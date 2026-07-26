@@ -1205,8 +1205,9 @@ def _spec_request(request: str) -> dict[str, object]:
             "interruptible.`, `The pure result has no shared state.`, `One "
             "public function owns the behavior.`, and `No legacy representation "
             "exists.` Include governed trim/preserve illustrations and the "
-            "`text.regression.unknown-mode` regression. Return the artifact, "
-            "not a profile label.\n\n"
+            "`text.regression.unknown-mode` regression. Be concise: return one "
+            "complete artifact under 4,500 characters, not commentary or a "
+            "profile label.\n\n"
             "Request:\n" + request
         ),
         "output_schema": _closed_object_schema(
@@ -1214,7 +1215,7 @@ def _spec_request(request: str) -> dict[str, object]:
                 "artifact_markdown": {
                     "type": "string",
                     "minLength": 500,
-                    "maxLength": 8000,
+                    "maxLength": 4500,
                 }
             }
         ),
@@ -1240,7 +1241,7 @@ def _review_request(
             "`Status: approved`, `Reviewed artifact identity: <the identity "
             "above>`, `Material findings: none`, and `Recording status: recorded` "
             "in the record, and all except Recording status in the log. "
-            "Approve only if the artifact exhaustively models "
+            "Keep both records concise. Approve only if the artifact exhaustively models "
             "the applicable boundaries and explicit non-applicability.\n\n"
             "Artifact:\n" + artifact_markdown
         ),
@@ -1257,12 +1258,12 @@ def _review_request(
                 "review_record_markdown": {
                     "type": "string",
                     "minLength": 200,
-                    "maxLength": 3000,
+                    "maxLength": 1800,
                 },
                 "review_log_markdown": {
                     "type": "string",
                     "minLength": 100,
-                    "maxLength": 1500,
+                    "maxLength": 900,
                 },
             }
         ),
@@ -1288,7 +1289,7 @@ def _test_spec_request(
             "T1-T3 cases. T1 covers trim plus canonical/mode/outcome/evidence; "
             "T2 covers every unknown mode plus canonical/mode/outcome/evidence; "
             "T3 covers preserve plus outcome/evidence. Return the artifact, not "
-            "a profile label.\n\nRequest:\n"
+            "a profile label, and keep it under 3,000 characters.\n\nRequest:\n"
             + request
             + "\n\nApproved feature spec:\n"
             + feature_markdown
@@ -1300,7 +1301,7 @@ def _test_spec_request(
                 "artifact_markdown": {
                     "type": "string",
                     "minLength": 400,
-                    "maxLength": 6000,
+                    "maxLength": 3000,
                 }
             }
         ),
@@ -3925,7 +3926,7 @@ def _collect_runtime_attestation(
 
         _copy_participating_skills(runtime_home)
         _install_auth(runtime_home)
-        model_id = "gpt-5.6-sol"
+        model_id = "gpt-5.6-terra"
         node = shutil.which("node")
         if node is None:
             raise BoundaryRuntimeError("runtime-unavailable")
