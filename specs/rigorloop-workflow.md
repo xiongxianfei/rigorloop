@@ -1590,6 +1590,7 @@ capability_inventory_identity
 skill_inventory_identity
 feature_classification_identity
 protocol_item_classification_identity
+materialization_canary_policy_identity
 probe_results
 credential_isolation_results
 ```
@@ -1624,6 +1625,7 @@ The exact identity preimages are:
 | `skill_inventory_identity` | Canonical JSON of the complete accepted `skills/list` result after the exact path normalization below |
 | `feature_classification_identity` | Canonical JSON of the feature-name-sorted array of exact `{feature, classification}` rows |
 | `protocol_item_classification_identity` | Canonical JSON of the protocol-variant-name-sorted array of exact `{item_variant, classification}` rows derived from the bound schema |
+| `materialization_canary_policy_identity` | Canonical JSON of the exact `materialization-canary-v1` policy selected by the parent for the noncanonical preflight turn |
 
 For `config/read.origins`, format-valid means
 `sha256:<64 lowercase hexadecimal characters>`. The exact non-empty required
@@ -1770,8 +1772,28 @@ environment value, private path, or raw protocol log is recorded.
 `stage_envelope_materialization` is proved by one noncanonical preflight turn
 through `workflow` and `spec` after runtime negotiation and the direct sandbox
 probes succeed.
-The turn uses the stage-artifact envelope contract below with exactly one
-`transport-canary` artifact at `preflight/stage-envelope-canary.md`.
+Before the turn, the parent selects the separate
+`materialization-canary-v1` artifact policy and binds its canonical identity
+into the turn request, output schema, and runtime attestation.
+That policy contains exactly `policy_id`, `stage`, `artifact_set_variant`,
+`artifacts`, `per_artifact_byte_limit`, `aggregate_artifact_byte_limit`, and
+`envelope_byte_limit`.
+Its values are:
+
+```text
+policy_id: materialization-canary-v1
+stage: spec
+artifact_set_variant: materialization-canary
+artifacts:
+  - role: transport-canary
+    path: preflight/stage-envelope-canary.md
+per_artifact_byte_limit: 4096
+aggregate_artifact_byte_limit: 4096
+envelope_byte_limit: 16384
+```
+
+The policy identity is the standard SHA-256 identity of this exact
+canonical-JSON object.
 The stage-owning skill authors a nonempty UTF-8 canary value; the transport
 adapter validates the complete envelope, writes those exact UTF-8 bytes into
 the isolated output root, rereads them, and requires byte equality.
@@ -1781,6 +1803,10 @@ The canary is never a lifecycle artifact, behavior snapshot, candidate oracle,
 or canonical evidence output.
 A missing, malformed, partial, additional, substituted, oversized, or
 non-byte-equal canary fails as `stage-envelope-canary-failed`.
+A canary envelope under a lifecycle policy, a lifecycle envelope under the
+canary policy, a response-selected policy, or a policy identity not equal to
+the parent-selected request and attestation identities fails before
+materialization.
 
 The evidence-only
 `check-environment --change-id <change-id> --json` command returns exactly
@@ -2564,14 +2590,20 @@ The stage-artifact envelope contains exactly:
 
 ```text
 schema_version
+artifact_policy_id
 completed
 last_stage
+artifact_set_variant
 artifacts
 ```
 
 `schema_version` is `boundary-stage-artifact-envelope-v1`.
+`artifact_policy_id` equals the parent-selected policy ID in the turn request
+and output schema; returned content cannot select or widen policy.
 `completed` is `true`.
 `last_stage` is the exact invoked stage.
+`artifact_set_variant` is one closed value allowed for the invoked stage and
+occurrence by the selected policy.
 `artifacts` is a nonempty ordered list whose rows contain exactly `role`,
 `path`, and `content_utf8`.
 `role` and `path` are independently unique.
@@ -2585,17 +2617,60 @@ The envelope identity is the standard SHA-256 identity of canonical JSON using
 UTF-8, sorted object keys, compact separators, and artifact-list order as
 returned.
 
-The first-version stage policy is closed:
+The first-version lifecycle policy ID is
+`lifecycle-stage-artifacts-v1`.
+Its canonical policy object contains exactly `policy_id`, the complete stage
+and occurrence matrix below, and the three byte limits above.
+Its identity is the standard SHA-256 identity of that exact canonical-JSON
+object and is reconstructed independently during generation and validation.
 
-| Stage | Exact ordered artifacts |
-| --- | --- |
-| `spec` | `feature-spec` at `feature-spec/portable-text-normalizer.md` |
-| `spec-review` | `spec-review-record` at `reviews/spec-review.md`; `spec-review-log` at `review-log/spec-review.md` |
-| `test-spec` | `test-spec` at `test-spec/portable-text-normalizer.test.md` |
-| `test-spec-review` | `test-spec-review-record` at `reviews/test-spec-review.md`; `test-spec-review-log` at `review-log/test-spec-review.md` |
+The lifecycle artifact-set matrix is closed.
+`FR` means `feature-spec` at
+`feature-spec/portable-text-normalizer.md`.
+`TR` means `test-spec` at
+`test-spec/portable-text-normalizer.test.md`.
+`SR`, `SL`, and `SX` mean `spec-review-record` at
+`reviews/spec-review.md`, `spec-review-log` at
+`review-log/spec-review.md`, and `spec-review-resolution` at
+`review-resolution/spec-review.md`.
+`TRR`, `TRL`, and `TRX` mean the corresponding
+`test-spec-review-record`, `test-spec-review-log`, and
+`test-spec-review-resolution` roles at
+`reviews/test-spec-review.md`, `review-log/test-spec-review.md`, and
+`review-resolution/test-spec-review.md`.
+
+| Stage occurrence | Artifact-set variant | Exact ordered artifacts | Required content state |
+| --- | --- | --- | --- |
+| `spec#1` | `spec-initial` | FR | Authored feature spec |
+| `spec#2` | `spec-correction` | FR, SX | Distinct corrected feature spec; open resolution updated with accepted correction and validation evidence |
+| `spec-review#1` | `spec-review-approved-initial` | SR, SL | Review and log agree on `approved`; no resolution |
+| `spec-review#1` or `spec-review#2` | `spec-review-changes-requested` | SR, SL, SX | Review and log agree on `changes-requested`; nonempty findings; open resolution |
+| `spec-review#1` or `spec-review#2` | `spec-review-blocked` | SR, SL, SX | Review and log agree on `blocked`; nonempty findings; open resolution |
+| `spec-review#2` | `spec-review-approved-rereview` | SR, SL, SX | Review and log agree on `approved`; prior findings have final dispositions and resolution is closed |
+| `test-spec#1` | `test-spec-initial` | TR | Authored test spec |
+| `test-spec#2` | `test-spec-correction` | TR, TRX | Distinct corrected test spec; open resolution updated with accepted correction and validation evidence |
+| `test-spec-review#1` | `test-spec-review-approved-initial` | TRR, TRL | Review and log agree on `approved`; no resolution |
+| `test-spec-review#1` or `test-spec-review#2` | `test-spec-review-changes-requested` | TRR, TRL, TRX | Review and log agree on `changes-requested`; nonempty findings; open resolution |
+| `test-spec-review#1` or `test-spec-review#2` | `test-spec-review-blocked` | TRR, TRL, TRX | Review and log agree on `blocked`; nonempty findings; open resolution |
+| `test-spec-review#2` | `test-spec-review-approved-rereview` | TRR, TRL, TRX | Review and log agree on `approved`; prior findings have final dispositions and resolution is closed |
+
+The authoring stage skill owns FR or TR plus the correction update to SX or
+TRX for its correction occurrence.
+The review stage skill owns SR/SL or TRR/TRL and owns the initial open or final
+closed review-resolution version produced by its review occurrence.
+The correction update may change only the bound finding dispositions,
+chosen-action, and validation-evidence portions required by the accepted
+correction; it cannot mark the review approved or close the resolution.
+The approving rereview validates the corrected artifact and all dispositions
+before returning the final closed resolution.
+Lifecycle validation independently parses every materialized review record,
+log, and resolution and requires its outcome, finding IDs, closeout status,
+reviewed artifact identity, and occurrence to agree with the selected variant.
+Variant labels alone never establish review outcome or closeout.
 
 Missing, additional, duplicated, reordered, malformed, escaping, oversized,
-or stage-incompatible artifact rows fail closed.
+stage-incompatible, occurrence-incompatible, or policy-incompatible artifact
+rows fail closed before materialization.
 The adapter performs no per-file write until the entire envelope passes those
 checks.
 After validation it may create parent directories and write the returned
@@ -2609,15 +2684,83 @@ or substitute for its materialized files.
 The runtime collector retains every bounded agent-message candidate observed
 for the current turn even when terminal turn completion is not observed before
 the deadline.
-Exactly one syntactically valid candidate envelope is required for
-`complete`.
-No candidate is `absent`; a nonempty strict subset of the required rows in
-their required relative order is `partial`; a candidate with all required
-rows plus an additional row is `extra`; and multiple candidates, duplicate
-rows, mixed missing-plus-additional rows, stage mismatch, or unequal
-candidates are `contradictory`.
-Malformed top-level or artifact-row shape additionally records
-`protocol-shape-incompatible` and cannot be materialized.
+It retains at most two candidate messages and at most 1572864 aggregate
+candidate-message UTF-8 bytes.
+It counts candidate messages through the first overflowing message, so
+`candidate_count` is zero through three; three means count overflow was
+observed and collection stopped.
+It hashes every observed candidate before discarding raw bytes.
+Raw content is retained after classification only for the sole complete
+accepted or reconciled candidate and only until materialization and snapshot
+capture finish.
+
+Each attempt records one value-free candidate-set observation containing
+exactly `schema_version`, `candidate_count`, `aggregate_message_bytes`,
+`overflow`, and `candidates`.
+`schema_version` is `stage-candidate-set-observation-v1`.
+`overflow` is `none`, `candidate-count`, or `aggregate-bytes`.
+The collector stops at the first overflow; candidate-count overflow has
+precedence when the same newly observed message would satisfy both overflow
+conditions.
+`candidates` retains at most the first two rows.
+Each row contains exactly `ordinal`, `message_identity`,
+`message_byte_count`, `parse_state`, `shape_projection`,
+`shape_projection_identity`, `schema_version`, `artifact_policy_id`,
+`completed`, `last_stage`, `artifact_set_variant`, and
+`artifact_projection`.
+`ordinal` starts at one and is contiguous.
+`parse_state` is `parsed`, `malformed`, or `oversized`.
+For `parsed`, `shape_projection` is empty; the five envelope fields are the
+parsed values, including `completed: true`; and `artifact_projection`
+preserves artifact order with rows containing exactly `role`, `path`,
+`byte_identity`, and `byte_count`.
+For `malformed`, the five envelope fields are null,
+`artifact_projection` is empty, and `shape_projection` is the complete
+value-free path-and-JSON-type projection of the bounded message.
+For `oversized`, all parsed fields and projections are empty or null.
+`shape_projection_identity` is null unless `parse_state` is `malformed`; when
+present it is the canonical identity of the complete projection.
+The observation never persists `content_utf8` or raw candidate-message bytes.
+All counts and identities are independently recomputed from the transient
+messages.
+
+Output state is derived from the complete candidate-set observation:
+
+```text
+absent:
+  candidate_count is zero and overflow is none
+
+contradictory:
+  overflow is not none; or candidate_count is greater than one; or the sole
+  candidate is malformed or oversized; or its policy, stage, occurrence,
+  variant, role, path, uniqueness, order, or byte-limit contract is invalid;
+  or it simultaneously omits and adds required artifacts
+
+partial:
+  exactly one parsed policy/stage/occurrence-compatible candidate has a
+  nonempty strict subset of required artifacts in required relative order
+
+extra:
+  exactly one parsed policy/stage/occurrence-compatible candidate has every
+  required artifact exactly once plus one or more additional artifacts
+
+complete:
+  exactly one parsed candidate matches the parent-selected policy identity,
+  stage, occurrence, variant, exact ordered artifact set, and byte limits
+```
+
+The states are disjoint and exhaustive.
+Overflow additionally records `stage-output-candidate-overflow`; malformed,
+oversized, policy/stage/occurrence mismatch, or invalid field shape
+additionally records `stage-envelope-invalid`.
+No candidate is materialized unless its state is `complete`.
+After exact byte materialization, the harness—not the transport adapter—runs
+the existing structural lifecycle validators against the selected variant.
+That check verifies record/outcome/finding/closeout agreement without creating
+or changing a review judgment.
+Content-state mismatch downgrades the attempt to `contradictory`, records
+`stage-envelope-invalid` with `content-state-mismatch`, discards the temporary
+materialization, and creates no lifecycle event or current evidence reference.
 After a confirmed stop, one complete valid candidate is reconciled and
 materialized without reinvocation.
 Only confirmed stop with no candidate and no independently observed
@@ -2640,9 +2783,11 @@ correction events.
 Every transport-attempt row contains exactly:
 `transport_attempt_id`, `event_key`, `transport_attempt`, `runtime_thread_id`,
 `runtime_process_id`,
-`transport_policy_identity`, `termination_state`, `termination_receipt`, `output_state`,
-`primary_diagnostic_id`, `diagnostic_ids`, `decision`, `evidence_refs`, and
-`diagnostic_evidence`.
+`transport_policy_identity`, `artifact_policy_identity`,
+`termination_state`, `termination_receipt`, `output_state`,
+`stage_envelope_identity`, `artifact_set_variant`,
+`candidate_observation`, `primary_diagnostic_id`, `diagnostic_ids`,
+`decision`, `evidence_refs`, and `diagnostic_evidence`.
 `event_key` is the prospective lifecycle event identity `<stage>#<attempt>`.
 It is reserved before transport begins and remains a correlation key when a
 pause or failure prevents creation of the lifecycle event.
@@ -2655,6 +2800,13 @@ pause or failure prevents creation of the lifecycle event.
 derived before invocation.
 `transport_policy_identity` equals the policy transitively bound through the
 run's `implementation_manifest_ref`.
+`artifact_policy_identity` equals the canonical parent-selected lifecycle
+policy identity for generation rows or the attested canary policy identity for
+the preflight row.
+`candidate_observation` is null only for `uninspected`; otherwise it is the
+complete bounded observation above.
+`stage_envelope_identity` and `artifact_set_variant` are non-null only for
+`complete`, and equal the sole accepted or reconciled candidate.
 Rows are ordered first by lifecycle-event order and then by transport attempt.
 
 `termination_state` is exactly `completed`, `confirmed-stopped`, or
@@ -2678,13 +2830,13 @@ pauses, and performs no retry or output inspection.
 `output_state` is exactly `uninspected`, `absent`, `complete`, `partial`,
 `extra`, or `contradictory`.
 `uninspected` is permitted only with `liveness-uncertain`.
-Every other output state is computed from the last complete candidate
-stage-artifact envelope observed for the turn after normal completion or
-confirmed process termination.
-When no syntactically valid candidate envelope was observed, the candidate
-artifact list is empty and the output state is `absent`; independently
-detected envelope-shape failure remains
-`protocol-shape-incompatible`.
+Every other output state is computed from the complete bounded candidate-set
+observation after normal completion or confirmed process termination.
+`absent` means no candidate was observed, not that an observed candidate was
+malformed.
+Malformed, oversized, multiple, overflowing, or policy-incompatible candidate
+evidence is `contradictory` with its independently retained non-output
+diagnostic.
 Only a `complete` envelope may be materialized.
 After materialization, the adapter independently requires the bound
 stage-output root to contain exactly the envelope paths and exact returned
@@ -2696,6 +2848,8 @@ none
 stage-turn-timeout
 stage-liveness-uncertain
 protocol-item-classification-invalid
+stage-output-candidate-overflow
+stage-envelope-invalid
 protocol-conditional-policy-violation
 stage-output-absent
 stage-output-partial
@@ -2712,16 +2866,18 @@ condition, ordered by this closed precedence:
 ```text
 1. stage-liveness-uncertain
 2. protocol-item-classification-invalid
-3. protocol-shape-incompatible
-4. protocol-conditional-policy-violation
-5. unexpected-prohibited-event
-6. runtime-identity-unstable
-7. stage-output-absent
-8. stage-output-partial
-9. stage-output-extra
-10. stage-output-contradictory
-11. stage-turn-timeout
-12. none
+3. stage-output-candidate-overflow
+4. stage-envelope-invalid
+5. protocol-shape-incompatible
+6. protocol-conditional-policy-violation
+7. unexpected-prohibited-event
+8. runtime-identity-unstable
+9. stage-output-absent
+10. stage-output-partial
+11. stage-output-extra
+12. stage-output-contradictory
+13. stage-turn-timeout
+14. none
 ```
 
 `none` occurs only as the sole member when no other condition was detected.
@@ -2745,6 +2901,15 @@ matching-output-diagnostic:
 
 non-output-diagnostic:
   protocol-item-classification-invalid
+  stage-output-candidate-overflow
+  stage-envelope-invalid
+  protocol-shape-incompatible
+  protocol-conditional-policy-violation
+  unexpected-prohibited-event
+  runtime-identity-unstable
+
+pre-output-non-output-diagnostic:
+  protocol-item-classification-invalid
   protocol-shape-incompatible
   protocol-conditional-policy-violation
   unexpected-prohibited-event
@@ -2765,13 +2930,13 @@ The closed transport routing matrix is:
 | `confirmed-stopped` | valid confirmed-stopped receipt | `absent` | `[stage-output-absent, stage-turn-timeout]` | 2 | `fail-closed` |
 | `confirmed-stopped` | valid confirmed-stopped receipt | `partial`, `extra`, or `contradictory` | `[matching-output-diagnostic, stage-turn-timeout]` | 1 or 2 | `fail-closed` |
 | `confirmed-stopped` | valid confirmed-stopped receipt | any inspected output | tuple containing one or more non-output diagnostics, followed by any independently detected matching output diagnostic and `stage-turn-timeout` | 1 or 2 | `fail-closed` |
-| `liveness-uncertain` | null | `uninspected` | `[stage-liveness-uncertain, zero or more previously observed non-output diagnostics in precedence order, stage-turn-timeout]` | 1 or 2 | `pause` |
+| `liveness-uncertain` | null | `uninspected` | `[stage-liveness-uncertain, zero or more previously observed pre-output non-output diagnostics in precedence order, stage-turn-timeout]` | 1 or 2 | `pause` |
 
 The rows are mutually exclusive.
-The liveness row forbids every output diagnostic because output remains
-uninspected, but retains each protocol-classification, protocol-shape,
-prohibited-event, or runtime-identity condition observed before termination
-was requested.
+The liveness row forbids every candidate and output diagnostic because output
+remains uninspected, but retains each protocol-classification,
+protocol-shape, prohibited-event, or runtime-identity condition observed
+before termination was requested.
 Every vocabulary-valid tuple not listed in the matrix fails closed as
 `invalid-transport-tuple` before decision routing; that validator diagnostic
 does not become a row value.
@@ -2790,12 +2955,13 @@ Only terminal `accept` or `reconcile` creates the corresponding lifecycle event
 and permits eventual publication.
 
 For `complete`, `evidence_refs` contains exactly the current materialized
-stage-owned output references inspected for that attempt, plus the bounded
-stage-artifact-envelope identity record.
+stage-owned output references inspected for that attempt.
 For `absent` and `uninspected`, it is empty.
-For `partial`, `extra`, or `contradictory`, it contains only current references
-to the bounded observed output files used to classify that failure.
-Those references are diagnostic inputs, never canonical behavior evidence.
+For `partial`, `extra`, or `contradictory`, it is empty because invalid
+candidates are never materialized.
+The row's envelope, variant, policy, and candidate-observation fields plus
+`diagnostic_evidence` carry the bounded transport proof; they are diagnostic
+inputs, never canonical behavior evidence.
 `diagnostic_evidence` is an inline object keyed by every non-`none` member of
 `diagnostic_ids` and no other key.
 It is empty only for `[none]`.
@@ -2807,7 +2973,9 @@ Each value has one exact role-specific shape:
 | --- | --- |
 | `stage-turn-timeout` | `kind: deadline-observation-v1`, `transport_policy_identity`, `deadline_ms`, `elapsed_ms`, `runtime_thread_id` |
 | `stage-liveness-uncertain` | `kind: liveness-observation-v1`, `transport_policy_identity`, `termination_requested: true`, `wait_deadline_ms`, `wait_elapsed_ms`, `wait_completed: false`, `runtime_process_id` |
-| `stage-output-absent`, `stage-output-partial`, `stage-output-extra`, or `stage-output-contradictory` | `kind: output-inventory-v1`, exact output `root`, `required_outputs`, `observed_outputs`, and canonical `inventory_identity` |
+| `stage-output-absent`, `stage-output-partial`, `stage-output-extra`, or `stage-output-contradictory` | `kind: candidate-output-observation-v1`, `artifact_policy_identity`, `required_outputs`, `candidate_observation_identity`, and exact `output_state` |
+| `stage-output-candidate-overflow` | `kind: candidate-overflow-observation-v1`, `candidate_observation_identity`, `overflow`, `candidate_count`, and `aggregate_message_bytes` |
+| `stage-envelope-invalid` | `kind: stage-envelope-observation-v1`, `candidate_observation_identity`, and nonempty ordered `invalidity_reasons` |
 | `protocol-item-classification-invalid` | `kind: protocol-classification-observation-v1`, `event_kind`, `protocol_classification_identity`, `lookup_result: unknown`, `event_shape_projection`, `event_shape_identity` |
 | `protocol-shape-incompatible` | `kind: protocol-observation-v1`, `event_kind`, `schema_path`, `observed_shape_projection`, `observed_shape_identity` |
 | `protocol-conditional-policy-violation` | `kind: protocol-policy-observation-v1`, `rule_id`, `event_kind`, `status_is_disabled`, `environment_identity_is_null`, `policy_result: violation` |
@@ -2830,6 +2998,20 @@ The role predicates are exact:
   Its policy identity matches the row; `wait_deadline_ms` equals manifest
   `termination_wait_deadline_ms`; and monotonic `wait_elapsed_ms` is at least
   that deadline. No unbounded or caller-substituted wait is permitted.
+- Every candidate-observation identity is the canonical identity of the exact
+  row-local `candidate_observation`.
+  `required_outputs` is the exact ordered `{role, path}` list selected from
+  the bound artifact policy and occurrence.
+  The candidate-output evidence state equals the independently derived row
+  state.
+  Overflow evidence exactly repeats the observation's non-`none` overflow,
+  count, and aggregate byte count.
+  `invalidity_reasons` uses only `malformed`, `oversized`,
+  `policy-mismatch`, `stage-mismatch`, `occurrence-mismatch`,
+  `variant-mismatch`, `duplicate-role`, `duplicate-path`, `path-invalid`,
+  `order-invalid`, `byte-limit-exceeded`, or `content-state-mismatch`.
+  It contains every detected reason in this precedence order and no other
+  value.
 - `runtime-identity-unstable` requires `identity_kind` to be exactly
   `runtime-launcher` or `runtime-package`.
   `checkpoint` is exactly `before-schema-generation`,
@@ -2876,66 +3058,26 @@ The role predicates are exact:
   item classification failure and cannot be relabeled as schema-incompatible
   or known prohibited events.
 
-For output classification, `required_outputs` is the nonempty complete
-path-sorted stage-policy list of `{role, path, identity_rule}` descriptors.
-Its roles and paths are independently unique; an empty list or duplicate role
-or path is an invalid stage policy and fails before invocation.
-`identity_rule` is either `any-current` or one exact bound identity.
-`observed_outputs` is the raw complete list of `{path, identity}` descriptors
-projected in envelope order from syntactically valid artifact rows, where each
-identity is computed from `content_utf8` encoded as exact UTF-8 bytes.
-It contains no semantic role field.
-It is not deduplicated or converted to a set before classification.
-Let `E` be the required list and `O` the raw observed list.
-An observed descriptor matches a required descriptor if and only if their
-normalized paths are byte-equal and either the required `identity_rule` is
-`any-current` or the observed identity equals its exact bound identity.
-The required descriptor's role is projected onto a matched observation only
-after this comparison.
-An unmatched observed path is extra.
-An expected role is satisfied only by one matching observed path.
-Any role field, missing path/identity, additional field, nonstandard identity,
-or nonnormalized path in an observed descriptor is malformed and fails before
-classification.
-The evaluator applies this closed, disjoint order:
-
-```text
-absent:
-  O is empty
-
-contradictory:
-  O is nonempty and contains any duplicate path regardless of identity,
-  violates an exact bound identity, projects roles declared mutually exclusive
-  by the stage policy, or both has an unmatched member and leaves one or more
-  required members unsatisfied
-
-extra:
-  not contradictory, every member of E is satisfied exactly once, and one or
-  more members of O match no member of E
-
-partial:
-  not contradictory, O is nonempty, every member of O matches a distinct
-  member of E, and one or more members of E are unsatisfied
-
-complete:
-  not contradictory and O and E match bijectively
-```
-
-No observation may satisfy more than one state.
-The nonempty and uniqueness preconditions plus contradiction-first order make
-the five outcomes exhaustive, including identical duplicates,
-and mixed missing-plus-extra observations.
-`inventory_identity` is the canonical identity of exactly
-`{root, required_outputs, observed_outputs}`.
+For output classification, `required_outputs` is the nonempty exact ordered
+artifact list selected by parent invocation context and, for review stages,
+the returned closed variant.
+The policy's roles and paths are independently unique; an empty list,
+duplicate, malformed policy, or unknown stage/occurrence/variant fails before
+invocation.
+The evaluator applies the candidate-set algorithm above without sorting,
+deduplicating, or collapsing candidates or artifact rows.
+The complete candidate observation, its canonical identity, required outputs,
+and all detected invalidity reasons are recomputed during validation.
 The timeout and liveness records are cross-checked against the row's runtime
 thread, logical child process, policy, and termination fields.
 For `confirmed-stopped`, the separate inline `termination_receipt` is the
 required stop/reap authority evidence and is cross-checked with the timeout
 observation; it is not duplicated as a diagnostic-evidence role.
-The output inventory is cross-checked against `output_state` and
-`evidence_refs`.
-For `complete`, it is additionally cross-checked against the envelope identity
-and the independently reread materialized path-and-byte identities.
+The candidate observation is cross-checked against `output_state`,
+diagnostics, envelope identity, variant, and `evidence_refs`.
+For `complete`, the sole candidate's artifact projection is additionally
+cross-checked against the independently reread materialized path-and-byte
+identities.
 Compound conditions retain all role entries and never erase or replace
 `output_state`.
 Missing, additional, wrong-role, stale, self-referential, or cross-field
@@ -2973,6 +3115,8 @@ request is operation input evidence and is not a snapshot.
 `spec#2` has no reviewed snapshot, consumes exactly the prior feature-spec
 behavior output plus its changes-requested review evidence, and produces
 exactly one distinct corrected feature-spec behavior output.
+Its evidence references additionally include the current stage-authored
+correction update to the open spec-review resolution.
 `test-spec#1` has no reviewed snapshot, consumes exactly the final approved
 feature-spec behavior output plus its approving review evidence, and produces
 exactly one test-spec behavior output.
@@ -2981,6 +3125,8 @@ behavior output, its changes-requested review evidence, the final approved
 feature-spec behavior output, and that feature spec's approving review
 evidence, and produces exactly one distinct corrected test-spec behavior
 output.
+Its evidence references additionally include the current stage-authored
+correction update to the open test-spec-review resolution.
 `spec-review` consumes and identifies exactly one feature-spec behavior output
 and produces exactly one review-evidence bundle-manifest snapshot.
 `test-spec-review` consumes and identifies exactly one test-spec behavior
@@ -2992,8 +3138,11 @@ Every review-evidence bundle manifest contains exactly `review_id`, `outcome`,
 `reviewed_snapshot_id`, `material_finding_ids`, and `artifact_refs`.
 `artifact_refs` is role-keyed and contains exactly one `review-record` and one
 `review-log` current path-and-identity reference.
-For `approved`, `material_finding_ids` is empty and `review-resolution` is
-absent.
+For an initial `approved` review, `material_finding_ids` is empty and
+`review-resolution` is absent.
+For an approving rereview, `material_finding_ids` is the exact prior finding
+set and `artifact_refs` additionally contains exactly one closed
+`review-resolution` reference.
 For `changes-requested` or `blocked`, `material_finding_ids` is non-empty and
 `artifact_refs` additionally contains exactly one `review-resolution`
 reference.
@@ -3002,8 +3151,12 @@ bundle manifest does not replace or weaken them.
 The review event's `evidence_refs` includes the bundle manifest and every
 `artifact_refs` member.
 `input_snapshot_ids` and `output_snapshot_ids` are ordered unique lists.
-For an authoring event, `evidence_refs` equals the normalized deduplicated
-path-and-identity projection of all referenced input and output snapshots.
+For an initial authoring event, `evidence_refs` equals the normalized
+deduplicated path-and-identity projection of all referenced input and output
+snapshots.
+For a correction authoring event, it additionally contains exactly the
+materialized correction-resolution reference selected by its artifact-set
+variant.
 For a review event, it equals the normalized deduplicated union of all input
 snapshot references, the bundle-manifest output snapshot reference, and every
 bundle `artifact_refs` member.
@@ -3459,9 +3612,12 @@ Partial `v1` evidence MUST NOT be reinterpreted as `legacy` proof.
   the complete capability baseline and final verification pass.
 - `RLW-AC-B10`: A reviewer can prove that each fresh upstream artifact is
   authored in a closed stage-owned envelope, materialized byte-for-byte by a
-  semantics-free adapter, reconciled without reinvocation when complete, and
+  semantics-free adapter, selected from an exhaustive review/correction
+  artifact-set matrix, reconciled without reinvocation when complete, and
   rejected before publication when missing, malformed, partial, additional,
-  contradictory, oversized, or non-byte-equal.
+  contradictory, oversized, non-byte-equal, or content-state-inconsistent.
+  Failed candidate sets retain bounded value-free replay evidence, and the
+  noncanonical canary policy cannot be substituted for lifecycle policy.
 
 ## Open questions
 
