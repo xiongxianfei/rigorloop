@@ -1419,7 +1419,7 @@ The closed operation registry is:
 | `preservation-review-recording` | skill behavior harness | canonical preservation manifest and every reference selected by it | review-recording result | `preservation.review-recording` |
 | `preservation-isolation` | skill behavior harness | canonical preservation manifest and every reference selected by it | isolation result | `preservation.isolation` |
 | `preservation-handoff` | skill behavior harness | canonical preservation manifest and every reference selected by it | handoff result | `preservation.handoff` |
-| `behavior-implementation-manifest` | boundary model validator | exact standalone harness components, five participating skill packages, applicable repository instructions, contract inputs, closed invocation profile, and bounded recorded runtime attestation below | exact `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json` | `support.behavior-implementation-manifest` |
+| `behavior-implementation-manifest` | boundary model validator | exact standalone harness components, five participating skill packages, applicable repository instructions, contract inputs, closed invocation profile, closed transport policy, and bounded recorded runtime attestation below | exact `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json` | `support.behavior-implementation-manifest` |
 | `simple-change-behavior` | standalone simple-change behavior harness and evaluator | exact candidate corpus, current five participating skill packages, current behavior-implementation manifest, and invocation-owned pre-run HEAD | immutable run, atomic current pointer, behavior-output snapshots, trace, and metric result | `simple_change` |
 | `canonical-skill-resource-manifest` | skill validator | current exact eight R28m skills and every mapped boundary-proof resource | exact `docs/changes/<change-id>/evidence/canonical-skill-resource-manifest.json` | `support.canonical-skill-resource-manifest` |
 | `adapter-parity` | adapter validator | exact current `scripts/adapter_distribution.py`, `scripts/build-adapters.py`, `scripts/validate-adapters.py`, `dist/adapters/manifest.yaml`, and canonical skill/resource manifest | durable current four-surface parity manifest set | `adapter_parity` |
@@ -1792,10 +1792,11 @@ mapped phase, and `attestation_ref` is null:
 | `runtime-unreadable` | `pre-thread-start` |
 | `runtime-version-invalid` | `pre-thread-start` |
 | `runtime-version-unsupported` | `pre-thread-start` |
-| `runtime-identity-unstable` | `pre-thread-start`, `pre-turn-start`, or `in-turn`, matching the checkpoint that observed the change |
+| `runtime-identity-unstable` | the single phase assigned by the closed checkpoint-to-phase table below |
 | `schema-bundle-invalid` | `pre-thread-start` |
 | `experimental-api-unavailable` | `pre-thread-start` |
 | `protocol-shape-incompatible` | `pre-thread-start` |
+| `protocol-conditional-policy-violation` | `in-turn` |
 | `thread-metadata-mismatch` | `pre-turn-start` |
 | `feature-pagination-invalid` | `pre-turn-start` |
 | `capability-inventory-mismatch` | `pre-turn-start` |
@@ -1807,6 +1808,23 @@ mapped phase, and `attestation_ref` is null:
 | `sandbox-probe-failed` | `pre-turn-start` |
 | `credential-isolation-failed` | `pre-turn-start` |
 | `unexpected-prohibited-event` | `in-turn` |
+
+For `runtime-identity-unstable`, the checkpoint-to-phase mapping is closed:
+
+| Checkpoint | Phase |
+| --- | --- |
+| `before-schema-generation` | `pre-thread-start` |
+| `after-schema-generation` | `pre-thread-start` |
+| `before-sandbox-probe` | `pre-turn-start` |
+| `after-sandbox-probe` | `pre-turn-start` |
+| `before-app-server-negotiation` | `pre-thread-start` |
+| `after-app-server-negotiation` | `pre-thread-start` |
+| `before-accepted-turn` | `pre-turn-start` |
+| `after-accepted-turn` | `in-turn` |
+
+Every checkpoint occurs exactly once in this table.
+Missing, additional, duplicate, unknown, or cross-phase checkpoint mappings
+fail closed.
 
 Every failure result is `environment-unavailable`.
 Pre-thread failures stop before `thread/start`; pre-turn failures stop before
@@ -1923,18 +1941,22 @@ Canonical generation:
 Canonical validation MUST NOT reinvoke a lifecycle skill.
 It recomputes the input-set identity from the recorded baseline commit plus
 the current referenced scenario, complete participating skill packages,
-instructions, contracts, invocation profile, recorded runtime attestation,
+instructions, contracts, invocation profile, closed transport policy,
+recorded runtime attestation,
 oracles, and standalone harness components; validates the pointed immutable run and every current referenced
 byte; reconstructs its events and typed
 `simple-change-behavior` result, freshly executes deterministic registry
 operations, recomputes dependencies and aggregate formulas, and compares the
 complete reconstructed report with the recorded canonical report.
 For `behavior-implementation-manifest`, generation captures the invocation
-profile, runtime attestation, and current references once; validation checks
-that record's closed shape, import policy, exact derived resource and
-instruction sets, bounded attestation shape and identities, and every current
-identity without replacing the recorded behavior-generation profile or
-attestation with the validator's environment.
+profile, transport policy, runtime attestation, and current references once.
+Validation checks that record's closed shape, import policy, exact derived
+resource and instruction sets, bounded attestation shape and identities, and
+every current identity without replacing the recorded behavior-generation
+profile or attestation with the validator's environment.
+It independently reconstructs the exact closed transport-policy object,
+recomputes `transport_policy_identity`, and requires all three policy fields
+and the transitive identity used by the immutable run to match.
 A changed input-set identity is stale evidence and requires canonical
 generation; validation MUST NOT silently reuse or rewrite it.
 Validation does not replace the recorded baseline commit with the later
@@ -2714,8 +2736,9 @@ The role predicates are exact:
   `runtime-launcher` or `runtime-package`.
   `checkpoint` is exactly `before-schema-generation`,
   `after-schema-generation`, `before-sandbox-probe`, `after-sandbox-probe`,
-  `before-app-server`, `after-app-server`, `before-accepted-turn`, or
-  `after-accepted-turn`.
+  `before-app-server-negotiation`, `after-app-server-negotiation`,
+  `before-accepted-turn`, or `after-accepted-turn`, with the exact preflight
+  phase defined by the closed checkpoint-to-phase table above.
   `expected_identity` equals the corresponding bound
   launcher or package identity in the runtime attestation;
   `observed_identity` is freshly captured from that same resource at the named
@@ -3388,6 +3411,6 @@ Partial `v1` evidence MUST NOT be reinterpreted as `legacy` proof.
 ## Readiness
 
 - The retained workflow contract remains approved.
-- The boundary-first `R28` through `R28q` amendment is ready for independent
+- The boundary-first `R28` through `R28z` amendment is ready for independent
   `spec-review` and MUST NOT be relied on for implementation until that review
   approves it.
