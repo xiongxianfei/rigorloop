@@ -1210,7 +1210,13 @@ def _spec_request(request: str) -> dict[str, object]:
             "Request:\n" + request
         ),
         "output_schema": _closed_object_schema(
-            {"artifact_markdown": {"type": "string", "minLength": 500}}
+            {
+                "artifact_markdown": {
+                    "type": "string",
+                    "minLength": 500,
+                    "maxLength": 8000,
+                }
+            }
         ),
     }
 
@@ -1248,8 +1254,16 @@ def _review_request(
                     "type": "string",
                     "enum": ["approved", "changes-requested", "blocked"],
                 },
-                "review_record_markdown": {"type": "string", "minLength": 200},
-                "review_log_markdown": {"type": "string", "minLength": 100},
+                "review_record_markdown": {
+                    "type": "string",
+                    "minLength": 200,
+                    "maxLength": 3000,
+                },
+                "review_log_markdown": {
+                    "type": "string",
+                    "minLength": 100,
+                    "maxLength": 1500,
+                },
             }
         ),
     }
@@ -1282,7 +1296,13 @@ def _test_spec_request(
             + review_record
         ),
         "output_schema": _closed_object_schema(
-            {"artifact_markdown": {"type": "string", "minLength": 400}}
+            {
+                "artifact_markdown": {
+                    "type": "string",
+                    "minLength": 400,
+                    "maxLength": 6000,
+                }
+            }
         ),
     }
 
@@ -2492,6 +2512,8 @@ def generate_behavior(
     ):
         raise BoundaryRuntimeError("runtime-identity-unstable")
     def invoke(request: Mapping[str, object]) -> tuple[dict[str, object], dict[str, object]]:
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            print(f"stage-start:{request.get('stage')}", file=sys.stderr)
         generated: list[dict[str, object]] = []
         observed_attestation = _collect_runtime_attestation(
             command,
@@ -2501,6 +2523,8 @@ def generate_behavior(
         )
         if len(generated) != 1:
             raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            print(f"stage-complete:{request.get('stage')}", file=sys.stderr)
         return observed_attestation, generated[0]
 
     attestation, route_result = invoke(_route_request(str(scenario["request"])))
