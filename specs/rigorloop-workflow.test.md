@@ -49,12 +49,12 @@ Boundary model scope: R28-R28z
 | --- | --- | --- | --- |
 | Feature spec | `specs/rigorloop-workflow.md` | draft; focused spec-review pending | pending after approval |
 | Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion to the draft workflow amendment | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r34.md` | changes-requested; R34 findings resolved in the R35 candidate | `sha256:e19a033ace10c2c1b93fbc5a0532a7a39de5c164b99da05865a81ccab993ff4d` |
+| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r35.md` | changes-requested; R35 findings resolved in the R36 candidate | `sha256:e8ef367b3ab2c540003d9c707315f946b651597e38728d412cd9238403edf12c` |
 | Architecture | `docs/architecture/system/architecture.md` | draft; focused architecture-review pending | pending after approval |
 | Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r13.md` | approved | `sha256:47571b7555fe6470de8e78a9c8b180c09fbdb627e8e641ab1c6915e0d9044288` |
 | ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | proposed amendment | pending after acceptance |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted | `sha256:f757569f2bbe986f957f8a2532a6d9bd268695ff0f271779dce270b1bdb7b690` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; spec-review R35 is the next gate | `sha256:0ca274bb41a4fc588547ef1b47dcf4ae00c46d1b9d749bc005882c931fa2acfb` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; spec-review R36 is the next gate | `sha256:b30452b950c5948f5b518d0a30e88e6c336a3c56d478374f756e6017ad02b36d` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md` | approved | `sha256:d38b5b63b05239d7b34df4e15727f2449d3e9ce263dac07ba754e1578a5ee6fb` |
 
 ## Testing strategy
@@ -1230,11 +1230,16 @@ Boundary model scope: R28-R28z
   `instruction_profile`, `tool_profile`, `python_implementation`, and
   `python_version`; and the exact `boundary-runtime-attestation-v1` record with
   all fifteen top-level fields, eight thread-metadata fields, five probe results, and six
-  credential-isolation results.
+  credential-isolation results; plus the exact
+  `boundary-transport-policy-v1` record and its recomputed identity.
 - Steps: Derive the manifest from current Resource maps and instruction walks;
   for every manifest collection and every invocation-profile field,
   independently test valid, missing, additional, duplicate where applicable,
   unknown closed value, malformed format, stale identity, and changed value;
+  omit, add, substitute, caller-select, or make nonpositive or unbounded each
+  transport-policy deadline; mutate its schema version or recorded identity;
+  and require generation and canonical validation to reconstruct the exact
+  policy and its transitive immutable-run binding independently;
   independently mutate every runtime-attestation identity, result key, result
   value, profile value, schema version, thread-metadata field and logical-role
   projection; cross-substitute invocation and thread version, model,
@@ -1392,7 +1397,9 @@ Boundary model scope: R28-R28z
   confirmation. Bind timeout rows to their exact runtime thread and
   termination/liveness records to their exact logical `runtime_process_id`;
   reject thread, process, deadline, elapsed-time, and policy substitutions.
-  Exercise both closed runtime-identity kinds at every closed checkpoint.
+  Exercise both closed runtime-identity kinds at every closed checkpoint and
+  require the exact checkpoint-to-phase matrix. Reject missing, duplicate,
+  additional, unknown, and cross-phase matrix rows.
   Reject cross-kind substitutions, unknown kinds or checkpoints, expected
   identity not equal to the attested resource, observation of a different
   resource, and expected/observed equality.
@@ -1853,8 +1860,8 @@ Boundary model scope: R28-R28z
 
 ## Next artifacts
 
-- Boundary-first amendment: independent `test-spec-review` for this
-  R18/R8/R11 proof map, then resume M2 under the recorded implementation
+- Boundary-first amendment: independent `test-spec-review` for the focused
+  R28y/R35 proof map after spec approval, then resume M2 under the recorded implementation
   authorization.
 - `code-review M2` under the current
   [Boundary-First Proof Modeling plan](../docs/plans/2026-07-25-boundary-first-proof-modeling.md)
@@ -1871,7 +1878,8 @@ Boundary model scope: R28-R28z
 
 Active proof-planning and regression surface for the workflow contract,
 including the boundary-first R28-R28z amendment.
-The R18/R8/R11 runtime-boundary revision awaits test-spec review and is the
-candidate proof map for resumed M2 implementation.
+The focused R28y/R35 runtime-boundary revision awaits spec approval and then
+test-spec review before it becomes the candidate proof map for resumed M2
+implementation.
 
 Test-spec proof map is confirmed against the approved active plan. M2 implementation can hand off to `code-review M2` only after the M2 guidance and contract surfaces make the relevant assertions and validation commands pass. Each milestone closes only after clean review and any required review-resolution.

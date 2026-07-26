@@ -931,4 +931,4 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r35.md
 Resolution: review-resolution.md#spec-review-r35
 Material findings: BFP-SR-R35-1, BFP-SR-R35-2, BFP-SR-R35-3
-Open findings: BFP-SR-R35-1, BFP-SR-R35-2, BFP-SR-R35-3
+Open findings: None

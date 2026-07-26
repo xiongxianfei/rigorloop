@@ -2215,61 +2215,6 @@ closed rule/event identities plus two derived booleans; T49 and T52 prove all
 four boolean combinations, precedence cross-products, and raw-value exclusion;
 pending spec-review-r35.
 
-### spec-review-r35
-
-#### BFP-SR-R35-1 - Conditional policy failure is absent from preflight results
-
-Finding ID: BFP-SR-R35-1
-Disposition: accepted
-Status: in-progress
-Owner: workflow spec author
-Owning stage: spec revision
-Decision owner: R28y preflight result contract
-Decision needed: none
-Required outcome: Make conditional-policy failure a valid deterministic
-in-turn preflight result without retaining raw values.
-Chosen action: Add the diagnostic to the closed preflight phase table and
-prove all four conditional-rule combinations.
-Rationale: Transport evidence cannot use a result vocabulary that its
-enclosing preflight record rejects.
-Validation target: spec-review-r36
-Validation evidence: pending
-
-#### BFP-SR-R35-2 - Runtime checkpoints lack deterministic phase mapping
-
-Finding ID: BFP-SR-R35-2
-Disposition: accepted
-Status: in-progress
-Owner: workflow spec author
-Owning stage: spec revision
-Decision owner: R28y runtime attestation
-Decision needed: none
-Required outcome: Bind every closed identity checkpoint to exactly one
-preflight phase.
-Chosen action: Add an exhaustive checkpoint-to-phase table with unknown,
-duplicate, missing, and cross-phase rejection.
-Rationale: “Matching the checkpoint” is not an executable mapping.
-Validation target: spec-review-r36
-Validation evidence: pending
-
-#### BFP-SR-R35-3 - Transport policy is omitted from manifest selection
-
-Finding ID: BFP-SR-R35-3
-Disposition: accepted
-Status: in-progress
-Owner: workflow spec author
-Owning stage: spec revision
-Decision owner: R28y behavior manifest
-Decision needed: none
-Required outcome: Include the exact transport policy in complete generation
-selection and canonical semantic validation.
-Chosen action: Add policy selection, recomputed identity validation, and T48
-manifest-closure contrasts.
-Rationale: Record shape alone cannot prove a normative manifest input was
-selected and validated.
-Validation target: spec-review-r36
-Validation evidence: pending
-
 #### BFP-SR-R34-2 - Separate completed recovery history from active state
 
 Finding ID: BFP-SR-R34-2
@@ -2329,6 +2274,70 @@ identity to the attestation, freshly observes the same resource, and requires
 inequality. T49 and T52 prove every checkpoint plus unknown, cross-kind,
 cross-resource, attestation-mismatch, and equal-identity contrast cases;
 pending spec-review-r35.
+
+### spec-review-r35
+
+#### BFP-SR-R35-1 - Conditional policy failure is absent from preflight results
+
+Finding ID: BFP-SR-R35-1
+Disposition: accepted
+Status: resolved
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y preflight result contract
+Decision needed: none
+Required outcome: Make conditional-policy failure a valid deterministic
+in-turn preflight result without retaining raw values.
+Chosen action: Add the diagnostic to the closed preflight phase table and
+prove all four conditional-rule combinations.
+Rationale: Transport evidence cannot use a result vocabulary that its
+enclosing preflight record rejects.
+Validation target: spec-review-r36
+Validation evidence: the closed preflight table now admits
+`protocol-conditional-policy-violation` only in `in-turn`; T49 proves the one
+permitted and three forbidden boolean combinations while retaining no raw
+status or environment identity; pending spec-review-r36.
+
+#### BFP-SR-R35-2 - Runtime checkpoints lack deterministic phase mapping
+
+Finding ID: BFP-SR-R35-2
+Disposition: accepted
+Status: resolved
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y runtime attestation
+Decision needed: none
+Required outcome: Bind every closed identity checkpoint to exactly one
+preflight phase.
+Chosen action: Add an exhaustive checkpoint-to-phase table with unknown,
+duplicate, missing, and cross-phase rejection.
+Rationale: “Matching the checkpoint” is not an executable mapping.
+Validation target: spec-review-r36
+Validation evidence: R28y now maps all eight closed, unambiguous checkpoints
+to exactly one phase and rejects missing, additional, duplicate, unknown, and
+cross-phase mappings; T49 proves the matrix and every identity kind/checkpoint
+combination; pending spec-review-r36.
+
+#### BFP-SR-R35-3 - Transport policy is omitted from manifest selection
+
+Finding ID: BFP-SR-R35-3
+Disposition: accepted
+Status: resolved
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y behavior manifest
+Decision needed: none
+Required outcome: Include the exact transport policy in complete generation
+selection and canonical semantic validation.
+Chosen action: Add policy selection, recomputed identity validation, and T48
+manifest-closure contrasts.
+Rationale: Record shape alone cannot prove a normative manifest input was
+selected and validated.
+Validation target: spec-review-r36
+Validation evidence: the operation registry now selects the closed transport
+policy, canonical validation reconstructs its three fields and identity and
+checks the immutable-run binding, and T48 proves policy closure and
+substitution contrasts; pending spec-review-r36.
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
