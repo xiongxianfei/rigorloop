@@ -2,13 +2,16 @@
 
 Stage: architecture-assessment
 Applicability: required
-Spec identity: sha256:bed5b028aa08cefbf5d497cb81ba3245993466778e0fcabf522e2ff37a58c634
+Spec identity: sha256:cce7047761aaa99d81263cf226261e73de3de35e9064e93732274d3a3a8ae1f8
 
 Architecture is required because the approved amendment changes the ownership
 and interaction of canonical workflow specifications, eight published skills,
 packaged resources, structural validators, proof fixtures, selector
 registration, generated adapters, installed-resource parity, release
 activation evidence, and the change-local capability-baseline report.
+The R13 amendment also introduces a standalone behavior harness, isolated
+child-runtime workspace, closed invocation profile, and immutable-run
+publication/recovery boundary.
 
 The architecture update must preserve the approved ownership ledger:
 
@@ -19,3 +22,9 @@ The architecture update must preserve the approved ownership ledger:
 - matching test specs own executable proof maps;
 - validators own syntax, closed vocabularies, and trace integrity;
 - reviewers retain semantic completeness judgment.
+
+The accepted architecture amendment must place the standalone harness without
+making it a second workflow engine, distinguish child-tool network denial from
+runtime model-service transport, keep raw access observations transient, and
+bind the deterministic outer prompt through the harness and scenario
+identities.

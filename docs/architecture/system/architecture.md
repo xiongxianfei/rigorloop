@@ -2,7 +2,7 @@
 
 ## Status
 
-- approved
+- draft
 
 ## Related artifacts
 
@@ -124,7 +124,7 @@
 - Single Bounded Review-Fix Workflow Automation change metadata: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml`
 - Boundary-First Proof Modeling proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Boundary-First Proof Modeling spec amendments: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Boundary-First Proof Modeling spec-review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r2.md`
+- Boundary-First Proof Modeling spec-review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r13.md`
 - Boundary-First Proof Modeling ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md`
 - Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
 - Formal Review Recording spec: `specs/formal-review-recording.md`
@@ -384,6 +384,10 @@ for the component view.
 | --- | --- | --- |
 | Boundary model constants and parser | `scripts/boundary_proof_model.py` | Projects closed IDs, marker and scope rules, row schemas, reference integrity, fixture identities, result vocabularies, and report aggregation from approved specs. |
 | Capability evaluator | Pure functions in `scripts/boundary_proof_model.py` | Computes the six-check, fixture, preservation, parity, overhead, and final capability outcomes from validated typed inputs; it performs no filesystem writes. |
+| Standalone behavior harness | `scripts/boundary_proof_behavior.py` | Assembles the five participating skill packages and governing inputs, enforces the closed two-module import boundary, creates the isolated workspace and fresh runtime home, launches one workflow invocation, captures the observable invocation profile, validates transient access observations, and publishes or reconciles one immutable behavior run. |
+| Child-runtime adapter | Functions in `scripts/boundary_proof_behavior.py` | Resolves and identities the runtime executable, requires child-reported model metadata, applies the closed instruction and tool profiles, keeps model-service transport outside child-tool authority, and rejects unavailable or unsafe metadata before output is accepted. |
+| Isolated workspace assembler | Functions in `scripts/boundary_proof_behavior.py` | Copies only manifest-bound skills, mapped resources, applicable instructions, contracts, scenario inputs, and candidate oracles into a fresh workspace and exposes one writable behavior-output root. |
+| Immutable run publisher and reconciler | Functions in `scripts/boundary_proof_behavior.py` | Builds the run in a sibling temporary directory, validates the complete event bundle, persists a prepared publication receipt, atomically installs the immutable run and current pointer, and reconciles crashes without reinvoking lifecycle skills during validation. |
 | Boundary validator | `scripts/validate-boundary-proof.py` | Validates scoped feature specs, matching test specs, fixture evidence, and the capability report without scoring semantic adequacy. |
 | Regression suite | `scripts/test-boundary-proof.py` | Proves known and unknown values, duplicates, orphans, version mismatch, aggregate behavior, and the compact simple fixture. |
 | Boundary fixtures | `tests/fixtures/boundary-proof/` | Holds valid, invalid, eight seeded incident-replay, and simple-change inputs. |
@@ -397,6 +401,10 @@ for the component view.
 
 Only `scripts/boundary_proof_model.py` owns executable closed constants and
 shared parsing or aggregate evaluation.
+The standalone harness imports only standard-library modules and
+`boundary_proof_model`; the model imports only standard-library modules.
+The harness does not import the workflow-automation engine, lifecycle
+validators, test drivers, or third-party packages.
 Selector code routes checks but does not parse boundary records.
 Skill validation may import the model but cannot carry a second vocabulary.
 Only `scripts/validate-boundary-proof.py` serializes or replaces the canonical
@@ -602,19 +610,42 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    inspection for discovered defects.
 5. `code-review` independently challenges omitted dimensions, composed paths,
    and example-only remediation.
-6. The incident runner evaluates the eight frozen fixture IDs at their
+6. For canonical simple-change behavior, the standalone harness derives the
+   exact five-skill package set from current resource maps, discovers the
+   applicable repository instruction chain, binds current contract and
+   scenario inputs, and creates a fresh isolated workspace and configuration
+   home.
+7. The child-runtime adapter records runtime version and executable identity,
+   requires the runtime's own model ID, applies the closed instruction and
+   tool profiles, and invokes `workflow` once to orchestrate `spec`,
+   `spec-review`, `test-spec`, and `test-spec-review`.
+8. Child tools have workspace-only filesystem access, no connectors,
+   subagents, or network. The runtime's model-service control-plane transport
+   is outside the child tool profile and cannot be used as a tool or arbitrary
+   egress channel.
+9. The outer prompt is a deterministic constant in the identity-bound harness
+   module combined with `scenario_ref`; changing either changes the input-set
+   identity. The access log is transient enforcement state: the harness
+   validates it before publication, records only the typed result and
+   diagnostic in durable evidence, then discards the raw log.
+10. The harness prepares the run under a sibling temporary directory, writes
+    the prepared publication receipt, atomically installs the immutable run
+    and current pointer, and removes the receipt only after reconciliation.
+    Validation checks the pointed run and current bound identities without
+    invoking a lifecycle skill or substituting the validator's environment.
+11. The incident runner evaluates the eight frozen fixture IDs at their
    expected pre-code-review gates.
-7. Adapter generation carries the mapped reference through Codex, Claude, and
+12. Adapter generation carries the mapped reference through Codex, Claude, and
    opencode packages; resource validation proves relative path and raw-byte
    identity.
-8. The evaluator computes the capability report from fixtures, checks,
+13. The evaluator computes the capability report from fixtures, checks,
    preservation, parity, false blocking, ownership, artifact count, and
    correction-cycle evidence.
-9. `verify` rejects missing, stale, mismatched, asserted, or incomplete
+14. `verify` rejects missing, stale, mismatched, asserted, or incomplete
    evidence.
-10. A release activates `v1` only when tracked notes bind its tag to the
+15. A release activates `v1` only when tracked notes bind its tag to the
     passing report's SHA-256.
-11. Rollback reverts skills, references, validators, fixtures, selectors, and
+16. Rollback reverts skills, references, validators, fixtures, selectors, and
     adapters as one unit; partial `v1` evidence is not legacy proof.
 
 ### Generated guidance flow
@@ -810,6 +841,17 @@ own executable proof mappings.
 `scripts/boundary_proof_model.py` is an immutable executable projection.
 Unknown closed values fail before consistency checks.
 The projection cannot add a dimension, result, fixture, or gate.
+
+`scripts/boundary_proof_behavior.py` is a standalone nondeterministic boundary,
+not another workflow engine.
+It owns one child invocation and immutable evidence publication; it consumes
+the public `workflow` skill and four stage skills as identity-bound packages
+and cannot own their lifecycle semantics.
+Its resource-map, instruction-chain, import-policy, invocation-profile,
+workspace-access, and publication checks fail closed before evidence is
+accepted.
+Raw access observations are transient enforcement state, not a new durable
+evidence schema.
 
 Structural validation and semantic review remain separate:
 
@@ -1182,6 +1224,9 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | The executable boundary model could become a competing specification | The approved feature specs remain normative; the Python model is an immutable projection with exhaustive conformance tests and fails closed when projection and spec disagree. |
 | Incident-derived fixtures could overfit known failures | Incident replay is one additive check beside the closed twelve-dimension model, normative extensions, negative fixtures, sibling-interaction proofs, and independent review. |
 | A capability report could be asserted, stale, or detached from the release candidate | The validator computes the report from named checks and evidence identities; activation binds the report byte hash in tracked release notes and fails on any non-pass or not-run required result. |
+| A behavior run could depend on undeclared resources, instructions, code, or runtime authority | The standalone harness uses an exact five-skill resource-map set, applicable instruction discovery, a two-module import allowlist, an identity-bound invocation profile, and an isolated workspace whose transient access observations must contain no unmanifested source or capability. |
+| Disabling child-tool network could be confused with disabling the model runtime | The child tool profile denies network and arbitrary egress; the identified runtime may use only its model-service control-plane transport, which is outside child tool authority and cannot be invoked as a tool. |
+| Raw access logs could leak local or runtime details | Access observations remain transient, are reduced to typed result and diagnostic evidence, and are discarded before successful publication. |
 | Mixed v1 and legacy skills could make rollback ambiguous | Each governed skill declares one boundary-model version; activation requires all governed skills at v1, while rollback removes the activation marker and restores a uniformly validated legacy set rather than accepting a mixed claim. |
 
 ## Glossary
@@ -1198,6 +1243,9 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 - boundary model: the closed set of core failure, authority, identity, transition, recovery, composition, and interaction dimensions that a governed lifecycle skill must classify before examples can be treated as sufficient proof.
 - boundary proof map: the versioned, scope-bound table that maps every applicable boundary dimension and normative extension to typed proof evidence or an explicit `not-applicable` rationale.
 - capability baseline: the generated change-local report that aggregates the six required boundary checks across all governed skills and records whether capability preservation is proven.
+- standalone behavior harness: the isolated `boundary_proof_behavior.py` process boundary that binds five skill packages and one observable runtime profile, invokes the public workflow once, and publishes an immutable behavior run without importing the workflow-automation engine.
+- child tool profile: the closed set of capabilities available to the invoked agent; for canonical behavior proof it permits isolated-workspace filesystem access and forbids network, connectors, and subagents.
+- model-service control plane: runtime-owned transport used to obtain model execution, outside the child tool profile and not available as arbitrary tool network access.
 - boundary activation identity: the SHA-256 identity of the passing capability-baseline report recorded by release notes when boundary-model v1 becomes an active published capability claim.
 - transition release: a stable release that preserves repository-tree adapter installation from `dist/adapters/` while `.codex/skills/` remains ignored local runtime state and adapter archives remain a follow-on migration by default.
 - compatibility-window release: a stable release that preserves repository-tree adapter packages while also providing release archives and install guidance, giving downstream users one release to transition install models.
@@ -1320,7 +1368,12 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Readiness
 
-The canonical package remains approved for all previously accepted architecture decisions. Architecture-review R2 approved the boundary-first proof-modeling amendment for planning reliance. The accepted ADR, executable projection boundary, one-writer capability-report flow, copied packaged-resource ownership, release activation identity, and component view are now settled; planning may sequence implementation but may not redefine those decisions.
+The canonical package remains approved for all previously accepted
+architecture decisions, while the hermetic behavior-harness amendment is
+draft pending architecture-review R3.
+Planning and test-spec revision must not rely on that amendment until the
+standalone harness, child-runtime boundary, isolated workspace, invocation
+profile, and immutable publication flow are approved.
 
 ADR `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md` records the accepted durable consolidation and supersedes the three earlier profile ADRs; their descriptions below are historical context, not current writable-mechanism authority under the approved spec.
 

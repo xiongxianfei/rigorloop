@@ -6,12 +6,20 @@ flowchart LR
   templates["Shared boundary reference source<br/>[Template container]"]:::container
   fixtures["Boundary and skill fixtures<br/>[Test fixture container]"]:::container
   report["Capability report<br/>[Change-local evidence]"]:::container
+  behavior_runs["Immutable behavior runs<br/>[Change-local evidence]"]:::container
+  isolated_workspace["Isolated scenario workspace<br/>[Ephemeral filesystem]"]:::container
+  child_runtime["Child agent runtime<br/>[Fresh config + identified executable/model]"]:::external
+  model_control_plane["Model service control plane<br/>[Runtime-only transport]"]:::external
   release["Release notes<br/>[Activation identity]"]:::container
   reviewer["Independent reviewer"]:::person
 
   subgraph validation["Validation and generation scripts<br/>[Python and shell container]"]
     model["Boundary model projection<br/>[Typed constants + parser]"]:::component
     evaluator["Capability evaluator<br/>[Pure aggregate]"]:::component
+    harness["Standalone behavior harness<br/>[One workflow invocation]"]:::component
+    assembler["Package + workspace assembler<br/>[Manifest-bound inputs]"]:::component
+    runtime_adapter["Child-runtime adapter<br/>[Profile attestation]"]:::component
+    publisher["Immutable run publisher<br/>[Prepared receipt + atomic pointer]"]:::component
     validator["Boundary validator + report writer<br/>[Structure + serialization]"]:::component
     selector["Validation selector<br/>[Six check IDs]"]:::component
     generators["Adapter integration<br/>[Generation + parity]"]:::component
@@ -21,10 +29,23 @@ flowchart LR
   skill_spec -->|normative stage projection| model
   model --> validator
   model --> evaluator
+  model --> harness
   selector --> validator
   fixtures -->|fixture and behavior evidence| validator
   feature_specs -->|boundary and proof records| validator
   reviewer -->|semantic completeness| feature_specs
+  skills -->|five participating packages + resource maps| assembler
+  workflow_spec -->|governing contracts and instruction chain| assembler
+  assembler -->|fresh config home + closed workspace| isolated_workspace
+  harness --> assembler
+  harness --> runtime_adapter
+  runtime_adapter -->|one workflow invocation| child_runtime
+  child_runtime -->|model execution only| model_control_plane
+  child_runtime -->|events + transient access observations| harness
+  isolated_workspace -->|workspace-only child tools| child_runtime
+  harness -->|validated event bundle| publisher
+  publisher -->|immutable run + current pointer| behavior_runs
+  behavior_runs -->|current typed result| validator
   templates -->|copied byte-for-byte| skills
   skills -->|canonical procedures and resources| generators
   generators -->|parity evidence| evaluator
