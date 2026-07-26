@@ -2900,7 +2900,7 @@ correction sequence for test-spec synchronization.
 
 Finding ID: BFP-TSR15-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec revision
 Decision owner: approved R45 publication transaction
@@ -2913,9 +2913,9 @@ ordered gate, invalid/stale staging contrasts, and the post-validation
 pre-receipt crash boundary.
 Rationale: Crash coverage cannot substitute for proof that invalid staging
 never crosses the publication mutation boundary.
-Validation target: test-spec-review-r16
-Validation evidence: test-spec-review-r16 confirmed the staged-run gate is
-covered and found a separate working-run validation-gate omission.
+Validation target: test-spec-review-r17
+Validation evidence: test-spec-review-r17 approved the complete proof map and
+confirmed invalid or stale staging cannot cross the prepared-receipt boundary.
 
 ### test-spec-review-r16
 
@@ -2923,7 +2923,7 @@ covered and found a separate working-run validation-gate omission.
 
 Finding ID: BFP-TSR16-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec revision
 Decision owner: approved R45 publication transaction
@@ -2937,4 +2937,10 @@ boundary.
 Rationale: The working and staged validation gates protect different
 publication boundaries and require independent negative proof.
 Validation target: test-spec-review-r17
-Validation evidence: pending
+Validation evidence: test-spec-review-r17 approved the ordered working and
+staged validation gates and their negative and interruption proof.
+
+### test-spec-review-r17
+
+No new material findings. R17 independently confirmed BFP-TSR15-1 and
+BFP-TSR16-1 resolved and approved the M2 proof map for implementation.

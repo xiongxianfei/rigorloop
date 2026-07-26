@@ -1140,7 +1140,7 @@ Status: changes-requested
 Detailed record: reviews/test-spec-review-r15.md
 Resolution: review-resolution.md#test-spec-review-r15
 Material findings: BFP-TSR15-1
-Open findings: BFP-TSR15-1
+Open findings: None
 
 ### Review entry
 Review ID: test-spec-review-r16
@@ -1151,4 +1151,15 @@ Status: changes-requested
 Detailed record: reviews/test-spec-review-r16.md
 Resolution: review-resolution.md#test-spec-review-r16
 Material findings: BFP-TSR16-1
-Open findings: BFP-TSR16-1
+Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r17
+Stage: test-spec-review
+Round: 17
+Reviewed artifact: specs/rigorloop-workflow.test.md at 77f8508f
+Status: approved
+Detailed record: reviews/test-spec-review-r17.md
+Resolution: review-resolution.md#test-spec-review-r17
+Material findings: None
+Open findings: None
