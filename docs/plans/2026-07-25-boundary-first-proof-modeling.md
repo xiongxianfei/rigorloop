@@ -36,8 +36,8 @@ resumes.
 ## Context and orientation
 
 The approved baseline outside the focused R28y amendment remains normative.
-The focused R28y feature and proof text is draft until spec and test-spec
-rereview approve it.
+The focused R28y feature contract is approved and its active proof text awaits
+focused test-spec-review R14 before implementation resumes.
 `scripts/boundary_proof_model.py` will be their immutable typed projection and
 pure aggregate evaluator.
 `scripts/boundary_proof_behavior.py` will be the standalone hermetic behavior
@@ -87,9 +87,9 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r13.md
 - Review status: changes-requested; stage=test-spec-review; round=r13
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: test-spec revision for BFP-TSR13-1 and BFP-TSR13-2
+- Next stage: test-spec-review R14 for active R28y proof map
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-TSR13-1,BFP-TSR13-2
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
 ## Milestones
 
@@ -155,6 +155,7 @@ resource through generated, packed, and installed outputs.
   - `scripts/test-boundary-proof.py`
   - `tests/fixtures/boundary-proof/behavior/`
   - `tests/fixtures/boundary-proof/runtime/`
+  - `tests/fixtures/boundary-proof/transport/`
   - `tests/fixtures/boundary-proof/simple-change/`
   - `templates/shared/boundary-proof-model.md`
   - `skills/workflow/SKILL.md`
@@ -374,6 +375,9 @@ resource through generated, packed, and installed outputs.
     by the current behavior implementation manifest and immutable run
   - current `behavior-implementation-manifest.json`
   - immutable `boundary-proof-baseline.json`
+  - controlled test-owned transport-failure fixtures below
+    `tests/fixtures/boundary-proof/transport/`, all schema-valid and
+    `canonical_evidence_eligible: false`
   - current `simple-change/current.json` pointing to a fully validated immutable run
   - `prepared.json` absent after successful reconciliation
   - focused and skill validation pass evidence

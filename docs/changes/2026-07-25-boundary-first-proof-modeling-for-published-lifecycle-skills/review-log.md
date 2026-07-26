@@ -975,4 +975,4 @@ Status: changes-requested
 Detailed record: reviews/test-spec-review-r13.md
 Resolution: review-resolution.md#test-spec-review-r13
 Material findings: BFP-TSR13-1, BFP-TSR13-2
-Open findings: BFP-TSR13-1, BFP-TSR13-2
+Open findings: None

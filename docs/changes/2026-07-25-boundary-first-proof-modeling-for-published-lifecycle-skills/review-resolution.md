@@ -1060,7 +1060,7 @@ Validation evidence: pending plan-review-r7
 
 Finding ID: BFP-TSR13-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec revision
 Decision owner: approved workflow and architecture artifacts
@@ -1071,13 +1071,15 @@ Chosen action: Set the test spec active and replace stale upstream-gate text
 with the current R36/R15/R14 identities and focused R14 rereview gate.
 Rationale: Implementation must rely on an active, current proof contract.
 Validation target: test-spec-review-r14
-Validation evidence: pending test-spec-review-r14
+Validation evidence: the test spec is active; governing-artifact text names
+approved R36/R15/R14 inputs; readiness identifies focused test-spec-review R14
+as the remaining gate; pending independent confirmation.
 
 #### BFP-TSR13-2 - Controlled transport-failure fixtures lack an executable contract
 
 Finding ID: BFP-TSR13-2
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec revision
 Decision owner: approved R28y transport contract
@@ -1088,7 +1090,9 @@ Chosen action: Project the approved fixture contract into T52, the fixture
 declaration, and M2 ownership and evidence.
 Rationale: A named schema without closed data ownership is not executable proof.
 Validation target: test-spec-review-r14
-Validation evidence: pending test-spec-review-r14
+Validation evidence: T52, the global fixture declaration, and M2 now bind the
+exact transport root, owner, seven fields, false canonical-evidence eligibility,
+CMD-BFP-1, and fail-closed validation; pending independent confirmation.
 
 ### architecture-review-r14
 

@@ -18,7 +18,7 @@ Index policy:
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
-| [Boundary-First Proof Modeling for Published Lifecycle Skills](plans/2026-07-25-boundary-first-proof-modeling.md) | active | test-spec revision for R13 findings | 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills |
+| [Boundary-First Proof Modeling for Published Lifecycle Skills](plans/2026-07-25-boundary-first-proof-modeling.md) | active | test-spec-review R14 for active R28y proof map | 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills |
 
 ## Blocked
 

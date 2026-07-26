@@ -2,7 +2,7 @@
 
 ## Status
 
-- draft
+- active
 
 Boundary model version: v1
 Boundary model scope: R28-R28z
@@ -34,9 +34,9 @@ Boundary model scope: R28-R28z
 - Historical workflow-refactor architecture: not required for that completed
   slice.
 - Boundary-first architecture: [Canonical System Architecture](../docs/architecture/system/architecture.md),
-  draft pending focused architecture rereview, with
+  approved by focused `architecture-review-r15`, with
   [ADR-20260725](../docs/adr/ADR-20260725-boundary-first-proof-modeling.md)
-  proposed for the amendment and
+  accepted for the amendment and
   [ADR-20260726](../docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md)
   otherwise accepted.
 - Boundary-first plan: [Boundary-First Proof Modeling](../docs/plans/2026-07-25-boundary-first-proof-modeling.md),
@@ -55,7 +55,7 @@ Boundary model scope: R28-R28z
 | Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r15.md` | approved | `sha256:10887b1ca4319906873651ac3c0ba922cb1bd4fbba9ff6d62fb8d60a44b61eef` |
 | ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted by architecture-review R15 | `sha256:f2d6653d93382474b2a4e76b381b00d900dede8038358f51e699b3b634831a69` |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted | `sha256:f757569f2bbe986f957f8a2532a6d9bd268695ff0f271779dce270b1bdb7b690` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; test-spec-review R13 is the next gate | `sha256:c3534c03de0c5f22811d9aa5fbe5f5ea6c71760b2000000acf789117d7cbd683` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; test-spec-review R14 is the next gate | `sha256:d8b258355b8d68d3e25eeb1cd2d6169d8f94e1fb26576105548c0deb8cc5e370` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md` | approved | `sha256:d38b5b63b05239d7b34df4e15727f2449d3e9ce263dac07ba754e1578a5ee6fb` |
 
 ## Testing strategy
@@ -64,8 +64,9 @@ Boundary model scope: R28-R28z
 - Use filesystem-backed integration tests for selector behavior, lifecycle validation, skill validation, generated-output drift, adapter generation, change metadata, and review artifact validation.
 - Use focused skill-validator assertions only for stable, machine-checkable skill guidance such as required labels, forbidden stale labels, handoff boundaries, and generated-output drift.
 - Use selector-selected targeted proof as the first validation layer for changed paths; use broad smoke only when an authoritative trigger elevates it.
-- Treat `specs/rigorloop-workflow.test.md` as the draft proof-planning and
-  regression amendment until focused spec and test-spec rereview approve it.
+- Treat `specs/rigorloop-workflow.test.md` as the active proof-planning and
+  regression amendment; focused test-spec rereview is the remaining gate
+  before resumed M2 implementation.
 - Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
 - Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
 - Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
@@ -1580,10 +1581,16 @@ Boundary model scope: R28-R28z
 
 - Covers: R28y
 - Level: e2e
-- Command IDs: CMD-BFP-8, CMD-BFP-10, CMD-BFP-11, CMD-BFP-12
+- Command IDs: CMD-BFP-1, CMD-BFP-8, CMD-BFP-10, CMD-BFP-11, CMD-BFP-12
 - Fixture/setup: The exact `workflow`, `spec`, `spec-review`, `test-spec`, and
   `test-spec-review` packages and the simple-change scenario corpus; this is a
-  four-stage lifecycle path using five participating skills.
+  four-stage lifecycle path using five participating skills. Controlled
+  transport-failure fixtures are owned by `scripts/test-boundary-proof.py`
+  below `tests/fixtures/boundary-proof/transport/`. Each record contains
+  exactly `fixture_id`, `event_key`, `transport_attempts`,
+  `expected_terminal_decision`, `expected_diagnostic_id`,
+  `expected_diagnostic_ids`, and `canonical_evidence_eligible`;
+  `canonical_evidence_eligible` is `false`.
 - Steps: Pass preflight; freeze baseline; invoke `workflow` to route the
   four-stage upstream path; require each stage-owning skill to write its
   complete artifact under the isolated output root; snapshot it before the
@@ -1608,7 +1615,9 @@ Boundary model scope: R28-R28z
   inconsistent rows. Prove complete output references, empty
   absent/uninspected references, bounded noncanonical
   partial/extra/contradictory references, diagnostic-evidence parity, and the
-  exact test-owned failure-fixture schema. For every diagnostic role, remove
+  exact test-owned failure-fixture schema. Require missing, extra, stale,
+  contradictory, or publication-eligible fixture fields to fail closed. For
+  every diagnostic role, remove
   its inline evidence, add an unrelated role, mutate each field, substitute a
   stale observation, and attempt direct or indirect self-reference to the row
   or manifest. Test elapsed time immediately below, equal to, and above the
@@ -1645,7 +1654,8 @@ Boundary model scope: R28-R28z
   observations. Complete output reconciles without reinvocation, absent output
   permits at most one transient retry, partial or non-retryable evidence stops,
   uncertain liveness pauses without inspection, failed/paused invocations never
-  publish, and validation performs no lifecycle reinvocation.
+  publish, every controlled transport-failure fixture remains ineligible for
+  canonical evidence, and validation performs no lifecycle reinvocation.
 - Failure proves: M2 evidence is asserted, incomplete, or nondeterministically
   regenerated during validation.
 - Evidence artifact: current M2 immutable run and `validation-m2.md`
@@ -1699,6 +1709,7 @@ Boundary model scope: R28-R28z
 
 - Boundary-first fixtures:
   - `tests/fixtures/boundary-proof/` for valid, invalid, incident, aggregate, activation, and simple-change records
+  - `tests/fixtures/boundary-proof/transport/` for test-owned controlled transport failures validated by `scripts/test-boundary-proof.py`
   - `tests/fixtures/skills/boundary-proof/` for stage behavior and preservation
   - `tests/fixtures/boundary-proof/behavior/happy-path.json`
   - `tests/fixtures/boundary-proof/simple-change/scenario.json`
@@ -1862,8 +1873,8 @@ Boundary model scope: R28-R28z
 ## Next artifacts
 
 - Boundary-first amendment: independent `test-spec-review` for the focused
-  R28y/R35 proof map after spec approval, then resume M2 under the recorded implementation
-  authorization.
+  R28y/R35 proof map after approved spec-review R36 and architecture-review
+  R15, then resume M2 under the recorded implementation authorization.
 - `code-review M2` under the current
   [Boundary-First Proof Modeling plan](../docs/plans/2026-07-25-boundary-first-proof-modeling.md)
   after M2 implementation handoff.
@@ -1879,8 +1890,8 @@ Boundary model scope: R28-R28z
 
 Active proof-planning and regression surface for the workflow contract,
 including the boundary-first R28-R28z amendment.
-The focused R28y/R35 runtime-boundary revision awaits spec approval and then
-test-spec review before it becomes the candidate proof map for resumed M2
-implementation.
+The focused R28y/R35 runtime-boundary revision has approved upstream spec,
+architecture, ADR, and plan inputs. Approval of this revised active test spec
+is the remaining lifecycle gate before resumed M2 implementation.
 
 Test-spec proof map is confirmed against the approved active plan. M2 implementation can hand off to `code-review M2` only after the M2 guidance and contract surfaces make the relevant assertions and validation commands pass. Each milestone closes only after clean review and any required review-resolution.
