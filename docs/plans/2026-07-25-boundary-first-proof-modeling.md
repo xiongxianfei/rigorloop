@@ -79,10 +79,10 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M1. Typed model, validator, fixtures, and report core
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r6.md
-- Review status: changes-requested; stage=spec-review; round=r6
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r7.md
+- Review status: changes-requested; stage=spec-review; round=r7
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: spec-review R7
+- Next stage: spec revision for canonical oracle and manifest ownership
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=9; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-SR3-2,BFP-SR3-3
 
@@ -309,6 +309,7 @@ implementation authorization is requested.
 - 2026-07-26: The R6 candidate closes the operation-to-report registry, input/output provenance, preservation and adapter manifests, behavior-output capture, snapshot/event cardinality, structural/result consistency, and reproducible artifact-inventory formulas.
 - 2026-07-26: Spec-review R6 retained BFP-SR3-2 and BFP-SR3-3 for oracle/input/output separation, complete workspace inventory, historical and typed-result identity, aggregate observation projection, marker-absence selection, and frozen fixture paths.
 - 2026-07-26: The R7 candidate makes candidates oracle-only, closes stage input cardinality and terminal branches, inventories the behavior artifact tree with a closed classifier, materializes historical evidence, identity-binds typed results and dependencies, and losslessly projects aggregate observations.
+- 2026-07-26: Spec-review R7 retained BFP-SR3-2 and BFP-SR3-3 for oracle-label independence, exact normalized assertions, complete formal-review output bundles, pre-run HEAD authority, canonical manifest paths, and normalized result identities.
 
 ## Decision log
 
