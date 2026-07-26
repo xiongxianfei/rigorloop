@@ -8,7 +8,7 @@ Terminal disposition: none
 - Owner: maintainer
 - Change ID: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
 - Start date: 2026-07-25
-- Last updated: 2026-07-25
+- Last updated: 2026-07-26
 - Related issue or PR: none yet
 - Supersedes: none
 
@@ -82,7 +82,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r5.md
 - Review status: changes-requested; stage=spec-review; round=r5
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: spec revision for snapshots and operation registry
+- Next stage: spec-review R6
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=9; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-SR3-2,BFP-SR3-3
 
@@ -306,6 +306,7 @@ implementation authorization is requested.
 - 2026-07-26: Spec-review R4 retained the R3 findings and required fresh operation recomputation plus phase-appropriate workflow proof.
 - 2026-07-26: The R5 candidate replaces caller-authored receipts with fresh closed-registry execution, makes incident triggers unique, and phases real skill behavior after M1's synthetic engine proof.
 - 2026-07-26: Spec-review R5 resolved incident derivation and retained only snapshot/trace closure and operation-registry projection.
+- 2026-07-26: The R6 candidate closes the operation-to-report registry, input/output provenance, preservation and adapter manifests, behavior-output capture, snapshot/event cardinality, structural/result consistency, and reproducible artifact-inventory formulas.
 
 ## Decision log
 
