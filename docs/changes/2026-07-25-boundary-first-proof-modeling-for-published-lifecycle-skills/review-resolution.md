@@ -2640,7 +2640,7 @@ Validation evidence: pending
 
 Finding ID: BFP-SR41-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: stage-turn permission boundary
@@ -2653,7 +2653,8 @@ proved.
 Rationale: Removing child write authority is stronger and more portable than
 trying to discover every detached descendant after execution.
 Validation target: spec-review-r42
-Validation evidence: pending
+Validation evidence: spec-review-r45 approved the read-only parent-only
+materialization contract and confirmed this finding resolved.
 
 ### spec-review-r42
 
@@ -2661,7 +2662,7 @@ Validation evidence: pending
 
 Finding ID: BFP-SR42-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: app-server file-change permission proof
@@ -2673,7 +2674,8 @@ app-server thread and parent fixtures before the materialization canary.
 Rationale: Command sandbox probes do not prove a distinct runtime-managed write
 path.
 Validation target: spec-review-r43
-Validation evidence: pending
+Validation evidence: spec-review-r45 approved the shared cause-specific
+file-change denial proof and confirmed this finding resolved.
 
 ### spec-review-r43
 
@@ -2681,7 +2683,7 @@ Validation evidence: pending
 
 Finding ID: BFP-SR43-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: app-server file-change authorization policy
@@ -2694,7 +2696,8 @@ through attestation and all governed turn surfaces.
 Rationale: A probe-local denial cannot prove that later turns retain the same
 non-writable authority.
 Validation target: spec-review-r44
-Validation evidence: pending
+Validation evidence: spec-review-r45 approved the deny-only policy across
+probe, canary, stage, retry, and reconciliation contexts.
 
 ### spec-review-r44
 
@@ -2702,7 +2705,7 @@ Validation evidence: pending
 
 Finding ID: BFP-SR44-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: historical runtime-evidence compatibility
@@ -2715,13 +2718,25 @@ read-only history and unknown v1 variants fail closed.
 Rationale: Reused historical v1 labels do not identify one stable schema, but
 the immutable persisted bytes can identify the supported history exactly.
 Validation target: spec-review-r45
-Validation evidence: pending
+Validation evidence: spec-review-r45 verified the exact historical registry
+path and raw-byte identity and approved opaque fail-closed treatment.
+
+### spec-review-r45
+
+No new material findings.
+Spec-review R45 approved the current contract and confirmed
+BFP-SR41-1 through BFP-SR41-3, BFP-SR42-1 through BFP-SR42-2,
+BFP-SR43-1 through BFP-SR43-3, and BFP-SR44-1 resolved.
+The accepted spec identity is
+`sha256:754151c5404f6c2bf02ed85cdec39f24333c721eb9cb16148d5c8e72d5244907`.
+Architecture and ADR synchronization remain required before test-spec
+reliance or implementation.
 
 #### BFP-SR43-2 — Runtime attestation v1 is mutated in place
 
 Finding ID: BFP-SR43-2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: runtime-attestation compatibility contract
@@ -2732,13 +2747,14 @@ Chosen action: Advance new evidence to `boundary-runtime-attestation-v2` and
 keep v1 readable only as historical evidence that is stale for this boundary.
 Rationale: One schema identifier cannot describe incompatible exact records.
 Validation target: spec-review-r44
-Validation evidence: pending
+Validation evidence: spec-review-r45 approved the v2-only current contract and
+deterministic exact-identity historical treatment.
 
 #### BFP-SR43-3 — The workspace-failure size boundary is unreachable
 
 Finding ID: BFP-SR43-3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: workspace-failure result schema
@@ -2751,13 +2767,14 @@ vocabulary.
 Rationale: An unreachable boundary adds no safety proof and leaves overflow
 without a valid result.
 Validation target: spec-review-r44
-Validation evidence: pending
+Validation evidence: spec-review-r45 confirmed the intrinsic 271-byte maximum
+is reachable and independently reconstructible.
 
 #### BFP-SR42-2 — Baseline failure reasons have no defined result surface
 
 Finding ID: BFP-SR42-2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: pre-turn failure observability
@@ -2768,13 +2785,14 @@ Chosen action: Add a bounded identity-bound `workspace_failure` object to
 preflight v2 and a closed generation-start failure result.
 Rationale: Exact output schemas cannot rely on hidden or prose-only reasons.
 Validation target: spec-review-r43
-Validation evidence: pending
+Validation evidence: spec-review-r45 approved the typed preflight and
+generation-start baseline-failure surfaces.
 
 #### BFP-SR41-2 — Workspace scanning lacks closed race-safe failure behavior
 
 Finding ID: BFP-SR41-2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: workspace-integrity observation
@@ -2787,13 +2805,14 @@ checks, closed scan states/reasons, baseline failure, and post-turn
 Rationale: Inspection inability is neither proof of mutation nor permission to
 materialize.
 Validation target: spec-review-r42
-Validation evidence: pending
+Validation evidence: spec-review-r45 approved the total root-anchored,
+race-resistant inspection and failure-routing contract.
 
 #### BFP-SR41-3 — Integrity work and evidence are unbounded and can persist child-authored path strings
 
 Finding ID: BFP-SR41-3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: workspace-integrity policy and evidence
@@ -2806,7 +2825,8 @@ shape.
 Rationale: A security observation must not become an unbounded or
 child-authored evidence channel.
 Validation target: spec-review-r42
-Validation evidence: pending
+Validation evidence: spec-review-r45 approved the bounded scan policy and
+privacy-safe value-free unexpected-path evidence.
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 

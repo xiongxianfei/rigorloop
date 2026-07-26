@@ -2,7 +2,7 @@
 
 Stage: architecture-assessment
 Applicability: required
-Spec identity: sha256:29d7f1555f937ee835733d44b6e9386fae7a4203e596ef5ded483e3551bb76a3
+Spec identity: sha256:754151c5404f6c2bf02ed85cdec39f24333c721eb9cb16148d5c8e72d5244907
 
 Architecture is required because the approved amendment changes the ownership
 and interaction of canonical workflow specifications, eight published skills,

@@ -1052,7 +1052,7 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r41.md
 Resolution: review-resolution.md#spec-review-r41
 Material findings: BFP-SR41-1, BFP-SR41-2, BFP-SR41-3
-Open findings: BFP-SR41-1, BFP-SR41-2, BFP-SR41-3
+Open findings: None
 
 ### Review entry
 Review ID: spec-review-r42
@@ -1063,7 +1063,7 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r42.md
 Resolution: review-resolution.md#spec-review-r42
 Material findings: BFP-SR42-1, BFP-SR42-2
-Open findings: BFP-SR42-1, BFP-SR42-2
+Open findings: None
 
 ### Review entry
 Review ID: spec-review-r43
@@ -1074,7 +1074,7 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r43.md
 Resolution: review-resolution.md#spec-review-r43
 Material findings: BFP-SR43-1, BFP-SR43-2, BFP-SR43-3
-Open findings: BFP-SR43-1, BFP-SR43-2, BFP-SR43-3
+Open findings: None
 
 ### Review entry
 Review ID: spec-review-r44
@@ -1085,4 +1085,15 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r44.md
 Resolution: review-resolution.md#spec-review-r44
 Material findings: BFP-SR44-1
-Open findings: BFP-SR44-1
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r45
+Stage: spec-review
+Round: 45
+Reviewed artifact: specs/rigorloop-workflow.md at db432dce
+Status: approved
+Detailed record: reviews/spec-review-r45.md
+Resolution: review-resolution.md#spec-review-r45
+Material findings: None
+Open findings: None
