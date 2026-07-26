@@ -55,7 +55,7 @@ Boundary model scope: R28-R28z
 | Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r13.md` | approved | `sha256:47571b7555fe6470de8e78a9c8b180c09fbdb627e8e641ab1c6915e0d9044288` |
 | ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | proposed amendment | pending after acceptance |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted | `sha256:f757569f2bbe986f957f8a2532a6d9bd268695ff0f271779dce270b1bdb7b690` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; architecture revision is the next gate | `sha256:c039545a821ad055fc089837c311c43c7f92558fe6b6f7e3dc9ec06d10a7d101` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; architecture-review R15 is the next gate | `sha256:4f3e5a9bf00a334aa24b19f02657f2f82e8a7651540c7f88485834af4f8b58fb` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md` | approved | `sha256:d38b5b63b05239d7b34df4e15727f2449d3e9ce263dac07ba754e1578a5ee6fb` |
 
 ## Testing strategy
