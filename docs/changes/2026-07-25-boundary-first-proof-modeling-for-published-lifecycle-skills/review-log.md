@@ -965,3 +965,14 @@ Detailed record: reviews/architecture-review-r15.md
 Resolution: review-resolution.md#architecture-review-r15
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r13
+Stage: test-spec-review
+Round: 13
+Reviewed artifact: specs/rigorloop-workflow.test.md at 14af42f9
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r13.md
+Resolution: review-resolution.md#test-spec-review-r13
+Material findings: BFP-TSR13-1, BFP-TSR13-2
+Open findings: BFP-TSR13-1, BFP-TSR13-2

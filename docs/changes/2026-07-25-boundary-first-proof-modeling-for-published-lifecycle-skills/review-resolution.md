@@ -1054,6 +1054,42 @@ Rationale: One-time resolution cannot detect replacement between trust-boundary 
 Validation target: plan-review-r7
 Validation evidence: pending plan-review-r7
 
+### test-spec-review-r13
+
+#### BFP-TSR13-1 - Test-spec lifecycle and readiness are stale
+
+Finding ID: BFP-TSR13-1
+Disposition: accepted
+Status: in-progress
+Owner: test-spec author
+Owning stage: test-spec revision
+Decision owner: approved workflow and architecture artifacts
+Decision needed: none
+Required outcome: Activate the proof surface and synchronize its governing
+artifact and readiness claims.
+Chosen action: Set the test spec active and replace stale upstream-gate text
+with the current R36/R15/R14 identities and focused R14 rereview gate.
+Rationale: Implementation must rely on an active, current proof contract.
+Validation target: test-spec-review-r14
+Validation evidence: pending test-spec-review-r14
+
+#### BFP-TSR13-2 - Controlled transport-failure fixtures lack an executable contract
+
+Finding ID: BFP-TSR13-2
+Disposition: accepted
+Status: in-progress
+Owner: test-spec author
+Owning stage: test-spec revision
+Decision owner: approved R28y transport contract
+Decision needed: none
+Required outcome: Bind the controlled transport fixtures to their exact owner,
+root, fields, eligibility rule, validation command, and M2 evidence.
+Chosen action: Project the approved fixture contract into T52, the fixture
+declaration, and M2 ownership and evidence.
+Rationale: A named schema without closed data ownership is not executable proof.
+Validation target: test-spec-review-r14
+Validation evidence: pending test-spec-review-r14
+
 ### architecture-review-r14
 
 #### BFP-AR14-1 - Component view contradicts transport and publication ownership
