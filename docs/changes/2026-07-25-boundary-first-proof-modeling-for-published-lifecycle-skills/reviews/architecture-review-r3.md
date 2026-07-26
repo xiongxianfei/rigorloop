@@ -31,6 +31,7 @@ Manifest owner: workflow orchestrator
 
 ### BFP-AR3-1 - Publication ordering contradicts the approved recovery contract
 
+Finding ID: BFP-AR3-1
 Severity: material
 
 Evidence:
@@ -54,6 +55,7 @@ pointer installation jointly atomic.
 
 ### BFP-AR3-2 - Child-runtime trust is asserted but not enforceably owned
 
+Finding ID: BFP-AR3-2
 Severity: material
 
 Evidence:
@@ -79,6 +81,7 @@ show enforcement/authentication boundaries in both C4 views and security text.
 
 ### BFP-AR3-3 - The ADR omits the new durable architecture alternatives
 
+Finding ID: BFP-AR3-3
 Severity: material
 
 Evidence:
