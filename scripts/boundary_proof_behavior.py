@@ -1911,7 +1911,7 @@ def _render_test_spec_markdown(
             "",
             "T2. Exercise the closed unknown-mode partition with stable cases `T2-EMPTY` (empty), `T2-CASE` (`TRIM` and `Preserve`), `T2-FUTURE` (`trim-v2`), `T2-CANONICAL-CLOSURE` (enumerate the canonical-normalization closure of the two ASCII accepted tokens and prove it contains no scalar-distinct accepted alias), and `T2-OTHER` (deterministically generate non-equal scalar strings across empty, one-scalar, combining-mark, non-ASCII, and multi-scalar classes). Every case requires exactly `{\"error\":\"unknown-mode\"}` and asserts that `mode` and `text` fields are absent.",
             "",
-            "T3. `preserve` returns every input scalar sequence unchanged, including trim-set members, and returns the exact `preserve` success record.",
+            "T3. Use stable cases `T3-EMPTY`, `T3-ASCII`, `T3-TRIM-SCALARS`, and `T3-CANONICAL-PAIR` (U+00E9 versus the scalar-distinct U+0065 U+0301 sequence), plus `T3-GENERATED`, a deterministic seed-`0x50544E31` corpus over empty, ASCII, every trim-set member, combining marks, BMP non-ASCII, and supplementary scalars at lengths 0 through 4. For each corpus member, require scalar-for-scalar unchanged text and exactly `{\"mode\":\"preserve\",\"text\":<original>}`; identify a failure by stable case ID and corpus index.",
             "",
             "## Validation",
             "",
