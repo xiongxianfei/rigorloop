@@ -183,7 +183,7 @@ review:
   open_findings: 3
   closed_findings: 126
   architecture_review: reviews/architecture-review-r15.md
-  spec_review: reviews/spec-review-r39.md
+  spec_review: reviews/spec-review-r40.md
   test_spec_review: reviews/test-spec-review-r14.md
   code_review: reviews/code-review-m2-r2.md
   review_log: review-log.md

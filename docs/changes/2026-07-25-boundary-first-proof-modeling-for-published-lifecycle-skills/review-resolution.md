@@ -2585,6 +2585,14 @@ equality, rejects one-byte-over at the correct pre- or post-parse boundary,
 and derives the lifecycle aggregate limit from the selected raw limit;
 pending spec-review-r40
 
+### spec-review-r40
+
+No new material findings. R40 independently confirmed BFP-SR-R39-1 and every
+residual R37/R38 transport finding resolved and approved the stage-authored
+artifact-envelope amendment. Architecture/ADR synchronization and approving
+architecture review remain mandatory before test-spec revision or
+implementation resumes.
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2
