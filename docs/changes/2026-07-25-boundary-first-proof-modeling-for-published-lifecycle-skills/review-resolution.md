@@ -12,6 +12,7 @@ Closeout status: open
 - Review closeout: spec-review-r7 open
 - Review closeout: spec-review-r8 open
 - Review closeout: spec-review-r9 open
+- Review closeout: spec-review-r10 open
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -22,10 +23,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`
 - Findings resolved: 17
 - Unresolved findings: 8
-- Current result: `spec-review-r9` resolved BFP-SR3-2 and BFP-SR3-3 and opened BFP-SR9-1 for generation-versus-validation and stale-run closure.
+- Current result: `spec-review-r10` kept BFP-SR9-1 open only for immutable prior-pointer history and complete behavior-implementation identity.
 
 ## Resolution Overview
 
@@ -375,6 +376,14 @@ Chosen action: Define generate and validate modes, exact input-set identity and 
 Rationale: Random run paths and nondeterministic skill output make complete typed-result rerun equality impossible, while an unbound old pointer could accept stale evidence.
 Validation target: spec-review-r10
 Validation evidence: pending
+
+### spec-review-r10
+
+No new material findings.
+`spec-review-r10` confirmed the generation-versus-validation split, post-commit
+validation, pointer/run binding, dependency reconstruction, and inventory
+rules, while retaining `BFP-SR9-1` for an immutable prior-pointer value and an
+exact execution-affecting implementation manifest.
 
 ### spec-review-r3
 
