@@ -2,7 +2,7 @@
 
 ## Status
 
-- draft
+- approved
 
 ## Related artifacts
 
@@ -1409,12 +1409,10 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Readiness
 
-The canonical package remains approved for all previously accepted
-architecture decisions, while the hermetic behavior-harness amendment is
-draft pending architecture-review R3.
-Planning and test-spec revision must not rely on that amendment until the
-standalone harness, child-runtime boundary, isolated workspace, invocation
-profile, and immutable publication flow are approved.
+The canonical package and hermetic behavior-harness amendment are approved.
+Architecture-review R4 accepted the standalone harness, child-runtime trust
+boundary, isolated workspace, invocation profile, and immutable publication
+flow for plan and test-spec reliance.
 
 ADR `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md` records the accepted durable consolidation and supersedes the three earlier profile ADRs; their descriptions below are historical context, not current writable-mechanism authority under the approved spec.
 

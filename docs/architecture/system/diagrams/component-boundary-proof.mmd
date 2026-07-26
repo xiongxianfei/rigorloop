@@ -12,7 +12,7 @@ flowchart LR
   isolated_workspace["Isolated scenario workspace<br/>[Ephemeral filesystem]"]:::container
   child_runtime["Child agent runtime<br/>[Fresh config + identified executable/model]"]:::external
   model_control_plane["Model service control plane<br/>[Runtime-only transport]"]:::external
-  credential_channel["Opaque credential channel<br/>[Private runtime home]"]:::external
+  credential_channel["Opaque credential channel<br/>[Execution-environment boundary: private runtime home]"]:::external
   release["Release notes<br/>[Activation identity]"]:::container
   reviewer["Independent reviewer"]:::person
 

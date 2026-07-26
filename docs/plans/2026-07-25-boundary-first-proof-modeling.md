@@ -79,12 +79,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M1. Typed model, validator, fixtures, and report core
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r3.md
-- Review status: changes-requested; stage=architecture-review; round=r3
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r4.md
+- Review status: approved; stage=architecture-review; round=r4
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: architecture-review R4
+- Next stage: plan revision
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=10; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-AR3-1,BFP-AR3-2,BFP-AR3-3
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7
 
 ## Milestones
 
@@ -325,6 +325,7 @@ implementation authorization is requested.
 - 2026-07-26: The architecture R3 candidate assigns the standalone harness, five-skill package assembly, isolated child runtime, observable invocation attestation, transient access enforcement, and prepared-receipt immutable publication to explicit components and updates the ADR and C4 views.
 - 2026-07-26: Architecture-review R3 requested the exact R28y publication order, trusted parent/runtime enforcement with opaque control-plane authentication, and durable ADR rationale for the hermetic design.
 - 2026-07-26: The R4 candidate corrects publication to validated run installation, fsynced receipt, atomic pointer replacement, parent fsync, and receipt cleanup; assigns confinement to parent-attested runtime sandboxing; keeps credentials in a private runtime-only channel; and records rejected alternatives and operating costs.
+- 2026-07-26: Architecture-review R4 approved the hermetic child-runtime boundary, exact publication recovery, ADR tradeoffs, and C4 views; plan revision must start with runtime feasibility proof.
 
 ## Decision log
 
