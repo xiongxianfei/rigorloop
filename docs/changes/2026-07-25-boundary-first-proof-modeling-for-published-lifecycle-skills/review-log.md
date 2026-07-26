@@ -283,3 +283,14 @@ Detailed record: reviews/plan-review-r3.md
 Resolution: review-resolution.md#plan-review-r3
 Material findings: BFP-PL4, BFP-PL5
 Open findings: BFP-PL4, BFP-PL5
+
+### Review entry
+Review ID: plan-review-r4
+Stage: plan-review
+Round: 4
+Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: changes-requested
+Detailed record: reviews/plan-review-r4.md
+Resolution: review-resolution.md#plan-review-r4
+Material findings: None
+Open findings: None

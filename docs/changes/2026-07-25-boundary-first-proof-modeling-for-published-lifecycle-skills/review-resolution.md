@@ -19,6 +19,7 @@ Closeout status: open
 - Review closeout: architecture-review-r3
 - Review closeout: architecture-review-r4
 - Review closeout: plan-review-r3 open
+- Review closeout: plan-review-r4 open
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -29,10 +30,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`, `plan-review-r4`
 - Findings resolved: 21
 - Unresolved findings: 9
-- Current result: `plan-review-r3` requested M1-M4 phase alignment and exact evidence-production, validation, promotion, and recovery commands.
+- Current result: `plan-review-r4` confirmed the M1-M4 sequence but retained BFP-PL4 for inconsistent feasibility ownership and BFP-PL5 for incomplete M4 release/parity paths and commands.
 
 ## Resolution Overview
 
@@ -486,10 +487,10 @@ Owning stage: plan revision
 Decision owner: approved R28y phase contract
 Decision needed: none
 Required outcome: Restore M1-M4 ownership while retaining feasibility before full harness or skill mutation.
-Chosen action: Keep M1 deterministic; make feasibility and harness work pre-mutation work inside M2; keep upstream behavior in M2, preservation in M3, and aggregation in M4.
+Chosen action: Keep M1 deterministic; make `check-environment` the first bounded M2 implementation slice; run it before any other harness or skill mutation; keep upstream behavior in M2, preservation in M3, and aggregation in M4.
 Rationale: Plan sequencing cannot renumber explicit normative phase ownership.
-Validation target: plan-review-r4
-Validation evidence: pending
+Validation target: plan-review-r5
+Validation evidence: `plan-review-r4` confirmed the M1-M4 sequence and retained the finding only for inconsistent feasibility evidence and failure-stop ownership.
 
 #### BFP-PL5 - Evidence creation and promotion commands are incomplete
 
@@ -501,10 +502,16 @@ Owning stage: plan revision
 Decision owner: approved R28y evidence contract
 Decision needed: none
 Required outcome: Make every evidence transition executable and independently promotable.
-Chosen action: Add exact production and validation commands, output paths, pre-mutation baseline timing, failure stops, and code-review promotion gates.
+Chosen action: Add exact production and validation commands, output paths, pre-mutation baseline timing, failure stops, code-review promotion gates, tracked adapter input, four durable parity outputs, and release validation/test commands.
 Rationale: Validation of an existing artifact does not define how current evidence is produced.
-Validation target: plan-review-r4
-Validation evidence: pending
+Validation target: plan-review-r5
+Validation evidence: `plan-review-r4` confirmed the earlier production and promotion corrections and retained the finding only for incomplete M4 release/parity paths and commands.
+
+### plan-review-r4
+
+No new material findings.
+`plan-review-r4` partially resolved `BFP-PL4` and `BFP-PL5`; the exact retained
+gaps are recorded in the R4 review and the original finding dispositions above.
 
 ### spec-review-r3
 
