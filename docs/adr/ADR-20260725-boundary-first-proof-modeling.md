@@ -38,17 +38,22 @@ Use one spec-normative boundary model with these projections:
 - the harness launches one child runtime with a fresh configuration home and
   isolated workspace, records runtime version and executable identity plus the
   child-reported model ID, and applies closed instruction and tool profiles;
-- child tools have workspace-only filesystem access and no network,
-  connectors, or subagents; model-service control-plane transport belongs to
-  the identified runtime and is not child tool authority;
+- the parent accepts output only after independently observing an effective
+  runtime-native sandbox/profile that gives child tools workspace-only
+  filesystem access and no network, connectors, or subagents;
+- model-service control-plane transport and opaque authentication belong to
+  the identified runtime, stay outside child tool authority and
+  sandbox-readable roots, and are never serialized into evidence;
 - the exact outer prompt is a deterministic harness constant combined with
   the identity-bound scenario; transient access observations must contain no
   unmanifested input or capability and are discarded after their typed result
   is recorded;
-- behavior generation publishes one prepared-receipt-backed immutable run and
-  atomic current pointer; deterministic validation checks that run and current
-  identities without reinvoking lifecycle skills or replacing its recorded
-  invocation profile;
+- behavior generation validates and installs one immutable run, writes and
+  fsyncs a prepared receipt, atomically replaces and fsyncs the current
+  pointer, fsyncs the parent directory, and removes the reconciled receipt;
+  the receipt makes these writes recoverable rather than jointly atomic;
+  deterministic validation checks the run and current identities without
+  reinvoking lifecycle skills or replacing its recorded invocation profile;
 - `scripts/validate-boundary-proof.py` performs structural, vocabulary,
   traceability, version-parity, fixture, and aggregate validation and is the
   only component permitted to serialize or replace the canonical capability
@@ -87,6 +92,23 @@ the validated report identity without rewriting the report.
 - Let validators score semantic completeness: rejected because applicability,
   meaningful partitions, hazards, and adversarial sufficiency require review
   judgment.
+- Reuse the workflow-automation engine as the behavior harness: rejected
+  because its dynamic state, migration, and validation dependencies create an
+  open execution surface and make the proof mechanism depend on the mechanism
+  being observed.
+- Reconstruct a transitive repository dependency graph: rejected because
+  dynamic imports, runtime instructions, conditionals, and resource loading
+  make that graph incomplete and difficult to validate. A standalone
+  two-module boundary is smaller and enforceable.
+- Run lifecycle skills in the parent process: rejected because caller context,
+  tools, configuration, and filesystem authority would become unbound inputs.
+- Persist raw access logs as durable evidence: rejected because they can expose
+  local paths or runtime details and still do not independently prove
+  confinement. Parent-observed enforcement is reduced to bounded typed
+  attestation and diagnostics.
+- Permit general child-tool network access: rejected because it creates
+  undeclared inputs and egress. Only the identified runtime's model-service
+  control-plane transport is allowed outside the child tool profile.
 
 ## Consequences
 
@@ -103,6 +125,18 @@ the validated report identity without rewriting the report.
   mixed `v1` surfaces.
 - Capability-preserving progressive disclosure remains paused until the
   complete baseline and final verification pass.
+- Canonical behavior generation requires a supported runtime-native sandbox,
+  independently observable effective settings, and secure control-plane
+  authentication; unsupported environments stop with
+  `environment-unavailable`.
+- Each behavior run incurs nondeterministic model execution cost; validation
+  reuses bound immutable evidence and never reinvokes skills.
+- Transient access observations reduce privacy exposure but limit later raw-log
+  forensics; durable records retain bounded attestation, result, and
+  diagnostics only.
+- Immutable run installation, receipt persistence, pointer replacement,
+  directory fsync, and receipt cleanup are separate recoverable writes and
+  require explicit crash-point tests.
 
 ## Follow-up
 
