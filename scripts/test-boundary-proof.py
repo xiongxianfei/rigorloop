@@ -12,6 +12,9 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
+
+from boundary_proof_behavior import ENVIRONMENT_CHECK_IDS, assess_environment
 
 from boundary_proof_model import (
     APPLICABILITY_VALUES,
@@ -1557,6 +1560,186 @@ class BoundaryProofModelTests(unittest.TestCase):
             )
             self.assertEqual(reordered.returncode, 0, reordered.stderr)
             self.assertEqual(output.read_bytes(), reordered_output.read_bytes())
+
+
+class BoundaryProofEnvironmentTests(unittest.TestCase):
+    def test_environment_preflight_rejects_advertised_but_unattested_controls(
+        self,
+    ) -> None:
+        advertising_help = """
+        --ignore-user-config --ignore-rules --ephemeral --json
+        --sandbox-state-json --sandbox-state-readable-root
+        --sandbox-state-disable-network --disable --runtime-metadata-json
+        """
+        with tempfile.TemporaryDirectory() as raw:
+            executable = Path(raw) / "codex"
+            executable.write_bytes(b"identified runtime")
+            executable.chmod(0o755)
+            with (
+                mock.patch(
+                    "boundary_proof_behavior.shutil.which",
+                    return_value=str(executable),
+                ),
+                mock.patch(
+                    "boundary_proof_behavior._run_runtime",
+                    side_effect=[
+                        (0, "codex-cli 1.0.0\n", ""),
+                        (0, advertising_help, ""),
+                    ],
+                ),
+            ):
+                result = assess_environment()
+
+        self.assertEqual(result["schema_version"], "boundary-environment-preflight-v1")
+        self.assertEqual(result["result"], "environment-unavailable")
+        self.assertEqual(
+            result["diagnostic_id"],
+            "effective-profile-attestation-unavailable",
+        )
+        self.assertEqual(list(result["checks"]), list(ENVIRONMENT_CHECK_IDS))
+        self.assertEqual(result["checks"]["runtime-identity"], "pass")
+        self.assertTrue(
+            all(
+                result["checks"][check_id] == "fail"
+                for check_id in ENVIRONMENT_CHECK_IDS[1:]
+            )
+        )
+        self.assertNotIn(str(executable.parent), json.dumps(result))
+
+    def test_environment_preflight_fails_closed_without_workspace_read_confinement(
+        self,
+    ) -> None:
+        current_help = """
+        --ignore-user-config --ignore-rules --ephemeral --json
+        --sandbox workspace-write --disable
+        """
+        with tempfile.TemporaryDirectory() as raw:
+            executable = Path(raw) / "codex"
+            executable.write_bytes(b"identified runtime")
+            executable.chmod(0o755)
+            with (
+                mock.patch(
+                    "boundary_proof_behavior.shutil.which",
+                    return_value=str(executable),
+                ),
+                mock.patch(
+                    "boundary_proof_behavior._run_runtime",
+                    side_effect=[
+                        (0, "codex-cli 1.0.0\n", ""),
+                        (0, current_help, ""),
+                    ],
+                ),
+            ):
+                result = assess_environment()
+
+        self.assertEqual(result["result"], "environment-unavailable")
+        self.assertEqual(
+            result["diagnostic_id"],
+            "effective-profile-attestation-unavailable",
+        )
+        self.assertEqual(result["checks"]["runtime-identity"], "pass")
+        self.assertEqual(
+            result["checks"]["workspace-only-filesystem"],
+            "fail",
+        )
+        self.assertNotIn("identified runtime", json.dumps(result))
+
+    def test_environment_preflight_rejects_missing_and_unsafe_runtime_metadata(
+        self,
+    ) -> None:
+        cases = (
+            (False, [], "runtime-executable-unavailable"),
+            (True, [(0, "bad\nversion\n", ""), (0, "", "")], "runtime-version-unsafe"),
+        )
+        for executable_present, responses, diagnostic in cases:
+            with self.subTest(diagnostic=diagnostic):
+                with tempfile.TemporaryDirectory() as raw:
+                    executable = Path(raw) / "codex"
+                    executable.write_bytes(b"identified runtime")
+                    executable.chmod(0o755)
+                    with mock.patch(
+                        "boundary_proof_behavior.shutil.which",
+                        return_value=str(executable) if executable_present else None,
+                    ):
+                        if responses:
+                            runner = mock.patch(
+                                "boundary_proof_behavior._run_runtime",
+                                side_effect=responses,
+                            )
+                        else:
+                            runner = mock.patch("boundary_proof_behavior._run_runtime")
+                        with runner:
+                            result = assess_environment()
+                self.assertEqual(result["result"], "environment-unavailable")
+                self.assertEqual(result["diagnostic_id"], diagnostic)
+
+    def test_environment_preflight_rejects_identity_read_and_replacement(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            executable = Path(raw) / "codex"
+            executable.write_bytes(b"identified runtime")
+            executable.chmod(0o755)
+            with (
+                mock.patch(
+                    "boundary_proof_behavior.shutil.which",
+                    return_value=str(executable),
+                ),
+                mock.patch(
+                    "boundary_proof_behavior._read_executable_identity",
+                    side_effect=OSError("unreadable"),
+                ),
+            ):
+                unreadable = assess_environment()
+            self.assertEqual(
+                unreadable["diagnostic_id"],
+                "runtime-identity-unavailable",
+            )
+
+            def replace_after_version(argv: object) -> tuple[int, str, str]:
+                executable.write_bytes(b"replacement runtime")
+                return 0, "codex-cli 1.0.0\n", ""
+
+            executable.write_bytes(b"identified runtime")
+            with (
+                mock.patch(
+                    "boundary_proof_behavior.shutil.which",
+                    return_value=str(executable),
+                ),
+                mock.patch(
+                    "boundary_proof_behavior._run_runtime",
+                    side_effect=replace_after_version,
+                ),
+            ):
+                replaced = assess_environment()
+            self.assertEqual(replaced["result"], "environment-unavailable")
+            self.assertEqual(
+                replaced["diagnostic_id"],
+                "runtime-identity-changed",
+            )
+
+            def remove_after_version(argv: object) -> tuple[int, str, str]:
+                executable.unlink()
+                return 0, "codex-cli 1.0.0\n", ""
+
+            executable.write_bytes(b"identified runtime")
+            executable.chmod(0o755)
+            with (
+                mock.patch(
+                    "boundary_proof_behavior.shutil.which",
+                    return_value=str(executable),
+                ),
+                mock.patch(
+                    "boundary_proof_behavior._run_runtime",
+                    side_effect=remove_after_version,
+                ),
+            ):
+                removed = assess_environment()
+            self.assertEqual(removed["result"], "environment-unavailable")
+            self.assertEqual(
+                removed["diagnostic_id"],
+                "runtime-identity-unavailable",
+            )
 
 
 if __name__ == "__main__":
