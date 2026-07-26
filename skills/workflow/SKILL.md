@@ -72,6 +72,11 @@ Produce a routing decision, current stage assessment, blockers or assumptions, a
 
 ## Resource map
 
+- LOAD `references/boundary-proof-model.md` when a change creates, revises, or
+  reviews a contract or proof map. Route boundary records to `spec`, proof
+  records to `test-spec`, semantic completeness to their review skills, and
+  stop downstream handoff when an applicable boundary lacks requirement-owned
+  proof.
 - COPY `assets/workflows-skeleton.md` when creating a new project-local
   `docs/workflows.md` or fully rewriting a stale workflow guide.
   Fill metadata, source rank, lifecycle graph, stage obligations, artifact

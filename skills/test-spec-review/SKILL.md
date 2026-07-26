@@ -121,6 +121,10 @@ Do not broad-search authoritative documents just to find paths. Use the project 
 
 ## Resource map
 
+- LOAD `references/boundary-proof-model.md` when reviewing a `v1` proof map.
+  Reject missing applicable dimensions, unjustified non-applicability,
+  example-complete but boundary-incomplete coverage, helper-only composed-path
+  proof, or evidence broader than its claim.
 - COPY `assets/review-result-skeleton.md` when recording the review result.
   Fill: skill, review status, material findings, recording fields, review paths, blockers, immediate next stage, implementation handoff, and stop condition.
   Do not emit unfilled placeholders.

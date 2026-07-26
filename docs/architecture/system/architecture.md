@@ -623,7 +623,7 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    version before lifecycle output is accepted. The client initializes with
    `capabilities.experimentalApi: true`. Before starting a thread, the parent
    uses the same executable to generate the experimental app-server schema,
-   binds the path-sorted raw-byte identity of that bundle, and requires every
+   binds the logical-path-sorted canonical-JSON identity of that bundle, and requires every
    method and non-null field used by this protocol. Missing, additional,
    defaulted-away, or incompatible protocol fields fail closed.
 8. The named permission profile denies `:root`, allows only `:minimal`, the
@@ -637,10 +637,33 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    `mcpServerStatus/list`, and `skills/list` responses must
    prove the effective configuration and exact closed capability inventory
    before the turn. Apps, plugins, MCP servers, browser/computer tools, and
-   subagent tools are absent; skills equal the five manifest-bound packages.
+   subagent tools are absent. The forced-refresh skill inventory is the exact
+   config-bound eleven-row roster: five enabled manifest-bound `user` packages
+   and six disabled runtime-home-rooted `system` packages—`imagegen`,
+   `openai-docs`, `plugin-creator`, `review-agent`, `skill-creator`, and
+   `skill-installer`—with empty errors and unique raw and normalized paths.
    Thread start supplies `dynamicTools: []`, `environments: []`, and only the
-   manifest-bound skill capability roots. Unknown features, methods,
+   manifest-bound skill capability roots. The exact Codex `0.145.0`
+   projection records the empty runtime-root list returned by `thread/start`
+   while requiring both the thread and turn requests to bind the isolated
+   workspace root; the independent named-profile probes remain the
+   parent-owned enforcement proof. Unknown features, methods,
    capabilities, tools, or inventory entries fail closed.
+   The executable projection pins the exact Codex 0.145.0 canonical schema
+   identity and complete protocol-classification identity. It does not
+   classify newly discovered same-version methods by fallback. Every observed
+   server request or notification is checked against that projection;
+   unknown or prohibited variants stop the turn. A disabled, unbound
+   `remoteControl/status/changed` notification is the only remote-control
+   status traffic classified as non-side-effect.
+   The config projection requires every origin row to name the sole generated
+   user config and share one format-valid runtime-owned version. After exact
+   effective-setting equivalence, it substitutes that opaque version and all
+   recognized temporary roots with closed logical identities before hashing.
+   The parent app-server environment may carry only the closed upper/lowercase
+   proxy-name set needed for service reachability. The generated shell
+   environment continues to inherit nothing, and the child environment probe
+   proves those proxy names and values do not cross into commands.
 9. Before app-server output is accepted, the parent invokes the same identified
    runtime's `codex sandbox --include-managed-config` surface with the same
    named profile and proves:
@@ -665,13 +688,33 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    copy caller instructions or general caller configuration, inject
    credentials into the child tool environment, or serialize credentials into
    manifests, diagnostics, access observations, or run evidence.
-11. The outer prompt is a deterministic constant in the identity-bound harness
+11. The successful preflight publishes feasibility-only evidence. It proves
+   that the identified runtime can enforce the required boundary at that
+   moment, but it does not authorize generation and cannot be copied into a
+   behavior implementation manifest.
+12. Generation creates a fresh isolated home and workspace, re-runs the
+   complete runtime-owned evidence and parent-observed probes, and derives a
+   fresh generation attestation for the then-current exact eleven-row runtime
+   inventory: five enabled manifest-bound `user` rows and six
+   generated-config-bound disabled `system` rows. That inventory is distinct
+   from the assembler's path-sorted five-package resource set. The fresh
+   generation attestation binds the current runtime, schemas, configuration,
+   inventories, classifications, probes, and credential-isolation result.
+13. The generation attestation is a required member of
+   `behavior-implementation-manifest.json`. Its identity is bound transitively
+   through the simple-change input-set identity, installed immutable run,
+   atomic current pointer, and `simple-change-behavior` report selector.
+   Validation reuses those recorded identities only: it cannot invoke the
+   runtime or substitute preflight or validation-time runtime evidence. A
+   missing, copied, stale, substituted, or tampered generation attestation
+   invalidates the manifest and every downstream identity.
+14. The outer prompt is a deterministic constant in the identity-bound harness
    module combined with `scenario_ref`; changing either changes the input-set
    identity. Parent-observed sandbox audit is transient enforcement state: the
    harness validates it before publication, records only the typed result,
    bounded non-secret profile attestation, and diagnostic in durable evidence,
    then discards the raw log.
-12. Publication uses the exact durable sequence:
+15. Publication uses the exact durable sequence:
     (a) build and validate the sibling temporary run;
     (b) rename it to the immutable run root;
     (c) write and fsync `prepared.json`;
@@ -683,20 +726,20 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
     immutable-run installation and pointer replacement jointly atomic.
     Validation checks the pointed run and current bound identities without
     invoking a lifecycle skill or substituting the validator's environment.
-11. The incident runner evaluates the eight frozen fixture IDs at their
+16. The incident runner evaluates the eight frozen fixture IDs at their
    expected pre-code-review gates.
-12. Adapter generation carries the mapped reference through Codex, Claude, and
+17. Adapter generation carries the mapped reference through Codex, Claude, and
    opencode packages; resource validation proves relative path and raw-byte
    identity.
-13. The evaluator computes the capability report from fixtures, checks,
+18. The evaluator computes the capability report from fixtures, checks,
    preservation, parity, false blocking, ownership, artifact count, and
    correction-cycle evidence.
-14. `verify` rejects missing, stale, mismatched, asserted, or incomplete
+19. `verify` rejects missing, stale, mismatched, asserted, or incomplete
    evidence.
-15. A release activates `v1` only when tracked notes bind its tag to the
-    passing report's SHA-256.
-16. Rollback reverts skills, references, validators, fixtures, selectors, and
-    adapters as one unit; partial `v1` evidence is not legacy proof.
+20. A release activates `v1` only when tracked notes bind its tag to the
+   passing report's SHA-256.
+21. Rollback reverts skills, references, validators, fixtures, selectors, and
+   adapters as one unit; partial `v1` evidence is not legacy proof.
 
 ### Generated guidance flow
 
@@ -920,8 +963,9 @@ not `codex exec` JSONL. The app-server `thread/start` response is the
 runtime-owned metadata source for model, provider, CLI version, active
 permission-profile provenance, runtime workspace roots, instruction sources,
 and working directory. The client negotiates the experimental API and binds a
-path-sorted raw-byte identity for the exact executable's generated
-experimental schema. Missing, null, additional, defaulted-away, or
+logical-path-sorted canonical-JSON identity for the exact executable's
+generated experimental schema, rejecting duplicate object names before
+canonicalization. Missing, null, additional, defaulted-away, or
 incompatible fields fail closed. The parent creates one exact custom
 permission profile using the supported `default_permissions` and
 `[permissions.<name>]` model and does not combine it with legacy
@@ -931,8 +975,11 @@ Runtime-owned `config/read`, `configRequirements/read`, fully paginated
 `experimentalFeature/list`, `app/list`, `plugin/list`,
 `mcpServerStatus/list`, and `skills/list` are mandatory
 pre-turn evidence. Apps, plugins, MCP servers, browser/computer tools, and
-subagent tools must be absent, and the skill inventory must equal the five
-manifested packages. Any unexpected method, inventory entry, or tool event
+subagent tools must be absent. The exact forced-refresh inventory contains five
+enabled manifested `user` packages and the six generated-config-bound
+disabled runtime `system` packages, including disabled `review-agent`, with no
+errors or path/name collisions.
+Any other skill, unexpected method, inventory entry, or tool event
 fails before lifecycle output is accepted.
 
 The first-version model-visible built-in tool set is closed:

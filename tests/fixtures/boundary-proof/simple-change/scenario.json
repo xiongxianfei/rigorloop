@@ -1,0 +1,6 @@
+{
+  "scenario_id": "BFP-SIMPLE-001",
+  "request": "Specify and test a portable text normalizer that accepts trim and preserve modes, rejects every unknown mode, and returns the selected mode with the normalized text.",
+  "expected_branch": "zero-correction",
+  "corrected_role": null
+}

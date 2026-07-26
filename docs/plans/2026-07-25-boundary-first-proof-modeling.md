@@ -25,12 +25,13 @@ resumes.
 
 - Proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Specs: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r18.md`
+- Spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r26.md`
 - Architecture: `docs/architecture/system/architecture.md`
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md`
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
-- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r8.md`
-- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; current runtime-boundary candidate requires rereview after the current plan revision is approved
+- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r13.md`
+- Plan review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md`
+- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; current runtime-boundary candidate requires focused test-spec review after plan approval
 
 ## Context and orientation
 
@@ -81,12 +82,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: implementing
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r8.md
-- Review status: approved; stage=test-spec-review; round=r8
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r12.md
+- Review status: approved; stage=test-spec-review; round=r10
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement M2
+- Next stage: implement M2 hermetic harness and upstream behavior
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -183,7 +184,22 @@ resource through generated, packed, and installed outputs.
   - Fully paginated `experimentalFeature/list`; missing, duplicate, unknown,
     newly enabled prohibited, and disabled prohibited feature rows; exact
     `config/read`, `configRequirements/read`, `app/list`, `plugin/list`,
-    `mcpServerStatus/list`, and five-package `skills/list` inventories
+    `mcpServerStatus/list`; and complete `skills/list` inventory with exactly
+    five enabled manifested lifecycle packages plus the exact six
+    generated-config-bound disabled, runtime-home-rooted, classified
+    runtime-system rows; force reload, empty errors, exact scopes, and unique
+    raw and normalized paths
+  - Exact Codex 0.145.0 canonical schema and protocol-classification
+    identities; exact 96-row feature projection; and explicit disabled
+    `review-agent` within the six-row system roster
+  - Empty runtime roots in the exact 0.145.0 `thread/start` response while
+    both outbound thread and turn requests bind one exact isolated workspace
+    root; missing, added, substituted, or reordered-root contrasts
+  - Every observed request/notification classified against the pinned
+    projection; unknown and prohibited traffic rejected; remote-control status
+    accepted only when disabled and unbound
+  - Parent runtime proxy environment closed to the upper/lowercase proxy-name
+    set while spawned commands retain the exact inherit-none environment
   - Empty `dynamicTools` and `environments`; command tools closed to
     `shell_tool`, `unified_exec`, and `shell_snapshot`; isolated-workspace
     file-change/apply-patch events; prohibited schema variants that remain
@@ -232,8 +248,12 @@ resource through generated, packed, and installed outputs.
     app-server negotiation, and the accepted lifecycle invocation. Any
     removal, replacement, or mutation stops the run.
   - Generate the experimental app-server schema with that same identified
-    runtime and bind the path-sorted raw-byte schema bundle before starting
-    the server.
+    runtime and bind every generated JSON file through a path-sorted
+    canonical-JSON schema bundle before starting the server. Object-key order
+    is non-semantic; every member and array position remains identity-bound.
+    Require the exact approved Codex 0.145.0 schema and complete
+    protocol-classification identities before `thread/start`; require exactly
+    96 classified feature rows.
   - Build a fresh mode-restricted `CODEX_HOME` with one named permission
     profile: root denied, minimal runtime paths readable, isolated workspace
     writable, and child-command network disabled. Do not combine the profile
@@ -243,6 +263,16 @@ resource through generated, packed, and installed outputs.
     paginate `experimentalFeature/list`, and require exact closed results from
     `config/read`, `configRequirements/read`, `app/list`, `plugin/list`,
     `mcpServerStatus/list`, and `skills/list`.
+  - Normalize the exact generated-config origin and recognized temporary roots
+    in the complete `config/read` projection; require every origin row to name
+    the sole generated user config and share one format-valid runtime-owned
+    version before replacing it with the stable
+    `runtime-generated-config-origin` logical value.
+  - Require exactly the five manifest-bound lifecycle skills enabled and the
+    exact six generated-config-bound runtime system skills, including
+    `review-agent`, disabled. Force
+    reload; require the exact workspace row, empty errors, exact scopes, and
+    unique raw and normalized paths.
   - Apply one exhaustive version/schema-bound exactly-once feature-row
     classification: permitted built-in tool, permitted non-tool runtime
     behavior, or must-be-disabled tool-bearing behavior. Reject missing,
@@ -256,6 +286,14 @@ resource through generated, packed, and installed outputs.
     `shell_snapshot`, and file-change/apply-patch events only in the isolated
     workspace. A schema-supported prohibited variant must be disabled
     pre-turn and fails the accepted turn if observed.
+  - Build both thread and turn requests from closed builders that bind one
+    exact isolated workspace root. Record the exact empty 0.145.0
+    thread-start root response, then classify every observed request and
+    notification. Reject unknown/prohibited traffic; accept remote-control
+    status only when disabled with no environment identity.
+  - Forward only the closed upper/lowercase proxy-name set to the parent
+    app-server process. Keep the generated child shell environment
+    inherit-none and prove no proxy or unrelated parent variable crosses it.
   - Run positive and negative probes with the same executable, generated and
     managed configuration, and named profile through
     `codex sandbox --include-managed-config`. Require workspace read/write and
@@ -282,7 +320,9 @@ resource through generated, packed, and installed outputs.
   - Assemble the five skill packages, applicable instructions, contracts, scenario, and candidates into a fresh isolated workspace.
   - Launch the identified runtime through the preflight-proven sandbox and
     private runtime home; derive a fresh generation-time attestation for the
-    then-current five-skill inventory, embed it in
+    exact eleven-row runtime inventory—five enabled manifested lifecycle rows and
+    six generated-config-bound disabled system rows—while keeping the
+    five-package resource set as a distinct input; embed the attestation in
     `behavior-implementation-manifest.json`, and bind that manifest reference
     transitively through the input-set identity, immutable run, pointer, and
     report selector. The preflight artifact is feasibility evidence only and
@@ -311,6 +351,10 @@ resource through generated, packed, and installed outputs.
     runtime roots, instruction sources, effective configuration/inventories,
     exact feature/item classification, sandbox probes, and
     credential-isolation result without secret values or private paths
+  - exact pinned Codex 0.145.0 schema and protocol-classification identities,
+    96 feature rows, five enabled user plus six disabled system skill rows,
+    exact thread/turn root requests, classified observed events, and closed
+    parent-proxy/child-environment evidence
   - durable current `runtime-preflight-attestation.json` whose reference
     matches the pass receipt, plus a fresh nested generation attestation bound
     by the current behavior implementation manifest and immutable run
@@ -328,6 +372,11 @@ resource through generated, packed, and installed outputs.
     exposure, baseline conflict, unmanifested input, invalid run, unresolved
     receipt, stale pointer, or any failed validation; do not mutate
     participating skills after a failed preflight or baseline step.
+  - Stop on a pinned schema/protocol identity mismatch, any feature count
+    other than 96, enabled or missing `review-agent`, missing/additional/
+    substituted/reordered request roots, non-disabled or bound remote-control
+    status, unknown/prohibited observed traffic, an unlisted parent
+    environment variable, or any proxy leakage into a spawned command.
   - Stop on any unknown or mismatched preflight diagnostic/phase, invalid
     change root, pass emitted before file and directory durability, unresolved
     preflight temporary state, substituted generation attestation, or attempt
@@ -641,6 +690,30 @@ resource through generated, packed, and installed outputs.
   them.
 - 2026-07-26: Test-spec-review R8 approved the proof map and allowed M2
   implementation handoff.
+- 2026-07-26: The live M2 preflight exposed that Codex 0.144.6 reports five
+  disabled runtime-system skills alongside the five enabled manifested
+  lifecycle skills. Spec-review R19 requested an exact request, roster, scope,
+  error, and uniqueness contract; spec-review R20 approved the config-bound
+  ten-row correction.
+- 2026-07-26: Before canonical generation, the installed runtime advanced to
+  Codex 0.145.0. The exact projection adds four feature rows and one
+  runtime-system `review-agent` row. The M2 correction uses a version-keyed
+  closed feature registry, explicitly disables every added tool-bearing
+  feature and `review-agent`, and requires the resulting five-user/six-system
+  eleven-row inventory. Because `thread/start` now reports an empty
+  runtime-root list, the version-bound contract records that value while both
+  thread and turn requests bind the isolated workspace and the parent sandbox
+  probes remain authoritative.
+- 2026-07-26: Focused runtime-contract review requested exact schema/protocol
+  pinning, observed-event enforcement, direct thread/turn request proof, and
+  refreshed governing identities. The correction pins both 0.145.0
+  identities, rejects unknown/prohibited observed variants, tests both root
+  requests and the closed parent proxy environment, and keeps the lifecycle
+  gates open pending rereview.
+- 2026-07-26: Architecture-review R9 approved the focused correction without
+  changing components, persistence, deployment, or trust boundaries. The live
+  preflight now passes and publishes a durable bounded attestation; plan and
+  test-spec review synchronization remain before broader M2 implementation.
 - 2026-07-26: Test-spec-review R3 retained one gap: aggregate hermetic-input
   coverage must become field-complete mutation proof before implementation.
 - 2026-07-26: The R4 test-spec candidate now mutates every manifest collection,

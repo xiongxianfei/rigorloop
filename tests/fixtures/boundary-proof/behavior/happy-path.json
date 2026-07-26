@@ -1,0 +1,6 @@
+{
+  "fixture_id": "boundary-behavior-happy-path-v1",
+  "scenario": "tests/fixtures/boundary-proof/simple-change/scenario.json",
+  "feature_candidate": "tests/fixtures/boundary-proof/simple-change/candidates/feature-spec.md",
+  "test_spec_candidate": "tests/fixtures/boundary-proof/simple-change/candidates/test-spec.md"
+}

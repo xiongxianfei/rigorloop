@@ -6,6 +6,10 @@ flowchart LR
   templates["Shared boundary reference source<br/>[Template container]"]:::container
   fixtures["Boundary and skill fixtures<br/>[Test fixture container]"]:::container
   report["Capability report<br/>[Change-local evidence]"]:::container
+  preflight_attestation["Runtime preflight attestation<br/>[Feasibility only; non-authorizing]"]:::container
+  generation_attestation["Fresh generation attestation<br/>[Exact eleven-row runtime inventory]"]:::container
+  implementation_manifest["Behavior implementation manifest<br/>[Binds generation attestation]"]:::container
+  input_set["Simple-change input set<br/>[Five-package resources + manifest identity]"]:::container
   immutable_run["Installed immutable run<br/>[Change-local evidence]"]:::container
   prepared_receipt["Prepared publication receipt<br/>[Fsynced recovery evidence]"]:::container
   current_pointer["Current run pointer<br/>[Atomic file replacement]"]:::container
@@ -47,13 +51,20 @@ flowchart LR
   runtime_adapter -->|thread/start + one workflow turn over stdio| child_runtime
   child_runtime -->|model execution only| model_control_plane
   child_runtime -->|events| harness
-  runtime_adapter -->|schema + effective config/inventories + managed-profile probes| harness
+  runtime_adapter -->|preflight schema + effective config/inventories + managed-profile probes| preflight_attestation
+  preflight_attestation -->|feasibility gate only; never copied as authority| harness
+  runtime_adapter -->|fresh generation schema, exact eleven-row runtime inventory, probes| generation_attestation
+  generation_attestation -->|required fresh identity| implementation_manifest
+  assembler -->|distinct path-sorted five-package resource set| input_set
+  implementation_manifest -->|manifest identity| input_set
   isolated_workspace -->|workspace-only child tools| child_runtime
-  harness -->|validated event bundle| publisher
+  input_set -->|bound generation inputs| harness
+  harness -->|validated event bundle + input-set identity| publisher
   publisher -->|1. install validated run| immutable_run
   immutable_run -->|2. bind installed run in| prepared_receipt
   prepared_receipt -->|3. authorize atomic replacement of| current_pointer
   current_pointer -->|current typed result after reconciliation| validator
+  immutable_run -->|transitively binds input set and generation attestation| current_pointer
   templates -->|copied byte-for-byte| skills
   skills -->|canonical procedures and resources| generators
   generators -->|parity evidence| evaluator
@@ -61,6 +72,7 @@ flowchart LR
   fixtures -->|incident outcomes| evaluator
   evaluator -->|computed result| validator
   validator -->|only report writer| report
+  current_pointer -->|simple-change-behavior selector input| report
   report -->|raw-byte SHA-256| release
 
   classDef person fill:#08427b,stroke:#073b6f,color:#fff
