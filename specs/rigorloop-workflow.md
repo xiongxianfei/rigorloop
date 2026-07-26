@@ -2124,13 +2124,17 @@ prepared.json
 .current-run-*.json
 manual-recovery-run-*.json
 manual-recovery-state-run-*.json
+.manual-recovery-run-*-recovery-*.tmp
+.recovery-quarantine-run-*-recovery-*-*
 ```
 
-Historical immutable `runs/<run-id>/` roots and basis/state recovery pairs
-whose state is `completed` do not by themselves indicate an in-flight
-publication.
+Historical immutable `runs/<run-id>/` roots and valid completed recovery
+basis/state pairs plus their required non-lease-only quarantine do not by
+themselves indicate an in-flight publication.
 An immutable recovery basis with a missing, `authorized`, or
-`orphan-parent-synced` state record is active and owns its run candidate.
+`orphan-detached` state record is active and owns its run candidate.
+A single valid temporary basis is also active recovery intent for its bound
+lease/run and must be installed or reconciled before any other routing.
 Every discovered transient name is parsed and every present object is
 validated before consistency routing.
 Unknown transient names, symlinks, malformed objects, multiple active recovery
@@ -2328,18 +2332,28 @@ the bound lease;
 `exclusive-nonblocking-file-lock-v1`, `lock_path` is `publisher.lock`,
 `acquired` is `true`, and `prior_lease_identity` equals the lease snapshot
 identity;
-`orphan_snapshot` contains exactly `kind`, `path`, `identity`, and
-`durability_parent`.
+`orphan_snapshot` contains exactly `kind`, `path`, `identity`,
+`quarantine_path`, and `durability_parent`.
 `kind` is `working`, `staging`, or `lease-only`.
 For `working` and `staging`, path names the bound root and identity is the
-canonical path-and-raw-byte tree identity captured before deletion; for
+canonical path-and-raw-byte tree identity captured before detachment; for
 `working`, the root MUST satisfy the minimum-valid contract above; for
 `staging`, the complete staged manifest MUST validate against the lease.
-For `lease-only`, path and identity are null.
+Their `quarantine_path` is exactly
+`.recovery-quarantine-<run-id>-<recovery-id>-<kind>`.
+For `lease-only`, path, identity, and quarantine path are null.
 `durability_parent` is the simple-change root for all three kinds.
 `action` is only `discard-and-regenerate`.
-The basis is written exclusively and fsynced before deletion and is never
-replaced or mutated.
+The basis is first written exclusively to
+`.manual-recovery-<run-id>-<recovery-id>.tmp` and fsynced.
+It is installed at the canonical basis path with the platform's atomic
+no-clobber namespace primitive, and the simple-change parent is fsynced.
+The temporary file is then removed and its parent fsynced.
+On resume, a lone valid temporary basis is installed; a temporary basis whose
+canonical file exists with identical bytes is removed and fsynced.
+Different bytes, more than one temporary basis, or malformed temporary state
+fails closed.
+The installed basis is never replaced or mutated.
 Its raw-byte identity is `basis_identity`.
 
 Recovery progress is stored separately at
@@ -2349,7 +2363,7 @@ That state record contains exactly `schema_version`, `recovery_id`,
 Its `schema_version` is `simple-change-manual-recovery-state-v1`;
 `recovery_id` equals the immutable basis; `basis_identity` is the current
 standard raw-byte identity of that basis; and `state` is `authorized`,
-`orphan-parent-synced`, or `completed`.
+`orphan-detached`, or `completed`.
 Each atomic state replacement may change only `state`; the other fields remain
 byte-for-byte identical and continue to resolve to the immutable basis.
 Missing, changed, substituted, or multiply bound basis/state files fail
@@ -2366,22 +2380,26 @@ Recovery uses this closed resume table while the lock remains held:
 
 | Recovery state | Orphan root | Matching lease | Required action |
 | --- | --- | --- | --- |
-| absent | present as snapshotted, or absent for `lease-only` | present | Validate authority, lease-bound input identity, and orphan snapshot; if the immutable basis is absent, exclusively write and fsync it; otherwise validate it byte-for-byte; then atomically write and fsync state `authorized`. |
-| `authorized` | present and snapshot matches | present | Remove the orphan root, fsync `orphan_snapshot.durability_parent`, atomically write and fsync `orphan-parent-synced`. |
-| `authorized` | absent | present | Fsync `orphan_snapshot.durability_parent` again, then atomically write and fsync `orphan-parent-synced`; this is also the lease-only route. |
-| `orphan-parent-synced` | absent | present | Remove the lease, fsync its parent, atomically write and fsync `completed`. |
-| `orphan-parent-synced` | absent | absent | Fsync the lease parent again, then atomically write and fsync `completed`. |
-| `completed` | absent | absent | Recovery is terminal; global discovery may begin a later fresh generation. |
+| absent | active orphan present as snapshotted and quarantine absent, or both absent for `lease-only` | present | Validate authority, lease-bound input identity, and orphan snapshot; atomically install or validate the immutable basis; then atomically write and fsync state `authorized`. |
+| `authorized` | active orphan present and snapshot matches; quarantine absent | present | Atomically rename the orphan root to `quarantine_path`, fsync `durability_parent`, then atomically write and fsync `orphan-detached`. |
+| `authorized` | active orphan absent; quarantine present with the exact snapshot identity | present | Fsync `durability_parent` again, then atomically write and fsync `orphan-detached`. |
+| `authorized` | active orphan and quarantine both absent for `lease-only` | present | Fsync `durability_parent`, then atomically write and fsync `orphan-detached`. |
+| `orphan-detached` | active orphan absent; exact quarantine present, or absent for `lease-only` | present | Remove the lease, fsync its parent, atomically write and fsync `completed`. |
+| `orphan-detached` | active orphan absent; exact quarantine present, or absent for `lease-only` | absent | Fsync the lease parent again, then atomically write and fsync `completed`. |
+| `completed` | active orphan absent; exact quarantine present, or absent for `lease-only` | absent | Recovery is terminal; preserve quarantine and permit later fresh generation. |
 
-Crash after deletion but before parent fsync resumes through the
-`authorized + absent` row.
+Crash after quarantine rename but before parent fsync resumes through the
+`authorized + active absent + quarantine present` row.
 Crash after parent fsync but before state replacement safely repeats fsync.
 Crash after lease removal but before completion resumes through
-`orphan-parent-synced + absent lease`.
-Every vocabulary-valid tuple not listed, including completed recovery with an
-orphan or lease present, is `recovery-conflict` and fails closed.
-No recovery adopts working or staged bytes.
-The discarded bytes are never adopted as canonical evidence.
+`orphan-detached + absent lease`.
+The first version never deletes or mutates quarantine.
+Quarantine is bounded noncanonical recovery evidence and cannot satisfy a
+behavior run, pointer, review, or report.
+An attempted cleanup, partial quarantine tree, changed quarantine identity,
+completed recovery with active orphan or lease, or any other vocabulary-valid
+tuple not listed is `recovery-conflict` and fails closed.
+No recovery adopts working, staged, or quarantined bytes.
 After `published` or completed manual recovery, the holder releases the global
 publisher lock; lock release never substitutes for the required file and
 directory fsyncs.
@@ -2397,7 +2415,9 @@ The before inventory is the complete classifier result from the
 from current invocation bytes.
 Both selectors cover `specs/`, `docs/proposals/`, `docs/plans/`,
 `docs/architecture/`, `docs/adr/`, and the selected change root except its
-`evidence/simple-change/runs/` subtree and `evidence/simple-change/current.json`.
+`evidence/simple-change/runs/` subtree,
+`evidence/simple-change/current.json`, and every transaction-control or
+recovery path named by the global discovery vocabulary above.
 The after selector additionally covers the complete
 `<behavior-root>/artifacts/` subtree.
 Paths and identities are unique and normalized; identity is the raw-byte
@@ -2580,15 +2600,69 @@ Each value has one exact role-specific shape:
 | --- | --- |
 | `stage-turn-timeout` | `kind: deadline-observation-v1`, `deadline_ms`, `elapsed_ms`, `runtime_thread_id` |
 | `stage-liveness-uncertain` | `kind: liveness-observation-v1`, `termination_requested: true`, `wait_completed: false`, `runtime_process_id` |
-| `stage-output-absent` | `kind: output-inventory-v1`, exact output `root`, empty `paths`, and the canonical empty-list `inventory_identity` |
-| `stage-output-partial`, `stage-output-extra`, or `stage-output-contradictory` | `kind: output-inventory-v1`, exact output `root`, complete path-sorted `paths`, and canonical `inventory_identity` |
-| `protocol-shape-incompatible` | `kind: protocol-observation-v1`, `event_kind`, `schema_path`, `observed_shape_identity` |
-| `unexpected-prohibited-event` | `kind: prohibited-event-observation-v1`, `event_kind`, `event_identity` |
+| `stage-output-absent`, `stage-output-partial`, `stage-output-extra`, or `stage-output-contradictory` | `kind: output-inventory-v1`, exact output `root`, `required_outputs`, `observed_outputs`, and canonical `inventory_identity` |
+| `protocol-shape-incompatible` | `kind: protocol-observation-v1`, `event_kind`, `schema_path`, `observed_shape_projection`, `observed_shape_identity` |
+| `unexpected-prohibited-event` | `kind: prohibited-event-observation-v1`, `event_kind`, `event_identity`, `protocol_classification_identity` |
 | `runtime-identity-unstable` | `kind: runtime-identity-observation-v1`, `expected_identity`, `observed_identity` |
 
 All listed numeric fields are non-negative integers; every identity uses the
 standard `sha256:` form; every path is normalized and bounded to the invocation
 or approved schema root.
+The role predicates are exact:
+
+- `stage-turn-timeout` requires `elapsed_ms >= deadline_ms`; equality is the
+  minimum timeout boundary.
+- `stage-liveness-uncertain` requires a timeout record for the same thread,
+  one attempted termination, and failure to observe process exit before the
+  bounded wait completed.
+- `runtime-identity-unstable` requires unequal expected and observed
+  identities. Equal identities invalidate that diagnostic.
+- `protocol-shape-incompatible` requires `schema_path` to resolve inside the
+  exact bound schema bundle. `observed_shape_projection` is the complete
+  path-sorted field-name and JSON-type projection with values omitted;
+  `observed_shape_identity` is its canonical identity; and validation of that
+  projection against the resolved schema MUST return false. A projection that
+  the bound schema accepts invalidates the diagnostic.
+- `unexpected-prohibited-event` requires `event_kind` to resolve in the exact
+  bound `protocol_item_classification_identity` to
+  `prohibited-capability-event`. Unknown event kinds route through protocol
+  shape/classification failure and cannot be relabeled as known prohibited
+  events.
+
+For output classification, `required_outputs` is the complete path-sorted
+stage-policy set of `{role, path, identity_rule}` descriptors.
+`identity_rule` is either `any-current` or one exact bound identity.
+`observed_outputs` is the complete path-sorted set of
+`{role, path, identity}` descriptors captured from the output root.
+Let `E` be the required descriptors and `O` the observed descriptors.
+The evaluator applies this closed, disjoint order:
+
+```text
+absent:
+  O is empty
+
+contradictory:
+  O is nonempty and contains a duplicate role or path with unequal identity,
+  violates an exact bound identity, or contains roles declared mutually
+  exclusive by the stage policy
+
+extra:
+  not contradictory, every member of E is satisfied exactly once, and one or
+  more members of O match no member of E
+
+partial:
+  not contradictory, O is nonempty, every member of O matches a distinct
+  member of E, and one or more members of E are unsatisfied
+
+complete:
+  not contradictory and O and E match bijectively
+```
+
+No observation may satisfy more than one state.
+An observation outside these predicates is
+`invalid-output-classification` and fails closed before transport routing.
+`inventory_identity` is the canonical identity of exactly
+`{root, required_outputs, observed_outputs}`.
 The timeout and liveness records are cross-checked against the row's runtime
 thread and termination fields.
 For `confirmed-stopped`, the separate inline `termination_receipt` is the
