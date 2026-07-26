@@ -90,9 +90,9 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r38.md
 - Review status: changes-requested; stage=spec-review; round=r38
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec revision
+- Next stage: spec-review R39
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR-R38-1,BFP-SR-R38-2,BFP-SR-R38-3,BFP-SR-R38-4
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
 ## Milestones
 
@@ -619,6 +619,11 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-26: Spec-review R38 confirmed the canary policy and requested exact
+  lifecycle-policy serialization/binding, canonical malformed/oversized
+  candidate rows, replayable post-materialization observations, and a terminal
+  second-correction branch. The R39 candidate closes those four contracts.
 
 - 2026-07-26: Spec-review R37 requested exhaustive review/correction artifact
   variants, bounded replayable candidate-set evidence, and a canary policy

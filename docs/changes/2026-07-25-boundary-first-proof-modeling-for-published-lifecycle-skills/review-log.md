@@ -1008,4 +1008,4 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r38.md
 Resolution: review-resolution.md#spec-review-r38
 Material findings: BFP-SR-R38-1, BFP-SR-R38-2, BFP-SR-R38-3, BFP-SR-R38-4
-Open findings: BFP-SR-R38-1, BFP-SR-R38-2, BFP-SR-R38-3, BFP-SR-R38-4
+Open findings: None

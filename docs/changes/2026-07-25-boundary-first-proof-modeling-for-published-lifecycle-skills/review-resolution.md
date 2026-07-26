@@ -2496,7 +2496,7 @@ schema, runtime attestation, and cross-use rejection; pending spec-review-r38
 
 Finding ID: BFP-SR-R38-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y policy identity contract
@@ -2506,13 +2506,16 @@ Chosen action: Define exact policy/nested row schemas and ordering and add the
 object to behavior-manifest selection and validation.
 Rationale: A required runtime identity must have one independently reconstructible preimage.
 Validation target: spec-review-r39
-Validation evidence: pending spec revision and spec-review-r39
+Validation evidence: R39 candidate defines exact policy, occurrence, variant,
+content-state, artifact, and ordering schemas; adds `artifact_policy` to the
+behavior manifest; and reconstructs its transitive input/run binding; pending
+spec-review-r39
 
 #### BFP-SR-R38-2 - Malformed and oversized candidate observations are ambiguous
 
 Finding ID: BFP-SR-R38-2
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y candidate evidence contract
@@ -2521,13 +2524,16 @@ Required outcome: Give every parse state one exact representation and determinis
 Chosen action: Add malformation kinds, exact null/list values, size-before-parse precedence, and inclusive overflow accounting.
 Rationale: Failure evidence must be canonical and independently replayable.
 Validation target: spec-review-r39
-Validation evidence: pending spec revision and spec-review-r39
+Validation evidence: R39 candidate defines invalid-JSON, non-object,
+schema-invalid, parsed, and oversized rows with exact null/list values,
+size-before-parse precedence, and inclusive first-overflow accounting; pending
+spec-review-r39
 
 #### BFP-SR-R38-3 - Post-materialization failures lack replayable evidence
 
 Finding ID: BFP-SR-R38-3
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y transport evidence contract
@@ -2536,13 +2542,15 @@ Required outcome: Record bounded byte-materialization and structural-content obs
 Chosen action: Add exact value-free observation records and bind their identities into failed transport evidence.
 Rationale: A contradictory label alone cannot prove a physical or structural mismatch.
 Validation target: spec-review-r39
-Validation evidence: pending spec revision and spec-review-r39
+Validation evidence: R39 candidate adds canonical value-free materialization
+and content-validation observations and binds both identities through failed
+output evidence; pending spec-review-r39
 
 #### BFP-SR-R38-4 - Second changes-requested review lacks a terminal trace
 
 Finding ID: BFP-SR-R38-4
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y trace grammar
@@ -2551,7 +2559,10 @@ Required outcome: Map second-review changes-requested to one explicit terminal s
 Chosen action: Add correction-budget-exhausted terminal branches with an open resolution and stable failure diagnostic.
 Rationale: Every permitted stage result must be observable in exactly one valid branch.
 Validation target: spec-review-r39
-Validation evidence: pending spec revision and spec-review-r39
+Validation evidence: R39 candidate adds explicit
+correction-budget-exhausted terminal branches for second changes-requested
+reviews, preserves open resolution, prohibits attempt three, and emits a
+stable run diagnostic; pending spec-review-r39
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
