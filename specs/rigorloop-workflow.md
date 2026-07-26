@@ -1,7 +1,7 @@
 # RigorLoop Workflow
 
 ## Status
-- approved
+- draft
 Boundary model version: v1
 Boundary model scope: R28-R28z
 
@@ -1750,7 +1750,8 @@ when it reports `status: disabled` and a null environment identity; every
 other value stops the turn.
 
 `probe_results` contains exactly `workspace_read`, `workspace_write`,
-`unmanifested_source_denied`, `private_auth_denied`, and `network_denied`.
+`unmanifested_source_denied`, `private_auth_denied`, `network_denied`, and
+`stage_envelope_materialization`.
 `credential_isolation_results` contains exactly `environment_names_closed`,
 `canary_absent_from_environment`, `canary_absent_from_argv`,
 `canary_absent_from_stdin`, `private_paths_unreadable`, and
@@ -1765,6 +1766,21 @@ closed child environment proved above.
 Every result value is `pass`; failed or unavailable proof prevents manifest
 creation. No raw configuration, inventory response, canary, credential,
 environment value, private path, or raw protocol log is recorded.
+
+`stage_envelope_materialization` is proved by one noncanonical preflight turn
+through `workflow` and `spec` after runtime negotiation and the direct sandbox
+probes succeed.
+The turn uses the stage-artifact envelope contract below with exactly one
+`transport-canary` artifact at `preflight/stage-envelope-canary.md`.
+The stage-owning skill authors a nonempty UTF-8 canary value; the transport
+adapter validates the complete envelope, writes those exact UTF-8 bytes into
+the isolated output root, rereads them, and requires byte equality.
+The preflight discards the canary workspace and content after recording only
+the `pass` result and the already permitted bounded runtime observations.
+The canary is never a lifecycle artifact, behavior snapshot, candidate oracle,
+or canonical evidence output.
+A missing, malformed, partial, additional, substituted, oversized, or
+non-byte-equal canary fails as `stage-envelope-canary-failed`.
 
 The evidence-only
 `check-environment --change-id <change-id> --json` command returns exactly
@@ -1807,6 +1823,7 @@ mapped phase, and `attestation_ref` is null:
 | `config-equivalence-mismatch` | `pre-turn-start` |
 | `sandbox-probe-failed` | `pre-turn-start` |
 | `credential-isolation-failed` | `pre-turn-start` |
+| `stage-envelope-canary-failed` | `in-turn` |
 | `unexpected-prohibited-event` | `in-turn` |
 
 For `runtime-identity-unstable`, the checkpoint-to-phase mapping is closed:
@@ -2532,20 +2549,91 @@ An unexpected workspace file fails the run even when classified
 `non-lifecycle`.
 
 The harness invokes the canonical stage-owning skill through the workflow
-orchestrator and captures only newly produced files below the current
-behavior-output root.
-It snapshots those files after the invocation returns and before any later
-stage begins.
-The `workflow` skill owns stage routing; each stage-owning skill supplies the
-complete bytes of its own artifact through the approved isolated-workspace
-write capability.
-The harness may enforce paths, capture bytes, validate structure, compare
-normalized oracle records, and publish snapshots, but it MUST NOT contain,
-render, inject, or complete normative feature requirements, acceptance
-criteria, test cases, validation commands, formal review judgments, or review
-records.
-Caller prose, candidate fixtures, pre-existing files, and copied expected
-outputs cannot be recorded as fresh behavior outputs.
+orchestrator and accepts only one closed stage-artifact envelope from that
+turn.
+The `workflow` skill owns stage routing.
+The selected stage-owning skill authors every semantic byte in the envelope.
+The transport adapter validates the complete envelope before mutation and
+then mechanically writes each `content_utf8` value as its exact UTF-8 bytes
+below the current behavior-output root.
+It rereads every materialized file and requires byte-for-byte equality with
+the bound envelope before the harness snapshots those files and before any
+later stage begins.
+
+The stage-artifact envelope contains exactly:
+
+```text
+schema_version
+completed
+last_stage
+artifacts
+```
+
+`schema_version` is `boundary-stage-artifact-envelope-v1`.
+`completed` is `true`.
+`last_stage` is the exact invoked stage.
+`artifacts` is a nonempty ordered list whose rows contain exactly `role`,
+`path`, and `content_utf8`.
+`role` and `path` are independently unique.
+`path` is normalized, relative, contains no empty, `.` or `..` segment, and
+resolves strictly below the isolated output root without traversing a symlink.
+`content_utf8` is a nonempty string, contains no null character or unpaired
+surrogate, encodes as UTF-8 without replacement, and is at most 262144 bytes.
+The aggregate UTF-8 byte count is at most 524288 bytes.
+The complete envelope is at most 786432 canonical-JSON bytes.
+The envelope identity is the standard SHA-256 identity of canonical JSON using
+UTF-8, sorted object keys, compact separators, and artifact-list order as
+returned.
+
+The first-version stage policy is closed:
+
+| Stage | Exact ordered artifacts |
+| --- | --- |
+| `spec` | `feature-spec` at `feature-spec/portable-text-normalizer.md` |
+| `spec-review` | `spec-review-record` at `reviews/spec-review.md`; `spec-review-log` at `review-log/spec-review.md` |
+| `test-spec` | `test-spec` at `test-spec/portable-text-normalizer.test.md` |
+| `test-spec-review` | `test-spec-review-record` at `reviews/test-spec-review.md`; `test-spec-review-log` at `review-log/test-spec-review.md` |
+
+Missing, additional, duplicated, reordered, malformed, escaping, oversized,
+or stage-incompatible artifact rows fail closed.
+The adapter performs no per-file write until the entire envelope passes those
+checks.
+After validation it may create parent directories and write the returned
+bytes, but it MUST NOT render, interpret, normalize, prepend, append, repair,
+complete, or otherwise change artifact content.
+The adapter records the envelope identity plus each materialized path and
+raw-byte identity so validation can prove exact transport.
+The envelope itself is transport evidence and is never a lifecycle artifact
+or substitute for its materialized files.
+
+The runtime collector retains every bounded agent-message candidate observed
+for the current turn even when terminal turn completion is not observed before
+the deadline.
+Exactly one syntactically valid candidate envelope is required for
+`complete`.
+No candidate is `absent`; a nonempty strict subset of the required rows in
+their required relative order is `partial`; a candidate with all required
+rows plus an additional row is `extra`; and multiple candidates, duplicate
+rows, mixed missing-plus-additional rows, stage mismatch, or unequal
+candidates are `contradictory`.
+Malformed top-level or artifact-row shape additionally records
+`protocol-shape-incompatible` and cannot be materialized.
+After a confirmed stop, one complete valid candidate is reconciled and
+materialized without reinvocation.
+Only confirmed stop with no candidate and no independently observed
+non-output failure permits the single fresh-runtime retry.
+Partial, extra, contradictory, or malformed candidate evidence never permits
+retry.
+
+The harness may enforce paths, validate envelope shape and size, materialize
+and capture exact bytes, validate artifact structure, compare normalized
+oracle records, and publish snapshots.
+It MUST NOT contain, render, inject, or complete normative feature
+requirements, acceptance criteria, test cases, validation commands, formal
+review judgments, or review records.
+Caller prose, candidate fixtures, pre-existing files, copied expected outputs,
+and adapter-authored semantic content cannot be recorded as fresh behavior
+outputs.
 
 `transport_attempts` records runtime transport separately from lifecycle
 correction events.
@@ -2590,8 +2678,17 @@ pauses, and performs no retry or output inspection.
 `output_state` is exactly `uninspected`, `absent`, `complete`, `partial`,
 `extra`, or `contradictory`.
 `uninspected` is permitted only with `liveness-uncertain`.
-Every other output state is computed from the bound stage-output root only
-after normal completion or confirmed process termination.
+Every other output state is computed from the last complete candidate
+stage-artifact envelope observed for the turn after normal completion or
+confirmed process termination.
+When no syntactically valid candidate envelope was observed, the candidate
+artifact list is empty and the output state is `absent`; independently
+detected envelope-shape failure remains
+`protocol-shape-incompatible`.
+Only a `complete` envelope may be materialized.
+After materialization, the adapter independently requires the bound
+stage-output root to contain exactly the envelope paths and exact returned
+bytes; a mismatch is `stage-output-contradictory` and cannot be accepted.
 Every member of `diagnostic_ids` and `primary_diagnostic_id` is one of:
 
 ```text
@@ -2692,8 +2789,9 @@ No row may follow a terminal decision, and transport attempt 2 may never decide
 Only terminal `accept` or `reconcile` creates the corresponding lifecycle event
 and permits eventual publication.
 
-For `complete`, `evidence_refs` contains exactly the current stage-owned output
-references inspected for that attempt.
+For `complete`, `evidence_refs` contains exactly the current materialized
+stage-owned output references inspected for that attempt, plus the bounded
+stage-artifact-envelope identity record.
 For `absent` and `uninspected`, it is empty.
 For `partial`, `extra`, or `contradictory`, it contains only current references
 to the bounded observed output files used to classify that failure.
@@ -2783,8 +2881,9 @@ path-sorted stage-policy list of `{role, path, identity_rule}` descriptors.
 Its roles and paths are independently unique; an empty list or duplicate role
 or path is an invalid stage policy and fails before invocation.
 `identity_rule` is either `any-current` or one exact bound identity.
-`observed_outputs` is the raw complete path-sorted list of
-`{path, identity}` descriptors captured from filesystem paths and raw bytes.
+`observed_outputs` is the raw complete list of `{path, identity}` descriptors
+projected in envelope order from syntactically valid artifact rows, where each
+identity is computed from `content_utf8` encoded as exact UTF-8 bytes.
 It contains no semantic role field.
 It is not deduplicated or converted to a set before classification.
 Let `E` be the required list and `O` the raw observed list.
@@ -2835,6 +2934,8 @@ required stop/reap authority evidence and is cross-checked with the timeout
 observation; it is not duplicated as a diagnostic-evidence role.
 The output inventory is cross-checked against `output_state` and
 `evidence_refs`.
+For `complete`, it is additionally cross-checked against the envelope identity
+and the independently reread materialized path-and-byte identities.
 Compound conditions retain all role entries and never erase or replace
 `output_state`.
 Missing, additional, wrong-role, stale, self-referential, or cross-field
@@ -3356,6 +3457,11 @@ Partial `v1` evidence MUST NOT be reinterpreted as `legacy` proof.
   artifacts, and bounded simple-fixture overhead.
 - `RLW-AC-B9`: Progressive-disclosure proposal review remains paused until
   the complete capability baseline and final verification pass.
+- `RLW-AC-B10`: A reviewer can prove that each fresh upstream artifact is
+  authored in a closed stage-owned envelope, materialized byte-for-byte by a
+  semantics-free adapter, reconciled without reinvocation when complete, and
+  rejected before publication when missing, malformed, partial, additional,
+  contradictory, oversized, or non-byte-equal.
 
 ## Open questions
 
