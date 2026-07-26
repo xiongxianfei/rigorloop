@@ -13,6 +13,7 @@ import dataclasses
 import hashlib
 import json
 import re
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
@@ -147,6 +148,10 @@ BLOCKING_REASON_CODES = (
     "authorization-required",
     "environment-unavailable",
     "upstream-failure",
+)
+BOUNDARY_CHANGE_ROOT = (
+    "docs/changes/"
+    "2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills"
 )
 PRESERVATION_KEYS = (
     "behavior",
@@ -313,6 +318,7 @@ class SimpleTraceMetrics:
     false_blocking_count: int
     new_universal_artifact_count: int
     structure_only_correction_cycles: int
+    applicable_only_mapping: bool
 
 
 def _object(value: Any, label: str) -> Mapping[str, Any]:
@@ -934,6 +940,28 @@ def _evidence_ref(value: Any, label: str, repository_root: Path) -> None:
             break
     if not resolved.is_file() or traverses_symlink:
         raise BoundaryProofError(f"{label}: evidence must be a non-symlink regular file")
+    is_change_local = path.as_posix().startswith(BOUNDARY_CHANGE_ROOT + "/")
+    try:
+        tracked = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(repository_root),
+                "ls-files",
+                "--error-unmatch",
+                "--",
+                raw_path,
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        ).returncode == 0
+    except OSError:
+        tracked = False
+    if not tracked and not is_change_local:
+        raise BoundaryProofError(
+            f"{label}: evidence must be tracked or current change-local"
+        )
     identity = _nonempty_string(record["identity"], f"{label}.identity")
     expected = "sha256:" + hashlib.sha256(resolved.read_bytes()).hexdigest()
     if identity != expected:
@@ -1186,26 +1214,218 @@ def validate_capability_report(
         )
 
 
-def evaluate_simple_change_trace(payload: Mapping[str, Any]) -> SimpleTraceMetrics:
-    """Compute M1 synthetic simple-change metrics from a closed event trace."""
+def evaluate_simple_change_trace(
+    payload: Mapping[str, Any],
+    *,
+    feature_models: Mapping[str, FeatureBoundaryModel] | None = None,
+    proof_maps: Mapping[str, BoundaryProofMap] | None = None,
+) -> SimpleTraceMetrics:
+    """Validate the exact R28y synthetic trace and derive its observations."""
 
     record = _object(payload, "simple_trace")
     _exact_fields(
         record,
-        frozenset({"events", "before_inventory", "after_inventory"}),
+        frozenset(
+            {
+                "snapshots",
+                "review_bundles",
+                "events",
+                "before_inventory",
+                "after_inventory",
+            }
+        ),
         "simple_trace",
     )
-    events = _records(record["events"], "events")
-    allowed_event_fields = frozenset(
+
+    identity_pattern = re.compile(r"^sha256:[0-9a-f]{64}$")
+    snapshot_fields = frozenset(
+        {"snapshot_id", "source", "artifact_role", "path", "identity"}
+    )
+    event_fields = frozenset(
         {
             "stage",
             "attempt",
+            "input_snapshot_ids",
+            "reviewed_snapshot_id",
+            "output_snapshot_ids",
             "structural_result",
             "observed_result",
             "diagnostic_id",
+            "evidence_refs",
         }
     )
+    inventory_fields = frozenset({"path", "artifact_kind", "identity"})
     allowed_stages = ("spec", "spec-review", "test-spec", "test-spec-review")
+    allowed_roles = ("feature-spec", "test-spec", "review-evidence")
+    artifact_kinds = (
+        "feature-spec",
+        "test-spec",
+        "review-evidence",
+        "other-lifecycle",
+        "non-lifecycle",
+    )
+
+    def normalized_path(value: Any, label: str) -> str:
+        raw = _nonempty_string(value, label)
+        path = Path(raw)
+        if path.is_absolute() or ".." in path.parts or path.as_posix() != raw:
+            raise BoundaryProofError(f"{label}: unsafe path")
+        return raw
+
+    def identity(value: Any, label: str) -> str:
+        result = _nonempty_string(value, label)
+        if not identity_pattern.fullmatch(result):
+            raise BoundaryProofError(f"{label}: invalid identity")
+        return result
+
+    snapshots: dict[str, Mapping[str, Any]] = {}
+    snapshot_by_ref: dict[tuple[str, str], str] = {}
+    for index, raw_snapshot in enumerate(_records(record["snapshots"], "snapshots")):
+        label = f"snapshots[{index}]"
+        snapshot = _object(raw_snapshot, label)
+        _exact_fields(snapshot, snapshot_fields, label)
+        snapshot_id = _nonempty_string(snapshot["snapshot_id"], f"{label}.snapshot_id")
+        if not STABLE_ID_RE.fullmatch(snapshot_id):
+            raise BoundaryProofError(f"{label}: invalid snapshot ID")
+        if snapshot_id in snapshots:
+            raise BoundaryProofError(f"{label}: duplicate snapshot ID")
+        source = snapshot["source"]
+        if source not in ("fixture-candidate", "behavior-output"):
+            raise BoundaryProofError(f"{label}: unknown snapshot source")
+        role = snapshot["artifact_role"]
+        if role not in allowed_roles:
+            raise BoundaryProofError(f"{label}: unknown snapshot role")
+        path = normalized_path(snapshot["path"], f"{label}.path")
+        digest = identity(snapshot["identity"], f"{label}.identity")
+        if source == "fixture-candidate":
+            prefix = "tests/fixtures/boundary-proof/simple-change/candidates/"
+            if role == "review-evidence" or not path.startswith(prefix):
+                raise BoundaryProofError(f"{label}: invalid fixture-candidate path")
+        else:
+            marker = "/evidence/simple-change/runs/run-"
+            role_path = f"/artifacts/{role}/"
+            if marker not in path or role_path not in path:
+                raise BoundaryProofError(f"{label}: invalid behavior-output path")
+        reference = (path, digest)
+        if reference in snapshot_by_ref:
+            raise BoundaryProofError(f"{label}: duplicate snapshot path and identity")
+        if any(existing[0] == path for existing in snapshot_by_ref):
+            raise BoundaryProofError(f"{label}: duplicate snapshot path")
+        snapshots[snapshot_id] = snapshot
+        snapshot_by_ref[reference] = snapshot_id
+
+    def snapshot_ref(snapshot_id: str) -> dict[str, str]:
+        snapshot = snapshots[snapshot_id]
+        return {"path": snapshot["path"], "identity": snapshot["identity"]}
+
+    def snapshot_ids(value: Any, label: str) -> tuple[str, ...]:
+        values = _strings(value, label, nonempty=False)
+        if len(values) != len(set(values)):
+            raise BoundaryProofError(f"{label}: duplicate snapshot ID")
+        for snapshot_id in values:
+            if snapshot_id not in snapshots:
+                raise BoundaryProofError(f"{label}: unknown snapshot ID")
+            if snapshots[snapshot_id]["source"] != "behavior-output":
+                raise BoundaryProofError(f"{label}: fixture candidates cannot enter events")
+        return values
+
+    def evidence_refs(value: Any, label: str) -> tuple[tuple[str, str], ...]:
+        rows = _records(value, label)
+        result: list[tuple[str, str]] = []
+        for index, row in enumerate(rows):
+            item_label = f"{label}[{index}]"
+            _exact_fields(row, frozenset({"path", "identity"}), item_label)
+            reference = (
+                normalized_path(row["path"], f"{item_label}.path"),
+                identity(row["identity"], f"{item_label}.identity"),
+            )
+            if reference not in snapshot_by_ref:
+                raise BoundaryProofError(f"{item_label}: evidence does not name a snapshot")
+            result.append(reference)
+        if len(result) != len(set(result)):
+            raise BoundaryProofError(f"{label}: duplicate evidence reference")
+        if result != sorted(result):
+            raise BoundaryProofError(f"{label}: evidence references are not normalized")
+        return tuple(result)
+
+    bundle_records = _object(record["review_bundles"], "review_bundles")
+    bundles: dict[str, Mapping[str, Any]] = {}
+    bundle_artifacts: dict[str, tuple[str, ...]] = {}
+    for bundle_snapshot_id, raw_bundle in bundle_records.items():
+        label = f"review_bundles.{bundle_snapshot_id}"
+        if bundle_snapshot_id not in snapshots:
+            raise BoundaryProofError(f"{label}: unknown bundle snapshot")
+        bundle_snapshot = snapshots[bundle_snapshot_id]
+        if (
+            bundle_snapshot["source"] != "behavior-output"
+            or bundle_snapshot["artifact_role"] != "review-evidence"
+        ):
+            raise BoundaryProofError(f"{label}: invalid bundle snapshot")
+        bundle = _object(raw_bundle, label)
+        _exact_fields(
+            bundle,
+            frozenset(
+                {
+                    "review_id",
+                    "outcome",
+                    "reviewed_snapshot_id",
+                    "material_finding_ids",
+                    "artifact_refs",
+                }
+            ),
+            label,
+        )
+        _nonempty_string(bundle["review_id"], f"{label}.review_id")
+        outcome = bundle["outcome"]
+        if outcome not in ("approved", "changes-requested", "blocked"):
+            raise BoundaryProofError(f"{label}: unknown review outcome")
+        reviewed_snapshot_id = _nonempty_string(
+            bundle["reviewed_snapshot_id"], f"{label}.reviewed_snapshot_id"
+        )
+        if reviewed_snapshot_id not in snapshots:
+            raise BoundaryProofError(f"{label}: unknown reviewed snapshot")
+        findings = _strings(
+            bundle["material_finding_ids"],
+            f"{label}.material_finding_ids",
+            nonempty=False,
+        )
+        if len(findings) != len(set(findings)):
+            raise BoundaryProofError(f"{label}: duplicate material finding")
+        for finding in findings:
+            if not STABLE_ID_RE.fullmatch(finding):
+                raise BoundaryProofError(f"{label}: invalid material finding ID")
+        artifact_refs = _object(bundle["artifact_refs"], f"{label}.artifact_refs")
+        required_roles = {"review-record", "review-log"}
+        if outcome in ("changes-requested", "blocked"):
+            required_roles.add("review-resolution")
+        if set(artifact_refs) != required_roles:
+            raise BoundaryProofError(f"{label}: review artifact roles mismatch")
+        if (outcome == "approved") != (not findings):
+            raise BoundaryProofError(f"{label}: material findings mismatch outcome")
+        artifact_snapshot_ids: list[str] = []
+        for role, raw_reference in artifact_refs.items():
+            reference_label = f"{label}.artifact_refs.{role}"
+            reference = _object(raw_reference, reference_label)
+            _exact_fields(reference, frozenset({"path", "identity"}), reference_label)
+            key = (
+                normalized_path(reference["path"], f"{reference_label}.path"),
+                identity(reference["identity"], f"{reference_label}.identity"),
+            )
+            artifact_snapshot_id = snapshot_by_ref.get(key)
+            if artifact_snapshot_id is None:
+                raise BoundaryProofError(f"{reference_label}: unknown snapshot reference")
+            artifact_snapshot = snapshots[artifact_snapshot_id]
+            if (
+                artifact_snapshot["source"] != "behavior-output"
+                or artifact_snapshot["artifact_role"] != "review-evidence"
+            ):
+                raise BoundaryProofError(f"{reference_label}: invalid review evidence")
+            artifact_snapshot_ids.append(artifact_snapshot_id)
+        if len(artifact_snapshot_ids) != len(set(artifact_snapshot_ids)):
+            raise BoundaryProofError(f"{label}: duplicate review artifact reference")
+        bundles[bundle_snapshot_id] = bundle
+        bundle_artifacts[bundle_snapshot_id] = tuple(artifact_snapshot_ids)
+
     false_blocking = 0
     correction_cycles = 0
     correction_used = False
@@ -1213,37 +1433,175 @@ def evaluate_simple_change_trace(payload: Mapping[str, Any]) -> SimpleTraceMetri
     expected_stage = "spec"
     expected_attempt = 1
     terminal = False
-    for index, event in enumerate(events):
+    produced: set[str] = set()
+    produced_paths: set[str] = set()
+    prior_authoring_output: dict[str, str] = {}
+    review_evidence_for_snapshot: dict[str, tuple[str, ...]] = {}
+    final_approved_feature: str | None = None
+    final_approved_test_spec: str | None = None
+
+    events = _records(record["events"], "events")
+    for index, raw_event in enumerate(events):
         label = f"events[{index}]"
-        _exact_fields(event, allowed_event_fields, label)
+        event = _object(raw_event, label)
+        _exact_fields(event, event_fields, label)
         stage = event["stage"]
         if stage not in allowed_stages:
             raise BoundaryProofError(f"{label}: unknown stage")
         attempt = event["attempt"]
         if attempt not in (1, 2):
             raise BoundaryProofError(f"{label}: invalid attempt")
+        if terminal:
+            raise BoundaryProofError(f"{label}: event follows terminal result")
         if (stage, attempt) != (expected_stage, expected_attempt):
             raise BoundaryProofError(
                 f"{label}: unsupported stage sequence; expected "
                 f"{expected_stage}#{expected_attempt}"
             )
+        inputs = snapshot_ids(event["input_snapshot_ids"], f"{label}.input_snapshot_ids")
+        outputs = snapshot_ids(event["output_snapshot_ids"], f"{label}.output_snapshot_ids")
+        if len(outputs) != 1:
+            raise BoundaryProofError(f"{label}: expected exactly one output snapshot")
+        if any(snapshot_id not in produced for snapshot_id in inputs):
+            raise BoundaryProofError(f"{label}: input snapshot used before production")
+        if any(snapshot_id in produced for snapshot_id in outputs):
+            raise BoundaryProofError(f"{label}: output snapshot already produced")
         structural = event["structural_result"]
         if structural not in ("pass", "fail"):
             raise BoundaryProofError(f"{label}: unknown structural result")
         observed = event["observed_result"]
         diagnostic = _nonempty_string(event["diagnostic_id"], f"{label}.diagnostic_id")
-        if terminal:
-            raise BoundaryProofError(f"{label}: event follows terminal result")
+        diagnostic_is_none = diagnostic == "none"
+        if not diagnostic_is_none and not STABLE_ID_RE.fullmatch(diagnostic):
+            raise BoundaryProofError(f"{label}: invalid diagnostic ID")
+        reviewed = event["reviewed_snapshot_id"]
         is_review = stage.endswith("-review")
+        output_id = outputs[0]
+
         if is_review:
+            expected_role = "feature-spec" if stage == "spec-review" else "test-spec"
+            if reviewed not in snapshots:
+                raise BoundaryProofError(f"{label}: unknown reviewed snapshot")
+            if reviewed not in inputs or inputs.count(reviewed) != 1:
+                raise BoundaryProofError(f"{label}: reviewed snapshot linkage mismatch")
+            if snapshots[reviewed]["artifact_role"] != expected_role:
+                raise BoundaryProofError(f"{label}: reviewed snapshot role mismatch")
+            if snapshots[output_id]["artifact_role"] != "review-evidence":
+                raise BoundaryProofError(f"{label}: review output role mismatch")
+            bundle = bundles.get(output_id)
+            if bundle is None:
+                raise BoundaryProofError(f"{label}: missing review bundle")
+            if (
+                bundle["reviewed_snapshot_id"] != reviewed
+                or bundle["outcome"] != observed
+            ):
+                raise BoundaryProofError(f"{label}: review bundle mismatch")
             if observed not in ("approved", "changes-requested", "blocked"):
                 raise BoundaryProofError(f"{label}: invalid review result")
-            if structural == "fail" and observed == "approved":
+            if structural == "pass" and observed == "approved":
+                if not diagnostic_is_none:
+                    raise BoundaryProofError(f"{label}: approved review requires no diagnostic")
+            elif observed in ("changes-requested", "blocked"):
+                if diagnostic_is_none:
+                    raise BoundaryProofError(f"{label}: non-approval requires diagnostic")
+                if structural == "pass":
+                    false_blocking += 1
+            else:
                 raise BoundaryProofError(f"{label}: failed structure cannot be approved")
-            if structural == "pass" and observed == "approved" and diagnostic != "none":
-                raise BoundaryProofError(f"{label}: approved review requires no diagnostic")
-            if structural == "pass" and observed != "approved":
-                false_blocking += 1
+        else:
+            if reviewed is not None:
+                raise BoundaryProofError(f"{label}: authoring cannot review a snapshot")
+            expected_role = "feature-spec" if stage == "spec" else "test-spec"
+            if snapshots[output_id]["artifact_role"] != expected_role:
+                raise BoundaryProofError(f"{label}: authoring output role mismatch")
+            if observed != "produced":
+                raise BoundaryProofError(f"{label}: authoring result must be produced")
+            if (structural == "pass") != diagnostic_is_none:
+                raise BoundaryProofError(f"{label}: authoring diagnostic mismatch")
+
+        if stage == "spec" and attempt == 1 and inputs:
+            raise BoundaryProofError(f"{label}: spec#1 must have no inputs")
+        if stage == "spec-review" and set(inputs) != {reviewed}:
+            raise BoundaryProofError(f"{label}: spec-review input mismatch")
+
+        if stage == "spec" and attempt == 2:
+            prior = prior_authoring_output.get("spec")
+            expected_inputs = (
+                {prior, *review_evidence_for_snapshot.get(prior or "", ())}
+                if prior is not None
+                else set()
+            )
+            if set(inputs) != expected_inputs:
+                raise BoundaryProofError(f"{label}: spec#2 input mismatch")
+            if snapshots[output_id]["path"] == snapshots[prior]["path"]:
+                raise BoundaryProofError(f"{label}: corrected output must use a distinct path")
+            if snapshots[output_id]["identity"] == snapshots[prior]["identity"]:
+                raise BoundaryProofError(f"{label}: corrected output must use a distinct identity")
+
+        if stage == "test-spec":
+            if final_approved_feature is None:
+                raise BoundaryProofError(f"{label}: approved feature input is missing")
+            expected_inputs = {
+                final_approved_feature,
+                *review_evidence_for_snapshot[final_approved_feature],
+            }
+            if attempt == 2:
+                prior = prior_authoring_output.get("test-spec")
+                if prior is None:
+                    raise BoundaryProofError(f"{label}: prior test-spec is missing")
+                expected_inputs.update(
+                    {prior, *review_evidence_for_snapshot.get(prior, ())}
+                )
+                if snapshots[output_id]["path"] == snapshots[prior]["path"]:
+                    raise BoundaryProofError(
+                        f"{label}: corrected output must use a distinct path"
+                    )
+                if snapshots[output_id]["identity"] == snapshots[prior]["identity"]:
+                    raise BoundaryProofError(
+                        f"{label}: corrected output must use a distinct identity"
+                    )
+            if set(inputs) != expected_inputs:
+                raise BoundaryProofError(f"{label}: test-spec input mismatch")
+
+        if stage == "test-spec-review":
+            if final_approved_feature is None:
+                raise BoundaryProofError(f"{label}: approved feature input is missing")
+            expected_inputs = {
+                reviewed,
+                final_approved_feature,
+                *review_evidence_for_snapshot[final_approved_feature],
+            }
+            if set(inputs) != expected_inputs:
+                raise BoundaryProofError(f"{label}: test-spec-review input mismatch")
+
+        expected_evidence_ids = set(inputs) | set(outputs)
+        if is_review:
+            expected_evidence_ids.update(bundle_artifacts[output_id])
+        expected_evidence = tuple(
+            sorted(
+                (
+                    snapshots[snapshot_id]["path"],
+                    snapshots[snapshot_id]["identity"],
+                )
+                for snapshot_id in expected_evidence_ids
+            )
+        )
+        if evidence_refs(event["evidence_refs"], f"{label}.evidence_refs") != expected_evidence:
+            raise BoundaryProofError(f"{label}: evidence reference union mismatch")
+
+        produced.add(output_id)
+        produced_paths.add(snapshots[output_id]["path"])
+        if is_review:
+            produced.update(bundle_artifacts[output_id])
+            produced_paths.update(
+                snapshots[snapshot_id]["path"]
+                for snapshot_id in bundle_artifacts[output_id]
+            )
+            review_evidence_for_snapshot[reviewed] = (
+                output_id,
+                *bundle_artifacts[output_id],
+            )
+
             if observed == "changes-requested":
                 if correction_used or attempt != 1:
                     raise BoundaryProofError(f"{label}: more than one correction")
@@ -1259,56 +1617,103 @@ def evaluate_simple_change_trace(payload: Mapping[str, Any]) -> SimpleTraceMetri
                 correction_cycles += 1
                 awaiting_correction_approval = None
                 if stage == "spec-review":
+                    final_approved_feature = reviewed
                     expected_stage, expected_attempt = "test-spec", 1
                 else:
+                    final_approved_test_spec = reviewed
                     terminal = True
             elif stage == "spec-review":
+                final_approved_feature = reviewed
                 expected_stage, expected_attempt = "test-spec", 1
             else:
+                final_approved_test_spec = reviewed
                 terminal = True
         else:
-            if observed != "produced":
-                raise BoundaryProofError(f"{label}: authoring result must be produced")
+            prior_authoring_output[stage] = output_id
             if structural == "fail":
                 terminal = True
             else:
                 expected_stage, expected_attempt = f"{stage}-review", attempt
+
     if not terminal:
         raise BoundaryProofError("simple_trace: incomplete terminal branch")
 
-    def inventory(value: Any, label: str) -> set[tuple[str, str]]:
+    def inventory(value: Any, label: str) -> dict[str, tuple[str, str]]:
         rows = _records(value, label)
-        result: set[tuple[str, str]] = set()
-        for index, row in enumerate(rows):
+        paths = [row.get("path") for row in rows]
+        if paths != sorted(paths):
+            raise BoundaryProofError(f"{label}: inventory is not path sorted")
+        result: dict[str, tuple[str, str]] = {}
+        for index, raw_row in enumerate(rows):
             item_label = f"{label}[{index}]"
-            _exact_fields(row, frozenset({"path", "artifact_kind"}), item_label)
-            path = _nonempty_string(row["path"], f"{item_label}.path")
+            row = _object(raw_row, item_label)
+            _exact_fields(row, inventory_fields, item_label)
+            path = normalized_path(row["path"], f"{item_label}.path")
             kind = row["artifact_kind"]
-            if kind not in (
-                "feature-spec",
-                "test-spec",
-                "review-evidence",
-                "other-lifecycle",
-                "non-lifecycle",
-            ):
+            if kind not in artifact_kinds:
                 raise BoundaryProofError(f"{item_label}: unknown artifact kind")
-            item = (path, kind)
-            if item in result:
-                raise BoundaryProofError(f"{item_label}: duplicate inventory entry")
-            result.add(item)
+            digest = identity(row["identity"], f"{item_label}.identity")
+            if path in result:
+                raise BoundaryProofError(f"{item_label}: duplicate inventory path")
+            result[path] = (kind, digest)
         return result
 
     before = inventory(record["before_inventory"], "before_inventory")
     after = inventory(record["after_inventory"], "after_inventory")
-    allowed_outputs = {
-        item for item in after - before if item[1] in {"feature-spec", "test-spec", "review-evidence"}
-    }
+    for snapshot_id in produced:
+        snapshot = snapshots[snapshot_id]
+        path = snapshot["path"]
+        expected_inventory = (
+            snapshot["artifact_role"],
+            snapshot["identity"],
+        )
+        if after.get(path) != expected_inventory:
+            raise BoundaryProofError(
+                f"after_inventory: produced snapshot missing or mismatched: {snapshot_id}"
+            )
+    new_paths = set(after) - set(before)
     new_universal = sum(
         1
-        for item in after - before - allowed_outputs
-        if item[1] != "non-lifecycle"
+        for path in new_paths - produced_paths
+        if after[path][0] != "non-lifecycle"
     )
-    return SimpleTraceMetrics(false_blocking, new_universal, correction_cycles)
+
+    applicable_only = False
+    if final_approved_feature is not None and final_approved_test_spec is not None:
+        if feature_models is None or proof_maps is None:
+            raise BoundaryProofError(
+                "simple_trace: normalized final feature and proof models are required"
+            )
+        feature = feature_models.get(final_approved_feature)
+        proof = proof_maps.get(final_approved_test_spec)
+        if feature is None or proof is None:
+            raise BoundaryProofError(
+                "simple_trace: final approved snapshot model is missing"
+            )
+        applicable_references = {
+            boundary_id
+            for entry in (*feature.core_dimensions, *feature.extensions)
+            if entry.applicability == "applicable"
+            for boundary_id in entry.boundary_ids
+        }
+        applicable_references.update(
+            interaction.interaction_id for interaction in feature.interactions
+        )
+        mapped_references = {
+            reference
+            for obligation in proof.proof_obligations
+            for reference in obligation.boundary_or_interaction_ids
+        }
+        applicable_only = mapped_references == applicable_references
+        if not applicable_only:
+            raise BoundaryProofError("simple_trace: applicable-only mapping mismatch")
+
+    return SimpleTraceMetrics(
+        false_blocking,
+        new_universal,
+        correction_cycles,
+        applicable_only,
+    )
 
 
 __all__ = [

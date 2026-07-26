@@ -128,7 +128,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: BFP-M1-CR1, BFP-M1-CR2, BFP-M1-CR3, BFP-M1-CR4, BFP-M1-CR5, BFP-M1-CR6, BFP-M1-CR7
-Open findings: BFP-M1-CR4, BFP-M1-CR7
+Open findings: None
 
 ### Review entry
 Review ID: spec-review-r3

@@ -6,7 +6,7 @@ Result: passed
 
 ## Commands
 
-- `python scripts/test-boundary-proof.py` — passed 13 tests.
+- `python scripts/test-boundary-proof.py` — passed 16 tests.
 - `python scripts/validate-boundary-proof.py --help` — passed.
 - `python -m py_compile scripts/boundary_proof_model.py scripts/validate-boundary-proof.py scripts/test-boundary-proof.py` — passed.
 - `python scripts/test-artifact-lifecycle-validator.py` — passed 156 tests.
@@ -22,6 +22,9 @@ synthetic report serialization.
 Direct negative proof covers malformed and duplicate example evidence IDs,
 unrelated known requirements, mixed-reference ownership, every incident label
 mutation, multi-trigger state, partial marker/scope combinations, missing,
-unsafe and stale evidence, invalid not-run blockers, mapping-order byte
-permutations, false blocking, extra lifecycle artifacts, and multiple
-correction cycles.
+unsafe, stale, symlinked, and untracked non-change-local evidence, invalid
+not-run blockers, mapping-order byte permutations, every trace diagnostic
+consistency class, use-before-production and reviewed-snapshot linkage,
+review-bundle roles, invalid evidence unions, terminal failures, identity-bound
+single correction, same-path correction, unproduced inventory content, extra
+lifecycle artifacts, and multiple correction cycles.

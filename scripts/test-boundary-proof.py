@@ -214,6 +214,80 @@ def _report(result: str = "pass") -> dict[str, object]:
     }
 
 
+def _set_all_report_evidence(
+    report: dict[str, object],
+    reference: dict[str, str],
+) -> None:
+    for row in report["checks"].values():  # type: ignore[union-attr]
+        row["evidence_refs"] = [reference]  # type: ignore[index]
+    for row in report["fixtures"]:  # type: ignore[union-attr]
+        row["evidence_refs"] = [reference]
+    for row in report["preservation_results"].values():  # type: ignore[union-attr]
+        row["evidence_refs"] = [reference]  # type: ignore[index]
+    report["adapter_parity"]["evidence_refs"] = [reference]  # type: ignore[index]
+
+
+def _simple_models(
+    payload: dict[str, object],
+    *,
+    feature_snapshot_ids: tuple[str, ...] = ("simple.snapshot.feature.v1",),
+    proof_snapshot_ids: tuple[str, ...] = ("simple.snapshot.test-spec.v1",),
+) -> tuple[dict[str, object], dict[str, object]]:
+    feature = normalize_feature_model(payload["feature_model"])  # type: ignore[arg-type]
+    proof = normalize_proof_map(payload["proof_map"], feature)  # type: ignore[arg-type]
+    return (
+        {snapshot_id: feature for snapshot_id in feature_snapshot_ids},
+        {snapshot_id: proof for snapshot_id in proof_snapshot_ids},
+    )
+
+
+def _evaluate_simple(
+    payload: dict[str, object],
+    *,
+    feature_snapshot_ids: tuple[str, ...] = ("simple.snapshot.feature.v1",),
+    proof_snapshot_ids: tuple[str, ...] = ("simple.snapshot.test-spec.v1",),
+) -> object:
+    feature_models, proof_maps = _simple_models(
+        payload,
+        feature_snapshot_ids=feature_snapshot_ids,
+        proof_snapshot_ids=proof_snapshot_ids,
+    )
+    return evaluate_simple_change_trace(
+        payload["simple_trace"],  # type: ignore[arg-type]
+        feature_models=feature_models,  # type: ignore[arg-type]
+        proof_maps=proof_maps,  # type: ignore[arg-type]
+    )
+
+
+def _snapshot_ref(trace: dict[str, object], snapshot_id: str) -> dict[str, str]:
+    snapshot = next(
+        row
+        for row in trace["snapshots"]  # type: ignore[union-attr]
+        if row["snapshot_id"] == snapshot_id
+    )
+    return {"path": snapshot["path"], "identity": snapshot["identity"]}
+
+
+def _sync_event_evidence(trace: dict[str, object], event: dict[str, object]) -> None:
+    snapshot_ids = set(event["input_snapshot_ids"]) | set(event["output_snapshot_ids"])  # type: ignore[arg-type]
+    if event["stage"].endswith("-review"):  # type: ignore[union-attr]
+        bundle_id = event["output_snapshot_ids"][0]  # type: ignore[index]
+        bundle = trace["review_bundles"][bundle_id]  # type: ignore[index]
+        for reference in bundle["artifact_refs"].values():
+            snapshot_ids.add(
+                next(
+                    row["snapshot_id"]
+                    for row in trace["snapshots"]  # type: ignore[union-attr]
+                    if row["path"] == reference["path"]
+                    and row["identity"] == reference["identity"]
+                )
+            )
+    event["evidence_refs"] = sorted(
+        (_snapshot_ref(trace, snapshot_id) for snapshot_id in snapshot_ids),
+        key=lambda reference: (reference["path"], reference["identity"]),
+    )
+
+
 class BoundaryProofModelTests(unittest.TestCase):
     def test_projection_is_closed_and_frozen(self) -> None:
         self.assertEqual(len(CORE_DIMENSION_IDS), 12)
@@ -617,45 +691,143 @@ class BoundaryProofModelTests(unittest.TestCase):
         with self.assertRaisesRegex(BoundaryProofError, "unknown blocking reason"):
             validate_capability_report(unknown_blocker)
 
+        with tempfile.TemporaryDirectory() as raw:
+            repository = Path(raw)
+            subprocess.run(
+                ["git", "init", "-q", str(repository)],
+                check=True,
+            )
+            tracked = repository / "tracked-proof.md"
+            tracked.write_text("tracked proof\n")
+            subprocess.run(
+                ["git", "-C", str(repository), "add", "tracked-proof.md"],
+                check=True,
+            )
+            tracked_reference = {
+                "path": "tracked-proof.md",
+                "identity": "sha256:"
+                + hashlib.sha256(tracked.read_bytes()).hexdigest(),
+            }
+            tracked_report = _report()
+            _set_all_report_evidence(tracked_report, tracked_reference)
+            validate_capability_report(
+                tracked_report,
+                repository_root=repository,
+            )
+
+            scratch = repository / "untracked-review-scratch.bin"
+            scratch.write_bytes(b"caller scratch")
+            scratch_reference = {
+                "path": "untracked-review-scratch.bin",
+                "identity": "sha256:"
+                + hashlib.sha256(scratch.read_bytes()).hexdigest(),
+            }
+            untracked = _report()
+            _set_all_report_evidence(untracked, scratch_reference)
+            with self.assertRaisesRegex(
+                BoundaryProofError,
+                "tracked or current change-local",
+            ):
+                validate_capability_report(untracked, repository_root=repository)
+
+            change_local = (
+                repository
+                / "docs"
+                / "changes"
+                / "2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills"
+                / "proof.md"
+            )
+            change_local.parent.mkdir(parents=True)
+            change_local.write_text("change-local proof\n")
+            change_reference = {
+                "path": change_local.relative_to(repository).as_posix(),
+                "identity": "sha256:"
+                + hashlib.sha256(change_local.read_bytes()).hexdigest(),
+            }
+            local_report = _report()
+            _set_all_report_evidence(local_report, change_reference)
+            validate_capability_report(local_report, repository_root=repository)
+
+            real = repository / "real"
+            real.mkdir()
+            linked_file = real / "proof.md"
+            linked_file.write_text("linked proof\n")
+            (repository / "linked").symlink_to(real, target_is_directory=True)
+            linked_reference = {
+                "path": "linked/proof.md",
+                "identity": "sha256:"
+                + hashlib.sha256(linked_file.read_bytes()).hexdigest(),
+            }
+            linked_report = _report()
+            _set_all_report_evidence(linked_report, linked_reference)
+            with self.assertRaisesRegex(BoundaryProofError, "non-symlink"):
+                validate_capability_report(linked_report, repository_root=repository)
+
     def test_simple_fixture_is_compact_and_requires_at_most_one_cycle(self) -> None:
         payload = json.loads((FIXTURES / "simple-change.json").read_text())
         feature = normalize_feature_model(payload["feature_model"])
-        normalize_proof_map(payload["proof_map"], feature)
+        proof = normalize_proof_map(payload["proof_map"], feature)
         self.assertEqual(len(feature.core_dimensions), 12)
-        metrics = evaluate_simple_change_trace(payload["simple_trace"])
+        metrics = evaluate_simple_change_trace(
+            payload["simple_trace"],
+            feature_models={"simple.snapshot.feature.v1": feature},
+            proof_maps={"simple.snapshot.test-spec.v1": proof},
+        )
         self.assertEqual(metrics.new_universal_artifact_count, 0)
         self.assertEqual(metrics.false_blocking_count, 0)
         self.assertLessEqual(metrics.structure_only_correction_cycles, 1)
-
-        one_correction = copy.deepcopy(payload["simple_trace"])
-        one_correction["events"] = [  # type: ignore[index]
-            {"stage": "spec", "attempt": 1, "structural_result": "pass", "observed_result": "produced", "diagnostic_id": "none"},
-            {"stage": "spec-review", "attempt": 1, "structural_result": "fail", "observed_result": "changes-requested", "diagnostic_id": "missing-boundary"},
-            {"stage": "spec", "attempt": 2, "structural_result": "pass", "observed_result": "produced", "diagnostic_id": "none"},
-            {"stage": "spec-review", "attempt": 2, "structural_result": "pass", "observed_result": "approved", "diagnostic_id": "none"},
-            {"stage": "test-spec", "attempt": 1, "structural_result": "pass", "observed_result": "produced", "diagnostic_id": "none"},
-            {"stage": "test-spec-review", "attempt": 1, "structural_result": "pass", "observed_result": "approved", "diagnostic_id": "none"},
-        ]
-        self.assertEqual(
-            evaluate_simple_change_trace(one_correction).structure_only_correction_cycles,
-            1,
-        )
-
-        two_corrections = copy.deepcopy(one_correction)
-        two_corrections["events"][-1].update(  # type: ignore[index]
-            structural_result="fail",
-            observed_result="changes-requested",
-            diagnostic_id="missing-proof",
-        )
-        with self.assertRaisesRegex(BoundaryProofError, "more than one correction"):
-            evaluate_simple_change_trace(two_corrections)
+        self.assertTrue(metrics.applicable_only_mapping)
 
         false_block = copy.deepcopy(payload["simple_trace"])
         false_block["events"][1].update(  # type: ignore[index]
             observed_result="blocked",
-            diagnostic_id="review-blocked",
+            diagnostic_id="simple.diagnostic.review-blocked",
+        )
+        false_block["review_bundles"]["simple.snapshot.spec-review.bundle.v1"].update(  # type: ignore[index]
+            outcome="blocked",
+            material_finding_ids=["simple.finding.blocked"],
+        )
+        false_block["snapshots"].append(  # type: ignore[union-attr]
+            {
+                "snapshot_id": "simple.snapshot.spec-review.resolution.v1",
+                "source": "behavior-output",
+                "artifact_role": "review-evidence",
+                "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-resolution.md",
+                "identity": "sha256:" + "9" * 64,
+            }
+        )
+        false_block["review_bundles"]["simple.snapshot.spec-review.bundle.v1"][  # type: ignore[index]
+            "artifact_refs"
+        ]["review-resolution"] = _snapshot_ref(  # type: ignore[index]
+            false_block,
+            "simple.snapshot.spec-review.resolution.v1",
         )
         false_block["events"] = false_block["events"][:2]  # type: ignore[index]
+        _sync_event_evidence(false_block, false_block["events"][1])  # type: ignore[index]
+        allowed_paths = {
+            snapshot_id
+            for event in false_block["events"]  # type: ignore[union-attr]
+            for snapshot_id in event["output_snapshot_ids"]
+        }
+        allowed_paths.update(
+            (
+                "simple.snapshot.spec-review.record.v1",
+                "simple.snapshot.spec-review.log.v1",
+                "simple.snapshot.spec-review.resolution.v1",
+            )
+        )
+        false_block["after_inventory"] = sorted(  # type: ignore[index]
+            (
+                {
+                    "path": snapshot["path"],
+                    "artifact_kind": snapshot["artifact_role"],
+                    "identity": snapshot["identity"],
+                }
+                for snapshot in false_block["snapshots"]  # type: ignore[union-attr]
+                if snapshot["snapshot_id"] in allowed_paths
+            ),
+            key=lambda row: row["path"],
+        )
         self.assertEqual(
             evaluate_simple_change_trace(false_block).false_blocking_count,
             1,
@@ -666,12 +838,477 @@ class BoundaryProofModelTests(unittest.TestCase):
             {
                 "path": "docs/changes/example/new-required.md",
                 "artifact_kind": "other-lifecycle",
+                "identity": "sha256:" + "a" * 64,
             }
         )
+        universal["after_inventory"].sort(key=lambda row: row["path"])  # type: ignore[union-attr]
         self.assertEqual(
-            evaluate_simple_change_trace(universal).new_universal_artifact_count,
+            evaluate_simple_change_trace(
+                universal,
+                feature_models={"simple.snapshot.feature.v1": feature},
+                proof_maps={"simple.snapshot.test-spec.v1": proof},
+            ).new_universal_artifact_count,
             1,
         )
+
+        extra_feature = copy.deepcopy(payload["simple_trace"])
+        extra_feature["after_inventory"].append(  # type: ignore[union-attr]
+            {
+                "path": "docs/changes/example/unproduced-feature.md",
+                "artifact_kind": "feature-spec",
+                "identity": "sha256:" + "b" * 64,
+            }
+        )
+        extra_feature["after_inventory"].sort(key=lambda row: row["path"])  # type: ignore[union-attr]
+        self.assertEqual(
+            evaluate_simple_change_trace(
+                extra_feature,
+                feature_models={"simple.snapshot.feature.v1": feature},
+                proof_maps={"simple.snapshot.test-spec.v1": proof},
+            ).new_universal_artifact_count,
+            1,
+        )
+
+    def test_simple_trace_rejects_invalid_diagnostics_and_linkage(self) -> None:
+        payload = json.loads((FIXTURES / "simple-change.json").read_text())
+        cases = []
+
+        authoring_diagnostic = copy.deepcopy(payload)
+        authoring_diagnostic["simple_trace"]["events"][0][
+            "diagnostic_id"
+        ] = "simple.diagnostic.unexpected"
+        cases.append((authoring_diagnostic, "authoring diagnostic mismatch"))
+
+        review_without_diagnostic = copy.deepcopy(payload)
+        review_without_diagnostic["simple_trace"]["events"][1].update(
+            observed_result="blocked",
+            diagnostic_id="none",
+        )
+        review_without_diagnostic["simple_trace"]["snapshots"].append(
+            {
+                "snapshot_id": "simple.snapshot.spec-review.resolution.no-diagnostic",
+                "source": "behavior-output",
+                "artifact_role": "review-evidence",
+                "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-resolution-no-diagnostic.md",
+                "identity": "sha256:" + "e" * 64,
+            }
+        )
+        no_diagnostic_bundle = review_without_diagnostic["simple_trace"][
+            "review_bundles"
+        ]["simple.snapshot.spec-review.bundle.v1"]
+        no_diagnostic_bundle.update(
+            outcome="blocked",
+            material_finding_ids=["simple.finding.no-diagnostic"],
+        )
+        no_diagnostic_bundle["artifact_refs"][
+            "review-resolution"
+        ] = _snapshot_ref(
+            review_without_diagnostic["simple_trace"],
+            "simple.snapshot.spec-review.resolution.no-diagnostic",
+        )
+        _sync_event_evidence(
+            review_without_diagnostic["simple_trace"],
+            review_without_diagnostic["simple_trace"]["events"][1],
+        )
+        cases.append(
+            (
+                review_without_diagnostic,
+                "non-approval requires diagnostic",
+            )
+        )
+
+        authoring_failure_without_diagnostic = copy.deepcopy(payload)
+        authoring_failure_without_diagnostic["simple_trace"]["events"][0][
+            "structural_result"
+        ] = "fail"
+        authoring_failure_without_diagnostic["simple_trace"]["events"] = (
+            authoring_failure_without_diagnostic["simple_trace"]["events"][:1]
+        )
+        cases.append(
+            (authoring_failure_without_diagnostic, "authoring diagnostic mismatch")
+        )
+
+        broken_review_link = copy.deepcopy(payload)
+        broken_review_link["simple_trace"]["events"][1][
+            "reviewed_snapshot_id"
+        ] = "simple.snapshot.test-spec.v1"
+        cases.append((broken_review_link, "used before production|linkage mismatch"))
+
+        bad_evidence_union = copy.deepcopy(payload)
+        bad_evidence_union["simple_trace"]["events"][2]["evidence_refs"] = (
+            bad_evidence_union["simple_trace"]["events"][2]["evidence_refs"][:-1]
+        )
+        cases.append((bad_evidence_union, "evidence reference union mismatch"))
+
+        for candidate, message in cases:
+            with self.subTest(message=message):
+                with self.assertRaisesRegex(BoundaryProofError, message):
+                    _evaluate_simple(candidate)
+
+        failed_approved = copy.deepcopy(payload)
+        failed_approved["simple_trace"]["events"][1].update(
+            structural_result="fail",
+            observed_result="approved",
+            diagnostic_id="simple.diagnostic.structural-failure",
+        )
+        with self.assertRaisesRegex(
+            BoundaryProofError,
+            "approved review requires no diagnostic|failed structure",
+        ):
+            _evaluate_simple(failed_approved)
+
+        duplicate_review_input = copy.deepcopy(payload)
+        duplicate_review_input["simple_trace"]["events"][1][
+            "input_snapshot_ids"
+        ].append("simple.snapshot.feature.v1")
+        with self.assertRaisesRegex(
+            BoundaryProofError,
+            "duplicate snapshot ID|duplicate values",
+        ):
+            _evaluate_simple(duplicate_review_input)
+
+        inventory_mismatch = copy.deepcopy(payload)
+        inventory_mismatch["simple_trace"]["after_inventory"][0][
+            "identity"
+        ] = "sha256:" + "f" * 64
+        with self.assertRaisesRegex(
+            BoundaryProofError,
+            "produced snapshot missing or mismatched",
+        ):
+            _evaluate_simple(inventory_mismatch)
+
+        missing_final_model = copy.deepcopy(payload)
+        with self.assertRaisesRegex(
+            BoundaryProofError,
+            "final approved snapshot model is missing",
+        ):
+            evaluate_simple_change_trace(
+                missing_final_model["simple_trace"],
+                feature_models={},
+                proof_maps={},
+            )
+
+    def test_simple_trace_accepts_closed_terminal_failure_branches(self) -> None:
+        payload = json.loads((FIXTURES / "simple-change.json").read_text())
+
+        authoring_failure = copy.deepcopy(payload["simple_trace"])
+        authoring_failure["events"][0].update(
+            structural_result="fail",
+            diagnostic_id="simple.diagnostic.authoring-failure",
+        )
+        authoring_failure["events"] = authoring_failure["events"][:1]
+        first_output = "simple.snapshot.feature.v1"
+        authoring_failure["after_inventory"] = [
+            {
+                "path": _snapshot_ref(authoring_failure, first_output)["path"],
+                "artifact_kind": "feature-spec",
+                "identity": _snapshot_ref(authoring_failure, first_output)["identity"],
+            }
+        ]
+        authoring_metrics = evaluate_simple_change_trace(authoring_failure)
+        self.assertFalse(authoring_metrics.applicable_only_mapping)
+        self.assertEqual(authoring_metrics.false_blocking_count, 0)
+
+        blocked = copy.deepcopy(payload["simple_trace"])
+        blocked["snapshots"].append(
+            {
+                "snapshot_id": "simple.snapshot.spec-review.resolution.blocked",
+                "source": "behavior-output",
+                "artifact_role": "review-evidence",
+                "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-11111111111111111111111111111111/artifacts/review-evidence/spec-review-resolution-blocked.md",
+                "identity": "sha256:" + "f" * 64,
+            }
+        )
+        bundle = blocked["review_bundles"]["simple.snapshot.spec-review.bundle.v1"]
+        bundle.update(
+            outcome="blocked",
+            material_finding_ids=["simple.finding.structural-block"],
+        )
+        bundle["artifact_refs"]["review-resolution"] = _snapshot_ref(
+            blocked,
+            "simple.snapshot.spec-review.resolution.blocked",
+        )
+        blocked["events"][1].update(
+            structural_result="fail",
+            observed_result="blocked",
+            diagnostic_id="simple.diagnostic.structural-block",
+        )
+        _sync_event_evidence(blocked, blocked["events"][1])
+        blocked["events"] = blocked["events"][:2]
+        blocked_with_unproduced_inventory = copy.deepcopy(blocked)
+        blocked_with_unproduced_inventory["after_inventory"].append(
+            {
+                "path": _snapshot_ref(
+                    blocked_with_unproduced_inventory,
+                    "simple.snapshot.spec-review.resolution.blocked",
+                )["path"],
+                "artifact_kind": "review-evidence",
+                "identity": _snapshot_ref(
+                    blocked_with_unproduced_inventory,
+                    "simple.snapshot.spec-review.resolution.blocked",
+                )["identity"],
+            }
+        )
+        blocked_with_unproduced_inventory["after_inventory"].sort(
+            key=lambda row: row["path"]
+        )
+        self.assertGreater(
+            evaluate_simple_change_trace(
+                blocked_with_unproduced_inventory
+            ).new_universal_artifact_count,
+            0,
+        )
+        produced_ids = {
+            "simple.snapshot.feature.v1",
+            "simple.snapshot.spec-review.bundle.v1",
+            "simple.snapshot.spec-review.record.v1",
+            "simple.snapshot.spec-review.log.v1",
+            "simple.snapshot.spec-review.resolution.blocked",
+        }
+        blocked["after_inventory"] = sorted(
+            (
+                {
+                    "path": snapshot["path"],
+                    "artifact_kind": snapshot["artifact_role"],
+                    "identity": snapshot["identity"],
+                }
+                for snapshot in blocked["snapshots"]
+                if snapshot["snapshot_id"] in produced_ids
+            ),
+            key=lambda row: row["path"],
+        )
+        blocked_metrics = evaluate_simple_change_trace(blocked)
+        self.assertEqual(blocked_metrics.false_blocking_count, 0)
+        self.assertEqual(blocked_metrics.new_universal_artifact_count, 0)
+
+    def test_simple_trace_accepts_exactly_one_identity_bound_correction(
+        self,
+    ) -> None:
+        payload = json.loads((FIXTURES / "simple-change.json").read_text())
+        trace = payload["simple_trace"]
+        run_root = (
+            "docs/changes/"
+            "2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/"
+            "evidence/simple-change/runs/run-11111111111111111111111111111111/"
+            "artifacts"
+        )
+
+        additions = [
+            (
+                "simple.snapshot.spec-review.resolution.v1",
+                "review-evidence",
+                f"{run_root}/review-evidence/spec-review-resolution.md",
+                "9",
+            ),
+            (
+                "simple.snapshot.feature.v2",
+                "feature-spec",
+                f"{run_root}/feature-spec/feature-v2.md",
+                "a",
+            ),
+            (
+                "simple.snapshot.spec-review.bundle.v2",
+                "review-evidence",
+                f"{run_root}/review-evidence/spec-review-bundle-v2.json",
+                "b",
+            ),
+            (
+                "simple.snapshot.spec-review.record.v2",
+                "review-evidence",
+                f"{run_root}/review-evidence/spec-review-record-v2.md",
+                "c",
+            ),
+            (
+                "simple.snapshot.spec-review.log.v2",
+                "review-evidence",
+                f"{run_root}/review-evidence/spec-review-log-v2.md",
+                "d",
+            ),
+        ]
+        for snapshot_id, role, path, digit in additions:
+            trace["snapshots"].append(
+                {
+                    "snapshot_id": snapshot_id,
+                    "source": "behavior-output",
+                    "artifact_role": role,
+                    "path": path,
+                    "identity": "sha256:" + digit * 64,
+                }
+            )
+
+        first_bundle = trace["review_bundles"][
+            "simple.snapshot.spec-review.bundle.v1"
+        ]
+        first_bundle.update(
+            outcome="changes-requested",
+            material_finding_ids=["simple.finding.missing-boundary"],
+        )
+        first_bundle["artifact_refs"]["review-resolution"] = _snapshot_ref(
+            trace,
+            "simple.snapshot.spec-review.resolution.v1",
+        )
+        trace["review_bundles"]["simple.snapshot.spec-review.bundle.v2"] = {
+            "review_id": "simple.review.spec.v2",
+            "outcome": "approved",
+            "reviewed_snapshot_id": "simple.snapshot.feature.v2",
+            "material_finding_ids": [],
+            "artifact_refs": {
+                "review-record": _snapshot_ref(
+                    trace,
+                    "simple.snapshot.spec-review.record.v2",
+                ),
+                "review-log": _snapshot_ref(
+                    trace,
+                    "simple.snapshot.spec-review.log.v2",
+                ),
+            },
+        }
+
+        first_review = trace["events"][1]
+        first_review.update(
+            structural_result="fail",
+            observed_result="changes-requested",
+            diagnostic_id="simple.diagnostic.missing-boundary",
+        )
+        _sync_event_evidence(trace, first_review)
+
+        spec2 = {
+            "stage": "spec",
+            "attempt": 2,
+            "input_snapshot_ids": [
+                "simple.snapshot.feature.v1",
+                "simple.snapshot.spec-review.bundle.v1",
+                "simple.snapshot.spec-review.record.v1",
+                "simple.snapshot.spec-review.log.v1",
+                "simple.snapshot.spec-review.resolution.v1",
+            ],
+            "reviewed_snapshot_id": None,
+            "output_snapshot_ids": ["simple.snapshot.feature.v2"],
+            "structural_result": "pass",
+            "observed_result": "produced",
+            "diagnostic_id": "none",
+            "evidence_refs": [],
+        }
+        spec_review2 = {
+            "stage": "spec-review",
+            "attempt": 2,
+            "input_snapshot_ids": ["simple.snapshot.feature.v2"],
+            "reviewed_snapshot_id": "simple.snapshot.feature.v2",
+            "output_snapshot_ids": ["simple.snapshot.spec-review.bundle.v2"],
+            "structural_result": "pass",
+            "observed_result": "approved",
+            "diagnostic_id": "none",
+            "evidence_refs": [],
+        }
+        _sync_event_evidence(trace, spec2)
+        _sync_event_evidence(trace, spec_review2)
+        trace["events"][2:2] = [spec2, spec_review2]
+
+        test_spec = trace["events"][4]
+        test_spec["input_snapshot_ids"] = [
+            "simple.snapshot.feature.v2",
+            "simple.snapshot.spec-review.bundle.v2",
+            "simple.snapshot.spec-review.record.v2",
+            "simple.snapshot.spec-review.log.v2",
+        ]
+        _sync_event_evidence(trace, test_spec)
+        test_review = trace["events"][5]
+        test_review["input_snapshot_ids"] = [
+            "simple.snapshot.test-spec.v1",
+            "simple.snapshot.feature.v2",
+            "simple.snapshot.spec-review.bundle.v2",
+            "simple.snapshot.spec-review.record.v2",
+            "simple.snapshot.spec-review.log.v2",
+        ]
+        _sync_event_evidence(trace, test_review)
+
+        trace["after_inventory"] = sorted(
+            (
+                {
+                    "path": snapshot["path"],
+                    "artifact_kind": snapshot["artifact_role"],
+                    "identity": snapshot["identity"],
+                }
+                for snapshot in trace["snapshots"]
+            ),
+            key=lambda row: row["path"],
+        )
+        metrics = _evaluate_simple(
+            payload,
+            feature_snapshot_ids=(
+                "simple.snapshot.feature.v1",
+                "simple.snapshot.feature.v2",
+            ),
+        )
+        self.assertEqual(metrics.structure_only_correction_cycles, 1)
+        self.assertTrue(metrics.applicable_only_mapping)
+
+        same_path = copy.deepcopy(payload)
+        next(
+            snapshot
+            for snapshot in same_path["simple_trace"]["snapshots"]
+            if snapshot["snapshot_id"] == "simple.snapshot.feature.v2"
+        )["path"] = _snapshot_ref(
+            same_path["simple_trace"],
+            "simple.snapshot.feature.v1",
+        )["path"]
+        with self.assertRaisesRegex(
+            BoundaryProofError,
+            "duplicate snapshot path|distinct path",
+        ):
+            _evaluate_simple(
+                same_path,
+                feature_snapshot_ids=(
+                    "simple.snapshot.feature.v1",
+                    "simple.snapshot.feature.v2",
+                ),
+            )
+
+        second_correction = copy.deepcopy(payload)
+        second_trace = second_correction["simple_trace"]
+        second_trace["snapshots"].append(
+            {
+                "snapshot_id": "simple.snapshot.test-spec-review.resolution.v1",
+                "source": "behavior-output",
+                "artifact_role": "review-evidence",
+                "path": f"{run_root}/review-evidence/test-spec-review-resolution.md",
+                "identity": "sha256:" + "e" * 64,
+            }
+        )
+        second_bundle = second_trace["review_bundles"][
+            "simple.snapshot.test-spec-review.bundle.v1"
+        ]
+        second_bundle.update(
+            outcome="changes-requested",
+            material_finding_ids=["simple.finding.missing-proof"],
+        )
+        second_bundle["artifact_refs"]["review-resolution"] = _snapshot_ref(
+            second_trace,
+            "simple.snapshot.test-spec-review.resolution.v1",
+        )
+        second_event = second_trace["events"][-1]
+        second_event.update(
+            structural_result="fail",
+            observed_result="changes-requested",
+            diagnostic_id="simple.diagnostic.missing-proof",
+        )
+        _sync_event_evidence(second_trace, second_event)
+        second_trace["after_inventory"].append(
+            {
+                "path": f"{run_root}/review-evidence/test-spec-review-resolution.md",
+                "artifact_kind": "review-evidence",
+                "identity": "sha256:" + "e" * 64,
+            }
+        )
+        second_trace["after_inventory"].sort(key=lambda row: row["path"])
+        with self.assertRaisesRegex(BoundaryProofError, "more than one correction"):
+            _evaluate_simple(
+                second_correction,
+                feature_snapshot_ids=(
+                    "simple.snapshot.feature.v1",
+                    "simple.snapshot.feature.v2",
+                ),
+            )
 
     def test_validator_help_and_fixture_validation(self) -> None:
         result = subprocess.run(
