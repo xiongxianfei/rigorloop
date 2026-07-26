@@ -1158,7 +1158,10 @@ def _string_array_schema() -> dict[str, object]:
 def _feature_model_schema() -> dict[str, object]:
     boundary_row = _closed_object_schema(
         {
-            "dimension_id": {"type": "string"},
+            "dimension_id": {
+                "type": "string",
+                "enum": list(CORE_DIMENSION_IDS),
+            },
             "applicability": {
                 "type": "string",
                 "enum": ["applicable", "not-applicable"],
