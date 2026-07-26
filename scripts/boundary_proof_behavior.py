@@ -1538,29 +1538,42 @@ def _validate_review_payload(
             if isinstance(record, str):
                 print(record, file=sys.stderr)
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
-    record_required = (
-        f"Review ID: {review_id}",
-        f"Stage: {stage}",
-        "Status: approved",
-        f"Reviewed artifact identity: {artifact_identity}",
-        "Material findings: none",
-        "Recording status: recorded",
-    )
-    log_required = (
-        f"Review ID: {review_id}",
-        f"Stage: {stage}",
-        "Status: approved",
-        f"Reviewed artifact identity: {artifact_identity}",
-        "Material findings: none",
-    )
-    if any(value not in record for value in record_required) or any(
-        value not in log for value in log_required
+    def metadata(markdown: str, label: str) -> str | None:
+        match = re.search(
+            rf"(?im)^\s*(?:[-*]\s*)?(?:\*\*)?{re.escape(label)}"
+            rf"(?:\*\*)?\s*:\s*(.+?)\s*$",
+            markdown,
+        )
+        if match is None:
+            return None
+        return match.group(1).strip().rstrip("  ").strip("`* ")
+
+    required = {
+        "Review ID": review_id,
+        "Stage": stage,
+        "Status": "approved",
+        "Reviewed artifact identity": artifact_identity,
+        "Material findings": "none",
+    }
+    record_values = {label: metadata(record, label) for label in required}
+    log_values = {label: metadata(log, label) for label in required}
+    record_values["Recording status"] = metadata(record, "Recording status")
+    if (
+        any(
+            (str(record_values[label]).lower() if label == "Material findings" else record_values[label])
+            != expected
+            for label, expected in required.items()
+        )
+        or any(
+            (str(log_values[label]).lower() if label == "Material findings" else log_values[label])
+            != expected
+            for label, expected in required.items()
+        )
+        or record_values["Recording status"] != "recorded"
     ):
         if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
-            missing_record = [value for value in record_required if value not in record]
-            missing_log = [value for value in log_required if value not in log]
             print(
-                f"review-fields:{stage}:record={missing_record!r}:log={missing_log!r}",
+                f"review-fields:{stage}:record={record_values!r}:log={log_values!r}",
                 file=sys.stderr,
             )
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
