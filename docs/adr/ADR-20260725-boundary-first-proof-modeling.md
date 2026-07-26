@@ -2,7 +2,7 @@
 
 ## Status
 
-proposed
+accepted
 
 ## Context
 
@@ -177,9 +177,9 @@ the validated report identity without rewriting the report.
 
 ## Follow-up
 
-- Architecture-review R4 accepted the original amendment. The expanded
-  transport, diagnostic, checkpoint-phase, publication, and recovery contract
-  remains proposed until focused architecture rereview.
+- Architecture-review R4 accepted the original amendment. Architecture-review
+  R15 accepted the expanded transport, diagnostic, checkpoint-phase,
+  publication, and recovery contract.
 - The execution plan must order typed model and fixtures before skill rollout.
 - The test spec must map R28-R28z and R56-R56q before implementation.
 - The revised plan begins with child-runtime sandbox and credential-isolation
