@@ -2,7 +2,7 @@
 
 ## Status
 
-- draft
+- approved
 
 ## Related artifacts
 
@@ -1655,15 +1655,13 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Readiness
 
-The retained canonical package is approved. The expanded hermetic
-behavior-harness amendment is draft pending focused architecture review.
+The retained canonical package and expanded hermetic behavior-harness
+amendment are approved. Architecture-review R15 accepted the transport,
+diagnostic/checkpoint, stage-output reconciliation, global publication
+ownership, and discard-only recovery projection.
 Architecture-review R4 accepted the original standalone harness,
 child-runtime trust boundary, isolated workspace, invocation profile, and
-immutable publication flow. The current revision adds the approved R28y
-transport policy, diagnostic/checkpoint model, stage-output reconciliation,
-global publication ownership, and discard-only recovery contract; downstream
-plan and test-spec reliance on those additions requires the new approving
-architecture review.
+immutable publication flow.
 
 ADR `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md` records the accepted durable consolidation and supersedes the three earlier profile ADRs; their descriptions below are historical context, not current writable-mechanism authority under the approved spec.
 

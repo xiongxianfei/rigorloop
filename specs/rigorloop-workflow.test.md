@@ -49,13 +49,13 @@ Boundary model scope: R28-R28z
 | Input | Path | Status / Review state | Identity |
 | --- | --- | --- | --- |
 | Feature spec | `specs/rigorloop-workflow.md` | approved by focused spec-review R36 | `sha256:e7b256e1d3e48335bd4fd88275ccf89375bc3d99e4089e252c03086b387b4f04` |
-| Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion to the draft workflow amendment | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r36.md` | approved; architecture synchronization required | `sha256:273e1b5dd55f02b5a838083e8247d93940b118cb3c87a49bb464cded02f0a8b2` |
-| Architecture | `docs/architecture/system/architecture.md` | draft; focused architecture-review pending | pending after approval |
-| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r13.md` | approved | `sha256:47571b7555fe6470de8e78a9c8b180c09fbdb627e8e641ab1c6915e0d9044288` |
-| ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | proposed amendment | pending after acceptance |
+| Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
+| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r36.md` | approved; architecture synchronized by R15 | `sha256:273e1b5dd55f02b5a838083e8247d93940b118cb3c87a49bb464cded02f0a8b2` |
+| Architecture | `docs/architecture/system/architecture.md` | approved by focused architecture-review R15 | `sha256:24a958b5147f36e979d9bd61e4911005d7b625a574c9ce54e8529eb23f5ba4d7` |
+| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r15.md` | approved | `sha256:10887b1ca4319906873651ac3c0ba922cb1bd4fbba9ff6d62fb8d60a44b61eef` |
+| ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted by architecture-review R15 | `sha256:f2d6653d93382474b2a4e76b381b00d900dede8038358f51e699b3b634831a69` |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted | `sha256:f757569f2bbe986f957f8a2532a6d9bd268695ff0f271779dce270b1bdb7b690` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; architecture-review R15 is the next gate | `sha256:4f3e5a9bf00a334aa24b19f02657f2f82e8a7651540c7f88485834af4f8b58fb` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; test-spec-review R13 is the next gate | `sha256:c3534c03de0c5f22811d9aa5fbe5f5ea6c71760b2000000acf789117d7cbd683` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md` | approved | `sha256:d38b5b63b05239d7b34df4e15727f2449d3e9ce263dac07ba754e1578a5ee6fb` |
 
 ## Testing strategy

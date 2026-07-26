@@ -1077,7 +1077,13 @@ Validation evidence: the component view now separates the acquired kernel
 lock from the durable run-bound lease, routes global discovery/recovery while
 locked, sends runtime observations through transport reconciliation, and shows
 staged run -> fsynced prepared receipt -> immutable run -> atomic pointer;
-pending architecture-review-r15.
+architecture-review-r15 approved the corrected package.
+
+### architecture-review-r15
+
+No new material findings. R15 independently confirmed BFP-AR14-1 resolved and
+approved the canonical architecture amendment and ADR-20260725 for plan and
+test-spec reliance.
 
 ### spec-review-r19
 
