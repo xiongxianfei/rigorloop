@@ -1419,7 +1419,7 @@ The closed operation registry is:
 | `preservation-review-recording` | skill behavior harness | canonical preservation manifest and every reference selected by it | review-recording result | `preservation.review-recording` |
 | `preservation-isolation` | skill behavior harness | canonical preservation manifest and every reference selected by it | isolation result | `preservation.isolation` |
 | `preservation-handoff` | skill behavior harness | canonical preservation manifest and every reference selected by it | handoff result | `preservation.handoff` |
-| `behavior-implementation-manifest` | boundary model validator | exact standalone harness components, five participating skill packages, applicable repository instructions, contract inputs, and closed invocation profile below | exact `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json` | `support.behavior-implementation-manifest` |
+| `behavior-implementation-manifest` | boundary model validator | exact standalone harness components, five participating skill packages, applicable repository instructions, contract inputs, closed invocation profile, and bounded recorded runtime attestation below | exact `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json` | `support.behavior-implementation-manifest` |
 | `simple-change-behavior` | standalone simple-change behavior harness and evaluator | exact candidate corpus, current five participating skill packages, current behavior-implementation manifest, and invocation-owned pre-run HEAD | immutable run, atomic current pointer, behavior-output snapshots, trace, and metric result | `simple_change` |
 | `canonical-skill-resource-manifest` | skill validator | current exact eight R28m skills and every mapped boundary-proof resource | exact `docs/changes/<change-id>/evidence/canonical-skill-resource-manifest.json` | `support.canonical-skill-resource-manifest` |
 | `adapter-parity` | adapter validator | exact current `scripts/adapter_distribution.py`, `scripts/build-adapters.py`, `scripts/validate-adapters.py`, `dist/adapters/manifest.yaml`, and canonical skill/resource manifest | durable current four-surface parity manifest set | `adapter_parity` |
@@ -1476,7 +1476,7 @@ The canonical behavior-implementation manifest path is exactly
 `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json`.
 It contains exactly `manifest_id`, `harness_component_refs`,
 `skill_package_refs`, `instruction_refs`, `contract_refs`, and
-`invocation_profile`.
+`invocation_profile`, and `runtime_attestation`.
 `manifest_id` is `boundary-behavior-implementation-v1`.
 
 `harness_component_refs` is the path-sorted current reference list containing
@@ -1535,7 +1535,14 @@ specs/skill-contract.test.md
 `agent_runtime` is exactly `codex`.
 `runtime_version` is the trimmed single-line version emitted by the exact
 runtime executable used for the child invocation and matches
-`^[A-Za-z0-9][A-Za-z0-9 ._+:/()-]{0,127}$`.
+`^codex-cli ([0-9]+\.[0-9]+\.[0-9]+(?:[-+][A-Za-z0-9.-]+)?)$`.
+The captured group is the package version.
+The captured version MUST have SemVer 2.0.0 precedence greater than or equal
+to `0.138.0`. Prerelease identifiers have SemVer precedence below their
+corresponding release; build metadata is ignored for precedence but retained
+for exact launcher/package version equality. Malformed versions use
+`runtime-version-invalid`; well-formed versions below the floor use
+`runtime-version-unsupported`.
 `runtime_executable_identity` is the raw-byte SHA-256 identity of that resolved
 regular executable.
 `model_id` is copied from the child runtime's own invocation metadata before
@@ -1549,11 +1556,190 @@ any lifecycle output is accepted and matches
 `platform.python_implementation()` and matches `^[a-z][a-z0-9-]*$`;
 `python_version` is `sys.version_info` normalized to `major.minor.micro`.
 
+`runtime_attestation` is the bounded, non-secret record accepted before the
+behavior turn. It contains exactly:
+
+```text
+schema_version
+runtime_launcher_identity
+runtime_package_identity
+schema_bundle_identity
+generated_config_identity
+managed_requirements_identity
+active_permission_profile
+thread_metadata
+feature_inventory_identity
+capability_inventory_identity
+skill_inventory_identity
+feature_classification_identity
+protocol_item_classification_identity
+probe_results
+credential_isolation_results
+```
+
+`schema_version` is `boundary-runtime-attestation-v1`.
+Every `*_identity` field is `sha256:<64 lowercase hexadecimal characters>`.
+Canonical JSON is UTF-8 JSON with keys sorted lexicographically, array order
+preserved, `ensure_ascii=false`, separators `,` and `:`, and no trailing
+newline. A raw-byte file identity hashes the exact file bytes. A bundle
+identity hashes canonical JSON for a logical-path-sorted array containing
+exactly `logical_path` and raw-byte `identity` for every regular non-symlink
+file; paths are relative to the bundle root and use `/`.
+
+The exact identity preimages are:
+
+| Field | Exact preimage |
+| --- | --- |
+| `runtime_launcher_identity` | Raw bytes of the resolved regular Codex launcher |
+| `runtime_package_identity` | Bundle projection of every regular file under the resolved runtime-package root |
+| `schema_bundle_identity` | Bundle projection of every file generated by the identified executable's experimental schema command |
+| `generated_config_identity` | Raw UTF-8 generated-config bytes after exact substitution of the generated runtime-home, runtime-package, and isolated-workspace absolute path byte strings with `runtime-home`, `runtime-package`, and `isolated-workspace`; no other byte is normalized |
+| `managed_requirements_identity` | Canonical JSON of the complete `configRequirements/read` result after the same closed logical-role path normalization |
+| `feature_inventory_identity` | Canonical JSON of the ordered page array, each page containing exactly the complete returned `items` array and `next_cursor`, including the final null cursor |
+| `capability_inventory_identity` | Canonical JSON object containing the complete normalized results of `config/read`, `app/list`, `plugin/list`, and `mcpServerStatus/list`, keyed by method name |
+| `skill_inventory_identity` | Canonical JSON of the complete `skills/list` result with paths replaced by the exact five manifest skill logical paths |
+| `feature_classification_identity` | Canonical JSON of the feature-name-sorted array of exact `{feature, classification}` rows |
+| `protocol_item_classification_identity` | Canonical JSON of the protocol-variant-name-sorted array of exact `{item_variant, classification}` rows derived from the bound schema |
+
+For complete runtime-owned method results, every protocol field is included;
+unknown or additional fields fail protocol compatibility rather than being
+dropped from the preimage. Recognized absolute paths must map to one of the
+closed logical roles or manifested instruction/skill references; any other
+absolute or private path fails closed.
+
+The first-version runtime-package root is derived from the fully resolved
+regular launcher path. Walking parent directories without following symlinks
+must find exactly one nearest regular `package.json` whose parsed JSON has
+package name `@openai/codex` and a version equal to `runtime_version` after
+removal of the CLI's fixed presentation prefix. That directory is the
+runtime-package root. No match, multiple nearest matches, malformed metadata,
+or version mismatch is `runtime-unavailable`.
+
+Bundle traversal never follows symlinks. Directories are traversal nodes and
+every other entry must be a regular file. A symlink, socket, device, FIFO, or
+other non-regular entry fails closed instead of being omitted.
+The runtime home, runtime package, and isolated workspace roots must be
+byte-distinct and non-nested. Generated-config substitution processes their
+absolute UTF-8 path byte strings longest-first and requires every occurrence
+to be replaced; an unknown absolute path or remaining known-root occurrence
+fails closed.
+
+The closed secret-key registry is the case-insensitive regular expression
+`^(api[_-]?key|access[_-]?token|authorization|authentication|auth|bearer|client[_-]?secret|credential|password|private[_-]?key|refresh[_-]?token|session[_-]?token)$`.
+Any matching object key or environment name, and any value byte-equal to the
+transient canary or authentication material, is forbidden in every durable
+record and identity preimage. No heuristic secret-name judgment is permitted.
+
+The launcher and runtime-package identities are verified with unchanged
+filesystem identity before and after every schema-generation, sandbox-probe,
+app-server, and accepted-turn boundary.
+`active_permission_profile` is exactly `boundary-proof-v1`.
+
+`thread_metadata` contains exactly `cli_version`, `model_id`,
+`model_provider`, `active_permission_profile`, `workspace_root_roles`,
+`instruction_source_refs`, `runtime_default_instruction_source`, and
+`cwd_role`.
+`workspace_root_roles` is exactly `["isolated-workspace"]`;
+`cwd_role` is `isolated-workspace`; and `instruction_source_refs` is the
+path-sorted complete current `instruction_refs` list reported by the runtime.
+`runtime_default_instruction_source` is `runtime-default` when exposed by the
+runtime and otherwise `identified-runtime-substrate`; no other source is
+allowed. `model_provider` matches
+`^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$`.
+It equals the provider selected by both the generated configuration and the
+runtime-owned `config/read` projection.
+The runtime-owned `cli_version`, `model_id`, and
+`active_permission_profile` equal `invocation_profile.runtime_version`,
+`invocation_profile.model_id`, and the attestation profile.
+`invocation_profile.runtime_executable_identity` equals
+`runtime_launcher_identity`. Any mismatch fails before `turn/start`.
+
+`feature_classification_identity` uses exactly `permitted-built-in-tool`,
+`permitted-non-tool-runtime-behavior`, or
+`must-be-disabled-tool-bearing-behavior`.
+`protocol_item_classification_identity` uses exactly
+`permitted-side-effect`, `non-side-effect-protocol-traffic`, or
+`prohibited-capability-event`.
+
+`probe_results` contains exactly `workspace_read`, `workspace_write`,
+`unmanifested_source_denied`, `private_auth_denied`, and `network_denied`.
+`credential_isolation_results` contains exactly `environment_names_closed`,
+`canary_absent_from_environment`, `canary_absent_from_argv`,
+`canary_absent_from_stdin`, `private_paths_unreadable`, and
+`process_metadata_unreadable`.
+Every result value is `pass`; failed or unavailable proof prevents manifest
+creation. No raw configuration, inventory response, canary, credential,
+environment value, private path, or raw protocol log is recorded.
+
+The evidence-only
+`check-environment --change-id <change-id> --json` command returns exactly
+`schema_version`, `result`, `diagnostic_id`, `phase`, and `attestation_ref`.
+`change-id` must match `^[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9][a-z0-9-]*$`
+and resolve to the existing non-symlink change root with that exact basename.
+Missing, malformed, mismatched, absent, or symlinked change roots fail before
+runtime discovery and produce no pass result.
+`schema_version` is `boundary-runtime-preflight-v1`.
+`result` is `pass` or `environment-unavailable`.
+For pass, `diagnostic_id` is `none`, `phase` is `pre-turn-start`, and
+`attestation_ref` is the standard current path-and-identity reference to
+`docs/changes/<change-id>/evidence/runtime-preflight-attestation.json`.
+That file contains exactly the `boundary-runtime-attestation-v1` record above,
+is published durably only after every preflight check passes, and is
+referenced from `validation-m2.md`. It proves feasibility but does not
+authorize later execution; generation derives a fresh attestation for the
+then-current skill inventory.
+For failure, `diagnostic_id` is one closed value below and `phase` is the
+mapped phase, and `attestation_ref` is null:
+
+| Diagnostic | Phase |
+| --- | --- |
+| `runtime-unavailable` | `pre-thread-start` |
+| `runtime-unreadable` | `pre-thread-start` |
+| `runtime-version-invalid` | `pre-thread-start` |
+| `runtime-version-unsupported` | `pre-thread-start` |
+| `runtime-identity-unstable` | `pre-thread-start`, `pre-turn-start`, or `in-turn`, matching the checkpoint that observed the change |
+| `schema-bundle-invalid` | `pre-thread-start` |
+| `experimental-api-unavailable` | `pre-thread-start` |
+| `protocol-shape-incompatible` | `pre-thread-start` |
+| `thread-metadata-mismatch` | `pre-turn-start` |
+| `feature-pagination-invalid` | `pre-turn-start` |
+| `capability-inventory-mismatch` | `pre-turn-start` |
+| `skill-inventory-mismatch` | `pre-turn-start` |
+| `feature-classification-invalid` | `pre-turn-start` |
+| `protocol-item-classification-invalid` | `pre-turn-start` |
+| `permission-profile-mismatch` | `pre-turn-start` |
+| `config-equivalence-mismatch` | `pre-turn-start` |
+| `sandbox-probe-failed` | `pre-turn-start` |
+| `credential-isolation-failed` | `pre-turn-start` |
+| `unexpected-prohibited-event` | `in-turn` |
+
+Every failure result is `environment-unavailable`.
+Pre-thread failures stop before `thread/start`; pre-turn failures stop before
+`turn/start`; in-turn failures discard the turn and stop before manifest or
+lifecycle-output acceptance. Unknown diagnostic IDs or phases fail closed.
+The successful `runtime_attestation` contains no diagnostic field.
+
+Durable preflight publication writes a sibling mode-restricted temporary file
+in the target evidence directory, flushes and fsyncs that file, installs it
+with same-filesystem atomic replacement, fsyncs the evidence directory, and
+only then emits pass JSON. A crash before replacement leaves prior attestation
+bytes authoritative and the temporary file non-authoritative. A crash after
+replacement but before directory fsync emits no pass; the next invocation
+validates the installed bytes, repeats the replacement/fsync transaction, and
+only then may pass. Startup removes only malformed or identity-mismatched
+sibling preflight temporary files after preserving the prior installed
+attestation. A failed preflight never deletes or rewrites prior evidence and
+never treats it as current authorization.
+A missing, stale, substituted, malformed, or tampered
+`runtime_attestation` makes the implementation manifest and every dependent
+input set stale; validation never replaces it with validation-time runtime
+evidence.
+
 The child runtime uses a fresh configuration home, receives no caller-supplied
 system or developer instruction, has no connectors or subagents, has network
 disabled, and may read or write only the isolated scenario workspace.
 The exact harness prompt, repository instruction chain, skill packages, and
-tool profile are manifest-bound inputs.
+tool profile and bounded runtime attestation are manifest-bound inputs.
 Runtime-built-in instructions that are not exposed as invocation inputs are
 part of the identified runtime executable/model substrate; the report makes no
 claim that they are portable across another runtime version, executable
@@ -1642,17 +1828,18 @@ Canonical generation:
 Canonical validation MUST NOT reinvoke a lifecycle skill.
 It recomputes the input-set identity from the recorded baseline commit plus
 the current referenced scenario, complete participating skill packages,
-instructions, contracts, invocation profile, oracles, and standalone harness
-components; validates the pointed immutable run and every current referenced
+instructions, contracts, invocation profile, recorded runtime attestation,
+oracles, and standalone harness components; validates the pointed immutable run and every current referenced
 byte; reconstructs its events and typed
 `simple-change-behavior` result, freshly executes deterministic registry
 operations, recomputes dependencies and aggregate formulas, and compares the
 complete reconstructed report with the recorded canonical report.
 For `behavior-implementation-manifest`, generation captures the invocation
-profile and current references once; validation checks that record's closed
-shape, import policy, exact derived resource and instruction sets, and every
-current identity without replacing the recorded behavior-generation profile
-with the validator's environment.
+profile, runtime attestation, and current references once; validation checks
+that record's closed shape, import policy, exact derived resource and
+instruction sets, bounded attestation shape and identities, and every current
+identity without replacing the recorded behavior-generation profile or
+attestation with the validator's environment.
 A changed input-set identity is stale evidence and requires canonical
 generation; validation MUST NOT silently reuse or rewrite it.
 Validation does not replace the recorded baseline commit with the later
@@ -1817,12 +2004,21 @@ skills.
 candidate file.
 `implementation_manifest_ref` is the one current standard reference to the
 canonical behavior-implementation manifest.
+Its raw-byte identity transitively binds the nested `runtime_attestation`.
 The input-set evaluator also validates every component and environment field
-inside that manifest before accepting its identity.
+inside that manifest, including the recorded attestation, before accepting its
+identity. Validation may run in a different runtime environment; it validates
+the recorded attestation's closed shape, identities, cross-field equality,
+and pass-only results without comparing against or substituting
+validation-time runtime evidence.
 `input_set_identity` is the `sha256:<64 lowercase hexadecimal characters>` of
 canonical JSON serialization of `input_set`.
 Missing, extra, reordered, stale, substituted, or caller-selected input-set
 members fail closed.
+A missing, stale, substituted, malformed, or tampered nested attestation
+changes or invalidates `implementation_manifest_ref`, which invalidates
+`input_set_identity`, the immutable run, `manifest_ref`, the current pointer,
+and the `simple-change-behavior` report selector.
 
 The harness prepares a sibling temporary directory, validates all events,
 bundles, snapshots, inventories, and metrics, then renames it to the new

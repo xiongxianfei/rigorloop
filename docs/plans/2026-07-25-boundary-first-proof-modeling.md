@@ -25,12 +25,12 @@ resumes.
 
 - Proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Specs: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r13.md`
+- Spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r18.md`
 - Architecture: `docs/architecture/system/architecture.md`
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md`
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
 - Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r8.md`
-- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; revision required after plan-review R6
+- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; current runtime-boundary candidate requires rereview after the current plan revision is approved
 
 ## Context and orientation
 
@@ -80,11 +80,11 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r8.md
-- Review status: approved; stage=plan-review; round=r8
+- Current milestone state: implementing
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r8.md
+- Review status: approved; stage=test-spec-review; round=r8
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: test-spec revision
+- Next stage: implement M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -142,7 +142,7 @@ resource through generated, packed, and installed outputs.
 
 ### M2. Hermetic harness, upstream skills, and fresh upstream behavior
 
-- Milestone state: resolution-needed
+- Milestone state: implementing
 - Goal: Prove runtime feasibility, freeze the pre-mutation baseline, implement the standalone recoverable harness, update the five participating skill packages, and publish the one fresh upstream behavior run owned by R28y M2.
 - Requirements: R28y, R56-R56e, R56j-R56k, R56p
 - Files/components likely touched:
@@ -175,6 +175,8 @@ resource through generated, packed, and installed outputs.
   - Runtime supported/unsupported version; exact executable and generated
     experimental-schema identity; experimental-API negotiation; missing,
     null, additional, or incompatible app-server fields
+  - SemVer cases below, at, and above 0.138.0, prerelease/build precedence,
+    malformed versions, and exact CLI/package version equality
   - Launcher and runtime-package removal, replacement, or raw-byte/filesystem
     identity mutation before and after schema generation, every sandbox probe,
     app-server negotiation, and the accepted lifecycle invocation
@@ -205,12 +207,25 @@ resource through generated, packed, and installed outputs.
   - Caller-supplied instruction, unexpected tool, connector, subagent, network, and unmanifested read rejection
   - Validation under a different validator environment without profile replacement
   - Crash points before run install, after run install, after receipt fsync, after pointer replace, after parent fsync, and before receipt removal
+  - Preflight crash before replacement and after replacement but before
+    directory fsync; pass-before-fsync rejection; malformed temporary cleanup;
+    prior-attestation preservation on failure; and stale prior evidence never
+    satisfying the current preflight
+  - Every closed preflight diagnostic/result/phase combination, malformed,
+    mismatched, absent, and symlinked change roots before runtime discovery
+  - Fresh generation-time attestation embedded in
+    `behavior-implementation-manifest.json`; missing, stale, substituted, and
+    tampered nested attestation invalidating the manifest reference, input-set
+    identity, immutable run, pointer, and report selector without
+    validation-time substitution
   - Later commits with unchanged referenced bytes versus changed referenced bytes
   - Resource-map, raw-byte-copy, trigger, stop, claim, handoff, complete review-bundle, and isolation tests
   - Example-only spec/test-spec rejection and valid compact simple-change cases
 - Implementation steps:
-  - Implement only the minimal read-only `check-environment` preflight as the
+  - Implement only the minimal evidence-only `check-environment` preflight as the
     first bounded M2 slice.
+  - Require the exact change ID, select only its existing non-symlink change
+    root, and accept Codex only when SemVer precedence is at least 0.138.0.
   - Resolve and identity-bind one Codex launcher and runtime package, reject
     versions before 0.138.0, and capture their raw-byte and filesystem
     identities before and after schema generation, each sandbox probe,
@@ -248,6 +263,16 @@ resource through generated, packed, and installed outputs.
   - Inject a transient parent canary and require exact child environment names
     plus canary absence from environment values, argv, stdin, readable paths,
     and process metadata. Persist only typed non-secret decisions.
+  - Publish the successful preflight attestation only at
+    `evidence/runtime-preflight-attestation.json`: sibling temporary write,
+    file flush/fsync, same-filesystem atomic replace, evidence-directory
+    fsync, then pass emission. Reconcile interrupted publication without
+    promoting stale prior or temporary evidence.
+  - On failed or interrupted preflight, preserve installed prior evidence as
+    historical bytes but never treat it as current feasibility authority.
+    Remove only malformed or identity-mismatched sibling temporary files and
+    repeat replacement/fsync after an after-replace/before-directory-fsync
+    interruption.
   - Before any other harness mutation or any participating-skill mutation, run
     that preflight and record only bounded non-secret results in
     `validation-m2.md`. On `environment-unavailable`, stop M2 and route to
@@ -255,14 +280,20 @@ resource through generated, packed, and installed outputs.
   - Create and validate `evidence/boundary-proof-baseline.json` from the harness-derived current HEAD before the first participating-skill edit. If an immutable baseline already exists with a different value, stop.
   - Freeze the two-module AST import policy and exact manifest/input-set schemas.
   - Assemble the five skill packages, applicable instructions, contracts, scenario, and candidates into a fresh isolated workspace.
-  - Launch the identified runtime through the preflight-proven sandbox and private runtime home; capture only bounded parent-observed attestation and typed event output.
+  - Launch the identified runtime through the preflight-proven sandbox and
+    private runtime home; derive a fresh generation-time attestation for the
+    then-current five-skill inventory, embed it in
+    `behavior-implementation-manifest.json`, and bind that manifest reference
+    transitively through the input-set identity, immutable run, pointer, and
+    report selector. The preflight artifact is feasibility evidence only and
+    is not substituted for this fresh generation record.
   - Build and validate the sibling temporary run; install the immutable run; fsync the receipt; replace/fsync the pointer; fsync the parent; reconcile; remove the receipt.
   - Implement validation-only reuse that never invokes a lifecycle skill and never substitutes validation-time environment data.
   - Exercise the full pipeline with controlled fixture packages without writing canonical evidence.
   - Write and map the shared boundary reference in the five participating packages, keeping stage-specific triggers, claims, stops, and handoffs in each `SKILL.md`.
   - Generate the real `spec -> spec-review -> test-spec -> test-spec-review` run through one `workflow` invocation and validate it without reinvoking skills.
 - Validation commands:
-  - `python scripts/boundary_proof_behavior.py check-environment --json`
+  - `python scripts/boundary_proof_behavior.py check-environment --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --json`
   - `python scripts/boundary_proof_behavior.py freeze-baseline --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`
   - `tmpdir="$(mktemp -d)" && python scripts/boundary_proof_behavior.py exercise-fixture --fixture tests/fixtures/boundary-proof/behavior/happy-path.json --output-root "$tmpdir" && python scripts/boundary_proof_behavior.py validate-fixture --root "$tmpdir"`
   - `python scripts/validate-skills.py`
@@ -280,6 +311,9 @@ resource through generated, packed, and installed outputs.
     runtime roots, instruction sources, effective configuration/inventories,
     exact feature/item classification, sandbox probes, and
     credential-isolation result without secret values or private paths
+  - durable current `runtime-preflight-attestation.json` whose reference
+    matches the pass receipt, plus a fresh nested generation attestation bound
+    by the current behavior implementation manifest and immutable run
   - current `behavior-implementation-manifest.json`
   - immutable `boundary-proof-baseline.json`
   - current `simple-change/current.json` pointing to a fully validated immutable run
@@ -294,6 +328,10 @@ resource through generated, packed, and installed outputs.
     exposure, baseline conflict, unmanifested input, invalid run, unresolved
     receipt, stale pointer, or any failed validation; do not mutate
     participating skills after a failed preflight or baseline step.
+  - Stop on any unknown or mismatched preflight diagnostic/phase, invalid
+    change root, pass emitted before file and directory durability, unresolved
+    preflight temporary state, substituted generation attestation, or attempt
+    to replace recorded attestation with validation-time runtime evidence.
 - Expected observable result: The upstream skills require complete boundary/proof maps and one input-bound immutable behavior run proves the real upstream workflow with zero false blocking and no new universal artifact.
 - Commit message: `M2: implement and prove hermetic upstream behavior`
 - Milestone closeout:
@@ -448,7 +486,7 @@ resource through generated, packed, and installed outputs.
 ## Validation plan
 
 - `python scripts/test-boundary-proof.py`: focused typed-model, parser, fixture, and aggregate proof.
-- `python scripts/boundary_proof_behavior.py check-environment --json`: live, non-secret runtime sandbox/profile and credential-isolation feasibility proof.
+- `python scripts/boundary_proof_behavior.py check-environment --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --json`: live, evidence-only, non-secret runtime sandbox/profile and credential-isolation feasibility transaction.
 - `python scripts/boundary_proof_behavior.py freeze-baseline --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`: immutable pre-skill-mutation preservation baseline creation.
 - `tmpdir="$(mktemp -d)" && python scripts/boundary_proof_behavior.py exercise-fixture --fixture tests/fixtures/boundary-proof/behavior/happy-path.json --output-root "$tmpdir" && python scripts/boundary_proof_behavior.py validate-fixture --root "$tmpdir"`: controlled noncanonical harness generation and validation.
 - `python scripts/boundary_proof_behavior.py generate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --scenario tests/fixtures/boundary-proof/simple-change/scenario.json`: one canonical upstream behavior generation.
@@ -570,6 +608,39 @@ resource through generated, packed, and installed outputs.
   now proves both independently.
 - 2026-07-26: Plan-review R8 approved the corrected M2 plan with no material
   findings and routed the initiative to matching test-spec revision.
+- 2026-07-26: The test-spec R5 candidate maps runtime identity continuity,
+  experimental protocol closure, independent feature/item classifications,
+  equivalent sandbox probes, and credential isolation into explicit contrasts.
+- 2026-07-26: Test-spec-review R5 requested exact schema/negotiation/pagination
+  negatives and exposed a spec-shape gap; the focused R14 spec candidate now
+  embeds bounded runtime attestation in the existing implementation manifest.
+- 2026-07-26: Spec-review R14 required exact thread metadata, deterministic
+  identity preimages, phase-correct failure receipts, and explicit transitive
+  binding; the R15 candidate defines all four contracts.
+- 2026-07-26: Spec-review R15 required complete provider/instruction equality,
+  deterministic package and secret rules, evidence-bound preflight pass, and
+  report-selector proof; the R16 candidate closes each residual gap.
+- 2026-07-26: Spec-review R16 required exact version-floor semantics and a
+  durable explicitly targeted preflight transaction; the R17 candidate adds
+  SemVer closure, `--change-id`, fsync ordering, and crash recovery.
+- 2026-07-26: Spec-review R17 found one stale duplicate preflight command; the
+  R18 candidate synchronizes it with CMD-BFP-8 and the M2 command.
+- 2026-07-26: Spec-review R18 approved the focused contract; the R9 plan
+  candidate projects the SemVer floor and durable preflight evidence
+  transaction before test-spec rereview.
+- 2026-07-26: Plan-review R9 requested current source pointers and full
+  preflight/generation transaction projection; the R10 candidate closes both.
+- 2026-07-26: Plan-review R10 confirmed the transaction projection and found
+  one stale rereview-round label; the R11 candidate corrects it.
+- 2026-07-26: Plan-review R11 approved the current plan with no material
+  findings and routed the amended proof map to test-spec review.
+- 2026-07-26: Test-spec-review R6 requested exact preflight recovery and fresh
+  generation-attestation contrast matrices; the R7 candidate adds both.
+- 2026-07-26: Test-spec-review R7 confirmed the proof bodies and requested
+  current governing identities and M2 ownership; the R8 candidate synchronizes
+  them.
+- 2026-07-26: Test-spec-review R8 approved the proof map and allowed M2
+  implementation handoff.
 - 2026-07-26: Test-spec-review R3 retained one gap: aggregate hermetic-input
   coverage must become field-complete mutation proof before implementation.
 - 2026-07-26: The R4 test-spec candidate now mutates every manifest collection,

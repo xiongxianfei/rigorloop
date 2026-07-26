@@ -17,6 +17,18 @@ Closeout status: open
 - Review closeout: plan-review-r6
 - Review closeout: plan-review-r7
 - Review closeout: plan-review-r8
+- Review closeout: test-spec-review-r5
+- Review closeout: spec-review-r14
+- Review closeout: spec-review-r15
+- Review closeout: spec-review-r16
+- Review closeout: spec-review-r17
+- Review closeout: spec-review-r18
+- Review closeout: plan-review-r9
+- Review closeout: plan-review-r10
+- Review closeout: plan-review-r11
+- Review closeout: test-spec-review-r6
+- Review closeout: test-spec-review-r7
+- Review closeout: test-spec-review-r8
 - Review closeout: spec-review-r3 open
 - Review closeout: spec-review-r4 open
 - Review closeout: spec-review-r5 open
@@ -46,9 +58,9 @@ Closeout status: open
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m2-preflight-r1`, `code-review-m2-preflight-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `architecture-review-r5`, `architecture-review-r6`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
-- Findings resolved: 43
+- Findings resolved: 62
 - Unresolved findings: 0
-- Current result: Plan-review R8 approved the M2 plan; matching test-spec revision is next.
+- Current result: Test-spec-review R8 approved M2 implementation handoff.
 
 ## Resolution Overview
 
@@ -95,6 +107,25 @@ Closeout status: open
 | BFP-PL6-2 | accepted | resolved | Exact command tools and exactly-once feature/item classification are projected into M2. |
 | BFP-PL6-3 | accepted | resolved | The current review gate and feature-pagination behavior are unambiguous. |
 | BFP-PL7-1 | accepted | resolved | Feature enablement and protocol-event classifications use separate closed vocabularies and independent exactly-once proof. |
+| BFP-TSR5-1 | accepted | resolved | Schema bundle, experimental negotiation, required-field, and pagination failure matrices are explicit. |
+| BFP-TSR5-2 | accepted | resolved | A spec-owned bounded runtime attestation is embedded in the implementation manifest and bound through immutable-run validation. |
+| BFP-SR14-1 | accepted | resolved | Exact runtime-owned thread metadata and invocation/attestation equality are defined with logical path roles. |
+| BFP-SR14-2 | accepted | resolved | Every attestation identity has a deterministic canonical preimage and private-data exclusion. |
+| BFP-SR14-3 | accepted | resolved | A separate bounded preflight result carries exhaustive phase-correct diagnostics. |
+| BFP-SR14-4 | accepted | resolved | Manifest identity transitively binds attestation through input set, immutable run, pointer, and report without validation-time substitution. |
+| BFP-SR15-1 | accepted | resolved | Runtime provider and complete instruction-source expectations are exact and cross-checked. |
+| BFP-SR15-2 | accepted | resolved | Npm package discovery, filesystem traversal, path substitution, and secret exclusion are deterministic and directly testable. |
+| BFP-SR15-3 | accepted | resolved | Passing preflight references an atomic bounded attestation and all runtime-unavailable branches have closed diagnostics. |
+| BFP-SR15-4 | accepted | resolved | T50 proves attestation tamper invalidates the final report selector. |
+| BFP-SR16-1 | accepted | resolved | Runtime support uses exact SemVer precedence at the accepted 0.138.0 floor. |
+| BFP-SR16-2 | accepted | resolved | Preflight requires an exact change ID and publishes evidence durably before pass. |
+| BFP-SR17-1 | accepted | resolved | Every active preflight command projection includes the exact change ID and evidence-only classification. |
+| BFP-PL9-1 | accepted | resolved | The plan's governing chain identifies spec-review R18, architecture-review R8, and R9 test-spec handoff. |
+| BFP-PL9-2 | accepted | resolved | Preflight recovery and fresh generation-time attestation binding are explicit in tests, steps, evidence, and stops. |
+| BFP-PL10-1 | accepted | resolved | Test-spec rereview is gated on the current clean plan-review round. |
+| BFP-TSR6-1 | accepted | resolved | T49 covers the exact preflight envelope and every temporary/prior/restart recovery state. |
+| BFP-TSR6-2 | accepted | resolved | T50 proves fresh generation re-attestation and rejects preflight substitution. |
+| BFP-TSR7-1 | accepted | resolved | The proof map binds R18/R8/R11 inputs, both ADRs, and the actual M2 handoff. |
 
 ## Finding Details
 
@@ -727,6 +758,122 @@ Rationale: Named observations without algorithms permit incompatible implementat
 Validation target: spec-review-r4
 Validation evidence: pending
 
+### test-spec-review-r8
+
+No material findings.
+Test-spec-review R8 confirmed BFP-TSR5-1 through BFP-TSR7-1 resolved and
+allowed M2 implementation handoff.
+
+### plan-review-r11
+
+No material findings.
+Plan-review R11 confirmed BFP-PL9-1 through BFP-PL10-1 resolved and approved
+the plan for test-spec rereview.
+
+### test-spec-review-r6
+
+#### BFP-TSR6-1 - Preflight envelope and recovery matrix are incomplete
+
+Finding ID: BFP-TSR6-1
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: test-spec revision
+Decision owner: approved preflight contract
+Decision needed: none
+Required outcome: Prove the exact envelope and interrupted-publication states.
+Chosen action: Add field mutations, malformed/mismatched/valid temp states, prior preservation, restart replacement/fsync, and pass-after-durability proof.
+Rationale: Generic crash tests cannot prove the exact evidence-only transaction.
+Validation target: test-spec-review-r7
+Validation evidence: pending
+
+### test-spec-review-r7
+
+#### BFP-TSR7-1 - Governing identities and M2 handoff are stale
+
+Finding ID: BFP-TSR7-1
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: test-spec revision
+Decision owner: current approved lifecycle state
+Decision needed: none
+Required outcome: Synchronize governing inputs and M2 ownership.
+Chosen action: Refresh R18/R8/R11 identities, add the runtime ADR, and route implementation/review through the current boundary-first M2.
+Rationale: A proof map cannot authorize work against obsolete owners.
+Validation target: test-spec-review-r8
+Validation evidence: pending
+
+#### BFP-TSR6-2 - Fresh generation attestation is not contrasted with preflight
+
+Finding ID: BFP-TSR6-2
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: test-spec revision
+Decision owner: approved attestation freshness contract
+Decision needed: none
+Required outcome: Prove generation re-attests and cannot copy feasibility evidence.
+Chosen action: Change a five-skill input after preflight, require fresh nested attestation, and reject copied/substituted preflight evidence before manifest/run acceptance.
+Rationale: Feasibility and generation evidence have distinct freshness bases.
+Validation target: test-spec-review-r7
+Validation evidence: pending
+
+### spec-review-r18
+
+No material findings.
+Spec-review R18 confirmed BFP-SR14-1 through BFP-SR17-1 resolved and approved
+the focused runtime-attestation contract.
+
+### plan-review-r9
+
+#### BFP-PL9-1 - Governing source alignment is stale
+
+Finding ID: BFP-PL9-1
+Disposition: accepted
+Status: resolved
+Owner: plan author
+Owning stage: plan revision
+Decision owner: current lifecycle state
+Decision needed: none
+Required outcome: Make the plan self-contained on the approved revision chain.
+Chosen action: Update governing review pointers and test-spec rereview wording.
+Rationale: Old rounds belong only in decision history.
+Validation target: plan-review-r10
+Validation evidence: pending
+
+### plan-review-r10
+
+#### BFP-PL10-1 - Test-spec handoff names the superseded plan-review round
+
+Finding ID: BFP-PL10-1
+Disposition: accepted
+Status: resolved
+Owner: plan author
+Owning stage: plan revision
+Decision owner: current lifecycle state
+Decision needed: none
+Required outcome: Gate test-spec rereview on clean current plan review.
+Chosen action: Replace the stale round number with approval of the current plan revision in Source artifacts.
+Rationale: A changes-requested round cannot authorize downstream handoff.
+Validation target: plan-review-r11
+Validation evidence: pending
+
+#### BFP-PL9-2 - Preflight recovery and generation binding are incomplete
+
+Finding ID: BFP-PL9-2
+Disposition: accepted
+Status: resolved
+Owner: plan author
+Owning stage: plan revision
+Decision owner: approved runtime-attestation spec
+Decision needed: none
+Required outcome: Project both preflight and generation attestation transactions.
+Chosen action: Add crash, durability, stale-prior, diagnostic/phase, fresh nested attestation, transitive invalidation, evidence, and failure-stop bullets.
+Rationale: Feasibility evidence and generation evidence have different authority and freshness.
+Validation target: plan-review-r10
+Validation evidence: pending
+
 #### BFP-SR3-3 - Evidence is not operation-bound
 
 Finding ID: BFP-SR3-3
@@ -911,6 +1058,211 @@ Validation evidence: pending plan-review-r8
 No material findings.
 Plan-review R8 confirmed BFP-PL6-1 through BFP-PL7-1 resolved and approved the
 M2 plan for matching test-spec revision.
+
+### test-spec-review-r5
+
+#### BFP-TSR5-1 - Schema, negotiation, and pagination negatives are incomplete
+
+Finding ID: BFP-TSR5-1
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: test-spec revision
+Decision owner: accepted runtime ADR and plan
+Decision needed: none
+Required outcome: Close schema-bundle, experimental negotiation, required-field, and cursor behavior.
+Chosen action: Add file/path/byte/identity, negotiation, method/field, continuation, termination, cycle, and cross-page duplication contrasts.
+Rationale: Aggregate protocol-mutation wording cannot prove cursor or bundle identity semantics.
+Validation target: test-spec-review-r6
+Validation evidence: pending spec-review R14 and test-spec-review R6
+
+#### BFP-TSR5-2 - Runtime attestation is not durably operation-bound
+
+Finding ID: BFP-TSR5-2
+Disposition: accepted
+Status: resolved
+Owner: spec and test-spec authors
+Owning stage: focused spec and test-spec revision
+Decision owner: accepted runtime ADR
+Decision needed: none
+Required outcome: Bind bounded runtime proof to the accepted invocation and immutable run.
+Chosen action: Add one exact non-secret `runtime_attestation` record to the existing implementation manifest, closed failure diagnostics, and complete T48-T50 substitution proof.
+Rationale: The prior exact manifest schema could not carry the accepted architecture's proof without an implementation-only field.
+Validation target: spec-review-r14 then test-spec-review-r6
+Validation evidence: pending
+
+### spec-review-r14
+
+#### BFP-SR14-1 - Mandatory runtime-owned thread metadata is incomplete
+
+Finding ID: BFP-SR14-1
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec revision
+Decision owner: accepted runtime ADR
+Decision needed: none
+Required outcome: Close runtime-owned metadata and cross-field equality.
+Chosen action: Add exact thread metadata with provider, logical roots/cwd, instruction refs, and equality to invocation/profile/launcher fields.
+Rationale: Partial thread metadata cannot prove the accepted runtime boundary.
+Validation target: spec-review-r15
+Validation evidence: pending
+
+### spec-review-r15
+
+#### BFP-SR15-1 - Thread provider and instruction expectations remain incomplete
+
+Finding ID: BFP-SR15-1
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec revision
+Decision owner: accepted runtime ADR
+Decision needed: none
+Required outcome: Require complete instruction and provider expectations.
+Chosen action: Require the complete instruction list, a closed runtime-default marker, and provider equality across generated config, effective config, and thread metadata.
+Rationale: Format-valid runtime metadata may still name the wrong execution substrate.
+Validation target: spec-review-r16
+Validation evidence: pending
+
+### spec-review-r16
+
+#### BFP-SR16-1 - Supported runtime version predicate is incomplete
+
+Finding ID: BFP-SR16-1
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec revision
+Decision owner: accepted runtime ADR
+Decision needed: none
+Required outcome: Freeze the supported version predicate.
+Chosen action: Require SemVer precedence at least 0.138.0, standard prerelease ordering, build-insensitive precedence, and full version equality with the package.
+Rationale: The diagnostic needs an exact executable trigger.
+Validation target: spec-review-r17
+Validation evidence: pending
+
+### spec-review-r17
+
+#### BFP-SR17-1 - Active plan retains one stale preflight command
+
+Finding ID: BFP-SR17-1
+Disposition: accepted
+Status: resolved
+Owner: plan author
+Owning stage: spec projection synchronization
+Decision owner: approved preflight command contract
+Decision needed: none
+Required outcome: Synchronize every active command projection.
+Chosen action: Add the exact change ID and evidence-only transaction wording to the global validation command.
+Rationale: Duplicate commands must not encode different public behavior.
+Validation target: spec-review-r18
+Validation evidence: pending
+
+#### BFP-SR16-2 - Preflight destination and durable publication are undefined
+
+Finding ID: BFP-SR16-2
+Disposition: accepted
+Status: resolved
+Owner: spec, plan, and test-spec authors
+Owning stage: focused contract revision
+Decision owner: pre-mutation feasibility gate
+Decision needed: none
+Required outcome: Select one target and make pass conditional on durable evidence.
+Chosen action: Add required `--change-id`, exact root validation, sibling temp/file fsync/atomic replace/directory fsync ordering, crash recovery, and pass-after-durability tests.
+Rationale: Evidence-only mutation must be explicit and recoverable.
+Validation target: spec-review-r17
+Validation evidence: pending
+
+#### BFP-SR15-2 - Residual identity-preimage rules remain open
+
+Finding ID: BFP-SR15-2
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec revision
+Decision owner: deterministic evidence contract
+Decision needed: none
+Required outcome: Close every remaining package, filesystem, normalization, and secret rule.
+Chosen action: Freeze npm package-root discovery, reject non-regular entries, require distinct non-nested roots and longest-first substitution, and define a closed secret-key regex.
+Rationale: Evidence identities must be independently reproducible.
+Validation target: spec-review-r16
+Validation evidence: pending
+
+#### BFP-SR15-3 - Passing preflight is not evidence-bound
+
+Finding ID: BFP-SR15-3
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec revision
+Decision owner: pre-mutation feasibility gate
+Decision needed: none
+Required outcome: Bind pass to evidence and map unavailable runtime branches.
+Chosen action: Add exact `attestation_ref`, atomic conditional preflight evidence, null-on-failure behavior, and unavailable/unreadable/version-invalid diagnostics.
+Rationale: A generic pass cannot authorize the next mutation boundary.
+Validation target: spec-review-r16
+Validation evidence: pending
+
+#### BFP-SR15-4 - Report-selector invalidation is missing from T50
+
+Finding ID: BFP-SR15-4
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: test-spec revision
+Decision owner: R28y transitive binding
+Decision needed: none
+Required outcome: Prove the complete attestation tamper cascade.
+Chosen action: Extend T50 through the `simple-change-behavior` report selector.
+Rationale: Proof must reach the final normative consumer.
+Validation target: test-spec-review-r6
+Validation evidence: pending
+
+#### BFP-SR14-2 - Attestation identity preimages are undefined
+
+Finding ID: BFP-SR14-2
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec revision
+Decision owner: deterministic evidence contract
+Decision needed: none
+Required outcome: Define every identity preimage and normalization.
+Chosen action: Freeze canonical JSON, bundle framing, complete method projections, pagination cursors, logical path roles, and classification rows.
+Rationale: Hash labels without preimage contracts are not interoperable evidence.
+Validation target: spec-review-r15
+Validation evidence: pending
+
+#### BFP-SR14-3 - Failure diagnostics lack a carrier and phase mapping
+
+Finding ID: BFP-SR14-3
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec revision
+Decision owner: fail-closed runtime contract
+Decision needed: none
+Required outcome: Define the failure receipt, exhaustive mapping, and correct timing.
+Chosen action: Add exact preflight JSON shape, closed diagnostics, and pre-thread, pre-turn, and in-turn phases; successful attestation remains pass-only.
+Rationale: Success evidence and failure routing are different record types.
+Validation target: spec-review-r15
+Validation evidence: pending
+
+#### BFP-SR14-4 - Transitive binding is implicit
+
+Finding ID: BFP-SR14-4
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec revision
+Decision owner: immutable evidence contract
+Decision needed: none
+Required outcome: Bind recorded attestation through every dependent identity without runtime substitution.
+Chosen action: Make selector, manifest reference, input-set identity, run, pointer, and report cascade explicit while allowing validation on another runtime.
+Rationale: Transitive evidence must be normative, not inferred.
+Validation target: spec-review-r15
+Validation evidence: pending
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 

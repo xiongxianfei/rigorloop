@@ -459,3 +459,135 @@ Detailed record: reviews/plan-review-r8.md
 Resolution: review-resolution.md#plan-review-r8
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r5
+Stage: test-spec-review
+Round: 5
+Reviewed artifact: specs/rigorloop-workflow.test.md
+Status: blocked
+Detailed record: reviews/test-spec-review-r5.md
+Resolution: review-resolution.md#test-spec-review-r5
+Material findings: BFP-TSR5-1, BFP-TSR5-2
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r14
+Stage: spec-review
+Round: 14
+Reviewed artifact: specs/rigorloop-workflow.md
+Status: changes-requested
+Detailed record: reviews/spec-review-r14.md
+Resolution: review-resolution.md#spec-review-r14
+Material findings: BFP-SR14-1, BFP-SR14-2, BFP-SR14-3, BFP-SR14-4
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r15
+Stage: spec-review
+Round: 15
+Reviewed artifact: specs/rigorloop-workflow.md
+Status: changes-requested
+Detailed record: reviews/spec-review-r15.md
+Resolution: review-resolution.md#spec-review-r15
+Material findings: BFP-SR15-1, BFP-SR15-2, BFP-SR15-3, BFP-SR15-4
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r16
+Stage: spec-review
+Round: 16
+Reviewed artifact: specs/rigorloop-workflow.md
+Status: changes-requested
+Detailed record: reviews/spec-review-r16.md
+Resolution: review-resolution.md#spec-review-r16
+Material findings: BFP-SR16-1, BFP-SR16-2
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r17
+Stage: spec-review
+Round: 17
+Reviewed artifact: specs/rigorloop-workflow.md; specs/rigorloop-workflow.test.md; docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: changes-requested
+Detailed record: reviews/spec-review-r17.md
+Resolution: review-resolution.md#spec-review-r17
+Material findings: BFP-SR17-1
+Open findings: None
+
+### Review entry
+Review ID: spec-review-r18
+Stage: spec-review
+Round: 18
+Reviewed artifact: specs/rigorloop-workflow.md; specs/rigorloop-workflow.test.md; docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: approved
+Detailed record: reviews/spec-review-r18.md
+Resolution: review-resolution.md#spec-review-r18
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: plan-review-r9
+Stage: plan-review
+Round: 9
+Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: changes-requested
+Detailed record: reviews/plan-review-r9.md
+Resolution: review-resolution.md#plan-review-r9
+Material findings: BFP-PL9-1, BFP-PL9-2
+Open findings: None
+
+### Review entry
+Review ID: plan-review-r10
+Stage: plan-review
+Round: 10
+Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: changes-requested
+Detailed record: reviews/plan-review-r10.md
+Resolution: review-resolution.md#plan-review-r10
+Material findings: BFP-PL10-1
+Open findings: None
+
+### Review entry
+Review ID: plan-review-r11
+Stage: plan-review
+Round: 11
+Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md
+Status: approved
+Detailed record: reviews/plan-review-r11.md
+Resolution: review-resolution.md#plan-review-r11
+Material findings: None
+Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r6
+Stage: test-spec-review
+Round: 6
+Reviewed artifact: specs/rigorloop-workflow.test.md
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r6.md
+Resolution: review-resolution.md#test-spec-review-r6
+Material findings: BFP-TSR6-1, BFP-TSR6-2
+Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r7
+Stage: test-spec-review
+Round: 7
+Reviewed artifact: specs/rigorloop-workflow.test.md
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r7.md
+Resolution: review-resolution.md#test-spec-review-r7
+Material findings: BFP-TSR7-1
+Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r8
+Stage: test-spec-review
+Round: 8
+Reviewed artifact: specs/rigorloop-workflow.test.md
+Status: approved
+Detailed record: reviews/test-spec-review-r8.md
+Resolution: review-resolution.md#test-spec-review-r8
+Material findings: None
+Open findings: None
