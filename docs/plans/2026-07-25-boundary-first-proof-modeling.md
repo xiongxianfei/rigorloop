@@ -91,7 +91,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r16.md
 - Review status: changes-requested; stage=architecture-review; round=r16
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec
+- Next stage: spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-AR16-1,BFP-AR16-2,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
@@ -620,6 +620,13 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-26: Architecture-review R16 found that child workspace writes could
+  bypass adapter-exclusive materialization and that the canonical Runtime View
+  remained on the pre-R40 protocol. The focused R41 spec candidate adds a
+  complete pre-turn workspace baseline, bounded post-turn comparison, a
+  replayable value-free integrity observation, and the closed
+  `stage-workspace-mutated` fail-closed route before materialization.
 
 - 2026-07-26: Spec-review R39 confirmed every prior transport finding and
   retained only the missing distinction between raw pre-parse message size and
