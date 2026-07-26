@@ -1031,3 +1031,14 @@ Detailed record: reviews/spec-review-r40.md
 Resolution: review-resolution.md#spec-review-r40
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: architecture-review-r16
+Stage: architecture-review
+Round: 16
+Reviewed artifact: canonical architecture, boundary-proof component diagram, architecture assessment, proposed stage-envelope ADR, accepted boundary-first ADR, and accepted permission-profile ADR at 428f36d6
+Status: changes-requested
+Detailed record: reviews/architecture-review-r16.md
+Resolution: review-resolution.md#architecture-review-r16
+Material findings: BFP-AR16-1, BFP-AR16-2
+Open findings: BFP-AR16-1, BFP-AR16-2

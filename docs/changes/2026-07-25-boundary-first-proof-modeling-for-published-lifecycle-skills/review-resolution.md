@@ -2593,6 +2593,47 @@ artifact-envelope amendment. Architecture/ADR synchronization and approving
 architecture review remain mandatory before test-spec revision or
 implementation resumes.
 
+### architecture-review-r16
+
+#### BFP-AR16-1 — The envelope-only materialization boundary remains bypassable through child filesystem writes
+
+Finding ID: BFP-AR16-1
+Disposition: accepted
+Status: open
+Owner: workflow spec and architecture author
+Owning stage: focused spec revision, then architecture revision
+Decision owner: R28y transport mutation-integrity contract
+Decision needed: none
+Required outcome: Prove the child did not create, change, remove, symlink, or
+replace any scenario-workspace entry before adapter materialization.
+Chosen action: Add an identity-bound baseline/observation contract and closed
+diagnostic to the workflow spec, then project it into the transport ADR,
+canonical architecture, Runtime View, and component diagram.
+Rationale: Final reread equality proves the materialized result but cannot
+prove exclusive adapter write ownership when child commands can prewrite the
+same path.
+Validation target: spec-review-r41, then architecture-review-r17
+Validation evidence: pending
+
+#### BFP-AR16-2 — The canonical Runtime View still projects the superseded direct-output protocol
+
+Finding ID: BFP-AR16-2
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: approved R40 transport sequence
+Decision needed: none
+Required outcome: Make the numbered Runtime View project the complete
+canary-policy, lifecycle-policy, candidate, integrity, materialization,
+content-validation, snapshot, and publication sequence.
+Chosen action: Rewrite Boundary-first proof flow steps 9, 13, and 15 after the
+focused spec amendment is approved.
+Rationale: A canonical runtime sequence must not contradict its Building Block
+and Crosscutting component contracts.
+Validation target: architecture-review-r17
+Validation evidence: pending
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2
