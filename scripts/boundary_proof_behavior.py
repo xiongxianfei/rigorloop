@@ -2639,6 +2639,8 @@ def generate_behavior(
         normalized_feature = normalize_feature_model(feature_model)
         feature_markdown = _render_feature_markdown(feature_model)
     except BoundaryProofError as error:
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            print(f"feature-model-invalid:{error}", file=sys.stderr)
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn") from error
     feature_identity = _sha256(feature_markdown.encode("utf-8"))
 
@@ -2677,6 +2679,8 @@ def generate_behavior(
             proof_map, feature_model
         )
     except BoundaryProofError as error:
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            print(f"proof-map-invalid:{error}", file=sys.stderr)
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn") from error
     test_spec_identity = _sha256(test_spec_markdown.encode("utf-8"))
 
