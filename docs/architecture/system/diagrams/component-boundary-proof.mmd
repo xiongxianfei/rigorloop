@@ -9,9 +9,12 @@ flowchart LR
   preflight_attestation["Runtime preflight attestation<br/>[Feasibility only; non-authorizing]"]:::container
   generation_attestation["Fresh generation attestation<br/>[Exact eleven-row runtime inventory]"]:::container
   implementation_manifest["Behavior implementation manifest<br/>[Binds generation attestation]"]:::container
+  transport_policy["Transport policy<br/>[Manifest-bound positive deadlines]"]:::container
   input_set["Simple-change input set<br/>[Five-package resources + manifest identity]"]:::container
   immutable_run["Installed immutable run<br/>[Change-local evidence]"]:::container
   prepared_receipt["Prepared publication receipt<br/>[Fsynced recovery evidence]"]:::container
+  publisher_lease["Publisher lease + lock<br/>[Exclusive durable ownership]"]:::container
+  recovery["Recovery basis/state + quarantine<br/>[Discard-only reconciliation]"]:::container
   current_pointer["Current run pointer<br/>[Atomic file replacement]"]:::container
   isolated_workspace["Isolated scenario workspace<br/>[Ephemeral filesystem]"]:::container
   child_runtime["Codex app-server<br/>[Fresh home + runtime-owned thread metadata]"]:::external
@@ -26,6 +29,7 @@ flowchart LR
     harness["Standalone behavior harness<br/>[One workflow invocation]"]:::component
     assembler["Package + workspace assembler<br/>[Manifest-bound inputs]"]:::component
     runtime_adapter["Child-runtime adapter<br/>[Permission profile + app-server + parent probes]"]:::component
+    transport["Transport + output reconciler<br/>[Timeout, reap, diagnostics, retry]"]:::component
     publisher["Immutable run publisher<br/>[Run → receipt → atomic pointer]"]:::component
     validator["Boundary validator + report writer<br/>[Structure + serialization]"]:::component
     selector["Validation selector<br/>[Six check IDs]"]:::component
@@ -49,17 +53,24 @@ flowchart LR
   runtime_adapter -->|provisions runtime-only auth| credential_channel
   credential_channel -->|authenticates runtime outside tool sandbox| child_runtime
   runtime_adapter -->|thread/start + one workflow turn over stdio| child_runtime
+  harness --> transport
+  transport -->|fresh thread/process + bounded deadline| runtime_adapter
+  transport_policy -->|policy identity + deadlines| transport
   child_runtime -->|model execution only| model_control_plane
   child_runtime -->|events| harness
   runtime_adapter -->|preflight schema + effective config/inventories + managed-profile probes| preflight_attestation
   preflight_attestation -->|feasibility gate only; never copied as authority| harness
   runtime_adapter -->|fresh generation schema, exact eleven-row runtime inventory, probes| generation_attestation
   generation_attestation -->|required fresh identity| implementation_manifest
+  transport_policy -->|required closed policy| implementation_manifest
   assembler -->|distinct path-sorted five-package resource set| input_set
   implementation_manifest -->|manifest identity| input_set
   isolated_workspace -->|workspace-only child tools| child_runtime
   input_set -->|bound generation inputs| harness
   harness -->|validated event bundle + input-set identity| publisher
+  publisher -->|acquires and validates| publisher_lease
+  publisher_lease -->|owns active run/recovery context| recovery
+  recovery -->|reconciles before generation| publisher
   publisher -->|1. install validated run| immutable_run
   immutable_run -->|2. bind installed run in| prepared_receipt
   prepared_receipt -->|3. authorize atomic replacement of| current_pointer

@@ -38,6 +38,16 @@ Use one spec-normative boundary model with these projections:
 - an expired stage is reconciled from its bound output before retry: complete
   valid output is accepted without reinvocation, absent output permits one
   transient retry, and partial or non-retryable evidence fails closed;
+- the behavior implementation manifest binds one closed positive transport
+  policy; caller-selected, nonpositive, missing, substituted, or unbounded
+  turn and termination-wait deadlines invalidate the run;
+- each transport attempt binds one fresh runtime thread, one preallocated
+  logical child process, the policy identity, termination state, output state,
+  the complete ordered diagnostic tuple, inline bounded evidence, and one
+  closed decision;
+- an expired child is terminated, observed stopped, and reaped within the
+  manifest wait bound before output inspection or the single absent-output
+  retry; uncertain liveness pauses without inspection or retry;
 - the harness binds exactly the five participating skill packages and every
   current resource-map entry, the applicable repository instruction chain,
   the governing contracts, scenario inputs, candidate oracles, and its own two
@@ -48,6 +58,9 @@ Use one spec-normative boundary model with these projections:
 - the parent accepts output only after independently observing an effective
   runtime-native sandbox/profile that gives child tools workspace-only
   filesystem access and no network, connectors, or subagents;
+- runtime-identity instability binds the attested launcher or package to one
+  of eight exact checkpoint/phase pairs; conditional remote-control policy
+  failures retain only the rule, event kind, and derived booleans;
 - model-service control-plane transport and opaque authentication belong to
   the identified runtime, stay outside child tool authority and
   sandbox-readable roots, and are never serialized into evidence;
@@ -55,11 +68,17 @@ Use one spec-normative boundary model with these projections:
   the identity-bound scenario; transient access observations must contain no
   unmanifested input or capability and are discarded after their typed result
   is recorded;
-- behavior generation validates a deterministic non-authoritative staged run,
-  exclusively writes and fsyncs a prepared receipt, installs and fsyncs the
-  immutable run, validates it, atomically replaces and fsyncs the current
-  pointer, and removes and fsyncs the reconciled receipt;
+- behavior generation acquires one persistent publisher lock, validates global
+  publication and recovery state, writes a durable run-bound publisher lease,
+  validates a deterministic non-authoritative staged run, exclusively writes
+  and fsyncs a prepared receipt, installs and fsyncs the immutable run,
+  validates it, atomically replaces and fsyncs the current pointer, and
+  removes and fsyncs the reconciled receipt and lease;
   the receipt makes these writes recoverable rather than jointly atomic;
+  orphan working, staging, and lease-only state is discard-only through an
+  immutable recovery basis, atomic state replacement, preserved quarantine,
+  and directory fsync; completed recovery history is excluded from active
+  candidacy only after its terminal invariants validate;
   deterministic validation checks the run and current identities without
   reinvoking lifecycle skills or replacing its recorded invocation profile;
 - `scripts/validate-boundary-proof.py` performs structural, vocabulary,
@@ -117,6 +136,11 @@ the validated report identity without rewriting the report.
 - Permit general child-tool network access: rejected because it creates
   undeclared inputs and egress. Only the identified runtime's model-service
   control-plane transport is allowed outside the child tool profile.
+- Use caller-provided timeouts or generic process handles: rejected because
+  retry and liveness safety require manifest-owned bounds and exact
+  thread/process identity.
+- Adopt orphan publication output: rejected because incomplete nondeterministic
+  work cannot become authority; orphan recovery is discard-only.
 
 ## Consequences
 
@@ -147,11 +171,15 @@ the validated report identity without rewriting the report.
   writes and require explicit crash-point tests. Staging is non-authoritative;
   the durable exclusive receipt always precedes immutable installation and
   pointer mutation.
+- Persistent lock, durable lease, global discovery, immutable recovery basis,
+  preserved quarantine, and completed-history partitioning add implementation
+  complexity but make interruption and concurrency behavior deterministic.
 
 ## Follow-up
 
-- Architecture-review R4 accepted the original amendment. The write-ahead
-  ordering clarification remains proposed until focused architecture rereview.
+- Architecture-review R4 accepted the original amendment. The expanded
+  transport, diagnostic, checkpoint-phase, publication, and recovery contract
+  remains proposed until focused architecture rereview.
 - The execution plan must order typed model and fixtures before skill rollout.
 - The test spec must map R28-R28z and R56-R56q before implementation.
 - The revised plan begins with child-runtime sandbox and credential-isolation

@@ -124,7 +124,7 @@
 - Single Bounded Review-Fix Workflow Automation change metadata: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml`
 - Boundary-First Proof Modeling proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Boundary-First Proof Modeling spec amendments: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Boundary-First Proof Modeling spec-review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r13.md`
+- Boundary-First Proof Modeling spec-review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r36.md`
 - Boundary-First Proof Modeling ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md`
 - Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
 - Formal Review Recording spec: `specs/formal-review-recording.md`
@@ -384,10 +384,11 @@ for the component view.
 | --- | --- | --- |
 | Boundary model constants and parser | `scripts/boundary_proof_model.py` | Projects closed IDs, marker and scope rules, row schemas, reference integrity, fixture identities, result vocabularies, and report aggregation from approved specs. |
 | Capability evaluator | Pure functions in `scripts/boundary_proof_model.py` | Computes the six-check, fixture, preservation, parity, overhead, and final capability outcomes from validated typed inputs; it performs no filesystem writes. |
-| Standalone behavior harness | `scripts/boundary_proof_behavior.py` | Assembles the five participating skill packages and governing inputs, enforces the closed two-module import boundary, creates the isolated workspace and fresh runtime home, launches one workflow-orchestrated invocation, captures stage-created files without rendering normative content, validates transient access observations, and publishes or reconciles one immutable behavior run. |
-| Child-runtime adapter | Functions in `scripts/boundary_proof_behavior.py` | Resolves and identities Codex CLI 0.138.0 or later, starts its app-server over stdio, binds the runtime-reported model and active permission profile, independently probes the same profile through `codex sandbox`, provisions opaque control-plane authentication outside the child workspace and tool environment, and rejects output when profile provenance or enforcement cannot be established. |
+| Standalone behavior harness | `scripts/boundary_proof_behavior.py` | Assembles the five participating skill packages and governing inputs, enforces the closed two-module import boundary, creates the isolated workspace and fresh runtime home, invokes the public workflow once, captures stage-created files without rendering normative content, and coordinates transport, output reconciliation, and immutable publication. |
+| Child-runtime adapter | Functions in `scripts/boundary_proof_behavior.py` | Resolves and identities the exact supported Codex runtime projection, starts app-server over stdio, binds runtime metadata and the active permission profile, independently probes the same profile through `codex sandbox`, provisions opaque control-plane authentication outside child authority, enforces the closed checkpoint-to-phase matrix, and emits only bounded typed diagnostics. |
+| Transport and output reconciler | Functions in `scripts/boundary_proof_behavior.py` | Applies the manifest-bound positive turn and termination-wait deadlines, binds every attempt to one fresh logical thread/process pair, classifies the complete closed diagnostic tuple, terminates and reaps expired children, inspects only bound stage-output roots, and permits the single absent-output retry while failing closed or pausing every other unsafe tuple. |
 | Isolated workspace assembler | Functions in `scripts/boundary_proof_behavior.py` | Copies only manifest-bound skills, mapped resources, applicable instructions, contracts, scenario inputs, and candidate oracles into a fresh workspace, exposes one writable behavior-output root, and keeps the private runtime home and credentials outside sandbox-readable roots. |
-| Immutable run publisher and reconciler | Functions in `scripts/boundary_proof_behavior.py` | Builds and validates a deterministic non-authoritative staged run, exclusively writes and fsyncs the prepared receipt before publication mutation, installs and fsyncs the immutable run, validates it, atomically replaces and fsyncs the current pointer, removes the reconciled receipt, and resumes that sequence without reinvoking lifecycle skills. |
+| Immutable run publisher and reconciler | Functions in `scripts/boundary_proof_behavior.py` | Acquires the persistent publisher lock, validates global publication/recovery state, creates a run-bound publisher lease, builds a deterministic non-authoritative staged run, writes the durable exclusive receipt before installation or pointer mutation, and reconciles every interruption without reinvoking lifecycle skills. Completed recovery history is preserved but excluded from active candidacy. |
 | Boundary validator | `scripts/validate-boundary-proof.py` | Validates scoped feature specs, matching test specs, fixture evidence, and the capability report without scoring semantic adequacy. |
 | Regression suite | `scripts/test-boundary-proof.py` | Proves known and unknown values, duplicates, orphans, version mismatch, aggregate behavior, and the compact simple fixture. |
 | Boundary fixtures | `tests/fixtures/boundary-proof/` | Holds valid, invalid, eight seeded incident-replay, and simple-change inputs. |
@@ -701,51 +702,77 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    generation attestation binds the current runtime, schemas, configuration,
    inventories, classifications, probes, and credential-isolation result.
 13. The generation attestation is a required member of
-   `behavior-implementation-manifest.json`. Its identity is bound transitively
-   through the simple-change input-set identity, installed immutable run,
-   atomic current pointer, and `simple-change-behavior` report selector.
+   `behavior-implementation-manifest.json`, beside the exact closed
+   `boundary-transport-policy-v1`. The policy owns positive, non-caller-
+   selectable turn and termination-wait deadlines. The manifest, attestation,
+   and policy identities are bound transitively through the simple-change
+   input-set identity, installed immutable run, atomic current pointer, and
+   `simple-change-behavior` report selector.
    Validation reuses those recorded identities only: it cannot invoke the
    runtime or substitute preflight or validation-time runtime evidence. A
-   missing, copied, stale, substituted, or tampered generation attestation
-   invalidates the manifest and every downstream identity.
+   missing, copied, stale, substituted, or tampered generation attestation or
+   transport policy invalidates the manifest and every downstream identity.
 14. The outer prompt is a deterministic constant in the identity-bound harness
    module combined with `scenario_ref`; changing either changes the input-set
    identity. Parent-observed sandbox audit is transient enforcement state: the
    harness validates it before publication, records only the typed result,
    bounded non-secret profile attestation, and diagnostic in durable evidence,
    then discards the raw log.
-15. Publication uses the exact durable sequence:
-    (a) build and validate the sibling temporary run;
-    (b) rename it to the deterministic non-authoritative staging root, fsync
-    the staging parent, and validate the staged run;
-    (c) exclusively write and fsync `prepared.json`;
-    (d) rename staging to the immutable run root, fsync the runs directory,
+15. Each lifecycle event records one or two exact transport-attempt rows.
+    Every row binds a fresh `runtime_thread_id`, a preallocated logical
+    `runtime_process_id`, the manifest transport-policy identity, termination
+    state, output state, the complete ordered diagnostic tuple, bounded inline
+    evidence, and one closed decision. Timeout uses the parent monotonic clock.
+    An expired child must be terminated, observed stopped, and reaped within
+    the policy wait bound before output inspection or retry. Uncertain
+    liveness pauses without output inspection. Complete output reconciles
+    without reinvocation; absent output permits one fresh-runtime retry;
+    partial, extra, contradictory, protocol-policy, prohibited-event, shape,
+    classification, or identity evidence fails closed.
+16. Runtime-identity evidence binds `runtime-launcher` or `runtime-package` to
+    one of the eight closed checkpoints and to the exact preflight phase.
+    `remoteControl/status/changed` remains non-side-effect traffic only for
+    disabled status with null environment identity; other schema-valid values
+    emit `protocol-conditional-policy-violation` using boolean-only evidence.
+17. Publication acquires the persistent `publisher.lock`, validates global
+    state, and creates one run/publisher-bound durable lease before generating.
+    It then uses the exact durable sequence:
+    (a) build, fsync, and validate the working/staged run;
+    (b) exclusively write and fsync `prepared.json`;
+    (c) rename staging to the immutable run root, fsync the runs directory,
     and validate the installed run;
-    (e) write and fsync a sibling temporary pointer, atomically replace
+    (d) write and fsync a sibling temporary pointer, atomically replace
     `current.json`, and fsync the pointer parent directory;
-    (f) reconcile the installed run and pointer; and
-    (g) remove `prepared.json` and fsync its parent.
+    (e) reconcile the installed run and pointer;
+    (f) remove and fsync receipt and lease parents; and
+    (g) release the publisher lock.
     The receipt makes the multi-step publication recoverable; it does not make
     immutable-run installation and pointer replacement jointly atomic.
     Staging is reversible and non-authoritative. Immutable installation and
     pointer replacement never occur without a durable exclusive receipt.
-    A staged run without a receipt cannot satisfy evidence and fails closed for
-    explicit reconciliation.
+    Global discovery runs before allocation and after lock acquisition,
+    validates transient names before contents, reconciles the unique active
+    lease/receipt/recovery candidate, and fails closed on ambiguous active run
+    identities. Orphan working, staging, and lease-only state is discard-only
+    through an immutable recovery basis, atomically replaced recovery state,
+    preserved quarantine, and directory fsync. Valid completed recovery
+    history is excluded from active candidacy; malformed or nonterminal
+    recovery remains active and conflicting.
     Validation checks the pointed run and current bound identities without
     invoking a lifecycle skill or substituting the validator's environment.
-16. The incident runner evaluates the eight frozen fixture IDs at their
+18. The incident runner evaluates the eight frozen fixture IDs at their
    expected pre-code-review gates.
-17. Adapter generation carries the mapped reference through Codex, Claude, and
+19. Adapter generation carries the mapped reference through Codex, Claude, and
    opencode packages; resource validation proves relative path and raw-byte
    identity.
-18. The evaluator computes the capability report from fixtures, checks,
+20. The evaluator computes the capability report from fixtures, checks,
    preservation, parity, false blocking, ownership, artifact count, and
    correction-cycle evidence.
-19. `verify` rejects missing, stale, mismatched, asserted, or incomplete
+21. `verify` rejects missing, stale, mismatched, asserted, or incomplete
    evidence.
-20. A release activates `v1` only when tracked notes bind its tag to the
+22. A release activates `v1` only when tracked notes bind its tag to the
    passing report's SHA-256.
-21. Rollback reverts skills, references, validators, fixtures, selectors, and
+23. Rollback reverts skills, references, validators, fixtures, selectors, and
    adapters as one unit; partial `v1` evidence is not legacy proof.
 
 ### Generated guidance flow
@@ -953,6 +980,12 @@ accepted.
 Raw access observations are transient enforcement state, not a new durable
 evidence schema.
 
+The implementation manifest is the complete generation selector for harness
+components, skill packages, instructions, contracts, invocation profile,
+transport policy, and fresh runtime attestation. Canonical validation
+reconstructs the exact policy and its identity; shape-only validation or a
+validation-time replacement is insufficient.
+
 ### Hermetic behavior trust boundary
 
 The parent harness trusts only the identity-bound runtime executable and a
@@ -1047,6 +1080,54 @@ Credentials are absent from child tool environment, copied scenario inputs,
 manifests, access observations, diagnostics, and durable runs.
 The runtime may use that opaque channel only for model-service transport;
 general child-tool network access remains denied.
+
+### Transport, diagnostic, and stage-output boundary
+
+The transport coordinator is an internal responsibility of the standalone
+harness, not a workflow engine or stage-content author.
+Its policy is immutable input from the behavior implementation manifest.
+Callers cannot select, shorten, remove, or make either deadline unbounded.
+
+Every transport attempt binds one logical child process and one runtime
+thread. The parent monotonic clock classifies timeout and the bounded
+termination wait. A confirmed-stopped receipt proves termination observation
+and reap for that same child; otherwise the row is liveness-uncertain and
+pauses without inspecting output.
+
+Protocol classification, conditional protocol policy, prohibited events,
+runtime identity, output inventory, and timeout are independent observations.
+The complete diagnostic tuple is retained in closed precedence order; the
+primary diagnostic is presentation only. Runtime-identity evidence binds the
+attested launcher or package to one closed checkpoint/phase. Conditional
+remote-control evidence retains only a rule ID, event kind, and two booleans.
+
+The harness inspects only the bound output root after normal completion or
+confirmed stop. Stage skills own the complete normative bytes. The harness may
+validate paths, identities, and structure, but never fills requirements,
+reviews, tests, commands, or judgments. Only absent output after a confirmed
+timeout may retry once, with fresh process and thread identities.
+
+### Publication and recovery boundary
+
+Publication has one persistent control lock and one durable run-bound lease.
+The lock serializes discovery and mutation; the lease, prepared receipt, and
+recovery basis provide durable ownership. No working directory, staging
+directory, temporary pointer, receipt, lease, or recovery record is inferred
+as authoritative outside its exact validated tuple.
+
+Prepared publication is write-ahead and recoverable rather than atomic.
+Resume reconciles existing completion evidence before any lifecycle
+reinvocation. Orphan discard uses an immutable recovery basis, atomically
+replaced state, preserved noncanonical quarantine, and fsynced parent
+directories. Recovery adoption is forbidden. Completed recovery history is
+audit evidence and is removed from active candidate projection only after its
+basis, terminal state, lease absence, and quarantine invariant validate.
+
+Unknown states, malformed canonical objects, multiple active run identities,
+changed inputs, ownership mismatch, or partial installed evidence fail closed.
+One specially named malformed temporary recovery-basis file may reach only
+the constrained locked cleanup route when its lease/run/recovery context is
+otherwise unique and valid.
 
 Structural validation and semantic review remain separate:
 
@@ -1574,10 +1655,15 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Readiness
 
-The canonical package and hermetic behavior-harness amendment are approved.
-Architecture-review R4 accepted the standalone harness, child-runtime trust
-boundary, isolated workspace, invocation profile, and immutable publication
-flow for plan and test-spec reliance.
+The retained canonical package is approved. The expanded hermetic
+behavior-harness amendment is draft pending focused architecture review.
+Architecture-review R4 accepted the original standalone harness,
+child-runtime trust boundary, isolated workspace, invocation profile, and
+immutable publication flow. The current revision adds the approved R28y
+transport policy, diagnostic/checkpoint model, stage-output reconciliation,
+global publication ownership, and discard-only recovery contract; downstream
+plan and test-spec reliance on those additions requires the new approving
+architecture review.
 
 ADR `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md` records the accepted durable consolidation and supersedes the three earlier profile ADRs; their descriptions below are historical context, not current writable-mechanism authority under the approved spec.
 
