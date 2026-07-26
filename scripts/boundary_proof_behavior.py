@@ -1555,6 +1555,8 @@ def _validate_review_payload(
                 f"review-envelope:{stage}:id={review_id!r}:outcome={outcome!r}",
                 file=sys.stderr,
             )
+            if isinstance(record, str):
+                print(record, file=sys.stderr)
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
     record_required = (
         f"Review ID: {review_id}",
