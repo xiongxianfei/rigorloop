@@ -295,6 +295,10 @@ class BoundaryRuntimeError(RuntimeError):
         super().__init__(f"{diagnostic_id} ({selected})")
 
 
+class _StageTurnTimeout(RuntimeError):
+    """An ephemeral stage turn ended before an accepted result existed."""
+
+
 @dataclass(frozen=True)
 class _SemVer:
     major: int
@@ -2780,15 +2784,26 @@ def generate_behavior(
     def invoke(request: Mapping[str, object]) -> tuple[dict[str, object], dict[str, object]]:
         if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
             print(f"stage-start:{request.get('stage')}", file=sys.stderr)
-        generated: list[dict[str, object]] = []
-        observed_attestation = _collect_runtime_attestation(
-            command,
-            repo_root=repo_root,
-            generation_request=request,
-            generation_sink=generated,
-        )
-        if len(generated) != 1:
-            raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+        for attempt in (1, 2):
+            generated: list[dict[str, object]] = []
+            try:
+                observed_attestation = _collect_runtime_attestation(
+                    command,
+                    repo_root=repo_root,
+                    generation_request=request,
+                    generation_sink=generated,
+                )
+            except _StageTurnTimeout as error:
+                if attempt == 2:
+                    raise BoundaryRuntimeError(
+                        "unexpected-prohibited-event", "in-turn"
+                    ) from error
+                continue
+            if len(generated) != 1:
+                raise BoundaryRuntimeError(
+                    "protocol-shape-incompatible", "in-turn"
+                )
+            break
         if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
             print(f"stage-complete:{request.get('stage')}", file=sys.stderr)
         return observed_attestation, generated[0]
@@ -3607,7 +3622,14 @@ class _AppServer:
         self._notifications.clear()
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
-            response = pending.pop(0) if pending else self._read_message(deadline)
+            try:
+                response = (
+                    pending.pop(0) if pending else self._read_message(deadline)
+                )
+            except BoundaryRuntimeError as error:
+                if error.diagnostic_id == "experimental-api-unavailable":
+                    raise _StageTurnTimeout from error
+                raise
             method = response.get("method")
             if not isinstance(method, str):
                 raise BoundaryRuntimeError(
@@ -3680,9 +3702,7 @@ class _AppServer:
                     "agent_message_count": len(messages),
                     "event_methods": event_methods,
                 }
-        raise BoundaryRuntimeError(
-            "unexpected-prohibited-event", "in-turn"
-        )
+        raise _StageTurnTimeout
 
     def close(self) -> None:
         self._process.terminate()

@@ -26,6 +26,7 @@ from boundary_proof_behavior import (
     RUNTIME_SCHEMA_IDENTITY_BY_VERSION,
     BoundaryRuntimeError,
     _AppServer,
+    _StageTurnTimeout,
     _artifact_kind,
     _build_behavior_manifest,
     _derive_config_origin_paths,
@@ -2151,6 +2152,19 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                     raised.exception.diagnostic_id,
                     "unexpected-prohibited-event",
                 )
+
+    def test_turn_collection_distinguishes_retryable_timeout_from_bad_events(
+        self,
+    ) -> None:
+        server = object.__new__(_AppServer)
+        server._notifications = []  # type: ignore[attr-defined]
+        with mock.patch.object(
+            server,
+            "_read_message",
+            side_effect=BoundaryRuntimeError("experimental-api-unavailable"),
+        ):
+            with self.assertRaises(_StageTurnTimeout):
+                server.collect_turn("thread-1", [], timeout=1)
 
     def test_thread_and_turn_requests_bind_one_exact_workspace_root(self) -> None:
         workspace = Path("/isolated-workspace")
