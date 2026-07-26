@@ -1158,10 +1158,6 @@ def _string_array_schema() -> dict[str, object]:
 def _feature_model_schema() -> dict[str, object]:
     boundary_row = _closed_object_schema(
         {
-            "dimension_id": {
-                "type": "string",
-                "enum": list(CORE_DIMENSION_IDS),
-            },
             "applicability": {
                 "type": "string",
                 "enum": ["applicable", "not-applicable"],
@@ -1175,14 +1171,6 @@ def _feature_model_schema() -> dict[str, object]:
     )
     example_row = _closed_object_schema(
         {
-            "example_id": {
-                "type": "string",
-                "enum": [
-                    "text.example.trim",
-                    "text.example.preserve",
-                    "text.example.unknown",
-                ],
-            },
             "role": {
                 "type": "string",
                 "enum": [
@@ -1211,23 +1199,27 @@ def _feature_model_schema() -> dict[str, object]:
         {
             "boundary_model_version": {"type": "string", "const": "v1"},
             "boundary_model_scope": {"type": "string", "const": "R1-R4"},
-            "core_dimensions": {
-                "type": "array",
-                "items": boundary_row,
-                "minItems": 12,
-                "maxItems": 12,
-            },
+            "core_dimensions": _closed_object_schema(
+                {
+                    dimension_id: boundary_row
+                    for dimension_id in CORE_DIMENSION_IDS
+                }
+            ),
             "extensions": {
                 "type": "array",
                 "items": boundary_row,
                 "maxItems": 0,
             },
-            "examples": {
-                "type": "array",
-                "items": example_row,
-                "minItems": 3,
-                "maxItems": 3,
-            },
+            "examples": _closed_object_schema(
+                {
+                    example_id: example_row
+                    for example_id in (
+                        "text.example.trim",
+                        "text.example.preserve",
+                        "text.example.unknown",
+                    )
+                }
+            ),
             "interactions": {
                 "type": "array",
                 "items": interaction_row,
@@ -1240,15 +1232,6 @@ def _feature_model_schema() -> dict[str, object]:
 def _proof_map_schema() -> dict[str, object]:
     proof_row = _closed_object_schema(
         {
-            "proof_obligation_id": {
-                "type": "string",
-                "enum": [
-                    "text.proof.canonical",
-                    "text.proof.mode",
-                    "text.proof.outcome",
-                    "text.proof.evidence",
-                ],
-            },
             "governing_requirement_ids": _string_array_schema(),
             "boundary_or_interaction_ids": _string_array_schema(),
             "test_case_ids": _string_array_schema(),
@@ -1263,14 +1246,53 @@ def _proof_map_schema() -> dict[str, object]:
         {
             "boundary_model_version": {"type": "string", "const": "v1"},
             "boundary_model_scope": {"type": "string", "const": "R1-R4"},
-            "proof_obligations": {
-                "type": "array",
-                "items": proof_row,
-                "minItems": 4,
-                "maxItems": 4,
-            },
+            "proof_obligations": _closed_object_schema(
+                {
+                    proof_id: proof_row
+                    for proof_id in (
+                        "text.proof.canonical",
+                        "text.proof.mode",
+                        "text.proof.outcome",
+                        "text.proof.evidence",
+                    )
+                }
+            ),
         }
     )
+
+
+def _expand_stage_feature_model(record: Mapping[str, object]) -> dict[str, object]:
+    dimensions = record.get("core_dimensions")
+    examples = record.get("examples")
+    if not isinstance(dimensions, dict) or not isinstance(examples, dict):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    return {
+        **{key: value for key, value in record.items() if key not in {"core_dimensions", "examples"}},
+        "core_dimensions": [
+            {"dimension_id": dimension_id, **row}
+            for dimension_id, row in dimensions.items()
+            if isinstance(row, dict)
+        ],
+        "examples": [
+            {"example_id": example_id, **row}
+            for example_id, row in examples.items()
+            if isinstance(row, dict)
+        ],
+    }
+
+
+def _expand_stage_proof_map(record: Mapping[str, object]) -> dict[str, object]:
+    obligations = record.get("proof_obligations")
+    if not isinstance(obligations, dict):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    return {
+        **{key: value for key, value in record.items() if key != "proof_obligations"},
+        "proof_obligations": [
+            {"proof_obligation_id": proof_id, **row}
+            for proof_id, row in obligations.items()
+            if isinstance(row, dict)
+        ],
+    }
 
 
 def _route_request(request: str) -> dict[str, object]:
@@ -2666,6 +2688,7 @@ def generate_behavior(
     feature_model = spec_payload.get("feature_model")
     if not isinstance(feature_model, dict):
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    feature_model = _expand_stage_feature_model(feature_model)
     try:
         normalized_feature = normalize_feature_model(feature_model)
         feature_markdown = _render_feature_markdown(feature_model)
@@ -2704,6 +2727,7 @@ def generate_behavior(
     proof_map = test_spec_payload.get("proof_map")
     if not isinstance(proof_map, dict):
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    proof_map = _expand_stage_proof_map(proof_map)
     try:
         normalize_proof_map(proof_map, normalized_feature)
         test_spec_markdown = _render_test_spec_markdown(
