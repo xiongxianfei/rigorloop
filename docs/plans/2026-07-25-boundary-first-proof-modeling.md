@@ -81,11 +81,11 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: implementing
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r12.md
-- Review status: approved; stage=test-spec-review; round=r10
+- Review status: approved; stage=test-spec-review; round=r12
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement M2 hermetic harness and upstream behavior
+- Next stage: code-review M2 hermetic harness and upstream behavior
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 

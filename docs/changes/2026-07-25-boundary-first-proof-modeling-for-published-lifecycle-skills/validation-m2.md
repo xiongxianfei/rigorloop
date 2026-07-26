@@ -1,19 +1,21 @@
-# M2 Runtime-Feasibility Evidence
+# M2 Hermetic Upstream-Behavior Evidence
 
 Stage: implement
-Milestone: M2 preflight
+Milestone: M2
 Result: pass
 Diagnostic: none
 
 ## Commands
 
 - `python scripts/test-boundary-proof.py BoundaryProofEnvironmentTests` —
-  passed 18 focused tests.
-- `python scripts/test-boundary-proof.py` — passed 34 tests.
+  passed 23 focused tests.
+- `python scripts/test-boundary-proof.py` — passed 39 tests, including the
+  current immutable-run validation-only regression.
 - `python scripts/validate-skills.py` — validated 24 skills.
 - `python scripts/test-skill-validator.py` — passed 259 tests.
 - `python scripts/build-skills.py --check` — passed.
 - `python -m py_compile scripts/boundary_proof_behavior.py
+  scripts/boundary_proof_model.py scripts/validate-boundary-proof.py
   scripts/test-boundary-proof.py` — passed.
 - `python scripts/boundary_proof_behavior.py check-environment --change-id
   2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
@@ -22,6 +24,11 @@ Diagnostic: none
 - A minimal structured app-server turn through the same identified runtime,
   exact schema/protocol projection, event classifier, root requests, and
   permission profile returned `{"ok":true}` with 21 classified event methods.
+- The controlled `exercise-fixture` followed by `validate-fixture` passed in
+  a temporary output root.
+- Canonical `generate` passed and published immutable run
+  `run-618414b81ad5279f187a6187e992e2c2`.
+- Canonical `validate` passed without runtime or lifecycle-skill reinvocation.
 
 ## Bounded receipt
 
@@ -38,8 +45,9 @@ credential-isolation results.
 
 No credential, canary, private path, raw configuration, raw inventory, or raw
 protocol log is serialized. The preflight attestation is feasibility evidence
-only; the later behavior-generation manifest must derive its own fresh
-generation-time attestation.
+only. The current `behavior-implementation-manifest.json` contains a distinct
+fresh generation-time attestation and transitively binds the current immutable
+run.
 
 ## Implementation-discovered contract correction
 
@@ -75,9 +83,21 @@ records that exact response while requiring both thread and turn requests to
 name only the isolated workspace; the independent sandbox probes remain the
 enforcement proof.
 
+## Immutable behavior result
+
+```json
+{"false_blocking_count":0,"input_set_identity":"sha256:ac62e92634807c60d709f66ca4c56ddc82c3e003a39ff6518c70ae62a73081e3","new_universal_artifact_count":0,"result":"pass","run_id":"run-618414b81ad5279f187a6187e992e2c2","simple_fixture_structure_correction_cycles":0}
+```
+
+The workflow turn selected the complete boundary-first feature profile and
+applicable-only proof profile; both formal review outcomes were approved. The
+harness projected that closed decision into fresh feature-spec, review,
+test-spec, and review artifacts, reparsed them with the same parser used for
+the independent candidates, and published them through the prepared-receipt
+transaction.
+
 ## Handoff
 
-The runtime feasibility gate and spec-review R26 are satisfied. M2 remains
-`implementing` until architecture, plan, and test-spec review synchronization
-and the remaining harness, immutable behavior-run, and validation work are
-complete.
+Runtime feasibility, governing review synchronization, the controlled fixture,
+fresh generation, immutable publication, and validation-only reuse are
+satisfied. M2 is ready for independent code review.
