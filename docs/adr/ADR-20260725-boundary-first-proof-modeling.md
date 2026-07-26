@@ -2,7 +2,7 @@
 
 ## Status
 
-accepted
+proposed
 
 ## Context
 
@@ -27,6 +27,28 @@ Use one spec-normative boundary model with these projections:
 - `specs/skill-contract.md` owns the eight-skill portable projection;
 - `scripts/boundary_proof_model.py` is the only typed executable projection of
   closed constants, record parsing, and pure capability aggregation;
+- `scripts/boundary_proof_behavior.py` is a standalone behavior harness that
+  may import only the Python standard library and `boundary_proof_model`; it
+  does not import the workflow-automation engine, lifecycle validators, test
+  drivers, or third-party packages;
+- the harness binds exactly the five participating skill packages and every
+  current resource-map entry, the applicable repository instruction chain,
+  the governing contracts, scenario inputs, candidate oracles, and its own two
+  implementation components;
+- the harness launches one child runtime with a fresh configuration home and
+  isolated workspace, records runtime version and executable identity plus the
+  child-reported model ID, and applies closed instruction and tool profiles;
+- child tools have workspace-only filesystem access and no network,
+  connectors, or subagents; model-service control-plane transport belongs to
+  the identified runtime and is not child tool authority;
+- the exact outer prompt is a deterministic harness constant combined with
+  the identity-bound scenario; transient access observations must contain no
+  unmanifested input or capability and are discarded after their typed result
+  is recorded;
+- behavior generation publishes one prepared-receipt-backed immutable run and
+  atomic current pointer; deterministic validation checks that run and current
+  identities without reinvoking lifecycle skills or replacing its recorded
+  invocation profile;
 - `scripts/validate-boundary-proof.py` performs structural, vocabulary,
   traceability, version-parity, fixture, and aggregate validation and is the
   only component permitted to serialize or replace the canonical capability
@@ -69,8 +91,9 @@ the validated report identity without rewriting the report.
 ## Consequences
 
 - The implementation adds one typed model module, one validator CLI, one test
-  module, one fixture family, selector registration, eight skill projections,
-  copied mapped references, and one change-specific capability report.
+  module, one standalone behavior harness, one fixture family, selector
+  registration, eight skill projections, copied mapped references, immutable
+  behavior-run evidence, and one change-specific capability report.
 - The copied reference increases packaged bytes but is loaded on demand and is
   identical across supported skills and adapter targets.
 - Any vocabulary change requires a spec amendment before code changes.
@@ -83,7 +106,8 @@ the validated report identity without rewriting the report.
 
 ## Follow-up
 
-- Architecture review must accept this ADR before planning.
+- Architecture-review R3 must accept this amendment before plan and test-spec
+  revision rely on the hermetic harness.
 - The execution plan must order typed model and fixtures before skill rollout.
 - The test spec must map R28-R28z and R56-R56q before implementation.
-- On architecture-review approval, change this ADR to `accepted`.
+- On architecture-review R3 approval, change this ADR back to `accepted`.
