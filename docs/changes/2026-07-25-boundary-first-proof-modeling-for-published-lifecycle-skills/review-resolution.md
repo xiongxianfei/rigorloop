@@ -2675,6 +2675,63 @@ path.
 Validation target: spec-review-r43
 Validation evidence: pending
 
+### spec-review-r43
+
+#### BFP-SR43-1 — The probe does not bind file-change denial to accepted turns
+
+Finding ID: BFP-SR43-1
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: app-server file-change authorization policy
+Decision needed: none
+Required outcome: Bind one deny-only authorization policy to the probe and
+every canary, accepted, retry, and reconciliation turn.
+Chosen action: Require request-approval plus `decline` and terminal `declined`,
+forbid generic failure and every accept decision, and bind the shared policy
+through attestation and all governed turn surfaces.
+Rationale: A probe-local denial cannot prove that later turns retain the same
+non-writable authority.
+Validation target: spec-review-r44
+Validation evidence: pending
+
+#### BFP-SR43-2 — Runtime attestation v1 is mutated in place
+
+Finding ID: BFP-SR43-2
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: runtime-attestation compatibility contract
+Decision needed: none
+Required outcome: Give every exact attestation shape one schema version and
+deterministic legacy treatment.
+Chosen action: Advance new evidence to `boundary-runtime-attestation-v2` and
+keep v1 readable only as historical evidence that is stale for this boundary.
+Rationale: One schema identifier cannot describe incompatible exact records.
+Validation target: spec-review-r44
+Validation evidence: pending
+
+#### BFP-SR43-3 — The workspace-failure size boundary is unreachable
+
+Finding ID: BFP-SR43-3
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: workspace-failure result schema
+Decision needed: none
+Required outcome: Keep the failure result bounded with reachable,
+deterministic validation and one legal result for every failure.
+Chosen action: Remove the arbitrary numeric limit and rely on the intrinsic
+bound from exact fields, fixed-length identities, and the closed reason
+vocabulary.
+Rationale: An unreachable boundary adds no safety proof and leaves overflow
+without a valid result.
+Validation target: spec-review-r44
+Validation evidence: pending
+
 #### BFP-SR42-2 — Baseline failure reasons have no defined result surface
 
 Finding ID: BFP-SR42-2
