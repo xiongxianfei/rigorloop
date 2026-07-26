@@ -1,0 +1,35 @@
+{
+  "feature_model": {
+    "boundary_model_version": "v1",
+    "boundary_model_scope": "R1-R1",
+    "core_dimensions": [
+      {"dimension_id": "canonical-trust", "applicability": "applicable", "governing_requirement_ids": ["R1"], "boundary_ids": ["simple.canonical.current"], "non_applicability_rationale": null},
+      {"dimension_id": "identity-freshness", "applicability": "not-applicable", "governing_requirement_ids": [], "boundary_ids": [], "non_applicability_rationale": "No persisted or reviewed identity exists."},
+      {"dimension_id": "closed-vocabulary", "applicability": "applicable", "governing_requirement_ids": ["R1"], "boundary_ids": ["simple.vocabulary.valid"], "non_applicability_rationale": null},
+      {"dimension_id": "state-transition", "applicability": "not-applicable", "governing_requirement_ids": [], "boundary_ids": [], "non_applicability_rationale": "The behavior has no lifecycle state."},
+      {"dimension_id": "authorization-scope", "applicability": "not-applicable", "governing_requirement_ids": [], "boundary_ids": [], "non_applicability_rationale": "The behavior grants no authority."},
+      {"dimension_id": "mutation-atomicity", "applicability": "not-applicable", "governing_requirement_ids": [], "boundary_ids": [], "non_applicability_rationale": "The behavior performs no durable mutation."},
+      {"dimension_id": "interruption-recovery", "applicability": "not-applicable", "governing_requirement_ids": [], "boundary_ids": [], "non_applicability_rationale": "There is no interruptible operation."},
+      {"dimension_id": "concurrency-idempotency", "applicability": "not-applicable", "governing_requirement_ids": [], "boundary_ids": [], "non_applicability_rationale": "There is no concurrent operation."},
+      {"dimension_id": "composition-bypass", "applicability": "not-applicable", "governing_requirement_ids": [], "boundary_ids": [], "non_applicability_rationale": "There is one direct public path."},
+      {"dimension_id": "compatibility-migration", "applicability": "not-applicable", "governing_requirement_ids": [], "boundary_ids": [], "non_applicability_rationale": "No historical representation exists."},
+      {"dimension_id": "outcome-stop", "applicability": "applicable", "governing_requirement_ids": ["R1"], "boundary_ids": ["simple.outcome.pass", "simple.outcome.fail"], "non_applicability_rationale": null},
+      {"dimension_id": "evidence-claims", "applicability": "applicable", "governing_requirement_ids": ["R1"], "boundary_ids": ["simple.evidence.present", "simple.evidence.missing"], "non_applicability_rationale": null}
+    ],
+    "extensions": [],
+    "examples": [],
+    "interactions": []
+  },
+  "proof_map": {
+    "boundary_model_version": "v1",
+    "boundary_model_scope": "R1-R1",
+    "proof_obligations": [
+      {"proof_obligation_id": "simple.proof.canonical", "governing_requirement_ids": ["R1"], "boundary_or_interaction_ids": ["simple.canonical.current"], "test_case_ids": ["T1"], "automation_level": "automated", "manual_procedure_ids": []},
+      {"proof_obligation_id": "simple.proof.vocabulary", "governing_requirement_ids": ["R1"], "boundary_or_interaction_ids": ["simple.vocabulary.valid"], "test_case_ids": ["T2"], "automation_level": "automated", "manual_procedure_ids": []},
+      {"proof_obligation_id": "simple.proof.outcomes", "governing_requirement_ids": ["R1"], "boundary_or_interaction_ids": ["simple.outcome.pass", "simple.outcome.fail"], "test_case_ids": ["T3"], "automation_level": "automated", "manual_procedure_ids": []},
+      {"proof_obligation_id": "simple.proof.evidence", "governing_requirement_ids": ["R1"], "boundary_or_interaction_ids": ["simple.evidence.present", "simple.evidence.missing"], "test_case_ids": ["T4"], "automation_level": "automated", "manual_procedure_ids": []}
+    ]
+  },
+  "new_universal_artifact_count": 0,
+  "structure_only_correction_cycles": 0
+}

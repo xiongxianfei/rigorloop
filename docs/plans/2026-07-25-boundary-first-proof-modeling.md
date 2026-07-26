@@ -78,11 +78,11 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M1. Typed model, validator, fixtures, and report core
-- Current milestone state: planned
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r2.md
-- Review status: approved; stage=test-spec-review; round=r2
+- Current milestone state: review-requested
+- Latest review evidence: none
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: implement M1
+- Next stage: code-review M1
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -90,7 +90,7 @@ resource through generated, packed, and installed outputs.
 
 ### M1. Typed model, validator, fixtures, and report core
 
-- Milestone state: planned
+- Milestone state: review-requested
 - Goal: Establish the closed executable projection and fail-closed proof engine before changing published skill behavior.
 - Requirements: R28-R28e, R28k, R28p-R28y, R56m, R56o-R56p
 - Files/components likely touched:
@@ -298,6 +298,7 @@ implementation authorization is requested.
 - 2026-07-25: Plan created after spec-review R2 and architecture-review R2 approval.
 - 2026-07-25: Plan-review R2 approved the corrected four-milestone sequence.
 - 2026-07-25: Matching workflow and skill-contract test specs were amended with v1 proof maps, fixtures, commands, and milestone gates.
+- 2026-07-26: M1 added the immutable typed model, deterministic validator CLI, frozen incident registry, compact simple-change fixture, and synthetic capability aggregation proof.
 
 ## Decision log
 
@@ -305,16 +306,28 @@ implementation authorization is requested.
 | --- | --- | --- | --- |
 | 2026-07-25 | Use four implementation milestones ordered engine, upstream skills, downstream skills, distribution evidence. | Each slice has an independently reviewable contract and a safe rollback boundary. | One large milestone; skill edits before the proof engine; adapter work before canonical behavior settles. |
 | 2026-07-25 | Keep release activation validation in M4 but perform no activation or publication. | The spec requires activation semantics, while external release actions remain outside this change and automation authority. | Omitting activation tests; writing a premature activation marker. |
+| 2026-07-26 | Use frozen dataclasses plus pure mapping validators and JSON fixture inputs for M1. | The executable projection remains dependency-free, immutable, deterministic, and separate from Markdown serialization or semantic review. | A second YAML registry; validator-owned semantic scoring; mutable global records. |
 
 ## Surprises and discoveries
 
-- None yet.
+- The unified automation state adapter writes `run.pause_reason`, while the
+  change-metadata schema currently accepts `run.stop_reason`. The run was
+  normalized through the sole state writer. This pre-existing harness mismatch
+  is outside the boundary-proof implementation scope and requires a focused
+  workflow-automation bugfix before the next release.
+- M1 aligned-surface audit: selector registration, public skills, shared
+  references, adapters, release notes, and the canonical capability report are
+  intentionally unaffected because M2-M4 own those surfaces.
 
 ## Validation notes
 
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-25-boundary-first-proof-modeling.md` passed after R1 corrections, with unrelated existing workflow-spec lifecycle-language warnings.
 - `python scripts/validate-change-metadata.py docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml` passed after R1 corrections.
 - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` passed after R1 recording.
+- `python scripts/test-boundary-proof.py` passed 12 tests covering closed values, exact fields, version parity, traceability, fixtures, aggregation, evidence, and sole-writer serialization.
+- `python scripts/validate-boundary-proof.py --help` passed.
+- `python -m py_compile scripts/boundary_proof_model.py scripts/validate-boundary-proof.py scripts/test-boundary-proof.py` passed.
+- `python scripts/test-artifact-lifecycle-validator.py` passed 156 tests.
 
 ## Outcome and retrospective
 
