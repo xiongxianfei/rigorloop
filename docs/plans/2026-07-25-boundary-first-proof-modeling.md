@@ -71,32 +71,30 @@ resource through generated, packed, and installed outputs.
 
 | Requirement set | Implementation milestone |
 | --- | --- |
-| R28-R28e, R28k, R28p-R28y, R56m, R56o-R56p | M1 runtime feasibility plus typed projection, structural validation, fixtures, trace, and report correction |
-| R28y, R56p | M2 standalone hermetic behavior harness and immutable publication/recovery |
-| R56-R56e, R56j-R56k | M3 authoring and proof-planning skills plus canonical upstream behavior run |
-| R28f-R28j, R56f-R56i, R56l | M4 implementation, review, verify, and workflow skills |
-| R28l-R28o, R28z, R56n, R56q | M5 selector, adapter parity, baseline, activation, and rollback proof |
+| R28-R28e, R28k, R28p-R28y, R56m, R56o-R56p | M1 typed projection, structural validation, executable incidents, synthetic trace, and report correction |
+| R28y, R56-R56e, R56j-R56k, R56p | M2 pre-harness feasibility, standalone harness/recovery, upstream skills, and fresh upstream behavior |
+| R28f-R28j, R56f-R56i, R56l | M3 downstream implementation/review/verify/workflow projection and preservation |
+| R28l-R28o, R28z, R56n, R56q | M4 selector, adapter parity, current aggregation, activation, and rollback proof |
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Runtime feasibility and deterministic core correction
+- Current milestone: M1. Deterministic core correction
 - Current milestone state: resolution-needed
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r3.md
 - Review status: changes-requested; stage=plan-review; round=r3
-- Remaining in-scope implementation milestones: M1, M2, M3, M4, M5
-- Next stage: plan revision
+- Remaining in-scope implementation milestones: M1, M2, M3, M4
+- Next stage: plan-review R4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=9; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-PL4,BFP-PL5
 
 ## Milestones
 
-### M1. Runtime feasibility and deterministic core correction
+### M1. Deterministic core correction
 
 - Milestone state: resolution-needed
-- Goal: Prove that the selected runtime can enforce the approved hermetic profile, then close every M1 code-review finding in the deterministic model, fixtures, trace, and report engine before building the full behavior harness.
+- Goal: Close every M1 code-review finding in the deterministic model, fixtures, synthetic trace, and report engine without invoking lifecycle skills.
 - Requirements: R28-R28e, R28k, R28p-R28y, R56m, R56o-R56p
 - Files/components likely touched:
-  - `scripts/boundary_proof_behavior.py`
   - `scripts/boundary_proof_model.py`
   - `scripts/validate-boundary-proof.py`
   - `scripts/test-boundary-proof.py`
@@ -105,7 +103,6 @@ resource through generated, packed, and installed outputs.
 - Dependencies:
   - Approved R13 specs, accepted R4 architecture/ADR, and revised active test specs
 - Tests to add/update:
-  - Runtime supported/unsupported version, missing profile attestation, wrong effective sandbox, unavailable or unsafe model metadata, credential leakage, and secret-free evidence cases
   - Stable and unique regression/discovery IDs plus exact requirement ownership for each proof reference
   - Exact eight-row incident ID, seeded-omission, and gate registry mutation cases
   - Complete marker/scope presence and parity matrix, including fully markerless grandfathering and contradictory partial state
@@ -114,19 +111,23 @@ resource through generated, packed, and installed outputs.
   - Eight executable boundary-state incident fixtures with detected stage, diagnostic, code-review escape, and sibling-bypass results
   - Synthetic four-stage simple-change trace with derived applicable-only proof map, artifact count, false blocking, and correction cycles
 - Implementation steps:
-  - First implement a read-only `check-environment` path that resolves the exact Codex executable, records bounded version and executable identity, obtains runtime-owned model metadata, verifies the effective runtime-native sandbox/profile from parent-observed evidence, and proves that the private runtime home is outside child-readable roots.
-  - Run the real feasibility check and record only non-secret bounded results. If any required enforcement or credential-isolation property is unavailable, stop M1 and route back to architecture; do not emulate or weaken the profile.
   - Add failing tests for BFP-M1-CR1 through BFP-M1-CR7 before correcting production behavior.
   - Enforce the complete closed ID/ownership, incident registry, marker parity, evidence identity/blocker, canonical serialization, incident replay, and synthetic trace contracts.
   - Keep M1 behavior proof synthetic: do not invoke lifecycle skills or claim published-skill preservation.
 - Validation commands:
-  - `python scripts/boundary_proof_behavior.py check-environment --json`
   - `python scripts/test-boundary-proof.py`
   - `python scripts/validate-boundary-proof.py --help`
-  - `python -m py_compile scripts/boundary_proof_behavior.py scripts/boundary_proof_model.py scripts/validate-boundary-proof.py scripts/test-boundary-proof.py`
+  - `python -m py_compile scripts/boundary_proof_model.py scripts/validate-boundary-proof.py scripts/test-boundary-proof.py`
   - `python scripts/test-artifact-lifecycle-validator.py`
-- Expected observable result: Runtime feasibility is proven without exposing credentials; every R1 adversarial probe fails closed; the deterministic engine computes synthetic results without asserting published behavior.
-- Commit message: `M1: close boundary core findings and prove runtime feasibility`
+- Promotion evidence:
+  - direct negative regression for every BFP-M1-CR1 through BFP-M1-CR7 escape
+  - current synthetic incident and simple-trace results only
+  - focused validation recorded in `validation-m1.md`
+  - clean M1 code-review R2 or later before M2 starts
+- Failure stop:
+  - Stop on any remaining adversarial escape, unknown-value fall-through, stale evidence acceptance, noncanonical report bytes, or failed validation.
+- Expected observable result: Every R1 adversarial probe fails closed and the deterministic engine computes synthetic results without asserting published behavior.
+- Commit message: `M1: close boundary core review findings`
 - Milestone closeout:
   - validation passed
   - progress updated
@@ -134,26 +135,42 @@ resource through generated, packed, and installed outputs.
   - validation notes updated
   - milestone committed
 - Risks:
-  - Current Codex runtime may not expose verifiable effective-profile or credential-isolation evidence.
   - Parser correction could still compress multi-property requirements or accept unknown values through fall-through.
 - Rollback/recovery:
-  - If feasibility fails, retain the failed non-secret evidence, stop, and revise architecture rather than adding a weaker fallback.
-  - Revert the M1 script/fixture correction as one unit; no published skill depends on it before M3.
+  - Revert the M1 script/fixture correction as one unit; no published skill depends on it before M2.
 
-### M2. Standalone hermetic behavior harness
+### M2. Hermetic harness, upstream skills, and fresh upstream behavior
 
 - Milestone state: planned
-- Goal: Implement one standalone, identity-bound workflow behavior invocation and deterministic immutable-run validation/recovery without importing the workflow-automation engine.
-- Requirements: R28y, R56p
+- Goal: Prove runtime feasibility, freeze the pre-mutation baseline, implement the standalone recoverable harness, update the five participating skill packages, and publish the one fresh upstream behavior run owned by R28y M2.
+- Requirements: R28y, R56-R56e, R56j-R56k, R56p
 - Files/components likely touched:
   - `scripts/boundary_proof_behavior.py`
   - `scripts/boundary_proof_model.py`
   - `scripts/validate-boundary-proof.py`
   - `scripts/test-boundary-proof.py`
   - `tests/fixtures/boundary-proof/behavior/`
+  - `tests/fixtures/boundary-proof/simple-change/`
+  - `templates/shared/boundary-proof-model.md`
+  - `skills/workflow/SKILL.md`
+  - `skills/workflow/references/boundary-proof-model.md`
+  - `skills/spec/SKILL.md`
+  - `skills/spec/references/boundary-proof-model.md`
+  - `skills/spec-review/SKILL.md`
+  - `skills/spec-review/references/boundary-proof-model.md`
+  - `skills/test-spec/SKILL.md`
+  - `skills/test-spec/references/boundary-proof-model.md`
+  - `skills/test-spec-review/SKILL.md`
+  - `skills/test-spec-review/references/boundary-proof-model.md`
+  - `tests/fixtures/skills/boundary-proof/`
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/behavior-implementation-manifest.json`
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/boundary-proof-baseline.json`
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/`
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m2.md`
 - Dependencies:
   - M1 closed
 - Tests to add/update:
+  - Runtime supported/unsupported version, missing profile attestation, wrong effective sandbox, unavailable or unsafe model metadata, credential leakage, and secret-free evidence cases
   - Sole allowed repository import plus relative, wildcard, third-party, other local, and dynamic-import rejections
   - Complete five-skill resource-map set; missing, extra, stale, escaping, non-regular, and unmapped resource contrasts
   - Root and nested applicable/inapplicable `AGENTS.md` discovery
@@ -163,20 +180,42 @@ resource through generated, packed, and installed outputs.
   - Validation under a different validator environment without profile replacement
   - Crash points before run install, after run install, after receipt fsync, after pointer replace, after parent fsync, and before receipt removal
   - Later commits with unchanged referenced bytes versus changed referenced bytes
+  - Resource-map, raw-byte-copy, trigger, stop, claim, handoff, complete review-bundle, and isolation tests
+  - Example-only spec/test-spec rejection and valid compact simple-change cases
 - Implementation steps:
+  - Implement the read-only environment preflight, then run `check-environment` before any harness or skill mutation. Record only bounded non-secret results in `validation-m2.md`; on `environment-unavailable`, stop and route to architecture without a weaker fallback.
+  - Create and validate `evidence/boundary-proof-baseline.json` from the harness-derived current HEAD before the first participating-skill edit. If an immutable baseline already exists with a different value, stop.
   - Freeze the two-module AST import policy and exact manifest/input-set schemas.
   - Assemble the five skill packages, applicable instructions, contracts, scenario, and candidates into a fresh isolated workspace.
-  - Launch the identified runtime through the M1-proven sandbox and private runtime home; capture only bounded parent-observed attestation and typed event output.
+  - Launch the identified runtime through the preflight-proven sandbox and private runtime home; capture only bounded parent-observed attestation and typed event output.
   - Build and validate the sibling temporary run; install the immutable run; fsync the receipt; replace/fsync the pointer; fsync the parent; reconcile; remove the receipt.
   - Implement validation-only reuse that never invokes a lifecycle skill and never substitutes validation-time environment data.
-  - Exercise the full pipeline with controlled fixture packages; do not yet publish the canonical four-stage behavior result.
+  - Exercise the full pipeline with controlled fixture packages without writing canonical evidence.
+  - Write and map the shared boundary reference in the five participating packages, keeping stage-specific triggers, claims, stops, and handoffs in each `SKILL.md`.
+  - Generate the real `spec -> spec-review -> test-spec -> test-spec-review` run through one `workflow` invocation and validate it without reinvoking skills.
 - Validation commands:
   - `python scripts/boundary_proof_behavior.py check-environment --json`
+  - `python scripts/boundary_proof_behavior.py freeze-baseline --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`
+  - `tmpdir="$(mktemp -d)" && python scripts/boundary_proof_behavior.py exercise-fixture --fixture tests/fixtures/boundary-proof/behavior/happy-path.json --output-root "$tmpdir" && python scripts/boundary_proof_behavior.py validate-fixture --root "$tmpdir"`
+  - `python scripts/validate-skills.py`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/build-skills.py --check`
   - `python scripts/test-boundary-proof.py`
   - `python scripts/validate-boundary-proof.py --help`
   - `python -m py_compile scripts/boundary_proof_behavior.py scripts/boundary_proof_model.py scripts/validate-boundary-proof.py scripts/test-boundary-proof.py`
-- Expected observable result: Controlled fixture runs publish and recover one input-bound immutable run; deterministic validation detects every stale or substituted input without reinvocation.
-- Commit message: `M2: add hermetic boundary behavior harness`
+  - `python scripts/boundary_proof_behavior.py generate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --scenario tests/fixtures/boundary-proof/simple-change/scenario.json`
+  - `python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`
+- Promotion evidence:
+  - current `behavior-implementation-manifest.json`
+  - immutable `boundary-proof-baseline.json`
+  - current `simple-change/current.json` pointing to a fully validated immutable run
+  - `prepared.json` absent after successful reconciliation
+  - focused and skill validation pass evidence
+  - clean M2 code review before M3 starts
+- Failure stop:
+  - Stop on unavailable enforcement, baseline conflict, unmanifested input, runtime/profile mismatch, invalid run, unresolved receipt, stale pointer, or any failed validation; do not mutate participating skills after a failed preflight or baseline step.
+- Expected observable result: The upstream skills require complete boundary/proof maps and one input-bound immutable behavior run proves the real upstream workflow with zero false blocking and no new universal artifact.
+- Commit message: `M2: implement and prove hermetic upstream behavior`
 - Milestone closeout:
   - validation passed
   - progress updated
@@ -186,87 +225,59 @@ resource through generated, packed, and installed outputs.
 - Risks:
   - Nondeterministic runtime output or crash recovery could make tests flaky or repeat work.
   - Sandbox attestation could be accidentally treated as child self-report.
-- Rollback/recovery:
-  - Remove M2 run evidence and revert the standalone harness flow while retaining the proven M1 preflight and deterministic engine.
-
-### M3. Authoring and proof-planning skill projection
-
-- Milestone state: planned
-- Goal: Make boundary classification and proof mapping explicit in the four upstream public skills and generate the first canonical simple-change behavior run.
-- Requirements: R56-R56e, R56j-R56k; R28-R28g, R28y
-- Files/components likely touched:
-  - `skills/workflow/`
-  - `templates/shared/boundary-proof-model.md`
-  - `skills/spec/`
-  - `skills/spec-review/`
-  - `skills/test-spec/`
-  - `skills/test-spec-review/`
-  - `tests/fixtures/skills/boundary-proof/`
-  - change-local immutable simple-change behavior evidence
-- Dependencies:
-  - M1 and M2 closed
-- Tests to add/update:
-  - Resource-map, raw-byte-copy, trigger, stop, claim, handoff, complete review-bundle, and isolation tests
-  - Example-only spec/test-spec rejection and valid compact simple-change cases
-  - Behavior-preservation fixtures for all four stage skills and workflow orchestration
-  - Canonical generation followed by validation-only reuse
-- Implementation steps:
-  - Write the reviewed shared reference from the approved record grammar.
-  - Map identical skill-local copies in the five participating skill packages.
-  - Add compact stage-owned instructions without moving normative behavior into the reference.
-  - Generate the real `spec -> spec-review -> test-spec -> test-spec-review` run through one `workflow` invocation.
-  - Validate the current pointer, trace, bundles, metrics, input identities, and zero unmanifested inputs without reinvoking skills.
-- Validation commands:
-  - `python scripts/validate-skills.py`
-  - `python scripts/test-skill-validator.py`
-  - `python scripts/build-skills.py --check`
-  - `python scripts/test-boundary-proof.py`
-  - `python scripts/boundary_proof_behavior.py generate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --scenario tests/fixtures/boundary-proof/simple-change/scenario.json`
-  - `python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`
-- Expected observable result: The upstream skills require complete boundary/proof maps, preserve their stage claims, and produce one current immutable simple-change run with zero false blocking and no new universal artifact.
-- Commit message: `M3: project and prove upstream boundary behavior`
-- Milestone closeout:
-  - validation passed
-  - progress updated
-  - decision log updated if needed
-  - validation notes updated
-  - milestone committed
-- Risks:
   - Shared reference use could hide stage-specific stop or claim boundaries.
-  - The workflow skill could become a second normative owner or broaden automatic authority.
 - Rollback/recovery:
-  - Revert the five package edits and canonical pointer together; retain historical immutable failed runs only as non-current evidence.
+  - Revert the five package edits and current pointer together, retain immutable failed runs as non-current evidence, and retain the M1 deterministic engine.
 
-### M4. Implementation, review, verification, and routing projection
+### M3. Downstream skill projection and preservation
 
 - Milestone state: planned
-- Goal: Carry boundary proof through implementation, independent review, final verification, and workflow routing while preserving prior behavior.
-- Requirements: R28f-R28j; R56f-R56i, R56l
+- Goal: Carry the boundary contract through implementation, review, verification, and workflow routing, then compute downstream preservation from the frozen pre-M2 baseline without rerunning upstream skills.
+- Requirements: R28f-R28j, R28y; R56f-R56i, R56l
 - Files/components likely touched:
-  - `skills/implement/`
-  - `skills/code-review/`
-  - `skills/verify/`
-  - `skills/workflow/`
+  - `skills/implement/SKILL.md`
+  - `skills/implement/references/boundary-proof-model.md`
+  - `skills/code-review/SKILL.md`
+  - `skills/code-review/references/boundary-proof-model.md`
+  - `skills/verify/SKILL.md`
+  - `skills/verify/references/boundary-proof-model.md`
+  - `skills/workflow/SKILL.md`
+  - `skills/workflow/references/boundary-proof-model.md`
   - `tests/fixtures/skills/boundary-proof/`
-  - change-local preservation manifests and snapshots
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/preservation/manifest.json`
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/preservation/<run-id>/before/`
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/preservation/<run-id>/after/`
 - Dependencies:
-  - M1-M3 closed
+  - M1-M2 closed
+  - frozen `boundary-proof-baseline.json` and current M2 immutable run validate
 - Tests to add/update:
   - Proof-before-change, sibling-remediation, public-path composition, stale-evidence, and pause behavior
   - Behavior, claim-boundary, review-recording, isolation, and handoff preservation for all eight skills
-  - Cross-stage version, scope, and handoff parity
+  - Missing, duplicate, stale, mismatched, and cross-skill preservation pair keys
+  - Historical snapshot origin, current materialization identity, and no-direct-historical-reference contrasts
 - Implementation steps:
-  - Add mapped copies of the shared reference to the remaining skills.
-  - Add stage-local proof, sibling analysis, independence, verification, and pause rules.
-  - Materialize before snapshots from the frozen pre-M3 baseline and current after artifacts.
-  - Evaluate all five preservation categories without rerunning the upstream simple-change workflow.
+  - Add mapped copies and stage-local proof, sibling analysis, independence, verification, and pause rules to the remaining skill surfaces.
+  - Materialize before snapshots from the immutable baseline commit and current after artifacts under the exact preservation run root.
+  - Generate the exact `preservation/manifest.json` and all 40 `<skill>:<category>` pairs.
+  - Evaluate preservation from recorded before/after evidence only; do not invoke the upstream lifecycle workflow.
+  - Validate origin commits, current snapshot identities, pair completeness, category results, and typed dependencies.
 - Validation commands:
   - `python scripts/validate-skills.py`
   - `python scripts/test-skill-validator.py`
   - `python scripts/build-skills.py --check`
   - `python scripts/test-boundary-proof.py`
+  - `python scripts/boundary_proof_behavior.py generate-preservation --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`
+  - `python scripts/boundary_proof_behavior.py validate-preservation --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`
+- Promotion evidence:
+  - current exact preservation manifest
+  - complete immutable before and current after snapshot roots
+  - 40 validated pair results for eight skills and five categories
+  - no upstream behavior reinvocation
+  - clean M3 code review before M4 starts
+- Failure stop:
+  - Stop on missing baseline, stale M2 pointer, origin mismatch, incomplete pair set, direct historical reference, behavior regression, or failed validation.
 - Expected observable result: The full eight-skill chain preserves behavior and stops on missing, stale, partial, or example-only boundary evidence.
-- Commit message: `M4: enforce boundary proof across delivery skills`
+- Commit message: `M3: preserve boundary behavior across delivery skills`
 - Milestone closeout:
   - validation passed
   - progress updated
@@ -275,11 +286,11 @@ resource through generated, packed, and installed outputs.
   - milestone committed
 - Risks:
   - Workflow guidance could claim authority or duplicate reviewer judgment.
-  - Historical snapshot materialization could cite stale Git bytes instead of current evidence.
+  - Historical materialization could cite stale Git bytes instead of current evidence.
 - Rollback/recovery:
-  - Revert M4 skill projections and after evidence together; retain M1-M3 without claiming the complete baseline.
+  - Revert M3 skill projections and current preservation evidence together; retain M1-M2 without claiming the complete baseline.
 
-### M5. Selection, adapter parity, capability baseline, and activation proof
+### M4. Selection, adapter parity, capability baseline, and activation proof
 
 - Milestone state: planned
 - Goal: Make the complete boundary capability selectable, portable, measurable, and release-safe without activating or publishing it.
@@ -287,11 +298,17 @@ resource through generated, packed, and installed outputs.
 - Files/components likely touched:
   - `scripts/validation_selection.py`
   - `scripts/test-select-validation.py`
-  - adapter generation and validation tests
+  - `scripts/adapter_distribution.py`
+  - `scripts/build-adapters.py`
+  - `scripts/validate-adapters.py`
+  - `scripts/test-adapter-distribution.py`
+  - `scripts/validate-release.py`
+  - `scripts/test-boundary-proof.py`
+  - `tests/fixtures/boundary-proof/release/`
   - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md`
-  - release validation tests and fixtures
 - Dependencies:
-  - M1-M4 closed
+  - M1-M3 closed with clean code reviews
+  - current M2 immutable run and M3 preservation manifest validate
 - Tests to add/update:
   - Exact routing for the six boundary check IDs
   - Canonical/generated/packed/installed raw-byte parity
@@ -300,16 +317,25 @@ resource through generated, packed, and installed outputs.
 - Implementation steps:
   - Register exact affected paths and checks in the selector.
   - Extend existing generation and resource-integrity proof for all supported adapters.
-  - Generate the canonical capability-baseline report from current immutable and preservation evidence.
+  - Freshly execute the closed deterministic operation registry, consume the current immutable and preservation results, and serialize the report only through `validate-boundary-proof.py generate-report`.
   - Add release-note activation validation without writing an activation marker in this non-release change.
 - Validation commands:
   - `python scripts/test-select-validation.py`
   - `python scripts/test-adapter-distribution.py`
   - `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5`
   - `python scripts/test-boundary-proof.py`
-  - `python scripts/validate-boundary-proof.py docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md`
+  - `python scripts/validate-boundary-proof.py generate-report --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --output docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md`
+  - `python scripts/validate-boundary-proof.py validate-report docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md`
+- Promotion evidence:
+  - current canonical skill/resource manifest
+  - durable canonical/generated/packed/installed parity manifest set
+  - freshly generated passing capability report and raw-byte identity
+  - exact selector routing proof for all six check IDs
+  - clean M4 code review before final holistic review
+- Failure stop:
+  - Stop on any not-run/fail operation, stale dependency identity, parity mismatch, selector gap, asserted result, activation mismatch, or failed report validation; do not write release activation.
 - Expected observable result: A passing, provenance-bound R28y report proves the eight-skill implementation checks across canonical and distributed surfaces. It does not by itself satisfy R28o, and release activation remains a later release action.
-- Commit message: `M5: prove portable boundary capability baseline`
+- Commit message: `M4: prove portable boundary capability baseline`
 - Milestone closeout:
   - validation passed
   - progress updated
@@ -325,7 +351,14 @@ resource through generated, packed, and installed outputs.
 
 - `python scripts/test-boundary-proof.py`: focused typed-model, parser, fixture, and aggregate proof.
 - `python scripts/boundary_proof_behavior.py check-environment --json`: live, non-secret runtime sandbox/profile and credential-isolation feasibility proof.
+- `python scripts/boundary_proof_behavior.py freeze-baseline --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`: immutable pre-skill-mutation preservation baseline creation.
+- `tmpdir="$(mktemp -d)" && python scripts/boundary_proof_behavior.py exercise-fixture --fixture tests/fixtures/boundary-proof/behavior/happy-path.json --output-root "$tmpdir" && python scripts/boundary_proof_behavior.py validate-fixture --root "$tmpdir"`: controlled noncanonical harness generation and validation.
+- `python scripts/boundary_proof_behavior.py generate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --scenario tests/fixtures/boundary-proof/simple-change/scenario.json`: one canonical upstream behavior generation.
 - `python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`: deterministic current immutable-run validation without lifecycle reinvocation.
+- `python scripts/boundary_proof_behavior.py generate-preservation --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`: preservation manifest and current snapshot/result generation.
+- `python scripts/boundary_proof_behavior.py validate-preservation --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`: preservation-only validation without upstream reinvocation.
+- `python scripts/validate-boundary-proof.py generate-report --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --output docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md`: fresh closed-registry execution and sole-writer report generation.
+- `python scripts/validate-boundary-proof.py validate-report docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md`: deterministic current report validation.
 - `python scripts/validate-skills.py`: canonical skill structure and mapped-resource contract.
 - `python scripts/test-skill-validator.py`: public-skill regressions, including unknown values.
 - `python scripts/build-skills.py --check`: generated local mirror parity.
@@ -362,8 +395,8 @@ resource through generated, packed, and installed outputs.
 - M1 runtime feasibility and deterministic correction before full harness work.
 - M2 harness and recovery proof before any canonical published-skill behavior generation.
 - M3 before M4 so downstream skills consume a stable upstream record contract and current immutable run.
-- M1-M4 before M5 computes capability outcomes.
-- M5 writes the R28y report from implementation evidence; its code review then closes the implementation milestone without recursively rewriting the report to cite its own review.
+- M1-M3 before M4 computes capability outcomes.
+- M4 writes the R28y report from implementation evidence; its code review then closes the implementation milestone without recursively rewriting the report to cite its own review.
 - R28o remains unsatisfied until all milestone reviews and the final holistic code review are clean, review resolution is closed, explain-change is current, and final verification passes.
 - Separate implementation authorization before M1.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
@@ -403,6 +436,7 @@ resource through generated, packed, and installed outputs.
 - 2026-07-26: Architecture-review R4 approved the hermetic child-runtime boundary, exact publication recovery, ADR tradeoffs, and C4 views; plan revision must start with runtime feasibility proof.
 - 2026-07-26: The plan R3 candidate replaces the stale four-milestone sequence with five reviewed boundaries: runtime feasibility and core correction, standalone harness and recovery, upstream behavior generation, downstream preservation, and portable capability aggregation.
 - 2026-07-26: Plan-review R3 requested restoration of normative R28y M1-M4 ownership and exact production, validation, promotion, baseline, and recovery commands.
+- 2026-07-26: The plan R4 candidate restores normative M1-M4 ownership, makes runtime feasibility and baseline capture the first M2 gates, and names exact controlled/canonical generation, validation, preservation, aggregation, promotion, and failure-stop commands and artifacts.
 
 ## Decision log
 
@@ -412,6 +446,7 @@ resource through generated, packed, and installed outputs.
 | 2026-07-25 | Keep release activation validation in the final baseline milestone but perform no activation or publication. | The spec requires activation semantics, while external release actions remain outside this change and automation authority. | Omitting activation tests; writing a premature activation marker. |
 | 2026-07-26 | Use frozen dataclasses plus pure mapping validators and JSON fixture inputs for M1. | The executable projection remains dependency-free, immutable, deterministic, and separate from Markdown serialization or semantic review. | A second YAML registry; validator-owned semantic scoring; mutable global records. |
 | 2026-07-26 | Revise to five milestones: feasibility/core, harness, upstream behavior, downstream preservation, and distribution baseline. | The accepted R13/R4 design adds a high-risk runtime boundary and recoverable publication flow that need an independent review before public skill mutation. | Hide the harness inside upstream skill work; build the full harness before proving runtime support; keep stale four-milestone mapping. |
+| 2026-07-26 | Restore normative M1-M4 ownership and make runtime feasibility the first M2 promotion gate. | R28y explicitly assigns synthetic proof, upstream behavior, downstream preservation, and aggregation to M1-M4. | Renumber the approved phases; amend the spec only to preserve an unnecessary fifth phase. |
 
 ## Surprises and discoveries
 
@@ -422,7 +457,7 @@ resource through generated, packed, and installed outputs.
   workflow-automation bugfix before the next release.
 - M1 aligned-surface audit: selector registration, public skills, shared
   references, adapters, release notes, and the canonical capability report are
-  intentionally unaffected because M3-M5 own those surfaces.
+  intentionally unaffected because M2-M4 own those surfaces.
 
 ## Validation notes
 
