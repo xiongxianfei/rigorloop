@@ -2118,6 +2118,68 @@ from both inventories while requiring separate regular non-symlink validation;
 T51 proves creation/persistence/reuse does not affect counts or canonical
 evidence; pending spec-review-r33.
 
+### spec-review-r33
+
+#### BFP-SR-R33-1 - Route the recoverable malformed temp
+
+Finding ID: BFP-SR-R33-1
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y global discovery
+Decision needed: none
+Required outcome: Make the constrained malformed-temp cleanup reachable without weakening generic corrupt-state handling.
+Chosen action: Validate transient names first and add one unique lease/run/recovery-bound recoverable-malformed-temp discovery class.
+Rationale: A recovery route is useless when an earlier generic validator always intercepts it.
+Validation target: spec-review-r34
+Validation evidence: pending
+
+#### BFP-SR-R33-2 - Retain value-free unknown-event shape
+
+Finding ID: BFP-SR-R33-2
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y diagnostic evidence
+Decision needed: none
+Required outcome: Make unknown-event shape identity independently recomputable without raw values.
+Chosen action: Store the canonical path/type projection and require its hash equality.
+Rationale: An ungrounded hash is not proof.
+Validation target: spec-review-r34
+Validation evidence: pending
+
+#### BFP-SR-R33-3 - Derive output roles from policy paths
+
+Finding ID: BFP-SR-R33-3
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y output evaluator
+Decision needed: none
+Required outcome: Remove unauthenticated observed roles and define exact matching.
+Chosen action: Capture only observed path/identity and project roles from the unique required path mapping.
+Rationale: Filesystem observation cannot assert semantic role independently.
+Validation target: spec-review-r34
+Validation evidence: pending
+
+#### BFP-SR-R33-4 - Preserve non-output diagnostics during liveness pause
+
+Finding ID: BFP-SR-R33-4
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y transport routing
+Decision needed: none
+Required outcome: Keep every prior non-output observation while output remains uninspected and routing pauses.
+Chosen action: Define the liveness tuple family as liveness, ordered zero-or-more non-output diagnostics, and timeout, excluding output diagnostics.
+Rationale: Failed termination does not erase already observed protocol or identity failures.
+Validation target: spec-review-r34
+Validation evidence: pending
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2
