@@ -25,7 +25,7 @@ resumes.
 
 - Proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Specs: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r40.md` (approved; architecture required)
+- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r45.md` (approved; architecture required)
 - Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R15)
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` (accepted by architecture-review R15)
 - Proposed transport ADR: `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md`
@@ -91,7 +91,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r45.md
 - Review status: approved; stage=spec-review; round=r45
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture
+- Next stage: architecture-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-AR16-1,BFP-AR16-2,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
@@ -620,6 +620,14 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-26: Spec-review R45 approved the read-only transport contract and
+  closed all R41-R44 spec findings. The R17 architecture candidate rewrites
+  the numbered runtime sequence, trust boundary, transport boundary, quality
+  scenarios, risks, component view, architecture assessment, and proposed
+  stage-envelope ADR around parent-only materialization, shared file-change
+  denial, root-anchored workspace integrity, v2 current evidence, and exact
+  opaque v1 history.
 
 - 2026-07-26: Spec-review R44 approved the current v2 transport/security
   contract and found only that reused historical v1 labels could not select a

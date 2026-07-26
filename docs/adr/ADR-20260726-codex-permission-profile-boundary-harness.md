@@ -217,3 +217,14 @@ This ADR may become accepted only after architecture review confirms:
 This ADR refines the child-runtime adapter selected by
 `ADR-20260725-boundary-first-proof-modeling`. It does not supersede the
 boundary model, evidence, publication, or activation decisions in that ADR.
+
+## Pending scoped supersession
+
+If `ADR-20260726-stage-authored-artifact-envelope-transport` is accepted, it
+supersedes only this ADR's writable-workspace,
+behavior-output-write-success, and isolated-workspace-file-change-permission
+clauses.
+The replacement is read-only child workspace access, deny-only app-server
+file-change handling, parent-only exact-byte materialization, and bounded
+root-anchored workspace-integrity inspection.
+Until that ADR is accepted, this accepted ADR remains governing history.

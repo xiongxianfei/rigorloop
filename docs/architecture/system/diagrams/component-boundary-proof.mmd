@@ -6,10 +6,12 @@ flowchart LR
   templates["Shared boundary reference source<br/>[Template container]"]:::container
   fixtures["Boundary and skill fixtures<br/>[Test fixture container]"]:::container
   report["Capability report<br/>[Change-local evidence]"]:::container
-  preflight_attestation["Runtime preflight attestation<br/>[Feasibility only; non-authorizing]"]:::container
-  generation_attestation["Fresh generation attestation<br/>[Exact eleven-row runtime inventory]"]:::container
-  implementation_manifest["Behavior implementation manifest<br/>[Binds generation attestation]"]:::container
+  preflight_attestation["Runtime preflight attestation v2<br/>[Feasibility only; non-authorizing]"]:::container
+  generation_attestation["Fresh generation attestation v2<br/>[Read-only boundary + exact inventory]"]:::container
+  implementation_manifest["Behavior implementation manifest v2<br/>[Binds generation attestation]"]:::container
+  historical_registry["Historical v1 registry<br/>[Exact path + bytes; opaque only]"]:::container
   transport_policy["Transport policy<br/>[Manifest-bound positive deadlines]"]:::container
+  file_change_policy["File-change authorization policy<br/>[Decline-only for every governed turn]"]:::container
   artifact_policy["Artifact policies<br/>[Lifecycle manifest + preflight canary]"]:::container
   input_set["Simple-change input set<br/>[Five-package resources + manifest identity]"]:::container
   staged_run["Validated staged run<br/>[Non-authoritative]"]:::container
@@ -19,7 +21,7 @@ flowchart LR
   publisher_lease["Publisher lease<br/>[Durable run-bound ownership]"]:::container
   recovery["Recovery basis/state + quarantine<br/>[Discard-only; completed history excluded]"]:::container
   current_pointer["Current run pointer<br/>[Atomic file replacement]"]:::container
-  isolated_workspace["Isolated scenario workspace<br/>[Ephemeral filesystem]"]:::container
+  isolated_workspace["Isolated scenario workspace<br/>[Child read-only; parent materialization]"]:::container
   child_runtime["Codex app-server<br/>[Fresh home + runtime-owned thread metadata]"]:::external
   model_control_plane["Model service control plane<br/>[Runtime-only transport]"]:::external
   credential_channel["Opaque credential channel<br/>[Execution-environment boundary: private runtime home]"]:::external
@@ -31,8 +33,9 @@ flowchart LR
     evaluator["Capability evaluator<br/>[Pure aggregate]"]:::component
     harness["Standalone behavior harness<br/>[One workflow invocation]"]:::component
     assembler["Package + workspace assembler<br/>[Manifest-bound inputs]"]:::component
-    runtime_adapter["Child-runtime adapter + candidate collector<br/>[App-server + bounded agent messages]"]:::component
+    runtime_adapter["Child-runtime adapter + candidate collector<br/>[App-server + deny-only request handler]"]:::component
     transport["Envelope transport reconciler<br/>[Policy, timeout, candidates, retry]"]:::component
+    integrity["Workspace integrity guard<br/>[Root-anchored baseline + post-turn scan]"]:::component
     materializer["Exact-byte materializer<br/>[Write + complete reread observation]"]:::component
     content_validator["Lifecycle content validator<br/>[Structural agreement only]"]:::component
     publisher["Immutable run publisher<br/>[Run → receipt → atomic pointer]"]:::component
@@ -58,29 +61,37 @@ flowchart LR
   runtime_adapter -->|provisions runtime-only auth| credential_channel
   credential_channel -->|authenticates runtime outside tool sandbox| child_runtime
   runtime_adapter -->|thread/start + one workflow turn over stdio| child_runtime
+  file_change_policy -->|configures every request handler| runtime_adapter
   harness --> transport
   transport -->|fresh thread/process + bounded deadline| runtime_adapter
   transport_policy -->|policy identity + deadlines| transport
   artifact_policy -->|selected policy identity + limits + variants| transport
+  artifact_policy -->|bounded scan policy| integrity
   child_runtime -->|model execution only| model_control_plane
   child_runtime -->|protocol events and output observations| runtime_adapter
   runtime_adapter -->|bounded candidate + protocol observations| transport
-  transport -->|one complete stage-authored envelope| materializer
+  isolated_workspace -->|pre-turn and post-turn descriptor observations| integrity
+  integrity -->|complete unchanged observation only| transport
+  transport -->|complete envelope + unchanged workspace| materializer
   materializer -->|exact returned UTF-8 bytes| isolated_workspace
   materializer -->|value-free materialization observation| content_validator
   isolated_workspace -->|materialized artifact set| content_validator
   content_validator -->|value-free structural validation observation| transport
   transport -->|terminal validated bundle| harness
   runtime_adapter -->|preflight schema + effective config/inventories + managed-profile probes| preflight_attestation
+  file_change_policy -->|policy identity + denial proof| preflight_attestation
   preflight_attestation -->|feasibility gate only; never copied as authority| harness
-  runtime_adapter -->|fresh generation schema, exact eleven-row runtime inventory, probes| generation_attestation
+  runtime_adapter -->|fresh generation schema, denial probes, exact inventory| generation_attestation
+  file_change_policy -->|policy identity + pass result| generation_attestation
   generation_attestation -->|required fresh identity| implementation_manifest
+  file_change_policy -->|required deny-only policy| implementation_manifest
   transport_policy -->|required closed policy| implementation_manifest
   artifact_policy -->|lifecycle policy identity| implementation_manifest
   artifact_policy -->|canary policy identity| preflight_attestation
   assembler -->|distinct path-sorted five-package resource set| input_set
   implementation_manifest -->|manifest identity| input_set
-  isolated_workspace -->|workspace-only child tools| child_runtime
+  historical_registry -->|recognized only as non-current opaque history| validator
+  isolated_workspace -->|read-only child tools; no writable root| child_runtime
   input_set -->|bound generation inputs| harness
   harness -->|validated event bundle + input-set identity| publisher
   publisher -->|acquires runtime exclusivity| publisher_lock
