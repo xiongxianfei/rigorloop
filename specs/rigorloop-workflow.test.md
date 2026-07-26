@@ -1472,12 +1472,16 @@ Boundary model scope: R28-R28z
 - Fixture/setup: Crash injection before and after run installation, receipt
   fsync, pointer replacement, parent-directory fsync, and receipt cleanup;
   valid and invalid pre-existing run/pointer/receipt combinations.
-- Steps: Interrupt once at each boundary; resume against the original inputs;
-  inspect installed run, prepared receipt, current pointer, and directory
-  durability; attempt a second in-flight publication.
+- Steps: Interrupt before receipt creation, after durable receipt but before
+  immutable installation, after installation/fsync, after installed-run
+  validation, after pointer replacement, after parent-directory fsync, and
+  after receipt cleanup. Resume against the original inputs; inspect
+  deterministic staging, installed run, prepared receipt, current pointer, and
+  directory durability; attempt a second in-flight publication.
 - Expected result: Resume reconciles valid evidence without reinvoking skills,
-  never points at a partial run, never loses the prior immutable pointer, and
-  fails closed on conflict or changed inputs.
+  never installs or points at a partial run, never installs without a durable
+  exclusive receipt, never loses the prior immutable pointer, and fails closed
+  on orphan staging, conflict, or changed inputs.
 - Failure proves: A crash can duplicate nondeterministic work or publish an
   incomplete/stale run.
 - Evidence artifact: controlled publication-recovery fixtures
@@ -1492,12 +1496,17 @@ Boundary model scope: R28-R28z
 - Command IDs: CMD-BFP-8, CMD-BFP-10, CMD-BFP-11, CMD-BFP-12
 - Fixture/setup: The exact `workflow`, `spec`, `spec-review`, `test-spec`, and
   `test-spec-review` packages and the simple-change scenario corpus.
-- Steps: Pass preflight; freeze baseline; invoke the five-stage upstream path
-  once; capture complete artifact/review bundles and structural trace; run
-  validation repeatedly.
+- Steps: Pass preflight; freeze baseline; invoke `workflow` to route the
+  five-stage upstream path; require each stage-owning skill to write its
+  complete artifact under the isolated output root; snapshot it before the
+  next stage; reject harness-authored normative content. Inject stage timeout
+  with absent, complete, partial, extra, and contradictory output plus
+  protocol/security failures. Run validation repeatedly.
 - Expected result: One fresh immutable run contains current output snapshots,
   terminal branches, review-event evidence unions, and computed simple-change
-  observations; validation performs no lifecycle reinvocation.
+  observations. Complete output reconciles without reinvocation, absent output
+  permits at most one transient retry, partial or non-retryable evidence stops,
+  and validation performs no lifecycle reinvocation.
 - Failure proves: M2 evidence is asserted, incomplete, or nondeterministically
   regenerated during validation.
 - Evidence artifact: current M2 immutable run and `validation-m2.md`

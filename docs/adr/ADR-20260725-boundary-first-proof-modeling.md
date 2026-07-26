@@ -2,7 +2,7 @@
 
 ## Status
 
-accepted
+proposed
 
 ## Context
 
@@ -31,6 +31,13 @@ Use one spec-normative boundary model with these projections:
   may import only the Python standard library and `boundary_proof_model`; it
   does not import the workflow-automation engine, lifecycle validators, test
   drivers, or third-party packages;
+- the isolated `workflow` skill routes every upstream stage, and each
+  stage-owning skill writes its complete artifact below the bound output root;
+  the harness captures and validates those bytes but does not render normative
+  requirements, test cases, validation commands, or formal review judgments;
+- an expired stage is reconciled from its bound output before retry: complete
+  valid output is accepted without reinvocation, absent output permits one
+  transient retry, and partial or non-retryable evidence fails closed;
 - the harness binds exactly the five participating skill packages and every
   current resource-map entry, the applicable repository instruction chain,
   the governing contracts, scenario inputs, candidate oracles, and its own two
@@ -48,9 +55,10 @@ Use one spec-normative boundary model with these projections:
   the identity-bound scenario; transient access observations must contain no
   unmanifested input or capability and are discarded after their typed result
   is recorded;
-- behavior generation validates and installs one immutable run, writes and
-  fsyncs a prepared receipt, atomically replaces and fsyncs the current
-  pointer, fsyncs the parent directory, and removes the reconciled receipt;
+- behavior generation validates a deterministic non-authoritative staged run,
+  exclusively writes and fsyncs a prepared receipt, installs and fsyncs the
+  immutable run, validates it, atomically replaces and fsyncs the current
+  pointer, and removes and fsyncs the reconciled receipt;
   the receipt makes these writes recoverable rather than jointly atomic;
   deterministic validation checks the run and current identities without
   reinvoking lifecycle skills or replacing its recorded invocation profile;
@@ -134,14 +142,16 @@ the validated report identity without rewriting the report.
 - Transient access observations reduce privacy exposure but limit later raw-log
   forensics; durable records retain bounded attestation, result, and
   diagnostics only.
-- Immutable run installation, receipt persistence, pointer replacement,
-  directory fsync, and receipt cleanup are separate recoverable writes and
-  require explicit crash-point tests.
+- Staging, receipt persistence, immutable run installation, pointer
+  replacement, directory fsync, and receipt cleanup are separate recoverable
+  writes and require explicit crash-point tests. Staging is non-authoritative;
+  the durable exclusive receipt always precedes immutable installation and
+  pointer mutation.
 
 ## Follow-up
 
-- Architecture-review R4 accepted this amendment for plan and test-spec
-  reliance.
+- Architecture-review R4 accepted the original amendment. The write-ahead
+  ordering clarification remains proposed until focused architecture rereview.
 - The execution plan must order typed model and fixtures before skill rollout.
 - The test spec must map R28-R28z and R56-R56q before implementation.
 - The revised plan begins with child-runtime sandbox and credential-isolation
