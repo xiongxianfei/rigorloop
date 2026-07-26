@@ -2123,10 +2123,14 @@ prepared.json
 .prepared-run-*
 .current-run-*.json
 manual-recovery-run-*.json
+manual-recovery-state-run-*.json
 ```
 
-Historical immutable `runs/<run-id>/` roots and completed manual-recovery
-records do not by themselves indicate an in-flight publication.
+Historical immutable `runs/<run-id>/` roots and basis/state recovery pairs
+whose state is `completed` do not by themselves indicate an in-flight
+publication.
+An immutable recovery basis with a missing, `authorized`, or
+`orphan-parent-synced` state record is active and owns its run candidate.
 Every discovered transient name is parsed and every present object is
 validated before consistency routing.
 Unknown transient names, symlinks, malformed objects, multiple active recovery
@@ -2171,6 +2175,12 @@ The three roots are the exact normalized paths
 the current pointer.
 After lease durability, the harness creates and fsyncs the deterministic
 working root and invokes the workflow and stage-owning skills only inside it.
+For recovery classification, a minimum-valid working root is the exact regular,
+non-symlink directory named by the lease whose descendants are only regular
+files or directories within the approved behavior-workspace paths.
+Every descendant is included in its canonical path-and-raw-byte tree identity.
+An unknown path, symlink, special file, escape, unreadable entry, or identity
+instability is corrupt rather than a discardable working root.
 It validates all events, bundles, snapshots, inventories, and metrics, then
 renames the working root to the non-authoritative staging root and fsyncs the
 simple-change parent.
@@ -2239,9 +2249,15 @@ I = valid immutable runs/<run-id> directory exists
 T = valid .current-<run-id>.json temporary pointer exists and names I
 C = current.json is absent, equals the lease/receipt prior pointer, names the candidate, or is other
 A = absent, active, or completed manual-recovery record for the candidate
+H = same_live_publisher_instance is true or false
 ```
 
 Null prior pointer and absent `current.json` are equal for first publication.
+`H` is true only inside the uninterrupted invocation that generated
+`L.publisher_instance_id` and has continuously held the global publisher lock
+since the lease's exclusive creation.
+It is false for every later lock holder and cannot be caller supplied or
+reconstructed from process ID.
 An involved object is corrupt when it is a symlink, malformed, has an identity
 or path mismatch, or violates its exact schema.
 Corrupt classification occurs before consistency routing.
@@ -2250,9 +2266,9 @@ The closed state table is:
 | State | Exact predicate | Required action | Durability / terminal result |
 | --- | --- | --- | --- |
 | `clean` | `!L && !W && !S && !R && !T && A` absent; candidate I is absent; C is absent or a valid unrelated current pointer | Create the lease and working root as specified above. | Nonterminal; no lifecycle invocation has begun. |
-| `lease-only-interrupted` | `L && !W && !S && !R && !I && !T && A` absent and `C == L.prior_pointer` | Stop and require bounded `lease-only` recovery. | Terminal pause; no lifecycle invocation or automatic lease deletion. |
-| `generating` | `L && W && !S && !R && !I && !T && A` absent and `C == L.prior_pointer` | Only the process that created L and still holds the global lock may continue generation. A later holder pauses for manual `working` recovery. | Nonterminal for the live owner; otherwise terminal pause. |
-| `staged-unreceipted` | `L && !W && S && !R && !I && !T && A` absent and `C == L.prior_pointer` | Stop with `orphan-staging`; require bounded `staging` recovery. | Terminal pause; no install, publication, deletion, or lifecycle reinvocation. |
+| `lease-acquired` | `L && !W && !S && !R && !I && !T && A` absent and `C == L.prior_pointer` | If H is true, create and fsync W; if H is false, stop and require bounded `lease-only` recovery. | Nonterminal only for H true; otherwise terminal pause. |
+| `generating` | `L && W && !S && !R && !I && !T && A` absent and `C == L.prior_pointer` | If H is true, continue generation; if H is false, stop for manual `working` recovery. | Nonterminal only for H true; otherwise terminal pause. |
+| `staged-unreceipted` | `L && !W && S && !R && !I && !T && A` absent and `C == L.prior_pointer` | If H is true, validate staging/current inputs and durably create R; if H is false, stop for manual `staging` recovery. | Nonterminal only for H true; otherwise terminal pause. |
 | `prepared-staged` | `L && !W && S && R && !I && !T && A` absent and `C == R.prior_pointer` | Validate the staged snapshot, lease/receipt equality, and recorded and current input identities; rename S to I; fsync the runs parent; validate I against the same snapshot identity. | Continue as `prepared-installed`. |
 | `prepared-installed` | `L && !W && !S && R && I && !T && A` absent and `C == R.prior_pointer` | Validate I, lease/receipt equality, and recorded and current input identities; write and fsync T. | Continue as `prepared-pointer-temporary`. |
 | `prepared-pointer-temporary` | `L && !W && !S && R && I && T && A` absent and `C == R.prior_pointer` | Validate T, atomically replace `current.json` with T, and fsync the pointer parent. | Continue as `prepared-pointed`. |
@@ -2275,8 +2291,8 @@ Reconciliation never accepts a prior run as completion of the candidate,
 changes the candidate identity, derives a replacement receipt, or reinvokes
 lifecycle skills.
 
-The only automated transition out of `lease-only-interrupted`, an interrupted
-`generating`, or `staged-unreceipted` is none.
+No H-false `lease-acquired`, `generating`, or `staged-unreceipted` state has an
+automated transition.
 A separately authorized maintainer may return it to a globally clean state only
 through `discard-and-regenerate`.
 The maintainer first acquires and holds the same exclusive publisher lock.
@@ -2285,7 +2301,7 @@ proof; it is not a transport termination receipt and does not claim process
 reaping.
 The recovery record path is exactly
 `docs/changes/<change-id>/evidence/simple-change/manual-recovery-<run-id>.json`
-and contains exactly:
+and is an immutable recovery-basis record containing exactly:
 
 ```text
 schema_version
@@ -2299,7 +2315,6 @@ publisher_lock_proof
 orphan_snapshot
 input_set_identity
 action
-state
 ```
 
 `schema_version` is `simple-change-manual-recovery-v1`;
@@ -2313,21 +2328,47 @@ the bound lease;
 `exclusive-nonblocking-file-lock-v1`, `lock_path` is `publisher.lock`,
 `acquired` is `true`, and `prior_lease_identity` equals the lease snapshot
 identity;
-`orphan_snapshot` contains exactly `kind`, `path`, and `identity`.
+`orphan_snapshot` contains exactly `kind`, `path`, `identity`, and
+`durability_parent`.
 `kind` is `working`, `staging`, or `lease-only`.
 For `working` and `staging`, path names the bound root and identity is the
-canonical path-and-raw-byte tree identity captured before deletion.
+canonical path-and-raw-byte tree identity captured before deletion; for
+`working`, the root MUST satisfy the minimum-valid contract above; for
+`staging`, the complete staged manifest MUST validate against the lease.
 For `lease-only`, path and identity are null.
+`durability_parent` is the simple-change root for all three kinds.
 `action` is only `discard-and-regenerate`.
-`state` is `authorized`, `orphan-parent-synced`, or `completed`.
+The basis is written exclusively and fsynced before deletion and is never
+replaced or mutated.
+Its raw-byte identity is `basis_identity`.
+
+Recovery progress is stored separately at
+`manual-recovery-state-<run-id>.json`.
+That state record contains exactly `schema_version`, `recovery_id`,
+`basis_identity`, and `state`.
+Its `schema_version` is `simple-change-manual-recovery-state-v1`;
+`recovery_id` equals the immutable basis; `basis_identity` is the current
+standard raw-byte identity of that basis; and `state` is `authorized`,
+`orphan-parent-synced`, or `completed`.
+Each atomic state replacement may change only `state`; the other fields remain
+byte-for-byte identical and continue to resolve to the immutable basis.
+Missing, changed, substituted, or multiply bound basis/state files fail
+closed.
+Recovery validates `run_id`, `publisher_instance_id`, and
+`input_set_identity` for exact equality among the recovery basis, lease, and
+orphan snapshot.
+It validates the recorded input identity's shape and lease binding but does not
+require equality to freshly derived current inputs; discard of stale orphan
+work must remain possible.
+Any later fresh generation independently derives and validates current inputs.
 
 Recovery uses this closed resume table while the lock remains held:
 
 | Recovery state | Orphan root | Matching lease | Required action |
 | --- | --- | --- | --- |
-| absent | present as snapshotted, or absent for `lease-only` | present | Validate authority, lease, input identity, and orphan snapshot; atomically write and fsync `authorized`. |
-| `authorized` | present and snapshot matches | present | Remove the orphan root, fsync its parent, atomically write and fsync `orphan-parent-synced`. |
-| `authorized` | absent | present | Fsync the orphan parent again, then atomically write and fsync `orphan-parent-synced`. |
+| absent | present as snapshotted, or absent for `lease-only` | present | Validate authority, lease-bound input identity, and orphan snapshot; if the immutable basis is absent, exclusively write and fsync it; otherwise validate it byte-for-byte; then atomically write and fsync state `authorized`. |
+| `authorized` | present and snapshot matches | present | Remove the orphan root, fsync `orphan_snapshot.durability_parent`, atomically write and fsync `orphan-parent-synced`. |
+| `authorized` | absent | present | Fsync `orphan_snapshot.durability_parent` again, then atomically write and fsync `orphan-parent-synced`; this is also the lease-only route. |
 | `orphan-parent-synced` | absent | present | Remove the lease, fsync its parent, atomically write and fsync `completed`. |
 | `orphan-parent-synced` | absent | absent | Fsync the lease parent again, then atomically write and fsync `completed`. |
 | `completed` | absent | absent | Recovery is terminal; global discovery may begin a later fresh generation. |
@@ -2401,7 +2442,7 @@ Every transport-attempt row contains exactly:
 `transport_attempt_id`, `event_key`, `transport_attempt`, `runtime_thread_id`,
 `termination_state`, `termination_receipt`, `output_state`,
 `primary_diagnostic_id`, `diagnostic_ids`, `decision`, `evidence_refs`, and
-`diagnostic_evidence_refs`.
+`diagnostic_evidence`.
 `event_key` is the prospective lifecycle event identity `<stage>#<attempt>`.
 It is reserved before transport begins and remains a correlation key when a
 pause or failure prevents creation of the lifecycle event.
@@ -2486,19 +2527,21 @@ non-output-diagnostic:
   runtime-identity-unstable
 ```
 
-The closed transport routing matrix uses `primary_diagnostic_id`:
+`primary_diagnostic_id` is presentation metadata only.
+Routing uses the complete ordered `diagnostic_ids` tuple.
+The closed transport routing matrix is:
 
-| Termination | Receipt | Output | Primary diagnostic | Attempt | Decision |
+| Termination | Receipt | Output | Exact diagnostic tuple | Attempt | Decision |
 | --- | --- | --- | --- | --- | --- |
-| `completed` | null | `complete` | `none` | 1 or 2 | `accept` |
-| `completed` | null | any inspected output | a non-output diagnostic | 1 or 2 | `fail-closed` |
-| `completed` | null | `absent`, `partial`, `extra`, or `contradictory` | its matching output diagnostic | 1 or 2 | `fail-closed` |
-| `confirmed-stopped` | valid confirmed-stopped receipt | `complete` | `stage-turn-timeout` | 1 or 2 | `reconcile` |
-| `confirmed-stopped` | valid confirmed-stopped receipt | `absent` | `stage-turn-timeout` | 1 | `retry` |
-| `confirmed-stopped` | valid confirmed-stopped receipt | `absent` | `stage-turn-timeout` | 2 | `fail-closed` |
-| `confirmed-stopped` | valid confirmed-stopped receipt | any inspected output | a non-output diagnostic | 1 or 2 | `fail-closed` |
-| `confirmed-stopped` | valid confirmed-stopped receipt | `absent`, `partial`, `extra`, or `contradictory` | its matching output diagnostic | 1 or 2 | `fail-closed` |
-| `liveness-uncertain` | null | `uninspected` | `stage-liveness-uncertain` | 1 or 2 | `pause` |
+| `completed` | null | `complete` | `[none]` | 1 or 2 | `accept` |
+| `completed` | null | `absent`, `partial`, `extra`, or `contradictory` | `[matching-output-diagnostic]` | 1 or 2 | `fail-closed` |
+| `completed` | null | any inspected output | tuple containing one or more non-output diagnostics, followed by any independently detected matching output diagnostic | 1 or 2 | `fail-closed` |
+| `confirmed-stopped` | valid confirmed-stopped receipt | `complete` | `[stage-turn-timeout]` | 1 or 2 | `reconcile` |
+| `confirmed-stopped` | valid confirmed-stopped receipt | `absent` | `[stage-output-absent, stage-turn-timeout]` | 1 | `retry` |
+| `confirmed-stopped` | valid confirmed-stopped receipt | `absent` | `[stage-output-absent, stage-turn-timeout]` | 2 | `fail-closed` |
+| `confirmed-stopped` | valid confirmed-stopped receipt | `partial`, `extra`, or `contradictory` | `[matching-output-diagnostic, stage-turn-timeout]` | 1 or 2 | `fail-closed` |
+| `confirmed-stopped` | valid confirmed-stopped receipt | any inspected output | tuple containing one or more non-output diagnostics, followed by any independently detected matching output diagnostic and `stage-turn-timeout` | 1 or 2 | `fail-closed` |
+| `liveness-uncertain` | null | `uninspected` | `[stage-liveness-uncertain, stage-turn-timeout]` | 1 or 2 | `pause` |
 
 The rows are mutually exclusive.
 Every vocabulary-valid tuple not listed in the matrix fails closed as
@@ -2526,11 +2569,37 @@ For `absent` and `uninspected`, it is empty.
 For `partial`, `extra`, or `contradictory`, it contains only current references
 to the bounded observed output files used to classify that failure.
 Those references are diagnostic inputs, never canonical behavior evidence.
-`diagnostic_evidence_refs` contains the bounded current evidence for every
-non-`none` member of `diagnostic_ids` in matching order.
-It is empty only when `diagnostic_ids` is `[none]`.
-Compound conditions retain separate bounded evidence entries and never erase
-or replace `output_state`.
+`diagnostic_evidence` is an inline object keyed by every non-`none` member of
+`diagnostic_ids` and no other key.
+It is empty only for `[none]`.
+It MUST NOT contain a path-and-identity reference to the run manifest,
+transport row, or another diagnostic evidence object.
+Each value has one exact role-specific shape:
+
+| Diagnostic | Inline evidence fields |
+| --- | --- |
+| `stage-turn-timeout` | `kind: deadline-observation-v1`, `deadline_ms`, `elapsed_ms`, `runtime_thread_id` |
+| `stage-liveness-uncertain` | `kind: liveness-observation-v1`, `termination_requested: true`, `wait_completed: false`, `runtime_process_id` |
+| `stage-output-absent` | `kind: output-inventory-v1`, exact output `root`, empty `paths`, and the canonical empty-list `inventory_identity` |
+| `stage-output-partial`, `stage-output-extra`, or `stage-output-contradictory` | `kind: output-inventory-v1`, exact output `root`, complete path-sorted `paths`, and canonical `inventory_identity` |
+| `protocol-shape-incompatible` | `kind: protocol-observation-v1`, `event_kind`, `schema_path`, `observed_shape_identity` |
+| `unexpected-prohibited-event` | `kind: prohibited-event-observation-v1`, `event_kind`, `event_identity` |
+| `runtime-identity-unstable` | `kind: runtime-identity-observation-v1`, `expected_identity`, `observed_identity` |
+
+All listed numeric fields are non-negative integers; every identity uses the
+standard `sha256:` form; every path is normalized and bounded to the invocation
+or approved schema root.
+The timeout and liveness records are cross-checked against the row's runtime
+thread and termination fields.
+For `confirmed-stopped`, the separate inline `termination_receipt` is the
+required stop/reap authority evidence and is cross-checked with the timeout
+observation; it is not duplicated as a diagnostic-evidence role.
+The output inventory is cross-checked against `output_state` and
+`evidence_refs`.
+Compound conditions retain all role entries and never erase or replace
+`output_state`.
+Missing, additional, wrong-role, stale, self-referential, or cross-field
+inconsistent evidence fails closed before routing.
 A paused or failed invocation has no publishable run manifest or current
 pointer.
 A successful run retains every preceding absent-timeout row plus its accepted
