@@ -2997,6 +2997,7 @@ def _generated_config(
     workspace: Path,
     model_id: str,
     runtime_version: str,
+    command_path: str,
 ) -> bytes:
     runtime_features = RUNTIME_FEATURES_BY_VERSION.get(runtime_version)
     if runtime_features is None:
@@ -3011,7 +3012,7 @@ def _generated_config(
         "",
         "[shell_environment_policy]",
         'inherit = "none"',
-        f'set = {{ PATH = {_toml_string(os.environ.get("PATH", "/usr/bin:/bin"))} }}',
+        f'set = {{ PATH = {_toml_string(command_path)} }}',
         "",
         "[features]",
     ]
@@ -3886,8 +3887,17 @@ def _collect_runtime_attestation(
         _copy_participating_skills(runtime_home)
         _install_auth(runtime_home)
         model_id = "gpt-5.6-sol"
+        node = shutil.which("node")
+        if node is None:
+            raise BoundaryRuntimeError("runtime-unavailable")
+        command_path = f"{Path(node).parent}:/usr/bin:/bin"
         config = _generated_config(
-            runtime_home, package_root, workspace, model_id, version
+            runtime_home,
+            package_root,
+            workspace,
+            model_id,
+            version,
+            command_path,
         )
         config_path = runtime_home / "config.toml"
         try:
@@ -3898,10 +3908,6 @@ def _collect_runtime_attestation(
         config_identity = _normalized_config_identity(
             config, runtime_home, package_root, workspace
         )
-        node = shutil.which("node")
-        if node is None:
-            raise BoundaryRuntimeError("runtime-unavailable")
-        command_path = f"{Path(node).parent}:/usr/bin:/bin"
         canary = "boundary-proof-" + secrets.token_hex(32)
         environment = _runtime_environment(runtime_home, command_path, canary)
         probe_source = workspace / "manifested.txt"
