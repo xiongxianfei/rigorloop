@@ -187,9 +187,9 @@ the validated report identity without rewriting the report.
 
 ## Scoped supersession
 
-On acceptance,
+Accepted
 `ADR-20260726-stage-authored-artifact-envelope-transport` supersedes only the
-original direct stage-filesystem-write clause. Until that ADR is accepted, this
-ADR remains the governing accepted decision. The proposed amendment preserves
-the stage as sole semantic author and moves only physical byte materialization
-to the transport adapter. All other decisions in this ADR remain accepted.
+original direct stage-filesystem-write clause. The replacement preserves the
+stage as sole semantic author, removes child workspace-write authority, and
+moves only physical byte materialization to the parent transport adapter after
+the unchanged-workspace gate. All other decisions in this ADR remain accepted.

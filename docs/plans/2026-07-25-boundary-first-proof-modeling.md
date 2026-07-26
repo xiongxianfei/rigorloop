@@ -26,11 +26,11 @@ resumes.
 - Proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Specs: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
 - Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r45.md` (approved; architecture required)
-- Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R15)
+- Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R18)
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` (accepted by architecture-review R15)
 - Proposed transport ADR: `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md`
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
-- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r17.md`
+- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r18.md`
 - Plan review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md`
 - Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; current runtime-boundary proof map is approved by focused test-spec-review R14
 
@@ -88,12 +88,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r17.md
-- Review status: changes-requested; stage=architecture-review; round=r17
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r18.md
+- Review status: approved; stage=architecture-review; round=r18
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture-review
+- Next stage: plan
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=6; open-findings=BFP-AR16-1,BFP-AR16-2,BFP-AR17-1,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
 ## Milestones
 
@@ -620,6 +620,12 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-26: Architecture-review R18 approved the complete read-only
+  stage-transport amendment and closed BFP-AR16-1, BFP-AR16-2, and
+  BFP-AR17-1. The canonical architecture and transport ADR are accepted, the
+  predecessor ADR clauses are narrowly superseded, and focused plan revision
+  is next.
 
 - 2026-07-26: Architecture-review R17 confirmed the Runtime View, component
   trace, evidence compatibility, and ADR lifecycle, but found one stale

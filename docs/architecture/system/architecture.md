@@ -2,7 +2,7 @@
 
 ## Status
 
-- draft
+- approved
 
 ## Related artifacts
 
@@ -1410,8 +1410,8 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 ## Architecture Decisions
 
 - [ADR-20260725-boundary-first-proof-modeling](../../adr/ADR-20260725-boundary-first-proof-modeling.md) - Use a spec-normative typed projection, copied packaged reference, structural validator, frozen incident registry, and report-hash release activation for boundary-model `v1`.
-- [ADR-20260726-stage-authored-artifact-envelope-transport](../../adr/ADR-20260726-stage-authored-artifact-envelope-transport.md) - Preserve stage ownership of semantic bytes while using a parent-policy-bound envelope collector and exact-byte materializer for the isolated behavior harness.
-- [ADR-20260726-codex-permission-profile-boundary-harness](../../adr/ADR-20260726-codex-permission-profile-boundary-harness.md) - Accepted app-server, named permission-profile, exact experimental-schema, effective-config/inventory, managed-policy, and parent-probe decision, with a pending scoped read-only supersession defined by the proposed stage-envelope ADR.
+- [ADR-20260726-stage-authored-artifact-envelope-transport](../../adr/ADR-20260726-stage-authored-artifact-envelope-transport.md) - Accept the read-only child boundary, deny-only file-change policy, workspace-integrity gate, stage-authored envelope, and parent-only exact-byte materialization contract.
+- [ADR-20260726-codex-permission-profile-boundary-harness](../../adr/ADR-20260726-codex-permission-profile-boundary-harness.md) - Accepted app-server, named permission-profile, exact experimental-schema, effective-config/inventory, managed-policy, and parent-probe decision; its writable-child clauses are narrowly superseded by the accepted stage-envelope ADR.
 
 - `docs/adr/ADR-20260428-architecture-package-method.md`: default C4 plus official arc42 plus ADR architecture package method.
 - `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`: removes change-local deltas from the normal architecture authoring path and requires architecture-review surface classification.
@@ -1768,15 +1768,14 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Readiness
 
-The retained canonical package remains approved through architecture-review
-R15. The current read-only stage-transport amendment is a draft candidate for
-architecture-review R17. It replaces child workspace-write authority with
-direct, descendant, and file-change denial; adds the pre-materialization
-workspace-integrity guard; advances current runtime evidence to v2; and keeps
-the sole registered v1 manifest as opaque history. The proposed stage-envelope
-ADR must be accepted, and its scoped supersession of the two accepted
-predecessor clauses must be normalized, before planning or implementation
-relies on this amendment.
+Architecture-review R18 approved the read-only stage-transport amendment. The
+canonical package now replaces child workspace-write authority with direct,
+descendant, and file-change denial; gates parent-only materialization on a
+complete unchanged-workspace observation; requires v2 for every current
+runtime-evidence role; and recognizes the sole registered v1 manifest only as
+opaque history. The accepted stage-envelope ADR narrowly supersedes only the
+named writable-child clauses in its two accepted predecessors. The package is
+ready for focused execution-plan revision.
 
 ADR `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md` records the accepted durable consolidation and supersedes the three earlier profile ADRs; their descriptions below are historical context, not current writable-mechanism authority under the approved spec.
 

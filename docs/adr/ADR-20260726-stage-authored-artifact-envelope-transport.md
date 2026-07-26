@@ -2,7 +2,7 @@
 
 ## Status
 
-proposed
+accepted
 
 ## Context
 
@@ -131,7 +131,7 @@ additional, stale, or inconsistent values.
 
 ## Relationship
 
-On acceptance, this ADR supersedes:
+This ADR supersedes:
 
 - only the direct stage-filesystem-write clause in
   `ADR-20260725-boundary-first-proof-modeling`; and
@@ -143,10 +143,10 @@ The replacement is a read-only child profile, deny-only file-change handling,
 parent-only materialization, and bounded workspace-integrity inspection.
 All other decisions in those ADRs remain accepted.
 
-Until this ADR is accepted, the two accepted predecessor ADRs remain the
-governing decisions. On acceptance, this ADR strengthens the runtime
-permission profile without changing credential isolation, identity binding,
-publication, recovery, or release-activation boundaries.
+Architecture-review R18 accepted this decision and activated only the scoped
+clause replacements above. This ADR strengthens the runtime permission profile
+without changing credential isolation, identity binding, publication,
+recovery, or release-activation boundaries.
 
 ## Acceptance conditions
 
