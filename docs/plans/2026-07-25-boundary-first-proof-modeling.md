@@ -31,13 +31,13 @@ resumes.
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
 - Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r15.md`
 - Plan review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md`
-- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; current runtime-boundary candidate requires focused test-spec review after plan approval
+- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; current runtime-boundary proof map is approved by focused test-spec-review R14
 
 ## Context and orientation
 
 The approved baseline outside the focused R28y amendment remains normative.
-The focused R28y feature contract is approved and its active proof text awaits
-focused test-spec-review R14 before implementation resumes.
+The focused R28y feature contract and active proof text are approved through
+test-spec-review R14; implementation may resume.
 `scripts/boundary_proof_model.py` will be their immutable typed projection and
 pure aggregate evaluator.
 `scripts/boundary_proof_behavior.py` will be the standalone hermetic behavior
@@ -84,10 +84,10 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r13.md
-- Review status: changes-requested; stage=test-spec-review; round=r13
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r14.md
+- Review status: approved; stage=test-spec-review; round=r14
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: test-spec-review R14 for active R28y proof map
+- Next stage: implement M2 correction for BFP-CR-M2-1, BFP-CR-M2-7, and BFP-CR-M2-8
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
