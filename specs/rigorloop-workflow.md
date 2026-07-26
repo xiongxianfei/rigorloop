@@ -2060,16 +2060,29 @@ New preflight and generation paths emit only
 `boundary-runtime-attestation-v2` nested in
 `boundary-behavior-implementation-v2`.
 Existing v1 attestations and v1 implementation manifests remain readable as
-historical report evidence under their original closed shapes, but they are
-stale for current preflight, generation, immutable-run selection, current
-pointer publication, validation, and capability reporting.
-The historical v1 implementation manifest has the same exact top-level fields
-as v2 and `manifest_id: boundary-behavior-implementation-v1`.
-Its nested `boundary-runtime-attestation-v1` has the exact v2 attestation field
-list except that `file_change_authorization_policy_identity` is absent, and
-its exact `probe_results` omit `workspace_file_change_denied`.
-No other v1/v2 shape difference is permitted.
-They are never copied, field-injected, or silently upgraded to v2.
+opaque historical evidence only through this closed registry:
+
+| Record kind | Repository-relative path | Raw-byte identity | Treatment |
+| --- | --- | --- | --- |
+| `behavior-implementation-manifest` | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/behavior-implementation-manifest.json` | `sha256:d4a98482700e711f6c1ec17f1309d56c64f67e9cc6181389cc74daf4f2c4cc0e` | `opaque-read-only-history` |
+
+Historical recognition requires exact path, regular non-symlink file kind, and
+raw-byte identity equality with one registry row.
+Its closed result is `registered-opaque-history` or
+`unsupported-historical-evidence`.
+Only exact registry equality produces `registered-opaque-history`.
+The current validator may report only the registered record kind, path,
+identity, and treatment; it does not structurally parse, normalize, project,
+or derive claims from the opaque payload.
+No other v1 evidence is supported by the first-version registry.
+An unknown, additional, path-moved, identity-mismatched, ambiguous, or
+caller-supplied v1 record is `unsupported-historical-evidence` and fails closed
+whenever a caller attempts to select or validate it.
+Registered v1 history is stale and ineligible for current preflight,
+generation, implementation-manifest dependency, immutable-run selection,
+current pointer publication, current validation, capability reporting, or
+activation.
+It is never copied, field-injected, or silently upgraded to v2.
 Current generation must produce a fresh v2 attestation and manifest.
 
 Durable preflight publication writes a sibling mode-restricted temporary file

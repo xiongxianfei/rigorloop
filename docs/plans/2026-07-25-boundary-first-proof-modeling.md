@@ -91,7 +91,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r44.md
 - Review status: changes-requested; stage=spec-review; round=r44
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec
+- Next stage: spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=14; open-findings=BFP-AR16-1,BFP-AR16-2,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR41-1,BFP-SR41-2,BFP-SR41-3,BFP-SR42-1,BFP-SR42-2,BFP-SR43-1,BFP-SR43-2,BFP-SR43-3,BFP-SR44-1
 
@@ -620,6 +620,13 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-26: Spec-review R44 approved the current v2 transport/security
+  contract and found only that reused historical v1 labels could not select a
+  deterministic parser. The R45 candidate removes structural v1 parsing and
+  recognizes only the one actually persisted manifest by exact path,
+  regular-file kind, and raw-byte identity as opaque read-only history;
+  unknown v1 records fail closed and no v1 record can satisfy a current role.
 
 - 2026-07-26: Spec-review R43 confirmed the typed baseline-failure surface but
   found that the probe-local decline did not govern accepted turns, the
