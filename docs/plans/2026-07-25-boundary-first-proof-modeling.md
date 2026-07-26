@@ -79,12 +79,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M1. Typed model, validator, fixtures, and report core
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r8.md
-- Review status: changes-requested; stage=spec-review; round=r8
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r9.md
+- Review status: changes-requested; stage=spec-review; round=r9
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: spec-review R9
+- Next stage: spec revision for deterministic recorded-run validation
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=9; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-SR3-2,BFP-SR3-3
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=8; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-SR9-1
 
 ## Milestones
 
@@ -313,6 +313,7 @@ implementation authorization is requested.
 - 2026-07-26: The R8 candidate makes scenario labels comparison-only, closes normalized oracle records, bundles complete formal review evidence, derives simple-run HEAD and pre-M2 preservation baselines separately, freezes support-manifest paths and schemas, and normalizes typed-result identities.
 - 2026-07-26: Spec-review R8 retained only review-event evidence-union, portable immutable-run publication, and filesystem-versus-typed selector separation gaps.
 - 2026-07-26: The R9 candidate defines authoring and review evidence sets separately, counts complete review bundles, publishes immutable runs through one atomically replaced pointer, and separates filesystem input references from typed-result dependencies.
+- 2026-07-26: Spec-review R9 resolved BFP-SR3-2 and BFP-SR3-3 and opened BFP-SR9-1 because generation and validation still reran nondeterministic skill invocations and stale pointer reuse was not input-bound.
 
 ## Decision log
 
