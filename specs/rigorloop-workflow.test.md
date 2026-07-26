@@ -1212,15 +1212,29 @@ Boundary model scope: R28-R28z
 - Level: integration
 - Command IDs: CMD-BFP-1, CMD-BFP-9, CMD-BFP-12
 - Fixture/setup: Exact harness components; all resources mapped by the five
-  participating skill packages; applicable root and nested instructions;
-  contract references; invocation profile; missing, extra, stale, escaping,
-  non-regular, and substituted variants.
+  participating skill packages; root-to-leaf applicable instructions; the
+  exact five contract references `docs/workflows.md`,
+  `specs/rigorloop-workflow.md`, `specs/rigorloop-workflow.test.md`,
+  `specs/skill-contract.md`, and `specs/skill-contract.test.md`; and the exact
+  nine invocation-profile fields `agent_runtime`, `runtime_version`,
+  `runtime_executable_identity`, `model_id`, `orchestration_mode`,
+  `instruction_profile`, `tool_profile`, `python_implementation`, and
+  `python_version`.
 - Steps: Derive the manifest from current Resource maps and instruction walks;
-  mutate each reference class independently; validate from a different
-  validator environment without replacing the recorded invocation profile.
+  for every manifest collection and every invocation-profile field,
+  independently test valid, missing, additional, duplicate where applicable,
+  unknown closed value, malformed format, stale identity, and changed value;
+  delete and substitute each of the five contract refs; reorder applicable
+  instructions, duplicate one, omit root or nested instructions, add an
+  inapplicable instruction, and introduce a symlinked instruction path;
+  validate from a different validator environment without replacing the
+  recorded invocation profile.
 - Expected result: Only the exact current closure validates. Every missing,
   extra, duplicate, stale, escaping, non-regular, inapplicable, or substituted
-  reference fails with its stable class diagnostic.
+  reference and every unknown, malformed, missing, additional, or changed
+  profile field fails with its stable class diagnostic. Instruction refs are
+  root-to-leaf, path-deduplicated, applicable, and discovered without following
+  symlinks.
 - Failure proves: The behavior result can depend on unbound skill resources,
   instructions, contracts, or runtime inputs.
 - Evidence artifact: `evidence/behavior-implementation-manifest.json`
@@ -1255,15 +1269,31 @@ Boundary model scope: R28-R28z
 - Covers: R28y
 - Level: e2e
 - Command IDs: CMD-BFP-10, CMD-BFP-11, CMD-BFP-12
-- Fixture/setup: Frozen pre-mutation HEAD; unchanged and independently changed
-  harness, skill-resource, instruction, contract, runtime executable/version,
-  model, tool-profile, and Python identities.
+- Fixture/setup: Exact baseline record with only `schema_version`, `change_id`,
+  and `preservation_baseline_commit`; exact input set with only
+  `schema_version`, `scenario_ref`, `baseline_commit`, `skill_resource_refs`,
+  `oracle_refs`, and `implementation_manifest_ref`; unchanged and independently
+  changed harness, skill-resource, instruction, contract, runtime, scenario,
+  oracle, and implementation-manifest identities.
 - Steps: Freeze the baseline before skill mutation; generate once; validate
-  unchanged bytes; alter every referenced identity one class at a time; rerun
-  validation without invoking lifecycle skills.
+  unchanged bytes; attempt caller-selected baseline commits and baseline
+  rewrites; for each baseline and input-set field test missing, additional,
+  malformed, reordered where order is normative, stale, substituted, and
+  caller-selected variants; omit, add, reorder, or substitute each scenario,
+  skill-resource, oracle, and implementation-manifest member; independently
+  change `expected_branch` and `corrected_role`; rerun validation without
+  invoking lifecycle skills.
 - Expected result: Unchanged inputs validate; any behavior-affecting identity
   change makes the current run stale and requires explicit new generation.
-  Validation never changes the invocation profile or current pointer.
+  The baseline accepts only `boundary-proof-baseline-v1`, the exact change ID,
+  and the harness-derived immutable pre-M2 commit. The input set accepts only
+  `simple-change-input-v1`, invocation-owned pre-run HEAD, exact current
+  scenario, complete path-sorted five-package resources and oracle set, and
+  the canonical implementation-manifest reference. Changing
+  `expected_branch` or `corrected_role` changes only final comparison, never
+  invocation, events, structural results, observations, or diagnostics.
+  Validation never changes the invocation profile, baseline, or current
+  pointer.
 - Failure proves: Recorded behavior can be reused across materially different
   implementations or environments.
 - Evidence artifact: immutable run, current pointer, baseline, and manifest

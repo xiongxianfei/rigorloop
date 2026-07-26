@@ -83,7 +83,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r5.md
 - Review status: approved; stage=plan-review; round=r5
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: test-spec revision
+- Next stage: test-spec-review R4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=8; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-TSR3-1
 
@@ -477,6 +477,10 @@ resource through generated, packed, and installed outputs.
   preservation, parity, and release proof mapped to M1-M4.
 - 2026-07-26: Test-spec-review R3 retained one gap: aggregate hermetic-input
   coverage must become field-complete mutation proof before implementation.
+- 2026-07-26: The R4 test-spec candidate now mutates every manifest collection,
+  all nine invocation-profile fields, all five contract refs, instruction
+  ordering/deduplication/symlink behavior, the exact baseline record, the exact
+  input-set fields and members, and comparison-only scenario expectations.
 
 ## Decision log
 
