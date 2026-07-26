@@ -2007,7 +2007,7 @@ R31 candidate is committed; pending independent spec-review-r31.
 
 Finding ID: BFP-SR-R31-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y transport evidence
@@ -2016,13 +2016,18 @@ Required outcome: Make every inline diagnostic role semantically deterministic, 
 Chosen action: Define exact role predicates, bound schema/prohibited vocabularies, and a total disjoint comparison over required and observed outputs.
 Rationale: Correct shapes do not prove the observation they label.
 Validation target: spec-review-r32
-Validation evidence: pending
+Validation evidence: R28y now defines timeout equality, unequal runtime
+identity, bound-schema rejection, version-bound prohibited-event membership,
+and a total disjoint required-versus-observed output evaluator with
+contradiction precedence; T52 covers boundary equality, wrong-role,
+permitted/unknown events, and overlapping output cases; pending independent
+spec-review-r32.
 
 #### BFP-SR-R31-2 - Atomically quarantine orphan recovery
 
 Finding ID: BFP-SR-R31-2
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y recovery transaction
@@ -2031,7 +2036,12 @@ Required outcome: Eliminate partially deleted active orphans and malformed first
 Chosen action: Atomically install the basis through a no-clobber temporary file, rename the orphan to deterministic quarantine, fsync, record detached state, and preserve the identity-validated quarantine without cleanup in v1.
 Rationale: Atomic namespace transitions are resumable; recursive deletion is not.
 Validation target: spec-review-r32
-Validation evidence: pending
+Validation evidence: R28y now installs the immutable recovery basis through a
+fsynced temporary and atomic no-clobber transition, atomically renames active
+orphans to deterministic identity-bound quarantine, fsyncs the namespace,
+records `orphan-detached`, and preserves quarantine without cleanup; T51
+covers temporary basis, rename, quarantine corruption, and forbidden cleanup;
+pending independent spec-review-r32.
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 

@@ -887,4 +887,4 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r31.md
 Resolution: review-resolution.md#spec-review-r31
 Material findings: BFP-SR-R31-1, BFP-SR-R31-2
-Open findings: BFP-SR-R31-1, BFP-SR-R31-2
+Open findings: None
