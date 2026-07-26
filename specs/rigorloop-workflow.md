@@ -1523,11 +1523,35 @@ An operation whose complete selector contains only typed dependencies has empty
 An operation that produces only an in-memory typed result has empty
 `output_refs`.
 
-The canonical writer mode MUST rerun every required operation, reject
-`not-run`, and write the canonical report only after the complete aggregate is
-computed.
-Validating an existing canonical report MUST rerun the registry and compare the
-complete typed results and current evidence identities.
+Canonical generation and canonical validation are separate modes.
+
+Canonical generation:
+
+- freshly executes every deterministic registry operation;
+- invokes the four upstream lifecycle skills exactly once through
+  `simple-change-behavior`;
+- publishes that invocation as one immutable input-bound run;
+- evaluates preservation from already recorded M2/M3 behavior outputs rather
+  than reinvoking those skills;
+- rejects `not-run`; and
+- writes the canonical report only after the complete aggregate is computed.
+
+Canonical validation MUST NOT reinvoke a lifecycle skill.
+It recomputes the input-set identity from the recorded baseline commit plus
+the current referenced scenario, skills, resources, oracles, and harness
+contracts; validates the pointed immutable run and every current referenced
+byte; reconstructs its events and typed
+`simple-change-behavior` result, freshly executes deterministic registry
+operations, recomputes dependencies and aggregate formulas, and compares the
+complete reconstructed report with the recorded canonical report.
+A changed input-set identity is stale evidence and requires canonical
+generation; validation MUST NOT silently reuse or rewrite it.
+Validation does not replace the recorded baseline commit with the later
+validation-time HEAD.
+It requires that commit to exist, be an ancestor of validation-time HEAD, and
+match the recorded before inventory.
+Later commits that only preserve the referenced input bytes do not stale the
+run; changed referenced bytes do.
 Test mode MAY inject typed operation results to exercise pass, fail, not-run,
 ordering, and aggregation behavior, but it MUST NOT write or validate the
 canonical report path.
@@ -1656,25 +1680,80 @@ run while the latter measures behavior preservation across skill changes.
 
 The behavior harness writes one immutable run manifest containing event results
 under the run root.
-The run manifest contains exactly `run_id`, `baseline_commit`,
-`before_artifact_inventory`, `after_artifact_inventory`, `snapshots`, and
-`events`.
+The run manifest contains exactly `run_id`, `input_set`, `input_set_identity`,
+`baseline_commit`, `before_artifact_inventory`, `after_artifact_inventory`,
+`snapshots`, and `events`.
 `run_id` matches `run-[0-9a-f]{32}`, is generated from 128 bits of
 cryptographically secure randomness, and MUST NOT already exist.
+
+`input_set` contains exactly:
+
+```text
+schema_version
+scenario_ref
+baseline_commit
+skill_resource_refs
+oracle_refs
+harness_contract_refs
+```
+
+`schema_version` is `simple-change-input-v1`.
+`scenario_ref` is the current standard path-and-identity reference for
+`scenario.json`.
+`baseline_commit` is the invocation-owned pre-run HEAD.
+`skill_resource_refs` is the complete path-sorted current reference set for
+the four upstream `SKILL.md` files and every mapped boundary-proof resource.
+`oracle_refs` is the complete path-sorted current reference set for every
+candidate file.
+`harness_contract_refs` is the complete path-sorted current reference set for
+`specs/rigorloop-workflow.md`, `specs/rigorloop-workflow.test.md`,
+`specs/skill-contract.md`, `specs/skill-contract.test.md`,
+`scripts/boundary_proof_model.py`, and
+`scripts/validate-boundary-proof.py`.
+`input_set_identity` is the `sha256:<64 lowercase hexadecimal characters>` of
+canonical JSON serialization of `input_set`.
+Missing, extra, reordered, stale, substituted, or caller-selected input-set
+members fail closed.
+
 The harness prepares a sibling temporary directory, validates all events,
 bundles, snapshots, inventories, and metrics, then renames it to the new
 immutable run root.
 It publishes the run only through
 `docs/changes/<change-id>/evidence/simple-change/current.json`.
-That pointer contains exactly `run_id` and `manifest_ref`.
+That pointer contains exactly `run_id`, `input_set_identity`, and
+`manifest_ref`.
+`manifest_ref` is the standard current `{path, identity}` evidence reference.
+Its path MUST equal
+`docs/changes/<change-id>/evidence/simple-change/runs/<run-id>/manifest.json`;
+the pointed manifest's `run_id` and `input_set_identity` MUST equal the pointer
+values.
+Run-ID/path, input-set, or identity mismatch fails closed.
+
+Before pointer replacement, the harness writes
+`docs/changes/<change-id>/evidence/simple-change/prepared.json`.
+That receipt contains exactly `run_id`, `input_set_identity`, `manifest_ref`,
+and `prior_pointer_ref`.
+`prior_pointer_ref` is null for the first publication or the standard current
+reference to the prior pointer.
+The receipt is fsynced only after the immutable run validates.
 The harness writes and fsyncs a sibling temporary pointer, atomically replaces
 the pointer file with the platform's same-filesystem atomic file-replace
 primitive, and fsyncs the parent directory.
 Failure before pointer replacement leaves the prior pointer and immutable run
 unchanged.
-On resume after an interrupted replacement, the pointer contains either the
-old or new complete record; the harness validates its manifest reference and
-accepts the pointed immutable run without repeating stage invocations.
+On resume, a prepared receipt is reconciled before any generation or
+validation:
+
+- if the pointer names the prepared run, validate the run and finish receipt
+  cleanup;
+- if the pointer still names `prior_pointer_ref`, validate the prepared run
+  against its recorded and current input-set identity, complete pointer
+  publication, and finish cleanup;
+- any other pointer, missing staged run, corrupt receipt, or input mismatch
+  fails closed.
+
+The harness never accepts the old run as completion of a different prepared
+invocation and never reinvokes lifecycle skills during reconciliation.
 `baseline_commit` is exactly the harness-derived
 `git:<40 lowercase hexadecimal characters>` pre-run HEAD and names the commit
 used for the before run.
