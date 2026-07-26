@@ -38,6 +38,7 @@ from boundary_proof_behavior import (
     _load_generated_payload,
     _publish_run,
     _reconcile_prepared,
+    _render_feature_markdown,
     _parse_feature_markdown,
     _parse_test_spec_markdown,
     _portable_text_contract,
@@ -1605,6 +1606,23 @@ class BoundaryProofModelTests(unittest.TestCase):
 
 
 class BoundaryProofEnvironmentTests(unittest.TestCase):
+    def test_feature_contract_does_not_require_an_empty_unknown_mode_class(
+        self,
+    ) -> None:
+        feature, _ = _portable_text_contract()
+        rendered = _render_feature_markdown(feature)
+        self.assertIn(
+            "no distinct canonically equivalent mode exists", rendered
+        )
+        self.assertIn(
+            "that empty class is not an unknown-mode evidence obligation",
+            rendered,
+        )
+        self.assertNotIn(
+            "including empty, canonically equivalent, differently cased",
+            rendered,
+        )
+
     def test_stage_output_schemas_are_compact_closed_records(self) -> None:
         feature = _feature_model_schema()
         proof = _proof_map_schema()
