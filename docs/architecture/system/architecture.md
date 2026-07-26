@@ -385,9 +385,9 @@ for the component view.
 | Boundary model constants and parser | `scripts/boundary_proof_model.py` | Projects closed IDs, marker and scope rules, row schemas, reference integrity, fixture identities, result vocabularies, and report aggregation from approved specs. |
 | Capability evaluator | Pure functions in `scripts/boundary_proof_model.py` | Computes the six-check, fixture, preservation, parity, overhead, and final capability outcomes from validated typed inputs; it performs no filesystem writes. |
 | Standalone behavior harness | `scripts/boundary_proof_behavior.py` | Assembles the five participating skill packages and governing inputs, enforces the closed two-module import boundary, creates the isolated workspace and fresh runtime home, launches one workflow invocation, captures the observable invocation profile, validates transient access observations, and publishes or reconciles one immutable behavior run. |
-| Child-runtime adapter | Functions in `scripts/boundary_proof_behavior.py` | Resolves and identities the runtime executable, requires child-reported model metadata, applies the closed instruction and tool profiles, keeps model-service transport outside child-tool authority, and rejects unavailable or unsafe metadata before output is accepted. |
-| Isolated workspace assembler | Functions in `scripts/boundary_proof_behavior.py` | Copies only manifest-bound skills, mapped resources, applicable instructions, contracts, scenario inputs, and candidate oracles into a fresh workspace and exposes one writable behavior-output root. |
-| Immutable run publisher and reconciler | Functions in `scripts/boundary_proof_behavior.py` | Builds the run in a sibling temporary directory, validates the complete event bundle, persists a prepared publication receipt, atomically installs the immutable run and current pointer, and reconciles crashes without reinvoking lifecycle skills during validation. |
+| Child-runtime adapter | Functions in `scripts/boundary_proof_behavior.py` | Resolves and identities the runtime executable, requires runtime-reported model metadata, configures a runtime-native sandbox whose effective filesystem/tool/network settings are independently observed by the parent, provisions opaque control-plane authentication outside the child workspace and tool environment, and rejects output when the effective profile cannot be established. |
+| Isolated workspace assembler | Functions in `scripts/boundary_proof_behavior.py` | Copies only manifest-bound skills, mapped resources, applicable instructions, contracts, scenario inputs, and candidate oracles into a fresh workspace, exposes one writable behavior-output root, and keeps the private runtime home and credentials outside sandbox-readable roots. |
+| Immutable run publisher and reconciler | Functions in `scripts/boundary_proof_behavior.py` | Builds and validates a sibling temporary run, installs the immutable run, writes and fsyncs the prepared receipt, atomically replaces and fsyncs the current pointer, fsyncs the parent directory, removes the reconciled receipt, and resumes that sequence without reinvoking lifecycle skills. |
 | Boundary validator | `scripts/validate-boundary-proof.py` | Validates scoped feature specs, matching test specs, fixture evidence, and the capability report without scoring semantic adequacy. |
 | Regression suite | `scripts/test-boundary-proof.py` | Proves known and unknown values, duplicates, orphans, version mismatch, aggregate behavior, and the compact simple fixture. |
 | Boundary fixtures | `tests/fixtures/boundary-proof/` | Holds valid, invalid, eight seeded incident-replay, and simple-change inputs. |
@@ -615,22 +615,38 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    applicable repository instruction chain, binds current contract and
    scenario inputs, and creates a fresh isolated workspace and configuration
    home.
-7. The child-runtime adapter records runtime version and executable identity,
-   requires the runtime's own model ID, applies the closed instruction and
-   tool profiles, and invokes `workflow` once to orchestrate `spec`,
-   `spec-review`, `test-spec`, and `test-spec-review`.
+7. The parent adapter records runtime version and executable identity,
+   requires the runtime's own model ID, configures the closed instruction and
+   tool profiles, and verifies the effective runtime-native sandbox settings
+   before accepting lifecycle output. The parent fails with
+   `environment-unavailable` when the identified runtime cannot attest its
+   effective filesystem, tool, connector, subagent, and network restrictions.
 8. Child tools have workspace-only filesystem access, no connectors,
-   subagents, or network. The runtime's model-service control-plane transport
-   is outside the child tool profile and cannot be used as a tool or arbitrary
-   egress channel.
+   subagents, or network. Parent-observed sandbox audit, not child-reported
+   access history, proves this profile. The trusted runtime's model-service
+   control-plane transport is outside the child tool profile and cannot be
+   selected by model output as a tool or arbitrary egress channel.
+   The parent provisions authentication in a private mode-restricted runtime
+   home outside the child workspace and sandbox-readable roots. It does not
+   copy caller instructions or general caller configuration, inject
+   credentials into the child tool environment, or serialize credentials into
+   manifests, diagnostics, access observations, or run evidence.
 9. The outer prompt is a deterministic constant in the identity-bound harness
    module combined with `scenario_ref`; changing either changes the input-set
-   identity. The access log is transient enforcement state: the harness
-   validates it before publication, records only the typed result and
-   diagnostic in durable evidence, then discards the raw log.
-10. The harness prepares the run under a sibling temporary directory, writes
-    the prepared publication receipt, atomically installs the immutable run
-    and current pointer, and removes the receipt only after reconciliation.
+   identity. Parent-observed sandbox audit is transient enforcement state: the
+   harness validates it before publication, records only the typed result,
+   bounded non-secret profile attestation, and diagnostic in durable evidence,
+   then discards the raw log.
+10. Publication uses the exact durable sequence:
+    (a) build and validate the sibling temporary run;
+    (b) rename it to the immutable run root;
+    (c) write and fsync `prepared.json`;
+    (d) write and fsync a sibling temporary pointer, atomically replace
+    `current.json`, and fsync the pointer parent directory;
+    (e) reconcile the installed run and pointer; and
+    (f) remove `prepared.json`.
+    The receipt makes the multi-step publication recoverable; it does not make
+    immutable-run installation and pointer replacement jointly atomic.
     Validation checks the pointed run and current bound identities without
     invoking a lifecycle skill or substituting the validator's environment.
 11. The incident runner evaluates the eight frozen fixture IDs at their
@@ -852,6 +868,27 @@ workspace-access, and publication checks fail closed before evidence is
 accepted.
 Raw access observations are transient enforcement state, not a new durable
 evidence schema.
+
+### Hermetic behavior trust boundary
+
+The parent harness trusts only the identity-bound runtime executable and a
+runtime-native sandbox/profile whose effective settings the parent can verify.
+It does not treat model output or child-reported access history as confinement
+evidence.
+The effective profile must independently establish workspace-only child
+filesystem access, the closed tool set, connector and subagent absence, and
+child-tool network denial before lifecycle output is accepted.
+Unsupported runtimes and unverifiable profiles return
+`environment-unavailable`.
+
+Model authentication is runtime control-plane state, not a child tool input.
+The parent provisions only the credential material needed by the identified
+runtime in a private, mode-restricted runtime home outside the child workspace
+and sandbox-readable roots.
+Credentials are absent from child tool environment, copied scenario inputs,
+manifests, access observations, diagnostics, and durable runs.
+The runtime may use that opaque channel only for model-service transport;
+general child-tool network access remains denied.
 
 Structural validation and semantic review remain separate:
 
@@ -1226,6 +1263,8 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | A capability report could be asserted, stale, or detached from the release candidate | The validator computes the report from named checks and evidence identities; activation binds the report byte hash in tracked release notes and fails on any non-pass or not-run required result. |
 | A behavior run could depend on undeclared resources, instructions, code, or runtime authority | The standalone harness uses an exact five-skill resource-map set, applicable instruction discovery, a two-module import allowlist, an identity-bound invocation profile, and an isolated workspace whose transient access observations must contain no unmanifested source or capability. |
 | Disabling child-tool network could be confused with disabling the model runtime | The child tool profile denies network and arbitrary egress; the identified runtime may use only its model-service control-plane transport, which is outside child tool authority and cannot be invoked as a tool. |
+| The child runtime could self-attest a sandbox it bypassed | The parent accepts output only after independently observing an effective runtime-native sandbox/profile; child-reported access history is diagnostic input, not confinement proof. |
+| Model authentication could leak into tools or durable evidence | Credentials live only in a private runtime home outside the workspace and sandbox-readable roots, are absent from child tool environment and persisted records, and are used by the identified runtime only for control-plane transport. |
 | Raw access logs could leak local or runtime details | Access observations remain transient, are reduced to typed result and diagnostic evidence, and are discarded before successful publication. |
 | Mixed v1 and legacy skills could make rollback ambiguous | Each governed skill declares one boundary-model version; activation requires all governed skills at v1, while rollback removes the activation marker and restores a uniformly validated legacy set rather than accepting a mixed claim. |
 
@@ -1246,6 +1285,8 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 - standalone behavior harness: the isolated `boundary_proof_behavior.py` process boundary that binds five skill packages and one observable runtime profile, invokes the public workflow once, and publishes an immutable behavior run without importing the workflow-automation engine.
 - child tool profile: the closed set of capabilities available to the invoked agent; for canonical behavior proof it permits isolated-workspace filesystem access and forbids network, connectors, and subagents.
 - model-service control plane: runtime-owned transport used to obtain model execution, outside the child tool profile and not available as arbitrary tool network access.
+- runtime-native sandbox attestation: parent-observed non-secret evidence that the identified runtime actually applied the required filesystem, tool, connector, subagent, and child-network restrictions.
+- opaque control-plane authentication: credential provisioning available to the identified runtime for model transport but absent from the child workspace, child tool environment, and durable evidence.
 - boundary activation identity: the SHA-256 identity of the passing capability-baseline report recorded by release notes when boundary-model v1 becomes an active published capability claim.
 - transition release: a stable release that preserves repository-tree adapter installation from `dist/adapters/` while `.codex/skills/` remains ignored local runtime state and adapter archives remain a follow-on migration by default.
 - compatibility-window release: a stable release that preserves repository-tree adapter packages while also providing release archives and install guidance, giving downstream users one release to transition install models.

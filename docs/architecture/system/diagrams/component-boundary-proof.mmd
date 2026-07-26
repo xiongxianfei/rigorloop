@@ -6,10 +6,13 @@ flowchart LR
   templates["Shared boundary reference source<br/>[Template container]"]:::container
   fixtures["Boundary and skill fixtures<br/>[Test fixture container]"]:::container
   report["Capability report<br/>[Change-local evidence]"]:::container
-  behavior_runs["Immutable behavior runs<br/>[Change-local evidence]"]:::container
+  immutable_run["Installed immutable run<br/>[Change-local evidence]"]:::container
+  prepared_receipt["Prepared publication receipt<br/>[Fsynced recovery evidence]"]:::container
+  current_pointer["Current run pointer<br/>[Atomic file replacement]"]:::container
   isolated_workspace["Isolated scenario workspace<br/>[Ephemeral filesystem]"]:::container
   child_runtime["Child agent runtime<br/>[Fresh config + identified executable/model]"]:::external
   model_control_plane["Model service control plane<br/>[Runtime-only transport]"]:::external
+  credential_channel["Opaque credential channel<br/>[Private runtime home]"]:::external
   release["Release notes<br/>[Activation identity]"]:::container
   reviewer["Independent reviewer"]:::person
 
@@ -18,8 +21,8 @@ flowchart LR
     evaluator["Capability evaluator<br/>[Pure aggregate]"]:::component
     harness["Standalone behavior harness<br/>[One workflow invocation]"]:::component
     assembler["Package + workspace assembler<br/>[Manifest-bound inputs]"]:::component
-    runtime_adapter["Child-runtime adapter<br/>[Profile attestation]"]:::component
-    publisher["Immutable run publisher<br/>[Prepared receipt + atomic pointer]"]:::component
+    runtime_adapter["Child-runtime adapter<br/>[Parent-observed sandbox attestation]"]:::component
+    publisher["Immutable run publisher<br/>[Run → receipt → atomic pointer]"]:::component
     validator["Boundary validator + report writer<br/>[Structure + serialization]"]:::component
     selector["Validation selector<br/>[Six check IDs]"]:::component
     generators["Adapter integration<br/>[Generation + parity]"]:::component
@@ -39,13 +42,18 @@ flowchart LR
   assembler -->|fresh config home + closed workspace| isolated_workspace
   harness --> assembler
   harness --> runtime_adapter
+  runtime_adapter -->|provisions runtime-only auth| credential_channel
+  credential_channel -->|authenticates runtime outside tool sandbox| child_runtime
   runtime_adapter -->|one workflow invocation| child_runtime
   child_runtime -->|model execution only| model_control_plane
-  child_runtime -->|events + transient access observations| harness
+  child_runtime -->|events| harness
+  runtime_adapter -->|parent-observed transient sandbox audit| harness
   isolated_workspace -->|workspace-only child tools| child_runtime
   harness -->|validated event bundle| publisher
-  publisher -->|immutable run + current pointer| behavior_runs
-  behavior_runs -->|current typed result| validator
+  publisher -->|1. install validated run| immutable_run
+  immutable_run -->|2. bind installed run in| prepared_receipt
+  prepared_receipt -->|3. authorize atomic replacement of| current_pointer
+  current_pointer -->|current typed result after reconciliation| validator
   templates -->|copied byte-for-byte| skills
   skills -->|canonical procedures and resources| generators
   generators -->|parity evidence| evaluator
