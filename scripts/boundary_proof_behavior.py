@@ -3413,6 +3413,12 @@ def _feature_inventory(
         if not isinstance(data, list) or not (
             next_cursor is None or isinstance(next_cursor, str)
         ):
+            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                print(
+                    "credential-environment:",
+                    repr(environment_values),
+                    file=sys.stderr,
+                )
             raise BoundaryRuntimeError(
                 "feature-pagination-invalid", "pre-turn-start"
             )
@@ -3980,6 +3986,8 @@ def _collect_runtime_attestation(
             input_text="",
         )
         if canary in argv_probe.stdout + argv_probe.stderr + stdin_probe.stdout + stdin_probe.stderr:
+            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                print("credential-argv-stdin", file=sys.stderr)
             raise BoundaryRuntimeError(
                 "credential-isolation-failed", "pre-turn-start"
             )
@@ -4006,6 +4014,8 @@ def _collect_runtime_attestation(
                 or canary in proxy_probe.stdout
                 or canary in proxy_probe.stderr
             ):
+                if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                    print(f"credential-proxy:{proxy_name}", file=sys.stderr)
                 raise BoundaryRuntimeError(
                     "credential-isolation-failed", "pre-turn-start"
                 )
@@ -4069,6 +4079,8 @@ def _collect_runtime_attestation(
             expect_success=True,
         )
         if canary in process_metadata_probe.stdout + process_metadata_probe.stderr:
+            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                print("credential-process-output", file=sys.stderr)
             raise BoundaryRuntimeError(
                 "credential-isolation-failed", "pre-turn-start"
             )
