@@ -4056,12 +4056,14 @@ def _collect_runtime_attestation(
             (
                 "/usr/bin/python3",
                 "-c",
-                "import pathlib,sys\n"
+                "import hashlib,pathlib,re,sys\n"
                 f"paths={[f'/proc/{os.getpid()}/{name}' for name in ('environ', 'cmdline', 'status')]!r}\n"
+                f"d={canary_digest!r}\n"
                 "for value in paths:\n"
-                " try:pathlib.Path(value).read_bytes()\n"
+                " try:raw=pathlib.Path(value).read_bytes()\n"
                 " except OSError:continue\n"
-                " sys.exit(9)\n"
+                " for token in re.split(b'[\\\\x00\\\\s:=]+',raw):\n"
+                "  if hashlib.sha256(token).hexdigest()==d:sys.exit(9)\n"
                 "sys.exit(0)",
             ),
             expect_success=True,
