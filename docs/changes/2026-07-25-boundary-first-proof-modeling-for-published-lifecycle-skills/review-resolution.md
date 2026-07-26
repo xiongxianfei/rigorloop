@@ -2655,6 +2655,43 @@ trying to discover every detached descendant after execution.
 Validation target: spec-review-r42
 Validation evidence: pending
 
+### spec-review-r42
+
+#### BFP-SR42-1 — App-server file-change denial is asserted but not proved
+
+Finding ID: BFP-SR42-1
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: app-server file-change permission proof
+Decision needed: none
+Required outcome: Independently prove the app-server file-change/apply-patch
+path cannot mutate the stage workspace.
+Chosen action: Add an identity-bound parent-observed denial probe using a fresh
+app-server thread and parent fixtures before the materialization canary.
+Rationale: Command sandbox probes do not prove a distinct runtime-managed write
+path.
+Validation target: spec-review-r43
+Validation evidence: pending
+
+#### BFP-SR42-2 — Baseline failure reasons have no defined result surface
+
+Finding ID: BFP-SR42-2
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: pre-turn failure observability
+Decision needed: none
+Required outcome: Represent every closed baseline reason in preflight and
+generation without a transport row.
+Chosen action: Add a bounded identity-bound `workspace_failure` object to
+preflight v2 and a closed generation-start failure result.
+Rationale: Exact output schemas cannot rely on hidden or prose-only reasons.
+Validation target: spec-review-r43
+Validation evidence: pending
+
 #### BFP-SR41-2 — Workspace scanning lacks closed race-safe failure behavior
 
 Finding ID: BFP-SR41-2

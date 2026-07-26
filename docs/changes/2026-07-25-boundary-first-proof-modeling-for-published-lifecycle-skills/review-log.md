@@ -1053,3 +1053,14 @@ Detailed record: reviews/spec-review-r41.md
 Resolution: review-resolution.md#spec-review-r41
 Material findings: BFP-SR41-1, BFP-SR41-2, BFP-SR41-3
 Open findings: BFP-SR41-1, BFP-SR41-2, BFP-SR41-3
+
+### Review entry
+Review ID: spec-review-r42
+Stage: spec-review
+Round: 42
+Reviewed artifact: specs/rigorloop-workflow.md at a101ec89
+Status: changes-requested
+Detailed record: reviews/spec-review-r42.md
+Resolution: review-resolution.md#spec-review-r42
+Material findings: BFP-SR42-1, BFP-SR42-2
+Open findings: BFP-SR42-1, BFP-SR42-2
