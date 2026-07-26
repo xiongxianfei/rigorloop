@@ -16,6 +16,7 @@ Closeout status: open
 - Review closeout: spec-review-r11 open
 - Review closeout: spec-review-r12 open
 - Review closeout: spec-review-r13
+- Review closeout: architecture-review-r3 open
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -26,10 +27,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`
 - Findings resolved: 18
-- Unresolved findings: 7
-- Current result: `spec-review-r13` approved the hermetic behavior-harness contract and resolved BFP-SR9-1; architecture amendment is next.
+- Unresolved findings: 10
+- Current result: `architecture-review-r3` requested exact publication ordering, enforceable child-runtime trust and authentication, and complete ADR tradeoff records.
 
 ## Resolution Overview
 
@@ -60,6 +61,9 @@ Closeout status: open
 | BFP-SR3-2 | accepted | resolved | Trace observations, formal-review bundles, output capture, inventory, and terminal branches are deterministic. |
 | BFP-SR3-3 | accepted | resolved | Filesystem inputs, typed dependencies, manifests, result identities, and report projection are bound losslessly. |
 | BFP-SR9-1 | accepted | resolved | A standalone hermetic harness binds immutable runs to complete packages, instructions, contracts, components, and invocation profile inputs. |
+| BFP-AR3-1 | accepted | open | Correct durable publication to immutable run, fsynced receipt, atomic pointer, parent fsync, and reconciliation. |
+| BFP-AR3-2 | accepted | open | Assign hermetic enforcement and opaque control-plane authentication to a trusted parent/runtime boundary. |
+| BFP-AR3-3 | accepted | open | Record the rejected hermetic-runtime alternatives and operational consequences in the ADR. |
 
 ## Finding Details
 
@@ -411,6 +415,53 @@ resolved `BFP-SR9-1`.
 Architecture must now place the child runtime, isolated workspace, package
 assembly, invocation attestation, immutable publication, and recovery
 responsibilities before the test specification is revised.
+
+### architecture-review-r3
+
+#### BFP-AR3-1 - Publication ordering contradicts the approved recovery contract
+
+Finding ID: BFP-AR3-1
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: approved R28y publication contract
+Decision needed: none
+Required outcome: Represent immutable-run installation before the fsynced prepared receipt and atomic pointer replacement.
+Chosen action: Correct runtime, component, ADR, and diagram sequencing and state that the receipt provides recovery rather than joint atomicity.
+Rationale: A receipt written before run installation can name a missing run after a crash.
+Validation target: architecture-review-r4
+Validation evidence: pending
+
+#### BFP-AR3-2 - Child-runtime trust is asserted but not enforceably owned
+
+Finding ID: BFP-AR3-2
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: approved hermetic invocation contract
+Decision needed: none
+Required outcome: Assign confinement, profile attestation, and secret-free authentication to a trusted boundary outside child self-report.
+Chosen action: Use a parent-verified runtime-native sandbox or parent tool broker, opaque runtime-owned control-plane credentials, and non-secret attestation.
+Rationale: Workspace copying and child-returned observations do not prove confinement.
+Validation target: architecture-review-r4
+Validation evidence: pending
+
+#### BFP-AR3-3 - The ADR omits the new durable architecture alternatives
+
+Finding ID: BFP-AR3-3
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: approved standalone harness direction
+Decision needed: none
+Required outcome: Preserve the rejected dependency, invocation, access-log, and network alternatives plus operational consequences.
+Chosen action: Expand ADR alternatives and consequences for the hermetic runtime decision.
+Rationale: Future maintainers need the rationale that prevents reintroduction of unsafe designs.
+Validation target: architecture-review-r4
+Validation evidence: pending
 
 ### spec-review-r3
 

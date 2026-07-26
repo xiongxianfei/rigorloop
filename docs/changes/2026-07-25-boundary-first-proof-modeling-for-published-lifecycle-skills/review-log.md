@@ -250,3 +250,14 @@ Detailed record: reviews/spec-review-r13.md
 Resolution: review-resolution.md#spec-review-r13
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: architecture-review-r3
+Stage: architecture-review
+Round: 3
+Reviewed artifact: docs/architecture/system/architecture.md; docs/adr/ADR-20260725-boundary-first-proof-modeling.md; docs/architecture/system/diagrams/container.mmd; docs/architecture/system/diagrams/component-boundary-proof.mmd
+Status: changes-requested
+Detailed record: reviews/architecture-review-r3.md
+Resolution: review-resolution.md#architecture-review-r3
+Material findings: BFP-AR3-1, BFP-AR3-2, BFP-AR3-3
+Open findings: BFP-AR3-1, BFP-AR3-2, BFP-AR3-3
