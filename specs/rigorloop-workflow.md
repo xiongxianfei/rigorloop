@@ -1789,8 +1789,8 @@ Before the turn, the parent selects the separate
 `materialization-canary-v1` artifact policy and binds its canonical identity
 into the turn request, output schema, and runtime attestation.
 That policy contains exactly `policy_id`, `stage`, `artifact_set_variant`,
-`artifacts`, `per_artifact_byte_limit`, `aggregate_artifact_byte_limit`, and
-`envelope_byte_limit`.
+`artifacts`, `per_artifact_byte_limit`, `aggregate_artifact_byte_limit`,
+`candidate_message_byte_limit`, and `envelope_byte_limit`.
 Its values are:
 
 ```text
@@ -1802,6 +1802,7 @@ artifacts:
     path: preflight/stage-envelope-canary.md
 per_artifact_byte_limit: 4096
 aggregate_artifact_byte_limit: 4096
+candidate_message_byte_limit: 16384
 envelope_byte_limit: 16384
 ```
 
@@ -2640,8 +2641,9 @@ The first-version lifecycle policy ID is
 `lifecycle-stage-artifacts-v1`.
 Its canonical policy object contains exactly `policy_id`,
 `stage_occurrences`, `per_artifact_byte_limit`,
-`aggregate_artifact_byte_limit`, and `envelope_byte_limit`.
-The three limits are exactly `262144`, `524288`, and `786432`.
+`aggregate_artifact_byte_limit`, `candidate_message_byte_limit`, and
+`envelope_byte_limit`.
+The four limits are exactly `262144`, `524288`, `786432`, and `786432`.
 `stage_occurrences` is an ordered list whose rows contain exactly `stage`,
 `attempt`, and `variants`.
 Rows are ordered by stage in the closed order `spec`, `spec-review`,
@@ -2747,6 +2749,10 @@ for the current turn even when terminal turn completion is not observed before
 the deadline.
 It accepts at most two candidate messages and 1572864 aggregate
 candidate-message UTF-8 bytes before overflow.
+For lifecycle turns that aggregate limit is exactly two times the selected
+`candidate_message_byte_limit`.
+The canary turn accepts exactly one candidate and uses its policy's 16384-byte
+raw candidate limit; a second canary candidate is candidate-count overflow.
 Overflowing raw bytes are hashed and counted through the first overflow but
 are not retained after the bounded observation row is formed.
 It counts candidate messages through the first overflowing message, so
@@ -2776,8 +2782,17 @@ Each row contains exactly `ordinal`, `message_identity`,
 `malformation_kind` is null for `parsed` and `oversized`; for `malformed` it
 is exactly `invalid-json`, `non-object-json`, or `schema-invalid`.
 The collector applies the per-message byte limit before JSON parsing.
-A message above that limit is `oversized` even if its prefix or complete bytes
+That raw limit is exactly the parent-selected artifact policy's
+`candidate_message_byte_limit`.
+A message whose complete UTF-8 byte count equals the limit is eligible for
+parsing; one byte over is `oversized` even if its prefix or complete bytes
 would otherwise parse.
+After parsing, canonical JSON bytes are computed independently and must be at
+most the same selected policy's `envelope_byte_limit`.
+Equality is accepted.
+A parsed envelope whose canonical bytes are one byte over is
+`stage-envelope-invalid` with `byte-limit-exceeded`; it is not relabeled as a
+raw oversized message.
 
 The serialization matrix is exact:
 
