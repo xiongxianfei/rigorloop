@@ -1478,7 +1478,7 @@ It contains exactly `manifest_id`, `harness_component_refs`,
 `skill_package_refs`, `instruction_refs`, `contract_refs`, and
 `invocation_profile`, `transport_policy`, `artifact_policy`, and
 `runtime_attestation`.
-`manifest_id` is `boundary-behavior-implementation-v1`.
+`manifest_id` is `boundary-behavior-implementation-v2`.
 
 `transport_policy` contains exactly `schema_version`, `turn_deadline_ms`, and
 `termination_wait_deadline_ms`.
@@ -1603,13 +1603,13 @@ capability_inventory_identity
 skill_inventory_identity
 feature_classification_identity
 protocol_item_classification_identity
-file_change_denial_policy_identity
+file_change_authorization_policy_identity
 materialization_canary_policy_identity
 probe_results
 credential_isolation_results
 ```
 
-`schema_version` is `boundary-runtime-attestation-v1`.
+`schema_version` is `boundary-runtime-attestation-v2`.
 Every `*_identity` field is `sha256:<64 lowercase hexadecimal characters>`.
 Canonical JSON is UTF-8 JSON with keys sorted lexicographically, array order
 preserved, `ensure_ascii=false`, separators `,` and `:`, and no trailing
@@ -1639,7 +1639,7 @@ The exact identity preimages are:
 | `skill_inventory_identity` | Canonical JSON of the complete accepted `skills/list` result after the exact path normalization below |
 | `feature_classification_identity` | Canonical JSON of the feature-name-sorted array of exact `{feature, classification}` rows |
 | `protocol_item_classification_identity` | Canonical JSON of the protocol-variant-name-sorted array of exact `{item_variant, classification}` rows derived from the bound schema |
-| `file_change_denial_policy_identity` | Canonical JSON of the exact `stage-file-change-denial-probe-v1` policy selected by the parent |
+| `file_change_authorization_policy_identity` | Canonical JSON of the exact `stage-file-change-authorization-policy-v1` object configured in the parent before any governed thread starts |
 | `materialization_canary_policy_identity` | Canonical JSON of the exact `materialization-canary-v1` policy selected by the parent for the noncanonical preflight turn |
 
 For `config/read.origins`, format-valid means
@@ -1807,21 +1807,35 @@ and is the only component with write access to the behavior-output root.
 `workspace_file_change_denied` independently proves the app-server
 file-change path after the direct and descendant command probes and before the
 materialization canary.
-The parent selects an exact `stage-file-change-denial-probe-v1` policy
-containing exactly `schema_version`, `required_protocol_classification`,
-`operation`, `fixture_path`, `prompt_identity`, and
-`accepted_terminal_statuses`.
+The parent configures one exact
+`stage-file-change-authorization-policy-v1` object before any governed thread
+starts.
+The policy contains exactly `schema_version`,
+`required_protocol_classification`, `request_decision`,
+`prohibited_decisions`, `governed_turn_kinds`, `probe_operation`,
+`probe_fixture_directory`, `probe_fixture_path`,
+`probe_fixture_initial_state`, `prompt_identity`, and
+`accepted_probe_terminal_status`.
 Its values are:
 
 ```text
-schema_version: stage-file-change-denial-probe-v1
+schema_version: stage-file-change-authorization-policy-v1
 required_protocol_classification: permitted-side-effect
-operation: create-regular-file
-fixture_path: preflight/file-change-denial-probe.md
+request_decision: decline
+prohibited_decisions:
+  - accept
+  - acceptForSession
+governed_turn_kinds:
+  - denial-probe
+  - materialization-canary
+  - lifecycle-stage
+  - lifecycle-retry
+probe_operation: create-regular-file
+probe_fixture_directory: preflight
+probe_fixture_path: preflight/file-change-denial-probe.md
+probe_fixture_initial_state: absent
 prompt_identity: sha256:<canonical deterministic probe prompt bytes>
-accepted_terminal_statuses:
-  - declined
-  - failed
+accepted_probe_terminal_status: declined
 ```
 
 The policy identity is the standard canonical-JSON identity of that exact
@@ -1842,30 +1856,59 @@ The identity-bound prompt requires the child to attempt only the runtime
 file-change/apply-patch operation that creates the policy fixture and then
 return a schema-constrained terminal marker.
 The marker is control-flow evidence only and never proves denial.
+Before the probe turn, the parent creates `probe_fixture_directory` as a
+regular directory, proves `probe_fixture_path` is absent through the retained
+root-anchored descriptor, and captures the complete workspace identity.
 The parent independently requires exactly one version-projected
 `FileChangeThreadItem` whose `type` is `fileChange`, whose changes contain
-exactly one `add` for the policy fixture, and whose terminal status is one of
-the policy's accepted terminal statuses.
-If the runtime sends `item/fileChange/requestApproval`, the parent returns
-exactly `decision: decline`; an accept decision is forbidden.
+exactly one `add` for `probe_fixture_path`, and whose terminal status equals
+`accepted_probe_terminal_status`.
+The item is observed through the version-projected generic
+`ServerNotification:item/started` and
+`ServerNotification:item/completed` carriers.
+Exactly one intervening `ServerRequest:item/fileChange/requestApproval` for
+that same thread, turn, item, and change is required, and the parent returns
+exactly `decision: decline`.
+The request must precede the terminal `declined` item.
 The parent additionally requires every observed file-change protocol item to
 resolve to `permitted-side-effect`, an unchanged root-anchored workspace
-identity, no candidate or lifecycle output, and complete thread/process stop
-and reap within `termination_wait_deadline_ms`.
-For Codex `0.145.0`, the applicable projected protocol family consists of
+identity, no stage-envelope candidate or lifecycle output, and complete
+thread/process stop and reap within `termination_wait_deadline_ms`.
+For Codex `0.145.0`, the specialized projected protocol family consists of
 `ServerRequest:item/fileChange/requestApproval`,
 `ServerNotification:item/fileChange/outputDelta`, and
-`ServerNotification:item/fileChange/patchUpdated`; the observed operation must
-resolve unambiguously through that bound schema projection.
+`ServerNotification:item/fileChange/patchUpdated`; its generic item carriers
+are the two notifications named above.
+The observed operation must resolve unambiguously through that bound schema
+projection.
 Missing invocation of the required file-change family, substitution of a shell
-command, an unknown or additional side-effect operation, a missing or
-ambiguous denial, any workspace mutation, lifecycle output, or incomplete
-cleanup is `sandbox-probe-failed`.
+command, generic `failed` or `completed` status, an unknown or additional
+side-effect operation, a missing or ambiguous denial, any workspace mutation,
+lifecycle output, or incomplete cleanup is `sandbox-probe-failed`.
 The parent persists only `workspace_file_change_denied: pass` and the policy
 identity; it never persists the child marker, prompt, raw protocol event,
 fixture content, or child-authored path.
 Generation repeats this proof in a fresh runtime and binds its result into the
 fresh runtime attestation before the materialization canary or accepted turn.
+
+The same policy governs the denial probe, materialization canary, every
+accepted lifecycle-stage turn, and every fresh lifecycle retry.
+Before each `thread/start`, the parent installs one request handler configured
+from the exact policy object and verifies that its identity equals
+`file_change_authorization_policy_identity` in the attestation and
+parent-owned turn context.
+Every `item/fileChange/requestApproval` receives `decision: decline`;
+`accept`, `acceptForSession`, a missing handler, a different handler policy,
+and any response-selected widening are forbidden.
+Outside the denial probe, any `FileChangeThreadItem` must likewise have one
+preceding matching decline request and terminal status `declined`; every other
+status or missing interaction stops the turn before output acceptance.
+A reconciliation performs no child turn and cannot emit a file-change event;
+it remains bound to the original run and policy identity while materializing
+only an already recorded complete envelope.
+The canary request, lifecycle-stage request, retry context, implementation
+manifest, immutable run, current pointer, validation, and report selector all
+bind the same policy transitively through the v2 runtime attestation.
 
 `stage_envelope_materialization` is proved by one noncanonical preflight turn
 through `workflow` and `spec` after runtime negotiation and the direct sandbox
@@ -1936,7 +1979,7 @@ For pass, `diagnostic_id` is `none`, `phase` is `pre-turn-start`, and
 `attestation_ref` is the standard current path-and-identity reference to
 `docs/changes/<change-id>/evidence/runtime-preflight-attestation.json`.
 `workspace_failure` is null.
-That file contains exactly the `boundary-runtime-attestation-v1` record above,
+That file contains exactly the `boundary-runtime-attestation-v2` record above,
 is published durably only after every preflight check passes, and is
 referenced from `validation-m2.md`. It proves feasibility but does not
 authorize later execution; generation derives a fresh attestation for the
@@ -2002,13 +2045,32 @@ overflow uses `entry-limit-exceeded`.
 `policy_identity` is the canonical identity of the selected artifact policy's
 workspace-integrity policy.
 `failure_identity` is the canonical identity of the other three fields.
-The complete canonical serialized object MUST be at most 1024 bytes; equality
-is accepted and one byte over fails closed without substituting a less precise
-reason.
+The record is intrinsically bounded by its four exact fields, two fixed-length
+identities, and closed reason vocabulary.
+Canonical serialization of every valid first-version record is at most 271
+bytes; this maximum is a derived schema property, not a separately truncatable
+runtime limit.
+Validation enumerates every permitted reason and recomputes this maximum.
 It contains no path, content, exception, errno, raw protocol value, or private
 absolute value.
-Missing, additional, unknown, misordered-precedence, oversized, or
-identity-inconsistent workspace-failure data invalidates the response.
+Missing, additional, unknown, misordered-precedence, or identity-inconsistent
+workspace-failure data invalidates the response.
+
+New preflight and generation paths emit only
+`boundary-runtime-attestation-v2` nested in
+`boundary-behavior-implementation-v2`.
+Existing v1 attestations and v1 implementation manifests remain readable as
+historical report evidence under their original closed shapes, but they are
+stale for current preflight, generation, immutable-run selection, current
+pointer publication, validation, and capability reporting.
+The historical v1 implementation manifest has the same exact top-level fields
+as v2 and `manifest_id: boundary-behavior-implementation-v1`.
+Its nested `boundary-runtime-attestation-v1` has the exact v2 attestation field
+list except that `file_change_authorization_policy_identity` is absent, and
+its exact `probe_results` omit `workspace_file_change_denied`.
+No other v1/v2 shape difference is permitted.
+They are never copied, field-injected, or silently upgraded to v2.
+Current generation must produce a fresh v2 attestation and manifest.
 
 Durable preflight publication writes a sibling mode-restricted temporary file
 in the target evidence directory, flushes and fsyncs that file, installs it
@@ -3184,8 +3246,8 @@ workspace_failure: <the exact workspace-baseline-failure-v1 object>
 
 It emits no raw diagnostic prose, creates no durable failure file, and does not
 append a transport row.
-The `workspace_failure` object and its 1024-byte equality boundary are
-identical to the preflight contract.
+The `workspace_failure` object has the same intrinsic closed-schema bound as
+the preflight contract.
 `baseline_inventory_identity` is the canonical identity of
 `baseline_entries`.
 

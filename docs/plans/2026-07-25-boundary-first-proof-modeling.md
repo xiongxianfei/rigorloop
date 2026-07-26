@@ -91,7 +91,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r43.md
 - Review status: changes-requested; stage=spec-review; round=r43
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec
+- Next stage: spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=13; open-findings=BFP-AR16-1,BFP-AR16-2,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR41-1,BFP-SR41-2,BFP-SR41-3,BFP-SR42-1,BFP-SR42-2,BFP-SR43-1,BFP-SR43-2,BFP-SR43-3
 
@@ -620,6 +620,15 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-26: Spec-review R43 confirmed the typed baseline-failure surface but
+  found that the probe-local decline did not govern accepted turns, the
+  expanded attestation reused v1, and the fixed failure record declared an
+  unreachable size boundary. The R44 candidate defines one deny-only
+  authorization policy for probe, canary, stage, retry, and reconciliation
+  contexts; advances current attestation and implementation-manifest evidence
+  to v2 with explicit historical-v1 treatment; and relies on the reachable
+  intrinsic 271-byte maximum of the closed failure schema.
 
 - 2026-07-26: Spec-review R42 confirmed the R41 workspace-integrity
   corrections and retained two gaps: the app-server file-change path lacked an
