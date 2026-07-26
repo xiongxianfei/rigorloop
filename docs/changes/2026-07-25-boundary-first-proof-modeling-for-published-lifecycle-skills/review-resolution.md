@@ -2696,6 +2696,27 @@ non-writable authority.
 Validation target: spec-review-r44
 Validation evidence: pending
 
+### spec-review-r44
+
+#### BFP-SR44-1 — Historical v1 compatibility describes a nonexistent shape
+
+Finding ID: BFP-SR44-1
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: historical runtime-evidence compatibility
+Decision needed: none
+Required outcome: Recognize actual persisted v1 evidence deterministically
+without allowing it to satisfy any current evidence role.
+Chosen action: Replace structural v1 parsing with a closed registry of exact
+historical path-and-byte identities; registered records are opaque,
+read-only history and unknown v1 variants fail closed.
+Rationale: Reused historical v1 labels do not identify one stable schema, but
+the immutable persisted bytes can identify the supported history exactly.
+Validation target: spec-review-r45
+Validation evidence: pending
+
 #### BFP-SR43-2 — Runtime attestation v1 is mutated in place
 
 Finding ID: BFP-SR43-2
