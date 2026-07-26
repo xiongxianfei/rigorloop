@@ -2001,6 +2001,38 @@ draft R28y amendment and names R30/R31; the test spec binds the recorded R30
 review and will bind the stabilized resolution-needed plan identity before the
 R31 candidate is committed; pending independent spec-review-r31.
 
+### spec-review-r31
+
+#### BFP-SR-R31-1 - Close semantic diagnostic predicates
+
+Finding ID: BFP-SR-R31-1
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y transport evidence
+Decision needed: none
+Required outcome: Make every inline diagnostic role semantically deterministic, including disjoint output-state classification.
+Chosen action: Define exact role predicates, bound schema/prohibited vocabularies, and a total disjoint comparison over required and observed outputs.
+Rationale: Correct shapes do not prove the observation they label.
+Validation target: spec-review-r32
+Validation evidence: pending
+
+#### BFP-SR-R31-2 - Atomically quarantine orphan recovery
+
+Finding ID: BFP-SR-R31-2
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y recovery transaction
+Decision needed: none
+Required outcome: Eliminate partially deleted active orphans and malformed first-write recovery bases.
+Chosen action: Atomically install the basis through a no-clobber temporary file, rename the orphan to deterministic quarantine, fsync, record detached state, and preserve the identity-validated quarantine without cleanup in v1.
+Rationale: Atomic namespace transitions are resumable; recursive deletion is not.
+Validation target: spec-review-r32
+Validation evidence: pending
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2
