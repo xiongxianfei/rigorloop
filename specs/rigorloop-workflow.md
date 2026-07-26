@@ -1419,7 +1419,7 @@ The closed operation registry is:
 | `preservation-review-recording` | skill behavior harness | canonical preservation manifest and every reference selected by it | review-recording result | `preservation.review-recording` |
 | `preservation-isolation` | skill behavior harness | canonical preservation manifest and every reference selected by it | isolation result | `preservation.isolation` |
 | `preservation-handoff` | skill behavior harness | canonical preservation manifest and every reference selected by it | handoff result | `preservation.handoff` |
-| `simple-change-behavior` | simple-change behavior harness and evaluator | exact candidate corpus, current four upstream skills and mapped resources, and invocation-owned pre-run HEAD | fresh run manifest, behavior-output snapshots, trace, and metric result | `simple_change` |
+| `simple-change-behavior` | simple-change behavior harness and evaluator | exact candidate corpus, current four upstream skills and mapped resources, and invocation-owned pre-run HEAD | immutable run, atomic current pointer, behavior-output snapshots, trace, and metric result | `simple_change` |
 | `canonical-skill-resource-manifest` | skill validator | current exact eight R28m skills and every mapped boundary-proof resource | exact `docs/changes/<change-id>/evidence/canonical-skill-resource-manifest.json` | `support.canonical-skill-resource-manifest` |
 | `adapter-parity` | adapter validator | exact current `scripts/adapter_distribution.py`, `scripts/build-adapters.py`, `scripts/validate-adapters.py`, `dist/adapters/manifest.yaml`, and canonical skill/resource manifest | durable current four-surface parity manifest set | `adapter_parity` |
 | `boundary-adapter-parity` | adapter validator | current `adapter-parity` typed result | aggregate adapter check result | `checks.boundary-adapter-parity` |
@@ -1511,13 +1511,17 @@ substituted dependencies fail closed.
   `new_universal_artifact_count`, and
   `simple_fixture_structure_correction_cycles`.
 
-`input_refs` MUST equal the complete resolved input selector; `output_refs`
-MUST equal every durable artifact produced by the invocation.
+`input_refs` MUST equal the complete filesystem-reference portion of the
+resolved input selector.
+`dependency_results` MUST equal the complete typed-result portion.
+Neither representation may contain or substitute for the other.
+`output_refs` MUST equal every durable artifact produced by the invocation.
 Missing, extra, duplicate, stale, or reordered manifest entries fail closed
 after normalization by path.
+An operation whose complete selector contains only typed dependencies has empty
+`input_refs`.
 An operation that produces only an in-memory typed result has empty
-`output_refs`; its non-empty complete `input_refs` still satisfies executed-row
-evidence.
+`output_refs`.
 
 The canonical writer mode MUST rerun every required operation, reject
 `not-run`, and write the canonical report only after the complete aggregate is
@@ -1589,7 +1593,8 @@ role-compatible, and identities use current raw-byte SHA-256.
 Fixture candidates reside only below
 `tests/fixtures/boundary-proof/simple-change/candidates/`.
 Fresh behavior outputs reside only below
-`docs/changes/<change-id>/evidence/simple-change/<run-id>/`.
+`docs/changes/<change-id>/evidence/simple-change/runs/<run-id>/`.
+In the rules below, `<behavior-root>` means that exact immutable run root.
 Fixture candidates use only `feature-spec` or `test-spec`;
 `review-evidence` is always a fresh behavior output.
 An event reference MUST resolve to exactly one snapshot in the current run
@@ -1649,15 +1654,27 @@ This invocation baseline is distinct from the frozen pre-M2 preservation
 baseline because the former measures artifacts created by the current scenario
 run while the latter measures behavior preservation across skill changes.
 
-The behavior harness writes one current run manifest containing immutable event
-results under the behavior-output root.
+The behavior harness writes one immutable run manifest containing event results
+under the run root.
 The run manifest contains exactly `run_id`, `baseline_commit`,
 `before_artifact_inventory`, `after_artifact_inventory`, `snapshots`, and
 `events`.
-`run_id` is `current`; the harness prepares a sibling temporary directory,
-atomically replaces the prior `current` directory only after all events,
-bundles, snapshots, inventories, and metrics validate, and preserves the prior
-complete directory on failure.
+`run_id` matches `run-[0-9a-f]{32}`, is generated from 128 bits of
+cryptographically secure randomness, and MUST NOT already exist.
+The harness prepares a sibling temporary directory, validates all events,
+bundles, snapshots, inventories, and metrics, then renames it to the new
+immutable run root.
+It publishes the run only through
+`docs/changes/<change-id>/evidence/simple-change/current.json`.
+That pointer contains exactly `run_id` and `manifest_ref`.
+The harness writes and fsyncs a sibling temporary pointer, atomically replaces
+the pointer file with the platform's same-filesystem atomic file-replace
+primitive, and fsyncs the parent directory.
+Failure before pointer replacement leaves the prior pointer and immutable run
+unchanged.
+On resume after an interrupted replacement, the pointer contains either the
+old or new complete record; the harness validates its manifest reference and
+accepts the pointed immutable run without repeating stage invocations.
 `baseline_commit` is exactly the harness-derived
 `git:<40 lowercase hexadecimal characters>` pre-run HEAD and names the commit
 used for the before run.
@@ -1670,7 +1687,7 @@ The before inventory is the complete classifier result from the
 from current invocation bytes.
 Both selectors cover `specs/`, `docs/proposals/`, `docs/plans/`,
 `docs/architecture/`, `docs/adr/`, and the selected change root except its
-`evidence/simple-change/current/` subtree.
+`evidence/simple-change/runs/` subtree and `evidence/simple-change/current.json`.
 The after selector additionally covers the complete
 `<behavior-root>/artifacts/` subtree.
 Paths and identities are unique and normalized; identity is the raw-byte
@@ -1742,9 +1759,12 @@ bundle manifest does not replace or weaken them.
 The review event's `evidence_refs` includes the bundle manifest and every
 `artifact_refs` member.
 `input_snapshot_ids` and `output_snapshot_ids` are ordered unique lists.
-For every event, `evidence_refs` equals the normalized path-and-identity
-projection of all referenced input and output snapshots; review events also
-include their `reviewed_snapshot_id`, which MUST already occur exactly once in
+For an authoring event, `evidence_refs` equals the normalized deduplicated
+path-and-identity projection of all referenced input and output snapshots.
+For a review event, it equals the normalized deduplicated union of all input
+snapshot references, the bundle-manifest output snapshot reference, and every
+bundle `artifact_refs` member.
+The `reviewed_snapshot_id` MUST already occur exactly once in
 `input_snapshot_ids`.
 No snapshot may be used before the event that produced it.
 `structural_result` is freshly computed as `pass` or `fail`.
@@ -1811,9 +1831,9 @@ The evaluator derives:
   the terminal approved `test-spec-review` trace;
 - new universal artifacts: compute the set of paths present only in the
   complete after inventory; remove the exact feature-spec and test-spec
-  behavior outputs, and remove review-evidence outputs only for review events
-  actually present in the trace; count the remaining paths whose classifier
-  kind is a lifecycle artifact.
+  behavior outputs, and for each review event remove exactly its
+  bundle-manifest path plus every bundle `artifact_refs` member; count the
+  remaining paths whose classifier kind is a lifecycle artifact.
   The run manifest is control evidence outside the artifact-inventory selector.
   Immutable fixture candidates are outside both inventory selectors.
 
