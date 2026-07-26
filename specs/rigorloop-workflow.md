@@ -1474,37 +1474,70 @@ closed.
 
 The canonical behavior-implementation manifest path is exactly
 `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json`.
-It contains exactly `manifest_id`, `execution_environment`, and `components`.
+It contains exactly `manifest_id`, `execution_environment`, `roots`,
+`components`, and `dependency_edges`.
 `manifest_id` is `boundary-behavior-implementation-v1`.
 `execution_environment` contains exactly `agent_runtime`, `model_id`,
-`python_implementation`, and `python_version`; every value is a non-empty
-harness-derived string.
-`components` is a path-sorted list of current standard path-and-identity
-references containing exactly:
+`orchestration_mode`, `python_implementation`, and `python_version`.
+`agent_runtime` is the adapter target selected by the harness and is exactly
+`codex` for the first canonical behavior run.
+`model_id` is copied from authoritative runtime invocation metadata and MUST
+match `^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$`.
+`orchestration_mode` is `workflow-auto-isolated-v1`.
+`python_implementation` is lowercased
+`platform.python_implementation()` and matches `^[a-z][a-z0-9-]*$`;
+`python_version` is `sys.version_info` normalized to `major.minor.micro`.
+Missing, unavailable, unsafe, unknown, or additional environment values stop
+generation with `environment-unavailable`; secrets and raw configuration
+values are never recorded.
+
+`roots` is a path-sorted current reference list containing exactly:
 
 ```text
+AGENTS.md
+CONSTITUTION.md
+docs/workflows.md
+docs/project-map.md
 skills/workflow/SKILL.md
-every mapped resource loaded by workflow for this harness
 scripts/boundary_proof_behavior.py
 scripts/boundary_proof_model.py
 scripts/validate-boundary-proof.py
 scripts/workflow_automation.py
-scripts/workflow_automation_policy.py
-scripts/workflow_automation_state.py
 specs/rigorloop-workflow.md
 specs/rigorloop-workflow.test.md
 specs/skill-contract.md
 specs/skill-contract.test.md
 ```
 
+`components` is the path-sorted current reference list equal to the complete
+transitive repository dependency closure of `roots`.
+The closure includes every root and recursively adds:
+
+- every repository-local Python module resolved from a static `import` or
+  `from ... import ...` in a Python component;
+- every mapped resource named by a loaded skill's `Resource map`; and
+- every repository instruction explicitly consulted through the governing
+  precedence chain.
+
+`dependency_edges` is the path-sorted list whose entries contain exactly
+`from`, `to`, and `kind`; `kind` is exactly `python-import`,
+`resource-map`, or `governing-instruction`.
+Every non-root component has at least one incoming edge.
+Every edge endpoint resolves in `components`.
+Traversal uses a normalized repository-relative visited-path set, so import
+cycles terminate and remain represented by their edges.
+Unknown, unresolved, dynamic repository imports, missing mapped resources,
+duplicate edges, unreferenced components, and an imported or consulted
+repository file absent from the closure fail closed.
+
+The harness executes in an isolated read view containing only the complete
+input-set references and the writable behavior-output root.
+Any attempted repository read outside that view fails and is recorded as an
+unmanifested-input diagnostic.
 The four stage-owning skills and their resources remain in
-`skill_resource_refs`; they are not duplicated here.
-`scripts/test-boundary-proof.py` and `scripts/workflow_code_state.py` are
-explicitly excluded because canonical generation and validation do not import,
-execute, or consult them.
-If implementation later loads another harness, orchestrator, capture,
-serialization, or evaluation component, this closed manifest and its governing
-spec MUST be amended before that component may affect canonical evidence.
+`skill_resource_refs`; the closure does not duplicate them.
+Test drivers are absent only when they are neither reachable from a root nor
+consulted at runtime.
 
 The adapter validator creates all three non-canonical manifests in a fresh
 temporary root during the current invocation.
@@ -1575,7 +1608,7 @@ Canonical generation:
 Canonical validation MUST NOT reinvoke a lifecycle skill.
 It recomputes the input-set identity from the recorded baseline commit plus
 the current referenced scenario, skills, resources, oracles, and harness
-contracts; validates the pointed immutable run and every current referenced
+implementation components; validates the pointed immutable run and every current referenced
 byte; reconstructs its events and typed
 `simple-change-behavior` result, freshly executes deterministic registry
 operations, recomputes dependencies and aggregate formulas, and compares the

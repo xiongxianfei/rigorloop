@@ -82,7 +82,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r11.md
 - Review status: changes-requested; stage=spec-review; round=r11
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: spec revision for transitive implementation identity
+- Next stage: spec-review R12
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=8; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-SR9-1
 
@@ -318,6 +318,7 @@ implementation authorization is requested.
 - 2026-07-26: Spec-review R10 retained BFP-SR9-1 only for immutable prior-pointer history and complete behavior-harness/orchestration implementation identity.
 - 2026-07-26: The R11 candidate stores the prior pointer as immutable inline history and binds every behavior-affecting workflow, harness, capture, serialization, evaluation, contract, and runtime input through one closed implementation manifest.
 - 2026-07-26: Spec-review R11 retained BFP-SR9-1 because the manual component list omitted transitive workflow imports, governing instructions, and exact environment derivation.
+- 2026-07-26: The R12 candidate replaces the manual component list with a validated transitive import/resource/instruction closure, runs against an allowlisted read view, and derives normalized non-secret execution-environment fields from authoritative runtime sources.
 
 ## Decision log
 
