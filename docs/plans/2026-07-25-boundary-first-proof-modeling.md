@@ -25,23 +25,26 @@ resumes.
 
 - Proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Specs: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r45.md` (approved; architecture required)
+- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r45.md` (approved; projected by architecture-review R18)
 - Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R18)
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` (accepted by architecture-review R15)
-- Proposed transport ADR: `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md`
+- Transport ADR: `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md` (accepted by architecture-review R18)
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
 - Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r18.md`
 - Plan review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md`
-- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; current runtime-boundary proof map is approved by focused test-spec-review R14
+- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; the R14 proof map predates R45 and must be revised after this plan is approved
 
 ## Context and orientation
 
-The approved baseline outside the focused R28y amendment remains normative.
-The focused R28y stage-transport text is under revision because live M2
-generation proved that the pinned app-server returns schema-constrained stage
-messages but does not expose the assumed stage-agent workspace-write surface.
-Implementation is paused at that contract boundary pending spec-review and
-the required downstream architecture, plan, and test-spec synchronization.
+The approved R45 R28y contract and R18 architecture are now normative.
+Live M2 generation proved that the pinned app-server returns
+schema-constrained stage messages but does not expose the assumed stage-agent
+workspace-write surface. The accepted replacement gives every child a
+read-only workspace with no writable root, denies every app-server file-change
+request, captures a root-anchored before/after integrity observation, and lets
+only the parent materialize the stage-authored envelope after an unchanged
+result. Implementation remains paused until this plan and the matching test
+spec project that replacement and pass review.
 `scripts/boundary_proof_model.py` will be their immutable typed projection and
 pure aggregate evaluator.
 `scripts/boundary_proof_behavior.py` will be the standalone hermetic behavior
@@ -91,7 +94,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r18.md
 - Review status: approved; stage=architecture-review; round=r18
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: plan
+- Next stage: plan-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
@@ -208,16 +211,34 @@ resource through generated, packed, and installed outputs.
   - Parent runtime proxy environment closed to the upper/lowercase proxy-name
     set while spawned commands retain the exact inherit-none environment
   - Empty `dynamicTools` and `environments`; command tools closed to
-    `shell_tool`, `unified_exec`, and `shell_snapshot`; isolated-workspace
-    file-change/apply-patch events; prohibited schema variants that remain
-    disabled; and rejection of every observed prohibited item/event
+    `shell_tool`, `unified_exec`, and `shell_snapshot` under the exact
+    read-only profile; direct create, overwrite, remove, and mode-change
+    denial; the same four denials for a detached descendant followed by
+    bounded exit/reap; prohibited schema variants that remain disabled; and
+    rejection of every observed prohibited item/event
   - Exactly-one feature-row classification as permitted built-in tool,
     permitted non-tool runtime behavior, or must-be-disabled tool-bearing
     behavior; independently, exactly-one generated protocol-item
     classification as permitted side effect, non-side-effect protocol traffic,
     or prohibited capability event; missing, duplicate, unknown, and
-    unclassified contrasts for both mappings
-  - Missing profile attestation, wrong effective sandbox, profile/config
+    unclassified contrasts for both mappings; and proof that
+    `permitted-side-effect` classifies protocol traffic rather than granting
+    mutation authority
+  - Exact `stage-file-change-authorization-policy-v1` fields, ordering,
+    canonical identity, deterministic prompt bytes, and the cause-specific
+    app-server trace: one matching request, `decision: decline`, generic
+    started/completed carriers, one terminal `FileChangeThreadItem` with
+    `status: declined`, unchanged workspace, no lifecycle output, and complete
+    stop/reap. Cover missing, ambiguous, accepted, session-accepted, generic
+    failed/completed, shell-substituted, additional-side-effect, mutated, and
+    unclean termination contrasts.
+  - One shared file-change policy and handler identity across denial probe,
+    materialization canary, lifecycle stage, and fresh retry; missing,
+    substituted, widened, or response-selected handlers fail before output
+    acceptance; reconciliation performs no child turn.
+  - Missing profile attestation, wrong effective sandbox, writable child root,
+    mismatched `boundary-proof-stage-readonly-v1` or
+    `isolated-workspace-readonly-no-network-v1`, profile/config
     mismatch between app-server and `codex sandbox --include-managed-config`,
     unavailable or unsafe model metadata, and secret-free evidence cases
   - Transient-canary absence from the exact child environment-name allowlist,
@@ -229,27 +250,65 @@ resource through generated, packed, and installed outputs.
   - Runtime executable/version/model/instruction/tool/Python identity mismatch, unavailable, and unsafe cases
   - Caller-supplied instruction, unexpected tool, connector, subagent, network, and unmanifested read rejection
   - Validation under a different validator environment without profile replacement
-  - Crash points before run install, after run install, after receipt fsync, after pointer replace, after parent fsync, and before receipt removal
+  - Crash points before prepared-receipt write, after prepared-receipt fsync,
+    after immutable-run install, after pointer replace, after parent fsync, and
+    before receipt removal; every resume validates staged or installed
+    identities and never reinvokes lifecycle skills
   - Stage timeout with absent output then one success; two absent-output
     timeouts; complete-output reconciliation without reinvocation; partial or
     extra output stop; and non-retry of protocol or security failures
+  - Exact lifecycle and canary workspace-integrity policies; retained-root,
+    no-follow, strict-UTF-8, descriptor-stability, regular-file hashing, entry,
+    path-byte, aggregate-path-byte, observation-byte, and deadline boundaries;
+    complete/overflow/invalid scan states; every closed failure reason and
+    precedence; and the intrinsic 271-byte maximum for
+    `workspace-baseline-failure-v1`
+  - Pre-turn baseline failure before `thread/start`; post-turn comparison only
+    after normal completion or confirmed stop/reap; no inspection under
+    uncertain liveness; created, changed, removed, symlinked, replaced, or
+    non-regular entries route to `stage-workspace-mutated`; unavailable,
+    raced, unstable, unreadable, or unsupported inspection routes to
+    `stage-workspace-inspection-failed`; neither route materializes,
+    publishes, or retries
+  - Candidate-message raw-byte equality/one-byte-over and canonical-envelope
+    equality/one-byte-over limits, cardinality and aggregate overflow,
+    complete/absent/partial/extra/contradictory states, complete diagnostic
+    tuples, and exact closed routing for accept, reconcile, retry, pause, and
+    fail-closed
+  - Parent-only materialization after a complete unchanged observation, using
+    the retained root descriptor; exact ordered paths and UTF-8 bytes; complete
+    reread and structural content observations; no harness-authored or repaired
+    normative content; and no materialization for a non-accepting decision
   - Preflight crash before replacement and after replacement but before
     directory fsync; pass-before-fsync rejection; malformed temporary cleanup;
     prior-attestation preservation on failure; and stale prior evidence never
     satisfying the current preflight
   - Every closed preflight diagnostic/result/phase combination, malformed,
     mismatched, absent, and symlinked change roots before runtime discovery
-  - Fresh generation-time attestation embedded in
+  - Fresh `boundary-runtime-attestation-v2` embedded in the
+    `boundary-behavior-implementation-v2`
     `behavior-implementation-manifest.json`; missing, stale, substituted, and
     tampered nested attestation invalidating the manifest reference, input-set
     identity, immutable run, pointer, and report selector without
     validation-time substitution
+  - Exact historical-v1 registry path, regular-file kind, and raw-byte
+    identity producing only `registered-opaque-history`; moved, altered,
+    additional, ambiguous, caller-supplied, or structurally parsed v1 records
+    produce `unsupported-historical-evidence`; no v1 record satisfies a
+    current preflight, manifest, run, pointer, validation, report, capability,
+    or activation role
   - Later commits with unchanged referenced bytes versus changed referenced bytes
   - Resource-map, raw-byte-copy, trigger, stop, claim, handoff, complete review-bundle, and isolation tests
   - Example-only spec/test-spec rejection and valid compact simple-change cases
 - Implementation steps:
-  - Implement only the minimal evidence-only `check-environment` preflight as the
-    first bounded M2 slice.
+  - First correct the immutable projection and tests: add the exact shared
+    file-change policy, canary and lifecycle integrity policies, v2
+    preflight/attestation/implementation-manifest schemas, transport and
+    workspace observations, diagnostic precedence and routing matrix, and
+    exact opaque-v1 registry. Unknown fields, values, versions, policies, and
+    tuples fail closed before consistency checks.
+  - Implement only the minimal evidence-only `check-environment` preflight as
+    the first runtime-executing M2 correction slice.
   - Require the exact change ID, select only its existing non-symlink change
     root, and accept Codex only when SemVer precedence is at least 0.138.0.
   - Resolve and identity-bind one Codex launcher and runtime package, reject
@@ -264,10 +323,11 @@ resource through generated, packed, and installed outputs.
     Require the exact approved Codex 0.145.0 schema and complete
     protocol-classification identities before `thread/start`; require exactly
     96 classified feature rows.
-  - Build a fresh mode-restricted `CODEX_HOME` with one named permission
-    profile: root denied, minimal runtime paths readable, isolated workspace
-    writable, and child-command network disabled. Do not combine the profile
-    with legacy `sandbox_mode`.
+  - Build a fresh mode-restricted `CODEX_HOME` with exact profile
+    `boundary-proof-stage-readonly-v1`: root denied, only minimal runtime paths
+    and manifested scenario roots readable, no child writable root, and
+    child-command network disabled. Do not combine the profile with legacy
+    `sandbox_mode`.
   - Initialize app-server over stdio with `experimentalApi: true`. Before
     `turn/start`, require exact non-null `thread/start` metadata, fully
     paginate `experimentalFeature/list`, and require exact closed results from
@@ -290,12 +350,16 @@ resource through generated, packed, and installed outputs.
     must-be-disabled behavior.
   - Independently apply one exhaustive version/schema-bound exactly-once
     protocol-item classification: permitted side effect, non-side-effect
-    protocol traffic, or prohibited capability event. Reject missing,
-    duplicate, unknown, or unclassified item mappings.
-  - Permit command side effects only through `shell_tool`, `unified_exec`, or
-    `shell_snapshot`, and file-change/apply-patch events only in the isolated
-    workspace. A schema-supported prohibited variant must be disabled
-    pre-turn and fails the accepted turn if observed.
+    protocol traffic, or prohibited capability event. Treat
+    `permitted-side-effect` only as a protocol classification, never as
+    mutation authority. Reject missing, duplicate, unknown, or unclassified
+    item mappings.
+  - Keep `shell_tool`, `unified_exec`, and `shell_snapshot` read-only under the
+    named profile. Configure the exact parent-owned deny-only file-change
+    handler before every governed thread; return `decision: decline` for every
+    `item/fileChange/requestApproval`; and reject missing, substituted,
+    response-widened, accepted, or session-accepted decisions before output
+    acceptance.
   - Build both thread and turn requests from closed builders that bind one
     exact isolated workspace root. Record the exact empty 0.145.0
     thread-start root response, then classify every observed request and
@@ -306,11 +370,24 @@ resource through generated, packed, and installed outputs.
     inherit-none and prove no proxy or unrelated parent variable crosses it.
   - Run positive and negative probes with the same executable, generated and
     managed configuration, and named profile through
-    `codex sandbox --include-managed-config`. Require workspace read/write and
-    deny unmanifested source, private-auth path, and network access.
+    `codex sandbox --include-managed-config`. Require manifested workspace
+    read; deny direct create, overwrite, remove, and mode change; repeat those
+    four attempts from a detached descendant and require bounded exit/reap;
+    and deny unmanifested source, private-auth path, and network access.
+  - Run the separate fresh app-server file-change probe after command denial
+    and before the canary. Correlate the exact projected request and generic
+    item carriers to one terminal `declined` file-change item, require the
+    workspace unchanged and the process stopped/reaped, and persist only
+    `workspace_file_change_denied: pass` plus the policy identity.
   - Inject a transient parent canary and require exact child environment names
     plus canary absence from environment values, argv, stdin, readable paths,
     and process metadata. Persist only typed non-secret decisions.
+  - Execute the separate noncanonical `materialization-canary-v1` turn through
+    `workflow` and `spec` under the same deny-only handler and a canary
+    workspace-integrity baseline. Require an unchanged post-turn observation,
+    one complete canary envelope, parent-only exact-byte materialization, and
+    complete reread equality; discard the workspace and semantic bytes and
+    retain only the bounded pass result.
   - Publish the successful preflight attestation only at
     `evidence/runtime-preflight-attestation.json`: sibling temporary write,
     file flush/fsync, same-filesystem atomic replace, evidence-directory
@@ -328,15 +405,43 @@ resource through generated, packed, and installed outputs.
   - Create and validate `evidence/boundary-proof-baseline.json` from the harness-derived current HEAD before the first participating-skill edit. If an immutable baseline already exists with a different value, stop.
   - Freeze the two-module AST import policy and exact manifest/input-set schemas.
   - Assemble the five skill packages, applicable instructions, contracts, scenario, and candidates into a fresh isolated workspace.
-  - Launch the identified runtime through the preflight-proven sandbox and
-    private runtime home; derive a fresh generation-time attestation for the
+  - Launch the identified runtime through the preflight-proven read-only
+    sandbox and private runtime home; independently repeat command and
+    file-change denial, then derive a fresh
+    `boundary-runtime-attestation-v2` for the
     exact eleven-row runtime inventory—five enabled manifested lifecycle rows and
     six generated-config-bound disabled system rows—while keeping the
     five-package resource set as a distinct input; embed the attestation in
+    a fresh `boundary-behavior-implementation-v2`
     `behavior-implementation-manifest.json`, and bind that manifest reference
     transitively through the input-set identity, immutable run, pointer, and
     report selector. The preflight artifact is feasibility evidence only and
     is not substituted for this fresh generation record.
+  - Recognize the exact tracked v1 manifest only through the closed historical
+    registry before current generation. Do not parse, normalize, inject,
+    upgrade, or select it. Fresh generation replaces current authority with a
+    newly derived v2 manifest; every nonregistered v1 input fails closed.
+  - Before the canary and every lifecycle turn, open and retain the isolated
+    workspace root descriptor and capture the complete bounded no-follow
+    baseline. Child tools remain read-only. After terminal completion, or only
+    after the exact timed-out child is confirmed stopped and reaped, run the
+    complete bounded post-turn scan before considering output or
+    materialization.
+  - Route any complete or overflowing mutation observation to
+    `stage-workspace-mutated` and any invalid/uncertain inspection to
+    `stage-workspace-inspection-failed`; discard the workspace and stop before
+    materialization, publication, or retry. Under uncertain liveness, perform
+    no output or workspace inspection.
+  - Collect the complete bounded agent-message candidate set, validate raw and
+    canonical byte limits, the parent-selected policy, exact stage occurrence,
+    artifact-set variant, paths, roles, content state, and UTF-8 without
+    interpreting semantic content. Only one complete candidate plus a
+    complete unchanged workspace may reach the parent materializer.
+  - Materialize accepted stage-authored bytes relative to the retained root
+    descriptor, reread the complete leaf set, record value-free exact-byte
+    equality, run the closed structural lifecycle validators, and snapshot the
+    complete stage output before advancing. Remove all substantive harness
+    renderers and keep candidate oracles comparison-only.
   - Build and validate the sibling temporary run; move it to the deterministic
     non-authoritative staging root and fsync; exclusively write and fsync the
     prepared receipt; install and fsync the immutable run; validate it;
@@ -345,12 +450,17 @@ resource through generated, packed, and installed outputs.
   - Exercise the full pipeline with controlled fixture packages without writing canonical evidence.
   - Write and map the shared boundary reference in the five participating packages, keeping stage-specific triggers, claims, stops, and handoffs in each `SKILL.md`.
   - Generate the real `spec -> spec-review -> test-spec -> test-spec-review`
-    run through `workflow`: each stage skill writes its complete artifact below
-    the isolated output root, the harness snapshots before advancing, and no
-    harness renderer supplies normative artifact content.
-  - Reconcile a timed-out stage before retry: accept one complete valid output
-    without reinvocation, retry once only when no output exists, and stop on
-    partial output or protocol/security failure.
+    run through one public `workflow` orchestration. Each stage skill returns
+    one complete policy-bound artifact envelope; the parent materializes and
+    snapshots it before advancing; no harness renderer supplies, repairs, or
+    completes normative artifact content.
+  - Reconcile a timed-out stage before retry using the exact transport matrix:
+    complete valid output plus unchanged workspace reconciles without
+    reinvocation; confirmed stop, zero candidates, unchanged workspace, and no
+    non-output diagnostic permit one fresh-runtime retry; a second absence,
+    partial/extra/contradictory evidence, mutation, inspection uncertainty,
+    protocol/security failure, or uncertain liveness stops or pauses exactly
+    as specified.
 - Validation commands:
   - `python scripts/boundary_proof_behavior.py check-environment --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --json`
   - `python scripts/boundary_proof_behavior.py freeze-baseline --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`
@@ -375,9 +485,21 @@ resource through generated, packed, and installed outputs.
     exact thread/turn root requests, classified observed events, and closed
     parent-proxy/child-environment evidence
   - durable current `runtime-preflight-attestation.json` whose reference
-    matches the pass receipt, plus a fresh nested generation attestation bound
-    by the current behavior implementation manifest and immutable run
-  - current `behavior-implementation-manifest.json`
+    matches the `boundary-runtime-preflight-v2` pass receipt, plus a fresh
+    nested `boundary-runtime-attestation-v2` bound by the current behavior
+    implementation manifest and immutable run
+  - current `boundary-behavior-implementation-v2`
+    `behavior-implementation-manifest.json`, including exact transport,
+    lifecycle artifact, workspace-integrity, canary, and shared file-change
+    policy identities
+  - direct and descendant command-write denial, cause-specific app-server
+    file-change decline, unchanged canary workspace, and parent-only
+    materialization pass evidence
+  - complete transport-attempt rows with candidate, workspace-integrity,
+    materialization, and content-validation observations for every lifecycle
+    event; no raw failed candidate or child-authored path retained
+  - exact registered v1 path/raw-byte identity recognized only as opaque
+    history and absent from every current authority chain
   - immutable `boundary-proof-baseline.json`
   - controlled test-owned transport-failure fixtures below
     `tests/fixtures/boundary-proof/transport/`, all schema-valid and
@@ -403,6 +525,16 @@ resource through generated, packed, and installed outputs.
     change root, pass emitted before file and directory durability, unresolved
     preflight temporary state, substituted generation attestation, or attempt
     to replace recorded attestation with validation-time runtime evidence.
+  - Stop on any writable child root, successful or ambiguous direct/descendant
+    mutation, incomplete descendant reap, missing or widened file-change
+    handler, non-declined file-change outcome, child workspace mutation,
+    incomplete or unstable integrity inspection, or canary materialization
+    before a complete unchanged observation.
+  - Stop on unknown or inconsistent transport tuple, candidate overflow,
+    malformed/partial/extra/contradictory output, materialization/content
+    mismatch, unsafe retry, registered-v1 use as current authority, unknown v1
+    evidence, or any attempt to synthesize stage-owned normative bytes in the
+    harness.
 - Expected observable result: The upstream skills require complete boundary/proof maps and one input-bound immutable behavior run proves the real upstream workflow with zero false blocking and no new universal artifact.
 - Commit message: `M2: implement and prove hermetic upstream behavior`
 - Milestone closeout:
@@ -414,6 +546,10 @@ resource through generated, packed, and installed outputs.
 - Risks:
   - Nondeterministic runtime output or crash recovery could make tests flaky or repeat work.
   - Sandbox attestation could be accidentally treated as child self-report.
+  - Descriptor scanning or a detached child could race parent materialization
+    if the read-only profile, root retention, or stop/reap proof is weakened.
+  - Historical v1 evidence could be accidentally parsed or rebound as current
+    authority during the v2 migration.
   - Shared reference use could hide stage-specific stop or claim boundaries.
 - Rollback/recovery:
   - Revert the five package edits and current pointer together, retain immutable failed runs as non-current evidence, and retain the M1 deterministic engine.
@@ -852,14 +988,16 @@ resource through generated, packed, and installed outputs.
 | 2026-07-26 | Use frozen dataclasses plus pure mapping validators and JSON fixture inputs for M1. | The executable projection remains dependency-free, immutable, deterministic, and separate from Markdown serialization or semantic review. | A second YAML registry; validator-owned semantic scoring; mutable global records. |
 | 2026-07-26 | Revise to five milestones: feasibility/core, harness, upstream behavior, downstream preservation, and distribution baseline. | The accepted R13/R4 design adds a high-risk runtime boundary and recoverable publication flow that need an independent review before public skill mutation. | Hide the harness inside upstream skill work; build the full harness before proving runtime support; keep stale four-milestone mapping. |
 | 2026-07-26 | Restore normative M1-M4 ownership and make runtime feasibility the first M2 promotion gate. | R28y explicitly assigns synthetic proof, upstream behavior, downstream preservation, and aggregation to M1-M4. | Renumber the approved phases; amend the spec only to preserve an unnecessary fifth phase. |
+| 2026-07-26 | Keep one M2 milestone but order its correction as immutable projection/tests, read-only preflight, integrity-gated envelope transport, workflow-owned generation, then durable publication. | The approved R45/R18 contract resolves the three open M2 findings without changing normative milestone ownership; each internal slice has a fail-closed promotion gate before the next riskier slice. | Reopen milestone numbering; implement the live runtime before closed validators; retain child writes; allow the harness to render normative artifacts. |
+| 2026-07-26 | Use staged validation, durable exclusive prepared receipt, immutable install, installed-run validation, atomic pointer replacement, and receipt cleanup as the only publication order. | This is the approved recovery transaction and closes the governing-artifact half of BFP-CR-M2-8. | Install before receipt; validate only after pointer publication; adopt orphan output. |
 
 ## Surprises and discoveries
 
-- The direct sandbox `workspace_write` probe proves that spawned commands can
-  write under the permission profile; it does not prove that a schema-bound
-  app-server stage turn exposes a file-write tool to the agent. Runtime
-  feasibility must test the actual stage-output transport, not a neighboring
-  capability.
+- The earlier writable sandbox probe proved only a neighboring command
+  capability and left the stage-output boundary bypassable. R45/R18 replace
+  that design with direct and descendant write denial, a separate
+  cause-specific app-server file-change decline probe, read-only stage turns,
+  and parent-only envelope materialization after workspace-integrity proof.
 
 - The unified automation state adapter writes `run.pause_reason`, while the
   change-metadata schema currently accepts `run.stop_reason`. The run was
