@@ -1820,6 +1820,66 @@ Rationale: Proof expectations cannot claim authority ahead of the contract they 
 Validation target: spec-review-r28 and test-spec-review-r13
 Validation evidence: The amended test spec is draft, labels the feature spec and architecture amendments as pending review, and no longer claims current approved identities for those surfaces.
 
+### spec-review-r28
+
+#### BFP-SR-R28-1 - Close transport state and transitions
+
+Finding ID: BFP-SR-R28-1
+Disposition: accepted
+Status: resolved
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y transport protocol
+Decision needed: none
+Required outcome: Define closed output states, admissible tuples, sequencing, termination receipts, failure fixtures, and evidence rules.
+Chosen action: Replace the overlapping matrix with vocabulary-first tuple validation, an ordered transition grammar, `uninspected` liveness state, and bounded termination receipts.
+Rationale: Transport retry is safe only when every durable and transient state has one route.
+Validation target: spec-review-r29
+Validation evidence: `specs/rigorloop-workflow.md` now defines the closed row
+schema, termination receipt, output and diagnostic vocabularies, mutually
+exclusive tuple matrix, one-or-two-row grammar, canonical-evidence rules, and
+exact test-owned failure-fixture schema; `specs/rigorloop-workflow.test.md`
+T52 exercises every admissible route and invalid contrast; pending independent
+spec-review-r29 confirmation.
+
+#### BFP-SR-R28-2 - Close publication durable states
+
+Finding ID: BFP-SR-R28-2
+Disposition: accepted
+Status: resolved
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y publication state machine
+Decision needed: none
+Required outcome: Define exact named state predicates, actions, fsync cleanup, terminal results, and manual recovery authority/evidence.
+Chosen action: Add a vocabulary-first state table covering clean, staged-unreceipted, prepared-staged, prepared-installed, prepared-pointer-temporary, prepared-pointed, published, conflict, and corrupt.
+Rationale: Recovery must be a total function over durable filesystem state.
+Validation target: spec-review-r29
+Validation evidence: `specs/rigorloop-workflow.md` now defines the nine-state
+candidate-scoped publication machine, exact predicates and actions, pointer and
+receipt fsync obligations, conflict/corrupt closure, and two-state authorized
+manual recovery record; `specs/rigorloop-workflow.test.md` T51 enumerates every
+state and required contrast; pending independent spec-review-r29 confirmation.
+
+#### BFP-SR-R28-3 - Synchronize amendment metadata
+
+Finding ID: BFP-SR-R28-3
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: test-spec metadata correction
+Decision owner: artifact lifecycle contract
+Decision needed: none
+Required outcome: Remove stale active/approved/implementation-ready claims and correct the four-stage wording.
+Chosen action: Mark every amendment-specific identity and review field pending/current, record the active plan as resolution-needed, and use four-stage lifecycle path with five skills consistently.
+Rationale: Draft proof cannot cite stale approval as current authority.
+Validation target: spec-review-r29
+Validation evidence: the workflow and test specs remain draft, the test spec
+binds latest review R28 and the active resolution-needed plan without a stale
+identity, the plan and index route to spec-review R29, and T52 consistently
+uses a four-stage path with five skills; pending independent spec-review-r29
+confirmation.
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2
