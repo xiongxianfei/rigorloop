@@ -2351,8 +2351,23 @@ no-clobber namespace primitive, and the simple-change parent is fsynced.
 The temporary file is then removed and its parent fsynced.
 On resume, a lone valid temporary basis is installed; a temporary basis whose
 canonical file exists with identical bytes is removed and fsynced.
-Different bytes, more than one temporary basis, or malformed temporary state
-fails closed.
+Different bytes or more than one temporary basis fails closed.
+A malformed or truncated temporary basis is noncanonical and may be discarded
+only while the global publisher lock is held and its filename contains the
+single selected lease `run_id` and intended `recovery_id`.
+If no canonical basis exists, the harness additionally requires the matching
+lease, one H-false lease-only/working/staging orphan state, no recovery state
+file, and fresh explicit recovery authority.
+It removes only that temporary file, fsyncs the simple-change parent,
+revalidates lease and orphan state, and reconstructs the basis from current
+authority.
+If a valid canonical basis exists, a malformed same-run/same-recovery
+temporary file is removed and the parent fsynced only after the canonical
+basis and its state binding validate.
+Malformed names, ambiguous context, a temporary file for another run or
+recovery, or any attempt to discard a canonical basis fails closed.
+Resume always fsyncs the temporary-file parent before reconstruction, so a
+crash during removal safely repeats either removal or the durability barrier.
 The installed basis is never replaced or mutated.
 Its raw-byte identity is `basis_identity`.
 
@@ -2418,6 +2433,11 @@ Both selectors cover `specs/`, `docs/proposals/`, `docs/plans/`,
 `evidence/simple-change/runs/` subtree,
 `evidence/simple-change/current.json`, and every transaction-control or
 recovery path named by the global discovery vocabulary above.
+They also explicitly exclude
+`docs/changes/<change-id>/evidence/simple-change/publisher.lock`.
+The harness validates that lock separately as the one exact regular,
+non-symlink control file at that path; its creation, persistence, and reuse
+cannot change artifact inventories or canonical behavior evidence.
 The after selector additionally covers the complete
 `<behavior-root>/artifacts/` subtree.
 Paths and identities are unique and normalized; identity is the raw-byte
@@ -2497,6 +2517,7 @@ Every member of `diagnostic_ids` and `primary_diagnostic_id` is one of:
 none
 stage-turn-timeout
 stage-liveness-uncertain
+protocol-item-classification-invalid
 stage-output-absent
 stage-output-partial
 stage-output-extra
@@ -2511,15 +2532,16 @@ condition, ordered by this closed precedence:
 
 ```text
 1. stage-liveness-uncertain
-2. protocol-shape-incompatible
-3. unexpected-prohibited-event
-4. runtime-identity-unstable
-5. stage-output-absent
-6. stage-output-partial
-7. stage-output-extra
-8. stage-output-contradictory
-9. stage-turn-timeout
-10. none
+2. protocol-item-classification-invalid
+3. protocol-shape-incompatible
+4. unexpected-prohibited-event
+5. runtime-identity-unstable
+6. stage-output-absent
+7. stage-output-partial
+8. stage-output-extra
+9. stage-output-contradictory
+10. stage-turn-timeout
+11. none
 ```
 
 `none` occurs only as the sole member when no other condition was detected.
@@ -2542,6 +2564,7 @@ matching-output-diagnostic:
   contradictory -> stage-output-contradictory
 
 non-output-diagnostic:
+  protocol-item-classification-invalid
   protocol-shape-incompatible
   unexpected-prohibited-event
   runtime-identity-unstable
@@ -2601,6 +2624,7 @@ Each value has one exact role-specific shape:
 | `stage-turn-timeout` | `kind: deadline-observation-v1`, `deadline_ms`, `elapsed_ms`, `runtime_thread_id` |
 | `stage-liveness-uncertain` | `kind: liveness-observation-v1`, `termination_requested: true`, `wait_completed: false`, `runtime_process_id` |
 | `stage-output-absent`, `stage-output-partial`, `stage-output-extra`, or `stage-output-contradictory` | `kind: output-inventory-v1`, exact output `root`, `required_outputs`, `observed_outputs`, and canonical `inventory_identity` |
+| `protocol-item-classification-invalid` | `kind: protocol-classification-observation-v1`, `event_kind`, `protocol_classification_identity`, `lookup_result: unknown`, `event_shape_identity` |
 | `protocol-shape-incompatible` | `kind: protocol-observation-v1`, `event_kind`, `schema_path`, `observed_shape_projection`, `observed_shape_identity` |
 | `unexpected-prohibited-event` | `kind: prohibited-event-observation-v1`, `event_kind`, `event_identity`, `protocol_classification_identity` |
 | `runtime-identity-unstable` | `kind: runtime-identity-observation-v1`, `expected_identity`, `observed_identity` |
@@ -2617,6 +2641,12 @@ The role predicates are exact:
   bounded wait completed.
 - `runtime-identity-unstable` requires unequal expected and observed
   identities. Equal identities invalidate that diagnostic.
+- `protocol-item-classification-invalid` requires
+  `protocol_classification_identity` to equal the exact bound classification,
+  lookup of `event_kind` in that classification to return no member, and
+  `lookup_result` to be `unknown`.
+  `event_shape_identity` is the canonical field-name/JSON-type projection of
+  the bounded event envelope and does not require a schema path.
 - `protocol-shape-incompatible` requires `schema_path` to resolve inside the
   exact bound schema bundle. `observed_shape_projection` is the complete
   path-sorted field-name and JSON-type projection with values omitted;
@@ -2626,15 +2656,18 @@ The role predicates are exact:
 - `unexpected-prohibited-event` requires `event_kind` to resolve in the exact
   bound `protocol_item_classification_identity` to
   `prohibited-capability-event`. Unknown event kinds route through protocol
-  shape/classification failure and cannot be relabeled as known prohibited
-  events.
+  item classification failure and cannot be relabeled as schema-incompatible
+  or known prohibited events.
 
-For output classification, `required_outputs` is the complete path-sorted
-stage-policy set of `{role, path, identity_rule}` descriptors.
+For output classification, `required_outputs` is the nonempty complete
+path-sorted stage-policy list of `{role, path, identity_rule}` descriptors.
+Its roles and paths are independently unique; an empty list or duplicate role
+or path is an invalid stage policy and fails before invocation.
 `identity_rule` is either `any-current` or one exact bound identity.
-`observed_outputs` is the complete path-sorted set of
+`observed_outputs` is the raw complete path-sorted list of
 `{role, path, identity}` descriptors captured from the output root.
-Let `E` be the required descriptors and `O` the observed descriptors.
+It is not deduplicated or converted to a set before classification.
+Let `E` be the required list and `O` the raw observed list.
 The evaluator applies this closed, disjoint order:
 
 ```text
@@ -2642,9 +2675,10 @@ absent:
   O is empty
 
 contradictory:
-  O is nonempty and contains a duplicate role or path with unequal identity,
-  violates an exact bound identity, or contains roles declared mutually
-  exclusive by the stage policy
+  O is nonempty and contains any duplicate role or path regardless of
+  identity, violates an exact bound identity, contains roles declared mutually
+  exclusive by the stage policy, or both has an unexpected member and leaves
+  one or more required members unsatisfied
 
 extra:
   not contradictory, every member of E is satisfied exactly once, and one or
@@ -2659,8 +2693,10 @@ complete:
 ```
 
 No observation may satisfy more than one state.
-An observation outside these predicates is
-`invalid-output-classification` and fails closed before transport routing.
+The nonempty and uniqueness preconditions plus contradiction-first order make
+the five outcomes exhaustive, including identical duplicates,
+same-identity duplicate roles on different paths, and mixed missing-plus-extra
+observations.
 `inventory_identity` is the canonical identity of exactly
 `{root, required_outputs, observed_outputs}`.
 The timeout and liveness records are cross-checked against the row's runtime

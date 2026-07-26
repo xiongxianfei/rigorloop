@@ -2049,7 +2049,7 @@ pending independent spec-review-r32.
 
 Finding ID: BFP-SR-R32-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y diagnostic vocabulary
@@ -2058,13 +2058,16 @@ Required outcome: Record unknown protocol items without inventing a bound schema
 Chosen action: Add `protocol-item-classification-invalid` with exact unknown lookup evidence, precedence, and fail-closed routing.
 Rationale: Schema incompatibility and classification absence are different boundary failures.
 Validation target: spec-review-r33
-Validation evidence: pending
+Validation evidence: R28y now defines
+`protocol-item-classification-invalid`, its precedence, non-output routing, and
+exact bound-classification/unknown-lookup evidence; T52 tests known prohibited,
+known permitted, and unknown event kinds; pending spec-review-r33.
 
 #### BFP-SR-R32-2 - Preserve raw output multiplicity
 
 Finding ID: BFP-SR-R32-2
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y output evaluator
@@ -2073,13 +2076,16 @@ Required outcome: Make empty, duplicate, and mixed missing/extra output uniquely
 Chosen action: Use path-sorted lists before uniqueness checks, require nonempty unique requirements, and classify all duplicates and mixed observations as contradictory.
 Rationale: Set normalization destroys boundary evidence.
 Validation target: spec-review-r33
-Validation evidence: pending
+Validation evidence: R28y now preserves raw observed lists, rejects empty or
+duplicate required lists before invocation, classifies every observed
+duplicate as contradictory, and closes mixed missing-plus-extra observations;
+T52 covers all empty/duplicate/mixed contrasts; pending spec-review-r33.
 
 #### BFP-SR-R32-3 - Recover malformed temporary basis writes
 
 Finding ID: BFP-SR-R32-3
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y recovery transaction
@@ -2088,13 +2094,17 @@ Required outcome: Recover a crash-truncated noncanonical basis temp without weak
 Chosen action: Under the global lock, validate filename/lease/orphan context, discard only the malformed temp, fsync, and reconstruct from current authority.
 Rationale: Noncanonical write interruption must not permanently poison recovery.
 Validation target: spec-review-r33
-Validation evidence: pending
+Validation evidence: R28y now permits only lock-held, filename/lease/orphan
+bound removal of malformed noncanonical temp files, fsyncs before
+reconstruction, protects canonical basis, and makes cleanup interruption
+idempotent; T51 covers truncated byte classes and canonical/no-canonical
+contexts; pending spec-review-r33.
 
 #### BFP-SR-R32-4 - Exclude the publisher lock from behavior counts
 
 Finding ID: BFP-SR-R32-4
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: R28y artifact inventory
@@ -2103,7 +2113,10 @@ Required outcome: Keep persistent concurrency control outside behavior artifact 
 Chosen action: Add the exact lock exclusion and separate file-type/path validation with T51/T52 parity proof.
 Rationale: Harness control files are not lifecycle behavior artifacts.
 Validation target: spec-review-r33
-Validation evidence: pending
+Validation evidence: R28y explicitly excludes the exact persistent lock path
+from both inventories while requiring separate regular non-symlink validation;
+T51 proves creation/persistence/reuse does not affect counts or canonical
+evidence; pending spec-review-r33.
 
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 

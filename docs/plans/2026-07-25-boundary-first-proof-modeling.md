@@ -89,7 +89,7 @@ resource through generated, packed, and installed outputs.
 - Remaining in-scope implementation milestones: M2, M3, M4
 - Next stage: spec-review R33 for remaining protocol and recovery closure
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR-R32-1,BFP-SR-R32-2,BFP-SR-R32-3,BFP-SR-R32-4
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
 ## Milestones
 
