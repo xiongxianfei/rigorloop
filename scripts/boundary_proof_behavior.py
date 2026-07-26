@@ -1727,7 +1727,7 @@ def _render_feature_markdown(payload: Mapping[str, object]) -> str:
         "",
         "## Status",
         "",
-        "draft",
+        "approved",
         "",
         f"Boundary model version: {model.boundary_model_version}",
         f"Boundary model scope: {model.boundary_model_scope}",
@@ -1909,7 +1909,7 @@ def _render_test_spec_markdown(
             "",
             "T1. For every scalar in the fixed R2 trim set, place it at each edge and in the interior; require edge removal, interior preservation, stopping at an adjacent non-member, and the exact `trim` success record.",
             "",
-            "T2. Every unknown mode fails with `unknown-mode` and returns no text.",
+            "T2. Exercise the closed unknown-mode partition with stable cases `T2-EMPTY` (empty), `T2-CASE` (`TRIM` and `Preserve`), `T2-FUTURE` (`trim-v2`), `T2-CANONICAL-CLOSURE` (enumerate the canonical-normalization closure of the two ASCII accepted tokens and prove it contains no scalar-distinct accepted alias), and `T2-OTHER` (deterministically generate non-equal scalar strings across empty, one-scalar, combining-mark, non-ASCII, and multi-scalar classes). Every case requires exactly `{\"error\":\"unknown-mode\"}` and asserts that `mode` and `text` fields are absent.",
             "",
             "T3. `preserve` returns every input scalar sequence unchanged, including trim-set members, and returns the exact `preserve` success record.",
             "",
@@ -2857,7 +2857,13 @@ def generate_behavior(
             test_spec_markdown,
             test_spec_identity,
             governing_context=(
-                feature_markdown
+                "Approved fixture execution context: R28y/T52 simple-change "
+                "upstream behavior proof; owning milestone M2; active plan "
+                "review R14 approved; active test-spec review R12 approved; "
+                "the closed fixture route intentionally contains spec, "
+                "spec-review, test-spec, and test-spec-review only, so no "
+                "fixture-local implementation plan is applicable.\n\n"
+                + feature_markdown
                 + "\n\n"
                 + str(spec_review_payload["review_record_markdown"])
             ),
