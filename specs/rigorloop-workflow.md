@@ -2137,44 +2137,105 @@ The receipt is fsynced only after the staged run validates and before the
 staged directory is renamed to the immutable run root.
 After receipt durability, the harness installs and fsyncs the immutable run,
 validates the installed run, then continues to pointer publication.
-The deterministic staging root is not behavior evidence and cannot satisfy a
-run, pointer, review, or report reference.
-If staging exists without a receipt, generation fails closed for explicit
-reconciliation; it does not install, publish, or silently reinvoke lifecycle
-skills.
-The harness writes and fsyncs a sibling temporary pointer, atomically replaces
-the pointer file with the platform's same-filesystem atomic file-replace
+The temporary pointer path is exactly
+`docs/changes/<change-id>/evidence/simple-change/.current-<run-id>.json`.
+The harness writes and fsyncs that sibling temporary pointer, atomically
+replaces `current.json` with the platform's same-filesystem atomic file-replace
 primitive, and fsyncs the parent directory.
-Failure before pointer replacement leaves the prior pointer unchanged.
-It may leave the prepared immutable run installed but unpointed; that run is
-non-current and can become current only through receipt reconciliation.
-On resume, a prepared receipt is reconciled before any generation or
-validation:
+The deterministic staging root and temporary pointer are not behavior evidence
+and cannot satisfy a run, pointer, review, or report reference.
 
-- if the pointer names the prepared run, validate the run and finish receipt
-  cleanup;
-- if the pointer exactly equals the inline `prior_pointer` and the immutable
-  run exists, validate it against its recorded and current input-set identity,
-  complete pointer publication, and finish cleanup;
-- if the pointer exactly equals the inline `prior_pointer`, the immutable run
-  is absent, and the deterministic staged run exists, validate staging, install
-  and fsync the immutable run, validate it, complete pointer publication, and
-  finish cleanup;
-- any other pointer, missing both staged and immutable prepared run, corrupt
-  receipt, or input mismatch fails closed.
+Publication and resume use one closed durable-state machine scoped to the
+candidate `run_id`.
+The observer first validates every present involved object and then records:
 
-The harness never accepts the old run as completion of a different prepared
-invocation and never reinvokes lifecycle skills during reconciliation.
-Receipt removal is followed by fsync of the receipt parent before publication
-is reported complete.
-If deterministic staging exists without a receipt, automated generation and
-publication stop with `orphan-staging`.
-The staged run is never adopted or discarded automatically.
-Documented manual recovery MUST first establish that no publisher remains
-live, validate the complete staged run and current input identities, preserve
-bounded diagnostics, and then either remove staging for an explicit new
-generation or create a new reviewed recovery action.
+```text
+S = valid .prepared-<run-id> staging directory exists
+R = valid prepared.json exists and names the candidate run
+I = valid immutable runs/<run-id> directory exists
+T = valid .current-<run-id>.json temporary pointer exists and names I
+C = current.json is absent, equals R.prior_pointer, names the candidate, or is other
+```
+
+`R.prior_pointer: null` and absent `current.json` are equal for the first
+publication.
+An involved object is corrupt when it is a symlink, malformed, has an identity
+or path mismatch, or violates its exact schema.
+Corrupt classification occurs before consistency routing.
+The closed state table is:
+
+| State | Exact predicate | Required action | Durability / terminal result |
+| --- | --- | --- | --- |
+| `clean` | `!S && !R && !I && !T` and `C` is absent or a valid unrelated current pointer | Begin a new generation. | Nonterminal; no publication mutation has started. |
+| `staged-unreceipted` | `S && !R && !I && !T` and `C` is absent or a valid unrelated current pointer | Stop with `orphan-staging`; require the bounded manual recovery below. | Terminal pause; no install, publication, deletion, or lifecycle reinvocation. |
+| `prepared-staged` | `S && R && !I && !T && C == R.prior_pointer` | Validate staging, atomically rename it to I, fsync the runs parent, and validate I. | Continue as `prepared-installed`. |
+| `prepared-installed` | `!S && R && I && !T && C == R.prior_pointer` | Validate I and current input identities, write and fsync T. | Continue as `prepared-pointer-temporary`. |
+| `prepared-pointer-temporary` | `!S && R && I && T && C == R.prior_pointer` | Validate T, atomically replace `current.json` with T, and fsync the pointer parent. | Continue as `prepared-pointed`. |
+| `prepared-pointed` | `!S && R && I && !T && C` names the candidate | Validate I and C, remove R, and fsync the receipt parent. | Continue as `published`. |
+| `published` | `!S && !R && I && !T && C` names the candidate | Validate I and C and fsync the parent before reporting success. | Terminal success. |
+| `corrupt` | Any involved object is corrupt. | Fail closed before consistency routing. | Terminal failure; no automated mutation. |
+| `conflict` | Every structurally valid tuple not matching a preceding row. | Fail closed and report the observed tuple. | Terminal failure; no automated mutation. |
+
+The `conflict` row includes, without special recovery, simultaneous staging and
+immutable roots, staging when the pointer already names the candidate, a
+temporary pointer without a receipt, an unpointed immutable candidate without
+a receipt, a valid receipt whose current pointer is neither its prior pointer
+nor its candidate, and missing both staged and immutable candidate state.
+The observer assigns `corrupt` before evaluating any non-corrupt row.
+The remaining predicates are mutually exclusive.
+Reconciliation never accepts a prior run as completion of the candidate,
+changes the candidate identity, derives a replacement receipt, or reinvokes
+lifecycle skills.
+
+The only automated transition out of `staged-unreceipted` is none.
+A separately authorized maintainer may return it to `clean` only through
+`discard-and-regenerate`.
+Before deletion, the maintainer MUST establish and durably record that the
+publisher process is confirmed stopped and reaped.
+The recovery record path is exactly
+`docs/changes/<change-id>/evidence/simple-change/manual-recovery-<run-id>.json`
+and contains exactly:
+
+```text
+schema_version
+recovery_id
+run_id
+authorized_by
+authorization_evidence_ref
+publisher_termination_receipt
+staged_manifest_snapshot
+input_set_identity
+action
+result
+staging_removed
+parent_fsynced
+```
+
+`schema_version` is `simple-change-manual-recovery-v1`;
+`recovery_id` is `recovery-<32 lowercase hexadecimal characters>`;
+`authorization_evidence_ref` is the current change-local review or owner
+decision that authorizes this exact recovery;
+`publisher_termination_receipt` has the exact confirmed-stopped shape defined
+for transport below;
+`staged_manifest_snapshot` is an inline historical `{path, identity}` copy,
+not a current reference after removal;
+`action` is only `discard-and-regenerate`.
+The only valid recovery-record state tuples are:
+
+| `result` | `staging_removed` | `parent_fsynced` | Meaning |
+| --- | --- | --- | --- |
+| `authorized` | `false` | `false` | Authority, stopped-publisher proof, staged snapshot, and intended action are durable before deletion. |
+| `completed` | `true` | `true` | Staging was removed and its parent directory was fsynced. |
+
+The maintainer validates the staged manifest and input identity, atomically
+writes and fsyncs the `authorized` record, removes staging, fsyncs the staging
+parent, then atomically replaces the record with the `completed` tuple and
+fsyncs its parent.
+Any other tuple fails closed.
+An existing `authorized` recovery record blocks automated publication until an
+authorized maintainer completes or explicitly supersedes that recovery.
 Uncertain publisher liveness pauses without retry or mutation.
+The discarded bytes are never adopted as canonical evidence.
 `baseline_commit` is exactly the harness-derived
 `git:<40 lowercase hexadecimal characters>` pre-run HEAD and names the commit
 used for the before run.
@@ -2230,8 +2291,8 @@ outputs cannot be recorded as fresh behavior outputs.
 correction events.
 Every transport-attempt row contains exactly:
 `transport_attempt_id`, `event_key`, `transport_attempt`, `runtime_thread_id`,
-`termination_state`, `output_state`, `diagnostic_id`, `decision`, and
-`evidence_refs`.
+`termination_state`, `termination_receipt`, `output_state`, `diagnostic_id`,
+`decision`, and `evidence_refs`.
 `event_key` is the lifecycle event identity `<stage>#<attempt>`.
 `transport_attempt` is `1` or `2` and does not change the lifecycle event's
 `attempt`.
@@ -2242,41 +2303,114 @@ Rows are ordered first by lifecycle-event order and then by transport attempt.
 
 `termination_state` is exactly `completed`, `confirmed-stopped`, or
 `liveness-uncertain`.
-The adapter MUST terminate and reap an expired runtime process before recording
-`confirmed-stopped`.
-Failure to prove termination records `liveness-uncertain`, pauses, and performs
-no retry or output mutation.
-`output_state` is exactly `absent`, `complete`, `partial`, `extra`, or
-`contradictory`, computed from the bound stage-output path after termination or
-normal completion.
-`diagnostic_id` is `none` for normal completion, `stage-turn-timeout` for the
-only retryable transport failure, or a stable non-retryable protocol, security,
-shape, identity, or output diagnostic.
+`termination_receipt` is null for `completed` and `liveness-uncertain`.
+For `confirmed-stopped`, it contains exactly `method`, `runtime_process_id`,
+`termination_observed`, and `reaped`.
+`method` is `terminate-wait-v1`; `runtime_process_id` matches
+`process-[0-9a-f]{32}` and is derived before invocation; and
+`termination_observed` and `reaped` are both `true`.
+The adapter MUST terminate, wait for, and reap an expired runtime process before
+recording that receipt.
+Failure to prove both facts records `liveness-uncertain` with a null receipt,
+pauses, and performs no retry or output inspection.
+
+`output_state` is exactly `uninspected`, `absent`, `complete`, `partial`,
+`extra`, or `contradictory`.
+`uninspected` is permitted only with `liveness-uncertain`.
+Every other output state is computed from the bound stage-output root only
+after normal completion or confirmed process termination.
+`diagnostic_id` is one of:
+
+```text
+none
+stage-turn-timeout
+stage-liveness-uncertain
+stage-output-absent
+stage-output-partial
+stage-output-extra
+stage-output-contradictory
+protocol-shape-incompatible
+unexpected-prohibited-event
+runtime-identity-unstable
+```
+
 `decision` is exactly `accept`, `reconcile`, `retry`, `pause`, or
 `fail-closed`.
 
-The closed transport decision matrix is:
+The following diagnostic classes are closed aliases used only by the matrix:
 
-| Termination | Output | Diagnostic | Decision |
-| --- | --- | --- | --- |
-| `completed` | `complete` | `none` | `accept` |
-| `confirmed-stopped` | `complete` | `stage-turn-timeout` | `reconcile` without reinvocation |
-| `confirmed-stopped` | `absent` | `stage-turn-timeout` and transport attempt 1 | `retry` once in a fresh runtime |
-| `confirmed-stopped` | `absent` | `stage-turn-timeout` and transport attempt 2 | `fail-closed` |
-| `liveness-uncertain` | any | any | `pause` |
-| `completed` or `confirmed-stopped` | `partial`, `extra`, or `contradictory` | any | `fail-closed` |
-| `completed` or `confirmed-stopped` | `absent` or `complete` | protocol, security, shape, identity, or other non-retryable diagnostic | `fail-closed` |
+```text
+matching-output-diagnostic:
+  absent -> stage-output-absent
+  partial -> stage-output-partial
+  extra -> stage-output-extra
+  contradictory -> stage-output-contradictory
+
+non-output-diagnostic:
+  protocol-shape-incompatible
+  unexpected-prohibited-event
+  runtime-identity-unstable
+```
+
+The closed transport tuple matrix is:
+
+| Termination | Receipt | Output | Diagnostic | Attempt | Decision |
+| --- | --- | --- | --- | --- | --- |
+| `completed` | null | `complete` | `none` | 1 or 2 | `accept` |
+| `completed` | null | `absent`, `partial`, `extra`, or `contradictory` | its matching output diagnostic | 1 or 2 | `fail-closed` |
+| `completed` | null | `complete` | a non-output diagnostic | 1 or 2 | `fail-closed` |
+| `confirmed-stopped` | valid confirmed-stopped receipt | `complete` | `stage-turn-timeout` | 1 or 2 | `reconcile` |
+| `confirmed-stopped` | valid confirmed-stopped receipt | `absent` | `stage-turn-timeout` | 1 | `retry` |
+| `confirmed-stopped` | valid confirmed-stopped receipt | `absent` | `stage-turn-timeout` | 2 | `fail-closed` |
+| `confirmed-stopped` | valid confirmed-stopped receipt | `absent`, `partial`, `extra`, or `contradictory` | its matching output diagnostic | 1 or 2 | `fail-closed` |
+| `confirmed-stopped` | valid confirmed-stopped receipt | `complete` | a non-output diagnostic | 1 or 2 | `fail-closed` |
+| `liveness-uncertain` | null | `uninspected` | `stage-liveness-uncertain` | 1 or 2 | `pause` |
+
+The rows are mutually exclusive.
+Every vocabulary-valid tuple not listed in the matrix fails closed as
+`invalid-transport-tuple` before decision routing; that validator diagnostic
+does not become a row value.
+
+Each lifecycle event has exactly one or two transport rows.
+The first row has `transport_attempt: 1`.
+A second row exists if and only if the first row has `decision: retry`; it has
+`transport_attempt: 2`, the same `event_key`, and a different fresh
+`runtime_thread_id`.
+If both rows contain confirmed-stopped receipts, their
+`runtime_process_id` values also differ.
+`retry` is the only nonterminal decision.
+The last row is exactly one of `accept`, `reconcile`, `pause`, or
+`fail-closed`.
+No row may follow a terminal decision, and transport attempt 2 may never decide
+`retry`.
+Only terminal `accept` or `reconcile` creates the corresponding lifecycle event
+and permits eventual publication.
 
 For `complete`, `evidence_refs` contains exactly the current stage-owned output
 references inspected for that attempt.
-For `absent`, it is empty.
-Partial, extra, contradictory, paused, and failed invocations cannot satisfy a
-published behavior run; their controlled-fixture proof records bounded
-diagnostics but no canonical behavior evidence.
-A successful run retains every preceding absent-timeout row plus the accepted
+For `absent` and `uninspected`, it is empty.
+For `partial`, `extra`, or `contradictory`, it contains only current references
+to the bounded observed output files used to classify that failure.
+Those references are diagnostic inputs, never canonical behavior evidence.
+A paused or failed invocation has no publishable run manifest or current
+pointer.
+A successful run retains every preceding absent-timeout row plus its accepted
 or reconciled terminal row.
 Validation and publication reconciliation consume recorded transport rows and
 MUST NOT reinvoke lifecycle skills.
+
+Controlled transport-failure fixtures are test-owned, not runtime evidence.
+`scripts/test-boundary-proof.py` owns fixtures below
+`tests/fixtures/boundary-proof/transport/`.
+Each fixture record contains exactly `fixture_id`, `event_key`,
+`transport_attempts`, `expected_terminal_decision`, `expected_diagnostic_id`,
+and `canonical_evidence_eligible`.
+`transport_attempts` uses the exact row schema and grammar above;
+`expected_terminal_decision` is the last row decision;
+`expected_diagnostic_id` is its diagnostic;
+and `canonical_evidence_eligible` is always `false`.
+Missing, extra, stale, contradictory, or publication-eligible failure-fixture
+fields fail closed.
 
 Every event contains exactly:
 `stage`, `attempt`, `input_snapshot_ids`, `reviewed_snapshot_id`,

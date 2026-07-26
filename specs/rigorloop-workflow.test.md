@@ -48,13 +48,13 @@ Boundary model scope: R28-R28z
 | Input | Path | Status / Review state | Identity |
 | --- | --- | --- | --- |
 | Feature spec | `specs/rigorloop-workflow.md` | draft; focused spec-review pending | pending after approval |
-| Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion under spec-review-r26 | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r26.md` | approved | `sha256:f994de035ef9d7721054155b20b6448735b78b00922eb5a75017b0734e43efc7` |
+| Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion to the draft workflow amendment | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
+| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r28.md` | changes-requested; R28 findings under revision | `sha256:730088ce83e3e15b585e7854329e5db05a94c213fa88e3cd2ce82cc27e708c24` |
 | Architecture | `docs/architecture/system/architecture.md` | draft; focused architecture-review pending | pending after approval |
 | Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r13.md` | approved | `sha256:47571b7555fe6470de8e78a9c8b180c09fbdb627e8e641ab1c6915e0d9044288` |
 | ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | proposed amendment | pending after acceptance |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted | `sha256:f757569f2bbe986f957f8a2532a6d9bd268695ff0f271779dce270b1bdb7b690` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active for M2 implementation; execution contract approved by plan-review-r14 | `sha256:9bf5bc6e0c56a8e63085ffee3f0c011e3644420ec7d04c643b7ab74602caa601` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; spec rereview is the next gate | pending after lifecycle resynchronization |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r14.md` | approved | `sha256:d38b5b63b05239d7b34df4e15727f2449d3e9ce263dac07ba754e1578a5ee6fb` |
 
 ## Testing strategy
@@ -63,7 +63,8 @@ Boundary model scope: R28-R28z
 - Use filesystem-backed integration tests for selector behavior, lifecycle validation, skill validation, generated-output drift, adapter generation, change metadata, and review artifact validation.
 - Use focused skill-validator assertions only for stable, machine-checkable skill guidance such as required labels, forbidden stale labels, handoff boundaries, and generated-output drift.
 - Use selector-selected targeted proof as the first validation layer for changed paths; use broad smoke only when an authoritative trigger elevates it.
-- Treat `specs/rigorloop-workflow.test.md` as the active proof-planning and regression surface for the workflow contract and implemented amendment.
+- Treat `specs/rigorloop-workflow.test.md` as the draft proof-planning and
+  regression amendment until focused spec and test-spec rereview approve it.
 - Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
 - Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
 - Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
@@ -1473,22 +1474,30 @@ Boundary model scope: R28-R28z
 - Command IDs: CMD-BFP-9, CMD-BFP-11, CMD-BFP-12
 - Fixture/setup: Crash injection before and after run installation, receipt
   fsync, pointer replacement, parent-directory fsync, and receipt cleanup;
-  valid and invalid pre-existing run/pointer/receipt combinations.
+  exact `clean`, `staged-unreceipted`, `prepared-staged`,
+  `prepared-installed`, `prepared-pointer-temporary`, `prepared-pointed`,
+  `published`, `conflict`, and `corrupt` fixtures scoped to one candidate run.
 - Steps: Interrupt before receipt creation, after durable receipt but before
   immutable installation, after installation/fsync, after installed-run
   validation, after pointer replacement, after parent-directory fsync, and
   after receipt cleanup. Resume against the original inputs; inspect
   deterministic staging, installed run, prepared receipt, current pointer, and
   directory durability; distinguish the current staged-manifest reference from
-  the prospective immutable target descriptor; attempt a second in-flight
-  publication. Exercise every durable staging/receipt/run/pointer/prior-pointer
-  combination plus corrupt, conflicting, and changed-input variants. For
-  orphan staging, prove automated stop and the documented manual-recovery
-  preconditions; for cleanup, prove receipt removal and parent fsync.
+  the prospective immutable target descriptor; test a null prior pointer for
+  first publication; attempt a second in-flight publication. Exercise the
+  exact predicate and action of all nine durable states, including simultaneous
+  staging and target, staging with a target pointer, temporary pointer without
+  receipt, unpointed target without receipt, missing candidate bytes, malformed
+  object, symlink, identity mismatch, other current pointer, and changed input.
+  For orphan staging, prove automated stop, separately durable owner authority,
+  confirmed-stopped termination receipt, exact recovery-record schema,
+  discard-only behavior, staging-parent fsync, and no adoption. For cleanup,
+  prove pointer-parent and receipt-parent fsync before success.
 - Expected result: Resume reconciles valid evidence without reinvoking skills,
   never installs or points at a partial run, never installs without a durable
   exclusive receipt, never loses the prior immutable pointer, and fails closed
-  on orphan staging, conflict, or changed inputs.
+  on every orphan, conflict, corrupt, unknown, or changed-input state. Every
+  non-corrupt durable tuple matches exactly one named state and route.
 - Failure proves: A crash can duplicate nondeterministic work or publish an
   incomplete/stale run.
 - Evidence artifact: controlled publication-recovery fixtures
@@ -1505,21 +1514,27 @@ Boundary model scope: R28-R28z
   `test-spec-review` packages and the simple-change scenario corpus; this is a
   four-stage lifecycle path using five participating skills.
 - Steps: Pass preflight; freeze baseline; invoke `workflow` to route the
-  five-stage upstream path; require each stage-owning skill to write its
+  four-stage upstream path; require each stage-owning skill to write its
   complete artifact under the isolated output root; snapshot it before the
   next stage; reject harness-authored normative content. Inject stage timeout
   with absent, complete, partial, extra, and contradictory output plus
-  uncertain liveness and protocol/security failures. Assert lifecycle
-  correction attempt and transport attempt remain distinct, every transport
-  row has the closed R28y fields and decision, the original process is
-  terminated and reaped before retry, and transport evidence lives in the
-  successful immutable run or controlled failure fixture. Run validation
-  repeatedly.
+  uncertain liveness and every closed non-output diagnostic. Enumerate every
+  admissible transport tuple and representative vocabulary-valid unlisted
+  tuples. Assert lifecycle correction attempt and transport attempt remain
+  distinct; every row has the exact R28y fields; confirmed-stopped rows bind
+  the exact termination receipt; liveness-uncertain rows are uninspected; and
+  attempt 2 exists if and only if attempt 1 decides retry, uses a fresh runtime
+  identity, and terminates without retry. Reject missing, extra, duplicate,
+  unknown, out-of-order, post-terminal, multiple-terminal, and inconsistent
+  rows. Prove complete output references, empty absent/uninspected references,
+  bounded noncanonical partial/extra/contradictory references, and the exact
+  test-owned failure-fixture schema. Run validation repeatedly.
 - Expected result: One fresh immutable run contains current output snapshots,
   terminal branches, review-event evidence unions, and computed simple-change
   observations. Complete output reconciles without reinvocation, absent output
   permits at most one transient retry, partial or non-retryable evidence stops,
-  and validation performs no lifecycle reinvocation.
+  uncertain liveness pauses without inspection, failed/paused invocations never
+  publish, and validation performs no lifecycle reinvocation.
 - Failure proves: M2 evidence is asserted, incomplete, or nondeterministically
   regenerated during validation.
 - Evidence artifact: current M2 immutable run and `validation-m2.md`
