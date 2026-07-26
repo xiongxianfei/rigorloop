@@ -1565,8 +1565,7 @@ Boundary model scope: R28-R28z
 
 Active proof-planning and regression surface for the workflow contract,
 including the boundary-first R28-R28z amendment.
-The R13/R4/R5 revision is ready for independent test-spec review; the prior R2
-approval is stale and implementation must not resume until the new review
-approves this proof map.
+The R13/R4/R5 revision is approved by `test-spec-review-r4` and is the active
+proof map for implementation.
 
 Test-spec proof map is confirmed against the approved active plan. M2 implementation can hand off to `code-review M2` only after the M2 guidance and contract surfaces make the relevant assertions and validation commands pass. Each milestone closes only after clean review and any required review-resolution.

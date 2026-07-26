@@ -21,7 +21,8 @@ Closeout status: open
 - Review closeout: plan-review-r3
 - Review closeout: plan-review-r4
 - Review closeout: plan-review-r5
-- Review closeout: test-spec-review-r3 open
+- Review closeout: test-spec-review-r3
+- Review closeout: test-spec-review-r4
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -33,9 +34,9 @@ Closeout status: open
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
-- Findings resolved: 23
-- Unresolved findings: 8
-- Current result: `test-spec-review-r3` requested field-complete negative proof for the closed R28y hermetic input structures.
+- Findings resolved: 24
+- Unresolved findings: 7
+- Current result: `test-spec-review-r4` approved the field-complete M1-M4 proof map for implementation.
 
 ## Resolution Overview
 
@@ -71,7 +72,7 @@ Closeout status: open
 | BFP-AR3-3 | accepted | resolved | The ADR records rejected hermetic-runtime alternatives and operational consequences. |
 | BFP-PL4 | accepted | resolved | Preserve approved R28y M1-M4 ownership and keep runtime feasibility as a pre-harness promotion gate. |
 | BFP-PL5 | accepted | resolved | Name exact evidence inputs, outputs, production/validation commands, promotion receipts, and failure stops. |
-| BFP-TSR3-1 | accepted | open | Expand T48-T50 so every closed manifest, instruction, contract, profile, baseline, and input-set field has explicit positive and negative proof. |
+| BFP-TSR3-1 | accepted | resolved | Expand T48-T50 so every closed manifest, instruction, contract, profile, baseline, and input-set field has explicit positive and negative proof. |
 
 ## Finding Details
 
@@ -528,7 +529,7 @@ matching test-spec revision.
 
 Finding ID: BFP-TSR3-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec revision
 Decision owner: approved R28y contract
@@ -537,7 +538,13 @@ Required outcome: Map every closed hermetic input field, selector, and format ru
 Chosen action: Expand T48-T50 with exact field mutation matrices for manifest, instruction, contract, invocation profile, baseline, and input-set records.
 Rationale: Aggregate class wording can pass while one normative closed field or selector remains unchecked.
 Validation target: test-spec-review-r4
-Validation evidence: pending
+Validation evidence: `test-spec-review-r4` approved the exact field mutation matrices and M1-M4 regression scan.
+
+### test-spec-review-r4
+
+No new material findings.
+`test-spec-review-r4` resolved `BFP-TSR3-1` and approved implementation
+handoff under the existing separate implementation authorization.
 
 ### spec-review-r3
 
