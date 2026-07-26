@@ -2564,6 +2564,23 @@ correction-budget-exhausted terminal branches for second changes-requested
 reviews, preserves open resolution, prohibits attempt three, and emits a
 stable run diagnostic; pending spec-review-r39
 
+### spec-review-r39
+
+#### BFP-SR-R39-1 - Raw candidate-message limit has no exact policy source
+
+Finding ID: BFP-SR-R39-1
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: R28y artifact policy
+Decision needed: none
+Required outcome: Bind separate raw pre-parse and canonical post-parse byte limits through both artifact policies.
+Chosen action: Add exact `candidate_message_byte_limit` fields and equality/one-byte-over behavior.
+Rationale: Raw transport framing and canonical envelope size are different boundaries.
+Validation target: spec-review-r40
+Validation evidence: pending spec revision and spec-review-r40
+
 #### BFP-PL6-2 - Closed feature and protocol-item mapping is underspecified
 
 Finding ID: BFP-PL6-2
