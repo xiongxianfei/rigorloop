@@ -1836,7 +1836,7 @@ def _render_feature_markdown(payload: Mapping[str, object]) -> str:
         "",
         "R3. `preserve` MUST perform no Unicode normalization and return the exact input scalar-value sequence unchanged as `{\"mode\":\"preserve\",\"text\":<original scalar-value string>}`. A conformance claim MUST include executable evidence covering trim-set members and canonically equivalent but scalar-distinct sequences.",
         "",
-        "R4. Every other exact mode scalar sequence, including empty, canonically equivalent, differently cased, and future-looking values, MUST return exactly `{\"error\":\"unknown-mode\"}` and MUST NOT return `mode` or `text`. A conformance claim MUST include executable evidence for each named unknown-mode class.",
+        "R4. Every other exact mode scalar sequence, including empty, differently cased, and future-looking values, MUST return exactly `{\"error\":\"unknown-mode\"}` and MUST NOT return `mode` or `text`. A conformance claim MUST include executable evidence for each named unknown-mode class. Because the accepted mode tokens contain only ASCII scalars and are invariant under Unicode normalization, no distinct canonically equivalent mode exists; that empty class is not an unknown-mode evidence obligation.",
         "",
         "## Boundary model",
         "",
