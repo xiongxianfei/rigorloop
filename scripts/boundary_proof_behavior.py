@@ -1338,36 +1338,6 @@ def _expand_stage_proof_map(record: Mapping[str, object]) -> dict[str, object]:
     }
 
 
-def _route_request(request: str) -> dict[str, object]:
-    return {
-        "skill_names": ["workflow"],
-        "stage": "workflow",
-        "prompt": (
-            "Use the installed workflow skill to route this bounded request. "
-            "Do not author lifecycle artifacts and do not use tools. Return "
-            "the exact ordered stage route only.\n\nRequest:\n" + request
-        ),
-        "output_schema": _closed_object_schema(
-            {
-                "stages": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "enum": [
-                            "spec",
-                            "spec-review",
-                            "test-spec",
-                            "test-spec-review",
-                        ],
-                    },
-                    "minItems": 4,
-                    "maxItems": 4,
-                }
-            }
-        ),
-    }
-
-
 def _spec_request(request: str) -> dict[str, object]:
     return {
         "skill_names": ["spec"],
@@ -2178,7 +2148,6 @@ def _assemble_run(
         if isinstance(row, dict) and isinstance(row.get("stage"), str)
     }
     if set(provenance_by_stage) != {
-        "workflow",
         "spec",
         "spec-review",
         "test-spec",
@@ -2810,14 +2779,7 @@ def generate_behavior(
             print(f"stage-complete:{request.get('stage')}", file=sys.stderr)
         return observed_attestation, generated[0]
 
-    attestation, route_result = invoke(_route_request(str(scenario["request"])))
-    route = _load_generated_payload(route_result, {"stages"})
-    if route != {
-        "stages": ["spec", "spec-review", "test-spec", "test-spec-review"]
-    }:
-        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
-
-    spec_attestation, spec_result = invoke(
+    attestation, spec_result = invoke(
         _spec_request(str(scenario["request"]))
     )
     spec_payload = _load_generated_payload(spec_result, {"feature_model"})
@@ -2907,7 +2869,6 @@ def generate_behavior(
         if field.endswith("_identity") or field == "active_permission_profile"
     }
     for observed in (
-        spec_attestation,
         spec_review_attestation,
         test_spec_attestation,
         test_review_attestation,
@@ -2915,7 +2876,6 @@ def generate_behavior(
         if any(observed[field] != attestation[field] for field in attestation_identity_fields):
             raise BoundaryRuntimeError("runtime-identity-unstable", "in-turn")
     thread_ids = [
-        route_result.get("thread_id"),
         spec_result.get("thread_id"),
         spec_review_result.get("thread_id"),
         test_spec_result.get("thread_id"),
@@ -2923,7 +2883,7 @@ def generate_behavior(
     ]
     if any(not isinstance(value, str) for value in thread_ids) or len(
         set(thread_ids)
-    ) != 5:
+    ) != 4:
         raise BoundaryRuntimeError("thread-metadata-mismatch", "in-turn")
     payload = {
         "feature_model": feature_model,
@@ -2937,7 +2897,6 @@ def generate_behavior(
                 "skill_names": result["skill_names"],
             }
             for result in (
-                route_result,
                 spec_result,
                 spec_review_result,
                 test_spec_result,
