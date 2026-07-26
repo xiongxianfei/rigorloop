@@ -1856,11 +1856,43 @@ def _render_test_spec_markdown(
         "",
         "Exercise every applicable partition directly and retain explicit non-applicability as feature-spec evidence rather than inventing tests for absent behavior.",
         "",
+        "## Boundary disposition",
+        "",
+        "| Dimension ID | Applicability | Governing rationale | Test case IDs |",
+        "| --- | --- | --- | --- |",
+    ]
+    test_ids_by_dimension = {
+        "canonical-trust": "T1, T2",
+        "closed-vocabulary": "T1, T2",
+        "outcome-stop": "T1, T2, T3",
+        "evidence-claims": "T1, T2, T3",
+    }
+    for row in feature.core_dimensions:
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    row.dimension_id,
+                    row.applicability,
+                    (
+                        _join(row.governing_requirement_ids)
+                        if row.applicability == "applicable"
+                        else str(row.non_applicability_rationale)
+                    ),
+                    test_ids_by_dimension.get(row.dimension_id, "-"),
+                ]
+            )
+            + " |"
+        )
+    lines.extend(
+        [
+        "",
         "## Proof map",
         "",
         "| Proof obligation ID | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Automation level | Manual procedure IDs |",
         "| --- | --- | --- | --- | --- | --- |",
-    ]
+        ]
+    )
     for row in sorted(proof.proof_obligations, key=lambda item: item.proof_obligation_id):
         lines.append(
             "| "
@@ -1889,7 +1921,17 @@ def _render_test_spec_markdown(
             "",
             "## Validation",
             "",
-            "Run the three automated cases in the target implementation's smallest deterministic test command. A failure in any case blocks implementation handoff.",
+            "Command ID: PTN-VALIDATE-1",
+            "",
+            "Command: `python -m unittest -q tests.test_portable_text_normalizer`",
+            "",
+            "Owner: implementation milestone owner",
+            "",
+            "Milestone: portable-text-normalizer implementation",
+            "",
+            "Classification: automated deterministic validation",
+            "",
+            "Expected result: exit 0 after discovering and executing T1, T2, and T3. A nonzero exit, a missing named case, or zero discovered tests blocks implementation handoff.",
             "",
         ]
     )
