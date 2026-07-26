@@ -1403,7 +1403,11 @@ def _spec_request(request: str) -> dict[str, object]:
 
 
 def _review_request(
-    stage: str, artifact_markdown: str, artifact_identity: str
+    stage: str,
+    artifact_markdown: str,
+    artifact_identity: str,
+    *,
+    governing_context: str = "",
 ) -> dict[str, object]:
     if stage not in {"spec-review", "test-spec-review"}:
         raise BoundaryRuntimeError("protocol-shape-incompatible", "pre-turn-start")
@@ -1423,7 +1427,13 @@ def _review_request(
             "in the record, and all except Recording status in the log. "
             "Keep both records concise. Approve only if the artifact exhaustively models "
             "the applicable boundaries and explicit non-applicability.\n\n"
-            "Artifact:\n" + artifact_markdown
+            "Artifact:\n"
+            + artifact_markdown
+            + (
+                "\n\nGoverning upstream evidence:\n" + governing_context
+                if governing_context
+                else ""
+            )
         ),
         "output_schema": _closed_object_schema(
             {
@@ -2867,7 +2877,14 @@ def generate_behavior(
 
     test_review_attestation, test_review_result = invoke(
         _review_request(
-            "test-spec-review", test_spec_markdown, test_spec_identity
+            "test-spec-review",
+            test_spec_markdown,
+            test_spec_identity,
+            governing_context=(
+                feature_markdown
+                + "\n\n"
+                + str(spec_review_payload["review_record_markdown"])
+            ),
         )
     )
     test_review_payload = _load_generated_payload(
