@@ -18,8 +18,9 @@ Closeout status: open
 - Review closeout: spec-review-r13
 - Review closeout: architecture-review-r3
 - Review closeout: architecture-review-r4
-- Review closeout: plan-review-r3 open
-- Review closeout: plan-review-r4 open
+- Review closeout: plan-review-r3
+- Review closeout: plan-review-r4
+- Review closeout: plan-review-r5
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -30,10 +31,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`, `plan-review-r4`
-- Findings resolved: 21
-- Unresolved findings: 9
-- Current result: `plan-review-r4` confirmed the M1-M4 sequence but retained BFP-PL4 for inconsistent feasibility ownership and BFP-PL5 for incomplete M4 release/parity paths and commands.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
+- Findings resolved: 23
+- Unresolved findings: 7
+- Current result: `plan-review-r5` approved the exact M1-M4 execution boundaries; the matching test specs require revision and independent review before implementation resumes.
 
 ## Resolution Overview
 
@@ -67,8 +68,8 @@ Closeout status: open
 | BFP-AR3-1 | accepted | resolved | Durable publication installs the run before the fsynced receipt and atomic pointer, then fsyncs the parent and reconciles cleanup. |
 | BFP-AR3-2 | accepted | resolved | The parent attests the runtime sandbox and keeps opaque authentication outside child authority and durable evidence. |
 | BFP-AR3-3 | accepted | resolved | The ADR records rejected hermetic-runtime alternatives and operational consequences. |
-| BFP-PL4 | accepted | open | Preserve approved R28y M1-M4 ownership and keep runtime feasibility as a pre-harness promotion gate. |
-| BFP-PL5 | accepted | open | Name exact evidence inputs, outputs, production/validation commands, promotion receipts, and failure stops. |
+| BFP-PL4 | accepted | resolved | Preserve approved R28y M1-M4 ownership and keep runtime feasibility as a pre-harness promotion gate. |
+| BFP-PL5 | accepted | resolved | Name exact evidence inputs, outputs, production/validation commands, promotion receipts, and failure stops. |
 
 ## Finding Details
 
@@ -328,7 +329,7 @@ approved the active proof maps for test-driven M1 implementation.
 
 Finding ID: BFP-M1-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution M1
 Decision owner: approved R28s, R28u, and R28w contract
@@ -481,7 +482,7 @@ the aligned C4 views.
 
 Finding ID: BFP-PL4
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: plan author
 Owning stage: plan revision
 Decision owner: approved R28y phase contract
@@ -490,13 +491,13 @@ Required outcome: Restore M1-M4 ownership while retaining feasibility before ful
 Chosen action: Keep M1 deterministic; make `check-environment` the first bounded M2 implementation slice; run it before any other harness or skill mutation; keep upstream behavior in M2, preservation in M3, and aggregation in M4.
 Rationale: Plan sequencing cannot renumber explicit normative phase ownership.
 Validation target: plan-review-r5
-Validation evidence: `plan-review-r4` confirmed the M1-M4 sequence and retained the finding only for inconsistent feasibility evidence and failure-stop ownership.
+Validation evidence: `plan-review-r5` approved the minimal preflight as the first bounded M2 slice and the M2-only evidence and failure stop.
 
 #### BFP-PL5 - Evidence creation and promotion commands are incomplete
 
 Finding ID: BFP-PL5
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: plan author
 Owning stage: plan revision
 Decision owner: approved R28y evidence contract
@@ -505,13 +506,19 @@ Required outcome: Make every evidence transition executable and independently pr
 Chosen action: Add exact production and validation commands, output paths, pre-mutation baseline timing, failure stops, code-review promotion gates, tracked adapter input, four durable parity outputs, and release validation/test commands.
 Rationale: Validation of an existing artifact does not define how current evidence is produced.
 Validation target: plan-review-r5
-Validation evidence: `plan-review-r4` confirmed the earlier production and promotion corrections and retained the finding only for incomplete M4 release/parity paths and commands.
+Validation evidence: `plan-review-r5` approved the exact M4 adapter input, durable parity outputs, release fixtures, release tests, release validation, and promotion boundaries.
 
 ### plan-review-r4
 
 No new material findings.
 `plan-review-r4` partially resolved `BFP-PL4` and `BFP-PL5`; the exact retained
 gaps are recorded in the R4 review and the original finding dispositions above.
+
+### plan-review-r5
+
+No new material findings.
+`plan-review-r5` resolved `BFP-PL4` and `BFP-PL5` and approved the plan for
+matching test-spec revision.
 
 ### spec-review-r3
 

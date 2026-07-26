@@ -80,12 +80,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M1. Deterministic core correction
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r4.md
-- Review status: changes-requested; stage=plan-review; round=r4
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r5.md
+- Review status: approved; stage=plan-review; round=r5
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: plan-review R5
+- Next stage: test-spec revision
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=9; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7,BFP-PL4,BFP-PL5
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-M1-CR1,BFP-M1-CR2,BFP-M1-CR3,BFP-M1-CR4,BFP-M1-CR5,BFP-M1-CR6,BFP-M1-CR7
 
 ## Milestones
 
@@ -469,6 +469,8 @@ resource through generated, packed, and installed outputs.
 - 2026-07-26: The plan R5 candidate makes the minimal preflight the first bounded
   M2 implementation slice and freezes M4 adapter, parity, release-fixture, and
   release-validation surfaces.
+- 2026-07-26: Plan-review R5 resolved BFP-PL4 and BFP-PL5 and approved
+  the M1-M4 execution plan for matching test-spec revision.
 
 ## Decision log
 
