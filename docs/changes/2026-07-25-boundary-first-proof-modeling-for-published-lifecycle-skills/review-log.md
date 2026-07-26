@@ -1097,3 +1097,14 @@ Detailed record: reviews/spec-review-r45.md
 Resolution: review-resolution.md#spec-review-r45
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: architecture-review-r17
+Stage: architecture-review
+Round: 17
+Reviewed artifact: canonical architecture, boundary-proof component diagram, architecture assessment, proposed stage-envelope ADR, accepted predecessor ADRs, and approved R45 workflow spec at 5cce27cf
+Status: changes-requested
+Detailed record: reviews/architecture-review-r17.md
+Resolution: review-resolution.md#architecture-review-r17
+Material findings: BFP-AR17-1
+Open findings: BFP-AR17-1

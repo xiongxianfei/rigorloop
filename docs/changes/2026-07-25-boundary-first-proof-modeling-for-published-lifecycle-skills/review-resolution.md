@@ -2857,3 +2857,24 @@ Chosen action: Point to plan-review R6 and reserve full pagination for `experime
 Rationale: Implementation handoff must not infer protocol behavior from ambiguous prose.
 Validation target: plan-review-r7
 Validation evidence: pending plan-review-r7
+
+### architecture-review-r17
+
+#### BFP-AR17-1 — The Building Block View still exposes a writable child workspace root
+
+Finding ID: BFP-AR17-1
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: approved R45 child-write boundary
+Decision needed: none
+Required outcome: Make the isolated-workspace assembler responsibility
+consistent with read-only child access, no child writable root, and parent-only
+materialization after the unchanged-workspace gate.
+Chosen action: Replace the stale writable-output-root statement with the
+approved parent-owned output-root contract.
+Rationale: Component responsibilities are plan-authoritative architecture
+inputs and cannot contradict the canonical Runtime View and ADR.
+Validation target: architecture-review-r18
+Validation evidence: pending
