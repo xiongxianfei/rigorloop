@@ -32,11 +32,12 @@ Boundary model scope: R28-R28z
 - Historical workflow-refactor architecture: not required for that completed
   slice.
 - Boundary-first architecture: [Canonical System Architecture](../docs/architecture/system/architecture.md),
-  approved by `architecture-review-r4`, with
+  approved by `architecture-review-r8`, with
   [ADR-20260725](../docs/adr/ADR-20260725-boundary-first-proof-modeling.md)
+  and [ADR-20260726](../docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md)
   accepted.
 - Boundary-first plan: [Boundary-First Proof Modeling](../docs/plans/2026-07-25-boundary-first-proof-modeling.md),
-  approved by `plan-review-r5`.
+  approved by `plan-review-r11`.
 - Spec-review: approved with no material findings after the PR-self-contained lifecycle completion amendment was added; minor SR-1 asked the test spec to decide how merge-dependent language classification is recorded.
 - Plan-review: approved with no material findings for the PR-self-contained lifecycle completion plan. Minor non-blocking note: if README remains unchanged, final affected-surface evidence should mark it unaffected with rationale.
 
@@ -44,14 +45,15 @@ Boundary model scope: R28-R28z
 
 | Input | Path | Status / Review state | Identity |
 | --- | --- | --- | --- |
-| Feature spec | `specs/rigorloop-workflow.md` | approved; spec-review-r13 | `sha256:cce7047761aaa99d81263cf226261e73de3de35e9064e93732274d3a3a8ae1f8` |
-| Companion skill spec | `specs/skill-contract.md` | approved; spec-review-r13 | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r13.md` | approved | `sha256:063f0bd15ff4ed9861179cc4be9da2f063276c01c2d536498a8c67974e4a3fe0` |
-| Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review-r4 | `sha256:a766457e13872dcb01af9587fd3e23d1a7cd3cf7162a27457a70e076a9e6e9f0` |
-| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r4.md` | approved | `sha256:dad098aaf2800f3e8762ac9c05ac5b5067ba5c35925afadb69f97fa662225477` |
+| Feature spec | `specs/rigorloop-workflow.md` | approved; spec-review-r18 | `sha256:51f95f5a428c5b3b5e3abf9f0f658e13a338ff9be1c42cb9e9103faf0b4c1013` |
+| Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion under spec-review-r18 | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
+| Spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r18.md` | approved | `sha256:01e2a3474a6a12bb5778e77c82b8f1b93d49e94adc4cc312177655588c152639` |
+| Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review-r8 | `sha256:06e79aee80c0e3f7f43374b55c06b12f07853b89eae79e06821b38210ca24141` |
+| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r8.md` | approved | `sha256:b650908fcbfb3806d50ea27723f123c1b6bd9e8fca3a0b142ced55281fc8383b` |
 | ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted | `sha256:dac4993ec648a4c6ed72c50b5c22954760ea4b6c28f6686b7f7aeec246fdc216` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; plan-review-r5 | `sha256:e761d02218270dca568deab8cdf7f27d316d471fd850dc79d5e2a62c0ad59e90` |
-| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r5.md` | approved | `sha256:41eca0f767652f05201becbe9a4a75a03935d506bdf0695fce4454f090e54ac3` |
+| Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted | `sha256:80eb7bc263a8c31a944fa6802027591b78db24b6087d268d2068963482d95d1e` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; plan-review-r11 | `sha256:7930093975ec074dfc73747b83c613eaa7e38629ff9c198e417259324a358c41` |
+| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r11.md` | approved | `sha256:6c72a7e95c71d052f4340232b57e9bef67ee401f4b6cb7b9884a83a906dd0376` |
 
 ## Testing strategy
 
@@ -217,7 +219,7 @@ Boundary model scope: R28-R28z
 | `CMD-BFP-5` | `python scripts/test-adapter-distribution.py` | existing/configured | adapter tooling owner | M4 | M4 code-review | nonzero blocks milestone | zero tests is failure | M4 validation notes | local generation only; no publication |
 | `CMD-BFP-6` | `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5` | existing/configured | adapter tooling owner | M4 | M4 code-review | any nonzero result blocks milestone | not applicable | temporary adapter validation output | temporary local output; no registry, release, or publication |
 | `CMD-BFP-7` | `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/rigorloop-workflow.md --path specs/rigorloop-workflow.test.md --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/plans/2026-07-25-boundary-first-proof-modeling.md --path docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml` | existing/configured | lifecycle validator owner | lifecycle closeout | test-spec-review and verify | blocking result stops handoff | not applicable | validation ledger in change.yaml | read-only repository validation |
-| `CMD-BFP-8` | `python scripts/boundary_proof_behavior.py check-environment --json` | planned-for-implementation | behavior harness owner | M2 | M2 preflight gate | nonzero or `environment-unavailable` stops M2 before other harness or skill mutation | not applicable | `validation-m2.md` | read-only, non-secret parent-observed feasibility probe |
+| `CMD-BFP-8` | `python scripts/boundary_proof_behavior.py check-environment --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --json` | planned-for-implementation | behavior harness owner | M2 | M2 preflight gate | nonzero or `environment-unavailable` stops M2 before other harness or skill mutation | not applicable | `validation-m2.md`; `evidence/runtime-preflight-attestation.json` | evidence-only, non-secret parent-observed feasibility transaction |
 | `CMD-BFP-9` | `tmpdir="$(mktemp -d)" && python scripts/boundary_proof_behavior.py exercise-fixture --fixture tests/fixtures/boundary-proof/behavior/happy-path.json --output-root "$tmpdir" && python scripts/boundary_proof_behavior.py validate-fixture --root "$tmpdir"` | planned-for-implementation | behavior harness owner | M2 | M2 code-review | nonzero blocks milestone | not applicable | temporary controlled-run evidence | isolated temporary workspace; no canonical pointer mutation |
 | `CMD-BFP-10` | `python scripts/boundary_proof_behavior.py freeze-baseline --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` | planned-for-implementation | behavior harness owner | M2 | before first participating-skill mutation | nonzero blocks skill mutation | not applicable | `evidence/boundary-proof-baseline.json` | immutable change-local baseline; no lifecycle invocation |
 | `CMD-BFP-11` | `python scripts/boundary_proof_behavior.py generate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --scenario tests/fixtures/boundary-proof/simple-change/scenario.json` | planned-for-implementation | behavior harness owner | M2 | M2 code-review | failed/partial publication blocks milestone | not applicable | immutable upstream run and current pointer | isolated child runtime; no network/connectors/subagents |
@@ -1219,14 +1221,32 @@ Boundary model scope: R28-R28z
   nine invocation-profile fields `agent_runtime`, `runtime_version`,
   `runtime_executable_identity`, `model_id`, `orchestration_mode`,
   `instruction_profile`, `tool_profile`, `python_implementation`, and
-  `python_version`.
+  `python_version`; and the exact `boundary-runtime-attestation-v1` record with
+  all fifteen top-level fields, eight thread-metadata fields, five probe results, and six
+  credential-isolation results.
 - Steps: Derive the manifest from current Resource maps and instruction walks;
   for every manifest collection and every invocation-profile field,
   independently test valid, missing, additional, duplicate where applicable,
   unknown closed value, malformed format, stale identity, and changed value;
+  independently mutate every runtime-attestation identity, result key, result
+  value, profile value, schema version, thread-metadata field and logical-role
+  projection; cross-substitute invocation and thread version, model,
+  executable/launcher identity, and profile values;
+  test canonical JSON with Unicode, key-order, array-order, separator, and
+  trailing-newline contrasts; test launcher-to-package-root discovery with
+  missing, multiple, malformed, wrong-name, and wrong-version package files;
+  inject symlink, socket, FIFO, device, and non-regular bundle entries; test
+  nested/equal roots, longest-first path collisions, unknown absolute paths,
+  remaining known-root bytes, every closed secret-key spelling, one near-miss
+  key, and canary/authentication byte values in every identity projection;
+  test `0.137.9`, `0.138.0`, `0.138.0-rc.1`, a later prerelease, build
+  metadata, malformed versions, and exact launcher/package version mismatch;
   delete and substitute each of the five contract refs; reorder applicable
   instructions, duplicate one, omit root or nested instructions, add an
   inapplicable instruction, and introduce a symlinked instruction path;
+  remove, replace, or mutate the Codex launcher and runtime package before and
+  after schema generation, every sandbox probe, app-server negotiation, and
+  the accepted lifecycle invocation;
   validate from a different validator environment without replacing the
   recorded invocation profile.
 - Expected result: Only the exact current closure validates. Every missing,
@@ -1234,7 +1254,10 @@ Boundary model scope: R28-R28z
   reference and every unknown, malformed, missing, additional, or changed
   profile field fails with its stable class diagnostic. Instruction refs are
   root-to-leaf, path-deduplicated, applicable, and discovered without following
-  symlinks.
+  symlinks. One stable launcher and runtime-package raw-byte/filesystem
+  identity spans every execution boundary. Missing, stale, substituted,
+  malformed, or tampered attestation invalidates the manifest and is never
+  replaced by validation-time runtime evidence.
 - Failure proves: The behavior result can depend on unbound skill resources,
   instructions, contracts, or runtime inputs.
 - Evidence artifact: `evidence/behavior-implementation-manifest.json`
@@ -1250,14 +1273,84 @@ Boundary model scope: R28-R28z
 - Fixture/setup: The sole allowed repository import; one fixture for each
   forbidden relative, wildcard, third-party, repository-local, dynamic import,
   evaluator, workflow-engine, lifecycle-validator, and test-driver edge;
-  unavailable and unsafe runtime profiles.
+  unavailable and unsafe runtime profiles; exact generated app-server schemas,
+  feature pages, effective configuration, managed requirements, app/plugin/MCP
+  inventories, five-package skill inventory, thread metadata, and protocol
+  item streams.
 - Steps: Inspect the AST closure; run the parent-observed preflight; attempt
   caller instructions, extra tools, connectors, subagents, network,
-  unmanifested reads, and child self-attestation.
+  unmanifested reads, and child self-attestation. Negotiate
+  `experimentalApi: true`; add, remove, rename, reorder, byte-mutate, stale,
+  or substitute files in the path-sorted generated schema bundle; omit
+  `experimentalApi`, set it false, and reject it server-side; test every
+  required method and non-null `thread/start` field as missing, null,
+  additional, renamed, or incompatible. Paginate `experimentalFeature/list`
+  across multiple pages and test ignored continuation, premature termination,
+  repeated or cyclic cursors, duplicate cross-page rows, the required final
+  null cursor, missing rows, reordered rows, unknown rows, and newly enabled
+  rows; require exact closed results from `config/read`,
+  `configRequirements/read`, `app/list`, `plugin/list`,
+  `mcpServerStatus/list`, and `skills/list`.
+  Independently map every feature row exactly once as permitted built-in tool,
+  permitted non-tool runtime behavior, or must-be-disabled tool-bearing
+  behavior, then map every generated protocol item variant exactly once as
+  permitted side effect, non-side-effect protocol traffic, or prohibited
+  capability event. For each map, test missing, duplicate, unknown, and
+  unclassified entries. Keep schema-supported prohibited variants disabled
+  pre-turn and inject each prohibited event during the accepted turn.
+  Start with `dynamicTools: []` and `environments: []`; accept command tools
+  only as `shell_tool`, `unified_exec`, or `shell_snapshot` and file-change
+  events only in the isolated workspace. Run allow/deny probes through
+  `codex sandbox --include-managed-config` using the same profile and
+  config/requirements identities. Inject a transient canary and test exact
+  child environment names plus absence from environment values, argv, stdin,
+  private paths, and readable process metadata.
+  Require pass output to contain the exact current
+  `runtime-preflight-attestation.json` reference and require the file's
+  identity and closed record to match. For each of the exact five preflight
+  fields, test missing, additional, renamed, null, wrong type, malformed
+  `schema_version`, and incompatible result/diagnostic/phase/reference
+  combinations; test missing, stale, substituted, malformed, and non-atomic
+  evidence. Invoke without `--change-id`, with
+  malformed/mismatched/absent/symlinked change roots, and with a valid exact
+  change. Crash before temp-file fsync, before replacement, after replacement,
+  and before directory fsync. Exercise malformed, identity-mismatched, and
+  well-formed leftover sibling temporary files; prove cleanup only for the
+  first two, non-authority for all temporary bytes, preservation of prior
+  installed evidence on failure, stale prior evidence never satisfying the
+  current attempt, and restart after replacement repeating replacement and
+  directory fsync before pass. Test pass emission before durability. Require
+  every failure result to carry a null attestation reference.
+  Assert the closed diagnostic mapping
+  `runtime-unavailable`, `runtime-unreadable`, `runtime-version-invalid`,
+  `runtime-version-unsupported`, `runtime-identity-unstable`, `schema-bundle-invalid`,
+  `experimental-api-unavailable`, `protocol-shape-incompatible`,
+  `thread-metadata-mismatch`, `feature-pagination-invalid`,
+  `capability-inventory-mismatch`, `skill-inventory-mismatch`,
+  `feature-classification-invalid`, `protocol-item-classification-invalid`,
+  `permission-profile-mismatch`, `config-equivalence-mismatch`,
+  `sandbox-probe-failed`,
+  `credential-isolation-failed`, and `unexpected-prohibited-event`; mutate
+  each failure into every sibling diagnostic and one unknown value; mutate
+  every result/diagnostic/phase combination across `pre-thread-start`,
+  `pre-turn-start`, and `in-turn`, and exercise
+  `runtime-identity-unstable` at one checkpoint in each phase.
 - Expected result: The model module is standard-library only; the harness uses
   only standard library plus `boundary_proof_model`; the parent establishes
-  sandbox and private authentication channels; every other edge stops with
-  `environment-unavailable` or `unmanifested-input` before output acceptance.
+  one stable launcher/runtime/schema identity, exact effective profile and
+  capability closure, equivalent sandbox enforcement, and private
+  authentication channels. Missing, duplicate, unknown, unclassified,
+  enabled-prohibited, observed-prohibited, mismatched-profile, incomplete-page,
+  unstable-identity, or canary-visible cases stop with
+  `environment-unavailable` and the exact stable diagnostic at its mapped
+  phase. Pre-thread failures precede `thread/start`; pre-turn failures precede
+  `turn/start`; an unexpected prohibited event discards the active turn before
+  manifest or output acceptance. Unknown or
+  mismatched diagnostics fail closed. Unmanifested behavior inputs stop with
+  `unmanifested-input`. A pass is accepted only when its attestation reference
+  resolves to the exact current bounded preflight record after file and parent
+  directory durability. Failed or interrupted attempts never promote prior or
+  temporary evidence.
 - Failure proves: A child can broaden or attest its own trust boundary.
 - Evidence artifact: `validation-m2.md` and controlled behavior fixtures
 - Automation location: `scripts/test-boundary-proof.py`;
@@ -1274,13 +1367,21 @@ Boundary model scope: R28-R28z
   `schema_version`, `scenario_ref`, `baseline_commit`, `skill_resource_refs`,
   `oracle_refs`, and `implementation_manifest_ref`; unchanged and independently
   changed harness, skill-resource, instruction, contract, runtime, scenario,
-  oracle, and implementation-manifest identities.
+  oracle, and implementation-manifest identities; current, missing, stale,
+  substituted, malformed, and tampered bounded runtime-attestation records.
 - Steps: Freeze the baseline before skill mutation; generate once; validate
   unchanged bytes; attempt caller-selected baseline commits and baseline
   rewrites; for each baseline and input-set field test missing, additional,
   malformed, reordered where order is normative, stale, substituted, and
   caller-selected variants; omit, add, reorder, or substitute each scenario,
-  skill-resource, oracle, and implementation-manifest member; independently
+  skill-resource, oracle, and implementation-manifest member; remove, replace,
+  or mutate every attestation identity, classification, probe result, and
+  credential-isolation result; attempt to replace recorded attestation with
+  validation-time runtime evidence. In a controlled sequence, pass preflight,
+  change one attested five-skill inventory byte, generate against the new
+  current packages, and compare the nested generation attestation with the
+  preflight artifact; copy or substitute the preflight attestation into the
+  generation manifest; independently
   change `expected_branch` and `corrected_role`; rerun validation without
   invoking lifecycle skills.
 - Expected result: Unchanged inputs validate; any behavior-affecting identity
@@ -1292,8 +1393,13 @@ Boundary model scope: R28-R28z
   the canonical implementation-manifest reference. Changing
   `expected_branch` or `corrected_role` changes only final comparison, never
   invocation, events, structural results, observations, or diagnostics.
-  Validation never changes the invocation profile, baseline, or current
-  pointer.
+  Validation never changes the invocation profile, runtime attestation,
+  baseline, or current pointer. Any missing, stale, substituted, malformed, or
+  tampered attestation invalidates the manifest reference, input-set identity,
+  immutable run, current pointer, and `simple-change-behavior` report selector
+  together. Generation derives a fresh nested attestation for the then-current
+  five-skill inventory; copying preflight evidence fails before manifest or run
+  acceptance.
 - Failure proves: Recorded behavior can be reused across materially different
   implementations or environments.
 - Evidence artifact: immutable run, current pointer, baseline, and manifest
@@ -1550,11 +1656,14 @@ Boundary model scope: R28-R28z
 
 ## Next artifacts
 
-- Boundary-first amendment: independent `test-spec-review` for this R13/R4/R5
-  proof map, then resume M1 correction under the recorded implementation
+- Boundary-first amendment: independent `test-spec-review` for this
+  R18/R8/R11 proof map, then resume M2 under the recorded implementation
   authorization.
-- `code-review M2` under [Single Workflow Lane, Explain-Change Before Verify Execution Plan](../docs/plans/2026-05-08-single-workflow-lane-explain-before-verify.md) after M2 implementation handoff.
-- Continue the approved milestone loop with M3 through M5 until all in-scope implementation milestones are closed.
+- `code-review M2` under the current
+  [Boundary-First Proof Modeling plan](../docs/plans/2026-07-25-boundary-first-proof-modeling.md)
+  after M2 implementation handoff.
+- Continue the approved milestone loop with M3 and M4 until all in-scope
+  implementation milestones are closed.
 
 ## Follow-on artifacts
 
@@ -1565,7 +1674,7 @@ Boundary model scope: R28-R28z
 
 Active proof-planning and regression surface for the workflow contract,
 including the boundary-first R28-R28z amendment.
-The R13/R4/R5 revision is approved by `test-spec-review-r4` and is the active
-proof map for implementation.
+The R18/R8/R11 runtime-boundary revision awaits test-spec review and is the
+candidate proof map for resumed M2 implementation.
 
 Test-spec proof map is confirmed against the approved active plan. M2 implementation can hand off to `code-review M2` only after the M2 guidance and contract surfaces make the relevant assertions and validation commands pass. Each milestone closes only after clean review and any required review-resolution.
