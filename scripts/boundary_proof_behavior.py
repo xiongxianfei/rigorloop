@@ -1165,10 +1165,10 @@ def _route_request(request: str) -> dict[str, object]:
                 "stages": {
                     "type": "array",
                     "prefixItems": [
-                        {"const": "spec"},
-                        {"const": "spec-review"},
-                        {"const": "test-spec"},
-                        {"const": "test-spec-review"},
+                        {"type": "string", "const": "spec"},
+                        {"type": "string", "const": "spec-review"},
+                        {"type": "string", "const": "test-spec"},
+                        {"type": "string", "const": "test-spec-review"},
                     ],
                     "items": False,
                     "minItems": 4,
