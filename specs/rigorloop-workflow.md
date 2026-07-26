@@ -2,6 +2,8 @@
 
 ## Status
 - approved
+Boundary model version: v1
+Boundary model scope: R28-R28z
 
 ## Unified automation amendment
 
@@ -25,6 +27,7 @@ Requirements outside that registry remain current lifecycle and artifact-orderin
 - [Proposal-Gated Authoring Autoprogression Through Plan Review](../docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md)
 - [Separately Armed Implementation Autoprogression Through Verify](../docs/proposals/2026-06-24-separately-armed-implementation-autoprogression-through-verify.md)
 - [Independent Test-Spec-Review Gate](../docs/proposals/2026-06-25-independent-test-spec-review-gate.md)
+- [Boundary-First Proof Modeling for Published Lifecycle Skills](../docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md)
 
 ## Goal and context
 
@@ -252,6 +255,20 @@ Then the workflow reports `pr` as next and stops without opening a PR.
 Given a formal workflow-managed change has an active test spec
 When no current approved `test-spec-review` exists, or a substantive test-spec edit makes the review stale
 Then `implement` does not begin until the review is approved, current, recorded when required, and has no open material findings.
+
+### Example E23: examples do not own completeness
+
+Example ID: E23
+Role: `illustration`
+Governing requirement IDs: `R28`, `R28d`, `R28f`
+Boundary IDs: `bfp.composition.direct`, `bfp.composition.public-path`
+Regression ID: -
+Discovery gap: -
+
+Given a feature spec illustrates a valid helper invocation
+When the public command composes that helper with authorization and persistence
+Then the spec and test spec model and prove both named paths
+And the helper example alone cannot establish complete behavior.
 
 ## Requirements
 
@@ -981,6 +998,372 @@ R26. The starter kit MUST support phased enforcement maturity:
 
 R27. The starter kit MUST preserve Git, pull requests, CI, and human review as the source of truth rather than replacing them with orchestration state.
 
+### Boundary-first proof-modeling amendment
+
+R28. A feature spec created or substantively revised under boundary-model
+version `v1` MUST contain one normative boundary model that classifies every
+core dimension in `R28a` exactly once.
+
+R28a. The closed core boundary-dimension IDs are:
+
+| Dimension ID | Contract owned by the feature spec |
+| --- | --- |
+| `canonical-trust` | Canonical truth, asserted inputs, missing truth, and contradictory sources. |
+| `identity-freshness` | Exact identity, freshness, substitution, and changed-after-review behavior. |
+| `closed-vocabulary` | Every accepted value and unknown-value behavior. |
+| `state-transition` | Legal, illegal, terminal, and ambiguous transitions. |
+| `authorization-scope` | Authority basis, absence, revocation, invalidation, and scope expansion. |
+| `mutation-atomicity` | Preconditions, durable write order, complete writes, and partial writes. |
+| `interruption-recovery` | Retry, reconcile, cancel, and stale prepared-work behavior. |
+| `concurrency-idempotency` | Duplicate, replayed, and conflicting in-flight work. |
+| `composition-bypass` | Direct, helper, adapter, sibling, and composed public paths. |
+| `compatibility-migration` | Old, mixed, unsupported, one-way migration, and rollback behavior. |
+| `outcome-stop` | Continue, pause, block, terminate, not-applicable, and unknown outcomes. |
+| `evidence-claims` | Current, missing, stale, or contradictory proof and permitted claims. |
+
+R28b. Core applicability MUST use exactly `applicable` or `not-applicable`.
+An `applicable` entry MUST name one or more governing requirement IDs and one
+or more stable partition or transition IDs.
+A `not-applicable` entry MUST contain a concise rationale and MUST NOT claim
+proof obligations for that dimension.
+Unknown dimension IDs and applicability values MUST fail closed before
+cross-entry consistency checks.
+
+R28c. A feature-specific boundary extension MAY be added only as a separate
+entry whose stable ID matches
+`x.<namespace>.<dimension>`, where every segment is lowercase
+hyphen-separated alphanumeric text beginning with a letter.
+The entry MUST include `id`, `title`, `applicability`, `rationale`, and
+`governing_requirement_ids`.
+When applicable it MUST also include stable partition or transition IDs.
+An extension MUST NOT replace, rename, or satisfy a core dimension, and
+`other` MUST NOT be accepted as a core or extension identity.
+
+R28d. Every behavior-significant example under `v1` MUST declare exactly one
+role from:
+
+- `illustration`;
+- `regression`;
+- `discovery`;
+- `non-normative`.
+
+An `illustration` MUST cite a governing requirement and boundary partition.
+A `regression` MUST cite a governing requirement, boundary partition, and
+regression identity.
+A `discovery` MUST identify the missing rule or partition and pause downstream
+handoff until the owning artifact is revised.
+A `non-normative` example MUST state that it creates no behavior or proof
+obligation.
+
+R28e. The feature spec MUST model every partition or transition in each
+applicable dimension, but MUST NOT require the Cartesian product of all
+dimensions.
+Selected cross-dimension interactions MUST cite involved boundary IDs and use
+exactly one rationale:
+
+- `state-coupling`;
+- `trust-or-authority`;
+- `mutation-or-recovery`;
+- `compatibility-or-migration`;
+- `composed-path`;
+- `incident-evidence`.
+
+R28f. The matching test spec MUST use the same boundary-model version and map
+every applicable partition or transition ID to at least one test case or an
+explicitly allowed manual-proof case.
+It MUST map every selected interaction to proof and MUST NOT create behavior
+that has no governing feature-spec requirement.
+
+R28g. A formal `spec-review` under `v1` MUST independently audit missing core
+dimensions, invalid non-applicability, implicit closed contracts,
+contradictions, unowned examples, and insufficient hazard-selected
+interactions.
+A formal `test-spec-review` MUST independently audit dimension, partition,
+transition, interaction, fixture, selector, milestone, and manual-proof
+coverage.
+
+R28h. `implement` MUST stop when an approved requirement lacks current boundary
+proof, when a test or example discovers an unowned rule, or when implementation
+would have to invent a missing product decision.
+Before handoff it MUST inspect the sibling members of every boundary class
+touched by a finding or discovered defect.
+
+R28i. A material finding that exposes one missed boundary member MUST record:
+
+- the reported example or failing path;
+- the root boundary class;
+- sibling inputs, transitions, and paths inspected;
+- the governing artifact update when the contract was incomplete;
+- direct regression proof;
+- broader proof or a rationale for unaffected siblings.
+
+The resolution MUST pause for the owning artifact or owner decision when the
+sibling sweep discovers new scope or incompatible behavior.
+
+R28j. `code-review` MUST remain an independent adversarial audit and MUST check
+for omitted dimensions, sibling bypasses, unproved composed paths, and
+example-only remediation.
+`verify` MUST check version parity and current coherence among the feature
+spec, test spec, implementation, review resolution, generated adapters, and
+final evidence.
+`workflow` MUST stop at the first missing or stale required boundary-proof
+gate without creating a new lifecycle stage.
+
+R28k. Deterministic validation MAY enforce stable IDs, required fields, closed
+vocabularies, trace links, non-applicability rationales, duplicate or orphan
+entries, selected fixtures, and selector registration.
+It MUST NOT claim that a domain taxonomy is semantically complete, that a
+partition is meaningful, that interaction coverage is sufficient, or that
+review reasoning is adequate.
+
+R28l. The boundary-first public contract applies prospectively beginning with
+the first released RigorLoop baseline whose capability report satisfies
+`R28n`.
+Specs approved before that activation are grandfathered.
+A grandfathered initiative MAY opt in only through synchronized feature-spec
+and test-spec revision, required reviews, and active-plan synchronization when
+a plan exists.
+Partial adoption or mismatched boundary-model versions MUST pause downstream
+handoff.
+
+R28m. The first release is closed to the published skills `spec`,
+`spec-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`,
+`verify`, and `workflow`, plus their required templates or packaged resources,
+validators, fixtures, selectors, and generated adapter parity.
+Updating `proposal`, `proposal-review`, `architecture`,
+`architecture-review`, `plan`, or `plan-review` skill behavior requires a
+separately reviewed implementation slice.
+
+R28n. The first release MUST record one change-local boundary capability report
+with:
+
+- `boundary_model_version`;
+- the exact eight evaluated skills;
+- one row per seeded omission class with expected owner, detected stage,
+  code-review escape result, sibling-bypass result, and outcome;
+- behavior, claim-boundary, review-recording, isolation, and handoff
+  preservation results;
+- canonical-to-installed adapter parity;
+- false-blocking result for valid fixtures;
+- duplicate normative-owner count;
+- new mandatory artifact count;
+- simple-fixture structure-only correction-cycle count;
+- final baseline result.
+
+The baseline passes only when every seeded omission is detected no later than
+its owning pre-code-review gate, no direct-proof escape or sibling bypass
+remains, preservation and adapter parity pass, false blocking is zero,
+duplicate normative owners and new universal artifacts are zero, and the
+simple fixture requires no more than one structure-only correction cycle.
+
+R28o. Capability-preserving progressive-disclosure proposal review MUST remain
+paused until the complete `R28n` baseline passes, all required implementation
+and final code reviews are clean, review resolution has no open findings, and
+final verification passes.
+Proposal acceptance, spec approval, partial skill updates, or structural
+validation alone MUST NOT satisfy this dependency.
+
+R28p. The required first-release validation check IDs are:
+
+- `boundary-workflow-contract`;
+- `boundary-skill-contract`;
+- `boundary-traceability`;
+- `boundary-incident-replay`;
+- `boundary-adapter-parity`;
+- `boundary-capability-baseline`.
+
+Unknown check IDs do not satisfy these checks.
+
+R28q. Cross-spec ownership is closed as follows:
+
+| Contract surface | Normative owner | Projection owner |
+| --- | --- | --- |
+| Core dimensions, applicability, extensions, example roles, interactions, adoption, stage gates, remediation evidence, and capability-baseline result | `R28` through `R28p` in this spec | None |
+| First-release published-skill procedures, portability, packaged resources, behavior preservation, and adapter parity | `R56` through `R56q` in `specs/skill-contract.md` | The eight named canonical skills |
+
+Neither contract may duplicate the other's normative rows.
+Contradictory projections MUST stop for spec revision.
+
+R28r. A feature spec and matching test spec participating in this contract
+MUST contain exactly one literal marker:
+
+```text
+Boundary model version: legacy
+```
+
+or:
+
+```text
+Boundary model version: v1
+```
+
+and exactly one scope marker:
+
+```text
+Boundary model scope: whole-spec
+```
+
+or a closed stable requirement-ID range such as:
+
+```text
+Boundary model scope: R28-R28z
+```
+
+An artifact approved before public activation that lacks the marker is treated
+as `legacy`.
+Before activation, only an explicitly reviewed initiative such as this
+boundary-first amendment may use `v1`.
+After activation, a new or substantively revised behavior spec MUST use `v1`;
+an unchanged grandfathered spec MAY retain `legacy`.
+The matching test spec MUST use the same value.
+Its scope MUST map the same requirement set.
+Retained clauses and examples outside a scoped cumulative amendment remain
+grandfathered and MUST NOT be cited as `v1` boundary proof.
+Unknown, duplicate, absent-when-required, or mismatched markers or scopes fail
+closed.
+
+R28s. A `v1` feature spec MUST represent core entries in one table with exactly
+these columns:
+
+| Column | Required value |
+| --- | --- |
+| `Dimension ID` | One ID from `R28a`, exactly once. |
+| `Applicability` | `applicable` or `not-applicable`. |
+| `Governing requirement IDs` | Non-empty unique IDs when applicable; `-` otherwise. |
+| `Boundary IDs` | Non-empty unique partition or transition IDs when applicable; `-` otherwise. |
+| `Non-applicability rationale` | Non-empty when not applicable; `-` otherwise. |
+
+Boundary, interaction, regression, manual-proof, and test-case IDs MUST match
+`^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)+$` or the repository's already-governing
+stable test-ID grammar.
+IDs MUST be unique within their artifact class.
+
+R28t. A `v1` extension table, when present, MUST contain exactly:
+`Extension ID`, `Title`, `Applicability`, `Rationale`,
+`Governing requirement IDs`, `Boundary IDs`, and
+`Non-applicability rationale`.
+Extension IDs MUST match
+`^x\.[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)+$`.
+The applicability-dependent `-` rules from `R28s` apply.
+
+R28u. A behavior-significant example declaration MUST contain:
+`Example ID`, `Role`, `Governing requirement IDs`, `Boundary IDs`,
+`Regression ID`, and `Discovery gap`.
+`illustration` requires requirement and boundary IDs;
+`regression` additionally requires a regression ID;
+`discovery` requires one discovery-gap ID and pauses until that gap is owned;
+`non-normative` uses `-` for normative links and explicitly states its
+non-normative purpose.
+
+R28v. A selected interaction record MUST contain:
+`Interaction ID`, at least two `Boundary IDs`, one `Rationale` from `R28e`, and
+one or more `Governing requirement IDs`.
+Every referenced ID MUST resolve in the same feature spec.
+
+R28w. A `v1` test-spec proof map MUST contain exactly:
+`Proof obligation ID`, `Governing requirement IDs`, `Boundary or interaction
+IDs`, `Test case IDs`, `Automation level`, and `Manual procedure IDs`.
+`Automation level` is exactly `automated`, `manual`, or `hybrid`.
+`manual` and `hybrid` require non-empty manual procedure IDs;
+`automated` uses `-`.
+Every applicable boundary and selected interaction MUST appear in at least one
+row.
+Duplicate IDs, orphan references, missing required references, and proof rows
+without an approved governing requirement fail closed.
+
+R28x. The first-release seeded fixture registry is:
+
+| Fixture ID | Seeded omission | Owning pre-code-review gate |
+| --- | --- | --- |
+| `BFP-FX-CANONICAL-001` | caller assertion accepted instead of canonical evidence | `spec-review` |
+| `BFP-FX-VOCAB-001` | unknown closed-vocabulary value is not rejected | `test-spec-review` |
+| `BFP-FX-TRANSITION-001` | illegal state transition is unmodeled | `test-spec-review` |
+| `BFP-FX-IDENTITY-001` | stale or substituted identity is accepted | `test-spec-review` |
+| `BFP-FX-ATOMICITY-001` | partial durable write is unproved | `test-spec-review` |
+| `BFP-FX-RECOVERY-001` | retry repeats work instead of reconciling | `test-spec-review` |
+| `BFP-FX-COMPOSITION-001` | helper proof omits the composed public path | `test-spec-review` |
+| `BFP-FX-SIBLING-001` | reported bypass is fixed while a sibling bypass remains | `implement` |
+
+The fixture IDs, seeded omission classes, and owning gates are closed for the
+first release.
+
+R28y. The canonical first-release report path is:
+
+```text
+docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md
+```
+
+The report MUST contain one fenced YAML record with:
+`schema_version: boundary-capability-baseline-v1`,
+`boundary_model_version: v1`, the exact eight `evaluated_skills`, all six
+`required_check_ids`, one row for every `R28x` fixture, preservation and
+adapter-parity check rows, `false_blocking_count`,
+`duplicate_normative_owner_count`, `new_universal_artifact_count`,
+`simple_fixture_structure_correction_cycles`, and `overall_result`.
+Every check and fixture result uses exactly `pass`, `fail`, or `not-run`.
+The `checks` mapping contains exactly the six IDs from `R28p`;
+`boundary-skill-contract` includes routing, claim-boundary, review-recording,
+isolation, validation, and handoff preservation.
+Each fixture row also records `expected_gate`, `detected_stage`,
+`escaped_to_code_review`, `sibling_bypass_remaining`, and non-empty
+`evidence_refs`.
+The two escape fields are YAML booleans.
+`expected_gate` uses exactly `spec`, `spec-review`, `test-spec`,
+`test-spec-review`, or `implement`.
+`detected_stage` uses one of those values or `not-detected`.
+Gate ordering is the standard workflow order shown in that list.
+Every `pass` or `fail` row MUST cite repository-visible evidence; `not-run`
+MUST cite its blocking reason.
+
+`overall_result` is computed as `pass` only when every required check and
+fixture is `pass`, every `detected_stage` is no later than its expected gate,
+both escape flags are false, all three count fields that must be zero are zero,
+and correction cycles are at most one.
+Otherwise it is `fail`; `not-run` cannot aggregate to `pass`.
+
+R28z. Public activation occurs only when tracked release notes for an actual
+release contain:
+
+```text
+Boundary model activation: v1
+Boundary capability report identity: sha256:<report-bytes>
+```
+
+The release tag plus the exact report identity is the activation identity.
+Release notes MUST NOT record activation unless `R28y` computes `pass` and the
+released canonical skills, resources, validators, fixtures, selectors, and
+adapters are the reviewed baseline.
+Rollback release notes MUST record `Boundary model activation: rolled-back`
+and the prior activation identity.
+Rollback forbids new `v1` adoption until a later valid activation.
+An already approved `v1` initiative remains historical evidence but MUST pause
+before further boundary-dependent mutation unless it runs against a retained
+compatible baseline or synchronously adopts a later active version.
+Partial `v1` evidence MUST NOT be reinterpreted as `legacy` proof.
+
+### Boundary model for this amendment
+
+| Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
+| --- | --- | --- | --- | --- |
+| `canonical-trust` | applicable | R28q, R28z | bfp.canonical.workflow-owner, bfp.canonical.skill-projection, bfp.canonical.release-identity | - |
+| `identity-freshness` | applicable | R28f, R28j, R28r, R28z | bfp.identity.exact, bfp.identity.stale, bfp.identity.mismatched-version | - |
+| `closed-vocabulary` | applicable | R28a-R28e, R28p, R28r-R28y | bfp.vocabulary.known, bfp.vocabulary.unknown, bfp.vocabulary.extension | - |
+| `state-transition` | applicable | R28d, R28h-R28j, R28l, R28z | bfp.state.continue, bfp.state.pause, bfp.state.activate, bfp.state.rollback | - |
+| `authorization-scope` | applicable | R28d, R28h, R28i, R28l | bfp.authority.owned-rule, bfp.authority.missing-rule, bfp.authority.new-scope | - |
+| `mutation-atomicity` | applicable | R28a, R28f, R28x | bfp.mutation.complete, bfp.mutation.partial | - |
+| `interruption-recovery` | applicable | R28a, R28f, R28x | bfp.recovery.retry, bfp.recovery.reconcile, bfp.recovery.stale | - |
+| `concurrency-idempotency` | applicable | R28a, R28f | bfp.concurrency.duplicate, bfp.concurrency.conflict, bfp.concurrency.replay | - |
+| `composition-bypass` | applicable | R28e, R28i, R28j, R28x | bfp.composition.direct, bfp.composition.helper, bfp.composition.public-path, bfp.composition.sibling | - |
+| `compatibility-migration` | applicable | R28l, R28r, R28z | bfp.compatibility.legacy, bfp.compatibility.opt-in, bfp.compatibility.partial, bfp.compatibility.rollback | - |
+| `outcome-stop` | applicable | R28d, R28h-R28j, R28y | bfp.outcome.pass, bfp.outcome.fail, bfp.outcome.not-run, bfp.outcome.pause | - |
+| `evidence-claims` | applicable | R28f, R28j, R28k, R28n, R28y | bfp.evidence.current, bfp.evidence.missing, bfp.evidence.stale, bfp.evidence.overclaim | - |
+
+| Interaction ID | Boundary IDs | Rationale | Governing requirement IDs |
+| --- | --- | --- | --- |
+| `bfp.interaction.stale-authority` | bfp.identity.stale, bfp.authority.owned-rule | `trust-or-authority` | R28f, R28h |
+| `bfp.interaction.partial-retry` | bfp.mutation.partial, bfp.recovery.reconcile | `mutation-or-recovery` | R28f, R28x |
+| `bfp.interaction.helper-public` | bfp.composition.helper, bfp.composition.public-path | `composed-path` | R28e, R28j, R28x |
+
 ## Inputs and outputs
 
 ### Inputs
@@ -997,6 +1380,9 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - change artifacts and PR text;
 - local validation commands and CI workflow configuration;
 - tool-specific adapter inputs when an adapter is enabled.
+- boundary-model version and activation evidence;
+- core and extension boundary classifications, example roles, selected
+  interactions, and matching proof-map trace links.
 
 ### Outputs
 
@@ -1013,6 +1399,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - recorded architecture assessment result when authoring autoprogression evaluates architecture need;
 - generated adapter distribution content;
 - local and CI validation results.
+- change-local boundary capability report and the six named validation-check
+  results for the first release.
 
 ## State and invariants
 
@@ -1036,11 +1424,21 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - In a milestone-based plan, final closeout is not available until all in-scope implementation milestones are closed and no required review-resolution remains open.
 - Repo-local lifecycle state in a review-open PR is true within that PR's tracked tree.
 - Merge integrates pre-validated repo-local lifecycle state; it does not perform routine lifecycle closeout.
+- Under boundary-model `v1`, every core dimension is classified exactly once,
+  every applicable partition is proof-mapped, and examples never own behavior
+  completeness.
+- Feature-spec and test-spec boundary-model versions remain equal throughout
+  implementation and final verification.
 
 ## Error and boundary behavior
 
 - A manual skill invocation that claims omitted upstream or downstream stages have passed MUST be considered incomplete unless the claimed stage evidence exists.
 - A complete workflow claim without evidence from the relevant standard workflow stages MUST be considered incomplete.
+- Unknown boundary IDs, applicability values, example roles, interaction
+  rationales, versions, or required check IDs fail closed before consistency
+  evaluation.
+- Missing proof for an applicable boundary, a discovery example without an
+  owning rule, partial adoption, or a stale version pauses downstream handoff.
 - An authoring autoprogression activation without both an armed profile and a gate-ready proposal MUST be considered incomplete and must not enter `spec`.
 - An authoring autoprogression activation without a durable authorization record, with a malformed or incomplete authorization record, or with a failed authorization-persistence write MUST pause with an authorization-persistence stop condition before any profile-driven transition.
 - `RLW-ERROR-1`: An unknown profile value, contradictory profile state, ambiguous architecture assessment, non-clean review, material finding, open owner decision, missing or malformed authorization persistence, authorization persistence write failure, or exhausted transition budget MUST pause the profile.
@@ -1267,6 +1665,27 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - `RLW-AC-A7`: A reviewer can verify that profile policy metadata does not own live workflow state.
 - `RLW-AC-A8`: A reviewer can verify that profile authorization is recorded durably before activation and that missing, malformed, incomplete, or failed authorization persistence pauses the profile before any profile-driven transition.
 - `RLW-AC-A9`: A reviewer can verify that future profiles require separate proposal and spec amendments.
+- `RLW-AC-B1`: A reviewer can identify the twelve closed core boundary IDs,
+  both applicability values, extension identity grammar, four example roles,
+  and six interaction rationales.
+- `RLW-AC-B2`: A `v1` feature spec classifies every core dimension exactly
+  once and every applicable entry has stable rule and boundary IDs.
+- `RLW-AC-B3`: A matching `v1` test spec maps every applicable partition,
+  transition, and selected interaction to proof without inventing behavior.
+- `RLW-AC-B4`: Unknown closed-vocabulary values fail before consistency
+  checks, while structurally valid namespaced extensions proceed to semantic
+  review.
+- `RLW-AC-B5`: Formal spec and test-spec review reject example-only
+  completeness and preserve independent review.
+- `RLW-AC-B6`: A boundary finding cannot close without sibling inspection,
+  regression proof, and governing-artifact correction when required.
+- `RLW-AC-B7`: Grandfathered initiatives remain valid, synchronized opt-in is
+  allowed, and partial or version-mismatched adoption pauses.
+- `RLW-AC-B8`: The capability report proves all eight skills, seeded early
+  detection, preservation, parity, zero duplicate owners, zero new universal
+  artifacts, and bounded simple-fixture overhead.
+- `RLW-AC-B9`: Progressive-disclosure proposal review remains paused until
+  the complete capability baseline and final verification pass.
 
 ## Open questions
 
@@ -1274,6 +1693,9 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - The visible stage/action label and skill entrypoint are both `ci-maintenance`; detailed periodic `learn` cadence scheduling remains outside this workflow contract.
 
 ## Next artifacts
+
+- Current boundary-first amendment: `spec-review`, then required architecture
+  and architecture-review.
 
 - Architecture assessment for implementation-profile policy, phase gating, workflow orchestration, review classification, correction loops, verify-boundary behavior, and generated adapter impact.
 - Architecture and architecture-review when the assessment requires architecture.
@@ -1318,5 +1740,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 
 ## Readiness
 
-- Approved amendment for separately armed implementation autoprogression through verify.
-- Ready for architecture assessment before downstream planning or implementation relies on the new profile.
+- The retained workflow contract remains approved.
+- The boundary-first `R28` through `R28q` amendment is ready for independent
+  `spec-review` and MUST NOT be relied on for implementation until that review
+  approves it.

@@ -3,6 +3,8 @@
 ## Status
 
 - approved
+Boundary model version: v1
+Boundary model scope: R56-R56q
 
 ## Related proposal
 
@@ -13,6 +15,7 @@
 - [Spec and Test-Spec Structural Hygiene](../docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md)
 - [Test-Spec Contract Normalization](../docs/proposals/2026-05-20-test-spec-contract-normalization.md)
 - [Published Skill Resource Integrity with an Architecture-Skill Pilot](../docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md)
+- [Boundary-First Proof Modeling for Published Lifecycle Skills](../docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md)
 
 ## Goal and context
 
@@ -272,6 +275,22 @@ Given a mapped redundant convenience resource is unexpectedly missing at runtime
 And `SKILL.md` already contains the complete contract needed for the current invocation
 When the agent continues with a disclosed fallback
 Then package validation still fails for the missing mapped resource.
+
+### Example E23: a review skill detects example-only proof
+
+Example ID: E23
+Role: `illustration`
+Governing requirement IDs: `R56c`, `R56e`, `R56g`
+Boundary IDs: `bfps.vocabulary.unknown`
+Regression ID: -
+Discovery gap: -
+
+Given a fixture covers every documented happy-path example
+But omits the specified unknown-value partition
+When `spec-review`, `test-spec-review`, or `code-review` evaluates its owned
+surface
+Then the relevant review reports the omission
+And no skill treats example coverage as boundary completeness.
 
 ## Requirements
 
@@ -886,6 +905,143 @@ R55d. The architecture pilot MUST classify diagram conventions as `references/` 
 
 R55e. The architecture pilot MUST preserve architecture trigger behavior, arc42 section obligations, C4 obligations, ADR structure, architecture-review boundaries, and handoff semantics unless a later approved spec explicitly changes them.
 
+### Boundary-first published-skill amendment
+
+R56. The first boundary-proof release MUST update exactly these published
+skills:
+
+- `spec`;
+- `spec-review`;
+- `test-spec`;
+- `test-spec-review`;
+- `implement`;
+- `code-review`;
+- `verify`;
+- `workflow`.
+
+The six deferred lifecycle skills named by the related proposal MUST retain
+their current behavior until a separate reviewed slice changes them.
+
+R56a. The eight skills MUST project the boundary-model vocabulary, adoption,
+handoff, and stop behavior owned by `specs/rigorloop-workflow.md`.
+They MUST NOT redefine core dimension IDs, applicability, example roles,
+interaction rationales, activation, or baseline completion.
+
+R56b. `spec` MUST require one compact normative classification of all core
+dimensions for a `v1` behavior spec.
+It MUST require rule and stable boundary IDs for applicable dimensions,
+rationales for non-applicable dimensions, and separately namespaced extension
+entries.
+It MUST preserve examples while requiring their declared role and trace links.
+
+R56c. `spec-review` MUST independently challenge missing or implicit
+dimensions, invalid non-applicability, example-only behavior, contradictions,
+and insufficient hazard-selected interactions.
+It MUST treat syntactic presence as insufficient evidence of semantic
+completeness.
+
+R56d. `test-spec` MUST map every applicable partition and transition ID and
+every selected interaction to direct executable proof or an explicitly
+permitted manual-proof case.
+It MUST distinguish exhaustive boundary coverage from hazard-selected
+interaction coverage and MUST stop on behavior not owned by the approved spec.
+
+R56e. `test-spec-review` MUST reject a proof map that covers listed examples
+but omits a declared partition, transition, interaction, composed public path,
+fixture, selector, milestone, or required manual-proof procedure.
+
+R56f. `implement` MUST establish the planned boundary proof before or with
+production behavior, derive trusted evidence from canonical owners, stop on a
+contract gap, and perform a sibling-boundary sweep before review handoff.
+
+R56g. `code-review` MUST independently inspect the real diff for omitted
+dimensions, sibling bypasses, unproved composed paths, and incomplete
+example-only remediation.
+When it records a missed boundary member, its finding or resolution recipe
+MUST require the complete sibling-boundary evidence defined by the workflow
+contract.
+
+R56h. `verify` MUST confirm current boundary-model version parity and coherence
+among governing requirements, the proof map, implemented tests and behavior,
+review-resolution evidence, required generated adapters, and final validation.
+
+R56i. `workflow` MUST route the existing lifecycle and stop at missing,
+contradictory, or stale required boundary evidence.
+It MUST NOT create a `boundary-review` stage, a reduced workflow lane, or a
+universal standalone boundary artifact.
+
+R56j. Published skill wording MUST keep these responsibilities project
+portable.
+Repository-specific schema paths, validator implementation, selector
+registration, incident corpus, generated-output mechanics, and release-report
+storage belong in contributor-facing repository artifacts rather than shipped
+skill prose.
+
+R56k. Packaged assets or references MAY carry stable output structure or
+bounded explanatory guidance only when they satisfy the existing resource-map
+and parity contracts.
+Normative boundary behavior and stop rules MUST remain visible in the owning
+`SKILL.md` or a required normative mapped resource and MUST NOT be hidden in an
+optional resource.
+
+R56l. Behavior-preservation proof for each of the eight skills MUST cover its
+existing routing, claim boundary, review-recording, isolation, artifact,
+validation, and handoff obligations in addition to its new boundary-first
+behavior.
+
+R56m. Deterministic skill validation MUST fail closed on unknown core
+dimension IDs, applicability values, example roles, interaction rationales,
+boundary-model versions, and required check IDs before evaluating consistency.
+It MAY validate shape and traceability, but MUST NOT score semantic
+completeness or reviewer quality.
+
+R56n. Canonical skill source, generated public adapters, packed release
+candidates, and installed Codex, Claude, and opencode skill trees MUST preserve
+the required boundary behavior and mapped-resource identity according to the
+existing adapter and resource-integrity contracts.
+
+R56o. The selected incident-replay corpus MUST contain at least one seeded
+omission for every exact fixture ID in
+`specs/rigorloop-workflow.md` R28x.
+The workflow-owned fixture registry supplies each omission class and expected
+gate; this skill contract owns its projection into the eight skill behavior
+fixtures and MUST NOT rename or replace those IDs.
+
+R56p. A valid simple-change fixture MUST exercise the same workflow while
+recording the twelve core classifications once in one compact feature-spec
+table.
+Its test spec MUST map only applicable proof obligations, it MUST create no new
+universal artifact, and satisfying structure alone MUST require no more than
+one author-review correction cycle.
+
+R56q. Public activation and rollback MUST update the eight skills, required
+resources, validators, fixtures, selector registrations, and generated
+adapters as one versioned release unit.
+A partial unit MUST fail the capability baseline and MUST NOT advertise
+boundary-model `v1`.
+
+### Boundary model for this amendment
+
+| Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
+| --- | --- | --- | --- | --- |
+| `canonical-trust` | applicable | R56a, R56j, R56n | bfps.canonical.workflow-contract, bfps.canonical.skill-source, bfps.canonical.installed-output | - |
+| `identity-freshness` | applicable | R56h, R56n, R56q | bfps.identity.current-resource, bfps.identity.stale-adapter, bfps.identity.version-mismatch | - |
+| `closed-vocabulary` | applicable | R56a, R56m, R56o | bfps.vocabulary.known, bfps.vocabulary.unknown, bfps.vocabulary.fixture-id | - |
+| `state-transition` | applicable | R56c-R56i, R56q | bfps.state.author, bfps.state.review, bfps.state.pause, bfps.state.activate | - |
+| `authorization-scope` | applicable | R56f, R56g, R56i | bfps.authority.owned-behavior, bfps.authority.contract-gap, bfps.authority.scope-expansion | - |
+| `mutation-atomicity` | applicable | R56d, R56f, R56o | bfps.mutation.proved, bfps.mutation.partial | - |
+| `interruption-recovery` | applicable | R56d, R56h, R56o | bfps.recovery.retry, bfps.recovery.reconcile, bfps.recovery.stale | - |
+| `concurrency-idempotency` | applicable | R56d, R56h | bfps.concurrency.duplicate, bfps.concurrency.conflict, bfps.concurrency.replay | - |
+| `composition-bypass` | applicable | R56e-R56g, R56o | bfps.composition.helper, bfps.composition.public-path, bfps.composition.sibling | - |
+| `compatibility-migration` | applicable | R56j, R56n, R56q | bfps.compatibility.canonical, bfps.compatibility.generated, bfps.compatibility.installed, bfps.compatibility.rollback | - |
+| `outcome-stop` | applicable | R56c-R56i, R56m, R56q | bfps.outcome.continue, bfps.outcome.pause, bfps.outcome.fail, bfps.outcome.pass | - |
+| `evidence-claims` | applicable | R56c-R56h, R56l-R56n | bfps.evidence.structural, bfps.evidence.semantic-review, bfps.evidence.behavior-preservation, bfps.evidence.overclaim | - |
+
+| Interaction ID | Boundary IDs | Rationale | Governing requirement IDs |
+| --- | --- | --- | --- |
+| `bfps.interaction.stale-adapter-review` | bfps.identity.stale-adapter, bfps.evidence.behavior-preservation | `compatibility-or-migration` | R56l, R56n, R56q |
+| `bfps.interaction.helper-sibling` | bfps.composition.helper, bfps.composition.sibling | `composed-path` | R56e, R56g, R56o |
+
 ## Inputs and outputs
 
 Inputs:
@@ -899,6 +1055,7 @@ Inputs:
 - generated adapter output under `dist/adapters/`;
 - accepted test-spec contract normalization proposal;
 - accepted published skill resource integrity with architecture-skill pilot proposal;
+- accepted boundary-first proof-modeling proposal;
 - workflow contract in `specs/rigorloop-workflow.md`;
 - contributor summaries in `docs/workflows.md` and `AGENTS.md`;
 - skill validator and generated-output drift validation scripts.
@@ -925,6 +1082,10 @@ Outputs:
 - architecture resource-chain audit and behavior-preservation evidence for the architecture pilot;
 - contributor summary updates when root or workflow guidance is affected.
 - grouped test-spec coverage in `specs/skill-contract.test.md` during the matching test-spec stage.
+- boundary-first behavior and preservation evidence for the exact eight-skill
+  first-release set;
+- seeded incident-replay, simple-fixture, selector, validator, adapter-parity,
+  and capability-baseline evidence.
 
 ## State and invariants
 
@@ -951,6 +1112,11 @@ Outputs:
 - Normative asset structure is checked for drift through metadata, structural fingerprints, and section-set parity.
 - Runtime fallback can preserve useful work only within the fallback boundary; it does not prove package validity.
 - Structural hygiene amendments preserve R-clause IDs, clause text, acceptance-criterion text, test-case IDs, and cross-references.
+- The workflow contract owns boundary vocabularies and lifecycle gates; this
+  spec owns their portable eight-skill projection.
+- Examples remain explanatory or regression evidence and never replace the
+  complete boundary model or proof map.
+- Optional packaged resources cannot hide required normative boundary behavior.
 
 ## Error and boundary behavior
 
@@ -983,6 +1149,15 @@ Outputs:
 - If a changed published-skill design pilot skill lacks a routing coverage table, the pilot MUST NOT claim routing coverage validation is complete.
 - If a changed published-skill design pilot skill lacks a behavior-preservation note, the pilot MUST NOT claim behavior-significant wording was safely preserved.
 - If behavior-parity evidence shows weakened material review status, finding format, recording obligations, stop conditions, validation obligations, or claim boundaries, the pilot MUST stop for revision before closeout.
+- If one of the eight first-release skills omits its `R56b` through `R56i`
+  responsibility, the boundary capability baseline MUST fail.
+- If a validator accepts an unknown boundary vocabulary value or claims
+  semantic completeness, the implementation MUST stop for correction.
+- If generated or installed adapters differ from canonical boundary behavior,
+  the release unit and capability baseline MUST fail.
+- If a seeded omission escapes its owning pre-code-review gate or an
+  example-only fix leaves a sibling bypass, the rollout MUST stop for contract,
+  proof-map, or implementation revision.
 - If the assets-first plan pilot ships more or fewer than four assets, validation MUST fail unless this spec is amended.
 - If a `plan` asset lacks required metadata comments, validation MUST fail.
 - If a normative `plan` asset structural fingerprint drifts without a template-version update, validation MUST fail.
@@ -1189,11 +1364,34 @@ This change has no user-interface surface. The relevant user experience is contr
 
 No acceptance criteria are added in this amendment. Structural hygiene is reviewed by preserving the existing acceptance-criterion text while adding navigation headers.
 
+### Boundary-first published-skill release (R56-R56q)
+
+- A reviewer can identify exactly eight first-release skills and six deferred
+  skills without inferring scope.
+- A reviewer can trace every skill responsibility to the workflow-owned
+  boundary vocabulary and gate rather than a duplicated skill-local contract.
+- `spec-review` and `test-spec-review` fixtures reject example-complete but
+  boundary-incomplete artifacts.
+- `implement` stops on a missing governing rule and records a sibling-boundary
+  sweep before handoff.
+- `code-review` fixtures reject a reported-example-only correction that leaves
+  a sibling bypass.
+- `verify` detects mismatched boundary-model versions and stale proof.
+- Unknown boundary vocabulary values fail closed before consistency checks.
+- Existing routing, recording, isolation, claim, validation, and handoff
+  fixtures for all eight skills continue to pass.
+- Canonical, generated, packed, and installed skill behavior and mapped
+  resources remain equivalent.
+- The simple-change fixture uses one compact classification table, no new
+  universal artifact, and at most one structure-only correction cycle.
+
 ## Open questions
 
 - None. Spec-stage decisions resolved the proposal's open questions as follows: use about 1200 lines or more than about 6 slice families as the hygiene trigger; group the test spec Requirement coverage map during the matching test-spec amendment; keep the navigation index focused on R-clause bands; apply the growth strategy to this spec only; keep Examples flat because examples can be cross-cutting.
 
 ## Next artifacts
+
+- Current boundary-first amendment: `spec-review`, then architecture assessment.
 
 - Current amendment: plan for the audit-first `proposal` and `proposal-review` pilot.
 - Current draft amendment: spec-review for the assets-first `plan` progressive disclosure pilot.
@@ -1233,4 +1431,7 @@ No acceptance criteria are added in this amendment. Structural hygiene is review
 
 ## Readiness
 
-Approved published-skill resource integrity amendment. Current downstream workflow state is owned by the active plan for each initiative.
+The retained skill contract remains approved.
+The boundary-first `R56` through `R56q` amendment is ready for independent
+`spec-review` and MUST NOT be relied on for implementation until that review
+approves it.
