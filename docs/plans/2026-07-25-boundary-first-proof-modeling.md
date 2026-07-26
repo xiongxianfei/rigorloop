@@ -91,12 +91,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r16.md
-- Review status: changes-requested; stage=test-spec-review; round=r16
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r17.md
+- Review status: approved; stage=test-spec-review; round=r17
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: test-spec-review
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-TSR15-1,BFP-TSR16-1
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
 ## Milestones
 
@@ -757,6 +757,11 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-26: Test-spec-review R17 approved the complete M2 proof map with no
+  findings. BFP-TSR15-1 and BFP-TSR16-1 are closed; the Current Handoff
+  Summary owns the next stage against the three accepted M2 code-review
+  findings.
+
 - 2026-07-26: The R17 test-spec candidate resolves BFP-TSR16-1 by proving
   working-run object validation before staging rename, invalid working-run
   failure before every publication mutation, and the
@@ -1053,4 +1058,4 @@ resource through generated, packed, and installed outputs.
 ## Readiness
 
 - See `Current Handoff Summary`.
-- Readiness is not implementation completion or final closeout.
+- Readiness is not milestone completion or final closeout.
