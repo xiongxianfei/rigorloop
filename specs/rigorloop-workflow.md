@@ -1419,8 +1419,8 @@ The closed operation registry is:
 | `preservation-review-recording` | skill behavior harness | canonical preservation manifest and every reference selected by it | review-recording result | `preservation.review-recording` |
 | `preservation-isolation` | skill behavior harness | canonical preservation manifest and every reference selected by it | isolation result | `preservation.isolation` |
 | `preservation-handoff` | skill behavior harness | canonical preservation manifest and every reference selected by it | handoff result | `preservation.handoff` |
-| `behavior-implementation-manifest` | boundary model validator | every execution-affecting component and environment field in the closed manifest below | exact `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json` | `support.behavior-implementation-manifest` |
-| `simple-change-behavior` | simple-change behavior harness and evaluator | exact candidate corpus, current four upstream skills and mapped resources, current behavior-implementation manifest, and invocation-owned pre-run HEAD | immutable run, atomic current pointer, behavior-output snapshots, trace, and metric result | `simple_change` |
+| `behavior-implementation-manifest` | boundary model validator | exact standalone harness components, five participating skill packages, applicable repository instructions, contract inputs, and closed invocation profile below | exact `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json` | `support.behavior-implementation-manifest` |
+| `simple-change-behavior` | standalone simple-change behavior harness and evaluator | exact candidate corpus, current five participating skill packages, current behavior-implementation manifest, and invocation-owned pre-run HEAD | immutable run, atomic current pointer, behavior-output snapshots, trace, and metric result | `simple_change` |
 | `canonical-skill-resource-manifest` | skill validator | current exact eight R28m skills and every mapped boundary-proof resource | exact `docs/changes/<change-id>/evidence/canonical-skill-resource-manifest.json` | `support.canonical-skill-resource-manifest` |
 | `adapter-parity` | adapter validator | exact current `scripts/adapter_distribution.py`, `scripts/build-adapters.py`, `scripts/validate-adapters.py`, `dist/adapters/manifest.yaml`, and canonical skill/resource manifest | durable current four-surface parity manifest set | `adapter_parity` |
 | `boundary-adapter-parity` | adapter validator | current `adapter-parity` typed result | aggregate adapter check result | `checks.boundary-adapter-parity` |
@@ -1474,70 +1474,104 @@ closed.
 
 The canonical behavior-implementation manifest path is exactly
 `docs/changes/<change-id>/evidence/behavior-implementation-manifest.json`.
-It contains exactly `manifest_id`, `execution_environment`, `roots`,
-`components`, and `dependency_edges`.
+It contains exactly `manifest_id`, `harness_component_refs`,
+`skill_package_refs`, `instruction_refs`, `contract_refs`, and
+`invocation_profile`.
 `manifest_id` is `boundary-behavior-implementation-v1`.
-`execution_environment` contains exactly `agent_runtime`, `model_id`,
-`orchestration_mode`, `python_implementation`, and `python_version`.
-`agent_runtime` is the adapter target selected by the harness and is exactly
-`codex` for the first canonical behavior run.
-`model_id` is copied from authoritative runtime invocation metadata and MUST
-match `^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$`.
-`orchestration_mode` is `workflow-auto-isolated-v1`.
-`python_implementation` is lowercased
-`platform.python_implementation()` and matches `^[a-z][a-z0-9-]*$`;
-`python_version` is `sys.version_info` normalized to `major.minor.micro`.
-Missing, unavailable, unsafe, unknown, or additional environment values stop
-generation with `environment-unavailable`; secrets and raw configuration
-values are never recorded.
 
-`roots` is a path-sorted current reference list containing exactly:
+`harness_component_refs` is the path-sorted current reference list containing
+exactly:
 
 ```text
-AGENTS.md
-CONSTITUTION.md
-docs/workflows.md
-docs/project-map.md
-skills/workflow/SKILL.md
 scripts/boundary_proof_behavior.py
 scripts/boundary_proof_model.py
-scripts/validate-boundary-proof.py
-scripts/workflow_automation.py
+```
+
+The harness is standalone. Static AST validation requires
+`scripts/boundary_proof_behavior.py` to import only Python standard-library
+modules and `boundary_proof_model`, and requires
+`scripts/boundary_proof_model.py` to import only standard-library modules.
+Relative imports, wildcard imports, repository-local imports other than that
+one exact edge, third-party imports, and dynamic import or execution through
+`importlib`, `__import__`, `eval`, `exec`, or an equivalent loader fail closed.
+The harness MUST NOT import or call the workflow-automation engine, a lifecycle
+validator, or a test driver. The boundary model is the only repository-local
+behavior library used by the harness.
+
+`skill_package_refs` is the path-sorted current reference list for exactly
+`workflow`, `spec`, `spec-review`, `test-spec`, and `test-spec-review`.
+For each skill it contains exactly the skill's `SKILL.md` and every existing
+repository file named by that file's `Resource map`, whether or not a
+particular scenario branch loads the resource.
+The boundary model validator derives the expected set from the five current
+resource maps and requires exact set and identity equality.
+Missing, extra, duplicate, unmapped, stale, substituted, escaping, or
+non-regular resource references fail closed.
+
+`instruction_refs` is the path-sorted current reference list for exactly the
+applicable repository instruction chain: root `CONSTITUTION.md`, root
+`AGENTS.md`, and every nested `AGENTS.md` found by walking from the repository
+root to each skill-package, scenario-input, and behavior-output parent.
+The walk is root-to-leaf, does not follow symlinks, and deduplicates by
+normalized repository-relative path.
+An instruction discovered by that walk but absent from `instruction_refs`, or
+an instruction reference that is not applicable to at least one governed
+path, fails closed.
+
+`contract_refs` is the path-sorted current reference list containing exactly:
+
+```text
+docs/workflows.md
 specs/rigorloop-workflow.md
 specs/rigorloop-workflow.test.md
 specs/skill-contract.md
 specs/skill-contract.test.md
 ```
 
-`components` is the path-sorted current reference list equal to the complete
-transitive repository dependency closure of `roots`.
-The closure includes every root and recursively adds:
+`invocation_profile` contains exactly `agent_runtime`,
+`runtime_version`, `runtime_executable_identity`, `model_id`,
+`orchestration_mode`, `instruction_profile`, `tool_profile`,
+`python_implementation`, and `python_version`.
+`agent_runtime` is exactly `codex`.
+`runtime_version` is the trimmed single-line version emitted by the exact
+runtime executable used for the child invocation and matches
+`^[A-Za-z0-9][A-Za-z0-9 ._+:/()-]{0,127}$`.
+`runtime_executable_identity` is the raw-byte SHA-256 identity of that resolved
+regular executable.
+`model_id` is copied from the child runtime's own invocation metadata before
+any lifecycle output is accepted and matches
+`^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$`.
+`orchestration_mode` is `workflow-auto-isolated-v1`.
+`instruction_profile` is
+`repository-instructions-plus-runtime-default-v1`.
+`tool_profile` is `isolated-workspace-no-network-v1`.
+`python_implementation` is lowercased
+`platform.python_implementation()` and matches `^[a-z][a-z0-9-]*$`;
+`python_version` is `sys.version_info` normalized to `major.minor.micro`.
 
-- every repository-local Python module resolved from a static `import` or
-  `from ... import ...` in a Python component;
-- every mapped resource named by a loaded skill's `Resource map`; and
-- every repository instruction explicitly consulted through the governing
-  precedence chain.
+The child runtime uses a fresh configuration home, receives no caller-supplied
+system or developer instruction, has no connectors or subagents, has network
+disabled, and may read or write only the isolated scenario workspace.
+The exact harness prompt, repository instruction chain, skill packages, and
+tool profile are manifest-bound inputs.
+Runtime-built-in instructions that are not exposed as invocation inputs are
+part of the identified runtime executable/model substrate; the report makes no
+claim that they are portable across another runtime version, executable
+identity, or model.
+If the adapter cannot establish the runtime metadata or closed invocation
+profile before accepting output, generation stops with
+`environment-unavailable`.
 
-`dependency_edges` is the path-sorted list whose entries contain exactly
-`from`, `to`, and `kind`; `kind` is exactly `python-import`,
-`resource-map`, or `governing-instruction`.
-Every non-root component has at least one incoming edge.
-Every edge endpoint resolves in `components`.
-Traversal uses a normalized repository-relative visited-path set, so import
-cycles terminate and remain represented by their edges.
-Unknown, unresolved, dynamic repository imports, missing mapped resources,
-duplicate edges, unreferenced components, and an imported or consulted
-repository file absent from the closure fail closed.
-
-The harness executes in an isolated read view containing only the complete
-input-set references and the writable behavior-output root.
-Any attempted repository read outside that view fails and is recorded as an
-unmanifested-input diagnostic.
-The four stage-owning skills and their resources remain in
-`skill_resource_refs`; the closure does not duplicate them.
-Test drivers are absent only when they are neither reachable from a root nor
-consulted at runtime.
+The harness copies only the manifested skill packages, instructions, contract
+inputs, scenario inputs, and candidate oracles into a fresh isolated
+workspace. It records an access log and requires every observed repository
+source to belong to that manifest-derived set.
+An attempted read outside the isolated workspace, an unmanifested source read,
+an unexpected tool, network access, or a caller-supplied instruction fails the
+run with `unmanifested-input`.
+Missing, unavailable, unsafe, unknown, or additional manifest/profile values
+stop generation with `environment-unavailable`; secrets and raw configuration
+values are never recorded.
 
 The adapter validator creates all three non-canonical manifests in a fresh
 temporary root during the current invocation.
@@ -1597,8 +1631,8 @@ Canonical generation and canonical validation are separate modes.
 Canonical generation:
 
 - freshly executes every deterministic registry operation;
-- invokes the four upstream lifecycle skills exactly once through
-  `simple-change-behavior`;
+- invokes the public `workflow` skill once to orchestrate the four upstream
+  lifecycle skills through `simple-change-behavior`;
 - publishes that invocation as one immutable input-bound run;
 - evaluates preservation from already recorded M2/M3 behavior outputs rather
   than reinvoking those skills;
@@ -1607,16 +1641,18 @@ Canonical generation:
 
 Canonical validation MUST NOT reinvoke a lifecycle skill.
 It recomputes the input-set identity from the recorded baseline commit plus
-the current referenced scenario, skills, resources, oracles, and harness
-implementation components; validates the pointed immutable run and every current referenced
+the current referenced scenario, complete participating skill packages,
+instructions, contracts, invocation profile, oracles, and standalone harness
+components; validates the pointed immutable run and every current referenced
 byte; reconstructs its events and typed
 `simple-change-behavior` result, freshly executes deterministic registry
 operations, recomputes dependencies and aggregate formulas, and compares the
 complete reconstructed report with the recorded canonical report.
-For `behavior-implementation-manifest`, generation captures the execution
-environment and current component references once; validation checks that
-record's closed shape and every component's current identity without replacing
-the recorded behavior-generation environment with the validator's environment.
+For `behavior-implementation-manifest`, generation captures the invocation
+profile and current references once; validation checks that record's closed
+shape, import policy, exact derived resource and instruction sets, and every
+current identity without replacing the recorded behavior-generation profile
+with the validator's environment.
 A changed input-set identity is stale evidence and requires canonical
 generation; validation MUST NOT silently reuse or rewrite it.
 Validation does not replace the recorded baseline commit with the later
@@ -1774,8 +1810,9 @@ implementation_manifest_ref
 `scenario_ref` is the current standard path-and-identity reference for
 `scenario.json`.
 `baseline_commit` is the invocation-owned pre-run HEAD.
-`skill_resource_refs` is the complete path-sorted current reference set for
-the four upstream `SKILL.md` files and every mapped boundary-proof resource.
+`skill_resource_refs` is byte-for-byte equal to the implementation manifest's
+complete path-sorted `skill_package_refs` set for the five participating
+skills.
 `oracle_refs` is the complete path-sorted current reference set for every
 candidate file.
 `implementation_manifest_ref` is the one current standard reference to the
