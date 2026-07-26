@@ -383,13 +383,15 @@ Boundary model scope: R56-R56q
 | `CMD-SBFP-13` | `python scripts/validate-boundary-proof.py generate-report --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --output docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md` | planned-for-implementation | boundary validator owner | M4 | M4 code-review | nonzero blocks milestone | not applicable | canonical capability report | sole report writer; no release action |
 | `CMD-SBFP-14` | `python scripts/test-release-transaction.py` | existing/configured | release validator owner | M4 | M4 code-review | nonzero blocks milestone | zero tests is failure | M4 validation notes | local fixtures; no publication |
 | `CMD-SBFP-15` | `python scripts/validate-release.py --version v0.3.6` | existing/configured | release validator owner | M4 | M4 code-review | nonzero blocks milestone | not applicable | current release validation | validation-only; no publication |
+| `CMD-SBFP-16` | `python scripts/boundary_proof_behavior.py freeze-baseline --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` | planned-for-implementation | behavior harness owner | M2 | before first participating-skill mutation | nonzero blocks skill mutation | not applicable | `evidence/boundary-proof-baseline.json` | immutable baseline; no lifecycle invocation |
+| `CMD-SBFP-17` | `tmpdir="$(mktemp -d)" && python scripts/boundary_proof_behavior.py exercise-fixture --fixture tests/fixtures/boundary-proof/behavior/happy-path.json --output-root "$tmpdir" && python scripts/boundary_proof_behavior.py validate-fixture --root "$tmpdir"` | planned-for-implementation | behavior harness owner | M2 | M2 code-review | nonzero blocks milestone | not applicable | temporary controlled-run evidence | isolated temporary workspace; no canonical pointer mutation |
 
 ## Milestone proof map
 
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | M1 | T49, T51, T55 | bfp-manual.skill-stage-semantics | CMD-SBFP-1 | synthetic model, incident, trace, and report fixtures | M1 code-review | Establishes the deterministic projection; no skill behavior invocation. |
-| M2 | T49, T50, T51, T54, T55, T57, T58 | bfp-manual.skill-stage-semantics | CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4, CMD-SBFP-8, CMD-SBFP-9, CMD-SBFP-10 | exact five-package manifest, preflight, immutable upstream run, and four upstream skill resources | M2 code-review | Preflight passes before all other harness or skill mutation. |
+| M2 | T49, T50, T51, T54, T55, T57, T58 | bfp-manual.skill-stage-semantics | CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4, CMD-SBFP-8, CMD-SBFP-9, CMD-SBFP-10, CMD-SBFP-16, CMD-SBFP-17 | exact five-package manifest, preflight, immutable baseline and upstream run, controlled fixture, and four upstream skill resources | M2 code-review | Preflight and controlled fixture pass, then baseline freezes before participating-skill mutation. |
 | M3 | T49, T52, T53, T54, T55, T59 | bfp-manual.skill-authority, bfp-manual.skill-composition, bfp-manual.skill-preservation | CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4, CMD-SBFP-11, CMD-SBFP-12 | four downstream resources, preservation manifest, snapshot roots, and 40 results | M3 code-review | Preservation uses recorded M2 outputs without upstream reinvocation. |
 | M4 | T54, T55, T56, T60 | bfp-manual.skill-preservation | CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-4, CMD-SBFP-5, CMD-SBFP-6, CMD-SBFP-7, CMD-SBFP-13, CMD-SBFP-14, CMD-SBFP-15 | four durable parity manifests, report, and release fixtures | M4 code-review | No release activation or publication is performed. |
 
@@ -1817,7 +1819,8 @@ Boundary model scope: R56-R56q
 
 - Covers: R56a, R56j-R56k
 - Level: integration
-- Command IDs: CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-8
+- Command IDs: CMD-SBFP-1, CMD-SBFP-2, CMD-SBFP-3, CMD-SBFP-8,
+  CMD-SBFP-17
 - Fixture/setup: Exact `workflow`, `spec`, `spec-review`, `test-spec`, and
   `test-spec-review` packages; every Resource map entry; missing, extra,
   duplicate, stale, escaping, symlinked, and non-regular variants.
@@ -1836,12 +1839,15 @@ Boundary model scope: R56-R56q
 
 - Covers: R56b-R56e, R56p
 - Level: e2e
-- Command IDs: CMD-SBFP-8, CMD-SBFP-9, CMD-SBFP-10
+- Command IDs: CMD-SBFP-8, CMD-SBFP-9, CMD-SBFP-10, CMD-SBFP-16,
+  CMD-SBFP-17
 - Fixture/setup: Exact five-stage simple-change scenario; isolated child home;
   parent-observed sandbox; caller-instruction, tool, connector, subagent,
   network, unmanifested-read, runtime-identity, and model-identity contrasts.
-- Steps: Run preflight, generate once, inspect complete outputs and reviews,
-  validate repeatedly, then alter each behavior-affecting input class.
+- Steps: Run preflight and controlled fixture; freeze the baseline before the
+  first participating-skill mutation; generate once; inspect complete outputs
+  and reviews; validate repeatedly; then alter each behavior-affecting input
+  class.
 - Expected result: The accepted run uses only manifested packages and the
   closed invocation profile; validation never reinvokes a skill; changed
   identities make the run stale; unsafe or unavailable profiles stop before
