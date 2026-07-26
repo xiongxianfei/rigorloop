@@ -1762,13 +1762,13 @@ Validation evidence: pending
 
 Finding ID: BFP-CR-M2-8
 Disposition: accepted
-Status: needs-decision
+Status: in-progress
 Owner: architecture and plan owners
 Owning stage: architecture and plan correction
 Decision owner: approved publication transaction contract
-Decision needed: Confirm receipt-before-install as the canonical ordering and synchronize the architecture, ADR if needed, plan, test spec, and implementation.
+Decision needed: none
 Required outcome: One noncontradictory transaction sequence governs specification, architecture, plan, proof, and code.
-Chosen action: Retain the safer staged-validation then durable-exclusive-receipt then immutable-install direction pending formal upstream correction and rereview.
+Chosen action: Use staged validation, then durable exclusive receipt, then immutable install as the canonical sequence; synchronize the spec, architecture, ADR, plan, test spec, and implementation and rerun each affected review gate.
 Rationale: The implementation cannot resolve contradictory higher-ranked architecture and plan text by silently choosing one.
 Validation target: architecture-review and plan-review, then code-review-m2-r3
 Validation evidence: pending

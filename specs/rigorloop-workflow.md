@@ -1,7 +1,7 @@
 # RigorLoop Workflow
 
 ## Status
-- approved
+- draft
 Boundary model version: v1
 Boundary model scope: R28-R28z
 
@@ -2099,8 +2099,10 @@ changes or invalidates `implementation_manifest_ref`, which invalidates
 and the `simple-change-behavior` report selector.
 
 The harness prepares a sibling temporary directory, validates all events,
-bundles, snapshots, inventories, and metrics, then renames it to the new
-immutable run root.
+bundles, snapshots, inventories, and metrics, then renames it to the
+deterministic non-authoritative staging root
+`.prepared-<run-id>` and fsyncs the staging parent.
+It validates the complete staged run before publication begins.
 It publishes the run only through
 `docs/changes/<change-id>/evidence/simple-change/current.json`.
 That pointer contains exactly `run_id`, `input_set_identity`, and
@@ -2112,7 +2114,8 @@ the pointed manifest's `run_id` and `input_set_identity` MUST equal the pointer
 values.
 Run-ID/path, input-set, or identity mismatch fails closed.
 
-Before pointer replacement, the harness writes
+Before immutable-run installation or pointer replacement, the harness
+exclusively writes
 `docs/changes/<change-id>/evidence/simple-change/prepared.json`.
 That receipt contains exactly `run_id`, `input_set_identity`, `manifest_ref`,
 and `prior_pointer`.
@@ -2120,7 +2123,15 @@ and `prior_pointer`.
 of the prior pointer's exact `run_id`, `input_set_identity`, and
 `manifest_ref` values.
 It is historical comparison data, not a current path-and-identity reference.
-The receipt is fsynced only after the immutable run validates.
+The receipt is fsynced only after the staged run validates and before the
+staged directory is renamed to the immutable run root.
+After receipt durability, the harness installs and fsyncs the immutable run,
+validates the installed run, then continues to pointer publication.
+The deterministic staging root is not behavior evidence and cannot satisfy a
+run, pointer, review, or report reference.
+If staging exists without a receipt, generation fails closed for explicit
+reconciliation; it does not install, publish, or silently reinvoke lifecycle
+skills.
 The harness writes and fsyncs a sibling temporary pointer, atomically replaces
 the pointer file with the platform's same-filesystem atomic file-replace
 primitive, and fsyncs the parent directory.
@@ -2131,11 +2142,15 @@ validation:
 
 - if the pointer names the prepared run, validate the run and finish receipt
   cleanup;
-- if the pointer exactly equals the inline `prior_pointer`, validate the prepared run
-  against its recorded and current input-set identity, complete pointer
-  publication, and finish cleanup;
-- any other pointer, missing staged run, corrupt receipt, or input mismatch
-  fails closed.
+- if the pointer exactly equals the inline `prior_pointer` and the immutable
+  run exists, validate it against its recorded and current input-set identity,
+  complete pointer publication, and finish cleanup;
+- if the pointer exactly equals the inline `prior_pointer`, the immutable run
+  is absent, and the deterministic staged run exists, validate staging, install
+  and fsync the immutable run, validate it, complete pointer publication, and
+  finish cleanup;
+- any other pointer, missing both staged and immutable prepared run, corrupt
+  receipt, or input mismatch fails closed.
 
 The harness never accepts the old run as completion of a different prepared
 invocation and never reinvokes lifecycle skills during reconciliation.
@@ -2179,6 +2194,14 @@ orchestrator and captures only newly produced files below the current
 behavior-output root.
 It snapshots those files after the invocation returns and before any later
 stage begins.
+The `workflow` skill owns stage routing; each stage-owning skill supplies the
+complete bytes of its own artifact through the approved isolated-workspace
+write capability.
+The harness may enforce paths, capture bytes, validate structure, compare
+normalized oracle records, and publish snapshots, but it MUST NOT contain,
+render, inject, or complete normative feature requirements, acceptance
+criteria, test cases, validation commands, formal review judgments, or review
+records.
 Caller prose, candidate fixtures, pre-existing files, and copied expected
 outputs cannot be recorded as fresh behavior outputs.
 

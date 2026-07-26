@@ -85,7 +85,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r2.md
 - Review status: blocked; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture and plan correction for BFP-CR-M2-8, then review-resolution and implement M2 corrections
+- Next stage: spec-review R27 for BFP-CR-M2-8 transaction clarification
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
@@ -223,6 +223,9 @@ resource through generated, packed, and installed outputs.
   - Caller-supplied instruction, unexpected tool, connector, subagent, network, and unmanifested read rejection
   - Validation under a different validator environment without profile replacement
   - Crash points before run install, after run install, after receipt fsync, after pointer replace, after parent fsync, and before receipt removal
+  - Stage timeout with absent output then one success; two absent-output
+    timeouts; complete-output reconciliation without reinvocation; partial or
+    extra output stop; and non-retry of protocol or security failures
   - Preflight crash before replacement and after replacement but before
     directory fsync; pass-before-fsync rejection; malformed temporary cleanup;
     prior-attestation preservation on failure; and stale prior evidence never
@@ -327,11 +330,20 @@ resource through generated, packed, and installed outputs.
     transitively through the input-set identity, immutable run, pointer, and
     report selector. The preflight artifact is feasibility evidence only and
     is not substituted for this fresh generation record.
-  - Build and validate the sibling temporary run; install the immutable run; fsync the receipt; replace/fsync the pointer; fsync the parent; reconcile; remove the receipt.
+  - Build and validate the sibling temporary run; move it to the deterministic
+    non-authoritative staging root and fsync; exclusively write and fsync the
+    prepared receipt; install and fsync the immutable run; validate it;
+    replace/fsync the pointer; reconcile; remove the receipt and fsync.
   - Implement validation-only reuse that never invokes a lifecycle skill and never substitutes validation-time environment data.
   - Exercise the full pipeline with controlled fixture packages without writing canonical evidence.
   - Write and map the shared boundary reference in the five participating packages, keeping stage-specific triggers, claims, stops, and handoffs in each `SKILL.md`.
-  - Generate the real `spec -> spec-review -> test-spec -> test-spec-review` run through one `workflow` invocation and validate it without reinvoking skills.
+  - Generate the real `spec -> spec-review -> test-spec -> test-spec-review`
+    run through `workflow`: each stage skill writes its complete artifact below
+    the isolated output root, the harness snapshots before advancing, and no
+    harness renderer supplies normative artifact content.
+  - Reconcile a timed-out stage before retry: accept one complete valid output
+    without reinvocation, retry once only when no output exists, and stop on
+    partial output or protocol/security failure.
 - Validation commands:
   - `python scripts/boundary_proof_behavior.py check-environment --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --json`
   - `python scripts/boundary_proof_behavior.py freeze-baseline --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`

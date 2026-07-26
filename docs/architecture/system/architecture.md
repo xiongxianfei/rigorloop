@@ -2,7 +2,7 @@
 
 ## Status
 
-- approved
+- draft
 
 ## Related artifacts
 
@@ -384,10 +384,10 @@ for the component view.
 | --- | --- | --- |
 | Boundary model constants and parser | `scripts/boundary_proof_model.py` | Projects closed IDs, marker and scope rules, row schemas, reference integrity, fixture identities, result vocabularies, and report aggregation from approved specs. |
 | Capability evaluator | Pure functions in `scripts/boundary_proof_model.py` | Computes the six-check, fixture, preservation, parity, overhead, and final capability outcomes from validated typed inputs; it performs no filesystem writes. |
-| Standalone behavior harness | `scripts/boundary_proof_behavior.py` | Assembles the five participating skill packages and governing inputs, enforces the closed two-module import boundary, creates the isolated workspace and fresh runtime home, launches one workflow invocation, captures the observable invocation profile, validates transient access observations, and publishes or reconciles one immutable behavior run. |
+| Standalone behavior harness | `scripts/boundary_proof_behavior.py` | Assembles the five participating skill packages and governing inputs, enforces the closed two-module import boundary, creates the isolated workspace and fresh runtime home, launches one workflow-orchestrated invocation, captures stage-created files without rendering normative content, validates transient access observations, and publishes or reconciles one immutable behavior run. |
 | Child-runtime adapter | Functions in `scripts/boundary_proof_behavior.py` | Resolves and identities Codex CLI 0.138.0 or later, starts its app-server over stdio, binds the runtime-reported model and active permission profile, independently probes the same profile through `codex sandbox`, provisions opaque control-plane authentication outside the child workspace and tool environment, and rejects output when profile provenance or enforcement cannot be established. |
 | Isolated workspace assembler | Functions in `scripts/boundary_proof_behavior.py` | Copies only manifest-bound skills, mapped resources, applicable instructions, contracts, scenario inputs, and candidate oracles into a fresh workspace, exposes one writable behavior-output root, and keeps the private runtime home and credentials outside sandbox-readable roots. |
-| Immutable run publisher and reconciler | Functions in `scripts/boundary_proof_behavior.py` | Builds and validates a sibling temporary run, installs the immutable run, writes and fsyncs the prepared receipt, atomically replaces and fsyncs the current pointer, fsyncs the parent directory, removes the reconciled receipt, and resumes that sequence without reinvoking lifecycle skills. |
+| Immutable run publisher and reconciler | Functions in `scripts/boundary_proof_behavior.py` | Builds and validates a deterministic non-authoritative staged run, exclusively writes and fsyncs the prepared receipt before publication mutation, installs and fsyncs the immutable run, validates it, atomically replaces and fsyncs the current pointer, removes the reconciled receipt, and resumes that sequence without reinvoking lifecycle skills. |
 | Boundary validator | `scripts/validate-boundary-proof.py` | Validates scoped feature specs, matching test specs, fixture evidence, and the capability report without scoring semantic adequacy. |
 | Regression suite | `scripts/test-boundary-proof.py` | Proves known and unknown values, duplicates, orphans, version mismatch, aggregate behavior, and the compact simple fixture. |
 | Boundary fixtures | `tests/fixtures/boundary-proof/` | Holds valid, invalid, eight seeded incident-replay, and simple-change inputs. |
@@ -716,14 +716,21 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    then discards the raw log.
 15. Publication uses the exact durable sequence:
     (a) build and validate the sibling temporary run;
-    (b) rename it to the immutable run root;
-    (c) write and fsync `prepared.json`;
-    (d) write and fsync a sibling temporary pointer, atomically replace
+    (b) rename it to the deterministic non-authoritative staging root, fsync
+    the staging parent, and validate the staged run;
+    (c) exclusively write and fsync `prepared.json`;
+    (d) rename staging to the immutable run root, fsync the runs directory,
+    and validate the installed run;
+    (e) write and fsync a sibling temporary pointer, atomically replace
     `current.json`, and fsync the pointer parent directory;
-    (e) reconcile the installed run and pointer; and
-    (f) remove `prepared.json`.
+    (f) reconcile the installed run and pointer; and
+    (g) remove `prepared.json` and fsync its parent.
     The receipt makes the multi-step publication recoverable; it does not make
     immutable-run installation and pointer replacement jointly atomic.
+    Staging is reversible and non-authoritative. Immutable installation and
+    pointer replacement never occur without a durable exclusive receipt.
+    A staged run without a receipt cannot satisfy evidence and fails closed for
+    explicit reconciliation.
     Validation checks the pointed run and current bound identities without
     invoking a lifecycle skill or substituting the validator's environment.
 16. The incident runner evaluates the eight frozen fixture IDs at their
@@ -1297,6 +1304,8 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | Capability-stable resume | A prepared transition is resumed after its effective capability becomes invalid. | Resume retains the recorded `effective_capability_id`, pauses reconciliation, and never silently binds replacement authority. |
 | Authorization-bound execution | A run targets a later stage across risk boundaries. | Only a basis-complete effective capability within an active parent authorization can invoke the current stage; missing implementation or verification authority pauses without widening consent. |
 | Interrupted-transition recovery | Execution stops after a prepared receipt and before finalization. | Resume inspects stage-owned evidence before retry, reconciles valid completion without rerun, retries only declared idempotent stages, and pauses on contradiction or partial output. |
+| Isolated stage-output ownership | The boundary harness asks `workflow` to execute an upstream stage. | `workflow` routes to the stage-owning skill, that skill writes one complete artifact below the isolated output root through the approved workspace-write capability, and the harness snapshots it before the next stage without rendering or completing normative content. |
+| Isolated stage timeout recovery | A stage turn expires after it may have written output. | The stage coordinator inspects the bound output root first: one complete valid artifact is reconciled without reinvocation, no artifact permits one fresh-runtime retry, and partial, extra, stale, or contradictory output fails closed. Protocol or security failures are never retried. |
 | Repeated-target identity | `code-review@M2` resumes after the active plan has advanced to M3. | The run remains bound to M2 and cannot silently reinterpret the target as M3. |
 | External-action containment | Unified automation completes fresh verification. | The run stops at the verify target and performs no PR creation, push, publication, deployment, merge, destructive Git operation, or other external action. |
 | Automated review independence | A workflow-managed profile invokes an automated review. | The review can advance only when the orchestrator records a valid manifest, verifiable initial packet, non-L0 independence level, phase receipts, risk-tier classification, stage-native verdict, and normalized `review_gate_outcome`. |
