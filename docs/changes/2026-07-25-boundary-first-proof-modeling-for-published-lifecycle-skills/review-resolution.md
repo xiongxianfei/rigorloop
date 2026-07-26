@@ -10,6 +10,7 @@ Closeout status: open
 - Review closeout: spec-review-r5 open
 - Review closeout: spec-review-r6 open
 - Review closeout: spec-review-r7 open
+- Review closeout: spec-review-r8 open
 - Review closeout: test-spec-review-r2
 - Review closeout: test-spec-review-r1
 - Review closeout: plan-review-r2
@@ -20,10 +21,10 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`
 - Findings resolved: 15
 - Unresolved findings: 9
-- Current result: `spec-review-r7` kept BFP-SR3-2 and BFP-SR3-3 open for oracle independence, complete formal-review evidence, and canonical manifest/baseline closure.
+- Current result: `spec-review-r8` kept BFP-SR3-2 and BFP-SR3-3 open only for review-evidence union, portable current-run publication, and filesystem-versus-typed selector separation.
 
 ## Resolution Overview
 
@@ -346,6 +347,15 @@ No new material findings.
 results, canonical review output was modeled as one file rather than a complete
 formal-recording bundle, and manifest/baseline selectors were not uniquely
 owned.
+
+### spec-review-r8
+
+No new material findings.
+`spec-review-r8` confirmed oracle independence, formal-review bundle
+membership, baseline authority, canonical manifests, result identities, and
+the dependency graph, while retaining the two prior findings for an exact
+review-evidence union, portable immutable-run publication, and disjoint
+filesystem/typed selector representations.
 
 ### spec-review-r3
 

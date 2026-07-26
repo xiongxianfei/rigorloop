@@ -184,3 +184,14 @@ Detailed record: reviews/spec-review-r7.md
 Resolution: review-resolution.md#spec-review-r7
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: spec-review-r8
+Stage: spec-review
+Round: 8
+Reviewed artifact: specs/rigorloop-workflow.md; specs/skill-contract.md
+Status: changes-requested
+Detailed record: reviews/spec-review-r8.md
+Resolution: review-resolution.md#spec-review-r8
+Material findings: None
+Open findings: None
