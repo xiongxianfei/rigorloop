@@ -2914,4 +2914,27 @@ pre-receipt crash boundary.
 Rationale: Crash coverage cannot substitute for proof that invalid staging
 never crosses the publication mutation boundary.
 Validation target: test-spec-review-r16
+Validation evidence: test-spec-review-r16 confirmed the staged-run gate is
+covered and found a separate working-run validation-gate omission.
+
+### test-spec-review-r16
+
+#### BFP-TSR16-1 — T51 moves the working run before proving its required validation gate
+
+Finding ID: BFP-TSR16-1
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec revision
+Decision owner: approved R45 publication transaction
+Decision needed: none
+Required outcome: Prove working-run validation before staging rename in
+addition to the staged-run validation before prepared-receipt creation, and
+prove invalid working-run contents cannot cross either mutation boundary.
+Chosen action: Revise T51 setup, steps, and expected result with malformed and
+inconsistent working-run contrasts plus the post-validation pre-rename crash
+boundary.
+Rationale: The working and staged validation gates protect different
+publication boundaries and require independent negative proof.
+Validation target: test-spec-review-r17
 Validation evidence: pending
