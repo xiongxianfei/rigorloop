@@ -1060,7 +1060,7 @@ Validation evidence: pending plan-review-r7
 
 Finding ID: BFP-AR14-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: architecture author
 Owning stage: architecture revision
 Decision owner: approved R28y architecture projection
@@ -1073,7 +1073,11 @@ relationships while preserving the approved canonical prose and ADR.
 Rationale: A component diagram cannot contradict the normative transaction it
 is intended to explain.
 Validation target: architecture-review-r15
-Validation evidence: pending
+Validation evidence: the component view now separates the acquired kernel
+lock from the durable run-bound lease, routes global discovery/recovery while
+locked, sends runtime observations through transport reconciliation, and shows
+staged run -> fsynced prepared receipt -> immutable run -> atomic pointer;
+pending architecture-review-r15.
 
 ### spec-review-r19
 

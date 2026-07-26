@@ -953,4 +953,4 @@ Status: changes-requested
 Detailed record: reviews/architecture-review-r14.md
 Resolution: review-resolution.md#architecture-review-r14
 Material findings: BFP-AR14-1
-Open findings: BFP-AR14-1
+Open findings: None
