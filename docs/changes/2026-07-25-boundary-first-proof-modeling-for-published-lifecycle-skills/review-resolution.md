@@ -1054,6 +1054,27 @@ Rationale: One-time resolution cannot detect replacement between trust-boundary 
 Validation target: plan-review-r7
 Validation evidence: pending plan-review-r7
 
+### architecture-review-r14
+
+#### BFP-AR14-1 - Component view contradicts transport and publication ownership
+
+Finding ID: BFP-AR14-1
+Disposition: accepted
+Status: in-progress
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: approved R28y architecture projection
+Decision needed: none
+Required outcome: Separate kernel-lock and durable-lease ownership, restore
+write-ahead publication order, and route runtime events through transport
+reconciliation.
+Chosen action: Correct only the boundary-proof component nodes and
+relationships while preserving the approved canonical prose and ADR.
+Rationale: A component diagram cannot contradict the normative transaction it
+is intended to explain.
+Validation target: architecture-review-r15
+Validation evidence: pending
+
 ### spec-review-r19
 
 #### BFP-SR19-1 - Accepted skill-row classification is not deterministic

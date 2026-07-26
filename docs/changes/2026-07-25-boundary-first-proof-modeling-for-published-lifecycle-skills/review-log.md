@@ -943,3 +943,14 @@ Detailed record: reviews/spec-review-r36.md
 Resolution: review-resolution.md#spec-review-r36
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: architecture-review-r14
+Stage: architecture-review
+Round: 14
+Reviewed artifact: canonical architecture, component diagram, and ADR-20260725 at 19415360
+Status: changes-requested
+Detailed record: reviews/architecture-review-r14.md
+Resolution: review-resolution.md#architecture-review-r14
+Material findings: BFP-AR14-1
+Open findings: BFP-AR14-1
