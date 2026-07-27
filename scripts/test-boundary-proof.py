@@ -2115,9 +2115,27 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 termination_state="confirmed-stopped",
             )
 
-        with self.assertRaises(BoundaryRuntimeError):
+        diagnostic = io.StringIO()
+        with (
+            mock.patch.dict(
+                "os.environ", {"BOUNDARY_PROOF_DIAGNOSTICS": "1"}
+            ),
+            mock.patch("sys.stderr", diagnostic),
+            self.assertRaises(BoundaryRuntimeError),
+        ):
             _invoke_with_reconciliation(absent, ["artifact.md"])
         self.assertEqual(calls, 2)
+        self.assertEqual(
+            diagnostic.getvalue().splitlines(),
+            [
+                "transport-decision:attempt=1:"
+                "termination_state=confirmed-stopped:"
+                "output_state=absent:decision=retry",
+                "transport-decision:attempt=2:"
+                "termination_state=confirmed-stopped:"
+                "output_state=absent:decision=fail-closed",
+            ],
+        )
 
     def test_controlled_transport_fixture_is_closed_and_noncanonical(self) -> None:
         fixture = _load_transport_fixture(
