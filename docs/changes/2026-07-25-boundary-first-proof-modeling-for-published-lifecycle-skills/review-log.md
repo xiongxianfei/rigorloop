@@ -19,6 +19,17 @@ Material findings: BFP-PR1, BFP-PR2, BFP-PR3, BFP-PR4
 Open findings: None
 
 ### Review entry
+Review ID: architecture-review-r27
+Stage: architecture-review
+Round: 27
+Reviewed artifact: focused extension-oracle ownership update at e35fe738
+Status: approved
+Detailed record: reviews/architecture-review-r27.md
+Resolution: review-resolution.md#architecture-review-r27
+Material findings: None
+Open findings: None
+
+### Review entry
 Review ID: spec-review-r55
 Stage: spec-review
 Round: 55

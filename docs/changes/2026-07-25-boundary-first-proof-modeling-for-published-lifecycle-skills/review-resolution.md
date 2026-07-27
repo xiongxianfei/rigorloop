@@ -3535,3 +3535,9 @@ No new material findings. R55 independently approved removal of stage-owned
 extension identity from the deterministic fixture-candidate projection.
 Architecture, plan, executable projection, and proof-map synchronization
 remain required before M2 implementation resumes.
+
+### architecture-review-r27
+
+No new material findings. R27 independently approved the focused canonical
+architecture update and confirmed that the existing evaluator/reviewer
+boundary and ADR remain sufficient.
