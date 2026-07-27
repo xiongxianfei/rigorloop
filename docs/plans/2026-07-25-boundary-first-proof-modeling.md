@@ -95,12 +95,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r7.md
-- Review status: changes-requested; stage=code-review; round=r7
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r8.md
+- Review status: blocked; stage=code-review; round=r8
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: code-review
+- Next stage: spec
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BFP-CR-M2-13
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BFP-CR-M2-14
 
 ## Milestones
 
@@ -873,6 +873,12 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Code-review M2 R8 confirmed the exact recovery-decision
+  correction and opened spec-blocking `BFP-CR-M2-14`. Fresh behavior evidence
+  recorded a `needs-decision` review finding but the harness treated
+  `changes-requested` alone as correction authority and executed `spec#2`.
+  M2 remains `resolution-needed`; the next stage is focused spec revision.
 
 - 2026-07-27: Published the decision-bound recovery correction as immutable
   run `run-8f095d95abb863dbcbd642fe61abd65e` for input identity

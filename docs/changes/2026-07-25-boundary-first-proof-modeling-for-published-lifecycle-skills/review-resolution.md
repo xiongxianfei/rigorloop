@@ -1985,7 +1985,7 @@ authority-class gap as `BFP-CR-M2-13`.
 
 Finding ID: BFP-CR-M2-13
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M2 implementation and code-review owners
 Owning stage: implementation correction and code review
 Decision owner: approved R28y exact recovery authority
@@ -1999,6 +1999,33 @@ Rationale: Change-root containment proves locality but not artifact class or
 authorization semantics.
 Validation target: focused M2 tests, regenerated canonical evidence, and
 code-review-m2-r8
+Validation evidence: The exact recovery-decision schema binds change, run,
+publisher, input identity, action, actor, and authorized outcome. A complete
+field/shape/path mutation matrix, arbitrary change-local Markdown rejection,
+and decision-identity drift regression pass in the 100-test suite. Immutable
+run `run-8f095d95abb863dbcbd642fe61abd65e` validates with zero false blocks and
+zero universal artifacts. Code-review R8 confirmed this finding resolved.
+
+### code-review-m2-r8
+
+#### BFP-CR-M2-14 - Changes-requested is incorrectly treated as correction authority
+
+Finding ID: BFP-CR-M2-14
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec, proof-map, architecture, plan, implementation, and review owners
+Owning stage: focused spec revision
+Decision owner: workflow correction-authority contract
+Decision needed: yes
+Required outcome: Separate formal review outcome from effective correction
+authority and define the owner-decision branch before authoring attempt 2.
+Chosen action: Amend R28y with a closed correction-eligibility projection and
+identity-bound owner-decision evidence, then synchronize and review downstream
+projections before implementation resumes.
+Rationale: The current run proves that `changes-requested` may coexist with an
+explicit needs-decision finding, so outcome alone cannot authorize mutation.
+Validation target: spec-review, affected downstream reviews, then
+code-review-m2-r9
 Validation evidence: Pending.
 
 ### spec-review-r27
