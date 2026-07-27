@@ -1537,7 +1537,9 @@ def _workflow_stage_request(
             "stage must load and apply its mapped "
             "`references/boundary-proof-model.md` before authoring or "
             "reviewing. The returned artifact must satisfy that installed "
-            "skill's boundary-first completion gate. The owning "
+            "skill's boundary-first completion gate. All required inputs are "
+            "attached; do not invoke tools, web search, network access, or "
+            "other external capabilities. The owning "
             "skill must author every semantic byte and return one complete "
             "policy-bound artifact envelope in the agent message. Child tools "
             "have read-only workspace access and must not create or modify "
@@ -5104,12 +5106,14 @@ def _turn_start_request(
     model_id: str,
     runtime_home: Path,
     prompt: str,
+    required_reference_text: str,
     output_schema: Mapping[str, object],
     skill_names: Sequence[str] = PARTICIPATING_SKILLS,
 ) -> dict[str, object]:
     if (
         len(skill_names) != len(set(skill_names))
         or any(name not in PARTICIPATING_SKILLS for name in skill_names)
+        or not required_reference_text
     ):
         raise BoundaryRuntimeError("protocol-shape-incompatible", "pre-turn-start")
     skill_inputs = [
@@ -5122,7 +5126,17 @@ def _turn_start_request(
     ]
     return {
         "threadId": thread_id,
-        "input": [*skill_inputs, {"type": "text", "text": prompt}],
+        "input": [
+            *skill_inputs,
+            {
+                "type": "text",
+                "text": (
+                    "Required installed boundary-proof reference:\n\n"
+                    + required_reference_text
+                ),
+            },
+            {"type": "text", "text": prompt},
+        ],
         "cwd": str(workspace),
         "model": model_id,
         "permissions": "boundary-proof-stage-readonly-v1",
@@ -5501,6 +5515,25 @@ def _collect_runtime_attestation(
                 ):
                     raise BoundaryRuntimeError("protocol-shape-incompatible")
                 expected_outputs = list(expected_output_value)
+                reference_path = (
+                    runtime_home
+                    / "skills"
+                    / skill_names[-1]
+                    / "references"
+                    / "boundary-proof-model.md"
+                )
+                try:
+                    required_reference_text = reference_path.read_text(
+                        encoding="utf-8"
+                    )
+                except (OSError, UnicodeError) as error:
+                    raise BoundaryRuntimeError(
+                        "unmanifested-input", "pre-turn-start"
+                    ) from error
+                if not required_reference_text:
+                    raise BoundaryRuntimeError(
+                        "unmanifested-input", "pre-turn-start"
+                    )
                 workspace_before_turn = _workspace_probe_snapshot(workspace)
                 started = server.request(
                     "turn/start",
@@ -5510,6 +5543,7 @@ def _collect_runtime_attestation(
                         model_id,
                         runtime_home,
                         prompt,
+                        required_reference_text,
                         output_schema,
                         skill_names,
                     ),
