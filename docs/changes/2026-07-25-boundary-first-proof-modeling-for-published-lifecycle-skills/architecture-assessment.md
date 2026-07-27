@@ -58,9 +58,11 @@ The approved R48 amendment strengthens that transport boundary:
 - one immutable typed projection binds exact launcher and runtime-package
   bytes, schemas, protocol and feature classifications, enabled/disabled
   features, and file-change capability state;
-- exposed capability requires a correlated live decline trace, while reviewed
-  non-exposure requires a complete effective-tool projection, fresh
-  invocation-owned handler conformance, and drift-event rejection;
+- both capability states require fresh invocation-owned conformance against
+  the installed production deny-only dispatcher;
+- exposed capability additionally requires a correlated live decline trace;
+- reviewed non-exposure additionally requires the exact projection, a
+  complete effective-tool projection, and drift-event rejection;
 - current runtime attestation, preflight, and implementation-manifest evidence
   use v3; v2 is unsupported historical evidence; and
 - the sole registered v1 manifest is exact-identity opaque history and cannot
