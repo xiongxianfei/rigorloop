@@ -546,3 +546,16 @@ lease-bound recovery transaction and retained in recovery quarantine. The
 scenario expectation now records `one-correction` with corrected role
 `test-spec`; no request, stage output, review result, diagnostic, or correction
 decision was changed to force the comparison.
+
+A second run using that expectation produced an immediately approved test spec
+and therefore also failed the final comparison. This demonstrated that the
+feature contract was stable but the underspecified proof request allowed two
+review-valid authoring paths. Run `run-f02ddb57e4145d77ff550d2fade6ea3c`
+was explicitly discarded and quarantined.
+
+The narrow fix is to make the existing R2 proof obligation explicit in the
+parent-only scenario request: enumerate the closed Unicode `White_Space` set
+and prove both boundary removal and interior preservation. This changes no
+normative feature requirement and exposes no comparison expectation to child
+stages; it removes reviewer-dependent ambiguity from the initial test-spec
+proof and restores the deterministic zero-correction expectation.
