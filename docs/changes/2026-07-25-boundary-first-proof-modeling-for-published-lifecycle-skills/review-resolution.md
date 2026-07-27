@@ -3473,4 +3473,10 @@ Required outcome: Separate exact scenario and structural invariants from indepen
 Chosen action: Amend R28y so the oracle proves the requested behavior and closed boundary-proof properties without requiring one hidden golden decomposition; add a dedicated mismatch diagnostic and synchronize affected proof and execution artifacts.
 Rationale: Injecting the candidate would violate comparison-only input separation, while weakening only the implementation would violate the approved spec.
 Validation target: spec-review, affected downstream reviews, then code-review-m2-r4
-Validation evidence: pending focused spec revision
+Validation evidence: spec-review-r54 approved the focused contract correction; affected downstream synchronization remains pending.
+
+### spec-review-r54
+
+No new material findings. R54 independently approved the focused R28y
+invariant-oracle correction and confirmed that it resolves BFP-CR-M2-9 at the
+contract level without weakening semantic fidelity.
