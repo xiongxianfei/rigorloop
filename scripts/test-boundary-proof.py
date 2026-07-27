@@ -1890,6 +1890,8 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         )
         self.assertNotIn("file-write tool", stage_request["prompt"])
         self.assertIn("artifact envelope", stage_request["prompt"])
+        self.assertIn("`## Boundary model`", stage_request["prompt"])
+        self.assertIn("add no normative behavior", stage_request["prompt"])
         self.assertEqual(
             stage_request["artifact_policy_id"],
             "lifecycle-stage-artifacts-v1",

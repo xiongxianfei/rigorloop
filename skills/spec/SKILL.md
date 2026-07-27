@@ -122,6 +122,8 @@ For contract-bearing behavior, do not declare the spec ready until it contains
 core dimension named by the mapped boundary-proof reference, classified
 examples, and an explicit interaction selection. If the required reference
 cannot be loaded, stop; do not silently fall back to example-only output.
+Use the exact section headings `## Boundary model`, `## Examples`, and
+`## Interactions` so the record remains portable across validators.
 
 ## Generated Markdown readability
 
@@ -214,6 +216,9 @@ not-needed
 - Do not skip failure behavior.
 - Do not skip compatibility expectations.
 - Do not invent requirements that the proposal excludes.
+- Use the smallest requirement set that completely owns the requested
+  behavior. Do not invent input, transport, performance, storage, logging, or
+  implementation semantics absent from the authoritative input.
 - Do not use `reviewed` as a durable spec status. Once the review outcome is relied on, normalize the tracked spec to `approved` or the appropriate terminal state.
 - Preserve `Next artifacts` as planning history. Use `Follow-on artifacts` for actual downstream artifacts, replacement, or terminal closeout.
 - If a spec is superseded, identify the replacement with `superseded_by` or equivalent labeled text.
