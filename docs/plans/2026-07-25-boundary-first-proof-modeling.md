@@ -97,7 +97,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r16.md
 - Review status: changes-requested; stage=plan-review; round=r16
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: plan revision
+- Next stage: plan-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-PL16-1,BFP-PL16-2
 
@@ -236,6 +236,10 @@ resource through generated, packed, and installed outputs.
     exact `stage-file-change-handler-conformance-v1` policy/result schemas.
     Exercise every conformance case against the production dispatch and
     response-validation functions in fresh preflight and generation runs.
+    Missing, failed, malformed, stale, reordered, incomplete, or
+    identity-inconsistent conformance results must leave invocation counters
+    for both capability branches, the canary, every governed lifecycle turn,
+    and successful attestation assembly at zero.
   - Capability-state branches: `exposed-live-probe-required` additionally
     proves one matching request, `decision: decline`, generic carriers,
     terminal `declined`, unchanged workspace, no lifecycle output, and clean
@@ -268,6 +272,12 @@ resource through generated, packed, and installed outputs.
     after immutable-run install, after pointer replace, after parent fsync, and
     before receipt removal; every resume validates staged or installed
     identities and never reinvokes lifecycle skills
+  - Phase-aware rollback with an absent, reconcilable, or irreconcilable
+    prepared receipt; validated prior pointer versus no prior current run;
+    exact registered-v1 restoration versus no current manifest; complete
+    compatibility-unit reversion; non-current v3 retention; and rejection of
+    every dangling v3 manifest, attestation, pointer, selector, or report
+    reference
   - Stage timeout with absent output then one success; two absent-output
     timeouts; complete-output reconciliation without reinvocation; partial or
     extra output stop; and non-retry of protocol or security failures
@@ -378,8 +388,12 @@ resource through generated, packed, and installed outputs.
     named profile. Configure the exact parent-owned production deny-only
     dispatcher before every governed thread. In preflight and again in
     generation, run every closed conformance case against the same dispatch
-    and response-validation functions before evaluating the selected
-    capability branch.
+    and response-validation functions, then validate the complete policy and
+    result through `boundary_proof_model` before selecting or invoking either
+    capability branch. Missing, failed, malformed, stale, reordered,
+    incomplete, or identity-inconsistent conformance emits only the bounded
+    failure result and stops before any live probe, non-exposure acceptance,
+    canary, governed lifecycle turn, or successful attestation.
   - Build both thread and turn requests from closed builders that bind one
     exact isolated workspace root. Record the exact empty 0.145.0
     thread-start root response, then classify every observed request and
@@ -587,7 +601,23 @@ resource through generated, packed, and installed outputs.
     v3 migration.
   - Shared reference use could hide stage-specific stop or claim boundaries.
 - Rollback/recovery:
-  - Revert the five package edits and current pointer together, retain immutable failed runs as non-current evidence, and retain the M1 deterministic engine.
+  - Acquire the publisher lock before rollback. Reconcile any prepared receipt
+    against staged and installed identities; if reconciliation cannot prove one
+    complete state, fail closed without changing current authority.
+  - Restore the current pointer to a previously validated immutable state, or
+    remove it when no validated current run exists. Restore the exact
+    registered opaque-v1 manifest path and bytes only when reverting to that
+    historical baseline; otherwise leave no current behavior manifest.
+  - Revert the M2 model, harness, validator, fixtures, shared template, and five
+    package/resource edits as one compatibility unit. Remove the current v3
+    preflight attestation when its bound implementation is reverted.
+  - Retain installed v3 immutable runs only as non-current history, remove no
+    audit evidence needed for recovery, and ensure no current pointer,
+    implementation manifest, selector, or report references those runs.
+  - Revalidate registered history, prepared/staged/installed publication state,
+    current-pointer and manifest coherence, skill/resource parity, and absence
+    of dangling v3 authority before declaring rollback complete. Retain the M1
+    deterministic engine.
 
 ### M3. Downstream skill projection and preservation
 
@@ -792,6 +822,13 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Resolved plan-review R16 by making pure-model validation of the
+  complete production-dispatch conformance result the common pre-branch gate
+  in both preflight and generation, adding zero-invocation contrast proof, and
+  defining phase-aware rollback across receipts, pointer, manifests,
+  attestations, code, fixtures, skills, and retained non-current history. The
+  next gate is plan-review R17.
 
 - 2026-07-27: Revised M2 planning to the approved R48/R22 contract: pure
   ten-field runtime registry and validators first; production dispatch and
@@ -1148,7 +1185,7 @@ resource through generated, packed, and installed outputs.
 | 2026-07-26 | Restore normative M1-M4 ownership and make runtime feasibility the first M2 promotion gate. | R28y explicitly assigns synthetic proof, upstream behavior, downstream preservation, and aggregation to M1-M4. | Renumber the approved phases; amend the spec only to preserve an unnecessary fifth phase. |
 | 2026-07-26 | Keep one M2 milestone but order its correction as immutable projection/tests, read-only preflight, integrity-gated envelope transport, workflow-owned generation, then durable publication. | The approved R45/R18 contract resolves the three open M2 findings without changing normative milestone ownership; each internal slice has a fail-closed promotion gate before the next riskier slice. | Reopen milestone numbering; implement the live runtime before closed validators; retain child writes; allow the harness to render normative artifacts. |
 | 2026-07-26 | Use staged validation, durable exclusive prepared receipt, immutable install, installed-run validation, atomic pointer replacement, and receipt cleanup as the only publication order. | This is the approved recovery transaction and closes the governing-artifact half of BFP-CR-M2-8. | Install before receipt; validate only after pointer publication; adopt orphan output. |
-| 2026-07-27 | Select file-change proof through one exact-runtime-bound immutable projection and make production-dispatch conformance common to both branches. | The approved R48/R22 contract proves enforcement without asking a model to invoke an operation the reviewed runtime does not expose. | Version-only gating; feature flags alone; event absence alone; unconditional live probing; removing the deny-only handler. |
+| 2026-07-27 | Select file-change proof through one exact-runtime-bound immutable projection and make pure-model-validated production-dispatch conformance common to both branches. | The approved R48/R22 contract proves enforcement without asking a model to invoke an operation the reviewed runtime does not expose, and validation before branch selection prevents malformed or stale conformance evidence from authorizing capability-specific work. | Version-only gating; feature flags alone; event absence alone; unconditional live probing; branching before conformance validation; removing the deny-only handler. |
 
 ## Surprises and discoveries
 
