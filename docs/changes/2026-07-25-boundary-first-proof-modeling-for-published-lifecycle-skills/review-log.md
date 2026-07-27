@@ -1459,4 +1459,15 @@ Status: changes-requested
 Detailed record: reviews/test-spec-review-r21.md
 Resolution: review-resolution.md#test-spec-review-r21
 Material findings: BFP-TSR21-1
-Open findings: BFP-TSR21-1
+Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r22
+Stage: test-spec-review
+Round: 22
+Reviewed artifact: parent-only candidate isolation proof at af2f908f
+Status: approved
+Detailed record: reviews/test-spec-review-r22.md
+Resolution: review-resolution.md#test-spec-review-r22
+Material findings: None
+Open findings: None

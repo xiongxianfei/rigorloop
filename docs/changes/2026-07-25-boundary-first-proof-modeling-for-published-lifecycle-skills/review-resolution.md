@@ -3500,7 +3500,7 @@ Finding ID: BFP-TSR21-1
 
 Disposition: accepted
 
-Status: in-progress
+Status: resolved
 
 Owner: test-spec author
 
@@ -3521,4 +3521,10 @@ Rationale: Input binding does not prove child non-exposure.
 
 Validation target: test-spec-review-r22
 
-Validation evidence: pending test-spec revision
+Validation evidence: test-spec-review-r22 approved the direct parent-only
+candidate isolation proof.
+
+### test-spec-review-r22
+
+No new material findings. R22 independently confirmed BFP-TSR21-1 resolved and
+approved the R54/R26/R20-synchronized proof map for M2 implementation.
