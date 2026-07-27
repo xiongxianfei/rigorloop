@@ -210,7 +210,7 @@ review:
   closed_findings: 163
   architecture_review: reviews/architecture-review-r25.md
   spec_review: reviews/spec-review-r53.md
-  test_spec_review: reviews/test-spec-review-r19.md
+  test_spec_review: reviews/test-spec-review-r20.md
   code_review: reviews/code-review-m2-r2.md
   review_log: review-log.md
 workflow:

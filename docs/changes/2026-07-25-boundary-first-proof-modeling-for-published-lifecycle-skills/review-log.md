@@ -1394,3 +1394,14 @@ Detailed record: reviews/plan-review-r19.md
 Resolution: review-resolution.md#plan-review-r19
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r20
+Stage: test-spec-review
+Round: 20
+Reviewed artifact: identity-synchronized three-category proof map at 3acb224d
+Status: approved
+Detailed record: reviews/test-spec-review-r20.md
+Resolution: review-resolution.md#test-spec-review-r20
+Material findings: None
+Open findings: None
