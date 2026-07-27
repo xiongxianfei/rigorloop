@@ -2445,6 +2445,12 @@ def _validate_review_payload(
                 print(record, file=sys.stderr)
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
     if outcome != "approved":
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            print(
+                f"review-nonapproval:{stage}:outcome={outcome}",
+                file=sys.stderr,
+            )
+            print(record[:8192], file=sys.stderr)
         raise BoundaryRuntimeError("review-nonapproval", "in-turn")
     def metadata(markdown: str, label: str) -> str | None:
         match = re.search(
