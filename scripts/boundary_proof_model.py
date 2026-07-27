@@ -686,6 +686,26 @@ class BoundaryProofMap:
 
 
 @dataclass(frozen=True)
+class FeatureInvariantProjection:
+    """Closed candidate/produced comparison surface for one feature model."""
+
+    boundary_model_version: str
+    boundary_model_scope: str
+    requirement_ids: tuple[str, ...]
+    core_dimension_ids: tuple[str, ...]
+    extension_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class ProofInvariantProjection:
+    """Closed candidate/produced comparison surface for one proof map."""
+
+    boundary_model_version: str
+    boundary_model_scope: str
+    governing_requirement_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True)
 class StageGateResult:
     detected_stage: str
     diagnostic_id: str
@@ -1181,6 +1201,63 @@ def normalize_proof_map(
     if missing:
         raise BoundaryProofError("unmapped boundary or interaction: " + ", ".join(missing))
     return BoundaryProofMap(version, scope, tuple(normalized))
+
+
+def feature_invariant_projection(
+    model: FeatureBoundaryModel,
+) -> FeatureInvariantProjection:
+    """Project only the closed, stage-independent feature invariants."""
+
+    requirement_ids = {
+        requirement_id
+        for row in (*model.core_dimensions, *model.extensions, *model.interactions)
+        for requirement_id in row.governing_requirement_ids
+    }
+    return FeatureInvariantProjection(
+        boundary_model_version=model.boundary_model_version,
+        boundary_model_scope=model.boundary_model_scope,
+        requirement_ids=tuple(sorted(requirement_ids)),
+        core_dimension_ids=tuple(
+            sorted(row.dimension_id for row in model.core_dimensions)
+        ),
+        extension_ids=tuple(sorted(row.extension_id for row in model.extensions)),
+    )
+
+
+def proof_invariant_projection(
+    proof: BoundaryProofMap,
+) -> ProofInvariantProjection:
+    """Project only the closed, stage-independent proof-map invariants."""
+
+    return ProofInvariantProjection(
+        boundary_model_version=proof.boundary_model_version,
+        boundary_model_scope=proof.boundary_model_scope,
+        governing_requirement_ids=tuple(
+            sorted(
+                {
+                    requirement_id
+                    for row in proof.proof_obligations
+                    for requirement_id in row.governing_requirement_ids
+                }
+            )
+        ),
+    )
+
+
+def boundary_invariant_projections_match(
+    candidate_feature: FeatureBoundaryModel,
+    produced_feature: FeatureBoundaryModel,
+    candidate_proof: BoundaryProofMap,
+    produced_proof: BoundaryProofMap,
+) -> bool:
+    """Compare candidates and stage outputs without comparing modeling choices."""
+
+    return (
+        feature_invariant_projection(candidate_feature)
+        == feature_invariant_projection(produced_feature)
+        and proof_invariant_projection(candidate_proof)
+        == proof_invariant_projection(produced_proof)
+    )
 
 
 def evaluate_boundary_state(payload: Mapping[str, Any]) -> StageGateResult:
@@ -2235,17 +2312,22 @@ __all__ = [
     "FIXTURE_GATES",
     "INCIDENT_RULES",
     "FeatureBoundaryModel",
+    "FeatureInvariantProjection",
     "INTERACTION_RATIONALES",
     "PRESERVATION_KEYS",
     "ProofObligation",
+    "ProofInvariantProjection",
     "RESULT_VALUES",
     "SimpleTraceMetrics",
     "StageGateResult",
     "capability_report_result",
+    "boundary_invariant_projections_match",
     "evaluate_boundary_state",
     "evaluate_simple_change_trace",
+    "feature_invariant_projection",
     "normalize_feature_model",
     "normalize_proof_map",
+    "proof_invariant_projection",
     "validate_capability_report",
     "validate_incident_registry",
     "validate_incident_fixture",

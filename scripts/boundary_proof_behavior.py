@@ -28,10 +28,13 @@ from boundary_proof_model import (
     CORE_DIMENSION_IDS,
     HANDLER_CONFORMANCE_CASES,
     BoundaryProofError,
+    boundary_invariant_projections_match,
     evaluate_simple_change_trace,
+    feature_invariant_projection,
     handler_conformance_policy,
     normalize_feature_model,
     normalize_proof_map,
+    proof_invariant_projection,
     runtime_projection_identity,
     select_runtime_projection,
     validate_handler_conformance,
@@ -263,6 +266,8 @@ DIAGNOSTIC_PHASES: Final[dict[str, frozenset[str]]] = {
     "credential-isolation-failed": frozenset({"pre-turn-start"}),
     "workspace-baseline-invalid": frozenset({"pre-turn-start"}),
     "stage-envelope-canary-failed": frozenset({"in-turn"}),
+    "boundary-oracle-mismatch": frozenset({"in-turn"}),
+    "unmanifested-input": frozenset({"pre-turn-start"}),
     "unexpected-prohibited-event": frozenset({"in-turn"}),
 }
 CONTRACT_PATHS: Final[tuple[str, ...]] = (
@@ -1587,6 +1592,25 @@ def _workflow_stage_request(
     }
 
 
+def _assert_parent_only_candidate_isolation(
+    *,
+    serialized_request: Mapping[str, object],
+    workspace_inventory: Sequence[object],
+    child_access_observations: Sequence[object],
+    forbidden_candidate_values: Sequence[str],
+) -> None:
+    """Reject any candidate oracle value exposed on a child-visible surface."""
+
+    surfaces = (
+        _canonical_json_bytes(serialized_request),
+        _canonical_json_bytes(list(workspace_inventory)),
+        _canonical_json_bytes(list(child_access_observations)),
+    )
+    for value in forbidden_candidate_values:
+        if value and any(value.encode("utf-8") in surface for surface in surfaces):
+            raise BoundaryRuntimeError("unmanifested-input", "pre-turn-start")
+
+
 def _stage_policy_variants(
     stage: str, attempt: int
 ) -> list[Mapping[str, object]]:
@@ -2519,11 +2543,13 @@ def _assemble_run(
         )
     except (UnicodeError, BoundaryProofError) as error:
         raise BoundaryRuntimeError("runtime-identity-unstable", "in-turn") from error
-    if (
-        _feature_record(parsed_feature) != _feature_record(candidate_feature)
-        or _proof_record(parsed_proof) != _proof_record(candidate_proof)
+    if not boundary_invariant_projections_match(
+        candidate_feature,
+        parsed_feature,
+        candidate_proof,
+        parsed_proof,
     ):
-        raise BoundaryRuntimeError("runtime-identity-unstable", "in-turn")
+        raise BoundaryRuntimeError("boundary-oracle-mismatch", "in-turn")
     if (
         spec_review_payload.get("outcome") != "approved"
         or test_review_payload.get("outcome") != "approved"
@@ -3178,9 +3204,11 @@ def _validate_run(
             ),
             oracle_feature,
         )
-        if (
-            _feature_record(feature) != _feature_record(oracle_feature)
-            or _proof_record(proof) != _proof_record(oracle_proof)
+        if not boundary_invariant_projections_match(
+            oracle_feature,
+            feature,
+            oracle_proof,
+            proof,
         ):
             raise BoundaryRuntimeError("runtime-identity-unstable")
         structural = {
@@ -3260,6 +3288,31 @@ def generate_behavior(
     if not scenario_path.is_absolute():
         scenario_path = repo_root / scenario_path
     scenario = _scenario(repo_root, scenario_path)
+    oracle_paths = [
+        scenario_path.parent / "candidates" / "feature-spec.md",
+        scenario_path.parent / "candidates" / "test-spec.md",
+    ]
+    try:
+        oracle_raw = [path.read_bytes() for path in oracle_paths]
+        candidate_feature = normalize_feature_model(
+            _parse_feature_markdown(oracle_raw[0].decode("utf-8"))
+        )
+        candidate_proof = normalize_proof_map(
+            _parse_test_spec_markdown(oracle_raw[1].decode("utf-8")),
+            candidate_feature,
+        )
+    except (OSError, UnicodeError, BoundaryProofError) as error:
+        raise BoundaryRuntimeError("boundary-oracle-mismatch", "in-turn") from error
+    forbidden_candidate_values = tuple(
+        value
+        for path, raw in zip(oracle_paths, oracle_raw, strict=True)
+        for value in (
+            str(path),
+            path.relative_to(repo_root).as_posix(),
+            _sha256(raw),
+            raw.decode("utf-8"),
+        )
+    )
     baseline_path = (
         _select_change_root(repo_root, change_id)
         / "evidence"
@@ -3288,6 +3341,7 @@ def generate_behavior(
                 repo_root=repo_root,
                 generation_request=stage_request,
                 generation_sink=generated,
+                forbidden_candidate_values=forbidden_candidate_values,
             )
             if len(generated) != 1:
                 raise BoundaryRuntimeError("protocol-shape-incompatible")
@@ -3350,30 +3404,24 @@ def generate_behavior(
         normalized_feature = normalize_feature_model(
             _parse_feature_markdown(feature_markdown)
         )
-        oracle_feature_path = (
-            scenario_path.parent / "candidates" / "feature-spec.md"
-        )
-        expected_feature_model = normalize_feature_model(
-            _parse_feature_markdown(
-                oracle_feature_path.read_text(encoding="utf-8")
-            )
-        )
-        if _feature_record(normalized_feature) != _feature_record(
-            expected_feature_model
-        ):
+        if feature_invariant_projection(
+            normalized_feature
+        ) != feature_invariant_projection(candidate_feature):
             raise BoundaryProofError(
-                "stage-owned feature differs from the fixture contract"
+                "stage-owned feature differs from the closed invariant projection"
             )
     except BoundaryProofError as error:
         raise BoundaryRuntimeError(
-            "unexpected-prohibited-event", "in-turn"
+            "boundary-oracle-mismatch", "in-turn"
         ) from error
 
     spec_review_request = _workflow_stage_request(
         "spec-review",
         "Review the exact feature specification and record the formal result.",
         artifact_context=(
-            f"Reviewed artifact identity: {feature_identity}\n\n"
+            "Authoritative scenario request:\n"
+            + str(scenario["request"])
+            + f"\n\nReviewed artifact identity: {feature_identity}\n\n"
             + feature_markdown
         ),
     )
@@ -3416,31 +3464,24 @@ def generate_behavior(
             _parse_test_spec_markdown(test_spec_markdown),
             normalized_feature,
         )
-        oracle_test_path = (
-            scenario_path.parent / "candidates" / "test-spec.md"
-        )
-        expected_proof_map = normalize_proof_map(
-            _parse_test_spec_markdown(
-                oracle_test_path.read_text(encoding="utf-8")
-            ),
-            expected_feature_model,
-        )
-        if _proof_record(normalized_proof) != _proof_record(
-            expected_proof_map
-        ):
+        if proof_invariant_projection(
+            normalized_proof
+        ) != proof_invariant_projection(candidate_proof):
             raise BoundaryProofError(
-                "stage-owned proof differs from the fixture contract"
+                "stage-owned proof differs from the closed invariant projection"
             )
     except BoundaryProofError as error:
         raise BoundaryRuntimeError(
-            "unexpected-prohibited-event", "in-turn"
+            "boundary-oracle-mismatch", "in-turn"
         ) from error
 
     test_review_request = _workflow_stage_request(
         "test-spec-review",
         "Review the exact test specification and record the formal result.",
         artifact_context=(
-            f"Reviewed artifact identity: {test_spec_identity}\n\n"
+            "Authoritative scenario request:\n"
+            + str(scenario["request"])
+            + f"\n\nReviewed artifact identity: {test_spec_identity}\n\n"
             + test_spec_markdown
             + "\n\nGoverning feature specification:\n"
             + feature_markdown
@@ -3527,10 +3568,6 @@ def generate_behavior(
     _atomic_write(implementation_path, implementation_raw)
     baseline_commit = "git:" + baseline_head
     skill_refs = list(behavior_manifest["skill_package_refs"])
-    oracle_paths = [
-        scenario_path.parent / "candidates" / "feature-spec.md",
-        scenario_path.parent / "candidates" / "test-spec.md",
-    ]
     oracle_refs = [
         _regular_reference(repo_root, path) for path in sorted(oracle_paths)
     ]
@@ -3542,13 +3579,6 @@ def generate_behavior(
         "oracle_refs": oracle_refs,
         "implementation_manifest_ref": implementation_ref,
     }
-    candidate_feature = normalize_feature_model(
-        _parse_feature_markdown(oracle_paths[0].read_text(encoding="utf-8"))
-    )
-    candidate_proof = normalize_proof_map(
-        _parse_test_spec_markdown(oracle_paths[1].read_text(encoding="utf-8")),
-        candidate_feature,
-    )
     run_id = "run-" + secrets.token_hex(16)
     temporary, run_manifest = _assemble_run(
         repo_root,
@@ -5174,6 +5204,7 @@ def _collect_runtime_attestation(
     repo_root: Path = ROOT,
     generation_request: Mapping[str, object] | None = None,
     generation_sink: list[dict[str, object]] | None = None,
+    forbidden_candidate_values: Sequence[str] = (),
 ) -> dict[str, object]:
     """Collect the trusted attestation or fail at the first unproved boundary."""
 
@@ -5499,10 +5530,15 @@ def _collect_runtime_attestation(
                 runtime_home,
                 workspace,
             )
-            thread = server.request(
-                "thread/start",
-                _thread_start_request(workspace, model_id),
-            )
+            thread_request = _thread_start_request(workspace, model_id)
+            if generation_request is not None:
+                _assert_parent_only_candidate_isolation(
+                    serialized_request=generation_request,
+                    workspace_inventory=_workspace_probe_snapshot(workspace),
+                    child_access_observations=[thread_request],
+                    forbidden_candidate_values=forbidden_candidate_values,
+                )
+            thread = server.request("thread/start", thread_request)
             thread_metadata, thread_id = _validated_thread_metadata(
                 thread,
                 version=version,
@@ -5556,18 +5592,25 @@ def _collect_runtime_attestation(
                         "unmanifested-input", "pre-turn-start"
                     )
                 workspace_before_turn = _workspace_probe_snapshot(workspace)
+                turn_request = _turn_start_request(
+                    thread_id,
+                    workspace,
+                    model_id,
+                    runtime_home,
+                    prompt,
+                    required_reference_text,
+                    output_schema,
+                    skill_names,
+                )
+                _assert_parent_only_candidate_isolation(
+                    serialized_request=turn_request,
+                    workspace_inventory=workspace_before_turn,
+                    child_access_observations=[thread_request, turn_request],
+                    forbidden_candidate_values=forbidden_candidate_values,
+                )
                 started = server.request(
                     "turn/start",
-                    _turn_start_request(
-                        thread_id,
-                        workspace,
-                        model_id,
-                        runtime_home,
-                        prompt,
-                        required_reference_text,
-                        output_schema,
-                        skill_names,
-                    ),
+                    turn_request,
                 )
                 if (
                     not isinstance(started, dict)
