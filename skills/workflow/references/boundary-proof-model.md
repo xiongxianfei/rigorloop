@@ -67,8 +67,9 @@ Apply these closed serialization rules:
 - for `not-applicable`, use `-` for requirement and boundary IDs and provide a
   nonempty rationale;
 - define each boundary ID in exactly one core or extension row;
-- give each example a unique ID, cite only defined boundaries, and cite
-  requirements that own every cited boundary;
+- give each example a unique ID, cite only defined boundaries, keep its
+  requirement IDs within the union owned by those boundaries, and overlap the
+  owner requirements of every cited boundary;
 - use `illustration` with requirement and boundary IDs and no regression or
   discovery ID; use `regression` with those links plus one regression ID;
 - either provide an interaction table with unique IDs, at least two defined

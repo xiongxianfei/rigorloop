@@ -1906,6 +1906,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "Each boundary ID must appear in exactly one boundary row",
             stage_request["prompt"],
         )
+        self.assertIn("must overlap each cited boundary", stage_request["prompt"])
         self.assertIn("add no normative behavior", stage_request["prompt"])
         self.assertEqual(
             stage_request["artifact_policy_id"],
