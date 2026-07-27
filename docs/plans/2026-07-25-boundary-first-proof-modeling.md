@@ -94,13 +94,13 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r26.md
-- Review status: pending; stage=code-review; next-round=r10
+- Current milestone state: resolution-needed
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r10.md
+- Review status: changes-requested; stage=code-review; round=r10
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BFP-CR-M2-14,BFP-CR-M2-15
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-14,BFP-CR-M2-15,BFP-CR-M2-16,BFP-CR-M2-17
 
 ## Milestones
 
@@ -928,6 +928,12 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
+  BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
+  Owner-decision stops do not yet retain the complete recoverable review
+  package, and the approved T52 direct contrast matrix is materially
+  under-proved. Both findings have deterministic declared-safe fixes; M2 is
+  `resolution-needed`.
 - 2026-07-27: Published fresh canonical zero-correction behavior run
   `run-b6114d1a01a6e6703177c512c2eb4a11` for input identity
   `sha256:3996b321b3d9d5e8b8b2dfba5140afc128ec8503c27c709f983612c39dae4c12`.
