@@ -1317,3 +1317,14 @@ Detailed record: reviews/spec-review-r51.md
 Resolution: review-resolution.md#spec-review-r51
 Material findings: BFP-SR51-1
 Open findings: BFP-SR51-1
+
+### Review entry
+Review ID: spec-review-r52
+Stage: spec-review
+Round: 52
+Reviewed artifact: stable review-reference correction at 1c19a77c
+Status: changes-requested
+Detailed record: reviews/spec-review-r52.md
+Resolution: review-resolution.md#spec-review-r52
+Material findings: BFP-SR52-1
+Open findings: BFP-SR52-1

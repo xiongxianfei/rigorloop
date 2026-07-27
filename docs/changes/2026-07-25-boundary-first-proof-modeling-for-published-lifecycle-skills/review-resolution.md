@@ -3355,3 +3355,23 @@ does not yet exist.
 Rationale: Review recording must not create a new stale-reference defect.
 Validation target: next focused spec review
 Validation evidence: pending
+
+### spec-review-r52
+
+#### BFP-SR52-1 — One feature-spec input row still predicts R50
+
+Finding ID: BFP-SR52-1
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: focused spec/test-spec revision
+Decision owner: formal review recording contract
+Decision needed: none
+Required outcome: Replace the last stale named pending review with stable
+current-state wording.
+Chosen action: Bind the row to latest recorded R52 changes-requested evidence
+and an unnamed clean focused rereview while leaving the identity pending.
+Rationale: One stale status cell can contradict an otherwise coherent proof
+map.
+Validation target: next focused spec review
+Validation evidence: pending
