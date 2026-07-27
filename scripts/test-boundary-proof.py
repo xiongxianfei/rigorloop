@@ -6,6 +6,7 @@ from __future__ import annotations
 import dataclasses
 import copy
 import hashlib
+import io
 import json
 import subprocess
 import sys
@@ -3021,10 +3022,24 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                         }
                     )
                 with self.assertRaises(BoundaryRuntimeError) as raised:
-                    server.collect_turn("thread-1", rows)
+                    diagnostic = io.StringIO()
+                    with (
+                        mock.patch.dict(
+                            "os.environ",
+                            {"BOUNDARY_PROOF_DIAGNOSTICS": "1"},
+                        ),
+                        mock.patch("sys.stderr", diagnostic),
+                    ):
+                        server.collect_turn("thread-1", rows)
                 self.assertEqual(
                     raised.exception.diagnostic_id,
                     "unexpected-prohibited-event",
+                )
+                self.assertEqual(
+                    diagnostic.getvalue(),
+                    "prohibited-event:classification-rejected:"
+                    + f"classification={classification}:"
+                    + f"event_kind=ServerNotification:{observed}\n",
                 )
 
     def test_turn_collection_distinguishes_retryable_timeout_from_bad_events(
