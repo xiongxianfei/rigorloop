@@ -349,6 +349,18 @@ RECOVERY_BASIS_FIELDS: Final[frozenset[str]] = frozenset(
 RECOVERY_STATE_FIELDS: Final[frozenset[str]] = frozenset(
     {"schema_version", "recovery_id", "basis_identity", "state"}
 )
+RECOVERY_DECISION_FIELDS: Final[frozenset[str]] = frozenset(
+    {
+        "schema_version",
+        "change_id",
+        "run_id",
+        "publisher_instance_id",
+        "input_set_identity",
+        "action",
+        "authorized_by",
+        "outcome",
+    }
+)
 RUN_ID_PATTERN: Final[re.Pattern[str]] = re.compile(r"^run-[0-9a-f]{32}$")
 PUBLISHER_ID_PATTERN: Final[re.Pattern[str]] = re.compile(
     r"^publisher-[0-9a-f]{32}$"
@@ -4227,6 +4239,45 @@ def _validate_recovery_state(
         raise BoundaryRuntimeError("runtime-identity-unstable")
 
 
+def _validate_recovery_decision_ref(
+    repo_root: Path,
+    change_id: str,
+    authority_ref: object,
+    *,
+    run_id: object,
+    publisher_instance_id: object,
+    input_set_identity: object,
+    action: object,
+    authorized_by: object,
+) -> None:
+    expected_path = (
+        f"docs/changes/{change_id}/recovery-decisions/{run_id}.json"
+    )
+    if (
+        not isinstance(authority_ref, dict)
+        or set(authority_ref) != {"path", "identity"}
+        or authority_ref.get("path") != expected_path
+        or not isinstance(authority_ref.get("identity"), str)
+        or IDENTITY_PATTERN.fullmatch(str(authority_ref["identity"])) is None
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    _validate_reference(repo_root, authority_ref)
+    decision = _read_json(repo_root / expected_path)
+    if (
+        set(decision) != RECOVERY_DECISION_FIELDS
+        or decision.get("schema_version")
+        != "simple-change-recovery-decision-v1"
+        or decision.get("change_id") != change_id
+        or decision.get("run_id") != run_id
+        or decision.get("publisher_instance_id") != publisher_instance_id
+        or decision.get("input_set_identity") != input_set_identity
+        or decision.get("action") != action
+        or decision.get("authorized_by") != authorized_by
+        or decision.get("outcome") != "authorized"
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+
+
 def _validate_recovery_basis(
     repo_root: Path,
     change_id: str,
@@ -4260,21 +4311,27 @@ def _validate_recovery_basis(
     ):
         raise BoundaryRuntimeError("runtime-identity-unstable")
     authority_ref = basis.get("authorization_evidence_ref")
-    authority_prefix = f"docs/changes/{change_id}/"
     if (
         not isinstance(authority_ref, dict)
         or set(authority_ref) != {"path", "identity"}
         or not isinstance(authority_ref.get("path"), str)
         or PurePosixPath(str(authority_ref["path"])).is_absolute()
         or ".." in PurePosixPath(str(authority_ref["path"])).parts
-        or not str(authority_ref["path"]).startswith(authority_prefix)
-        or not str(authority_ref["path"]).endswith(".md")
         or not isinstance(authority_ref.get("identity"), str)
         or IDENTITY_PATTERN.fullmatch(str(authority_ref["identity"])) is None
     ):
         raise BoundaryRuntimeError("runtime-identity-unstable")
     if require_current_authority:
-        _validate_reference(repo_root, authority_ref)
+        _validate_recovery_decision_ref(
+            repo_root,
+            change_id,
+            authority_ref,
+            run_id=basis["run_id"],
+            publisher_instance_id=basis["publisher_instance_id"],
+            input_set_identity=basis["input_set_identity"],
+            action=basis["action"],
+            authorized_by=basis["authorized_by"],
+        )
     lease_snapshot = basis.get("publisher_lease_snapshot")
     if (
         not isinstance(lease_snapshot, dict)
@@ -5461,6 +5518,20 @@ def discard_interrupted_publication(
         if not authorization_evidence.is_absolute():
             authorization_evidence = repo_root / authorization_evidence
         authority_ref = _regular_reference(repo_root, authorization_evidence)
+        if lease_path.exists():
+            authority_lease = _read_publisher_lease(repo_root, change_id)
+            _validate_recovery_decision_ref(
+                repo_root,
+                change_id,
+                authority_ref,
+                run_id=authority_lease["run_id"],
+                publisher_instance_id=authority_lease[
+                    "publisher_instance_id"
+                ],
+                input_set_identity=authority_lease["input_set_identity"],
+                action="discard-and-regenerate",
+                authorized_by=authorized_by,
+            )
         recovery_temps = sorted(simple_root.glob(".manual-recovery-run-*.tmp"))
         if len(recovery_temps) > 1:
             raise BoundaryRuntimeError("runtime-identity-unstable")
@@ -9018,10 +9089,21 @@ def _parser() -> argparse.ArgumentParser:
     validate.add_argument("--change-id", required=True)
     recover = subparsers.add_parser(
         "recover-discard",
-        help="discard one interrupted lease-owned run with explicit authority",
+        help=(
+            "discard one interrupted lease-owned run with an exact "
+            "change-local recovery decision"
+        ),
     )
     recover.add_argument("--change-id", required=True)
-    recover.add_argument("--authorization-evidence", required=True, type=Path)
+    recover.add_argument(
+        "--authorization-evidence",
+        required=True,
+        type=Path,
+        help=(
+            "docs/changes/<change-id>/recovery-decisions/"
+            "<run-id>.json"
+        ),
+    )
     recover.add_argument("--authorized-by", required=True)
     fixture = subparsers.add_parser(
         "exercise-fixture",

@@ -120,6 +120,52 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "fixtures" / "boundary-proof"
 
 
+def _recovery_authority(
+    root: Path,
+    change_id: str,
+    *,
+    authorized_by: str = "test-maintainer",
+) -> Path:
+    lease_path = (
+        root
+        / "docs"
+        / "changes"
+        / change_id
+        / "evidence"
+        / "simple-change"
+        / "publisher.json"
+    )
+    lease = json.loads(lease_path.read_text(encoding="utf-8"))
+    authority = (
+        root
+        / "docs"
+        / "changes"
+        / change_id
+        / "recovery-decisions"
+        / f"{lease['run_id']}.json"
+    )
+    authority.parent.mkdir(parents=True, exist_ok=True)
+    authority.write_text(
+        json.dumps(
+            {
+                "schema_version": "simple-change-recovery-decision-v1",
+                "change_id": change_id,
+                "run_id": lease["run_id"],
+                "publisher_instance_id": lease["publisher_instance_id"],
+                "input_set_identity": lease["input_set_identity"],
+                "action": "discard-and-regenerate",
+                "authorized_by": authorized_by,
+                "outcome": "authorized",
+            },
+            ensure_ascii=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+    return authority
+
+
 def _core_rows() -> list[dict[str, object]]:
     return [
         {
@@ -3392,10 +3438,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             child.mkdir()
             marker = child / "manifested.txt"
             marker.write_text("untrusted", encoding="utf-8")
-            authority = (
-                root / "docs/changes" / change_id / "review-resolution.md"
-            )
-            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            authority = _recovery_authority(root, change_id)
             before = marker.read_bytes()
             result = discard_interrupted_publication(
                 change_id,
@@ -3432,10 +3475,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             (working / "unknown-outside-approved-workspace").write_text(
                 "untrusted", encoding="utf-8"
             )
-            authority = (
-                root / "docs/changes" / change_id / "review-resolution.md"
-            )
-            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            authority = _recovery_authority(root, change_id)
             with self.assertRaises(BoundaryRuntimeError):
                 discard_interrupted_publication(
                     change_id,
@@ -3457,10 +3497,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             staging = root / str(lease["staging_root"])
             working.rename(staging)
             (staging / "junk").write_text("not a staged run", encoding="utf-8")
-            authority = (
-                root / "docs/changes" / change_id / "review-resolution.md"
-            )
-            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            authority = _recovery_authority(root, change_id)
             with self.assertRaises(BoundaryRuntimeError):
                 discard_interrupted_publication(
                     change_id,
@@ -3486,10 +3523,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             (
                 simple / f".manual-recovery-{run_id}-{recovery_id}.tmp"
             ).write_bytes(b"{")
-            authority = (
-                root / "docs/changes" / change_id / "review-resolution.md"
-            )
-            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            authority = _recovery_authority(root, change_id)
             result = discard_interrupted_publication(
                 change_id,
                 authority,
@@ -3515,10 +3549,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 root, change_id, run_id, "publisher-" + "1" * 32,
                 "sha256:" + "b" * 64,
             )
-            authority = (
-                root / "docs/changes" / change_id / "review-resolution.md"
-            )
-            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            authority = _recovery_authority(root, change_id)
             with self.assertRaises(BoundaryRuntimeError):
                 discard_interrupted_publication(
                     change_id,
@@ -3593,10 +3624,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 root, change_id, run_id, "publisher-" + "1" * 32,
                 "sha256:" + "b" * 64,
             )
-            authority = (
-                root / "docs/changes" / change_id / "review-resolution.md"
-            )
-            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            authority = _recovery_authority(root, change_id)
             result = discard_interrupted_publication(
                 change_id,
                 authority,
@@ -3620,10 +3648,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 root, change_id, run_id, "publisher-" + "1" * 32,
                 "sha256:" + "b" * 64,
             )
-            authority = (
-                root / "docs/changes" / change_id / "review-resolution.md"
-            )
-            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            authority = _recovery_authority(root, change_id)
             discard_interrupted_publication(
                 change_id,
                 authority,
@@ -3696,10 +3721,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
-            authority = (
-                root / "docs/changes" / change_id / "review-resolution.md"
-            )
-            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            authority = _recovery_authority(root, change_id)
             with self.assertRaises(BoundaryRuntimeError):
                 discard_interrupted_publication(
                     change_id,
@@ -3726,6 +3748,145 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                     authorized_by="test-maintainer",
                     repo_root=root,
                 )
+
+    def test_t51_manual_recovery_rejects_arbitrary_change_local_markdown(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            change_root = root / "docs/changes" / change_id
+            change_root.mkdir(parents=True)
+            _create_publisher_lease(
+                root, change_id, "run-" + "a" * 32,
+                "publisher-" + "1" * 32, "sha256:" + "b" * 64,
+            )
+            authority = change_root / "validation-note.md"
+            authority.write_text(
+                "# Unrelated change-local evidence\n", encoding="utf-8"
+            )
+            with self.assertRaises(BoundaryRuntimeError):
+                discard_interrupted_publication(
+                    change_id,
+                    authority,
+                    authorized_by="test-maintainer",
+                    repo_root=root,
+                )
+
+    def test_t51_recovery_decision_schema_and_subject_are_exact(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            _create_publisher_lease(
+                root, change_id, "run-" + "a" * 32,
+                "publisher-" + "1" * 32, "sha256:" + "b" * 64,
+            )
+            authority = _recovery_authority(root, change_id)
+            valid = json.loads(authority.read_text(encoding="utf-8"))
+
+            invalid_values = {
+                "schema_version": "unknown",
+                "change_id": "2026-07-25-other",
+                "run_id": "run-" + "c" * 32,
+                "publisher_instance_id": "publisher-" + "2" * 32,
+                "input_set_identity": "sha256:" + "d" * 64,
+                "action": "adopt",
+                "authorized_by": "other-maintainer",
+                "outcome": "denied",
+            }
+            candidates: list[tuple[str, dict[str, object]]] = []
+            for field, value in invalid_values.items():
+                invalid = dict(valid)
+                invalid[field] = value
+                candidates.append((f"changed-{field}", invalid))
+            for field in valid:
+                invalid = dict(valid)
+                invalid.pop(field)
+                candidates.append((f"missing-{field}", invalid))
+            invalid = dict(valid)
+            invalid["extra"] = True
+            candidates.append(("extra-field", invalid))
+
+            for case, invalid in candidates:
+                with self.subTest(case=case):
+                    authority.write_text(
+                        json.dumps(
+                            invalid,
+                            ensure_ascii=False,
+                            separators=(",", ":"),
+                            sort_keys=True,
+                        ),
+                        encoding="utf-8",
+                    )
+                    with self.assertRaises(BoundaryRuntimeError):
+                        discard_interrupted_publication(
+                            change_id,
+                            authority,
+                            authorized_by="test-maintainer",
+                            repo_root=root,
+                        )
+            authority.write_text(
+                json.dumps(
+                    valid,
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                    sort_keys=True,
+                ),
+                encoding="utf-8",
+            )
+            wrong_path = authority.with_name("other.json")
+            wrong_path.write_bytes(authority.read_bytes())
+            with self.assertRaises(BoundaryRuntimeError):
+                discard_interrupted_publication(
+                    change_id,
+                    wrong_path,
+                    authorized_by="test-maintainer",
+                    repo_root=root,
+                )
+
+    def test_t51_recovery_decision_identity_cannot_drift_on_resume(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            run_id = "run-" + "a" * 32
+            _, working = _create_publisher_lease(
+                root, change_id, run_id, "publisher-" + "1" * 32,
+                "sha256:" + "b" * 64,
+            )
+            child = working / "boundary-proof-workspace-abcdefgh"
+            child.mkdir()
+            (child / "manifested.txt").write_text(
+                "untrusted", encoding="utf-8"
+            )
+            authority = _recovery_authority(root, change_id)
+            with self.assertRaises(BoundaryRuntimeError):
+                discard_interrupted_publication(
+                    change_id,
+                    authority,
+                    authorized_by="test-maintainer",
+                    repo_root=root,
+                    crash_at="after-recovery-authorized",
+                )
+            authority.write_bytes(authority.read_bytes() + b"\n")
+            with self.assertRaises(BoundaryRuntimeError):
+                discard_interrupted_publication(
+                    change_id,
+                    authority,
+                    authorized_by="test-maintainer",
+                    repo_root=root,
+                )
+            state = json.loads(
+                (
+                    working.parent
+                    / f"manual-recovery-state-{run_id}.json"
+                ).read_text(encoding="utf-8")
+            )
+            self.assertEqual(state["state"], "authorized")
+            self.assertTrue((working.parent / "publisher.json").is_file())
 
     def test_t51_global_discovery_rejects_invalid_fixed_root_kind(
         self,
@@ -3768,10 +3929,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 (child / "manifested.txt").write_text(
                     f"attempt-{index}", encoding="utf-8"
                 )
-                authority = (
-                    root / "docs/changes" / change_id / "review-resolution.md"
-                )
-                authority.write_text("# Authorized recovery\n", encoding="utf-8")
+                authority = _recovery_authority(root, change_id)
                 with self.assertRaises(BoundaryRuntimeError):
                     discard_interrupted_publication(
                         change_id,
