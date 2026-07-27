@@ -66,8 +66,9 @@ Boundary model scope: R28-R28z
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted with scoped writable-child supersession | `sha256:b80c4a494ae1e08abea77d74fb270a959ebbde5cf5e01e1f8606791f0e0b5434` |
 | Capability-projection ADR | `docs/adr/ADR-20260727-capability-projected-file-change-control.md` | accepted base decision; binary clauses superseded narrowly | `sha256:b9d75ea29d528ef0e1f835ab796d6aa6936d362520ce1a424f5f0bb1112568ef` |
 | Three-category projection ADR | `docs/adr/ADR-20260727-three-category-runtime-feature-projection.md` | accepted by architecture-review R25 | `sha256:b2d8997a97114f2b055efc2bec627b39c26d4fea95e5b86ae4bacae3a9c724eb` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; approved for proof-map synchronization | `sha256:9e2c5f129f86df371290b035f8f0bde37ae925250d394be6fd4de78464926eff` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; approved for proof-map synchronization | `sha256:4c9f7281ea6d9e2e6e946b5954aa1fd7d66627828245d309e0afa914bfe593b1` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r21.md` | approved | `sha256:3a4167f23f829247775b5743f5b7c4bdd1c1a4deb47b415779a5c81ea93573ed` |
+| M2 code review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r4.md` | changes requested; `BFP-CR-M2-10` open | `sha256:83c8b9fa5842194d3e30b650badd1fe0a7de9989b340616b48fb79e440e13b37` |
 
 ## Testing strategy
 
@@ -75,9 +76,10 @@ Boundary model scope: R28-R28z
 - Use filesystem-backed integration tests for selector behavior, lifecycle validation, skill validation, generated-output drift, adapter generation, change metadata, and review artifact validation.
 - Use focused skill-validator assertions only for stable, machine-checkable skill guidance such as required labels, forbidden stale labels, handoff boundaries, and generated-output drift.
 - Use selector-selected targeted proof as the first validation layer for changed paths; use broad smoke only when an authoritative trigger elevates it.
-- Treat `specs/rigorloop-workflow.test.md` as a pending proof-map amendment.
-  M2 remains blocked until an independent test-spec review approves this
-  R55/R27/R21-synchronized proof map and exact input identities.
+- Treat `specs/rigorloop-workflow.test.md` as a pending focused proof-map
+  amendment. M2 remains blocked until test-spec-review R24 confirms that T51
+  decomposes every `BFP-CR-M2-10` publisher property into direct executable
+  proof and approves the current input identities.
 - Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
 - Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
 - Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
@@ -1613,6 +1615,22 @@ Boundary model scope: R28-R28z
   `staged-unreceipted`, `prepared-staged`, `prepared-installed`,
   `prepared-pointer-temporary`, `prepared-pointed`, `published-owned`,
   `published`, `conflict`, and `corrupt` candidate fixtures.
+- Direct property obligations:
+
+  | Property ID | Required executable proof |
+  | --- | --- |
+  | `T51-PUBLISHER-IDENTITY` | Mutate, omit, add, or substitute each exact `publisher.json` field and `manifest.publisher_instance_id`; prove the lease and manifest accept only the same `publisher-[0-9a-f]{32}` identity. |
+  | `T51-LEASE-BEFORE-STAGE` | Instrument the first lifecycle invocation and prove an exclusively created and fsynced valid lease plus its fsynced deterministic working root already exist; inject failure on either durability boundary and prove no stage invocation. |
+  | `T51-ROOT-BINDING` | Substitute each working, staging, and target root independently; prove only the three normalized lease-bound paths are accepted and every symlink, special file, escape, unreadable entry, unknown descendant, or unstable identity fails closed. |
+  | `T51-GLOBAL-DISCOVERY` | Exercise the fixed name-parse, lease/recovery validation, unique-context selection, content-validation, and tuple-routing order; prove malformed names, multiple active runs or recoveries, cross-run objects, ambiguous temps, and unknown transient paths stop before generation or mutation. |
+  | `T51-PUBLICATION-STATES` | Exercise every positive state from `clean` through `published` and independently violate each predicate; prove `corrupt` precedes consistency routing, every remaining valid tuple selects exactly one row, and every unlisted tuple is `conflict`. |
+  | `T51-SAME-LIVE-PUBLISHER` | Prove only the uninterrupted lease creator holding the same lock may advance `lease-acquired`, `generating`, or `staged-unreceipted`; every later holder pauses without stage reinvocation. |
+  | `T51-RECEIPT-BINDING` | Mutate every prepared-receipt field and prove exact equality to the lease, staged snapshot, prospective target, and prior pointer before immutable installation or pointer replacement. |
+  | `T51-MANUAL-RECOVERY` | Exercise `lease-only`, `working`, and `staging` recovery through every basis/state row and crash boundary; prove explicit authority, no-clobber basis installation, quarantine preservation, lease cleanup, idempotent resume, no adoption, and no lifecycle reinvocation. |
+
+  Each property ID MUST map to at least one separately named test. A broad
+  publication happy-path test cannot satisfy a property row or a negative
+  mutation obligation.
 - Steps: Build and fsync the working run, then validate all of its events,
   bundles, snapshots, inventories, and metrics before any staging rename. For
   each malformed or inconsistent working-run object, assert failure before
@@ -1687,12 +1705,17 @@ Boundary model scope: R28-R28z
   evidence whose implementation was reverted; retain installed v3 runs only
   as non-current history; and inject dangling v3 manifest, attestation,
   pointer, selector, and report references independently.
-- Expected result: The only publication order is build/fsync working bytes;
+- Expected result: The only publication order is exclusively write/fsync the
+  publisher lease; create/fsync the deterministic working root without
+  invoking a lifecycle stage earlier; build/fsync working bytes;
   validate working-run events, bundles, snapshots, inventories, and metrics;
   rename/fsync staging; validate the complete staged run and current input
   identities; exclusively write/fsync the prepared receipt; install/fsync and
   validate the immutable run; replace/fsync the pointer; reconcile and
-  remove/fsync the receipt. Invalid working-run contents leave no staging
+  remove/fsync the receipt; validate/remove/fsync the publisher lease before
+  success. The manifest and prepared receipt remain bound to the original
+  publisher instance throughout generation and resume. Invalid working-run
+  contents leave no staging
   rename, prepared receipt, immutable installation, pointer mutation, or
   lifecycle reinvocation. Invalid or stale staging leaves no prepared receipt,
   immutable installation, pointer mutation, or lifecycle reinvocation. Resume
