@@ -10,8 +10,9 @@ Boundary model scope: R28-R28z
 ## Related spec and plan
 
 - Spec: [RigorLoop Workflow](rigorloop-workflow.md), approved by focused
-  `spec-review-r53` for the three-category exact-runtime capability projection
-  discovered during M2 preflight.
+  `spec-review-r54` for the invariant-oracle correction layered on the
+  three-category exact-runtime capability projection discovered during M2
+  preflight.
 - Proposal: [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md), accepted.
 - Historical plan: [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md), done.
 - Related follow-on spec: [Learn Artifact Model](learn-artifact-model.md), approved.
@@ -34,8 +35,8 @@ Boundary model scope: R28-R28z
 - Historical workflow-refactor architecture: not required for that completed
   slice.
 - Boundary-first architecture: [Canonical System Architecture](../docs/architecture/system/architecture.md),
-  approved by focused `architecture-review-r25` for the three-category
-  correction, with
+  approved by focused `architecture-review-r26` for the parent-only candidate
+  and pure invariant-evaluator correction, with
   [ADR-20260725](../docs/adr/ADR-20260725-boundary-first-proof-modeling.md)
   accepted for the amendment and
   [ADR-20260726](../docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md)
@@ -47,7 +48,7 @@ Boundary model scope: R28-R28z
   the accepted [three-category successor ADR](../docs/adr/ADR-20260727-three-category-runtime-feature-projection.md)
   owning the 3/4/89 partition correction.
 - Boundary-first plan: [Boundary-First Proof Modeling](../docs/plans/2026-07-25-boundary-first-proof-modeling.md),
-  approved by focused `plan-review-r19`.
+  approved by focused `plan-review-r20`.
 - Spec-review: approved with no material findings after the PR-self-contained lifecycle completion amendment was added; minor SR-1 asked the test spec to decide how merge-dependent language classification is recorded.
 - Plan-review: approved with no material findings for the PR-self-contained lifecycle completion plan. Minor non-blocking note: if README remains unchanged, final affected-surface evidence should mark it unaffected with rationale.
 
@@ -55,18 +56,18 @@ Boundary model scope: R28-R28z
 
 | Input | Path | Status / Review state | Identity |
 | --- | --- | --- | --- |
-| Feature spec | `specs/rigorloop-workflow.md` | approved by focused spec-review R53 | `sha256:a8b39968fe229a206ba84db281d99301fd57c3f9bb76e2e2933b7cac6f0babdc` |
+| Feature spec | `specs/rigorloop-workflow.md` | approved by focused spec-review R54 | `sha256:d58620666f06c6032ab96fecf18510cc816343a6320a9f08ee55618ed6c0b97d` |
 | Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r53.md` | approved | `sha256:290b29912ec1ed1c907bde8a28f15de32d90ce658aaf267f5470cd6b03cd7e1a` |
-| Architecture | `docs/architecture/system/architecture.md` | approved by focused architecture-review R25 | `sha256:2c0ce1c8dd97169298f116106564e7fac0ed34d31b2ec1015fc0920e4fc90607` |
-| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r25.md` | approved | `sha256:6b363e1e973372c802e98b238c38ec30690fb8a8e943916f7e645b3c190b4a84` |
+| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r54.md` | approved | `sha256:9e3272b4a2d68d5104e7a16448cfa9a38c42d8beba217d2325efa8e924b935e8` |
+| Architecture | `docs/architecture/system/architecture.md` | approved by focused architecture-review R26 | `sha256:fd511bc999323a541afdcd6e17fb09c1b3a3a29faf61919013caf714d4744841` |
+| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r26.md` | approved | `sha256:07c7a16678af909206110fa7d0aaac114c3292b5d3482db597e8bbf367177519` |
 | Boundary ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted with scoped transport supersession | `sha256:0bd0cc5b7964b45f61b020b31c6781d360d072e15120feaf2a7f106cae05df15` |
 | Transport ADR | `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md` | accepted with scoped capability-projection supersession | `sha256:e357094a48c9a3410cc661d2f5e28c50afd8aa4dcdd375ec074a355103ea8263` |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted with scoped writable-child supersession | `sha256:b80c4a494ae1e08abea77d74fb270a959ebbde5cf5e01e1f8606791f0e0b5434` |
 | Capability-projection ADR | `docs/adr/ADR-20260727-capability-projected-file-change-control.md` | accepted base decision; binary clauses superseded narrowly | `sha256:b9d75ea29d528ef0e1f835ab796d6aa6936d362520ce1a424f5f0bb1112568ef` |
 | Three-category projection ADR | `docs/adr/ADR-20260727-three-category-runtime-feature-projection.md` | accepted by architecture-review R25 | `sha256:b2d8997a97114f2b055efc2bec627b39c26d4fea95e5b86ae4bacae3a9c724eb` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; approved for proof-map synchronization | `sha256:cc224535057c65df91f55e1dc38341f57075e759a74ee540f9ad88be9b8a51e0` |
-| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r19.md` | approved | `sha256:87584e97112bce30f589e1077523e50d14510d48df608f5239e1e21344864367` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; approved for proof-map synchronization | `sha256:817ec7c6fbb7cfa0962fb390f49e83660f79e87e3e28cbbd26ecc66436b0a3c1` |
+| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r20.md` | approved | `sha256:297bfde578f3b0dfdcf08d7007a1ed7bab6170ef70fdff7b3a1d873dafc4d61e` |
 
 ## Testing strategy
 
@@ -75,10 +76,8 @@ Boundary model scope: R28-R28z
 - Use focused skill-validator assertions only for stable, machine-checkable skill guidance such as required labels, forbidden stale labels, handoff boundaries, and generated-output drift.
 - Use selector-selected targeted proof as the first validation layer for changed paths; use broad smoke only when an authoritative trigger elevates it.
 - Treat `specs/rigorloop-workflow.test.md` as a pending proof-map amendment.
-  M2 remains blocked until focused spec review approves the three-category
-  projection, architecture and plan rereviews approve their synchronized
-  projections, exact input identities are recorded, and an independent
-  test-spec review approves this proof map.
+  M2 remains blocked until an independent test-spec review approves this
+  R54/R26/R20-synchronized proof map and exact input identities.
 - Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
 - Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
 - Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
@@ -256,7 +255,7 @@ Boundary model scope: R28-R28z
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | M1 | T40, T41, T42, T43, T44, T45, T46 | bfp-manual.semantic-authority, bfp-manual.semantic-evidence | CMD-BFP-1 | `scripts/test-boundary-proof.py`; synthetic incident, trace, and report fixtures | M1 code-review | Report tests use synthetic inputs; runtime behavior and the canonical report are deferred. |
-| M2 | T41, T42, T43, T48, T49, T50, T51, T52, T55, T56, T57, T58 | bfp-manual.semantic-authority | CMD-BFP-1, CMD-BFP-3, CMD-BFP-8, CMD-BFP-9, CMD-BFP-10, CMD-BFP-11, CMD-BFP-12, CMD-BFP-18, CMD-BFP-19, CMD-BFP-20, CMD-BFP-21 | v3 environment receipt, exact runtime projection and common conformance evidence, immutable baseline, v3 behavior manifest, integrity and transport observations, immutable run, pointer, receipt/rollback fixtures, opaque-v1 and unsupported-v2 proof, skill/build validation, CLI/import smoke | M2 code-review | Closed projection and contrast tests precede the read-only preflight; validated common conformance precedes either capability branch; no live skill mutation proceeds before the complete preflight and baseline gates pass. |
+| M2 | T41, T42, T43, T48, T49, T50, T51, T52, T55, T56, T57, T58 | bfp-manual.semantic-authority | CMD-BFP-1, CMD-BFP-3, CMD-BFP-8, CMD-BFP-9, CMD-BFP-10, CMD-BFP-11, CMD-BFP-12, CMD-BFP-18, CMD-BFP-19, CMD-BFP-20, CMD-BFP-21 | v3 environment receipt, exact runtime projection and common conformance evidence, immutable baseline, parent-only candidate and scenario-bound review evidence, invariant and alternative-decomposition contrasts, v3 behavior manifest, integrity and transport observations, immutable run, pointer, receipt/rollback fixtures, opaque-v1 and unsupported-v2 proof, skill/build validation, CLI/import smoke | M2 code-review | Runtime and invariant projection contrasts precede generation; validated common conformance precedes either capability branch; no live skill mutation proceeds before the complete preflight and baseline gates pass. |
 | M3 | T42, T43, T44, T45, T53 | bfp-manual.composed-path, bfp-manual.semantic-evidence | CMD-BFP-1, CMD-BFP-3, CMD-BFP-13, CMD-BFP-14 | exact preservation manifest, before/after roots, and 40 pair results | M3 code-review | Preservation consumes recorded M2 evidence without upstream reinvocation. |
 | M4 | T44, T45, T46, T47, T54 | bfp-manual.composed-path | CMD-BFP-1, CMD-BFP-2, CMD-BFP-4, CMD-BFP-5, CMD-BFP-6, CMD-BFP-15, CMD-BFP-16, CMD-BFP-17 | four durable parity manifests, canonical report, release fixtures, and validation output | M4 code-review | R28y report pass is not the later R28o resumption predicate. |
 | Final lifecycle closeout | T40, T41, T42, T43, T44, T45, T46, T47 | bfp-manual.semantic-authority, bfp-manual.composed-path, bfp-manual.semantic-evidence | CMD-BFP-1, CMD-BFP-2, CMD-BFP-3, CMD-BFP-4, CMD-BFP-5, CMD-BFP-6, CMD-BFP-7 | clean milestone/final reviews, closed resolution, explanation, verification | verify | Progressive-disclosure review remains paused until R28o passes. |
@@ -2182,11 +2181,10 @@ Boundary model scope: R28-R28z
 
 ## Next artifacts
 
-- Boundary-first amendment: focused spec review of the R28y invariant-oracle
-  correction, followed by independent test-spec review of this synchronized
-  proof map. Resume M2 only after both reviews approve the scenario-owned
-  semantic input, stage-owned decomposition, deterministic invariant
-  projection, v3 exact runtime projection, common conformance,
+- Boundary-first amendment: independent test-spec review of this
+  R54/R26/R20-synchronized proof map. Resume M2 only after that review approves
+  the scenario-owned semantic input, stage-owned decomposition, deterministic
+  invariant projection, v3 exact runtime projection, common conformance,
   capability-branch, integrity, envelope, retry, publication/rollback, and
   compatibility proof.
 - `code-review M2` under the current
@@ -2206,8 +2204,9 @@ Active proof-planning and regression surface for the workflow contract,
 including the boundary-first R28-R28z amendment.
 The focused R28y oracle correction separates scenario-owned behavior,
 stage-owned modeling choices, independent semantic review, and deterministic
-invariant comparison. It remains pending focused spec review and independent
-test-spec review and is not implementation-ready until both gates approve it.
+invariant comparison. Spec-review R54, architecture-review R26, and plan-review
+R20 are approved. It remains pending independent test-spec review and is not
+implementation-ready until that gate approves it.
 
 M2 can hand off to
 `code-review M2` only after the M2 guidance and contract surfaces make the
