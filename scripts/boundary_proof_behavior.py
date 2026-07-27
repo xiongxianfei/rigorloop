@@ -1812,6 +1812,13 @@ def _workflow_stage_request(
             "Rationale cell. "
             "Every authored stable ID must match "
             "`^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$`; IDs must be dotted. "
+            "As a final referential-integrity audit, require the union of "
+            "governing requirement IDs across boundary, extension, and "
+            "interaction rows to equal exactly `R1`, `R2`, `R3`, and `R4`; "
+            "require every boundary ID cited by an example or interaction to "
+            "exist in exactly one boundary or extension row; and reject the "
+            "draft yourself if any requirement is unowned or any cited ID is "
+            "orphaned. "
             "Use the literal ASCII `-` for every empty table value; never "
             "use a blank cell or a Unicode dash. "
         ),
