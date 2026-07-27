@@ -7,6 +7,29 @@ complete boundary.
 ## Boundary record
 
 Record `Boundary model version: v1` and the governed requirement range.
+Serialize the record with these exact headings and columns:
+
+```md
+Boundary model version: v1
+Boundary model scope: <governed requirement range>
+
+## Boundary model
+
+| Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
+| --- | --- | --- | --- | --- |
+
+Extensions: <none or extension records>
+
+## Examples
+
+| Example ID | Role | Governing requirement IDs | Boundary IDs | Regression ID | Discovery gap |
+| --- | --- | --- | --- | --- | --- |
+
+## Interactions
+
+<selected interaction records or an explicit none-selected rationale>
+```
+
 Classify every core dimension exactly once:
 
 | Dimension | Question |
@@ -44,6 +67,21 @@ Cartesian product.
 Map every applicable boundary and selected interaction to a stable proof
 obligation. Each obligation records governing requirements, boundary or
 interaction IDs, test IDs, automation level, and any exact manual procedure.
+Serialize it with these exact headings and columns:
+
+```md
+Boundary model version: v1
+Boundary model scope: <governed requirement range>
+
+## Proof map
+
+| Proof obligation ID | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Automation level | Manual procedure IDs |
+| --- | --- | --- | --- | --- | --- |
+
+## Test cases
+
+<stable test case records>
+```
 
 Proof partitions must include valid, invalid, missing, additional, stale,
 substituted, unknown, and conflicting states when the boundary admits them.
