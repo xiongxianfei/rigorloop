@@ -2,7 +2,7 @@
 
 ## Status
 
-- approved
+- draft
 
 ## Related artifacts
 
@@ -386,7 +386,7 @@ for the component view.
 | Boundary model constants and parser | `scripts/boundary_proof_model.py` | Projects closed IDs, marker and scope rules, row schemas, reference integrity, fixture identities, result vocabularies, and report aggregation from approved specs. |
 | Capability evaluator | Pure functions in `scripts/boundary_proof_model.py` | Computes the six-check, fixture, preservation, parity, overhead, and final capability outcomes from validated typed inputs; it performs no filesystem writes. |
 | Standalone behavior harness | `scripts/boundary_proof_behavior.py` | Assembles the five participating skill packages and governing inputs, enforces the closed two-module import boundary, creates the isolated workspace and fresh runtime home, invokes the public workflow once, and coordinates envelope transport, exact-byte materialization, structural content validation, output reconciliation, and immutable publication without authoring semantic content. |
-| Child-runtime adapter and candidate collector | Functions in `scripts/boundary_proof_behavior.py` | Resolves and identities the exact supported Codex runtime projection, starts app-server over stdio, binds runtime metadata and the active permission profile, independently probes the same profile through `codex sandbox`, provisions opaque control-plane authentication outside child authority, enforces the closed checkpoint-to-phase matrix, and captures at most the policy-bounded set of schema-constrained agent-message candidates, including candidates observed before timeout. It emits only closed value-free candidate observations and retains raw candidate bytes transiently only as permitted by the selected policy. |
+| Child-runtime adapter and candidate collector | Functions in `scripts/boundary_proof_behavior.py` | Selects one immutable typed runtime projection by exact launcher, package, schema, protocol-classification, and feature-classification identities; derives the complete effective-tool projection; starts app-server over stdio; binds runtime metadata and the active permission profile; independently probes the same profile through `codex sandbox`; installs and freshly proves the deny-only file-change handler; provisions opaque control-plane authentication outside child authority; enforces the closed checkpoint-to-phase and file-change cause-to-phase matrices; and captures at most the policy-bounded set of schema-constrained agent-message candidates, including candidates observed before timeout. It emits only closed value-free observations and retains raw candidate bytes transiently only as permitted by the selected policy. |
 | Envelope transport and output reconciler | Functions in `scripts/boundary_proof_behavior.py` | Applies the manifest-bound positive turn and termination-wait deadlines plus the parent-selected artifact policy, binds every attempt to one fresh logical thread/process pair, classifies candidate sets and the complete closed diagnostic tuple, terminates and reaps expired children, validates the closed envelope and exact raw/canonical byte limits, and permits the single confirmed-stopped absent-output retry while failing closed or pausing every other unsafe tuple. |
 | Exact-byte materializer | Functions in `scripts/boundary_proof_behavior.py` | Accepts only one complete policy-matching `boundary-stage-artifact-envelope-v1`, writes each stage-authored `content_utf8` value unchanged below the isolated output root, rereads the complete leaf set, and emits a value-free materialization observation proving exact path, byte identity, byte count, and entry-kind equality. It cannot create, normalize, complete, or repair semantic content. |
 | Lifecycle content validator | Functions in `scripts/boundary_proof_behavior.py` | Applies the closed manifest-bound structural validators to exactly materialized artifacts, records a value-free content-validation observation, and rejects record, occurrence, review-outcome, finding-set, resolution-state, reviewed-identity, or content-state disagreement. It checks structure and agreement only; it cannot create or change review judgment. |
@@ -658,10 +658,18 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    workspace root; the independent named-profile probes remain the
    parent-owned enforcement proof. Unknown features, methods,
    capabilities, tools, or inventory entries fail closed.
-   The executable projection pins the exact Codex 0.145.0 canonical schema
-   identity and complete protocol-classification identity. It does not
-   classify newly discovered same-version methods by fallback. Every observed
-   server request or notification is checked against that projection;
+   The executable registry contains one complete immutable
+   `codex-0.145.0-readonly-boundary-v1` projection. Its selection key binds
+   the exact launcher and runtime-package byte identities plus the canonical
+   schema, complete protocol-classification, and complete
+   feature-classification identities. Its content identity binds the full
+   ten-field row, including the three permitted command features, all 93
+   required-disabled features, and
+   `file_change_capability_state: not-exposed-projection`. Equal version or
+   declarations with different runtime bytes select no row. The registry does
+   not classify newly discovered same-version methods or implementations by
+   fallback. Every observed server request or notification is checked against
+   the selected projection;
    unknown or prohibited variants stop the turn. A disabled, unbound
    `remoteControl/status/changed` notification is the only remote-control
    status traffic classified as non-side-effect.
@@ -680,14 +688,23 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    writes from a detached descendant fail and the descendant is reaped; an
    unmanifested source read fails; the private auth path is unreadable; and
    child network access fails.
-   A separate fresh app-server probe uses the exact shared
-   `stage-file-change-authorization-policy-v1`: the parent creates the fixture
-   directory, proves the fixture absent, observes one matching
-   `item/fileChange/requestApproval`, returns `decision: decline`, and requires
-   the generic item carriers to end the exact `FileChangeThreadItem` as
-   `declined` with the workspace unchanged.
-   Generic failure, completed mutation, a missing request, any accept decision,
-   or incomplete stop/reap fails before the canary.
+   File-change enforcement follows the selected projection.
+   An `exposed-live-probe-required` projection runs a separate fresh
+   app-server probe using the exact shared
+   `stage-file-change-authorization-policy-v1`, requires one correlated
+   request/decline/terminal-`declined` trace, and proves the workspace
+   unchanged.
+   The first `not-exposed-projection` does not ask the model to invoke an
+   absent operation. It instead requires exact runtime-projection equality,
+   all 93 required-disabled feature rows disabled, a complete
+   effective-tool projection with only the three permitted command features
+   enabled, and a fresh invocation-owned
+   `stage-file-change-handler-conformance-result-v1` covering the matching
+   decline and every closed negative case. The same handler is installed
+   before every governed thread, and any observed file-change request or item
+   is projection drift. Generic failure, mutation, missing or widened decline,
+   prohibited acceptance, invalid conformance, or incomplete stop/reap fails
+   before the canary.
    It then requires the app-server-reported active profile identity, workspace
    roots, and instruction-source set to match the parent-created inputs.
    Generated config bytes and applicable managed requirements are
@@ -714,15 +731,17 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    behavior implementation manifest.
 12. Generation creates a fresh isolated home and workspace, re-runs the
    complete runtime-owned evidence and parent-observed probes, and derives a
-   fresh `boundary-runtime-attestation-v2` for the then-current exact eleven-row runtime
+   fresh `boundary-runtime-attestation-v3` for the then-current exact eleven-row runtime
    inventory: five enabled manifest-bound `user` rows and six
    generated-config-bound disabled `system` rows. That inventory is distinct
    from the assembler's path-sorted five-package resource set. The fresh
    generation attestation binds the current runtime, schemas, configuration,
    inventories, classifications, probes, credential-isolation result, and
-   shared file-change authorization-policy identity.
+   selected projection and content identity, effective-tool projection,
+   file-change authorization-policy identity, fresh handler-conformance
+   identity, and closed capability state.
 13. The generation attestation is a required member of
-   the `boundary-behavior-implementation-v2`
+   the `boundary-behavior-implementation-v3`
    `behavior-implementation-manifest.json`, beside the exact closed
    `boundary-transport-policy-v1`. The policy owns positive, non-caller-
    selectable turn and termination-wait deadlines. The manifest, attestation,
@@ -737,7 +756,9 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    repository path, regular non-symlink kind, and raw-byte identity as opaque
    read-only history. It is never parsed, upgraded, or eligible for a current
    manifest, run, pointer, validation, report, capability, or activation role;
-   every unregistered v1 record fails closed.
+   every unregistered v1 record fails closed. No durable v2 evidence was
+   published; every v2-labeled record is unsupported historical evidence and
+   cannot satisfy a current selector or be silently upgraded.
 14. The outer prompt is a deterministic constant in the identity-bound harness
    module combined with `scenario_ref`; changing either changes the input-set
    identity. Parent-observed sandbox audit is transient enforcement state: the
@@ -1024,17 +1045,20 @@ accepted.
 Raw access observations are transient enforcement state, not a new durable
 evidence schema.
 
-The v2 implementation manifest is the complete generation selector for harness
+The v3 implementation manifest is the complete generation selector for harness
 components, skill packages, instructions, contracts, invocation profile,
-transport policy, lifecycle artifact policy, and fresh v2 runtime attestation.
-The attestation binds the shared file-change authorization policy, direct and
-descendant command denial, app-server request/decline denial, workspace
-integrity, canary materialization, and credential-isolation results.
+transport policy, lifecycle artifact policy, and fresh v3 runtime attestation.
+The attestation binds the complete selected runtime projection, exact launcher
+and package bytes, effective-tool projection, shared file-change authorization
+policy, fresh handler conformance, capability-state-appropriate denial proof,
+direct and descendant command denial, workspace integrity, canary
+materialization, and credential-isolation results.
 Canonical validation reconstructs the exact policy and its identity;
 shape-only validation or a validation-time replacement is insufficient.
 Historical v1 data is not a schema fallback. The sole supported record is an
 opaque registry row keyed by exact path and raw-byte identity; it cannot become
-current authority or satisfy any v2 selector.
+current authority or satisfy any v3 selector. No v2 record is registered;
+v2-labeled data is unsupported history and cannot be upgraded.
 
 ### Hermetic behavior trust boundary
 
@@ -1078,7 +1102,7 @@ The first-version model-visible built-in tool set is closed:
 | Built-in capability | State | Enforcement |
 | --- | --- | --- |
 | Sandboxed command execution | permitted read-only | Only `shell_tool`, `unified_exec`, and `shell_snapshot` may be enabled; every command and detached descendant remains inside the bound profile and cannot mutate the workspace. |
-| Sandboxed file change | observable but deny-only | The parent answers every request with `decline`; only the probe may exercise the path, and every governed turn fails closed on acceptance, mutation, missing approval, or a terminal status other than `declined`. |
+| Sandboxed file change | projection-negotiated, always deny-only | `exposed-live-probe-required` requires a correlated live decline trace. `not-exposed-projection` requires exact reviewed runtime bytes, disabled file-change-bearing features, the complete effective-tool projection, fresh handler conformance, and rejection of any observed file-change event. Every governed request is still decline-only. |
 | Dynamic tools and environments | prohibited | `thread/start` requires `dynamicTools: []` and `environments: []`. |
 | Apps, plugins, MCP, connectors | prohibited | Effective feature rows are disabled and runtime-owned inventories are empty. |
 | Subagents and goals | prohibited | `multi_agent`, `multi_agent_v2`, `enable_fanout`, and `goals` are disabled. |
@@ -1101,7 +1125,7 @@ execution and file-change handling. That classification permits protocol
 handling, not workspace mutation: command tools are read-only and file-change
 requests are deny-only.
 
-The parent does not infer enforcement from the response alone. It runs direct
+The parent does not infer enforcement from the response or event absence alone. It runs direct
 and detached-descendant probes through the same identified runtime's
 `codex sandbox` surface with `--include-managed-config` and the same profile:
 workspace read must succeed; create, overwrite, remove, and mode change must
@@ -1109,7 +1133,12 @@ fail; and an unmanifested source read, private-auth read, and network
 connection must fail. A separate fresh app-server probe requires the exact
 request-approval/decline/terminal-declined file-change trace and unchanged
 workspace. Generated config bytes and applicable
-managed requirements are identity-bound on both paths. The runtime response,
+managed requirements are identity-bound on both paths. A live app-server
+file-change probe runs only when the selected projection declares it exposed.
+For a non-exposed projection, exact runtime bytes, the complete feature and
+effective-tool projections, fresh handler conformance, and the absence of
+contradictory observed events jointly establish the control.
+The runtime response,
 effective configuration and capability inventories, and parent probes are
 jointly required. Any absent field, profile mismatch, extra workspace root,
 unexpected instruction source or capability, successful forbidden probe, or
@@ -1411,6 +1440,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 
 - [ADR-20260725-boundary-first-proof-modeling](../../adr/ADR-20260725-boundary-first-proof-modeling.md) - Use a spec-normative typed projection, copied packaged reference, structural validator, frozen incident registry, and report-hash release activation for boundary-model `v1`.
 - [ADR-20260726-stage-authored-artifact-envelope-transport](../../adr/ADR-20260726-stage-authored-artifact-envelope-transport.md) - Accept the read-only child boundary, deny-only file-change policy, workspace-integrity gate, stage-authored envelope, and parent-only exact-byte materialization contract.
+- [ADR-20260727-capability-projected-file-change-control](../../adr/ADR-20260727-capability-projected-file-change-control.md) - On acceptance, replace the unconditional live file-change probe and v2 current-evidence clauses with exact-runtime-bound capability projection, conditional proof, and v3 evidence.
 - [ADR-20260726-codex-permission-profile-boundary-harness](../../adr/ADR-20260726-codex-permission-profile-boundary-harness.md) - Accepted app-server, named permission-profile, exact experimental-schema, effective-config/inventory, managed-policy, and parent-probe decision; its writable-child clauses are narrowly superseded by the accepted stage-envelope ADR.
 
 - `docs/adr/ADR-20260428-architecture-package-method.md`: default C4 plus official arc42 plus ADR architecture package method.
@@ -1490,11 +1520,11 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | Authorization-bound execution | A run targets a later stage across risk boundaries. | Only a basis-complete effective capability within an active parent authorization can invoke the current stage; missing implementation or verification authority pauses without widening consent. |
 | Interrupted-transition recovery | Execution stops after a prepared receipt and before finalization. | Resume inspects stage-owned evidence before retry, reconciles valid completion without rerun, retries only declared idempotent stages, and pauses on contradiction or partial output. |
 | Isolated stage-output ownership | The boundary harness asks `workflow` to execute an upstream stage. | `workflow` routes to the stage-owning skill, that skill authors every semantic byte in one policy-bound schema envelope, and the adapter materializes those exact bytes below the isolated output root before structural validation and snapshot capture. Neither the adapter nor harness renders, normalizes, repairs, or completes normative content. |
-| Isolated child write denial | A governed child command, detached descendant, or app-server file-change operation attempts to mutate the scenario workspace. | Direct and descendant command writes fail; every file-change approval receives `decline` and ends `declined`; mutation, generic failure, acceptance, missing correlation, or incomplete cleanup stops before canary, materialization, or lifecycle publication. |
+| Isolated child write denial | A governed child command, detached descendant, or app-server file-change operation attempts to mutate the scenario workspace. | Direct and descendant command writes fail. An exposed file-change capability must produce a correlated request/decline/terminal-`declined` probe. A reviewed non-exposed capability must match exact runtime bytes, disabled-feature and effective-tool projections, and fresh handler conformance; any observed file-change event is drift. Mutation, acceptance, missing correlation, invalid conformance, or incomplete cleanup stops before canary, materialization, or lifecycle publication. |
 | Workspace integrity before materialization | A stage turn completes, times out, or leaves an uncertain filesystem observation. | The parent compares a bounded root-anchored no-follow baseline and post-turn scan before materialization. Complete unchanged state may continue; changed/overflow state records mutation; invalid inspection records uncertainty; neither failing branch materializes or retries. |
 | Isolated stage timeout recovery | A stage turn expires after emitting zero or more candidate messages. | After the exact child is confirmed stopped and reaped, the coordinator derives the bounded candidate observation and completes the root-anchored post-turn scan. One complete valid envelope plus unchanged workspace is reconciled and materialized without reinvocation; zero candidates, no independent non-output failure, and unchanged workspace permit one fresh-runtime retry; partial, extra, contradictory, malformed, oversized, overflowing, policy-incompatible, protocol, security, mutation, or inspection-uncertainty evidence fails closed. |
 | Stage-envelope materialization feasibility | Runtime preflight has passed direct, descendant, file-change, credential, and network denial probes. | A separate `materialization-canary-v1` turn through `workflow` and `spec` must retain an unchanged workspace observation and return one valid noncanonical envelope whose exact UTF-8 bytes are materialized only by the parent and reread identically. The canary workspace and semantic bytes are discarded and cannot become lifecycle evidence. |
-| Runtime evidence compatibility | Current selection encounters v1 runtime evidence. | Only the registry-listed exact path and raw-byte identity are recognized as opaque read-only history. Every current preflight, generation, manifest, run, pointer, validation, report, capability, and activation role requires v2; unknown v1 evidence fails closed. |
+| Runtime evidence compatibility | Current selection encounters v1 or v2 runtime evidence. | Only the registry-listed exact v1 path and raw-byte identity are recognized as opaque read-only history. Every current preflight, generation, manifest, run, pointer, validation, report, capability, and activation role requires v3; unknown v1 and every v2 record fail closed. |
 | Repeated-target identity | `code-review@M2` resumes after the active plan has advanced to M3. | The run remains bound to M2 and cannot silently reinterpret the target as M3. |
 | External-action containment | Unified automation completes fresh verification. | The run stops at the verify target and performs no PR creation, push, publication, deployment, merge, destructive Git operation, or other external action. |
 | Automated review independence | A workflow-managed profile invokes an automated review. | The review can advance only when the orchestrator records a valid manifest, verifiable initial packet, non-L0 independence level, phase receipts, risk-tier classification, stage-native verdict, and normalized `review_gate_outcome`. |
@@ -1614,11 +1644,11 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | A behavior run could depend on undeclared resources, instructions, code, or runtime authority | The standalone harness uses an exact five-skill resource-map set, applicable instruction discovery, a two-module import allowlist, an identity-bound invocation profile, and an isolated workspace whose transient access observations must contain no unmanifested source or capability. |
 | Disabling child-tool network could be confused with disabling the model runtime | The child tool profile denies network and arbitrary egress; the identified runtime may use only its model-service control-plane transport, which is outside child tool authority and cannot be invoked as a tool. |
 | The child runtime could self-attest a sandbox it bypassed | The parent accepts output only after independently observing an effective runtime-native sandbox/profile; child-reported access history is diagnostic input, not confinement proof. |
-| A command descendant or app-server file-change path could bypass parent-only materialization | The child profile has no writable root; direct and detached-descendant command probes plus a cause-specific request/decline/terminal-declined app-server probe are required, and the same deny-only handler governs canary, lifecycle, and retry turns. |
+| A command descendant or app-server file-change path could bypass parent-only materialization | The child profile has no writable root; direct and detached-descendant command probes are always required. File-change proof is selected by an exact-runtime-bound immutable capability projection: exposed capability requires a live decline trace; non-exposure requires disabled-feature and effective-tool projections, fresh handler conformance, and drift monitoring. The same deny-only handler governs canary, lifecycle, and retry turns. |
 | A child mutation or scan race could be hidden by a later exact-byte reread | A retained root descriptor, bounded no-follow baseline, stable descriptor inspection, and complete post-turn scan run before materialization. Mutation and inspection uncertainty are separate fail-closed routes and neither permits retry. |
 | Model authentication could leak into tools or durable evidence | Credentials live only in a private runtime home outside the workspace and sandbox-readable roots, are absent from child tool environment and persisted records, and are used by the identified runtime only for control-plane transport. |
 | Raw access logs could leak local or runtime details | Access observations remain transient, are reduced to typed result and diagnostic evidence, and are discarded before successful publication. |
-| Reused historical v1 labels could select an incorrect parser or become current authority | Current roles require v2. The sole supported v1 record is recognized only by exact path, file kind, and raw-byte identity as opaque history; every other v1 input fails closed. |
+| Reused historical labels could select an incorrect parser or become current authority | Current roles require v3. The sole supported v1 record is recognized only by exact path, file kind, and raw-byte identity as opaque history; every other v1 input and all v2-labeled data fail closed. |
 | Mixed v1 and legacy skills could make rollback ambiguous | Each governed skill declares one boundary-model version; activation requires all governed skills at v1, while rollback removes the activation marker and restores a uniformly validated legacy set rather than accepting a mixed claim. |
 
 ## Glossary
@@ -1639,6 +1669,14 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 - child tool profile: the closed set of capabilities available to the invoked agent; for canonical behavior proof it permits read-only isolated-workspace filesystem access, gives no child a writable root, and forbids network, connectors, and subagents.
 - workspace integrity guard: the parent-owned retained-descriptor component that captures a bounded no-follow pre-turn baseline and complete post-turn observation before exact-byte materialization.
 - file-change authorization policy: the identity-bound deny-only parent policy applied to the probe and every governed child turn; it never grants or remembers write approval.
+- runtime capability projection: an immutable typed compatibility row selected
+  by exact runtime implementation, schema, protocol-classification, and
+  feature-classification identities; it states whether file-change control
+  requires a live decline probe or reviewed non-exposure proof.
+- handler-conformance result: fresh invocation-owned value-free evidence that
+  the installed file-change dispatcher declines one correctly bound request
+  and fails closed for the complete malformed, mismatched, widened, accepted,
+  and session-accepted case set.
 - model-service control plane: runtime-owned transport used to obtain model execution, outside the child tool profile and not available as arbitrary tool network access.
 - runtime-native sandbox attestation: parent-observed non-secret evidence that the identified runtime actually applied the required filesystem, tool, connector, subagent, and child-network restrictions.
 - Codex permission-profile attestation: the conjunction of an app-server
@@ -1768,14 +1806,15 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Readiness
 
-Architecture-review R18 approved the read-only stage-transport amendment. The
-canonical package now replaces child workspace-write authority with direct,
-descendant, and file-change denial; gates parent-only materialization on a
-complete unchanged-workspace observation; requires v2 for every current
-runtime-evidence role; and recognizes the sole registered v1 manifest only as
-opaque history. The accepted stage-envelope ADR narrowly supersedes only the
-named writable-child clauses in its two accepted predecessors. The package is
-ready for focused execution-plan revision.
+Architecture-review R18 approved the read-only stage-transport amendment.
+The R48 spec amendment now requires architecture rereview because the supported
+runtime exposes no live file-change operation under the approved configuration.
+This draft replaces unconditional live probing with exact-runtime-bound
+capability projection, capability-state-appropriate proof, fresh deny-handler
+conformance, and v3 current evidence. It preserves direct and descendant
+command denial, parent-only materialization, complete unchanged-workspace
+inspection, and opaque exact-v1 history. Plan and test-spec revision remain
+blocked until architecture review accepts the new ADR and this package.
 
 ADR `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md` records the accepted durable consolidation and supersedes the three earlier profile ADRs; their descriptions below are historical context, not current writable-mechanism authority under the approved spec.
 
