@@ -69,6 +69,24 @@ Read:
 - `AGENTS.md` and `CONSTITUTION.md`;
 - CI workflow definitions relevant to the change.
 
+## Resource map
+
+- LOAD `references/boundary-proof-model.md` when the governing spec or test
+  spec uses `Boundary model version: v1`.
+
+## Boundary-first verification
+
+For a `v1` boundary-model change, verify current version parity and coherence
+among governing requirements, the boundary record, proof map, implemented
+tests and behavior, review-resolution evidence, generated adapters when
+required, and final validation. Confirm that current evidence covers every
+applicable boundary, selected interaction, and material composed path.
+
+Pause instead of claiming branch readiness when any required boundary evidence
+is missing, stale, contradictory, version-mismatched, example-only, or broader
+than the claim it supports. Structural checks do not replace semantic review,
+and final verification does not repair a missing contract or review decision.
+
 ## Artifact placement
 
 Use the project workflow guide for artifact locations when placement matters.

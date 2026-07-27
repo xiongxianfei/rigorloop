@@ -91,8 +91,10 @@ from boundary_proof_behavior import (
     assess_environment,
     discard_interrupted_publication,
     exercise_fixture,
+    generate_preservation,
     validate_behavior,
     validate_fixture,
+    validate_preservation,
 )
 
 from boundary_proof_model import (
@@ -5817,6 +5819,166 @@ name = "one"
             ):
                 with self.assertRaises(BoundaryRuntimeError):
                     freeze_baseline(change_id, repo_root=root)
+
+    def test_preservation_materializes_and_validates_exact_forty_pairs(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            subprocess.run(
+                ["git", "init", "-q"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.email", "test@example.com"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Boundary Test"],
+                cwd=root,
+                check=True,
+            )
+            for skill in EVALUATED_SKILLS:
+                skill_root = root / "skills" / skill
+                (skill_root / "references").mkdir(parents=True)
+                (skill_root / "SKILL.md").write_text(
+                    f"# {skill}\n\n## Handoff\n\nPreserve {skill}.\n",
+                    encoding="utf-8",
+                )
+                (
+                    skill_root / "references" / "boundary-proof-model.md"
+                ).write_text(
+                    "# Boundary model\n\nBoundary model version: v1\n",
+                    encoding="utf-8",
+                )
+            subprocess.run(["git", "add", "skills"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "commit", "-qm", "baseline"],
+                cwd=root,
+                check=True,
+            )
+            baseline = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            change_id = "2026-07-25-example"
+            evidence = (
+                root / "docs" / "changes" / change_id / "evidence"
+            )
+            evidence.mkdir(parents=True)
+            (evidence / "boundary-proof-baseline.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": "boundary-proof-baseline-v1",
+                        "change_id": change_id,
+                        "preservation_baseline_commit": baseline,
+                    },
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ),
+                encoding="utf-8",
+            )
+            for skill in EVALUATED_SKILLS:
+                path = root / "skills" / skill / "SKILL.md"
+                path.write_text(
+                    path.read_text(encoding="utf-8")
+                    + "\nBoundary model version: v1\n",
+                    encoding="utf-8",
+                )
+
+            generated = generate_preservation(
+                change_id,
+                repo_root=root,
+            )
+            validated = validate_preservation(
+                change_id,
+                repo_root=root,
+            )
+
+            self.assertEqual(generated, validated)
+            self.assertEqual(generated["pair_count"], 40)
+            self.assertEqual(generated["upstream_invocation_count"], 0)
+            manifest = generated["manifest"]
+            self.assertEqual(len(manifest["before_refs"]), 40)
+            self.assertEqual(len(manifest["after_refs"]), 40)
+            expected = {
+                f"{skill}:{category}"
+                for skill in EVALUATED_SKILLS
+                for category in (
+                    "behavior",
+                    "claim-boundary",
+                    "review-recording",
+                    "isolation",
+                    "handoff",
+                )
+            }
+            self.assertEqual(
+                expected,
+                {
+                    row["pair_key"]
+                    for row in manifest["before_refs"]
+                },
+            )
+            self.assertTrue(
+                all(
+                    "/evidence/preservation/" in row["snapshot_ref"]["path"]
+                    for row in manifest["before_refs"]
+                )
+            )
+
+            manifest_path = (
+                evidence / "preservation" / "manifest.json"
+            )
+            canonical_manifest = copy.deepcopy(manifest)
+            for mutate in (
+                lambda value: value["before_refs"].pop(),
+                lambda value: value["before_refs"].__setitem__(
+                    1, copy.deepcopy(value["before_refs"][0])
+                ),
+                lambda value: value["before_refs"][0].__setitem__(
+                    "origin_commit", "b" * 40
+                ),
+                lambda value: value["after_refs"][0].__setitem__(
+                    "artifact_ref",
+                    copy.deepcopy(
+                        value["after_refs"][1]["artifact_ref"]
+                    ),
+                ),
+            ):
+                candidate = copy.deepcopy(canonical_manifest)
+                mutate(candidate)
+                manifest_path.write_text(
+                    json.dumps(
+                        candidate,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ),
+                    encoding="utf-8",
+                )
+                with self.assertRaises(BoundaryRuntimeError):
+                    validate_preservation(change_id, repo_root=root)
+            manifest_path.write_text(
+                json.dumps(
+                    canonical_manifest,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ),
+                encoding="utf-8",
+            )
+
+            after_path = root / manifest["after_refs"][0]["artifact_ref"]["path"]
+            after_path.write_text("stale\n", encoding="utf-8")
+            with self.assertRaises(BoundaryRuntimeError) as raised:
+                validate_preservation(change_id, repo_root=root)
+            self.assertEqual(
+                raised.exception.diagnostic_id,
+                "runtime-identity-unstable",
+            )
 
 
 if __name__ == "__main__":

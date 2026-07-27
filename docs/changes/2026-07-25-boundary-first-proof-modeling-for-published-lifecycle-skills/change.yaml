@@ -210,6 +210,19 @@ changed_files:
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r11.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r12.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r13.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/preservation/manifest.json
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m3.md
+  - scripts/boundary_proof_behavior.py
+  - scripts/skill_validation.py
+  - scripts/test-boundary-proof.py
+  - scripts/test-skill-validator.py
+  - skills/implement/SKILL.md
+  - skills/implement/references/boundary-proof-model.md
+  - skills/code-review/SKILL.md
+  - skills/code-review/references/boundary-proof-model.md
+  - skills/verify/SKILL.md
+  - skills/verify/references/boundary-proof-model.md
+  - skills/workflow/SKILL.md
 review:
   status: approved
   unresolved_items: 0

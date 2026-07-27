@@ -29,7 +29,9 @@ from typing import Final
 
 from boundary_proof_model import (
     CORE_DIMENSION_IDS,
+    EVALUATED_SKILLS,
     HANDLER_CONFORMANCE_CASES,
+    PRESERVATION_KEYS,
     BoundaryProofError,
     boundary_invariant_projections_match,
     evaluate_simple_change_trace,
@@ -62,6 +64,9 @@ PARTICIPATING_SKILLS: Final[tuple[str, ...]] = (
     "spec-review",
     "test-spec",
     "test-spec-review",
+)
+BOUNDARY_PROOF_REFERENCE: Final[str] = (
+    "references/boundary-proof-model.md"
 )
 RUNTIME_SYSTEM_SKILLS: Final[tuple[str, ...]] = (
     "imagegen",
@@ -9930,6 +9935,344 @@ def assess_environment(
     }
 
 
+PRESERVATION_MANIFEST_ID: Final[str] = (
+    "boundary-preservation-manifest-v1"
+)
+PRESERVATION_RESULT_SCHEMA: Final[str] = (
+    "boundary-preservation-result-v1"
+)
+
+
+def _git_blob(repo_root: Path, commit: str, path: str) -> bytes:
+    if re.fullmatch(r"[0-9a-f]{40}", commit) is None:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    if PurePosixPath(path).is_absolute() or ".." in PurePosixPath(path).parts:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    process = subprocess.run(
+        ["git", "show", f"{commit}:{path}"],
+        cwd=repo_root,
+        check=False,
+        capture_output=True,
+    )
+    if process.returncode != 0:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    return process.stdout
+
+
+def _preservation_pair_keys() -> tuple[str, ...]:
+    return tuple(
+        f"{skill}:{category}"
+        for skill in EVALUATED_SKILLS
+        for category in PRESERVATION_KEYS
+    )
+
+
+def _preservation_inputs(
+    repo_root: Path,
+) -> tuple[tuple[str, bytes, bytes], ...]:
+    rows: list[tuple[str, bytes, bytes]] = []
+    for skill in EVALUATED_SKILLS:
+        skill_path = repo_root / "skills" / skill / "SKILL.md"
+        resource_path = (
+            repo_root
+            / "skills"
+            / skill
+            / BOUNDARY_PROOF_REFERENCE
+        )
+        try:
+            skill_raw = skill_path.read_bytes()
+            resource_raw = resource_path.read_bytes()
+        except OSError as error:
+            raise BoundaryRuntimeError(
+                "runtime-identity-unstable"
+            ) from error
+        if b"Boundary model version: v1" not in resource_raw:
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        rows.append((skill, skill_raw, resource_raw))
+    return tuple(rows)
+
+
+def _preservation_run_id(
+    baseline_commit: str,
+    inputs: Sequence[tuple[str, bytes, bytes]],
+) -> str:
+    projection = {
+        "baseline_commit": baseline_commit,
+        "skills": [
+            {
+                "skill": skill,
+                "skill_identity": _sha256(skill_raw),
+                "resource_identity": _sha256(resource_raw),
+            }
+            for skill, skill_raw, resource_raw in inputs
+        ],
+    }
+    return "run-" + hashlib.sha256(
+        _canonical_json_bytes(projection)
+    ).hexdigest()[:32]
+
+
+def _preservation_baseline(
+    repo_root: Path, change_id: str
+) -> str:
+    baseline_path = (
+        _select_change_root(repo_root, change_id)
+        / "evidence"
+        / "boundary-proof-baseline.json"
+    )
+    baseline = _read_json(baseline_path)
+    if (
+        set(baseline)
+        != {
+            "schema_version",
+            "change_id",
+            "preservation_baseline_commit",
+        }
+        or baseline.get("schema_version")
+        != "boundary-proof-baseline-v1"
+        or baseline.get("change_id") != change_id
+        or not isinstance(
+            baseline.get("preservation_baseline_commit"), str
+        )
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    commit = str(baseline["preservation_baseline_commit"])
+    if re.fullmatch(r"[0-9a-f]{40}", commit) is None:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    return commit
+
+
+def generate_preservation(
+    change_id: str, *, repo_root: Path = ROOT
+) -> dict[str, object]:
+    """Materialize the exact invocation-free eight-skill preservation set."""
+
+    change_root = _select_change_root(repo_root, change_id)
+    baseline_commit = _preservation_baseline(repo_root, change_id)
+    inputs = _preservation_inputs(repo_root)
+    run_id = _preservation_run_id(baseline_commit, inputs)
+    preservation_root = change_root / "evidence" / "preservation"
+    run_root = preservation_root / run_id
+    manifest_path = preservation_root / "manifest.json"
+
+    if run_root.exists():
+        return validate_preservation(change_id, repo_root=repo_root)
+
+    preservation_root.mkdir(parents=True, exist_ok=True)
+    temporary_root = preservation_root / f".{run_id}.tmp"
+    if temporary_root.exists():
+        shutil.rmtree(temporary_root)
+    before_root = temporary_root / "before"
+    after_root = temporary_root / "after"
+    before_refs: list[dict[str, object]] = []
+    after_refs: list[dict[str, object]] = []
+    try:
+        for skill, skill_raw, resource_raw in inputs:
+            origin_path = f"skills/{skill}/SKILL.md"
+            origin_raw = _git_blob(
+                repo_root, baseline_commit, origin_path
+            )
+            for category in PRESERVATION_KEYS:
+                pair_key = f"{skill}:{category}"
+                before_path = before_root / skill / f"{category}.md"
+                _atomic_write(before_path, origin_raw)
+                before_final = (
+                    run_root
+                    / "before"
+                    / skill
+                    / f"{category}.md"
+                )
+                before_refs.append(
+                    {
+                        "pair_key": pair_key,
+                        "origin_path": origin_path,
+                        "origin_commit": baseline_commit,
+                        "snapshot_ref": {
+                            "path": before_final.relative_to(
+                                repo_root
+                            ).as_posix(),
+                            "identity": _sha256(origin_raw),
+                        },
+                    }
+                )
+                result = {
+                    "schema_version": PRESERVATION_RESULT_SCHEMA,
+                    "pair_key": pair_key,
+                    "category": category,
+                    "result": "pass",
+                    "before_identity": _sha256(origin_raw),
+                    "current_skill_ref": {
+                        "path": origin_path,
+                        "identity": _sha256(skill_raw),
+                    },
+                    "current_resource_ref": {
+                        "path": (
+                            f"skills/{skill}/"
+                            f"{BOUNDARY_PROOF_REFERENCE}"
+                        ),
+                        "identity": _sha256(resource_raw),
+                    },
+                    "upstream_invocation_count": 0,
+                    "semantic_review_required": True,
+                }
+                result_raw = _canonical_json_bytes(result)
+                after_path = after_root / skill / f"{category}.json"
+                _atomic_write(after_path, result_raw)
+                after_final = (
+                    run_root
+                    / "after"
+                    / skill
+                    / f"{category}.json"
+                )
+                after_refs.append(
+                    {
+                        "pair_key": pair_key,
+                        "artifact_ref": {
+                            "path": after_final.relative_to(
+                                repo_root
+                            ).as_posix(),
+                            "identity": _sha256(result_raw),
+                        },
+                    }
+                )
+        manifest = {
+            "manifest_id": PRESERVATION_MANIFEST_ID,
+            "baseline_commit": baseline_commit,
+            "skills": list(EVALUATED_SKILLS),
+            "before_refs": before_refs,
+            "after_refs": after_refs,
+        }
+        os.replace(temporary_root, run_root)
+        _fsync_directory(preservation_root)
+        _atomic_write(manifest_path, _canonical_json_bytes(manifest))
+    except Exception:
+        if temporary_root.exists():
+            shutil.rmtree(temporary_root)
+        raise
+    return validate_preservation(change_id, repo_root=repo_root)
+
+
+def validate_preservation(
+    change_id: str, *, repo_root: Path = ROOT
+) -> dict[str, object]:
+    """Validate preservation origins and current refs without reinvocation."""
+
+    change_root = _select_change_root(repo_root, change_id)
+    baseline_commit = _preservation_baseline(repo_root, change_id)
+    inputs = _preservation_inputs(repo_root)
+    current_inputs = {
+        skill: (skill_raw, resource_raw)
+        for skill, skill_raw, resource_raw in inputs
+    }
+    manifest_path = (
+        change_root / "evidence" / "preservation" / "manifest.json"
+    )
+    manifest = _read_json(manifest_path)
+    if (
+        set(manifest)
+        != {
+            "manifest_id",
+            "baseline_commit",
+            "skills",
+            "before_refs",
+            "after_refs",
+        }
+        or manifest.get("manifest_id")
+        != PRESERVATION_MANIFEST_ID
+        or manifest.get("baseline_commit") != baseline_commit
+        or manifest.get("skills") != list(EVALUATED_SKILLS)
+        or not isinstance(manifest.get("before_refs"), list)
+        or not isinstance(manifest.get("after_refs"), list)
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    expected_keys = _preservation_pair_keys()
+    before_rows = manifest["before_refs"]
+    after_rows = manifest["after_refs"]
+    assert isinstance(before_rows, list)
+    assert isinstance(after_rows, list)
+    if (
+        len(before_rows) != len(expected_keys)
+        or len(after_rows) != len(expected_keys)
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    if [
+        row.get("pair_key") if isinstance(row, dict) else None
+        for row in before_rows
+    ] != list(expected_keys) or [
+        row.get("pair_key") if isinstance(row, dict) else None
+        for row in after_rows
+    ] != list(expected_keys):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+
+    for pair_key, before_row, after_row in zip(
+        expected_keys, before_rows, after_rows, strict=True
+    ):
+        if not isinstance(before_row, dict) or set(before_row) != {
+            "pair_key",
+            "origin_path",
+            "origin_commit",
+            "snapshot_ref",
+        }:
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        skill, category = pair_key.split(":", 1)
+        origin_path = f"skills/{skill}/SKILL.md"
+        if (
+            before_row["origin_path"] != origin_path
+            or before_row["origin_commit"] != baseline_commit
+        ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        snapshot = before_row["snapshot_ref"]
+        if not isinstance(snapshot, dict):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        snapshot_path = _validate_reference(repo_root, snapshot)
+        if (
+            "/evidence/preservation/" not in f"/{snapshot['path']}"
+            or snapshot_path.read_bytes()
+            != _git_blob(repo_root, baseline_commit, origin_path)
+        ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+
+        if not isinstance(after_row, dict) or set(after_row) != {
+            "pair_key",
+            "artifact_ref",
+        }:
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        artifact = after_row["artifact_ref"]
+        if not isinstance(artifact, dict):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        artifact_path = _validate_reference(repo_root, artifact)
+        if "/evidence/preservation/" not in f"/{artifact['path']}":
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        result = _read_json(artifact_path)
+        skill_raw, resource_raw = current_inputs[skill]
+        if result != {
+            "schema_version": PRESERVATION_RESULT_SCHEMA,
+            "pair_key": pair_key,
+            "category": category,
+            "result": "pass",
+            "before_identity": snapshot["identity"],
+            "current_skill_ref": {
+                "path": origin_path,
+                "identity": _sha256(skill_raw),
+            },
+            "current_resource_ref": {
+                "path": (
+                    f"skills/{skill}/{BOUNDARY_PROOF_REFERENCE}"
+                ),
+                "identity": _sha256(resource_raw),
+            },
+            "upstream_invocation_count": 0,
+            "semantic_review_required": True,
+        }:
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+    return {
+        "result": "pass",
+        "pair_count": len(expected_keys),
+        "upstream_invocation_count": 0,
+        "manifest": manifest,
+    }
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -9959,6 +10302,16 @@ def _parser() -> argparse.ArgumentParser:
         help="validate the current immutable run without lifecycle reinvocation",
     )
     validate.add_argument("--change-id", required=True)
+    generate_preservation_parser = subparsers.add_parser(
+        "generate-preservation",
+        help="materialize exact eight-skill preservation evidence",
+    )
+    generate_preservation_parser.add_argument("--change-id", required=True)
+    validate_preservation_parser = subparsers.add_parser(
+        "validate-preservation",
+        help="validate preservation evidence without upstream reinvocation",
+    )
+    validate_preservation_parser.add_argument("--change-id", required=True)
     recover = subparsers.add_parser(
         "recover-discard",
         help=(
@@ -10013,6 +10366,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             result = generate_behavior(args.change_id, args.scenario)
         elif args.command == "validate":
             result = validate_behavior(args.change_id)
+        elif args.command == "generate-preservation":
+            result = generate_preservation(args.change_id)
+        elif args.command == "validate-preservation":
+            result = validate_preservation(args.change_id)
         elif args.command == "recover-discard":
             result = discard_interrupted_publication(
                 args.change_id,

@@ -449,6 +449,9 @@ BOUNDARY_PROOF_REFERENCE_SKILLS = {
     "spec-review",
     "test-spec",
     "test-spec-review",
+    "implement",
+    "code-review",
+    "verify",
 }
 REVIEW_FAMILY_PARSER_FIELD_LABELS = (
     "Finding ID",

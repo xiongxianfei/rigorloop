@@ -7559,6 +7559,39 @@ and result format.
 
 
 class MarkdownReadabilityGuidanceTests(unittest.TestCase):
+    def test_boundary_proof_reference_is_mapped_for_all_eight_skills(self) -> None:
+        expected_skills = {
+            "workflow",
+            "spec",
+            "spec-review",
+            "test-spec",
+            "test-spec-review",
+            "implement",
+            "code-review",
+            "verify",
+        }
+        self.assertEqual(
+            expected_skills,
+            skill_validation.BOUNDARY_PROOF_REFERENCE_SKILLS,
+        )
+        shared = (
+            ROOT / "templates" / "shared" / "boundary-proof-model.md"
+        ).read_bytes()
+        for skill_name in sorted(expected_skills):
+            skill_root = ROOT / "skills" / skill_name
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    shared,
+                    (
+                        skill_root
+                        / skill_validation.BOUNDARY_PROOF_REFERENCE
+                    ).read_bytes(),
+                )
+                self.assertIn(
+                    f"`{skill_validation.BOUNDARY_PROOF_REFERENCE}`",
+                    (skill_root / "SKILL.md").read_text(encoding="utf-8"),
+                )
+
     def test_generated_markdown_skeletons_declare_readability_shape(self) -> None:
         skeletons = [
             ROOT / "skills" / "proposal" / "assets" / "proposal-skeleton.md",

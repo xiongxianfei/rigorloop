@@ -94,13 +94,13 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M3. Downstream skill projection and preservation
-- Current milestone state: in-progress
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r13.md
-- Review status: approved; stage=code-review; round=r13
+- Current milestone state: review-requested
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m3.md
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -726,7 +726,7 @@ resource through generated, packed, and installed outputs.
 
 ### M3. Downstream skill projection and preservation
 
-- Milestone state: in-progress
+- Milestone state: review-requested
 - Goal: Carry the boundary contract through implementation, review, verification, and workflow routing, then compute downstream preservation from the frozen pre-M2 baseline without rerunning upstream skills.
 - Requirements: R28f-R28j, R28y; R56f-R56i, R56l
 - Files/components likely touched:
@@ -992,6 +992,12 @@ resource through generated, packed, and installed outputs.
 - 2026-07-27: Code-review R13 approved M2 with no new material findings and
   confirmed BFP-CR-M2-14 through BFP-CR-M2-19 resolved. M2 is closed; the
   active handoff advances to M3 implementation.
+- 2026-07-27: M3 added stage-local boundary-first guidance and byte-identical
+  mapped references across all eight skills. Preservation run
+  `run-029e566b0597c59e9bc029ce60562e9d` validates all 40 skill/category pairs
+  from the frozen baseline with zero upstream invocations. The 111-test
+  boundary suite, 260-test skill-validator suite, skill validation, and
+  generated-skill drift check pass. M3 is review-requested.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review
