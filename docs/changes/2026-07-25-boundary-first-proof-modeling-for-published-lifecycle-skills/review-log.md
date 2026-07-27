@@ -19,6 +19,17 @@ Material findings: BFP-PR1, BFP-PR2, BFP-PR3, BFP-PR4
 Open findings: None
 
 ### Review entry
+Review ID: spec-review-r57
+Stage: spec-review
+Round: 57
+Reviewed artifact: closed correction-authority amendment at 8d15e1e6
+Status: approved
+Detailed record: reviews/spec-review-r57.md
+Resolution: review-resolution.md#spec-review-r57
+Material findings: None
+Open findings: None
+
+### Review entry
 Review ID: spec-review-r56
 Stage: spec-review
 Round: 56
@@ -27,7 +38,7 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r56.md
 Resolution: review-resolution.md#spec-review-r56
 Material findings: BFP-SR56-1, BFP-SR56-2
-Open findings: BFP-SR56-1, BFP-SR56-2
+Open findings: None
 
 ### Review entry
 Review ID: code-review-m2-r9

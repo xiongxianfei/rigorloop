@@ -2056,7 +2056,7 @@ Validation evidence: Pending.
 
 Finding ID: BFP-SR56-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: focused R28y correction-authority contract
@@ -2068,13 +2068,16 @@ review-record identity binding, aggregate derivation, and fail-closed
 contrasts.
 Rationale: Eligibility cannot depend on informal Markdown interpretation.
 Validation target: spec-review-r57
-Validation evidence: Pending.
+Validation evidence: R28y now defines the exact five-field normalized finding
+row, heading and label grammar, stable-ID ordering, duplicate/missing/empty
+rejection, canonical projection identity, same-record bundle binding, and
+aggregate eligibility formula. Spec-review R57 approved the contract.
 
 #### BFP-SR56-2 — Authorization-required termination is outside the closed diagnostic and recovery model
 
 Finding ID: BFP-SR56-2
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: focused R28y runtime and recovery contract
@@ -2086,7 +2089,17 @@ working evidence under the existing lease and permits only explicit
 discard-and-regenerate recovery before a changed-input fresh run.
 Rationale: A terminal branch must leave one deterministic durable state.
 Validation target: spec-review-r57
-Validation evidence: Pending.
+Validation evidence: R28y now assigns the diagnostic to the in-turn
+non-retryable behavior layer, defines the exact correction-stop receipt,
+lease-bound working state, nonpublication boundary, explicit recovery path,
+quarantine persistence, and unequal-input fresh-run gate. Spec-review R57
+approved the contract.
+
+### spec-review-r57
+
+No new material findings. R57 independently confirmed BFP-SR56-1 and
+BFP-SR56-2 resolved and approved the focused correction-authority amendment
+for architecture synchronization.
 
 ### spec-review-r27
 
