@@ -1677,7 +1677,10 @@ def _workflow_stage_request(
                 "\nClosed governing boundary and interaction IDs:\n- "
                 + "\n- ".join(governing_reference_ids)
                 + "\nEvery proof-map boundary or interaction reference must "
-                "be one exact member of this closed list."
+                "be one exact member of this closed list. The test spec does "
+                "not own boundary or interaction definitions. Copy needed IDs "
+                "verbatim, perform a final membership audit, and never coin a "
+                "replacement."
                 if governing_reference_ids
                 else ""
             )

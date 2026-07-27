@@ -2450,6 +2450,14 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "- interaction.mode-outcome",
             test_spec_request["prompt"],
         )
+        self.assertIn(
+            "The test spec does not own boundary or interaction definitions",
+            test_spec_request["prompt"],
+        )
+        self.assertIn(
+            "perform a final membership audit",
+            test_spec_request["prompt"],
+        )
         with self.assertRaises(BoundaryRuntimeError):
             _workflow_stage_request(
                 "spec",
