@@ -10,7 +10,7 @@ Diagnostic: none
 The current immutable upstream behavior run is:
 
 ```json
-{"false_blocking_count":0,"input_set_identity":"sha256:59c301f845c1d08b76c0505b379208537844a781058b13798df99f7cee72705e","new_universal_artifact_count":0,"result":"pass","run_id":"run-c9cf75951ba54219a13fe8f7c237c63d","simple_fixture_structure_correction_cycles":0}
+{"false_blocking_count":0,"input_set_identity":"sha256:06124df85f7efe1b3a16304aa9e5eba5f173b4f049462da11325db9282a130bd","new_universal_artifact_count":0,"result":"pass","run_id":"run-f6bb6b5f5d7912166d28fa37d012242f","simple_fixture_structure_correction_cycles":0}
 ```
 
 The run completed fresh `spec`, `spec-review`, `test-spec`, and
@@ -21,7 +21,7 @@ It introduced no universal lifecycle artifact and produced no false block.
 The current run also closes the publisher transaction gap:
 
 - its exact manifest contains
-  `publisher_instance_id: publisher-af486cb89d256f672f1c1e0aee59dad2`;
+  `publisher_instance_id: publisher-fcde95cf6ab70c087aacc09a9330d998`;
 - the lease was durable before the first stage workspace existed;
 - every child workspace was created below the lease-bound working root with a
   hermetic project marker, preventing ancestor skill/instruction discovery;
@@ -29,7 +29,7 @@ The current run also closes the publisher transaction gap:
   target, and prior pointer identities;
 - successful publication left no publisher lease, prepared receipt, working
   root, staging root, or temporary pointer; and
-- four deliberately interrupted live attempts were preserved through
+- five deliberately interrupted live attempts were preserved through
   evidence-bound completed recovery records and quarantine rather than
   adoption or silent deletion; and
 - the focused recovery proof crashes and resumes after each durable recovery
@@ -54,7 +54,7 @@ Current validation:
 - `python scripts/boundary_proof_behavior.py validate --change-id
   2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` —
   passed against the immutable current run without lifecycle reinvocation.
-- `python scripts/test-boundary-proof.py` — passed 85 tests.
+- `python scripts/test-boundary-proof.py` — passed 93 tests.
 - `python scripts/validate-skills.py` — validated 24 skills.
 - `python scripts/test-skill-validator.py` — passed 259 tests.
 - `python scripts/build-skills.py --check` — passed.

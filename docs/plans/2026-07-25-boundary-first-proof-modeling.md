@@ -874,6 +874,17 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-27: Published boundary-complete recovery run
+  `run-f6bb6b5f5d7912166d28fa37d012242f` for input identity
+  `sha256:06124df85f7efe1b3a16304aa9e5eba5f173b4f049462da11325db9282a130bd`.
+  The manifest binds publisher
+  `publisher-fcde95cf6ab70c087aacc09a9330d998`; canonical validation passes with
+  zero false blocks, zero universal artifacts, and zero correction cycles.
+  Ninety-three focused tests cover the four R5 escapes, exact nested recovery
+  schemas, lock contention, multiple-temp conflict, quarantine integrity, and
+  every durable recovery resume point. M2 remains `resolution-needed` pending
+  code-review R6.
+
 - 2026-07-27: Code-review M2 R5 classified the broad publisher recovery
   remediation as incomplete and opened `BFP-CR-M2-11`. Direct probes showed
   malformed completed history is ignored, unknown working bytes and invalid
@@ -1446,8 +1457,8 @@ resource through generated, packed, and installed outputs.
 
 ## Validation notes
 
-- `python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` passed for current run `run-c9cf75951ba54219a13fe8f7c237c63d`.
-- `python scripts/test-boundary-proof.py` passed 85 tests including all eight named T51 publisher property rows and resumable recovery after every durable recovery boundary.
+- `python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` passed for current run `run-f6bb6b5f5d7912166d28fa37d012242f`.
+- `python scripts/test-boundary-proof.py` passed 93 tests including all eight named T51 publisher property rows, four direct R5 escape regressions, exact recovery-schema mutations, and resumable recovery after every durable recovery boundary.
 - `python scripts/validate-skills.py` validated 24 skills.
 - `python scripts/test-skill-validator.py` passed 259 tests.
 - `python scripts/build-skills.py --check` passed.

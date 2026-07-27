@@ -1940,7 +1940,13 @@ Rationale: The accepted specification already defines every required state and
 safe action; no product, architecture, or scope choice is needed.
 Validation target: focused M2 tests, canonical evidence validation or
 regeneration, and code-review-m2-r6
-Validation evidence: Pending.
+Validation evidence: Implementation correction `d0adeef2` adds closed
+basis/state/nested validators, active-versus-completed discovery, approved
+working-tree and staged-run validation, constrained malformed-temp cleanup,
+and publisher-active diagnostics. The 93-test focused suite passes, the four
+R5 direct probes now reject or complete through the exact route, and immutable
+run `run-f6bb6b5f5d7912166d28fa37d012242f` passes non-regenerating validation.
+Finding remains open pending code-review M2 R6.
 
 ### spec-review-r27
 
