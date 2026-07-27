@@ -77,6 +77,7 @@ from boundary_proof_behavior import (
     _review_payload_from_markdown,
     _validate_correction_stop_receipt,
     _validate_correction_stop_evidence,
+    _validate_review_bundle_payloads,
     _validate_review_payload,
     _validate_scenario_expectations,
     _write_correction_stop,
@@ -2344,6 +2345,61 @@ class BoundaryProofModelTests(unittest.TestCase):
                             ).hexdigest(),
                             resolution_ref["identity"],
                         )
+
+    def test_review_bundle_byte_validator_rejects_malformed_subjects(
+        self,
+    ) -> None:
+        for reviewed_snapshot_id in (None, 1, True, [], {}):
+            with self.subTest(
+                field="reviewed_snapshot_id",
+                value=reviewed_snapshot_id,
+            ):
+                with self.assertRaisesRegex(
+                    BoundaryRuntimeError, "runtime-identity-unstable"
+                ):
+                    _validate_review_bundle_payloads(
+                        {
+                            "bundle": {
+                                "artifact_refs": {},
+                                "reviewed_snapshot_id": reviewed_snapshot_id,
+                                "material_finding_ids": [],
+                            }
+                        },
+                        {},
+                        lambda snapshot: Path("unused"),
+                    )
+
+        for findings in (
+            None,
+            "finding.one",
+            [None],
+            [{}],
+            ["invalid"],
+            ["finding.two", "finding.one"],
+            ["finding.one", "finding.one"],
+        ):
+            with self.subTest(
+                field="material_finding_ids", value=findings
+            ):
+                with self.assertRaisesRegex(
+                    BoundaryRuntimeError, "runtime-identity-unstable"
+                ):
+                    _validate_review_bundle_payloads(
+                        {
+                            "bundle": {
+                                "artifact_refs": {},
+                                "reviewed_snapshot_id": "snapshot.one",
+                                "material_finding_ids": findings,
+                            }
+                        },
+                        {
+                            "snapshot.one": {
+                                "path": "reviews/snapshot.one.md",
+                                "identity": "sha256:" + "1" * 64,
+                            }
+                        },
+                        lambda snapshot: Path("unused"),
+                    )
 
     def test_validator_help_and_fixture_validation(self) -> None:
         result = subprocess.run(
