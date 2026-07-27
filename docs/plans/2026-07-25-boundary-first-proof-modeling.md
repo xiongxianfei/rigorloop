@@ -93,12 +93,12 @@ resource through generated, packed, and installed outputs.
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Downstream skill projection and preservation
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m3.md
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review
+- Current milestone: M4. Selection, adapter parity, capability baseline, and activation proof
+- Current milestone state: implementing
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m3-r2.md
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M4
+- Next stage: implement
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -726,7 +726,7 @@ resource through generated, packed, and installed outputs.
 
 ### M3. Downstream skill projection and preservation
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Carry the boundary contract through implementation, review, verification, and workflow routing, then compute downstream preservation from the frozen pre-M2 baseline without rerunning upstream skills.
 - Requirements: R28f-R28j, R28y; R56f-R56i, R56l
 - Files/components likely touched:
@@ -787,7 +787,7 @@ resource through generated, packed, and installed outputs.
 
 ### M4. Selection, adapter parity, capability baseline, and activation proof
 
-- Milestone state: planned
+- Milestone state: implementing
 - Goal: Make the complete boundary capability selectable, portable, measurable, and release-safe without activating or publishing it.
 - Requirements: R28l-R28o, R28z; R56n, R56q
 - Files/components likely touched:
@@ -1007,6 +1007,9 @@ resource through generated, packed, and installed outputs.
   with missing-phrase contrasts, and publishes current run
   `run-21e1ee9615edbaa0feb47ea0905d2c1b`. All 111 boundary tests and 261 skill
   tests pass. M3 is review-requested for semantic rereview R2.
+- 2026-07-27: Code-review M3 R2 approved the corrected structural claim and
+  recorded all 40 semantic preservation decisions as passing. M3 is closed;
+  the active handoff advances to M4 implementation.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review

@@ -3997,3 +3997,11 @@ independent semantic preservation judgment.
 Validation target: focused M3 tests, regenerated preservation evidence, and
 code-review-m3-r2
 Validation evidence: pending
+### code-review-m3-r2
+
+No new material findings.
+
+R2 independently confirmed BFP-CR-M3-1 resolved. Generated preservation
+evidence now reports structural scope only, the downstream responsibility
+projection fails closed on omissions, and the review records all 40 semantic
+preservation decisions as passing.
