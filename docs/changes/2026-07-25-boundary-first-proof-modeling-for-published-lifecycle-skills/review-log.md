@@ -1658,3 +1658,14 @@ Detailed record: reviews/plan-review-r22.md
 Resolution: review-resolution.md#plan-review-r22
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r26
+Stage: test-spec-review
+Round: 26
+Reviewed artifact: correction-authority and scenario-expectation proof map at 03a6fe7b
+Status: approved
+Detailed record: reviews/test-spec-review-r26.md
+Resolution: review-resolution.md#test-spec-review-r26
+Material findings: None
+Open findings: None

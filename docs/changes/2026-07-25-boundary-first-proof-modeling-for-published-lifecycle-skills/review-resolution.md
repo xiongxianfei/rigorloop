@@ -3853,3 +3853,9 @@ plan synchronization.
 No new material findings. R22 independently approved the M2 correction-
 authority, terminal recovery, request-only child projection, and post-
 observation expectation-comparison sequence for proof-map synchronization.
+
+### test-spec-review-r26
+
+No new material findings. R26 independently approved the complete T52
+correction-authority, terminal recovery, request-only projection, and
+post-observation expectation proof map for M2 implementation.
