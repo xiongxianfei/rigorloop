@@ -593,3 +593,32 @@ python scripts/build-skills.py --check
 ```
 
 M2 is ready for code-review R11. Final verification is not claimed.
+
+## Code-review R11 correction
+
+`BFP-CR-M2-18` is implemented at all three enforcement layers:
+
+- correction assembly binds attempt 1 to the exact initial open resolution;
+- approving rereview binds the exact prior finding set and corrected closed
+  resolution while retaining the approved review record's empty projection;
+- the pure evaluator remembers the pending finding tuple and initial
+  resolution snapshot, then rejects empty, changed, missing, or reused
+  rereview evidence;
+- staged/current validation reparses the exact review record and log,
+  recomputes the projection and eligibility, and checks resolution finding IDs
+  plus open/closed status;
+- both correction-role assembler cases assert open/closed bytes and identities,
+  while direct mutations reject reversed closeout status.
+
+Focused validation passed:
+
+```text
+python -m py_compile scripts/boundary_proof_behavior.py scripts/boundary_proof_model.py scripts/test-boundary-proof.py
+python scripts/test-boundary-proof.py
+  Ran 109 tests
+  OK
+```
+
+The prior immutable run now correctly reports stale because the harness
+component identity changed. Fresh canonical generation is required before M2
+can return to code review.

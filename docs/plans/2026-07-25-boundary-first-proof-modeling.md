@@ -963,6 +963,13 @@ resource through generated, packed, and installed outputs.
   the closed resolution to the first review, then erase the exact prior
   finding set and resolution from the approving rereview; the pure evaluator
   and assembler test accept that invalid history. M2 is `resolution-needed`.
+- 2026-07-27: Implemented the R11 temporal-evidence correction. Both correction
+  assemblers now preserve the initial open resolution and bind the approving
+  rereview to the exact prior finding set plus distinct closed resolution.
+  The pure evaluator and staged/current validator reject empty, changed,
+  missing, reused, or status-incompatible evidence. The 109 focused tests
+  pass; fresh canonical generation is next because the harness identity
+  changed.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review

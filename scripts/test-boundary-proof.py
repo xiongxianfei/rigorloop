@@ -42,6 +42,7 @@ from boundary_proof_behavior import (
     _build_behavior_manifest,
     _classify_historical_evidence,
     _completed_correction_stop_input_identities,
+    _correction_review_bundle,
     _create_publisher_lease,
     _dispatch_file_change_request,
     _discover_global_candidate,
@@ -1763,6 +1764,12 @@ class BoundaryProofModelTests(unittest.TestCase):
                 f"{run_root}/review-evidence/spec-review-log-v2.md",
                 "d",
             ),
+            (
+                "simple.snapshot.spec-review.resolution.v2",
+                "review-evidence",
+                f"{run_root}/review-evidence/spec-review-resolution-v2.md",
+                "f",
+            ),
         ]
         for snapshot_id, role, path, digit in additions:
             trace["snapshots"].append(
@@ -1798,7 +1805,7 @@ class BoundaryProofModelTests(unittest.TestCase):
             "review_id": "simple.review.spec.v2",
             "outcome": "approved",
             "reviewed_snapshot_id": "simple.snapshot.feature.v2",
-            "material_finding_ids": [],
+            "material_finding_ids": ["simple.finding.missing-boundary"],
             "finding_projection": [],
             "finding_projection_identity": _projection_identity([]),
             "correction_eligibility": "not-applicable",
@@ -1810,6 +1817,10 @@ class BoundaryProofModelTests(unittest.TestCase):
                 "review-log": _snapshot_ref(
                     trace,
                     "simple.snapshot.spec-review.log.v2",
+                ),
+                "review-resolution": _snapshot_ref(
+                    trace,
+                    "simple.snapshot.spec-review.resolution.v2",
                 ),
             },
         }
@@ -1860,6 +1871,7 @@ class BoundaryProofModelTests(unittest.TestCase):
             "simple.snapshot.spec-review.bundle.v2",
             "simple.snapshot.spec-review.record.v2",
             "simple.snapshot.spec-review.log.v2",
+            "simple.snapshot.spec-review.resolution.v2",
         ]
         _sync_event_evidence(trace, test_spec)
         test_review = trace["events"][5]
@@ -1869,6 +1881,7 @@ class BoundaryProofModelTests(unittest.TestCase):
             "simple.snapshot.spec-review.bundle.v2",
             "simple.snapshot.spec-review.record.v2",
             "simple.snapshot.spec-review.log.v2",
+            "simple.snapshot.spec-review.resolution.v2",
         ]
         _sync_event_evidence(trace, test_review)
 
@@ -1892,6 +1905,62 @@ class BoundaryProofModelTests(unittest.TestCase):
         )
         self.assertEqual(metrics.structure_only_correction_cycles, 1)
         self.assertTrue(metrics.applicable_only_mapping)
+
+        for name, mutate, diagnostic in (
+            (
+                "empty-rereview-findings",
+                lambda bundle, trace: bundle.update(
+                    material_finding_ids=[]
+                ),
+                "review artifact roles mismatch",
+            ),
+            (
+                "changed-rereview-findings",
+                lambda bundle, trace: bundle.update(
+                    material_finding_ids=["simple.finding.substituted"]
+                ),
+                "finding set mismatch",
+            ),
+            (
+                "missing-rereview-resolution",
+                lambda bundle, trace: bundle["artifact_refs"].pop(
+                    "review-resolution"
+                ),
+                "review artifact roles mismatch",
+            ),
+            (
+                "reused-open-resolution",
+                lambda bundle, trace: bundle["artifact_refs"].update(
+                    {
+                        "review-resolution": _snapshot_ref(
+                            trace,
+                            "simple.snapshot.spec-review.resolution.v1",
+                        )
+                    }
+                ),
+                "resolution mismatch",
+            ),
+        ):
+            with self.subTest(contrast=name):
+                invalid = copy.deepcopy(payload)
+                invalid_trace = invalid["simple_trace"]
+                invalid_bundle = invalid_trace["review_bundles"][
+                    "simple.snapshot.spec-review.bundle.v2"
+                ]
+                mutate(invalid_bundle, invalid_trace)
+                _sync_event_evidence(
+                    invalid_trace, invalid_trace["events"][3]
+                )
+                with self.assertRaisesRegex(
+                    BoundaryProofError, diagnostic
+                ):
+                    _evaluate_simple(
+                        invalid,
+                        feature_snapshot_ids=(
+                            "simple.snapshot.feature.v1",
+                            "simple.snapshot.feature.v2",
+                        ),
+                    )
 
         same_path = copy.deepcopy(payload)
         next(
@@ -2023,6 +2092,53 @@ class BoundaryProofModelTests(unittest.TestCase):
             ),
             "review_log_markdown": "# Changes-requested log\n",
         }
+        def authored_snapshot(
+            snapshot_id: str,
+            role: str,
+            relative: str,
+            raw: bytes,
+        ) -> dict[str, object]:
+            return {
+                "snapshot_id": snapshot_id,
+                "source": "behavior-output",
+                "artifact_role": role,
+                "path": f"docs/changes/example/artifacts/{relative}",
+                "identity": "sha256:" + hashlib.sha256(raw).hexdigest(),
+            }
+
+        reviewed_snapshot = {
+            "snapshot_id": "output.feature-spec.one",
+            "identity": "sha256:" + "1" * 64,
+        }
+        with self.assertRaisesRegex(
+            BoundaryRuntimeError, "protocol-shape-incompatible"
+        ):
+            _correction_review_bundle(
+                authored_snapshot,
+                "spec-review",
+                1,
+                reviewed_snapshot,
+                changed_review,
+                resolution_markdown=(
+                    "Finding ID: finding.boundary\n"
+                    "Closeout status: closed\n"
+                ),
+            )
+        with self.assertRaisesRegex(
+            BoundaryRuntimeError, "protocol-shape-incompatible"
+        ):
+            _correction_review_bundle(
+                authored_snapshot,
+                "spec-review",
+                2,
+                reviewed_snapshot,
+                approved_spec_review,
+                resolution_markdown=(
+                    "Finding ID: finding.boundary\n"
+                    "Closeout status: open\n"
+                ),
+                prior_finding_ids=["finding.boundary"],
+            )
         stage_artifacts = {
             "feature-spec/portable-text-normalizer.md": final_feature,
             "test-spec/portable-text-normalizer.test.md": final_test_spec,
@@ -2049,8 +2165,16 @@ class BoundaryProofModelTests(unittest.TestCase):
                         "role": "feature-spec",
                         "initial_artifact_markdown": final_feature + "\n",
                         "initial_review": changed_review,
-                        "initial_resolution_markdown": "# Open\n",
-                        "corrected_resolution_markdown": "# Closed\n",
+                        "initial_resolution_markdown": (
+                            "# Resolution\n\n"
+                            "Finding ID: finding.boundary\n"
+                            "Closeout status: open\n"
+                        ),
+                        "corrected_resolution_markdown": (
+                            "# Resolution\n\n"
+                            "Finding ID: finding.boundary\n"
+                            "Closeout status: closed\n"
+                        ),
                     },
                     (
                         ("spec", 1),
@@ -2067,8 +2191,16 @@ class BoundaryProofModelTests(unittest.TestCase):
                         "role": "test-spec",
                         "initial_artifact_markdown": final_test_spec + "\n",
                         "initial_review": changed_review,
-                        "initial_resolution_markdown": "# Open\n",
-                        "corrected_resolution_markdown": "# Closed\n",
+                        "initial_resolution_markdown": (
+                            "# Resolution\n\n"
+                            "Finding ID: finding.boundary\n"
+                            "Closeout status: open\n"
+                        ),
+                        "corrected_resolution_markdown": (
+                            "# Resolution\n\n"
+                            "Finding ID: finding.boundary\n"
+                            "Closeout status: closed\n"
+                        ),
                     },
                     (
                         ("spec", 1),
@@ -2139,6 +2271,79 @@ class BoundaryProofModelTests(unittest.TestCase):
                         ),
                         manifest,
                     )
+                    review_stage = (
+                        "spec-review"
+                        if correction["role"] == "feature-spec"
+                        else "test-spec-review"
+                    )
+                    snapshots_by_id = {
+                        snapshot["snapshot_id"]: snapshot
+                        for snapshot in manifest["snapshots"]
+                    }
+
+                    def resolve_snapshot(
+                        snapshot: dict[str, object],
+                    ) -> Path:
+                        relative = str(snapshot["path"]).split(
+                            "/artifacts/", 1
+                        )[1]
+                        return temporary / "artifacts" / relative
+
+                    def read_bundle(attempt: int) -> dict[str, object]:
+                        snapshot = snapshots_by_id[
+                            f"output.{review_stage}.attempt-{attempt}.bundle"
+                        ]
+                        return json.loads(
+                            resolve_snapshot(snapshot).read_text(encoding="utf-8")
+                        )
+
+                    first_bundle = read_bundle(1)
+                    second_bundle = read_bundle(2)
+                    self.assertEqual(
+                        first_bundle["material_finding_ids"],
+                        ["finding.boundary"],
+                    )
+                    self.assertEqual(
+                        second_bundle["material_finding_ids"],
+                        ["finding.boundary"],
+                    )
+                    self.assertEqual(
+                        second_bundle["finding_projection"], []
+                    )
+                    for bundle, expected in (
+                        (
+                            first_bundle,
+                            "# Resolution\n\n"
+                            "Finding ID: finding.boundary\n"
+                            "Closeout status: open\n",
+                        ),
+                        (
+                            second_bundle,
+                            "# Resolution\n\n"
+                            "Finding ID: finding.boundary\n"
+                            "Closeout status: closed\n",
+                        ),
+                    ):
+                        resolution_ref = bundle["artifact_refs"][
+                            "review-resolution"
+                        ]
+                        relative = str(resolution_ref["path"]).split(
+                            "/artifacts/", 1
+                        )[1]
+                        resolution_path = (
+                            temporary / "artifacts" / relative
+                        )
+                        self.assertEqual(
+                            resolution_path.read_text(encoding="utf-8"),
+                            expected,
+                        )
+                        self.assertEqual(
+                            "sha256:"
+                            + hashlib.sha256(
+                                expected.encode("utf-8")
+                            ).hexdigest(),
+                            resolution_ref["identity"],
+                        )
 
     def test_validator_help_and_fixture_validation(self) -> None:
         result = subprocess.run(
