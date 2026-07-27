@@ -1350,3 +1350,14 @@ Detailed record: reviews/architecture-review-r23.md
 Resolution: review-resolution.md#architecture-review-r23
 Material findings: BFP-AR23-1
 Open findings: BFP-AR23-1
+
+### Review entry
+Review ID: architecture-review-r24
+Stage: architecture-review
+Round: 24
+Reviewed artifact: append-only architecture correction at 829fe9c1
+Status: changes-requested
+Detailed record: reviews/architecture-review-r24.md
+Resolution: review-resolution.md#architecture-review-r24
+Material findings: BFP-AR24-1
+Open findings: BFP-AR24-1

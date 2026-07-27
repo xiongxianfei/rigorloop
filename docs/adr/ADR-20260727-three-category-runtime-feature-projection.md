@@ -86,3 +86,16 @@ evidence created under another identity.
 
 On acceptance, this ADR supersedes only the binary-partition clauses of
 `ADR-20260727-capability-projected-file-change-control`.
+
+## Follow-up
+
+- Accept this ADR only after a clean architecture review.
+- On approval, normalize this ADR from `proposed` to `accepted` and the
+  canonical architecture from `draft` to `approved` in the same handoff.
+- Preserve the predecessor ADR as accepted historical evidence; do not rewrite
+  its binary-partition decision.
+- Synchronize the active plan and test spec to approved spec-review R53, this
+  ADR, the approved architecture identity, and the eleven-field projection
+  identity.
+- Synchronize implementation and v3 evidence selectors to those identities
+  before M2 resumes.

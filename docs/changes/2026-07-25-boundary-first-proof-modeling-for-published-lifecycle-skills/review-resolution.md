@@ -3402,3 +3402,22 @@ Rationale: Accepted decision history is evidence and cannot be rewritten as
 though a later discovery was always known.
 Validation target: architecture-review-r24
 Validation evidence: pending
+
+### architecture-review-r24
+
+#### BFP-AR24-1 — Proposed successor ADR lacks mandatory follow-up
+
+Finding ID: BFP-AR24-1
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: architecture package method R46
+Decision needed: none
+Required outcome: Add the mandatory post-decision lifecycle and downstream
+synchronization contract.
+Chosen action: Record approval-gated status normalization, downstream artifact
+identity synchronization, M2 resume conditions, and predecessor preservation.
+Rationale: A proposed ADR is incomplete without its required follow-up.
+Validation target: architecture-review-r25
+Validation evidence: pending
