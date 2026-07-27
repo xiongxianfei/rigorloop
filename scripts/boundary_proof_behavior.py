@@ -1557,8 +1557,26 @@ def _workflow_stage_request(
             "Use the literal ASCII `-` for every empty table value; never "
             "use a blank cell or a Unicode dash. "
         ),
-        "spec-review": "",
-        "test-spec-review": "",
+        "spec-review": (
+            "Use the installed normative review-result skeleton. In both the "
+            "review record and review log, include exact metadata lines "
+            "`Review ID: spec-review-r1`, `Stage: spec-review`, "
+            "`Status: <approved | changes-requested | blocked | inconclusive>`, "
+            "`Reviewed artifact identity: <the supplied sha256 identity>`, "
+            "`Material findings: <IDs or none>`, and "
+            "`Recording status: recorded`. Preserve independent judgment; do "
+            "not report `approved` when a material finding exists. "
+        ),
+        "test-spec-review": (
+            "Use the installed normative review-result skeleton. In both the "
+            "review record and review log, include exact metadata lines "
+            "`Review ID: test-spec-review-r1`, `Stage: test-spec-review`, "
+            "`Status: <approved | changes-requested | blocked | inconclusive>`, "
+            "`Reviewed artifact identity: <the supplied sha256 identity>`, "
+            "`Material findings: <IDs or none>`, and "
+            "`Recording status: recorded`. Preserve independent judgment; do "
+            "not report `approved` when a material finding exists. "
+        ),
     }[stage]
     return {
         "skill_names": ["workflow", stage],
