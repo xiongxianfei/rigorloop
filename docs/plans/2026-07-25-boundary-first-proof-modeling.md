@@ -98,7 +98,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r54.md
 - Review status: approved; stage=spec-review; round=r54
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture
+- Next stage: architecture-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-CR-M2-9
 
@@ -839,6 +839,13 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Canonical architecture and the boundary-proof component view now
+  keep comparison candidates outside child-readable roots, route the
+  authoritative scenario into both reviews, and assign the closed invariant
+  projection to a pure evaluator. No new ADR is required because this
+  specializes the already accepted structural-validator/semantic-review
+  boundary without changing the system or persistence design.
 
 - 2026-07-27: Spec-review R54 approved the focused R28y invariant-oracle
   correction with no material findings. Affected architecture, plan, and

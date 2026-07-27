@@ -41,6 +41,7 @@ flowchart LR
     integrity["Workspace integrity guard<br/>[Root-anchored baseline + post-turn scan]"]:::component
     materializer["Exact-byte materializer<br/>[Write + complete reread observation]"]:::component
     content_validator["Lifecycle content validator<br/>[Structural agreement only]"]:::component
+    oracle_evaluator["Invariant oracle evaluator<br/>[Closed projection; no golden decomposition]"]:::component
     publisher["Immutable run publisher<br/>[Run → receipt → atomic pointer]"]:::component
     validator["Boundary validator + report writer<br/>[Structure + serialization]"]:::component
     selector["Validation selector<br/>[Six check IDs]"]:::component
@@ -55,6 +56,7 @@ flowchart LR
   model -->|closed runtime and evidence decisions| harness
   selector -->|routes affected paths| validator
   fixtures -->|fixture and behavior evidence| validator
+  fixtures -->|parent-only comparison candidates| oracle_evaluator
   feature_specs -->|boundary and proof records| validator
   reviewer -->|semantic completeness| feature_specs
   skills -->|five participating packages + resource maps| assembler
@@ -86,7 +88,8 @@ flowchart LR
   materializer -->|exact returned UTF-8 bytes| isolated_workspace
   materializer -->|value-free materialization observation| content_validator
   isolated_workspace -->|materialized artifact set| content_validator
-  content_validator -->|value-free structural validation observation| transport
+  content_validator -->|validated normalized record| oracle_evaluator
+  oracle_evaluator -->|invariant pass or boundary-oracle-mismatch| transport
   transport -->|terminal validated bundle| harness
   projection_registry -->|validated closed preflight success-attestation fields| preflight_attestation
   preflight_attestation -->|feasibility gate only; never copied as authority| harness
