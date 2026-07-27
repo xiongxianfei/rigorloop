@@ -23,6 +23,7 @@ from boundary_proof_behavior import (
     PARTICIPATING_SKILLS,
     PREFLIGHT_FIELDS,
     FILE_CHANGE_AUTHORIZATION_POLICY,
+    DIAGNOSTIC_PHASES,
     MATERIALIZATION_CANARY_POLICY,
     RUNTIME_SYSTEM_SKILLS,
     RUNTIME_PROTOCOL_CLASSIFICATION_IDENTITY_BY_VERSION,
@@ -30,6 +31,7 @@ from boundary_proof_behavior import (
     BoundaryRuntimeError,
     _AppServer,
     _StageTurnTimeout,
+    _assert_parent_only_candidate_isolation,
     _artifact_kind,
     _build_behavior_manifest,
     _classify_historical_evidence,
@@ -84,6 +86,8 @@ from boundary_proof_model import (
     RUNTIME_PROJECTION_FIELDS,
     runtime_projection_identity,
     BoundaryProofError,
+    boundary_invariant_projections_match,
+    feature_invariant_projection,
     CoreBoundaryEntry,
     capability_report_result,
     evaluate_boundary_state,
@@ -91,6 +95,7 @@ from boundary_proof_model import (
     handler_conformance_policy,
     normalize_feature_model,
     normalize_proof_map,
+    proof_invariant_projection,
     select_runtime_projection,
     validate_capability_report,
     validate_handler_conformance,
@@ -2103,6 +2108,202 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             set(CORE_DIMENSION_IDS),
         )
         self.assertEqual(len(normalized_proof.proof_obligations), 4)
+
+    def test_invariant_projection_accepts_stage_owned_alternative_modeling(
+        self,
+    ) -> None:
+        feature_payload = _parse_feature_markdown(
+            (
+                FIXTURES / "simple-change" / "candidates" / "feature-spec.md"
+            ).read_text(encoding="utf-8")
+        )
+        proof_payload = _parse_test_spec_markdown(
+            (
+                FIXTURES / "simple-change" / "candidates" / "test-spec.md"
+            ).read_text(encoding="utf-8")
+        )
+        candidate_feature = normalize_feature_model(feature_payload)
+        candidate_proof = normalize_proof_map(proof_payload, candidate_feature)
+
+        alternative_payload = copy.deepcopy(feature_payload)
+        rows = {
+            row["dimension_id"]: row
+            for row in alternative_payload["core_dimensions"]
+        }
+        canonical = rows["canonical-trust"]
+        freshness = rows["identity-freshness"]
+        canonical.update(
+            {
+                "applicability": "not-applicable",
+                "governing_requirement_ids": [],
+                "boundary_ids": [],
+                "non_applicability_rationale": (
+                    "The stage owns this alternative applicability rationale."
+                ),
+            }
+        )
+        freshness.update(
+            {
+                "applicability": "applicable",
+                "governing_requirement_ids": ["R1", "R2", "R3"],
+                "boundary_ids": ["text.canonical.requirements"],
+                "non_applicability_rationale": None,
+            }
+        )
+        alternative_payload["examples"][0]["example_id"] = "alt.example.trim"
+        alternative_feature = normalize_feature_model(alternative_payload)
+
+        alternative_proof_payload = copy.deepcopy(proof_payload)
+        alternative_proof_payload["proof_obligations"][0][
+            "proof_obligation_id"
+        ] = "alt.proof.canonical"
+        alternative_proof_payload["proof_obligations"][0]["test_case_ids"] = [
+            "alt.t1",
+            "alt.t2",
+            "alt.t3",
+        ]
+        alternative_proof = normalize_proof_map(
+            alternative_proof_payload, alternative_feature
+        )
+
+        self.assertNotEqual(candidate_feature, alternative_feature)
+        self.assertNotEqual(candidate_proof, alternative_proof)
+        self.assertTrue(
+            boundary_invariant_projections_match(
+                candidate_feature,
+                alternative_feature,
+                candidate_proof,
+                alternative_proof,
+            )
+        )
+
+    def test_invariant_projection_contains_only_the_closed_oracle_fields(
+        self,
+    ) -> None:
+        feature = normalize_feature_model(
+            _parse_feature_markdown(
+                (
+                    FIXTURES
+                    / "simple-change"
+                    / "candidates"
+                    / "feature-spec.md"
+                ).read_text(encoding="utf-8")
+            )
+        )
+        proof = normalize_proof_map(
+            _parse_test_spec_markdown(
+                (
+                    FIXTURES
+                    / "simple-change"
+                    / "candidates"
+                    / "test-spec.md"
+                ).read_text(encoding="utf-8")
+            ),
+            feature,
+        )
+        self.assertEqual(
+            dataclasses.asdict(feature_invariant_projection(feature)),
+            {
+                "boundary_model_version": "v1",
+                "boundary_model_scope": "R1-R4",
+                "requirement_ids": ("R1", "R2", "R3", "R4"),
+                "core_dimension_ids": tuple(sorted(CORE_DIMENSION_IDS)),
+                "extension_ids": (),
+            },
+        )
+        self.assertEqual(
+            dataclasses.asdict(proof_invariant_projection(proof)),
+            {
+                "boundary_model_version": "v1",
+                "boundary_model_scope": "R1-R4",
+                "governing_requirement_ids": ("R1", "R2", "R3", "R4"),
+            },
+        )
+
+    def test_invariant_projection_rejects_every_unequal_closed_member(self) -> None:
+        feature = normalize_feature_model(
+            _parse_feature_markdown(
+                (
+                    FIXTURES
+                    / "simple-change"
+                    / "candidates"
+                    / "feature-spec.md"
+                ).read_text(encoding="utf-8")
+            )
+        )
+        projection = feature_invariant_projection(feature)
+        mutations = {
+            field: dataclasses.replace(projection, **{field: replacement})
+            for field, replacement in {
+                "boundary_model_version": "legacy",
+                "boundary_model_scope": "R1-R3",
+                "requirement_ids": ("R1", "R2", "R3"),
+                "core_dimension_ids": projection.core_dimension_ids[:-1],
+                "extension_ids": ("unexpected-extension",),
+            }.items()
+        }
+        for field, altered in mutations.items():
+            with self.subTest(field=field):
+                self.assertNotEqual(projection, altered)
+
+    def test_generation_only_diagnostics_are_closed_and_phase_bound(self) -> None:
+        self.assertEqual(
+            DIAGNOSTIC_PHASES["boundary-oracle-mismatch"],
+            frozenset({"in-turn"}),
+        )
+        self.assertEqual(
+            DIAGNOSTIC_PHASES["unmanifested-input"],
+            frozenset({"pre-turn-start"}),
+        )
+        with self.assertRaises(ValueError):
+            BoundaryRuntimeError("not-in-vocabulary")
+
+    def test_candidate_values_are_rejected_from_every_child_visible_surface(
+        self,
+    ) -> None:
+        clean = {
+            "serialized_request": {"prompt": "author from the scenario"},
+            "workspace_inventory": [("scenario.json", 10, "sha256:clean")],
+            "child_access_observations": [{"root": "/isolated/workspace"}],
+            "forbidden_candidate_values": ("candidate-secret",),
+        }
+        _assert_parent_only_candidate_isolation(**clean)
+        for surface in (
+            "serialized_request",
+            "workspace_inventory",
+            "child_access_observations",
+        ):
+            contaminated = copy.deepcopy(clean)
+            if surface == "serialized_request":
+                contaminated[surface] = {"prompt": "candidate-secret"}
+            else:
+                contaminated[surface] = ["candidate-secret"]
+            with self.subTest(surface=surface):
+                with self.assertRaises(BoundaryRuntimeError) as raised:
+                    _assert_parent_only_candidate_isolation(**contaminated)
+                self.assertEqual(
+                    raised.exception.diagnostic_id, "unmanifested-input"
+                )
+
+    def test_scenario_is_bound_into_spec_and_both_formal_reviews(self) -> None:
+        scenario = json.loads(
+            (
+                FIXTURES / "simple-change" / "scenario.json"
+            ).read_text(encoding="utf-8")
+        )["request"]
+        spec_request = _workflow_stage_request("spec", scenario)
+        spec_review_request = _workflow_stage_request(
+            "spec-review",
+            "review",
+            artifact_context="Authoritative scenario request:\n" + scenario,
+        )
+        test_review_request = _workflow_stage_request(
+            "test-spec-review",
+            "review",
+            artifact_context="Authoritative scenario request:\n" + scenario,
+        )
+        for request in (spec_request, spec_review_request, test_review_request):
+            self.assertIn(scenario, request["prompt"])
 
     def test_stage_output_rejects_label_only_generation(self) -> None:
         accepted = {
