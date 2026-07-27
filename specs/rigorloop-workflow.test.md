@@ -10,7 +10,7 @@ Boundary model scope: R28-R28z
 ## Related spec and plan
 
 - Spec: [RigorLoop Workflow](rigorloop-workflow.md), approved by focused
-  `spec-review-r54` for the invariant-oracle correction layered on the
+  `spec-review-r55` for the extension-oracle correction layered on the
   three-category exact-runtime capability projection discovered during M2
   preflight.
 - Proposal: [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md), accepted.
@@ -35,8 +35,8 @@ Boundary model scope: R28-R28z
 - Historical workflow-refactor architecture: not required for that completed
   slice.
 - Boundary-first architecture: [Canonical System Architecture](../docs/architecture/system/architecture.md),
-  approved by focused `architecture-review-r26` for the parent-only candidate
-  and pure invariant-evaluator correction, with
+  approved by focused `architecture-review-r27` for the extension-oracle
+  ownership correction, with
   [ADR-20260725](../docs/adr/ADR-20260725-boundary-first-proof-modeling.md)
   accepted for the amendment and
   [ADR-20260726](../docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md)
@@ -48,7 +48,7 @@ Boundary model scope: R28-R28z
   the accepted [three-category successor ADR](../docs/adr/ADR-20260727-three-category-runtime-feature-projection.md)
   owning the 3/4/89 partition correction.
 - Boundary-first plan: [Boundary-First Proof Modeling](../docs/plans/2026-07-25-boundary-first-proof-modeling.md),
-  approved by focused `plan-review-r20`.
+  approved by focused `plan-review-r21`.
 - Spec-review: approved with no material findings after the PR-self-contained lifecycle completion amendment was added; minor SR-1 asked the test spec to decide how merge-dependent language classification is recorded.
 - Plan-review: approved with no material findings for the PR-self-contained lifecycle completion plan. Minor non-blocking note: if README remains unchanged, final affected-surface evidence should mark it unaffected with rationale.
 
@@ -56,18 +56,18 @@ Boundary model scope: R28-R28z
 
 | Input | Path | Status / Review state | Identity |
 | --- | --- | --- | --- |
-| Feature spec | `specs/rigorloop-workflow.md` | approved by focused spec-review R54 | `sha256:d58620666f06c6032ab96fecf18510cc816343a6320a9f08ee55618ed6c0b97d` |
+| Feature spec | `specs/rigorloop-workflow.md` | approved by focused spec-review R55 | `sha256:7d32316ec3434641ef1fc6512a03deef765a4e264a507300ddf1ab3b4215ee1d` |
 | Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r54.md` | approved | `sha256:9e3272b4a2d68d5104e7a16448cfa9a38c42d8beba217d2325efa8e924b935e8` |
-| Architecture | `docs/architecture/system/architecture.md` | approved by focused architecture-review R26 | `sha256:fd511bc999323a541afdcd6e17fb09c1b3a3a29faf61919013caf714d4744841` |
-| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r26.md` | approved | `sha256:07c7a16678af909206110fa7d0aaac114c3292b5d3482db597e8bbf367177519` |
+| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r55.md` | approved | `sha256:3828bbf59481d5f56693ce5dcd7bb934dd26dcb54861d6be67644394967fef36` |
+| Architecture | `docs/architecture/system/architecture.md` | approved by focused architecture-review R27 | `sha256:ee9cda306ac94b7f23be63f59353ae453c7792e8f7a5bda9af8ca603f007ac1d` |
+| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r27.md` | approved | `sha256:ba021631e6930bddacac0bd5726154eb5b4a2730e3d50da00ca4374d2dc40862` |
 | Boundary ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted with scoped transport supersession | `sha256:0bd0cc5b7964b45f61b020b31c6781d360d072e15120feaf2a7f106cae05df15` |
 | Transport ADR | `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md` | accepted with scoped capability-projection supersession | `sha256:e357094a48c9a3410cc661d2f5e28c50afd8aa4dcdd375ec074a355103ea8263` |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted with scoped writable-child supersession | `sha256:b80c4a494ae1e08abea77d74fb270a959ebbde5cf5e01e1f8606791f0e0b5434` |
 | Capability-projection ADR | `docs/adr/ADR-20260727-capability-projected-file-change-control.md` | accepted base decision; binary clauses superseded narrowly | `sha256:b9d75ea29d528ef0e1f835ab796d6aa6936d362520ce1a424f5f0bb1112568ef` |
 | Three-category projection ADR | `docs/adr/ADR-20260727-three-category-runtime-feature-projection.md` | accepted by architecture-review R25 | `sha256:b2d8997a97114f2b055efc2bec627b39c26d4fea95e5b86ae4bacae3a9c724eb` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; approved for proof-map synchronization | `sha256:94734107f7feba0284384f0387a488df5787041c6f591e2002024903214dcc73` |
-| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r20.md` | approved | `sha256:297bfde578f3b0dfdcf08d7007a1ed7bab6170ef70fdff7b3a1d873dafc4d61e` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; approved for proof-map synchronization | `sha256:9e2c5f129f86df371290b035f8f0bde37ae925250d394be6fd4de78464926eff` |
+| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r21.md` | approved | `sha256:3a4167f23f829247775b5743f5b7c4bdd1c1a4deb47b415779a5c81ea93573ed` |
 
 ## Testing strategy
 
@@ -77,7 +77,7 @@ Boundary model scope: R28-R28z
 - Use selector-selected targeted proof as the first validation layer for changed paths; use broad smoke only when an authoritative trigger elevates it.
 - Treat `specs/rigorloop-workflow.test.md` as a pending proof-map amendment.
   M2 remains blocked until an independent test-spec review approves this
-  R54/R26/R20-synchronized proof map and exact input identities.
+  R55/R27/R21-synchronized proof map and exact input identities.
 - Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
 - Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
 - Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
