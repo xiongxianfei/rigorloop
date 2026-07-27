@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import fcntl
 import hashlib
 import json
 import os
@@ -21,6 +22,7 @@ import time
 import traceback
 import tomllib
 from collections.abc import Callable, Mapping, Sequence
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Final
@@ -291,6 +293,46 @@ MANIFEST_FIELDS: Final[frozenset[str]] = frozenset(
         "artifact_policy",
         "runtime_attestation",
     }
+)
+RUN_MANIFEST_FIELDS: Final[frozenset[str]] = frozenset(
+    {
+        "run_id",
+        "publisher_instance_id",
+        "input_set",
+        "input_set_identity",
+        "baseline_commit",
+        "before_artifact_inventory",
+        "after_artifact_inventory",
+        "snapshots",
+        "events",
+        "transport_attempts",
+    }
+)
+PUBLISHER_FIELDS: Final[frozenset[str]] = frozenset(
+    {
+        "schema_version",
+        "publisher_instance_id",
+        "run_id",
+        "input_set_identity",
+        "prior_pointer",
+        "working_root",
+        "staging_root",
+        "target_root",
+    }
+)
+PREPARED_FIELDS: Final[frozenset[str]] = frozenset(
+    {
+        "publisher_instance_id",
+        "run_id",
+        "input_set_identity",
+        "staged_manifest_snapshot",
+        "target_manifest",
+        "prior_pointer",
+    }
+)
+RUN_ID_PATTERN: Final[re.Pattern[str]] = re.compile(r"^run-[0-9a-f]{32}$")
+PUBLISHER_ID_PATTERN: Final[re.Pattern[str]] = re.compile(
+    r"^publisher-[0-9a-f]{32}$"
 )
 TRANSPORT_POLICY: Final[dict[str, object]] = {
     "schema_version": "boundary-transport-policy-v1",
@@ -781,8 +823,16 @@ def _selected_repository_path(path: str, change_id: str) -> bool:
     return not (
         path.startswith(simple_prefix + "runs/")
         or path == simple_prefix + "current.json"
+        or path == simple_prefix + "publisher.lock"
+        or path == simple_prefix + "publisher.json"
         or path == simple_prefix + "prepared.json"
-        or "/.prepared-" in path
+        or path.startswith(simple_prefix + ".working-")
+        or path.startswith(simple_prefix + ".prepared-")
+        or path.startswith(simple_prefix + ".current-")
+        or path.startswith(simple_prefix + "manual-recovery-")
+        or path.startswith(simple_prefix + "manual-recovery-state-")
+        or path.startswith(simple_prefix + ".manual-recovery-")
+        or path.startswith(simple_prefix + ".recovery-quarantine-")
     )
 
 
@@ -2936,15 +2986,15 @@ def _assemble_test_spec_correction_run(
     before_inventory: Sequence[Mapping[str, str]],
     repository_after_inventory: Sequence[Mapping[str, str]],
     correction: Mapping[str, object],
+    publisher_instance_id: str,
+    working_root: Path,
 ) -> tuple[Path, dict[str, object]]:
     """Assemble the closed R28y test-spec correction branch."""
 
     evidence_root = _select_change_root(repo_root, change_id) / "evidence"
     simple_root = evidence_root / "simple-change"
     simple_root.mkdir(parents=True, exist_ok=True)
-    temporary = Path(
-        tempfile.mkdtemp(prefix=f".{run_id}.", dir=simple_root)
-    )
+    temporary = working_root
     final_prefix = (
         f"docs/changes/{change_id}/evidence/simple-change/runs/{run_id}"
     )
@@ -3236,6 +3286,7 @@ def _assemble_test_spec_correction_run(
         raise BoundaryRuntimeError("protocol-shape-incompatible")
     manifest = {
         "run_id": run_id,
+        "publisher_instance_id": publisher_instance_id,
         "input_set": dict(input_set),
         "input_set_identity": _sha256(_canonical_json_bytes(input_set)),
         "baseline_commit": input_set["baseline_commit"],
@@ -3260,13 +3311,15 @@ def _assemble_feature_spec_correction_run(
     before_inventory: Sequence[Mapping[str, str]],
     repository_after_inventory: Sequence[Mapping[str, str]],
     correction: Mapping[str, object],
+    publisher_instance_id: str,
+    working_root: Path,
 ) -> tuple[Path, dict[str, object]]:
     """Assemble the closed R28y feature-spec correction branch."""
 
     evidence_root = _select_change_root(repo_root, change_id) / "evidence"
     simple_root = evidence_root / "simple-change"
     simple_root.mkdir(parents=True, exist_ok=True)
-    temporary = Path(tempfile.mkdtemp(prefix=f".{run_id}.", dir=simple_root))
+    temporary = working_root
     final_prefix = (
         f"docs/changes/{change_id}/evidence/simple-change/runs/{run_id}"
     )
@@ -3538,6 +3591,7 @@ def _assemble_feature_spec_correction_run(
         raise BoundaryRuntimeError("protocol-shape-incompatible")
     manifest = {
         "run_id": run_id,
+        "publisher_instance_id": publisher_instance_id,
         "input_set": dict(input_set),
         "input_set_identity": _sha256(_canonical_json_bytes(input_set)),
         "baseline_commit": input_set["baseline_commit"],
@@ -3561,6 +3615,8 @@ def _assemble_run(
     candidate_proof: object,
     before_inventory: Sequence[Mapping[str, str]],
     repository_after_inventory: Sequence[Mapping[str, str]],
+    publisher_instance_id: str,
+    working_root: Path,
 ) -> tuple[Path, dict[str, object]]:
     correction = payload.get("correction_history")
     if isinstance(correction, dict) and correction.get("role") == "feature-spec":
@@ -3575,6 +3631,8 @@ def _assemble_run(
             before_inventory,
             repository_after_inventory,
             correction,
+            publisher_instance_id,
+            working_root,
         )
     if isinstance(correction, dict) and correction.get("role") == "test-spec":
         return _assemble_test_spec_correction_run(
@@ -3588,13 +3646,13 @@ def _assemble_run(
             before_inventory,
             repository_after_inventory,
             correction,
+            publisher_instance_id,
+            working_root,
         )
     evidence_root = _select_change_root(repo_root, change_id) / "evidence"
     simple_root = evidence_root / "simple-change"
     simple_root.mkdir(parents=True, exist_ok=True)
-    temporary = Path(
-        tempfile.mkdtemp(prefix=f".{run_id}.", dir=simple_root)
-    )
+    temporary = working_root
     final_prefix = (
         f"docs/changes/{change_id}/evidence/simple-change/runs/{run_id}"
     )
@@ -3880,6 +3938,7 @@ def _assemble_run(
         raise BoundaryRuntimeError("runtime-identity-unstable", "in-turn")
     manifest = {
         "run_id": run_id,
+        "publisher_instance_id": publisher_instance_id,
         "input_set": dict(input_set),
         "input_set_identity": _sha256(_canonical_json_bytes(input_set)),
         "baseline_commit": input_set["baseline_commit"],
@@ -3935,6 +3994,253 @@ def _fsync_directory(path: Path) -> None:
         os.close(descriptor)
 
 
+def _simple_root(repo_root: Path, change_id: str) -> Path:
+    return (
+        _select_change_root(repo_root, change_id)
+        / "evidence"
+        / "simple-change"
+    )
+
+
+@contextmanager
+def _publisher_lock(repo_root: Path, change_id: str):
+    """Hold the one persistent nonblocking publisher lock for an operation."""
+
+    simple_root = _simple_root(repo_root, change_id)
+    simple_root.mkdir(mode=0o700, parents=True, exist_ok=True)
+    lock_path = simple_root / "publisher.lock"
+    if lock_path.exists() and (
+        lock_path.is_symlink() or not lock_path.is_file()
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    descriptor = os.open(lock_path, os.O_RDWR | os.O_CREAT, 0o600)
+    try:
+        try:
+            fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as error:
+            raise BoundaryRuntimeError("runtime-unavailable") from error
+        yield
+    finally:
+        try:
+            fcntl.flock(descriptor, fcntl.LOCK_UN)
+        finally:
+            os.close(descriptor)
+
+
+def _publisher_paths(
+    repo_root: Path, change_id: str, run_id: str
+) -> tuple[str, str, str]:
+    simple = (
+        f"docs/changes/{change_id}/evidence/simple-change"
+    )
+    return (
+        f"{simple}/.working-{run_id}",
+        f"{simple}/.prepared-{run_id}",
+        f"{simple}/runs/{run_id}",
+    )
+
+
+def _validate_pointer_shape(pointer: object) -> None:
+    if pointer is None:
+        return
+    if (
+        not isinstance(pointer, dict)
+        or set(pointer) != {"run_id", "input_set_identity", "manifest_ref"}
+        or not isinstance(pointer.get("run_id"), str)
+        or RUN_ID_PATTERN.fullmatch(str(pointer["run_id"])) is None
+        or not isinstance(pointer.get("input_set_identity"), str)
+        or IDENTITY_PATTERN.fullmatch(str(pointer["input_set_identity"])) is None
+        or not isinstance(pointer.get("manifest_ref"), dict)
+        or set(pointer["manifest_ref"]) != {"path", "identity"}
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+
+
+def _validate_publisher_lease(
+    repo_root: Path,
+    change_id: str,
+    lease: Mapping[str, object],
+) -> None:
+    if (
+        set(lease) != PUBLISHER_FIELDS
+        or lease.get("schema_version") != "simple-change-publisher-v1"
+        or not isinstance(lease.get("publisher_instance_id"), str)
+        or PUBLISHER_ID_PATTERN.fullmatch(
+            str(lease["publisher_instance_id"])
+        )
+        is None
+        or not isinstance(lease.get("run_id"), str)
+        or RUN_ID_PATTERN.fullmatch(str(lease["run_id"])) is None
+        or not isinstance(lease.get("input_set_identity"), str)
+        or IDENTITY_PATTERN.fullmatch(str(lease["input_set_identity"])) is None
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    _validate_pointer_shape(lease.get("prior_pointer"))
+    expected = _publisher_paths(
+        repo_root, change_id, str(lease["run_id"])
+    )
+    actual = tuple(
+        lease[field] for field in ("working_root", "staging_root", "target_root")
+    )
+    if actual != expected:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+
+
+def _read_publisher_lease(
+    repo_root: Path, change_id: str
+) -> dict[str, object]:
+    lease = _read_json(_simple_root(repo_root, change_id) / "publisher.json")
+    _validate_publisher_lease(repo_root, change_id, lease)
+    return lease
+
+
+def _create_publisher_lease(
+    repo_root: Path,
+    change_id: str,
+    run_id: str,
+    publisher_instance_id: str,
+    input_set_identity: str,
+) -> tuple[dict[str, object], Path]:
+    simple_root = _simple_root(repo_root, change_id)
+    simple_root.mkdir(mode=0o700, parents=True, exist_ok=True)
+    current_path = simple_root / "current.json"
+    prior = _read_json(current_path) if current_path.exists() else None
+    _validate_pointer_shape(prior)
+    working, staging, target = _publisher_paths(repo_root, change_id, run_id)
+    lease = {
+        "schema_version": "simple-change-publisher-v1",
+        "publisher_instance_id": publisher_instance_id,
+        "run_id": run_id,
+        "input_set_identity": input_set_identity,
+        "prior_pointer": prior,
+        "working_root": working,
+        "staging_root": staging,
+        "target_root": target,
+    }
+    _validate_publisher_lease(repo_root, change_id, lease)
+    lease_path = simple_root / "publisher.json"
+    _exclusive_write(lease_path, _canonical_json_bytes(lease))
+    working_path = repo_root / working
+    working_path.mkdir(mode=0o700, parents=False, exist_ok=False)
+    _fsync_directory(simple_root)
+    return lease, working_path
+
+
+def _validate_prepared_receipt(
+    repo_root: Path,
+    change_id: str,
+    prepared: Mapping[str, object],
+    lease: Mapping[str, object],
+) -> None:
+    if set(prepared) != PREPARED_FIELDS:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    for field in ("publisher_instance_id", "run_id", "input_set_identity"):
+        if prepared.get(field) != lease.get(field):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+    if prepared.get("prior_pointer") != lease.get("prior_pointer"):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    staged_ref = prepared.get("staged_manifest_snapshot")
+    target_ref = prepared.get("target_manifest")
+    if (
+        not isinstance(staged_ref, dict)
+        or set(staged_ref) != {"path", "identity"}
+        or not isinstance(target_ref, dict)
+        or set(target_ref) != {"path", "identity"}
+        or staged_ref.get("identity") != target_ref.get("identity")
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    run_id = str(lease["run_id"])
+    expected_staged = (
+        f"docs/changes/{change_id}/evidence/simple-change/"
+        f".prepared-{run_id}/manifest.json"
+    )
+    expected_target = (
+        f"docs/changes/{change_id}/evidence/simple-change/"
+        f"runs/{run_id}/manifest.json"
+    )
+    if (
+        staged_ref.get("path") != expected_staged
+        or target_ref.get("path") != expected_target
+        or not isinstance(target_ref.get("identity"), str)
+        or IDENTITY_PATTERN.fullmatch(str(target_ref["identity"])) is None
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+
+
+def _discover_global_candidate(
+    repo_root: Path, change_id: str
+) -> str | None:
+    """Validate the transient namespace and select at most one active run."""
+
+    simple_root = _simple_root(repo_root, change_id)
+    if not simple_root.exists():
+        return None
+    run_ids: set[str] = set()
+    known_fixed = {
+        "current.json",
+        "publisher.lock",
+        "publisher.json",
+        "prepared.json",
+        "runs",
+    }
+    transient_patterns = (
+        re.compile(r"^\.working-(run-[0-9a-f]{32})$"),
+        re.compile(r"^\.prepared-(run-[0-9a-f]{32})$"),
+        re.compile(r"^\.current-(run-[0-9a-f]{32})\.json$"),
+        re.compile(r"^manual-recovery-(run-[0-9a-f]{32})\.json$"),
+        re.compile(r"^manual-recovery-state-(run-[0-9a-f]{32})\.json$"),
+        re.compile(
+            r"^\.manual-recovery-(run-[0-9a-f]{32})-"
+            r"recovery-[0-9a-f]{32}\.tmp$"
+        ),
+        re.compile(
+            r"^\.recovery-quarantine-(run-[0-9a-f]{32})-"
+            r"recovery-[0-9a-f]{32}-(?:working|staging)$"
+        ),
+    )
+    for path in simple_root.iterdir():
+        name = path.name
+        if name in known_fixed:
+            if path.is_symlink():
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            continue
+        match = next(
+            (pattern.fullmatch(name) for pattern in transient_patterns
+             if pattern.fullmatch(name) is not None),
+            None,
+        )
+        if match is not None:
+            if path.is_symlink():
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            run_ids.add(match.group(1))
+            continue
+        if (
+            name.startswith(".working-")
+            or name.startswith(".prepared-")
+            or name.startswith(".current-")
+            or name.startswith("manual-recovery-")
+            or name.startswith("manual-recovery-state-")
+            or name.startswith(".manual-recovery-")
+            or name.startswith(".recovery-quarantine-")
+        ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+    lease_path = simple_root / "publisher.json"
+    if lease_path.exists():
+        lease = _read_publisher_lease(repo_root, change_id)
+        run_ids.add(str(lease["run_id"]))
+    prepared_path = simple_root / "prepared.json"
+    if prepared_path.exists():
+        if not lease_path.exists():
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        prepared = _read_json(prepared_path)
+        lease = _read_publisher_lease(repo_root, change_id)
+        _validate_prepared_receipt(repo_root, change_id, prepared, lease)
+        run_ids.add(str(prepared["run_id"]))
+    if len(run_ids) > 1:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    return next(iter(run_ids), None)
+
+
 def _exclusive_write(path: Path, raw: bytes) -> None:
     descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     try:
@@ -3952,7 +4258,10 @@ def _exclusive_write(path: Path, raw: bytes) -> None:
 
 
 def _validate_staged_run(
-    staged: Path, manifest: Mapping[str, object], pointer: Mapping[str, object]
+    staged: Path,
+    manifest: Mapping[str, object],
+    pointer: Mapping[str, object],
+    lease: Mapping[str, object],
 ) -> None:
     manifest_path = staged / "manifest.json"
     manifest_ref = pointer.get("manifest_ref")
@@ -3962,6 +4271,10 @@ def _validate_staged_run(
         or _read_json(manifest_path) != dict(manifest)
         or not isinstance(manifest_ref, dict)
         or manifest_ref.get("identity") != _read_file_identity(manifest_path).digest
+        or manifest.get("publisher_instance_id")
+        != lease.get("publisher_instance_id")
+        or manifest.get("run_id") != lease.get("run_id")
+        or manifest.get("input_set_identity") != lease.get("input_set_identity")
     ):
         raise BoundaryRuntimeError("runtime-identity-unstable")
     snapshots = manifest.get("snapshots")
@@ -4005,13 +4318,20 @@ def _publish_run(
     *,
     crash_at: str | None = None,
 ) -> dict[str, object]:
-    simple_root = (
-        _select_change_root(repo_root, change_id) / "evidence" / "simple-change"
-    )
+    simple_root = _simple_root(repo_root, change_id)
     runs_root = simple_root / "runs"
     runs_root.mkdir(mode=0o700, parents=True, exist_ok=True)
     run_id = manifest["run_id"]
-    if not isinstance(run_id, str) or re.fullmatch(r"run-[0-9a-f]{32}", run_id) is None:
+    if not isinstance(run_id, str) or RUN_ID_PATTERN.fullmatch(run_id) is None:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    lease = _read_publisher_lease(repo_root, change_id)
+    publisher_instance_id = manifest.get("publisher_instance_id")
+    if (
+        manifest.get("run_id") != lease.get("run_id")
+        or publisher_instance_id != lease.get("publisher_instance_id")
+        or manifest.get("input_set_identity") != lease.get("input_set_identity")
+        or temporary != repo_root / str(lease["working_root"])
+    ):
         raise BoundaryRuntimeError("runtime-identity-unstable")
     target = runs_root / run_id
     if target.exists():
@@ -4024,6 +4344,8 @@ def _publish_run(
     if prepared_path.exists():
         raise BoundaryRuntimeError("runtime-identity-unstable")
     prior = _read_json(current_path) if current_path.exists() else None
+    if prior != lease["prior_pointer"]:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
     try:
         manifest_path = (
             repo_root
@@ -4036,21 +4358,32 @@ def _publish_run(
             / run_id
             / "manifest.json"
         )
+        target_manifest = {
+            "path": manifest_path.relative_to(repo_root).as_posix(),
+            "identity": _sha256(_canonical_json_bytes(manifest)),
+        }
         pointer = {
             "run_id": run_id,
             "input_set_identity": str(manifest["input_set_identity"]),
-            "manifest_ref": {
-                "path": manifest_path.relative_to(repo_root).as_posix(),
-                "identity": _sha256(_canonical_json_bytes(manifest)),
-            },
-        }
-        prepared = {
-            **pointer,
-            "prior_pointer": prior,
+            "manifest_ref": target_manifest,
         }
         os.replace(temporary, staged)
         _fsync_directory(simple_root)
-        _validate_staged_run(staged, manifest, pointer)
+        staged_manifest = staged / "manifest.json"
+        staged_snapshot = {
+            "path": staged_manifest.relative_to(repo_root).as_posix(),
+            "identity": _read_file_identity(staged_manifest).digest,
+        }
+        prepared = {
+            "publisher_instance_id": publisher_instance_id,
+            "run_id": run_id,
+            "input_set_identity": str(manifest["input_set_identity"]),
+            "staged_manifest_snapshot": staged_snapshot,
+            "target_manifest": target_manifest,
+            "prior_pointer": prior,
+        }
+        _validate_staged_run(staged, manifest, pointer, lease)
+        _validate_prepared_receipt(repo_root, change_id, prepared, lease)
         _crash_if(crash_at, "before-receipt")
         _exclusive_write(prepared_path, _canonical_json_bytes(prepared))
         _crash_if(crash_at, "after-receipt-fsync")
@@ -4059,13 +4392,18 @@ def _publish_run(
         _crash_if(crash_at, "after-run-install")
         _validate_run(repo_root, change_id, pointer)
         _crash_if(crash_at, "after-run-validation")
-        _atomic_write(current_path, _canonical_json_bytes(pointer))
+        temporary_pointer = simple_root / f".current-{run_id}.json"
+        _exclusive_write(temporary_pointer, _canonical_json_bytes(pointer))
+        os.replace(temporary_pointer, current_path)
         _crash_if(crash_at, "after-pointer-replace")
         _fsync_directory(simple_root)
         _crash_if(crash_at, "after-parent-fsync")
         prepared_path.unlink()
         _fsync_directory(simple_root)
         _crash_if(crash_at, "after-receipt-cleanup")
+        (simple_root / "publisher.json").unlink()
+        _fsync_directory(simple_root)
+        _crash_if(crash_at, "after-lease-cleanup")
     except OSError as error:
         raise BoundaryRuntimeError("runtime-identity-unstable") from error
     return pointer
@@ -4166,17 +4504,7 @@ def _validate_run(
     if manifest_path != expected_path:
         raise BoundaryRuntimeError("runtime-identity-unstable")
     run = _read_json(manifest_path)
-    if set(run) != {
-        "run_id",
-        "input_set",
-        "input_set_identity",
-        "baseline_commit",
-        "before_artifact_inventory",
-        "after_artifact_inventory",
-        "snapshots",
-        "events",
-        "transport_attempts",
-    }:
+    if set(run) != RUN_MANIFEST_FIELDS:
         raise BoundaryRuntimeError("runtime-identity-unstable")
     input_set = run.get("input_set")
     if not isinstance(input_set, dict):
@@ -4184,6 +4512,11 @@ def _validate_run(
     input_identity = _sha256(_canonical_json_bytes(input_set))
     if (
         run.get("run_id") != run_id
+        or not isinstance(run.get("publisher_instance_id"), str)
+        or PUBLISHER_ID_PATTERN.fullmatch(
+            str(run["publisher_instance_id"])
+        )
+        is None
         or run.get("input_set_identity") != input_identity
         or pointer.get("input_set_identity") != input_identity
         or run.get("baseline_commit") != input_set.get("baseline_commit")
@@ -4330,50 +4663,106 @@ def _validate_run(
 
 
 def _reconcile_prepared(repo_root: Path, change_id: str) -> None:
-    simple_root = (
-        _select_change_root(repo_root, change_id) / "evidence" / "simple-change"
-    )
+    simple_root = _simple_root(repo_root, change_id)
+    _discover_global_candidate(repo_root, change_id)
     prepared_path = simple_root / "prepared.json"
+    lease_path = simple_root / "publisher.json"
     if not prepared_path.exists():
-        return
+        if not lease_path.exists():
+            return
+        lease = _read_publisher_lease(repo_root, change_id)
+        run_id = str(lease["run_id"])
+        target_pointer = {
+            "run_id": run_id,
+            "input_set_identity": lease["input_set_identity"],
+            "manifest_ref": {
+                "path": (
+                    f"docs/changes/{change_id}/evidence/simple-change/"
+                    f"runs/{run_id}/manifest.json"
+                ),
+                "identity": (
+                    _read_file_identity(
+                        simple_root / "runs" / run_id / "manifest.json"
+                    ).digest
+                    if (simple_root / "runs" / run_id / "manifest.json").is_file()
+                    else ""
+                ),
+            },
+        }
+        current_path = simple_root / "current.json"
+        current = _read_json(current_path) if current_path.exists() else None
+        if (
+            (simple_root / "runs" / run_id).is_dir()
+            and current == target_pointer
+            and not (simple_root / f".working-{run_id}").exists()
+            and not (simple_root / f".prepared-{run_id}").exists()
+        ):
+            _validate_run(repo_root, change_id, target_pointer)
+            lease_path.unlink()
+            _fsync_directory(simple_root)
+            return
+        # A later lock holder cannot reconstruct same-live-publisher authority.
+        # Lease-only, working, and unreceipted staging require explicit bounded
+        # discard-and-regenerate recovery.
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    if not lease_path.exists():
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    lease = _read_publisher_lease(repo_root, change_id)
     prepared = _read_json(prepared_path)
-    if set(prepared) != {
-        "run_id",
-        "input_set_identity",
-        "manifest_ref",
-        "prior_pointer",
-    }:
+    _validate_prepared_receipt(repo_root, change_id, prepared, lease)
+    run_id = prepared["run_id"]
+    if not isinstance(run_id, str) or RUN_ID_PATTERN.fullmatch(run_id) is None:
         raise BoundaryRuntimeError("runtime-identity-unstable")
     target_pointer = {
-        key: prepared[key]
-        for key in ("run_id", "input_set_identity", "manifest_ref")
+        "run_id": run_id,
+        "input_set_identity": prepared["input_set_identity"],
+        "manifest_ref": prepared["target_manifest"],
     }
-    run_id = prepared["run_id"]
-    if not isinstance(run_id, str):
-        raise BoundaryRuntimeError("runtime-identity-unstable")
     staged = simple_root / f".prepared-{run_id}"
     target = simple_root / "runs" / run_id
+    temporary_pointer = simple_root / f".current-{run_id}.json"
     if staged.exists() and target.exists():
         raise BoundaryRuntimeError("runtime-identity-unstable")
     if not target.exists():
         if not staged.is_dir() or staged.is_symlink():
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        staged_manifest = staged / "manifest.json"
+        if (
+            _read_file_identity(staged_manifest).digest
+            != prepared["staged_manifest_snapshot"]["identity"]
+        ):
             raise BoundaryRuntimeError("runtime-identity-unstable")
         os.replace(staged, target)
         _fsync_directory(target.parent)
     current_path = simple_root / "current.json"
     current = _read_json(current_path) if current_path.exists() else None
     if current == target_pointer:
+        if temporary_pointer.exists():
+            raise BoundaryRuntimeError("runtime-identity-unstable")
         _validate_run(repo_root, change_id, target_pointer)
     elif current == prepared["prior_pointer"]:
         _validate_run(repo_root, change_id, target_pointer)
-        _atomic_write(current_path, _canonical_json_bytes(target_pointer))
+        if temporary_pointer.exists():
+            if (
+                temporary_pointer.is_symlink()
+                or _read_json(temporary_pointer) != target_pointer
+            ):
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+        else:
+            _exclusive_write(
+                temporary_pointer, _canonical_json_bytes(target_pointer)
+            )
+        os.replace(temporary_pointer, current_path)
+        _fsync_directory(simple_root)
     else:
         raise BoundaryRuntimeError("runtime-identity-unstable")
     prepared_path.unlink()
     _fsync_directory(simple_root)
+    lease_path.unlink()
+    _fsync_directory(simple_root)
 
 
-def generate_behavior(
+def _generate_behavior_locked(
     change_id: str,
     scenario_path: Path,
     *,
@@ -4430,6 +4819,45 @@ def generate_behavior(
         or baseline.get("change_id") != change_id
     ):
         raise BoundaryRuntimeError("runtime-identity-unstable")
+    preflight_path = (
+        _select_change_root(repo_root, change_id)
+        / "evidence"
+        / "runtime-preflight-attestation.json"
+    )
+    attestation = _read_json(preflight_path)
+    _validate_attestation(attestation)
+    behavior_manifest = _build_behavior_manifest(repo_root, attestation)
+    _validate_behavior_manifest(repo_root, behavior_manifest)
+    change_root = _select_change_root(repo_root, change_id)
+    implementation_path = (
+        change_root / "evidence" / "behavior-implementation-manifest.json"
+    )
+    implementation_raw = _canonical_json_bytes(behavior_manifest)
+    implementation_ref = {
+        "path": implementation_path.relative_to(repo_root).as_posix(),
+        "identity": _sha256(implementation_raw),
+    }
+    _atomic_write(implementation_path, implementation_raw)
+    input_set = {
+        "schema_version": "simple-change-input-v1",
+        "scenario_ref": _regular_reference(repo_root, scenario_path),
+        "baseline_commit": "git:" + baseline_head,
+        "skill_resource_refs": list(behavior_manifest["skill_package_refs"]),
+        "oracle_refs": [
+            _regular_reference(repo_root, path) for path in sorted(oracle_paths)
+        ],
+        "implementation_manifest_ref": implementation_ref,
+    }
+    run_id = "run-" + secrets.token_hex(16)
+    publisher_instance_id = "publisher-" + secrets.token_hex(16)
+    lease, working_root = _create_publisher_lease(
+        repo_root,
+        change_id,
+        run_id,
+        publisher_instance_id,
+        _sha256(_canonical_json_bytes(input_set)),
+    )
+
     def run_stage(
         stage_request: Mapping[str, object],
     ) -> tuple[
@@ -4449,6 +4877,7 @@ def generate_behavior(
                 generation_request=stage_request,
                 generation_sink=generated,
                 forbidden_candidate_values=forbidden_candidate_values,
+                workspace_parent=working_root,
             )
             if len(generated) != 1:
                 raise BoundaryRuntimeError("protocol-shape-incompatible")
@@ -4517,8 +4946,8 @@ def generate_behavior(
     spec_request = _workflow_stage_request(
         "spec", str(scenario["request"])
     )
-    attestation, spec_result, attempts, artifacts = run_stage(spec_request)
-    stage_attestations.append(attestation)
+    observed, spec_result, attempts, artifacts = run_stage(spec_request)
+    stage_attestations.append(observed)
     stage_results.append(spec_result)
     transport_attempts.extend(attempts)
     stage_artifacts.update(artifacts)
@@ -4948,7 +5377,7 @@ def generate_behavior(
     }
     if any(
         observed[field] != attestation[field]
-        for observed in stage_attestations[1:]
+        for observed in stage_attestations
         for field in attestation_identity_fields
     ):
         raise BoundaryRuntimeError("runtime-identity-unstable", "in-turn")
@@ -4988,8 +5417,6 @@ def generate_behavior(
             for result in stage_results
         ],
     }
-    behavior_manifest = _build_behavior_manifest(repo_root, attestation)
-    _validate_behavior_manifest(repo_root, behavior_manifest)
     transport_policy_identity = _sha256(
         _canonical_json_bytes(behavior_manifest["transport_policy"])
     )
@@ -5001,30 +5428,6 @@ def generate_behavior(
         ),
         transport_policy_identity,
     )
-    change_root = _select_change_root(repo_root, change_id)
-    implementation_path = (
-        change_root / "evidence" / "behavior-implementation-manifest.json"
-    )
-    implementation_raw = _canonical_json_bytes(behavior_manifest)
-    implementation_ref = {
-        "path": implementation_path.relative_to(repo_root).as_posix(),
-        "identity": _sha256(implementation_raw),
-    }
-    _atomic_write(implementation_path, implementation_raw)
-    baseline_commit = "git:" + baseline_head
-    skill_refs = list(behavior_manifest["skill_package_refs"])
-    oracle_refs = [
-        _regular_reference(repo_root, path) for path in sorted(oracle_paths)
-    ]
-    input_set = {
-        "schema_version": "simple-change-input-v1",
-        "scenario_ref": _regular_reference(repo_root, scenario_path),
-        "baseline_commit": baseline_commit,
-        "skill_resource_refs": skill_refs,
-        "oracle_refs": oracle_refs,
-        "implementation_manifest_ref": implementation_ref,
-    }
-    run_id = "run-" + secrets.token_hex(16)
     temporary, run_manifest = _assemble_run(
         repo_root,
         change_id,
@@ -5035,6 +5438,8 @@ def generate_behavior(
         candidate_proof,
         _inventory_from_commit(repo_root, change_id, baseline_head),
         _inventory_from_worktree(repo_root, change_id),
+        publisher_instance_id,
+        working_root,
     )
     pointer = _publish_run(
         repo_root, change_id, temporary, run_manifest
@@ -5052,7 +5457,23 @@ def generate_behavior(
     }
 
 
-def validate_behavior(
+def generate_behavior(
+    change_id: str,
+    scenario_path: Path,
+    *,
+    repo_root: Path = ROOT,
+    command: str = "codex",
+) -> dict[str, object]:
+    with _publisher_lock(repo_root, change_id):
+        return _generate_behavior_locked(
+            change_id,
+            scenario_path,
+            repo_root=repo_root,
+            command=command,
+        )
+
+
+def _validate_behavior_locked(
     change_id: str, *, repo_root: Path = ROOT
 ) -> dict[str, object]:
     _reconcile_prepared(repo_root, change_id)
@@ -5074,6 +5495,13 @@ def validate_behavior(
             metrics.structure_only_correction_cycles
         ),
     }
+
+
+def validate_behavior(
+    change_id: str, *, repo_root: Path = ROOT
+) -> dict[str, object]:
+    with _publisher_lock(repo_root, change_id):
+        return _validate_behavior_locked(change_id, repo_root=repo_root)
 
 
 def exercise_fixture(
@@ -6714,6 +7142,7 @@ def _collect_runtime_attestation(
     generation_request: Mapping[str, object] | None = None,
     generation_sink: list[dict[str, object]] | None = None,
     forbidden_candidate_values: Sequence[str] = (),
+    workspace_parent: Path | None = None,
 ) -> dict[str, object]:
     """Collect the trusted attestation or fail at the first unproved boundary."""
 
@@ -6725,7 +7154,10 @@ def _collect_runtime_attestation(
     with (
         tempfile.TemporaryDirectory(prefix="boundary-proof-schema-") as schema_raw,
         tempfile.TemporaryDirectory(prefix="boundary-proof-home-") as home_raw,
-        tempfile.TemporaryDirectory(prefix="boundary-proof-workspace-") as work_raw,
+        tempfile.TemporaryDirectory(
+            prefix="boundary-proof-workspace-",
+            dir=workspace_parent,
+        ) as work_raw,
     ):
         schema_root = Path(schema_raw)
         runtime_home = Path(home_raw)

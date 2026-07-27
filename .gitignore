@@ -8,3 +8,6 @@ __pycache__/
 
 # Local validation cache state
 .rigorloop-validation-cache/
+
+# Persistent kernel-lock control path for the boundary behavior publisher
+docs/changes/*/evidence/simple-change/publisher.lock
