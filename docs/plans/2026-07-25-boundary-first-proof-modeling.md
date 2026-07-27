@@ -94,11 +94,11 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M4. Selection, adapter parity, capability baseline, and activation proof
-- Current milestone state: implementing
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m3-r2.md
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M4
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -787,7 +787,7 @@ resource through generated, packed, and installed outputs.
 
 ### M4. Selection, adapter parity, capability baseline, and activation proof
 
-- Milestone state: implementing
+- Milestone state: review-requested
 - Goal: Make the complete boundary capability selectable, portable, measurable, and release-safe without activating or publishing it.
 - Requirements: R28l-R28o, R28z; R56n, R56q
 - Files/components likely touched:
@@ -832,7 +832,6 @@ resource through generated, packed, and installed outputs.
   - `python scripts/test-adapter-distribution.py`
   - `tmpdir="$(mktemp -d)" && python scripts/build-adapters.py --version v0.1.5 --output-dir "$tmpdir" && python scripts/validate-adapters.py --root "$tmpdir" --version v0.1.5`
   - `python scripts/test-release-transaction.py`
-  - `python scripts/validate-release.py --version v0.3.6`
   - `python scripts/test-boundary-proof.py`
   - `python scripts/validate-boundary-proof.py generate-report --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --output docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md`
   - `python scripts/validate-boundary-proof.py validate-report docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md`
@@ -842,8 +841,9 @@ resource through generated, packed, and installed outputs.
     `generated.json`, `packed.json`, and `installed.json` manifest set
   - freshly generated passing capability report and raw-byte identity
   - exact selector routing proof for all six check IDs
-  - passing activation, partial-activation, rollback, and current v0.3.6
-    non-publishing release validation
+  - passing activation, partial-activation, rollback, current
+    release-transaction regression, and non-publishing candidate archive
+    validation
   - clean M4 code review before final holistic review
 - Failure stop:
   - Stop on any not-run/fail operation, stale dependency identity, parity mismatch, selector gap, asserted result, activation mismatch, or failed report validation; do not write release activation.
@@ -1686,6 +1686,14 @@ resource through generated, packed, and installed outputs.
   normalized through the sole state writer. This pre-existing harness mismatch
   is outside the boundary-proof implementation scope and requires a focused
   workflow-automation bugfix before the next release.
+- The approved M4 plan originally named bare
+  `python scripts/validate-release.py --version v0.3.6`. That command cannot
+  validate changed candidate adapter bytes against immutable published v0.3.6
+  artifact hashes, and without `--release-output-dir` it correctly fails the
+  archive checks. M4 therefore uses the release-transaction regression suite
+  for activation/rollback semantics and freshly built v0.1.5 candidate
+  archives for non-publishing parity; it does not rewrite historical v0.3.6
+  metadata or claim a new release.
 - 2026-07-27: Approved spec R57 settled the correction-authority and
   scenario-expectation contracts. The architecture candidate now assigns
   finding projection and durable stop recording to a correction-authority

@@ -42,6 +42,10 @@ from release_transaction import (  # noqa: E402
     validate_release_workflow_parity,
     validate_pending_release_artifacts,
 )
+from boundary_proof_model import (  # noqa: E402
+    BoundaryProofError,
+    validate_boundary_activation_notes,
+)
 
 REQUIRED_PROFILE_FIELD_CASES = (
     ("invalid-missing-release-tag.yaml", "release_tag"),
@@ -52,6 +56,10 @@ REQUIRED_PROFILE_FIELD_CASES = (
     ("invalid-missing-publication.yaml", "publication"),
     ("invalid-missing-evidence.yaml", "evidence"),
     ("invalid-missing-validation.yaml", "validation"),
+)
+
+BOUNDARY_RELEASE_FIXTURES = (
+    ROOT / "tests" / "fixtures" / "boundary-proof" / "release"
 )
 
 
@@ -161,6 +169,50 @@ class ReleaseProfileTests(unittest.TestCase):
         self.assertEqual(profile.release_kind, "special")
         self.assertEqual(profile.owner_decision, "Fixture owner decision for a special release path.")
         self.assertFalse(is_routine_release_profile(profile))
+
+
+class BoundaryReleaseActivationTests(unittest.TestCase):
+    def test_complete_activation_binds_the_current_report_identity(self) -> None:
+        report_identity = "sha256:" + "a" * 64
+        notes = (
+            BOUNDARY_RELEASE_FIXTURES
+            / "valid-activation"
+            / "release-notes.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertEqual(
+            "activated",
+            validate_boundary_activation_notes(
+                notes,
+                report_identity=report_identity,
+            ),
+        )
+
+    def test_partial_activation_fails_closed(self) -> None:
+        report_identity = "sha256:" + "a" * 64
+        notes = (
+            BOUNDARY_RELEASE_FIXTURES
+            / "invalid-partial-activation"
+            / "release-notes.md"
+        ).read_text(encoding="utf-8")
+
+        with self.assertRaises(BoundaryProofError):
+            validate_boundary_activation_notes(
+                notes,
+                report_identity=report_identity,
+            )
+
+    def test_rollback_requires_the_prior_activation_identity(self) -> None:
+        notes = (
+            BOUNDARY_RELEASE_FIXTURES
+            / "valid-rollback"
+            / "release-notes.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertEqual(
+            "rolled-back",
+            validate_boundary_activation_notes(notes),
+        )
 
 
 class ReleaseSurfaceInventoryTests(unittest.TestCase):
