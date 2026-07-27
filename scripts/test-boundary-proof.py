@@ -3324,6 +3324,15 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             test_spec_request["prompt"],
         )
         self.assertIn(
+            "compute the union of governing requirement IDs owned by every "
+            "cited boundary and interaction",
+            test_spec_request["prompt"],
+        )
+        self.assertIn(
+            "overlap the owner set of every cited reference",
+            test_spec_request["prompt"],
+        )
+        self.assertIn(
             "The governing feature selected these interactions:\n"
             "- interaction.mode-outcome",
             test_spec_request["prompt"],
