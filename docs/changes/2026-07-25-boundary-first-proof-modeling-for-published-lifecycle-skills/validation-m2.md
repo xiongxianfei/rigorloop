@@ -565,3 +565,31 @@ instruction: enumerate the closed Unicode `White_Space` set and prove both
 boundary removal and interior preservation. This changes no normative feature
 requirement, exposes no comparison expectation, and removes reviewer-dependent
 ambiguity from the initial proof without weakening independent review.
+
+## Fresh canonical R10-resolution result
+
+Generation from committed input `b54350e7` published immutable run
+`run-5820520b699df7182fce9ebffd554c6b`:
+
+```json
+{"false_blocking_count":0,"input_set_identity":"sha256:cf18887fbe3eb076fe949b73563ea7135968e81eb38493005ccff7b8be45acc4","new_universal_artifact_count":0,"result":"pass","run_id":"run-5820520b699df7182fce9ebffd554c6b","simple_fixture_structure_correction_cycles":0}
+```
+
+The trace contains exactly one occurrence each of `spec`, `spec-review`,
+`test-spec`, and `test-spec-review`. Both formal reviews approved their exact
+bound artifacts on the first attempt. No correction stage was invoked.
+
+Post-publication validation passed:
+
+```text
+python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+python scripts/test-boundary-proof.py
+  Ran 109 tests
+  OK
+python scripts/validate-skills.py
+  validated 24 skill files
+python scripts/build-skills.py --check
+  validated generated skills
+```
+
+M2 is ready for code-review R11. Final verification is not claimed.

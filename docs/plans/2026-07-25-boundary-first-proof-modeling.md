@@ -94,11 +94,11 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r10.md
-- Review status: changes-requested; stage=code-review; round=r10
+- Current milestone state: review-requested
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m2.md
+- Review status: pending; stage=code-review; round=r11
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: review-resolution
+- Next stage: code-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-14,BFP-CR-M2-15,BFP-CR-M2-16,BFP-CR-M2-17
 
@@ -953,6 +953,11 @@ resource through generated, packed, and installed outputs.
   quarantined the empty working run. The scenario is feature-only again; the
   parent-owned test-spec instruction now carries the R2 proof detail, where it
   cannot become a fifth feature requirement.
+- 2026-07-27: Published and immutably validated canonical run
+  `run-5820520b699df7182fce9ebffd554c6b` from `b54350e7`. The four first-attempt
+  stages passed with zero corrections, zero false blocking, and zero new
+  universal artifacts. The 109-test focused suite and skill/build validators
+  pass; M2 is `review-requested` for code-review R11.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review
