@@ -2452,6 +2452,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 "boundary.mode-domain",
                 "interaction.mode-outcome",
             ),
+            governing_interaction_ids=("interaction.mode-outcome",),
         )
         self.assertIn(
             "must exactly match an ID defined by the attached governing "
@@ -2475,6 +2476,20 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         self.assertIn(
             "perform a final membership audit",
             test_spec_request["prompt"],
+        )
+        self.assertIn(
+            "The governing feature selected these interactions:\n"
+            "- interaction.mode-outcome",
+            test_spec_request["prompt"],
+        )
+        no_interaction_request = _workflow_stage_request(
+            "test-spec",
+            "author proof",
+            governing_reference_ids=("boundary.mode-domain",),
+        )
+        self.assertIn(
+            "The governing feature selected no interactions",
+            no_interaction_request["prompt"],
         )
         with self.assertRaises(BoundaryRuntimeError):
             _workflow_stage_request(
