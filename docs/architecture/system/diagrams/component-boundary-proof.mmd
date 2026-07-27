@@ -9,6 +9,7 @@ flowchart LR
   preflight_attestation["Runtime preflight attestation v3<br/>[Feasibility only; non-authorizing]"]:::container
   generation_attestation["Fresh generation attestation v3<br/>[Projection + read-only boundary]"]:::container
   implementation_manifest["Behavior implementation manifest v3<br/>[Binds generation attestation]"]:::container
+  runtime_failure["Runtime preflight or generation failure<br/>[Bounded diagnostic response/evidence; no attestation]"]:::container
   historical_registry["Historical evidence registry<br/>[Exact v1 opaque; v2 unsupported]"]:::container
   transport_policy["Transport policy<br/>[Manifest-bound positive deadlines]"]:::container
   file_change_policy["File-change authorization policy<br/>[Decline-only for every governed turn]"]:::container
@@ -66,6 +67,7 @@ flowchart LR
   runtime_adapter -->|installed production dispatch implementation| handler_conformance
   handler_conformance -->|bounded result for identity and shape validation| projection_registry
   file_change_policy -->|selected policy object and identity| projection_registry
+  artifact_policy -->|selected canary policy object and identity| projection_registry
   runtime_adapter -->|provisions runtime-only auth| credential_channel
   credential_channel -->|authenticates runtime outside tool sandbox| child_runtime
   runtime_adapter -->|thread/start + one workflow turn over stdio| child_runtime
@@ -86,14 +88,15 @@ flowchart LR
   isolated_workspace -->|materialized artifact set| content_validator
   content_validator -->|value-free structural validation observation| transport
   transport -->|terminal validated bundle| harness
-  projection_registry -->|validated preflight projection, tool, policy, conformance, probe, and diagnostic evidence| preflight_attestation
+  projection_registry -->|validated closed preflight success-attestation fields| preflight_attestation
   preflight_attestation -->|feasibility gate only; never copied as authority| harness
-  projection_registry -->|validated fresh generation projection, tool, policy, conformance, probe, and diagnostic evidence| generation_attestation
+  projection_registry -->|validated closed generation success-attestation fields| generation_attestation
+  projection_registry -->|validated cause, phase, and precedence decisions only| runtime_failure
+  runtime_failure -->|bounded stop result without successful attestation| harness
   generation_attestation -->|required fresh identity| implementation_manifest
   file_change_policy -->|required deny-only policy| implementation_manifest
   transport_policy -->|required closed policy| implementation_manifest
   artifact_policy -->|lifecycle policy identity| implementation_manifest
-  artifact_policy -->|canary policy identity| preflight_attestation
   assembler -->|distinct path-sorted five-package resource set| input_set
   implementation_manifest -->|manifest identity| input_set
   historical_registry -->|recognized only as non-current opaque history| validator

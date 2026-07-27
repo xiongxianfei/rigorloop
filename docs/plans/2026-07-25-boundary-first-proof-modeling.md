@@ -94,7 +94,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r21.md
 - Review status: changes-requested; stage=architecture-review; round=r21
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture
+- Next stage: architecture-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=8; open-findings=BFP-AR19-1,BFP-AR19-2,BFP-AR20-1,BFP-AR20-2,BFP-AR21-1,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
@@ -756,6 +756,11 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: The R22 architecture candidate routes the selected canary policy
+  through pure validation into both v3 success attestations, removes
+  diagnostics from those closed records, and sends validated failure
+  cause/phase/precedence decisions to a separate bounded failure surface.
 
 - 2026-07-27: Architecture-review R21 found one final attestation-flow defect:
   canary policy bypassed pure validation and successful evidence edges carried
