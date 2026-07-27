@@ -72,6 +72,7 @@ from boundary_proof_behavior import (
     _validate_runtime_projection,
     _validated_thread_metadata,
     assess_environment,
+    discard_interrupted_publication,
     exercise_fixture,
     validate_behavior,
     validate_fixture,
@@ -3317,14 +3318,28 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             )
             marker = working / "partial-output"
             marker.write_text("untrusted", encoding="utf-8")
-            (working.parent / f"manual-recovery-{run_id}.json").write_text(
-                "{}", encoding="utf-8"
+            authority = (
+                root / "docs/changes" / change_id / "review-resolution.md"
             )
+            authority.write_text("# Authorized recovery\n", encoding="utf-8")
             before = marker.read_bytes()
-            with self.assertRaises(BoundaryRuntimeError):
-                _reconcile_prepared(root, change_id)
-            self.assertEqual(marker.read_bytes(), before)
+            result = discard_interrupted_publication(
+                change_id,
+                authority,
+                authorized_by="test-maintainer",
+                repo_root=root,
+            )
+            quarantine = root / str(result["quarantine_path"])
+            self.assertEqual((quarantine / marker.name).read_bytes(), before)
             self.assertFalse((working.parent / "runs" / run_id).exists())
+            self.assertFalse((working.parent / "publisher.json").exists())
+            state = json.loads(
+                (
+                    working.parent
+                    / f"manual-recovery-state-{run_id}.json"
+                ).read_text(encoding="utf-8")
+            )
+            self.assertEqual(state["state"], "completed")
 
     def test_prepared_publication_reconciles_without_reinvocation(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
