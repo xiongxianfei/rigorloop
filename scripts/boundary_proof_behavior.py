@@ -4393,7 +4393,14 @@ def generate_behavior(
 
     test_review_request = _workflow_stage_request(
         "test-spec-review",
-        "Review the exact test specification and record the formal result.",
+        "Under approved R28y, perform the isolated behavior-evidence review of "
+        "the exact test specification and record the formal result. The closed "
+        "upstream set is the authoritative scenario request, approved feature "
+        "specification, approving feature review, and current test "
+        "specification supplied here. Architecture, plan, and plan-review are "
+        "outside this scenario and must not be invented or required. This "
+        "review never grants implementation authority; record "
+        "`Implementation handoff: not-allowed` even when approved.",
         artifact_context=(
             "Authoritative scenario request:\n"
             + str(scenario["request"])
@@ -4525,8 +4532,12 @@ def generate_behavior(
             )
         rereview_request = _workflow_stage_request(
             "test-spec-review",
-            "Rereview the corrected test specification against the exact "
-            "prior findings and record the formal result.",
+            "Under approved R28y, rereview the corrected test specification "
+            "against the exact prior findings in the isolated "
+            "behavior-evidence mode. Use only the closed supplied upstream "
+            "set; architecture, plan, and plan-review are outside this "
+            "scenario. Record the formal result and always record "
+            "`Implementation handoff: not-allowed`.",
             attempt=2,
             artifact_context=(
                 "Authoritative scenario request:\n"
