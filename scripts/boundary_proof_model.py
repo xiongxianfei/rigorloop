@@ -2398,7 +2398,6 @@ def evaluate_simple_change_trace(
         if paths != sorted(paths):
             raise BoundaryProofError(f"{label}: inventory is not path sorted")
         result: dict[str, tuple[str, str]] = {}
-        identities: set[str] = set()
         for index, raw_row in enumerate(rows):
             item_label = f"{label}[{index}]"
             row = _object(raw_row, item_label)
@@ -2415,10 +2414,7 @@ def evaluate_simple_change_trace(
             digest = identity(row["identity"], f"{item_label}.identity")
             if path in result:
                 raise BoundaryProofError(f"{item_label}: duplicate inventory path")
-            if digest in identities:
-                raise BoundaryProofError(f"{item_label}: duplicate inventory identity")
             result[path] = (kind, digest)
-            identities.add(digest)
         return result
 
     before = inventory(record["before_inventory"], "before_inventory")

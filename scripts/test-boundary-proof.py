@@ -1599,19 +1599,34 @@ class BoundaryProofModelTests(unittest.TestCase):
             ):
                 _evaluate_simple(mislabeled)
 
-        duplicate_inventory_identity = copy.deepcopy(payload)
-        duplicate_inventory_identity["simple_trace"]["after_inventory"].append(
+        shared_inventory_identity = copy.deepcopy(payload)
+        shared_inventory_identity["simple_trace"]["after_inventory"].append(
             {
                 "path": "notes/duplicate-content.txt",
                 "artifact_kind": "non-lifecycle",
                 "identity": "sha256:" + "1" * 64,
             }
         )
-        duplicate_inventory_identity["simple_trace"]["after_inventory"].sort(
+        shared_inventory_identity["simple_trace"]["after_inventory"].sort(
             key=lambda row: row["path"]
         )
-        with self.assertRaisesRegex(BoundaryProofError, "duplicate inventory identity"):
-            _evaluate_simple(duplicate_inventory_identity)
+        _evaluate_simple(shared_inventory_identity)
+
+        duplicate_inventory_path = copy.deepcopy(payload)
+        duplicate_inventory_path["simple_trace"]["after_inventory"].append(
+            copy.deepcopy(
+                duplicate_inventory_path["simple_trace"][
+                    "after_inventory"
+                ][0]
+            )
+        )
+        duplicate_inventory_path["simple_trace"]["after_inventory"].sort(
+            key=lambda row: row["path"]
+        )
+        with self.assertRaisesRegex(
+            BoundaryProofError, "duplicate inventory path"
+        ):
+            _evaluate_simple(duplicate_inventory_path)
 
         orphan_snapshot = copy.deepcopy(payload)
         orphan_snapshot["simple_trace"]["snapshots"].append(
