@@ -75,6 +75,7 @@ Closeout status: open
 - Review closeout: spec-review-r1
 - Review closeout: proposal-review-r1
 - Review closeout: proposal-review-r2
+- Review closeout: code-review-m2-r10
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`, `code-review-m2-preflight-r1`, `code-review-m2-preflight-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `spec-review-r6`, `spec-review-r7`, `spec-review-r8`, `spec-review-r9`, `spec-review-r10`, `spec-review-r11`, `spec-review-r12`, `spec-review-r13`, `architecture-review-r3`, `architecture-review-r4`, `architecture-review-r5`, `architecture-review-r6`, `plan-review-r3`, `plan-review-r4`, `plan-review-r5`
 - Findings resolved: 62
 - Unresolved findings: 0
@@ -2048,6 +2049,47 @@ Rationale: The spec already defines both expectation values as comparison-only
 and forbids them from influencing invocation.
 Validation target: focused M2 tests, regenerated canonical evidence, and
 code-review-m2-r10
+Validation evidence: Pending.
+
+### code-review-m2-r10
+
+#### BFP-CR-M2-16 - Owner-decision stop does not retain recoverable review evidence
+
+Finding ID: BFP-CR-M2-16
+Disposition: accepted
+Status: in-progress
+Owner: M2 implementation and code-review owners
+Owning stage: review-resolution and implementation correction
+Decision owner: approved R28y durable correction-stop contract
+Decision needed: none
+Required outcome: Retain and validate the accepted event, record, log,
+resolution, bundle, projection, and identities in the lease-bound working root
+before the terminal diagnostic.
+Chosen action: Add one closed parent-materialized correction-stop evidence
+package, bind it to the existing receipt, and prove stop plus discard recovery
+for both review stages.
+Rationale: The current stop writes only a receipt after the ephemeral stage
+workspace is gone, while recovery requires evidence that no longer exists.
+Validation target: focused M2 tests and code-review-m2-r11
+Validation evidence: Pending.
+
+#### BFP-CR-M2-17 - T52 named boundary contrasts are not directly proved
+
+Finding ID: BFP-CR-M2-17
+Disposition: accepted
+Status: in-progress
+Owner: M2 implementation and code-review owners
+Owning stage: review-resolution and implementation correction
+Decision owner: approved T52 proof map
+Decision needed: none
+Required outcome: Add direct named proof for the complete finding, stop,
+recovery, equal-input, request-only, and expectation-comparison matrices.
+Chosen action: Add table-driven pure/helper contrasts and bounded temporary
+transaction tests without widening runtime behavior.
+Rationale: The live zero-correction run is integration evidence, not proof for
+the approved negative and recovery boundaries.
+Validation target: `python scripts/test-boundary-proof.py` and
+code-review-m2-r11
 Validation evidence: Pending.
 
 ### spec-review-r56

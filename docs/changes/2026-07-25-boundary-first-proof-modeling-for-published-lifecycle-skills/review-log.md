@@ -1669,3 +1669,14 @@ Detailed record: reviews/test-spec-review-r26.md
 Resolution: review-resolution.md#test-spec-review-r26
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: code-review-m2-r10
+Stage: code-review
+Round: 10
+Reviewed artifact: M2 correction-authority implementation through 928355ac
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r10.md
+Resolution: review-resolution.md#code-review-m2-r10
+Material findings: BFP-CR-M2-16, BFP-CR-M2-17
+Open findings: BFP-CR-M2-16, BFP-CR-M2-17
