@@ -3372,6 +3372,9 @@ def generate_behavior(
         list[dict[str, object]],
         dict[str, str],
     ]:
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            print(f"stage-start:{stage_request['stage']}", file=sys.stderr)
+
         def invoke() -> tuple[dict[str, object], dict[str, object]]:
             generated: list[dict[str, object]] = []
             observed_attestation = _collect_runtime_attestation(
@@ -3419,6 +3422,8 @@ def generate_behavior(
             raise BoundaryRuntimeError("protocol-shape-incompatible")
         for attempt in attempts:
             attempt["event_key"] = f"{stage_request['stage']}#1"
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            print(f"stage-complete:{stage_request['stage']}", file=sys.stderr)
         return observed, result, attempts, artifacts
 
     stage_results: list[dict[str, object]] = []
