@@ -30,6 +30,10 @@ Extensions: <none or extension records>
 <selected interaction records or an explicit none-selected rationale>
 ```
 
+The `## Boundary model`, `Extensions:`, `## Examples`, and `## Interactions`
+surfaces form one contiguous boundary record in exactly that order. Do not
+interleave another section or relocate examples outside that record.
+
 Classify every core dimension exactly once:
 
 | Dimension | Question |
