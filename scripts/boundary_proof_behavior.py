@@ -4260,12 +4260,15 @@ def _validate_recovery_basis(
     ):
         raise BoundaryRuntimeError("runtime-identity-unstable")
     authority_ref = basis.get("authorization_evidence_ref")
+    authority_prefix = f"docs/changes/{change_id}/"
     if (
         not isinstance(authority_ref, dict)
         or set(authority_ref) != {"path", "identity"}
         or not isinstance(authority_ref.get("path"), str)
         or PurePosixPath(str(authority_ref["path"])).is_absolute()
         or ".." in PurePosixPath(str(authority_ref["path"])).parts
+        or not str(authority_ref["path"]).startswith(authority_prefix)
+        or not str(authority_ref["path"]).endswith(".md")
         or not isinstance(authority_ref.get("identity"), str)
         or IDENTITY_PATTERN.fullmatch(str(authority_ref["identity"])) is None
     ):
@@ -4378,6 +4381,18 @@ def _completed_recovery_is_valid(
     orphan_path = orphan.get("path")
     if orphan_path is not None and (repo_root / str(orphan_path)).exists():
         raise BoundaryRuntimeError("runtime-identity-unstable")
+    unexpected_paths = (
+        simple_root / f".working-{run_id}",
+        simple_root / f".prepared-{run_id}",
+        simple_root / f".current-{run_id}.json",
+        simple_root / "runs" / run_id,
+    )
+    if any(path.exists() for path in unexpected_paths):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    if list(
+        simple_root.glob(f".manual-recovery-{run_id}-recovery-*.tmp")
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
     quarantine_path = orphan.get("quarantine_path")
     if orphan["kind"] == "lease-only":
         if quarantine_path is not None:
@@ -4402,6 +4417,14 @@ def _completed_recovery_is_valid(
             or quarantine.is_symlink()
             or observed_identity != orphan["identity"]
         ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+    allowed_quarantine = (
+        None if quarantine_path is None else Path(str(quarantine_path)).name
+    )
+    for candidate in simple_root.glob(
+        f".recovery-quarantine-{run_id}-recovery-*-*"
+    ):
+        if candidate.name != allowed_quarantine:
             raise BoundaryRuntimeError("runtime-identity-unstable")
     return True
 
@@ -4443,7 +4466,12 @@ def _discover_global_candidate(
     for path in simple_root.iterdir():
         name = path.name
         if name in known_fixed:
-            if path.is_symlink():
+            expected_directory = name == "runs"
+            if (
+                path.is_symlink()
+                or (expected_directory and not path.is_dir())
+                or (not expected_directory and not path.is_file())
+            ):
                 raise BoundaryRuntimeError("runtime-identity-unstable")
             continue
         match = next(
@@ -4652,8 +4680,27 @@ def _validate_staged_run(
             repo_root, implementation_manifest, manifest["input_set"]
         )
     output_files: set[Path] = set()
+    output_snapshots: dict[str, Mapping[str, object]] = {}
+    snapshot_ids: set[str] = set()
+    target_artifact_prefix = str(lease["target_root"]) + "/artifacts/"
     for snapshot in snapshots:
-        if not isinstance(snapshot, dict) or snapshot.get("source") != "behavior-output":
+        if (
+            not isinstance(snapshot, dict)
+            or set(snapshot)
+            != {"snapshot_id", "source", "artifact_role", "path", "identity"}
+            or not isinstance(snapshot.get("snapshot_id"), str)
+            or not str(snapshot["snapshot_id"])
+            or snapshot["snapshot_id"] in snapshot_ids
+            or snapshot.get("source")
+            not in {"behavior-output", "fixture-candidate"}
+            or not isinstance(snapshot.get("artifact_role"), str)
+            or not isinstance(snapshot.get("path"), str)
+            or not isinstance(snapshot.get("identity"), str)
+            or IDENTITY_PATTERN.fullmatch(str(snapshot["identity"])) is None
+        ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        snapshot_ids.add(str(snapshot["snapshot_id"]))
+        if snapshot.get("source") != "behavior-output":
             continue
         path = snapshot.get("path")
         role = snapshot.get("artifact_role")
@@ -4664,10 +4711,9 @@ def _validate_staged_run(
             or not isinstance(identity, str)
         ):
             raise BoundaryRuntimeError("runtime-identity-unstable")
-        marker = "/artifacts/"
-        if marker not in path:
+        if not path.startswith(target_artifact_prefix):
             raise BoundaryRuntimeError("runtime-identity-unstable")
-        relative = path.split(marker, 1)[1]
+        relative = path.removeprefix(target_artifact_prefix)
         candidate = staged / "artifacts" / relative
         if (
             not candidate.is_file()
@@ -4676,6 +4722,7 @@ def _validate_staged_run(
         ):
             raise BoundaryRuntimeError("runtime-identity-unstable")
         output_files.add(candidate)
+        output_snapshots[str(snapshot["snapshot_id"])] = snapshot
     actual_files = {
         path
         for path in (staged / "artifacts").rglob("*")
@@ -4683,6 +4730,132 @@ def _validate_staged_run(
     }
     if actual_files != output_files:
         raise BoundaryRuntimeError("runtime-identity-unstable")
+    if not transport:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    first_transport = transport[0]
+    if (
+        not isinstance(first_transport, dict)
+        or not isinstance(
+            first_transport.get("transport_policy_identity"), str
+        )
+        or IDENTITY_PATTERN.fullmatch(
+            str(first_transport["transport_policy_identity"])
+        )
+        is None
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    _validate_transport_rows(
+        transport, str(first_transport["transport_policy_identity"])
+    )
+    for inventory in (before, after):
+        seen_paths: set[str] = set()
+        for row in inventory:
+            if (
+                not isinstance(row, dict)
+                or set(row) != {"path", "artifact_kind", "identity"}
+                or not isinstance(row.get("path"), str)
+                or not isinstance(row.get("artifact_kind"), str)
+                or not isinstance(row.get("identity"), str)
+                or IDENTITY_PATTERN.fullmatch(str(row["identity"])) is None
+                or row["path"] in seen_paths
+            ):
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            seen_paths.add(str(row["path"]))
+    event_fields = {
+        "stage",
+        "attempt",
+        "input_snapshot_ids",
+        "reviewed_snapshot_id",
+        "output_snapshot_ids",
+        "structural_result",
+        "observed_result",
+        "diagnostic_id",
+        "evidence_refs",
+    }
+    for event in events:
+        if (
+            not isinstance(event, dict)
+            or set(event) != event_fields
+            or event.get("stage")
+            not in {"spec", "spec-review", "test-spec", "test-spec-review"}
+            or not isinstance(event.get("attempt"), int)
+            or event["attempt"] not in {1, 2}
+            or event.get("structural_result") != "pass"
+            or not isinstance(event.get("input_snapshot_ids"), list)
+            or not isinstance(event.get("output_snapshot_ids"), list)
+            or not isinstance(event.get("evidence_refs"), list)
+        ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        referenced_ids = (
+            list(event["input_snapshot_ids"])
+            + list(event["output_snapshot_ids"])
+            + (
+                []
+                if event.get("reviewed_snapshot_id") is None
+                else [event["reviewed_snapshot_id"]]
+            )
+        )
+        if any(value not in snapshot_ids for value in referenced_ids):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        for reference in event["evidence_refs"]:
+            if (
+                not isinstance(reference, dict)
+                or set(reference) != {"path", "identity"}
+                or not isinstance(reference.get("path"), str)
+                or not isinstance(reference.get("identity"), str)
+                or IDENTITY_PATTERN.fullmatch(str(reference["identity"]))
+                is None
+            ):
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+    feature_snapshot = output_snapshots.get("output.feature-spec.one")
+    test_snapshot = output_snapshots.get("output.test-spec.one")
+    if feature_snapshot is None or test_snapshot is None:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+
+    def staged_output(snapshot: Mapping[str, object]) -> Path:
+        return staged / "artifacts" / str(snapshot["path"]).removeprefix(
+            target_artifact_prefix
+        )
+
+    bundles: dict[str, object] = {}
+    for snapshot_id, snapshot in output_snapshots.items():
+        if str(snapshot["path"]).endswith("-bundle.json"):
+            bundles[snapshot_id] = _read_json(staged_output(snapshot))
+    try:
+        feature = normalize_feature_model(
+            _parse_feature_markdown(
+                staged_output(feature_snapshot).read_text(encoding="utf-8")
+            )
+        )
+        proof = normalize_proof_map(
+            _parse_test_spec_markdown(
+                staged_output(test_snapshot).read_text(encoding="utf-8")
+            ),
+            feature,
+        )
+        structural = {
+            f"{event['stage']}#{event['attempt']}": {
+                "structural_result": "pass",
+                "diagnostic_id": "none",
+            }
+            for event in events
+        }
+        evaluate_simple_change_trace(
+            {
+                "snapshots": snapshots,
+                "review_bundles": bundles,
+                "events": events,
+                "before_inventory": before,
+                "after_inventory": after,
+            },
+            feature_models={"output.feature-spec.one": feature},
+            proof_maps={"output.test-spec.one": proof},
+            structural_evaluations=structural,
+        )
+    except (OSError, UnicodeError, KeyError, BoundaryProofError) as error:
+        if isinstance(error, BoundaryRuntimeError):
+            raise
+        raise BoundaryRuntimeError("runtime-identity-unstable") from error
 
 
 def _crash_if(boundary: str | None, expected: str) -> None:
