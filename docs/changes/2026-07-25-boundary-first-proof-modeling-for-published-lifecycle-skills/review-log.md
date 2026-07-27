@@ -1647,3 +1647,14 @@ Detailed record: reviews/architecture-review-r29.md
 Resolution: review-resolution.md#architecture-review-r29
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: plan-review-r22
+Stage: plan-review
+Round: 22
+Reviewed artifact: correction-authority and expectation-comparison M2 plan at aabc3693
+Status: approved
+Detailed record: reviews/plan-review-r22.md
+Resolution: review-resolution.md#plan-review-r22
+Material findings: None
+Open findings: None
