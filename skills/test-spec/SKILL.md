@@ -98,6 +98,8 @@ For a `v1` proof map, do not declare the test spec ready until it records the
 boundary-model version and scope and maps every applicable boundary and
 selected interaction to direct proof. If the required reference cannot be
 loaded, stop; do not silently substitute example coverage.
+Use the exact section headings `## Proof map` and `## Test cases` so the proof
+record remains portable across validators.
 
 ## Generated Markdown readability
 

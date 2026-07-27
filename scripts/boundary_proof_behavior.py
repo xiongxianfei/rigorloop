@@ -1525,6 +1525,24 @@ def _workflow_stage_request(
     if expected_outputs is None:
         raise BoundaryRuntimeError("protocol-shape-incompatible")
     variants = _stage_policy_variants(stage, attempt)
+    structure_instruction = {
+        "spec": (
+            "Use the exact markers `Boundary model version: v1` and "
+            "`Boundary model scope: R1-R4`, followed by exact sections "
+            "`## Boundary model`, `## Examples`, and `## Interactions`. "
+            "The Boundary model and Examples tables must use the exact "
+            "columns defined by the attached boundary-proof reference. "
+        ),
+        "test-spec": (
+            "Use the exact markers `Boundary model version: v1` and "
+            "`Boundary model scope: R1-R4`, followed by exact sections "
+            "`## Proof map` and `## Test cases`. The Proof map table must "
+            "use the exact columns defined by the attached boundary-proof "
+            "reference. "
+        ),
+        "spec-review": "",
+        "test-spec-review": "",
+    }[stage]
     return {
         "skill_names": ["workflow", stage],
         "stage": stage,
@@ -1546,7 +1564,10 @@ def _workflow_stage_request(
             "files. The parent transport validates and materializes exact bytes; "
             "the harness must not render, inject, repair, or complete normative "
             "content. Do not advance past this stage. Return only the closed "
-            "artifact envelope.\n\nArtifact policy: "
+            "artifact envelope. Keep every artifact concise and add no "
+            "normative behavior beyond the authoritative stage input. "
+            + structure_instruction
+            + "\n\nArtifact policy: "
             + str(ARTIFACT_POLICY["policy_id"])
             + "\nAllowed variants: "
             + ", ".join(
