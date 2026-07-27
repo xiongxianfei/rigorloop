@@ -88,9 +88,7 @@ M5 fail-closed routing contrasts; actual PR-range selection; review-log and
 resolution closure; current plan/index state; and explicit evidence-reuse
 reasoning.
 
-Areas requiring direct inspection: complete review/resolution summary,
-`2933508d..6e774436`, selector matching and registry, focused tests,
-`validation-m5.md`, the blocked verification report, and active-plan handoff.
+Areas requiring direct inspection: complete review/resolution summary, `2933508d..6e774436`, selector matching and registry, focused tests, `validation-m5.md`, the blocked verification report, and active-plan handoff.
 
 Areas intentionally out of scope: hosted CI, release activation, publication,
 deployment, PR creation, and capability-preserving progressive disclosure.
@@ -99,10 +97,8 @@ Risk classes considered: requirements=applicable; generated-evidence=applicable;
 
 Falsifiable review questions: Does any post-R2 change weaken a previously approved boundary?
 
-- Does evidence registration merely select existing semantic validators, or
-  can it manufacture a passing result?
-- Can a nested registration capture another change or an unknown evidence
-  family?
+- Does evidence registration merely select existing semantic validators, or can it manufacture a passing result?
+- Can a nested registration capture another change or an unknown evidence family?
 - Is reuse limited to suites whose inputs and implementation did not change?
 - Does final lifecycle state require a fresh explanation and verification?
 
@@ -210,10 +206,10 @@ release, PR, and merge operations.
 Confidence: high for final holistic review closure; final verification is not
 claimed.
 
-No-finding rationale: final R2 remains authoritative for the unchanged
-capability implementation, M5 is independently bounded and directly proven,
-the actual PR selector closes the only verification-discovered routing debt,
-and lifecycle state correctly requires fresh explanation and verification.
+No-finding rationale: final R2 remains authoritative for the unchanged capability implementation.
+M5 is independently bounded and directly proven.
+The actual PR selector closes the only verification-discovered routing debt.
+Lifecycle state correctly requires fresh explanation and verification.
 
 ## Handoff
 
