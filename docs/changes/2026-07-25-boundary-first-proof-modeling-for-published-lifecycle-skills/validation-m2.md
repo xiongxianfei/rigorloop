@@ -622,3 +622,27 @@ python scripts/test-boundary-proof.py
 The prior immutable run now correctly reports stale because the harness
 component identity changed. Fresh canonical generation is required before M2
 can return to code review.
+
+## Fresh canonical R11-resolution result
+
+Generation from committed input `1f65cbb8` published immutable run
+`run-9538fe0ae2891f1e86f50145088ff0ea`:
+
+```json
+{"false_blocking_count":0,"input_set_identity":"sha256:54ee39644551946380d1e59f47d39370453a5a6924da8325046a75ec950b4115","new_universal_artifact_count":0,"result":"pass","run_id":"run-9538fe0ae2891f1e86f50145088ff0ea","simple_fixture_structure_correction_cycles":0}
+```
+
+Post-publication validation passed:
+
+```text
+python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+python scripts/test-boundary-proof.py
+  Ran 109 tests
+  OK
+python scripts/validate-skills.py
+  validated 24 skill files
+python scripts/build-skills.py --check
+  validated generated skills
+```
+
+M2 is ready for code-review R12. Final verification is not claimed.
