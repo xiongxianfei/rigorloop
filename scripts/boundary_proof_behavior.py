@@ -365,6 +365,27 @@ def _trace_prohibited_event(subreason: str, **shape: object) -> None:
     print(f"prohibited-event:{subreason}{suffix}", file=sys.stderr)
 
 
+def _trace_transport_decision(
+    *,
+    attempt: int,
+    termination_state: str,
+    output_state: str,
+    decision: str,
+) -> None:
+    """Emit the closed, value-free transport tuple selected by the coordinator."""
+
+    if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") != "1":
+        return
+    print(
+        "transport-decision:"
+        f"attempt={attempt}:"
+        f"termination_state={termination_state}:"
+        f"output_state={output_state}:"
+        f"decision={decision}",
+        file=sys.stderr,
+    )
+
+
 @dataclass(frozen=True)
 class _SemVer:
     major: int
@@ -2025,6 +2046,12 @@ def _invoke_with_reconciliation(
             attestation, result = invoke()
         except _StageTurnTimeout as error:
             if error.termination_state != "confirmed-stopped":
+                _trace_transport_decision(
+                    attempt=attempt,
+                    termination_state=error.termination_state,
+                    output_state="uninspected",
+                    decision="pause",
+                )
                 raise BoundaryRuntimeError(
                     "unexpected-prohibited-event", "in-turn"
                 ) from error
@@ -2036,6 +2063,12 @@ def _invoke_with_reconciliation(
                 else _output_state(required_paths, error.output_files)
             )
             if state == "complete" and error.attestation is not None:
+                _trace_transport_decision(
+                    attempt=attempt,
+                    termination_state=error.termination_state,
+                    output_state=state,
+                    decision="reconcile",
+                )
                 attempts.append(
                     {
                         "transport_attempt": attempt,
@@ -2053,6 +2086,12 @@ def _invoke_with_reconciliation(
                     attempts,
                 )
             if state == "absent" and attempt == 1:
+                _trace_transport_decision(
+                    attempt=attempt,
+                    termination_state=error.termination_state,
+                    output_state=state,
+                    decision="retry",
+                )
                 attempts.append(
                     {
                         "transport_attempt": attempt,
@@ -2065,6 +2104,12 @@ def _invoke_with_reconciliation(
                     }
                 )
                 continue
+            _trace_transport_decision(
+                attempt=attempt,
+                termination_state=error.termination_state,
+                output_state=state,
+                decision="fail-closed",
+            )
             attempts.append(
                 {
                     "transport_attempt": attempt,
@@ -2088,7 +2133,19 @@ def _invoke_with_reconciliation(
             else _output_state(required_paths, output_files)
         )
         if state != "complete":
+            _trace_transport_decision(
+                attempt=attempt,
+                termination_state="completed",
+                output_state=state,
+                decision="fail-closed",
+            )
             raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+        _trace_transport_decision(
+            attempt=attempt,
+            termination_state="completed",
+            output_state=state,
+            decision="accept",
+        )
         attempts.append(
             {
                 "transport_attempt": attempt,
