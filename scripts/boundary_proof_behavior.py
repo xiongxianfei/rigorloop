@@ -4762,6 +4762,152 @@ def _reconcile_prepared(repo_root: Path, change_id: str) -> None:
     _fsync_directory(simple_root)
 
 
+def _tree_identity(root: Path) -> str:
+    if root.is_symlink() or not root.is_dir():
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    rows: list[dict[str, str]] = []
+    for path in sorted(root.rglob("*")):
+        if path.is_symlink() or not (path.is_dir() or path.is_file()):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        relative = path.relative_to(root).as_posix()
+        rows.append(
+            {
+                "path": relative,
+                "kind": "directory" if path.is_dir() else "file",
+                "identity": (
+                    _sha256(path.read_bytes()) if path.is_file() else "directory"
+                ),
+            }
+        )
+    return _sha256(_canonical_json_bytes(rows))
+
+
+def discard_interrupted_publication(
+    change_id: str,
+    authorization_evidence: Path,
+    *,
+    authorized_by: str,
+    repo_root: Path = ROOT,
+) -> dict[str, object]:
+    """Discard one H-false lease-owned orphan through durable recovery evidence."""
+
+    with _publisher_lock(repo_root, change_id):
+        simple_root = _simple_root(repo_root, change_id)
+        candidate = _discover_global_candidate(repo_root, change_id)
+        lease = _read_publisher_lease(repo_root, change_id)
+        run_id = str(lease["run_id"])
+        if candidate != run_id or (simple_root / "prepared.json").exists():
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        if not authorization_evidence.is_absolute():
+            authorization_evidence = repo_root / authorization_evidence
+        authority_ref = _regular_reference(repo_root, authorization_evidence)
+        working = repo_root / str(lease["working_root"])
+        staging = repo_root / str(lease["staging_root"])
+        present = [path for path in (working, staging) if path.exists()]
+        if len(present) > 1:
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        kind = (
+            "working" if present and present[0] == working
+            else "staging" if present
+            else "lease-only"
+        )
+        orphan = present[0] if present else None
+        recovery_id = "recovery-" + secrets.token_hex(16)
+        quarantine = (
+            simple_root
+            / f".recovery-quarantine-{run_id}-{recovery_id}-{kind}"
+            if orphan is not None
+            else None
+        )
+        lease_path = simple_root / "publisher.json"
+        lease_raw = lease_path.read_bytes()
+        orphan_snapshot = {
+            "kind": kind,
+            "path": (
+                orphan.relative_to(repo_root).as_posix()
+                if orphan is not None
+                else None
+            ),
+            "identity": _tree_identity(orphan) if orphan is not None else None,
+            "quarantine_path": (
+                quarantine.relative_to(repo_root).as_posix()
+                if quarantine is not None
+                else None
+            ),
+            "durability_parent": simple_root.relative_to(repo_root).as_posix(),
+        }
+        basis = {
+            "schema_version": "simple-change-manual-recovery-v1",
+            "recovery_id": recovery_id,
+            "run_id": run_id,
+            "publisher_instance_id": lease["publisher_instance_id"],
+            "authorized_by": authorized_by,
+            "authorization_evidence_ref": authority_ref,
+            "publisher_lease_snapshot": {
+                "path": lease_path.relative_to(repo_root).as_posix(),
+                "identity": _sha256(lease_raw),
+                "values": lease,
+            },
+            "publisher_lock_proof": {
+                "method": "exclusive-nonblocking-file-lock-v1",
+                "lock_path": "publisher.lock",
+                "acquired": True,
+                "prior_lease_identity": _sha256(lease_raw),
+            },
+            "orphan_snapshot": orphan_snapshot,
+            "input_set_identity": lease["input_set_identity"],
+            "action": "discard-and-regenerate",
+        }
+        basis_path = simple_root / f"manual-recovery-{run_id}.json"
+        temporary = (
+            simple_root
+            / f".manual-recovery-{run_id}-{recovery_id}.tmp"
+        )
+        _exclusive_write(temporary, _canonical_json_bytes(basis))
+        try:
+            os.link(temporary, basis_path)
+        except FileExistsError as error:
+            raise BoundaryRuntimeError("runtime-identity-unstable") from error
+        _fsync_directory(simple_root)
+        temporary.unlink()
+        _fsync_directory(simple_root)
+        basis_identity = _read_file_identity(basis_path).digest
+        state_path = simple_root / f"manual-recovery-state-{run_id}.json"
+
+        def write_state(state: str) -> None:
+            _atomic_write(
+                state_path,
+                _canonical_json_bytes(
+                    {
+                        "schema_version":
+                            "simple-change-manual-recovery-state-v1",
+                        "recovery_id": recovery_id,
+                        "basis_identity": basis_identity,
+                        "state": state,
+                    }
+                ),
+            )
+
+        write_state("authorized")
+        if orphan is not None:
+            assert quarantine is not None
+            os.replace(orphan, quarantine)
+            _fsync_directory(simple_root)
+        else:
+            _fsync_directory(simple_root)
+        write_state("orphan-detached")
+        lease_path.unlink()
+        _fsync_directory(simple_root)
+        write_state("completed")
+        return {
+            "result": "completed",
+            "run_id": run_id,
+            "recovery_id": recovery_id,
+            "orphan_kind": kind,
+            "quarantine_path": orphan_snapshot["quarantine_path"],
+        }
+
+
 def _generate_behavior_locked(
     change_id: str,
     scenario_path: Path,
@@ -7965,6 +8111,13 @@ def _parser() -> argparse.ArgumentParser:
         help="validate the current immutable run without lifecycle reinvocation",
     )
     validate.add_argument("--change-id", required=True)
+    recover = subparsers.add_parser(
+        "recover-discard",
+        help="discard one interrupted lease-owned run with explicit authority",
+    )
+    recover.add_argument("--change-id", required=True)
+    recover.add_argument("--authorization-evidence", required=True, type=Path)
+    recover.add_argument("--authorized-by", required=True)
     fixture = subparsers.add_parser(
         "exercise-fixture",
         help="exercise the controlled parser and oracle fixture",
@@ -8001,6 +8154,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             result = generate_behavior(args.change_id, args.scenario)
         elif args.command == "validate":
             result = validate_behavior(args.change_id)
+        elif args.command == "recover-discard":
+            result = discard_interrupted_publication(
+                args.change_id,
+                args.authorization_evidence,
+                authorized_by=args.authorized_by,
+            )
         elif args.command == "exercise-fixture":
             result = exercise_fixture(args.fixture, args.output_root)
         elif args.command == "validate-fixture":
