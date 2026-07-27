@@ -61,8 +61,11 @@ flowchart LR
   assembler -->|fresh config home + closed workspace| isolated_workspace
   harness -->|requests manifest-bound inputs| assembler
   harness -->|coordinates runtime observation| runtime_adapter
-  projection_registry -->|unique exact projection| runtime_adapter
-  runtime_adapter -->|installed dispatch implementation| handler_conformance
+  runtime_adapter -->|runtime identities, inventories, probes, and effective-tool observations| projection_registry
+  projection_registry -->|unique exact projection and closed diagnostic decisions| runtime_adapter
+  runtime_adapter -->|installed production dispatch implementation| handler_conformance
+  handler_conformance -->|bounded result for identity and shape validation| projection_registry
+  file_change_policy -->|selected policy object and identity| projection_registry
   runtime_adapter -->|provisions runtime-only auth| credential_channel
   credential_channel -->|authenticates runtime outside tool sandbox| child_runtime
   runtime_adapter -->|thread/start + one workflow turn over stdio| child_runtime
@@ -83,13 +86,9 @@ flowchart LR
   isolated_workspace -->|materialized artifact set| content_validator
   content_validator -->|value-free structural validation observation| transport
   transport -->|terminal validated bundle| harness
-  runtime_adapter -->|preflight schema + exact runtime bytes + effective config/inventories + capability-state proof| preflight_attestation
-  handler_conformance -->|fresh value-free result identity| preflight_attestation
-  file_change_policy -->|policy identity + conditional denial proof| preflight_attestation
+  projection_registry -->|validated preflight projection, tool, policy, conformance, probe, and diagnostic evidence| preflight_attestation
   preflight_attestation -->|feasibility gate only; never copied as authority| harness
-  runtime_adapter -->|fresh generation projection, denial proof, exact inventory| generation_attestation
-  handler_conformance -->|fresh generation result identity| generation_attestation
-  file_change_policy -->|policy identity + capability-state pass| generation_attestation
+  projection_registry -->|validated fresh generation projection, tool, policy, conformance, probe, and diagnostic evidence| generation_attestation
   generation_attestation -->|required fresh identity| implementation_manifest
   file_change_policy -->|required deny-only policy| implementation_manifest
   transport_policy -->|required closed policy| implementation_manifest
