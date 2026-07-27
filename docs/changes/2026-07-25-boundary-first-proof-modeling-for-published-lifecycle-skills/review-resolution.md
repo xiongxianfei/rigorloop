@@ -4080,6 +4080,16 @@ after the identity-bound capability report was regenerated and independently
 validated as
 `sha256:ab0057f39cb928f0f08d07a8398aca82659bbeba267aa557514c02e5249c101f`.
 
+### code-review-final-r2
+
+No new material findings.
+
+R2 independently confirmed `BFP-CR-FINAL-1` resolved. The complete governed
+boundary input surface now composes through the public selector, release
+fixtures retain their additional regression, unrelated unsupported scripts
+remain blocked, shared publisher-state suites are sequential-only, the current
+report reconstructs, and the exact 14-check selected-CI command passes.
+
 ### spec-review-r58
 
 No new material findings. R58 approved the bounded correction outcome
