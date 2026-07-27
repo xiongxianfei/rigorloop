@@ -1758,8 +1758,9 @@ The runtime-owned `cli_version`, `model_id`, and
 
 The harness MUST select exactly one immutable runtime projection before
 `thread/start`.
-The selection key is the observed runtime version plus the complete generated
-schema, protocol-classification, and feature-classification identities.
+The selection key is the observed runtime version plus the exact launcher,
+runtime-package, generated-schema, protocol-classification, and
+feature-classification identities.
 The harness MUST NOT use one repository-wide hard-coded runtime version as a
 substitute for projection selection.
 No match, more than one match, an unknown projection field, or a projection
@@ -1771,6 +1772,8 @@ Each runtime projection contains exactly:
 ```text
 projection_id
 runtime_version
+runtime_launcher_identity
+runtime_package_identity
 schema_bundle_identity
 protocol_item_classification_identity
 feature_classification_identity
@@ -1788,9 +1791,9 @@ exhaustive for all 96 feature rows bound by
 `file_change_capability_state` is exactly
 `exposed-live-probe-required` or `not-exposed-projection`.
 `runtime_projection_identity` is the standard canonical-JSON identity of the
-complete eight-field row. The identity is evidence about the row and is not a
-self-referential ninth field.
-Projection IDs, complete four-identity selection keys, and projection
+complete ten-field row. The identity is evidence about the row and is not a
+self-referential eleventh field.
+Projection IDs, complete selection keys, and projection
 identities are independently unique.
 An unknown or additional field, duplicate projection ID, duplicate selection
 key, duplicate projection identity, missing feature, duplicate feature,
@@ -1804,6 +1807,8 @@ The first supported projection is this complete immutable row:
 ```yaml
 projection_id: codex-0.145.0-readonly-boundary-v1
 runtime_version: 0.145.0
+runtime_launcher_identity: sha256:134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477
+runtime_package_identity: sha256:a66a2dee773de39b690a08048971ec18d04f97d8a8d5e9a205f51a9f0d4cdbfa
 schema_bundle_identity: sha256:18d79891673d9d43a8e7a49864fef49a04305bd13571a8aef45824209f1bfae8
 protocol_item_classification_identity: sha256:35f1203d9c6abc62ef3f1aca94e2f3165e0213697d554ab11d0477d9cd7e4bf8
 feature_classification_identity: sha256:6f833f4c43196e43f67fea215de09743e5a5e3a80bed53973b42740041369268
@@ -1909,15 +1914,22 @@ file_change_capability_state: not-exposed-projection
 ```
 
 Its `runtime_projection_identity` is
-`sha256:a1f1827f4d412a58622fd3be68a3b58556e206473ce183930fe2f294188d5432`.
-The three attestation fields `runtime_projection_id`,
-`runtime_projection_identity`, and `file_change_capability_state` MUST equal
-the selected row. Future runtime versions require new complete projection rows
-rather than changes to this row.
+`sha256:d2a945a5a67eb9e0d335d96004e670a6b9823cc934869c4d1fcf7fefb157ca86`.
+The attestation's `runtime_projection_id`, `runtime_projection_identity`,
+`runtime_launcher_identity`, `runtime_package_identity`,
+`schema_bundle_identity`, `protocol_item_classification_identity`,
+`feature_classification_identity`, and `file_change_capability_state` MUST
+equal the selected row.
+Future runtime implementations or versions require new complete projection
+rows rather than changes to this row.
 
-The runtime version, complete schema identity, protocol classification
-identity, and feature classification identity MUST match one exact projection
-before `thread/start`.
+The runtime version, exact launcher and runtime-package identities, complete
+schema identity, protocol classification identity, and feature classification
+identity MUST match one exact projection before `thread/start`.
+Equal version, schema, protocol, and feature declarations with different
+launcher or runtime-package bytes fail with
+`runtime-projection-unsupported`; the engine MUST NOT infer non-exposure from
+those declarations.
 Deriving a classification for an additional same-version schema method is
 forbidden.
 Missing, added, or changed schema files, members, methods, features, or
@@ -4559,7 +4571,9 @@ Partial `v1` evidence MUST NOT be reinterpreted as `legacy` proof.
 - `RLW-AC-B12`: A reviewer can recompute the first runtime projection identity
   from its complete immutable row and prove that duplicate IDs, duplicate
   selection keys, duplicate identities, unknown fields, missing features,
-  and content/identity disagreement fail before `thread/start`.
+  content/identity disagreement, and launcher or runtime-package byte drift
+  fail before `thread/start`, even when version, schema, protocol, and feature
+  declarations remain equal.
 - `RLW-AC-B13`: A reviewer can prove non-exposure from a complete
   invocation-owned effective-tool projection and fresh invocation-owned
   handler-conformance result, including every negative case, without treating
