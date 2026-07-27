@@ -553,9 +553,15 @@ feature contract was stable but the underspecified proof request allowed two
 review-valid authoring paths. Run `run-f02ddb57e4145d77ff550d2fade6ea3c`
 was explicitly discarded and quarantined.
 
-The narrow fix is to make the existing R2 proof obligation explicit in the
-parent-only scenario request: enumerate the closed Unicode `White_Space` set
-and prove both boundary removal and interior preservation. This changes no
-normative feature requirement and exposes no comparison expectation to child
-stages; it removes reviewer-dependent ambiguity from the initial test-spec
-proof and restores the deterministic zero-correction expectation.
+Putting the proof instruction in the cross-stage scenario request was rejected
+by the feature invariant oracle in
+`run-2b25b33aa371c079aa1c55760563713d`: proof construction guidance must not be
+available for the feature author to reinterpret as a fifth normative
+requirement. That empty working run was explicitly discarded and quarantined.
+
+The narrow owning-layer fix keeps the scenario request feature-only and adds
+the existing R2 obligation to the parent-authored `test-spec` stage
+instruction: enumerate the closed Unicode `White_Space` set and prove both
+boundary removal and interior preservation. This changes no normative feature
+requirement, exposes no comparison expectation, and removes reviewer-dependent
+ambiguity from the initial proof without weakening independent review.
