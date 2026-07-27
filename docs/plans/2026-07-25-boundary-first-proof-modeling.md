@@ -25,20 +25,20 @@ resumes.
 
 - Proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Specs: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r48.md` (approved; projected by architecture-review R22)
-- Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R22)
+- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r53.md` (approved three-category projection)
+- Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R25)
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` (accepted by architecture-review R15)
 - Transport ADR: `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md` (accepted; scoped clauses superseded by the capability-projection ADR)
 - Capability-projection ADR: `docs/adr/ADR-20260727-capability-projected-file-change-control.md` (accepted by architecture-review R22)
-- Three-category projection ADR: `docs/adr/ADR-20260727-three-category-runtime-feature-projection.md` (proposed; focused architecture review pending)
+- Three-category projection ADR: `docs/adr/ADR-20260727-three-category-runtime-feature-projection.md` (accepted by architecture-review R25)
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
-- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r22.md`
-- Plan review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r17.md`
-- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; the approved R17 proof map predates R48/R22 and must be revised after this plan is approved
+- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r25.md`
+- Plan review: focused successor review pending; `plan-review-r17` is historical binary-projection evidence
+- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; exact identity synchronization and focused test-spec review remain pending
 
 ## Context and orientation
 
-The approved R48 R28y contract and R22 architecture are now normative.
+The approved R53 R28y contract and R25 architecture are now normative.
 Live M2 generation proved that the pinned app-server returns
 schema-constrained stage messages but does not expose the assumed stage-agent
 workspace-write surface or a file-change operation under the approved
@@ -95,12 +95,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r24.md
-- Review status: changes-requested; stage=architecture-review; round=r24
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r25.md
+- Review status: approved; stage=architecture-review; round=r25
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture
+- Next stage: plan-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-AR23-1,BFP-AR24-1,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
 ## Milestones
 
@@ -826,6 +826,10 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Architecture-review R25 approved the append-only successor and
+  canonical architecture. Their statuses and lifecycle wording were normalized
+  together; this plan now binds R53/R25 and routes to focused plan review.
 
 - 2026-07-27: Architecture-review R24 confirmed the append-only correction and
   found only the successor ADR's missing mandatory follow-up. The R25

@@ -2,7 +2,7 @@
 
 ## Status
 
-- draft
+- approved
 
 ## Related artifacts
 
@@ -1459,7 +1459,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - [ADR-20260725-boundary-first-proof-modeling](../../adr/ADR-20260725-boundary-first-proof-modeling.md) - Use a spec-normative typed projection, copied packaged reference, structural validator, frozen incident registry, and report-hash release activation for boundary-model `v1`.
 - [ADR-20260726-stage-authored-artifact-envelope-transport](../../adr/ADR-20260726-stage-authored-artifact-envelope-transport.md) - Accept the read-only child boundary, deny-only file-change policy, workspace-integrity gate, stage-authored envelope, and parent-only exact-byte materialization contract.
 - [ADR-20260727-capability-projected-file-change-control](../../adr/ADR-20260727-capability-projected-file-change-control.md) - Accepted exact-runtime-bound capability projection, conditional file-change proof, common deny-handler conformance, and v3 evidence.
-- [ADR-20260727-three-category-runtime-feature-projection](../../adr/ADR-20260727-three-category-runtime-feature-projection.md) - Proposed append-only correction separating permitted tools, permitted non-tool behavior, and required-disabled tool-bearing behavior.
+- [ADR-20260727-three-category-runtime-feature-projection](../../adr/ADR-20260727-three-category-runtime-feature-projection.md) - Accepted append-only correction separating permitted tools, permitted non-tool behavior, and required-disabled tool-bearing behavior.
 - [ADR-20260726-codex-permission-profile-boundary-harness](../../adr/ADR-20260726-codex-permission-profile-boundary-harness.md) - Accepted app-server, named permission-profile, exact experimental-schema, effective-config/inventory, managed-policy, and parent-probe decision; its writable-child clauses are narrowly superseded by the accepted stage-envelope ADR.
 
 - `docs/adr/ADR-20260428-architecture-package-method.md`: default C4 plus official arc42 plus ADR architecture package method.
@@ -1831,13 +1831,13 @@ spec-review R53 now requires a focused architecture rereview because live M2
 evidence distinguishes four permitted non-tool runtime behaviors from three
 permitted tools and 89 required-disabled tool-bearing features.
 
-This draft preserves the accepted capability-projection ADR as historical
-truth and records the three-category correction in proposed
+The approved package preserves the accepted capability-projection ADR as
+historical truth and records the three-category correction in accepted
 `ADR-20260727-three-category-runtime-feature-projection`. It preserves exact
 runtime-byte binding, direct and descendant command denial, parent-only
 materialization, complete unchanged-workspace inspection, v3 current evidence,
-and opaque exact-v1 history. Plan and test-spec synchronization remain blocked
-until architecture review accepts the successor ADR and this package.
+and opaque exact-v1 history. Architecture-review R25 approved the package;
+focused plan and test-spec synchronization remain before M2 can resume.
 
 ADR `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md` records the accepted durable consolidation and supersedes the three earlier profile ADRs; their descriptions below are historical context, not current writable-mechanism authority under the approved spec.
 
