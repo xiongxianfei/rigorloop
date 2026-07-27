@@ -33,9 +33,11 @@ from boundary_proof_behavior import (
     _artifact_kind,
     _build_behavior_manifest,
     _classify_historical_evidence,
+    _dispatch_file_change_request,
     _invoke_with_reconciliation,
     _load_transport_fixture,
     _derive_config_origin_paths,
+    _effective_tool_projection,
     _feature_inventory,
     freeze_baseline,
     _normalize_config_result,
@@ -50,6 +52,7 @@ from boundary_proof_behavior import (
     _parse_semver,
     _preflight_failure,
     _runtime_environment,
+    _run_file_change_handler_conformance,
     _schema_bundle_projection,
     _workflow_request,
     _workflow_stage_request,
@@ -75,15 +78,22 @@ from boundary_proof_model import (
     FIXTURE_GATES,
     INCIDENT_RULES,
     INTERACTION_RATIONALES,
+    HANDLER_CONFORMANCE_CASES,
     RESULT_VALUES,
+    RUNTIME_PROJECTIONS,
+    RUNTIME_PROJECTION_FIELDS,
+    runtime_projection_identity,
     BoundaryProofError,
     CoreBoundaryEntry,
     capability_report_result,
     evaluate_boundary_state,
     evaluate_simple_change_trace,
+    handler_conformance_policy,
     normalize_feature_model,
     normalize_proof_map,
+    select_runtime_projection,
     validate_capability_report,
+    validate_handler_conformance,
     validate_incident_registry,
     validate_incident_fixture,
     validate_version_parity,
@@ -423,6 +433,249 @@ class BoundaryProofModelTests(unittest.TestCase):
         normalized = normalize_feature_model(_feature_model())
         with self.assertRaises(dataclasses.FrozenInstanceError):
             normalized.core_dimensions[0].applicability = "other"  # type: ignore[misc]
+
+    def test_runtime_projection_binds_exact_implementation_bytes(self) -> None:
+        self.assertEqual(len(RUNTIME_PROJECTIONS), 1)
+        projection = dict(RUNTIME_PROJECTIONS[0])
+        self.assertEqual(set(projection), RUNTIME_PROJECTION_FIELDS)
+        self.assertEqual(
+            projection["projection_id"],
+            "codex-0.145.0-readonly-boundary-v1",
+        )
+        self.assertEqual(
+            runtime_projection_identity(projection),
+            "sha256:ab6416627d461e3f11a2bc0d16d465ae8601478a8d085b64e86a6945931a4624",
+        )
+        self.assertEqual(
+            projection["permitted_tool_features"],
+            ("shell_snapshot", "shell_tool", "unified_exec"),
+        )
+        self.assertEqual(
+            projection["permitted_non_tool_features"],
+            (
+                "terminal_resize_reflow",
+                "tool_search_always_defer_mcp_tools",
+                "resize_all_images",
+                "tui_app_server",
+            ),
+        )
+        self.assertEqual(len(projection["required_disabled_features"]), 89)
+        selected = select_runtime_projection(
+            runtime_version=str(projection["runtime_version"]),
+            runtime_launcher_identity=str(
+                projection["runtime_launcher_identity"]
+            ),
+            runtime_package_identity=str(
+                projection["runtime_package_identity"]
+            ),
+            schema_bundle_identity=str(projection["schema_bundle_identity"]),
+            protocol_item_classification_identity=str(
+                projection["protocol_item_classification_identity"]
+            ),
+            feature_classification_identity=str(
+                projection["feature_classification_identity"]
+            ),
+        )
+        self.assertEqual(selected, projection)
+
+        with self.assertRaises(BoundaryProofError):
+            select_runtime_projection(
+                runtime_version=str(projection["runtime_version"]),
+                runtime_launcher_identity="sha256:" + "0" * 64,
+                runtime_package_identity=str(
+                    projection["runtime_package_identity"]
+                ),
+                schema_bundle_identity=str(
+                    projection["schema_bundle_identity"]
+                ),
+                protocol_item_classification_identity=str(
+                    projection["protocol_item_classification_identity"]
+                ),
+                feature_classification_identity=str(
+                    projection["feature_classification_identity"]
+                ),
+            )
+
+        for left, right in (
+            ("permitted_tool_features", "permitted_non_tool_features"),
+            ("permitted_tool_features", "required_disabled_features"),
+            ("permitted_non_tool_features", "required_disabled_features"),
+        ):
+            with self.subTest(left=left, right=right):
+                swapped = copy.deepcopy(projection)
+                left_values = list(swapped[left])
+                right_values = list(swapped[right])
+                left_values[0], right_values[0] = (
+                    right_values[0],
+                    left_values[0],
+                )
+                swapped[left] = tuple(left_values)
+                swapped[right] = tuple(right_values)
+                with (
+                    mock.patch(
+                        "boundary_proof_model.RUNTIME_PROJECTIONS",
+                        (swapped,),
+                    ),
+                    self.assertRaises(BoundaryProofError),
+                ):
+                    select_runtime_projection(
+                        runtime_version=str(swapped["runtime_version"]),
+                        runtime_launcher_identity=str(
+                            swapped["runtime_launcher_identity"]
+                        ),
+                        runtime_package_identity=str(
+                            swapped["runtime_package_identity"]
+                        ),
+                        schema_bundle_identity=str(
+                            swapped["schema_bundle_identity"]
+                        ),
+                        protocol_item_classification_identity=str(
+                            swapped[
+                                "protocol_item_classification_identity"
+                            ]
+                        ),
+                        feature_classification_identity=str(
+                            swapped["feature_classification_identity"]
+                        ),
+                    )
+
+    def test_handler_conformance_is_closed_and_identity_bound(self) -> None:
+        authorization_identity = "sha256:" + "a" * 64
+        policy = handler_conformance_policy(authorization_identity)
+        self.assertEqual(tuple(policy["cases"]), HANDLER_CONFORMANCE_CASES)
+        policy_identity = "sha256:" + hashlib.sha256(
+            json.dumps(
+                policy,
+                ensure_ascii=False,
+                separators=(",", ":"),
+                sort_keys=True,
+            ).encode("utf-8")
+        ).hexdigest()
+        result = {
+            "schema_version": (
+                "stage-file-change-handler-conformance-result-v1"
+            ),
+            "policy_identity": policy_identity,
+            "case_results": [
+                {"case": case, "result": "pass"}
+                for case in HANDLER_CONFORMANCE_CASES
+            ],
+            "result": "pass",
+        }
+        result["result_identity"] = "sha256:" + hashlib.sha256(
+            json.dumps(
+                result,
+                ensure_ascii=False,
+                separators=(",", ":"),
+                sort_keys=True,
+            ).encode("utf-8")
+        ).hexdigest()
+        self.assertEqual(
+            validate_handler_conformance(
+                policy,
+                result,
+                authorization_policy_identity=authorization_identity,
+            ),
+            result["result_identity"],
+        )
+
+        reordered = copy.deepcopy(result)
+        reordered["case_results"].reverse()
+        with self.assertRaises(BoundaryProofError):
+            validate_handler_conformance(
+                policy,
+                reordered,
+                authorization_policy_identity=authorization_identity,
+            )
+
+    def test_production_handler_passes_every_closed_conformance_case(
+        self,
+    ) -> None:
+        result = _run_file_change_handler_conformance(
+            FILE_CHANGE_AUTHORIZATION_POLICY
+        )
+        self.assertEqual(result["result"], "pass")
+        self.assertEqual(
+            [row["case"] for row in result["case_results"]],
+            list(HANDLER_CONFORMANCE_CASES),
+        )
+
+        malformed = {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "item/fileChange/requestApproval",
+            "params": {
+                "grantRoot": None,
+                "itemId": "item",
+                "reason": None,
+                "startedAtMs": True,
+                "threadId": "thread",
+                "turnId": "turn",
+            },
+        }
+        response, failure = _dispatch_file_change_request(
+            malformed,
+            policy=FILE_CHANGE_AUTHORIZATION_POLICY,
+            expected_thread_id="thread",
+            expected_turn_id="turn",
+            expected_item_id="item",
+            expected_change_identity="sha256:" + "a" * 64,
+            observed_change_identity="sha256:" + "a" * 64,
+            decision_handler=lambda: {"decision": "decline"},
+        )
+        self.assertIsNone(response)
+        self.assertEqual(failure, "malformed-request")
+
+    def test_effective_tool_projection_excludes_permitted_non_tool_behavior(
+        self,
+    ) -> None:
+        projection = dict(RUNTIME_PROJECTIONS[0])
+        permitted_tools = set(projection["permitted_tool_features"])
+        permitted_non_tools = set(
+            projection["permitted_non_tool_features"]
+        )
+        disabled = set(projection["required_disabled_features"])
+        pages = [
+            {
+                "items": [
+                    {
+                        "name": feature,
+                        "enabled": feature
+                        in permitted_tools | permitted_non_tools,
+                    }
+                    for feature in CODEX_0_145_0_FEATURES
+                ],
+                "next_cursor": None,
+            }
+        ]
+        classifications = [
+            {
+                "feature": feature,
+                "classification": (
+                    "permitted-built-in-tool"
+                    if feature in permitted_tools
+                    else (
+                        "permitted-non-tool-runtime-behavior"
+                        if feature in permitted_non_tools
+                        else "must-be-disabled-tool-bearing-behavior"
+                    )
+                ),
+            }
+            for feature in sorted(CODEX_0_145_0_FEATURES)
+        ]
+        effective = _effective_tool_projection(
+            pages, classifications, projection
+        )
+        self.assertEqual(len(effective), len(permitted_tools | disabled))
+        self.assertTrue(
+            permitted_non_tools.isdisjoint(
+                {str(row["feature"]) for row in effective}
+            )
+        )
+        self.assertEqual(
+            {str(row["feature"]) for row in effective if row["enabled"]},
+            permitted_tools,
+        )
 
     def test_unknown_closed_values_fail_before_consistency(self) -> None:
         cases = (
@@ -1982,7 +2235,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
     def test_invocation_profile_uses_approved_exact_literals(self) -> None:
         manifest = _build_behavior_manifest(ROOT, self._attestation())
         self.assertEqual(
-            manifest["manifest_id"], "boundary-behavior-implementation-v2"
+            manifest["manifest_id"], "boundary-behavior-implementation-v3"
         )
         self.assertEqual(manifest["artifact_policy"], ARTIFACT_POLICY)
         profile = manifest["invocation_profile"]
@@ -2243,57 +2496,38 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         )
 
     def test_runtime_projection_rejects_schema_and_protocol_drift(self) -> None:
-        rows = [
-            {
-                "item_variant": "ServerNotification:turn/completed",
-                "classification": "non-side-effect-protocol-traffic",
-            }
-        ]
-        protocol_identity = "sha256:" + hashlib.sha256(
-            json.dumps(
-                rows,
-                ensure_ascii=False,
-                separators=(",", ":"),
-                sort_keys=True,
-            ).encode("utf-8")
-        ).hexdigest()
-        schema_identity = "sha256:" + "b" * 64
-        with (
-            mock.patch.dict(
-                RUNTIME_SCHEMA_IDENTITY_BY_VERSION,
-                {"test-runtime": schema_identity},
-            ),
-            mock.patch.dict(
-                RUNTIME_PROTOCOL_CLASSIFICATION_IDENTITY_BY_VERSION,
-                {"test-runtime": protocol_identity},
-            ),
+        projection = dict(RUNTIME_PROJECTIONS[0])
+        protocol_rows = [{"classification": "bound-protocol"}]
+        feature_rows = [{"classification": "bound-features"}]
+        with mock.patch(
+            "boundary_proof_behavior._sha256",
+            side_effect=[
+                projection["protocol_item_classification_identity"],
+                projection["feature_classification_identity"],
+            ],
         ):
-            _validate_runtime_projection(
-                "test-runtime", schema_identity, rows
+            complete = _validate_runtime_projection(
+                str(projection["runtime_version"]),
+                str(projection["runtime_launcher_identity"]),
+                str(projection["runtime_package_identity"]),
+                str(projection["schema_bundle_identity"]),
+                protocol_rows,
             )
-            with self.assertRaises(BoundaryRuntimeError) as raised:
-                _validate_runtime_projection(
-                    "test-runtime", "sha256:" + "c" * 64, rows
-                )
-            self.assertEqual(
-                raised.exception.diagnostic_id, "schema-bundle-invalid"
-            )
+            self.assertEqual(complete(feature_rows), projection)
 
-            added = [
-                *rows,
-                {
-                    "item_variant": "ServerNotification:unknown/value",
-                    "classification": "non-side-effect-protocol-traffic",
-                },
-            ]
-            with self.assertRaises(BoundaryRuntimeError) as raised:
-                _validate_runtime_projection(
-                    "test-runtime", schema_identity, added
-                )
-            self.assertEqual(
-                raised.exception.diagnostic_id,
-                "protocol-item-classification-invalid",
-            )
+        complete = _validate_runtime_projection(
+            str(projection["runtime_version"]),
+            "sha256:" + "0" * 64,
+            str(projection["runtime_package_identity"]),
+            str(projection["schema_bundle_identity"]),
+            protocol_rows,
+        )
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            complete(feature_rows)
+        self.assertEqual(
+            raised.exception.diagnostic_id,
+            "runtime-projection-unsupported",
+        )
 
     def test_codex_0_145_projection_matches_approved_literal_oracle(
         self,
@@ -2451,11 +2685,19 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
     @staticmethod
     def _attestation() -> dict[str, object]:
         digest = "sha256:" + "a" * 64
+        projection = dict(RUNTIME_PROJECTIONS[0])
+        conformance = _run_file_change_handler_conformance(
+            FILE_CHANGE_AUTHORIZATION_POLICY
+        )
         return {
-            "schema_version": "boundary-runtime-attestation-v2",
-            "runtime_launcher_identity": digest,
-            "runtime_package_identity": digest,
-            "schema_bundle_identity": digest,
+            "schema_version": "boundary-runtime-attestation-v3",
+            "runtime_launcher_identity": projection[
+                "runtime_launcher_identity"
+            ],
+            "runtime_package_identity": projection[
+                "runtime_package_identity"
+            ],
+            "schema_bundle_identity": projection["schema_bundle_identity"],
             "generated_config_identity": digest,
             "managed_requirements_identity": digest,
             "active_permission_profile": "boundary-proof-stage-readonly-v1",
@@ -2472,8 +2714,20 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "feature_inventory_identity": digest,
             "capability_inventory_identity": digest,
             "skill_inventory_identity": digest,
-            "feature_classification_identity": digest,
-            "protocol_item_classification_identity": digest,
+            "feature_classification_identity": projection[
+                "feature_classification_identity"
+            ],
+            "protocol_item_classification_identity": projection[
+                "protocol_item_classification_identity"
+            ],
+            "runtime_projection_id": projection["projection_id"],
+            "runtime_projection_identity": runtime_projection_identity(
+                projection
+            ),
+            "file_change_capability_state": projection[
+                "file_change_capability_state"
+            ],
+            "effective_tool_projection_identity": digest,
             "file_change_authorization_policy_identity": (
                 "sha256:"
                 + hashlib.sha256(
@@ -2485,6 +2739,9 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                     ).encode("utf-8")
                 ).hexdigest()
             ),
+            "file_change_handler_conformance_identity": conformance[
+                "result_identity"
+            ],
             "materialization_canary_policy_identity": (
                 "sha256:"
                 + hashlib.sha256(
@@ -2522,7 +2779,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         self.assertEqual(
             result,
             {
-                "schema_version": "boundary-runtime-preflight-v2",
+                "schema_version": "boundary-runtime-preflight-v3",
                 "result": "environment-unavailable",
                 "diagnostic_id": "runtime-version-unsupported",
                 "phase": "pre-thread-start",
@@ -2530,6 +2787,10 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 "workspace_failure": None,
             },
         )
+        with self.assertRaises(ValueError):
+            _preflight_failure(
+                "file-change-control-mismatch", "pre-thread-start"
+            )
 
     def test_v2_policies_are_closed_and_identity_bound(self) -> None:
         self.assertEqual(

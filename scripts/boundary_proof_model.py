@@ -16,6 +16,7 @@ import re
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
+from types import MappingProxyType
 from typing import Any, Iterable, Mapping, Sequence
 
 
@@ -46,6 +47,186 @@ INTERACTION_RATIONALES = (
 BOUNDARY_MODEL_VERSIONS = ("legacy", "v1")
 AUTOMATION_LEVELS = ("automated", "manual", "hybrid")
 RESULT_VALUES = ("pass", "fail", "not-run")
+RUNTIME_PROJECTION_FIELDS = frozenset(
+    {
+        "projection_id",
+        "runtime_version",
+        "runtime_launcher_identity",
+        "runtime_package_identity",
+        "schema_bundle_identity",
+        "protocol_item_classification_identity",
+        "feature_classification_identity",
+        "permitted_tool_features",
+        "permitted_non_tool_features",
+        "required_disabled_features",
+        "file_change_capability_state",
+    }
+)
+CODEX_0_145_0_FEATURES = (
+    "undo",
+    "shell_tool",
+    "secret_auth_storage",
+    "unified_exec",
+    "shell_zsh_fork",
+    "unified_exec_zsh_fork",
+    "shell_snapshot",
+    "deferred_executor",
+    "js_repl",
+    "code_mode",
+    "code_mode_host",
+    "code_mode_only",
+    "js_repl_tools_only",
+    "terminal_resize_reflow",
+    "web_search_request",
+    "web_search_cached",
+    "standalone_web_search",
+    "search_tool",
+    "codex_git_commit",
+    "runtime_metrics",
+    "sqlite",
+    "memories",
+    "local_thread_store_compression",
+    "chronicle",
+    "apply_patch_freeform",
+    "apply_patch_streaming_events",
+    "exec_permission_approvals",
+    "hooks",
+    "request_permissions_tool",
+    "use_linux_sandbox_bwrap",
+    "use_legacy_landlock",
+    "request_rule",
+    "experimental_windows_sandbox",
+    "elevated_windows_sandbox",
+    "remote_models",
+    "enable_request_compression",
+    "network_proxy",
+    "respect_system_proxy",
+    "multi_agent",
+    "multi_agent_v2",
+    "multi_agent_mode",
+    "enable_fanout",
+    "apps",
+    "enable_mcp_apps",
+    "apps_mcp_path_override",
+    "tool_search",
+    "tool_search_always_defer_mcp_tools",
+    "non_prefixed_mcp_tool_names",
+    "unavailable_dummy_tools",
+    "tool_suggest",
+    "plugins",
+    "plugin_hooks",
+    "in_app_browser",
+    "browser_use",
+    "browser_use_full_cdp_access",
+    "browser_use_external",
+    "computer_use",
+    "remote_plugin",
+    "plugin_sharing",
+    "external_migration",
+    "image_generation",
+    "resize_all_images",
+    "item_ids",
+    "concurrent_reasoning_summaries",
+    "skill_mcp_dependency_install",
+    "skill_env_var_dependency_prompt",
+    "mentions_v2",
+    "steer",
+    "default_mode_request_user_input",
+    "terminal_visualization_instructions",
+    "guardian_approval",
+    "goals",
+    "token_budget",
+    "rollout_budget",
+    "current_time_reminder",
+    "collaboration_modes",
+    "tool_call_mcp_elicitation",
+    "auth_elicitation",
+    "personality",
+    "artifact",
+    "fast_mode",
+    "realtime_conversation",
+    "remote_control",
+    "image_detail_original",
+    "tui_app_server",
+    "prevent_idle_sleep",
+    "workspace_owner_usage_nudge",
+    "responses_websockets",
+    "responses_websockets_v2",
+    "remote_compaction_v2",
+    "use_agent_identity",
+    "workspace_dependencies",
+    "code_mode_buffered_exec",
+    "executor_capability_discovery",
+    "external_agent_memory_import",
+    "skill_search",
+)
+PERMITTED_PROJECTED_TOOL_FEATURES = (
+    "shell_snapshot",
+    "shell_tool",
+    "unified_exec",
+)
+PERMITTED_PROJECTED_NON_TOOL_FEATURES = (
+    "terminal_resize_reflow",
+    "tool_search_always_defer_mcp_tools",
+    "resize_all_images",
+    "tui_app_server",
+)
+REQUIRED_DISABLED_PROJECTED_FEATURES = tuple(
+    feature
+    for feature in CODEX_0_145_0_FEATURES
+    if feature
+    not in (
+        *PERMITTED_PROJECTED_TOOL_FEATURES,
+        *PERMITTED_PROJECTED_NON_TOOL_FEATURES,
+    )
+)
+RUNTIME_PROJECTIONS = (
+    MappingProxyType(
+        {
+            "projection_id": "codex-0.145.0-readonly-boundary-v1",
+            "runtime_version": "0.145.0",
+            "runtime_launcher_identity": (
+                "sha256:134063e133f0b4244fa3b251acf973d4f"
+                "e4b4aeeacbdc135211bf480f59f1477"
+            ),
+            "runtime_package_identity": (
+                "sha256:a66a2dee773de39b690a08048971ec18"
+                "d04f97d8a8d5e9a205f51a9f0d4cdbfa"
+            ),
+            "schema_bundle_identity": (
+                "sha256:18d79891673d9d43a8e7a49864fef49"
+                "a04305bd13571a8aef45824209f1bfae8"
+            ),
+            "protocol_item_classification_identity": (
+                "sha256:35f1203d9c6abc62ef3f1aca94e2f316"
+                "5e0213697d554ab11d0477d9cd7e4bf8"
+            ),
+            "feature_classification_identity": (
+                "sha256:6f833f4c43196e43f67fea215de09743"
+                "e5a5e3a80bed53973b42740041369268"
+            ),
+            "permitted_tool_features": PERMITTED_PROJECTED_TOOL_FEATURES,
+            "permitted_non_tool_features": (
+                PERMITTED_PROJECTED_NON_TOOL_FEATURES
+            ),
+            "required_disabled_features": REQUIRED_DISABLED_PROJECTED_FEATURES,
+            "file_change_capability_state": "not-exposed-projection",
+        }
+    ),
+)
+HANDLER_CONFORMANCE_CASES = (
+    "matching-request-declined",
+    "missing-handler-rejected",
+    "wrong-policy-identity-rejected",
+    "thread-mismatch-rejected",
+    "turn-mismatch-rejected",
+    "item-mismatch-rejected",
+    "change-mismatch-rejected",
+    "accept-rejected",
+    "accept-for-session-rejected",
+    "widened-response-rejected",
+    "malformed-request-rejected",
+)
 EXPECTED_GATES = ("spec", "spec-review", "test-spec", "test-spec-review", "implement")
 DETECTED_STAGES = (*EXPECTED_GATES, "not-detected")
 EVALUATED_SKILLS = (
@@ -237,6 +418,205 @@ REPORT_FIELDS = frozenset(
 
 class BoundaryProofError(ValueError):
     """Raised when deterministic boundary-proof validation fails."""
+
+
+def _canonical_identity(value: object) -> str:
+    payload = json.dumps(
+        value,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+    return "sha256:" + hashlib.sha256(payload).hexdigest()
+
+
+def runtime_projection_identity(projection: Mapping[str, object]) -> str:
+    """Return the identity of one complete, non-self-referential row."""
+
+    if set(projection) != RUNTIME_PROJECTION_FIELDS:
+        raise BoundaryProofError("runtime projection fields are not closed")
+    return _canonical_identity(dict(projection))
+
+
+def _validate_runtime_projection_registry() -> None:
+    projection_ids: set[str] = set()
+    selection_keys: set[tuple[object, ...]] = set()
+    identities: set[str] = set()
+    identity_pattern = re.compile(r"^sha256:[0-9a-f]{64}$")
+    projection_pattern = re.compile(
+        r"^codex-[0-9]+\.[0-9]+\.[0-9]+-[a-z0-9-]+-v[0-9]+$"
+    )
+    for projection in RUNTIME_PROJECTIONS:
+        if set(projection) != RUNTIME_PROJECTION_FIELDS:
+            raise BoundaryProofError("runtime projection fields are not closed")
+        projection_id = projection["projection_id"]
+        if (
+            not isinstance(projection_id, str)
+            or projection_pattern.fullmatch(projection_id) is None
+            or projection_id in projection_ids
+        ):
+            raise BoundaryProofError("runtime projection id is invalid")
+        projection_ids.add(projection_id)
+        for field in (
+            "runtime_launcher_identity",
+            "runtime_package_identity",
+            "schema_bundle_identity",
+            "protocol_item_classification_identity",
+            "feature_classification_identity",
+        ):
+            if (
+                not isinstance(projection[field], str)
+                or identity_pattern.fullmatch(projection[field]) is None
+            ):
+                raise BoundaryProofError(
+                    f"runtime projection {field} is invalid"
+                )
+        permitted = projection["permitted_tool_features"]
+        non_tool = projection["permitted_non_tool_features"]
+        disabled = projection["required_disabled_features"]
+        if (
+            not isinstance(permitted, tuple)
+            or not isinstance(non_tool, tuple)
+            or not isinstance(disabled, tuple)
+            or not permitted
+            or len(permitted) != len(set(permitted))
+            or len(non_tool) != len(set(non_tool))
+            or len(disabled) != len(set(disabled))
+            or set(permitted) & set(non_tool)
+            or set(permitted) & set(disabled)
+            or set(non_tool) & set(disabled)
+            or set(permitted) | set(non_tool) | set(disabled)
+            != set(CODEX_0_145_0_FEATURES)
+            or permitted != PERMITTED_PROJECTED_TOOL_FEATURES
+            or non_tool != PERMITTED_PROJECTED_NON_TOOL_FEATURES
+            or disabled != REQUIRED_DISABLED_PROJECTED_FEATURES
+        ):
+            raise BoundaryProofError(
+                "runtime projection feature partition is invalid"
+            )
+        if projection["file_change_capability_state"] not in (
+            "exposed-live-probe-required",
+            "not-exposed-projection",
+        ):
+            raise BoundaryProofError(
+                "runtime projection capability state is unknown"
+            )
+        selection_key = tuple(
+            projection[field]
+            for field in (
+                "runtime_version",
+                "runtime_launcher_identity",
+                "runtime_package_identity",
+                "schema_bundle_identity",
+                "protocol_item_classification_identity",
+                "feature_classification_identity",
+            )
+        )
+        if selection_key in selection_keys:
+            raise BoundaryProofError("runtime projection selection is ambiguous")
+        selection_keys.add(selection_key)
+        identity = runtime_projection_identity(projection)
+        if identity in identities:
+            raise BoundaryProofError("runtime projection identity is duplicated")
+        identities.add(identity)
+
+
+def select_runtime_projection(
+    *,
+    runtime_version: str,
+    runtime_launcher_identity: str,
+    runtime_package_identity: str,
+    schema_bundle_identity: str,
+    protocol_item_classification_identity: str,
+    feature_classification_identity: str,
+) -> dict[str, object]:
+    """Select exactly one immutable row using the complete implementation key."""
+
+    _validate_runtime_projection_registry()
+    observed = (
+        runtime_version,
+        runtime_launcher_identity,
+        runtime_package_identity,
+        schema_bundle_identity,
+        protocol_item_classification_identity,
+        feature_classification_identity,
+    )
+    matches = [
+        projection
+        for projection in RUNTIME_PROJECTIONS
+        if observed
+        == tuple(
+            projection[field]
+            for field in (
+                "runtime_version",
+                "runtime_launcher_identity",
+                "runtime_package_identity",
+                "schema_bundle_identity",
+                "protocol_item_classification_identity",
+                "feature_classification_identity",
+            )
+        )
+    ]
+    if len(matches) != 1:
+        raise BoundaryProofError("runtime projection is unsupported")
+    return dict(matches[0])
+
+
+def handler_conformance_policy(
+    authorization_policy_identity: str,
+) -> dict[str, object]:
+    if re.fullmatch(r"sha256:[0-9a-f]{64}", authorization_policy_identity) is None:
+        raise BoundaryProofError("authorization policy identity is invalid")
+    return {
+        "schema_version": "stage-file-change-handler-conformance-v1",
+        "authorization_policy_identity": authorization_policy_identity,
+        "cases": list(HANDLER_CONFORMANCE_CASES),
+    }
+
+
+def validate_handler_conformance(
+    policy: Mapping[str, object],
+    result: Mapping[str, object],
+    *,
+    authorization_policy_identity: str,
+) -> str:
+    """Validate the complete ordered conformance result and its identities."""
+
+    expected_policy = handler_conformance_policy(authorization_policy_identity)
+    if dict(policy) != expected_policy:
+        raise BoundaryProofError("handler conformance policy is invalid")
+    policy_identity = _canonical_identity(expected_policy)
+    if set(result) != {
+        "schema_version",
+        "policy_identity",
+        "case_results",
+        "result",
+        "result_identity",
+    }:
+        raise BoundaryProofError("handler conformance result fields are not closed")
+    if (
+        result.get("schema_version")
+        != "stage-file-change-handler-conformance-result-v1"
+        or result.get("policy_identity") != policy_identity
+        or result.get("result") != "pass"
+    ):
+        raise BoundaryProofError("handler conformance result is invalid")
+    case_results = result.get("case_results")
+    if not isinstance(case_results, list) or case_results != [
+        {"case": case, "result": "pass"}
+        for case in HANDLER_CONFORMANCE_CASES
+    ]:
+        raise BoundaryProofError("handler conformance cases are invalid")
+    without_identity = {
+        key: value for key, value in result.items() if key != "result_identity"
+    }
+    expected_identity = _canonical_identity(without_identity)
+    if result.get("result_identity") != expected_identity:
+        raise BoundaryProofError("handler conformance identity is invalid")
+    return expected_identity
+
+
+_validate_runtime_projection_registry()
 
 
 @dataclass(frozen=True)
