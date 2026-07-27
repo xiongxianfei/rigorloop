@@ -4100,6 +4100,15 @@ blocked, existing root-level registration behavior is preserved, all tracked
 boundary evidence paths route exactly once, and actual
 `origin/main..c015ff96` selection has no blocking result or registration debt.
 
+### code-review-final-r3
+
+No new material findings.
+
+R3 confirmed final R2 remains valid for the unchanged M1-M4 implementation,
+M5 is bounded to selector routing and lifecycle synchronization, all 185
+material findings remain resolved, and final closeout now requires a refreshed
+explanation, capability report, and verification.
+
 ### spec-review-r58
 
 No new material findings. R58 approved the bounded correction outcome

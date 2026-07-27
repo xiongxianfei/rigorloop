@@ -95,12 +95,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M5. Verification routing and lifecycle synchronization correction
 - Current milestone state: closed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m5-r1.md
-- Review status: approved; stage=code-review; round=r1
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-final-r3.md
+- Review status: approved; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: none
-- Next stage: code-review
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: lifecycle-gates-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
