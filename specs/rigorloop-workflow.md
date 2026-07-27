@@ -1610,8 +1610,11 @@ skill_inventory_identity
 feature_classification_identity
 protocol_item_classification_identity
 runtime_projection_id
+runtime_projection_identity
 file_change_capability_state
+effective_tool_projection_identity
 file_change_authorization_policy_identity
+file_change_handler_conformance_identity
 materialization_canary_policy_identity
 probe_results
 credential_isolation_results
@@ -1647,7 +1650,10 @@ The exact identity preimages are:
 | `skill_inventory_identity` | Canonical JSON of the complete accepted `skills/list` result after the exact path normalization below |
 | `feature_classification_identity` | Canonical JSON of the feature-name-sorted array of exact `{feature, classification}` rows |
 | `protocol_item_classification_identity` | Canonical JSON of the protocol-variant-name-sorted array of exact `{item_variant, classification}` rows derived from the bound schema |
+| `runtime_projection_identity` | Canonical JSON of the selected complete runtime-projection row, excluding no field |
+| `effective_tool_projection_identity` | Canonical JSON of the complete feature-name-sorted array of exact `{feature, classification, enabled}` rows for every feature classified `permitted-built-in-tool` or `must-be-disabled-tool-bearing-behavior` |
 | `file_change_authorization_policy_identity` | Canonical JSON of the exact `stage-file-change-authorization-policy-v1` object configured in the parent before any governed thread starts |
+| `file_change_handler_conformance_identity` | Canonical JSON of the exact invocation-owned `stage-file-change-handler-conformance-result-v1` record's four non-identity fields, as defined below |
 | `materialization_canary_policy_identity` | Canonical JSON of the exact `materialization-canary-v1` policy selected by the parent for the noncanonical preflight turn |
 
 For `config/read.origins`, format-valid means
@@ -1777,36 +1783,137 @@ file_change_capability_state
 `^codex-[0-9]+\.[0-9]+\.[0-9]+-[a-z0-9-]+-v[0-9]+$`.
 `runtime_version` is one exact SemVer value.
 Both feature collections are ordered, independently unique, disjoint, and
-exhaustive for their governed rows.
+exhaustive for all 96 feature rows bound by
+`feature_classification_identity`.
 `file_change_capability_state` is exactly
 `exposed-live-probe-required` or `not-exposed-projection`.
+`runtime_projection_identity` is the standard canonical-JSON identity of the
+complete eight-field row. The identity is evidence about the row and is not a
+self-referential ninth field.
+Projection IDs, complete four-identity selection keys, and projection
+identities are independently unique.
+An unknown or additional field, duplicate projection ID, duplicate selection
+key, duplicate projection identity, missing feature, duplicate feature,
+overlapping feature lists, or identity/content disagreement fails with
+`runtime-projection-unsupported` before `thread/start`.
 Adding or changing a projection is a reviewed compatibility change and does
 not rewrite evidence created under another projection.
 
-The first supported projection is
-`codex-0.145.0-readonly-boundary-v1`.
-It binds the already specified Codex 0.145.0 schema and protocol identities,
-the complete existing feature classification, the three permitted read-only
-command features, and `file_change_capability_state:
-not-exposed-projection`.
-Its apply-patch and other file-change-producing feature rows are required
-disabled.
-Future runtime versions require new projection rows rather than changes to
-this row.
+The first supported projection is this complete immutable row:
 
-`runtime_projection_id` and `file_change_capability_state` in the attestation
-MUST equal the selected projection.
-
-The first accepted Codex `0.145.0` projection is immutable:
-
-```text
-schema_bundle_identity:
-  sha256:18d79891673d9d43a8e7a49864fef49a04305bd13571a8aef45824209f1bfae8
-protocol_item_classification_identity:
-  sha256:35f1203d9c6abc62ef3f1aca94e2f3165e0213697d554ab11d0477d9cd7e4bf8
-feature rows:
-  96
+```yaml
+projection_id: codex-0.145.0-readonly-boundary-v1
+runtime_version: 0.145.0
+schema_bundle_identity: sha256:18d79891673d9d43a8e7a49864fef49a04305bd13571a8aef45824209f1bfae8
+protocol_item_classification_identity: sha256:35f1203d9c6abc62ef3f1aca94e2f3165e0213697d554ab11d0477d9cd7e4bf8
+feature_classification_identity: sha256:6f833f4c43196e43f67fea215de09743e5a5e3a80bed53973b42740041369268
+permitted_tool_features:
+  - shell_snapshot
+  - shell_tool
+  - unified_exec
+required_disabled_features:
+  - undo
+  - secret_auth_storage
+  - shell_zsh_fork
+  - unified_exec_zsh_fork
+  - deferred_executor
+  - js_repl
+  - code_mode
+  - code_mode_host
+  - code_mode_only
+  - js_repl_tools_only
+  - terminal_resize_reflow
+  - web_search_request
+  - web_search_cached
+  - standalone_web_search
+  - search_tool
+  - codex_git_commit
+  - runtime_metrics
+  - sqlite
+  - memories
+  - local_thread_store_compression
+  - chronicle
+  - apply_patch_freeform
+  - apply_patch_streaming_events
+  - exec_permission_approvals
+  - hooks
+  - request_permissions_tool
+  - use_linux_sandbox_bwrap
+  - use_legacy_landlock
+  - request_rule
+  - experimental_windows_sandbox
+  - elevated_windows_sandbox
+  - remote_models
+  - enable_request_compression
+  - network_proxy
+  - respect_system_proxy
+  - multi_agent
+  - multi_agent_v2
+  - multi_agent_mode
+  - enable_fanout
+  - apps
+  - enable_mcp_apps
+  - apps_mcp_path_override
+  - tool_search
+  - tool_search_always_defer_mcp_tools
+  - non_prefixed_mcp_tool_names
+  - unavailable_dummy_tools
+  - tool_suggest
+  - plugins
+  - plugin_hooks
+  - in_app_browser
+  - browser_use
+  - browser_use_full_cdp_access
+  - browser_use_external
+  - computer_use
+  - remote_plugin
+  - plugin_sharing
+  - external_migration
+  - image_generation
+  - resize_all_images
+  - item_ids
+  - concurrent_reasoning_summaries
+  - skill_mcp_dependency_install
+  - skill_env_var_dependency_prompt
+  - mentions_v2
+  - steer
+  - default_mode_request_user_input
+  - terminal_visualization_instructions
+  - guardian_approval
+  - goals
+  - token_budget
+  - rollout_budget
+  - current_time_reminder
+  - collaboration_modes
+  - tool_call_mcp_elicitation
+  - auth_elicitation
+  - personality
+  - artifact
+  - fast_mode
+  - realtime_conversation
+  - remote_control
+  - image_detail_original
+  - tui_app_server
+  - prevent_idle_sleep
+  - workspace_owner_usage_nudge
+  - responses_websockets
+  - responses_websockets_v2
+  - remote_compaction_v2
+  - use_agent_identity
+  - workspace_dependencies
+  - code_mode_buffered_exec
+  - executor_capability_discovery
+  - external_agent_memory_import
+  - skill_search
+file_change_capability_state: not-exposed-projection
 ```
+
+Its `runtime_projection_identity` is
+`sha256:a1f1827f4d412a58622fd3be68a3b58556e206473ce183930fe2f294188d5432`.
+The three attestation fields `runtime_projection_id`,
+`runtime_projection_identity`, and `file_change_capability_state` MUST equal
+the selected row. Future runtime versions require new complete projection rows
+rather than changes to this row.
 
 The runtime version, complete schema identity, protocol classification
 identity, and feature classification identity MUST match one exact projection
@@ -1905,6 +2012,81 @@ Use only the runtime file-change/apply-patch operation, not a shell command, to 
 ```
 
 `prompt_identity` is the SHA-256 identity of those exact prompt bytes.
+
+The effective-tool projection is invocation-owned evidence derived from the
+fully paginated runtime-owned `experimentalFeature/list` result after exact
+configuration equivalence is proved.
+It contains one feature-name-sorted row with exactly `feature`,
+`classification`, and `enabled` for every feature classified
+`permitted-built-in-tool` or
+`must-be-disabled-tool-bearing-behavior`.
+Each classified feature appears exactly once, `enabled` is the runtime-owned
+Boolean value, and the set is reconstructed independently from the complete
+feature inventory and the selected projection.
+Missing, additional, duplicate, unclassified, non-Boolean, or
+configuration-disagreeing rows fail with `file-change-control-mismatch`.
+The attestation's `effective_tool_projection_identity` is the standard
+canonical-JSON identity of that complete row array.
+For `codex-0.145.0-readonly-boundary-v1`, exactly `shell_snapshot`,
+`shell_tool`, and `unified_exec` are enabled and every
+`required_disabled_features` member is disabled.
+
+The parent request handler is proved by the closed
+`stage-file-change-handler-conformance-v1` policy before every preflight and
+again during generation after installing the handler and before starting any
+governed thread.
+The policy contains exactly `schema_version`,
+`authorization_policy_identity`, and `cases`.
+`schema_version` is `stage-file-change-handler-conformance-v1`;
+`authorization_policy_identity` equals the selected
+`file_change_authorization_policy_identity`; and `cases` is this exact ordered
+list:
+
+```text
+matching-request-declined
+missing-handler-rejected
+wrong-policy-identity-rejected
+thread-mismatch-rejected
+turn-mismatch-rejected
+item-mismatch-rejected
+change-mismatch-rejected
+accept-rejected
+accept-for-session-rejected
+widened-response-rejected
+malformed-request-rejected
+```
+
+The parent executes each case once against the same installed dispatch
+function used for live runtime requests.
+`matching-request-declined` supplies a well-formed synthetic request whose
+thread, turn, item, change, and policy identities equal the parent-owned turn
+context and passes only when the exact response is `{"decision":"decline"}`.
+Each other case changes only the condition named by that case and passes only
+when dispatch returns no protocol response and records a closed failure.
+The `accept-rejected` and `accept-for-session-rejected` cases replace the
+handler result with exactly the named prohibited decision;
+`widened-response-rejected` adds one response field; and
+`malformed-request-rejected` removes one required request field.
+
+The result contains exactly `schema_version`, `policy_identity`,
+`case_results`, `result`, and `result_identity`.
+Its `schema_version` is
+`stage-file-change-handler-conformance-result-v1`;
+`policy_identity` is the canonical identity of the complete conformance
+policy; `case_results` is an ordered array containing exactly one object with
+exactly `case` and `result` for every policy case; every case result and the
+aggregate `result` are exactly `pass`; and `result_identity` is the canonical
+identity of the other four fields.
+The attestation's `file_change_handler_conformance_identity` equals
+`result_identity`.
+A missing, additional, duplicate, reordered, skipped, failed, malformed,
+unknown, stale, or identity-inconsistent case or result fails with
+`file-change-control-mismatch`.
+The conformance record contains no raw request, response, path, content,
+exception, credential, or private value.
+Repository tests may test this handler but cannot substitute for these two
+fresh invocation-owned executions.
+
 The parent evaluates the selected projection's
 `file_change_capability_state` before deciding whether a live probe is valid.
 The schema-constrained terminal marker is control-flow evidence only and never
@@ -1951,20 +2133,19 @@ It instead requires all of:
 - exact equality with the selected immutable projection;
 - every projection-named file-change-producing feature disabled in the
   runtime-owned complete feature inventory;
-- no file-change tool in the effective tool inventory;
+- an identity-valid effective-tool projection in which only the selected
+  projection's permitted tools are enabled;
 - the exact parent decline-handler policy identity installed before every
   governed thread;
-- deterministic protocol-handler conformance tests proving that a synthetic
-  correctly bound approval request receives only `decision: decline`, while
-  malformed, mismatched, widened, accepted, or session-accepted requests fail
-  closed; and
+- the fresh identity-valid handler-conformance result defined above; and
 - no file-change request or item observed during the canary or lifecycle turn.
 
 An observed file-change event under `not-exposed-projection` is projection
 drift and fails with `file-change-control-mismatch`.
 The engine MUST NOT silently reclassify the projection.
-The parent persists only `workspace_file_change_denied: pass` and the policy
-identity; it never persists the child marker, prompt, raw protocol event,
+The parent persists only `workspace_file_change_denied: pass` plus the
+projection, effective-tool, policy, and conformance identities in the
+attestation; it never persists the child marker, prompt, raw protocol event,
 fixture content, or child-authored path.
 Generation repeats this proof in a fresh runtime and binds its result into the
 fresh runtime attestation before the materialization canary or accepted turn.
@@ -1986,7 +2167,7 @@ it remains bound to the original run and policy identity while materializing
 only an already recorded complete envelope.
 The canary request, lifecycle-stage request, retry context, implementation
 manifest, immutable run, current pointer, validation, and report selector all
-bind the same policy transitively through the v2 runtime attestation.
+bind the same policy transitively through the v3 runtime attestation.
 
 `stage_envelope_materialization` is proved by one noncanonical preflight turn
 through `workflow` and `spec` after runtime negotiation and the direct sandbox
@@ -2087,7 +2268,7 @@ for `workspace-baseline-invalid`:
 | `permission-profile-mismatch` | `pre-turn-start` |
 | `config-equivalence-mismatch` | `pre-turn-start` |
 | `sandbox-probe-failed` | `pre-turn-start` |
-| `file-change-control-mismatch` | `pre-turn-start` or `in-turn`, according to where the mismatch is observed |
+| `file-change-control-mismatch` | the single phase assigned by the closed cause-to-phase table below |
 | `credential-isolation-failed` | `pre-turn-start` |
 | `workspace-baseline-invalid` | `pre-turn-start` |
 | `stage-envelope-canary-failed` | `in-turn` |
@@ -2109,6 +2290,58 @@ For `runtime-identity-unstable`, the checkpoint-to-phase mapping is closed:
 Every checkpoint occurs exactly once in this table.
 Missing, additional, duplicate, unknown, or cross-phase checkpoint mappings
 fail closed.
+
+For `file-change-control-mismatch`, the cause-to-phase mapping is closed:
+
+| Cause | Phase |
+| --- | --- |
+| `effective-tool-projection-invalid` | `pre-turn-start` |
+| `required-disabled-feature-enabled` | `pre-turn-start` |
+| `authorization-policy-identity-mismatch` | `pre-turn-start` |
+| `handler-conformance-invalid` | `pre-turn-start` |
+| `live-probe-required-operation-not-observed` | `pre-turn-start` |
+| `live-probe-operation-shape-mismatch` | `pre-turn-start` |
+| `live-probe-decline-missing-or-ambiguous` | `pre-turn-start` |
+| `live-probe-terminal-status-invalid` | `pre-turn-start` |
+| `live-probe-workspace-mutated` | `pre-turn-start` |
+| `live-probe-cleanup-incomplete` | `pre-turn-start` |
+| `not-exposed-file-change-event-observed` | `in-turn` |
+| `governed-request-binding-mismatch` | `in-turn` |
+| `governed-decline-missing-or-widened` | `in-turn` |
+| `governed-prohibited-decision` | `in-turn` |
+| `governed-file-change-terminal-status-invalid` | `in-turn` |
+
+`pre-turn-start` means before the accepted lifecycle or canary
+`turn/start`; the isolated denial-probe turn is itself preflight evidence and
+does not change that phase.
+Every cause appears exactly once.
+An unknown cause, missing cause, duplicate cause, or cause paired with another
+phase invalidates the response and cannot produce pass evidence.
+
+When one observation could satisfy more than one preflight diagnostic, the
+closed precedence is:
+
+```text
+1. runtime-identity-unstable
+2. protocol-shape-incompatible
+3. unexpected-prohibited-event
+4. file-change-control-mismatch
+5. sandbox-probe-failed
+```
+
+A live-probe filesystem change is the exact
+`live-probe-workspace-mutated` file-change cause because it occurs in the
+noncanonical probe workspace.
+An accepted canary or lifecycle-turn filesystem change is instead
+`stage-workspace-mutated` under the stage-result precedence contract below.
+An unknown protocol variant remains `protocol-shape-incompatible`; a
+schema-known prohibited event remains `unexpected-prohibited-event`; neither
+is collapsed into a file-change cause.
+Incomplete probe termination or reap is
+`live-probe-cleanup-incomplete`.
+The parent retains every independently detected accepted-turn diagnostic under
+the later multi-diagnostic contract; this preflight precedence selects the
+single bounded `check-environment` failure response only.
 
 Every failure result is `environment-unavailable`.
 Pre-thread failures stop before `thread/start`; pre-turn failures stop before
@@ -2158,12 +2391,22 @@ No other v1 evidence is supported by the first-version registry.
 An unknown, additional, path-moved, identity-mismatched, ambiguous, or
 caller-supplied v1 record is `unsupported-historical-evidence` and fails closed
 whenever a caller attempts to select or validate it.
+No durable v2 evidence was published before v3 became current.
+Every record labeled with a v2 attestation, implementation-manifest,
+preflight-response, or related schema is therefore
+`unsupported-historical-evidence`; no v2 compatibility-registry row exists
+and no structural v2 parser is authoritative.
 Registered v1 history is stale and ineligible for current preflight,
 generation, implementation-manifest dependency, immutable-run selection,
 current pointer publication, current validation, capability reporting, or
 activation.
-It is never copied, field-injected, or silently upgraded to v2.
-Current generation must produce a fresh v2 attestation and manifest.
+Both registered v1 history and unsupported v2 evidence are ineligible for
+those current roles.
+Neither is copied, field-injected, structurally projected, or silently
+upgraded to v3.
+Current generation MUST produce a fresh
+`boundary-runtime-attestation-v3` and
+`boundary-behavior-implementation-v3` manifest.
 
 Durable preflight publication writes a sibling mode-restricted temporary file
 in the target evidence directory, flushes and fsyncs that file, installs it
@@ -4309,6 +4552,22 @@ Partial `v1` evidence MUST NOT be reinterpreted as `legacy` proof.
   integrity inspection is bounded by the parent-selected policy, persists no
   unexpected raw path, and distinguishes confirmed mutation from inspection
   failure before materialization.
+- `RLW-AC-B11`: A reviewer can prove that every current runtime attestation
+  and implementation manifest is v3; registered v1 evidence remains opaque
+  history; unregistered v1 and all v2 evidence are unsupported history; and
+  no historical record is copied, field-injected, or silently upgraded.
+- `RLW-AC-B12`: A reviewer can recompute the first runtime projection identity
+  from its complete immutable row and prove that duplicate IDs, duplicate
+  selection keys, duplicate identities, unknown fields, missing features,
+  and content/identity disagreement fail before `thread/start`.
+- `RLW-AC-B13`: A reviewer can prove non-exposure from a complete
+  invocation-owned effective-tool projection and fresh invocation-owned
+  handler-conformance result, including every negative case, without treating
+  event absence or repository tests as sufficient evidence.
+- `RLW-AC-B14`: Every file-change-control mismatch cause maps to exactly one
+  phase; the bounded preflight response follows the closed diagnostic
+  precedence; and unknown, missing, duplicate, or cross-phase causes fail
+  closed.
 
 ## Open questions
 
