@@ -148,11 +148,11 @@ This report is computed from repository-visible evidence.
         },
         {
           "operation_id": "behavior-implementation-manifest",
-          "result_identity": "sha256:78dfd15fc4e38dd765c1646cce6406948fcdef1a278e425e870a293082ef85da"
+          "result_identity": "sha256:78bbcc47b4a26b55c33c553675d7a09e16370abb5f16c6a186858f878e90429a"
         },
         {
           "operation_id": "simple-change-behavior",
-          "result_identity": "sha256:02ca073bb86b07ff3685096063f68673e2af0ba78afe0d510aaaf256c9472b7c"
+          "result_identity": "sha256:7617b819c29dc6852745d6a6b8a1c5df8a64c4bfe8c6821e6455c2a174ee4407"
         },
         {
           "operation_id": "canonical-skill-resource-manifest",
@@ -175,7 +175,7 @@ This report is computed from repository-visible evidence.
         "new_universal_artifact_count": 0,
         "simple_fixture_structure_correction_cycles": 0
       },
-      "operation_identity": "sha256:ca1521116b747dabda63b9ce64cc6e6afc789b3fbfde8cd9ae37ab7d400b6f93",
+      "operation_identity": "sha256:6d426e65f53405a448575b4740ea6837a3fefccc730ad293afa5faf7427690d9",
       "result": "pass"
     },
     "boundary-incident-replay": {
@@ -1041,13 +1041,13 @@ This report is computed from repository-visible evidence.
     "dependency_results": [
       {
         "operation_id": "behavior-implementation-manifest",
-        "result_identity": "sha256:78dfd15fc4e38dd765c1646cce6406948fcdef1a278e425e870a293082ef85da"
+        "result_identity": "sha256:78bbcc47b4a26b55c33c553675d7a09e16370abb5f16c6a186858f878e90429a"
       }
     ],
     "diagnostic_id": "none",
     "evidence_refs": [
       {
-        "identity": "sha256:702436f1e10eea375dae2051553354a99574a89bedd7790bd5a739494f3f8d96",
+        "identity": "sha256:431fd8011869f3619b1729d9eec9211b0d2b4684b4252afd611bbf3ac6499780",
         "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/behavior-implementation-manifest.json"
       },
       {
@@ -1103,44 +1103,44 @@ This report is computed from repository-visible evidence.
         "path": "tests/fixtures/boundary-proof/simple-change/scenario.json"
       },
       {
-        "identity": "sha256:24fe26c415bba1062affbfd457c1e782e27bae9fd19212c8ef08a6ce56a095fd",
+        "identity": "sha256:0e83884b7eaf54af56bed53f20252855b532af8f8e5bf83a84f9524c2f666d53",
         "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/current.json"
       },
       {
-        "identity": "sha256:d53f0c9e928616e158f15b030979a50e0e30bd16b3d440396d924453a4d9e9af",
-        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-fc271d49222db8c6d57049131561b0a5/artifacts/feature-spec/portable-text-normalizer.md"
+        "identity": "sha256:4281dc93ccdbbbfe345752090ac164f5f93aaa963a675cc51fc0f41c95e40366",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-62735d2bff6ab29bfe208183cf33fc03/artifacts/feature-spec/portable-text-normalizer.md"
       },
       {
-        "identity": "sha256:b142d116050e336d9445bd8e4e76608318d78be6fcf4414105e44835652ac44b",
-        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-fc271d49222db8c6d57049131561b0a5/artifacts/review-evidence/spec-review-bundle.json"
+        "identity": "sha256:762c2a669f0dcc7c932fdad20f8d273a2c368cffc7a6e55b7a3117d34cde5561",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-62735d2bff6ab29bfe208183cf33fc03/artifacts/review-evidence/spec-review-bundle.json"
       },
       {
-        "identity": "sha256:8ec5c353ba8d9b5b0ad9e2ce959413060ebf700f2c3e2bf6ec24cadd1153315f",
-        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-fc271d49222db8c6d57049131561b0a5/artifacts/review-evidence/spec-review-log.md"
+        "identity": "sha256:9624cc815dce1f89bbff0dd0d382319f5bf85148d0ba73b97647c02760256ee8",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-62735d2bff6ab29bfe208183cf33fc03/artifacts/review-evidence/spec-review-log.md"
       },
       {
-        "identity": "sha256:f751a6e1f68ddfeab7da4a6ba43bf825fbd9e06a5acc53f33625a998376c2d3a",
-        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-fc271d49222db8c6d57049131561b0a5/artifacts/review-evidence/spec-review-record.md"
+        "identity": "sha256:d4ad6a99cc2081da66d09ca21f6bf04bd0dc765a567038182e2a1241c8640c56",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-62735d2bff6ab29bfe208183cf33fc03/artifacts/review-evidence/spec-review-record.md"
       },
       {
-        "identity": "sha256:b3924dd254b3a8343c68ecc71244cd32d2036c17be333830fa72cca6cdfdae43",
-        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-fc271d49222db8c6d57049131561b0a5/artifacts/review-evidence/test-spec-review-bundle.json"
+        "identity": "sha256:3bfbf8afafebde3cde474e29d41a2d64da12ee81d1f2074258e69a8899c87c9f",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-62735d2bff6ab29bfe208183cf33fc03/artifacts/review-evidence/test-spec-review-bundle.json"
       },
       {
-        "identity": "sha256:83fffcebba7aeb665f02dc0ca0a5dde1bb8b39de6930ae2d650f4e9e8a638059",
-        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-fc271d49222db8c6d57049131561b0a5/artifacts/review-evidence/test-spec-review-log.md"
+        "identity": "sha256:8f2641b876249fbf1e09e82f7736524f5e929b9418a159058cc608463a024848",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-62735d2bff6ab29bfe208183cf33fc03/artifacts/review-evidence/test-spec-review-log.md"
       },
       {
-        "identity": "sha256:4a5fe235376bcdee58d43d2c3b9a2d7356106b62740a6667402cc45dc14f9d80",
-        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-fc271d49222db8c6d57049131561b0a5/artifacts/review-evidence/test-spec-review-record.md"
+        "identity": "sha256:7e88165b329555284b4821438db073e22d0385a482ba7a82a0c5a5ad0031e45f",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-62735d2bff6ab29bfe208183cf33fc03/artifacts/review-evidence/test-spec-review-record.md"
       },
       {
-        "identity": "sha256:e17ae0ccc7057c58cafba8fa6694ce0769ba38e0d3ae1a5bd76493ef77f8a5f0",
-        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-fc271d49222db8c6d57049131561b0a5/artifacts/test-spec/portable-text-normalizer.test.md"
+        "identity": "sha256:fe32c6712f9c2c5f88b52eb27bd8b7ef3f78ae942e109e1ca87f138519a41fb6",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-62735d2bff6ab29bfe208183cf33fc03/artifacts/test-spec/portable-text-normalizer.test.md"
       },
       {
-        "identity": "sha256:36ada67af1a568f23bfe163a011601c084e566294d8e4480270658222a81e1a5",
-        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-fc271d49222db8c6d57049131561b0a5/manifest.json"
+        "identity": "sha256:776e425e261b321a59b529936c81a4ed239ce7c26e723e972b621ae68af3e7b4",
+        "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-62735d2bff6ab29bfe208183cf33fc03/manifest.json"
       }
     ],
     "observations": {
@@ -1150,7 +1150,7 @@ This report is computed from repository-visible evidence.
       "new_universal_artifact_count": 0,
       "simple_fixture_structure_correction_cycles": 0
     },
-    "operation_identity": "sha256:02ca073bb86b07ff3685096063f68673e2af0ba78afe0d510aaaf256c9472b7c",
+    "operation_identity": "sha256:7617b819c29dc6852745d6a6b8a1c5df8a64c4bfe8c6821e6455c2a174ee4407",
     "result": "pass"
   },
   "simple_fixture_structure_correction_cycles": 0,
@@ -1177,7 +1177,7 @@ This report is computed from repository-visible evidence.
           "path": "scripts/boundary_proof_behavior.py"
         },
         {
-          "identity": "sha256:dadaf509f83d97331dc20b7e31be4fb6fa538b3ca1bb56264acf9c8a96009383",
+          "identity": "sha256:ef2a23e4ecfe81de9958c960fd3de28a41fefd2b9767ccadb23b9ac7495bb67b",
           "path": "scripts/boundary_proof_model.py"
         },
         {
@@ -1237,12 +1237,12 @@ This report is computed from repository-visible evidence.
           "path": "specs/skill-contract.test.md"
         },
         {
-          "identity": "sha256:702436f1e10eea375dae2051553354a99574a89bedd7790bd5a739494f3f8d96",
+          "identity": "sha256:431fd8011869f3619b1729d9eec9211b0d2b4684b4252afd611bbf3ac6499780",
           "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/behavior-implementation-manifest.json"
         }
       ],
       "observations": {},
-      "operation_identity": "sha256:78dfd15fc4e38dd765c1646cce6406948fcdef1a278e425e870a293082ef85da",
+      "operation_identity": "sha256:78bbcc47b4a26b55c33c553675d7a09e16370abb5f16c6a186858f878e90429a",
       "result": "pass"
     },
     "canonical-skill-resource-manifest": {

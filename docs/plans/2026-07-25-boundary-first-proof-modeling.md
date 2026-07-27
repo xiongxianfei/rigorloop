@@ -1060,6 +1060,13 @@ resource through generated, packed, and installed outputs.
   and retains order checks only for normative sequences such as operation
   dependencies. Because the typed model identity changed, a fresh behavior run
   is required before the canonical report can be regenerated.
+- 2026-07-27: Replacement run
+  `run-62735d2bff6ab29bfe208183cf33fc03` validates against the committed mapping
+  correction with zero corrections, false blocks, or new universal artifacts.
+  The reconstructed typed capability report passes with identity
+  `sha256:4cfacf61164795d4e227e97f93211e70b8f1554162ee5381b8ef36bc24f33b1c`.
+  Selector (134), adapter (132), release-transaction (87), boundary (115), and
+  skill-validator (261) suites pass; M4 is ready for correction rereview.
 
 - 2026-07-27: Spec-review R57 approved the identity-bound correction
   eligibility, correction-stop receipt, recovery, and unequal-input fresh-run
