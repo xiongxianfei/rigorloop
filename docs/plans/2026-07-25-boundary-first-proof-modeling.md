@@ -94,13 +94,13 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M3. Downstream skill projection and preservation
-- Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m3-r1.md
-- Review status: changes-requested; stage=code-review; round=r1
+- Current milestone state: review-requested
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m3.md
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BFP-CR-M3-1
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -726,7 +726,7 @@ resource through generated, packed, and installed outputs.
 
 ### M3. Downstream skill projection and preservation
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Carry the boundary contract through implementation, review, verification, and workflow routing, then compute downstream preservation from the frozen pre-M2 baseline without rerunning upstream skills.
 - Requirements: R28f-R28j, R28y; R56f-R56i, R56l
 - Files/components likely touched:
@@ -1002,6 +1002,11 @@ resource through generated, packed, and installed outputs.
   correctly proves origin, current identity, completeness, and zero
   reinvocation but labels those structural records as semantic preservation
   pass. M3 is resolution-needed; M4 remains blocked.
+- 2026-07-27: M3 correction changes every generated pair and command verdict
+  to `structural-pass`, adds a closed four-skill responsibility projection
+  with missing-phrase contrasts, and publishes current run
+  `run-21e1ee9615edbaa0feb47ea0905d2c1b`. All 111 boundary tests and 261 skill
+  tests pass. M3 is review-requested for semantic rereview R2.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review

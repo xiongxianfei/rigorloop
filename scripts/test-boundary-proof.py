@@ -5901,6 +5901,7 @@ name = "one"
             )
 
             self.assertEqual(generated, validated)
+            self.assertEqual(generated["result"], "structural-pass")
             self.assertEqual(generated["pair_count"], 40)
             self.assertEqual(generated["upstream_invocation_count"], 0)
             manifest = generated["manifest"]
@@ -5928,6 +5929,17 @@ name = "one"
                 all(
                     "/evidence/preservation/" in row["snapshot_ref"]["path"]
                     for row in manifest["before_refs"]
+                )
+            )
+            self.assertTrue(
+                all(
+                    json.loads(
+                        (
+                            root / row["artifact_ref"]["path"]
+                        ).read_text(encoding="utf-8")
+                    )["result"]
+                    == "structural-pass"
+                    for row in manifest["after_refs"]
                 )
             )
 
