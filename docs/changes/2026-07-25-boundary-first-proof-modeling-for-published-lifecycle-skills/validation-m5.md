@@ -4,7 +4,7 @@ Date: 2026-07-27
 
 Milestone: M5
 
-Result: implementation validation passed; PR-range proof pending committed HEAD
+Result: pass
 
 ## Root cause
 
@@ -52,6 +52,7 @@ and six root-level unregistered evidence files.
 | Focused nested-root, representative-family, unknown-sibling, cross-change, inventory, and preservation selector tests | pass; 8 tests |
 | `python scripts/test-select-validation.py` | pass; 142 tests |
 | `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-07-25-boundary-first-proof-modeling.md` | pass; pre-existing workflow-spec merge-language warnings only |
+| `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` | pass at `c015ff96`; status `ok`, no blocking results, no registration debt, broad smoke not required |
 
 The first scoped CI composition run passed the selector regression and guide
 checks, then stopped at lifecycle validation because the new handoff initially
@@ -74,7 +75,5 @@ for those unaffected dependencies remains applicable:
 - selected boundary CI: 14 checks.
 
 Those suites are not rerun for this selector-and-lifecycle correction. The
-remaining M5 proof is limited to change metadata, current capability-report
-generation/validation, patch integrity, and the actual PR-range selector over
-the committed corrective head.
-
+remaining post-review M5 proof is limited to current capability-report
+generation/validation and patch integrity.
