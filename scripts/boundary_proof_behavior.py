@@ -10274,6 +10274,47 @@ def validate_preservation(
     }
 
 
+def generate_canonical_skill_resource_manifest(
+    change_id: str, *, repo_root: Path = ROOT
+) -> dict[str, object]:
+    """Write the exact current eight-skill resource manifest."""
+
+    change_root = _select_change_root(repo_root, change_id)
+    files: list[dict[str, str]] = []
+    for skill, skill_raw, resource_raw in _preservation_inputs(repo_root):
+        files.extend(
+            (
+                {
+                    "skill": skill,
+                    "logical_path": "SKILL.md",
+                    "path": f"skills/{skill}/SKILL.md",
+                    "identity": _sha256(skill_raw),
+                },
+                {
+                    "skill": skill,
+                    "logical_path": BOUNDARY_PROOF_REFERENCE,
+                    "path": (
+                        f"skills/{skill}/{BOUNDARY_PROOF_REFERENCE}"
+                    ),
+                    "identity": _sha256(resource_raw),
+                },
+            )
+        )
+    files.sort(key=lambda row: row["path"])
+    manifest = {
+        "manifest_id": "canonical-boundary-skill-resources-v1",
+        "skills": list(EVALUATED_SKILLS),
+        "files": files,
+    }
+    target = (
+        change_root
+        / "evidence"
+        / "canonical-skill-resource-manifest.json"
+    )
+    _atomic_write(target, _canonical_json_bytes(manifest))
+    return manifest
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -10313,6 +10354,11 @@ def _parser() -> argparse.ArgumentParser:
         help="validate preservation evidence without upstream reinvocation",
     )
     validate_preservation_parser.add_argument("--change-id", required=True)
+    resource_manifest_parser = subparsers.add_parser(
+        "generate-resource-manifest",
+        help="write the exact current eight-skill resource manifest",
+    )
+    resource_manifest_parser.add_argument("--change-id", required=True)
     recover = subparsers.add_parser(
         "recover-discard",
         help=(
@@ -10371,6 +10417,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             result = generate_preservation(args.change_id)
         elif args.command == "validate-preservation":
             result = validate_preservation(args.change_id)
+        elif args.command == "generate-resource-manifest":
+            result = generate_canonical_skill_resource_manifest(
+                args.change_id
+            )
         elif args.command == "recover-discard":
             result = discard_interrupted_publication(
                 args.change_id,

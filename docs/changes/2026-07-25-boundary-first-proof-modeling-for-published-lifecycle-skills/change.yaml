@@ -225,6 +225,22 @@ changed_files:
   - skills/workflow/SKILL.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m3-r1.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m3-r2.md
+  - scripts/adapter_distribution.py
+  - scripts/boundary_proof_behavior.py
+  - scripts/boundary_proof_model.py
+  - scripts/test-adapter-distribution.py
+  - scripts/test-boundary-proof.py
+  - scripts/test-select-validation.py
+  - scripts/validate-boundary-proof.py
+  - scripts/validation_selection.py
+  - tests/fixtures/boundary-proof/release/valid-activation/release-notes.md
+  - tests/fixtures/boundary-proof/release/invalid-partial-activation/release-notes.md
+  - tests/fixtures/boundary-proof/release/valid-rollback/release-notes.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/canonical-skill-resource-manifest.json
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/adapter-parity/canonical.json
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/adapter-parity/generated.json
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/adapter-parity/packed.json
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/adapter-parity/installed.json
 review:
   status: approved
   unresolved_items: 0

@@ -31,6 +31,40 @@ class CheckCatalogEntry:
 
 
 CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
+    "boundary-workflow-contract": CheckCatalogEntry(
+        "boundary-workflow-contract",
+        "python scripts/test-boundary-proof.py",
+        "boundary-proof",
+        parallel_safe=True,
+    ),
+    "boundary-skill-contract": CheckCatalogEntry(
+        "boundary-skill-contract",
+        "python scripts/validate-skills.py",
+        "boundary-proof",
+    ),
+    "boundary-traceability": CheckCatalogEntry(
+        "boundary-traceability",
+        "python scripts/test-boundary-proof.py",
+        "boundary-proof",
+        parallel_safe=True,
+    ),
+    "boundary-incident-replay": CheckCatalogEntry(
+        "boundary-incident-replay",
+        "python scripts/test-boundary-proof.py",
+        "boundary-proof",
+        parallel_safe=True,
+    ),
+    "boundary-adapter-parity": CheckCatalogEntry(
+        "boundary-adapter-parity",
+        "python scripts/test-adapter-distribution.py",
+        "boundary-proof",
+        parallel_safe=True,
+    ),
+    "boundary-capability-baseline": CheckCatalogEntry(
+        "boundary-capability-baseline",
+        "python scripts/validate-boundary-proof.py validate-report docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md",
+        "boundary-proof",
+    ),
     "skills.validate": CheckCatalogEntry(
         "skills.validate",
         "python scripts/validate-skills.py",
@@ -250,8 +284,78 @@ BOUNDARY_CHECK_IDS = frozenset(
         "release.validate",
         "adapters.drift",
         "adapters.validate",
+        "boundary-workflow-contract",
+        "boundary-skill-contract",
+        "boundary-traceability",
+        "boundary-incident-replay",
+        "boundary-adapter-parity",
+        "boundary-capability-baseline",
     }
 )
+
+BOUNDARY_PROOF_CORE_PATHS = frozenset(
+    {
+        "scripts/boundary_proof_behavior.py",
+        "scripts/boundary_proof_model.py",
+        "scripts/validate-boundary-proof.py",
+        "scripts/test-boundary-proof.py",
+        "specs/rigorloop-workflow.md",
+        "specs/rigorloop-workflow.test.md",
+        "specs/skill-contract.md",
+        "specs/skill-contract.test.md",
+        "templates/shared/boundary-proof-model.md",
+        "tests/fixtures/boundary-proof/incident-registry.json",
+    }
+)
+BOUNDARY_PROOF_SKILLS = frozenset(
+    {
+        "spec",
+        "spec-review",
+        "test-spec",
+        "test-spec-review",
+        "implement",
+        "code-review",
+        "verify",
+        "workflow",
+    }
+)
+
+
+def boundary_proof_checks_for_path(path: str) -> tuple[str, ...]:
+    """Return the exact boundary capability checks selected by one path."""
+
+    skill_match = re.fullmatch(
+        r"skills/([^/]+)/(?:SKILL\.md|references/boundary-proof-model\.md)",
+        path,
+    )
+    if skill_match and skill_match.group(1) in BOUNDARY_PROOF_SKILLS:
+        return (
+            "boundary-skill-contract",
+            "boundary-traceability",
+            "boundary-adapter-parity",
+            "boundary-capability-baseline",
+        )
+    if path in BOUNDARY_PROOF_CORE_PATHS or path.startswith(
+        "tests/fixtures/boundary-proof/incidents/"
+    ):
+        return (
+            "boundary-workflow-contract",
+            "boundary-skill-contract",
+            "boundary-traceability",
+            "boundary-incident-replay",
+            "boundary-adapter-parity",
+            "boundary-capability-baseline",
+        )
+    if path.startswith("scripts/adapter_") or path in {
+        "scripts/build-adapters.py",
+        "scripts/validate-adapters.py",
+        "dist/adapters/manifest.yaml",
+    }:
+        return (
+            "boundary-adapter-parity",
+            "boundary-capability-baseline",
+        )
+    return ()
 AUTHORITATIVE_ARTIFACT_PREFIXES = (
     "docs/proposals/",
     "docs/plans/",
@@ -1208,6 +1312,12 @@ def _apply_path_selection(
     repo_root: Path,
     changed_sections_by_path: dict[str, tuple[str, ...]],
 ) -> None:
+    for boundary_check_id in boundary_proof_checks_for_path(path):
+        _add_check(
+            selected,
+            boundary_check_id,
+            "Changed boundary-proof capability input requires exact boundary validation.",
+        )
     if _is_tier_b_documentation_prose_path(path):
         _add_check(
             selected,
