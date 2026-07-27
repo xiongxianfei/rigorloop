@@ -91,12 +91,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r20.md
-- Review status: changes-requested; stage=architecture-review; round=r20
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r21.md
+- Review status: changes-requested; stage=architecture-review; round=r21
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture-review
+- Next stage: architecture
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-AR19-1,BFP-AR19-2,BFP-AR20-1,BFP-AR20-2,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=8; open-findings=BFP-AR19-1,BFP-AR19-2,BFP-AR20-1,BFP-AR20-2,BFP-AR21-1,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
 ## Milestones
 
@@ -756,6 +756,10 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Architecture-review R21 found one final attestation-flow defect:
+  canary policy bypassed pure validation and successful evidence edges carried
+  failure diagnostics. The R22 correction separates those paths.
 
 - 2026-07-27: The R21 architecture candidate synchronizes the assessment's
   common conformance gate and routes runtime observations, policy identity, and

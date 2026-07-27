@@ -1218,3 +1218,14 @@ Detailed record: reviews/architecture-review-r20.md
 Resolution: review-resolution.md#architecture-review-r20
 Material findings: BFP-AR20-1, BFP-AR20-2
 Open findings: BFP-AR20-1, BFP-AR20-2
+
+### Review entry
+Review ID: architecture-review-r21
+Stage: architecture-review
+Round: 21
+Reviewed artifact: canonical architecture, component diagram, assessment, and capability-projected ADR chain at a46757fc
+Status: changes-requested
+Detailed record: reviews/architecture-review-r21.md
+Resolution: review-resolution.md#architecture-review-r21
+Material findings: BFP-AR21-1
+Open findings: BFP-AR21-1

@@ -3128,3 +3128,24 @@ Rationale: The diagram must not imply that unvalidated runtime evidence can
 authorize v3 attestation fields.
 Validation target: architecture-review-r21
 Validation evidence: pending
+
+### architecture-review-r21
+
+#### BFP-AR21-1 — The v3 attestation path bypasses canary-policy validation and depicts forbidden diagnostic content
+
+Finding ID: BFP-AR21-1
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: approved R48 v3 attestation schema
+Decision needed: none
+Required outcome: Validate every successful-attestation input through the pure
+model and keep failure diagnostics outside successful evidence.
+Chosen action: Route canary policy through pure validation into both
+attestations, remove the direct edge, and add a separate failure-evidence path
+for diagnostic decisions.
+Rationale: A diagram must not authorize bypass or fields forbidden by the
+closed successful schema.
+Validation target: architecture-review-r22
+Validation evidence: pending
