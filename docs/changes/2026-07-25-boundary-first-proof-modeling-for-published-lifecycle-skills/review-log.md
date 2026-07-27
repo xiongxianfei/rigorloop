@@ -1163,3 +1163,14 @@ Detailed record: reviews/test-spec-review-r17.md
 Resolution: review-resolution.md#test-spec-review-r17
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: spec-review-r46
+Stage: spec-review
+Round: 46
+Reviewed artifact: specs/rigorloop-workflow.md at 7d90c904
+Status: changes-requested
+Detailed record: reviews/spec-review-r46.md
+Resolution: review-resolution.md#spec-review-r46
+Material findings: BFP-SR46-1, BFP-SR46-2, BFP-SR46-3, BFP-SR46-4
+Open findings: BFP-SR46-1, BFP-SR46-2, BFP-SR46-3, BFP-SR46-4

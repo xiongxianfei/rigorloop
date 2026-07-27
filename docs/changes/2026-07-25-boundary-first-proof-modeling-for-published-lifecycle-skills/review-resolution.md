@@ -2944,3 +2944,78 @@ staged validation gates and their negative and interruption proof.
 
 No new material findings. R17 independently confirmed BFP-TSR15-1 and
 BFP-TSR16-1 resolved and approved the M2 proof map for implementation.
+
+### spec-review-r46
+
+#### BFP-SR46-1 — The v3 migration remains internally contradictory and leaves v2 without a disposition
+
+Finding ID: BFP-SR46-1
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: runtime-evidence migration contract
+Decision needed: none
+Required outcome: Make current authority uniformly v3 and give v2 a closed
+historical disposition.
+Chosen action: Remove stale v2 authority text, preserve the exact v1 opaque
+row, classify unregistered v2 as unsupported history, and forbid both from
+current v3 roles or silent upgrade.
+Rationale: A schema transition is safe only when every earlier version has one
+deterministic treatment.
+Validation target: spec-review-r47
+Validation evidence: pending
+
+#### BFP-SR46-2 — The runtime projection is not completely content-bound
+
+Finding ID: BFP-SR46-2
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: runtime projection registry
+Decision needed: none
+Required outcome: Define and identity-bind the complete immutable first
+projection row.
+Chosen action: Add exact registry fields and feature sets, canonical projection
+identity, v3 evidence binding, uniqueness rules, and drift acceptance proof.
+Rationale: A stable name without content identity cannot prove immutable
+compatibility semantics.
+Validation target: spec-review-r47
+Validation evidence: pending
+
+#### BFP-SR46-3 — Non-exposure proof depends on undefined evidence
+
+Finding ID: BFP-SR46-3
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: non-exposure security proof
+Decision needed: none
+Required outcome: Make the effective tool inventory and decline-handler
+conformance proof closed, invocation-owned, and identity-bound.
+Chosen action: Define exact policy and result schemas, bind their identities
+into v3 attestation, and require independent preflight and generation
+execution.
+Rationale: Repository unit tests and event absence cannot substitute for
+invocation-owned enforcement evidence.
+Validation target: spec-review-r47
+Validation evidence: pending
+
+#### BFP-SR46-4 — File-change diagnostic phase is ambiguous
+
+Finding ID: BFP-SR46-4
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: file-change failure routing
+Decision needed: none
+Required outcome: Give every mismatch cause one phase and deterministic
+precedence.
+Chosen action: Add a closed cause-to-phase and precedence matrix with unknown
+and cross-phase rejection.
+Rationale: Durable failure receipts cannot vary by implementation.
+Validation target: spec-review-r47
+Validation evidence: pending
