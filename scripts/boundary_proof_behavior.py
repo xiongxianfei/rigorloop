@@ -2421,6 +2421,12 @@ def _review_payload_from_markdown(
     review_id = metadata(record, "Review ID")
     outcome = metadata(record, "Status")
     if not isinstance(review_id, str) or not isinstance(outcome, str):
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            print(
+                f"review-metadata:{stage}:id={review_id!r}:outcome={outcome!r}",
+                file=sys.stderr,
+            )
+            print(record, file=sys.stderr)
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
     return {
         "review_id": review_id,
