@@ -10,7 +10,7 @@ Boundary model scope: R28-R28z
 ## Related spec and plan
 
 - Spec: [RigorLoop Workflow](rigorloop-workflow.md), approved by focused
-  `spec-review-r55` for the extension-oracle correction layered on the
+  `spec-review-r57` for the correction-authority contract layered on the
   three-category exact-runtime capability projection discovered during M2
   preflight.
 - Proposal: [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md), accepted.
@@ -35,8 +35,8 @@ Boundary model scope: R28-R28z
 - Historical workflow-refactor architecture: not required for that completed
   slice.
 - Boundary-first architecture: [Canonical System Architecture](../docs/architecture/system/architecture.md),
-  approved by focused `architecture-review-r27` for the extension-oracle
-  ownership correction, with
+  approved by focused `architecture-review-r29` for correction authority and
+  request-only child scenario projection, with
   [ADR-20260725](../docs/adr/ADR-20260725-boundary-first-proof-modeling.md)
   accepted for the amendment and
   [ADR-20260726](../docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md)
@@ -48,7 +48,7 @@ Boundary model scope: R28-R28z
   the accepted [three-category successor ADR](../docs/adr/ADR-20260727-three-category-runtime-feature-projection.md)
   owning the 3/4/89 partition correction.
 - Boundary-first plan: [Boundary-First Proof Modeling](../docs/plans/2026-07-25-boundary-first-proof-modeling.md),
-  approved by focused `plan-review-r21`.
+  approved by focused `plan-review-r22`.
 - Spec-review: approved with no material findings after the PR-self-contained lifecycle completion amendment was added; minor SR-1 asked the test spec to decide how merge-dependent language classification is recorded.
 - Plan-review: approved with no material findings for the PR-self-contained lifecycle completion plan. Minor non-blocking note: if README remains unchanged, final affected-surface evidence should mark it unaffected with rationale.
 
@@ -56,20 +56,20 @@ Boundary model scope: R28-R28z
 
 | Input | Path | Status / Review state | Identity |
 | --- | --- | --- | --- |
-| Feature spec | `specs/rigorloop-workflow.md` | approved by focused spec-review R55 | `sha256:7d32316ec3434641ef1fc6512a03deef765a4e264a507300ddf1ab3b4215ee1d` |
+| Feature spec | `specs/rigorloop-workflow.md` | approved by focused spec-review R57 | `sha256:7b035049f01e8e197809e79dbfb7f8481a2c61f63fc3bf992116544a4250c819` |
 | Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r55.md` | approved | `sha256:3828bbf59481d5f56693ce5dcd7bb934dd26dcb54861d6be67644394967fef36` |
-| Architecture | `docs/architecture/system/architecture.md` | approved by focused architecture-review R27 | `sha256:ee9cda306ac94b7f23be63f59353ae453c7792e8f7a5bda9af8ca603f007ac1d` |
-| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r27.md` | approved | `sha256:ba021631e6930bddacac0bd5726154eb5b4a2730e3d50da00ca4374d2dc40862` |
+| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r57.md` | approved | `sha256:c22de7c9488bb538cbb73142cd66c7dc0a2500e16741ee8d60f735837c9edb53` |
+| Architecture | `docs/architecture/system/architecture.md` | approved by focused architecture-review R29 | `sha256:44ee05cb892079a99fd68c6409e5974efe8ba993b0d69aa0b0823f5cc6c13fbf` |
+| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r29.md` | approved | `sha256:8003bc8c5ae3b294eb4e2d144f8885a0c083b4068b6dc87ede3898b4ff18d940` |
 | Boundary ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted with scoped transport supersession | `sha256:0bd0cc5b7964b45f61b020b31c6781d360d072e15120feaf2a7f106cae05df15` |
 | Transport ADR | `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md` | accepted with scoped capability-projection supersession | `sha256:e357094a48c9a3410cc661d2f5e28c50afd8aa4dcdd375ec074a355103ea8263` |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted with scoped writable-child supersession | `sha256:b80c4a494ae1e08abea77d74fb270a959ebbde5cf5e01e1f8606791f0e0b5434` |
 | Capability-projection ADR | `docs/adr/ADR-20260727-capability-projected-file-change-control.md` | accepted base decision; binary clauses superseded narrowly | `sha256:b9d75ea29d528ef0e1f835ab796d6aa6936d362520ce1a424f5f0bb1112568ef` |
 | Three-category projection ADR | `docs/adr/ADR-20260727-three-category-runtime-feature-projection.md` | accepted by architecture-review R25 | `sha256:b2d8997a97114f2b055efc2bec627b39c26d4fea95e5b86ae4bacae3a9c724eb` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; approved for proof-map synchronization | `sha256:a69734aa09a23de3baef6ce1f5f08f5a231417e0d8452f970187aa426943ba97` |
-| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r21.md` | approved | `sha256:3a4167f23f829247775b5743f5b7c4bdd1c1a4deb47b415779a5c81ea93573ed` |
-| M2 code review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r4.md` | changes requested; `BFP-CR-M2-10` open | `sha256:83c8b9fa5842194d3e30b650badd1fe0a7de9989b340616b48fb79e440e13b37` |
-| Focused test-spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r24.md` | changes requested; `BFP-TSR24-1` correction applied pending rereview | `sha256:518644fd855c28be4abce6d80fd1fe3b07aec32bdb65d92dca756a99c79e27f3` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; approved for proof-map synchronization | `sha256:e7f88959d121c299bc33bb46f7784685f40c3efac7f0f6e6a1ee058d354b57cd` |
+| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r22.md` | approved | `sha256:2ad87ce80393e3ee13d8ea59ac44e73addf4d833b917d306c7f334434f54a713` |
+| M2 code review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r9.md` | changes requested; `BFP-CR-M2-14` and `BFP-CR-M2-15` open | `sha256:a0ef656bf41678b291695944101b857d747235d00ccd4259d7117ea80fbf3568` |
+| Focused test-spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r25.md` | approved publisher proof; correction-authority amendment pending R26 | `sha256:f82204a9825451f6acd772cddf9392f10435e73e84a3d85c1014bbe040cc1572` |
 
 ## Testing strategy
 
@@ -78,9 +78,10 @@ Boundary model scope: R28-R28z
 - Use focused skill-validator assertions only for stable, machine-checkable skill guidance such as required labels, forbidden stale labels, handoff boundaries, and generated-output drift.
 - Use selector-selected targeted proof as the first validation layer for changed paths; use broad smoke only when an authoritative trigger elevates it.
 - Treat `specs/rigorloop-workflow.test.md` as a pending focused proof-map
-  amendment. M2 remains blocked until test-spec-review R25 confirms that T51
-  decomposes every `BFP-CR-M2-10` publisher property into direct executable
-  proof and approves the current input identities.
+  amendment. Test-spec-review R25 already approved the T51 publisher
+  transaction. M2 remains blocked until R26 approves T52's direct
+  correction-authority, terminal recovery, request-only projection, and
+  expectation-comparison proof against the current input identities.
 - Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
 - Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
 - Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
@@ -1761,6 +1762,24 @@ Boundary model scope: R28-R28z
   `expected_terminal_decision`, `expected_diagnostic_id`,
   `expected_diagnostic_ids`, and `canonical_evidence_eligible`;
   `canonical_evidence_eligible` is `false`.
+- Direct property obligations:
+  - `T52-AUTHORITY-PROJECTION`: Parse every exact recognized finding field
+    from bound review-record bytes, stable-ID sort the complete projection,
+    recompute its canonical identity, and derive one closed correction
+    eligibility without treating review outcome as authority.
+  - `T52-OWNER-STOP`: Prove owner-decision eligibility durably stops before
+    attempt 2, staging, prepared receipt, immutable installation, pointer
+    replacement, or passing result.
+  - `T52-RECOVERY-INPUT`: Prove the stopped working root is discard-only,
+    quarantine preserves its input identity, equal input cannot allocate or
+    invoke, and clarified unequal input may start a fresh run.
+  - `T52-REQUEST-ONLY`: Prove the complete scenario record, path, bytes, and
+    expectations remain parent-only while exactly its request value reaches
+    the intended lifecycle invocations.
+  - `T52-EXPECTATION-COMPARISON`: Derive observed branch and corrected role
+    from the completed trace before reading expectations, then compare every
+    compatible and incompatible branch/role pair without allowing expectations
+    to influence invocation.
 - Steps: Pass the v3 capability-projected read-only preflight; freeze baseline;
   invoke the public
   `workflow` once to route the four-stage upstream path; require each
@@ -1789,8 +1808,12 @@ Boundary model scope: R28-R28z
   Require every forbidden candidate member to be absent from each child-visible
   surface.
   Require only the parent invariant evaluator to open candidate bytes.
-  Confirm the exact authoritative scenario request is present in the `spec`
-  request and both formal review requests.
+  Add the complete scenario file path, raw bytes, `expected_branch`, and
+  `corrected_role` to the forbidden parent-only set. Confirm that no
+  child-readable root, serialized prompt, attachment, artifact context, access
+  observation, or diagnostic exposes them; confirm only the exact
+  authoritative request value is present in the `spec` request and both formal
+  review requests.
   Independently inject a candidate path, reference identity, and content into
   each child-visible surface and require `unmanifested-input` before accepted
   stage output, parent materialization, immutable staging, or pointer change.
@@ -1855,6 +1878,45 @@ Boundary model scope: R28-R28z
   any non-accepting decision, path re-resolution outside the retained root
   descriptor, semantic normalization, missing or additional leaf files,
   reread mismatch, and content-state disagreement.
+  For every `changes-requested` review record, parse one block per material
+  finding and require exactly one heading and each exact recognized label in
+  order. Mutate each label through missing, repeated, empty, out-of-order,
+  extra recognized, heading/label-ID mismatch, duplicate ID, metadata/projection
+  ID disagreement, and unknown label cases. Preserve unrecognized prose as
+  review evidence without letting it alter the projection. Require the
+  stable-ID-sorted normalized rows and canonical JSON identity to round-trip
+  through the review bundle and recompute identically during staged and
+  immutable validation.
+  Exercise approved and blocked reviews with empty projections and
+  `not-applicable`; complete `changes-requested` findings with every
+  needs-decision rationale `none` and `automatic-eligible`; and every nonempty
+  subset of findings with a non-`none` rationale and
+  `owner-decision-required`. Reject missing or unknown eligibility and prove
+  that only the automatic value may schedule attempt 2.
+  For owner-decision eligibility, require the exact
+  `simple-change-correction-stop-v1` fields to bind run, publisher, input,
+  stage, attempt, review, reviewed artifact, material finding set, projection,
+  and diagnostic identities. Inject each missing, extra, stale, malformed,
+  mismatched, misplaced, symlinked, special-file, and non-durable receipt
+  contrast. Require the retained accepted review event, record, log,
+  resolution, bundle, and projection; one `correction-authorization-required`
+  diagnostic at `in-turn`; no transport retry; and no attempt 2, staged root,
+  prepared receipt, immutable run, pointer update, or passing result.
+  Prove automatic discovery cannot adopt or resume the stop and no lifecycle
+  stage is reinvoked. Exercise the exact explicit discard recovery transaction
+  and every crash boundary; require quarantine to preserve the stop receipt
+  and input identity. On a later generation, derive current inputs before run
+  or publisher allocation and stage invocation; reject equal identity with
+  `correction-authorization-required`, then mutate one governing input and
+  prove only the valid unequal identity may create fresh authority.
+  From complete event traces, derive `zero-correction` with null corrected role
+  and each valid `one-correction` role. Capture serialized requests,
+  invocations, produced events, structural and observed results, diagnostics,
+  and output identities before reading expectations. Cross each observed pair
+  with every schema-compatible expected pair; require only exact equality to
+  pass. Mutate only `expected_branch` and `corrected_role` and prove all
+  captured pre-comparison values remain byte-identical while mismatch fails
+  only at the final expectation comparison in generation and validation.
   Run validation repeatedly.
 - Expected result: One fresh immutable run contains current output snapshots,
   terminal branches, review-event evidence unions, and computed simple-change
@@ -1868,6 +1930,13 @@ Boundary model scope: R28-R28z
   Candidate identities remain bound in the parent input set, but no candidate
   path, identity, or byte is child-visible; deliberate exposure stops with
   `unmanifested-input` before materialization or publication.
+  A formal review outcome never supplies correction authority. Only an
+  identity-bound complete all-eligible projection permits attempt 2.
+  Owner-decision findings produce one durable, nonpublishing stop and can
+  proceed only through explicit discard plus clarified unequal input.
+  Scenario expectations remain parent-only and non-influential; the completed
+  observed trace must match them exactly before generation or validation can
+  pass.
   Complete output reconciles
   without reinvocation;
   absent output permits at most one transient retry only after confirmed stop,
@@ -2075,6 +2144,9 @@ Boundary model scope: R28-R28z
   - `tests/fixtures/skills/boundary-proof/` for stage behavior and preservation
   - `tests/fixtures/boundary-proof/behavior/happy-path.json`
   - `tests/fixtures/boundary-proof/simple-change/scenario.json`
+  - temp-root generated review-record, finding-projection, correction-stop,
+    quarantine, equal-input, unequal-input, and expectation-mutation matrices;
+    none is canonical behavior evidence
   - `tests/fixtures/boundary-proof/release/valid-activation/release-notes.md`
   - `tests/fixtures/boundary-proof/release/invalid-partial-activation/release-notes.md`
   - `tests/fixtures/boundary-proof/release/valid-rollback/release-notes.md`
@@ -2236,11 +2308,12 @@ Boundary model scope: R28-R28z
 ## Next artifacts
 
 - Boundary-first amendment: independent test-spec review of this
-  R54/R26/R20-synchronized proof map. Resume M2 only after that review approves
-  the scenario-owned semantic input, stage-owned decomposition, deterministic
-  invariant projection, v3 exact runtime projection, common conformance,
-  capability-branch, integrity, envelope, retry, publication/rollback, and
-  compatibility proof.
+  R57/R29/R22-synchronized proof map. Resume M2 only after that review approves
+  request-only child input, identity-bound correction authority, durable
+  correction stopping, discard-only recovery, post-observation expectations,
+  deterministic invariant projection, v3 exact runtime projection, common
+  conformance, capability-branch, integrity, envelope, retry,
+  publication/rollback, and compatibility proof.
 - `code-review M2` under the current
   [Boundary-First Proof Modeling plan](../docs/plans/2026-07-25-boundary-first-proof-modeling.md)
   after M2 implementation handoff.
@@ -2256,10 +2329,10 @@ Boundary model scope: R28-R28z
 
 Active proof-planning and regression surface for the workflow contract,
 including the boundary-first R28-R28z amendment.
-The focused R28y oracle correction separates scenario-owned behavior,
-stage-owned modeling choices, independent semantic review, and deterministic
-invariant comparison. Spec-review R54, architecture-review R26, and plan-review
-R20 are approved. It remains pending independent test-spec review and is not
+The focused R28y correction separates formal review outcome from executable
+correction authority and keeps scenario expectations outside child influence.
+Spec-review R57, architecture-review R29, and plan-review R22 are approved.
+It remains pending independent test-spec review and is not
 implementation-ready until that gate approves it.
 
 M2 can hand off to
