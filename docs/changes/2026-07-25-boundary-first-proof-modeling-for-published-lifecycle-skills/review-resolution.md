@@ -3335,3 +3335,23 @@ the counters again.
 Rationale: Chat review state cannot outrank stale durable metadata.
 Validation target: spec-review-r51
 Validation evidence: pending
+
+### spec-review-r51
+
+#### BFP-SR51-1 — Current-review references lag durable review state
+
+Finding ID: BFP-SR51-1
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: focused spec/test-spec revision
+Decision owner: formal review recording contract
+Decision needed: none
+Required outcome: Identify the latest recorded changes-requested review
+without leaving a stale named pending round after recording.
+Chosen action: Point to R51 as the latest recorded review and describe the
+required clean focused rereview without predicting a durable artifact that
+does not yet exist.
+Rationale: Review recording must not create a new stale-reference defect.
+Validation target: next focused spec review
+Validation evidence: pending

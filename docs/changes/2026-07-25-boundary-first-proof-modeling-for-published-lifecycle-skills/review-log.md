@@ -1306,3 +1306,14 @@ Detailed record: reviews/spec-review-r50.md
 Resolution: review-resolution.md#spec-review-r50
 Material findings: BFP-SR50-1, BFP-SR50-2
 Open findings: BFP-SR50-1, BFP-SR50-2
+
+### Review entry
+Review ID: spec-review-r51
+Stage: spec-review
+Round: 51
+Reviewed artifact: focused readiness and metadata correction at bf8a602c
+Status: changes-requested
+Detailed record: reviews/spec-review-r51.md
+Resolution: review-resolution.md#spec-review-r51
+Material findings: BFP-SR51-1
+Open findings: BFP-SR51-1
