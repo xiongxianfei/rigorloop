@@ -5731,9 +5731,19 @@ def _collect_runtime_attestation(
                         file=sys.stderr,
                     )
                 raise
+            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                print(
+                    f"stage-envelope-accepted:{generation_request['stage']}",
+                    file=sys.stderr,
+                )
             materialization = _materialize_stage_envelope(
                 workspace / "output", envelope
             )
+            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                print(
+                    f"stage-materialized:{generation_request['stage']}",
+                    file=sys.stderr,
+                )
             generation_result["thread_id"] = thread_id
             generation_result["stage"] = generation_request.get("stage")
             generation_result["skill_names"] = list(skill_names)
@@ -5742,6 +5752,11 @@ def _collect_runtime_attestation(
             generation_result["stage_envelope"] = envelope
             generation_result["materialization_observation"] = materialization
             generation_sink.append(generation_result)
+            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                print(
+                    f"stage-result-collected:{generation_request['stage']}",
+                    file=sys.stderr,
+                )
         if (
             _read_file_identity(executable) != launcher_before
             or _bundle_projection(package_root, "runtime-unreadable")[1]
