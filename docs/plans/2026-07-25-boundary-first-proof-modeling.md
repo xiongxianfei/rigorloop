@@ -93,14 +93,14 @@ resource through generated, packed, and installed outputs.
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m2.md
-- Review status: pending; stage=code-review; round=r13
-- Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: code-review
+- Current milestone: M3. Downstream skill projection and preservation
+- Current milestone state: in-progress
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r13.md
+- Review status: approved; stage=code-review; round=r13
+- Remaining in-scope implementation milestones: M3, M4
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=6; open-findings=BFP-CR-M2-14,BFP-CR-M2-15,BFP-CR-M2-16,BFP-CR-M2-17,BFP-CR-M2-18,BFP-CR-M2-19
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0
 
 ## Milestones
 
@@ -156,7 +156,7 @@ resource through generated, packed, and installed outputs.
 
 ### M2. Hermetic harness, upstream skills, and fresh upstream behavior
 
-- Milestone state: resolution-needed
+- Milestone state: closed
 - Goal: Prove runtime feasibility, freeze the pre-mutation baseline, implement the standalone recoverable harness, update the five participating skill packages, and publish the one fresh upstream behavior run owned by R28y M2.
 - Requirements: R28y, R56-R56e, R56j-R56k, R56p
 - Files/components likely touched:
@@ -726,7 +726,7 @@ resource through generated, packed, and installed outputs.
 
 ### M3. Downstream skill projection and preservation
 
-- Milestone state: planned
+- Milestone state: in-progress
 - Goal: Carry the boundary contract through implementation, review, verification, and workflow routing, then compute downstream preservation from the frozen pre-M2 baseline without rerunning upstream skills.
 - Requirements: R28f-R28j, R28y; R56f-R56i, R56l
 - Files/components likely touched:
@@ -989,6 +989,9 @@ resource through generated, packed, and installed outputs.
   `run-a246ff6b8dde62c90a0c999ebc11688a` from `463036a4`. The 110-test focused
   suite, skill validator, and generated-skill drift check pass. M2 is
   `review-requested` for code-review R13.
+- 2026-07-27: Code-review R13 approved M2 with no new material findings and
+  confirmed BFP-CR-M2-14 through BFP-CR-M2-19 resolved. M2 is closed; the
+  active handoff advances to M3 implementation.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review
