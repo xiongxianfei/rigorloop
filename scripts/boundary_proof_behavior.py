@@ -330,6 +330,24 @@ PREPARED_FIELDS: Final[frozenset[str]] = frozenset(
         "prior_pointer",
     }
 )
+RECOVERY_BASIS_FIELDS: Final[frozenset[str]] = frozenset(
+    {
+        "schema_version",
+        "recovery_id",
+        "run_id",
+        "publisher_instance_id",
+        "authorized_by",
+        "authorization_evidence_ref",
+        "publisher_lease_snapshot",
+        "publisher_lock_proof",
+        "orphan_snapshot",
+        "input_set_identity",
+        "action",
+    }
+)
+RECOVERY_STATE_FIELDS: Final[frozenset[str]] = frozenset(
+    {"schema_version", "recovery_id", "basis_identity", "state"}
+)
 RUN_ID_PATTERN: Final[re.Pattern[str]] = re.compile(r"^run-[0-9a-f]{32}$")
 PUBLISHER_ID_PATTERN: Final[re.Pattern[str]] = re.compile(
     r"^publisher-[0-9a-f]{32}$"
@@ -4843,89 +4861,168 @@ def discard_interrupted_publication(
     *,
     authorized_by: str,
     repo_root: Path = ROOT,
+    crash_at: str | None = None,
 ) -> dict[str, object]:
     """Discard one H-false lease-owned orphan through durable recovery evidence."""
 
     with _publisher_lock(repo_root, change_id):
         simple_root = _simple_root(repo_root, change_id)
         candidate = _discover_global_candidate(repo_root, change_id)
-        lease = _read_publisher_lease(repo_root, change_id)
-        run_id = str(lease["run_id"])
-        if candidate != run_id or (simple_root / "prepared.json").exists():
+        lease_path = simple_root / "publisher.json"
+        recovery_temps = sorted(simple_root.glob(".manual-recovery-run-*.tmp"))
+        if len(recovery_temps) > 1:
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        if recovery_temps:
+            temporary_basis = _read_json(recovery_temps[0])
+            if (
+                set(temporary_basis) != RECOVERY_BASIS_FIELDS
+                or temporary_basis.get("schema_version")
+                != "simple-change-manual-recovery-v1"
+            ):
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            temp_run_id = str(temporary_basis["run_id"])
+            canonical_basis = (
+                simple_root / f"manual-recovery-{temp_run_id}.json"
+            )
+            if canonical_basis.exists():
+                if canonical_basis.read_bytes() != recovery_temps[0].read_bytes():
+                    raise BoundaryRuntimeError("runtime-identity-unstable")
+            else:
+                try:
+                    os.link(recovery_temps[0], canonical_basis)
+                except FileExistsError as error:
+                    raise BoundaryRuntimeError(
+                        "runtime-identity-unstable"
+                    ) from error
+                _fsync_directory(simple_root)
+            recovery_temps[0].unlink()
+            _fsync_directory(simple_root)
+        basis_paths = sorted(simple_root.glob("manual-recovery-run-*.json"))
+        active_basis_paths = [
+            path
+            for path in basis_paths
+            if (
+                not (
+                    simple_root
+                    / path.name.replace(
+                        "manual-recovery-", "manual-recovery-state-"
+                    )
+                ).exists()
+                or _read_json(
+                    simple_root
+                    / path.name.replace(
+                        "manual-recovery-", "manual-recovery-state-"
+                    )
+                ).get("state")
+                != "completed"
+            )
+        ]
+        if len(active_basis_paths) > 1:
             raise BoundaryRuntimeError("runtime-identity-unstable")
         if not authorization_evidence.is_absolute():
             authorization_evidence = repo_root / authorization_evidence
         authority_ref = _regular_reference(repo_root, authorization_evidence)
-        working = repo_root / str(lease["working_root"])
-        staging = repo_root / str(lease["staging_root"])
-        present = [path for path in (working, staging) if path.exists()]
-        if len(present) > 1:
-            raise BoundaryRuntimeError("runtime-identity-unstable")
-        kind = (
-            "working" if present and present[0] == working
-            else "staging" if present
-            else "lease-only"
-        )
-        orphan = present[0] if present else None
-        recovery_id = "recovery-" + secrets.token_hex(16)
-        quarantine = (
-            simple_root
-            / f".recovery-quarantine-{run_id}-{recovery_id}-{kind}"
-            if orphan is not None
-            else None
-        )
-        lease_path = simple_root / "publisher.json"
-        lease_raw = lease_path.read_bytes()
-        orphan_snapshot = {
-            "kind": kind,
-            "path": (
-                orphan.relative_to(repo_root).as_posix()
+        if active_basis_paths:
+            basis_path = active_basis_paths[0]
+            basis = _read_json(basis_path)
+            run_id = str(basis.get("run_id"))
+            if (
+                set(basis) != RECOVERY_BASIS_FIELDS
+                or basis.get("schema_version")
+                != "simple-change-manual-recovery-v1"
+                or basis.get("authorized_by") != authorized_by
+                or basis.get("authorization_evidence_ref") != authority_ref
+                or basis.get("action") != "discard-and-regenerate"
+                or candidate != run_id
+            ):
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            recovery_id = str(basis["recovery_id"])
+            orphan_snapshot = basis.get("orphan_snapshot")
+            if not isinstance(orphan_snapshot, dict):
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+        else:
+            if not lease_path.exists():
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            lease = _read_publisher_lease(repo_root, change_id)
+            run_id = str(lease["run_id"])
+            if candidate != run_id or (simple_root / "prepared.json").exists():
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            working = repo_root / str(lease["working_root"])
+            staging = repo_root / str(lease["staging_root"])
+            present = [path for path in (working, staging) if path.exists()]
+            if len(present) > 1:
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            kind = (
+                "working" if present and present[0] == working
+                else "staging" if present
+                else "lease-only"
+            )
+            orphan = present[0] if present else None
+            recovery_id = "recovery-" + secrets.token_hex(16)
+            quarantine = (
+                simple_root
+                / f".recovery-quarantine-{run_id}-{recovery_id}-{kind}"
                 if orphan is not None
                 else None
-            ),
-            "identity": _tree_identity(orphan) if orphan is not None else None,
-            "quarantine_path": (
-                quarantine.relative_to(repo_root).as_posix()
-                if quarantine is not None
-                else None
-            ),
-            "durability_parent": simple_root.relative_to(repo_root).as_posix(),
-        }
-        basis = {
-            "schema_version": "simple-change-manual-recovery-v1",
-            "recovery_id": recovery_id,
-            "run_id": run_id,
-            "publisher_instance_id": lease["publisher_instance_id"],
-            "authorized_by": authorized_by,
-            "authorization_evidence_ref": authority_ref,
-            "publisher_lease_snapshot": {
-                "path": lease_path.relative_to(repo_root).as_posix(),
-                "identity": _sha256(lease_raw),
-                "values": lease,
-            },
-            "publisher_lock_proof": {
-                "method": "exclusive-nonblocking-file-lock-v1",
-                "lock_path": "publisher.lock",
-                "acquired": True,
-                "prior_lease_identity": _sha256(lease_raw),
-            },
-            "orphan_snapshot": orphan_snapshot,
-            "input_set_identity": lease["input_set_identity"],
-            "action": "discard-and-regenerate",
-        }
-        basis_path = simple_root / f"manual-recovery-{run_id}.json"
-        temporary = (
-            simple_root
-            / f".manual-recovery-{run_id}-{recovery_id}.tmp"
-        )
-        _exclusive_write(temporary, _canonical_json_bytes(basis))
-        try:
-            os.link(temporary, basis_path)
-        except FileExistsError as error:
-            raise BoundaryRuntimeError("runtime-identity-unstable") from error
-        _fsync_directory(simple_root)
-        temporary.unlink()
-        _fsync_directory(simple_root)
+            )
+            lease_raw = lease_path.read_bytes()
+            orphan_snapshot = {
+                "kind": kind,
+                "path": (
+                    orphan.relative_to(repo_root).as_posix()
+                    if orphan is not None
+                    else None
+                ),
+                "identity": _tree_identity(orphan) if orphan is not None else None,
+                "quarantine_path": (
+                    quarantine.relative_to(repo_root).as_posix()
+                    if quarantine is not None
+                    else None
+                ),
+                "durability_parent":
+                    simple_root.relative_to(repo_root).as_posix(),
+            }
+            basis = {
+                "schema_version": "simple-change-manual-recovery-v1",
+                "recovery_id": recovery_id,
+                "run_id": run_id,
+                "publisher_instance_id": lease["publisher_instance_id"],
+                "authorized_by": authorized_by,
+                "authorization_evidence_ref": authority_ref,
+                "publisher_lease_snapshot": {
+                    "path": lease_path.relative_to(repo_root).as_posix(),
+                    "identity": _sha256(lease_raw),
+                    "values": lease,
+                },
+                "publisher_lock_proof": {
+                    "method": "exclusive-nonblocking-file-lock-v1",
+                    "lock_path": "publisher.lock",
+                    "acquired": True,
+                    "prior_lease_identity": _sha256(lease_raw),
+                },
+                "orphan_snapshot": orphan_snapshot,
+                "input_set_identity": lease["input_set_identity"],
+                "action": "discard-and-regenerate",
+            }
+            basis_path = simple_root / f"manual-recovery-{run_id}.json"
+            temporary = (
+                simple_root
+                / f".manual-recovery-{run_id}-{recovery_id}.tmp"
+            )
+            _exclusive_write(temporary, _canonical_json_bytes(basis))
+            _crash_if(crash_at, "after-recovery-temp-fsync")
+            try:
+                os.link(temporary, basis_path)
+            except FileExistsError as error:
+                raise BoundaryRuntimeError("runtime-identity-unstable") from error
+            _fsync_directory(simple_root)
+            _crash_if(crash_at, "after-recovery-basis-install")
+            temporary.unlink()
+            _fsync_directory(simple_root)
+        if not isinstance(orphan_snapshot, dict) or set(orphan_snapshot) != {
+            "kind", "path", "identity", "quarantine_path", "durability_parent"
+        }:
+            raise BoundaryRuntimeError("runtime-identity-unstable")
         basis_identity = _read_file_identity(basis_path).digest
         state_path = simple_root / f"manual-recovery-state-{run_id}.json"
 
@@ -4943,22 +5040,74 @@ def discard_interrupted_publication(
                 ),
             )
 
-        write_state("authorized")
-        if orphan is not None:
-            assert quarantine is not None
-            os.replace(orphan, quarantine)
+        state = _read_json(state_path) if state_path.exists() else None
+        if state is None:
+            write_state("authorized")
+            _crash_if(crash_at, "after-recovery-authorized")
+            state = _read_json(state_path)
+        if (
+            not isinstance(state, dict)
+            or set(state) != RECOVERY_STATE_FIELDS
+            or state.get("schema_version")
+            != "simple-change-manual-recovery-state-v1"
+            or state.get("recovery_id") != recovery_id
+            or state.get("basis_identity") != basis_identity
+            or state.get("state")
+            not in {"authorized", "orphan-detached", "completed"}
+        ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        orphan_path = orphan_snapshot["path"]
+        quarantine_path = orphan_snapshot["quarantine_path"]
+        orphan = repo_root / str(orphan_path) if orphan_path is not None else None
+        quarantine = (
+            repo_root / str(quarantine_path)
+            if quarantine_path is not None
+            else None
+        )
+        if state["state"] == "authorized":
+            if orphan is not None and orphan.exists():
+                if (
+                    quarantine is None
+                    or quarantine.exists()
+                    or _tree_identity(orphan) != orphan_snapshot["identity"]
+                ):
+                    raise BoundaryRuntimeError("runtime-identity-unstable")
+                os.replace(orphan, quarantine)
+                _crash_if(crash_at, "after-recovery-quarantine-rename")
+                _fsync_directory(simple_root)
+            elif quarantine is not None and quarantine.exists():
+                if _tree_identity(quarantine) != orphan_snapshot["identity"]:
+                    raise BoundaryRuntimeError("runtime-identity-unstable")
+                _fsync_directory(simple_root)
+            elif orphan_snapshot["kind"] == "lease-only":
+                _fsync_directory(simple_root)
+            else:
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            write_state("orphan-detached")
+            _crash_if(crash_at, "after-recovery-orphan-detached")
+            state = _read_json(state_path)
+        if state["state"] == "orphan-detached":
+            if lease_path.exists():
+                lease_snapshot = basis.get("publisher_lease_snapshot")
+                if (
+                    not isinstance(lease_snapshot, dict)
+                    or lease_snapshot.get("identity")
+                    != _read_file_identity(lease_path).digest
+                ):
+                    raise BoundaryRuntimeError("runtime-identity-unstable")
+                lease_path.unlink()
+                _crash_if(crash_at, "after-recovery-lease-delete")
             _fsync_directory(simple_root)
-        else:
-            _fsync_directory(simple_root)
-        write_state("orphan-detached")
-        lease_path.unlink()
-        _fsync_directory(simple_root)
-        write_state("completed")
+            write_state("completed")
+            _crash_if(crash_at, "after-recovery-completed")
+            state = _read_json(state_path)
+        if state["state"] != "completed" or lease_path.exists():
+            raise BoundaryRuntimeError("runtime-identity-unstable")
         return {
             "result": "completed",
             "run_id": run_id,
             "recovery_id": recovery_id,
-            "orphan_kind": kind,
+            "orphan_kind": orphan_snapshot["kind"],
             "quarantine_path": orphan_snapshot["quarantine_path"],
         }
 

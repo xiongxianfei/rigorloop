@@ -3341,6 +3341,59 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             )
             self.assertEqual(state["state"], "completed")
 
+    def test_t51_manual_recovery_resumes_every_durable_crash_row(self) -> None:
+        boundaries = (
+            "after-recovery-temp-fsync",
+            "after-recovery-basis-install",
+            "after-recovery-authorized",
+            "after-recovery-quarantine-rename",
+            "after-recovery-orphan-detached",
+            "after-recovery-lease-delete",
+        )
+        for index, boundary in enumerate(boundaries):
+            with self.subTest(boundary=boundary), tempfile.TemporaryDirectory() as raw:
+                root = Path(raw)
+                change_id = "2026-07-25-example"
+                (root / "docs/changes" / change_id).mkdir(parents=True)
+                run_id = "run-" + format(index + 1, "032x")
+                _, working = _create_publisher_lease(
+                    root,
+                    change_id,
+                    run_id,
+                    "publisher-" + format(index + 1, "032x"),
+                    "sha256:" + "b" * 64,
+                )
+                (working / "partial-output").write_text(
+                    f"attempt-{index}", encoding="utf-8"
+                )
+                authority = (
+                    root / "docs/changes" / change_id / "review-resolution.md"
+                )
+                authority.write_text("# Authorized recovery\n", encoding="utf-8")
+                with self.assertRaises(BoundaryRuntimeError):
+                    discard_interrupted_publication(
+                        change_id,
+                        authority,
+                        authorized_by="test-maintainer",
+                        repo_root=root,
+                        crash_at=boundary,
+                    )
+                result = discard_interrupted_publication(
+                    change_id,
+                    authority,
+                    authorized_by="test-maintainer",
+                    repo_root=root,
+                )
+                self.assertEqual(result["result"], "completed")
+                state = json.loads(
+                    (
+                        working.parent
+                        / f"manual-recovery-state-{run_id}.json"
+                    ).read_text(encoding="utf-8")
+                )
+                self.assertEqual(state["state"], "completed")
+                self.assertFalse((working.parent / "publisher.json").exists())
+
     def test_prepared_publication_reconciles_without_reinvocation(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
