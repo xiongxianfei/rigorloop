@@ -2430,6 +2430,10 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "test-spec",
             "author proof",
             artifact_context="Governing feature specification",
+            governing_reference_ids=(
+                "boundary.mode-domain",
+                "interaction.mode-outcome",
+            ),
         )
         self.assertIn(
             "must exactly match an ID defined by the attached governing "
@@ -2440,6 +2444,18 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "Do not invent, rename, infer, or repair an ID",
             test_spec_request["prompt"],
         )
+        self.assertIn(
+            "Closed governing boundary and interaction IDs:\n"
+            "- boundary.mode-domain\n"
+            "- interaction.mode-outcome",
+            test_spec_request["prompt"],
+        )
+        with self.assertRaises(BoundaryRuntimeError):
+            _workflow_stage_request(
+                "spec",
+                "author",
+                governing_reference_ids=("boundary.mode-domain",),
+            )
         test_review_request = _workflow_stage_request(
             "test-spec-review",
             "review",
