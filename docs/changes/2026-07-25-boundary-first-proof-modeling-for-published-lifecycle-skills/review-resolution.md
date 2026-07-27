@@ -3217,7 +3217,7 @@ test-spec revision.
 
 Finding ID: BFP-TSR18-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec revision
 Decision owner: approved R48 change-root-bound preflight contract
@@ -3230,4 +3230,11 @@ evidence-only parent-observed feasibility transaction.
 Rationale: A mandatory proof command cannot omit an input the approved contract
 rejects before runtime discovery.
 Validation target: test-spec-review-r19
-Validation evidence: pending test-spec-review-r19
+Validation evidence: test-spec-review-r19 approved exact command equality,
+failure-before-mutation behavior, both evidence paths, and the parent-observed
+evidence-only boundary.
+
+### test-spec-review-r19
+
+No new material findings. R19 independently confirmed BFP-TSR18-1 resolved
+and approved both synchronized R48/R22/R17 proof maps for M2 implementation.
