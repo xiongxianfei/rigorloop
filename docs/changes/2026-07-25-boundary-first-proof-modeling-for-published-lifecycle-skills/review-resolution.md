@@ -3486,3 +3486,8 @@ contract level without weakening semantic fidelity.
 No new material findings. R26 independently approved the focused canonical
 architecture and component-view synchronization and confirmed that no new ADR
 is required.
+
+### plan-review-r20
+
+No new material findings. R20 independently approved the focused R54/R26 M2
+execution sequence and routed the change to test-spec synchronization.
