@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: code-review-m2-preflight-r1
 Review closeout: code-review-m1-r1
@@ -4049,6 +4049,29 @@ R2 independently confirmed BFP-CR-M4-1 resolved. The report is derived from
 the complete closed typed operation graph, dependencies and identities fail
 closed, validation reconstructs rather than trusts the report, mapping order
 is treated non-semantically, and the current capability baseline passes.
+
+### code-review-final-r1
+
+#### BFP-CR-FINAL-1 - Boundary checks do not compose through public CI selection
+
+Finding ID: BFP-CR-FINAL-1
+Disposition: accepted
+Status: open
+Owner: M4 integration correction and final holistic code review
+Owning stage: implementation correction and code review
+Decision owner: approved M4 selector and validation contract
+Decision needed: none
+Required outcome: Classify every governed boundary script and fixture,
+preserve exact R28p and release routes, and make the plan-owned explicit CI
+command executable while unrelated unsupported scripts remain blocked.
+Chosen action: Add the closed boundary-proof selector category, complete
+fixture-subtree routing, release-fixture regression selection, full selection
+and CI integration tests, and rerun the exact plan command.
+Rationale: Helper-level route selection is insufficient when the composed
+selector subsequently emits a manual-routing or unclassified-path blocker.
+Validation target: selector regression, exact explicit CI command, and final
+holistic code-review R2
+Validation evidence: pending
 
 ### spec-review-r58
 
