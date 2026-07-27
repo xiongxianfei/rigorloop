@@ -3019,3 +3019,24 @@ and cross-phase rejection.
 Rationale: Durable failure receipts cannot vary by implementation.
 Validation target: spec-review-r47
 Validation evidence: pending
+
+### spec-review-r47
+
+#### BFP-SR47-1 — The non-exposure projection is not bound to the runtime implementation that determines tool exposure
+
+Finding ID: BFP-SR47-1
+Disposition: accepted
+Status: open
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: runtime projection compatibility contract
+Decision needed: none
+Required outcome: Bind a non-exposure projection to the exact reviewed
+runtime implementation that determines tool exposure.
+Chosen action: Add exact launcher and runtime-package identities to the
+projection row and selection key, recompute its canonical identity, require
+attestation equality, and add implementation-drift acceptance proof.
+Rationale: Version, schemas, and feature declarations cannot prove
+non-exposure when different implementation bytes can retain those declarations.
+Validation target: spec-review-r48
+Validation evidence: pending

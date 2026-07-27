@@ -91,12 +91,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r46.md
-- Review status: changes-requested; stage=spec-review; round=r46
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r47.md
+- Review status: changes-requested; stage=spec-review; round=r47
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec-review
+- Next stage: spec
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR46-1,BFP-SR46-2,BFP-SR46-3,BFP-SR46-4
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=8; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR46-1,BFP-SR46-2,BFP-SR46-3,BFP-SR46-4,BFP-SR47-1
 
 ## Milestones
 
@@ -756,6 +756,11 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Spec-review R47 confirmed R46's migration and routing
+  corrections but found the non-exposure projection was not yet bound to the
+  exact launcher and runtime-package bytes that implement tool exposure.
+  BFP-SR47-1 routes to a focused projection-identity revision before R48.
 
 - 2026-07-27: The R47 spec candidate resolves R46 with one uniformly current
   v3 contract, an exact content-identified Codex 0.145.0 projection, complete
