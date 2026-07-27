@@ -2570,6 +2570,16 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             stage_request["prompt"],
         )
         self.assertIn(
+            "union of governing requirement IDs across boundary, extension, "
+            "and interaction rows to equal exactly `R1`, `R2`, `R3`, and `R4`",
+            stage_request["prompt"],
+        )
+        self.assertIn(
+            "every boundary ID cited by an example or interaction to exist "
+            "in exactly one boundary or extension row",
+            stage_request["prompt"],
+        )
+        self.assertIn(
             "Extension ID | Title | Applicability | Rationale | Governing "
             "requirement IDs | Boundary IDs | Non-applicability rationale",
             stage_request["prompt"],
