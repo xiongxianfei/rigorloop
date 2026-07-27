@@ -1654,6 +1654,64 @@ def capability_report_result(
     return "pass" if pass_result else "fail"
 
 
+def validate_boundary_activation_notes(
+    text: str,
+    *,
+    report_identity: str | None = None,
+) -> str:
+    """Validate the closed activation or rollback release-note transaction."""
+
+    activation_lines = [
+        line.strip()
+        for line in text.splitlines()
+        if line.startswith("Boundary model activation:")
+    ]
+    report_lines = [
+        line.strip()
+        for line in text.splitlines()
+        if line.startswith("Boundary capability report identity:")
+    ]
+    prior_lines = [
+        line.strip()
+        for line in text.splitlines()
+        if line.startswith("Prior boundary activation identity:")
+    ]
+    if len(activation_lines) != 1:
+        raise BoundaryProofError(
+            "release notes require exactly one boundary activation state"
+        )
+    state = activation_lines[0].split(":", 1)[1].strip()
+    if state == "v1":
+        if len(report_lines) != 1 or prior_lines:
+            raise BoundaryProofError(
+                "v1 activation requires exactly one report identity"
+            )
+        identity = report_lines[0].split(":", 1)[1].strip()
+        if not re.fullmatch(r"sha256:[0-9a-f]{64}", identity):
+            raise BoundaryProofError(
+                "activation report identity is invalid"
+            )
+        if report_identity is None or identity != report_identity:
+            raise BoundaryProofError(
+                "activation report identity is stale or unavailable"
+            )
+        return "activated"
+    if state == "rolled-back":
+        if report_lines or len(prior_lines) != 1:
+            raise BoundaryProofError(
+                "rollback requires exactly one prior activation identity"
+            )
+        prior = prior_lines[0].split(":", 1)[1].strip()
+        if not re.fullmatch(
+            r"[^\s]+@sha256:[0-9a-f]{64}", prior
+        ):
+            raise BoundaryProofError(
+                "prior activation identity is invalid"
+            )
+        return "rolled-back"
+    raise BoundaryProofError("unknown boundary activation state")
+
+
 def validate_capability_report(
     payload: Mapping[str, Any],
     *,
@@ -2463,6 +2521,7 @@ __all__ = [
     "normalize_proof_map",
     "proof_invariant_projection",
     "validate_capability_report",
+    "validate_boundary_activation_notes",
     "validate_incident_registry",
     "validate_incident_fixture",
     "validate_version_parity",

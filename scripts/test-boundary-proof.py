@@ -92,6 +92,7 @@ from boundary_proof_behavior import (
     discard_interrupted_publication,
     exercise_fixture,
     generate_preservation,
+    generate_canonical_skill_resource_manifest,
     validate_behavior,
     validate_fixture,
     validate_preservation,
@@ -125,6 +126,7 @@ from boundary_proof_model import (
     proof_invariant_projection,
     select_runtime_projection,
     validate_capability_report,
+    validate_boundary_activation_notes,
     validate_handler_conformance,
     validate_incident_registry,
     validate_incident_fixture,
@@ -557,6 +559,51 @@ def _trim_trace_to_event_snapshots(
 
 
 class BoundaryProofModelTests(unittest.TestCase):
+    def test_boundary_activation_requires_complete_identity_or_rollback(
+        self,
+    ) -> None:
+        identity = "sha256:" + "a" * 64
+        release_root = (
+            ROOT / "tests" / "fixtures" / "boundary-proof" / "release"
+        )
+        self.assertEqual(
+            "activated",
+            validate_boundary_activation_notes(
+                (
+                    release_root
+                    / "valid-activation"
+                    / "release-notes.md"
+                ).read_text(encoding="utf-8"),
+                report_identity=identity,
+            ),
+        )
+        self.assertEqual(
+            "rolled-back",
+            validate_boundary_activation_notes(
+                (
+                    release_root
+                    / "valid-rollback"
+                    / "release-notes.md"
+                ).read_text(encoding="utf-8"),
+            ),
+        )
+        for text in (
+            (
+                release_root
+                / "invalid-partial-activation"
+                / "release-notes.md"
+            ).read_text(encoding="utf-8"),
+            f"Boundary capability report identity: {identity}\n",
+            "Boundary model activation: unknown\n",
+            "Boundary model activation: rolled-back\n",
+        ):
+            with self.subTest(text=text):
+                with self.assertRaises(BoundaryProofError):
+                    validate_boundary_activation_notes(
+                        text,
+                        report_identity=identity,
+                    )
+
     def test_projection_is_closed_and_frozen(self) -> None:
         self.assertEqual(len(CORE_DIMENSION_IDS), 12)
         self.assertEqual(len(EVALUATED_SKILLS), 8)
@@ -5990,6 +6037,53 @@ name = "one"
             self.assertEqual(
                 raised.exception.diagnostic_id,
                 "runtime-identity-unstable",
+            )
+
+    def test_canonical_resource_manifest_covers_exact_eight_packages(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs" / "changes" / change_id).mkdir(
+                parents=True
+            )
+            for skill in EVALUATED_SKILLS:
+                skill_root = root / "skills" / skill
+                (skill_root / "references").mkdir(parents=True)
+                (skill_root / "SKILL.md").write_text(
+                    f"# {skill}\n",
+                    encoding="utf-8",
+                )
+                (
+                    skill_root
+                    / "references"
+                    / "boundary-proof-model.md"
+                ).write_text(
+                    "Boundary model version: v1\n",
+                    encoding="utf-8",
+                )
+            manifest = generate_canonical_skill_resource_manifest(
+                change_id,
+                repo_root=root,
+            )
+            self.assertEqual(
+                manifest["skills"],
+                list(EVALUATED_SKILLS),
+            )
+            self.assertEqual(len(manifest["files"]), 16)
+            self.assertEqual(
+                manifest,
+                json.loads(
+                    (
+                        root
+                        / "docs"
+                        / "changes"
+                        / change_id
+                        / "evidence"
+                        / "canonical-skill-resource-manifest.json"
+                    ).read_text(encoding="utf-8")
+                ),
             )
 
 

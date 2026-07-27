@@ -37,6 +37,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from validation_selection import (  # noqa: E402
     CHECK_CATALOG,
     EvidenceClassRegistration,
+    boundary_proof_checks_for_path,
     build_repository_preflight_context,
     SelectionRequest,
     normalize_path,
@@ -55,6 +56,16 @@ ADAPTER_REGRESSION_COMMAND = (
 )
 
 EXPECTED_CATALOG = {
+    "boundary-workflow-contract": "python scripts/test-boundary-proof.py",
+    "boundary-skill-contract": "python scripts/validate-skills.py",
+    "boundary-traceability": "python scripts/test-boundary-proof.py",
+    "boundary-incident-replay": "python scripts/test-boundary-proof.py",
+    "boundary-adapter-parity": "python scripts/test-adapter-distribution.py",
+    "boundary-capability-baseline": (
+        "python scripts/validate-boundary-proof.py validate-report "
+        "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/"
+        "boundary-capability-baseline.md"
+    ),
     "skills.validate": "python scripts/validate-skills.py",
     "skills.regression": "python scripts/test-skill-validator.py",
     "skills.generation_regression": "python scripts/test-build-skills.py",
@@ -526,6 +537,49 @@ class ScriptOutputContractTests(unittest.TestCase):
 
 
 class ValidationSelectionTests(unittest.TestCase):
+    def test_boundary_proof_paths_route_exact_capability_checks(self) -> None:
+        all_checks = (
+            "boundary-workflow-contract",
+            "boundary-skill-contract",
+            "boundary-traceability",
+            "boundary-incident-replay",
+            "boundary-adapter-parity",
+            "boundary-capability-baseline",
+        )
+        self.assertEqual(
+            all_checks,
+            boundary_proof_checks_for_path(
+                "scripts/boundary_proof_model.py"
+            ),
+        )
+        self.assertEqual(
+            (
+                "boundary-skill-contract",
+                "boundary-traceability",
+                "boundary-adapter-parity",
+                "boundary-capability-baseline",
+            ),
+            boundary_proof_checks_for_path(
+                "skills/verify/references/boundary-proof-model.md"
+            ),
+        )
+        self.assertEqual(
+            (
+                "boundary-adapter-parity",
+                "boundary-capability-baseline",
+            ),
+            boundary_proof_checks_for_path(
+                "dist/adapters/manifest.yaml"
+            ),
+        )
+        self.assertEqual(
+            (),
+            boundary_proof_checks_for_path("docs/README.md"),
+        )
+        self.assertTrue(
+            set(all_checks).issubset(CHECK_CATALOG),
+        )
+
     maxDiff = None
     root_preflight_context = build_repository_preflight_context(ROOT)
 
@@ -1568,6 +1622,10 @@ raise SystemExit({exit_code})
         expected_parallel_safe = {
             "adapters.regression",
             "artifact_lifecycle.regression",
+            "boundary-adapter-parity",
+            "boundary-incident-replay",
+            "boundary-traceability",
+            "boundary-workflow-contract",
             "change_record_query.regression",
             "change_metadata.regression",
             "documentation_prose.regression",

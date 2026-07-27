@@ -362,7 +362,12 @@ def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
         reasons.append("Depends on agents/openai.yaml.")
     if _references_codex_skills_as_only_install_location(text):
         reasons.append("References .codex/skills as the only install location.")
-    if CODEX_SKILL_INVOCATION_PATTERN.search(text):
+    portable_command_text = re.sub(
+        r"(?<![A-Za-z0-9_])\$workflow(?=\s+auto:)",
+        "workflow",
+        text,
+    )
+    if CODEX_SKILL_INVOCATION_PATTERN.search(portable_command_text):
         reasons.append("Requires Codex-specific $skill invocation.")
     if _has_codex_runtime_assumption(text):
         reasons.append("Assumes Codex-only tool, UI, approval, or runtime assumption.")
