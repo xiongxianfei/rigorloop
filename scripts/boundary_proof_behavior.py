@@ -3423,6 +3423,8 @@ def generate_behavior(
                 "stage-owned feature differs from the closed invariant projection"
             )
     except BoundaryProofError as error:
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            print(f"boundary-structure:spec:{error}", file=sys.stderr)
         raise BoundaryRuntimeError(
             "boundary-oracle-mismatch", "in-turn"
         ) from error
@@ -3483,6 +3485,8 @@ def generate_behavior(
                 "stage-owned proof differs from the closed invariant projection"
             )
     except BoundaryProofError as error:
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            print(f"boundary-structure:test-spec:{error}", file=sys.stderr)
         raise BoundaryRuntimeError(
             "boundary-oracle-mismatch", "in-turn"
         ) from error
