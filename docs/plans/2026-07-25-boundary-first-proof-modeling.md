@@ -94,11 +94,11 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r12.md
-- Review status: changes-requested; stage=code-review; round=r12
+- Current milestone state: review-requested
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m2.md
+- Review status: pending; stage=code-review; round=r13
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: review-resolution
+- Next stage: code-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=6; open-findings=BFP-CR-M2-14,BFP-CR-M2-15,BFP-CR-M2-16,BFP-CR-M2-17,BFP-CR-M2-18,BFP-CR-M2-19
 
@@ -985,6 +985,10 @@ resource through generated, packed, and installed outputs.
   uniqueness checks before membership or content operations. The 110 focused
   tests cover the malformed JSON matrix and pass; fresh canonical generation
   is next because the harness identity changed.
+- 2026-07-27: Published and immutably validated canonical run
+  `run-a246ff6b8dde62c90a0c999ebc11688a` from `463036a4`. The 110-test focused
+  suite, skill validator, and generated-skill drift check pass. M2 is
+  `review-requested` for code-review R13.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review
