@@ -10,13 +10,28 @@ Diagnostic: none
 The current immutable upstream behavior run is:
 
 ```json
-{"false_blocking_count":0,"input_set_identity":"sha256:2cc5d915ab8cd8216ea2c917891318be15f10698e7e641fb14caa4a3d36ea2be","new_universal_artifact_count":0,"result":"pass","run_id":"run-95e4759a48cb46d183b8222e73ecc5ec","simple_fixture_structure_correction_cycles":0}
+{"false_blocking_count":0,"input_set_identity":"sha256:f1a1949dd9f85b5b41c3d95b37e49e7cda4f14fa4765f5176c33686026414c64","new_universal_artifact_count":0,"result":"pass","run_id":"run-b59926e65e17a9debcf00ddc5b5ede03","simple_fixture_structure_correction_cycles":0}
 ```
 
 The run completed fresh `spec`, `spec-review`, `test-spec`, and
 `test-spec-review` occurrences with stage-owned artifacts and independent
 approving reviews.
 It introduced no universal lifecycle artifact and produced no false block.
+
+The current run also closes the publisher transaction gap:
+
+- its exact manifest contains
+  `publisher_instance_id: publisher-bc63226fdb604e1a7fbc208835202a5d`;
+- the lease was durable before the first stage workspace existed;
+- every child workspace was created below the lease-bound working root with a
+  hermetic project marker, preventing ancestor skill/instruction discovery;
+- the prepared receipt bound publisher, run, input, staged snapshot, immutable
+  target, and prior pointer identities;
+- successful publication left no publisher lease, prepared receipt, working
+  root, staging root, or temporary pointer; and
+- four deliberately interrupted live attempts were preserved through
+  evidence-bound completed recovery records and quarantine rather than
+  adoption or silent deletion.
 
 The focused correction also closed both bounded correction publication paths:
 
@@ -35,7 +50,7 @@ Current validation:
 - `python scripts/boundary_proof_behavior.py validate --change-id
   2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` —
   passed against the immutable current run without lifecycle reinvocation.
-- `python scripts/test-boundary-proof.py` — passed 77 tests.
+- `python scripts/test-boundary-proof.py` — passed 84 tests.
 - `python scripts/validate-skills.py` — validated 24 skills.
 - `python scripts/test-skill-validator.py` — passed 259 tests.
 - `python scripts/build-skills.py --check` — passed.

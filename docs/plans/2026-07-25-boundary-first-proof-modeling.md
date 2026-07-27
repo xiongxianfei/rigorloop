@@ -94,11 +94,11 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r25.md
-- Review status: approved; stage=test-spec-review; round=r25
+- Review status: review-requested; stage=code-review; round=r5
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BFP-CR-M2-10
 
@@ -156,7 +156,7 @@ resource through generated, packed, and installed outputs.
 
 ### M2. Hermetic harness, upstream skills, and fresh upstream behavior
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Prove runtime feasibility, freeze the pre-mutation baseline, implement the standalone recoverable harness, update the five participating skill packages, and publish the one fresh upstream behavior run owned by R28y M2.
 - Requirements: R28y, R56-R56e, R56j-R56k, R56p
 - Files/components likely touched:
@@ -874,6 +874,16 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-27: Published lease-bound immutable canonical run
+  `run-b59926e65e17a9debcf00ddc5b5ede03`.
+  The exact manifest binds
+  `publisher-bc63226fdb604e1a7fbc208835202a5d`; the transaction left no active
+  lease, receipt, working, staging, or temporary-pointer object. Four
+  interrupted live attempts were completed through authorized immutable
+  recovery basis/state records with preserved quarantine. Non-regenerating
+  validation passes, focused tests pass 84 cases, all 24 skills validate, and
+  generated-skill drift checking passes. M2 is review-requested.
+
 - 2026-07-27: Published immutable canonical run
   `run-95e4759a48cb46d183b8222e73ecc5ec`.
   Fresh upstream generation and non-regenerating validation report zero false
@@ -1421,8 +1431,8 @@ resource through generated, packed, and installed outputs.
 
 ## Validation notes
 
-- `python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` passed for current run `run-95e4759a48cb46d183b8222e73ecc5ec`.
-- `python scripts/test-boundary-proof.py` passed 77 tests after the extension-oracle and closed-serialization corrections.
+- `python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` passed for current run `run-b59926e65e17a9debcf00ddc5b5ede03`.
+- `python scripts/test-boundary-proof.py` passed 84 tests including all eight named T51 publisher property rows.
 - `python scripts/validate-skills.py` validated 24 skills.
 - `python scripts/test-skill-validator.py` passed 259 tests.
 - `python scripts/build-skills.py --check` passed.
