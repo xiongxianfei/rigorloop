@@ -1909,6 +1909,14 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         )
         self.assertIn("contiguous in that exact order", stage_request["prompt"])
         self.assertIn("must overlap each cited boundary", stage_request["prompt"])
+        self.assertIn(
+            "audit each example independently",
+            stage_request["prompt"],
+        )
+        self.assertIn(
+            "requirement-owner union",
+            stage_request["prompt"],
+        )
         self.assertIn("add no normative behavior", stage_request["prompt"])
         self.assertEqual(
             stage_request["artifact_policy_id"],
