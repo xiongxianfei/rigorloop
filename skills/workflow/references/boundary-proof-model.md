@@ -53,9 +53,10 @@ not applicable. Add extensions only for feature-specific dimensions not
 represented by the core.
 
 Every authored boundary, extension, example, interaction, proof-obligation,
-test-case, regression, discovery-gap, and manual-procedure ID must match
+regression, discovery-gap, and manual-procedure ID must match
 `^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)+$`; uppercase and undotted IDs are
-invalid. In table cells with no
+invalid. Test-case IDs may instead use the repository's uppercase numeric
+grammar such as `T1`. In table cells with no
 IDs or no applicable value, write the literal ASCII `-` sentinel. Do not use
 an em dash, another Unicode dash, or a blank cell.
 

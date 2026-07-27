@@ -1927,6 +1927,11 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "spec-review-log=review-log/spec-review.md",
             review_request["prompt"],
         )
+        test_spec_request = _workflow_stage_request("test-spec", "author tests")
+        self.assertIn(
+            "Use `T1`, `T2`, and subsequent uppercase numeric IDs",
+            test_spec_request["prompt"],
+        )
 
     def test_stage_envelope_is_policy_bound_and_parent_materialized(self) -> None:
         envelope = {
@@ -2535,6 +2540,11 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 normalized_reference = " ".join(reference.split())
                 self.assertIn(
                     "must match `^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$`",
+                    normalized_reference,
+                )
+                self.assertIn(
+                    "Test-case IDs may instead use the repository's "
+                    "uppercase numeric grammar",
                     normalized_reference,
                 )
                 self.assertIn(

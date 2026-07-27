@@ -1554,8 +1554,11 @@ def _workflow_stage_request(
             "`## Proof map` and `## Test cases`. The Proof map table must "
             "use the exact columns defined by the attached boundary-proof "
             "reference and collectively govern exactly R1, R2, R3, and R4. "
-            "Every authored stable ID must match "
+            "Every proof-obligation and manual-procedure ID must match "
             "`^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$`; IDs must be dotted. "
+            "Use `T1`, `T2`, and subsequent uppercase numeric IDs for both "
+            "proof-map test-case references and matching `## Test cases` "
+            "records. "
             "Use the literal ASCII `-` for every empty table value; never "
             "use a blank cell or a Unicode dash. "
         ),
@@ -3350,7 +3353,12 @@ def generate_behavior(
             _parse_test_spec_markdown(oracle_raw[1].decode("utf-8")),
             candidate_feature,
         )
-    except (OSError, UnicodeError, BoundaryProofError) as error:
+    except (
+        OSError,
+        UnicodeError,
+        BoundaryProofError,
+        BoundaryRuntimeError,
+    ) as error:
         raise BoundaryRuntimeError("boundary-oracle-mismatch", "in-turn") from error
     forbidden_candidate_values = tuple(
         value
@@ -3464,7 +3472,7 @@ def generate_behavior(
             raise BoundaryProofError(
                 "stage-owned feature differs from the closed invariant projection"
             )
-    except BoundaryProofError as error:
+    except (BoundaryProofError, BoundaryRuntimeError) as error:
         if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
             print(f"boundary-structure:spec:{error}", file=sys.stderr)
         raise BoundaryRuntimeError(
@@ -3526,7 +3534,7 @@ def generate_behavior(
             raise BoundaryProofError(
                 "stage-owned proof differs from the closed invariant projection"
             )
-    except BoundaryProofError as error:
+    except (BoundaryProofError, BoundaryRuntimeError) as error:
         if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
             print(f"boundary-structure:test-spec:{error}", file=sys.stderr)
         raise BoundaryRuntimeError(
