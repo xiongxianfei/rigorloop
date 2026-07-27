@@ -2018,6 +2018,8 @@ def _output_state_for_allowed_sets(
     if len(observed_paths) != len(set(observed_paths)):
         return "contradictory"
     actual = set(observed_paths)
+    if not actual:
+        return "absent"
     permitted = [set(paths) for paths in allowed_path_sets]
     if any(len(paths) != len(set(paths)) for paths in allowed_path_sets):
         raise BoundaryRuntimeError("protocol-shape-incompatible")
