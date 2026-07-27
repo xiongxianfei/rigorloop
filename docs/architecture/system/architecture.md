@@ -1293,12 +1293,13 @@ Structural validation and semantic review remain separate:
   to the exact authoritative scenario.
 
 For the simple-change behavior run, the invariant oracle evaluator compares
-only model version, scope, requirement IDs, core-dimension IDs, extension IDs,
-and proof-map governing requirement IDs.
+only model version, scope, requirement IDs, core-dimension IDs, and proof-map
+governing requirement IDs.
 Every complete feature and proof record must still pass R28s-R28w.
-Stable IDs, rationale prose, applicability choices, boundary decomposition,
-examples, interactions, automation levels, proof grouping, and test-case IDs
-remain stage-owned and review-owned choices.
+Stable IDs, extension presence and decomposition, rationale prose,
+applicability choices, boundary decomposition, examples, interactions,
+automation levels, proof grouping, and test-case IDs remain stage-owned and
+review-owned choices.
 The harness binds the exact scenario into both formal review requests.
 Candidate differences in those excluded choices cannot block a structurally
 valid artifact before review.
