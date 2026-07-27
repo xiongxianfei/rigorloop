@@ -3160,3 +3160,44 @@ closed success-attestation fields, and the separate failure diagnostic path.
 No new material findings. R22 independently confirmed BFP-AR19-1,
 BFP-AR19-2, BFP-AR20-1, BFP-AR20-2, and BFP-AR21-1 resolved and approved the
 v3 capability-projected architecture and scoped successor ADR.
+
+### plan-review-r16
+
+#### BFP-PL16-1 — Handler conformance is not explicitly validated before capability branching
+
+Finding ID: BFP-PL16-1
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan revision
+Decision owner: approved R48/R22 common conformance gate
+Decision needed: none
+Required outcome: Validate the complete fresh production-dispatch conformance
+policy and result through the pure model before either capability branch.
+Chosen action: Move pure-model validation immediately after conformance
+execution and add negative ordering proof that invalid conformance executes no
+branch, canary, lifecycle turn, or successful attestation.
+Rationale: Executing a gate is not equivalent to validating its closed result
+before dependent behavior.
+Validation target: plan-review-r17
+Validation evidence: pending plan-review-r17
+
+#### BFP-PL16-2 — M2 rollback does not restore a coherent authority and evidence state
+
+Finding ID: BFP-PL16-2
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan revision
+Decision owner: accepted v3 publication and opaque-history contracts
+Decision needed: none
+Required outcome: Define phase-aware M2 rollback that leaves one coherent
+current state and no unresolved publication transaction.
+Chosen action: Reconcile under the publisher lock, restore or remove current
+authority from validated prior state, revert the complete compatibility unit,
+retain v3 runs only as non-current history, and validate no dangling v3
+authority remains.
+Rationale: Reverting skill text and a pointer alone can leave current evidence
+bound to removed code or package identities.
+Validation target: plan-review-r17
+Validation evidence: pending plan-review-r17

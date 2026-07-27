@@ -1240,3 +1240,14 @@ Detailed record: reviews/architecture-review-r22.md
 Resolution: review-resolution.md#architecture-review-r22
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: plan-review-r16
+Stage: plan-review
+Round: 16
+Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md at 385f5026
+Status: changes-requested
+Detailed record: reviews/plan-review-r16.md
+Resolution: review-resolution.md#plan-review-r16
+Material findings: BFP-PL16-1, BFP-PL16-2
+Open findings: BFP-PL16-1, BFP-PL16-2
