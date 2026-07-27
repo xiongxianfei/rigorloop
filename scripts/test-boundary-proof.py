@@ -2294,6 +2294,23 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 self.assertIn(
                     "If the required reference cannot be loaded", normalized
                 )
+                reference = (
+                    ROOT
+                    / "skills"
+                    / skill
+                    / "references/boundary-proof-model.md"
+                ).read_text(encoding="utf-8")
+                self.assertIn(
+                    "| Dimension ID | Applicability | Governing requirement IDs | "
+                    "Boundary IDs | Non-applicability rationale |",
+                    reference,
+                )
+                self.assertIn(
+                    "| Proof obligation ID | Governing requirement IDs | "
+                    "Boundary or interaction IDs | Test case IDs | "
+                    "Automation level | Manual procedure IDs |",
+                    reference,
+                )
 
     def test_workflow_turn_binds_orchestrator_and_all_stage_owners(self) -> None:
         request = _turn_start_request(
