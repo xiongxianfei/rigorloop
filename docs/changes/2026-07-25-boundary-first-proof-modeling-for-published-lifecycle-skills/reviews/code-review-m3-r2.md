@@ -204,4 +204,3 @@ No new stage, universal artifact, or authority was introduced.
 
 M3 is closed. The active plan advances to M4 implementation. Final closeout,
 verify, and PR remain unavailable while M4 is open.
-
