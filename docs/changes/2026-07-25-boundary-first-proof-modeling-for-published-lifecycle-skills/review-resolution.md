@@ -3541,3 +3541,8 @@ remain required before M2 implementation resumes.
 No new material findings. R27 independently approved the focused canonical
 architecture update and confirmed that the existing evaluator/reviewer
 boundary and ADR remain sufficient.
+
+### plan-review-r21
+
+No new material findings. R21 independently approved the focused R55/R27 M2
+execution-plan synchronization and routed the change to test-spec review.

@@ -19,6 +19,17 @@ Material findings: BFP-PR1, BFP-PR2, BFP-PR3, BFP-PR4
 Open findings: None
 
 ### Review entry
+Review ID: plan-review-r21
+Stage: plan-review
+Round: 21
+Reviewed artifact: focused R55/R27 extension-oracle synchronization at 92473d01
+Status: approved
+Detailed record: reviews/plan-review-r21.md
+Resolution: review-resolution.md#plan-review-r21
+Material findings: None
+Open findings: None
+
+### Review entry
 Review ID: architecture-review-r27
 Stage: architecture-review
 Round: 27
