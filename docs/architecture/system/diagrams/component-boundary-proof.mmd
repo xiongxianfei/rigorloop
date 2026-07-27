@@ -14,6 +14,7 @@ flowchart LR
   transport_policy["Transport policy<br/>[Manifest-bound positive deadlines]"]:::container
   file_change_policy["File-change authorization policy<br/>[Decline-only for every governed turn]"]:::container
   artifact_policy["Artifact policies<br/>[Lifecycle manifest + preflight canary]"]:::container
+  scenario_record["Simple-change scenario record<br/>[Parent-owned request + expectations]"]:::container
   input_set["Simple-change input set<br/>[Five-package resources + manifest identity]"]:::container
   staged_run["Validated staged run<br/>[Non-authoritative]"]:::container
   immutable_run["Installed immutable run<br/>[Change-local evidence]"]:::container
@@ -59,6 +60,9 @@ flowchart LR
   selector -->|routes affected paths| validator
   fixtures -->|fixture and behavior evidence| validator
   fixtures -->|parent-only candidates and post-observation expectations| oracle_evaluator
+  scenario_record -->|request value only; no path or expectation bytes| harness
+  scenario_record -->|expectations read after trace derivation| oracle_evaluator
+  scenario_record -->|complete identity only| input_set
   feature_specs -->|boundary and proof records| validator
   reviewer -->|semantic completeness| feature_specs
   skills -->|five participating packages + resource maps| assembler
