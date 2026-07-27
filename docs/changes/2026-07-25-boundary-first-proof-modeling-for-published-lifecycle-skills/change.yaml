@@ -295,7 +295,7 @@ workflow:
     run:
       run_id: run-20260725-boundary-first-verify
       change_id: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
-      status: active
+      status: paused
       policy_version: 1
       target:
         stage: verify
@@ -304,6 +304,7 @@ workflow:
         bound_at: 2026-07-25T22:55:46Z
         completion:
           rule: fresh verification passes
+      stop_reason: verification-authorization-required
     parent_authorizations:
       authorization-authoring-run-20260725-boundary-first-verify:
         authorization_id: authorization-authoring-run-20260725-boundary-first-verify
