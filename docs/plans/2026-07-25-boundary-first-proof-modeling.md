@@ -98,7 +98,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r20.md
 - Review status: approved; stage=plan-review; round=r20
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: test-spec
+- Next stage: test-spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-CR-M2-9
 
@@ -872,6 +872,10 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Synchronized the active R28y proof map and its exact input
+  identities to spec-review R54, architecture-review R26, and plan-review R20.
+  Independent test-spec review is the remaining authoring gate for M2.
 
 - 2026-07-27: Plan-review R20 approved the focused R54/R26 M2 sequence with no
   material findings. Test-spec synchronization and independent review remain
