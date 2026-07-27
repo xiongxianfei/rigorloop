@@ -379,6 +379,40 @@ CORRECTION_STOP_FIELDS: Final[frozenset[str]] = frozenset(
         "diagnostic_id",
     }
 )
+CORRECTION_STOP_EVIDENCE_FILES: Final[frozenset[str]] = frozenset(
+    {
+        "review-record.md",
+        "review-log.md",
+        "review-resolution.md",
+        "review-bundle.json",
+        "review-event.json",
+        "finding-projection.json",
+    }
+)
+CORRECTION_STOP_BUNDLE_FIELDS: Final[frozenset[str]] = frozenset(
+    {
+        "schema_version",
+        "stage",
+        "attempt",
+        "review_id",
+        "outcome",
+        "reviewed_artifact_identity",
+        "material_finding_ids",
+        "finding_projection_identity",
+        "correction_eligibility",
+        "artifact_refs",
+    }
+)
+CORRECTION_STOP_EVENT_FIELDS: Final[frozenset[str]] = frozenset(
+    {
+        "schema_version",
+        "stage",
+        "attempt",
+        "observed_result",
+        "diagnostic_id",
+        "evidence_refs",
+    }
+)
 RUN_ID_PATTERN: Final[re.Pattern[str]] = re.compile(r"^run-[0-9a-f]{32}$")
 PUBLISHER_ID_PATTERN: Final[re.Pattern[str]] = re.compile(
     r"^publisher-[0-9a-f]{32}$"
@@ -3076,7 +3110,75 @@ def _write_correction_stop(
     stage: str,
     reviewed_artifact_identity: str,
     review_payload: Mapping[str, object],
+    resolution_markdown: str,
 ) -> dict[str, object]:
+    if not isinstance(resolution_markdown, str) or not resolution_markdown:
+        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+    evidence_root = working_root / "correction-stop-evidence"
+    evidence_root.mkdir(mode=0o700, parents=False, exist_ok=False)
+    raw_artifacts = {
+        "review-record.md": str(review_payload["review_record_markdown"]).encode(
+            "utf-8"
+        ),
+        "review-log.md": str(review_payload["review_log_markdown"]).encode(
+            "utf-8"
+        ),
+        "review-resolution.md": resolution_markdown.encode("utf-8"),
+        "finding-projection.json": _canonical_json_bytes(
+            review_payload["finding_projection"]
+        ),
+    }
+    artifact_refs = {
+        name.removesuffix(".md").removesuffix(".json"): {
+            "path": f"correction-stop-evidence/{name}",
+            "identity": _sha256(raw),
+        }
+        for name, raw in raw_artifacts.items()
+    }
+    bundle = {
+        "schema_version": "simple-change-correction-stop-bundle-v1",
+        "stage": stage,
+        "attempt": 1,
+        "review_id": review_payload["review_id"],
+        "outcome": review_payload["outcome"],
+        "reviewed_artifact_identity": reviewed_artifact_identity,
+        "material_finding_ids": list(
+            review_payload["material_finding_ids"]
+        ),
+        "finding_projection_identity": review_payload[
+            "finding_projection_identity"
+        ],
+        "correction_eligibility": review_payload[
+            "correction_eligibility"
+        ],
+        "artifact_refs": artifact_refs,
+    }
+    bundle_raw = _canonical_json_bytes(bundle)
+    raw_artifacts["review-bundle.json"] = bundle_raw
+    bundle_ref = {
+        "path": "correction-stop-evidence/review-bundle.json",
+        "identity": _sha256(bundle_raw),
+    }
+    event = {
+        "schema_version": "simple-change-correction-stop-event-v1",
+        "stage": stage,
+        "attempt": 1,
+        "observed_result": "changes-requested",
+        "diagnostic_id": "correction-authorization-required",
+        "evidence_refs": [
+            bundle_ref,
+            *sorted(
+                artifact_refs.values(),
+                key=lambda reference: str(reference["path"]),
+            ),
+        ],
+    }
+    raw_artifacts["review-event.json"] = _canonical_json_bytes(event)
+    if set(raw_artifacts) != CORRECTION_STOP_EVIDENCE_FILES:
+        raise BoundaryRuntimeError("runtime-identity-unstable", "in-turn")
+    for name, raw in raw_artifacts.items():
+        _exclusive_write(evidence_root / name, raw)
+    _fsync_directory(evidence_root)
     receipt = {
         "schema_version": "simple-change-correction-stop-v1",
         "run_id": lease["run_id"],
@@ -3099,6 +3201,7 @@ def _write_correction_stop(
         working_root / "correction-stop.json",
         _canonical_json_bytes(receipt),
     )
+    _fsync_directory(working_root)
     return receipt
 
 
@@ -4963,6 +5066,19 @@ def _completed_correction_stop_input_identities(
     return frozenset(identities)
 
 
+def _assert_correction_input_is_fresh(
+    repo_root: Path,
+    change_id: str,
+    input_set_identity: str,
+) -> None:
+    if input_set_identity in _completed_correction_stop_input_identities(
+        repo_root, change_id
+    ):
+        raise BoundaryRuntimeError(
+            "correction-authorization-required", "in-turn"
+        )
+
+
 def _exclusive_write(path: Path, raw: bytes) -> None:
     descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     try:
@@ -5791,6 +5907,111 @@ def _assembled_working_paths() -> tuple[set[str], set[str]]:
     return files, directories
 
 
+def _validate_correction_stop_evidence(
+    root: Path,
+    receipt: Mapping[str, object],
+) -> None:
+    evidence_root = root / "correction-stop-evidence"
+    if evidence_root.is_symlink() or not evidence_root.is_dir():
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    entries = list(evidence_root.iterdir())
+    if (
+        {entry.name for entry in entries} != CORRECTION_STOP_EVIDENCE_FILES
+        or any(entry.is_symlink() or not entry.is_file() for entry in entries)
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    raw_by_name = {entry.name: entry.read_bytes() for entry in entries}
+    try:
+        record = raw_by_name["review-record.md"].decode("utf-8")
+        log = raw_by_name["review-log.md"].decode("utf-8")
+        resolution = raw_by_name["review-resolution.md"].decode("utf-8")
+    except UnicodeError as error:
+        raise BoundaryRuntimeError("runtime-identity-unstable") from error
+    payload = _review_payload_from_markdown(str(receipt["stage"]), record, log)
+    _validate_review_payload(
+        payload,
+        stage=str(receipt["stage"]),
+        artifact_identity=str(receipt["reviewed_artifact_identity"]),
+        require_approval=False,
+    )
+    try:
+        projection = json.loads(
+            raw_by_name["finding-projection.json"].decode("utf-8")
+        )
+    except (UnicodeError, json.JSONDecodeError) as error:
+        raise BoundaryRuntimeError("runtime-identity-unstable") from error
+    bundle = _read_json(evidence_root / "review-bundle.json")
+    event = _read_json(evidence_root / "review-event.json")
+    artifact_refs = {
+        name.removesuffix(".md").removesuffix(".json"): {
+            "path": f"correction-stop-evidence/{name}",
+            "identity": _sha256(raw),
+        }
+        for name, raw in raw_by_name.items()
+        if name
+        in {
+            "review-record.md",
+            "review-log.md",
+            "review-resolution.md",
+            "finding-projection.json",
+        }
+    }
+    if (
+        projection != payload["finding_projection"]
+        or set(bundle) != CORRECTION_STOP_BUNDLE_FIELDS
+        or bundle.get("schema_version")
+        != "simple-change-correction-stop-bundle-v1"
+        or bundle.get("stage") != receipt["stage"]
+        or bundle.get("attempt") != 1
+        or bundle.get("review_id") != receipt["review_id"]
+        or bundle.get("outcome") != "changes-requested"
+        or bundle.get("reviewed_artifact_identity")
+        != receipt["reviewed_artifact_identity"]
+        or bundle.get("material_finding_ids")
+        != receipt["material_finding_ids"]
+        or bundle.get("finding_projection_identity")
+        != receipt["finding_projection_identity"]
+        or bundle.get("correction_eligibility")
+        != "owner-decision-required"
+        or bundle.get("artifact_refs") != artifact_refs
+        or payload["review_id"] != receipt["review_id"]
+        or payload["material_finding_ids"]
+        != receipt["material_finding_ids"]
+        or payload["finding_projection_identity"]
+        != receipt["finding_projection_identity"]
+        or payload["correction_eligibility"]
+        != "owner-decision-required"
+        or any(
+            finding_id not in resolution
+            for finding_id in receipt["material_finding_ids"]
+        )
+        or str(receipt["review_id"]) not in resolution
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    expected_refs = [
+        {
+            "path": "correction-stop-evidence/review-bundle.json",
+            "identity": _sha256(raw_by_name["review-bundle.json"]),
+        },
+        *sorted(
+            artifact_refs.values(),
+            key=lambda reference: str(reference["path"]),
+        ),
+    ]
+    if (
+        set(event) != CORRECTION_STOP_EVENT_FIELDS
+        or event.get("schema_version")
+        != "simple-change-correction-stop-event-v1"
+        or event.get("stage") != receipt["stage"]
+        or event.get("attempt") != 1
+        or event.get("observed_result") != "changes-requested"
+        or event.get("diagnostic_id")
+        != "correction-authorization-required"
+        or event.get("evidence_refs") != expected_refs
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+
+
 def _working_tree_identity(
     root: Path, lease: Mapping[str, object] | None = None
 ) -> str:
@@ -5807,6 +6028,11 @@ def _working_tree_identity(
     assembled_files, assembled_directories = _assembled_working_paths()
     for child in root.iterdir():
         if child == stop_path:
+            continue
+        if child.name == "correction-stop-evidence":
+            if stop_receipt is None:
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            _validate_correction_stop_evidence(root, stop_receipt)
             continue
         if child.name == "manifest.json":
             if child.is_symlink() or not child.is_file():
@@ -5846,39 +6072,7 @@ def _working_tree_identity(
             elif relative not in {"manifested.txt"} | allowed_files:
                 raise BoundaryRuntimeError("runtime-identity-unstable")
     if stop_receipt is not None:
-        stage = str(stop_receipt["stage"])
-        matches: list[dict[str, object]] = []
-        for record_path in root.glob(
-            f"boundary-proof-workspace-*/reviews/{stage}.md"
-        ):
-            workspace = record_path.parents[1]
-            log_path = workspace / "review-log" / f"{stage}.md"
-            if not log_path.is_file() or log_path.is_symlink():
-                continue
-            payload = _review_payload_from_markdown(
-                stage,
-                record_path.read_text(encoding="utf-8"),
-                log_path.read_text(encoding="utf-8"),
-            )
-            _validate_review_payload(
-                payload,
-                stage=stage,
-                artifact_identity=str(
-                    stop_receipt["reviewed_artifact_identity"]
-                ),
-                require_approval=False,
-            )
-            if (
-                payload["review_id"] == stop_receipt["review_id"]
-                and payload["material_finding_ids"]
-                == stop_receipt["material_finding_ids"]
-                and payload["finding_projection_identity"]
-                == stop_receipt["finding_projection_identity"]
-                and payload["correction_eligibility"]
-                == "owner-decision-required"
-            ):
-                matches.append(payload)
-        if len(matches) != 1:
+        if not (root / "correction-stop-evidence").is_dir():
             raise BoundaryRuntimeError("runtime-identity-unstable")
     return _tree_identity(root)
 
@@ -6388,12 +6582,9 @@ def _generate_behavior_locked(
         "implementation_manifest_ref": implementation_ref,
     }
     input_set_identity = _sha256(_canonical_json_bytes(input_set))
-    if input_set_identity in _completed_correction_stop_input_identities(
-        repo_root, change_id
-    ):
-        raise BoundaryRuntimeError(
-            "correction-authorization-required", "in-turn"
-        )
+    _assert_correction_input_is_fresh(
+        repo_root, change_id, input_set_identity
+    )
     run_id = "run-" + secrets.token_hex(16)
     publisher_instance_id = "publisher-" + secrets.token_hex(16)
     lease, working_root = _create_publisher_lease(
@@ -6550,12 +6741,20 @@ def _generate_behavior_locked(
             spec_review_payload["correction_eligibility"]
             == "owner-decision-required"
         ):
+            resolution_markdown = artifacts.get(
+                "review-resolution/spec-review.md"
+            )
+            if not isinstance(resolution_markdown, str):
+                raise BoundaryRuntimeError(
+                    "protocol-shape-incompatible", "in-turn"
+                )
             _write_correction_stop(
                 working_root,
                 lease,
                 stage="spec-review",
                 reviewed_artifact_identity=feature_identity,
                 review_payload=spec_review_payload,
+                resolution_markdown=resolution_markdown,
             )
             raise BoundaryRuntimeError(
                 "correction-authorization-required", "in-turn"
@@ -6783,12 +6982,20 @@ def _generate_behavior_locked(
             test_review_payload["correction_eligibility"]
             == "owner-decision-required"
         ):
+            resolution_markdown = artifacts.get(
+                "review-resolution/test-spec-review.md"
+            )
+            if not isinstance(resolution_markdown, str):
+                raise BoundaryRuntimeError(
+                    "protocol-shape-incompatible", "in-turn"
+                )
             _write_correction_stop(
                 working_root,
                 lease,
                 stage="test-spec-review",
                 reviewed_artifact_identity=test_spec_identity,
                 review_payload=test_review_payload,
+                resolution_markdown=resolution_markdown,
             )
             raise BoundaryRuntimeError(
                 "correction-authorization-required", "in-turn"

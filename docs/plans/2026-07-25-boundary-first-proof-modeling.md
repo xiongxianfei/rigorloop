@@ -928,6 +928,11 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-27: Implemented the R10 corrections. Owner-decision stops now retain
+  and validate one complete lease-bound review evidence package before the
+  terminal receipt, and 109 focused tests directly cover the T52 authority,
+  stop, recovery, request-only, and expectation matrices. Fresh canonical
+  generation is next because the harness identity changed.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review
