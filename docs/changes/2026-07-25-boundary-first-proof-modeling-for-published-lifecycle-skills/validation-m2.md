@@ -458,3 +458,35 @@ The correction now:
 
 `python scripts/test-boundary-proof.py` then passed 104 tests. No failed
 attempt was promoted to `current.json`.
+
+## Fresh canonical correction-authority result
+
+Fresh generation published immutable run
+`run-b6114d1a01a6e6703177c512c2eb4a11`:
+
+```json
+{"false_blocking_count":0,"input_set_identity":"sha256:3996b321b3d9d5e8b8b2dfba5140afc128ec8503c27c709f983612c39dae4c12","new_universal_artifact_count":0,"result":"pass","run_id":"run-b6114d1a01a6e6703177c512c2eb4a11","simple_fixture_structure_correction_cycles":0}
+```
+
+The authoritative scenario’s `White_Space` definition produced the declared
+zero-correction branch. Both independent reviews approved their exact bound
+artifacts, and every approved bundle carries the canonical empty finding
+projection, its identity, and `not-applicable` correction eligibility.
+
+The following post-publication checks passed:
+
+```text
+python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+python scripts/test-boundary-proof.py
+  Ran 104 tests
+  OK
+python scripts/validate-skills.py
+  validated 24 skill files
+python scripts/test-skill-validator.py
+  Ran 259 tests
+  OK
+python scripts/build-skills.py --check
+  validated generated skills
+```
+
+M2 is ready for code-review R10. Final verification is not claimed.
