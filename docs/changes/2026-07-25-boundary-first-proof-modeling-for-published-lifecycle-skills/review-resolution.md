@@ -1896,7 +1896,7 @@ architecture/plan contradiction identity.
 
 Finding ID: BFP-CR-M2-10
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: test-spec and M2 implementation owners
 Owning stage: test-spec correction, implementation, and code review
 Decision owner: approved R28y publication transaction
@@ -1910,6 +1910,36 @@ Rationale: The accepted specification already selects the behavior, so this is
 a declared-safe correction rather than a new product or architecture decision.
 Validation target: test-spec-review-r24, focused M2 validation, regenerated
 canonical evidence, and code-review-m2-r5
+Validation evidence: The lease, publisher-bound manifest/receipt, durable
+recovery basis/state, and crash-resume path were implemented and produced
+current immutable run `run-c9cf75951ba54219a13fe8f7c237c63d`.
+Code-review M2 R5 classified the attempted global-recovery remediation as
+incomplete after four direct probes escaped the closed R28y contract.
+Residual boundary-completeness work is tracked under `BFP-CR-M2-11` rather
+than keeping this broader predecessor finding open.
+
+### code-review-m2-r5
+
+#### BFP-CR-M2-11 - Recovery remains example-implemented instead of boundary-complete
+
+Finding ID: BFP-CR-M2-11
+Disposition: accepted
+Status: in-progress
+Owner: M2 implementation and code-review owners
+Owning stage: implementation correction and code review
+Decision owner: approved R28y global recovery contract
+Decision needed: none
+Required outcome: Project the complete global-discovery, completed-history,
+minimum-valid orphan, staged-run, temporary-basis, and recovery-state contract
+into closed validators and direct proof.
+Chosen action: Add failing regressions for the four reproduced escapes, replace
+example checks with shared typed validators and closed evaluators, expand the
+T51 negative and crash-resume matrix, and rerun canonical validation and code
+review.
+Rationale: The accepted specification already defines every required state and
+safe action; no product, architecture, or scope choice is needed.
+Validation target: focused M2 tests, canonical evidence validation or
+regeneration, and code-review-m2-r6
 Validation evidence: Pending.
 
 ### spec-review-r27

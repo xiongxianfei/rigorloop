@@ -205,13 +205,13 @@ changed_files:
 review:
   status: changes-requested
   unresolved_items: 1
-  material_findings: 170
+  material_findings: 171
   open_findings: 1
-  closed_findings: 169
+  closed_findings: 170
   architecture_review: reviews/architecture-review-r26.md
   spec_review: reviews/spec-review-r54.md
   test_spec_review: reviews/test-spec-review-r25.md
-  code_review: reviews/code-review-m2-r4.md
+  code_review: reviews/code-review-m2-r5.md
   review_log: review-log.md
 workflow:
   automation:

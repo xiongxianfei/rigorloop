@@ -95,12 +95,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r25.md
-- Review status: changes-requested; stage=code-review; round=r4
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r5.md
+- Review status: changes-requested; stage=code-review; round=r5
 - Remaining in-scope implementation milestones: M2, M3, M4
 - Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BFP-CR-M2-10
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BFP-CR-M2-11
 
 ## Milestones
 
@@ -873,6 +873,12 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Code-review M2 R5 classified the broad publisher recovery
+  remediation as incomplete and opened `BFP-CR-M2-11`. Direct probes showed
+  malformed completed history is ignored, unknown working bytes and invalid
+  staged bytes are accepted for recovery, and the required constrained
+  malformed-temp cleanup route is absent. M2 remains `resolution-needed`.
 
 - 2026-07-27: Published crash-resumable immutable canonical run
   `run-c9cf75951ba54219a13fe8f7c237c63d` for input identity

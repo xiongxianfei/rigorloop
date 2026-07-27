@@ -19,6 +19,17 @@ Material findings: BFP-PR1, BFP-PR2, BFP-PR3, BFP-PR4
 Open findings: None
 
 ### Review entry
+Review ID: code-review-m2-r5
+Stage: code-review
+Round: 5
+Reviewed artifact: commit range 8dce1866..dc7fc15f
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r5.md
+Resolution: review-resolution.md#code-review-m2-r5
+Material findings: BFP-CR-M2-11
+Open findings: BFP-CR-M2-11
+
+### Review entry
 Review ID: test-spec-review-r25
 Stage: test-spec-review
 Round: 25
@@ -49,7 +60,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r4.md
 Resolution: review-resolution.md#code-review-m2-r4
 Material findings: BFP-CR-M2-10
-Open findings: BFP-CR-M2-10
+Open findings: None
 
 ### Review entry
 Review ID: test-spec-review-r23
