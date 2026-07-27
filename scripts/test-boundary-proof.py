@@ -1902,6 +1902,10 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         )
         self.assertIn("literal ASCII `-`", stage_request["prompt"])
         self.assertIn("all twelve closed core dimension IDs", stage_request["prompt"])
+        self.assertIn(
+            "Each boundary ID must appear in exactly one boundary row",
+            stage_request["prompt"],
+        )
         self.assertIn("add no normative behavior", stage_request["prompt"])
         self.assertEqual(
             stage_request["artifact_policy_id"],
