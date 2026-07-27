@@ -94,13 +94,13 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m2.md
-- Review status: pending; stage=code-review; round=r12
+- Current milestone state: resolution-needed
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r12.md
+- Review status: changes-requested; stage=code-review; round=r12
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-CR-M2-14,BFP-CR-M2-15,BFP-CR-M2-16,BFP-CR-M2-17,BFP-CR-M2-18
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=6; open-findings=BFP-CR-M2-14,BFP-CR-M2-15,BFP-CR-M2-16,BFP-CR-M2-17,BFP-CR-M2-18,BFP-CR-M2-19
 
 ## Milestones
 
@@ -975,6 +975,11 @@ resource through generated, packed, and installed outputs.
   zero-correction path passes with zero false blocking and zero new universal
   artifacts; controlled correction-role tests prove the open/prior/closed
   history and its negative contrasts. M2 is `review-requested` for R12.
+- 2026-07-27: Code-review R12 confirmed the valid temporal-history path but
+  closed `BFP-CR-M2-18` and opened `BFP-CR-M2-19`. The new byte-revalidation helper performs mapping
+  membership and string containment before proving reviewed IDs and finding
+  members have closed types, so malformed JSON can raise raw `TypeError`.
+  M2 is `resolution-needed` for the bounded type-guard correction.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review

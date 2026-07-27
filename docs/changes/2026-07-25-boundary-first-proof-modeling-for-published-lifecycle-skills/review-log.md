@@ -1691,3 +1691,14 @@ Detailed record: reviews/code-review-m2-r11.md
 Resolution: review-resolution.md#code-review-m2-r11
 Material findings: BFP-CR-M2-18
 Open findings: BFP-CR-M2-18
+
+### Review entry
+Review ID: code-review-m2-r12
+Stage: code-review
+Round: 12
+Reviewed artifact: M2 R11 resolution through b849b9fe
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r12.md
+Resolution: review-resolution.md#code-review-m2-r12
+Material findings: BFP-CR-M2-19
+Open findings: BFP-CR-M2-19

@@ -2098,6 +2098,28 @@ Validation target: focused M2 tests, controlled correction assemblers,
 immutable current-run validation, and code-review-m2-r12
 Validation evidence: Pending.
 
+### code-review-m2-r12
+
+#### BFP-CR-M2-19 - Malformed bundle identities bypass controlled failure
+
+Finding ID: BFP-CR-M2-19
+Disposition: accepted
+Status: in-progress
+Owner: M2 implementation and code-review owners
+Owning stage: review-resolution and implementation correction
+Decision owner: approved R28y fail-closed validator contract
+Decision needed: none
+Required outcome: Prove reviewed snapshot IDs and finding members have closed
+types before membership or content operations and reject every malformed value
+through the stable runtime diagnostic.
+Chosen action: Add early string/list/stable-ID/order/uniqueness guards and a
+direct malformed-value contrast matrix.
+Rationale: The byte-revalidation helper currently lets unhashable JSON values
+raise raw `TypeError` before the pure closed-schema evaluator runs.
+Validation target: focused M2 tests, immutable current-run validation, and
+code-review-m2-r13
+Validation evidence: Pending.
+
 #### BFP-CR-M2-17 - T52 named boundary contrasts are not directly proved
 
 Finding ID: BFP-CR-M2-17
