@@ -19,6 +19,17 @@ Material findings: BFP-PR1, BFP-PR2, BFP-PR3, BFP-PR4
 Open findings: None
 
 ### Review entry
+Review ID: spec-review-r55
+Stage: spec-review
+Round: 55
+Reviewed artifact: focused extension-oracle correction at b63d7a2e
+Status: approved
+Detailed record: reviews/spec-review-r55.md
+Resolution: review-resolution.md#spec-review-r55
+Material findings: None
+Open findings: None
+
+### Review entry
 Review ID: code-review-m2-preflight-r1
 Stage: code-review
 Round: M2 preflight R1
