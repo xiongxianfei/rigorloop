@@ -96,9 +96,9 @@ resource through generated, packed, and installed outputs.
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r22.md
-- Review status: approved; stage=plan-review; round=r22
+- Review status: review-requested; stage=test-spec-review; round=r26
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: test-spec
+- Next stage: test-spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BFP-CR-M2-14,BFP-CR-M2-15
 
@@ -933,6 +933,10 @@ resource through generated, packed, and installed outputs.
   correction eligibility, durable owner-decision stop, discard-only recovery,
   unequal-input regeneration, and post-observation scenario comparison. Plan
   review R22 is the next gate.
+- 2026-07-27: The active test spec now contains five named T52 proof
+  obligations for finding projection, correction authority, terminal stop,
+  discard/equal-input recovery, request-only child input, and post-observation
+  expectation comparison. Test-spec review R26 is the next gate.
 
 - 2026-07-27: Spec-review R57 approved the identity-bound correction
   eligibility, correction-stop receipt, recovery, and unequal-input fresh-run
