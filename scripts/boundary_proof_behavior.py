@@ -4083,10 +4083,20 @@ def _assemble_run(
         record_markdown = review_payload.get("review_record_markdown")
         log_markdown = review_payload.get("review_log_markdown")
         review_id = review_payload.get("review_id")
+        finding_projection = review_payload.get("finding_projection")
+        finding_projection_identity = review_payload.get(
+            "finding_projection_identity"
+        )
+        correction_eligibility = review_payload.get(
+            "correction_eligibility"
+        )
         if (
             not isinstance(record_markdown, str)
             or not isinstance(log_markdown, str)
             or not isinstance(review_id, str)
+            or finding_projection != []
+            or not isinstance(finding_projection_identity, str)
+            or correction_eligibility != "not-applicable"
         ):
             raise BoundaryRuntimeError("protocol-shape-incompatible")
         record_raw = record_markdown.encode("utf-8")
@@ -4112,6 +4122,9 @@ def _assemble_run(
             "outcome": "approved",
             "reviewed_snapshot_id": reviewed["snapshot_id"],
             "material_finding_ids": [],
+            "finding_projection": finding_projection,
+            "finding_projection_identity": finding_projection_identity,
+            "correction_eligibility": correction_eligibility,
             "artifact_refs": {
                 "review-record": _snapshot_ref(record),
                 "review-log": _snapshot_ref(log),
@@ -5753,6 +5766,31 @@ def _working_output_paths() -> tuple[set[str], set[str]]:
     return files, directories
 
 
+def _assembled_working_paths() -> tuple[set[str], set[str]]:
+    """Return the closed file set an assembled run may hold before staging."""
+
+    files = {
+        "feature-spec/portable-text-normalizer.md",
+        "feature-spec/portable-text-normalizer-attempt-1.md",
+        "feature-spec/portable-text-normalizer-attempt-2.md",
+        "test-spec/portable-text-normalizer.test.md",
+        "test-spec/portable-text-normalizer-attempt-1.test.md",
+        "test-spec/portable-text-normalizer-attempt-2.test.md",
+    }
+    for stage in ("spec-review", "test-spec-review"):
+        for prefix in (stage, f"{stage}-attempt-1", f"{stage}-attempt-2"):
+            files.update(
+                {
+                    f"review-evidence/{prefix}-record.md",
+                    f"review-evidence/{prefix}-log.md",
+                    f"review-evidence/{prefix}-bundle.json",
+                    f"review-evidence/{prefix}-resolution.md",
+                }
+            )
+    directories = {"feature-spec", "test-spec", "review-evidence"}
+    return files, directories
+
+
 def _working_tree_identity(
     root: Path, lease: Mapping[str, object] | None = None
 ) -> str:
@@ -5766,8 +5804,28 @@ def _working_tree_identity(
             raise BoundaryRuntimeError("runtime-identity-unstable")
         stop_receipt = _read_json(stop_path)
         _validate_correction_stop_receipt(stop_receipt, lease=lease)
+    assembled_files, assembled_directories = _assembled_working_paths()
     for child in root.iterdir():
         if child == stop_path:
+            continue
+        if child.name == "manifest.json":
+            if child.is_symlink() or not child.is_file():
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            continue
+        if child.name == "artifacts":
+            if child.is_symlink() or not child.is_dir():
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            for path in child.rglob("*"):
+                if path.is_symlink() or not (path.is_dir() or path.is_file()):
+                    raise BoundaryRuntimeError("runtime-identity-unstable")
+                relative = path.relative_to(child).as_posix()
+                if path.is_dir():
+                    if relative not in assembled_directories:
+                        raise BoundaryRuntimeError(
+                            "runtime-identity-unstable"
+                        )
+                elif relative not in assembled_files:
+                    raise BoundaryRuntimeError("runtime-identity-unstable")
             continue
         if (
             child.is_symlink()

@@ -33,6 +33,7 @@ from boundary_proof_behavior import (
     _AppServer,
     _StageTurnTimeout,
     _assert_parent_only_candidate_isolation,
+    _assembled_working_paths,
     _artifact_kind,
     _assemble_feature_spec_correction_run,
     _assemble_test_spec_correction_run,
@@ -65,6 +66,7 @@ from boundary_proof_behavior import (
     _schema_bundle_projection,
     _workflow_request,
     _workflow_stage_request,
+    _working_tree_identity,
     _thread_start_request,
     _turn_start_request,
     _observed_scenario_outcome,
@@ -3377,6 +3379,35 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         rebound = dict(receipt, input_set_identity="sha256:" + "d" * 64)
         with self.assertRaises(BoundaryRuntimeError):
             _validate_correction_stop_receipt(rebound, lease=lease)
+
+    def test_working_tree_identity_accepts_only_closed_assembled_paths(
+        self,
+    ) -> None:
+        allowed_files, allowed_directories = _assembled_working_paths()
+        self.assertIn(
+            "review-evidence/spec-review-bundle.json", allowed_files
+        )
+        self.assertEqual(
+            allowed_directories,
+            {"feature-spec", "test-spec", "review-evidence"},
+        )
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            artifact = (
+                root
+                / "artifacts"
+                / "review-evidence"
+                / "spec-review-bundle.json"
+            )
+            artifact.parent.mkdir(parents=True)
+            artifact.write_text("{}", encoding="utf-8")
+            identity = _working_tree_identity(root)
+            self.assertRegex(identity, r"^sha256:[0-9a-f]{64}$")
+
+            prohibited = root / "artifacts" / "review-evidence" / "extra.json"
+            prohibited.write_text("{}", encoding="utf-8")
+            with self.assertRaises(BoundaryRuntimeError):
+                _working_tree_identity(root)
 
     def test_scenario_expectations_compare_after_observation(self) -> None:
         zero_events = [
