@@ -84,7 +84,7 @@ This report is computed from repository-visible evidence.
         },
         {
           "operation_id": "boundary-traceability",
-          "result_identity": "sha256:ac41fef4538a61661e7f2e265fb023e4d12d586b095dbbe575fb10e85814a22f"
+          "result_identity": "sha256:5a46e01b2066e731adb1137e498f7d6e1158848efc91265e2262df9a9fb37e23"
         },
         {
           "operation_id": "BFP-FX-CANONICAL-001",
@@ -175,7 +175,7 @@ This report is computed from repository-visible evidence.
         "new_universal_artifact_count": 0,
         "simple_fixture_structure_correction_cycles": 0
       },
-      "operation_identity": "sha256:e938c54bdf2a90cbd54e3c288c237168ee54b33110c95f6d8a8819d0bc62d1a0",
+      "operation_identity": "sha256:47947c1a94206af31ce9be5389bbea6736f99a0ae49560326b2b194a361a5e0d",
       "result": "pass"
     },
     "boundary-incident-replay": {
@@ -345,7 +345,7 @@ This report is computed from repository-visible evidence.
       "diagnostic_id": "none",
       "evidence_refs": [
         {
-          "identity": "sha256:fafd29f38df2eb833a8a3d36195c548f0ca223f2011b65a4eff506154cd5639f",
+          "identity": "sha256:2beb43894a0dafcfaa7eacb3f3de77faafd11bfc72dcb8cee29636c5a63c9572",
           "path": "docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml"
         },
         {
@@ -366,7 +366,7 @@ This report is computed from repository-visible evidence.
         }
       ],
       "observations": {},
-      "operation_identity": "sha256:ac41fef4538a61661e7f2e265fb023e4d12d586b095dbbe575fb10e85814a22f",
+      "operation_identity": "sha256:5a46e01b2066e731adb1137e498f7d6e1158848efc91265e2262df9a9fb37e23",
       "result": "pass"
     },
     "boundary-workflow-contract": {

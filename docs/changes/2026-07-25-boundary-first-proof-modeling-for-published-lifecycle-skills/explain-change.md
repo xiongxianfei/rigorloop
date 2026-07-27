@@ -6,9 +6,9 @@
 | Stage | `explain-change` |
 | Recorded | `2026-07-27` |
 | Status | `current` |
-| Reviewed diff | `f4c9354e..2933508d` |
-| Final diff identity | `sha256:e07f8b36963dd459b6758583a1eee08ad20c16b89ff6fcde74e36faf8c300856` |
-| Final review identity | `sha256:cbda561774c01e4b3ece45fd61575a8f8daa0bc2a294ab4f48858008451f4b75` |
+| Reviewed diff | `f4c9354e..282550ef` |
+| Final diff identity | `sha256:c923cf2e942ab2075cfcfa11d0f396029db60ff717bb4bc6f69b293b6aacd4a1` |
+| Final review identity | `sha256:1e1e57a4460a0f8fffe2a27cf676975120c3d3c524786ce473b8fd0164b65a2c` |
 | Final verify | Not claimed |
 | PR readiness | Not claimed |
 
@@ -112,9 +112,11 @@ The architecture preserves four ownership boundaries:
 | M2 | Runtime feasibility, hermetic harness, recovery transaction, upstream skill behavior, and fresh immutable evidence | Closed after thirteen implementation review rounds |
 | M3 | Downstream skill projection and 40-pair preservation proof | Closed after structural claims were separated from semantic review |
 | M4 | Selector routing, adapter parity, capability aggregation, activation/rollback proof, and final integration | Closed after public-CI composition and scheduling correction |
+| M5 | Verification routing and lifecycle synchronization correction | Closed after bounded nested-evidence routing, actual PR-range proof, and independent review |
 
-Final holistic code review R2 approved the complete cross-milestone diff.
-The active plan therefore has no remaining implementation milestone; its next stage remains `explain-change` because this direct invocation is isolated and does not advance workflow state.
+Final holistic code review R3 approved the complete cross-milestone diff after
+M5.
+The active plan therefore has no remaining implementation milestone.
 
 ## Diff Rationale by Area
 
@@ -129,7 +131,7 @@ The active plan therefore has no remaining implementation milestone; its next st
 | `tests/fixtures/boundary-proof/` | Added the exact incident registry, compact simple-change scenario, behavior, transport, activation, and rollback fixtures. | Prove closed boundary classes and contrasts while keeping examples subordinate. | `R28k`, `R28q-R28y`. | Incident replay, false-blocking, recovery, and release tests. |
 | `skills/*/SKILL.md`, `skills/*/references/boundary-proof-model.md`, `templates/shared/boundary-proof-model.md` | Added stage-local responsibilities and byte-identical on-demand reference material for the eight governed skills. | Make the capability portable and self-contained without duplicating eight normative contracts. | `R56-R56q`; packaged-resource architecture. | Skill validation, 261 skill tests, drift checks, 40 preservation pairs. |
 | `scripts/skill_validation.py`, adapter distribution and tests | Added resource mapping, identity, packaging, and four-surface parity checks. | Ensure canonical, generated, packed, and installed skills expose the same capability. | `R56n`, `R56q`, M4. | Adapter 132 tests and fresh v0.1.5 candidate archive validation. |
-| `scripts/validation_selection.py`, `scripts/test-select-validation.py` | Registered six boundary check IDs, classified all governed inputs, retained release routing, and made shared-state boundary suites sequential-only. | Prove the composed public validation path, not only a helper. | `R28p`, M4, `BFP-CR-FINAL-1`. | 137 selector tests and the exact 14-check selected-CI run. |
+| `scripts/validation_selection.py`, `scripts/test-select-validation.py` | Registered six boundary check IDs, classified governed inputs, made shared-state suites sequential-only, and made change-evidence matching honor bounded full roots and explicit descendant patterns. | Prove the composed public validation path and route nested durable evidence without accepting unrelated siblings. | `R28p`, CRM-R1-R19, M4-M5, `BFP-CR-FINAL-1`. | 142 selector tests, complete tracked-evidence inventory, and actual `origin/main..c015ff96` PR selection. |
 | Release transaction tests and fixtures | Added complete activation, partial-activation rejection, and rollback behavior without changing published release state. | Prove prospective all-or-nothing adoption and safe rollback. | `R28l-R28o`, `R28z`, `T47`, `T54`. | 87 release-transaction tests. |
 | Change-local immutable runs, recovery decisions, preservation snapshots, parity manifests, and capability report | Recorded exact inputs, outputs, interruptions, quarantine decisions, current pointers, and reconstructed results. | Preserve auditability and resume safety without treating chat or generated summaries as authority. | `R28y`, publication/recovery ADRs, M2-M4. | Current run, 40 preservation pairs, four parity manifests, capability report. |
 
@@ -174,6 +176,16 @@ Selector tests prove:
 - unrelated unsupported scripts still block; and
 - three aliases of the shared publisher-state suite cannot run concurrently.
 
+The M5 selector contrasts additionally prove:
+
+- safe nested roots are accepted while traversal, non-change roots, and
+  unbounded roots are rejected;
+- basename patterns remain immediate and recurse only through an explicit
+  descendant pattern;
+- unknown evidence siblings still produce `manual-routing-required`;
+- the initiative-specific routes do not capture another change; and
+- all tracked boundary evidence routes exactly once with no registration debt.
+
 Closed-vocabulary tests cover unknown values directly, so consistency checks cannot silently skip unrecognized states.
 
 ## Validation Evidence Available Before Final Verify
@@ -183,7 +195,7 @@ The following evidence passed before this explanation:
 | Command or evidence | Result |
 | --- | --- |
 | `python scripts/test-boundary-proof.py` | pass; 115 tests in the M4 baseline |
-| `python scripts/test-select-validation.py` | pass; 137 tests |
+| `python scripts/test-select-validation.py` | pass; 142 tests after M5 |
 | `python scripts/test-adapter-distribution.py` | pass; 132 tests |
 | `python scripts/test-release-transaction.py` | pass; 87 tests |
 | `python scripts/test-skill-validator.py` | pass; 261 tests |
@@ -192,9 +204,10 @@ The following evidence passed before this explanation:
 | Fresh v0.1.5 adapter build and validation | pass; three candidate archives |
 | Current behavior run | pass; `run-62735d2bff6ab29bfe208183cf33fc03` |
 | Current preservation run | structural pass; 40 pairs; zero upstream reinvocations |
-| Capability report reconstruction | pass; `sha256:ab0057f39cb928f0f08d07a8398aca82659bbeba267aa557514c02e5249c101f` |
+| Capability report reconstruction | pass after M5; `sha256:eee559b1ce85878a3ba5891a35ef9305b705fde721ab2f09131400806e255632` |
 | Exact plan-owned selected CI | pass; 14 selected checks |
-| Review artifact closeout validation | pass; 165 reviews and 185 findings |
+| `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` | pass at `c015ff96`; status `ok`, no blockers, no registration debt, broad smoke not required |
+| Review artifact structure validation | pass after final R3; 167 reviews and 185 findings |
 | Change metadata and lifecycle validation | pass, with existing merge-language warnings only |
 | `git diff --check` | pass |
 
@@ -214,10 +227,13 @@ The detailed review ledger contains:
 - zero rejected, deferred, partially accepted, or `needs-decision` dispositions; and
 - zero open findings.
 
-The final holistic R2 review introduced no new material finding and confirmed `BFP-CR-FINAL-1` resolved.
+Final holistic review R3 introduced no new material finding.
+It confirmed final R2 remains valid for the unchanged M1-M4 implementation and
+that M5 closes the verification-discovered routing debt without widening
+semantic validation or scope.
 
 See [review-resolution.md](review-resolution.md) and
-[code-review-final-r2.md](reviews/code-review-final-r2.md).
+[code-review-final-r3.md](reviews/code-review-final-r3.md).
 
 The scan-first prose summary near the top of `review-resolution.md` still contains historical intermediate counts.
 The validator-derived detailed ledger and current `change.yaml` metadata own the current 185/185 closeout count.
@@ -259,11 +275,15 @@ The change preserves these boundaries:
 - The `review-resolution.md` scan-first summary has stale historical counts, although the detailed ledger, metadata validator, and closeout validator agree on 185 resolved findings.
 - The unified automation verification handoff currently has a separate implementation gap: automatic `explain-change` requires verification capability while verification readiness expects current explanation evidence. This direct invocation records the explanation but does not repair or resume that mechanism.
 - Capability-preserving progressive disclosure remains paused. Resumption requires final verification plus a separate explicit decision; a passing capability report alone is insufficient.
+- The selector registry now contains exact initiative-specific evidence
+  registrations because the existing semantic checks are initiative-specific.
+  A future reusable evidence family should receive its own reviewed generic
+  contract rather than broadening these roots.
 
 ## Readiness Statement
 
-All four implementation milestones are closed, all material review findings are resolved, and final holistic code review is approved.
+All five implementation milestones are closed, all material review findings
+are resolved, and final holistic code review R3 is approved.
 
-This direct `explain-change` invocation is isolated.
-It does not resume the paused automation run, does not run final verification, and does not claim branch or PR readiness.
-The persisted automation stop remains `verification-authorization-required` until its separate readiness contract is satisfied or corrected.
+This explanation is current through the final reviewed M5 correction.
+It does not itself run final verification or claim branch or PR readiness.

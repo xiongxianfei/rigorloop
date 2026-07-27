@@ -8,30 +8,22 @@ Result: pass
 
 ## Root cause
 
-The evidence registry stored an `allowed_root`, but the selector ignored it
-when matching evidence. It classified only root-level change files and matched
-only their basenames. The boundary initiative legitimately records nested,
-typed evidence, so 461 tracked evidence paths fell through to
-`manual-routing-required` during PR selection.
+The evidence registry stored an `allowed_root`, but the selector ignored it when matching evidence.
+It classified only root-level change files and matched only their basenames.
+The boundary initiative legitimately records nested, typed evidence, so 461 tracked evidence paths fell through to `manual-routing-required` during PR selection.
 
-The blocked verification also found that the active plan still named
-`explain-change` after the explanation had been committed. That was a
-lifecycle-state synchronization defect, independent of the checker results.
+The blocked verification also found that the active plan still named `explain-change` after the explanation had been committed.
+That was a lifecycle-state synchronization defect, independent of the checker results.
 
 ## Correction
 
-- Match registered evidence against its complete repository path and the
-  registration's bounded root.
+- Match registered evidence against its complete repository path and the registration's bounded root.
 - Permit safe nested roots under one change or an exact dated change root.
-- Keep basename patterns immediate to their registered root; require an
-  explicit slash-bearing pattern for descendants.
-- Register this initiative's capability report, milestone evidence, runtime
-  evidence, adapter parity, preservation, simple-change, and recovery
-  evidence against existing semantic checks.
-- Bind those registrations to this exact dated change root. A similarly named
-  evidence path in another change remains unsupported.
-- Synchronize the plan body and plan index through a corrective M5 rather than
-  rewriting a closed implementation milestone.
+- Keep basename patterns immediate to their registered root; require an explicit slash-bearing pattern for descendants.
+- Register this initiative's capability report, milestone evidence, runtime evidence, adapter parity, preservation, simple-change, and recovery evidence against existing semantic checks.
+- Bind those registrations to this exact dated change root.
+  A similarly named evidence path in another change remains unsupported.
+- Synchronize the plan body and plan index through a corrective M5 rather than rewriting a closed implementation milestone.
 
 ## Failing-first evidence
 
@@ -41,9 +33,8 @@ Before the selector correction, the new focused tests failed in three places:
 - representative nested boundary evidence remained blocked;
 - the tracked boundary evidence inventory retained manual-routing debt.
 
-The earlier blocked verification recorded the real PR-range failure against
-`origin/main`: 461 paths required manual routing, comprising 455 nested paths
-and six root-level unregistered evidence files.
+The earlier blocked verification recorded the real PR-range failure against `origin/main`.
+It found 461 paths requiring manual routing: 455 nested paths and six root-level unregistered evidence files.
 
 ## Focused automated evidence
 
@@ -53,19 +44,18 @@ and six root-level unregistered evidence files.
 | `python scripts/test-select-validation.py` | pass; 142 tests |
 | `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan-archive.md --path docs/plan.md --path docs/plans/2026-07-25-boundary-first-proof-modeling.md` | pass; pre-existing workflow-spec merge-language warnings only |
 | `python scripts/select-validation.py --mode pr --base origin/main --head HEAD` | pass at `c015ff96`; status `ok`, no blocking results, no registration debt, broad smoke not required |
+| `python scripts/validate-boundary-proof.py generate-report --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills --output docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md` | pass; report `sha256:eee559b1ce85878a3ba5891a35ef9305b705fde721ab2f09131400806e255632` |
+| `python scripts/validate-boundary-proof.py validate-report docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md` | pass; independent reconstruction matched `sha256:eee559b1ce85878a3ba5891a35ef9305b705fde721ab2f09131400806e255632` |
 
-The first scoped CI composition run passed the selector regression and guide
-checks, then stopped at lifecycle validation because the new handoff initially
-used noncanonical plan vocabulary. The plan now uses the closed lifecycle
-state, structured review status, and canonical closeout reasons; only that
-failed lifecycle check was rerun.
+The first scoped CI composition run passed the selector regression and guide checks.
+It then stopped at lifecycle validation because the new handoff initially used noncanonical plan vocabulary.
+The plan now uses the closed lifecycle state, structured review status, and canonical closeout reasons.
+Only that failed lifecycle check was rerun.
 
 ## Evidence reuse
 
-M5 does not change the boundary model, runtime behavior harness, governed
-skills, adapter generator, preservation fixtures, or release transaction
-logic. The fresh passing evidence recorded by M4 and the blocked verification
-for those unaffected dependencies remains applicable:
+M5 does not change the boundary model, runtime behavior harness, governed skills, adapter generator, preservation fixtures, or release transaction logic.
+The fresh passing evidence recorded by M4 and the blocked verification for those unaffected dependencies remains applicable:
 
 - boundary model: 115 tests;
 - skill validator: 261 tests;
@@ -74,6 +64,5 @@ for those unaffected dependencies remains applicable:
 - preservation pairs: 40;
 - selected boundary CI: 14 checks.
 
-Those suites are not rerun for this selector-and-lifecycle correction. The
-remaining post-review M5 proof is limited to current capability-report
-generation/validation and patch integrity.
+Those suites are not rerun for this selector-and-lifecycle correction.
+The current capability report was regenerated once after review and explanation metadata settled, then independently reconstructed without lifecycle reinvocation.
