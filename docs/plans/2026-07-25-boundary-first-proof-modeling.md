@@ -91,12 +91,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r48.md
-- Review status: approved; stage=spec-review; round=r48
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r19.md
+- Review status: changes-requested; stage=architecture-review; round=r19
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture-review
+- Next stage: architecture
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-AR19-1,BFP-AR19-2
 
 ## Milestones
 
@@ -756,6 +756,11 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Architecture-review R19 requested two focused corrections:
+  make handler conformance common to both capability branches, and assign the
+  new registry/dispatch/conformance components to exact modules with fully
+  labeled C4 relationships. Plan revision remains blocked until R20.
 
 - 2026-07-27: Synchronized the R48 architecture candidate across the canonical
   Runtime View, component diagram, architecture assessment, accepted

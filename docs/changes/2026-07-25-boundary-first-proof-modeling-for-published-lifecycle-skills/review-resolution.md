@@ -3051,3 +3051,41 @@ runtime-package binding and runtime-byte drift rejection.
 No new material findings. R48 independently confirmed BFP-SR46-1 through
 BFP-SR46-4 and BFP-SR47-1 resolved and approved the v3 runtime-projection
 contract for architecture synchronization.
+
+### architecture-review-r19
+
+#### BFP-AR19-1 — Handler conformance is not unambiguously required for both capability branches
+
+Finding ID: BFP-AR19-1
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: approved R48 handler-conformance contract
+Decision needed: none
+Required outcome: Make fresh invocation-owned handler conformance a common
+gate for both capability states.
+Chosen action: Align Runtime View, capability table, quality scenario, risk,
+and ADR with a common conformance gate plus state-specific proof.
+Rationale: Exposed capability still depends on the same production decline
+handler and cannot skip its deterministic negative proof.
+Validation target: architecture-review-r20
+Validation evidence: pending
+
+#### BFP-AR19-2 — New executable components lack an exact C4-consistent ownership projection
+
+Finding ID: BFP-AR19-2
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: accepted two-module harness boundary
+Decision needed: none
+Required outcome: Assign registry, selection validation, production dispatch,
+and conformance execution to exact modules and align every C4 relationship.
+Chosen action: Add physical-owner rows, align the ADR and diagram, add the
+normative projection link, and label every relationship.
+Rationale: The plan must not choose executable ownership or infer diagram
+semantics.
+Validation target: architecture-review-r20
+Validation evidence: pending

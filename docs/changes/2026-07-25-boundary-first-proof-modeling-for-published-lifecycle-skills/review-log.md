@@ -1196,3 +1196,14 @@ Detailed record: reviews/spec-review-r48.md
 Resolution: review-resolution.md#spec-review-r48
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: architecture-review-r19
+Stage: architecture-review
+Round: 19
+Reviewed artifact: canonical architecture, boundary-proof component diagram, architecture assessment, proposed capability-projected file-change ADR, and predecessor ADR at 6abc9410
+Status: changes-requested
+Detailed record: reviews/architecture-review-r19.md
+Resolution: review-resolution.md#architecture-review-r19
+Material findings: BFP-AR19-1, BFP-AR19-2
+Open findings: BFP-AR19-1, BFP-AR19-2
