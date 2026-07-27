@@ -1539,7 +1539,8 @@ def _workflow_stage_request(
             "columns defined by the attached boundary-proof reference. "
             "Use all twelve closed core dimension IDs exactly once, no "
             "extensions, and governing requirement IDs R1, R2, R3, and R4. "
-            "Every authored stable ID must match `[a-z0-9][a-z0-9._-]*`. "
+            "Every authored stable ID must match "
+            "`^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$`; IDs must be dotted. "
             "Use the literal ASCII `-` for every empty table value; never "
             "use a blank cell or a Unicode dash. "
         ),
@@ -1549,7 +1550,8 @@ def _workflow_stage_request(
             "`## Proof map` and `## Test cases`. The Proof map table must "
             "use the exact columns defined by the attached boundary-proof "
             "reference and collectively govern exactly R1, R2, R3, and R4. "
-            "Every authored stable ID must match `[a-z0-9][a-z0-9._-]*`. "
+            "Every authored stable ID must match "
+            "`^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$`; IDs must be dotted. "
             "Use the literal ASCII `-` for every empty table value; never "
             "use a blank cell or a Unicode dash. "
         ),
