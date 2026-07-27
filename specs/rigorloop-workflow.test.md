@@ -9,10 +9,9 @@ Boundary model scope: R28-R28z
 
 ## Related spec and plan
 
-- Spec: [RigorLoop Workflow](rigorloop-workflow.md), approved by focused
-  `spec-review-r48` for the exact-runtime capability projection, common
-  production-dispatch conformance gate, capability-specific file-change
-  proof, evidence-v3, and opaque-history amendment.
+- Spec: [RigorLoop Workflow](rigorloop-workflow.md), pending focused
+  `spec-review-r50` for the three-category exact-runtime capability
+  projection discovered during M2 preflight.
 - Proposal: [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md), accepted.
 - Historical plan: [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md), done.
 - Related follow-on spec: [Learn Artifact Model](learn-artifact-model.md), approved.
@@ -35,7 +34,9 @@ Boundary model scope: R28-R28z
 - Historical workflow-refactor architecture: not required for that completed
   slice.
 - Boundary-first architecture: [Canonical System Architecture](../docs/architecture/system/architecture.md),
-  approved by focused `architecture-review-r22`, with
+  approved by focused `architecture-review-r22` for the superseded binary
+  projection and pending focused architecture rereview for the three-category
+  correction, with
   [ADR-20260725](../docs/adr/ADR-20260725-boundary-first-proof-modeling.md)
   accepted for the amendment and
   [ADR-20260726](../docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md)
@@ -45,7 +46,8 @@ Boundary model scope: R28-R28z
   [capability-projection ADR](../docs/adr/ADR-20260727-capability-projected-file-change-control.md)
   owns exact runtime selection and file-change proof.
 - Boundary-first plan: [Boundary-First Proof Modeling](../docs/plans/2026-07-25-boundary-first-proof-modeling.md),
-  approved by `plan-review-r17`.
+  approved by `plan-review-r17` for the superseded binary projection and
+  pending focused plan rereview after spec and architecture approval.
 - Spec-review: approved with no material findings after the PR-self-contained lifecycle completion amendment was added; minor SR-1 asked the test spec to decide how merge-dependent language classification is recorded.
 - Plan-review: approved with no material findings for the PR-self-contained lifecycle completion plan. Minor non-blocking note: if README remains unchanged, final affected-surface evidence should mark it unaffected with rationale.
 
@@ -53,16 +55,16 @@ Boundary model scope: R28-R28z
 
 | Input | Path | Status / Review state | Identity |
 | --- | --- | --- | --- |
-| Feature spec | `specs/rigorloop-workflow.md` | approved by focused spec-review R48 | `sha256:c34ce7291f7a2df9deec56e8d364514f05905136656dcec00af4787435353eff` |
+| Feature spec | `specs/rigorloop-workflow.md` | pending focused spec-review R50 | pending |
 | Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r48.md` | approved; architecture synchronized by R22 | `sha256:656fafdd5660f5e95b53fd5ec49407661473ac5c0eccf9a4ff95aa63b0a579cf` |
-| Architecture | `docs/architecture/system/architecture.md` | approved by focused architecture-review R22 | `sha256:ed5a12592117adc3a8c2ddfea77e41c1e819086467dd9b5928ab7e7e5ed25042` |
-| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r22.md` | approved | `sha256:dfd0fd1aac0ff08c8c6ac6064d0dfe96bdb59cc30093b8de76d0b170daf8d68a` |
+| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r49.md` | changes-requested; R50 pending | pending |
+| Architecture | `docs/architecture/system/architecture.md` | focused three-category amendment pending rereview | pending |
+| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r22.md` | prior binary projection only; successor pending | pending |
 | Boundary ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted with scoped transport supersession | `sha256:0bd0cc5b7964b45f61b020b31c6781d360d072e15120feaf2a7f106cae05df15` |
 | Transport ADR | `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md` | accepted with scoped capability-projection supersession | `sha256:e357094a48c9a3410cc661d2f5e28c50afd8aa4dcdd375ec074a355103ea8263` |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted with scoped writable-child supersession | `sha256:b80c4a494ae1e08abea77d74fb270a959ebbde5cf5e01e1f8606791f0e0b5434` |
-| Capability-projection ADR | `docs/adr/ADR-20260727-capability-projected-file-change-control.md` | accepted by architecture-review R22 | `sha256:b9d75ea29d528ef0e1f835ab796d6aa6936d362520ce1a424f5f0bb1112568ef` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; test-spec-review is next | `sha256:4bdf7041a737f0918a6253afa0776c395c3900950162a1d0f4b3041b5f7462fe` |
+| Capability-projection ADR | `docs/adr/ADR-20260727-capability-projected-file-change-control.md` | focused three-category amendment pending architecture review | pending |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; focused plan rereview pending | pending |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r17.md` | approved | `sha256:42d0bad827656bc01ab1a8dd0eb8b888e37417744782771a346fdb728cf0a2bc` |
 
 ## Testing strategy
@@ -1382,8 +1384,11 @@ Boundary model scope: R28-R28z
   directly, then add, remove, duplicate, overlap, or mutate projection fields,
   selection keys, identities, schema files, object members, methods,
   classifications, feature rows, launcher bytes, and package bytes as contrast
-  cases. Equal version/schema/protocol/feature declarations with changed
-  implementation bytes must fail. Capture the exact
+  cases. Swap one member between every pair of feature collections while
+  preserving 3/4/89 counts, disjointness, exhaustiveness, and a recomputed
+  projection identity; require every category-disagreeing row to fail before
+  thread start. Equal version/schema/protocol/feature declarations with
+  changed implementation bytes must fail. Capture the exact
   `thread/start` and `turn/start` requests and independently remove, add,
   substitute, or reorder their workspace roots. Exercise all four
   `status_is_disabled` × `environment_identity_is_null` combinations for
@@ -2146,7 +2151,8 @@ Boundary model scope: R28-R28z
 
 ## Uncovered gaps
 
-- None blocking at the spec, architecture, or planning level.
+- Focused spec, architecture, plan, and test-spec rereviews are blocking
+  implementation until the three-category projection identities settle.
 - Project-map lifecycle mechanics are intentionally deferred to a focused follow-up.
 - Detailed learn-session behavior is covered by `specs/learn-artifact-model.test.md`.
 - Merge-dependent language warning suppression after classification is intentionally not required in the first slice; the required proof is warning visibility plus contributor-visible classification before final handoff treats the warning as addressed.
@@ -2154,8 +2160,9 @@ Boundary model scope: R28-R28z
 
 ## Next artifacts
 
-- Boundary-first amendment: independent test-spec review for the R48/R22/R17
-  proof-map revision. Resume M2 only after that review approves the v3 exact
+- Boundary-first amendment: focused spec-review R50, architecture review,
+  plan review, proof-map identity synchronization, and independent test-spec
+  review. Resume M2 only after those reviews approve the v3 exact
   runtime projection, common conformance, capability-branch, integrity,
   envelope, retry, publication/rollback, and compatibility proof.
 - `code-review M2` under the current
