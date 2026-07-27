@@ -1160,6 +1160,37 @@ raise SystemExit({exit_code})
             with self.subTest(entry=entry.evidence_class_id):
                 self.assertTrue(validate_evidence_class_registry([entry]))
 
+    def test_change_evidence_registry_accepts_only_safe_bounded_nested_roots(self) -> None:
+        nested = EvidenceClassRegistration(
+            evidence_class_id="boundary-preservation",
+            allowed_root="docs/changes/{change_id}/evidence/preservation/",
+            patterns=("*.json", "**/*.json", "**/*.md"),
+            selector_routes=("boundary-skill-contract", "boundary-capability-baseline"),
+            required_validator="validate-boundary-proof",
+            lifecycle_stage="implementation",
+            allowed_when=("boundary preservation evidence is recorded",),
+        )
+        self.assertEqual(validate_evidence_class_registry([nested]), [])
+
+        unsafe_roots = (
+            "docs/changes/{change_id}/../",
+            "docs/changes/other/",
+            "/tmp/{change_id}/",
+            "docs/changes/{change_id}/evidence",
+        )
+        for allowed_root in unsafe_roots:
+            with self.subTest(allowed_root=allowed_root):
+                unsafe = EvidenceClassRegistration(
+                    evidence_class_id="unsafe-root",
+                    allowed_root=allowed_root,
+                    patterns=("proof.json",),
+                    selector_routes=("boundary-capability-baseline",),
+                    required_validator="validate-boundary-proof",
+                    lifecycle_stage="implementation",
+                    allowed_when=("unsafe fixture",),
+                )
+                self.assertTrue(validate_evidence_class_registry([unsafe]))
+
     def test_registered_change_evidence_patterns_and_exact_names_match_once(self) -> None:
         paths = [
             "docs/changes/2026-04-25-example/script-output-audit.md",
@@ -1260,6 +1291,118 @@ raise SystemExit({exit_code})
         self.assertIn("docs/changes/2026-04-25-example/behavior-preservation.md", lifecycle_check["paths"])
         self.assertIn("docs/changes/2026-04-25-example/change.yaml", lifecycle_check["paths"])
         self.assertIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
+
+    def test_boundary_nested_evidence_families_select_existing_boundary_checks(self) -> None:
+        change_root = (
+            "docs/changes/"
+            "2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills"
+        )
+        paths = [
+            f"{change_root}/evidence/adapter-parity/canonical.json",
+            f"{change_root}/evidence/preservation/run-1/after/spec/behavior.json",
+            f"{change_root}/evidence/simple-change/runs/run-1/manifest.json",
+            f"{change_root}/recovery-decisions/run-1.json",
+            f"{change_root}/boundary-capability-baseline.md",
+            f"{change_root}/implementation-m1.md",
+            f"{change_root}/validation-m4.md",
+        ]
+        result = self.select(paths)
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertFalse(payload["blocking_results"])
+        self.assertTrue(
+            all(
+                classified["category"] == "registered-change-evidence"
+                for classified in payload["classified_paths"]
+            )
+        )
+        self.assertEqual(
+            {
+                "artifact_lifecycle.validate",
+                "boundary-workflow-contract",
+                "boundary-skill-contract",
+                "boundary-traceability",
+                "boundary-incident-replay",
+                "boundary-adapter-parity",
+                "boundary-capability-baseline",
+            },
+            selected_ids(payload),
+        )
+
+    def test_unknown_boundary_evidence_sibling_still_requires_manual_routing(self) -> None:
+        path = (
+            "docs/changes/"
+            "2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/"
+            "evidence/unknown-family/proof.json"
+        )
+        result = self.select([path])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "blocked")
+        self.assertEqual(
+            {
+                "path": path,
+                "category": "change-local-unsupported",
+            },
+            payload["classified_paths"][0],
+        )
+        self.assertTrue(
+            any(
+                item["code"] == "manual-routing-required" and item["path"] == path
+                for item in payload["blocking_results"]
+            )
+        )
+
+    def test_boundary_evidence_registration_does_not_capture_another_change(self) -> None:
+        path = "docs/changes/2026-07-28-other/evidence/preservation/run-1/result.json"
+        result = self.select([path])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "blocked")
+        self.assertEqual(payload["classified_paths"][0]["category"], "change-local-unsupported")
+        self.assertTrue(
+            any(
+                item["code"] == "manual-routing-required" and item["path"] == path
+                for item in payload["blocking_results"]
+            )
+        )
+
+    def test_boundary_change_evidence_inventory_has_no_manual_routing_debt(self) -> None:
+        change_root = (
+            "docs/changes/"
+            "2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills"
+        )
+        completed = subprocess.run(
+            [
+                "git",
+                "ls-files",
+                f"{change_root}/evidence",
+                f"{change_root}/recovery-decisions",
+                f"{change_root}/boundary-capability-baseline.md",
+                f"{change_root}/implementation-m*.md",
+                f"{change_root}/validation-m*.md",
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        paths = [line for line in completed.stdout.splitlines() if line]
+        self.assertGreater(len(paths), 400)
+
+        result = self.select(paths)
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertFalse(payload["blocking_results"])
+        self.assertFalse(payload["registration_debt"])
+        self.assertTrue(
+            all(
+                classified["category"] == "registered-change-evidence"
+                for classified in payload["classified_paths"]
+            )
+        )
 
     def test_selector_preservation_surface_keeps_selected_check_identity(self) -> None:
         paths = [

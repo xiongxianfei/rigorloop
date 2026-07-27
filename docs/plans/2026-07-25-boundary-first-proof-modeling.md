@@ -93,14 +93,14 @@ resource through generated, packed, and installed outputs.
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Selection, adapter parity, capability baseline, and activation proof
-- Current milestone state: closed
+- Current milestone: M5. Verification routing and lifecycle synchronization correction
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-final-r2.md
-- Review status: approved; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Review status: review-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M5
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -861,6 +861,62 @@ resource through generated, packed, and installed outputs.
   - Adapter or report evidence could be stale, asserted, or coupled to a working-tree-only path.
 - Rollback/recovery:
   - Remove selector and activation checks, regenerate adapters from the last known good canonical skills, and retain the report only as failed historical evidence.
+
+### M5. Verification routing and lifecycle synchronization correction
+
+- Milestone state: review-requested
+- Goal: Route the complete boundary evidence tree through bounded registered evidence classes and synchronize the live plan handoff after the committed explanation.
+- Requirements: CRM-R1-R19; R28p
+- Files/components likely touched:
+  - `scripts/validation_selection.py`
+  - `scripts/test-select-validation.py`
+  - `docs/plans/2026-07-25-boundary-first-proof-modeling.md`
+  - `docs/plan.md`
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml`
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md`
+  - `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/verify-report.md`
+- Dependencies:
+  - M1-M4 closed
+  - final holistic code review R2 approved
+  - durable explanation committed
+  - blocked verification report `f5136d14` recorded
+- Tests to add/update:
+  - bounded nested evidence roots route through existing boundary check IDs;
+  - current boundary change evidence inventory has no `manual-routing-required`;
+  - unknown siblings, unsafe roots, broad change-root patterns, and ambiguous matches still fail closed;
+  - existing root-level evidence classes preserve their routes.
+- Implementation steps:
+  - Extend the evidence registry matcher to honor safe `allowed_root` templates below `docs/changes/{change_id}/`.
+  - Register capability, milestone, adapter-parity, preservation, simple-change, and recovery evidence families with bounded patterns.
+  - Route each family only to existing checks that validate its semantic inputs.
+  - Synchronize this plan and `docs/plan.md` without reopening a closed milestone.
+  - Regenerate the capability report only after final change metadata is stable.
+- Validation commands:
+  - focused new selector regression tests;
+  - `python scripts/test-select-validation.py`;
+  - `python scripts/select-validation.py --mode pr --base origin/main --head HEAD`;
+  - explicit selected CI over M5-touched selector and lifecycle paths only;
+  - change metadata and lifecycle validation;
+  - capability report sole-writer regeneration and independent validation;
+  - `git diff --check`.
+- Evidence-reuse rule:
+  - Preserve the fresh actual-run evidence recorded in `verify-report.md` for boundary model, runtime behavior, skills, adapters, preservation, and release transactions when their code, fixtures, commands, and dependency identities remain unchanged.
+  - Rerun only selector, lifecycle, metadata, capability-report, and composed routing checks affected by M5.
+- Failure stop:
+  - Stop if any current boundary evidence path remains unsupported or ambiguous, any unknown sibling becomes accepted, any existing route changes unexpectedly, or plan/index state diverges.
+- Expected observable result: PR-mode selection over `origin/main..HEAD` reports zero blocking routing results while preserving the existing boundary check set and prior actual-run evidence.
+- Commit message: `fix: route boundary evidence families`
+- Milestone closeout:
+  - focused and PR-range selector proof passed
+  - lifecycle state synchronized
+  - capability report current
+  - M5 review requested
+- Risks:
+  - A broad nested pattern could capture unrelated evidence.
+  - A narrow pattern could leave a sibling path unsupported.
+  - Routing every leaf to every boundary check could recreate unnecessary validation cost.
+- Rollback/recovery:
+  - Revert the M5 registry entries and matcher extension together; retain the blocked verification report and do not claim branch readiness.
 
 ## Validation plan
 

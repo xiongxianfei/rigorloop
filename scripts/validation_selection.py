@@ -403,6 +403,14 @@ class RepositoryPreflightContext:
 
 EVIDENCE_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
 BROAD_EVIDENCE_PATTERNS = frozenset({"*.md", "*.txt", "*.yaml", "*.yml"})
+DEFAULT_CHANGE_EVIDENCE_ROOT = "docs/changes/{change_id}/"
+BOUNDARY_CHANGE_EVIDENCE_ROOT = (
+    "docs/changes/"
+    "2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/"
+)
+CONCRETE_CHANGE_EVIDENCE_ROOT_PATTERN = re.compile(
+    r"^docs/changes/[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9][a-z0-9-]*/"
+)
 
 CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
     EvidenceClassRegistration(
@@ -568,6 +576,101 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         required_validator="validate-artifact-lifecycle",
         lifecycle_stage="implementation",
         allowed_when=("behavior parity evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="boundary-capability-report",
+        allowed_root=BOUNDARY_CHANGE_EVIDENCE_ROOT,
+        patterns=("boundary-capability-baseline.md",),
+        selector_routes=("boundary-capability-baseline",),
+        required_validator="validate-boundary-proof",
+        lifecycle_stage="verification",
+        allowed_when=("the boundary capability report is recorded for this initiative",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="boundary-milestone-evidence",
+        allowed_root=BOUNDARY_CHANGE_EVIDENCE_ROOT,
+        patterns=("implementation-m*.md", "validation-m*.md"),
+        selector_routes=("artifact_lifecycle.validate",),
+        required_validator="validate-artifact-lifecycle",
+        lifecycle_stage="implementation",
+        allowed_when=("boundary milestone implementation or validation evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="boundary-runtime-evidence",
+        allowed_root=f"{BOUNDARY_CHANGE_EVIDENCE_ROOT}evidence/",
+        patterns=(
+            "behavior-implementation-manifest.json",
+            "boundary-proof-baseline.json",
+            "runtime-preflight-attestation.json",
+        ),
+        selector_routes=(
+            "boundary-workflow-contract",
+            "boundary-traceability",
+            "boundary-incident-replay",
+            "boundary-capability-baseline",
+        ),
+        required_validator="validate-boundary-proof",
+        lifecycle_stage="implementation",
+        allowed_when=("boundary runtime and traceability evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="boundary-skill-resource-evidence",
+        allowed_root=f"{BOUNDARY_CHANGE_EVIDENCE_ROOT}evidence/",
+        patterns=("canonical-skill-resource-manifest.json",),
+        selector_routes=(
+            "boundary-skill-contract",
+            "boundary-adapter-parity",
+            "boundary-capability-baseline",
+        ),
+        required_validator="validate-boundary-proof",
+        lifecycle_stage="implementation",
+        allowed_when=("canonical boundary skill resource evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="boundary-adapter-parity-evidence",
+        allowed_root=f"{BOUNDARY_CHANGE_EVIDENCE_ROOT}evidence/adapter-parity/",
+        patterns=("*.json",),
+        selector_routes=("boundary-adapter-parity", "boundary-capability-baseline"),
+        required_validator="validate-boundary-proof",
+        lifecycle_stage="implementation",
+        allowed_when=("boundary adapter parity evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="boundary-preservation-evidence",
+        allowed_root=f"{BOUNDARY_CHANGE_EVIDENCE_ROOT}evidence/preservation/",
+        patterns=("*.json", "**/*.json", "**/*.md"),
+        selector_routes=("boundary-skill-contract", "boundary-capability-baseline"),
+        required_validator="validate-boundary-proof",
+        lifecycle_stage="implementation",
+        allowed_when=("boundary preservation evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="boundary-simple-change-evidence",
+        allowed_root=f"{BOUNDARY_CHANGE_EVIDENCE_ROOT}evidence/simple-change/",
+        patterns=("*.json", "**/*.json", "**/*.md"),
+        selector_routes=(
+            "boundary-workflow-contract",
+            "boundary-traceability",
+            "boundary-incident-replay",
+            "boundary-capability-baseline",
+        ),
+        required_validator="validate-boundary-proof",
+        lifecycle_stage="implementation",
+        allowed_when=("boundary simple-change behavior evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="boundary-recovery-evidence",
+        allowed_root=f"{BOUNDARY_CHANGE_EVIDENCE_ROOT}recovery-decisions/",
+        patterns=("*.json",),
+        selector_routes=(
+            "boundary-workflow-contract",
+            "boundary-traceability",
+            "boundary-incident-replay",
+            "boundary-capability-baseline",
+        ),
+        required_validator="validate-boundary-proof",
+        lifecycle_stage="implementation",
+        allowed_when=("boundary recovery decisions are recorded",),
     ),
     EvidenceClassRegistration(
         evidence_class_id="generated-output",
@@ -827,12 +930,12 @@ def validate_evidence_class_registry(
         if entry.evidence_class_id in seen_ids:
             errors.append(f"duplicate evidence class ID: {entry.evidence_class_id}")
         seen_ids.add(entry.evidence_class_id)
-        if entry.allowed_root != "docs/changes/{change_id}/":
+        if not _is_safe_evidence_root(entry.allowed_root):
             errors.append(f"{entry.evidence_class_id}: unsupported allowed root {entry.allowed_root}")
         if not entry.patterns:
             errors.append(f"{entry.evidence_class_id}: missing filename pattern or exact filename")
         for pattern in entry.patterns:
-            if _is_broad_evidence_pattern(pattern):
+            if _is_broad_evidence_pattern(pattern, allowed_root=entry.allowed_root):
                 errors.append(f"{entry.evidence_class_id}: evidence pattern {pattern} is too broad")
         if not entry.selector_routes:
             errors.append(f"{entry.evidence_class_id}: missing selector route")
@@ -1441,8 +1544,7 @@ def _apply_path_selection(
         return
 
     if category == "registered-change-evidence":
-        evidence_name = path.split("/")[3]
-        matches = _matching_evidence_classes(evidence_name)
+        matches = _matching_evidence_classes(path)
         if len(matches) != 1:
             blocking_results.append(
                 {
@@ -2347,12 +2449,11 @@ def _path_category(path: str) -> str | None:
             return "change-metadata"
         if parts[3] in {"review-log.md", "review-resolution.md"} or parts[3] == "reviews":
             return "review-artifacts"
-        if len(parts) == 4:
-            matches = _matching_evidence_classes(parts[3])
-            if len(matches) == 1:
-                return "registered-change-evidence"
-            if len(matches) > 1:
-                return "ambiguous-change-evidence"
+        matches = _matching_evidence_classes(path)
+        if len(matches) == 1:
+            return "registered-change-evidence"
+        if len(matches) > 1:
+            return "ambiguous-change-evidence"
         change_local_name = parts[3]
         if change_local_name in {
             "explain-change.md",
@@ -2423,21 +2524,82 @@ def _path_category(path: str) -> str | None:
 
 
 def _matching_evidence_classes(
-    filename: str,
+    evidence_path: str,
     *,
     registry: tuple[EvidenceClassRegistration, ...] = CHANGE_EVIDENCE_CLASSES,
 ) -> list[EvidenceClassRegistration]:
-    return [
-        entry
-        for entry in registry
-        if any(fnmatch.fnmatchcase(filename, pattern) for pattern in entry.patterns)
-    ]
+    matches: list[EvidenceClassRegistration] = []
+    for entry in registry:
+        relative_path = _evidence_path_relative_to_allowed_root(
+            evidence_path,
+            allowed_root=entry.allowed_root,
+        )
+        if relative_path is None:
+            continue
+        if any(_evidence_pattern_matches(relative_path, pattern) for pattern in entry.patterns):
+            matches.append(entry)
+    return matches
 
 
-def _is_broad_evidence_pattern(pattern: str) -> bool:
+def _evidence_path_relative_to_allowed_root(
+    evidence_path: str,
+    *,
+    allowed_root: str,
+) -> str | None:
+    if "/" not in evidence_path:
+        if allowed_root != DEFAULT_CHANGE_EVIDENCE_ROOT:
+            return None
+        return evidence_path
+
+    parts = PurePosixPath(evidence_path).parts
+    if len(parts) < 4 or parts[:2] != ("docs", "changes"):
+        return None
+    concrete_root = allowed_root.replace("{change_id}", parts[2])
+    if not evidence_path.startswith(concrete_root):
+        return None
+    relative_path = evidence_path[len(concrete_root) :]
+    if not relative_path or relative_path.startswith("/"):
+        return None
+    return relative_path
+
+
+def _evidence_pattern_matches(relative_path: str, pattern: str) -> bool:
+    if "/" not in pattern:
+        return "/" not in relative_path and fnmatch.fnmatchcase(relative_path, pattern)
+    return fnmatch.fnmatchcase(relative_path, pattern)
+
+
+def _is_safe_evidence_root(allowed_root: str) -> bool:
+    if allowed_root.count("{change_id}") > 1:
+        return False
+    if "{change_id}" in allowed_root:
+        if not allowed_root.startswith(DEFAULT_CHANGE_EVIDENCE_ROOT):
+            return False
+    elif CONCRETE_CHANGE_EVIDENCE_ROOT_PATTERN.match(allowed_root) is None:
+        return False
+    if not allowed_root.endswith("/"):
+        return False
+    if ".." in PurePosixPath(allowed_root.replace("{change_id}", "change")).parts:
+        return False
+    return True
+
+
+def _is_broad_evidence_pattern(
+    pattern: str,
+    *,
+    allowed_root: str = DEFAULT_CHANGE_EVIDENCE_ROOT,
+) -> bool:
+    if pattern in {"*", "**"}:
+        return True
+    if pattern.startswith("/") or ".." in PurePosixPath(pattern).parts:
+        return True
+    if allowed_root != DEFAULT_CHANGE_EVIDENCE_ROOT:
+        return False
     if pattern in BROAD_EVIDENCE_PATTERNS:
         return True
     if pattern.startswith("*.") and pattern.count("*") == 1:
+        return True
+    if pattern.startswith("**/"):
         return True
     return False
 
