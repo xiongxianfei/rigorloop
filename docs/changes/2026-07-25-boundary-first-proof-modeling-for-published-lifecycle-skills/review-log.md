@@ -1427,3 +1427,14 @@ Detailed record: reviews/spec-review-r54.md
 Resolution: review-resolution.md#spec-review-r54
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: architecture-review-r26
+Stage: architecture-review
+Round: 26
+Reviewed artifact: focused invariant-oracle architecture projection at c0827874
+Status: approved
+Detailed record: reviews/architecture-review-r26.md
+Resolution: review-resolution.md#architecture-review-r26
+Material findings: None
+Open findings: None

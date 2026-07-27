@@ -3480,3 +3480,9 @@ Validation evidence: spec-review-r54 approved the focused contract correction; a
 No new material findings. R54 independently approved the focused R28y
 invariant-oracle correction and confirmed that it resolves BFP-CR-M2-9 at the
 contract level without weakening semantic fidelity.
+
+### architecture-review-r26
+
+No new material findings. R26 independently approved the focused canonical
+architecture and component-view synchronization and confirmed that no new ADR
+is required.

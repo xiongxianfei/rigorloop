@@ -95,10 +95,10 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r54.md
-- Review status: approved; stage=spec-review; round=r54
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r26.md
+- Review status: approved; stage=architecture-review; round=r26
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture-review
+- Next stage: plan
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-CR-M2-9
 
@@ -839,6 +839,10 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Architecture-review R26 approved the parent-only candidate,
+  authoritative-scenario, pure invariant-evaluator, and dedicated diagnostic
+  boundaries with no material findings and no new ADR requirement.
 
 - 2026-07-27: Canonical architecture and the boundary-proof component view now
   keep comparison candidates outside child-readable roots, route the
