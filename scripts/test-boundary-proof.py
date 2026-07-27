@@ -53,6 +53,7 @@ from boundary_proof_behavior import (
     _materialize_stage_envelope,
     _parse_stage_envelope,
     _publish_run,
+    _publisher_lock,
     _reconcile_prepared,
     _parse_feature_markdown,
     _parse_test_spec_markdown,
@@ -68,6 +69,8 @@ from boundary_proof_behavior import (
     _validate_review_payload,
     _validate_prepared_receipt,
     _validate_publisher_lease,
+    _validate_recovery_basis,
+    _validate_recovery_state,
     _validate_attestation,
     _validate_runtime_projection,
     _validated_thread_metadata,
@@ -3202,6 +3205,17 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             with self.assertRaises(BoundaryRuntimeError):
                 _validate_publisher_lease(root, change_id, invalid)
 
+    def test_t51_publisher_lock_reports_publisher_active(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            with _publisher_lock(root, change_id):
+                with self.assertRaises(BoundaryRuntimeError) as caught:
+                    with _publisher_lock(root, change_id):
+                        self.fail("a second publisher acquired the lock")
+            self.assertEqual(caught.exception.diagnostic_id, "publisher-active")
+
     def test_t51_lease_before_stage_observation(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
@@ -3254,6 +3268,64 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 _discover_global_candidate(root, change_id)
             cross_run.rmdir()
             (simple / ".working-not-a-run").mkdir()
+            with self.assertRaises(BoundaryRuntimeError):
+                _discover_global_candidate(root, change_id)
+
+    def test_t51_global_discovery_rejects_malformed_completed_history(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            simple = (
+                root / "docs/changes" / change_id / "evidence/simple-change"
+            )
+            simple.mkdir(parents=True)
+            run_id = "run-" + "a" * 32
+            basis = {
+                "run_id": run_id,
+                "recovery_id": "not-a-recovery-id",
+                "orphan_snapshot": {"quarantine_path": None},
+            }
+            basis_path = simple / f"manual-recovery-{run_id}.json"
+            basis_path.write_text(
+                json.dumps(basis, separators=(",", ":"), sort_keys=True),
+                encoding="utf-8",
+            )
+            state = {
+                "schema_version": "simple-change-manual-recovery-state-v1",
+                "recovery_id": "not-a-recovery-id",
+                "basis_identity": (
+                    "sha256:" + hashlib.sha256(basis_path.read_bytes()).hexdigest()
+                ),
+                "state": "completed",
+            }
+            (
+                simple / f"manual-recovery-state-{run_id}.json"
+            ).write_text(
+                json.dumps(state, separators=(",", ":"), sort_keys=True),
+                encoding="utf-8",
+            )
+            with self.assertRaises(BoundaryRuntimeError):
+                _discover_global_candidate(root, change_id)
+
+    def test_t51_global_discovery_rejects_multiple_recovery_temps(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            run_id = "run-" + "a" * 32
+            _, working = _create_publisher_lease(
+                root, change_id, run_id, "publisher-" + "1" * 32,
+                "sha256:" + "b" * 64,
+            )
+            for value in ("2", "3"):
+                (
+                    working.parent
+                    / f".manual-recovery-{run_id}-recovery-{value * 32}.tmp"
+                ).write_text("{}", encoding="utf-8")
             with self.assertRaises(BoundaryRuntimeError):
                 _discover_global_candidate(root, change_id)
 
@@ -3316,7 +3388,9 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 root, change_id, run_id, "publisher-" + "1" * 32,
                 "sha256:" + "b" * 64,
             )
-            marker = working / "partial-output"
+            child = working / "boundary-proof-workspace-abcdefgh"
+            child.mkdir()
+            marker = child / "manifested.txt"
             marker.write_text("untrusted", encoding="utf-8")
             authority = (
                 root / "docs/changes" / change_id / "review-resolution.md"
@@ -3330,7 +3404,9 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 repo_root=root,
             )
             quarantine = root / str(result["quarantine_path"])
-            self.assertEqual((quarantine / marker.name).read_bytes(), before)
+            self.assertEqual(
+                (quarantine / child.name / marker.name).read_bytes(), before
+            )
             self.assertFalse((working.parent / "runs" / run_id).exists())
             self.assertFalse((working.parent / "publisher.json").exists())
             state = json.loads(
@@ -3340,6 +3416,197 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 ).read_text(encoding="utf-8")
             )
             self.assertEqual(state["state"], "completed")
+
+    def test_t51_manual_recovery_rejects_unknown_working_descendant(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            run_id = "run-" + "a" * 32
+            _, working = _create_publisher_lease(
+                root, change_id, run_id, "publisher-" + "1" * 32,
+                "sha256:" + "b" * 64,
+            )
+            (working / "unknown-outside-approved-workspace").write_text(
+                "untrusted", encoding="utf-8"
+            )
+            authority = (
+                root / "docs/changes" / change_id / "review-resolution.md"
+            )
+            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            with self.assertRaises(BoundaryRuntimeError):
+                discard_interrupted_publication(
+                    change_id,
+                    authority,
+                    authorized_by="test-maintainer",
+                    repo_root=root,
+                )
+
+    def test_t51_manual_recovery_rejects_invalid_staged_run(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            run_id = "run-" + "a" * 32
+            lease, working = _create_publisher_lease(
+                root, change_id, run_id, "publisher-" + "1" * 32,
+                "sha256:" + "b" * 64,
+            )
+            staging = root / str(lease["staging_root"])
+            working.rename(staging)
+            (staging / "junk").write_text("not a staged run", encoding="utf-8")
+            authority = (
+                root / "docs/changes" / change_id / "review-resolution.md"
+            )
+            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            with self.assertRaises(BoundaryRuntimeError):
+                discard_interrupted_publication(
+                    change_id,
+                    authority,
+                    authorized_by="test-maintainer",
+                    repo_root=root,
+                )
+
+    def test_t51_manual_recovery_cleans_one_bound_malformed_temp(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            run_id = "run-" + "a" * 32
+            _, working = _create_publisher_lease(
+                root, change_id, run_id, "publisher-" + "1" * 32,
+                "sha256:" + "b" * 64,
+            )
+            recovery_id = "recovery-" + "2" * 32
+            simple = working.parent
+            (
+                simple / f".manual-recovery-{run_id}-{recovery_id}.tmp"
+            ).write_bytes(b"{")
+            authority = (
+                root / "docs/changes" / change_id / "review-resolution.md"
+            )
+            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            result = discard_interrupted_publication(
+                change_id,
+                authority,
+                authorized_by="test-maintainer",
+                repo_root=root,
+            )
+            self.assertEqual(result["result"], "completed")
+            self.assertFalse(
+                (
+                    simple / f".manual-recovery-{run_id}-{recovery_id}.tmp"
+                ).exists()
+            )
+
+    def test_t51_manual_recovery_basis_and_state_schemas_are_exact(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            run_id = "run-" + "a" * 32
+            _, working = _create_publisher_lease(
+                root, change_id, run_id, "publisher-" + "1" * 32,
+                "sha256:" + "b" * 64,
+            )
+            authority = (
+                root / "docs/changes" / change_id / "review-resolution.md"
+            )
+            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            with self.assertRaises(BoundaryRuntimeError):
+                discard_interrupted_publication(
+                    change_id,
+                    authority,
+                    authorized_by="test-maintainer",
+                    repo_root=root,
+                    crash_at="after-recovery-authorized",
+                )
+            basis_path = working.parent / f"manual-recovery-{run_id}.json"
+            state_path = (
+                working.parent / f"manual-recovery-state-{run_id}.json"
+            )
+            basis = json.loads(basis_path.read_text(encoding="utf-8"))
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+            _validate_recovery_basis(
+                root, change_id, basis, expected_run_id=run_id
+            )
+            _validate_recovery_state(
+                state,
+                basis_identity=(
+                    "sha256:" + hashlib.sha256(basis_path.read_bytes()).hexdigest()
+                ),
+                recovery_id=basis["recovery_id"],
+            )
+            for field in tuple(basis):
+                with self.subTest(record="basis", field=field):
+                    invalid = copy.deepcopy(basis)
+                    invalid.pop(field)
+                    with self.assertRaises(BoundaryRuntimeError):
+                        _validate_recovery_basis(
+                            root,
+                            change_id,
+                            invalid,
+                            expected_run_id=run_id,
+                        )
+            for parent in (
+                "publisher_lease_snapshot",
+                "publisher_lock_proof",
+                "orphan_snapshot",
+            ):
+                for field in tuple(basis[parent]):
+                    with self.subTest(record=parent, field=field):
+                        invalid = copy.deepcopy(basis)
+                        invalid[parent].pop(field)
+                        with self.assertRaises(BoundaryRuntimeError):
+                            _validate_recovery_basis(
+                                root,
+                                change_id,
+                                invalid,
+                                expected_run_id=run_id,
+                            )
+            for field in tuple(state):
+                with self.subTest(record="state", field=field):
+                    invalid = dict(state)
+                    invalid.pop(field)
+                    with self.assertRaises(BoundaryRuntimeError):
+                        _validate_recovery_state(invalid)
+            invalid = dict(state)
+            invalid["state"] = "unknown"
+            with self.assertRaises(BoundaryRuntimeError):
+                _validate_recovery_state(invalid)
+
+    def test_t51_completed_history_rejects_changed_quarantine(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            run_id = "run-" + "a" * 32
+            _, working = _create_publisher_lease(
+                root, change_id, run_id, "publisher-" + "1" * 32,
+                "sha256:" + "b" * 64,
+            )
+            authority = (
+                root / "docs/changes" / change_id / "review-resolution.md"
+            )
+            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            result = discard_interrupted_publication(
+                change_id,
+                authority,
+                authorized_by="test-maintainer",
+                repo_root=root,
+            )
+            quarantine = root / str(result["quarantine_path"])
+            (quarantine / "changed").write_text("tampered", encoding="utf-8")
+            with self.assertRaises(BoundaryRuntimeError):
+                _discover_global_candidate(root, change_id)
 
     def test_t51_manual_recovery_resumes_every_durable_crash_row(self) -> None:
         boundaries = (
@@ -3363,7 +3630,9 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                     "publisher-" + format(index + 1, "032x"),
                     "sha256:" + "b" * 64,
                 )
-                (working / "partial-output").write_text(
+                child = working / "boundary-proof-workspace-abcdefgh"
+                child.mkdir()
+                (child / "manifested.txt").write_text(
                     f"attempt-{index}", encoding="utf-8"
                 )
                 authority = (
@@ -3432,10 +3701,15 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
-            with mock.patch(
-                "boundary_proof_behavior._validate_run",
-                return_value=SimpleNamespace(),
-            ) as validate:
+            with (
+                mock.patch(
+                    "boundary_proof_behavior._validate_run",
+                    return_value=SimpleNamespace(),
+                ) as validate,
+                mock.patch(
+                    "boundary_proof_behavior._validate_staged_run"
+                ),
+            ):
                 with self.assertRaises(BoundaryRuntimeError):
                     _publish_run(
                         root,
@@ -3524,9 +3798,14 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                     ),
                     encoding="utf-8",
                 )
-                with mock.patch(
-                    "boundary_proof_behavior._validate_run",
-                    return_value=SimpleNamespace(),
+                with (
+                    mock.patch(
+                        "boundary_proof_behavior._validate_run",
+                        return_value=SimpleNamespace(),
+                    ),
+                    mock.patch(
+                        "boundary_proof_behavior._validate_staged_run"
+                    ),
                 ):
                     with self.assertRaises(BoundaryRuntimeError):
                         _publish_run(
