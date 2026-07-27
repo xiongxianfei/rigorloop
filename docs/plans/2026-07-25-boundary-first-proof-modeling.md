@@ -25,16 +25,16 @@ resumes.
 
 - Proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Specs: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r54.md` (approved invariant-oracle correction)
-- Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R26)
+- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r55.md` (approved extension-oracle correction)
+- Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R27)
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` (accepted by architecture-review R15)
 - Transport ADR: `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md` (accepted; scoped clauses superseded by the capability-projection ADR)
 - Capability-projection ADR: `docs/adr/ADR-20260727-capability-projected-file-change-control.md` (accepted by architecture-review R22)
 - Three-category projection ADR: `docs/adr/ADR-20260727-three-category-runtime-feature-projection.md` (accepted by architecture-review R25)
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
-- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r26.md`
-- Plan review: focused invariant-oracle review pending; `plan-review-r19` is historical three-category projection evidence
-- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; R54/R26/plan identity synchronization and focused test-spec review remain pending
+- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r27.md`
+- Plan review: focused extension-oracle review pending; `plan-review-r20` is historical invariant-oracle evidence
+- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; R55/R27/plan identity synchronization and focused test-spec review remain pending
 
 ## Context and orientation
 
@@ -95,10 +95,10 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r22.md
-- Review status: approved; stage=test-spec-review; round=r22
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r27.md
+- Review status: approved; stage=architecture-review; round=r27
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement
+- Next stage: plan-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-CR-M2-9
 
@@ -339,15 +339,16 @@ resource through generated, packed, and installed outputs.
   - Resource-map, raw-byte-copy, trigger, stop, claim, handoff, complete review-bundle, and isolation tests
   - Example-only spec/test-spec rejection and valid compact simple-change cases
   - Exact candidate and produced invariant projections for model version,
-    scope, requirement IDs, all twelve core-dimension IDs, no extensions, and
-    proof-map governing requirement IDs; missing, additional, duplicate,
-    unknown, malformed, and unequal members emit
+    scope, requirement IDs, all twelve core-dimension IDs, and proof-map
+    governing requirement IDs; missing, additional, duplicate, unknown,
+    malformed, and unequal members emit
     `boundary-oracle-mismatch`
   - Pairwise and combined alternatives for stage-owned stable IDs,
-    applicability choices, non-applicability rationale prose, boundary rows,
-    examples, selected interactions, automation levels, proof grouping, and
-    test-case IDs; every R28s-R28w-valid alternative reaches formal review
-    instead of failing candidate comparison
+    extension presence and decomposition, applicability choices,
+    non-applicability rationale prose, boundary rows, examples, selected
+    interactions, automation levels, proof grouping, and test-case IDs; every
+    R28s-R28w-valid alternative reaches formal review instead of failing
+    candidate comparison
   - Candidate files absent from child-readable roots and every lifecycle
     request; exact scenario request present in both formal review invocations;
     `check-environment` cannot emit `boundary-oracle-mismatch`
@@ -873,6 +874,14 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-27: A fresh M2 run exercised the spec-correction branch and exposed
+  the remaining R28y contradiction: extension IDs were declared stage-owned
+  while also belonging to the exact fixture-candidate projection.
+  Spec-review R55 and architecture-review R27 approved removing extension
+  identity from that projection while preserving R28s-R28w structural
+  validation and independent semantic review.
+  This plan now requires an extension-presence contrast before M2 resumes.
+
 - 2026-07-27: Implemented the R54 invariant-only oracle, parent-only candidate
   checks, scenario-bound formal reviews, dedicated oracle and review
   diagnostics, occurrence-bound materialization, and mutually exclusive
@@ -1378,6 +1387,7 @@ resource through generated, packed, and installed outputs.
 | 2026-07-26 | Keep one M2 milestone but order its correction as immutable projection/tests, read-only preflight, integrity-gated envelope transport, workflow-owned generation, then durable publication. | The approved R45/R18 contract resolves the three open M2 findings without changing normative milestone ownership; each internal slice has a fail-closed promotion gate before the next riskier slice. | Reopen milestone numbering; implement the live runtime before closed validators; retain child writes; allow the harness to render normative artifacts. |
 | 2026-07-26 | Use staged validation, durable exclusive prepared receipt, immutable install, installed-run validation, atomic pointer replacement, and receipt cleanup as the only publication order. | This is the approved recovery transaction and closes the governing-artifact half of BFP-CR-M2-8. | Install before receipt; validate only after pointer publication; adopt orphan output. |
 | 2026-07-27 | Select file-change proof through one exact-runtime-bound immutable projection and make pure-model-validated production-dispatch conformance common to both branches. | The approved R53/R25 contract proves enforcement without asking a model to invoke an operation the reviewed runtime does not expose, binds all 96 features to exact tool/non-tool/disabled categories, and validates conformance before branch selection. | Version-only gating; feature flags alone; event absence alone; unconditional live probing; binary feature partitions; branching before conformance validation; removing the deny-only handler. |
+| 2026-07-27 | Exclude extension identity from the fixture-candidate oracle and prove structurally valid extension alternatives reach review. | R28y assigns extension modeling to the stage and reviewer; exact candidate equality made that authority contradictory and hidden. | Forbid all extensions in the scenario; inject candidate extension choices into child stages; let the evaluator judge extension semantics. |
 
 ## Surprises and discoveries
 
