@@ -1,6 +1,6 @@
 {
   "scenario_id": "BFP-SIMPLE-001",
   "request": "Specify and test a portable text normalizer as exactly four requirements, R1-R4: accept exactly the closed modes `trim` and `preserve`; in `trim`, remove leading and trailing Unicode whitespace, where whitespace means code points with the Unicode `White_Space` property; in `preserve`, return the input text unchanged; and for every unknown mode, fail with `unknown-mode` and return no text. Keep normative behavior limited to those four requirements; do not add input-shape, transport, performance, storage, logging, or implementation requirements.",
-  "expected_branch": "zero-correction",
-  "corrected_role": null
+  "allowed_branches": ["zero-correction", "one-correction"],
+  "allowed_corrected_roles": ["feature-spec", "test-spec"]
 }

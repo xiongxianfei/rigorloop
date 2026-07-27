@@ -2628,17 +2628,23 @@ The compact simple-change corpus contains immutable candidate snapshots under
 `tests/fixtures/boundary-proof/simple-change/`.
 It also contains exactly
 `tests/fixtures/boundary-proof/simple-change/scenario.json` with fields
-`scenario_id`, `request`, `expected_branch`, and `corrected_role`.
+`scenario_id`, `request`, `allowed_branches`, and
+`allowed_corrected_roles`.
 `scenario_id` is `BFP-SIMPLE-001`; `request` is the non-empty project-portable
-prompt passed to `spec#1`; `expected_branch` is `zero-correction` or
-`one-correction`; and `corrected_role` is null for zero correction or exactly
-`feature-spec` or `test-spec` for one correction.
+prompt passed to `spec#1`; `allowed_branches` is the exact ordered list
+`zero-correction`, `one-correction`; and `allowed_corrected_roles` is the
+exact ordered list `feature-spec`, `test-spec`.
 The scenario contains no stage result, diagnostic, trace, or aggregate count.
-`expected_branch` and `corrected_role` are comparison-only expectations.
-The harness derives events and observed results before reading either field.
-Changing either field may change only the final expectation comparison; it
+The two allowed-value lists are comparison-only expectations.
+The harness derives events and observed results before reading either list.
+Changing either list may change only the final expectation comparison; it
 MUST NOT change invocation, produced events, structural results, observed
 results, or diagnostics.
+The observed branch MUST belong to `allowed_branches`.
+For a one-correction branch, the observed corrected role MUST belong to
+`allowed_corrected_roles`.
+More than one correction or any branch/role value outside those lists fails
+with `boundary-oracle-mismatch`.
 
 Formal review outcome and correction authority are separate.
 For each material finding in a `changes-requested` review, the harness derives

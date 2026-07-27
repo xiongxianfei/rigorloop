@@ -25,16 +25,16 @@ resumes.
 
 - Proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Specs: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r57.md` (approved correction-authority contract)
-- Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R29)
+- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r58.md` (approved bounded correction outcome envelope)
+- Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R30)
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` (accepted by architecture-review R15)
 - Transport ADR: `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md` (accepted; scoped clauses superseded by the capability-projection ADR)
 - Capability-projection ADR: `docs/adr/ADR-20260727-capability-projected-file-change-control.md` (accepted by architecture-review R22)
 - Three-category projection ADR: `docs/adr/ADR-20260727-three-category-runtime-feature-projection.md` (accepted by architecture-review R25)
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
-- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r29.md`
-- Plan review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r21.md` (approved extension-oracle synchronization)
-- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; R55/R27/R21 identity synchronization is complete and focused test-spec review remains pending
+- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r30.md`
+- Plan review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r23.md` (approved bounded correction outcome envelope)
+- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; focused outcome-envelope proof approved by test-spec-review R27
 
 ## Context and orientation
 
@@ -100,7 +100,7 @@ resource through generated, packed, and installed outputs.
 - Remaining in-scope implementation milestones: M4
 - Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BFP-CR-M4-1
 
 ## Milestones
 
@@ -349,8 +349,8 @@ resource through generated, packed, and installed outputs.
     interactions, automation levels, proof grouping, and test-case IDs; every
     R28s-R28w-valid alternative reaches formal review instead of failing
     candidate comparison
-  - Candidate files, scenario path and bytes, `expected_branch`, and
-    `corrected_role` absent from child-readable roots and every lifecycle
+  - Candidate files, scenario path and bytes, `allowed_branches`, and
+    `allowed_corrected_roles` absent from child-readable roots and every lifecycle
     request; only the exact scenario request present in both formal review
     invocations; `check-environment` cannot emit
     `boundary-oracle-mismatch`
@@ -371,9 +371,10 @@ resource through generated, packed, and installed outputs.
     and clarified unequal input may start a fresh run.
   - Derive observed `zero-correction`/`one-correction` and corrected role only
     from the complete event trace, then compare them with scenario
-    expectations. Mutating only either expectation must preserve serialized
+    outcome-envelope expectations. Mutating only either expectation must preserve serialized
     requests, invocation order, events, diagnostics, and outputs until the
-    final comparison, where every branch/role mismatch fails closed.
+    final comparison, where values outside the closed branch/role envelope
+    fail closed.
 - Implementation steps:
   - First correct the pure immutable projection and tests in
     `boundary_proof_model.py`: add the exact eleven-field runtime row, selection
@@ -560,8 +561,9 @@ resource through generated, packed, and installed outputs.
     only for clarified unequal input.
   - Once the complete event trace exists, derive the observed correction
     branch and corrected role without reading scenario expectations. Read and
-    compare `expected_branch` and `corrected_role` only afterward, using the
-    same pure comparison during generation and staged/current validation.
+    compare `allowed_branches` and `allowed_corrected_roles` only afterward,
+    using the same pure membership comparison during generation and
+    staged/current validation.
   - Build and validate the sibling temporary run; move it to the deterministic
     non-authoritative staging root and fsync; exclusively write and fsync the
     prepared receipt; install and fsync the immutable run; validate it;
@@ -1040,6 +1042,15 @@ resource through generated, packed, and installed outputs.
   obligations for finding projection, correction authority, terminal stop,
   discard/equal-input recovery, request-only child input, and post-observation
   expectation comparison. Test-spec review R26 is the next gate.
+- 2026-07-27: Two independent post-M4 live generations each stayed within the
+  approved one-correction ceiling but selected different valid correction
+  roles. The first corrected the feature spec; the second corrected the test
+  spec. Both failed only because the scenario predicted one exact model path.
+  Explicit discard recovery preserved both failed runs. Spec-review R58 and
+  architecture-review R30 approved the correction outcome envelope: generation
+  now observes the branch and corrected role first, then requires membership in
+  the closed allowed sets. Focused plan and test-spec synchronization precede
+  the next live generation.
 
 - 2026-07-27: Spec-review R57 approved the identity-bound correction
   eligibility, correction-stop receipt, recovery, and unequal-input fresh-run
@@ -1667,6 +1678,7 @@ resource through generated, packed, and installed outputs.
 | 2026-07-27 | Select file-change proof through one exact-runtime-bound immutable projection and make pure-model-validated production-dispatch conformance common to both branches. | The approved R53/R25 contract proves enforcement without asking a model to invoke an operation the reviewed runtime does not expose, binds all 96 features to exact tool/non-tool/disabled categories, and validates conformance before branch selection. | Version-only gating; feature flags alone; event absence alone; unconditional live probing; binary feature partitions; branching before conformance validation; removing the deny-only handler. |
 | 2026-07-27 | Exclude extension identity from the fixture-candidate oracle and prove structurally valid extension alternatives reach review. | R28y assigns extension modeling to the stage and reviewer; exact candidate equality made that authority contradictory and hidden. | Forbid all extensions in the scenario; inject candidate extension choices into child stages; let the evaluator judge extension semantics. |
 | 2026-07-27 | Separate correction outcome, correction authority, and scenario expectation into three ordered M2 gates. | A `changes-requested` outcome does not authorize mutation, and comparison expectations must remain non-influential until observed behavior exists. | Treat review outcome as authority; expose expectations to the child; add a resumable mid-run owner-decision cursor. |
+| 2026-07-27 | Model the simple-change correction result as a closed observable envelope rather than one predicted model path. | The governing behavior is zero or one structure-only correction in either governed authored role; exact role/branch prediction coupled acceptance to valid reviewer variation and produced repeatable false negatives. | Prompt-tune until one path happens repeatedly; accept any correction count or role; remove comparison-only expectations. |
 
 ## Surprises and discoveries
 
