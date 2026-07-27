@@ -1896,7 +1896,10 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         self.assertNotIn("file-write tool", stage_request["prompt"])
         self.assertIn("artifact envelope", stage_request["prompt"])
         self.assertIn("`## Boundary model`", stage_request["prompt"])
-        self.assertIn("[a-z0-9][a-z0-9._-]*", stage_request["prompt"])
+        self.assertIn(
+            "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$",
+            stage_request["prompt"],
+        )
         self.assertIn("literal ASCII `-`", stage_request["prompt"])
         self.assertIn("all twelve closed core dimension IDs", stage_request["prompt"])
         self.assertIn("add no normative behavior", stage_request["prompt"])
@@ -2511,7 +2514,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 )
                 normalized_reference = " ".join(reference.split())
                 self.assertIn(
-                    "must match `[a-z0-9][a-z0-9._-]*`",
+                    "must match `^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$`",
                     normalized_reference,
                 )
                 self.assertIn(
