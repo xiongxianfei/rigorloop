@@ -1830,6 +1830,16 @@ def _workflow_stage_request(
             + "\n\nRequest:\n"
             + request
             + (
+                "\n\nMandatory boundary-table serialization: every "
+                "`applicable` core row MUST put the literal ASCII `-` in "
+                "`Non-applicability rationale`; every `not-applicable` core "
+                "row MUST put `-` in both proof-link columns and a nonempty "
+                "rationale in that final column. Explanations for applicable "
+                "rows belong outside the non-applicability field."
+                if stage == "spec"
+                else ""
+            )
+            + (
                 "\n\nAuthoritative stage input:\n" + artifact_context
                 if artifact_context
                 else ""
