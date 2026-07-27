@@ -95,12 +95,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r23.md
-- Review status: changes-requested; stage=architecture-review; round=r23
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r24.md
+- Review status: changes-requested; stage=architecture-review; round=r24
 - Remaining in-scope implementation milestones: M2, M3, M4
 - Next stage: architecture
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-AR23-1,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-AR23-1,BFP-AR24-1,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
 ## Milestones
 
@@ -826,6 +826,11 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Architecture-review R24 confirmed the append-only correction and
+  found only the successor ADR's missing mandatory follow-up. The R25
+  candidate adds approval-gated status normalization and downstream identity
+  synchronization without changing the decision.
 
 - 2026-07-27: Architecture-review R23 accepted the technical 3/4/89 boundary
   but rejected rewriting the accepted binary-partition ADR in place. The R24
