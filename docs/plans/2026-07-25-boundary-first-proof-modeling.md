@@ -97,7 +97,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r18.md
 - Review status: changes-requested; stage=test-spec-review; round=r18
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: test-spec revision
+- Next stage: test-spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-TSR18-1
 
@@ -822,6 +822,12 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Resolved test-spec-review R18 by synchronizing companion command
+  CMD-SBFP-8 with the exact change-root-bound primary preflight command,
+  failure-before-mutation behavior, both evidence surfaces, and the
+  evidence-only parent-observed side-effect boundary. The next gate is
+  test-spec-review R19.
 
 - 2026-07-27: Revised both active test specifications to the approved
   R48/R22/R17 contract. The proof map now binds exact runtime implementation
