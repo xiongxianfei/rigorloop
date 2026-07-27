@@ -3,7 +3,51 @@
 Stage: implement
 Milestone: M2
 Result: blocked
-Diagnostic: stage-output-transport-contract-unavailable
+Diagnostic: exact-semantic-oracle-overconstrains-independent-authoring
+
+## 2026-07-27 current implementation discovery
+
+The capability-bound v3 preflight now passes and publishes current evidence:
+
+```json
+{"attestation_ref":{"identity":"sha256:7ca2cfb30c6d8926dbb2439b68dedf686a121da1542a9dc28723118493034835","path":"docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/runtime-preflight-attestation.json"},"diagnostic_id":"none","phase":"pre-turn-start","result":"pass","schema_version":"boundary-runtime-preflight-v3","workspace_failure":null}
+```
+
+The pass binds the exact launcher, runtime package, schema bundle, protocol
+classification, feature classification, eleven-field runtime projection,
+3/4/89 feature partition, effective-tool projection, and production-handler
+conformance. The reported Codex version is one selector field, not sufficient
+authority by itself.
+
+Focused validation also passes:
+
+- `python scripts/test-boundary-proof.py` — passed 64 tests.
+- `python scripts/validate-skills.py` — validated 24 skills.
+- `python scripts/test-skill-validator.py` — passed 259 tests.
+- `python scripts/build-skills.py --check` — passed.
+- `python -m py_compile scripts/boundary_proof_behavior.py
+  scripts/boundary_proof_model.py scripts/validate-boundary-proof.py
+  scripts/test-boundary-proof.py` — passed.
+- `git diff --check` — passed.
+
+Canonical generation still fails closed before staging, receipt creation,
+immutable installation, or pointer replacement. The current pointer remains
+on historical run `run-91e41340b56169c06158eca244fb117c`.
+
+The fresh stage now receives the exact user-request semantics, the installed
+boundary reference, an inline capability-preserving completion gate, and an
+exact portable record skeleton. The resulting records nevertheless vary in
+stable IDs, non-applicability rationales, row ownership, and proof
+decomposition. R28y currently requires equality of every normalized oracle
+field, so structurally closed and independently reviewable alternatives are
+rejected unless they reproduce one hidden golden decomposition.
+
+That is an upstream contract issue. Retrying another model sample is not a
+safe resolution, and relaxing the implementation below the approved R28y
+comparison would violate the spec. M2 remains blocked pending formal
+code-review classification and, if confirmed, a focused spec amendment that
+separates exact structural/semantic invariants from reviewer-owned modeling
+choices.
 
 ## Current implementation discovery
 
