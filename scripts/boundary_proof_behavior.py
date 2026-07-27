@@ -1340,7 +1340,10 @@ def _parse_test_spec_markdown(raw: str) -> dict[str, object]:
         {
             match.group(1)
             for line in lines
-            if (match := re.match(r"^(T[0-9]+)\.", line)) is not None
+            if (
+                match := re.match(r"^(?:#{1,6}\s+)?(T[0-9]+)\.", line)
+            )
+            is not None
         }
     )
     if len(versions) != 1 or len(scopes) != 1 or not tests:

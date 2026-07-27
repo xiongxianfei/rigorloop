@@ -2211,6 +2211,27 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         )
         self.assertEqual(len(normalized_proof.proof_obligations), 4)
 
+    def test_test_spec_parser_accepts_equivalent_markdown_test_headings(
+        self,
+    ) -> None:
+        feature = normalize_feature_model(
+            _parse_feature_markdown(
+                (
+                    FIXTURES
+                    / "simple-change"
+                    / "candidates"
+                    / "feature-spec.md"
+                ).read_text(encoding="utf-8")
+            )
+        )
+        raw = (
+            FIXTURES / "simple-change" / "candidates" / "test-spec.md"
+        ).read_text(encoding="utf-8")
+        for test_id in ("T1", "T2", "T3"):
+            raw = raw.replace(f"\n{test_id}.", f"\n### {test_id}.")
+        proof = normalize_proof_map(_parse_test_spec_markdown(raw), feature)
+        self.assertEqual(len(proof.proof_obligations), 4)
+
     def test_invariant_projection_accepts_stage_owned_alternative_modeling(
         self,
     ) -> None:
