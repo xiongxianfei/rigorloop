@@ -490,3 +490,40 @@ python scripts/build-skills.py --check
 ```
 
 M2 is ready for code-review R10. Final verification is not claimed.
+
+## Code-review R10 correction
+
+`BFP-CR-M2-16` is implemented with a closed
+`correction-stop-evidence/` package. The parent materializer exclusively
+writes and fsyncs the accepted review record, log, resolution, bundle,
+normalized projection, and event before it writes the lease-bound terminal
+receipt. Working-root and completed-recovery validation recompute every
+identity and reject missing, extra, symlinked, special-file, stale, or
+inconsistent evidence.
+
+`BFP-CR-M2-17` is implemented with named T52 contrast proof covering:
+
+- missing, repeated, empty, out-of-order, extra recognized, mismatched,
+  duplicate, and unknown finding fields;
+- every nonempty owner-decision subset plus the all-automatic control;
+- both review-stage stop packages, nonpublication, explicit discard recovery,
+  preserved stopped-input identity, equal-input rejection, and unequal-input
+  acceptance;
+- missing, extra, symlinked, FIFO, and stale stop evidence;
+- all three valid observed branch/role pairs crossed with all three compatible
+  expectation pairs;
+- request-only child projection and expectation-only byte invariance.
+
+Focused validation passed:
+
+```text
+python -m py_compile scripts/boundary_proof_behavior.py scripts/boundary_proof_model.py scripts/test-boundary-proof.py
+python scripts/test-boundary-proof.py
+  Ran 109 tests
+  OK
+```
+
+The generic T51 recovery suite continues to prove every durable discard crash
+boundary; the T52 tests compose that transaction with the new correction-stop
+package. Fresh canonical generation remains required because the harness
+identity changed.

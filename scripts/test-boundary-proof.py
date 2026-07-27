@@ -8,6 +8,7 @@ import copy
 import hashlib
 import io
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -33,12 +34,14 @@ from boundary_proof_behavior import (
     _AppServer,
     _StageTurnTimeout,
     _assert_parent_only_candidate_isolation,
+    _assert_correction_input_is_fresh,
     _assembled_working_paths,
     _artifact_kind,
     _assemble_feature_spec_correction_run,
     _assemble_test_spec_correction_run,
     _build_behavior_manifest,
     _classify_historical_evidence,
+    _completed_correction_stop_input_identities,
     _create_publisher_lease,
     _dispatch_file_change_request,
     _discover_global_candidate,
@@ -72,8 +75,10 @@ from boundary_proof_behavior import (
     _observed_scenario_outcome,
     _review_payload_from_markdown,
     _validate_correction_stop_receipt,
+    _validate_correction_stop_evidence,
     _validate_review_payload,
     _validate_scenario_expectations,
+    _write_correction_stop,
     _validate_prepared_receipt,
     _validate_publisher_lease,
     _validate_recovery_basis,
@@ -430,6 +435,51 @@ def _projection_identity(projection: object) -> str:
         projection, sort_keys=True, separators=(",", ":")
     ).encode("utf-8")
     return "sha256:" + hashlib.sha256(raw).hexdigest()
+
+
+def _owner_decision_review(
+    stage: str,
+    artifact_identity: str,
+    *,
+    finding_ids: tuple[str, ...] = ("finding.owner-decision",),
+) -> tuple[dict[str, object], str]:
+    review_id = f"{stage}-r1"
+    blocks = []
+    for finding_id in finding_ids:
+        blocks.append(
+            f"## Finding {finding_id}\n\n"
+            f"- Finding ID: {finding_id}\n"
+            "- Evidence: exact boundary evidence\n"
+            "- Required outcome: preserve owner authority\n"
+            "- Safe resolution path: clarify the authoritative input\n"
+            "- needs-decision rationale: owner must select compatibility\n"
+        )
+    joined_ids = ", ".join(finding_ids)
+    record = (
+        "# Review\n\n"
+        f"Review ID: {review_id}\n"
+        f"Stage: {stage}\n"
+        "Status: changes-requested\n"
+        f"Reviewed artifact identity: {artifact_identity}\n"
+        f"Material findings: {joined_ids}\n"
+        "Recording status: recorded\n\n"
+        + "\n".join(blocks)
+    )
+    log = (
+        f"Review ID: {review_id}\n"
+        f"Stage: {stage}\n"
+        "Status: changes-requested\n"
+        f"Reviewed artifact identity: {artifact_identity}\n"
+        f"Material findings: {joined_ids}\n"
+    )
+    payload = _review_payload_from_markdown(stage, record, log)
+    resolution = (
+        "# Review resolution\n\n"
+        f"Review ID: {review_id}\n"
+        + "\n".join(f"Finding ID: {value}" for value in finding_ids)
+        + "\nCloseout status: open\n"
+    )
+    return payload, resolution
 
 
 def _snapshot_ref(trace: dict[str, object], snapshot_id: str) -> dict[str, str]:
@@ -3351,6 +3401,265 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "protocol-shape-incompatible",
         )
 
+    def test_t52_authority_projection_rejects_every_recognized_field_defect(
+        self,
+    ) -> None:
+        finding_id = "finding.boundary"
+        base = (
+            f"## Finding {finding_id}\n"
+            f"- Finding ID: {finding_id}\n"
+            "- Evidence: evidence\n"
+            "- Required outcome: outcome\n"
+            "- Safe resolution path: resolution\n"
+            "- needs-decision rationale: none\n"
+        )
+        mutations = {
+            "missing": base.replace("- Evidence: evidence\n", ""),
+            "repeated": base.replace(
+                "- Evidence: evidence\n",
+                "- Evidence: evidence\n- Evidence: repeated\n",
+            ),
+            "empty": base.replace(
+                "- Required outcome: outcome",
+                "- Required outcome:",
+            ),
+            "out_of_order": base.replace(
+                "- Evidence: evidence\n- Required outcome: outcome\n",
+                "- Required outcome: outcome\n- Evidence: evidence\n",
+            ),
+            "extra_recognized": base.replace(
+                "- Evidence: evidence\n",
+                "- Evidence: evidence\n- Evidence: extra\n",
+            ),
+            "heading_label_mismatch": base.replace(
+                f"- Finding ID: {finding_id}",
+                "- Finding ID: finding.other",
+            ),
+        }
+        for name, record in mutations.items():
+            with self.subTest(name=name):
+                with self.assertRaises(BoundaryRuntimeError) as raised:
+                    _runtime_finding_projection(
+                        record, "changes-requested", [finding_id]
+                    )
+                self.assertEqual(
+                    raised.exception.diagnostic_id,
+                    "protocol-shape-incompatible",
+                )
+
+        duplicate = base + "\n" + base
+        with self.assertRaises(BoundaryRuntimeError):
+            _runtime_finding_projection(
+                duplicate,
+                "changes-requested",
+                [finding_id, finding_id],
+            )
+
+        unknown_prose = base.replace(
+            "- Evidence: evidence\n",
+            "- Evidence: evidence\n- Unknown label: ignored\n",
+        )
+        self.assertEqual(
+            _runtime_finding_projection(
+                unknown_prose, "changes-requested", [finding_id]
+            ),
+            _runtime_finding_projection(
+                base, "changes-requested", [finding_id]
+            ),
+        )
+
+    def test_t52_owner_decision_eligibility_covers_every_nonempty_subset(
+        self,
+    ) -> None:
+        finding_ids = (
+            "finding.alpha",
+            "finding.beta",
+            "finding.gamma",
+        )
+        for mask in range(8):
+            blocks = []
+            for index, finding_id in enumerate(finding_ids):
+                rationale = (
+                    "owner decision required"
+                    if mask & (1 << index)
+                    else "none"
+                )
+                blocks.append(
+                    f"## Finding {finding_id}\n"
+                    f"- Finding ID: {finding_id}\n"
+                    "- Evidence: evidence\n"
+                    "- Required outcome: outcome\n"
+                    "- Safe resolution path: resolution\n"
+                    f"- needs-decision rationale: {rationale}\n"
+                )
+            record = "\n".join(blocks)
+            projection = _runtime_finding_projection(
+                record, "changes-requested", list(finding_ids)
+            )
+            payload = {
+                "review_id": "spec-review-r1",
+                "outcome": "changes-requested",
+                "material_finding_ids": list(finding_ids),
+                "finding_projection": projection,
+                "finding_projection_identity": _projection_identity(
+                    projection
+                ),
+                "correction_eligibility": (
+                    "owner-decision-required"
+                    if mask
+                    else "automatic-eligible"
+                ),
+                "review_record_markdown": (
+                    "Review ID: spec-review-r1\n"
+                    "Stage: spec-review\n"
+                    "Status: changes-requested\n"
+                    "Reviewed artifact identity: sha256:" + "a" * 64 + "\n"
+                    "Material findings: " + ", ".join(finding_ids) + "\n"
+                    "Recording status: recorded\n"
+                    + record
+                ),
+                "review_log_markdown": (
+                    "Review ID: spec-review-r1\n"
+                    "Stage: spec-review\n"
+                    "Status: changes-requested\n"
+                    "Reviewed artifact identity: sha256:" + "a" * 64 + "\n"
+                    "Material findings: " + ", ".join(finding_ids) + "\n"
+                ),
+            }
+            with self.subTest(mask=mask):
+                _validate_review_payload(
+                    payload,
+                    stage="spec-review",
+                    artifact_identity="sha256:" + "a" * 64,
+                    require_approval=False,
+                )
+        invalid = dict(payload)
+        invalid["correction_eligibility"] = "unknown"
+        with self.assertRaises(BoundaryRuntimeError):
+            _validate_review_payload(
+                invalid,
+                stage="spec-review",
+                artifact_identity="sha256:" + "a" * 64,
+                require_approval=False,
+            )
+        missing = dict(payload)
+        missing.pop("correction_eligibility")
+        with self.assertRaises(BoundaryRuntimeError):
+            _validate_review_payload(
+                missing,
+                stage="spec-review",
+                artifact_identity="sha256:" + "a" * 64,
+                require_approval=False,
+            )
+
+    def test_t52_correction_stop_package_and_discard_recovery(
+        self,
+    ) -> None:
+        for stage in ("spec-review", "test-spec-review"):
+            with self.subTest(stage=stage), tempfile.TemporaryDirectory() as raw:
+                root = Path(raw)
+                change_id = "2026-07-25-example"
+                (root / "docs/changes" / change_id).mkdir(parents=True)
+                run_id = "run-" + ("1" if stage == "spec-review" else "2") * 32
+                lease, working = _create_publisher_lease(
+                    root,
+                    change_id,
+                    run_id,
+                    "publisher-" + "3" * 32,
+                    "sha256:" + "4" * 64,
+                )
+                artifact_identity = "sha256:" + "5" * 64
+                payload, resolution = _owner_decision_review(
+                    stage, artifact_identity
+                )
+                receipt = _write_correction_stop(
+                    working,
+                    lease,
+                    stage=stage,
+                    reviewed_artifact_identity=artifact_identity,
+                    review_payload=payload,
+                    resolution_markdown=resolution,
+                )
+                _validate_correction_stop_evidence(working, receipt)
+                _working_tree_identity(working, lease)
+                self.assertFalse(
+                    (working.parent / f".prepared-{run_id}").exists()
+                )
+                self.assertFalse((working.parent / "runs" / run_id).exists())
+                self.assertFalse((working.parent / "current.json").exists())
+
+                authority = _recovery_authority(root, change_id)
+                result = discard_interrupted_publication(
+                    change_id,
+                    authority,
+                    authorized_by="test-maintainer",
+                    repo_root=root,
+                )
+                quarantine = root / str(result["quarantine_path"])
+                self.assertTrue(
+                    (quarantine / "correction-stop.json").is_file()
+                )
+                self.assertEqual(
+                    _completed_correction_stop_input_identities(
+                        root, change_id
+                    ),
+                    frozenset({lease["input_set_identity"]}),
+                )
+                with self.assertRaises(BoundaryRuntimeError) as raised:
+                    _assert_correction_input_is_fresh(
+                        root,
+                        change_id,
+                        str(lease["input_set_identity"]),
+                    )
+                self.assertEqual(
+                    raised.exception.diagnostic_id,
+                    "correction-authorization-required",
+                )
+                _assert_correction_input_is_fresh(
+                    root, change_id, "sha256:" + "6" * 64
+                )
+
+    def test_t52_correction_stop_package_rejects_boundary_mutations(
+        self,
+    ) -> None:
+        mutations = ("missing", "extra", "symlink", "fifo", "stale")
+        for mutation in mutations:
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as raw:
+                root = Path(raw)
+                lease = {
+                    "run_id": "run-" + "1" * 32,
+                    "publisher_instance_id": "publisher-" + "2" * 32,
+                    "input_set_identity": "sha256:" + "3" * 64,
+                }
+                artifact_identity = "sha256:" + "4" * 64
+                payload, resolution = _owner_decision_review(
+                    "spec-review", artifact_identity
+                )
+                _write_correction_stop(
+                    root,
+                    lease,
+                    stage="spec-review",
+                    reviewed_artifact_identity=artifact_identity,
+                    review_payload=payload,
+                    resolution_markdown=resolution,
+                )
+                evidence = root / "correction-stop-evidence"
+                target = evidence / "review-log.md"
+                if mutation == "missing":
+                    target.unlink()
+                elif mutation == "extra":
+                    (evidence / "extra").write_text("x", encoding="utf-8")
+                elif mutation == "symlink":
+                    target.unlink()
+                    target.symlink_to(evidence / "review-record.md")
+                elif mutation == "fifo":
+                    target.unlink()
+                    os.mkfifo(target)
+                else:
+                    target.write_text("stale", encoding="utf-8")
+                with self.assertRaises(BoundaryRuntimeError):
+                    _working_tree_identity(root, lease)
+
     def test_correction_stop_receipt_is_identity_bound_and_closed(self) -> None:
         lease = {
             "run_id": "run-" + "1" * 32,
@@ -3410,38 +3719,83 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 _working_tree_identity(root)
 
     def test_scenario_expectations_compare_after_observation(self) -> None:
-        zero_events = [
-            {"stage": "spec", "attempt": 1},
-            {"stage": "test-spec", "attempt": 1},
-        ]
-        corrected_events = [
-            {"stage": "spec", "attempt": 1},
-            {"stage": "test-spec", "attempt": 1},
-            {"stage": "test-spec", "attempt": 2},
-        ]
-        self.assertEqual(
-            _observed_scenario_outcome(zero_events),
-            ("zero-correction", None),
-        )
-        self.assertEqual(
-            _observed_scenario_outcome(corrected_events),
-            ("one-correction", "test-spec"),
-        )
-        _validate_scenario_expectations(
-            {"expected_branch": "zero-correction", "corrected_role": None},
-            zero_events,
-        )
-        with self.assertRaises(BoundaryRuntimeError) as raised:
-            _validate_scenario_expectations(
-                {
-                    "expected_branch": "one-correction",
-                    "corrected_role": "feature-spec",
-                },
-                zero_events,
+        observed_cases = {
+            ("zero-correction", None): [
+                {"stage": "spec", "attempt": 1},
+                {"stage": "test-spec", "attempt": 1},
+            ],
+            ("one-correction", "feature-spec"): [
+                {"stage": "spec", "attempt": 1},
+                {"stage": "spec", "attempt": 2},
+                {"stage": "test-spec", "attempt": 1},
+            ],
+            ("one-correction", "test-spec"): [
+                {"stage": "spec", "attempt": 1},
+                {"stage": "test-spec", "attempt": 1},
+                {"stage": "test-spec", "attempt": 2},
+            ],
+        }
+        for observed, events in observed_cases.items():
+            self.assertEqual(_observed_scenario_outcome(events), observed)
+            for expected in observed_cases:
+                scenario = {
+                    "expected_branch": expected[0],
+                    "corrected_role": expected[1],
+                }
+                with self.subTest(observed=observed, expected=expected):
+                    if expected == observed:
+                        _validate_scenario_expectations(scenario, events)
+                    else:
+                        with self.assertRaises(
+                            BoundaryRuntimeError
+                        ) as raised:
+                            _validate_scenario_expectations(scenario, events)
+                        self.assertEqual(
+                            raised.exception.diagnostic_id,
+                            "boundary-oracle-mismatch",
+                        )
+
+        with self.assertRaises(BoundaryRuntimeError):
+            _observed_scenario_outcome(
+                [
+                    {"stage": "spec", "attempt": 2},
+                    {"stage": "test-spec", "attempt": 2},
+                ]
             )
-        self.assertEqual(
-            raised.exception.diagnostic_id, "boundary-oracle-mismatch"
+
+    def test_t52_request_only_projection_excludes_parent_expectations(
+        self,
+    ) -> None:
+        request = "Author exactly the authoritative four-requirement record."
+        scenario = {
+            "scenario_id": "BFP-SIMPLE-001",
+            "request": request,
+            "expected_branch": "one-correction",
+            "corrected_role": "test-spec",
+        }
+        projected = _workflow_stage_request(
+            "spec",
+            "Author the feature specification.",
+            artifact_context=scenario["request"],
         )
+        serialized = json.dumps(projected, sort_keys=True)
+        self.assertIn(request, serialized)
+        self.assertNotIn("expected_branch", serialized)
+        self.assertNotIn("one-correction", serialized)
+        self.assertNotIn("corrected_role", serialized)
+        self.assertNotIn("test-spec", serialized)
+
+        changed_expectations = {
+            **scenario,
+            "expected_branch": "zero-correction",
+            "corrected_role": None,
+        }
+        projected_again = _workflow_stage_request(
+            "spec",
+            "Author the feature specification.",
+            artifact_context=changed_expectations["request"],
+        )
+        self.assertEqual(projected, projected_again)
 
     def test_closed_artifact_classifier_covers_repository_boundaries(self) -> None:
         change_id = "2026-07-25-example"
