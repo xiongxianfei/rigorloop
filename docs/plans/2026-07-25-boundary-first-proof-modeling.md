@@ -94,11 +94,11 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r26.md
-- Review status: approved; stage=test-spec-review; round=r26
+- Review status: pending; stage=code-review; next-round=r10
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BFP-CR-M2-14,BFP-CR-M2-15
 
@@ -928,6 +928,13 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-27: Published fresh canonical zero-correction behavior run
+  `run-b6114d1a01a6e6703177c512c2eb4a11` for input identity
+  `sha256:3996b321b3d9d5e8b8b2dfba5140afc128ec8503c27c709f983612c39dae4c12`.
+  Immutable validation reports zero false blocking, zero new universal
+  artifacts, and zero structure-only correction cycles. The focused 104-test
+  suite and skill/build validators pass; M2 is `review-requested` for
+  code-review R10.
 - 2026-07-27: Implemented the focused M2 correction-authority and scenario
   oracle slice. Review finding records now project exact correction authority;
   owner-decision findings write one lease-bound terminal stop before mutation;
