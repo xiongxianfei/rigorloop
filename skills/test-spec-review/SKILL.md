@@ -133,6 +133,13 @@ Do not broad-search authoritative documents just to find paths. Use the project 
   Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
   Do not emit unfilled placeholders.
 
+## Boundary-first completion gate
+
+For a `v1` proof map, a clean review requires version and scope plus direct
+proof for every applicable boundary and selected interaction in the mapped
+reference. If the required reference cannot be loaded, stop; do not approve
+example-complete but boundary-incomplete evidence.
+
 ## Review dimensions
 
 Evaluate each review dimension with `pass`, `concern`, or `block`.

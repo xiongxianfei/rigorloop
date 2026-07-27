@@ -2279,6 +2279,20 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 self.assertIn(required, request)
         self.assertIn("Keep normative behavior limited", request)
 
+    def test_participating_skills_keep_boundary_completion_gate_inline(
+        self,
+    ) -> None:
+        for skill in PARTICIPATING_SKILLS:
+            with self.subTest(skill=skill):
+                content = (
+                    ROOT / "skills" / skill / "SKILL.md"
+                ).read_text(encoding="utf-8")
+                self.assertIn("## Boundary-first completion gate", content)
+                normalized = " ".join(content.split())
+                self.assertIn(
+                    "If the required reference cannot be loaded", normalized
+                )
+
     def test_workflow_turn_binds_orchestrator_and_all_stage_owners(self) -> None:
         request = _turn_start_request(
             "thread-1",

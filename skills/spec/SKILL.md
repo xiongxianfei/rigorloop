@@ -115,6 +115,14 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
   Fill: spec title, required-section structures, examples, requirements, acceptance criteria, next artifacts, follow-on artifacts, and readiness.
   Do not emit unfilled placeholders.
 
+## Boundary-first completion gate
+
+For contract-bearing behavior, do not declare the spec ready until it contains
+`Boundary model version`, `Boundary model scope`, one classification for every
+core dimension named by the mapped boundary-proof reference, classified
+examples, and an explicit interaction selection. If the required reference
+cannot be loaded, stop; do not silently fall back to example-only output.
+
 ## Generated Markdown readability
 
 When this skill creates or updates generated or generator-shaped Markdown:
