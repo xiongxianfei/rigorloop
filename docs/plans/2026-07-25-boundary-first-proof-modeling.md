@@ -94,10 +94,10 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r19.md
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m2.md
 - Review status: approved; stage=test-spec-review; round=r19
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement
+- Next stage: spec
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
@@ -204,7 +204,7 @@ resource through generated, packed, and installed outputs.
     raw and normalized paths
   - Exact Codex 0.145.0 canonical schema and protocol-classification
     identities; exact launcher and runtime-package identities; exact
-    ten-field runtime-projection identity; exact 96-row feature partition;
+    eleven-field runtime-projection identity; exact 96-row feature partition;
     and explicit disabled `review-agent` within the six-row system roster.
     Prove no match, multiple matches, duplicate ID/key/identity, unknown field,
     identity/content disagreement, and changed runtime bytes with unchanged
@@ -244,8 +244,10 @@ resource through generated, packed, and installed outputs.
     proves one matching request, `decision: decline`, generic carriers,
     terminal `declined`, unchanged workspace, no lifecycle output, and clean
     stop/reap; `not-exposed-projection` additionally proves the exact reviewed
-    runtime bytes, all 93 required-disabled features disabled, only three
-    permitted command features enabled, and rejection of any observed
+    runtime bytes, all 89 required-disabled tool-bearing features disabled,
+    four permitted non-tool behaviors allowed to remain enabled, only three
+    permitted command features enabled within the effective-tool projection,
+    and rejection of any observed
     file-change event as drift. Event absence alone is never sufficient.
   - Closed file-change cause-to-phase and diagnostic precedence rows,
     including unknown and cross-phase rejection plus separation of successful
@@ -329,7 +331,7 @@ resource through generated, packed, and installed outputs.
   - Example-only spec/test-spec rejection and valid compact simple-change cases
 - Implementation steps:
   - First correct the pure immutable projection and tests in
-    `boundary_proof_model.py`: add the exact ten-field runtime row, selection
+    `boundary_proof_model.py`: add the exact eleven-field runtime row, selection
     and content identities, complete feature partition, effective-tool and
     handler-conformance schemas, common/state-specific proof rules, v3
     preflight/attestation/implementation-manifest schemas, closed file-change
@@ -522,9 +524,10 @@ resource through generated, packed, and installed outputs.
     exact feature/item classification, sandbox probes, and
     credential-isolation result without secret values or private paths
   - exact pinned Codex 0.145.0 schema and protocol-classification identities,
-    exact launcher and package bytes, ten-field projection identity, 96
-    feature rows partitioned into three permitted and 93 required-disabled
-    features, five enabled user plus six disabled system skill rows, exact
+    exact launcher and package bytes, eleven-field projection identity, 96
+    feature rows partitioned into three permitted tools, four permitted
+    non-tool behaviors, and 89 required-disabled tool-bearing features, five
+    enabled user plus six disabled system skill rows, exact
     thread/turn root requests, classified observed events, and closed
     parent-proxy/child-environment evidence
   - durable current `runtime-preflight-attestation.json` whose reference

@@ -1778,6 +1778,7 @@ schema_bundle_identity
 protocol_item_classification_identity
 feature_classification_identity
 permitted_tool_features
+permitted_non_tool_features
 required_disabled_features
 file_change_capability_state
 ```
@@ -1785,14 +1786,17 @@ file_change_capability_state
 `projection_id` matches
 `^codex-[0-9]+\.[0-9]+\.[0-9]+-[a-z0-9-]+-v[0-9]+$`.
 `runtime_version` is one exact SemVer value.
-Both feature collections are ordered, independently unique, disjoint, and
-exhaustive for all 96 feature rows bound by
+All three feature collections are ordered, independently unique, pairwise
+disjoint, and exhaustive for all 96 feature rows bound by
 `feature_classification_identity`.
+`permitted_non_tool_features` contains runtime behavior that may remain enabled
+but does not expose a child-invocable tool or file-change operation. It is not
+silently treated as a permitted tool or as required-disabled behavior.
 `file_change_capability_state` is exactly
 `exposed-live-probe-required` or `not-exposed-projection`.
 `runtime_projection_identity` is the standard canonical-JSON identity of the
-complete ten-field row. The identity is evidence about the row and is not a
-self-referential eleventh field.
+complete eleven-field row. The identity is evidence about the row and is not a
+self-referential twelfth field.
 Projection IDs, complete selection keys, and projection
 identities are independently unique.
 An unknown or additional field, duplicate projection ID, duplicate selection
@@ -1816,6 +1820,11 @@ permitted_tool_features:
   - shell_snapshot
   - shell_tool
   - unified_exec
+permitted_non_tool_features:
+  - terminal_resize_reflow
+  - tool_search_always_defer_mcp_tools
+  - resize_all_images
+  - tui_app_server
 required_disabled_features:
   - undo
   - secret_auth_storage
@@ -1827,7 +1836,6 @@ required_disabled_features:
   - code_mode_host
   - code_mode_only
   - js_repl_tools_only
-  - terminal_resize_reflow
   - web_search_request
   - web_search_cached
   - standalone_web_search
@@ -1860,7 +1868,6 @@ required_disabled_features:
   - enable_mcp_apps
   - apps_mcp_path_override
   - tool_search
-  - tool_search_always_defer_mcp_tools
   - non_prefixed_mcp_tool_names
   - unavailable_dummy_tools
   - tool_suggest
@@ -1875,7 +1882,6 @@ required_disabled_features:
   - plugin_sharing
   - external_migration
   - image_generation
-  - resize_all_images
   - item_ids
   - concurrent_reasoning_summaries
   - skill_mcp_dependency_install
@@ -1898,7 +1904,6 @@ required_disabled_features:
   - realtime_conversation
   - remote_control
   - image_detail_original
-  - tui_app_server
   - prevent_idle_sleep
   - workspace_owner_usage_nudge
   - responses_websockets
@@ -1914,7 +1919,7 @@ file_change_capability_state: not-exposed-projection
 ```
 
 Its `runtime_projection_identity` is
-`sha256:d2a945a5a67eb9e0d335d96004e670a6b9823cc934869c4d1fcf7fefb157ca86`.
+`sha256:ab6416627d461e3f11a2bc0d16d465ae8601478a8d085b64e86a6945931a4624`.
 The attestation's `runtime_projection_id`, `runtime_projection_identity`,
 `runtime_launcher_identity`, `runtime_package_identity`,
 `schema_bundle_identity`, `protocol_item_classification_identity`,
@@ -2040,8 +2045,10 @@ configuration-disagreeing rows fail with `file-change-control-mismatch`.
 The attestation's `effective_tool_projection_identity` is the standard
 canonical-JSON identity of that complete row array.
 For `codex-0.145.0-readonly-boundary-v1`, exactly `shell_snapshot`,
-`shell_tool`, and `unified_exec` are enabled and every
-`required_disabled_features` member is disabled.
+`shell_tool`, and `unified_exec` are enabled within the effective-tool
+projection, every `required_disabled_features` member is disabled, and the
+four `permitted_non_tool_features` members may remain enabled without entering
+the effective-tool projection.
 
 The parent request handler is proved by the closed
 `stage-file-change-handler-conformance-v1` policy before every preflight and
