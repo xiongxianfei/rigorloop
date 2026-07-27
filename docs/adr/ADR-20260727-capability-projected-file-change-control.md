@@ -41,7 +41,8 @@ Each projection binds:
 - exact launcher and runtime-package byte identities;
 - generated-schema identity;
 - complete protocol-item and feature-classification identities;
-- the exhaustive permitted-tool and required-disabled feature sets; and
+- the exhaustive permitted-tool, permitted-non-tool, and required-disabled
+  feature sets; and
 - one closed file-change capability state.
 
 The complete row has a canonical content identity. Selection requires one

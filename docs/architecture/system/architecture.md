@@ -669,8 +669,9 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    the exact launcher and runtime-package byte identities plus the canonical
    schema, complete protocol-classification, and complete
    feature-classification identities. Its content identity binds the full
-   ten-field row, including the three permitted command features, all 93
-   required-disabled features, and
+   eleven-field row, including the three permitted command features, four
+   permitted non-tool runtime behaviors, all 89 required-disabled
+   tool-bearing features, and
    `file_change_capability_state: not-exposed-projection`. Equal version or
    declarations with different runtime bytes select no row. The registry does
    not classify newly discovered same-version methods or implementations by
@@ -707,9 +708,10 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    unchanged.
    The first `not-exposed-projection` does not ask the model to invoke an
    absent operation. It instead requires exact runtime-projection equality,
-   all 93 required-disabled feature rows disabled, a complete
+   all 89 required-disabled tool-bearing feature rows disabled, the four
+   projected non-tool behaviors permitted to remain enabled, a complete
    effective-tool projection with only the three permitted command features
-   enabled, and a fresh invocation-owned
+   enabled within that projection, and a fresh invocation-owned
    `stage-file-change-handler-conformance-result-v1` from the common gate,
    plus the complete closed negative case evidence. The same handler is installed
    before every governed thread, and any observed file-change request or item

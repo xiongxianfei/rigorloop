@@ -1239,7 +1239,7 @@ Boundary model scope: R28-R28z
   `instruction_profile`, `tool_profile`, `python_implementation`, and
   `python_version`; the exact `boundary-runtime-attestation-v3` record with
   all closed top-level fields, including exact launcher/package identities,
-  the selected ten-field runtime projection, effective-tool projection,
+  the selected eleven-field runtime projection, effective-tool projection,
   file-change policy, fresh handler-conformance result, eight probe results,
   and six credential-isolation results; the exact
   `boundary-transport-policy-v1` record; the complete
@@ -1375,9 +1375,10 @@ Boundary model scope: R28-R28z
   feature-classification identity
   `sha256:6f833f4c43196e43f67fea215de09743e5a5e3a80bed53973b42740041369268`,
   projection ID `codex-0.145.0-readonly-boundary-v1`, projection identity
-  `sha256:d2a945a5a67eb9e0d335d96004e670a6b9823cc934869c4d1fcf7fefb157ca86`,
+  `sha256:ab6416627d461e3f11a2bc0d16d465ae8601478a8d085b64e86a6945931a4624`,
   and exactly 96 unique feature rows partitioned into three permitted command
-  features and 93 required-disabled features. Assert each approved literal
+  features, four permitted non-tool behaviors, and 89 required-disabled
+  tool-bearing features. Assert each approved literal
   directly, then add, remove, duplicate, overlap, or mutate projection fields,
   selection keys, identities, schema files, object members, methods,
   classifications, feature rows, launcher bytes, and package bytes as contrast
@@ -1424,9 +1425,11 @@ Boundary model scope: R28-R28z
   ambiguous requests, `accept`, `acceptForSession`, generic failed/completed
   status, mutation, additional side effects, and incomplete cleanup.
   Under the exact `not-exposed-projection` row, prove selected runtime bytes,
-  all 93 required-disabled features disabled, only the three permitted command
-  features enabled, exact policy and conformance identities, and no observed
-  file-change event; do not issue the unavailable-operation prompt. Inject any
+  all 89 required-disabled tool-bearing features disabled, only the three
+  permitted command features enabled within the effective-tool projection,
+  the four projected non-tool behaviors allowed to remain enabled, exact
+  policy and conformance identities, and no observed file-change event; do not
+  issue the unavailable-operation prompt. Inject any
   file-change event and require projection-drift failure without silently
   switching branches. Inject a
   transient canary and test exact child environment names plus absence from
@@ -1900,11 +1903,13 @@ Boundary model scope: R28-R28z
   ambiguous, substituted, accepted, session-accepted, failed, completed,
   shell-substituted, additional-side-effect, mutated, and unclean-stop
   contrasts.
-  For `not-exposed-projection`, require the exact ten-field projection and
-  implementation identities, all 93 required-disabled features disabled, only
-  the three permitted command features enabled, and no file-change event
-  during canary or lifecycle turns without issuing the unavailable-operation
-  prompt. Inject a file-change event and require drift failure.
+  For `not-exposed-projection`, require the exact eleven-field projection and
+  implementation identities, all 89 required-disabled tool-bearing features
+  disabled, only the three permitted command features enabled within the
+  effective-tool projection, the four projected non-tool behaviors allowed to
+  remain enabled, and no file-change event during canary or lifecycle turns
+  without issuing the unavailable-operation prompt. Inject a file-change event
+  and require drift failure.
   Apply the same policy identity to probe when applicable, canary, lifecycle,
   and retry contexts; prove reconciliation starts no child.
 - Expected result: All command mutations fail, the descendant exits and is

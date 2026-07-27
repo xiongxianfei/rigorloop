@@ -181,3 +181,42 @@ M2 is not ready for code review.
 The immediate next stage is focused spec-review of the stage-authored
 artifact-envelope correction, followed by synchronized architecture, plan, and
 test-spec review before implementation resumes.
+
+## 2026-07-27 capability-projection preflight correction
+
+The v3 evidence-only preflight stopped before publication:
+
+```json
+{"attestation_ref":null,"diagnostic_id":"file-change-control-mismatch","phase":"pre-thread-start","result":"environment-unavailable","schema_version":"boundary-runtime-preflight-v3","workspace_failure":null}
+```
+
+The deterministic implementation suite passed 60 tests before this live
+preflight. The exact bound runtime inventory contained 96 unique rows with
+these enabled features:
+
+```text
+shell_snapshot
+shell_tool
+unified_exec
+terminal_resize_reflow
+tool_search_always_defer_mcp_tools
+resize_all_images
+tui_app_server
+```
+
+The first three are the reviewed permitted command tools. The remaining four
+are already classified by the approved feature model as permitted non-tool
+runtime behavior. They do not expose a child-invocable tool or file-change
+operation, but the approved ten-field runtime row incorrectly included them in
+the 93-member required-disabled set.
+
+The preflight therefore proved a contract-model gap: the runtime projection
+needs three pairwise-disjoint exhaustive feature sets rather than the approved
+binary partition. The focused correction adds
+`permitted_non_tool_features`, yielding an eleven-field row with three
+permitted tools, four permitted non-tool behaviors, and 89 required-disabled
+tool-bearing features. No pass attestation, implementation manifest, immutable
+run, pointer, skill mutation, or publication was produced.
+
+Implementation remains blocked until the focused spec, architecture, plan, and
+test-spec amendments are independently approved.
