@@ -1732,7 +1732,7 @@ approved the current M2 proof map for implementation.
 
 Finding ID: BFP-CR-M2-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M2 harness implementer
 Owning stage: implementation correction
 Decision owner: stage-owned behavior-evidence contract
@@ -1741,7 +1741,10 @@ Required outcome: Capture actual isolated stage-owned authoring and independent 
 Chosen action: Invoke `workflow` as the isolated orchestrator, have each owning stage create its complete artifact file below the isolated output root, snapshot each file before advancing, remove harness-owned normative renderers, and keep candidate oracles only for post-production comparison.
 Rationale: The harness may transport and validate evidence, but it cannot substitute for the stage owner or independent reviewer.
 Validation target: code-review-m2-r2
-Validation evidence: Code-review M2 R2 classified the remediation as failed: the run has distinct stage threads and real review outcomes, but direct stage routing and harness-owned normative renderers still violate R28y.
+Validation evidence: Current immutable run `run-95e4759a48cb46d183b8222e73ecc5ec`
+contains stage-authored feature and test specifications plus independently
+authored formal review evidence from distinct stage occurrences. The harness
+only validates and materializes closed envelopes; 77 focused tests pass.
 
 #### BFP-CR-M2-2 - Invocation-profile literals contradict the spec
 
@@ -1824,7 +1827,7 @@ Validation evidence: synchronized plan body, index, change metadata, and review 
 
 Finding ID: BFP-CR-M2-7
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M2 harness implementer
 Owning stage: implementation correction
 Decision owner: stage-output reconciliation contract
@@ -1833,13 +1836,17 @@ Required outcome: Retry only an explicitly transient stage with no output eviden
 Chosen action: Extract a testable stage coordinator that owns output-state inspection and prove timeout success/failure, non-retryable behavior, complete reconciliation, partial stop, and no-reinvocation paths.
 Rationale: A timeout is not proof that a stage produced no durable or complete result.
 Validation target: code-review-m2-r3
-Validation evidence: pending implementation and code-review M2 R3
+Validation evidence: The closed transport-decision matrix, unknown-tuple
+regressions, confirmed-stop evidence, complete-output reconciliation, partial
+and contradictory output stops, and absent-output safe retry pass in
+`python scripts/test-boundary-proof.py`. Live canonical attempts also exercised
+confirmed-stopped absent-output retry without accepting partial evidence.
 
 #### BFP-CR-M2-8 - Publication ordering contradicts governing artifacts
 
 Finding ID: BFP-CR-M2-8
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: architecture and plan owners
 Owning stage: architecture and plan correction
 Decision owner: approved publication transaction contract
@@ -1848,7 +1855,11 @@ Required outcome: One noncontradictory transaction sequence governs specificatio
 Chosen action: Use staged validation, then durable exclusive receipt, then immutable install as the canonical sequence; synchronize the spec, architecture, ADR, plan, test spec, and implementation and rerun each affected review gate.
 Rationale: The implementation cannot resolve contradictory higher-ranked architecture and plan text by silently choosing one.
 Validation target: architecture-review and plan-review, then code-review-m2-r3
-Validation evidence: pending spec, architecture, plan, and test-spec approval
+Validation evidence: The approved specification, architecture, ADR, active
+plan, test spec, and implementation use prepared receipt before immutable
+install, installed-run validation before pointer replacement, and
+evidence-first recovery. Publication/recovery regressions and current immutable
+run validation pass.
 
 ### spec-review-r27
 
@@ -3464,7 +3475,7 @@ R53/R25/R19-bound three-category proof map for M2 implementation.
 
 Finding ID: BFP-CR-M2-9
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec author
 Owning stage: focused spec revision
 Decision owner: R28y stage-ownership and oracle-comparison contract
@@ -3473,7 +3484,12 @@ Required outcome: Separate exact scenario and structural invariants from indepen
 Chosen action: Amend R28y so the oracle proves the requested behavior and closed boundary-proof properties without requiring one hidden golden decomposition; add a dedicated mismatch diagnostic and synchronize affected proof and execution artifacts.
 Rationale: Injecting the candidate would violate comparison-only input separation, while weakening only the implementation would violate the approved spec.
 Validation target: spec-review, affected downstream reviews, then code-review-m2-r4
-Validation evidence: spec-review-r54 approved the focused contract correction; affected downstream synchronization remains pending.
+Validation evidence: Spec-review R55, architecture-review R27, plan-review
+R21, and test-spec-review R23 approved the final ownership projection.
+The pure evaluator excludes extension identity, a structurally valid extension
+alternative passes candidate comparison, the closed extension serialization
+and identity grammar are published, and current immutable run
+`run-95e4759a48cb46d183b8222e73ecc5ec` passes with zero false blocking.
 
 ### spec-review-r54
 

@@ -865,7 +865,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-m2-r1
 Material findings: BFP-CR-M2-1, BFP-CR-M2-2, BFP-CR-M2-3, BFP-CR-M2-4, BFP-CR-M2-5, BFP-CR-M2-6
-Open findings: BFP-CR-M2-1
+Open findings: None
 
 ### Review entry
 Review ID: code-review-m2-r2
@@ -876,7 +876,7 @@ Status: blocked
 Detailed record: reviews/code-review-m2-r2.md
 Resolution: review-resolution.md#code-review-m2-r2
 Material findings: BFP-CR-M2-7, BFP-CR-M2-8
-Open findings: BFP-CR-M2-7, BFP-CR-M2-8
+Open findings: None
 
 ### Review entry
 Review ID: spec-review-r27
@@ -1459,7 +1459,7 @@ Status: blocked
 Detailed record: reviews/code-review-m2-r3.md
 Resolution: review-resolution.md#code-review-m2-r3
 Material findings: BFP-CR-M2-9
-Open findings: BFP-CR-M2-9
+Open findings: None
 
 ### Review entry
 Review ID: spec-review-r54

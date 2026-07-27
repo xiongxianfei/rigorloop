@@ -94,13 +94,13 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: implementing
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r23.md
-- Review status: approved; stage=test-spec-review; round=r23
+- Current milestone state: review-requested
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m2.md
+- Review status: review-requested; stage=code-review; round=r4
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-CR-M2-9
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -156,7 +156,7 @@ resource through generated, packed, and installed outputs.
 
 ### M2. Hermetic harness, upstream skills, and fresh upstream behavior
 
-- Milestone state: implementing
+- Milestone state: review-requested
 - Goal: Prove runtime feasibility, freeze the pre-mutation baseline, implement the standalone recoverable harness, update the five participating skill packages, and publish the one fresh upstream behavior run owned by R28y M2.
 - Requirements: R28y, R56-R56e, R56j-R56k, R56p
 - Files/components likely touched:
@@ -874,6 +874,14 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-27: Published immutable canonical run
+  `run-95e4759a48cb46d183b8222e73ecc5ec`.
+  Fresh upstream generation and non-regenerating validation report zero false
+  blocking, zero universal artifacts, and zero correction cycles.
+  Focused tests pass 77 cases, all 24 skills validate, 259 skill-validator
+  tests pass, and generated-skill drift checking passes.
+  M2 is review-requested.
+
 - 2026-07-27: A fresh M2 run exercised the spec-correction branch and exposed
   the remaining R28y contradiction: extension IDs were declared stage-owned
   while also belonging to the exact fixture-candidate projection.
@@ -1413,6 +1421,13 @@ resource through generated, packed, and installed outputs.
 
 ## Validation notes
 
+- `python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` passed for current run `run-95e4759a48cb46d183b8222e73ecc5ec`.
+- `python scripts/test-boundary-proof.py` passed 77 tests after the extension-oracle and closed-serialization corrections.
+- `python scripts/validate-skills.py` validated 24 skills.
+- `python scripts/test-skill-validator.py` passed 259 tests.
+- `python scripts/build-skills.py --check` passed.
+- `python -m py_compile scripts/boundary_proof_behavior.py scripts/boundary_proof_model.py scripts/validate-boundary-proof.py scripts/test-boundary-proof.py` passed.
+- `git diff --check` passed.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-25-boundary-first-proof-modeling.md` passed after R1 corrections, with unrelated existing workflow-spec lifecycle-language warnings.
 - `python scripts/validate-change-metadata.py docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/change.yaml` passed after R1 corrections.
 - `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` passed after R1 recording.

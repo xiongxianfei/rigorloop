@@ -2,8 +2,50 @@
 
 Stage: implement
 Milestone: M2
-Result: blocked
-Diagnostic: canonical-generation-not-yet-published
+Result: pass
+Diagnostic: none
+
+## 2026-07-27 current canonical result
+
+The current immutable upstream behavior run is:
+
+```json
+{"false_blocking_count":0,"input_set_identity":"sha256:2cc5d915ab8cd8216ea2c917891318be15f10698e7e641fb14caa4a3d36ea2be","new_universal_artifact_count":0,"result":"pass","run_id":"run-95e4759a48cb46d183b8222e73ecc5ec","simple_fixture_structure_correction_cycles":0}
+```
+
+The run completed fresh `spec`, `spec-review`, `test-spec`, and
+`test-spec-review` occurrences with stage-owned artifacts and independent
+approving reviews.
+It introduced no universal lifecycle artifact and produced no false block.
+
+The focused correction also closed both bounded correction publication paths:
+
+- feature-spec and test-spec corrections each assemble one identity-bound
+  trace with one correction maximum;
+- both assemblers write the canonical `manifest.json`;
+- extension presence and decomposition remain stage-owned and review-owned;
+- the deterministic fixture oracle excludes extension identity;
+- the published boundary reference and parser define one closed optional
+  extension table; and
+- the published reference exposes the narrower `x.<namespace>.<dimension>`
+  extension-ID grammar already required by R28c and R28t.
+
+Current validation:
+
+- `python scripts/boundary_proof_behavior.py validate --change-id
+  2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` —
+  passed against the immutable current run without lifecycle reinvocation.
+- `python scripts/test-boundary-proof.py` — passed 77 tests.
+- `python scripts/validate-skills.py` — validated 24 skills.
+- `python scripts/test-skill-validator.py` — passed 259 tests.
+- `python scripts/build-skills.py --check` — passed.
+- `python -m py_compile scripts/boundary_proof_behavior.py
+  scripts/boundary_proof_model.py scripts/validate-boundary-proof.py
+  scripts/test-boundary-proof.py` — passed.
+- `git diff --check` — passed.
+
+All sections below this current result are chronological implementation
+history. They do not override the current passing result.
 
 ## 2026-07-27 invariant-oracle implementation correction
 
