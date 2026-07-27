@@ -8,7 +8,7 @@ Terminal disposition: none
 - Owner: maintainer
 - Change ID: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
 - Start date: 2026-07-25
-- Last updated: 2026-07-26
+- Last updated: 2026-07-27
 - Related issue or PR: none yet
 - Supersedes: none
 
@@ -94,12 +94,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r22.md
-- Review status: approved; stage=architecture-review; round=r22
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r16.md
+- Review status: changes-requested; stage=plan-review; round=r16
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: plan-review
+- Next stage: plan revision
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-PL16-1,BFP-PL16-2
 
 ## Milestones
 
