@@ -94,9 +94,9 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: review-requested
+- Current milestone state: resolution-needed
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r25.md
-- Review status: review-requested; stage=code-review; round=r5
+- Review status: changes-requested; stage=code-review; round=r4
 - Remaining in-scope implementation milestones: M2, M3, M4
 - Next stage: code-review
 - Final closeout readiness: not ready
@@ -156,7 +156,7 @@ resource through generated, packed, and installed outputs.
 
 ### M2. Hermetic harness, upstream skills, and fresh upstream behavior
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Prove runtime feasibility, freeze the pre-mutation baseline, implement the standalone recoverable harness, update the five participating skill packages, and publish the one fresh upstream behavior run owned by R28y M2.
 - Requirements: R28y, R56-R56e, R56j-R56k, R56p
 - Files/components likely touched:
@@ -874,6 +874,15 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-27: Published crash-resumable immutable canonical run
+  `run-c9cf75951ba54219a13fe8f7c237c63d` for input identity
+  `sha256:59c301f845c1d08b76c0505b379208537844a781058b13798df99f7cee72705e`.
+  The manifest binds publisher
+  `publisher-af486cb89d256f672f1c1e0aee59dad2`; non-regenerating validation
+  reports zero false blocks, zero universal artifacts, and zero correction
+  cycles. The 85-test focused suite now proves resumable manual recovery after
+  every durable recovery boundary. M2 remains review-requested.
+
 - 2026-07-27: Published lease-bound immutable canonical run
   `run-b59926e65e17a9debcf00ddc5b5ede03`.
   The exact manifest binds
@@ -1431,8 +1440,8 @@ resource through generated, packed, and installed outputs.
 
 ## Validation notes
 
-- `python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` passed for current run `run-b59926e65e17a9debcf00ddc5b5ede03`.
-- `python scripts/test-boundary-proof.py` passed 84 tests including all eight named T51 publisher property rows.
+- `python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` passed for current run `run-c9cf75951ba54219a13fe8f7c237c63d`.
+- `python scripts/test-boundary-proof.py` passed 85 tests including all eight named T51 publisher property rows and resumable recovery after every durable recovery boundary.
 - `python scripts/validate-skills.py` validated 24 skills.
 - `python scripts/test-skill-validator.py` passed 259 tests.
 - `python scripts/build-skills.py --check` passed.

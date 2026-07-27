@@ -10,7 +10,7 @@ Diagnostic: none
 The current immutable upstream behavior run is:
 
 ```json
-{"false_blocking_count":0,"input_set_identity":"sha256:f1a1949dd9f85b5b41c3d95b37e49e7cda4f14fa4765f5176c33686026414c64","new_universal_artifact_count":0,"result":"pass","run_id":"run-b59926e65e17a9debcf00ddc5b5ede03","simple_fixture_structure_correction_cycles":0}
+{"false_blocking_count":0,"input_set_identity":"sha256:59c301f845c1d08b76c0505b379208537844a781058b13798df99f7cee72705e","new_universal_artifact_count":0,"result":"pass","run_id":"run-c9cf75951ba54219a13fe8f7c237c63d","simple_fixture_structure_correction_cycles":0}
 ```
 
 The run completed fresh `spec`, `spec-review`, `test-spec`, and
@@ -21,7 +21,7 @@ It introduced no universal lifecycle artifact and produced no false block.
 The current run also closes the publisher transaction gap:
 
 - its exact manifest contains
-  `publisher_instance_id: publisher-bc63226fdb604e1a7fbc208835202a5d`;
+  `publisher_instance_id: publisher-af486cb89d256f672f1c1e0aee59dad2`;
 - the lease was durable before the first stage workspace existed;
 - every child workspace was created below the lease-bound working root with a
   hermetic project marker, preventing ancestor skill/instruction discovery;
@@ -31,7 +31,11 @@ The current run also closes the publisher transaction gap:
   root, staging root, or temporary pointer; and
 - four deliberately interrupted live attempts were preserved through
   evidence-bound completed recovery records and quarantine rather than
-  adoption or silent deletion.
+  adoption or silent deletion; and
+- the focused recovery proof crashes and resumes after each durable recovery
+  boundary: temporary-state fsync, immutable basis installation, authorized
+  state persistence, quarantine rename, orphan-detached persistence, and
+  publisher-lease deletion.
 
 The focused correction also closed both bounded correction publication paths:
 
@@ -50,7 +54,7 @@ Current validation:
 - `python scripts/boundary_proof_behavior.py validate --change-id
   2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` —
   passed against the immutable current run without lifecycle reinvocation.
-- `python scripts/test-boundary-proof.py` — passed 84 tests.
+- `python scripts/test-boundary-proof.py` — passed 85 tests.
 - `python scripts/validate-skills.py` — validated 24 skills.
 - `python scripts/test-skill-validator.py` — passed 259 tests.
 - `python scripts/build-skills.py --check` — passed.
