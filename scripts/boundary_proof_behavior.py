@@ -1534,6 +1534,10 @@ def _workflow_stage_request(
         "prompt": (
             "Use the installed workflow skill to route exactly the "
             f"{stage} stage to its installed stage-owning skill. The owning "
+            "stage must load and apply its mapped "
+            "`references/boundary-proof-model.md` before authoring or "
+            "reviewing. The returned artifact must satisfy that installed "
+            "skill's boundary-first completion gate. The owning "
             "skill must author every semantic byte and return one complete "
             "policy-bound artifact envelope in the agent message. Child tools "
             "have read-only workspace access and must not create or modify "

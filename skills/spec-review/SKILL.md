@@ -80,6 +80,14 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
   Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
   Do not emit unfilled placeholders.
 
+## Boundary-first completion gate
+
+For a `v1` boundary-model spec, a clean review requires the version and scope,
+all core-dimension classifications, classified examples, and explicit
+interaction selection required by the mapped reference. If the required
+reference cannot be loaded, stop; do not approve or infer example-only
+completeness.
+
 ## Review dimensions
 
 Evaluate each review dimension with `<review dimension verdict>`.

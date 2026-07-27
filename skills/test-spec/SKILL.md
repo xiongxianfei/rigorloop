@@ -92,6 +92,13 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
   Fill: milestone, required test IDs, manual proof IDs or none, command IDs or none, evidence artifacts, required-before gate, and notes.
   Do not emit unfilled placeholders.
 
+## Boundary-first completion gate
+
+For a `v1` proof map, do not declare the test spec ready until it records the
+boundary-model version and scope and maps every applicable boundary and
+selected interaction to direct proof. If the required reference cannot be
+loaded, stop; do not silently substitute example coverage.
+
 ## Generated Markdown readability
 
 When this skill creates or updates generated or generator-shaped Markdown:

@@ -84,6 +84,13 @@ Produce a routing decision, current stage assessment, blockers or assumptions, a
   customization rules, migration notes, and validation notes.
   Do not emit unfilled placeholders.
 
+## Boundary-first completion gate
+
+For a `v1` boundary-model path, require the owning stage to load the mapped
+boundary-proof reference and return its boundary or proof record before routing
+or handoff. If the required reference cannot be loaded, stop; do not silently
+fall back to example-only output.
+
 ## Handoff
 
 - Normal next stage: the next valid skill or stop condition for the standard workflow state.
