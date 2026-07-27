@@ -66,7 +66,7 @@ Boundary model scope: R28-R28z
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted with scoped writable-child supersession | `sha256:b80c4a494ae1e08abea77d74fb270a959ebbde5cf5e01e1f8606791f0e0b5434` |
 | Capability-projection ADR | `docs/adr/ADR-20260727-capability-projected-file-change-control.md` | accepted base decision; binary clauses superseded narrowly | `sha256:b9d75ea29d528ef0e1f835ab796d6aa6936d362520ce1a424f5f0bb1112568ef` |
 | Three-category projection ADR | `docs/adr/ADR-20260727-three-category-runtime-feature-projection.md` | accepted by architecture-review R25 | `sha256:b2d8997a97114f2b055efc2bec627b39c26d4fea95e5b86ae4bacae3a9c724eb` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; approved for proof-map synchronization | `sha256:817ec7c6fbb7cfa0962fb390f49e83660f79e87e3e28cbbd26ecc66436b0a3c1` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; approved for proof-map synchronization | `sha256:94734107f7feba0284384f0387a488df5787041c6f591e2002024903214dcc73` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r20.md` | approved | `sha256:297bfde578f3b0dfdcf08d7007a1ed7bab6170ef70fdff7b3a1d873dafc4d61e` |
 
 ## Testing strategy
@@ -1744,7 +1744,21 @@ Boundary model scope: R28-R28z
   not fail candidate comparison. Independently remove, add, duplicate, or
   substitute each invariant projection member and require
   `boundary-oracle-mismatch`; require an unknown diagnostic to fail closed and
-  prove the mismatch is never emitted by preflight. Inject stage timeout
+  prove the mismatch is never emitted by preflight.
+  Build the complete forbidden candidate set from every oracle path, raw-byte
+  identity, and raw content identity.
+  Inspect the complete assembled child-workspace inventory; every serialized
+  lifecycle request, including prompt, attachment, and artifact context; and
+  every bounded child access observation.
+  Require every forbidden candidate member to be absent from each child-visible
+  surface.
+  Require only the parent invariant evaluator to open candidate bytes.
+  Confirm the exact authoritative scenario request is present in the `spec`
+  request and both formal review requests.
+  Independently inject a candidate path, reference identity, and content into
+  each child-visible surface and require `unmanifested-input` before accepted
+  stage output, parent materialization, immutable staging, or pointer change.
+  Inject stage timeout
   with absent, complete, partial, extra, and contradictory output plus
   uncertain liveness and every closed non-output diagnostic. Enumerate every
   admissible transport tuple and representative vocabulary-valid unlisted
@@ -1814,7 +1828,11 @@ Boundary model scope: R28-R28z
   reviews own semantic fidelity; the deterministic oracle owns only the closed
   invariant projection and R28s-R28w structural validity. A structurally valid
   alternative decomposition is accepted for review, while an invariant
-  mismatch stops with `boundary-oracle-mismatch`. Complete output reconciles
+  mismatch stops with `boundary-oracle-mismatch`.
+  Candidate identities remain bound in the parent input set, but no candidate
+  path, identity, or byte is child-visible; deliberate exposure stops with
+  `unmanifested-input` before materialization or publication.
+  Complete output reconciles
   without reinvocation;
   absent output permits at most one transient retry only after confirmed stop,
   zero candidates, unchanged workspace, and no independent non-output

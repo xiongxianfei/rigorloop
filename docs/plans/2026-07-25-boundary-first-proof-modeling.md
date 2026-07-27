@@ -98,7 +98,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r21.md
 - Review status: changes-requested; stage=test-spec-review; round=r21
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: test-spec
+- Next stage: test-spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-CR-M2-9,BFP-TSR21-1
 
@@ -872,6 +872,12 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Resolved BFP-TSR21-1 in the proof map by requiring complete
+  child-workspace, serialized request, attachment, artifact-context, and
+  access-observation inspection. Candidate path, identity, and content
+  injection must stop with `unmanifested-input` before materialization or
+  publication.
 
 - 2026-07-27: Test-spec-review R21 requested one focused correction:
   directly inspect every child-visible workspace, request, attachment,
