@@ -3807,3 +3807,36 @@ execution-plan synchronization and routed the change to test-spec review.
 
 No new material findings. R23 independently approved the R55/R27/R21-bound
 extension-oracle proof map and allowed M2 implementation to resume.
+
+### architecture-review-r28
+
+#### BFP-AR28-1 - Scenario expectations remain ambiguously child-readable
+
+Finding ID: BFP-AR28-1
+
+Disposition: accepted
+
+Status: open
+
+Owner: architecture author
+
+Owning stage: architecture revision
+
+Decision owner: approved R57 scenario-expectation non-influence contract
+
+Decision needed: none
+
+Required outcome: Make the complete scenario record parent-owned and expose
+only its request value to child workspaces and lifecycle invocations.
+
+Chosen action: Revise the assembler responsibility, runtime sequence, and
+component relationship labels so expectation fields, paths, and bytes remain
+parent-only and are read only after observed branch and corrected role have
+been derived.
+
+Rationale: A comparison-only expectation cannot remain non-influential when
+the child can inspect it.
+
+Validation target: architecture-review-r29
+
+Validation evidence: pending

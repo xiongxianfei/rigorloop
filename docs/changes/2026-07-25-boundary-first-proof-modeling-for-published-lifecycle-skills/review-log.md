@@ -1625,3 +1625,14 @@ Detailed record: reviews/test-spec-review-r22.md
 Resolution: review-resolution.md#test-spec-review-r22
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: architecture-review-r28
+Stage: architecture-review
+Round: 28
+Reviewed artifact: correction-authority and scenario-expectation architecture candidate at 4573e506
+Status: changes-requested
+Detailed record: reviews/architecture-review-r28.md
+Resolution: review-resolution.md#architecture-review-r28
+Material findings: BFP-AR28-1
+Open findings: BFP-AR28-1
