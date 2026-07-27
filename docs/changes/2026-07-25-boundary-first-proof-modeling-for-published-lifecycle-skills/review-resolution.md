@@ -2073,6 +2073,31 @@ workspace is gone, while recovery requires evidence that no longer exists.
 Validation target: focused M2 tests and code-review-m2-r11
 Validation evidence: Pending.
 
+### code-review-m2-r11
+
+#### BFP-CR-M2-18 - Correction rereview evidence is temporally reversed
+
+Finding ID: BFP-CR-M2-18
+Disposition: accepted
+Status: in-progress
+Owner: M2 implementation and code-review owners
+Owning stage: review-resolution and implementation correction
+Decision owner: approved R28y temporal review-bundle contract
+Decision needed: none
+Required outcome: Bind the first changes-requested bundle to its open
+resolution and the approving rereview to the closed resolution plus the exact
+prior finding set; reject every mismatch.
+Chosen action: Add explicit historical-finding and resolution inputs to the
+correction bundle builder, track the pending finding tuple in the evaluator,
+correct both assemblers, and add positive plus mutation tests for both
+correction roles.
+Rationale: The current correction assemblers reverse resolution timing and
+erase the rereview's settled finding identity, while the zero-correction run
+cannot detect the defect.
+Validation target: focused M2 tests, controlled correction assemblers,
+immutable current-run validation, and code-review-m2-r12
+Validation evidence: Pending.
+
 #### BFP-CR-M2-17 - T52 named boundary contrasts are not directly proved
 
 Finding ID: BFP-CR-M2-17

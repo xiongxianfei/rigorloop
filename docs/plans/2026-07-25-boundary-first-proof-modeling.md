@@ -94,13 +94,13 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m2.md
-- Review status: pending; stage=code-review; round=r11
+- Current milestone state: resolution-needed
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r11.md
+- Review status: changes-requested; stage=code-review; round=r11
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-14,BFP-CR-M2-15,BFP-CR-M2-16,BFP-CR-M2-17
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-CR-M2-14,BFP-CR-M2-15,BFP-CR-M2-16,BFP-CR-M2-17,BFP-CR-M2-18
 
 ## Milestones
 
@@ -958,6 +958,11 @@ resource through generated, packed, and installed outputs.
   stages passed with zero corrections, zero false blocking, and zero new
   universal artifacts. The 109-test focused suite and skill/build validators
   pass; M2 is `review-requested` for code-review R11.
+- 2026-07-27: Code-review R11 confirmed BFP-CR-M2-14 through
+  BFP-CR-M2-17 behavior and opened `BFP-CR-M2-18`. Correction assemblers bind
+  the closed resolution to the first review, then erase the exact prior
+  finding set and resolution from the approving rereview; the pure evaluator
+  and assembler test accept that invalid history. M2 is `resolution-needed`.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review
