@@ -1911,6 +1911,13 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             stage_request["artifact_policy_id"],
             "lifecycle-stage-artifacts-v1",
         )
+        review_request = _workflow_stage_request(
+            "spec-review",
+            "review",
+            artifact_context="Reviewed artifact identity: sha256:" + "a" * 64,
+        )
+        self.assertIn("Review ID: spec-review-r1", review_request["prompt"])
+        self.assertIn("Preserve independent judgment", review_request["prompt"])
 
     def test_stage_envelope_is_policy_bound_and_parent_materialized(self) -> None:
         envelope = {
