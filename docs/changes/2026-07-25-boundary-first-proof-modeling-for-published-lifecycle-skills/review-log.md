@@ -1339,3 +1339,14 @@ Detailed record: reviews/spec-review-r53.md
 Resolution: review-resolution.md#spec-review-r53
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: architecture-review-r23
+Stage: architecture-review
+Round: 23
+Reviewed artifact: three-category architecture package at d7ccec5e
+Status: changes-requested
+Detailed record: reviews/architecture-review-r23.md
+Resolution: review-resolution.md#architecture-review-r23
+Material findings: BFP-AR23-1
+Open findings: BFP-AR23-1

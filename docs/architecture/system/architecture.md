@@ -2,7 +2,7 @@
 
 ## Status
 
-- approved
+- draft
 
 ## Related artifacts
 
@@ -677,6 +677,9 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    not classify newly discovered same-version methods or implementations by
    fallback. Every observed server request or notification is checked against
    the selected projection;
+   the accepted capability-projection ADR owns the surrounding runtime and
+   conformance boundary, while the proposed three-category successor owns only
+   this 3/4/89 feature partition and its recomputed projection identity.
    unknown or prohibited variants stop the turn. A disabled, unbound
    `remoteControl/status/changed` notification is the only remote-control
    status traffic classified as non-side-effect.
@@ -1455,7 +1458,8 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 
 - [ADR-20260725-boundary-first-proof-modeling](../../adr/ADR-20260725-boundary-first-proof-modeling.md) - Use a spec-normative typed projection, copied packaged reference, structural validator, frozen incident registry, and report-hash release activation for boundary-model `v1`.
 - [ADR-20260726-stage-authored-artifact-envelope-transport](../../adr/ADR-20260726-stage-authored-artifact-envelope-transport.md) - Accept the read-only child boundary, deny-only file-change policy, workspace-integrity gate, stage-authored envelope, and parent-only exact-byte materialization contract.
-- [ADR-20260727-capability-projected-file-change-control](../../adr/ADR-20260727-capability-projected-file-change-control.md) - On acceptance, replace the unconditional live file-change probe and v2 current-evidence clauses with exact-runtime-bound capability projection, conditional proof, and v3 evidence.
+- [ADR-20260727-capability-projected-file-change-control](../../adr/ADR-20260727-capability-projected-file-change-control.md) - Accepted exact-runtime-bound capability projection, conditional file-change proof, common deny-handler conformance, and v3 evidence.
+- [ADR-20260727-three-category-runtime-feature-projection](../../adr/ADR-20260727-three-category-runtime-feature-projection.md) - Proposed append-only correction separating permitted tools, permitted non-tool behavior, and required-disabled tool-bearing behavior.
 - [ADR-20260726-codex-permission-profile-boundary-harness](../../adr/ADR-20260726-codex-permission-profile-boundary-harness.md) - Accepted app-server, named permission-profile, exact experimental-schema, effective-config/inventory, managed-policy, and parent-probe decision; its writable-child clauses are narrowly superseded by the accepted stage-envelope ADR.
 
 - `docs/adr/ADR-20260428-architecture-package-method.md`: default C4 plus official arc42 plus ADR architecture package method.
@@ -1821,15 +1825,19 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Readiness
 
-Architecture-review R18 approved the read-only stage-transport amendment.
-The R48 spec amendment now requires architecture rereview because the supported
-runtime exposes no live file-change operation under the approved configuration.
-This draft replaces unconditional live probing with exact-runtime-bound
-capability projection, capability-state-appropriate proof, fresh deny-handler
-conformance, and v3 current evidence. It preserves direct and descendant
-command denial, parent-only materialization, complete unchanged-workspace
-inspection, and opaque exact-v1 history. Plan and test-spec revision remain
-blocked until architecture review accepts the new ADR and this package.
+Architecture-review R18 approved the read-only stage-transport amendment, and
+R22 approved the original binary capability-projection design. Approved
+spec-review R53 now requires a focused architecture rereview because live M2
+evidence distinguishes four permitted non-tool runtime behaviors from three
+permitted tools and 89 required-disabled tool-bearing features.
+
+This draft preserves the accepted capability-projection ADR as historical
+truth and records the three-category correction in proposed
+`ADR-20260727-three-category-runtime-feature-projection`. It preserves exact
+runtime-byte binding, direct and descendant command denial, parent-only
+materialization, complete unchanged-workspace inspection, v3 current evidence,
+and opaque exact-v1 history. Plan and test-spec synchronization remain blocked
+until architecture review accepts the successor ADR and this package.
 
 ADR `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md` records the accepted durable consolidation and supersedes the three earlier profile ADRs; their descriptions below are historical context, not current writable-mechanism authority under the approved spec.
 

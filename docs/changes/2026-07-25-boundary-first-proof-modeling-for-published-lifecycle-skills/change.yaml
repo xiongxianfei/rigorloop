@@ -118,6 +118,7 @@ changed_files:
   - docs/adr/ADR-20260725-boundary-first-proof-modeling.md
   - docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md
   - docs/adr/ADR-20260727-capability-projected-file-change-control.md
+  - docs/adr/ADR-20260727-three-category-runtime-feature-projection.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r1.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r2.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r3.md
@@ -203,11 +204,11 @@ changed_files:
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r14.md
 review:
   status: changes-requested
-  unresolved_items: 3
-  material_findings: 163
-  open_findings: 3
+  unresolved_items: 4
+  material_findings: 164
+  open_findings: 4
   closed_findings: 160
-  architecture_review: reviews/architecture-review-r22.md
+  architecture_review: reviews/architecture-review-r23.md
   spec_review: reviews/spec-review-r53.md
   test_spec_review: reviews/test-spec-review-r19.md
   code_review: reviews/code-review-m2-r2.md

@@ -3381,3 +3381,24 @@ Validation evidence: spec-review-r53 confirmed the final stale named round was r
 No new material findings. R53 independently confirmed BFP-SR49-1 through
 BFP-SR52-1 resolved and approved the focused three-category runtime-projection
 contract for architecture synchronization.
+
+### architecture-review-r23
+
+#### BFP-AR23-1 — Accepted decision history was rewritten
+
+Finding ID: BFP-AR23-1
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: architecture package method R47-R48
+Decision needed: none
+Required outcome: Preserve the accepted binary-projection ADR as history and
+record the three-category correction through an append-only successor.
+Chosen action: Restore the accepted ADR, add a narrowly scoped proposed
+successor, link both decisions from the draft architecture, and normalize
+statuses only after approval.
+Rationale: Accepted decision history is evidence and cannot be rewritten as
+though a later discovery was always known.
+Validation target: architecture-review-r24
+Validation evidence: pending
