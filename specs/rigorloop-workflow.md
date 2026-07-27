@@ -1,7 +1,7 @@
 # RigorLoop Workflow
 
 ## Status
-- draft
+- approved
 Boundary model version: v1
 Boundary model scope: R28-R28z
 

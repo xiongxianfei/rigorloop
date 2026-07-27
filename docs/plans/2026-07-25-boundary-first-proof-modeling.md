@@ -96,9 +96,9 @@ resource through generated, packed, and installed outputs.
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r57.md
-- Review status: approved; stage=spec-review; round=r57
+- Review status: review-requested; stage=architecture-review; round=r28
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture
+- Next stage: architecture-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BFP-CR-M2-14,BFP-CR-M2-15
 
@@ -1518,6 +1518,12 @@ resource through generated, packed, and installed outputs.
   normalized through the sole state writer. This pre-existing harness mismatch
   is outside the boundary-proof implementation scope and requires a focused
   workflow-automation bugfix before the next release.
+- 2026-07-27: Approved spec R57 settled the correction-authority and
+  scenario-expectation contracts. The architecture candidate now assigns
+  finding projection and durable stop recording to a correction-authority
+  gate, preserves discard-only recovery with unchanged-input rejection, and
+  compares scenario expectations only with observations derived after the
+  event trace completes. The focused architecture rereview is the next gate.
 - M1 aligned-surface audit: selector registration, public skills, shared
   references, adapters, release notes, and the canonical capability report are
   intentionally unaffected because M2-M4 own those surfaces.
