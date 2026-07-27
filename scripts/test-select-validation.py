@@ -576,9 +576,68 @@ class ValidationSelectionTests(unittest.TestCase):
             (),
             boundary_proof_checks_for_path("docs/README.md"),
         )
+        for fixture_path in (
+            "tests/fixtures/boundary-proof/simple-change.json",
+            "tests/fixtures/boundary-proof/behavior/scenario.json",
+            "tests/fixtures/boundary-proof/incidents/code-review.json",
+            "tests/fixtures/boundary-proof/release/valid-activation/release-notes.md",
+            "tests/fixtures/boundary-proof/transport/valid.json",
+        ):
+            with self.subTest(fixture_path=fixture_path):
+                self.assertEqual(
+                    all_checks,
+                    boundary_proof_checks_for_path(fixture_path),
+                )
         self.assertTrue(
             set(all_checks).issubset(CHECK_CATALOG),
         )
+
+    def test_boundary_proof_scripts_and_fixtures_compose_without_manual_routing(self) -> None:
+        paths = [
+            "scripts/boundary_proof_behavior.py",
+            "scripts/boundary_proof_model.py",
+            "scripts/validate-boundary-proof.py",
+            "scripts/test-boundary-proof.py",
+            "tests/fixtures/boundary-proof/simple-change.json",
+            "tests/fixtures/boundary-proof/behavior/scenario.json",
+            "tests/fixtures/boundary-proof/incidents/code-review.json",
+            "tests/fixtures/boundary-proof/transport/valid.json",
+        ]
+
+        result = self.select(paths)
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok", msg=payload)
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertNotIn(
+            "manual-routing-required",
+            {item["code"] for item in payload["blocking_results"]},
+        )
+        self.assertTrue(
+            {
+                "boundary-workflow-contract",
+                "boundary-skill-contract",
+                "boundary-traceability",
+                "boundary-incident-replay",
+                "boundary-adapter-parity",
+                "boundary-capability-baseline",
+            }.issubset(selected_ids(payload)),
+        )
+        self.assertEqual(
+            [{"path": path, "category": "boundary-proof"} for path in paths],
+            payload["classified_paths"],
+        )
+
+    def test_boundary_proof_release_fixture_retains_release_transaction_regression(self) -> None:
+        result = self.select(
+            [
+                "tests/fixtures/boundary-proof/release/valid-activation/release-notes.md",
+            ]
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok", msg=payload)
+        self.assertIn("release_transaction.regression", selected_ids(payload))
 
     maxDiff = None
     root_preflight_context = build_repository_preflight_context(ROOT)
@@ -1623,9 +1682,6 @@ raise SystemExit({exit_code})
             "adapters.regression",
             "artifact_lifecycle.regression",
             "boundary-adapter-parity",
-            "boundary-incident-replay",
-            "boundary-traceability",
-            "boundary-workflow-contract",
             "change_record_query.regression",
             "change_metadata.regression",
             "documentation_prose.regression",
@@ -1650,6 +1706,17 @@ raise SystemExit({exit_code})
             with self.subTest(check_id=check_id):
                 self.assertIsInstance(entry.parallel_safe, bool)
                 self.assertEqual(entry.parallel_safe, check_id in expected_parallel_safe)
+
+    def test_stateful_boundary_suite_routes_are_not_parallel_safe(self) -> None:
+        from validation_selection import is_parallel_safe_check
+
+        for check_id in (
+            "boundary-workflow-contract",
+            "boundary-traceability",
+            "boundary-incident-replay",
+        ):
+            with self.subTest(check_id=check_id):
+                self.assertFalse(is_parallel_safe_check(check_id))
 
     def test_cli_outputs_json_for_classified_skill_path(self) -> None:
         result = run_selector("--mode", "explicit", "--path", "skills/code-review/SKILL.md")

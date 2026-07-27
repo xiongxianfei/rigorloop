@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m2-preflight-r1
 Review closeout: code-review-m1-r1
@@ -4056,7 +4056,7 @@ is treated non-semantically, and the current capability baseline passes.
 
 Finding ID: BFP-CR-FINAL-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 integration correction and final holistic code review
 Owning stage: implementation correction and code review
 Decision owner: approved M4 selector and validation contract
@@ -4071,7 +4071,14 @@ Rationale: Helper-level route selection is insufficient when the composed
 selector subsequently emits a manual-routing or unclassified-path blocker.
 Validation target: selector regression, exact explicit CI command, and final
 holistic code-review R2
-Validation evidence: pending
+Validation evidence: `python scripts/test-select-validation.py` passed 137
+tests, including composed `select_validation()` coverage, complete fixture
+subtree routing, release-fixture preservation, and sequential-only
+shared-state boundary routes. The exact plan-owned
+`bash scripts/ci.sh --mode explicit ...` command passed all 14 selected checks
+after the identity-bound capability report was regenerated and independently
+validated as
+`sha256:ab0057f39cb928f0f08d07a8398aca82659bbeba267aa557514c02e5249c101f`.
 
 ### spec-review-r58
 

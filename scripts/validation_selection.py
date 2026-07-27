@@ -35,7 +35,6 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "boundary-workflow-contract",
         "python scripts/test-boundary-proof.py",
         "boundary-proof",
-        parallel_safe=True,
     ),
     "boundary-skill-contract": CheckCatalogEntry(
         "boundary-skill-contract",
@@ -46,13 +45,11 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "boundary-traceability",
         "python scripts/test-boundary-proof.py",
         "boundary-proof",
-        parallel_safe=True,
     ),
     "boundary-incident-replay": CheckCatalogEntry(
         "boundary-incident-replay",
         "python scripts/test-boundary-proof.py",
         "boundary-proof",
-        parallel_safe=True,
     ),
     "boundary-adapter-parity": CheckCatalogEntry(
         "boundary-adapter-parity",
@@ -293,12 +290,17 @@ BOUNDARY_CHECK_IDS = frozenset(
     }
 )
 
-BOUNDARY_PROOF_CORE_PATHS = frozenset(
+BOUNDARY_PROOF_SCRIPT_PATHS = frozenset(
     {
         "scripts/boundary_proof_behavior.py",
         "scripts/boundary_proof_model.py",
         "scripts/validate-boundary-proof.py",
         "scripts/test-boundary-proof.py",
+    }
+)
+BOUNDARY_PROOF_CORE_PATHS = frozenset(
+    {
+        *BOUNDARY_PROOF_SCRIPT_PATHS,
         "specs/rigorloop-workflow.md",
         "specs/rigorloop-workflow.test.md",
         "specs/skill-contract.md",
@@ -336,7 +338,7 @@ def boundary_proof_checks_for_path(path: str) -> tuple[str, ...]:
             "boundary-capability-baseline",
         )
     if path in BOUNDARY_PROOF_CORE_PATHS or path.startswith(
-        "tests/fixtures/boundary-proof/incidents/"
+        "tests/fixtures/boundary-proof/"
     ):
         return (
             "boundary-workflow-contract",
@@ -1318,6 +1320,14 @@ def _apply_path_selection(
             boundary_check_id,
             "Changed boundary-proof capability input requires exact boundary validation.",
         )
+    if category == "boundary-proof":
+        if path.startswith("tests/fixtures/boundary-proof/release/"):
+            _add_check(
+                selected,
+                "release_transaction.regression",
+                "Changed boundary release fixture requires release transaction regression.",
+            )
+        return
     if _is_tier_b_documentation_prose_path(path):
         _add_check(
             selected,
@@ -2189,6 +2199,10 @@ def _path_category(path: str) -> str | None:
         return "readme"
     if path == ROOT_VISION_PATH:
         return "vision"
+    if path in BOUNDARY_PROOF_SCRIPT_PATHS or path.startswith(
+        "tests/fixtures/boundary-proof/"
+    ):
+        return "boundary-proof"
     if path.startswith("tests/fixtures/artifact-lifecycle/"):
         return "artifact-lifecycle-fixtures"
     if path.startswith("tests/fixtures/review-artifacts/"):

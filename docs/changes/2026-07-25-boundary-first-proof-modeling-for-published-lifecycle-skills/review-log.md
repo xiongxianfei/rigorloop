@@ -1807,4 +1807,5 @@ Status: changes-requested
 Detailed record: reviews/code-review-final-r1.md
 Resolution: review-resolution.md#code-review-final-r1
 Material findings: BFP-CR-FINAL-1
-Open findings: BFP-CR-FINAL-1
+Open findings: None
+Closeout: resolved by review-resolution; confirmation pending final holistic code-review-r2
