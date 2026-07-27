@@ -2260,6 +2260,25 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             },
         )
 
+    def test_behavior_scenario_owns_every_oracle_semantic(self) -> None:
+        scenario = json.loads(
+            (
+                ROOT
+                / "tests/fixtures/boundary-proof/simple-change/scenario.json"
+            ).read_text(encoding="utf-8")
+        )
+        request = scenario["request"]
+        for required in (
+            "exactly four requirements, R1-R4",
+            "exactly the closed modes `trim` and `preserve`",
+            "leading and trailing Unicode whitespace",
+            "return the input text unchanged",
+            "fail with `unknown-mode` and return no text",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, request)
+        self.assertIn("Keep normative behavior limited", request)
+
     def test_workflow_turn_binds_orchestrator_and_all_stage_owners(self) -> None:
         request = _turn_start_request(
             "thread-1",
