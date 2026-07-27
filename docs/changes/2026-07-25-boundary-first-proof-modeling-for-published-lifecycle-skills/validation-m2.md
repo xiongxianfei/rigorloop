@@ -527,3 +527,22 @@ The generic T51 recovery suite continues to prove every durable discard crash
 boundary; the T52 tests compose that transaction with the new correction-stop
 package. Fresh canonical generation remains required because the harness
 identity changed.
+
+## Fresh canonical expectation reconciliation
+
+Fresh generation from committed harness identity `ca6d94d2` produced a complete
+valid trace with one bounded `test-spec` correction, then failed closed at the
+comparison-only scenario oracle because the scenario still expected the older
+zero-correction path.
+
+The independent first test-spec review identified a real proof-boundary gap:
+the initial test did not distinguish edge removal from accidental removal of
+interior Unicode whitespace and did not deterministically cover the closed
+Unicode `White_Space` set. The bounded correction added that proof and the
+same-stage rereview approved it.
+
+Run `run-f3a4fdb984c1db9000d5ff8f16232292` was explicitly discarded through the
+lease-bound recovery transaction and retained in recovery quarantine. The
+scenario expectation now records `one-correction` with corrected role
+`test-spec`; no request, stage output, review result, diagnostic, or correction
+decision was changed to force the comparison.

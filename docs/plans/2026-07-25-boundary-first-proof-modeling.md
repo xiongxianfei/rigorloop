@@ -933,6 +933,13 @@ resource through generated, packed, and installed outputs.
   terminal receipt, and 109 focused tests directly cover the T52 authority,
   stop, recovery, request-only, and expectation matrices. Fresh canonical
   generation is next because the harness identity changed.
+- 2026-07-27: Fresh generation from `ca6d94d2` completed the lifecycle trace
+  with one bounded test-spec correction and then failed only at the
+  comparison-only stale zero-correction expectation. The first review's
+  interior-whitespace and closed-Unicode-set proof finding was valid; the
+  corrected test spec passed same-stage rereview. Explicit discard recovery
+  quarantined `run-f3a4fdb984c1db9000d5ff8f16232292`; the canonical scenario
+  now expects `one-correction` for `test-spec` before regeneration.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review
