@@ -18,7 +18,7 @@ Boundary model scope: <governed requirement range>
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |
 
-Extensions: <none or extension records>
+Extensions: none.
 
 ## Examples
 
@@ -29,6 +29,16 @@ Extensions: <none or extension records>
 
 | Interaction ID | Governing requirement IDs | Boundary IDs | Rationale |
 | --- | --- | --- | --- |
+```
+
+When feature-specific dimensions are required, replace the exact
+`Extensions: none.` line with:
+
+```md
+Extensions:
+
+| Extension ID | Title | Applicability | Rationale | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
+| --- | --- | --- | --- | --- | --- | --- |
 ```
 
 When no interaction is selected, replace the interaction table with an
@@ -61,7 +71,9 @@ Classify every core dimension exactly once:
 Each row records one stable dimension ID, `applicable` or `not-applicable`,
 governing requirement IDs, boundary IDs, and a rationale only when
 not applicable. Add extensions only for feature-specific dimensions not
-represented by the core.
+represented by the core. Use exactly `Extensions: none.` when there are no
+extensions. Otherwise use exactly `Extensions:` followed by the seven-column
+extension table shown above.
 
 Every authored boundary, extension, example, interaction, proof-obligation,
 regression, discovery-gap, and manual-procedure ID must match

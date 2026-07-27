@@ -1299,6 +1299,39 @@ def _parse_feature_markdown(raw: str) -> dict[str, object]:
         }
         for row in rows
     ]
+    extension_none_count = sum(
+        line.strip() == "Extensions: none." for line in lines
+    )
+    extension_table_count = sum(line.strip() == "Extensions:" for line in lines)
+    if extension_none_count + extension_table_count != 1:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    extensions: list[dict[str, object]] = []
+    if extension_table_count == 1:
+        extension_header, extension_rows = _table_after(lines, "Extensions:")
+        if extension_header != [
+            "Extension ID",
+            "Title",
+            "Applicability",
+            "Rationale",
+            "Governing requirement IDs",
+            "Boundary IDs",
+            "Non-applicability rationale",
+        ]:
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        extensions = [
+            {
+                "extension_id": row[0],
+                "title": row[1],
+                "applicability": row[2],
+                "rationale": row[3],
+                "governing_requirement_ids": _csv(row[4]),
+                "boundary_ids": _csv(row[5]),
+                "non_applicability_rationale": (
+                    None if row[6] == "-" else row[6]
+                ),
+            }
+            for row in extension_rows
+        ]
     example_header, example_rows = _table_after(lines, "## Examples")
     if example_header != [
         "Example ID",
@@ -1344,7 +1377,7 @@ def _parse_feature_markdown(raw: str) -> dict[str, object]:
         "boundary_model_version": version_rows[0],
         "boundary_model_scope": scope_rows[0],
         "core_dimensions": core,
-        "extensions": [],
+        "extensions": extensions,
         "examples": examples,
         "interactions": interactions,
     }
@@ -1606,13 +1639,18 @@ def _workflow_stage_request(
             "Use the exact markers `Boundary model version: v1` and "
             "`Boundary model scope: R1-R4`, followed by exact sections "
             "`## Boundary model`, `## Examples`, and `## Interactions`. "
-            "Keep `## Boundary model`, `Extensions: none`, `## Examples`, and "
-            "`## Interactions` contiguous in that exact order, before any "
-            "other following section. "
-            "The Boundary model and Examples tables must use the exact "
-            "columns defined by the attached boundary-proof reference. "
-            "Use all twelve closed core dimension IDs exactly once, no "
-            "extensions, and governing requirement IDs R1, R2, R3, and R4. "
+            "Keep `## Boundary model`, one extension marker, `## Examples`, "
+            "and `## Interactions` contiguous in that exact order, before any "
+            "other following section. Use exactly `Extensions: none.` when "
+            "there is no meaningful feature-specific dimension. Otherwise "
+            "use `Extensions:` followed by exactly this table header: "
+            "`Extension ID | Title | Applicability | Rationale | Governing "
+            "requirement IDs | Boundary IDs | Non-applicability rationale`. "
+            "The Boundary model, optional Extensions, and Examples tables "
+            "must use the exact columns defined by the attached "
+            "boundary-proof reference. Use all twelve closed core dimension "
+            "IDs exactly once and governing requirement IDs R1, R2, R3, and "
+            "R4. "
             "Each boundary ID must appear in exactly one boundary row; examples "
             "may cite those IDs but must not redefine them. Every example's "
             "governing requirement IDs must be a subset of the union owned by "

@@ -2058,6 +2058,15 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             stage_request["prompt"],
         )
         self.assertIn(
+            "Extension ID | Title | Applicability | Rationale | Governing "
+            "requirement IDs | Boundary IDs | Non-applicability rationale",
+            stage_request["prompt"],
+        )
+        self.assertNotIn(
+            "all twelve closed core dimension IDs exactly once, no extensions",
+            stage_request["prompt"],
+        )
+        self.assertIn(
             "requirement-owner union",
             stage_request["prompt"],
         )
@@ -2508,6 +2517,38 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         )
         with self.assertRaises(BoundaryRuntimeError):
             _parse_feature_markdown(malformed)
+
+    def test_feature_parser_preserves_canonical_extension_table(self) -> None:
+        raw = (
+            FIXTURES / "simple-change" / "candidates" / "feature-spec.md"
+        ).read_text(encoding="utf-8")
+        extension_table = (
+            "Extensions:\n\n"
+            "| Extension ID | Title | Applicability | Rationale | "
+            "Governing requirement IDs | Boundary IDs | "
+            "Non-applicability rationale |\n"
+            "| --- | --- | --- | --- | --- | --- | --- |\n"
+            "| x.text.normalization | Text normalization | applicable | "
+            "Models the feature-specific text transformation partition. | "
+            "R2, R3 | text.normalization | - |"
+        )
+        parsed = normalize_feature_model(
+            _parse_feature_markdown(
+                raw.replace("Extensions: none.", extension_table)
+            )
+        )
+        self.assertEqual(
+            [extension.extension_id for extension in parsed.extensions],
+            ["x.text.normalization"],
+        )
+        malformed = extension_table.replace(
+            "Extension ID | Title",
+            "Title | Extension ID",
+        )
+        with self.assertRaises(BoundaryRuntimeError):
+            _parse_feature_markdown(
+                raw.replace("Extensions: none.", malformed)
+            )
 
     def test_invariant_projection_accepts_stage_owned_alternative_modeling(
         self,
