@@ -59,6 +59,15 @@ Use after a formal workflow-managed `test-spec` is active and before implementat
 
 Use for isolated advisory review only when the user asks for a focused proof-map critique. Isolated advisory review does not establish formal implementation eligibility unless the review is recorded under the workflow contract.
 
+An approved governing contract may explicitly request an isolated
+behavior-evidence review with a narrower named upstream artifact set. In that
+mode, review proof-map fidelity against exactly that bound set and do not
+invent missing lifecycle prerequisites. Even an `approved` result in this mode
+must record `Implementation handoff: not-allowed`; it is evidence about the
+isolated behavior scenario, never authority to begin implementation. Without
+an explicit governing-contract citation and closed artifact set, the normal
+plan and architecture prerequisites still apply.
+
 ## When not to use
 
 Do not use this skill to author or rewrite the test spec, reapprove requirements, redesign architecture, re-sequence the plan, implement tests, execute final validation, or replace `code-review` or `verify`.
@@ -248,6 +257,8 @@ Stop with `blocked` or `inconclusive` when:
 - required architecture is not approved;
 - the plan or plan-review is not approved;
 - upstream review findings remain open;
+- an asserted isolated behavior-evidence mode lacks an explicit governing
+  contract, closed artifact set, or `Implementation handoff: not-allowed`;
 - the test spec refers to requirements or milestones that cannot be identified;
 - command ownership cannot be determined;
 - essential external, compatibility, migration, or security evidence is unavailable;

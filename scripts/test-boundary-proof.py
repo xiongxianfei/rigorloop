@@ -2621,6 +2621,16 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         )
         for request in (spec_request, spec_review_request, test_review_request):
             self.assertIn(scenario, request["prompt"])
+        canonical_review_request = _workflow_stage_request(
+            "test-spec-review",
+            "Under approved R28y, perform the isolated behavior-evidence "
+            "review. Architecture, plan, and plan-review are outside this "
+            "scenario. `Implementation handoff: not-allowed`.",
+        )
+        self.assertIn(
+            "Implementation handoff: not-allowed",
+            canonical_review_request["prompt"],
+        )
 
     def test_stage_output_rejects_label_only_generation(self) -> None:
         accepted = {
