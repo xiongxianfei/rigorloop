@@ -3457,3 +3457,20 @@ approved the R53/R25 execution plan for test-spec synchronization.
 
 No new material findings. R20 independently approved the exact
 R53/R25/R19-bound three-category proof map for M2 implementation.
+
+### code-review-m2-r3
+
+#### BFP-CR-M2-9 - Exact oracle equality conflicts with independent stage ownership
+
+Finding ID: BFP-CR-M2-9
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: focused spec revision
+Decision owner: R28y stage-ownership and oracle-comparison contract
+Decision needed: none
+Required outcome: Separate exact scenario and structural invariants from independently authored modeling choices.
+Chosen action: Amend R28y so the oracle proves the requested behavior and closed boundary-proof properties without requiring one hidden golden decomposition; add a dedicated mismatch diagnostic and synchronize affected proof and execution artifacts.
+Rationale: Injecting the candidate would violate comparison-only input separation, while weakening only the implementation would violate the approved spec.
+Validation target: spec-review, affected downstream reviews, then code-review-m2-r4
+Validation evidence: pending focused spec revision
