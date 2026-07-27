@@ -73,9 +73,11 @@ Boundary model scope: R28-R28z
 - Use filesystem-backed integration tests for selector behavior, lifecycle validation, skill validation, generated-output drift, adapter generation, change metadata, and review artifact validation.
 - Use focused skill-validator assertions only for stable, machine-checkable skill guidance such as required labels, forbidden stale labels, handoff boundaries, and generated-output drift.
 - Use selector-selected targeted proof as the first validation layer for changed paths; use broad smoke only when an authoritative trigger elevates it.
-- Treat `specs/rigorloop-workflow.test.md` as the active R48/R22/R17 proof
-  candidate. M2 implementation remains paused until this revision receives a
-  clean test-spec review.
+- Treat `specs/rigorloop-workflow.test.md` as a pending proof-map amendment.
+  M2 remains blocked until focused spec review approves the three-category
+  projection, architecture and plan rereviews approve their synchronized
+  projections, exact input identities are recorded, and an independent
+  test-spec review approves this proof map.
 - Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
 - Treat final learn artifact modeling as a cross-spec alignment point here; detailed session, topic, evidence, classification, and routing proof lives in `specs/learn-artifact-model.test.md`.
 - Treat formal review recording as a cross-spec alignment point here; detailed review-artifact fixture coverage lives in `specs/formal-review-recording.test.md`, while this test spec proves the workflow contract does not contradict stage-neutral recording, clean-review settlement, or conditional review-resolution behavior.
@@ -2180,9 +2182,13 @@ Boundary model scope: R28-R28z
 
 Active proof-planning and regression surface for the workflow contract,
 including the boundary-first R28-R28z amendment.
-The focused R28y runtime-boundary revision has approved R48 spec, R22
-architecture/ADR, and R17 plan inputs. This active test-spec amendment is ready
-for independent test-spec review; M2 implementation remains paused until that
-review approves it.
+The focused R28y runtime-boundary correction is pending focused spec approval,
+architecture and plan rereviews, exact proof-map identity synchronization, and
+independent test-spec review. It is not implementation-ready while any of
+those gates remains pending.
 
-Test-spec proof map is confirmed against the approved active plan. M2 implementation can hand off to `code-review M2` only after the M2 guidance and contract surfaces make the relevant assertions and validation commands pass. Each milestone closes only after clean review and any required review-resolution.
+After those inputs settle, the test-spec proof map must be rebound to the
+approved active plan before M2 implementation resumes. M2 can hand off to
+`code-review M2` only after the M2 guidance and contract surfaces make the
+relevant assertions and validation commands pass. Each milestone closes only
+after clean review and any required review-resolution.

@@ -94,12 +94,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r49.md
-- Review status: changes-requested; stage=spec-review; round=r49
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r50.md
+- Review status: changes-requested; stage=spec-review; round=r50
 - Remaining in-scope implementation milestones: M2, M3, M4
 - Next stage: spec
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=6; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR49-1,BFP-SR49-2,BFP-SR49-3
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=8; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR49-1,BFP-SR49-2,BFP-SR49-3,BFP-SR50-1,BFP-SR50-2
 
 ## Milestones
 
@@ -825,6 +825,11 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Spec-review R50 confirmed the category and diagnostic fixes but
+  found stale R48/R22/R17 readiness prose and unsynchronized change metadata.
+  The R51 candidate removes those claims and derives the durable counters and
+  latest-review pointer from the recorded R50 evidence.
 
 - 2026-07-27: Spec-review R49 confirmed the eleven-field 3/4/89 projection
   direction and requested exact category-equality binding, correction of the
