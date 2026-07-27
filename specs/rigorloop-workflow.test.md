@@ -1491,7 +1491,10 @@ Boundary model scope: R28-R28z
   `sandbox-probe-failed`, `file-change-control-mismatch`,
   `credential-isolation-failed`,
   `workspace-baseline-invalid`, `stage-envelope-canary-failed`, and
-  `unexpected-prohibited-event`; mutate
+  `unexpected-prohibited-event`; separately require the
+  behavior-generation-only `boundary-oracle-mismatch` diagnostic for a
+  structurally valid envelope whose deterministic boundary invariant
+  projection fails, and prove `check-environment` never emits it; mutate
   each failure into every sibling diagnostic and one unknown value; mutate
   every result/diagnostic/phase combination across `pre-thread-start`,
   `pre-turn-start`, and `in-turn`, and exercise
@@ -1731,7 +1734,18 @@ Boundary model scope: R28-R28z
   envelope; require an unchanged workspace observation before the parent
   materializes the exact returned UTF-8 bytes and snapshots the complete
   artifact set before the next stage; reject harness-authored, repaired, or
-  completed normative content. Inject stage timeout
+  completed normative content. Bind the exact scenario request into both
+  formal review invocations. Normalize each fixture candidate and produced
+  artifact independently; compare only the closed version, scope, requirement,
+  core-dimension, extension, and governing-requirement invariant projection;
+  then vary stable IDs, non-applicability prose, applicable core rows,
+  boundary decomposition, examples, selected interactions, automation levels,
+  proof grouping, and test-case IDs while preserving R28s-R28w validity.
+  Require those alternative decompositions to proceed to independent review,
+  not fail candidate comparison. Independently remove, add, duplicate, or
+  substitute each invariant projection member and require
+  `boundary-oracle-mismatch`; require an unknown diagnostic to fail closed and
+  prove the mismatch is never emitted by preflight. Inject stage timeout
   with absent, complete, partial, extra, and contradictory output plus
   uncertain liveness and every closed non-output diagnostic. Enumerate every
   admissible transport tuple and representative vocabulary-valid unlisted
@@ -1797,7 +1811,12 @@ Boundary model scope: R28-R28z
   terminal branches, review-event evidence unions, and computed simple-change
   observations. Each artifact's semantic bytes originate in its stage skill,
   while physical writes originate only in the parent materializer after an
-  unchanged observation. Complete output reconciles without reinvocation;
+  unchanged observation. The scenario request and independent approving
+  reviews own semantic fidelity; the deterministic oracle owns only the closed
+  invariant projection and R28s-R28w structural validity. A structurally valid
+  alternative decomposition is accepted for review, while an invariant
+  mismatch stops with `boundary-oracle-mismatch`. Complete output reconciles
+  without reinvocation;
   absent output permits at most one transient retry only after confirmed stop,
   zero candidates, unchanged workspace, and no independent non-output
   diagnostic; partial, mutation, inspection, protocol, security, or other
@@ -2163,11 +2182,13 @@ Boundary model scope: R28-R28z
 
 ## Next artifacts
 
-- Boundary-first amendment: independent test-spec review of this
-  identity-synchronized proof map. Resume M2 only after that review approves
-  the v3 exact
-  runtime projection, common conformance, capability-branch, integrity,
-  envelope, retry, publication/rollback, and compatibility proof.
+- Boundary-first amendment: focused spec review of the R28y invariant-oracle
+  correction, followed by independent test-spec review of this synchronized
+  proof map. Resume M2 only after both reviews approve the scenario-owned
+  semantic input, stage-owned decomposition, deterministic invariant
+  projection, v3 exact runtime projection, common conformance,
+  capability-branch, integrity, envelope, retry, publication/rollback, and
+  compatibility proof.
 - `code-review M2` under the current
   [Boundary-First Proof Modeling plan](../docs/plans/2026-07-25-boundary-first-proof-modeling.md)
   after M2 implementation handoff.
@@ -2183,9 +2204,10 @@ Boundary model scope: R28-R28z
 
 Active proof-planning and regression surface for the workflow contract,
 including the boundary-first R28-R28z amendment.
-The focused R28y runtime-boundary correction now binds approved R53, R25, and
-R19 inputs with exact identities. It remains pending independent test-spec
-review and is not implementation-ready until that gate approves it.
+The focused R28y oracle correction separates scenario-owned behavior,
+stage-owned modeling choices, independent semantic review, and deterministic
+invariant comparison. It remains pending focused spec review and independent
+test-spec review and is not implementation-ready until both gates approve it.
 
 M2 can hand off to
 `code-review M2` only after the M2 guidance and contract surfaces make the

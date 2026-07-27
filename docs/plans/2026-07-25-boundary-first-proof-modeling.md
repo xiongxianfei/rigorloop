@@ -98,7 +98,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r3.md
 - Review status: blocked; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec
+- Next stage: spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-CR-M2-9
 
@@ -839,6 +839,11 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Focused R28y spec and proof-map correction separates the
+  scenario-owned behavior contract, stage-owned modeling choices, independent
+  semantic review, and deterministic invariant projection. It adds the
+  dedicated `boundary-oracle-mismatch` diagnostic and awaits spec review.
 
 - 2026-07-27: Code-review M2 R3 blocked on BFP-CR-M2-9. Exact equality
   against every field of one hidden golden boundary/proof decomposition

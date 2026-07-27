@@ -2656,41 +2656,71 @@ Fixture candidates use only `feature-spec` or `test-spec`;
 An event reference MUST resolve to exactly one snapshot in the current run
 manifest.
 Fixture candidates are comparison oracles only and MUST NOT be recorded as
-behavior outputs or appear in any
-event's `input_snapshot_ids`, `output_snapshot_ids`, or
-`reviewed_snapshot_id`.
-They define role-specific content assertions and the expected zero-correction
-or one-correction branch.
+behavior outputs, supplied to a lifecycle stage, or appear in any event's
+`input_snapshot_ids`, `output_snapshot_ids`, or `reviewed_snapshot_id`.
+The scenario request is the sole authoritative behavior input.
+The `spec-review` invocation receives the exact scenario request and the
+stage-authored feature spec.
+The `test-spec-review` invocation receives the exact scenario request, the
+approved feature spec and review, and the stage-authored test spec.
+Only approving formal reviews of those exact inputs satisfy semantic fidelity.
+
 The structural evaluator normalizes candidate and produced artifacts with the
-same R28s-R28w parser and compares these exact records:
+same R28s-R28w parser.
+It validates each complete normalized record independently and compares only
+this closed invariant projection:
 
 ```text
 feature-spec:
   boundary_model_version
   boundary_model_scope
   requirement_ids
-  core_rows
-  extension_rows
-  example_rows
-  interaction_rows
+  core_dimension_ids
+  extension_ids
 
 test-spec:
   boundary_model_version
   boundary_model_scope
-  proof_rows
-  test_case_ids
+  governing_requirement_ids
 ```
 
-Every list is stable-ID sorted; every row retains every governing R28 field;
-missing, additional, duplicate, unknown, or unequal normalized fields fail the
-oracle comparison.
-The structural evaluator compares produced output fields to those assertions;
-it MUST NOT require raw-byte equality or copy candidate bytes into the
-behavior-output root.
+Every projection list is stable-ID sorted.
+For this scenario, both feature projections contain exactly `v1`, `R1-R4`,
+`R1`, `R2`, `R3`, and `R4`, all twelve closed R28a core dimension IDs exactly
+once, and no extension IDs.
+Both test-spec projections contain exactly `v1`, `R1-R4`, and the same four
+governing requirement IDs.
+The complete produced feature record MUST also satisfy R28s-R28v, contain no
+open discovery gap, and classify every core dimension exactly once.
+The complete produced test-spec record MUST satisfy R28w and cover every
+applicable produced boundary and selected interaction.
+Missing, additional, duplicate, unknown, malformed, or unequal invariant
+projection fields fail with `boundary-oracle-mismatch`.
+
+Stable boundary, extension, example, interaction, proof-obligation, regression,
+manual-procedure, and test-case IDs are stage-owned modeling choices.
+Core applicability decisions, non-applicability rationale wording, boundary
+row decomposition, examples, selected interactions, automation levels, and
+proof grouping are also stage-owned choices subject to R28s-R28w and the
+independent formal reviews above.
+Differences in those choices MUST NOT fail the invariant comparison merely
+because they differ from a fixture candidate.
+The evaluator MUST NOT require raw-byte equality, compare the excluded
+stage-owned fields to one golden decomposition, expose candidate content to a
+stage, or copy candidate bytes into the behavior-output root.
 Zero-correction input contains one feature-spec and one test-spec candidate.
 One-correction input additionally contains exactly one corrected candidate for
 either the feature spec or test spec, never both.
 The fixture contains no trace, observed stage result, or aggregate counter.
+
+`boundary-oracle-mismatch` is a behavior-generation-only diagnostic with phase
+`in-turn`.
+It means a complete stage output failed the closed invariant projection or
+another deterministic R28s-R28w structural gate.
+It is not a protocol, permission, or prohibited-event diagnostic and MUST NOT
+be emitted by `check-environment`.
+Formal review nonapproval follows the normal review/correction branch instead
+of being relabeled as `boundary-oracle-mismatch`.
 
 M1 owns snapshot-schema, trace-grammar, structural-gate, and formula tests
 using injected synthetic event results.
@@ -4605,6 +4635,12 @@ Partial `v1` evidence MUST NOT be reinterpreted as `legacy` proof.
   phase; the bounded preflight response follows the closed diagnostic
   precedence; and unknown, missing, duplicate, or cross-phase causes fail
   closed.
+- `RLW-AC-B15`: The simple-change scenario is the sole behavior authority;
+  lifecycle stages never receive comparison candidates; independent reviews
+  assess semantic fidelity; and deterministic comparison rejects only invalid
+  R28s-R28w structure or a mismatch in the closed invariant projection, using
+  `boundary-oracle-mismatch` rather than a protocol or prohibited-event
+  diagnostic.
 
 ## Open questions
 
@@ -4663,3 +4699,6 @@ Partial `v1` evidence MUST NOT be reinterpreted as `legacy` proof.
 - The boundary-first `R28` through `R28z` amendment was approved by
   `spec-review-r36`. Architecture, plan, and test-spec synchronization remain
   mandatory before implementation relies on the focused amendment.
+- The focused R28y invariant-oracle correction is pending `spec-review`.
+  M2 implementation cannot rely on it until that review and the synchronized
+  test-spec review approve it.
