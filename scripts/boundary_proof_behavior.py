@@ -1820,27 +1820,32 @@ def _parse_stage_envelope(
 
 
 def _materialize_stage_envelope(
-    output_root: Path, envelope: Mapping[str, object]
+    output_root: Path,
+    envelope: Mapping[str, object],
+    *,
+    attempt: int | None = None,
 ) -> dict[str, object]:
     stage = envelope.get("last_stage")
     if not isinstance(stage, str):
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
-    attempts = [
-        int(row["attempt"])
-        for row in ARTIFACT_POLICY["stage_occurrences"]
-        if row["stage"] == stage
-        and any(
-            variant["artifact_set_variant"]
-            == envelope.get("artifact_set_variant")
-            for variant in row["variants"]
-        )
-    ]
-    if len(attempts) != 1:
-        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    if attempt is None:
+        attempts = [
+            int(row["attempt"])
+            for row in ARTIFACT_POLICY["stage_occurrences"]
+            if row["stage"] == stage
+            and any(
+                variant["artifact_set_variant"]
+                == envelope.get("artifact_set_variant")
+                for variant in row["variants"]
+            )
+        ]
+        if len(attempts) != 1:
+            raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+        attempt = attempts[0]
     parsed, rows = _parse_stage_envelope(
         _canonical_json_bytes(dict(envelope)).decode("utf-8"),
         stage=stage,
-        attempt=attempts[0],
+        attempt=attempt,
     )
     output_root.mkdir(parents=True, exist_ok=True)
     root = output_root.resolve(strict=True)
@@ -5745,7 +5750,9 @@ def _collect_runtime_attestation(
                     file=sys.stderr,
                 )
             materialization = _materialize_stage_envelope(
-                workspace / "output", envelope
+                workspace / "output",
+                envelope,
+                attempt=int(generation_request.get("attempt", 1)),
             )
             if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
                 print(

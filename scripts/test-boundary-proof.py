@@ -1972,6 +1972,39 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                         json.dumps(mutation), stage="spec", attempt=1
                     )
 
+    def test_materialization_preserves_bound_attempt_for_shared_review_variant(
+        self,
+    ) -> None:
+        envelope = {
+            "schema_version": "boundary-stage-artifact-envelope-v1",
+            "artifact_policy_id": "lifecycle-stage-artifacts-v1",
+            "completed": True,
+            "last_stage": "spec-review",
+            "artifact_set_variant": "spec-review-changes-requested",
+            "artifacts": [
+                {
+                    "role": "spec-review-record",
+                    "path": "reviews/spec-review.md",
+                    "content_utf8": "# Review\n",
+                },
+                {
+                    "role": "spec-review-log",
+                    "path": "review-log/spec-review.md",
+                    "content_utf8": "# Log\n",
+                },
+                {
+                    "role": "spec-review-resolution",
+                    "path": "review-resolution/spec-review.md",
+                    "content_utf8": "# Resolution\n",
+                },
+            ],
+        }
+        with tempfile.TemporaryDirectory() as raw:
+            observation = _materialize_stage_envelope(
+                Path(raw), envelope, attempt=1
+            )
+        self.assertEqual(observation["result"], "pass")
+
     def test_timeout_reconciles_complete_output_without_reinvocation(self) -> None:
         calls = 0
 
