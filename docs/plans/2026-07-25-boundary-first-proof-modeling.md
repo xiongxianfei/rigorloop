@@ -873,6 +873,17 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-27: Implemented the R54 invariant-only oracle, parent-only candidate
+  checks, scenario-bound formal reviews, dedicated oracle and review
+  diagnostics, occurrence-bound materialization, and mutually exclusive
+  artifact-set reconciliation. Published boundary references now state the
+  executable ID, sentinel, uniqueness, ownership, interaction, coverage, and
+  record-order constraints that were previously implicit. Seventy-three
+  focused harness tests and the skill/build validators pass. Live stages have
+  advanced through accepted spec, review, and test-spec envelopes, but no
+  current immutable run is published because the latest clean attempts stopped
+  at the fixed transport boundary. M2 remains `resolution-needed`.
+
 - 2026-07-27: Test-spec-review R22 approved the direct parent-only candidate
   isolation proof with no findings, closed BFP-TSR21-1, and allowed M2
   implementation to resume.
