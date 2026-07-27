@@ -26,10 +26,15 @@ from typing import Final
 
 from boundary_proof_model import (
     CORE_DIMENSION_IDS,
+    HANDLER_CONFORMANCE_CASES,
     BoundaryProofError,
     evaluate_simple_change_trace,
+    handler_conformance_policy,
     normalize_feature_model,
     normalize_proof_map,
+    runtime_projection_identity,
+    select_runtime_projection,
+    validate_handler_conformance,
 )
 
 
@@ -220,7 +225,12 @@ ATTESTATION_FIELDS: Final[tuple[str, ...]] = (
     "skill_inventory_identity",
     "feature_classification_identity",
     "protocol_item_classification_identity",
+    "runtime_projection_id",
+    "runtime_projection_identity",
+    "file_change_capability_state",
+    "effective_tool_projection_identity",
     "file_change_authorization_policy_identity",
+    "file_change_handler_conformance_identity",
     "materialization_canary_policy_identity",
     "probe_results",
     "credential_isolation_results",
@@ -243,6 +253,10 @@ DIAGNOSTIC_PHASES: Final[dict[str, frozenset[str]]] = {
     "skill-inventory-mismatch": frozenset({"pre-turn-start"}),
     "feature-classification-invalid": frozenset({"pre-turn-start"}),
     "protocol-item-classification-invalid": frozenset({"pre-turn-start"}),
+    "runtime-projection-unsupported": frozenset({"pre-thread-start"}),
+    "file-change-control-mismatch": frozenset(
+        {"pre-turn-start", "in-turn"}
+    ),
     "permission-profile-mismatch": frozenset({"pre-turn-start"}),
     "config-equivalence-mismatch": frozenset({"pre-turn-start"}),
     "sandbox-probe-failed": frozenset({"pre-turn-start"}),
@@ -647,7 +661,7 @@ def _preflight_failure(
 ) -> dict[str, object]:
     error = BoundaryRuntimeError(diagnostic_id, phase)
     return {
-        "schema_version": "boundary-runtime-preflight-v2",
+        "schema_version": "boundary-runtime-preflight-v3",
         "result": "environment-unavailable",
         "diagnostic_id": error.diagnostic_id,
         "phase": error.phase,
@@ -1058,7 +1072,7 @@ def _build_behavior_manifest(
     ]
     skill_references.sort(key=lambda row: row["path"])
     return {
-        "manifest_id": "boundary-behavior-implementation-v2",
+        "manifest_id": "boundary-behavior-implementation-v3",
         "harness_component_refs": [
             _regular_reference(repo_root, path) for path in sorted(harness_paths)
         ],
@@ -1082,7 +1096,7 @@ def _validate_behavior_manifest(
 ) -> None:
     if set(manifest) != MANIFEST_FIELDS:
         raise BoundaryRuntimeError("runtime-identity-unstable")
-    if manifest.get("manifest_id") != "boundary-behavior-implementation-v2":
+    if manifest.get("manifest_id") != "boundary-behavior-implementation-v3":
         raise BoundaryRuntimeError("runtime-identity-unstable")
     _assert_standalone_import_policy(repo_root)
     for field in (
@@ -4060,6 +4074,158 @@ def _install_auth(runtime_home: Path) -> None:
         raise BoundaryRuntimeError("runtime-unavailable") from error
 
 
+def _dispatch_file_change_request(
+    request: Mapping[str, object],
+    *,
+    policy: Mapping[str, object],
+    expected_thread_id: str,
+    expected_turn_id: str,
+    expected_item_id: str,
+    expected_change_identity: str,
+    observed_change_identity: str,
+    decision_handler: Callable[[], Mapping[str, object]] | None,
+) -> tuple[dict[str, object] | None, str | None]:
+    """Production deny-only dispatcher shared by live and conformance paths."""
+
+    policy_identity = _sha256(_canonical_json_bytes(policy))
+    params = request.get("params")
+    if (
+        set(request) != {"jsonrpc", "id", "method", "params"}
+        or request.get("jsonrpc") != "2.0"
+        or request.get("method") != "item/fileChange/requestApproval"
+        or not isinstance(request.get("id"), (int, str))
+        or not isinstance(params, dict)
+        or set(params)
+        != {
+            "grantRoot",
+            "itemId",
+            "reason",
+            "startedAtMs",
+            "threadId",
+            "turnId",
+        }
+        or not isinstance(params.get("startedAtMs"), int)
+        or isinstance(params.get("startedAtMs"), bool)
+    ):
+        return None, "malformed-request"
+    if (
+        policy != FILE_CHANGE_AUTHORIZATION_POLICY
+        or policy_identity
+        != _sha256(_canonical_json_bytes(FILE_CHANGE_AUTHORIZATION_POLICY))
+    ):
+        return None, "wrong-policy-identity"
+    if params.get("threadId") != expected_thread_id:
+        return None, "thread-mismatch"
+    if params.get("turnId") != expected_turn_id:
+        return None, "turn-mismatch"
+    if params.get("itemId") != expected_item_id:
+        return None, "item-mismatch"
+    if observed_change_identity != expected_change_identity:
+        return None, "change-mismatch"
+    if decision_handler is None:
+        return None, "missing-handler"
+    decision = dict(decision_handler())
+    if decision != {"decision": "decline"}:
+        return None, "response-not-deny-only"
+    return decision, None
+
+
+def _run_file_change_handler_conformance(
+    policy: Mapping[str, object],
+) -> dict[str, object]:
+    """Exercise every closed case against the installed production dispatcher."""
+
+    authorization_identity = _sha256(_canonical_json_bytes(policy))
+    conformance_policy = handler_conformance_policy(authorization_identity)
+    expected = {
+        "thread_id": "conformance-thread",
+        "turn_id": "conformance-turn",
+        "item_id": "conformance-item",
+        "change_identity": "sha256:" + "c" * 64,
+    }
+    base_request: dict[str, object] = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "item/fileChange/requestApproval",
+        "params": {
+            "grantRoot": None,
+            "itemId": expected["item_id"],
+            "reason": None,
+            "startedAtMs": 1,
+            "threadId": expected["thread_id"],
+            "turnId": expected["turn_id"],
+        },
+    }
+    case_results: list[dict[str, str]] = []
+    for case in HANDLER_CONFORMANCE_CASES:
+        request = json.loads(json.dumps(base_request))
+        case_policy = policy
+        observed_change_identity = expected["change_identity"]
+        handler: Callable[[], Mapping[str, object]] | None = (
+            lambda: {"decision": "decline"}
+        )
+        if case == "missing-handler-rejected":
+            handler = None
+        elif case == "wrong-policy-identity-rejected":
+            case_policy = {**policy, "request_decision": "accept"}
+        elif case == "thread-mismatch-rejected":
+            request["params"]["threadId"] = "other-thread"  # type: ignore[index]
+        elif case == "turn-mismatch-rejected":
+            request["params"]["turnId"] = "other-turn"  # type: ignore[index]
+        elif case == "item-mismatch-rejected":
+            request["params"]["itemId"] = "other-item"  # type: ignore[index]
+        elif case == "change-mismatch-rejected":
+            observed_change_identity = "sha256:" + "d" * 64
+        elif case == "accept-rejected":
+            handler = lambda: {"decision": "accept"}
+        elif case == "accept-for-session-rejected":
+            handler = lambda: {"decision": "acceptForSession"}
+        elif case == "widened-response-rejected":
+            handler = lambda: {"decision": "decline", "scope": "session"}
+        elif case == "malformed-request-rejected":
+            request["params"].pop("itemId")  # type: ignore[union-attr]
+        response, failure = _dispatch_file_change_request(
+            request,
+            policy=case_policy,
+            expected_thread_id=expected["thread_id"],
+            expected_turn_id=expected["turn_id"],
+            expected_item_id=expected["item_id"],
+            expected_change_identity=expected["change_identity"],
+            observed_change_identity=observed_change_identity,
+            decision_handler=handler,
+        )
+        passed = (
+            response == {"decision": "decline"} and failure is None
+            if case == "matching-request-declined"
+            else response is None and failure is not None
+        )
+        case_results.append(
+            {"case": case, "result": "pass" if passed else "fail"}
+        )
+    result: dict[str, object] = {
+        "schema_version": "stage-file-change-handler-conformance-result-v1",
+        "policy_identity": _sha256(_canonical_json_bytes(conformance_policy)),
+        "case_results": case_results,
+        "result": (
+            "pass"
+            if all(row["result"] == "pass" for row in case_results)
+            else "fail"
+        ),
+    }
+    result["result_identity"] = _sha256(_canonical_json_bytes(result))
+    try:
+        validate_handler_conformance(
+            conformance_policy,
+            result,
+            authorization_policy_identity=authorization_identity,
+        )
+    except BoundaryProofError as error:
+        raise BoundaryRuntimeError(
+            "file-change-control-mismatch", "pre-turn-start"
+        ) from error
+    return result
+
+
 class _AppServer:
     def __init__(self, executable: Path, environment: Mapping[str, str]) -> None:
         try:
@@ -4152,6 +4318,8 @@ class _AppServer:
         *,
         timeout: int = 300,
         file_change_policy: Mapping[str, object] | None = None,
+        turn_id: str | None = None,
+        file_change_capability_state: str | None = None,
     ) -> dict[str, object]:
         """Collect one classified turn and reject unknown or prohibited events."""
 
@@ -4201,11 +4369,37 @@ class _AppServer:
                 if (
                     method != "item/fileChange/requestApproval"
                     or file_change_policy != FILE_CHANGE_AUTHORIZATION_POLICY
+                    or file_change_capability_state
+                    != "exposed-live-probe-required"
+                    or turn_id is None
                 ):
                     raise BoundaryRuntimeError(
-                        "unexpected-prohibited-event", "in-turn"
+                        "file-change-control-mismatch", "in-turn"
                     )
-                self._respond(response["id"], {"decision": "decline"})
+                item_id = params.get("itemId")
+                if not isinstance(item_id, str):
+                    raise BoundaryRuntimeError(
+                        "file-change-control-mismatch", "in-turn"
+                    )
+                decision, failure = _dispatch_file_change_request(
+                    response,
+                    policy=file_change_policy,
+                    expected_thread_id=thread_id,
+                    expected_turn_id=turn_id,
+                    expected_item_id=item_id,
+                    expected_change_identity=str(
+                        FILE_CHANGE_AUTHORIZATION_POLICY["prompt_identity"]
+                    ),
+                    observed_change_identity=str(
+                        FILE_CHANGE_AUTHORIZATION_POLICY["prompt_identity"]
+                    ),
+                    decision_handler=lambda: {"decision": "decline"},
+                )
+                if decision is None or failure is not None:
+                    raise BoundaryRuntimeError(
+                        "file-change-control-mismatch", "in-turn"
+                    )
+                self._respond(response["id"], decision)
                 file_change_request_count += 1
                 event_methods.append(method)
                 continue
@@ -4236,7 +4430,12 @@ class _AppServer:
                         )
                     messages.append(text)
                 elif item_type not in {"userMessage", "reasoning"}:
-                    if item_type != "fileChange" or item.get("status") != "declined":
+                    if (
+                        item_type != "fileChange"
+                        or file_change_capability_state
+                        == "not-exposed-projection"
+                        or item.get("status") != "declined"
+                    ):
                         raise BoundaryRuntimeError(
                             "unexpected-prohibited-event", "in-turn"
                         )
@@ -4711,18 +4910,104 @@ def _protocol_classification(schema_root: Path) -> list[dict[str, str]]:
 
 def _validate_runtime_projection(
     version: str,
+    launcher_identity: str,
+    package_identity: str,
     schema_identity: str,
     protocol_classification: Sequence[Mapping[str, str]],
-) -> None:
-    if RUNTIME_SCHEMA_IDENTITY_BY_VERSION.get(version) != schema_identity:
-        raise BoundaryRuntimeError("schema-bundle-invalid")
+) -> Callable[[Sequence[Mapping[str, str]]], dict[str, object]]:
+    """Bind stable runtime bytes now and complete selection after inventory."""
+
+    protocol_identity = _sha256(_canonical_json_bytes(protocol_classification))
+
+    def select(
+        feature_classification: Sequence[Mapping[str, str]],
+    ) -> dict[str, object]:
+        try:
+            return select_runtime_projection(
+                runtime_version=version,
+                runtime_launcher_identity=launcher_identity,
+                runtime_package_identity=package_identity,
+                schema_bundle_identity=schema_identity,
+                protocol_item_classification_identity=protocol_identity,
+                feature_classification_identity=_sha256(
+                    _canonical_json_bytes(feature_classification)
+                ),
+            )
+        except BoundaryProofError as error:
+            raise BoundaryRuntimeError(
+                "runtime-projection-unsupported", "pre-thread-start"
+            ) from error
+
+    return select
+
+
+def _effective_tool_projection(
+    feature_pages: Sequence[Mapping[str, object]],
+    feature_classification: Sequence[Mapping[str, str]],
+    projection: Mapping[str, object],
+) -> list[dict[str, object]]:
+    inventory: dict[str, bool] = {}
+    for page in feature_pages:
+        items = page.get("items")
+        if not isinstance(items, list):
+            raise BoundaryRuntimeError(
+                "file-change-control-mismatch", "pre-turn-start"
+            )
+        for item in items:
+            if (
+                not isinstance(item, dict)
+                or not isinstance(item.get("name"), str)
+                or not isinstance(item.get("enabled"), bool)
+                or item["name"] in inventory
+            ):
+                raise BoundaryRuntimeError(
+                    "file-change-control-mismatch", "pre-turn-start"
+                )
+            inventory[item["name"]] = item["enabled"]
+    classifications = {
+        row.get("feature"): row.get("classification")
+        for row in feature_classification
+    }
+    projected = set(projection["permitted_tool_features"]) | set(
+        projection["permitted_non_tool_features"]
+    ) | set(
+        projection["required_disabled_features"]
+    )
     if (
-        RUNTIME_PROTOCOL_CLASSIFICATION_IDENTITY_BY_VERSION.get(version)
-        != _sha256(_canonical_json_bytes(protocol_classification))
+        len(classifications) != len(feature_classification)
+        or set(inventory) != projected
+        or set(classifications) != projected
     ):
         raise BoundaryRuntimeError(
-            "protocol-item-classification-invalid", "pre-turn-start"
+            "file-change-control-mismatch", "pre-turn-start"
         )
+    rows = [
+        {
+            "feature": feature,
+            "classification": classifications[feature],
+            "enabled": inventory[feature],
+        }
+        for feature in sorted(projected)
+        if classifications[feature]
+        in {
+            "permitted-built-in-tool",
+            "must-be-disabled-tool-bearing-behavior",
+        }
+    ]
+    permitted = set(projection["permitted_tool_features"])
+    permitted_non_tool = set(projection["permitted_non_tool_features"])
+    enabled_features = {
+        feature for feature, enabled in inventory.items() if enabled
+    }
+    if (
+        {row["feature"] for row in rows if row["enabled"]} != permitted
+        or not permitted <= enabled_features
+        or enabled_features - permitted - permitted_non_tool
+    ):
+        raise BoundaryRuntimeError(
+            "file-change-control-mismatch", "pre-turn-start"
+        )
+    return rows
 
 
 def _validated_thread_metadata(
@@ -5090,8 +5375,12 @@ def _collect_runtime_attestation(
             )
 
         protocol_classification = _protocol_classification(schema_root)
-        _validate_runtime_projection(
-            version, schema_identity, protocol_classification
+        complete_runtime_projection = _validate_runtime_projection(
+            version,
+            launcher_before.digest,
+            package_identity,
+            schema_identity,
+            protocol_classification,
         )
         runtime_process_id = "process-" + secrets.token_hex(16)
         timeout_elapsed_ms: int | None = None
@@ -5110,6 +5399,15 @@ def _collect_runtime_attestation(
             if not isinstance(initialize, dict):
                 raise BoundaryRuntimeError("experimental-api-unavailable")
             pages, feature_classification = _feature_inventory(server, version)
+            runtime_projection = complete_runtime_projection(
+                feature_classification
+            )
+            effective_tool_projection = _effective_tool_projection(
+                pages, feature_classification, runtime_projection
+            )
+            handler_conformance = _run_file_change_handler_conformance(
+                FILE_CHANGE_AUTHORIZATION_POLICY
+            )
             config_result = _expect_object(
                 server.request(
                     "config/read",
@@ -5172,71 +5470,16 @@ def _collect_runtime_attestation(
                 model_id=model_id,
                 workspace=workspace,
             )
-            probe_directory = workspace / str(
-                FILE_CHANGE_AUTHORIZATION_POLICY["probe_fixture_directory"]
+            capability_state = str(
+                runtime_projection["file_change_capability_state"]
             )
-            probe_directory.mkdir()
-            probe_path = workspace / str(
-                FILE_CHANGE_AUTHORIZATION_POLICY["probe_fixture_path"]
-            )
-            if probe_path.exists():
+            if capability_state == "exposed-live-probe-required":
                 raise BoundaryRuntimeError(
-                    "sandbox-probe-failed", "pre-turn-start"
+                    "runtime-projection-unsupported", "pre-thread-start"
                 )
-            probe_before = _workspace_probe_snapshot(workspace)
-            probe_thread = server.request(
-                "thread/start",
-                _thread_start_request(workspace, model_id),
-            )
-            _, probe_thread_id = _validated_thread_metadata(
-                probe_thread,
-                version=version,
-                model_id=model_id,
-                workspace=workspace,
-            )
-            probe_started = server.request(
-                "turn/start",
-                _turn_start_request(
-                    probe_thread_id,
-                    workspace,
-                    model_id,
-                    runtime_home,
-                    FILE_CHANGE_PROBE_PROMPT,
-                    _closed_object_schema(
-                        {
-                            "probe": {
-                                "type": "string",
-                                "const": "complete",
-                            }
-                        }
-                    ),
-                    (),
-                ),
-            )
-            if (
-                not isinstance(probe_started, dict)
-                or set(probe_started) != {"turn"}
-            ):
+            if capability_state != "not-exposed-projection":
                 raise BoundaryRuntimeError(
-                    "sandbox-probe-failed", "pre-turn-start"
-                )
-            probe_result = server.collect_turn(
-                probe_thread_id,
-                protocol_classification,
-                timeout=int(TRANSPORT_POLICY["turn_deadline_ms"]) // 1000,
-                file_change_policy=FILE_CHANGE_AUTHORIZATION_POLICY,
-            )
-            if (
-                probe_result.get("file_change_request_count") != 1
-                or probe_result.get("file_change_terminal_statuses")
-                != ["declined"]
-                or _load_generated_payload(probe_result, {"probe"})
-                != {"probe": "complete"}
-                or probe_path.exists()
-                or _workspace_probe_snapshot(workspace) != probe_before
-            ):
-                raise BoundaryRuntimeError(
-                    "sandbox-probe-failed", "pre-turn-start"
+                    "runtime-projection-unsupported", "pre-thread-start"
                 )
             if generation_request is not None:
                 prompt = generation_request.get("prompt")
@@ -5285,6 +5528,8 @@ def _collect_runtime_attestation(
                             int(TRANSPORT_POLICY["turn_deadline_ms"]) // 1000
                         ),
                         file_change_policy=FILE_CHANGE_AUTHORIZATION_POLICY,
+                        turn_id=started["turn"]["id"],
+                        file_change_capability_state=capability_state,
                     )
                 except _StageTurnTimeout:
                     turn_timeout = True
@@ -5341,7 +5586,7 @@ def _collect_runtime_attestation(
             "mcpServerStatus/list": mcp,
         }
         attestation = {
-            "schema_version": "boundary-runtime-attestation-v2",
+            "schema_version": "boundary-runtime-attestation-v3",
             "runtime_launcher_identity": launcher_before.digest,
             "runtime_package_identity": package_identity,
             "schema_bundle_identity": schema_identity,
@@ -5362,9 +5607,20 @@ def _collect_runtime_attestation(
             "protocol_item_classification_identity": _sha256(
                 _canonical_json_bytes(protocol_classification)
             ),
+            "runtime_projection_id": runtime_projection["projection_id"],
+            "runtime_projection_identity": runtime_projection_identity(
+                runtime_projection
+            ),
+            "file_change_capability_state": capability_state,
+            "effective_tool_projection_identity": _sha256(
+                _canonical_json_bytes(effective_tool_projection)
+            ),
             "file_change_authorization_policy_identity": _sha256(
                 _canonical_json_bytes(FILE_CHANGE_AUTHORIZATION_POLICY)
             ),
+            "file_change_handler_conformance_identity": handler_conformance[
+                "result_identity"
+            ],
             "materialization_canary_policy_identity": _sha256(
                 _canonical_json_bytes(MATERIALIZATION_CANARY_POLICY)
             ),
@@ -5402,7 +5658,7 @@ def _collect_runtime_attestation(
 def _validate_attestation(attestation: Mapping[str, object]) -> None:
     if set(attestation) != set(ATTESTATION_FIELDS):
         raise BoundaryRuntimeError("protocol-shape-incompatible")
-    if attestation.get("schema_version") != "boundary-runtime-attestation-v2":
+    if attestation.get("schema_version") != "boundary-runtime-attestation-v3":
         raise BoundaryRuntimeError("protocol-shape-incompatible")
     for field in ATTESTATION_FIELDS:
         if field.endswith("_identity") and (
@@ -5455,6 +5711,38 @@ def _validate_attestation(attestation: Mapping[str, object]) -> None:
         or thread_metadata.get("cwd_role") != "isolated-workspace"
     ):
         raise BoundaryRuntimeError("thread-metadata-mismatch", "pre-turn-start")
+    try:
+        projection = select_runtime_projection(
+            runtime_version=str(thread_metadata["cli_version"]),
+            runtime_launcher_identity=str(
+                attestation["runtime_launcher_identity"]
+            ),
+            runtime_package_identity=str(
+                attestation["runtime_package_identity"]
+            ),
+            schema_bundle_identity=str(attestation["schema_bundle_identity"]),
+            protocol_item_classification_identity=str(
+                attestation["protocol_item_classification_identity"]
+            ),
+            feature_classification_identity=str(
+                attestation["feature_classification_identity"]
+            ),
+        )
+    except (BoundaryProofError, TypeError) as error:
+        raise BoundaryRuntimeError(
+            "runtime-projection-unsupported", "pre-thread-start"
+        ) from error
+    if (
+        attestation.get("runtime_projection_id")
+        != projection["projection_id"]
+        or attestation.get("runtime_projection_identity")
+        != runtime_projection_identity(projection)
+        or attestation.get("file_change_capability_state")
+        != projection["file_change_capability_state"]
+    ):
+        raise BoundaryRuntimeError(
+            "runtime-projection-unsupported", "pre-thread-start"
+        )
     expected_probe_keys = {
         "workspace_read",
         "workspace_write_denied",
@@ -5568,7 +5856,7 @@ def assess_environment(
     except BoundaryRuntimeError as error:
         return _preflight_failure(error.diagnostic_id, error.phase)
     return {
-        "schema_version": "boundary-runtime-preflight-v2",
+        "schema_version": "boundary-runtime-preflight-v3",
         "result": "pass",
         "diagnostic_id": "none",
         "phase": "pre-turn-start",
