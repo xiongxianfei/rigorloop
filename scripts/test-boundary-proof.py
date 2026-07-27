@@ -2551,6 +2551,20 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             }
         )
         alternative_payload["examples"][0]["example_id"] = "alt.example.trim"
+        alternative_payload["extensions"].append(
+            {
+                "extension_id": "x.text.normalization",
+                "title": "Text normalization",
+                "applicability": "applicable",
+                "rationale": (
+                    "The stage models the stateless normalization partition "
+                    "as a feature-specific extension."
+                ),
+                "governing_requirement_ids": ["R2", "R3"],
+                "boundary_ids": ["alt.text.normalization"],
+                "non_applicability_rationale": None,
+            }
+        )
         alternative_feature = normalize_feature_model(alternative_payload)
 
         alternative_proof_payload = copy.deepcopy(proof_payload)
@@ -2562,6 +2576,16 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "alt.t2",
             "alt.t3",
         ]
+        alternative_proof_payload["proof_obligations"].append(
+            {
+                "proof_obligation_id": "alt.proof.normalization",
+                "governing_requirement_ids": ["R2", "R3"],
+                "boundary_or_interaction_ids": ["alt.text.normalization"],
+                "test_case_ids": ["alt.t1", "alt.t3"],
+                "automation_level": "automated",
+                "manual_procedure_ids": [],
+            }
+        )
         alternative_proof = normalize_proof_map(
             alternative_proof_payload, alternative_feature
         )
@@ -2608,7 +2632,6 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 "boundary_model_scope": "R1-R4",
                 "requirement_ids": ("R1", "R2", "R3", "R4"),
                 "core_dimension_ids": tuple(sorted(CORE_DIMENSION_IDS)),
-                "extension_ids": (),
             },
         )
         self.assertEqual(
@@ -2639,7 +2662,6 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 "boundary_model_scope": "R1-R3",
                 "requirement_ids": ("R1", "R2", "R3"),
                 "core_dimension_ids": projection.core_dimension_ids[:-1],
-                "extension_ids": ("unexpected-extension",),
             }.items()
         }
         for field, altered in mutations.items():
