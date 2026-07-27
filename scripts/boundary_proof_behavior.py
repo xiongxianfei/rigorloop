@@ -350,6 +350,20 @@ class _StageTurnTimeout(RuntimeError):
         super().__init__("stage turn timed out")
 
 
+def _trace_prohibited_event(subreason: str, **shape: object) -> None:
+    """Emit opt-in, value-free detail for a closed prohibited-event result."""
+
+    if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") != "1":
+        return
+    fields = ":".join(
+        f"{key}={value}"
+        for key, value in sorted(shape.items())
+        if isinstance(value, (bool, int, str)) or value is None
+    )
+    suffix = "" if not fields else ":" + fields
+    print(f"prohibited-event:{subreason}{suffix}", file=sys.stderr)
+
+
 @dataclass(frozen=True)
 class _SemVer:
     major: int
@@ -4546,6 +4560,14 @@ class _AppServer:
                 raise
             method = response.get("method")
             if not isinstance(method, str):
+                _trace_prohibited_event(
+                    "method-not-string",
+                    source=(
+                        "ServerRequest"
+                        if "id" in response
+                        else "ServerNotification"
+                    ),
+                )
                 raise BoundaryRuntimeError(
                     "unexpected-prohibited-event", "in-turn"
                 )
@@ -4554,11 +4576,20 @@ class _AppServer:
             if classification is None or classification == (
                 "prohibited-capability-event"
             ):
+                _trace_prohibited_event(
+                    "classification-rejected",
+                    event_kind=f"{source}:{method}",
+                    classification=classification,
+                )
                 raise BoundaryRuntimeError(
                     "unexpected-prohibited-event", "in-turn"
                 )
             params = response.get("params")
             if not isinstance(params, dict):
+                _trace_prohibited_event(
+                    "params-not-object",
+                    event_kind=f"{source}:{method}",
+                )
                 raise BoundaryRuntimeError(
                     "unexpected-prohibited-event", "in-turn"
                 )
@@ -4604,10 +4635,22 @@ class _AppServer:
                 params.get("status") != "disabled"
                 or params.get("environmentId") is not None
             ):
+                _trace_prohibited_event(
+                    "remote-control-policy-violation",
+                    event_kind=f"{source}:{method}",
+                    status_is_disabled=params.get("status") == "disabled",
+                    environment_identity_is_null=(
+                        params.get("environmentId") is None
+                    ),
+                )
                 raise BoundaryRuntimeError(
                     "unexpected-prohibited-event", "in-turn"
                 )
             if method == "error":
+                _trace_prohibited_event(
+                    "runtime-error-event",
+                    event_kind=f"{source}:{method}",
+                )
                 raise BoundaryRuntimeError(
                     "unexpected-prohibited-event", "in-turn"
                 )
@@ -4615,6 +4658,10 @@ class _AppServer:
             if method == "item/completed":
                 item = params.get("item")
                 if not isinstance(item, dict):
+                    _trace_prohibited_event(
+                        "completed-item-not-object",
+                        event_kind=f"{source}:{method}",
+                    )
                     raise BoundaryRuntimeError(
                         "unexpected-prohibited-event", "in-turn"
                     )
@@ -4622,6 +4669,11 @@ class _AppServer:
                 if item_type == "agentMessage":
                     text = item.get("text")
                     if not isinstance(text, str):
+                        _trace_prohibited_event(
+                            "agent-message-text-not-string",
+                            event_kind=f"{source}:{method}",
+                            item_type=item_type,
+                        )
                         raise BoundaryRuntimeError(
                             "unexpected-prohibited-event", "in-turn"
                         )
@@ -4633,12 +4685,22 @@ class _AppServer:
                         == "not-exposed-projection"
                         or item.get("status") != "declined"
                     ):
+                        _trace_prohibited_event(
+                            "completed-item-type-rejected",
+                            event_kind=f"{source}:{method}",
+                            item_type=item_type,
+                            status=item.get("status"),
+                        )
                         raise BoundaryRuntimeError(
                             "unexpected-prohibited-event", "in-turn"
                         )
                     file_change_terminal_statuses.append("declined")
             if method == "turn/completed":
                 if params.get("threadId") != thread_id:
+                    _trace_prohibited_event(
+                        "turn-thread-mismatch",
+                        event_kind=f"{source}:{method}",
+                    )
                     raise BoundaryRuntimeError(
                         "unexpected-prohibited-event", "in-turn"
                     )
@@ -4649,6 +4711,22 @@ class _AppServer:
                     or turn.get("error") is not None
                     or not messages
                 ):
+                    _trace_prohibited_event(
+                        "turn-terminal-shape-rejected",
+                        event_kind=f"{source}:{method}",
+                        turn_is_object=isinstance(turn, dict),
+                        status=(
+                            turn.get("status")
+                            if isinstance(turn, dict)
+                            else None
+                        ),
+                        error_is_null=(
+                            turn.get("error") is None
+                            if isinstance(turn, dict)
+                            else False
+                        ),
+                        agent_message_count=len(messages),
+                    )
                     raise BoundaryRuntimeError(
                         "unexpected-prohibited-event", "in-turn"
                     )
