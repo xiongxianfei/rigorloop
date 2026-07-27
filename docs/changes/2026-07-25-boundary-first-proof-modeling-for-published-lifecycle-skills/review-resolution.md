@@ -1956,7 +1956,7 @@ tracked under `BFP-CR-M2-12`.
 
 Finding ID: BFP-CR-M2-12
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M2 implementation and code-review owners
 Owning stage: implementation correction and code review
 Decision owner: approved R28y global recovery contract
@@ -1971,6 +1971,34 @@ Rationale: These are sibling members of already accepted R28y boundary classes
 and require no new product or architecture decision.
 Validation target: focused M2 tests, regenerated canonical evidence, and
 code-review-m2-r7
+Validation evidence: The four R6 direct regressions pass. Completed history
+consumes exact objects, complete staged semantic validation rejects malformed
+and empty correction traces, fixed control roots reject invalid kinds, and
+authority is contained within the selected change record. Immutable run
+`run-7c219a9daabd04402fa8345812f74b33` validates with zero false blocks and
+zero universal artifacts. Code-review R7 continues the narrower semantic
+authority-class gap as `BFP-CR-M2-13`.
+
+### code-review-m2-r7
+
+#### BFP-CR-M2-13 - Recovery authority is location-bound but not decision-bound
+
+Finding ID: BFP-CR-M2-13
+Disposition: accepted
+Status: in-progress
+Owner: M2 implementation and code-review owners
+Owning stage: implementation correction and code review
+Decision owner: approved R28y exact recovery authority
+Decision needed: none
+Required outcome: Bind recovery to a closed current change-local decision whose
+contents authorize the exact run, publisher, input, action, and actor.
+Chosen action: Add one closed recovery-decision schema and parser, validate its
+exact subject and action before any recovery mutation, add a complete field
+mutation matrix, regenerate canonical evidence, and rereview.
+Rationale: Change-root containment proves locality but not artifact class or
+authorization semantics.
+Validation target: focused M2 tests, regenerated canonical evidence, and
+code-review-m2-r8
 Validation evidence: Pending.
 
 ### spec-review-r27

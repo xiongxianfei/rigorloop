@@ -95,12 +95,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r6.md
-- Review status: changes-requested; stage=code-review; round=r6
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r7.md
+- Review status: changes-requested; stage=code-review; round=r7
 - Remaining in-scope implementation milestones: M2, M3, M4
 - Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BFP-CR-M2-12
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BFP-CR-M2-13
 
 ## Milestones
 
@@ -873,6 +873,12 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Code-review M2 R7 confirmed the R6 object-validity corrections
+  and opened `BFP-CR-M2-13`. The remaining authority check proves only that
+  evidence is current Markdown within the change root; it does not prove a
+  review or owner decision authorizes the exact recovery subject and action.
+  M2 remains `resolution-needed`.
 
 - 2026-07-27: Published the object-complete R6 correction as immutable run
   `run-7c219a9daabd04402fa8345812f74b33` for input identity
