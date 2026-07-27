@@ -94,13 +94,13 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M4. Selection, adapter parity, capability baseline, and activation proof
-- Current milestone state: closed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m4-r2.md
-- Review status: approved; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: none
-- Next stage: code-review (final holistic)
+- Current milestone state: resolution-needed
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-final-r1.md
+- Review status: changes-requested; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: M4 integration correction
+- Next stage: review-resolution
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BFP-CR-FINAL-1
 
 ## Milestones
 
@@ -789,7 +789,7 @@ resource through generated, packed, and installed outputs.
 
 ### M4. Selection, adapter parity, capability baseline, and activation proof
 
-- Milestone state: closed
+- Milestone state: resolution-needed
 - Goal: Make the complete boundary capability selectable, portable, measurable, and release-safe without activating or publishing it.
 - Requirements: R28l-R28o, R28z; R56n, R56q
 - Files/components likely touched:
@@ -1071,6 +1071,12 @@ resource through generated, packed, and installed outputs.
   operation graph, canonical reconstruction, outcome envelope, parity, and
   non-activation evidence. `BFP-CR-M4-1` is resolved and M4 is closed. The
   next required gate is a separate final holistic code review.
+- 2026-07-27: Final holistic code-review R1 opened `BFP-CR-FINAL-1`.
+  Component-level boundary route helpers return the six required checks, but
+  the public selector still classifies boundary scripts as unsupported and
+  fixture paths as unclassified. The exact plan-owned explicit CI command
+  exits before executing checks. M4 is reopened only for the declared-safe
+  selector/CI composition correction.
 
 - 2026-07-27: Spec-review R57 approved the identity-bound correction
   eligibility, correction-stop receipt, recovery, and unequal-input fresh-run
