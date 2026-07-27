@@ -2800,6 +2800,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         payload = {
             "review_id": "spec-review-r1",
             "outcome": "approved",
+            "material_finding_ids": [],
             "review_record_markdown": (
                 "# Review\n\nReview ID: spec-review-r1\nStage: spec-review\n"
                 "Status: approved\n"
@@ -2826,6 +2827,25 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             )
         nonapproval = copy.deepcopy(payload)
         nonapproval["outcome"] = "changes-requested"
+        nonapproval["material_finding_ids"] = ["finding.missing-boundary"]
+        nonapproval["review_record_markdown"] = nonapproval[
+            "review_record_markdown"
+        ].replace(
+            "Status: approved",
+            "Status: changes-requested",
+        ).replace(
+            "Material findings: none",
+            "Material findings: finding.missing-boundary",
+        )
+        nonapproval["review_log_markdown"] = nonapproval[
+            "review_log_markdown"
+        ].replace(
+            "Status: approved",
+            "Status: changes-requested",
+        ).replace(
+            "Material findings: none",
+            "Material findings: finding.missing-boundary",
+        )
         with self.assertRaises(BoundaryRuntimeError) as raised:
             _validate_review_payload(
                 nonapproval, stage="spec-review", artifact_identity=identity
