@@ -5704,11 +5704,22 @@ def _collect_runtime_attestation(
             message = generation_result.get("agent_message")
             if not isinstance(message, str):
                 raise BoundaryRuntimeError("protocol-shape-incompatible")
-            envelope, output_files = _parse_stage_envelope(
-                message,
-                stage=str(generation_request["stage"]),
-                attempt=int(generation_request.get("attempt", 1)),
-            )
+            try:
+                envelope, output_files = _parse_stage_envelope(
+                    message,
+                    stage=str(generation_request["stage"]),
+                    attempt=int(generation_request.get("attempt", 1)),
+                )
+            except BoundaryRuntimeError:
+                if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                    print(
+                        "stage-envelope-rejected:"
+                        + str(generation_request["stage"])
+                        + ":"
+                        + message[:4096],
+                        file=sys.stderr,
+                    )
+                raise
             materialization = _materialize_stage_envelope(
                 workspace / "output", envelope
             )
