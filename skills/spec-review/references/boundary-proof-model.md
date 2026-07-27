@@ -52,6 +52,12 @@ governing requirement IDs, boundary IDs, and a rationale only when
 not applicable. Add extensions only for feature-specific dimensions not
 represented by the core.
 
+Every authored boundary, extension, example, interaction, proof-obligation,
+test-case, regression, discovery-gap, and manual-procedure ID must match
+`[a-z0-9][a-z0-9._-]*`; uppercase IDs are invalid. In table cells with no
+IDs or no applicable value, write the literal ASCII `-` sentinel. Do not use
+an em dash, another Unicode dash, or a blank cell.
+
 Classify every example as `illustration`, `regression`, `discovery`, or
 `non-normative`. Illustrations and regressions link to governing requirements
 and boundary IDs. Discovery examples expose an explicit contract gap.

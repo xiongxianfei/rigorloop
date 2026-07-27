@@ -2506,6 +2506,15 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                     "Boundary IDs | Non-applicability rationale |",
                     reference,
                 )
+                normalized_reference = " ".join(reference.split())
+                self.assertIn(
+                    "must match `[a-z0-9][a-z0-9._-]*`",
+                    normalized_reference,
+                )
+                self.assertIn(
+                    "literal ASCII `-` sentinel",
+                    normalized_reference,
+                )
                 self.assertIn(
                     "| Proof obligation ID | Governing requirement IDs | "
                     "Boundary or interaction IDs | Test case IDs | "
