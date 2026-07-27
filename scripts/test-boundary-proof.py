@@ -1920,6 +1920,12 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             artifact_context="Reviewed artifact identity: sha256:" + "a" * 64,
         )
         self.assertIn("Review ID: spec-review-r1", review_request["prompt"])
+        rereview_request = _workflow_stage_request(
+            "spec-review",
+            "rereview",
+            attempt=2,
+        )
+        self.assertIn("Review ID: spec-review-r2", rereview_request["prompt"])
         self.assertIn("Preserve independent judgment", review_request["prompt"])
         self.assertIn(
             "spec-review-record=reviews/spec-review.md",
@@ -1933,6 +1939,26 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         self.assertIn(
             "Use `T1`, `T2`, and subsequent uppercase numeric IDs",
             test_spec_request["prompt"],
+        )
+        correction_request = _workflow_stage_request(
+            "test-spec",
+            "apply the recorded Required outcome exactly",
+            attempt=2,
+            governing_reference_ids=("interaction.mode-outcome",),
+            governing_interaction_ids=("interaction.mode-outcome",),
+        )
+        self.assertIn(
+            "interaction.mode-outcome",
+            correction_request["prompt"],
+        )
+        test_rereview_request = _workflow_stage_request(
+            "test-spec-review",
+            "rereview",
+            attempt=2,
+        )
+        self.assertIn(
+            "Review ID: test-spec-review-r2",
+            test_rereview_request["prompt"],
         )
 
     def test_stage_envelope_is_policy_bound_and_parent_materialized(self) -> None:

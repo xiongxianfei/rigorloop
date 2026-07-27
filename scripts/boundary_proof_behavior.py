@@ -1645,7 +1645,7 @@ def _workflow_stage_request(
         "spec-review": (
             "Use the installed normative review-result skeleton. In both the "
             "review record and review log, include exact metadata lines "
-            "`Review ID: spec-review-r1`, `Stage: spec-review`, "
+            f"`Review ID: spec-review-r{attempt}`, `Stage: spec-review`, "
             "`Status: <approved | changes-requested | blocked | inconclusive>`, "
             "`Reviewed artifact identity: <the supplied sha256 identity>`, "
             "`Material findings: <IDs or none>`, and "
@@ -1655,7 +1655,8 @@ def _workflow_stage_request(
         "test-spec-review": (
             "Use the installed normative review-result skeleton. In both the "
             "review record and review log, include exact metadata lines "
-            "`Review ID: test-spec-review-r1`, `Stage: test-spec-review`, "
+            f"`Review ID: test-spec-review-r{attempt}`, "
+            "`Stage: test-spec-review`, "
             "`Status: <approved | changes-requested | blocked | inconclusive>`, "
             "`Reviewed artifact identity: <the supplied sha256 identity>`, "
             "`Material findings: <IDs or none>`, and "
@@ -4218,8 +4219,11 @@ def generate_behavior(
         initial_spec_review_resolution = resolution_markdown
         correction_request = _workflow_stage_request(
             "spec",
-            "Correct only the accepted findings from the recorded formal "
-            "review, preserve R1-R4, and update the supplied review resolution.",
+            "The reviewer-declared finding is authorized for bounded "
+            "correction. Apply its recorded Required outcome exactly, preserve "
+            "R1-R4, change the feature-spec bytes, and update the supplied "
+            "review resolution to record that action. Do not reject, "
+            "reinterpret, or leave the finding unresolved.",
             attempt=2,
             artifact_context=(
                 "Authoritative scenario request:\n"
@@ -4243,6 +4247,10 @@ def generate_behavior(
             "feature-spec/portable-text-normalizer.md"
         ]
         feature_identity = _sha256(feature_markdown.encode("utf-8"))
+        if feature_identity == initial_feature_identity:
+            raise BoundaryRuntimeError(
+                "boundary-oracle-mismatch", "in-turn"
+            )
         try:
             normalized_feature = normalize_feature_model(
                 _parse_feature_markdown(feature_markdown)
@@ -4441,8 +4449,11 @@ def generate_behavior(
         )
         correction_request = _workflow_stage_request(
             "test-spec",
-            "Correct only the accepted findings from the recorded formal "
-            "review and update the supplied review resolution.",
+            "The reviewer-declared finding is authorized for bounded "
+            "correction. Apply its recorded Required outcome exactly, change "
+            "the test-spec bytes, and update the supplied review resolution "
+            "to record that action. Do not reject, reinterpret, or leave the "
+            "finding unresolved.",
             attempt=2,
             governing_reference_ids=reference_ids,
             governing_interaction_ids=interaction_ids,
@@ -4468,6 +4479,19 @@ def generate_behavior(
             "test-spec/portable-text-normalizer.test.md"
         ]
         test_spec_identity = _sha256(test_spec_markdown.encode("utf-8"))
+        if test_spec_identity == initial_test_spec_identity:
+            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                print(
+                    "correction-identity-unchanged:test-spec",
+                    file=sys.stderr,
+                )
+                print(
+                    str(correction_artifacts.get(resolution_path, ""))[:8192],
+                    file=sys.stderr,
+                )
+            raise BoundaryRuntimeError(
+                "boundary-oracle-mismatch", "in-turn"
+            )
         try:
             normalized_proof = normalize_proof_map(
                 _parse_test_spec_markdown(test_spec_markdown),
