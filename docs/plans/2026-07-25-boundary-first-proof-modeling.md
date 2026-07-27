@@ -94,11 +94,11 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r11.md
-- Review status: changes-requested; stage=code-review; round=r11
+- Current milestone state: review-requested
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m2.md
+- Review status: pending; stage=code-review; round=r12
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: review-resolution
+- Next stage: code-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-CR-M2-14,BFP-CR-M2-15,BFP-CR-M2-16,BFP-CR-M2-17,BFP-CR-M2-18
 
@@ -970,6 +970,11 @@ resource through generated, packed, and installed outputs.
   missing, reused, or status-incompatible evidence. The 109 focused tests
   pass; fresh canonical generation is next because the harness identity
   changed.
+- 2026-07-27: Published and immutably validated canonical run
+  `run-9538fe0ae2891f1e86f50145088ff0ea` from `1f65cbb8`. The four-stage
+  zero-correction path passes with zero false blocking and zero new universal
+  artifacts; controlled correction-role tests prove the open/prior/closed
+  history and its negative contrasts. M2 is `review-requested` for R12.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review
