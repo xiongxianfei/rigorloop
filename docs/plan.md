@@ -18,7 +18,6 @@ Index policy:
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
-| [Boundary-First Proof Modeling for Published Lifecycle Skills](plans/2026-07-25-boundary-first-proof-modeling.md) | active | pr | 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills |
 
 ## Blocked
 
@@ -29,6 +28,7 @@ Index policy:
 
 Full completed history: see [Plan archive](plan-archive.md).
 
+- [2026-07-27 Boundary-First Proof Modeling for Published Lifecycle Skills](plans/2026-07-25-boundary-first-proof-modeling.md) - done; terminal state: closed; PR #125 opened for review.
 - [2026-07-25 Single Bounded Review-Fix Workflow Automation](plans/2026-07-21-single-bounded-review-fix-workflow-automation.md) - done; terminal state: closed; PR #124 opened for review.
 - [2026-07-05 Workflow Guide Skeleton Asset](plans/2026-07-05-workflow-guide-skeleton-asset.md) - done; terminal state: closed; PR #122 opened for review.
 - [2026-07-04 Markdown Readability Contract](plans/2026-07-04-markdown-readability-contract.md) - done; terminal state: closed; PR #120 opened for review.
@@ -38,7 +38,6 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-06-27 Broad-Smoke Safe Parallelism](plans/2026-06-27-broad-smoke-safe-parallelism.md) - done; terminal state: closed; PR #116 opened for review.
 - [2026-06-27 Selector-Regression Runtime Reduction](plans/2026-06-27-selector-regression-runtime-reduction.md) - done; terminal state: done; PR #115 opened for review.
 - [2026-06-26 Preflight-First Validation Runtime Optimization](plans/2026-06-26-preflight-first-validation-runtime-optimization.md) - done; terminal state: done; PR #114 opened for review.
-- [2026-06-26 Requirement-Fidelity Gate for Spec-Canonical Reviews](plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md) - done; terminal state: done; PR #113 merged.
 
 ## Superseded
 - none yet

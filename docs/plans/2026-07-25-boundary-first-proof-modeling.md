@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Owner: maintainer
 - Change ID: 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
 - Start date: 2026-07-25
 - Last updated: 2026-07-27
-- Related issue or PR: none yet
+- Related issue or PR: PR #125, https://github.com/xiongxianfei/rigorloop/pull/125
 - Supersedes: none
 
 ## Purpose / big picture
@@ -93,14 +93,14 @@ resource through generated, packed, and installed outputs.
 
 ## Current Handoff Summary
 
-- Current milestone: M5. Verification routing and lifecycle synchronization correction
+- Current milestone: PR handoff
 - Current milestone state: closed
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-final-r3.md
 - Review status: approved; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Next stage: none
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 

@@ -4,8 +4,8 @@
 
 - Change ID: `2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills`
 - Stage: `pr`
-- PR status: prepared
-- PR URL: pending
+- PR status: opened
+- PR URL: https://github.com/xiongxianfei/rigorloop/pull/125
 - Last updated: `2026-07-27`
 
 ## Title
