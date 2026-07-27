@@ -95,10 +95,10 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r19.md
-- Review status: approved; stage=plan-review; round=r19
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r20.md
+- Review status: approved; stage=test-spec-review; round=r20
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: test-spec-review
+- Next stage: implement
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
@@ -839,6 +839,10 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Test-spec-review R20 approved the exact
+  R53/R25/R19-synchronized proof map with no findings. M2 implementation may
+  resume with the pure-model tests before the live preflight.
 
 - 2026-07-27: Synchronized the active proof map to the exact approved R53 spec,
   R25 architecture and successor ADR, and R19 plan identities. The remaining
