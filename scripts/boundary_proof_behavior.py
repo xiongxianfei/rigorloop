@@ -2102,6 +2102,10 @@ def _invoke_with_reconciliation(
                         "runtime_process_id": error.runtime_process_id,
                         "elapsed_ms": error.elapsed_ms,
                         "timed_out": True,
+                        "artifact_paths": sorted(
+                            str(row["path"]) for row in error.output_files
+                        ),
+                        "required_paths": list(required_paths),
                     }
                 )
                 return (
@@ -2125,6 +2129,8 @@ def _invoke_with_reconciliation(
                         "runtime_process_id": error.runtime_process_id,
                         "elapsed_ms": error.elapsed_ms,
                         "timed_out": True,
+                        "artifact_paths": [],
+                        "required_paths": list(required_paths),
                     }
                 )
                 continue
@@ -2143,6 +2149,10 @@ def _invoke_with_reconciliation(
                     "runtime_process_id": error.runtime_process_id,
                     "elapsed_ms": error.elapsed_ms,
                     "timed_out": True,
+                    "artifact_paths": sorted(
+                        str(row.get("path")) for row in error.output_files
+                    ),
+                    "required_paths": list(required_paths),
                 }
             )
             raise BoundaryRuntimeError(
@@ -2179,6 +2189,10 @@ def _invoke_with_reconciliation(
                 "runtime_process_id": result.get("runtime_process_id"),
                 "elapsed_ms": None,
                 "timed_out": False,
+                "artifact_paths": sorted(
+                    str(row["path"]) for row in output_files
+                ),
+                "required_paths": list(required_paths),
             }
         )
         return attestation, result, attempts
@@ -2187,21 +2201,9 @@ def _invoke_with_reconciliation(
 
 def _finalize_transport_rows(
     attempts: Sequence[Mapping[str, object]],
-    stage_artifacts: Mapping[str, str],
+    stage_artifacts_by_event: Mapping[str, Mapping[str, str]],
     transport_policy_identity: str,
 ) -> list[dict[str, object]]:
-    required_by_stage = {
-        "spec": ["feature-spec/portable-text-normalizer.md"],
-        "spec-review": [
-            "reviews/spec-review.md",
-            "review-log/spec-review.md",
-        ],
-        "test-spec": ["test-spec/portable-text-normalizer.test.md"],
-        "test-spec-review": [
-            "reviews/test-spec-review.md",
-            "review-log/test-spec-review.md",
-        ],
-    }
     rows: list[dict[str, object]] = []
     for attempt in attempts:
         event_key = attempt.get("event_key")
@@ -2210,6 +2212,8 @@ def _finalize_transport_rows(
         process_id = attempt.get("runtime_process_id")
         output_state = attempt.get("output_state")
         decision = attempt.get("decision")
+        artifact_paths = attempt.get("artifact_paths")
+        required_paths = attempt.get("required_paths")
         if (
             not isinstance(event_key, str)
             or "#" not in event_key
@@ -2222,19 +2226,26 @@ def _finalize_transport_rows(
             not in {"absent", "complete", "partial", "extra", "contradictory"}
             or decision
             not in {"accept", "reconcile", "retry", "pause", "fail-closed"}
+            or not isinstance(artifact_paths, list)
+            or any(not isinstance(path, str) for path in artifact_paths)
+            or len(artifact_paths) != len(set(artifact_paths))
+            or not isinstance(required_paths, list)
+            or not required_paths
+            or any(not isinstance(path, str) for path in required_paths)
         ):
             raise BoundaryRuntimeError("protocol-shape-incompatible")
-        stage = event_key.rsplit("#", 1)[0]
-        required_paths = required_by_stage.get(stage)
-        if required_paths is None:
+        event_artifacts = stage_artifacts_by_event.get(event_key)
+        if event_artifacts is None:
             raise BoundaryRuntimeError("protocol-shape-incompatible")
         evidence_refs = (
             [
                 {
                     "path": path,
-                    "identity": _sha256(stage_artifacts[path].encode("utf-8")),
+                    "identity": _sha256(
+                        event_artifacts[path].encode("utf-8")
+                    ),
                 }
-                for path in required_paths
+                for path in artifact_paths
             ]
             if output_state == "complete"
             else []
@@ -2282,7 +2293,9 @@ def _finalize_transport_rows(
                 observed_outputs: list[dict[str, str]] = []
                 required_outputs = [
                     {
-                        "role": f"{stage}-output-{index}",
+                        "role": (
+                            f"{event_key.rsplit('#', 1)[0]}-output-{index}"
+                        ),
                         "path": path,
                         "identity_rule": "any-current",
                     }
@@ -2414,12 +2427,38 @@ def _validate_transport_rows(
             raise BoundaryRuntimeError("protocol-shape-incompatible")
         seen_ids.add(attempt_id)
         grouped.setdefault(event_key, []).append(row)
-    if set(grouped) != {
-        "spec#1",
-        "spec-review#1",
-        "test-spec#1",
-        "test-spec-review#1",
-    }:
+    observed_events = frozenset(grouped)
+    allowed_event_sets = {
+        frozenset(
+            {
+                "spec#1",
+                "spec-review#1",
+                "test-spec#1",
+                "test-spec-review#1",
+            }
+        ),
+        frozenset(
+            {
+                "spec#1",
+                "spec-review#1",
+                "spec#2",
+                "spec-review#2",
+                "test-spec#1",
+                "test-spec-review#1",
+            }
+        ),
+        frozenset(
+            {
+                "spec#1",
+                "spec-review#1",
+                "test-spec#1",
+                "test-spec-review#1",
+                "test-spec#2",
+                "test-spec-review#2",
+            }
+        ),
+    }
+    if observed_events not in allowed_event_sets:
         raise BoundaryRuntimeError("protocol-shape-incompatible")
     for attempts in grouped.values():
         attempts.sort(key=lambda row: int(row["transport_attempt"]))
@@ -2558,6 +2597,7 @@ def _validate_review_payload(
     *,
     stage: str,
     artifact_identity: str,
+    require_approval: bool = True,
 ) -> None:
     review_id = payload.get("review_id")
     outcome = payload.get("outcome")
@@ -2586,7 +2626,8 @@ def _validate_review_payload(
                 file=sys.stderr,
             )
             print(record[:8192], file=sys.stderr)
-        raise BoundaryRuntimeError("review-nonapproval", "in-turn")
+        if require_approval:
+            raise BoundaryRuntimeError("review-nonapproval", "in-turn")
     def metadata(markdown: str, label: str) -> str | None:
         match = re.search(
             rf"(?im)^\s*(?:[-*]\s*)?(?:\*\*)?{re.escape(label)}"
@@ -2597,12 +2638,31 @@ def _validate_review_payload(
             return None
         return match.group(1).strip().rstrip("  ").strip("`* ")
 
+    material_finding_ids = payload.get("material_finding_ids")
+    if (
+        not isinstance(material_finding_ids, list)
+        or any(
+            not isinstance(value, str)
+            or re.fullmatch(
+                r"^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$",
+                value,
+            )
+            is None
+            for value in material_finding_ids
+        )
+        or len(material_finding_ids) != len(set(material_finding_ids))
+        or (outcome == "approved") != (not material_finding_ids)
+    ):
+        raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    findings_value = (
+        "none" if not material_finding_ids else ", ".join(material_finding_ids)
+    )
     required = {
         "Review ID": review_id,
         "Stage": stage,
-        "Status": "approved",
+        "Status": outcome,
         "Reviewed artifact identity": artifact_identity,
-        "Material findings": "none",
+        "Material findings": findings_value,
     }
     record_values = {label: metadata(record, label) for label in required}
     log_values = {label: metadata(log, label) for label in required}
@@ -2645,7 +2705,12 @@ def _review_payload_from_markdown(
 
     review_id = metadata(record, "Review ID")
     outcome = metadata(record, "Status")
-    if not isinstance(review_id, str) or not isinstance(outcome, str):
+    material_findings = metadata(record, "Material findings")
+    if (
+        not isinstance(review_id, str)
+        or not isinstance(outcome, str)
+        or not isinstance(material_findings, str)
+    ):
         if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
             print(
                 f"review-metadata:{stage}:id={review_id!r}:outcome={outcome!r}",
@@ -2656,6 +2721,15 @@ def _review_payload_from_markdown(
     return {
         "review_id": review_id,
         "outcome": outcome,
+        "material_finding_ids": (
+            []
+            if material_findings.lower() == "none"
+            else [
+                value.strip().strip("`")
+                for value in material_findings.split(",")
+                if value.strip()
+            ]
+        ),
         "review_record_markdown": record,
         "review_log_markdown": log,
     }
@@ -2693,6 +2767,8 @@ def _event(
     reviewed: Mapping[str, object] | None = None,
     bundle_artifacts: Sequence[Mapping[str, object]] = (),
     observed: str = "produced",
+    attempt: int = 1,
+    diagnostic_id: str | None = None,
 ) -> dict[str, object]:
     evidence = {
         (str(item["path"]), str(item["identity"]))
@@ -2700,7 +2776,7 @@ def _event(
     }
     return {
         "stage": stage,
-        "attempt": 1,
+        "attempt": attempt,
         "input_snapshot_ids": [str(item["snapshot_id"]) for item in inputs],
         "reviewed_snapshot_id": (
             None if reviewed is None else str(reviewed["snapshot_id"])
@@ -2708,7 +2784,15 @@ def _event(
         "output_snapshot_ids": [str(output["snapshot_id"])],
         "structural_result": "pass",
         "observed_result": observed,
-        "diagnostic_id": "none" if observed in {"produced", "approved"} else "review-nonapproval",
+        "diagnostic_id": (
+            diagnostic_id
+            if diagnostic_id is not None
+            else (
+                "none"
+                if observed in {"produced", "approved"}
+                else "review-nonapproval"
+            )
+        ),
         "evidence_refs": [
             {"path": path, "identity": identity}
             for path, identity in sorted(evidence)
@@ -2722,6 +2806,399 @@ def _write_run_artifact(root: Path, relative: str, raw: bytes) -> None:
     target.write_bytes(raw)
 
 
+def _assemble_test_spec_correction_run(
+    repo_root: Path,
+    change_id: str,
+    run_id: str,
+    input_set: Mapping[str, object],
+    payload: Mapping[str, object],
+    candidate_feature: object,
+    candidate_proof: object,
+    before_inventory: Sequence[Mapping[str, str]],
+    repository_after_inventory: Sequence[Mapping[str, str]],
+    correction: Mapping[str, object],
+) -> tuple[Path, dict[str, object]]:
+    """Assemble the closed R28y test-spec correction branch."""
+
+    evidence_root = _select_change_root(repo_root, change_id) / "evidence"
+    simple_root = evidence_root / "simple-change"
+    simple_root.mkdir(parents=True, exist_ok=True)
+    temporary = Path(
+        tempfile.mkdtemp(prefix=f".{run_id}.", dir=simple_root)
+    )
+    final_prefix = (
+        f"docs/changes/{change_id}/evidence/simple-change/runs/{run_id}"
+    )
+    stage_artifacts = payload.get("stage_artifacts")
+    provenance = payload.get("stage_provenance")
+    spec_review_payload = payload.get("spec_review")
+    test_review_payload = payload.get("test_spec_review")
+    initial_test_review = correction.get("initial_review")
+    initial_test_markdown = correction.get("initial_artifact_markdown")
+    initial_resolution = correction.get("initial_resolution_markdown")
+    corrected_resolution = correction.get("corrected_resolution_markdown")
+    if (
+        correction.get("role") != "test-spec"
+        or not isinstance(stage_artifacts, dict)
+        or not isinstance(provenance, list)
+        or not isinstance(spec_review_payload, dict)
+        or not isinstance(test_review_payload, dict)
+        or not isinstance(initial_test_review, dict)
+        or not isinstance(initial_test_markdown, str)
+        or not isinstance(initial_resolution, str)
+        or not isinstance(corrected_resolution, str)
+    ):
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    try:
+        feature_raw = str(
+            stage_artifacts["feature-spec/portable-text-normalizer.md"]
+        ).encode("utf-8")
+        final_test_raw = str(
+            stage_artifacts["test-spec/portable-text-normalizer.test.md"]
+        ).encode("utf-8")
+        initial_test_raw = initial_test_markdown.encode("utf-8")
+        parsed_feature = normalize_feature_model(
+            _parse_feature_markdown(feature_raw.decode("utf-8"))
+        )
+        initial_proof = normalize_proof_map(
+            _parse_test_spec_markdown(initial_test_raw.decode("utf-8")),
+            parsed_feature,
+        )
+        final_proof = normalize_proof_map(
+            _parse_test_spec_markdown(final_test_raw.decode("utf-8")),
+            parsed_feature,
+        )
+    except (KeyError, UnicodeError, BoundaryProofError) as error:
+        raise BoundaryRuntimeError(
+            "runtime-identity-unstable", "in-turn"
+        ) from error
+    if not boundary_invariant_projections_match(
+        candidate_feature,
+        parsed_feature,
+        candidate_proof,
+        final_proof,
+    ):
+        raise BoundaryRuntimeError("boundary-oracle-mismatch", "in-turn")
+    provenance_by_occurrence = {
+        (row.get("stage"), row.get("attempt")): row
+        for row in provenance
+        if isinstance(row, dict)
+    }
+    expected_occurrences = {
+        ("spec", 1),
+        ("spec-review", 1),
+        ("test-spec", 1),
+        ("test-spec-review", 1),
+        ("test-spec", 2),
+        ("test-spec-review", 2),
+    }
+    if (
+        set(provenance_by_occurrence) != expected_occurrences
+        or len(
+            {
+                row.get("thread_id")
+                for row in provenance_by_occurrence.values()
+            }
+        )
+        != len(expected_occurrences)
+        or any(
+            row.get("skill_names") != ["workflow", stage]
+            for (stage, _), row in provenance_by_occurrence.items()
+        )
+    ):
+        raise BoundaryRuntimeError("thread-metadata-mismatch", "in-turn")
+
+    def authored_snapshot(
+        snapshot_id: str,
+        role: str,
+        relative: str,
+        raw: bytes,
+    ) -> dict[str, object]:
+        _write_run_artifact(temporary, relative, raw)
+        return _snapshot(
+            snapshot_id,
+            "behavior-output",
+            role,
+            f"{final_prefix}/artifacts/{relative}",
+            raw,
+        )
+
+    feature = authored_snapshot(
+        "output.feature-spec.one",
+        "feature-spec",
+        "feature-spec/portable-text-normalizer.md",
+        feature_raw,
+    )
+    test_one = authored_snapshot(
+        "output.test-spec.one",
+        "test-spec",
+        "test-spec/portable-text-normalizer-attempt-1.test.md",
+        initial_test_raw,
+    )
+    test_two = authored_snapshot(
+        "output.test-spec.two",
+        "test-spec",
+        "test-spec/portable-text-normalizer-attempt-2.test.md",
+        final_test_raw,
+    )
+
+    def review_bundle(
+        stage: str,
+        attempt: int,
+        reviewed: Mapping[str, object],
+        review_payload: Mapping[str, object],
+        *,
+        resolution_markdown: str | None = None,
+        prior_finding_ids: Sequence[str] = (),
+    ) -> tuple[
+        dict[str, object],
+        dict[str, object],
+        list[dict[str, object]],
+    ]:
+        record = review_payload.get("review_record_markdown")
+        log = review_payload.get("review_log_markdown")
+        review_id = review_payload.get("review_id")
+        outcome = review_payload.get("outcome")
+        findings = review_payload.get("material_finding_ids")
+        if (
+            not isinstance(record, str)
+            or not isinstance(log, str)
+            or not isinstance(review_id, str)
+            or outcome
+            not in {"approved", "changes-requested", "blocked"}
+            or not isinstance(findings, list)
+        ):
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        prefix = f"{stage}-attempt-{attempt}"
+        record_snapshot = authored_snapshot(
+            f"output.{stage}.{attempt}.record",
+            "review-evidence",
+            f"review-evidence/{prefix}-record.md",
+            record.encode("utf-8"),
+        )
+        log_snapshot = authored_snapshot(
+            f"output.{stage}.{attempt}.log",
+            "review-evidence",
+            f"review-evidence/{prefix}-log.md",
+            log.encode("utf-8"),
+        )
+        artifacts = [record_snapshot, log_snapshot]
+        refs = {
+            "review-record": _snapshot_ref(record_snapshot),
+            "review-log": _snapshot_ref(log_snapshot),
+        }
+        if resolution_markdown is not None:
+            resolution_snapshot = authored_snapshot(
+                f"output.{stage}.{attempt}.resolution",
+                "review-evidence",
+                f"review-evidence/{prefix}-resolution.md",
+                resolution_markdown.encode("utf-8"),
+            )
+            artifacts.append(resolution_snapshot)
+            refs["review-resolution"] = _snapshot_ref(resolution_snapshot)
+        bundle = {
+            "review_id": review_id,
+            "outcome": outcome,
+            "reviewed_snapshot_id": reviewed["snapshot_id"],
+            "material_finding_ids": (
+                list(prior_finding_ids)
+                if outcome == "approved" and attempt == 2
+                else list(findings)
+            ),
+            "artifact_refs": refs,
+        }
+        bundle_raw = _canonical_json_bytes(bundle)
+        bundle_snapshot = authored_snapshot(
+            f"output.{stage}.{attempt}.bundle",
+            "review-evidence",
+            f"review-evidence/{prefix}-bundle.json",
+            bundle_raw,
+        )
+        return bundle_snapshot, bundle, artifacts
+
+    spec_bundle_snapshot, spec_bundle, spec_artifacts = review_bundle(
+        "spec-review", 1, feature, spec_review_payload
+    )
+    initial_findings = initial_test_review.get("material_finding_ids")
+    if not isinstance(initial_findings, list) or not initial_findings:
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    test_bundle_one, test_bundle_one_record, test_artifacts_one = review_bundle(
+        "test-spec-review",
+        1,
+        test_one,
+        initial_test_review,
+        resolution_markdown=initial_resolution,
+    )
+    test_bundle_two, test_bundle_two_record, test_artifacts_two = review_bundle(
+        "test-spec-review",
+        2,
+        test_two,
+        test_review_payload,
+        resolution_markdown=corrected_resolution,
+        prior_finding_ids=initial_findings,
+    )
+    snapshots = [
+        _snapshot(
+            "oracle.feature-spec",
+            "fixture-candidate",
+            "feature-spec",
+            (
+                "tests/fixtures/boundary-proof/simple-change/candidates/"
+                "feature-spec.md"
+            ),
+            (
+                repo_root
+                / "tests/fixtures/boundary-proof/simple-change/candidates/"
+                "feature-spec.md"
+            ).read_bytes(),
+        ),
+        _snapshot(
+            "oracle.test-spec",
+            "fixture-candidate",
+            "test-spec",
+            (
+                "tests/fixtures/boundary-proof/simple-change/candidates/"
+                "test-spec.md"
+            ),
+            (
+                repo_root
+                / "tests/fixtures/boundary-proof/simple-change/candidates/"
+                "test-spec.md"
+            ).read_bytes(),
+        ),
+        feature,
+        spec_bundle_snapshot,
+        *spec_artifacts,
+        test_one,
+        test_bundle_one,
+        *test_artifacts_one,
+        test_two,
+        test_bundle_two,
+        *test_artifacts_two,
+    ]
+    first_diagnostic = str(initial_findings[0])
+    events = [
+        _event("spec", [], feature),
+        _event(
+            "spec-review",
+            [feature],
+            spec_bundle_snapshot,
+            reviewed=feature,
+            bundle_artifacts=spec_artifacts,
+            observed="approved",
+        ),
+        _event(
+            "test-spec",
+            [feature, spec_bundle_snapshot, *spec_artifacts],
+            test_one,
+        ),
+        _event(
+            "test-spec-review",
+            [test_one, feature, spec_bundle_snapshot, *spec_artifacts],
+            test_bundle_one,
+            reviewed=test_one,
+            bundle_artifacts=test_artifacts_one,
+            observed="changes-requested",
+            diagnostic_id=first_diagnostic,
+        ),
+        _event(
+            "test-spec",
+            [
+                test_one,
+                test_bundle_one,
+                *test_artifacts_one,
+                feature,
+                spec_bundle_snapshot,
+                *spec_artifacts,
+            ],
+            test_two,
+            attempt=2,
+        ),
+        _event(
+            "test-spec-review",
+            [test_two, feature, spec_bundle_snapshot, *spec_artifacts],
+            test_bundle_two,
+            reviewed=test_two,
+            bundle_artifacts=test_artifacts_two,
+            observed="approved",
+            attempt=2,
+        ),
+    ]
+    behavior_inventory = [
+        {
+            "path": snapshot["path"],
+            "artifact_kind": snapshot["artifact_role"],
+            "identity": snapshot["identity"],
+        }
+        for snapshot in snapshots
+        if snapshot["source"] == "behavior-output"
+    ]
+    after_inventory = sorted(
+        [*map(dict, repository_after_inventory), *behavior_inventory],
+        key=lambda row: str(row["path"]),
+    )
+    trace = {
+        "snapshots": snapshots,
+        "review_bundles": {
+            spec_bundle_snapshot["snapshot_id"]: spec_bundle,
+            test_bundle_one["snapshot_id"]: test_bundle_one_record,
+            test_bundle_two["snapshot_id"]: test_bundle_two_record,
+        },
+        "events": events,
+        "before_inventory": list(map(dict, before_inventory)),
+        "after_inventory": after_inventory,
+    }
+    structural = {
+        f"{event['stage']}#{event['attempt']}": {
+            "structural_result": (
+                "fail"
+                if event["stage"] == "test-spec-review"
+                and event["attempt"] == 1
+                else "pass"
+            ),
+            "diagnostic_id": (
+                first_diagnostic
+                if event["stage"] == "test-spec-review"
+                and event["attempt"] == 1
+                else "none"
+            ),
+        }
+        for event in events
+    }
+    metrics = evaluate_simple_change_trace(
+        trace,
+        feature_models={str(feature["snapshot_id"]): parsed_feature},
+        proof_maps={
+            str(test_one["snapshot_id"]): initial_proof,
+            str(test_two["snapshot_id"]): final_proof,
+        },
+        structural_evaluations=structural,
+    )
+    if (
+        metrics.false_blocking_count != 0
+        or metrics.new_universal_artifact_count != 0
+        or metrics.structure_only_correction_cycles != 1
+        or not metrics.applicable_only_mapping
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable", "in-turn")
+    transport_attempts = payload.get("transport_attempts")
+    if not isinstance(transport_attempts, list):
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    manifest = {
+        "run_id": run_id,
+        "input_set": dict(input_set),
+        "input_set_identity": _sha256(_canonical_json_bytes(input_set)),
+        "baseline_commit": input_set["baseline_commit"],
+        "before_artifact_inventory": list(map(dict, before_inventory)),
+        "after_artifact_inventory": after_inventory,
+        "snapshots": snapshots,
+        "events": events,
+        "transport_attempts": list(map(dict, transport_attempts)),
+    }
+    _atomic_write(temporary / "run.json", _canonical_json_bytes(manifest))
+    return temporary, manifest
+
+
 def _assemble_run(
     repo_root: Path,
     change_id: str,
@@ -2733,6 +3210,20 @@ def _assemble_run(
     before_inventory: Sequence[Mapping[str, str]],
     repository_after_inventory: Sequence[Mapping[str, str]],
 ) -> tuple[Path, dict[str, object]]:
+    correction = payload.get("correction_history")
+    if isinstance(correction, dict) and correction.get("role") == "test-spec":
+        return _assemble_test_spec_correction_run(
+            repo_root,
+            change_id,
+            run_id,
+            input_set,
+            payload,
+            candidate_feature,
+            candidate_proof,
+            before_inventory,
+            repository_after_inventory,
+            correction,
+        )
     evidence_root = _select_change_root(repo_root, change_id) / "evidence"
     simple_root = evidence_root / "simple-change"
     simple_root.mkdir(parents=True, exist_ok=True)
@@ -3640,8 +4131,13 @@ def generate_behavior(
         }
         if len(artifacts) != len(rows):
             raise BoundaryRuntimeError("protocol-shape-incompatible")
+        event_key = (
+            f"{stage_request['stage']}#{int(stage_request.get('attempt', 1))}"
+        )
         for attempt in attempts:
-            attempt["event_key"] = f"{stage_request['stage']}#1"
+            attempt["event_key"] = event_key
+        result["attempt"] = int(stage_request.get("attempt", 1))
+        stage_artifacts_by_event[event_key] = dict(artifacts)
         if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
             print(f"stage-complete:{stage_request['stage']}", file=sys.stderr)
         return observed, result, attempts, artifacts
@@ -3650,6 +4146,8 @@ def generate_behavior(
     stage_attestations: list[dict[str, object]] = []
     transport_attempts: list[dict[str, object]] = []
     stage_artifacts: dict[str, str] = {}
+    stage_artifacts_by_event: dict[str, dict[str, str]] = {}
+    correction_history: dict[str, object] | None = None
 
     spec_request = _workflow_stage_request(
         "spec", str(scenario["request"])
@@ -3705,7 +4203,115 @@ def generate_behavior(
         spec_review_payload,
         stage="spec-review",
         artifact_identity=feature_identity,
+        require_approval=False,
     )
+    if spec_review_payload["outcome"] == "changes-requested":
+        resolution_path = "review-resolution/spec-review.md"
+        resolution_markdown = artifacts.get(resolution_path)
+        if not isinstance(resolution_markdown, str):
+            raise BoundaryRuntimeError(
+                "unexpected-prohibited-event", "in-turn"
+            )
+        initial_feature_markdown = feature_markdown
+        initial_feature_identity = feature_identity
+        initial_spec_review_payload = dict(spec_review_payload)
+        initial_spec_review_resolution = resolution_markdown
+        correction_request = _workflow_stage_request(
+            "spec",
+            "Correct only the accepted findings from the recorded formal "
+            "review, preserve R1-R4, and update the supplied review resolution.",
+            attempt=2,
+            artifact_context=(
+                "Authoritative scenario request:\n"
+                + str(scenario["request"])
+                + "\n\nPrior feature specification:\n"
+                + initial_feature_markdown
+                + "\n\nChanges-requested review:\n"
+                + str(spec_review_payload["review_record_markdown"])
+                + "\n\nOpen review resolution:\n"
+                + resolution_markdown
+            ),
+        )
+        observed, result, attempts, correction_artifacts = run_stage(
+            correction_request
+        )
+        stage_attestations.append(observed)
+        stage_results.append(result)
+        transport_attempts.extend(attempts)
+        stage_artifacts.update(correction_artifacts)
+        feature_markdown = correction_artifacts[
+            "feature-spec/portable-text-normalizer.md"
+        ]
+        feature_identity = _sha256(feature_markdown.encode("utf-8"))
+        try:
+            normalized_feature = normalize_feature_model(
+                _parse_feature_markdown(feature_markdown)
+            )
+            if feature_invariant_projection(
+                normalized_feature
+            ) != feature_invariant_projection(candidate_feature):
+                raise BoundaryProofError(
+                    "corrected feature differs from the closed invariant "
+                    "projection"
+                )
+        except (BoundaryProofError, BoundaryRuntimeError) as error:
+            raise BoundaryRuntimeError(
+                "boundary-oracle-mismatch", "in-turn"
+            ) from error
+        closed_resolution = correction_artifacts.get(resolution_path)
+        if not isinstance(closed_resolution, str):
+            raise BoundaryRuntimeError(
+                "unexpected-prohibited-event", "in-turn"
+            )
+        rereview_request = _workflow_stage_request(
+            "spec-review",
+            "Rereview the corrected feature specification against the exact "
+            "prior findings and record the formal result.",
+            attempt=2,
+            artifact_context=(
+                "Authoritative scenario request:\n"
+                + str(scenario["request"])
+                + f"\n\nReviewed artifact identity: {feature_identity}\n\n"
+                + feature_markdown
+                + "\n\nPrior changes-requested review:\n"
+                + str(initial_spec_review_payload["review_record_markdown"])
+                + "\n\nUpdated review resolution:\n"
+                + closed_resolution
+            ),
+        )
+        observed, result, attempts, rereview_artifacts = run_stage(
+            rereview_request
+        )
+        stage_attestations.append(observed)
+        stage_results.append(result)
+        transport_attempts.extend(attempts)
+        stage_artifacts.update(rereview_artifacts)
+        spec_review_payload = _review_payload_from_markdown(
+            "spec-review",
+            rereview_artifacts["reviews/spec-review.md"],
+            rereview_artifacts["review-log/spec-review.md"],
+        )
+        _validate_review_payload(
+            spec_review_payload,
+            stage="spec-review",
+            artifact_identity=feature_identity,
+        )
+        correction_history = {
+            "role": "feature-spec",
+            "initial_artifact_markdown": initial_feature_markdown,
+            "initial_artifact_identity": initial_feature_identity,
+            "initial_review": initial_spec_review_payload,
+            "initial_resolution_markdown": initial_spec_review_resolution,
+            "corrected_resolution_markdown": rereview_artifacts.get(
+                resolution_path, closed_resolution
+            ),
+        }
+    else:
+        _validate_review_payload(
+            spec_review_payload,
+            stage="spec-review",
+            artifact_identity=feature_identity,
+        )
 
     test_spec_request = _workflow_stage_request(
         "test-spec",
@@ -3795,7 +4401,147 @@ def generate_behavior(
         test_review_payload,
         stage="test-spec-review",
         artifact_identity=test_spec_identity,
+        require_approval=False,
     )
+    if test_review_payload["outcome"] == "changes-requested":
+        if correction_history is not None:
+            raise BoundaryRuntimeError("review-nonapproval", "in-turn")
+        resolution_path = "review-resolution/test-spec-review.md"
+        resolution_markdown = artifacts.get(resolution_path)
+        if not isinstance(resolution_markdown, str):
+            raise BoundaryRuntimeError(
+                "unexpected-prohibited-event", "in-turn"
+            )
+        initial_test_spec_markdown = test_spec_markdown
+        initial_test_spec_identity = test_spec_identity
+        initial_test_review_payload = dict(test_review_payload)
+        initial_test_review_resolution = resolution_markdown
+        reference_ids = tuple(
+            sorted(
+                {
+                    boundary_id
+                    for entry in (
+                        *normalized_feature.core_dimensions,
+                        *normalized_feature.extensions,
+                    )
+                    if entry.applicability == "applicable"
+                    for boundary_id in entry.boundary_ids
+                }
+                | {
+                    interaction.interaction_id
+                    for interaction in normalized_feature.interactions
+                }
+            )
+        )
+        interaction_ids = tuple(
+            sorted(
+                interaction.interaction_id
+                for interaction in normalized_feature.interactions
+            )
+        )
+        correction_request = _workflow_stage_request(
+            "test-spec",
+            "Correct only the accepted findings from the recorded formal "
+            "review and update the supplied review resolution.",
+            attempt=2,
+            governing_reference_ids=reference_ids,
+            governing_interaction_ids=interaction_ids,
+            artifact_context=(
+                "Governing approved feature specification:\n"
+                + feature_markdown
+                + "\n\nPrior test specification:\n"
+                + initial_test_spec_markdown
+                + "\n\nChanges-requested review:\n"
+                + str(test_review_payload["review_record_markdown"])
+                + "\n\nOpen review resolution:\n"
+                + resolution_markdown
+            ),
+        )
+        observed, result, attempts, correction_artifacts = run_stage(
+            correction_request
+        )
+        stage_attestations.append(observed)
+        stage_results.append(result)
+        transport_attempts.extend(attempts)
+        stage_artifacts.update(correction_artifacts)
+        test_spec_markdown = correction_artifacts[
+            "test-spec/portable-text-normalizer.test.md"
+        ]
+        test_spec_identity = _sha256(test_spec_markdown.encode("utf-8"))
+        try:
+            normalized_proof = normalize_proof_map(
+                _parse_test_spec_markdown(test_spec_markdown),
+                normalized_feature,
+            )
+            if proof_invariant_projection(
+                normalized_proof
+            ) != proof_invariant_projection(candidate_proof):
+                raise BoundaryProofError(
+                    "corrected proof differs from the closed invariant "
+                    "projection"
+                )
+        except (BoundaryProofError, BoundaryRuntimeError) as error:
+            raise BoundaryRuntimeError(
+                "boundary-oracle-mismatch", "in-turn"
+            ) from error
+        closed_resolution = correction_artifacts.get(resolution_path)
+        if not isinstance(closed_resolution, str):
+            raise BoundaryRuntimeError(
+                "unexpected-prohibited-event", "in-turn"
+            )
+        rereview_request = _workflow_stage_request(
+            "test-spec-review",
+            "Rereview the corrected test specification against the exact "
+            "prior findings and record the formal result.",
+            attempt=2,
+            artifact_context=(
+                "Authoritative scenario request:\n"
+                + str(scenario["request"])
+                + f"\n\nReviewed artifact identity: {test_spec_identity}\n\n"
+                + test_spec_markdown
+                + "\n\nGoverning feature specification:\n"
+                + feature_markdown
+                + "\n\nApproved feature review:\n"
+                + str(spec_review_payload["review_record_markdown"])
+                + "\n\nPrior changes-requested review:\n"
+                + str(initial_test_review_payload["review_record_markdown"])
+                + "\n\nUpdated review resolution:\n"
+                + closed_resolution
+            ),
+        )
+        observed, result, attempts, rereview_artifacts = run_stage(
+            rereview_request
+        )
+        stage_attestations.append(observed)
+        stage_results.append(result)
+        transport_attempts.extend(attempts)
+        stage_artifacts.update(rereview_artifacts)
+        test_review_payload = _review_payload_from_markdown(
+            "test-spec-review",
+            rereview_artifacts["reviews/test-spec-review.md"],
+            rereview_artifacts["review-log/test-spec-review.md"],
+        )
+        _validate_review_payload(
+            test_review_payload,
+            stage="test-spec-review",
+            artifact_identity=test_spec_identity,
+        )
+        correction_history = {
+            "role": "test-spec",
+            "initial_artifact_markdown": initial_test_spec_markdown,
+            "initial_artifact_identity": initial_test_spec_identity,
+            "initial_review": initial_test_review_payload,
+            "initial_resolution_markdown": initial_test_review_resolution,
+            "corrected_resolution_markdown": rereview_artifacts.get(
+                resolution_path, closed_resolution
+            ),
+        }
+    else:
+        _validate_review_payload(
+            test_review_payload,
+            stage="test-spec-review",
+            artifact_identity=test_spec_identity,
+        )
     attestation_identity_fields = {
         field
         for field in ATTESTATION_FIELDS
@@ -3810,7 +4556,7 @@ def generate_behavior(
     thread_ids = [result.get("thread_id") for result in stage_results]
     if (
         any(not isinstance(value, str) for value in thread_ids)
-        or len(set(thread_ids)) != 4
+        or len(set(thread_ids)) != len(thread_ids)
     ):
         raise BoundaryRuntimeError("thread-metadata-mismatch", "in-turn")
     feature_model = _feature_record(normalized_feature)
@@ -3820,19 +4566,27 @@ def generate_behavior(
         "spec_review": spec_review_payload,
         "proof_map": proof_map,
         "test_spec_review": test_review_payload,
-        "stage_artifacts": stage_artifacts,
+        "stage_artifacts": {
+            path: stage_artifacts[path]
+            for path in (
+                "feature-spec/portable-text-normalizer.md",
+                "reviews/spec-review.md",
+                "review-log/spec-review.md",
+                "test-spec/portable-text-normalizer.test.md",
+                "reviews/test-spec-review.md",
+                "review-log/test-spec-review.md",
+            )
+        },
+        "correction_history": correction_history,
         "transport_attempts": transport_attempts,
         "stage_provenance": [
             {
-                "stage": stage,
+                "stage": result["stage"],
+                "attempt": result["attempt"],
                 "thread_id": result["thread_id"],
-                "skill_names": ["workflow", stage],
+                "skill_names": ["workflow", result["stage"]],
             }
-            for stage, result in zip(
-                ("spec", "spec-review", "test-spec", "test-spec-review"),
-                stage_results,
-                strict=True,
-            )
+            for result in stage_results
         ],
     }
     behavior_manifest = _build_behavior_manifest(repo_root, attestation)
@@ -3843,7 +4597,7 @@ def generate_behavior(
     payload["transport_attempts"] = _validate_transport_rows(
         _finalize_transport_rows(
             transport_attempts,
-            stage_artifacts,
+            stage_artifacts_by_event,
             transport_policy_identity,
         ),
         transport_policy_identity,
