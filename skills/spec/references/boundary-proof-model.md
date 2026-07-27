@@ -81,9 +81,11 @@ Apply these closed serialization rules:
   boundary IDs, a closed rationale, and governing requirements, or state
   explicitly that no interaction is selected; and
 - in the proof map, use unique proof IDs, cite only approved requirements and
-  defined boundaries or interactions, cover every applicable boundary and
-  selected interaction, provide at least one test-case ID per row, use no
-  manual procedure for `automated`, and require one for `manual` or `hybrid`.
+  exact boundary or interaction IDs defined by the governing feature's
+  boundary record, never invent or rename an ID, cover every applicable
+  boundary and selected interaction, provide at least one test-case ID per
+  row, use no manual procedure for `automated`, and require one for `manual`
+  or `hybrid`.
 
 Classify every example as `illustration`, `regression`, `discovery`, or
 `non-normative`. Illustrations and regressions link to governing requirements

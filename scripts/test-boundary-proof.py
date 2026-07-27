@@ -2426,6 +2426,20 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "review",
             artifact_context="Authoritative scenario request:\n" + scenario,
         )
+        test_spec_request = _workflow_stage_request(
+            "test-spec",
+            "author proof",
+            artifact_context="Governing feature specification",
+        )
+        self.assertIn(
+            "must exactly match an ID defined by the attached governing "
+            "feature's boundary record",
+            test_spec_request["prompt"],
+        )
+        self.assertIn(
+            "Do not invent, rename, infer, or repair an ID",
+            test_spec_request["prompt"],
+        )
         test_review_request = _workflow_stage_request(
             "test-spec-review",
             "review",
