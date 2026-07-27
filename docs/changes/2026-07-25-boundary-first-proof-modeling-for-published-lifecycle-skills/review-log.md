@@ -49,7 +49,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r9.md
 Resolution: review-resolution.md#code-review-m2-r9
 Material findings: BFP-CR-M2-15
-Open findings: BFP-CR-M2-15
+Open findings: None
 
 ### Review entry
 Review ID: code-review-m2-r8
@@ -60,7 +60,7 @@ Status: blocked
 Detailed record: reviews/code-review-m2-r8.md
 Resolution: review-resolution.md#code-review-m2-r8
 Material findings: BFP-CR-M2-14
-Open findings: BFP-CR-M2-14
+Open findings: None
 
 ### Review entry
 Review ID: code-review-m2-r7
@@ -1679,7 +1679,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r10.md
 Resolution: review-resolution.md#code-review-m2-r10
 Material findings: BFP-CR-M2-16, BFP-CR-M2-17
-Open findings: BFP-CR-M2-16, BFP-CR-M2-17
+Open findings: None
 
 ### Review entry
 Review ID: code-review-m2-r11
@@ -1690,7 +1690,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r11.md
 Resolution: review-resolution.md#code-review-m2-r11
 Material findings: BFP-CR-M2-18
-Open findings: BFP-CR-M2-18
+Open findings: None
 
 ### Review entry
 Review ID: code-review-m2-r12
@@ -1701,4 +1701,15 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r12.md
 Resolution: review-resolution.md#code-review-m2-r12
 Material findings: BFP-CR-M2-19
-Open findings: BFP-CR-M2-19
+Open findings: None
+
+### Review entry
+Review ID: code-review-m2-r13
+Stage: code-review
+Round: 13
+Reviewed artifact: M2 malformed-evidence resolution through dc0e141a
+Status: approved
+Detailed record: reviews/code-review-m2-r13.md
+Resolution: review-resolution.md#code-review-m2-r13
+Material findings: None
+Open findings: None

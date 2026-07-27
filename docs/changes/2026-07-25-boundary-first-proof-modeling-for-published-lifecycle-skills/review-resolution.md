@@ -2013,11 +2013,11 @@ zero universal artifacts. Code-review R8 confirmed this finding resolved.
 
 Finding ID: BFP-CR-M2-14
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: workflow spec, proof-map, architecture, plan, implementation, and review owners
 Owning stage: focused spec revision
 Decision owner: workflow correction-authority contract
-Decision needed: yes
+Decision needed: none
 Required outcome: Separate formal review outcome from effective correction
 authority and define the owner-decision branch before authoring attempt 2.
 Chosen action: Amend R28y with a closed correction-eligibility projection and
@@ -2027,7 +2027,9 @@ Rationale: The current run proves that `changes-requested` may coexist with an
 explicit needs-decision finding, so outcome alone cannot authorize mutation.
 Validation target: spec-review, affected downstream reviews, then
 code-review-m2-r9
-Validation evidence: Pending.
+Validation evidence: R28y/spec-review R57 approved the exact identity-bound
+correction-eligibility contract. The 110-test suite proves automatic and
+owner-decision branches; code-review R13 confirmed the implementation.
 
 ### code-review-m2-r9
 
@@ -2035,7 +2037,7 @@ Validation evidence: Pending.
 
 Finding ID: BFP-CR-M2-15
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M2 implementation and code-review owners
 Owning stage: implementation correction and code review
 Decision owner: approved R28y comparison-only expectation contract
@@ -2049,7 +2051,9 @@ Rationale: The spec already defines both expectation values as comparison-only
 and forbids them from influencing invocation.
 Validation target: focused M2 tests, regenerated canonical evidence, and
 code-review-m2-r10
-Validation evidence: Pending.
+Validation evidence: Trace-derived expectation comparison and the complete
+branch/role mismatch matrix pass in the 110-test suite; code-review R13
+confirmed child input remains expectation-free.
 
 ### code-review-m2-r10
 
@@ -2057,7 +2061,7 @@ Validation evidence: Pending.
 
 Finding ID: BFP-CR-M2-16
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M2 implementation and code-review owners
 Owning stage: review-resolution and implementation correction
 Decision owner: approved R28y durable correction-stop contract
@@ -2071,7 +2075,9 @@ for both review stages.
 Rationale: The current stop writes only a receipt after the ephemeral stage
 workspace is gone, while recovery requires evidence that no longer exists.
 Validation target: focused M2 tests and code-review-m2-r11
-Validation evidence: Pending.
+Validation evidence: Both owner-decision stages retain and validate the exact
+stop package; explicit recovery and malformed evidence contrasts pass.
+Code-review R13 confirmed resolution.
 
 ### code-review-m2-r11
 
@@ -2079,7 +2085,7 @@ Validation evidence: Pending.
 
 Finding ID: BFP-CR-M2-18
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M2 implementation and code-review owners
 Owning stage: review-resolution and implementation correction
 Decision owner: approved R28y temporal review-bundle contract
@@ -2096,7 +2102,9 @@ erase the rereview's settled finding identity, while the zero-correction run
 cannot detect the defect.
 Validation target: focused M2 tests, controlled correction assemblers,
 immutable current-run validation, and code-review-m2-r12
-Validation evidence: Pending.
+Validation evidence: Both correction assemblers bind the open resolution,
+exact prior finding set, and distinct closed rereview resolution. Pure and
+byte-level mutation tests pass; code-review R13 confirmed resolution.
 
 ### code-review-m2-r12
 
@@ -2104,7 +2112,7 @@ Validation evidence: Pending.
 
 Finding ID: BFP-CR-M2-19
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M2 implementation and code-review owners
 Owning stage: review-resolution and implementation correction
 Decision owner: approved R28y fail-closed validator contract
@@ -2118,13 +2126,25 @@ Rationale: The byte-revalidation helper currently lets unhashable JSON values
 raise raw `TypeError` before the pure closed-schema evaluator runs.
 Validation target: focused M2 tests, immutable current-run validation, and
 code-review-m2-r13
-Validation evidence: Pending.
+Validation evidence: The malformed reviewed-ID and finding-collection matrix
+returns only `runtime-identity-unstable`; code-review R13 confirmed resolution.
+
+### code-review-m2-r13
+
+No new material findings.
+
+R13 independently confirmed that BFP-CR-M2-14 through BFP-CR-M2-19 are
+resolved. The 110-test focused suite covers correction authority, durable
+stops, temporal rereview evidence, malformed values, request isolation, and
+scenario comparison. Immutable run
+`run-a246ff6b8dde62c90a0c999ebc11688a` is current and passes with zero false
+blocking and zero new universal artifacts.
 
 #### BFP-CR-M2-17 - T52 named boundary contrasts are not directly proved
 
 Finding ID: BFP-CR-M2-17
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M2 implementation and code-review owners
 Owning stage: review-resolution and implementation correction
 Decision owner: approved T52 proof map
@@ -2137,7 +2157,9 @@ Rationale: The live zero-correction run is integration evidence, not proof for
 the approved negative and recovery boundaries.
 Validation target: `python scripts/test-boundary-proof.py` and
 code-review-m2-r11
-Validation evidence: Pending.
+Validation evidence: The direct T52 finding, stop, recovery, equal-input,
+request-only, and expectation matrices pass in the 110-test suite;
+code-review R13 confirmed resolution.
 
 ### spec-review-r56
 
