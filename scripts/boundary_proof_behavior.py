@@ -2764,8 +2764,8 @@ def _scenario(repo_root: Path, scenario_path: Path) -> dict[str, object]:
     expected = {
         "scenario_id",
         "request",
-        "expected_branch",
-        "corrected_role",
+        "allowed_branches",
+        "allowed_corrected_roles",
     }
     if (
         not isinstance(record, dict)
@@ -2773,19 +2773,11 @@ def _scenario(repo_root: Path, scenario_path: Path) -> dict[str, object]:
         or record.get("scenario_id") != "BFP-SIMPLE-001"
         or not isinstance(record.get("request"), str)
         or not record["request"].strip()
-        or record.get("expected_branch") not in {
-            "zero-correction",
-            "one-correction",
-        }
-        or (
-            record.get("corrected_role") is not None
-            and record.get("corrected_role") not in {"feature-spec", "test-spec"}
-        )
+        or record.get("allowed_branches")
+        != ["zero-correction", "one-correction"]
+        or record.get("allowed_corrected_roles")
+        != ["feature-spec", "test-spec"]
     ):
-        raise BoundaryRuntimeError("runtime-identity-unstable")
-    if (
-        record["expected_branch"] == "zero-correction"
-    ) != (record["corrected_role"] is None):
         raise BoundaryRuntimeError("runtime-identity-unstable")
     _regular_reference(repo_root, scenario_path)
     return record
@@ -3244,8 +3236,12 @@ def _validate_scenario_expectations(
 ) -> None:
     observed_branch, corrected_role = _observed_scenario_outcome(events)
     if (
-        scenario.get("expected_branch") != observed_branch
-        or scenario.get("corrected_role") != corrected_role
+        observed_branch not in scenario.get("allowed_branches", ())
+        or (
+            corrected_role is not None
+            and corrected_role
+            not in scenario.get("allowed_corrected_roles", ())
+        )
     ):
         raise BoundaryRuntimeError("boundary-oracle-mismatch", "in-turn")
 

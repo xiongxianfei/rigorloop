@@ -282,10 +282,10 @@ review:
   material_findings: 184
   open_findings: 1
   closed_findings: 183
-  architecture_review: reviews/architecture-review-r29.md
-  plan_review: reviews/plan-review-r22.md
-  spec_review: reviews/spec-review-r57.md
-  test_spec_review: reviews/test-spec-review-r26.md
+  architecture_review: reviews/architecture-review-r30.md
+  plan_review: reviews/plan-review-r23.md
+  spec_review: reviews/spec-review-r58.md
+  test_spec_review: reviews/test-spec-review-r27.md
   code_review: reviews/code-review-m4-r1.md
   review_log: review-log.md
 workflow:

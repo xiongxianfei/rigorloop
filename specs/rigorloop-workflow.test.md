@@ -1566,7 +1566,7 @@ Boundary model scope: R28-R28z
   registered v1 manifest and every unknown, moved, altered, additional, or
   caller-supplied v1 contrast; attempt to select, structurally validate, or
   silently upgrade v1; independently
-  change `expected_branch` and `corrected_role`; rerun validation without
+  change `allowed_branches` and `allowed_corrected_roles`; rerun validation without
   invoking lifecycle skills.
 - Expected result: Unchanged inputs validate; any behavior-affecting identity
   change makes the current run stale and requires explicit new generation.
@@ -1575,7 +1575,7 @@ Boundary model scope: R28-R28z
   `simple-change-input-v1`, invocation-owned pre-run HEAD, exact current
   scenario, complete path-sorted five-package resources and oracle set, and
   the canonical implementation-manifest reference. Changing
-  `expected_branch` or `corrected_role` changes only final comparison, never
+  `allowed_branches` or `allowed_corrected_roles` changes only final comparison, never
   invocation, events, structural results, observations, or diagnostics.
   Validation never changes the invocation profile, runtime attestation,
   baseline, or current pointer. Any missing, stale, substituted, malformed, or
@@ -1808,8 +1808,8 @@ Boundary model scope: R28-R28z
   Require every forbidden candidate member to be absent from each child-visible
   surface.
   Require only the parent invariant evaluator to open candidate bytes.
-  Add the complete scenario file path, raw bytes, `expected_branch`, and
-  `corrected_role` to the forbidden parent-only set. Confirm that no
+  Add the complete scenario file path, raw bytes, `allowed_branches`, and
+  `allowed_corrected_roles` to the forbidden parent-only set. Confirm that no
   child-readable root, serialized prompt, attachment, artifact context, access
   observation, or diagnostic exposes them; confirm only the exact
   authoritative request value is present in the `spec` request and both formal
@@ -1910,11 +1910,14 @@ Boundary model scope: R28-R28z
   `correction-authorization-required`, then mutate one governing input and
   prove only the valid unequal identity may create fresh authority.
   From complete event traces, derive `zero-correction` with null corrected role
-  and each valid `one-correction` role. Capture serialized requests,
+  and each valid `one-correction` role. Accept the exact outcome envelope and
+  reject branches, roles, multiple corrections, or combinations outside it.
+  Capture serialized requests,
   invocations, produced events, structural and observed results, diagnostics,
   and output identities before reading expectations. Cross each observed pair
-  with every schema-compatible expected pair; require only exact equality to
-  pass. Mutate only `expected_branch` and `corrected_role` and prove all
+  against the schema-compatible allowed branch and corrected-role lists;
+  require membership to pass. Mutate only `allowed_branches` and
+  `allowed_corrected_roles` and prove all
   captured pre-comparison values remain byte-identical while mismatch fails
   only at the final expectation comparison in generation and validation.
   Run validation repeatedly.

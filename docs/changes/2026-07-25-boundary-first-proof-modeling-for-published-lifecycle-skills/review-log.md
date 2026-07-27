@@ -1743,3 +1743,43 @@ Detailed record: reviews/code-review-m4-r1.md
 Resolution: review-resolution.md#code-review-m4-r1
 Material findings: BFP-CR-M4-1
 Open findings: BFP-CR-M4-1
+### Review entry
+Review ID: spec-review-r58
+Stage: spec-review
+Round: 58
+Reviewed artifact: bounded correction outcome-envelope amendment
+Status: approved
+Detailed record: reviews/spec-review-r58.md
+Resolution: review-resolution.md#spec-review-r58
+Material findings: None
+Open findings: None
+### Review entry
+Review ID: architecture-review-r30
+Stage: architecture-review
+Round: 30
+Reviewed artifact: bounded correction outcome-envelope architecture projection
+Status: approved
+Detailed record: reviews/architecture-review-r30.md
+Resolution: review-resolution.md#architecture-review-r30
+Material findings: None
+Open findings: None
+### Review entry
+Review ID: plan-review-r23
+Stage: plan-review
+Round: 23
+Reviewed artifact: bounded correction outcome-envelope plan synchronization
+Status: approved
+Detailed record: reviews/plan-review-r23.md
+Resolution: review-resolution.md#plan-review-r23
+Material findings: None
+Open findings: None
+### Review entry
+Review ID: test-spec-review-r27
+Stage: test-spec-review
+Round: 27
+Reviewed artifact: bounded correction outcome-envelope proof map
+Status: approved
+Detailed record: reviews/test-spec-review-r27.md
+Resolution: review-resolution.md#test-spec-review-r27
+Material findings: None
+Open findings: None

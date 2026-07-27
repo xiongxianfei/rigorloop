@@ -74,6 +74,7 @@ from boundary_proof_behavior import (
     _thread_start_request,
     _turn_start_request,
     _observed_scenario_outcome,
+    _scenario,
     _review_payload_from_markdown,
     _validate_correction_stop_receipt,
     _validate_correction_stop_evidence,
@@ -4194,23 +4195,50 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         }
         for observed, events in observed_cases.items():
             self.assertEqual(_observed_scenario_outcome(events), observed)
-            for expected in observed_cases:
-                scenario = {
-                    "expected_branch": expected[0],
-                    "corrected_role": expected[1],
-                }
-                with self.subTest(observed=observed, expected=expected):
-                    if expected == observed:
-                        _validate_scenario_expectations(scenario, events)
-                    else:
-                        with self.assertRaises(
-                            BoundaryRuntimeError
-                        ) as raised:
-                            _validate_scenario_expectations(scenario, events)
-                        self.assertEqual(
-                            raised.exception.diagnostic_id,
-                            "boundary-oracle-mismatch",
-                        )
+            scenario = {
+                "allowed_branches": [
+                    "zero-correction",
+                    "one-correction",
+                ],
+                "allowed_corrected_roles": [
+                    "feature-spec",
+                    "test-spec",
+                ],
+            }
+            with self.subTest(observed=observed):
+                _validate_scenario_expectations(scenario, events)
+
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _validate_scenario_expectations(
+                {
+                    "allowed_branches": ["zero-correction"],
+                    "allowed_corrected_roles": [
+                        "feature-spec",
+                        "test-spec",
+                    ],
+                },
+                observed_cases[("one-correction", "test-spec")],
+            )
+        self.assertEqual(
+            raised.exception.diagnostic_id,
+            "boundary-oracle-mismatch",
+        )
+
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _validate_scenario_expectations(
+                {
+                    "allowed_branches": [
+                        "zero-correction",
+                        "one-correction",
+                    ],
+                    "allowed_corrected_roles": ["feature-spec"],
+                },
+                observed_cases[("one-correction", "test-spec")],
+            )
+        self.assertEqual(
+            raised.exception.diagnostic_id,
+            "boundary-oracle-mismatch",
+        )
 
         with self.assertRaises(BoundaryRuntimeError):
             _observed_scenario_outcome(
@@ -4220,6 +4248,59 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 ]
             )
 
+    def test_scenario_outcome_envelope_is_closed(self) -> None:
+        valid = {
+            "scenario_id": "BFP-SIMPLE-001",
+            "request": "Author the bounded example.",
+            "allowed_branches": [
+                "zero-correction",
+                "one-correction",
+            ],
+            "allowed_corrected_roles": [
+                "feature-spec",
+                "test-spec",
+            ],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / "scenario.json"
+            path.write_text(json.dumps(valid), encoding="utf-8")
+            self.assertEqual(_scenario(root, path), valid)
+
+            invalid_records = (
+                {**valid, "allowed_branches": ["zero-correction"]},
+                {
+                    **valid,
+                    "allowed_branches": [
+                        "zero-correction",
+                        "one-correction",
+                        "unknown",
+                    ],
+                },
+                {
+                    **valid,
+                    "allowed_corrected_roles": ["feature-spec"],
+                },
+                {
+                    **valid,
+                    "allowed_corrected_roles": [
+                        "feature-spec",
+                        "test-spec",
+                        "unknown",
+                    ],
+                },
+                {**valid, "unexpected": True},
+            )
+            for record in invalid_records:
+                with self.subTest(record=record):
+                    path.write_text(json.dumps(record), encoding="utf-8")
+                    with self.assertRaises(BoundaryRuntimeError) as raised:
+                        _scenario(root, path)
+                    self.assertEqual(
+                        raised.exception.diagnostic_id,
+                        "runtime-identity-unstable",
+                    )
+
     def test_t52_request_only_projection_excludes_parent_expectations(
         self,
     ) -> None:
@@ -4227,8 +4308,14 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         scenario = {
             "scenario_id": "BFP-SIMPLE-001",
             "request": request,
-            "expected_branch": "one-correction",
-            "corrected_role": "test-spec",
+            "allowed_branches": [
+                "zero-correction",
+                "one-correction",
+            ],
+            "allowed_corrected_roles": [
+                "feature-spec",
+                "test-spec",
+            ],
         }
         projected = _workflow_stage_request(
             "spec",
@@ -4237,15 +4324,15 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         )
         serialized = json.dumps(projected, sort_keys=True)
         self.assertIn(request, serialized)
-        self.assertNotIn("expected_branch", serialized)
+        self.assertNotIn("allowed_branches", serialized)
         self.assertNotIn("one-correction", serialized)
-        self.assertNotIn("corrected_role", serialized)
+        self.assertNotIn("allowed_corrected_roles", serialized)
         self.assertNotIn("test-spec", serialized)
 
         changed_expectations = {
             **scenario,
-            "expected_branch": "zero-correction",
-            "corrected_role": None,
+            "allowed_branches": ["zero-correction"],
+            "allowed_corrected_roles": ["feature-spec"],
         }
         projected_again = _workflow_stage_request(
             "spec",

@@ -4030,3 +4030,27 @@ reported outcome.
 Validation target: focused report tests, regenerated capability report, and
 code-review-m4-r2
 Validation evidence: pending
+
+### spec-review-r58
+
+No new material findings. R58 approved the bounded correction outcome
+envelope and confirmed that exact model-path prediction is not part of the
+capability baseline.
+
+### architecture-review-r30
+
+No new material findings. R30 confirmed that the outcome-envelope amendment
+changes only the parent-owned pure comparison and requires no new component,
+trust boundary, persistence surface, diagram, or ADR.
+
+### plan-review-r23
+
+No new material findings. R23 approved the synchronized M2 outcome-envelope
+sequence, M4 dependency handling, current source pointers, and open-finding
+handoff state.
+
+### test-spec-review-r27
+
+No new material findings. R27 approved the complete allowed-branch and
+corrected-role membership proof, parent-only expectation isolation, invalid
+combination rejection, and generation/validation parity.
