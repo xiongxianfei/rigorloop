@@ -25,20 +25,20 @@ resumes.
 
 - Proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Specs: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r53.md` (approved three-category projection)
-- Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R25)
+- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r54.md` (approved invariant-oracle correction)
+- Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R26)
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` (accepted by architecture-review R15)
 - Transport ADR: `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md` (accepted; scoped clauses superseded by the capability-projection ADR)
 - Capability-projection ADR: `docs/adr/ADR-20260727-capability-projected-file-change-control.md` (accepted by architecture-review R22)
 - Three-category projection ADR: `docs/adr/ADR-20260727-three-category-runtime-feature-projection.md` (accepted by architecture-review R25)
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
-- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r25.md`
-- Plan review: focused successor review pending; `plan-review-r17` is historical binary-projection evidence
-- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; exact identity synchronization and focused test-spec review remain pending
+- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r26.md`
+- Plan review: focused invariant-oracle review pending; `plan-review-r19` is historical three-category projection evidence
+- Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; R54/R26/plan identity synchronization and focused test-spec review remain pending
 
 ## Context and orientation
 
-The approved R53 R28y contract and R25 architecture are now normative.
+The approved R54 R28y contract and R26 architecture are now normative.
 Live M2 generation proved that the pinned app-server returns
 schema-constrained stage messages but does not expose the assumed stage-agent
 workspace-write surface or a file-change operation under the approved
@@ -98,7 +98,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r26.md
 - Review status: approved; stage=architecture-review; round=r26
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: plan
+- Next stage: plan-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-CR-M2-9
 
@@ -338,6 +338,19 @@ resource through generated, packed, and installed outputs.
   - Later commits with unchanged referenced bytes versus changed referenced bytes
   - Resource-map, raw-byte-copy, trigger, stop, claim, handoff, complete review-bundle, and isolation tests
   - Example-only spec/test-spec rejection and valid compact simple-change cases
+  - Exact candidate and produced invariant projections for model version,
+    scope, requirement IDs, all twelve core-dimension IDs, no extensions, and
+    proof-map governing requirement IDs; missing, additional, duplicate,
+    unknown, malformed, and unequal members emit
+    `boundary-oracle-mismatch`
+  - Pairwise and combined alternatives for stage-owned stable IDs,
+    applicability choices, non-applicability rationale prose, boundary rows,
+    examples, selected interactions, automation levels, proof grouping, and
+    test-case IDs; every R28s-R28w-valid alternative reaches formal review
+    instead of failing candidate comparison
+  - Candidate files absent from child-readable roots and every lifecycle
+    request; exact scenario request present in both formal review invocations;
+    `check-environment` cannot emit `boundary-oracle-mismatch`
 - Implementation steps:
   - First correct the pure immutable projection and tests in
     `boundary_proof_model.py`: add the exact eleven-field runtime row, selection
@@ -460,7 +473,10 @@ resource through generated, packed, and installed outputs.
     architecture without a weaker fallback.
   - Create and validate `evidence/boundary-proof-baseline.json` from the harness-derived current HEAD before the first participating-skill edit. If an immutable baseline already exists with a different value, stop.
   - Freeze the two-module AST import policy and exact manifest/input-set schemas.
-  - Assemble the five skill packages, applicable instructions, contracts, scenario, and candidates into a fresh isolated workspace.
+  - Assemble the five skill packages, applicable instructions, contracts, and
+    authoritative scenario into a fresh child-readable workspace. Bind
+    candidate identities in the input set but retain their bytes in a separate
+    parent-only comparison root.
   - Launch the identified runtime through the preflight-proven read-only
     sandbox and private runtime home; independently repeat command and
     capability-state-appropriate file-change proof, then derive a fresh
@@ -497,8 +513,12 @@ resource through generated, packed, and installed outputs.
   - Materialize accepted stage-authored bytes relative to the retained root
     descriptor, reread the complete leaf set, record value-free exact-byte
     equality, run the closed structural lifecycle validators, and snapshot the
-    complete stage output before advancing. Remove all substantive harness
-    renderers and keep candidate oracles comparison-only.
+    complete stage output before advancing. Project candidate and produced
+    feature/test-spec records independently through the pure invariant
+    evaluator. Compare only the R54 closed invariant fields; route deterministic
+    structure or projection failure to `boundary-oracle-mismatch`. Remove all
+    substantive harness renderers and keep candidate oracles parent-only and
+    comparison-only.
   - Build and validate the sibling temporary run; move it to the deterministic
     non-authoritative staging root and fsync; exclusively write and fsync the
     prepared receipt; install and fsync the immutable run; validate it;
@@ -510,7 +530,9 @@ resource through generated, packed, and installed outputs.
     run through one public `workflow` orchestration. Each stage skill returns
     one complete policy-bound artifact envelope; the parent materializes and
     snapshots it before advancing; no harness renderer supplies, repairs, or
-    completes normative artifact content.
+    completes normative artifact content. Include the exact scenario request
+    in both formal review invocations so independent review, rather than a
+    hidden candidate decomposition, owns semantic-fidelity judgment.
   - Reconcile a timed-out stage before retry using the exact transport matrix:
     complete valid output plus unchanged workspace reconciles without
     reinvocation; confirmed stop, zero candidates, unchanged workspace, and no
@@ -559,6 +581,10 @@ resource through generated, packed, and installed outputs.
   - complete transport-attempt rows with candidate, workspace-integrity,
     materialization, and content-validation observations for every lifecycle
     event; no raw failed candidate or child-authored path retained
+  - direct contrast evidence that R28s-R28w-valid alternative decompositions
+    reach formal review, invariant mutations fail with
+    `boundary-oracle-mismatch`, candidate bytes never reach a child, and
+    preflight never emits that generation-only diagnostic
   - exact registered v1 path/raw-byte identity recognized only as opaque
     history and absent from every current authority chain; all v2 evidence
     rejected as unsupported history
@@ -600,6 +626,10 @@ resource through generated, packed, and installed outputs.
     mismatch, unsafe retry, registered-v1 use as current authority, unknown v1
     or any v2 evidence, or any attempt to synthesize stage-owned normative
     bytes in the harness.
+  - Stop on malformed or unequal invariant projection with
+    `boundary-oracle-mismatch`; fail review or enter only the governed
+    correction branch for semantic nonapproval. Do not relabel either case as
+    `unexpected-prohibited-event`.
 - Expected observable result: The upstream skills require complete boundary/proof maps and one input-bound immutable behavior run proves the real upstream workflow with zero false blocking and no new universal artifact.
 - Commit message: `M2: implement and prove hermetic upstream behavior`
 - Milestone closeout:
@@ -617,6 +647,9 @@ resource through generated, packed, and installed outputs.
     authority, or unsupported v2 data could be silently upgraded during the
     v3 migration.
   - Shared reference use could hide stage-specific stop or claim boundaries.
+  - A broad candidate comparison could silently restore one hidden golden
+    decomposition, while an under-specified invariant comparison could miss
+    the explicit scenario contract.
 - Rollback/recovery:
   - Acquire the publisher lock before rollback. Reconcile any prepared receipt
     against staged and installed identities; if reconciliation cannot prove one
@@ -839,6 +872,11 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Synchronized M2 to R54/R26. The plan now orders pure invariant
+  projection and contrast tests before generation, keeps candidate bytes
+  parent-only, binds the scenario into both reviews, and distinguishes
+  deterministic `boundary-oracle-mismatch` from semantic nonapproval.
 
 - 2026-07-27: Architecture-review R26 approved the parent-only candidate,
   authoritative-scenario, pure invariant-evaluator, and dedicated diagnostic
