@@ -98,7 +98,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r9.md
 - Review status: changes-requested; stage=code-review; round=r9
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec
+- Next stage: spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BFP-CR-M2-14,BFP-CR-M2-15
 
@@ -873,6 +873,14 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Focused R28y spec revision separates
+  `changes-requested` from correction authority. It derives the closed
+  `automatic-eligible`, `owner-decision-required`, or `not-applicable`
+  disposition from complete finding records; only all-eligible findings may
+  reach attempt 2. Owner-decision findings stop before mutation and require a
+  fresh run with clarified authoritative input. The draft amendment is ready
+  for focused spec review.
 
 - 2026-07-27: Code-review M2 R9 opened `BFP-CR-M2-15`. The canonical
   scenario expects zero correction, but the current run contains `spec#2` and
