@@ -9,9 +9,10 @@ Boundary model scope: R28-R28z
 
 ## Related spec and plan
 
-- Spec: [RigorLoop Workflow](rigorloop-workflow.md), pending focused
-  `spec-review-r50` for the three-category exact-runtime capability
-  projection discovered during M2 preflight.
+- Spec: [RigorLoop Workflow](rigorloop-workflow.md), latest reviewed by
+  changes-requested `spec-review-r51`; a clean focused rereview is required
+  for the three-category exact-runtime capability projection discovered during
+  M2 preflight.
 - Proposal: [Workflow Refactor](../docs/proposals/2026-05-01-workflow-refactor.md), accepted.
 - Historical plan: [Workflow Refactor Execution Plan](../docs/plans/2026-05-03-workflow-refactor.md), done.
 - Related follow-on spec: [Learn Artifact Model](learn-artifact-model.md), approved.
@@ -57,7 +58,7 @@ Boundary model scope: R28-R28z
 | --- | --- | --- | --- |
 | Feature spec | `specs/rigorloop-workflow.md` | pending focused spec-review R50 | pending |
 | Companion skill spec | `specs/skill-contract.md` | approved; unchanged companion | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r49.md` | changes-requested; R50 pending | pending |
+| Latest spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r51.md` | changes-requested; clean focused rereview pending | pending |
 | Architecture | `docs/architecture/system/architecture.md` | focused three-category amendment pending rereview | pending |
 | Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r22.md` | prior binary projection only; successor pending | pending |
 | Boundary ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted with scoped transport supersession | `sha256:0bd0cc5b7964b45f61b020b31c6781d360d072e15120feaf2a7f106cae05df15` |
@@ -2162,7 +2163,7 @@ Boundary model scope: R28-R28z
 
 ## Next artifacts
 
-- Boundary-first amendment: focused spec-review R50, architecture review,
+- Boundary-first amendment: clean focused spec rereview, architecture review,
   plan review, proof-map identity synchronization, and independent test-spec
   review. Resume M2 only after those reviews approve the v3 exact
   runtime projection, common conformance, capability-branch, integrity,

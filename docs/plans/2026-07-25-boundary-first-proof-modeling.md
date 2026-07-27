@@ -94,12 +94,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r50.md
-- Review status: changes-requested; stage=spec-review; round=r50
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r51.md
+- Review status: changes-requested; stage=spec-review; round=r51
 - Remaining in-scope implementation milestones: M2, M3, M4
 - Next stage: spec
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=8; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR49-1,BFP-SR49-2,BFP-SR49-3,BFP-SR50-1,BFP-SR50-2
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=9; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR49-1,BFP-SR49-2,BFP-SR49-3,BFP-SR50-1,BFP-SR50-2,BFP-SR51-1
 
 ## Milestones
 
@@ -825,6 +825,11 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Spec-review R51 found only three round-specific proof-map
+  references lagging the newly recorded R50 state. The next candidate binds
+  the latest recorded R51 review and uses a stable clean-rereview requirement
+  so recording the next result cannot recreate the defect.
 
 - 2026-07-27: Spec-review R50 confirmed the category and diagnostic fixes but
   found stale R48/R22/R17 readiness prose and unsynchronized change metadata.
