@@ -2065,6 +2065,47 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 self.assertEqual(calls, 1)
                 self.assertEqual(attempts[-1]["decision"], "accept")
 
+    def test_timeout_with_no_variant_output_is_absent_and_retries(self) -> None:
+        calls = 0
+        allowed = [
+            ["reviews/spec-review.md", "review-log/spec-review.md"],
+            [
+                "reviews/spec-review.md",
+                "review-log/spec-review.md",
+                "review-resolution/spec-review.md",
+            ],
+        ]
+
+        def invoke() -> tuple[dict[str, object], dict[str, object]]:
+            nonlocal calls
+            calls += 1
+            if calls == 1:
+                raise _StageTurnTimeout(
+                    attestation={"identity": "first"},
+                    output_files=[],
+                    termination_state="confirmed-stopped",
+                )
+            return (
+                {"identity": "second"},
+                {
+                    "output_files": [
+                        {"path": path, "text": "# Review\n"}
+                        for path in allowed[0]
+                    ]
+                },
+            )
+
+        _, _, attempts = _invoke_with_reconciliation(
+            invoke,
+            allowed[0],
+            allowed_path_sets=allowed,
+        )
+        self.assertEqual(calls, 2)
+        self.assertEqual(
+            [(row["output_state"], row["decision"]) for row in attempts],
+            [("absent", "retry"), ("complete", "accept")],
+        )
+
     def test_timeout_retries_only_absent_output_once(self) -> None:
         calls = 0
 
