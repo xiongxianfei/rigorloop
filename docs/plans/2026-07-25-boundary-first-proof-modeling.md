@@ -94,12 +94,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m2.md
-- Review status: approved; stage=test-spec-review; round=r19
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r49.md
+- Review status: changes-requested; stage=spec-review; round=r49
 - Remaining in-scope implementation milestones: M2, M3, M4
 - Next stage: spec
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=6; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR49-1,BFP-SR49-2,BFP-SR49-3
 
 ## Milestones
 
@@ -825,6 +825,12 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Spec-review R49 confirmed the eleven-field 3/4/89 projection
+  direction and requested exact category-equality binding, correction of the
+  nonconforming discovery diagnostic phase, and removal of stale proof-map
+  identities/readiness. The focused R50 candidate addresses all three before
+  architecture and plan rereview.
 
 - 2026-07-27: Resolved test-spec-review R18 by synchronizing companion command
   CMD-SBFP-8 with the exact change-root-bound primary preflight command,

@@ -1789,6 +1789,22 @@ file_change_capability_state
 All three feature collections are ordered, independently unique, pairwise
 disjoint, and exhaustive for all 96 feature rows bound by
 `feature_classification_identity`.
+Their membership is not inferred from counts:
+
+```text
+permitted_tool_features
+  = features classified permitted-built-in-tool
+
+permitted_non_tool_features
+  = features classified permitted-non-tool-runtime-behavior
+
+required_disabled_features
+  = features classified must-be-disabled-tool-bearing-behavior
+```
+
+Any category disagreement, including a count-preserving swap between two
+collections with a recomputed projection identity, fails with
+`runtime-projection-unsupported` before `thread/start`.
 `permitted_non_tool_features` contains runtime behavior that may remain enabled
 but does not expose a child-invocable tool or file-change operation. It is not
 silently treated as a permitted tool or as required-disabled behavior.

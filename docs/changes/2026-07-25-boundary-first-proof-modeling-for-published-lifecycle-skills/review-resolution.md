@@ -3238,3 +3238,62 @@ evidence-only boundary.
 
 No new material findings. R19 independently confirmed BFP-TSR18-1 resolved
 and approved both synchronized R48/R22/R17 proof maps for M2 implementation.
+
+### spec-review-r49
+
+#### BFP-SR49-1 — Projection collections are not bound to classification categories
+
+Finding ID: BFP-SR49-1
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec revision
+Decision owner: approved feature-classification contract
+Decision needed: none
+Required outcome: Bind every projection collection by exact equality to its
+corresponding feature-classification category and reject count-preserving
+category swaps before thread start.
+Chosen action: Add the three normative equality rules and direct pairwise swap
+contrasts with recomputed identities.
+Rationale: Counts, disjointness, and exhaustiveness alone do not preserve
+semantic category ownership.
+Validation target: spec-review-r50
+Validation evidence: pending
+
+#### BFP-SR49-2 — Discovery receipt uses a forbidden diagnostic phase
+
+Finding ID: BFP-SR49-2
+Disposition: accepted
+Status: open
+Owner: spec and implementation authors
+Owning stage: spec revision
+Decision owner: closed file-change cause-to-phase table
+Decision needed: none
+Required outcome: Classify the recorded failure receipt as nonconforming
+historical discovery evidence and prove the corrected implementation emits the
+cause's specified phase.
+Chosen action: Preserve the 96-row observation, reject the old
+`pre-thread-start` pair as a negative fixture, and keep the normative
+`pre-turn-start` mapping unchanged.
+Rationale: Failing closed does not make an invalid diagnostic tuple conforming
+evidence.
+Validation target: spec-review-r50 and test-spec-review after upstream approval
+Validation evidence: pending
+
+#### BFP-SR49-3 — Proof-map identities and readiness are stale
+
+Finding ID: BFP-SR49-3
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec synchronization
+Decision owner: active-plan handoff
+Decision needed: none
+Required outcome: Remove readiness claims based on R48/R22/R17 identities and
+bind the focused spec, architecture, and plan reviews before implementation.
+Chosen action: Mark affected input identities pending through the focused
+rereview sequence, then synchronize exact identities before test-spec review.
+Rationale: A proof map cannot authorize implementation against superseded
+upstream artifacts.
+Validation target: focused test-spec review after spec, architecture, and plan approval
+Validation evidence: pending

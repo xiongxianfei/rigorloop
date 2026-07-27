@@ -1284,3 +1284,14 @@ Detailed record: reviews/test-spec-review-r19.md
 Resolution: review-resolution.md#test-spec-review-r19
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: spec-review-r49
+Stage: spec-review
+Round: 49
+Reviewed artifact: focused three-category runtime-projection amendment at 4b601220
+Status: changes-requested
+Detailed record: reviews/spec-review-r49.md
+Resolution: review-resolution.md#spec-review-r49
+Material findings: BFP-SR49-1, BFP-SR49-2, BFP-SR49-3
+Open findings: BFP-SR49-1, BFP-SR49-2, BFP-SR49-3

@@ -190,6 +190,13 @@ The v3 evidence-only preflight stopped before publication:
 {"attestation_ref":null,"diagnostic_id":"file-change-control-mismatch","phase":"pre-thread-start","result":"environment-unavailable","schema_version":"boundary-runtime-preflight-v3","workspace_failure":null}
 ```
 
+This receipt failed closed but is not conforming current evidence: its
+`file-change-control-mismatch` / `pre-thread-start` pair is forbidden by the
+closed cause-to-phase table, which assigns the observed
+`required-disabled-feature-enabled` cause to `pre-turn-start`. The receipt is
+retained only as a negative diagnostic fixture. The independently observed
+96-row inventory below remains bounded discovery evidence.
+
 The deterministic implementation suite passed 60 tests before this live
 preflight. The exact bound runtime inventory contained 96 unique rows with
 these enabled features:
