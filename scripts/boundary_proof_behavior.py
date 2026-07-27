@@ -6775,6 +6775,13 @@ def _normalize_skill_inventory(
             skill_root = runtime_home / "skills" / ".system" / name
             logical_root = f"runtime-system-skill/{name}"
         else:
+            if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+                print(
+                    "unexpected-skill:"
+                    f"name={name!r};path={path_value!r};"
+                    f"enabled={enabled!r};scope={scope!r}",
+                    file=sys.stderr,
+                )
             raise BoundaryRuntimeError("skill-inventory-mismatch", "pre-turn-start")
         if normalized_path in normalized_paths:
             raise BoundaryRuntimeError("skill-inventory-mismatch", "pre-turn-start")
