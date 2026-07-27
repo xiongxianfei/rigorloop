@@ -1855,11 +1855,33 @@ Required outcome: One noncontradictory transaction sequence governs specificatio
 Chosen action: Use staged validation, then durable exclusive receipt, then immutable install as the canonical sequence; synchronize the spec, architecture, ADR, plan, test spec, and implementation and rerun each affected review gate.
 Rationale: The implementation cannot resolve contradictory higher-ranked architecture and plan text by silently choosing one.
 Validation target: architecture-review and plan-review, then code-review-m2-r3
-Validation evidence: The approved specification, architecture, ADR, active
-plan, test spec, and implementation use prepared receipt before immutable
-install, installed-run validation before pointer replacement, and
-evidence-first recovery. Publication/recovery regressions and current immutable
-run validation pass.
+Validation evidence: The architecture and plan contradiction was resolved and
+their affected formal review gates approved. Code-review M2 R4 later found a
+distinct implementation compression of the approved contract, recorded as
+`BFP-CR-M2-10`; that new finding does not reopen this resolved
+architecture/plan contradiction identity.
+
+### code-review-m2-r4
+
+#### BFP-CR-M2-10 - Publisher lease and global recovery contract are absent
+
+Finding ID: BFP-CR-M2-10
+Disposition: accepted
+Status: in-progress
+Owner: test-spec and M2 implementation owners
+Owning stage: test-spec correction, implementation, and code review
+Decision owner: approved R28y publication transaction
+Decision needed: none
+Required outcome: Directly prove and implement the complete lease-first,
+publisher-bound global recovery state machine.
+Chosen action: Expand T51-T52 with exact publisher identity, lease durability,
+global discovery, recovery-state, crash-boundary, and no-reinvocation proofs;
+then implement those approved properties and regenerate canonical evidence.
+Rationale: The accepted specification already selects the behavior, so this is
+a declared-safe correction rather than a new product or architecture decision.
+Validation target: test-spec-review-r24, focused M2 validation, regenerated
+canonical evidence, and code-review-m2-r5
+Validation evidence: Pending.
 
 ### spec-review-r27
 
