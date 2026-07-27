@@ -91,12 +91,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r47.md
-- Review status: changes-requested; stage=spec-review; round=r47
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r48.md
+- Review status: approved; stage=spec-review; round=r48
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec-review
+- Next stage: architecture
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=8; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR46-1,BFP-SR46-2,BFP-SR46-3,BFP-SR46-4,BFP-SR47-1
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
 ## Milestones
 
@@ -756,6 +756,10 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Spec-review R48 approved the exact-runtime-bound v3 projection
+  contract with no findings. R46 and R47 are closed; the required next stage
+  is architecture synchronization before plan and test-spec updates.
 
 - 2026-07-27: The R48 candidate resolves BFP-SR47-1 by adding exact launcher
   and runtime-package identities to the immutable projection and selection

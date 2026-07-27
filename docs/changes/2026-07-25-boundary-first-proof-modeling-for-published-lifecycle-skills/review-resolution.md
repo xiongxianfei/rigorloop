@@ -2951,7 +2951,7 @@ BFP-TSR16-1 resolved and approved the M2 proof map for implementation.
 
 Finding ID: BFP-SR46-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: runtime-evidence migration contract
@@ -2964,13 +2964,14 @@ current v3 roles or silent upgrade.
 Rationale: A schema transition is safe only when every earlier version has one
 deterministic treatment.
 Validation target: spec-review-r47
-Validation evidence: pending
+Validation evidence: spec-review-r48 approved the uniformly current v3
+migration contract.
 
 #### BFP-SR46-2 — The runtime projection is not completely content-bound
 
 Finding ID: BFP-SR46-2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: runtime projection registry
@@ -2982,13 +2983,14 @@ identity, v3 evidence binding, uniqueness rules, and drift acceptance proof.
 Rationale: A stable name without content identity cannot prove immutable
 compatibility semantics.
 Validation target: spec-review-r47
-Validation evidence: pending
+Validation evidence: spec-review-r48 approved the complete content-bound
+ten-field projection.
 
 #### BFP-SR46-3 — Non-exposure proof depends on undefined evidence
 
 Finding ID: BFP-SR46-3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: non-exposure security proof
@@ -3001,13 +3003,14 @@ execution.
 Rationale: Repository unit tests and event absence cannot substitute for
 invocation-owned enforcement evidence.
 Validation target: spec-review-r47
-Validation evidence: pending
+Validation evidence: spec-review-r48 approved the invocation-owned
+effective-tool and handler-conformance evidence.
 
 #### BFP-SR46-4 — File-change diagnostic phase is ambiguous
 
 Finding ID: BFP-SR46-4
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: file-change failure routing
@@ -3018,7 +3021,8 @@ Chosen action: Add a closed cause-to-phase and precedence matrix with unknown
 and cross-phase rejection.
 Rationale: Durable failure receipts cannot vary by implementation.
 Validation target: spec-review-r47
-Validation evidence: pending
+Validation evidence: spec-review-r48 approved the closed cause, phase, and
+diagnostic-precedence contract.
 
 ### spec-review-r47
 
@@ -3026,7 +3030,7 @@ Validation evidence: pending
 
 Finding ID: BFP-SR47-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow spec author
 Owning stage: spec revision
 Decision owner: runtime projection compatibility contract
@@ -3039,4 +3043,11 @@ attestation equality, and add implementation-drift acceptance proof.
 Rationale: Version, schemas, and feature declarations cannot prove
 non-exposure when different implementation bytes can retain those declarations.
 Validation target: spec-review-r48
-Validation evidence: pending
+Validation evidence: spec-review-r48 approved exact launcher and
+runtime-package binding and runtime-byte drift rejection.
+
+### spec-review-r48
+
+No new material findings. R48 independently confirmed BFP-SR46-1 through
+BFP-SR46-4 and BFP-SR47-1 resolved and approved the v3 runtime-projection
+contract for architecture synchronization.
