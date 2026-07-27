@@ -1531,6 +1531,7 @@ def _workflow_stage_request(
     *,
     artifact_context: str = "",
     attempt: int = 1,
+    governing_reference_ids: Sequence[str] = (),
 ) -> dict[str, object]:
     outputs_by_stage = {
         "spec": ["feature-spec/portable-text-normalizer.md"],
@@ -1546,6 +1547,24 @@ def _workflow_stage_request(
     }
     expected_outputs = outputs_by_stage.get(stage)
     if expected_outputs is None:
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    if (
+        governing_reference_ids
+        and (
+            stage != "test-spec"
+            or len(set(governing_reference_ids))
+            != len(governing_reference_ids)
+            or any(
+                not isinstance(value, str)
+                or re.fullmatch(
+                    r"^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$",
+                    value,
+                )
+                is None
+                for value in governing_reference_ids
+            )
+        )
+    ):
         raise BoundaryRuntimeError("protocol-shape-incompatible")
     variants = _stage_policy_variants(stage, attempt)
     structure_instruction = {
@@ -1653,6 +1672,14 @@ def _workflow_stage_request(
             )
             + "\nExpected paths:\n- "
             + "\n- ".join(expected_outputs)
+            + (
+                "\nClosed governing boundary and interaction IDs:\n- "
+                + "\n- ".join(governing_reference_ids)
+                + "\nEvery proof-map boundary or interaction reference must "
+                "be one exact member of this closed list."
+                if governing_reference_ids
+                else ""
+            )
             + "\n\nRequest:\n"
             + request
             + (
@@ -3602,6 +3629,23 @@ def generate_behavior(
             feature_markdown
             + "\n\nApproved formal review:\n"
             + str(spec_review_payload["review_record_markdown"])
+        ),
+        governing_reference_ids=tuple(
+            sorted(
+                {
+                    boundary_id
+                    for entry in (
+                        *normalized_feature.core_dimensions,
+                        *normalized_feature.extensions,
+                    )
+                    if entry.applicability == "applicable"
+                    for boundary_id in entry.boundary_ids
+                }
+                | {
+                    interaction.interaction_id
+                    for interaction in normalized_feature.interactions
+                }
+            )
         ),
     )
     observed, result, attempts, artifacts = run_stage(test_spec_request)
