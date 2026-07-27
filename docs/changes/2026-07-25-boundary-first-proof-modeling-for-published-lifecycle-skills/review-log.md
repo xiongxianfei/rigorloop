@@ -19,6 +19,17 @@ Material findings: BFP-PR1, BFP-PR2, BFP-PR3, BFP-PR4
 Open findings: None
 
 ### Review entry
+Review ID: test-spec-review-r25
+Stage: test-spec-review
+Round: 25
+Reviewed artifact: corrected lease-first publisher-recovery proof map at a9748c41
+Status: approved
+Detailed record: reviews/test-spec-review-r25.md
+Resolution: review-resolution.md#test-spec-review-r25
+Material findings: None
+Open findings: None
+
+### Review entry
 Review ID: test-spec-review-r24
 Stage: test-spec-review
 Round: 24
@@ -27,7 +38,7 @@ Status: changes-requested
 Detailed record: reviews/test-spec-review-r24.md
 Resolution: review-resolution.md#test-spec-review-r24
 Material findings: BFP-TSR24-1
-Open findings: BFP-TSR24-1
+Open findings: None
 
 ### Review entry
 Review ID: code-review-m2-r4

@@ -274,7 +274,7 @@ Validation evidence: architecture decision list and component-boundary-proof.mmd
 
 Finding ID: BFP-TSR24-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec correction
 Decision owner: approved R28y ordering
@@ -286,7 +286,16 @@ durability, working-root durability, and invocation-observation steps.
 Rationale: The expected result and property table already select the behavior;
 the steps must not preserve the obsolete unleased ordering.
 Validation target: test-spec-review-r25
-Validation evidence: Pending.
+Validation evidence: Test-spec-review R25 approved the corrected proof map at
+`a9748c41`; T51 now requires durable lease and working-root evidence before the
+first lifecycle invocation. The focused boundary-proof suite passed 77 tests
+and lifecycle validation passed with only the existing classified warnings.
+
+### test-spec-review-r25
+
+No new material findings. R25 approved the corrected lease-first T51 proof map
+and allowed M2 implementation to resume. `BFP-TSR24-1` is resolved;
+`BFP-CR-M2-10` remains open until implementation and code review pass.
 
 ### proposal-review-r1
 
