@@ -2795,6 +2795,9 @@ FINDING_PROJECTION_LABELS: Final[tuple[str, ...]] = (
     "Safe resolution path",
     "needs-decision rationale",
 )
+FINDING_ID_PATTERN: Final[re.Pattern[str]] = re.compile(
+    r"^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$"
+)
 
 
 def _finding_projection(
@@ -2927,11 +2930,7 @@ def _validate_review_payload(
         not isinstance(material_finding_ids, list)
         or any(
             not isinstance(value, str)
-            or re.fullmatch(
-                r"^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$",
-                value,
-            )
-            is None
+            or FINDING_ID_PATTERN.fullmatch(value) is None
             for value in material_finding_ids
         )
         or len(material_finding_ids) != len(set(material_finding_ids))
@@ -3314,6 +3313,7 @@ def _correction_review_bundle(
     review_payload: Mapping[str, object],
     *,
     resolution_markdown: str | None = None,
+    prior_finding_ids: Sequence[str] | None = None,
 ) -> tuple[dict[str, object], dict[str, object], list[dict[str, object]]]:
     """Materialize one identity-bound correction review evidence bundle."""
 
@@ -3343,6 +3343,52 @@ def _correction_review_bundle(
         }
     ):
         raise BoundaryRuntimeError("protocol-shape-incompatible")
+    if (
+        prior_finding_ids is not None
+        and (
+            outcome != "approved"
+            or not prior_finding_ids
+            or list(prior_finding_ids) != sorted(prior_finding_ids)
+            or len(prior_finding_ids) != len(set(prior_finding_ids))
+            or any(
+                FINDING_ID_PATTERN.fullmatch(finding_id) is None
+                for finding_id in prior_finding_ids
+            )
+        )
+    ):
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    if (
+        (outcome == "approved" and prior_finding_ids is None)
+        != (resolution_markdown is None)
+        or (
+            outcome in {"changes-requested", "blocked"}
+            and resolution_markdown is None
+        )
+    ):
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    bundle_findings = (
+        list(prior_finding_ids)
+        if prior_finding_ids is not None
+        else list(findings)
+    )
+    if resolution_markdown is not None:
+        if any(
+            finding_id not in resolution_markdown
+            for finding_id in bundle_findings
+        ):
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
+        expected_closeout = (
+            "Closeout status: closed"
+            if outcome == "approved"
+            else "Closeout status: open"
+            if outcome == "changes-requested"
+            else None
+        )
+        if (
+            expected_closeout is not None
+            and expected_closeout not in resolution_markdown
+        ):
+            raise BoundaryRuntimeError("protocol-shape-incompatible")
     prefix = f"{stage}-attempt-{attempt}"
     record_snapshot = authored_snapshot(
         f"output.{stage}.attempt-{attempt}.record",
@@ -3374,7 +3420,7 @@ def _correction_review_bundle(
         "review_id": review_id,
         "outcome": outcome,
         "reviewed_snapshot_id": reviewed["snapshot_id"],
-        "material_finding_ids": list(findings),
+        "material_finding_ids": bundle_findings,
         "finding_projection": list(finding_projection),
         "finding_projection_identity": finding_projection_identity,
         "correction_eligibility": correction_eligibility,
@@ -3387,6 +3433,117 @@ def _correction_review_bundle(
         _canonical_json_bytes(bundle),
     )
     return bundle_snapshot, bundle, artifacts
+
+
+def _validate_review_bundle_payloads(
+    bundles: Mapping[str, object],
+    output_snapshots: Mapping[str, Mapping[str, object]],
+    resolve_snapshot: Callable[[Mapping[str, object]], Path],
+) -> None:
+    """Recompute bundle fields from exact review and resolution bytes."""
+
+    snapshots_by_ref = {
+        (str(snapshot["path"]), str(snapshot["identity"])): snapshot
+        for snapshot in output_snapshots.values()
+    }
+    for raw_bundle in bundles.values():
+        if not isinstance(raw_bundle, dict):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        artifact_refs = raw_bundle.get("artifact_refs")
+        reviewed_snapshot_id = raw_bundle.get("reviewed_snapshot_id")
+        if (
+            not isinstance(artifact_refs, dict)
+            or reviewed_snapshot_id not in output_snapshots
+        ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+
+        def referenced(role: str) -> Mapping[str, object]:
+            reference = artifact_refs.get(role)
+            if (
+                not isinstance(reference, dict)
+                or set(reference) != {"path", "identity"}
+            ):
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            snapshot = snapshots_by_ref.get(
+                (str(reference["path"]), str(reference["identity"]))
+            )
+            if snapshot is None:
+                raise BoundaryRuntimeError("runtime-identity-unstable")
+            return snapshot
+
+        record_snapshot = referenced("review-record")
+        log_snapshot = referenced("review-log")
+        record_name = Path(str(record_snapshot["path"])).name
+        stage = (
+            "test-spec-review"
+            if record_name.startswith("test-spec-review")
+            else "spec-review"
+            if record_name.startswith("spec-review")
+            else None
+        )
+        if stage is None:
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        try:
+            record = resolve_snapshot(record_snapshot).read_text(
+                encoding="utf-8"
+            )
+            log = resolve_snapshot(log_snapshot).read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as error:
+            raise BoundaryRuntimeError(
+                "runtime-identity-unstable"
+            ) from error
+        payload = _review_payload_from_markdown(stage, record, log)
+        reviewed = output_snapshots[str(reviewed_snapshot_id)]
+        _validate_review_payload(
+            payload,
+            stage=stage,
+            artifact_identity=str(reviewed["identity"]),
+            require_approval=False,
+        )
+        outcome = raw_bundle.get("outcome")
+        findings = raw_bundle.get("material_finding_ids")
+        if (
+            raw_bundle.get("review_id") != payload["review_id"]
+            or outcome != payload["outcome"]
+            or raw_bundle.get("finding_projection")
+            != payload["finding_projection"]
+            or raw_bundle.get("finding_projection_identity")
+            != payload["finding_projection_identity"]
+            or raw_bundle.get("correction_eligibility")
+            != payload["correction_eligibility"]
+            or not isinstance(findings, list)
+            or (
+                outcome != "approved"
+                and findings != payload["material_finding_ids"]
+            )
+        ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        resolution_ref = artifact_refs.get("review-resolution")
+        if resolution_ref is not None:
+            resolution_snapshot = referenced("review-resolution")
+            try:
+                resolution = resolve_snapshot(
+                    resolution_snapshot
+                ).read_text(encoding="utf-8")
+            except (OSError, UnicodeError) as error:
+                raise BoundaryRuntimeError(
+                    "runtime-identity-unstable"
+                ) from error
+            expected_closeout = (
+                "Closeout status: closed"
+                if outcome == "approved" and findings
+                else "Closeout status: open"
+                if outcome == "changes-requested"
+                else None
+            )
+            if (
+                any(finding_id not in resolution for finding_id in findings)
+                or (
+                    expected_closeout is not None
+                    and expected_closeout not in resolution
+                )
+            ):
+                raise BoundaryRuntimeError("runtime-identity-unstable")
 
 
 def _assemble_test_spec_correction_run(
@@ -3538,7 +3695,7 @@ def _assemble_test_spec_correction_run(
             1,
             test_one,
             initial_test_review,
-            resolution_markdown=corrected_resolution,
+            resolution_markdown=initial_resolution,
         )
     )
     test_bundle_two, test_bundle_two_record, test_artifacts_two = (
@@ -3548,6 +3705,8 @@ def _assemble_test_spec_correction_run(
             2,
             test_two,
             test_review_payload,
+            resolution_markdown=corrected_resolution,
+            prior_finding_ids=initial_findings,
         )
     )
     snapshots = [
@@ -3855,7 +4014,7 @@ def _assemble_feature_spec_correction_run(
             1,
             feature_one,
             initial_spec_review,
-            resolution_markdown=corrected_resolution,
+            resolution_markdown=initial_resolution,
         )
     )
     spec_bundle_two, spec_record_two, spec_artifacts_two = (
@@ -3865,6 +4024,8 @@ def _assemble_feature_spec_correction_run(
             2,
             feature_two,
             final_spec_review,
+            resolution_markdown=corrected_resolution,
+            prior_finding_ids=initial_findings,
         )
     )
     test_bundle, test_record, test_artifacts = _correction_review_bundle(
@@ -5358,6 +5519,9 @@ def _validate_staged_run(
     for snapshot_id, snapshot in output_snapshots.items():
         if str(snapshot["path"]).endswith("-bundle.json"):
             bundles[snapshot_id] = _read_json(staged_output(snapshot))
+    _validate_review_bundle_payloads(
+        bundles, output_snapshots, staged_output
+    )
     try:
         feature_models, proof_maps = _parse_output_models(
             output_snapshots, staged_output
@@ -5679,6 +5843,11 @@ def _validate_run(
     for snapshot_id, snapshot in output_snapshots.items():
         if str(snapshot["path"]).endswith("-bundle.json"):
             bundles[snapshot_id] = _read_json(repo_root / str(snapshot["path"]))
+    _validate_review_bundle_payloads(
+        bundles,
+        output_snapshots,
+        lambda snapshot: repo_root / str(snapshot["path"]),
+    )
     trace = {
         "snapshots": snapshots,
         "review_bundles": bundles,

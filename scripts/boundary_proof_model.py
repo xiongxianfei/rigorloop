@@ -1864,6 +1864,7 @@ def evaluate_simple_change_trace(
     bundle_records = _object(record["review_bundles"], "review_bundles")
     bundles: dict[str, Mapping[str, Any]] = {}
     bundle_artifacts: dict[str, tuple[str, ...]] = {}
+    bundle_resolutions: dict[str, str | None] = {}
     for bundle_snapshot_id, raw_bundle in bundle_records.items():
         label = f"review_bundles.{bundle_snapshot_id}"
         if bundle_snapshot_id not in snapshots:
@@ -2023,11 +2024,29 @@ def evaluate_simple_change_trace(
             raise BoundaryProofError(f"{label}: duplicate review artifact reference")
         bundles[bundle_snapshot_id] = bundle
         bundle_artifacts[bundle_snapshot_id] = tuple(artifact_snapshot_ids)
+        bundle_resolutions[bundle_snapshot_id] = (
+            snapshot_by_ref[
+                (
+                    normalized_path(
+                        artifact_refs["review-resolution"]["path"],
+                        f"{label}.artifact_refs.review-resolution.path",
+                    ),
+                    identity(
+                        artifact_refs["review-resolution"]["identity"],
+                        f"{label}.artifact_refs.review-resolution.identity",
+                    ),
+                )
+            ]
+            if "review-resolution" in artifact_refs
+            else None
+        )
 
     false_blocking = 0
     correction_cycles = 0
     correction_used = False
-    awaiting_correction_approval: tuple[str, int] | None = None
+    awaiting_correction_approval: (
+        tuple[str, int, tuple[str, ...], str] | None
+    ) = None
     expected_stage = "spec"
     expected_attempt = 1
     terminal = False
@@ -2257,12 +2276,40 @@ def evaluate_simple_change_trace(
                 correction_used = True
                 expected_stage = stage.removesuffix("-review")
                 expected_attempt = 2
-                awaiting_correction_approval = (stage, 2)
+                resolution_snapshot_id = bundle_resolutions[output_id]
+                if resolution_snapshot_id is None:
+                    raise BoundaryProofError(
+                        f"{label}: correction review lacks resolution"
+                    )
+                awaiting_correction_approval = (
+                    stage,
+                    2,
+                    tuple(bundle["material_finding_ids"]),
+                    resolution_snapshot_id,
+                )
             elif observed == "blocked":
                 terminal = True
             elif awaiting_correction_approval is not None:
-                if (stage, attempt) != awaiting_correction_approval:
+                (
+                    pending_stage,
+                    pending_attempt,
+                    pending_findings,
+                    pending_resolution,
+                ) = awaiting_correction_approval
+                if (stage, attempt) != (pending_stage, pending_attempt):
                     raise BoundaryProofError(f"{label}: correction approval mismatch")
+                if tuple(bundle["material_finding_ids"]) != pending_findings:
+                    raise BoundaryProofError(
+                        f"{label}: approving rereview finding set mismatch"
+                    )
+                rereview_resolution = bundle_resolutions[output_id]
+                if (
+                    rereview_resolution is None
+                    or rereview_resolution == pending_resolution
+                ):
+                    raise BoundaryProofError(
+                        f"{label}: approving rereview resolution mismatch"
+                    )
                 correction_cycles += 1
                 awaiting_correction_approval = None
                 if stage == "spec-review":
