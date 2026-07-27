@@ -947,6 +947,12 @@ resource through generated, packed, and installed outputs.
   `White_Space` enumeration plus boundary-removal/interior-preservation
   contrasts—without adding feature behavior, so the canonical branch can be
   deterministically zero-correction rather than reviewer-dependent.
+- 2026-07-27: Cross-stage placement of that proof instruction caused
+  `run-2b25b33aa371c079aa1c55760563713d` to fail the feature invariant before
+  review, proving the instruction was at the wrong boundary. Explicit recovery
+  quarantined the empty working run. The scenario is feature-only again; the
+  parent-owned test-spec instruction now carries the R2 proof detail, where it
+  cannot become a fifth feature requirement.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review

@@ -6882,7 +6882,12 @@ def _generate_behavior_locked(
 
     test_spec_request = _workflow_stage_request(
         "test-spec",
-        "Author the complete proof map for the approved feature specification.",
+        "Author the complete proof map for the approved feature specification. "
+        "For R2, deterministically enumerate every code point in the Unicode "
+        "`White_Space` property and prove both removal at text boundaries and "
+        "preservation of the same code points between retained non-whitespace "
+        "code points. Treat this as proof guidance, not additional normative "
+        "feature behavior.",
         artifact_context=(
             feature_markdown
             + "\n\nApproved formal review:\n"
