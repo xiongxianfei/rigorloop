@@ -1295,3 +1295,14 @@ Detailed record: reviews/spec-review-r49.md
 Resolution: review-resolution.md#spec-review-r49
 Material findings: BFP-SR49-1, BFP-SR49-2, BFP-SR49-3
 Open findings: BFP-SR49-1, BFP-SR49-2, BFP-SR49-3
+
+### Review entry
+Review ID: spec-review-r50
+Stage: spec-review
+Round: 50
+Reviewed artifact: focused category-binding correction at 5c5cfb26
+Status: changes-requested
+Detailed record: reviews/spec-review-r50.md
+Resolution: review-resolution.md#spec-review-r50
+Material findings: BFP-SR50-1, BFP-SR50-2
+Open findings: BFP-SR50-1, BFP-SR50-2

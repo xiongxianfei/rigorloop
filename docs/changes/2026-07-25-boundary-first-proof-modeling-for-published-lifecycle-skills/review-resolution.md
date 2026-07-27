@@ -3297,3 +3297,41 @@ Rationale: A proof map cannot authorize implementation against superseded
 upstream artifacts.
 Validation target: focused test-spec review after spec, architecture, and plan approval
 Validation evidence: pending
+
+### spec-review-r50
+
+#### BFP-SR50-1 — Proof-map readiness still relies on superseded inputs
+
+Finding ID: BFP-SR50-1
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: focused spec/test-spec revision
+Decision owner: active-plan handoff
+Decision needed: none
+Required outcome: Remove every R48/R22/R17 implementation-readiness claim and
+state the focused rereview sequence consistently.
+Chosen action: Replace the stale strategy and readiness paragraphs with the
+pending spec, architecture, plan, identity-sync, and test-spec gates.
+Rationale: Pending input rows cannot coexist with an implementation-ready
+summary.
+Validation target: spec-review-r51
+Validation evidence: pending
+
+#### BFP-SR50-2 — Change metadata is not synchronized with R49
+
+Finding ID: BFP-SR50-2
+Disposition: accepted
+Status: open
+Owner: workflow state maintainer
+Owning stage: review recording
+Decision owner: formal review recording contract
+Decision needed: none
+Required outcome: Synchronize review counters and the latest spec-review
+pointer from durable evidence in the same state-changing handoff.
+Chosen action: Record R50 with 161 material findings, eight open, and 153
+closed; on R51 approval, close the five focused spec findings and synchronize
+the counters again.
+Rationale: Chat review state cannot outrank stale durable metadata.
+Validation target: spec-review-r51
+Validation evidence: pending
