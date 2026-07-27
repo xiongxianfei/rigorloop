@@ -2131,8 +2131,8 @@ itself.
 It instead requires all of:
 
 - exact equality with the selected immutable projection;
-- every projection-named file-change-producing feature disabled in the
-  runtime-owned complete feature inventory;
+- every selected-projection `required_disabled_features` member disabled in
+  the runtime-owned complete feature inventory;
 - an identity-valid effective-tool projection in which only the selected
   projection's permitted tools are enabled;
 - the exact parent decline-handler policy identity installed before every
