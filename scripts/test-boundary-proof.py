@@ -34,6 +34,8 @@ from boundary_proof_behavior import (
     _StageTurnTimeout,
     _assert_parent_only_candidate_isolation,
     _artifact_kind,
+    _assemble_feature_spec_correction_run,
+    _assemble_test_spec_correction_run,
     _build_behavior_manifest,
     _classify_historical_evidence,
     _dispatch_file_change_request,
@@ -1812,6 +1814,144 @@ class BoundaryProofModelTests(unittest.TestCase):
                     "simple.snapshot.feature.v2",
                 ),
             )
+
+    def test_correction_assemblers_publish_a_canonical_manifest(self) -> None:
+        final_feature = (
+            FIXTURES / "simple-change/candidates/feature-spec.md"
+        ).read_text(encoding="utf-8")
+        final_test_spec = (
+            FIXTURES / "simple-change/candidates/test-spec.md"
+        ).read_text(encoding="utf-8")
+        candidate_feature = normalize_feature_model(
+            _parse_feature_markdown(final_feature)
+        )
+        candidate_proof = normalize_proof_map(
+            _parse_test_spec_markdown(final_test_spec),
+            candidate_feature,
+        )
+        approved_spec_review = {
+            "review_id": "spec-review-r2",
+            "outcome": "approved",
+            "material_finding_ids": [],
+            "review_record_markdown": "# Spec review r2\n",
+            "review_log_markdown": "# Spec review log r2\n",
+        }
+        approved_test_review = {
+            "review_id": "test-spec-review-r2",
+            "outcome": "approved",
+            "material_finding_ids": [],
+            "review_record_markdown": "# Test-spec review r2\n",
+            "review_log_markdown": "# Test-spec review log r2\n",
+        }
+        changed_review = {
+            "review_id": "review-r1",
+            "outcome": "changes-requested",
+            "material_finding_ids": ["finding.boundary"],
+            "review_record_markdown": "# Changes requested\n",
+            "review_log_markdown": "# Changes-requested log\n",
+        }
+        stage_artifacts = {
+            "feature-spec/portable-text-normalizer.md": final_feature,
+            "test-spec/portable-text-normalizer.test.md": final_test_spec,
+        }
+        input_set = {"baseline_commit": "a" * 40}
+
+        with tempfile.TemporaryDirectory() as raw:
+            repo_root = Path(raw)
+            candidate_root = (
+                repo_root
+                / "tests/fixtures/boundary-proof/simple-change/candidates"
+            )
+            candidate_root.mkdir(parents=True)
+            (candidate_root / "feature-spec.md").write_text(
+                final_feature, encoding="utf-8"
+            )
+            (candidate_root / "test-spec.md").write_text(
+                final_test_spec, encoding="utf-8"
+            )
+            cases = (
+                (
+                    _assemble_feature_spec_correction_run,
+                    {
+                        "role": "feature-spec",
+                        "initial_artifact_markdown": final_feature + "\n",
+                        "initial_review": changed_review,
+                        "initial_resolution_markdown": "# Open\n",
+                        "corrected_resolution_markdown": "# Closed\n",
+                    },
+                    (
+                        ("spec", 1),
+                        ("spec-review", 1),
+                        ("spec", 2),
+                        ("spec-review", 2),
+                        ("test-spec", 1),
+                        ("test-spec-review", 1),
+                    ),
+                ),
+                (
+                    _assemble_test_spec_correction_run,
+                    {
+                        "role": "test-spec",
+                        "initial_artifact_markdown": final_test_spec + "\n",
+                        "initial_review": changed_review,
+                        "initial_resolution_markdown": "# Open\n",
+                        "corrected_resolution_markdown": "# Closed\n",
+                    },
+                    (
+                        ("spec", 1),
+                        ("spec-review", 1),
+                        ("test-spec", 1),
+                        ("test-spec-review", 1),
+                        ("test-spec", 2),
+                        ("test-spec-review", 2),
+                    ),
+                ),
+            )
+            for index, (assembler, correction, occurrences) in enumerate(cases):
+                with self.subTest(role=correction["role"]):
+                    change_id = f"2026-07-27-correction-{index}"
+                    (repo_root / "docs/changes" / change_id).mkdir(
+                        parents=True
+                    )
+                    payload = {
+                        "stage_artifacts": stage_artifacts,
+                        "stage_provenance": [
+                            {
+                                "stage": stage,
+                                "attempt": attempt,
+                                "thread_id": f"thread-{index}-{position}",
+                                "skill_names": ["workflow", stage],
+                            }
+                            for position, (stage, attempt) in enumerate(
+                                occurrences
+                            )
+                        ],
+                        "spec_review": approved_spec_review,
+                        "test_spec_review": approved_test_review,
+                        "transport_attempts": [],
+                    }
+                    temporary, manifest = assembler(
+                        repo_root,
+                        change_id,
+                        f"run-{'1' if index == 0 else '2'}" + "0" * 31,
+                        input_set,
+                        payload,
+                        candidate_feature,
+                        candidate_proof,
+                        [],
+                        [],
+                        correction,
+                    )
+                    self.assertTrue((temporary / "manifest.json").is_file())
+                    self.assertFalse((temporary / "run.json").exists())
+                    self.assertEqual(
+                        json.loads(
+                            (temporary / "manifest.json").read_text(
+                                encoding="utf-8"
+                            )
+                        ),
+                        manifest,
+                    )
 
     def test_validator_help_and_fixture_validation(self) -> None:
         result = subprocess.run(
