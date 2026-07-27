@@ -106,6 +106,8 @@ from boundary_proof_model import (
     EVALUATED_SKILLS,
     EXAMPLE_ROLES,
     FIXTURE_GATES,
+    OPERATION_IDS,
+    SUPPORT_OPERATION_IDS,
     INCIDENT_RULES,
     INTERACTION_RATIONALES,
     HANDLER_CONFORMANCE_CASES,
@@ -302,16 +304,91 @@ def _report(result: str = "pass") -> dict[str, object]:
         if result == "not-run"
         else None
     )
+    operation_identities = {
+        operation_id: "sha256:"
+        + hashlib.sha256(operation_id.encode("utf-8")).hexdigest()
+        for operation_id in OPERATION_IDS
+    }
+
+    def dependencies(operation_id: str) -> tuple[str, ...]:
+        if result == "not-run":
+            return ()
+        if operation_id == "boundary-incident-replay":
+            return tuple(FIXTURE_GATES)
+        if operation_id.startswith("preservation-") and operation_id != (
+            "preservation-manifest"
+        ):
+            return ("preservation-manifest",)
+        if operation_id == "simple-change-behavior":
+            return ("behavior-implementation-manifest",)
+        if operation_id == "adapter-parity":
+            return ("canonical-skill-resource-manifest",)
+        if operation_id == "boundary-adapter-parity":
+            return ("adapter-parity",)
+        if operation_id == "boundary-capability-baseline":
+            return tuple(
+                candidate
+                for candidate in OPERATION_IDS
+                if candidate != "boundary-capability-baseline"
+            )
+        return ()
+
+    aggregate_observations = {
+        "false_blocking_count": 0,
+        "duplicate_normative_owner_count": 0,
+        "new_universal_artifact_count": 0,
+        "simple_fixture_structure_correction_cycles": 1,
+    }
+    simple_observations = {
+        "false_blocking_count": 0,
+        "new_universal_artifact_count": 0,
+        "simple_fixture_structure_correction_cycles": 1,
+        "final_feature_spec_snapshot_id": "output.feature-spec.one",
+        "final_test_spec_snapshot_id": "output.test-spec.one",
+    }
+
+    def row(
+        operation_id: str,
+        *,
+        observations: dict[str, object] | None = None,
+    ) -> dict[str, object]:
+        return {
+            "result": result,
+            "diagnostic_id": (
+                "none" if result != "fail" else "synthetic-failure"
+            ),
+            "operation_identity": operation_identities[operation_id],
+            "dependency_results": [
+                {
+                    "operation_id": dependency,
+                    "result_identity": operation_identities[dependency],
+                }
+                for dependency in dependencies(operation_id)
+            ],
+            "evidence_refs": evidence if result != "not-run" else [],
+            "blocking_reason": blocking_reason,
+            "observations": (
+                observations if result != "not-run" else {}
+            )
+            or {},
+        }
+
     fixtures = [
         {
             "fixture_id": fixture_id,
-            "result": result,
             "expected_gate": expected_gate,
             "detected_stage": expected_gate if result != "not-run" else "not-detected",
             "escaped_to_code_review": False,
             "sibling_bypass_remaining": False,
-            "evidence_refs": evidence if result != "not-run" else [],
-            "blocking_reason": blocking_reason,
+            **row(
+                fixture_id,
+                observations={
+                    "expected_gate": expected_gate,
+                    "detected_stage": expected_gate,
+                    "escaped_to_code_review": False,
+                    "sibling_bypass_remaining": False,
+                },
+            ),
         }
         for fixture_id, expected_gate in FIXTURE_GATES.items()
     ]
@@ -321,20 +398,25 @@ def _report(result: str = "pass") -> dict[str, object]:
         "evaluated_skills": list(EVALUATED_SKILLS),
         "required_check_ids": list(CHECK_IDS),
         "checks": {
-            check_id: {
-                "result": result,
-                "evidence_refs": evidence if result != "not-run" else [],
-                "blocking_reason": blocking_reason,
-            }
+            check_id: row(
+                check_id,
+                observations=(
+                    {"duplicate_normative_owner_count": 0}
+                    if check_id == "boundary-workflow-contract"
+                    else aggregate_observations
+                    if check_id == "boundary-capability-baseline"
+                    else {}
+                ),
+            )
             for check_id in CHECK_IDS
         },
         "fixtures": fixtures,
+        "support": {
+            operation_id: row(operation_id)
+            for operation_id in SUPPORT_OPERATION_IDS
+        },
         "preservation_results": {
-            key: {
-                "result": result,
-                "evidence_refs": evidence if result != "not-run" else [],
-                "blocking_reason": blocking_reason,
-            }
+            key: row(f"preservation-{key}")
             for key in (
                 "behavior",
                 "claim-boundary",
@@ -343,11 +425,11 @@ def _report(result: str = "pass") -> dict[str, object]:
                 "handoff",
             )
         },
-        "adapter_parity": {
-            "result": result,
-            "evidence_refs": evidence if result != "not-run" else [],
-            "blocking_reason": blocking_reason,
-        },
+        "adapter_parity": row("adapter-parity"),
+        "simple_change": row(
+            "simple-change-behavior",
+            observations=simple_observations,
+        ),
         "false_blocking_count": 0,
         "duplicate_normative_owner_count": 0,
         "new_universal_artifact_count": 0,
@@ -367,6 +449,9 @@ def _set_all_report_evidence(
     for row in report["preservation_results"].values():  # type: ignore[union-attr]
         row["evidence_refs"] = [reference]  # type: ignore[index]
     report["adapter_parity"]["evidence_refs"] = [reference]  # type: ignore[index]
+    report["simple_change"]["evidence_refs"] = [reference]  # type: ignore[index]
+    for row in report["support"].values():  # type: ignore[union-attr]
+        row["evidence_refs"] = [reference]  # type: ignore[index]
 
 
 def _simple_models(
@@ -1248,6 +1333,34 @@ class BoundaryProofModelTests(unittest.TestCase):
         unknown_blocker["checks"]["boundary-traceability"]["blocking_reason"]["code"] = "later"  # type: ignore[index]
         with self.assertRaisesRegex(BoundaryProofError, "unknown blocking reason"):
             validate_capability_report(unknown_blocker)
+
+    def test_report_operation_dependencies_and_projection_fail_closed(
+        self,
+    ) -> None:
+        missing_support = _report()
+        del missing_support["support"]  # type: ignore[index]
+        with self.assertRaisesRegex(BoundaryProofError, "missing fields: support"):
+            validate_capability_report(missing_support)
+
+        reordered = _report()
+        dependencies = reordered["checks"]["boundary-incident-replay"][  # type: ignore[index]
+            "dependency_results"
+        ]
+        dependencies.reverse()
+        with self.assertRaisesRegex(
+            BoundaryProofError, "dependency order or membership mismatch"
+        ):
+            validate_capability_report(reordered)
+
+        stale_dependency = _report()
+        stale_dependency["adapter_parity"]["dependency_results"][0][  # type: ignore[index]
+            "result_identity"
+        ] = "sha256:" + "0" * 64
+        with self.assertRaisesRegex(
+            BoundaryProofError,
+            "stale or substituted dependency identity",
+        ):
+            validate_capability_report(stale_dependency)
 
         with tempfile.TemporaryDirectory() as raw:
             repository = Path(raw)

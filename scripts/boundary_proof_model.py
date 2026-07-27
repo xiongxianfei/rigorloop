@@ -342,6 +342,27 @@ PRESERVATION_KEYS = (
     "handoff",
 )
 CAPABILITY_REPORT_SCHEMA = "boundary-capability-baseline-v1"
+SUPPORT_OPERATION_IDS = (
+    "preservation-manifest",
+    "behavior-implementation-manifest",
+    "canonical-skill-resource-manifest",
+)
+FIXTURE_OPERATION_IDS = tuple(FIXTURE_GATES)
+OPERATION_IDS = (
+    "boundary-workflow-contract",
+    "boundary-skill-contract",
+    "boundary-traceability",
+    *FIXTURE_OPERATION_IDS,
+    "boundary-incident-replay",
+    "preservation-manifest",
+    *(f"preservation-{key}" for key in PRESERVATION_KEYS),
+    "behavior-implementation-manifest",
+    "simple-change-behavior",
+    "canonical-skill-resource-manifest",
+    "adapter-parity",
+    "boundary-adapter-parity",
+    "boundary-capability-baseline",
+)
 
 STABLE_ID_RE = re.compile(r"^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$")
 EXTENSION_ID_RE = re.compile(r"^x\.[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$")
@@ -405,13 +426,26 @@ REPORT_FIELDS = frozenset(
         "required_check_ids",
         "checks",
         "fixtures",
+        "support",
         "preservation_results",
         "adapter_parity",
+        "simple_change",
         "false_blocking_count",
         "duplicate_normative_owner_count",
         "new_universal_artifact_count",
         "simple_fixture_structure_correction_cycles",
         "overall_result",
+    }
+)
+REPORT_ROW_FIELDS = frozenset(
+    {
+        "result",
+        "diagnostic_id",
+        "operation_identity",
+        "dependency_results",
+        "evidence_refs",
+        "blocking_reason",
+        "observations",
     }
 )
 
@@ -1435,26 +1469,89 @@ def _result_record(
     value: Any,
     label: str,
     repository_root: Path,
+    *,
+    operation_id: str,
+    expected_dependencies: tuple[str, ...],
 ) -> str:
     record = _object(value, label)
-    _exact_fields(
-        record,
-        frozenset({"result", "evidence_refs", "blocking_reason"}),
-        label,
-    )
+    _exact_fields(record, REPORT_ROW_FIELDS, label)
     result = record["result"]
     if result not in RESULT_VALUES:
         raise BoundaryProofError(f"{label}: unknown result: {result!r}")
+    diagnostic = _nonempty_string(
+        record["diagnostic_id"], f"{label}.diagnostic_id"
+    )
+    if result == "pass" and diagnostic != "none":
+        raise BoundaryProofError(f"{label}: pass diagnostic must be none")
+    if result == "fail" and diagnostic == "none":
+        raise BoundaryProofError(f"{label}: fail diagnostic must be non-none")
+    operation_identity = _nonempty_string(
+        record["operation_identity"], f"{label}.operation_identity"
+    )
+    if not re.fullmatch(r"sha256:[0-9a-f]{64}", operation_identity):
+        raise BoundaryProofError(f"{label}.operation_identity: invalid identity")
+    dependencies = record["dependency_results"]
+    if not isinstance(dependencies, list):
+        raise BoundaryProofError(f"{label}.dependency_results: expected list")
+    dependency_ids: list[str] = []
+    for index, dependency in enumerate(dependencies):
+        dependency_label = f"{label}.dependency_results[{index}]"
+        dependency_record = _object(dependency, dependency_label)
+        _exact_fields(
+            dependency_record,
+            frozenset({"operation_id", "result_identity"}),
+            dependency_label,
+        )
+        dependency_id = _nonempty_string(
+            dependency_record["operation_id"],
+            f"{dependency_label}.operation_id",
+        )
+        if dependency_id not in OPERATION_IDS:
+            raise BoundaryProofError(
+                f"{dependency_label}: unknown operation ID"
+            )
+        dependency_identity = _nonempty_string(
+            dependency_record["result_identity"],
+            f"{dependency_label}.result_identity",
+        )
+        if not re.fullmatch(r"sha256:[0-9a-f]{64}", dependency_identity):
+            raise BoundaryProofError(
+                f"{dependency_label}.result_identity: invalid identity"
+            )
+        dependency_ids.append(dependency_id)
+    required_dependencies = (
+        () if result == "not-run" else expected_dependencies
+    )
+    if tuple(dependency_ids) != required_dependencies:
+        raise BoundaryProofError(
+            f"{label}: dependency order or membership mismatch"
+        )
     evidence = record["evidence_refs"]
     if not isinstance(evidence, list):
         raise BoundaryProofError(f"{label}.evidence_refs: expected list")
+    observations = record["observations"]
+    if not isinstance(observations, dict):
+        raise BoundaryProofError(f"{label}.observations: expected object")
     if result == "not-run":
+        if diagnostic != "none":
+            raise BoundaryProofError(f"{label}: not-run diagnostic must be none")
         if evidence:
             raise BoundaryProofError(f"{label}: not-run cannot cite evidence")
+        if dependencies:
+            raise BoundaryProofError(
+                f"{label}: not-run cannot cite dependencies"
+            )
+        if observations:
+            raise BoundaryProofError(
+                f"{label}: not-run cannot contain observations"
+            )
         _blocking_reason(record["blocking_reason"], f"{label}.blocking_reason")
     else:
-        if not evidence:
-            raise BoundaryProofError(f"{label}.evidence_refs: expected one or more values")
+        if not evidence and not dependencies:
+            raise BoundaryProofError(
+                f"{label}.evidence_refs or dependency_results: "
+                "executed result requires evidence or dependencies"
+            )
         if record["blocking_reason"] is not None:
             raise BoundaryProofError(f"{label}: executed result cannot have blocking reason")
         for index, reference in enumerate(evidence):
@@ -1464,6 +1561,28 @@ def _result_record(
                 repository_root,
             )
     return result
+
+
+def _expected_dependencies(operation_id: str) -> tuple[str, ...]:
+    if operation_id == "boundary-incident-replay":
+        return FIXTURE_OPERATION_IDS
+    if operation_id.startswith("preservation-") and operation_id != (
+        "preservation-manifest"
+    ):
+        return ("preservation-manifest",)
+    if operation_id == "simple-change-behavior":
+        return ("behavior-implementation-manifest",)
+    if operation_id == "adapter-parity":
+        return ("canonical-skill-resource-manifest",)
+    if operation_id == "boundary-adapter-parity":
+        return ("adapter-parity",)
+    if operation_id == "boundary-capability-baseline":
+        return tuple(
+            candidate
+            for candidate in OPERATION_IDS
+            if candidate != "boundary-capability-baseline"
+        )
+    return ()
 
 
 def _validate_report_shape(
@@ -1496,20 +1615,23 @@ def _validate_report_shape(
             raise BoundaryProofError("unknown required check ID: " + unknown[0])
         raise BoundaryProofError("checks must contain the exact six check IDs")
     for check_id in CHECK_IDS:
-        _result_record(checks[check_id], f"checks.{check_id}", root)
+        _result_record(
+            checks[check_id],
+            f"checks.{check_id}",
+            root,
+            operation_id=check_id,
+            expected_dependencies=_expected_dependencies(check_id),
+        )
 
     rows = _records(report["fixtures"], "fixtures")
     seen: set[str] = set()
-    fixture_fields = frozenset(
+    fixture_fields = REPORT_ROW_FIELDS | frozenset(
         {
             "fixture_id",
-            "result",
             "expected_gate",
             "detected_stage",
             "escaped_to_code_review",
             "sibling_bypass_remaining",
-            "evidence_refs",
-            "blocking_reason",
         }
     )
     for index, row in enumerate(rows):
@@ -1535,22 +1657,95 @@ def _validate_report_shape(
                 raise BoundaryProofError(f"{label}.{field}: expected boolean")
         _result_record(
             {
-                "result": result,
-                "evidence_refs": row["evidence_refs"],
-                "blocking_reason": row["blocking_reason"],
+                field: row[field] for field in REPORT_ROW_FIELDS
             },
             label,
             root,
+            operation_id=fixture_id,
+            expected_dependencies=(),
         )
     if seen != set(FIXTURE_GATES):
         raise BoundaryProofError("fixtures must contain every exact seeded fixture")
+
+    support = _object(report["support"], "support")
+    if tuple(support) != SUPPORT_OPERATION_IDS:
+        raise BoundaryProofError(
+            "support must contain the exact ordered support operations"
+        )
+    for operation_id in SUPPORT_OPERATION_IDS:
+        _result_record(
+            support[operation_id],
+            f"support.{operation_id}",
+            root,
+            operation_id=operation_id,
+            expected_dependencies=_expected_dependencies(operation_id),
+        )
 
     preservation = _object(report["preservation_results"], "preservation_results")
     if set(preservation) != set(PRESERVATION_KEYS):
         raise BoundaryProofError("preservation_results must contain exact preservation keys")
     for key in PRESERVATION_KEYS:
-        _result_record(preservation[key], f"preservation_results.{key}", root)
-    _result_record(report["adapter_parity"], "adapter_parity", root)
+        operation_id = f"preservation-{key}"
+        _result_record(
+            preservation[key],
+            f"preservation_results.{key}",
+            root,
+            operation_id=operation_id,
+            expected_dependencies=_expected_dependencies(operation_id),
+        )
+    _result_record(
+        report["adapter_parity"],
+        "adapter_parity",
+        root,
+        operation_id="adapter-parity",
+        expected_dependencies=_expected_dependencies("adapter-parity"),
+    )
+    _result_record(
+        report["simple_change"],
+        "simple_change",
+        root,
+        operation_id="simple-change-behavior",
+        expected_dependencies=_expected_dependencies(
+            "simple-change-behavior"
+        ),
+    )
+    projected_rows: dict[str, Mapping[str, Any]] = {
+        **{check_id: checks[check_id] for check_id in CHECK_IDS},
+        **{
+            row["fixture_id"]: row
+            for row in rows
+        },
+        **{
+            operation_id: support[operation_id]
+            for operation_id in SUPPORT_OPERATION_IDS
+        },
+        **{
+            f"preservation-{key}": preservation[key]
+            for key in PRESERVATION_KEYS
+        },
+        "adapter-parity": report["adapter_parity"],
+        "simple-change-behavior": report["simple_change"],
+    }
+    if set(projected_rows) != set(OPERATION_IDS):
+        raise BoundaryProofError(
+            "report projection does not cover the closed operation registry"
+        )
+    operation_identities = [
+        projected_rows[operation_id]["operation_identity"]
+        for operation_id in OPERATION_IDS
+    ]
+    if len(set(operation_identities)) != len(operation_identities):
+        raise BoundaryProofError("operation identities must be unique")
+    for operation_id in OPERATION_IDS:
+        row = projected_rows[operation_id]
+        for dependency in row["dependency_results"]:
+            dependency_id = dependency["operation_id"]
+            if dependency["result_identity"] != projected_rows[
+                dependency_id
+            ]["operation_identity"]:
+                raise BoundaryProofError(
+                    f"{operation_id}: stale or substituted dependency identity"
+                )
     for field in (
         "false_blocking_count",
         "duplicate_normative_owner_count",
@@ -1624,12 +1819,18 @@ def capability_report_result(
     _validate_report_shape(report, repository_root)
     checks = report["checks"]
     fixtures = report["fixtures"]
+    support = report["support"]
     preservation = report["preservation_results"]
     pass_result = all(checks[check_id]["result"] == "pass" for check_id in CHECK_IDS)
+    pass_result = pass_result and all(
+        support[operation_id]["result"] == "pass"
+        for operation_id in SUPPORT_OPERATION_IDS
+    )
     pass_result = pass_result and all(
         preservation[key]["result"] == "pass" for key in PRESERVATION_KEYS
     )
     pass_result = pass_result and report["adapter_parity"]["result"] == "pass"
+    pass_result = pass_result and report["simple_change"]["result"] == "pass"
     gate_index = {gate: index for index, gate in enumerate(EXPECTED_GATES)}
     for row in fixtures:
         detected = row["detected_stage"]
@@ -2503,6 +2704,8 @@ __all__ = [
     "FeatureInvariantProjection",
     "INTERACTION_RATIONALES",
     "PRESERVATION_KEYS",
+    "OPERATION_IDS",
+    "SUPPORT_OPERATION_IDS",
     "ProofObligation",
     "ProofInvariantProjection",
     "RESULT_VALUES",
