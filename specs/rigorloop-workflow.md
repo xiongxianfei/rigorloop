@@ -1,7 +1,7 @@
 # RigorLoop Workflow
 
 ## Status
-- approved
+- draft
 Boundary model version: v1
 Boundary model scope: R28-R28z
 
@@ -2639,6 +2639,42 @@ The harness derives events and observed results before reading either field.
 Changing either field may change only the final expectation comparison; it
 MUST NOT change invocation, produced events, structural results, observed
 results, or diagnostics.
+
+Formal review outcome and correction authority are separate.
+For each material finding in a `changes-requested` review, the harness parses
+the required review fields `Evidence`, `Required outcome`,
+`Safe resolution path`, and `needs-decision rationale`.
+The closed correction-eligibility values are:
+
+```text
+not-applicable
+automatic-eligible
+owner-decision-required
+```
+
+An initial `changes-requested` review is `automatic-eligible` only when every
+material finding has non-empty evidence, required outcome, and safe resolution
+path, and every `needs-decision rationale` is exactly `none`.
+If any finding has a non-`none` `needs-decision rationale`, the complete review
+is `owner-decision-required`.
+Missing, duplicate, contradictory, or unparseable finding fields fail closed
+as `protocol-shape-incompatible`; they do not default to correction authority.
+Approved and blocked reviews use `not-applicable`.
+
+Only `automatic-eligible` authorizes authoring attempt 2 within the existing
+one-correction budget.
+`owner-decision-required` terminates generation before authoring attempt 2 with
+`correction-authorization-required`.
+The first release does not resume that interrupted behavior run or consume a
+future-contingent owner decision.
+The owner must instead clarify the authoritative scenario request or other
+governing input, producing a new input-set identity, and explicitly start a
+fresh generation.
+The stopped run remains noncanonical and MUST NOT be installed, pointed to, or
+reported as passing behavior evidence.
+This input-revision rule preserves owner authority without introducing a
+second mid-run workflow cursor or silently rebinding the reviewed artifact.
+
 Every snapshot contains exactly `snapshot_id`, `source`, `artifact_role`,
 `path`, and `identity`.
 `source` is `fixture-candidate` or `behavior-output`.
@@ -4115,17 +4151,23 @@ approving review evidence, and produces exactly one review-evidence
 bundle-manifest snapshot.
 
 Every review-evidence bundle manifest contains exactly `review_id`, `outcome`,
-`reviewed_snapshot_id`, `material_finding_ids`, and `artifact_refs`.
+`reviewed_snapshot_id`, `material_finding_ids`, `correction_eligibility`, and
+`artifact_refs`.
 `artifact_refs` is role-keyed and contains exactly one `review-record` and one
 `review-log` current path-and-identity reference.
 For an initial `approved` review, `material_finding_ids` is empty and
-`review-resolution` is absent.
+`review-resolution` is absent, and `correction_eligibility` is
+`not-applicable`.
 For an approving rereview, `material_finding_ids` is the exact prior finding
 set and `artifact_refs` additionally contains exactly one closed
-`review-resolution` reference.
+`review-resolution` reference; `correction_eligibility` is
+`not-applicable`.
 For `changes-requested` or `blocked`, `material_finding_ids` is non-empty and
 `artifact_refs` additionally contains exactly one `review-resolution`
 reference.
+For `changes-requested`, `correction_eligibility` is the deterministically
+derived `automatic-eligible` or `owner-decision-required` value.
+For `blocked`, it is `not-applicable`.
 The referenced files MUST satisfy the formal review-recording contract; the
 bundle manifest does not replace or weaken them.
 The review event's `evidence_refs` includes the bundle manifest and every
@@ -4169,33 +4211,42 @@ successful:
   -> test-spec#1 -> test-spec-review#1(approved)
 
 one correction:
-  spec#1 -> spec-review#1(changes-requested)
+  spec#1 -> spec-review#1(changes-requested, automatic-eligible)
   -> spec#2 -> spec-review#2(approved)
   -> test-spec#1 -> test-spec-review#1(approved)
 
 or:
   spec#1 -> spec-review#1(approved)
-  -> test-spec#1 -> test-spec-review#1(changes-requested)
+  -> test-spec#1
+  -> test-spec-review#1(changes-requested, automatic-eligible)
   -> test-spec#2 -> test-spec-review#2(approved)
 
 blocked:
   any valid prefix ending in a review event with observed_result blocked
 
+correction authorization required:
+  any valid prefix ending in an initial review event with
+  observed_result changes-requested and correction_eligibility
+  owner-decision-required
+
 correction budget exhausted:
-  spec#1 -> spec-review#1(changes-requested)
-  -> spec#2 -> spec-review#2(changes-requested)
+  spec#1 -> spec-review#1(changes-requested, automatic-eligible)
+  -> spec#2 -> spec-review#2(changes-requested, *)
 
 or:
   spec#1 -> spec-review#1(approved)
-  -> test-spec#1 -> test-spec-review#1(changes-requested)
-  -> test-spec#2 -> test-spec-review#2(changes-requested)
+  -> test-spec#1
+  -> test-spec-review#1(changes-requested, automatic-eligible)
+  -> test-spec#2 -> test-spec-review#2(changes-requested, *)
 
 authoring failure:
   any valid prefix ending in an authoring event with structural_result fail
 ```
 
-No event may follow blocked, correction-budget-exhausted, or an authoring
-structural failure.
+No event may follow blocked, correction-authorization-required,
+correction-budget-exhausted, or an authoring structural failure.
+The `correction-authorization-required` terminal diagnostic is distinct from
+the review event diagnostic and prevents publication success.
 The second changes-requested review preserves its open resolution, permits no
 third authoring attempt, and terminates `simple-change-behavior` as `fail`
 with run diagnostic `correction-budget-exhausted`.
@@ -4697,10 +4748,12 @@ Partial `v1` evidence MUST NOT be reinterpreted as `legacy` proof.
 
 ## Readiness
 
-- The retained workflow contract remains approved.
+- The retained workflow contract remains approved outside the focused draft
+  R28y correction-authority amendment.
 - The boundary-first `R28` through `R28z` amendment was approved by
   `spec-review-r36`. Architecture, plan, and test-spec synchronization remain
   mandatory before implementation relies on the focused amendment.
-- The focused R28y invariant-oracle correction is pending `spec-review`.
+- The focused R28y correction-authority amendment is pending `spec-review`.
   M2 implementation cannot rely on it until that review and the synchronized
-  test-spec review approve it.
+  architecture, plan, and test-spec reviews approve their affected
+  projections.
