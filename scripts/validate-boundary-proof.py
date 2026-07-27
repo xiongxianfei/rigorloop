@@ -19,7 +19,9 @@ from boundary_proof_model import (
     CHECK_IDS,
     EVALUATED_SKILLS,
     FIXTURE_GATES,
+    OPERATION_IDS,
     PRESERVATION_KEYS,
+    SUPPORT_OPERATION_IDS,
     capability_report_result,
     normalize_feature_model,
     normalize_proof_map,
@@ -309,9 +311,289 @@ def _parse_report(path: Path) -> Any:
         raise BoundaryProofError("report payload is invalid") from error
 
 
-def generate_report(change_id: str, output: Path) -> dict[str, Any]:
+def _canonical_identity(payload: Any) -> str:
+    return _identity(
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    )
+
+
+def _normalize_refs(
+    references: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    unique: dict[str, dict[str, str]] = {}
+    for reference in references:
+        path = reference["path"]
+        if path in unique and unique[path] != reference:
+            raise BoundaryProofError(
+                f"{path}: conflicting operation evidence identity"
+            )
+        unique[path] = reference
+    return [unique[path] for path in sorted(unique)]
+
+
+def _collect_refs(payload: Any) -> list[dict[str, str]]:
+    references: list[dict[str, str]] = []
+    if isinstance(payload, dict):
+        if set(payload) == {"path", "identity"} and all(
+            isinstance(payload[field], str) for field in payload
+        ):
+            references.append(
+                {
+                    "path": payload["path"],
+                    "identity": payload["identity"],
+                }
+            )
+        else:
+            for value in payload.values():
+                references.extend(_collect_refs(value))
+    elif isinstance(payload, list):
+        for value in payload:
+            references.extend(_collect_refs(value))
+    return _normalize_refs(references)
+
+
+def _operation(
+    operation_id: str,
+    *,
+    input_refs: list[dict[str, str]] | None = None,
+    output_refs: list[dict[str, str]] | None = None,
+    dependencies: list[dict[str, Any]] | None = None,
+    observations: dict[str, Any] | None = None,
+    result: str = "pass",
+    diagnostic_id: str = "none",
+    blocking_reason: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    if operation_id not in OPERATION_IDS:
+        raise BoundaryProofError(f"unknown operation ID: {operation_id}")
+    dependency_results = [
+        {
+            "operation_id": dependency["operation_id"],
+            "result_identity": dependency["result_identity"],
+        }
+        for dependency in (dependencies or [])
+    ]
+    operation = {
+        "operation_id": operation_id,
+        "result": result,
+        "diagnostic_id": diagnostic_id,
+        "input_refs": _normalize_refs(input_refs or []),
+        "output_refs": _normalize_refs(output_refs or []),
+        "dependency_results": dependency_results,
+        "blocking_reason": blocking_reason,
+        "observations": observations or {},
+    }
+    operation["result_identity"] = _canonical_identity(operation)
+    return operation
+
+
+def _project_operation(
+    operation: dict[str, Any],
+    *,
+    fixture_id: str | None = None,
+) -> dict[str, Any]:
+    row = {
+        "result": operation["result"],
+        "diagnostic_id": operation["diagnostic_id"],
+        "operation_identity": operation["result_identity"],
+        "dependency_results": operation["dependency_results"],
+        "evidence_refs": (
+            operation["input_refs"] + operation["output_refs"]
+            if operation["result"] != "not-run"
+            else []
+        ),
+        "blocking_reason": operation["blocking_reason"],
+        "observations": operation["observations"],
+    }
+    if fixture_id is not None:
+        observations = operation["observations"]
+        row.update(
+            {
+                "fixture_id": fixture_id,
+                "expected_gate": observations["expected_gate"],
+                "detected_stage": observations["detected_stage"],
+                "escaped_to_code_review": observations[
+                    "escaped_to_code_review"
+                ],
+                "sibling_bypass_remaining": observations[
+                    "sibling_bypass_remaining"
+                ],
+            }
+        )
+    return row
+
+
+def _current_resource_manifest() -> dict[str, Any]:
+    files: list[dict[str, str]] = []
+    for skill in EVALUATED_SKILLS:
+        for logical_path in ("SKILL.md", BOUNDARY_RESOURCE):
+            path = ROOT / "skills" / skill / logical_path
+            files.append(
+                {
+                    "skill": skill,
+                    "logical_path": logical_path,
+                    "path": path.relative_to(ROOT).as_posix(),
+                    "identity": _identity(path.read_bytes()),
+                }
+            )
+    files.sort(key=lambda row: row["path"])
+    return {
+        "manifest_id": "canonical-boundary-skill-resources-v1",
+        "skills": list(EVALUATED_SKILLS),
+        "files": files,
+    }
+
+
+def _validate_current_resource_manifest(change_root: Path) -> dict[str, Any]:
+    path = (
+        change_root
+        / "evidence"
+        / "canonical-skill-resource-manifest.json"
+    )
+    manifest = _load_json(path)
+    if manifest != _current_resource_manifest():
+        raise BoundaryProofError(
+            "canonical skill/resource manifest is stale or incomplete"
+        )
+    return manifest
+
+
+def _run_checked(command: list[str], diagnostic: str) -> None:
+    process = subprocess.run(
+        command,
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if process.returncode != 0:
+        detail = (process.stderr or process.stdout).strip()
+        raise BoundaryProofError(f"{diagnostic}: {detail}")
+
+
+def _build_operation_results(
+    change_id: str,
+    *,
+    generation: bool,
+) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
     change_root = _change_root(change_id)
-    validate_adapter_parity(change_id)
+    if generation:
+        _run_checked(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "boundary_proof_behavior.py"),
+                "generate-resource-manifest",
+                "--change-id",
+                change_id,
+            ],
+            "canonical skill/resource manifest generation failed",
+        )
+        generate_adapter_parity(change_id)
+    else:
+        _validate_current_resource_manifest(change_root)
+        validate_adapter_parity(change_id)
+
+    workflow_spec = ROOT / "specs" / "rigorloop-workflow.md"
+    workflow_test_spec = ROOT / "specs" / "rigorloop-workflow.test.md"
+    skill_spec = ROOT / "specs" / "skill-contract.md"
+    skill_test_spec = ROOT / "specs" / "skill-contract.test.md"
+    change_metadata = change_root / "change.yaml"
+    workflow_text = workflow_spec.read_text(encoding="utf-8")
+    workflow_test_text = workflow_test_spec.read_text(encoding="utf-8")
+    if "R28y." not in workflow_text or "### T46." not in workflow_test_text:
+        raise BoundaryProofError("workflow boundary contract is incomplete")
+    for check_id in CHECK_IDS:
+        if check_id not in workflow_text:
+            raise BoundaryProofError(
+                f"workflow boundary contract omits {check_id}"
+            )
+    _run_checked(
+        [sys.executable, str(ROOT / "scripts" / "validate-skills.py")],
+        "skill contract validation failed",
+    )
+
+    operations: dict[str, dict[str, Any]] = {}
+    workflow_refs = [_reference(workflow_spec), _reference(workflow_test_spec)]
+    operations["boundary-workflow-contract"] = _operation(
+        "boundary-workflow-contract",
+        input_refs=workflow_refs,
+        observations={"duplicate_normative_owner_count": 0},
+    )
+    resource_manifest = _validate_current_resource_manifest(change_root)
+    resource_refs = [
+        {"path": row["path"], "identity": row["identity"]}
+        for row in resource_manifest["files"]
+    ]
+    operations["boundary-skill-contract"] = _operation(
+        "boundary-skill-contract",
+        input_refs=[
+            _reference(skill_spec),
+            _reference(skill_test_spec),
+            *resource_refs,
+        ],
+    )
+    operations["boundary-traceability"] = _operation(
+        "boundary-traceability",
+        input_refs=[
+            *workflow_refs,
+            _reference(skill_spec),
+            _reference(skill_test_spec),
+            _reference(change_metadata),
+        ],
+    )
+
+    registry_path = (
+        ROOT
+        / "tests"
+        / "fixtures"
+        / "boundary-proof"
+        / "incident-registry.json"
+    )
+    fixture_operations: list[dict[str, Any]] = []
+    for fixture_id, gate in FIXTURE_GATES.items():
+        fixture_path = (
+            ROOT
+            / "tests"
+            / "fixtures"
+            / "boundary-proof"
+            / "incidents"
+            / f"{fixture_id}.json"
+        )
+        replay = validate_incident_fixture(_load_json(fixture_path))
+        if replay.detected_stage != gate:
+            raise BoundaryProofError(
+                f"{fixture_id}: incident replay gate mismatch"
+            )
+        operation = _operation(
+            fixture_id,
+            input_refs=[_reference(registry_path), _reference(fixture_path)],
+            observations={
+                "expected_gate": gate,
+                "detected_stage": replay.detected_stage,
+                "escaped_to_code_review": replay.escaped_to_code_review,
+                "sibling_bypass_remaining": (
+                    replay.sibling_bypass_remaining
+                ),
+            },
+        )
+        operations[fixture_id] = operation
+        fixture_operations.append(operation)
+    operations["boundary-incident-replay"] = _operation(
+        "boundary-incident-replay",
+        input_refs=[
+            _reference(registry_path),
+            *[
+                reference
+                for operation in fixture_operations
+                for reference in operation["input_refs"][1:]
+            ],
+        ],
+        dependencies=fixture_operations,
+    )
+
     behavior_process = subprocess.run(
         [
             sys.executable,
@@ -349,18 +631,111 @@ def generate_report(change_id: str, output: Path) -> dict[str, Any]:
     if preservation.get("result") != "structural-pass":
         raise BoundaryProofError("preservation structural proof missing")
 
-    workflow_ref = _reference(ROOT / "specs" / "rigorloop-workflow.md")
-    skill_ref = _reference(ROOT / "specs" / "skill-contract.md")
-    trace_ref = _reference(
-        ROOT / "specs" / "rigorloop-workflow.test.md"
+    preservation_path = (
+        change_root / "evidence" / "preservation" / "manifest.json"
     )
-    review_ref = _reference(
-        change_root / "reviews" / "code-review-m3-r2.md"
+    preservation_manifest = preservation["manifest"]
+    preservation_inputs = [
+        _reference(
+            change_root / "evidence" / "boundary-proof-baseline.json"
+        ),
+        *resource_refs,
+        *[
+            row["artifact_ref"]
+            for row in preservation_manifest["after_refs"]
+        ],
+    ]
+    preservation_outputs = [
+        _reference(preservation_path),
+        *[
+            row["snapshot_ref"]
+            for row in preservation_manifest["before_refs"]
+        ],
+    ]
+    operations["preservation-manifest"] = _operation(
+        "preservation-manifest",
+        input_refs=preservation_inputs,
+        output_refs=preservation_outputs,
     )
-    current_ref = _reference(
+    for key in PRESERVATION_KEYS:
+        category_refs = []
+        for row in preservation_manifest["before_refs"]:
+            if row["pair_key"].endswith(f":{key}"):
+                category_refs.append(row["snapshot_ref"])
+        for row in preservation_manifest["after_refs"]:
+            if row["pair_key"].endswith(f":{key}"):
+                category_refs.append(row["artifact_ref"])
+        operations[f"preservation-{key}"] = _operation(
+            f"preservation-{key}",
+            input_refs=category_refs,
+            dependencies=[operations["preservation-manifest"]],
+        )
+
+    implementation_manifest_path = (
+        change_root / "evidence" / "behavior-implementation-manifest.json"
+    )
+    implementation_manifest = _load_json(implementation_manifest_path)
+    operations["behavior-implementation-manifest"] = _operation(
+        "behavior-implementation-manifest",
+        input_refs=_collect_refs(implementation_manifest),
+        output_refs=[_reference(implementation_manifest_path)],
+    )
+    current_path = (
         change_root / "evidence" / "simple-change" / "current.json"
     )
-    parity_refs = [
+    current = _load_json(current_path)
+    run_manifest_path = ROOT / current["manifest_ref"]["path"]
+    run_manifest = _load_json(run_manifest_path)
+    run_root = run_manifest_path.parent
+    run_outputs = [_reference(current_path)]
+    run_outputs.extend(
+        _reference(path)
+        for path in sorted(run_root.rglob("*"))
+        if path.is_file()
+    )
+    output_snapshots = {
+        row["artifact_role"]: row["snapshot_id"]
+        for row in run_manifest["snapshots"]
+        if row["source"] == "behavior-output"
+        and row["artifact_role"] in {"feature-spec", "test-spec"}
+    }
+    simple_observations = {
+        "false_blocking_count": behavior["false_blocking_count"],
+        "new_universal_artifact_count": behavior[
+            "new_universal_artifact_count"
+        ],
+        "simple_fixture_structure_correction_cycles": behavior[
+            "simple_fixture_structure_correction_cycles"
+        ],
+        "final_feature_spec_snapshot_id": output_snapshots["feature-spec"],
+        "final_test_spec_snapshot_id": output_snapshots["test-spec"],
+    }
+    operations["simple-change-behavior"] = _operation(
+        "simple-change-behavior",
+        input_refs=_collect_refs(run_manifest["input_set"]),
+        output_refs=run_outputs,
+        dependencies=[operations["behavior-implementation-manifest"]],
+        observations=simple_observations,
+    )
+
+    resource_manifest_path = (
+        change_root
+        / "evidence"
+        / "canonical-skill-resource-manifest.json"
+    )
+    operations["canonical-skill-resource-manifest"] = _operation(
+        "canonical-skill-resource-manifest",
+        input_refs=resource_refs,
+        output_refs=[_reference(resource_manifest_path)],
+    )
+    parity_inputs = [
+        _reference(ROOT / "scripts" / "adapter_distribution.py"),
+        _reference(ROOT / "scripts" / "build-adapters.py"),
+        _reference(ROOT / "scripts" / "validate-adapters.py"),
+        _reference(ROOT / "dist" / "adapters" / "manifest.yaml"),
+        _reference(resource_manifest_path),
+    ]
+    parity_outputs = [
         _reference(
             change_root
             / "evidence"
@@ -369,79 +744,72 @@ def generate_report(change_id: str, output: Path) -> dict[str, Any]:
         )
         for surface in ("canonical", "generated", "packed", "installed")
     ]
-    checks_refs = {
-        "boundary-workflow-contract": [workflow_ref],
-        "boundary-skill-contract": [skill_ref],
-        "boundary-traceability": [trace_ref],
-        "boundary-incident-replay": [
-            _reference(
-                ROOT
-                / "tests"
-                / "fixtures"
-                / "boundary-proof"
-                / "incident-registry.json"
-            )
+    operations["adapter-parity"] = _operation(
+        "adapter-parity",
+        input_refs=parity_inputs,
+        output_refs=parity_outputs,
+        dependencies=[operations["canonical-skill-resource-manifest"]],
+    )
+    operations["boundary-adapter-parity"] = _operation(
+        "boundary-adapter-parity",
+        dependencies=[operations["adapter-parity"]],
+    )
+    aggregate_observations = {
+        "false_blocking_count": behavior["false_blocking_count"],
+        "duplicate_normative_owner_count": 0,
+        "new_universal_artifact_count": behavior[
+            "new_universal_artifact_count"
         ],
-        "boundary-adapter-parity": parity_refs,
-        "boundary-capability-baseline": [review_ref, current_ref],
+        "simple_fixture_structure_correction_cycles": behavior[
+            "simple_fixture_structure_correction_cycles"
+        ],
     }
-    checks = {
-        check_id: {
-            "result": "pass",
-            "evidence_refs": checks_refs[check_id],
-            "blocking_reason": None,
-        }
-        for check_id in CHECK_IDS
-    }
-    fixtures = []
-    for fixture_id, gate in FIXTURE_GATES.items():
-        fixture_path = (
-            ROOT
-            / "tests"
-            / "fixtures"
-            / "boundary-proof"
-            / "incidents"
-            / f"{fixture_id}.json"
+    operations["boundary-capability-baseline"] = _operation(
+        "boundary-capability-baseline",
+        dependencies=[
+            operations[operation_id]
+            for operation_id in OPERATION_IDS
+            if operation_id != "boundary-capability-baseline"
+        ],
+        observations=aggregate_observations,
+    )
+    if tuple(operations) != OPERATION_IDS:
+        raise BoundaryProofError(
+            "closed operation registry execution order mismatch"
         )
-        replay = validate_incident_fixture(_load_json(fixture_path))
-        if replay.detected_stage != gate:
-            raise BoundaryProofError(
-                f"{fixture_id}: incident replay gate mismatch"
-            )
-        fixtures.append(
-            {
-                "fixture_id": fixture_id,
-                "result": "pass",
-                "expected_gate": gate,
-                "detected_stage": replay.detected_stage,
-                "escaped_to_code_review": replay.escaped_to_code_review,
-                "sibling_bypass_remaining": (
-                    replay.sibling_bypass_remaining
-                ),
-                "evidence_refs": [_reference(fixture_path)],
-                "blocking_reason": None,
-            }
-        )
+    return operations, behavior
+
+
+def _report_from_operations(
+    operations: dict[str, dict[str, Any]],
+    behavior: dict[str, Any],
+) -> dict[str, Any]:
+    fixtures = [
+        _project_operation(operations[fixture_id], fixture_id=fixture_id)
+        for fixture_id in FIXTURE_GATES
+    ]
     report = {
         "schema_version": "boundary-capability-baseline-v1",
         "boundary_model_version": "v1",
         "evaluated_skills": list(EVALUATED_SKILLS),
         "required_check_ids": list(CHECK_IDS),
-        "checks": checks,
+        "checks": {
+            check_id: _project_operation(operations[check_id])
+            for check_id in CHECK_IDS
+        },
         "fixtures": fixtures,
+        "support": {
+            operation_id: _project_operation(operations[operation_id])
+            for operation_id in SUPPORT_OPERATION_IDS
+        },
         "preservation_results": {
-            key: {
-                "result": "pass",
-                "evidence_refs": [review_ref],
-                "blocking_reason": None,
-            }
+            key: _project_operation(operations[f"preservation-{key}"])
             for key in PRESERVATION_KEYS
         },
-        "adapter_parity": {
-            "result": "pass",
-            "evidence_refs": parity_refs,
-            "blocking_reason": None,
-        },
+        "adapter_parity": _project_operation(operations["adapter-parity"]),
+        "simple_change": _project_operation(
+            operations["simple-change-behavior"]
+        ),
         "false_blocking_count": behavior["false_blocking_count"],
         "duplicate_normative_owner_count": 0,
         "new_universal_artifact_count": behavior[
@@ -452,6 +820,18 @@ def generate_report(change_id: str, output: Path) -> dict[str, Any]:
         ],
         "overall_result": "pass",
     }
+    report["checks"]["boundary-capability-baseline"] = _project_operation(
+        operations["boundary-capability-baseline"]
+    )
+    report["overall_result"] = capability_report_result(report)
+    return report
+
+
+def generate_report(change_id: str, output: Path) -> dict[str, Any]:
+    operations, behavior = _build_operation_results(
+        change_id, generation=True
+    )
+    report = _report_from_operations(operations, behavior)
     validate_capability_report(report)
     temporary = output.with_name(f".{output.name}.tmp")
     temporary.write_text(_render_report(report), encoding="utf-8")
@@ -459,6 +839,26 @@ def generate_report(change_id: str, output: Path) -> dict[str, Any]:
     return {
         "result": capability_report_result(report),
         "report_identity": _identity(output.read_bytes()),
+    }
+
+
+def validate_report(path: Path) -> dict[str, Any]:
+    payload = _parse_report(path)
+    operations, behavior = _build_operation_results(
+        CHANGE_ID, generation=False
+    )
+    expected = _report_from_operations(operations, behavior)
+    if payload != expected:
+        raise BoundaryProofError(
+            "canonical report does not match reconstructed operation results"
+        )
+    validate_capability_report(payload)
+    computed = capability_report_result(payload)
+    if computed != "pass":
+        raise BoundaryProofError("capability report does not pass")
+    return {
+        "result": computed,
+        "report_identity": _identity(path.read_bytes()),
     }
 
 
@@ -512,19 +912,7 @@ def main(argv: list[str] | None = None) -> int:
             elif args.command == "generate-report":
                 result = generate_report(args.change_id, args.output)
             else:
-                payload = _parse_report(args.report)
-                validate_capability_report(payload)
-                computed = capability_report_result(payload)
-                if computed != "pass":
-                    raise BoundaryProofError(
-                        "capability report does not pass"
-                    )
-                result = {
-                    "result": computed,
-                    "report_identity": _identity(
-                        args.report.read_bytes()
-                    ),
-                }
+                result = validate_report(args.report)
         except (
             BoundaryProofError,
             OSError,

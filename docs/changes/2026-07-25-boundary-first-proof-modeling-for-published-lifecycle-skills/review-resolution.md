@@ -4005,3 +4005,28 @@ R2 independently confirmed BFP-CR-M3-1 resolved. Generated preservation
 evidence now reports structural scope only, the downstream responsibility
 projection fails closed on omissions, and the review records all 40 semantic
 preservation decisions as passing.
+
+### code-review-m4-r1
+
+#### BFP-CR-M4-1 - Capability report bypasses the typed operation graph
+
+Finding ID: BFP-CR-M4-1
+Disposition: accepted
+Status: open
+Owner: M4 implementation and code-review owners
+Owning stage: implementation correction and code review
+Decision owner: approved R28y typed operation-result contract
+Decision needed: none
+Required outcome: Implement the complete closed operation registry, typed
+result identities and dependencies, exact report projections, and
+reconstruction-only validation.
+Chosen action: Replace direct pass-row assembly with one typed operation
+builder and validator; project support, simple-change, checks, preservation,
+adapter parity, and fixtures from those results; reconstruct the graph during
+canonical validation; add fail-closed contrast tests; regenerate the report.
+Rationale: Current evidence references cannot substitute for proof that the
+named operation executed or that its exact dependency results produced the
+reported outcome.
+Validation target: focused report tests, regenerated capability report, and
+code-review-m4-r2
+Validation evidence: pending

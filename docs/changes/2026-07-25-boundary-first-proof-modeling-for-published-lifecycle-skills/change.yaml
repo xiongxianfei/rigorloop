@@ -272,17 +272,18 @@ changed_files:
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/runs/run-fea7ef7510b6ae94ec3d9485452b6102/artifacts/review-evidence/test-spec-review-record.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/boundary-capability-baseline.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m4.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m4-r1.md
 review:
   status: approved
-  unresolved_items: 0
-  material_findings: 183
-  open_findings: 0
+  unresolved_items: 1
+  material_findings: 184
+  open_findings: 1
   closed_findings: 183
   architecture_review: reviews/architecture-review-r29.md
   plan_review: reviews/plan-review-r22.md
   spec_review: reviews/spec-review-r57.md
   test_spec_review: reviews/test-spec-review-r26.md
-  code_review: reviews/code-review-m3-r2.md
+  code_review: reviews/code-review-m4-r1.md
   review_log: review-log.md
 workflow:
   automation:

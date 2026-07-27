@@ -94,11 +94,11 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M4. Selection, adapter parity, capability baseline, and activation proof
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m3-r2.md
-- Review status: approved; stage=code-review; round=r2
+- Current milestone state: resolution-needed
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m4-r1.md
+- Review status: changes-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M4
-- Next stage: code-review
+- Next stage: review-resolution
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -787,7 +787,7 @@ resource through generated, packed, and installed outputs.
 
 ### M4. Selection, adapter parity, capability baseline, and activation proof
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Make the complete boundary capability selectable, portable, measurable, and release-safe without activating or publishing it.
 - Requirements: R28l-R28o, R28z; R56n, R56q
 - Files/components likely touched:
