@@ -252,7 +252,9 @@ DIAGNOSTIC_PHASES: Final[dict[str, frozenset[str]]] = {
     ),
     "schema-bundle-invalid": frozenset({"pre-thread-start"}),
     "experimental-api-unavailable": frozenset({"pre-thread-start"}),
-    "protocol-shape-incompatible": frozenset({"pre-thread-start"}),
+    "protocol-shape-incompatible": frozenset(
+        {"pre-thread-start", "in-turn"}
+    ),
     "protocol-conditional-policy-violation": frozenset({"in-turn"}),
     "thread-metadata-mismatch": frozenset({"pre-turn-start"}),
     "feature-pagination-invalid": frozenset({"pre-turn-start"}),
@@ -271,6 +273,7 @@ DIAGNOSTIC_PHASES: Final[dict[str, frozenset[str]]] = {
     "workspace-baseline-invalid": frozenset({"pre-turn-start"}),
     "stage-envelope-canary-failed": frozenset({"in-turn"}),
     "boundary-oracle-mismatch": frozenset({"in-turn"}),
+    "correction-authorization-required": frozenset({"in-turn"}),
     "review-nonapproval": frozenset({"in-turn"}),
     "unmanifested-input": frozenset({"pre-turn-start"}),
     "unexpected-prohibited-event": frozenset({"in-turn"}),
@@ -359,6 +362,21 @@ RECOVERY_DECISION_FIELDS: Final[frozenset[str]] = frozenset(
         "action",
         "authorized_by",
         "outcome",
+    }
+)
+CORRECTION_STOP_FIELDS: Final[frozenset[str]] = frozenset(
+    {
+        "schema_version",
+        "run_id",
+        "publisher_instance_id",
+        "input_set_identity",
+        "stage",
+        "attempt",
+        "review_id",
+        "reviewed_artifact_identity",
+        "material_finding_ids",
+        "finding_projection_identity",
+        "diagnostic_id",
     }
 )
 RUN_ID_PATTERN: Final[re.Pattern[str]] = re.compile(r"^run-[0-9a-f]{32}$")
@@ -2736,6 +2754,94 @@ def _load_generated_payload(
     return payload
 
 
+FINDING_PROJECTION_LABELS: Final[tuple[str, ...]] = (
+    "Finding ID",
+    "Evidence",
+    "Required outcome",
+    "Safe resolution path",
+    "needs-decision rationale",
+)
+
+
+def _finding_projection(
+    record: str,
+    outcome: object,
+    material_finding_ids: Sequence[object],
+) -> list[dict[str, str]]:
+    """Derive the closed correction-authority projection from review bytes."""
+
+    if outcome != "changes-requested":
+        return []
+    headings = list(
+        re.finditer(
+            r"(?m)^## Finding ([a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+)$",
+            record,
+        )
+    )
+    expected_ids = [
+        value for value in material_finding_ids if isinstance(value, str)
+    ]
+    if (
+        len(expected_ids) != len(material_finding_ids)
+        or expected_ids != sorted(expected_ids)
+        or len(expected_ids) != len(set(expected_ids))
+        or [match.group(1) for match in headings] != expected_ids
+    ):
+        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+    rows: list[dict[str, str]] = []
+    label_pattern = re.compile(
+        r"^- (" + "|".join(re.escape(label) for label in FINDING_PROJECTION_LABELS)
+        + r"):\s*(.*)$"
+    )
+    for index, heading in enumerate(headings):
+        end = headings[index + 1].start() if index + 1 < len(headings) else len(record)
+        block = record[heading.end():end]
+        recognized: list[tuple[str, str]] = []
+        for line in block.splitlines():
+            match = label_pattern.fullmatch(line)
+            if match is not None:
+                recognized.append((match.group(1), match.group(2).strip(" ")))
+        if (
+            [label for label, _ in recognized] != list(FINDING_PROJECTION_LABELS)
+            or any(not value for _, value in recognized)
+            or recognized[0][1] != heading.group(1)
+        ):
+            raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+        values = dict(recognized)
+        rows.append(
+            {
+                "finding_id": values["Finding ID"],
+                "evidence": values["Evidence"],
+                "required_outcome": values["Required outcome"],
+                "safe_resolution_path": values["Safe resolution path"],
+                "needs_decision_rationale": values[
+                    "needs-decision rationale"
+                ],
+            }
+        )
+    return rows
+
+
+def _correction_eligibility(
+    outcome: object, finding_projection: Sequence[Mapping[str, str]]
+) -> str:
+    if outcome != "changes-requested":
+        return "not-applicable"
+    if any(
+        row["needs_decision_rationale"] != "none"
+        for row in finding_projection
+    ):
+        return "owner-decision-required"
+    if finding_projection and all(
+        row["evidence"]
+        and row["required_outcome"]
+        and row["safe_resolution_path"]
+        for row in finding_projection
+    ):
+        return "automatic-eligible"
+    raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
+
+
 def _validate_review_payload(
     payload: Mapping[str, object],
     *,
@@ -2798,6 +2904,15 @@ def _validate_review_payload(
         or (outcome == "approved") != (not material_finding_ids)
     ):
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    projection = _finding_projection(record, outcome, material_finding_ids)
+    projection_identity = _sha256(_canonical_json_bytes(projection))
+    eligibility = _correction_eligibility(outcome, projection)
+    if (
+        payload.get("finding_projection") != projection
+        or payload.get("finding_projection_identity") != projection_identity
+        or payload.get("correction_eligibility") != eligibility
+    ):
+        raise BoundaryRuntimeError("protocol-shape-incompatible", "in-turn")
     findings_value = (
         "none" if not material_finding_ids else ", ".join(material_finding_ids)
     )
@@ -2862,21 +2977,157 @@ def _review_payload_from_markdown(
             )
             print(record, file=sys.stderr)
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    finding_ids = (
+        []
+        if material_findings.lower() == "none"
+        else [
+            value.strip().strip("`")
+            for value in material_findings.split(",")
+            if value.strip()
+        ]
+    )
+    projection = _finding_projection(record, outcome, finding_ids)
     return {
         "review_id": review_id,
         "outcome": outcome,
-        "material_finding_ids": (
-            []
-            if material_findings.lower() == "none"
-            else [
-                value.strip().strip("`")
-                for value in material_findings.split(",")
-                if value.strip()
-            ]
+        "material_finding_ids": finding_ids,
+        "finding_projection": projection,
+        "finding_projection_identity": _sha256(
+            _canonical_json_bytes(projection)
+        ),
+        "correction_eligibility": _correction_eligibility(
+            outcome, projection
         ),
         "review_record_markdown": record,
         "review_log_markdown": log,
     }
+
+
+def _validate_correction_stop_receipt(
+    receipt: Mapping[str, object],
+    *,
+    lease: Mapping[str, object] | None = None,
+) -> None:
+    if (
+        set(receipt) != CORRECTION_STOP_FIELDS
+        or receipt.get("schema_version")
+        != "simple-change-correction-stop-v1"
+        or not isinstance(receipt.get("run_id"), str)
+        or RUN_ID_PATTERN.fullmatch(str(receipt["run_id"])) is None
+        or not isinstance(receipt.get("publisher_instance_id"), str)
+        or PUBLISHER_ID_PATTERN.fullmatch(
+            str(receipt["publisher_instance_id"])
+        )
+        is None
+        or not isinstance(receipt.get("input_set_identity"), str)
+        or IDENTITY_PATTERN.fullmatch(str(receipt["input_set_identity"]))
+        is None
+        or receipt.get("stage") not in {"spec-review", "test-spec-review"}
+        or receipt.get("attempt") != 1
+        or not isinstance(receipt.get("review_id"), str)
+        or re.fullmatch(
+            rf"{re.escape(str(receipt['stage']))}-r[1-9][0-9]*",
+            str(receipt["review_id"]),
+        )
+        is None
+        or not isinstance(receipt.get("reviewed_artifact_identity"), str)
+        or IDENTITY_PATTERN.fullmatch(
+            str(receipt["reviewed_artifact_identity"])
+        )
+        is None
+        or not isinstance(receipt.get("material_finding_ids"), list)
+        or receipt["material_finding_ids"]
+        != sorted(receipt["material_finding_ids"])
+        or len(receipt["material_finding_ids"])
+        != len(set(receipt["material_finding_ids"]))
+        or not receipt["material_finding_ids"]
+        or any(
+            not isinstance(value, str)
+            or re.fullmatch(
+                r"^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$", value
+            )
+            is None
+            for value in receipt["material_finding_ids"]
+        )
+        or not isinstance(receipt.get("finding_projection_identity"), str)
+        or IDENTITY_PATTERN.fullmatch(
+            str(receipt["finding_projection_identity"])
+        )
+        is None
+        or receipt.get("diagnostic_id")
+        != "correction-authorization-required"
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    if lease is not None and any(
+        receipt[field] != lease[field]
+        for field in (
+            "run_id",
+            "publisher_instance_id",
+            "input_set_identity",
+        )
+    ):
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+
+
+def _write_correction_stop(
+    working_root: Path,
+    lease: Mapping[str, object],
+    *,
+    stage: str,
+    reviewed_artifact_identity: str,
+    review_payload: Mapping[str, object],
+) -> dict[str, object]:
+    receipt = {
+        "schema_version": "simple-change-correction-stop-v1",
+        "run_id": lease["run_id"],
+        "publisher_instance_id": lease["publisher_instance_id"],
+        "input_set_identity": lease["input_set_identity"],
+        "stage": stage,
+        "attempt": 1,
+        "review_id": review_payload["review_id"],
+        "reviewed_artifact_identity": reviewed_artifact_identity,
+        "material_finding_ids": list(
+            review_payload["material_finding_ids"]
+        ),
+        "finding_projection_identity": review_payload[
+            "finding_projection_identity"
+        ],
+        "diagnostic_id": "correction-authorization-required",
+    }
+    _validate_correction_stop_receipt(receipt, lease=lease)
+    _exclusive_write(
+        working_root / "correction-stop.json",
+        _canonical_json_bytes(receipt),
+    )
+    return receipt
+
+
+def _observed_scenario_outcome(
+    events: Sequence[Mapping[str, object]],
+) -> tuple[str, str | None]:
+    corrected_roles = [
+        "feature-spec" if event.get("stage") == "spec" else "test-spec"
+        for event in events
+        if event.get("stage") in {"spec", "test-spec"}
+        and event.get("attempt") == 2
+    ]
+    if len(corrected_roles) > 1:
+        raise BoundaryRuntimeError("boundary-oracle-mismatch", "in-turn")
+    if corrected_roles:
+        return "one-correction", corrected_roles[0]
+    return "zero-correction", None
+
+
+def _validate_scenario_expectations(
+    scenario: Mapping[str, object],
+    events: Sequence[Mapping[str, object]],
+) -> None:
+    observed_branch, corrected_role = _observed_scenario_outcome(events)
+    if (
+        scenario.get("expected_branch") != observed_branch
+        or scenario.get("corrected_role") != corrected_role
+    ):
+        raise BoundaryRuntimeError("boundary-oracle-mismatch", "in-turn")
 
 
 
@@ -2968,12 +3219,25 @@ def _correction_review_bundle(
     review_id = review_payload.get("review_id")
     outcome = review_payload.get("outcome")
     findings = review_payload.get("material_finding_ids")
+    finding_projection = review_payload.get("finding_projection")
+    finding_projection_identity = review_payload.get(
+        "finding_projection_identity"
+    )
+    correction_eligibility = review_payload.get("correction_eligibility")
     if (
         not isinstance(record, str)
         or not isinstance(log, str)
         or not isinstance(review_id, str)
         or outcome not in {"approved", "changes-requested", "blocked"}
         or not isinstance(findings, list)
+        or not isinstance(finding_projection, list)
+        or not isinstance(finding_projection_identity, str)
+        or correction_eligibility
+        not in {
+            "not-applicable",
+            "automatic-eligible",
+            "owner-decision-required",
+        }
     ):
         raise BoundaryRuntimeError("protocol-shape-incompatible")
     prefix = f"{stage}-attempt-{attempt}"
@@ -3008,6 +3272,9 @@ def _correction_review_bundle(
         "outcome": outcome,
         "reviewed_snapshot_id": reviewed["snapshot_id"],
         "material_finding_ids": list(findings),
+        "finding_projection": list(finding_projection),
+        "finding_projection_identity": finding_projection_identity,
+        "correction_eligibility": correction_eligibility,
         "artifact_refs": refs,
     }
     bundle_snapshot = authored_snapshot(
@@ -4463,11 +4730,9 @@ def _completed_recovery_is_valid(
         lease_values = lease_snapshot["values"]
         assert isinstance(lease_values, dict)
         observed_identity = (
-            _working_tree_identity(quarantine)
+            _working_tree_identity(quarantine, lease_values)
             if orphan["kind"] == "working"
-            else _staged_tree_identity(
-                repo_root, change_id, quarantine, lease_values
-            )
+            else _tree_identity(quarantine)
         )
         if (
             not quarantine.is_dir()
@@ -4625,6 +4890,64 @@ def _discover_global_candidate(
     if len(run_ids) > 1:
         raise BoundaryRuntimeError("runtime-identity-unstable")
     return next(iter(run_ids), None)
+
+
+def _completed_correction_stop_input_identities(
+    repo_root: Path, change_id: str
+) -> frozenset[str]:
+    """Return preserved stopped-input identities from valid completed recovery."""
+
+    simple_root = _simple_root(repo_root, change_id)
+    identities: set[str] = set()
+    for basis_path in simple_root.glob("manual-recovery-run-*.json"):
+        run_id = basis_path.name.removeprefix(
+            "manual-recovery-"
+        ).removesuffix(".json")
+        state_path = simple_root / f"manual-recovery-state-{run_id}.json"
+        if not state_path.exists():
+            continue
+        basis = _read_json(basis_path)
+        _validate_recovery_basis(
+            repo_root,
+            change_id,
+            basis,
+            expected_run_id=run_id,
+            require_current_authority=False,
+        )
+        state = _read_json(state_path)
+        _validate_recovery_state(
+            state,
+            basis_identity=_read_file_identity(basis_path).digest,
+            recovery_id=str(basis["recovery_id"]),
+        )
+        if state["state"] != "completed":
+            continue
+        if not _completed_recovery_is_valid(
+            repo_root, change_id, basis_path, state_path
+        ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        orphan = basis.get("orphan_snapshot")
+        lease_snapshot = basis.get("publisher_lease_snapshot")
+        if not isinstance(orphan, dict) or not isinstance(
+            lease_snapshot, dict
+        ):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        quarantine_value = orphan.get("quarantine_path")
+        if quarantine_value is None:
+            continue
+        quarantine = repo_root / str(quarantine_value)
+        stop_path = quarantine / "correction-stop.json"
+        if not stop_path.exists():
+            continue
+        if stop_path.is_symlink() or not stop_path.is_file():
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        lease_values = lease_snapshot.get("values")
+        if not isinstance(lease_values, dict):
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        receipt = _read_json(stop_path)
+        _validate_correction_stop_receipt(receipt, lease=lease_values)
+        identities.add(str(receipt["input_set_identity"]))
+    return frozenset(identities)
 
 
 def _exclusive_write(path: Path, raw: bytes) -> None:
@@ -5264,6 +5587,12 @@ def _validate_run(
                     proof,
                 ):
                     raise BoundaryRuntimeError("runtime-identity-unstable")
+        scenario_path = _validate_reference(
+            repo_root, input_set["scenario_ref"]
+        )
+        _validate_scenario_expectations(
+            _scenario(repo_root, scenario_path), events
+        )
         structural = {
             f"{event['stage']}#{event['attempt']}": {
                 "structural_result": event["structural_result"],
@@ -5424,11 +5753,22 @@ def _working_output_paths() -> tuple[set[str], set[str]]:
     return files, directories
 
 
-def _working_tree_identity(root: Path) -> str:
+def _working_tree_identity(
+    root: Path, lease: Mapping[str, object] | None = None
+) -> str:
     if root.is_symlink() or not root.is_dir():
         raise BoundaryRuntimeError("runtime-identity-unstable")
     allowed_files, allowed_directories = _working_output_paths()
+    stop_path = root / "correction-stop.json"
+    stop_receipt: Mapping[str, object] | None = None
+    if stop_path.exists():
+        if stop_path.is_symlink() or not stop_path.is_file():
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        stop_receipt = _read_json(stop_path)
+        _validate_correction_stop_receipt(stop_receipt, lease=lease)
     for child in root.iterdir():
+        if child == stop_path:
+            continue
         if (
             child.is_symlink()
             or not child.is_dir()
@@ -5447,6 +5787,41 @@ def _working_tree_identity(root: Path) -> str:
                     raise BoundaryRuntimeError("runtime-identity-unstable")
             elif relative not in {"manifested.txt"} | allowed_files:
                 raise BoundaryRuntimeError("runtime-identity-unstable")
+    if stop_receipt is not None:
+        stage = str(stop_receipt["stage"])
+        matches: list[dict[str, object]] = []
+        for record_path in root.glob(
+            f"boundary-proof-workspace-*/reviews/{stage}.md"
+        ):
+            workspace = record_path.parents[1]
+            log_path = workspace / "review-log" / f"{stage}.md"
+            if not log_path.is_file() or log_path.is_symlink():
+                continue
+            payload = _review_payload_from_markdown(
+                stage,
+                record_path.read_text(encoding="utf-8"),
+                log_path.read_text(encoding="utf-8"),
+            )
+            _validate_review_payload(
+                payload,
+                stage=stage,
+                artifact_identity=str(
+                    stop_receipt["reviewed_artifact_identity"]
+                ),
+                require_approval=False,
+            )
+            if (
+                payload["review_id"] == stop_receipt["review_id"]
+                and payload["material_finding_ids"]
+                == stop_receipt["material_finding_ids"]
+                and payload["finding_projection_identity"]
+                == stop_receipt["finding_projection_identity"]
+                and payload["correction_eligibility"]
+                == "owner-decision-required"
+            ):
+                matches.append(payload)
+        if len(matches) != 1:
+            raise BoundaryRuntimeError("runtime-identity-unstable")
     return _tree_identity(root)
 
 
@@ -5713,7 +6088,7 @@ def discard_interrupted_publication(
                     else None
                 ),
                 "identity": (
-                    _working_tree_identity(orphan)
+                    _working_tree_identity(orphan, lease)
                     if kind == "working" and orphan is not None
                     else _staged_tree_identity(
                         repo_root, change_id, orphan, lease
@@ -5954,6 +6329,13 @@ def _generate_behavior_locked(
         ],
         "implementation_manifest_ref": implementation_ref,
     }
+    input_set_identity = _sha256(_canonical_json_bytes(input_set))
+    if input_set_identity in _completed_correction_stop_input_identities(
+        repo_root, change_id
+    ):
+        raise BoundaryRuntimeError(
+            "correction-authorization-required", "in-turn"
+        )
     run_id = "run-" + secrets.token_hex(16)
     publisher_instance_id = "publisher-" + secrets.token_hex(16)
     lease, working_root = _create_publisher_lease(
@@ -5961,7 +6343,7 @@ def _generate_behavior_locked(
         change_id,
         run_id,
         publisher_instance_id,
-        _sha256(_canonical_json_bytes(input_set)),
+        input_set_identity,
     )
 
     def run_stage(
@@ -6106,6 +6488,27 @@ def _generate_behavior_locked(
         require_approval=False,
     )
     if spec_review_payload["outcome"] == "changes-requested":
+        if (
+            spec_review_payload["correction_eligibility"]
+            == "owner-decision-required"
+        ):
+            _write_correction_stop(
+                working_root,
+                lease,
+                stage="spec-review",
+                reviewed_artifact_identity=feature_identity,
+                review_payload=spec_review_payload,
+            )
+            raise BoundaryRuntimeError(
+                "correction-authorization-required", "in-turn"
+            )
+        if (
+            spec_review_payload["correction_eligibility"]
+            != "automatic-eligible"
+        ):
+            raise BoundaryRuntimeError(
+                "protocol-shape-incompatible", "in-turn"
+            )
         resolution_path = "review-resolution/spec-review.md"
         resolution_markdown = artifacts.get(resolution_path)
         if not isinstance(resolution_markdown, str):
@@ -6318,6 +6721,27 @@ def _generate_behavior_locked(
         require_approval=False,
     )
     if test_review_payload["outcome"] == "changes-requested":
+        if (
+            test_review_payload["correction_eligibility"]
+            == "owner-decision-required"
+        ):
+            _write_correction_stop(
+                working_root,
+                lease,
+                stage="test-spec-review",
+                reviewed_artifact_identity=test_spec_identity,
+                review_payload=test_review_payload,
+            )
+            raise BoundaryRuntimeError(
+                "correction-authorization-required", "in-turn"
+            )
+        if (
+            test_review_payload["correction_eligibility"]
+            != "automatic-eligible"
+        ):
+            raise BoundaryRuntimeError(
+                "protocol-shape-incompatible", "in-turn"
+            )
         if correction_history is not None:
             raise BoundaryRuntimeError("review-nonapproval", "in-turn")
         resolution_path = "review-resolution/test-spec-review.md"
@@ -6547,6 +6971,7 @@ def _generate_behavior_locked(
         publisher_instance_id,
         working_root,
     )
+    _validate_scenario_expectations(scenario, run_manifest["events"])
     pointer = _publish_run(
         repo_root, change_id, temporary, run_manifest
     )

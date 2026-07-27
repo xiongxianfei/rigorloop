@@ -46,6 +46,7 @@ from boundary_proof_behavior import (
     _derive_config_origin_paths,
     _effective_tool_projection,
     _feature_inventory,
+    _finding_projection as _runtime_finding_projection,
     freeze_baseline,
     _normalize_config_result,
     _normalize_skill_inventory,
@@ -66,7 +67,11 @@ from boundary_proof_behavior import (
     _workflow_stage_request,
     _thread_start_request,
     _turn_start_request,
+    _observed_scenario_outcome,
+    _review_payload_from_markdown,
+    _validate_correction_stop_receipt,
     _validate_review_payload,
+    _validate_scenario_expectations,
     _validate_prepared_receipt,
     _validate_publisher_lease,
     _validate_recovery_basis,
@@ -400,6 +405,29 @@ def _structural_evaluations(
         }
         for event in trace["events"]  # type: ignore[union-attr]
     }
+
+
+def _finding_projection(
+    finding_id: str,
+    *,
+    needs_decision_rationale: str = "none",
+) -> list[dict[str, str]]:
+    return [
+        {
+            "finding_id": finding_id,
+            "evidence": "direct evidence",
+            "required_outcome": "apply the bounded correction",
+            "safe_resolution_path": "update and rereview",
+            "needs_decision_rationale": needs_decision_rationale,
+        }
+    ]
+
+
+def _projection_identity(projection: object) -> str:
+    raw = json.dumps(
+        projection, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return "sha256:" + hashlib.sha256(raw).hexdigest()
 
 
 def _snapshot_ref(trace: dict[str, object], snapshot_id: str) -> dict[str, str]:
@@ -1698,9 +1726,17 @@ class BoundaryProofModelTests(unittest.TestCase):
         first_bundle = trace["review_bundles"][
             "simple.snapshot.spec-review.bundle.v1"
         ]
+        first_projection = _finding_projection(
+            "simple.finding.missing-boundary"
+        )
         first_bundle.update(
             outcome="changes-requested",
             material_finding_ids=["simple.finding.missing-boundary"],
+            finding_projection=first_projection,
+            finding_projection_identity=_projection_identity(
+                first_projection
+            ),
+            correction_eligibility="automatic-eligible",
         )
         first_bundle["artifact_refs"]["review-resolution"] = _snapshot_ref(
             trace,
@@ -1711,6 +1747,9 @@ class BoundaryProofModelTests(unittest.TestCase):
             "outcome": "approved",
             "reviewed_snapshot_id": "simple.snapshot.feature.v2",
             "material_finding_ids": [],
+            "finding_projection": [],
+            "finding_projection_identity": _projection_identity([]),
+            "correction_eligibility": "not-applicable",
             "artifact_refs": {
                 "review-record": _snapshot_ref(
                     trace,
@@ -1837,9 +1876,17 @@ class BoundaryProofModelTests(unittest.TestCase):
         second_bundle = second_trace["review_bundles"][
             "simple.snapshot.test-spec-review.bundle.v1"
         ]
+        second_projection = _finding_projection(
+            "simple.finding.missing-proof"
+        )
         second_bundle.update(
             outcome="changes-requested",
             material_finding_ids=["simple.finding.missing-proof"],
+            finding_projection=second_projection,
+            finding_projection_identity=_projection_identity(
+                second_projection
+            ),
+            correction_eligibility="automatic-eligible",
         )
         second_bundle["artifact_refs"]["review-resolution"] = _snapshot_ref(
             second_trace,
@@ -1887,6 +1934,9 @@ class BoundaryProofModelTests(unittest.TestCase):
             "review_id": "spec-review-r2",
             "outcome": "approved",
             "material_finding_ids": [],
+            "finding_projection": [],
+            "finding_projection_identity": _projection_identity([]),
+            "correction_eligibility": "not-applicable",
             "review_record_markdown": "# Spec review r2\n",
             "review_log_markdown": "# Spec review log r2\n",
         }
@@ -1894,14 +1944,31 @@ class BoundaryProofModelTests(unittest.TestCase):
             "review_id": "test-spec-review-r2",
             "outcome": "approved",
             "material_finding_ids": [],
+            "finding_projection": [],
+            "finding_projection_identity": _projection_identity([]),
+            "correction_eligibility": "not-applicable",
             "review_record_markdown": "# Test-spec review r2\n",
             "review_log_markdown": "# Test-spec review log r2\n",
         }
+        changed_projection = _finding_projection("finding.boundary")
         changed_review = {
             "review_id": "review-r1",
             "outcome": "changes-requested",
             "material_finding_ids": ["finding.boundary"],
-            "review_record_markdown": "# Changes requested\n",
+            "finding_projection": changed_projection,
+            "finding_projection_identity": _projection_identity(
+                changed_projection
+            ),
+            "correction_eligibility": "automatic-eligible",
+            "review_record_markdown": (
+                "# Changes requested\n\n"
+                "## Finding finding.boundary\n\n"
+                "- Finding ID: finding.boundary\n"
+                "- Evidence: direct evidence\n"
+                "- Required outcome: apply the bounded correction\n"
+                "- Safe resolution path: update and rereview\n"
+                "- needs-decision rationale: none\n"
+            ),
             "review_log_markdown": "# Changes-requested log\n",
         }
         stage_artifacts = {
@@ -3162,6 +3229,9 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "review_id": "spec-review-r1",
             "outcome": "approved",
             "material_finding_ids": [],
+            "finding_projection": [],
+            "finding_projection_identity": _projection_identity([]),
+            "correction_eligibility": "not-applicable",
             "review_record_markdown": (
                 "# Review\n\nReview ID: spec-review-r1\nStage: spec-review\n"
                 "Status: approved\n"
@@ -3207,11 +3277,140 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "Material findings: none",
             "Material findings: finding.missing-boundary",
         )
+        projection = _finding_projection("finding.missing-boundary")
+        nonapproval["finding_projection"] = projection
+        nonapproval["finding_projection_identity"] = _projection_identity(
+            projection
+        )
+        nonapproval["correction_eligibility"] = "automatic-eligible"
         with self.assertRaises(BoundaryRuntimeError) as raised:
             _validate_review_payload(
                 nonapproval, stage="spec-review", artifact_identity=identity
             )
         self.assertEqual(raised.exception.diagnostic_id, "review-nonapproval")
+
+    def test_review_finding_projection_owns_correction_authority(self) -> None:
+        finding_id = "finding.boundary-ambiguity"
+        record = (
+            "# Review\n\n"
+            "Review ID: spec-review-r1\n"
+            "Stage: spec-review\n"
+            "Status: changes-requested\n"
+            "Reviewed artifact identity: sha256:" + "a" * 64 + "\n"
+            f"Material findings: {finding_id}\n"
+            "Recording status: recorded\n\n"
+            f"## Finding {finding_id}\n\n"
+            f"- Finding ID: {finding_id}\n"
+            "- Evidence: R2 does not define the Unicode property.\n"
+            "- Required outcome: Name the exact Unicode property.\n"
+            "- Safe resolution path: Replace the ambiguous term in R2.\n"
+            "- needs-decision rationale: none\n"
+        )
+        log = (
+            "Review ID: spec-review-r1\n"
+            "Stage: spec-review\n"
+            "Status: changes-requested\n"
+            "Reviewed artifact identity: sha256:" + "a" * 64 + "\n"
+            f"Material findings: {finding_id}\n"
+        )
+        payload = _review_payload_from_markdown(
+            "spec-review", record, log
+        )
+        self.assertEqual(
+            payload["correction_eligibility"], "automatic-eligible"
+        )
+        self.assertEqual(
+            payload["finding_projection"],
+            _runtime_finding_projection(
+                record, "changes-requested", [finding_id]
+            ),
+        )
+
+        owner_record = record.replace(
+            "- needs-decision rationale: none",
+            "- needs-decision rationale: The owner must choose compatibility.",
+        )
+        owner_payload = _review_payload_from_markdown(
+            "spec-review", owner_record, log
+        )
+        self.assertEqual(
+            owner_payload["correction_eligibility"],
+            "owner-decision-required",
+        )
+
+        incomplete = record.replace(
+            "- Safe resolution path: Replace the ambiguous term in R2.",
+            "- Safe resolution path:",
+        )
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _review_payload_from_markdown("spec-review", incomplete, log)
+        self.assertEqual(
+            raised.exception.diagnostic_id,
+            "protocol-shape-incompatible",
+        )
+
+    def test_correction_stop_receipt_is_identity_bound_and_closed(self) -> None:
+        lease = {
+            "run_id": "run-" + "1" * 32,
+            "publisher_instance_id": "publisher-" + "2" * 32,
+            "input_set_identity": "sha256:" + "a" * 64,
+        }
+        receipt = {
+            "schema_version": "simple-change-correction-stop-v1",
+            **lease,
+            "stage": "spec-review",
+            "attempt": 1,
+            "review_id": "spec-review-r1",
+            "reviewed_artifact_identity": "sha256:" + "b" * 64,
+            "material_finding_ids": ["finding.boundary-ambiguity"],
+            "finding_projection_identity": "sha256:" + "c" * 64,
+            "diagnostic_id": "correction-authorization-required",
+        }
+        _validate_correction_stop_receipt(receipt, lease=lease)
+
+        unknown_field = dict(receipt, unexpected=True)
+        with self.assertRaises(BoundaryRuntimeError):
+            _validate_correction_stop_receipt(
+                unknown_field, lease=lease
+            )
+
+        rebound = dict(receipt, input_set_identity="sha256:" + "d" * 64)
+        with self.assertRaises(BoundaryRuntimeError):
+            _validate_correction_stop_receipt(rebound, lease=lease)
+
+    def test_scenario_expectations_compare_after_observation(self) -> None:
+        zero_events = [
+            {"stage": "spec", "attempt": 1},
+            {"stage": "test-spec", "attempt": 1},
+        ]
+        corrected_events = [
+            {"stage": "spec", "attempt": 1},
+            {"stage": "test-spec", "attempt": 1},
+            {"stage": "test-spec", "attempt": 2},
+        ]
+        self.assertEqual(
+            _observed_scenario_outcome(zero_events),
+            ("zero-correction", None),
+        )
+        self.assertEqual(
+            _observed_scenario_outcome(corrected_events),
+            ("one-correction", "test-spec"),
+        )
+        _validate_scenario_expectations(
+            {"expected_branch": "zero-correction", "corrected_role": None},
+            zero_events,
+        )
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _validate_scenario_expectations(
+                {
+                    "expected_branch": "one-correction",
+                    "corrected_role": "feature-spec",
+                },
+                zero_events,
+            )
+        self.assertEqual(
+            raised.exception.diagnostic_id, "boundary-oracle-mismatch"
+        )
 
     def test_closed_artifact_classifier_covers_repository_boundaries(self) -> None:
         change_id = "2026-07-25-example"

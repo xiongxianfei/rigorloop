@@ -403,3 +403,39 @@ run, pointer, skill mutation, or publication was produced.
 
 Implementation remains blocked until the focused spec, architecture, plan, and
 test-spec amendments are independently approved.
+
+## 2026-07-27 correction-authority implementation
+
+The approved R57/R29/R22/R26 correction is implemented before fresh canonical
+generation:
+
+- review-record bytes now produce a closed, identity-bound finding projection;
+- only `automatic-eligible` findings can enter attempt 2;
+- `owner-decision-required` writes one lease-bound `correction-stop.json` and
+  stops with `correction-authorization-required` before correction mutation;
+- completed discard recovery preserves the stopped input identity and rejects
+  an equal-input fresh run before run allocation;
+- the child receives only the authoritative scenario request, while expected
+  branch and corrected role are compared against the assembled observed trace
+  immediately before publication and during validation.
+
+Focused validation passed:
+
+```text
+python -m py_compile scripts/boundary_proof_behavior.py scripts/boundary_proof_model.py scripts/test-boundary-proof.py
+python scripts/test-boundary-proof.py
+  Ran 103 tests
+  OK
+python scripts/validate-skills.py
+  validated 24 skill files
+python scripts/test-skill-validator.py
+  Ran 259 tests
+  OK
+python scripts/build-skills.py --check
+  validated generated skills
+git diff --check
+  pass
+```
+
+Fresh canonical behavior generation and immutable-run validation remain
+required before M2 can return to code review.
