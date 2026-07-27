@@ -670,3 +670,27 @@ python scripts/test-boundary-proof.py
 
 Fresh canonical generation remains required because the harness identity
 changed.
+
+## Fresh canonical R12-resolution result
+
+Generation from committed input `463036a4` published immutable run
+`run-a246ff6b8dde62c90a0c999ebc11688a`:
+
+```json
+{"false_blocking_count":0,"input_set_identity":"sha256:ef8b3ca837f91a3ed5f2662009cf61c907255c5a2bed60f71c523b8c1c8f1660","new_universal_artifact_count":0,"result":"pass","run_id":"run-a246ff6b8dde62c90a0c999ebc11688a","simple_fixture_structure_correction_cycles":0}
+```
+
+Post-publication validation passed:
+
+```text
+python scripts/boundary_proof_behavior.py validate --change-id 2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills
+python scripts/test-boundary-proof.py
+  Ran 110 tests
+  OK
+python scripts/validate-skills.py
+  validated 24 skill files
+python scripts/build-skills.py --check
+  validated generated skills
+```
+
+M2 is ready for code-review R13. Final verification is not claimed.
