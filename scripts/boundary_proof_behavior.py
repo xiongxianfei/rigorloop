@@ -3451,9 +3451,19 @@ def _validate_review_bundle_payloads(
             raise BoundaryRuntimeError("runtime-identity-unstable")
         artifact_refs = raw_bundle.get("artifact_refs")
         reviewed_snapshot_id = raw_bundle.get("reviewed_snapshot_id")
+        findings = raw_bundle.get("material_finding_ids")
         if (
             not isinstance(artifact_refs, dict)
+            or not isinstance(reviewed_snapshot_id, str)
             or reviewed_snapshot_id not in output_snapshots
+            or not isinstance(findings, list)
+            or any(
+                not isinstance(finding_id, str)
+                or FINDING_ID_PATTERN.fullmatch(finding_id) is None
+                for finding_id in findings
+            )
+            or findings != sorted(findings)
+            or len(findings) != len(set(findings))
         ):
             raise BoundaryRuntimeError("runtime-identity-unstable")
 
@@ -3501,7 +3511,6 @@ def _validate_review_bundle_payloads(
             require_approval=False,
         )
         outcome = raw_bundle.get("outcome")
-        findings = raw_bundle.get("material_finding_ids")
         if (
             raw_bundle.get("review_id") != payload["review_id"]
             or outcome != payload["outcome"]
@@ -3511,7 +3520,6 @@ def _validate_review_bundle_payloads(
             != payload["finding_projection_identity"]
             or raw_bundle.get("correction_eligibility")
             != payload["correction_eligibility"]
-            or not isinstance(findings, list)
             or (
                 outcome != "approved"
                 and findings != payload["material_finding_ids"]

@@ -980,6 +980,11 @@ resource through generated, packed, and installed outputs.
   membership and string containment before proving reviewed IDs and finding
   members have closed types, so malformed JSON can raise raw `TypeError`.
   M2 is `resolution-needed` for the bounded type-guard correction.
+- 2026-07-27: Implemented the R12 malformed-evidence guard. Reviewed snapshot
+  IDs and finding collections now pass closed type, stable-ID, ordering, and
+  uniqueness checks before membership or content operations. The 110 focused
+  tests cover the malformed JSON matrix and pass; fresh canonical generation
+  is next because the harness identity changed.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review

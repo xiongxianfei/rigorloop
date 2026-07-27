@@ -646,3 +646,27 @@ python scripts/build-skills.py --check
 ```
 
 M2 is ready for code-review R12. Final verification is not claimed.
+
+## Code-review R12 correction
+
+`BFP-CR-M2-19` is implemented with early closed-shape guards in the
+review-bundle byte validator. `reviewed_snapshot_id` must be a string before
+mapping membership, and `material_finding_ids` must be a stable-ID-valid,
+sorted, unique string list before any resolution-content operation.
+
+The direct malformed-subject matrix covers null, scalar, boolean, array, and
+object reviewed IDs plus null/scalar finding collections, non-string members,
+invalid IDs, unsorted IDs, and duplicates. Every contrast now returns the
+stable `runtime-identity-unstable` diagnostic instead of a raw exception.
+
+Focused validation passed:
+
+```text
+python -m py_compile scripts/boundary_proof_behavior.py scripts/boundary_proof_model.py scripts/test-boundary-proof.py
+python scripts/test-boundary-proof.py
+  Ran 110 tests
+  OK
+```
+
+Fresh canonical generation remains required because the harness identity
+changed.
