@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 import shutil
 import subprocess
@@ -7591,6 +7592,62 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
                     f"`{skill_validation.BOUNDARY_PROOF_REFERENCE}`",
                     (skill_root / "SKILL.md").read_text(encoding="utf-8"),
                 )
+
+    def test_boundary_proof_downstream_responsibilities_fail_closed(
+        self,
+    ) -> None:
+        schema = json.loads(
+            (
+                ROOT / "schemas" / "skill.schema.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            {
+                "implement",
+                "code-review",
+                "verify",
+                "workflow",
+            },
+            set(
+                skill_validation
+                .BOUNDARY_PROOF_DOWNSTREAM_RESPONSIBILITIES
+            ),
+        )
+        for skill_name, phrases in (
+            skill_validation
+            .BOUNDARY_PROOF_DOWNSTREAM_RESPONSIBILITIES.items()
+        ):
+            source = ROOT / "skills" / skill_name / "SKILL.md"
+            canonical = source.read_text(encoding="utf-8")
+            with tempfile.TemporaryDirectory() as raw:
+                target = Path(raw) / "SKILL.md"
+                for phrase in phrases:
+                    with self.subTest(skill=skill_name, phrase=phrase):
+                        target.write_text(
+                            re.sub(
+                                r"\s+".join(
+                                    re.escape(part)
+                                    for part in phrase.split()
+                                ),
+                                "missing",
+                                canonical,
+                                count=1,
+                            ),
+                            encoding="utf-8",
+                        )
+                        errors, _ = skill_validation.validate_skill_file(
+                            target,
+                            schema,
+                        )
+                        self.assertTrue(
+                            any(
+                                "boundary-proof downstream "
+                                "responsibility missing required phrase"
+                                in error
+                                for error in errors
+                            ),
+                            errors,
+                        )
 
     def test_generated_markdown_skeletons_declare_readability_shape(self) -> None:
         skeletons = [

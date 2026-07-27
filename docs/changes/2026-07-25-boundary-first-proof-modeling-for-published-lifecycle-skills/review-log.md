@@ -1722,4 +1722,4 @@ Status: changes-requested
 Detailed record: reviews/code-review-m3-r1.md
 Resolution: review-resolution.md#code-review-m3-r1
 Material findings: BFP-CR-M3-1
-Open findings: BFP-CR-M3-1
+Open findings: None

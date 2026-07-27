@@ -804,7 +804,11 @@ Required outcome: Define trace shape, linkage, outcomes, correction events, inve
 Chosen action: Add exact trace and metric contracts plus malformed contrasts.
 Rationale: Named observations without algorithms permit incompatible implementations.
 Validation target: spec-review-r4
-Validation evidence: pending
+Validation evidence: The corrected preservation command reports
+`structural-pass` for 40 exact pairs with zero upstream invocations. The
+111-test boundary suite and 261-test skill-validator suite pass, including
+missing downstream-responsibility contrasts. Code-review R2 remains required
+for semantic closure.
 
 ### test-spec-review-r8
 
@@ -3976,7 +3980,7 @@ post-observation expectation proof map for M2 implementation.
 
 Finding ID: BFP-CR-M3-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implementation and code-review owners
 Owning stage: implementation correction and code review
 Decision owner: approved R56l/T59 preservation claim boundary

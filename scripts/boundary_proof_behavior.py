@@ -9997,6 +9997,7 @@ def _preservation_run_id(
     inputs: Sequence[tuple[str, bytes, bytes]],
 ) -> str:
     projection = {
+        "result_schema": PRESERVATION_RESULT_SCHEMA,
         "baseline_commit": baseline_commit,
         "skills": [
             {
@@ -10099,7 +10100,7 @@ def generate_preservation(
                     "schema_version": PRESERVATION_RESULT_SCHEMA,
                     "pair_key": pair_key,
                     "category": category,
-                    "result": "pass",
+                    "result": "structural-pass",
                     "before_identity": _sha256(origin_raw),
                     "current_skill_ref": {
                         "path": origin_path,
@@ -10249,7 +10250,7 @@ def validate_preservation(
             "schema_version": PRESERVATION_RESULT_SCHEMA,
             "pair_key": pair_key,
             "category": category,
-            "result": "pass",
+            "result": "structural-pass",
             "before_identity": snapshot["identity"],
             "current_skill_ref": {
                 "path": origin_path,
@@ -10266,7 +10267,7 @@ def validate_preservation(
         }:
             raise BoundaryRuntimeError("runtime-identity-unstable")
     return {
-        "result": "pass",
+        "result": "structural-pass",
         "pair_count": len(expected_keys),
         "upstream_invocation_count": 0,
         "manifest": manifest,

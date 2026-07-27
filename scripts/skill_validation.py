@@ -453,6 +453,32 @@ BOUNDARY_PROOF_REFERENCE_SKILLS = {
     "code-review",
     "verify",
 }
+BOUNDARY_PROOF_DOWNSTREAM_RESPONSIBILITIES = {
+    "implement": (
+        "establish the planned proof before or with production behavior",
+        "trusted inputs from their canonical owners",
+        "sweep material sibling paths",
+        "Stop for contract correction",
+    ),
+    "code-review": (
+        "inspect the real diff independently",
+        "omitted dimensions",
+        "complete affected sibling-boundary set",
+        "Do not authorize a fix",
+    ),
+    "verify": (
+        "verify current version parity and coherence",
+        "every applicable boundary",
+        "Pause instead of claiming branch readiness",
+        "Structural checks do not replace semantic review",
+    ),
+    "workflow": (
+        "Route boundary authoring, proof mapping, implementation",
+        "Stop on missing, contradictory, stale, or version-mismatched",
+        "Do not create a separate boundary-review stage",
+        "universal boundary artifact",
+    ),
+}
 REVIEW_FAMILY_PARSER_FIELD_LABELS = (
     "Finding ID",
     "Severity",
@@ -3443,6 +3469,16 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
 
     errors.extend(_validate_published_description(path, metadata))
     errors.extend(_validate_resource_map(path, body))
+    if skill_name in BOUNDARY_PROOF_DOWNSTREAM_RESPONSIBILITIES:
+        normalized_body = " ".join(body.split())
+        for required_phrase in BOUNDARY_PROOF_DOWNSTREAM_RESPONSIBILITIES[
+            skill_name
+        ]:
+            if required_phrase not in normalized_body:
+                errors.append(
+                    f"{path}: boundary-proof downstream responsibility "
+                    f"missing required phrase: {required_phrase}"
+                )
     errors.extend(validate_ci_maintenance_contract(path, metadata, body))
     errors.extend(_validate_published_self_containment(path, metadata, body))
     errors.extend(validate_readability_contract(path, metadata, body))
