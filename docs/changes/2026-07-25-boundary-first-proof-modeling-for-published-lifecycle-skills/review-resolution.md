@@ -2050,6 +2050,44 @@ Validation target: focused M2 tests, regenerated canonical evidence, and
 code-review-m2-r10
 Validation evidence: Pending.
 
+### spec-review-r56
+
+#### BFP-SR56-1 — Correction eligibility has no exact parsed finding contract
+
+Finding ID: BFP-SR56-1
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: focused R28y correction-authority contract
+Decision needed: none
+Required outcome: Define one identity-bound normalized finding projection and
+deterministic aggregate eligibility formula.
+Chosen action: Add exact fields, normalization, stable-ID uniqueness,
+review-record identity binding, aggregate derivation, and fail-closed
+contrasts.
+Rationale: Eligibility cannot depend on informal Markdown interpretation.
+Validation target: spec-review-r57
+Validation evidence: Pending.
+
+#### BFP-SR56-2 — Authorization-required termination is outside the closed diagnostic and recovery model
+
+Finding ID: BFP-SR56-2
+Disposition: accepted
+Status: in-progress
+Owner: workflow spec author
+Owning stage: spec revision
+Decision owner: focused R28y runtime and recovery contract
+Decision needed: none
+Required outcome: Bind the authorization-required stop to closed diagnostics,
+nonpublication evidence, recovery, retry, and fresh-input behavior.
+Chosen action: Define an in-turn non-retryable stop that retains complete
+working evidence under the existing lease and permits only explicit
+discard-and-regenerate recovery before a changed-input fresh run.
+Rationale: A terminal branch must leave one deterministic durable state.
+Validation target: spec-review-r57
+Validation evidence: Pending.
+
 ### spec-review-r27
 
 #### BFP-SR-R27-1 - Separate transport retry from lifecycle correction
