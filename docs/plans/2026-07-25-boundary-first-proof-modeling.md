@@ -940,6 +940,13 @@ resource through generated, packed, and installed outputs.
   corrected test spec passed same-stage rereview. Explicit discard recovery
   quarantined `run-f3a4fdb984c1db9000d5ff8f16232292`; the canonical scenario
   now expects `one-correction` for `test-spec` before regeneration.
+- 2026-07-27: The next independent run approved the initial test spec and
+  correctly rejected the fixed one-correction expectation. Explicit recovery
+  quarantined `run-f02ddb57e4145d77ff550d2fade6ea3c`. The fixture request now
+  states the already-governing R2 proof obligation—closed Unicode
+  `White_Space` enumeration plus boundary-removal/interior-preservation
+  contrasts—without adding feature behavior, so the canonical branch can be
+  deterministically zero-correction rather than reviewer-dependent.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review
