@@ -1924,7 +1924,7 @@ than keeping this broader predecessor finding open.
 
 Finding ID: BFP-CR-M2-11
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M2 implementation and code-review owners
 Owning stage: implementation correction and code review
 Decision owner: approved R28y global recovery contract
@@ -1946,7 +1946,32 @@ working-tree and staged-run validation, constrained malformed-temp cleanup,
 and publisher-active diagnostics. The 93-test focused suite passes, the four
 R5 direct probes now reject or complete through the exact route, and immutable
 run `run-f6bb6b5f5d7912166d28fa37d012242f` passes non-regenerating validation.
-Finding remains open pending code-review M2 R6.
+Code-review M2 R6 classified the remediation as incomplete after sibling
+object-validity and authority-containment probes escaped. Residual work is
+tracked under `BFP-CR-M2-12`.
+
+### code-review-m2-r6
+
+#### BFP-CR-M2-12 - Recovery classification still substitutes run IDs and shallow shape for closed object validity
+
+Finding ID: BFP-CR-M2-12
+Disposition: accepted
+Status: in-progress
+Owner: M2 implementation and code-review owners
+Owning stage: implementation correction and code review
+Decision owner: approved R28y global recovery contract
+Decision needed: none
+Required outcome: Use validated object-level state, complete staged-run
+validity, change-local authority containment, and exact fixed-root kinds.
+Chosen action: Add the four R6 direct regressions, replace completed run-ID
+subtraction with exact history-object consumption, share complete staged
+validation with recovery, constrain authority paths, and validate fixed roots
+before routing.
+Rationale: These are sibling members of already accepted R28y boundary classes
+and require no new product or architecture decision.
+Validation target: focused M2 tests, regenerated canonical evidence, and
+code-review-m2-r7
+Validation evidence: Pending.
 
 ### spec-review-r27
 
