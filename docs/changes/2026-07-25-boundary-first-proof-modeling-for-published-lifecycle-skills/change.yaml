@@ -223,17 +223,18 @@ changed_files:
   - skills/verify/SKILL.md
   - skills/verify/references/boundary-proof-model.md
   - skills/workflow/SKILL.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m3-r1.md
 review:
-  status: approved
-  unresolved_items: 0
-  material_findings: 182
-  open_findings: 0
+  status: changes-requested
+  unresolved_items: 1
+  material_findings: 183
+  open_findings: 1
   closed_findings: 182
   architecture_review: reviews/architecture-review-r29.md
   plan_review: reviews/plan-review-r22.md
   spec_review: reviews/spec-review-r57.md
   test_spec_review: reviews/test-spec-review-r26.md
-  code_review: reviews/code-review-m2-r13.md
+  code_review: reviews/code-review-m3-r1.md
   review_log: review-log.md
 workflow:
   automation:

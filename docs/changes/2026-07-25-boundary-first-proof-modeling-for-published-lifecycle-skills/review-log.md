@@ -1713,3 +1713,13 @@ Detailed record: reviews/code-review-m2-r13.md
 Resolution: review-resolution.md#code-review-m2-r13
 Material findings: None
 Open findings: None
+### Review entry
+Review ID: code-review-m3-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: M3 implementation at c5f63f83
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r1.md
+Resolution: review-resolution.md#code-review-m3-r1
+Material findings: BFP-CR-M3-1
+Open findings: BFP-CR-M3-1

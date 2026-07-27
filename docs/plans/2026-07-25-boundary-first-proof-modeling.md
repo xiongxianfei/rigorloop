@@ -94,13 +94,13 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M3. Downstream skill projection and preservation
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m3.md
-- Review status: review-requested; stage=code-review; round=r1
+- Current milestone state: resolution-needed
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m3-r1.md
+- Review status: changes-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review
+- Next stage: implement
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BFP-CR-M3-1
 
 ## Milestones
 
@@ -726,7 +726,7 @@ resource through generated, packed, and installed outputs.
 
 ### M3. Downstream skill projection and preservation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
 - Goal: Carry the boundary contract through implementation, review, verification, and workflow routing, then compute downstream preservation from the frozen pre-M2 baseline without rerunning upstream skills.
 - Requirements: R28f-R28j, R28y; R56f-R56i, R56l
 - Files/components likely touched:
@@ -998,6 +998,10 @@ resource through generated, packed, and installed outputs.
   from the frozen baseline with zero upstream invocations. The 111-test
   boundary suite, 260-test skill-validator suite, skill validation, and
   generated-skill drift check pass. M3 is review-requested.
+- 2026-07-27: Code-review M3 R1 opened `BFP-CR-M3-1`: the generator
+  correctly proves origin, current identity, completeness, and zero
+  reinvocation but labels those structural records as semantic preservation
+  pass. M3 is resolution-needed; M4 remains blocked.
 - 2026-07-27: Code-review M2 R10 confirmed BFP-CR-M2-14 and
   BFP-CR-M2-15 behavior but opened `BFP-CR-M2-16` and `BFP-CR-M2-17`.
   Owner-decision stops do not yet retain the complete recoverable review

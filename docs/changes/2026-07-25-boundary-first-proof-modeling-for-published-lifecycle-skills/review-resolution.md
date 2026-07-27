@@ -3970,3 +3970,26 @@ observation expectation-comparison sequence for proof-map synchronization.
 No new material findings. R26 independently approved the complete T52
 correction-authority, terminal recovery, request-only projection, and
 post-observation expectation proof map for M2 implementation.
+### code-review-m3-r1
+
+#### BFP-CR-M3-1 - Structural evidence is mislabeled as semantic preservation
+
+Finding ID: BFP-CR-M3-1
+Disposition: accepted
+Status: in-progress
+Owner: M3 implementation and code-review owners
+Owning stage: implementation correction and code review
+Decision owner: approved R56l/T59 preservation claim boundary
+Decision needed: none
+Required outcome: Separate structural origin/identity/completeness proof from
+reviewer-owned semantic preservation and directly prove downstream
+responsibility presence and absence.
+Chosen action: Emit structural-only pair and command results, add a closed
+downstream responsibility projection with fail-closed tests, regenerate the
+current preservation evidence, and require code-review R2 to record all 40
+semantic decisions.
+Rationale: A generator cannot convert the same bytes it authored into an
+independent semantic preservation judgment.
+Validation target: focused M3 tests, regenerated preservation evidence, and
+code-review-m3-r2
+Validation evidence: pending
