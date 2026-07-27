@@ -7715,16 +7715,21 @@ def _collect_runtime_attestation(
                 ):
                     raise BoundaryRuntimeError("protocol-shape-incompatible")
                 expected_outputs = list(expected_output_value)
+                stage_skill_root = runtime_home / "skills" / skill_names[-1]
                 reference_path = (
-                    runtime_home
-                    / "skills"
-                    / skill_names[-1]
-                    / "references"
-                    / "boundary-proof-model.md"
+                    stage_skill_root / "references" / "boundary-proof-model.md"
                 )
                 try:
-                    required_reference_text = reference_path.read_text(
-                        encoding="utf-8"
+                    resource_paths = [
+                        reference_path,
+                        *sorted((stage_skill_root / "assets").glob("*.md")),
+                    ]
+                    required_reference_text = "\n\n".join(
+                        "Installed resource "
+                        + path.relative_to(stage_skill_root).as_posix()
+                        + ":\n\n"
+                        + path.read_text(encoding="utf-8")
+                        for path in resource_paths
                     )
                 except (OSError, UnicodeError) as error:
                     raise BoundaryRuntimeError(
