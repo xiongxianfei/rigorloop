@@ -1051,6 +1051,15 @@ resource through generated, packed, and installed outputs.
   now observes the branch and corrected role first, then requires membership in
   the closed allowed sets. Focused plan and test-spec synchronization precede
   the next live generation.
+- 2026-07-27: Fresh run `run-fc271d49222db8c6d57049131561b0a5`
+  passed the corrected outcome envelope with zero corrections, false blocks,
+  or new universal artifacts. Report generation then exposed a deterministic
+  reconstruction defect: canonical JSON key sorting changed the iteration
+  order of the `support` mapping, while the validator incorrectly treated
+  mapping order as semantic. The correction requires the exact support key set
+  and retains order checks only for normative sequences such as operation
+  dependencies. Because the typed model identity changed, a fresh behavior run
+  is required before the canonical report can be regenerated.
 
 - 2026-07-27: Spec-review R57 approved the identity-bound correction
   eligibility, correction-stop receipt, recovery, and unequal-input fresh-run

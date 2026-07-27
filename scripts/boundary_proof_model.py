@@ -1668,9 +1668,9 @@ def _validate_report_shape(
         raise BoundaryProofError("fixtures must contain every exact seeded fixture")
 
     support = _object(report["support"], "support")
-    if tuple(support) != SUPPORT_OPERATION_IDS:
+    if set(support) != set(SUPPORT_OPERATION_IDS):
         raise BoundaryProofError(
-            "support must contain the exact ordered support operations"
+            "support must contain the exact support operations"
         )
     for operation_id in SUPPORT_OPERATION_IDS:
         _result_record(

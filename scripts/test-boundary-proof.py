@@ -2619,6 +2619,9 @@ class BoundaryProofModelTests(unittest.TestCase):
             report["checks"] = dict(  # type: ignore[assignment]
                 reversed(list(report["checks"].items()))  # type: ignore[union-attr]
             )
+            report["support"] = dict(  # type: ignore[assignment]
+                reversed(list(report["support"].items()))  # type: ignore[union-attr]
+            )
             reordered_source.write_text(json.dumps(report), encoding="utf-8")
             reordered = subprocess.run(
                 [
