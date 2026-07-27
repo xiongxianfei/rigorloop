@@ -928,6 +928,14 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-27: Implemented the focused M2 correction-authority and scenario
+  oracle slice. Review finding records now project exact correction authority;
+  owner-decision findings write one lease-bound terminal stop before mutation;
+  completed discard recovery preserves the stopped input identity; equal-input
+  regeneration fails before run allocation; and scenario expectations are
+  compared only after the observed trace is assembled. The focused 103-test
+  suite plus skill, skill-validator, and generated-skill checks pass. Fresh
+  canonical behavior generation is next.
 - 2026-07-27: The M2 plan now projects approved spec-review R57 and
   architecture-review R29 into request-only child input, identity-bound
   correction eligibility, durable owner-decision stop, discard-only recovery,

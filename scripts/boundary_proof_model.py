@@ -1883,6 +1883,9 @@ def evaluate_simple_change_trace(
                     "outcome",
                     "reviewed_snapshot_id",
                     "material_finding_ids",
+                    "finding_projection",
+                    "finding_projection_identity",
+                    "correction_eligibility",
                     "artifact_refs",
                 }
             ),
@@ -1907,13 +1910,95 @@ def evaluate_simple_change_trace(
         for finding in findings:
             if not STABLE_ID_RE.fullmatch(finding):
                 raise BoundaryProofError(f"{label}: invalid material finding ID")
+        projection = _records(
+            bundle["finding_projection"], f"{label}.finding_projection"
+        )
+        projection_ids: list[str] = []
+        for index, raw_row in enumerate(projection):
+            row_label = f"{label}.finding_projection[{index}]"
+            row = _object(raw_row, row_label)
+            _exact_fields(
+                row,
+                frozenset(
+                    {
+                        "finding_id",
+                        "evidence",
+                        "required_outcome",
+                        "safe_resolution_path",
+                        "needs_decision_rationale",
+                    }
+                ),
+                row_label,
+            )
+            finding_id = _nonempty_string(
+                row["finding_id"], f"{row_label}.finding_id"
+            )
+            if not STABLE_ID_RE.fullmatch(finding_id):
+                raise BoundaryProofError(f"{row_label}: invalid finding ID")
+            projection_ids.append(finding_id)
+            for field in (
+                "evidence",
+                "required_outcome",
+                "safe_resolution_path",
+                "needs_decision_rationale",
+            ):
+                _nonempty_string(row[field], f"{row_label}.{field}")
+        if projection_ids != sorted(projection_ids) or len(
+            projection_ids
+        ) != len(set(projection_ids)):
+            raise BoundaryProofError(f"{label}: finding projection order")
+        if outcome == "changes-requested":
+            if projection_ids != list(findings):
+                raise BoundaryProofError(
+                    f"{label}: finding projection ID mismatch"
+                )
+        elif projection:
+            raise BoundaryProofError(
+                f"{label}: non-correction projection must be empty"
+            )
+        if bundle["finding_projection_identity"] != _canonical_identity(
+            projection
+        ):
+            raise BoundaryProofError(
+                f"{label}: finding projection identity mismatch"
+            )
+        eligibility = bundle["correction_eligibility"]
+        if eligibility not in (
+            "not-applicable",
+            "automatic-eligible",
+            "owner-decision-required",
+        ):
+            raise BoundaryProofError(
+                f"{label}: unknown correction eligibility"
+            )
+        expected_eligibility = "not-applicable"
+        if outcome == "changes-requested":
+            expected_eligibility = (
+                "owner-decision-required"
+                if any(
+                    row["needs_decision_rationale"] != "none"
+                    for row in projection
+                )
+                else "automatic-eligible"
+            )
+        if eligibility != expected_eligibility:
+            raise BoundaryProofError(
+                f"{label}: correction eligibility mismatch"
+            )
         artifact_refs = _object(bundle["artifact_refs"], f"{label}.artifact_refs")
         required_roles = {"review-record", "review-log"}
-        if outcome in ("changes-requested", "blocked"):
+        if outcome in ("changes-requested", "blocked") or (
+            outcome == "approved" and findings
+        ):
             required_roles.add("review-resolution")
         if set(artifact_refs) != required_roles:
             raise BoundaryProofError(f"{label}: review artifact roles mismatch")
-        if (outcome == "approved") != (not findings):
+        if outcome == "approved" and findings:
+            if "review-resolution" not in artifact_refs:
+                raise BoundaryProofError(
+                    f"{label}: approving rereview lacks resolution"
+                )
+        elif (outcome == "approved") != (not findings):
             raise BoundaryProofError(f"{label}: material findings mismatch outcome")
         artifact_snapshot_ids: list[str] = []
         for role, raw_reference in artifact_refs.items():
@@ -2163,6 +2248,10 @@ def evaluate_simple_change_trace(
             )
 
             if observed == "changes-requested":
+                if bundle["correction_eligibility"] != "automatic-eligible":
+                    raise BoundaryProofError(
+                        f"{label}: non-executable correction authority"
+                    )
                 if correction_used or attempt != 1:
                     raise BoundaryProofError(f"{label}: more than one correction")
                 correction_used = True
