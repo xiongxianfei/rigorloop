@@ -182,6 +182,7 @@ Detailed record: reviews/code-review-m2-preflight-r1.md
 Resolution: review-resolution.md#code-review-m2-preflight-r1
 Material findings: BFP-M2-CR1, BFP-M2-CR2
 Open findings: None
+Closeout: resolved by review-resolution and confirmed by code-review-m2-preflight-r2
 
 ### Review entry
 Review ID: code-review-m2-preflight-r2
@@ -316,6 +317,7 @@ Detailed record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: BFP-M1-CR1, BFP-M1-CR2, BFP-M1-CR3, BFP-M1-CR4, BFP-M1-CR5, BFP-M1-CR6, BFP-M1-CR7
 Open findings: None
+Closeout: resolved by review-resolution and confirmed by code-review-m1-r4
 
 ### Review entry
 Review ID: spec-review-r3
@@ -525,6 +527,7 @@ Detailed record: reviews/code-review-m1-r2.md
 Resolution: review-resolution.md#code-review-m1-r2
 Material findings: None
 Open findings: None
+Closeout: resolved by review-resolution and confirmed by code-review-m1-r4
 
 ### Review entry
 Review ID: code-review-m1-r3
@@ -536,6 +539,7 @@ Detailed record: reviews/code-review-m1-r3.md
 Resolution: review-resolution.md#code-review-m1-r3
 Material findings: None
 Open findings: None
+Closeout: resolved by review-resolution and confirmed by code-review-m1-r4
 
 ### Review entry
 Review ID: code-review-m1-r4
@@ -1742,7 +1746,8 @@ Status: changes-requested
 Detailed record: reviews/code-review-m4-r1.md
 Resolution: review-resolution.md#code-review-m4-r1
 Material findings: BFP-CR-M4-1
-Open findings: BFP-CR-M4-1
+Open findings: None
+Closeout: resolved by review-resolution and confirmed by code-review-m4-r2
 ### Review entry
 Review ID: spec-review-r58
 Stage: spec-review
@@ -1781,5 +1786,15 @@ Reviewed artifact: bounded correction outcome-envelope proof map
 Status: approved
 Detailed record: reviews/test-spec-review-r27.md
 Resolution: review-resolution.md#test-spec-review-r27
+Material findings: None
+Open findings: None
+### Review entry
+Review ID: code-review-m4-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: M4 typed operation-graph correction through 09bd2758
+Status: approved
+Detailed record: reviews/code-review-m4-r2.md
+Resolution: review-resolution.md#code-review-m4-r2
 Material findings: None
 Open findings: None

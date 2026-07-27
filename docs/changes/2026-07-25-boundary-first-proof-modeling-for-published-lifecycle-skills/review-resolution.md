@@ -2,7 +2,12 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
+
+Review closeout: code-review-m2-preflight-r1
+Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
+Review closeout: code-review-m1-r3
 
 - Review closeout: code-review-m1-r1
 - Review closeout: code-review-m1-r2
@@ -975,7 +980,7 @@ Validation evidence: The full marker/scope contrast matrix passes in the focused
 
 Finding ID: BFP-M1-CR4
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: initiative owner
 Owning stage: owner decision before review-resolution M1
 Decision owner: initiative owner
@@ -1020,7 +1025,7 @@ Validation evidence: Eight canonical incident envelopes replay through the share
 
 Finding ID: BFP-M1-CR7
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: initiative owner
 Owning stage: owner decision before review-resolution M1
 Decision owner: initiative owner
@@ -4012,7 +4017,7 @@ preservation decisions as passing.
 
 Finding ID: BFP-CR-M4-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation and code-review owners
 Owning stage: implementation correction and code review
 Decision owner: approved R28y typed operation-result contract
@@ -4029,7 +4034,21 @@ named operation executed or that its exact dependency results produced the
 reported outcome.
 Validation target: focused report tests, regenerated capability report, and
 code-review-m4-r2
-Validation evidence: pending
+Validation evidence: resolved by code-review-m4-r2. Current behavior run
+`run-62735d2bff6ab29bfe208183cf33fc03` validates; the reconstructed report
+passes with identity
+`sha256:4cfacf61164795d4e227e97f93211e70b8f1554162ee5381b8ef36bc24f33b1c`;
+selector 134, adapter 132, release-transaction 87, boundary 115, and
+skill-validator 261 test suites pass.
+
+### code-review-m4-r2
+
+No new material findings.
+
+R2 independently confirmed BFP-CR-M4-1 resolved. The report is derived from
+the complete closed typed operation graph, dependencies and identities fail
+closed, validation reconstructs rather than trusts the report, mapping order
+is treated non-semantically, and the current capability baseline passes.
 
 ### spec-review-r58
 
