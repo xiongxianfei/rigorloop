@@ -874,6 +874,15 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-27: Published the object-complete R6 correction as immutable run
+  `run-7c219a9daabd04402fa8345812f74b33` for input identity
+  `sha256:a581eb599479874f3b043c51dbc9acc8ed3728cb023a017676378e29bc26d5e6`.
+  Its manifest binds publisher
+  `publisher-f21c802b33474485382e5e2088179ae3`; canonical validation passes with
+  zero false blocks, zero universal artifacts, and one justified test-spec
+  correction cycle. Ninety-seven focused tests and the skill/build validators
+  pass. M2 remains `resolution-needed` pending code-review R7.
+
 - 2026-07-27: Code-review M2 R6 classified the R5 correction as incomplete
   and opened `BFP-CR-M2-12`. Direct sibling probes showed completed-history
   run-ID subtraction hides a same-run staging orphan, shallow staged validation
