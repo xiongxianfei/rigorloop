@@ -1554,6 +1554,7 @@ def _workflow_stage_request(
     artifact_context: str = "",
     attempt: int = 1,
     governing_reference_ids: Sequence[str] = (),
+    governing_interaction_ids: Sequence[str] = (),
 ) -> dict[str, object]:
     outputs_by_stage = {
         "spec": ["feature-spec/portable-text-normalizer.md"],
@@ -1585,6 +1586,17 @@ def _workflow_stage_request(
                 is None
                 for value in governing_reference_ids
             )
+        )
+    ):
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    if (
+        governing_interaction_ids
+        and (
+            stage != "test-spec"
+            or len(set(governing_interaction_ids))
+            != len(governing_interaction_ids)
+            or not set(governing_interaction_ids)
+            <= set(governing_reference_ids)
         )
     ):
         raise BoundaryRuntimeError("protocol-shape-incompatible")
@@ -1701,7 +1713,17 @@ def _workflow_stage_request(
                 "be one exact member of this closed list. The test spec does "
                 "not own boundary or interaction definitions. Copy needed IDs "
                 "verbatim, perform a final membership audit, and never coin a "
-                "replacement."
+                "replacement.\n"
+                + (
+                    "The governing feature selected these interactions:\n- "
+                    + "\n- ".join(governing_interaction_ids)
+                    if governing_interaction_ids
+                    else (
+                        "The governing feature selected no interactions. Do "
+                        "not add an interaction reference or interaction proof "
+                        "obligation."
+                    )
+                )
                 if governing_reference_ids
                 else ""
             )
@@ -3706,6 +3728,12 @@ def generate_behavior(
                     interaction.interaction_id
                     for interaction in normalized_feature.interactions
                 }
+            )
+        ),
+        governing_interaction_ids=tuple(
+            sorted(
+                interaction.interaction_id
+                for interaction in normalized_feature.interactions
             )
         ),
     )
