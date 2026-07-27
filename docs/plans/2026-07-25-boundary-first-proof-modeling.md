@@ -94,13 +94,13 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M5. Verification routing and lifecycle synchronization correction
-- Current milestone state: review-requested
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-final-r2.md
-- Review status: review-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M5
+- Current milestone state: closed
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m5-r1.md
+- Review status: approved; stage=code-review; round=r1
+- Remaining in-scope implementation milestones: none
 - Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: lifecycle-gates-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -864,7 +864,7 @@ resource through generated, packed, and installed outputs.
 
 ### M5. Verification routing and lifecycle synchronization correction
 
-- Milestone state: review-requested
+- Milestone state: closed
 - Goal: Route the complete boundary evidence tree through bounded registered evidence classes and synchronize the live plan handoff after the committed explanation.
 - Requirements: CRM-R1-R19; R28p
 - Files/components likely touched:

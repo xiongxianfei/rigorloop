@@ -283,6 +283,7 @@ changed_files:
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/explain-change.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/verify-report.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/validation-m5.md
+  - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m5-r1.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m4-r1.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/recovery-decisions/run-237a1e509db4bbfd2f172fadc4c7bb0e.json
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/evidence/simple-change/manual-recovery-run-237a1e509db4bbfd2f172fadc4c7bb0e.json

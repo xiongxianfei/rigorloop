@@ -1819,3 +1819,13 @@ Detailed record: reviews/code-review-final-r2.md
 Resolution: review-resolution.md#code-review-final-r2
 Material findings: None
 Open findings: None
+### Review entry
+Review ID: code-review-m5-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: M5 verification-routing correction through c6253bb1
+Status: approved
+Detailed record: reviews/code-review-m5-r1.md
+Resolution: review-resolution.md#code-review-m5-r1
+Material findings: None
+Open findings: None

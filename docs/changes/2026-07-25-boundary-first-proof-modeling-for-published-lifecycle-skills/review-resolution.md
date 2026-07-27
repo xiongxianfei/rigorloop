@@ -4090,6 +4090,16 @@ fixtures retain their additional regression, unrelated unsupported scripts
 remain blocked, shared publisher-state suites are sequential-only, the current
 report reconstructs, and the exact 14-check selected-CI command passes.
 
+### code-review-m5-r1
+
+No new material findings.
+
+M5 independently confirmed the verification-routing correction is bounded to
+the exact initiative evidence roots, unknown and cross-change siblings remain
+blocked, existing root-level registration behavior is preserved, all tracked
+boundary evidence paths route exactly once, and actual
+`origin/main..c015ff96` selection has no blocking result or registration debt.
+
 ### spec-review-r58
 
 No new material findings. R58 approved the bounded correction outcome
