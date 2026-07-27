@@ -1,7 +1,7 @@
 # RigorLoop Workflow
 
 ## Status
-- approved
+- draft
 Boundary model version: v1
 Boundary model scope: R28-R28z
 
@@ -81,6 +81,12 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `pr-body-ready`: the `pr` stage conclusion that the PR body is accurate, concise, and grounded in verified artifacts.
 - `pr-open-ready`: the `pr` stage conclusion that branch, base, remote, worktree, PR body, and action prerequisites are ready for PR opening.
 - `direct proof`: targeted evidence tied to a named requirement or test-spec item, such as a targeted test, targeted validation output, or an explicit manual verification note when manual verification is allowed.
+- `runtime projection`: an immutable reviewed compatibility row binding one
+  runtime version, schema identity, protocol classification, feature
+  classification, and capability-state contract.
+- `capability state`: a closed statement about whether a governed runtime
+  operation is exposed and therefore requires a live denial probe, or is
+  proven not exposed by the selected runtime projection.
 - `targeted proof`: selector-selected validation checks that directly prove the changed surfaces and governing dependencies before review handoff.
 - `broad smoke`: broader repository validation run before final handoff, main, release, or another authoritative trigger; it is not the default first proof for every local edit.
 - `manual proof`: durable structured evidence for a check that cannot reasonably be automated.
@@ -1478,7 +1484,7 @@ It contains exactly `manifest_id`, `harness_component_refs`,
 `skill_package_refs`, `instruction_refs`, `contract_refs`, and
 `invocation_profile`, `transport_policy`, `artifact_policy`, and
 `runtime_attestation`.
-`manifest_id` is `boundary-behavior-implementation-v2`.
+`manifest_id` is `boundary-behavior-implementation-v3`.
 
 `transport_policy` contains exactly `schema_version`, `turn_deadline_ms`, and
 `termination_wait_deadline_ms`.
@@ -1603,13 +1609,15 @@ capability_inventory_identity
 skill_inventory_identity
 feature_classification_identity
 protocol_item_classification_identity
+runtime_projection_id
+file_change_capability_state
 file_change_authorization_policy_identity
 materialization_canary_policy_identity
 probe_results
 credential_isolation_results
 ```
 
-`schema_version` is `boundary-runtime-attestation-v2`.
+`schema_version` is `boundary-runtime-attestation-v3`.
 Every `*_identity` field is `sha256:<64 lowercase hexadecimal characters>`.
 Canonical JSON is UTF-8 JSON with keys sorted lexicographically, array order
 preserved, `ensure_ascii=false`, separators `,` and `:`, and no trailing
@@ -1742,6 +1750,53 @@ The runtime-owned `cli_version`, `model_id`, and
 `permitted-side-effect`, `non-side-effect-protocol-traffic`, or
 `prohibited-capability-event`.
 
+The harness MUST select exactly one immutable runtime projection before
+`thread/start`.
+The selection key is the observed runtime version plus the complete generated
+schema, protocol-classification, and feature-classification identities.
+The harness MUST NOT use one repository-wide hard-coded runtime version as a
+substitute for projection selection.
+No match, more than one match, an unknown projection field, or a projection
+whose identities do not match the observed runtime fails with
+`runtime-projection-unsupported`.
+
+Each runtime projection contains exactly:
+
+```text
+projection_id
+runtime_version
+schema_bundle_identity
+protocol_item_classification_identity
+feature_classification_identity
+permitted_tool_features
+required_disabled_features
+file_change_capability_state
+```
+
+`projection_id` matches
+`^codex-[0-9]+\.[0-9]+\.[0-9]+-[a-z0-9-]+-v[0-9]+$`.
+`runtime_version` is one exact SemVer value.
+Both feature collections are ordered, independently unique, disjoint, and
+exhaustive for their governed rows.
+`file_change_capability_state` is exactly
+`exposed-live-probe-required` or `not-exposed-projection`.
+Adding or changing a projection is a reviewed compatibility change and does
+not rewrite evidence created under another projection.
+
+The first supported projection is
+`codex-0.145.0-readonly-boundary-v1`.
+It binds the already specified Codex 0.145.0 schema and protocol identities,
+the complete existing feature classification, the three permitted read-only
+command features, and `file_change_capability_state:
+not-exposed-projection`.
+Its apply-patch and other file-change-producing feature rows are required
+disabled.
+Future runtime versions require new projection rows rather than changes to
+this row.
+
+`runtime_projection_id` and `file_change_capability_state` in the attestation
+MUST equal the selected projection.
+
 The first accepted Codex `0.145.0` projection is immutable:
 
 ```text
@@ -1753,11 +1808,13 @@ feature rows:
   96
 ```
 
-The runtime version, complete schema identity, and complete protocol
-classification identity must match one exact version-keyed projection before
-`thread/start`. Deriving a classification for an additional same-version
-schema method is forbidden. Missing, added, or changed schema files, members,
-methods, or classifications fail closed.
+The runtime version, complete schema identity, protocol classification
+identity, and feature classification identity MUST match one exact projection
+before `thread/start`.
+Deriving a classification for an additional same-version schema method is
+forbidden.
+Missing, added, or changed schema files, members, methods, features, or
+classifications fail closed.
 
 Every observed server request and notification during the accepted turn must
 resolve to its exact projected classification. Unknown or
@@ -1805,8 +1862,8 @@ The exact-byte materializer executes in the parent outside child tool authority
 and is the only component with write access to the behavior-output root.
 
 `workspace_file_change_denied` independently proves the app-server
-file-change path after the direct and descendant command probes and before the
-materialization canary.
+file-change control after the direct and descendant command probes and before
+the materialization canary.
 The parent configures one exact
 `stage-file-change-authorization-policy-v1` object before any governed thread
 starts.
@@ -1848,17 +1905,16 @@ Use only the runtime file-change/apply-patch operation, not a shell command, to 
 ```
 
 `prompt_identity` is the SHA-256 identity of those exact prompt bytes.
-The parent starts a fresh app-server thread under the same bound runtime
-version, generated configuration, schema bundle, protocol classification,
-read-only permission profile, and isolated workspace used by the accepted
-turn.
-The identity-bound prompt requires the child to attempt only the runtime
-file-change/apply-patch operation that creates the policy fixture and then
-return a schema-constrained terminal marker.
-The marker is control-flow evidence only and never proves denial.
+The parent evaluates the selected projection's
+`file_change_capability_state` before deciding whether a live probe is valid.
+The schema-constrained terminal marker is control-flow evidence only and never
+proves denial or non-exposure.
 Before the probe turn, the parent creates `probe_fixture_directory` as a
 regular directory, proves `probe_fixture_path` is absent through the retained
 root-anchored descriptor, and captures the complete workspace identity.
+For `exposed-live-probe-required`, the parent starts a fresh app-server thread
+under the same selected projection, generated configuration, read-only
+permission profile, and isolated workspace used by the accepted turn.
 The parent independently requires exactly one version-projected
 `FileChangeThreadItem` whose `type` is `fileChange`, whose changes contain
 exactly one `add` for `probe_fixture_path`, and whose terminal status equals
@@ -1884,7 +1940,29 @@ projection.
 Missing invocation of the required file-change family, substitution of a shell
 command, generic `failed` or `completed` status, an unknown or additional
 side-effect operation, a missing or ambiguous denial, any workspace mutation,
-lifecycle output, or incomplete cleanup is `sandbox-probe-failed`.
+lifecycle output, or incomplete cleanup is
+`file-change-control-mismatch`.
+
+For `not-exposed-projection`, the parent MUST NOT ask the model to invoke an
+unavailable operation and MUST NOT treat absence of an event as proof by
+itself.
+It instead requires all of:
+
+- exact equality with the selected immutable projection;
+- every projection-named file-change-producing feature disabled in the
+  runtime-owned complete feature inventory;
+- no file-change tool in the effective tool inventory;
+- the exact parent decline-handler policy identity installed before every
+  governed thread;
+- deterministic protocol-handler conformance tests proving that a synthetic
+  correctly bound approval request receives only `decision: decline`, while
+  malformed, mismatched, widened, accepted, or session-accepted requests fail
+  closed; and
+- no file-change request or item observed during the canary or lifecycle turn.
+
+An observed file-change event under `not-exposed-projection` is projection
+drift and fails with `file-change-control-mismatch`.
+The engine MUST NOT silently reclassify the projection.
 The parent persists only `workspace_file_change_denied: pass` and the policy
 identity; it never persists the child marker, prompt, raw protocol event,
 fixture content, or child-authored path.
@@ -1973,13 +2051,13 @@ The evidence-only
 and resolve to the existing non-symlink change root with that exact basename.
 Missing, malformed, mismatched, absent, or symlinked change roots fail before
 runtime discovery and produce no pass result.
-`schema_version` is `boundary-runtime-preflight-v2`.
+`schema_version` is `boundary-runtime-preflight-v3`.
 `result` is `pass` or `environment-unavailable`.
 For pass, `diagnostic_id` is `none`, `phase` is `pre-turn-start`, and
 `attestation_ref` is the standard current path-and-identity reference to
 `docs/changes/<change-id>/evidence/runtime-preflight-attestation.json`.
 `workspace_failure` is null.
-That file contains exactly the `boundary-runtime-attestation-v2` record above,
+That file contains exactly the `boundary-runtime-attestation-v3` record above,
 is published durably only after every preflight check passes, and is
 referenced from `validation-m2.md`. It proves feasibility but does not
 authorize later execution; generation derives a fresh attestation for the
@@ -1994,6 +2072,7 @@ for `workspace-baseline-invalid`:
 | `runtime-unreadable` | `pre-thread-start` |
 | `runtime-version-invalid` | `pre-thread-start` |
 | `runtime-version-unsupported` | `pre-thread-start` |
+| `runtime-projection-unsupported` | `pre-thread-start` |
 | `runtime-identity-unstable` | the single phase assigned by the closed checkpoint-to-phase table below |
 | `schema-bundle-invalid` | `pre-thread-start` |
 | `experimental-api-unavailable` | `pre-thread-start` |
@@ -2008,6 +2087,7 @@ for `workspace-baseline-invalid`:
 | `permission-profile-mismatch` | `pre-turn-start` |
 | `config-equivalence-mismatch` | `pre-turn-start` |
 | `sandbox-probe-failed` | `pre-turn-start` |
+| `file-change-control-mismatch` | `pre-turn-start` or `in-turn`, according to where the mismatch is observed |
 | `credential-isolation-failed` | `pre-turn-start` |
 | `workspace-baseline-invalid` | `pre-turn-start` |
 | `stage-envelope-canary-failed` | `in-turn` |
@@ -2057,8 +2137,8 @@ Missing, additional, unknown, misordered-precedence, or identity-inconsistent
 workspace-failure data invalidates the response.
 
 New preflight and generation paths emit only
-`boundary-runtime-attestation-v2` nested in
-`boundary-behavior-implementation-v2`.
+`boundary-runtime-attestation-v3` nested in
+`boundary-behavior-implementation-v3`.
 Existing v1 attestations and v1 implementation manifests remain readable as
 opaque historical evidence only through this closed registry:
 
