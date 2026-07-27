@@ -4,14 +4,14 @@
 
 accepted
 
-## Proposed successor observation
+## Accepted scoped successor
 
-`ADR-20260727-capability-projected-file-change-control` proposes to supersede
+`ADR-20260727-capability-projected-file-change-control` supersedes
 only this ADR's unconditional live file-change-probe and v2 current-evidence
-clauses. Until that ADR is accepted through architecture review, this accepted
-record remains governing. Its read-only child, deny-only handler,
+clauses. Architecture-review R22 accepted that scoped successor.
+This record remains accepted for its read-only child, deny-only handler,
 workspace-integrity, stage-authored envelope, and parent-only materialization
-decisions are not proposed for replacement.
+decisions.
 
 ## Context
 

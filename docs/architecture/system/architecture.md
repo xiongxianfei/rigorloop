@@ -2,7 +2,7 @@
 
 ## Status
 
-- draft
+- approved
 
 ## Related artifacts
 

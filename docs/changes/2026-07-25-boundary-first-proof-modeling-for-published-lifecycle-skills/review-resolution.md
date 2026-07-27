@@ -3058,7 +3058,7 @@ contract for architecture synchronization.
 
 Finding ID: BFP-AR19-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture author
 Owning stage: architecture revision
 Decision owner: approved R48 handler-conformance contract
@@ -3070,13 +3070,14 @@ and ADR with a common conformance gate plus state-specific proof.
 Rationale: Exposed capability still depends on the same production decline
 handler and cannot skip its deterministic negative proof.
 Validation target: architecture-review-r20
-Validation evidence: pending
+Validation evidence: architecture-review-r22 approved the common
+production-dispatch conformance gate for both capability states.
 
 #### BFP-AR19-2 — New executable components lack an exact C4-consistent ownership projection
 
 Finding ID: BFP-AR19-2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture author
 Owning stage: architecture revision
 Decision owner: accepted two-module harness boundary
@@ -3088,7 +3089,8 @@ normative projection link, and label every relationship.
 Rationale: The plan must not choose executable ownership or infer diagram
 semantics.
 Validation target: architecture-review-r20
-Validation evidence: pending
+Validation evidence: architecture-review-r22 approved exact two-module
+ownership and fully labeled C4 relationships.
 
 ### architecture-review-r20
 
@@ -3096,7 +3098,7 @@ Validation evidence: pending
 
 Finding ID: BFP-AR20-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture author
 Owning stage: architecture revision
 Decision owner: approved R48 handler-conformance contract
@@ -3109,13 +3111,14 @@ addition.
 Rationale: Architecture assessment must classify the same design accepted by
 the canonical package.
 Validation target: architecture-review-r21
-Validation evidence: pending
+Validation evidence: architecture-review-r22 approved the synchronized
+architecture assessment.
 
 #### BFP-AR20-2 — Component diagram bypasses the pure validation boundary for runtime evidence
 
 Finding ID: BFP-AR20-2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture author
 Owning stage: architecture revision
 Decision owner: accepted two-module harness boundary
@@ -3127,7 +3130,8 @@ and validated-evidence-to-attestation relationships.
 Rationale: The diagram must not imply that unvalidated runtime evidence can
 authorize v3 attestation fields.
 Validation target: architecture-review-r21
-Validation evidence: pending
+Validation evidence: architecture-review-r22 approved pure validation before
+v3 attestation assembly.
 
 ### architecture-review-r21
 
@@ -3135,7 +3139,7 @@ Validation evidence: pending
 
 Finding ID: BFP-AR21-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture author
 Owning stage: architecture revision
 Decision owner: approved R48 v3 attestation schema
@@ -3148,4 +3152,11 @@ for diagnostic decisions.
 Rationale: A diagram must not authorize bypass or fields forbidden by the
 closed successful schema.
 Validation target: architecture-review-r22
-Validation evidence: pending
+Validation evidence: architecture-review-r22 approved canary-policy validation,
+closed success-attestation fields, and the separate failure diagnostic path.
+
+### architecture-review-r22
+
+No new material findings. R22 independently confirmed BFP-AR19-1,
+BFP-AR19-2, BFP-AR20-1, BFP-AR20-2, and BFP-AR21-1 resolved and approved the
+v3 capability-projected architecture and scoped successor ADR.
