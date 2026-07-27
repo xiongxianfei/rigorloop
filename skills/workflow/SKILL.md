@@ -91,6 +91,12 @@ boundary-proof reference and return its boundary or proof record before routing
 or handoff. If the required reference cannot be loaded, stop; do not silently
 fall back to example-only output.
 
+Route boundary authoring, proof mapping, implementation, independent review,
+and verification to their existing stage owners. Stop on missing,
+contradictory, stale, or version-mismatched required evidence. Do not create a
+separate boundary-review stage, a shortened workflow lane, or a universal
+boundary artifact.
+
 ## Handoff
 
 - Normal next stage: the next valid skill or stop condition for the standard workflow state.

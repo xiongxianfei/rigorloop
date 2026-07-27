@@ -97,6 +97,19 @@ Bounded discovery is not evidence expansion. Record a compact reason only when r
 
 Use bounded evidence first, but do not under-read. Read broader specs, docs, historical reviews, generated outputs, or related code only when the diff, finding, validation result, or user request names them, or when bounded evidence is missing, stale, contradictory, or insufficient for the review conclusion. Full-file reads remain allowed when the whole file is the target, relevant sections cannot be isolated safely, bounded evidence is contradictory or incomplete, or whole-file context can change the review conclusion.
 
+## Boundary-first review
+
+For a `v1` boundary-model change, inspect the real diff independently for
+omitted dimensions, sibling bypasses, unproved composed paths, stale evidence,
+and remediation that fixes only a listed example. Passing selected tests is
+evidence, not proof that the selected set was complete.
+
+When one boundary member is missed, record the material finding before any
+fix. Require the complete affected sibling-boundary set in the finding or
+resolution recipe: the governing boundary IDs, every material sibling/public
+path, direct proof, and current validation evidence. Do not authorize a fix,
+broaden the spec, or replace semantic review with structural validation.
+
 ## Generated Markdown readability
 
 When this skill creates or updates generated or generator-shaped Markdown:
@@ -132,6 +145,8 @@ Do not read all validation history by default when reviewing code behavior. Esca
 
 ## Resource map
 
+- LOAD `references/boundary-proof-model.md` when the governing spec or test
+  spec uses `Boundary model version: v1`.
 - COPY `assets/material-finding.md` once per material finding.
   Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path, and needs-decision rationale when needed.
   Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.

@@ -114,6 +114,27 @@ Bounded discovery is not evidence expansion. Record a compact reason only when r
 
 Use bounded evidence first, but do not under-read. Expand beyond the milestone when bounded evidence is missing, stale, contradictory, or insufficient to implement the approved slice. Full-file reads remain allowed when the whole file is the target, relevant sections cannot be isolated safely, bounded evidence is contradictory or incomplete, or whole-file context can change the implementation decision.
 
+## Resource map
+
+- LOAD `references/boundary-proof-model.md` when the governing spec or test
+  spec uses `Boundary model version: v1`.
+
+## Boundary-first implementation
+
+For a `v1` boundary-model change, establish the planned proof before or with
+production behavior. Derive trusted inputs from their canonical owners; do not
+turn examples, caller assertions, or stale review evidence into authority.
+
+Before review handoff, sweep material sibling paths as well as the edited
+helper or public path. Confirm that applicable boundaries, selected
+interactions, retries, recovery paths, generated paths, and composed entry
+points have the proof required by the approved test spec.
+
+Stop for contract correction when implementation discovers behavior that the
+approved boundary record does not own. Stop for proof correction when an
+applicable boundary or material sibling path lacks planned proof. Do not invent
+the missing rule in code or narrow the implementation to the examples.
+
 ## Outputs
 
 Produce tests or proof surfaces first where feasible, implementation changes, updated plan progress and validation notes, and a milestone handoff commit that sets the milestone to `review-requested`.
