@@ -4586,6 +4586,39 @@ def _exclusive_write(path: Path, raw: bytes) -> None:
     _fsync_directory(path.parent)
 
 
+def _parse_output_models(
+    output_snapshots: Mapping[str, Mapping[str, object]],
+    path_for: Callable[[Mapping[str, object]], Path],
+) -> tuple[dict[str, object], dict[str, object]]:
+    feature_models: dict[str, object] = {}
+    feature_order: list[str] = []
+    for snapshot_id, snapshot in output_snapshots.items():
+        if snapshot.get("artifact_role") != "feature-spec":
+            continue
+        feature_models[snapshot_id] = normalize_feature_model(
+            _parse_feature_markdown(
+                path_for(snapshot).read_text(encoding="utf-8")
+            )
+        )
+        feature_order.append(snapshot_id)
+    if not feature_order:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    final_feature = feature_models[feature_order[-1]]
+    proof_maps: dict[str, object] = {}
+    for snapshot_id, snapshot in output_snapshots.items():
+        if snapshot.get("artifact_role") != "test-spec":
+            continue
+        proof_maps[snapshot_id] = normalize_proof_map(
+            _parse_test_spec_markdown(
+                path_for(snapshot).read_text(encoding="utf-8")
+            ),
+            final_feature,
+        )
+    if not proof_maps:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    return feature_models, proof_maps
+
+
 def _validate_staged_run(
     repo_root: Path,
     staged: Path,
@@ -4780,7 +4813,7 @@ def _validate_staged_run(
             not in {"spec", "spec-review", "test-spec", "test-spec-review"}
             or not isinstance(event.get("attempt"), int)
             or event["attempt"] not in {1, 2}
-            or event.get("structural_result") != "pass"
+            or event.get("structural_result") not in {"pass", "fail"}
             or not isinstance(event.get("input_snapshot_ids"), list)
             or not isinstance(event.get("output_snapshot_ids"), list)
             or not isinstance(event.get("evidence_refs"), list)
@@ -4807,11 +4840,6 @@ def _validate_staged_run(
                 is None
             ):
                 raise BoundaryRuntimeError("runtime-identity-unstable")
-    feature_snapshot = output_snapshots.get("output.feature-spec.one")
-    test_snapshot = output_snapshots.get("output.test-spec.one")
-    if feature_snapshot is None or test_snapshot is None:
-        raise BoundaryRuntimeError("runtime-identity-unstable")
-
     def staged_output(snapshot: Mapping[str, object]) -> Path:
         return staged / "artifacts" / str(snapshot["path"]).removeprefix(
             target_artifact_prefix
@@ -4822,21 +4850,17 @@ def _validate_staged_run(
         if str(snapshot["path"]).endswith("-bundle.json"):
             bundles[snapshot_id] = _read_json(staged_output(snapshot))
     try:
-        feature = normalize_feature_model(
-            _parse_feature_markdown(
-                staged_output(feature_snapshot).read_text(encoding="utf-8")
-            )
-        )
-        proof = normalize_proof_map(
-            _parse_test_spec_markdown(
-                staged_output(test_snapshot).read_text(encoding="utf-8")
-            ),
-            feature,
+        feature_models, proof_maps = _parse_output_models(
+            output_snapshots, staged_output
         )
         structural = {
             f"{event['stage']}#{event['attempt']}": {
-                "structural_result": "pass",
-                "diagnostic_id": "none",
+                "structural_result": event["structural_result"],
+                "diagnostic_id": (
+                    "none"
+                    if event["structural_result"] == "pass"
+                    else event["diagnostic_id"]
+                ),
             }
             for event in events
         }
@@ -4848,8 +4872,8 @@ def _validate_staged_run(
                 "before_inventory": before,
                 "after_inventory": after,
             },
-            feature_models={"output.feature-spec.one": feature},
-            proof_maps={"output.test-spec.one": proof},
+            feature_models=feature_models,
+            proof_maps=proof_maps,
             structural_evaluations=structural,
         )
     except (OSError, UnicodeError, KeyError, BoundaryProofError) as error:
@@ -5153,25 +5177,10 @@ def _validate_run(
         "before_inventory": before,
         "after_inventory": after,
     }
-    feature_snapshot = output_snapshots.get("output.feature-spec.one")
-    test_snapshot = output_snapshots.get("output.test-spec.one")
-    if feature_snapshot is None or test_snapshot is None:
-        raise BoundaryRuntimeError("runtime-identity-unstable")
     try:
-        feature = normalize_feature_model(
-            _parse_feature_markdown(
-                (repo_root / str(feature_snapshot["path"])).read_text(
-                    encoding="utf-8"
-                )
-            )
-        )
-        proof = normalize_proof_map(
-            _parse_test_spec_markdown(
-                (repo_root / str(test_snapshot["path"])).read_text(
-                    encoding="utf-8"
-                )
-            ),
-            feature,
+        feature_models, proof_maps = _parse_output_models(
+            output_snapshots,
+            lambda snapshot: repo_root / str(snapshot["path"]),
         )
         oracle_refs = input_set["oracle_refs"]
         oracle_by_name = {
@@ -5189,24 +5198,30 @@ def _validate_run(
             ),
             oracle_feature,
         )
-        if not boundary_invariant_projections_match(
-            oracle_feature,
-            feature,
-            oracle_proof,
-            proof,
-        ):
-            raise BoundaryRuntimeError("runtime-identity-unstable")
+        for feature in feature_models.values():
+            for proof in proof_maps.values():
+                if not boundary_invariant_projections_match(
+                    oracle_feature,
+                    feature,
+                    oracle_proof,
+                    proof,
+                ):
+                    raise BoundaryRuntimeError("runtime-identity-unstable")
         structural = {
             f"{event['stage']}#{event['attempt']}": {
-                "structural_result": "pass",
-                "diagnostic_id": "none",
+                "structural_result": event["structural_result"],
+                "diagnostic_id": (
+                    "none"
+                    if event["structural_result"] == "pass"
+                    else event["diagnostic_id"]
+                ),
             }
             for event in events
         }
         return evaluate_simple_change_trace(
             trace,
-            feature_models={"output.feature-spec.one": feature},
-            proof_maps={"output.test-spec.one": proof},
+            feature_models=feature_models,
+            proof_maps=proof_maps,
             structural_evaluations=structural,
         )
     except (OSError, UnicodeError, KeyError, BoundaryProofError) as error:
