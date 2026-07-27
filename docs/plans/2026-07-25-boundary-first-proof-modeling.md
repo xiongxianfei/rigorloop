@@ -874,6 +874,14 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-27: Published the decision-bound recovery correction as immutable
+  run `run-8f095d95abb863dbcbd642fe61abd65e` for input identity
+  `sha256:381be42985b3bf9d52f6cd17b298ddc8adb1d67cc05c0b633b391b11f2716a18`.
+  Its manifest binds publisher
+  `publisher-fdedafd502f871013353ae28a7af7683`; canonical validation, 100
+  focused tests, and the skill/build validators pass. M2 remains
+  `resolution-needed` pending code-review R8.
+
 - 2026-07-27: Code-review M2 R7 confirmed the R6 object-validity corrections
   and opened `BFP-CR-M2-13`. The remaining authority check proves only that
   evidence is current Markdown within the change root; it does not prove a

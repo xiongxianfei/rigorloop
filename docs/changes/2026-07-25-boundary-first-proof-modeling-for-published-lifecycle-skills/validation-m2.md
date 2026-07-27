@@ -10,7 +10,7 @@ Diagnostic: none
 The current immutable upstream behavior run is:
 
 ```json
-{"false_blocking_count":0,"input_set_identity":"sha256:a581eb599479874f3b043c51dbc9acc8ed3728cb023a017676378e29bc26d5e6","new_universal_artifact_count":0,"result":"pass","run_id":"run-7c219a9daabd04402fa8345812f74b33","simple_fixture_structure_correction_cycles":1}
+{"false_blocking_count":0,"input_set_identity":"sha256:381be42985b3bf9d52f6cd17b298ddc8adb1d67cc05c0b633b391b11f2716a18","new_universal_artifact_count":0,"result":"pass","run_id":"run-8f095d95abb863dbcbd642fe61abd65e","simple_fixture_structure_correction_cycles":1}
 ```
 
 The run completed fresh `spec`, `spec-review`, `test-spec`, and
@@ -21,7 +21,7 @@ It introduced no universal lifecycle artifact and produced no false block.
 The current run also closes the publisher transaction gap:
 
 - its exact manifest contains
-  `publisher_instance_id: publisher-f21c802b33474485382e5e2088179ae3`;
+  `publisher_instance_id: publisher-fdedafd502f871013353ae28a7af7683`;
 - the lease was durable before the first stage workspace existed;
 - every child workspace was created below the lease-bound working root with a
   hermetic project marker, preventing ancestor skill/instruction discovery;
@@ -47,6 +47,17 @@ The R6 correction additionally proves object-complete recovery classification:
 - fixed control roots have exact object kinds before candidate routing; and
 - malformed correction traces fail before staged publication.
 
+The R7 correction closes destructive-recovery authority:
+
+- the only accepted authority path is
+  `docs/changes/<change-id>/recovery-decisions/<run-id>.json`;
+- the decision has one closed schema and an `authorized` outcome;
+- change, run, publisher, input identity, action, and actor must match the
+  selected lease and recovery basis exactly;
+- every missing, added, or changed decision field rejects before mutation;
+- arbitrary change-local Markdown and wrong decision paths reject; and
+- decision-byte drift after authorization cannot resume an active recovery.
+
 The focused correction also closed both bounded correction publication paths:
 
 - feature-spec and test-spec corrections each assemble one identity-bound
@@ -64,7 +75,7 @@ Current validation:
 - `python scripts/boundary_proof_behavior.py validate --change-id
   2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` —
   passed against the immutable current run without lifecycle reinvocation.
-- `python scripts/test-boundary-proof.py` — passed 97 tests.
+- `python scripts/test-boundary-proof.py` — passed 100 tests.
 - `python scripts/validate-skills.py` — validated 24 skills.
 - `python scripts/test-skill-validator.py` — passed 259 tests.
 - `python scripts/build-skills.py --check` — passed.
