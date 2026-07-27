@@ -1610,6 +1610,17 @@ def _workflow_stage_request(
             + ", ".join(
                 str(row["artifact_set_variant"]) for row in variants
             )
+            + "\nAllowed artifact sets:\n"
+            + "\n".join(
+                "- "
+                + str(row["artifact_set_variant"])
+                + ": "
+                + ", ".join(
+                    str(artifact["role"]) + "=" + str(artifact["path"])
+                    for artifact in row["artifacts"]
+                )
+                for row in variants
+            )
             + "\nExpected paths:\n- "
             + "\n- ".join(expected_outputs)
             + "\n\nRequest:\n"
