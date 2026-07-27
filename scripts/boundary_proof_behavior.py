@@ -1903,6 +1903,32 @@ def _output_state(
     return "contradictory"
 
 
+def _output_state_for_allowed_sets(
+    allowed_path_sets: Sequence[Sequence[str]],
+    output_files: Sequence[Mapping[str, object]],
+) -> str:
+    """Classify output against mutually exclusive policy-approved artifact sets."""
+
+    if not allowed_path_sets:
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    observed_paths = [row.get("path") for row in output_files]
+    if any(not isinstance(path, str) for path in observed_paths):
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    if len(observed_paths) != len(set(observed_paths)):
+        return "contradictory"
+    actual = set(observed_paths)
+    permitted = [set(paths) for paths in allowed_path_sets]
+    if any(len(paths) != len(set(paths)) for paths in allowed_path_sets):
+        raise BoundaryRuntimeError("protocol-shape-incompatible")
+    if actual in permitted:
+        return "complete"
+    if any(actual < candidate for candidate in permitted):
+        return "partial"
+    if any(candidate < actual for candidate in permitted):
+        return "extra"
+    return "contradictory"
+
+
 def _collect_workspace_outputs(
     workspace: Path, expected_paths: Sequence[str]
 ) -> list[dict[str, str]]:
@@ -1932,6 +1958,8 @@ def _invoke_with_reconciliation(
         [], tuple[dict[str, object], dict[str, object]]
     ],
     required_paths: Sequence[str],
+    *,
+    allowed_path_sets: Sequence[Sequence[str]] | None = None,
 ) -> tuple[dict[str, object], dict[str, object], list[dict[str, object]]]:
     attempts: list[dict[str, object]] = []
     for attempt in (1, 2):
@@ -1942,7 +1970,13 @@ def _invoke_with_reconciliation(
                 raise BoundaryRuntimeError(
                     "unexpected-prohibited-event", "in-turn"
                 ) from error
-            state = _output_state(required_paths, error.output_files)
+            state = (
+                _output_state_for_allowed_sets(
+                    allowed_path_sets, error.output_files
+                )
+                if allowed_path_sets is not None
+                else _output_state(required_paths, error.output_files)
+            )
             if state == "complete" and error.attestation is not None:
                 attempts.append(
                     {
@@ -1990,7 +2024,11 @@ def _invoke_with_reconciliation(
         output_files = result.get("output_files")
         if not isinstance(output_files, list):
             raise BoundaryRuntimeError("protocol-shape-incompatible")
-        state = _output_state(required_paths, output_files)
+        state = (
+            _output_state_for_allowed_sets(allowed_path_sets, output_files)
+            if allowed_path_sets is not None
+            else _output_state(required_paths, output_files)
+        )
         if state != "complete":
             raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
         attempts.append(
@@ -3412,8 +3450,18 @@ def generate_behavior(
                 raise BoundaryRuntimeError("protocol-shape-incompatible")
             return observed_attestation, generated[0]
 
+        variants = _stage_policy_variants(
+            str(stage_request["stage"]),
+            int(stage_request.get("attempt", 1)),
+        )
+        allowed_path_sets = [
+            [str(artifact["path"]) for artifact in variant["artifacts"]]
+            for variant in variants
+        ]
         observed, result, attempts = _invoke_with_reconciliation(
-            invoke, list(stage_request["expected_outputs"])
+            invoke,
+            list(stage_request["expected_outputs"]),
+            allowed_path_sets=allowed_path_sets,
         )
         envelope = result.get("stage_envelope")
         completion = (

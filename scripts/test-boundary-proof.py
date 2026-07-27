@@ -2025,6 +2025,44 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         self.assertEqual(result["output_files"][0]["path"], "artifact.md")
         self.assertEqual(attempts[-1]["decision"], "reconcile")
 
+    def test_reconciliation_accepts_each_mutually_exclusive_review_set(
+        self,
+    ) -> None:
+        allowed = [
+            ["reviews/spec-review.md", "review-log/spec-review.md"],
+            [
+                "reviews/spec-review.md",
+                "review-log/spec-review.md",
+                "review-resolution/spec-review.md",
+            ],
+        ]
+        for paths in allowed:
+            with self.subTest(paths=paths):
+                calls = 0
+
+                def invoke() -> tuple[dict[str, object], dict[str, object]]:
+                    nonlocal calls
+                    calls += 1
+                    return (
+                        {"identity": "current"},
+                        {
+                            "thread_id": "thread-1",
+                            "runtime_process_id": "process-1",
+                            "output_files": [
+                                {"path": path, "text": "# Artifact\n"}
+                                for path in paths
+                            ],
+                        },
+                    )
+
+                _, _, attempts = _invoke_with_reconciliation(
+                    invoke,
+                    allowed[0],
+                    allowed_path_sets=allowed,
+                )
+                self.assertEqual(calls, 1)
+                self.assertEqual(attempts[-1]["decision"], "accept")
+
     def test_timeout_retries_only_absent_output_once(self) -> None:
         calls = 0
 
