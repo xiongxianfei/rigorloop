@@ -10,7 +10,7 @@ Diagnostic: none
 The current immutable upstream behavior run is:
 
 ```json
-{"false_blocking_count":0,"input_set_identity":"sha256:06124df85f7efe1b3a16304aa9e5eba5f173b4f049462da11325db9282a130bd","new_universal_artifact_count":0,"result":"pass","run_id":"run-f6bb6b5f5d7912166d28fa37d012242f","simple_fixture_structure_correction_cycles":0}
+{"false_blocking_count":0,"input_set_identity":"sha256:a581eb599479874f3b043c51dbc9acc8ed3728cb023a017676378e29bc26d5e6","new_universal_artifact_count":0,"result":"pass","run_id":"run-7c219a9daabd04402fa8345812f74b33","simple_fixture_structure_correction_cycles":1}
 ```
 
 The run completed fresh `spec`, `spec-review`, `test-spec`, and
@@ -21,7 +21,7 @@ It introduced no universal lifecycle artifact and produced no false block.
 The current run also closes the publisher transaction gap:
 
 - its exact manifest contains
-  `publisher_instance_id: publisher-fcde95cf6ab70c087aacc09a9330d998`;
+  `publisher_instance_id: publisher-f21c802b33474485382e5e2088179ae3`;
 - the lease was durable before the first stage workspace existed;
 - every child workspace was created below the lease-bound working root with a
   hermetic project marker, preventing ancestor skill/instruction discovery;
@@ -36,6 +36,16 @@ The current run also closes the publisher transaction gap:
   boundary: temporary-state fsync, immutable basis installation, authorized
   state persistence, quarantine rename, orphan-detached persistence, and
   publisher-lease deletion.
+
+The R6 correction additionally proves object-complete recovery classification:
+
+- completed history consumes only its exact validated history objects and
+  cannot hide same-run active staging;
+- recoverable staging must pass the same complete semantic validation used
+  before publication;
+- recovery authority is contained within the selected change record;
+- fixed control roots have exact object kinds before candidate routing; and
+- malformed correction traces fail before staged publication.
 
 The focused correction also closed both bounded correction publication paths:
 
@@ -54,7 +64,7 @@ Current validation:
 - `python scripts/boundary_proof_behavior.py validate --change-id
   2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills` —
   passed against the immutable current run without lifecycle reinvocation.
-- `python scripts/test-boundary-proof.py` — passed 93 tests.
+- `python scripts/test-boundary-proof.py` — passed 97 tests.
 - `python scripts/validate-skills.py` — validated 24 skills.
 - `python scripts/test-skill-validator.py` — passed 259 tests.
 - `python scripts/build-skills.py --check` — passed.
