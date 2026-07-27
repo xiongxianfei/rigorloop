@@ -1919,6 +1919,14 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         )
         self.assertIn("Review ID: spec-review-r1", review_request["prompt"])
         self.assertIn("Preserve independent judgment", review_request["prompt"])
+        self.assertIn(
+            "spec-review-record=reviews/spec-review.md",
+            review_request["prompt"],
+        )
+        self.assertIn(
+            "spec-review-log=review-log/spec-review.md",
+            review_request["prompt"],
+        )
 
     def test_stage_envelope_is_policy_bound_and_parent_materialized(self) -> None:
         envelope = {
