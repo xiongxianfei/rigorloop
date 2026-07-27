@@ -94,13 +94,13 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M4. Selection, adapter parity, capability baseline, and activation proof
-- Current milestone state: resolution-needed
+- Current milestone state: review-requested
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-final-r1.md
-- Review status: changes-requested; stage=code-review; round=r1
-- Remaining in-scope implementation milestones: M4 integration correction
-- Next stage: review-resolution
+- Review status: review-requested; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M4 final holistic rereview
+- Next stage: code-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BFP-CR-FINAL-1
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending, pr-handoff-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -789,7 +789,7 @@ resource through generated, packed, and installed outputs.
 
 ### M4. Selection, adapter parity, capability baseline, and activation proof
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
 - Goal: Make the complete boundary capability selectable, portable, measurable, and release-safe without activating or publishing it.
 - Requirements: R28l-R28o, R28z; R56n, R56q
 - Files/components likely touched:
@@ -1064,7 +1064,7 @@ resource through generated, packed, and installed outputs.
   `run-62735d2bff6ab29bfe208183cf33fc03` validates against the committed mapping
   correction with zero corrections, false blocks, or new universal artifacts.
   The reconstructed typed capability report passes with identity
-  `sha256:4cfacf61164795d4e227e97f93211e70b8f1554162ee5381b8ef36bc24f33b1c`.
+  `sha256:ab0057f39cb928f0f08d07a8398aca82659bbeba267aa557514c02e5249c101f`.
   Selector (134), adapter (132), release-transaction (87), boundary (115), and
   skill-validator (261) suites pass; M4 is ready for correction rereview.
 - 2026-07-27: Code-review M4 R2 independently approved the complete typed
@@ -1072,6 +1072,12 @@ resource through generated, packed, and installed outputs.
   non-activation evidence. `BFP-CR-M4-1` is resolved and M4 is closed. The
   next required gate is a separate final holistic code review.
 - 2026-07-27: Final holistic code-review R1 opened `BFP-CR-FINAL-1`.
+- 2026-07-27: M4 integration correction classified the complete governed
+  boundary script and fixture surfaces, retained release-transaction routing,
+  removed unsafe parallelism from the three shared-state boundary suite
+  routes, regenerated the identity-bound capability report, and passed the
+  exact 14-check selected-CI command. The correction is ready for final
+  holistic code-review R2.
   Component-level boundary route helpers return the six required checks, but
   the public selector still classifies boundary scripts as unsupported and
   fixture paths as unclassified. The exact plan-owned explicit CI command
