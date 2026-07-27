@@ -2652,7 +2652,7 @@ safe_resolution_path
 needs_decision_rationale
 ```
 
-The review record contains one finding block per
+For `changes-requested`, the review record contains one finding block per
 `material_finding_ids` member.
 Each block begins with the exact line
 `## Finding <finding_id>` and contains each of these exact single-line labels
@@ -2672,12 +2672,15 @@ and trailing ASCII space removed; internal bytes are otherwise preserved.
 `needs-decision rationale` is either the exact lowercase ASCII value `none` or
 nonempty decision text.
 Finding IDs are unique and stable-ID sorted in both the review metadata and
-the normalized projection.
+the normalized projection for `changes-requested`.
 Unknown prose outside these labels remains review evidence but does not alter
 the projection.
 Missing, repeated, empty, out-of-order, extra recognized labels, mismatched
-heading and label IDs, duplicate IDs, or a projection whose IDs differ from
-`material_finding_ids` fails closed as `protocol-shape-incompatible`.
+heading and label IDs, duplicate IDs, or a `changes-requested` projection
+whose IDs differ from `material_finding_ids` fails closed as
+`protocol-shape-incompatible`.
+For approved or blocked review outcomes, `finding_projection` is the empty
+list and its identity is the canonical identity of that empty list.
 
 The normalized projection is the stable-ID-sorted list of those exact rows.
 `finding_projection_identity` is the SHA-256 identity of its canonical JSON
@@ -2711,6 +2714,33 @@ It is non-retryable and is not a transport-attempt diagnostic.
 The accepted review event and its complete review record, log, resolution,
 bundle, normalized finding projection, and identities remain in the
 lease-bound working root.
+Before reporting the stop, the harness exclusively writes and fsyncs
+`correction-stop.json` at the lease-bound working root and fsyncs that root.
+The receipt contains exactly:
+
+```text
+schema_version
+run_id
+publisher_instance_id
+input_set_identity
+stage
+attempt
+review_id
+reviewed_artifact_identity
+material_finding_ids
+finding_projection_identity
+diagnostic_id
+```
+
+`schema_version` is `simple-change-correction-stop-v1`;
+`stage` is `spec-review` or `test-spec-review`;
+`attempt` is `1`;
+`diagnostic_id` is `correction-authorization-required`;
+and all run, publisher, input, review, reviewed-artifact, finding-set, and
+projection identities exactly match the retained accepted review evidence.
+The receipt is part of the minimum-valid working-root contract only for this
+terminal state.
+Missing, extra, stale, malformed, or inconsistent receipt state fails closed.
 No staged root, prepared receipt, immutable run, current-pointer replacement,
 or passing typed result is created.
 The publisher lease and minimum-valid working root remain as the single
@@ -2724,6 +2754,12 @@ future-contingent owner decision.
 The owner must instead clarify the authoritative scenario request or other
 governing input, producing a new input-set identity, and explicitly start a
 fresh generation.
+After completed recovery preserves a working quarantine containing a valid
+correction-stop receipt, a later generation derives current inputs before
+stage invocation and MUST reject equality with that receipt's
+`input_set_identity` as `correction-authorization-required`.
+Only an unequal, otherwise valid current input identity may allocate a new run
+or invoke a lifecycle stage.
 The stopped run remains noncanonical and MUST NOT be installed, pointed to, or
 reported as passing behavior evidence.
 This input-revision rule preserves owner authority without introducing a
@@ -2993,10 +3029,14 @@ After lease durability, the harness creates and fsyncs the deterministic
 working root and invokes the workflow and stage-owning skills only inside it.
 For recovery classification, a minimum-valid working root is the exact regular,
 non-symlink directory named by the lease whose descendants are only regular
-files or directories within the approved behavior-workspace paths.
+files or directories within the approved behavior-workspace paths, plus the
+single root-level `correction-stop.json` file only when it satisfies the
+terminal correction-stop contract above.
 Every descendant is included in its canonical path-and-raw-byte tree identity.
-An unknown path, symlink, special file, escape, unreadable entry, or identity
-instability is corrupt rather than a discardable working root.
+That root-level file is forbidden in every other working state.
+An unknown path, misplaced or inconsistent stop receipt, symlink, special file,
+escape, unreadable entry, or identity instability is corrupt rather than a
+discardable working root.
 It validates all events, bundles, snapshots, inventories, and metrics, then
 renames the working root to the non-authoritative staging root and fsyncs the
 simple-change parent.
