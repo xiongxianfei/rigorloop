@@ -18,6 +18,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import traceback
 import tomllib
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
@@ -6332,6 +6333,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         else:
             raise AssertionError(f"unknown command: {args.command}")
     except (BoundaryRuntimeError, BoundaryProofError, OSError) as error:
+        if os.environ.get("BOUNDARY_PROOF_DIAGNOSTICS") == "1":
+            traceback.print_exc()
         diagnostic = (
             error.diagnostic_id
             if isinstance(error, BoundaryRuntimeError)
