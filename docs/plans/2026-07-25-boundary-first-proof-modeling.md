@@ -94,9 +94,9 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r19.md
 - Review status: changes-requested; stage=architecture-review; round=r19
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture
+- Next stage: architecture-review
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-AR19-1,BFP-AR19-2
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-AR19-1,BFP-AR19-2,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
 ## Milestones
 
@@ -756,6 +756,12 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: The R20 architecture candidate resolves R19 by making fresh
+  production-dispatch conformance a common gate before either capability
+  branch, assigning registry/validation to `boundary_proof_model.py`, assigning
+  runtime dispatch/execution to `boundary_proof_behavior.py`, and labeling
+  every component relationship.
 
 - 2026-07-27: Architecture-review R19 requested two focused corrections:
   make handler conformance common to both capability branches, and assign the

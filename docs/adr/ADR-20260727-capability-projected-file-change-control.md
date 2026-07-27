@@ -23,8 +23,17 @@ and feature rows.
 
 ## Decision
 
-Use one immutable typed runtime-projection registry as the executable
-projection of the approved workflow specification.
+Use one immutable typed runtime-projection registry in
+`scripts/boundary_proof_model.py` as the executable projection of the approved
+workflow specification. The model module owns complete rows, canonical
+identities, uniqueness and selection validation, effective-tool projection
+validation, handler-conformance result validation, and closed diagnostic
+mapping without runtime I/O.
+
+`scripts/boundary_proof_behavior.py` owns runtime observation, the production
+deny-only dispatcher, and the fresh conformance runner. The runner exercises
+the same dispatch and response-validation functions installed for governed
+threads and returns only the bounded result to the model.
 
 Each projection binds:
 
@@ -40,11 +49,15 @@ unique exact match across all implementation and declaration identities.
 Unknown fields, duplicate IDs or selection keys, identity disagreement, or
 changed launcher/package bytes fail before `thread/start`.
 
-File-change proof is capability-state-specific:
+Fresh invocation-owned handler conformance is a common pre-branch gate.
+Preflight and generation each execute it independently after installing the
+production dispatcher and before any governed thread.
 
-- `exposed-live-probe-required` requires the correlated
+Additional file-change proof is capability-state-specific:
+
+- `exposed-live-probe-required` additionally requires the correlated
   request/decline/terminal-`declined` trace and unchanged workspace;
-- `not-exposed-projection` forbids asking the model to invoke an absent
+- `not-exposed-projection` additionally forbids asking the model to invoke an absent
   operation and instead requires the exact reviewed runtime projection, every
   required-disabled feature disabled, a complete invocation-owned
   effective-tool projection, a fresh invocation-owned deny-handler
@@ -52,10 +65,10 @@ File-change proof is capability-state-specific:
   projection drift.
 
 The same identity-bound deny-only handler remains installed before every
-canary, lifecycle, and retry thread. Its conformance policy proves the matching
-decline and the complete missing, malformed, mismatched, widened, accepted,
-and session-accepted negative set against the actual dispatch and validation
-functions.
+canary, lifecycle, and retry thread. The common conformance policy proves the
+matching decline and the complete missing, malformed, mismatched, widened,
+accepted, and session-accepted negative set against the actual dispatch and
+validation functions.
 
 New evidence uses:
 

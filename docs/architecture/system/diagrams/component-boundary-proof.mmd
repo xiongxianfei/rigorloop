@@ -33,9 +33,9 @@ flowchart LR
     evaluator["Capability evaluator<br/>[Pure aggregate]"]:::component
     harness["Standalone behavior harness<br/>[One workflow invocation]"]:::component
     assembler["Package + workspace assembler<br/>[Manifest-bound inputs]"]:::component
-    projection_registry["Runtime projection registry<br/>[Exact bytes + declarations + capability state]"]:::component
+    projection_registry["Runtime projection registry<br/>[boundary_proof_model.py: exact bytes + declarations + state]"]:::component
     runtime_adapter["Child-runtime adapter + candidate collector<br/>[App-server + capability-state proof]"]:::component
-    handler_conformance["File-change handler conformance<br/>[Fresh dispatch proof + closed negative set]"]:::component
+    handler_conformance["File-change handler conformance<br/>[boundary_proof_behavior.py: production dispatch proof]"]:::component
     transport["Envelope transport reconciler<br/>[Policy, timeout, candidates, retry]"]:::component
     integrity["Workspace integrity guard<br/>[Root-anchored baseline + post-turn scan]"]:::component
     materializer["Exact-byte materializer<br/>[Write + complete reread observation]"]:::component
@@ -48,25 +48,26 @@ flowchart LR
 
   workflow_spec -->|normative values and gates| model
   skill_spec -->|normative stage projection| model
-  model --> validator
-  model --> evaluator
-  model --> harness
-  selector --> validator
+  workflow_spec -->|normative runtime-projection contract| projection_registry
+  model -->|typed records and parsers| validator
+  model -->|validated aggregate inputs| evaluator
+  model -->|closed runtime and evidence decisions| harness
+  selector -->|routes affected paths| validator
   fixtures -->|fixture and behavior evidence| validator
   feature_specs -->|boundary and proof records| validator
   reviewer -->|semantic completeness| feature_specs
   skills -->|five participating packages + resource maps| assembler
   workflow_spec -->|governing contracts and instruction chain| assembler
   assembler -->|fresh config home + closed workspace| isolated_workspace
-  harness --> assembler
-  harness --> runtime_adapter
+  harness -->|requests manifest-bound inputs| assembler
+  harness -->|coordinates runtime observation| runtime_adapter
   projection_registry -->|unique exact projection| runtime_adapter
   runtime_adapter -->|installed dispatch implementation| handler_conformance
   runtime_adapter -->|provisions runtime-only auth| credential_channel
   credential_channel -->|authenticates runtime outside tool sandbox| child_runtime
   runtime_adapter -->|thread/start + one workflow turn over stdio| child_runtime
   file_change_policy -->|configures every request handler| runtime_adapter
-  harness --> transport
+  harness -->|coordinates stage attempts| transport
   transport -->|fresh thread/process + bounded deadline| runtime_adapter
   transport_policy -->|policy identity + deadlines| transport
   artifact_policy -->|selected policy identity + limits + variants| transport
