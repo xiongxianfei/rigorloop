@@ -95,12 +95,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r20.md
-- Review status: approved; stage=plan-review; round=r20
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r21.md
+- Review status: changes-requested; stage=test-spec-review; round=r21
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: test-spec-review
+- Next stage: test-spec
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-CR-M2-9
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-CR-M2-9,BFP-TSR21-1
 
 ## Milestones
 
@@ -872,6 +872,11 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Test-spec-review R21 requested one focused correction:
+  directly inspect every child-visible workspace, request, attachment,
+  artifact-context, and access-observation surface and reject deliberate
+  candidate exposure before output acceptance or publication.
 
 - 2026-07-27: Synchronized the active R28y proof map and its exact input
   identities to spec-review R54, architecture-review R26, and plan-review R20.
