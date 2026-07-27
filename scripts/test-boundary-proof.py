@@ -2357,6 +2357,10 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             DIAGNOSTIC_PHASES["unmanifested-input"],
             frozenset({"pre-turn-start"}),
         )
+        self.assertEqual(
+            DIAGNOSTIC_PHASES["review-nonapproval"],
+            frozenset({"in-turn"}),
+        )
         with self.assertRaises(ValueError):
             BoundaryRuntimeError("not-in-vocabulary")
 
@@ -2685,6 +2689,13 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             _validate_review_payload(
                 malformed, stage="spec-review", artifact_identity=identity
             )
+        nonapproval = copy.deepcopy(payload)
+        nonapproval["outcome"] = "changes-requested"
+        with self.assertRaises(BoundaryRuntimeError) as raised:
+            _validate_review_payload(
+                nonapproval, stage="spec-review", artifact_identity=identity
+            )
+        self.assertEqual(raised.exception.diagnostic_id, "review-nonapproval")
 
     def test_closed_artifact_classifier_covers_repository_boundaries(self) -> None:
         change_id = "2026-07-25-example"

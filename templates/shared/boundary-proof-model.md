@@ -88,8 +88,10 @@ Non-normative examples state their limited purpose.
 
 Select interactions from actual hazards: stale authority, partial retry,
 helper/public bypass, sibling drift, or another requirement-owned cross-boundary
-risk. Record the involved boundary IDs and rationale. Do not generate a full
-Cartesian product.
+risk. Select an interaction whenever correctness depends on two or more
+boundaries composing; this includes classification at one boundary determining
+the success, failure, or stop outcome at another. Record the involved boundary
+IDs and rationale. Do not generate a full Cartesian product.
 
 ## Proof record
 

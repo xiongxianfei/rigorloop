@@ -267,6 +267,7 @@ DIAGNOSTIC_PHASES: Final[dict[str, frozenset[str]]] = {
     "workspace-baseline-invalid": frozenset({"pre-turn-start"}),
     "stage-envelope-canary-failed": frozenset({"in-turn"}),
     "boundary-oracle-mismatch": frozenset({"in-turn"}),
+    "review-nonapproval": frozenset({"in-turn"}),
     "unmanifested-input": frozenset({"pre-turn-start"}),
     "unexpected-prohibited-event": frozenset({"in-turn"}),
 }
@@ -1543,6 +1544,9 @@ def _workflow_stage_request(
             "may cite those IDs but must not redefine them. Every example's "
             "governing requirement IDs must be a subset of the union owned by "
             "its cited boundaries and must overlap each cited boundary. "
+            "Apply the reference's interaction-selection rule whenever "
+            "correctness depends on boundaries composing; do not default to "
+            "no interaction merely because the feature is small. "
             "Every authored stable ID must match "
             "`^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$`; IDs must be dotted. "
             "Use the literal ASCII `-` for every empty table value; never "
@@ -2427,7 +2431,8 @@ def _validate_review_payload(
     if (
         not isinstance(review_id, str)
         or re.fullmatch(rf"{re.escape(stage)}-r[1-9][0-9]*", review_id) is None
-        or outcome != "approved"
+        or outcome
+        not in {"approved", "changes-requested", "blocked", "inconclusive"}
         or not isinstance(record, str)
         or not isinstance(log, str)
     ):
@@ -2439,6 +2444,8 @@ def _validate_review_payload(
             if isinstance(record, str):
                 print(record, file=sys.stderr)
         raise BoundaryRuntimeError("unexpected-prohibited-event", "in-turn")
+    if outcome != "approved":
+        raise BoundaryRuntimeError("review-nonapproval", "in-turn")
     def metadata(markdown: str, label: str) -> str | None:
         match = re.search(
             rf"(?im)^\s*(?:[-*]\s*)?(?:\*\*)?{re.escape(label)}"
