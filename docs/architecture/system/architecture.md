@@ -386,13 +386,14 @@ for the component view.
 | Boundary model constants and parser | `scripts/boundary_proof_model.py` | Projects closed IDs, marker and scope rules, row schemas, reference integrity, fixture identities, result vocabularies, and report aggregation from approved specs. |
 | Capability evaluator | Pure functions in `scripts/boundary_proof_model.py` | Computes the six-check, fixture, preservation, parity, overhead, and final capability outcomes from validated typed inputs; it performs no filesystem writes. |
 | Runtime projection registry and validator | Immutable constants and pure functions in `scripts/boundary_proof_model.py` | Projects complete reviewed runtime rows from the workflow spec, owns canonical projection identities and uniqueness checks, selects exactly one row by runtime implementation and declaration identities, and validates the complete successful-attestation input set including effective-tool, file-change policy, canary policy, handler-conformance, and probe evidence. Separately, it validates failure diagnostic causes, phases, and precedence and returns typed failure decisions that never enter a successful attestation. It fails closed on unknown, duplicate, incomplete, or inconsistent values and performs no runtime I/O. |
-| Standalone behavior harness | `scripts/boundary_proof_behavior.py` | Assembles the five participating skill packages and governing inputs, enforces the closed two-module import boundary, creates the isolated workspace and fresh runtime home, invokes the public workflow once, and coordinates envelope transport, exact-byte materialization, structural content validation, output reconciliation, and immutable publication without authoring semantic content. |
+| Standalone behavior harness | `scripts/boundary_proof_behavior.py` | Assembles the five participating skill packages and governing inputs, enforces the closed two-module import boundary, creates the isolated workspace and fresh runtime home, invokes the public workflow once, and coordinates envelope transport, exact-byte materialization, structural and invariant validation, output reconciliation, and immutable publication without authoring semantic content. It passes the authoritative scenario request to lifecycle stages and keeps comparison candidates outside child-readable roots. |
 | Child-runtime adapter and candidate collector | Functions in `scripts/boundary_proof_behavior.py` | Collects exact runtime and declaration identities for pure registry selection, derives the complete effective-tool observation for pure validation, starts app-server over stdio, binds runtime metadata and the active permission profile, independently probes the same profile through `codex sandbox`, provisions opaque control-plane authentication outside child authority, enforces the closed checkpoint-to-phase and file-change cause-to-phase decisions returned by the model, and captures at most the policy-bounded set of schema-constrained agent-message candidates, including candidates observed before timeout. It emits only closed value-free observations and retains raw candidate bytes transiently only as permitted by the selected policy. |
 | Production file-change dispatcher and conformance runner | Functions in `scripts/boundary_proof_behavior.py` | Installs the deny-only request dispatcher used by every governed thread and executes the complete fresh preflight and generation conformance case set against that same dispatch and response-validation implementation. It returns the bounded value-free result to the typed model for identity and shape validation; it cannot grant or remember approval. |
 | Envelope transport and output reconciler | Functions in `scripts/boundary_proof_behavior.py` | Applies the manifest-bound positive turn and termination-wait deadlines plus the parent-selected artifact policy, binds every attempt to one fresh logical thread/process pair, classifies candidate sets and the complete closed diagnostic tuple, terminates and reaps expired children, validates the closed envelope and exact raw/canonical byte limits, and permits the single confirmed-stopped absent-output retry while failing closed or pausing every other unsafe tuple. |
 | Exact-byte materializer | Functions in `scripts/boundary_proof_behavior.py` | Accepts only one complete policy-matching `boundary-stage-artifact-envelope-v1`, writes each stage-authored `content_utf8` value unchanged below the isolated output root, rereads the complete leaf set, and emits a value-free materialization observation proving exact path, byte identity, byte count, and entry-kind equality. It cannot create, normalize, complete, or repair semantic content. |
 | Lifecycle content validator | Functions in `scripts/boundary_proof_behavior.py` | Applies the closed manifest-bound structural validators to exactly materialized artifacts, records a value-free content-validation observation, and rejects record, occurrence, review-outcome, finding-set, resolution-state, reviewed-identity, or content-state disagreement. It checks structure and agreement only; it cannot create or change review judgment. |
-| Isolated workspace assembler | Functions in `scripts/boundary_proof_behavior.py` | Copies only manifest-bound skills, mapped resources, applicable instructions, contracts, scenario inputs, and candidate oracles into a fresh workspace; provisions a parent-owned behavior-output root; presents every scenario workspace root read-only to the child with no writable child root; permits writes only through the parent exact-byte materializer after the unchanged-workspace gate; and keeps the private runtime home and credentials outside sandbox-readable roots. |
+| Invariant oracle evaluator | Pure projection and comparison functions in `scripts/boundary_proof_model.py`, coordinated by `scripts/boundary_proof_behavior.py` | Normalizes candidate and stage-authored feature/test-spec records independently, validates each complete R28s-R28w record, and compares only the closed version, scope, requirement, core-dimension, extension, and governing-requirement projection. It returns `boundary-oracle-mismatch` for deterministic structural or invariant failure and cannot compare stage-owned IDs, rationales, applicability choices, decomposition, examples, interactions, automation levels, proof grouping, or test-case IDs to a golden record. |
+| Isolated workspace assembler | Functions in `scripts/boundary_proof_behavior.py` | Copies only manifest-bound skills, mapped resources, applicable instructions, contracts, and the authoritative scenario input into a fresh child-readable workspace; retains candidate oracles as parent-only comparison inputs outside child-readable roots; provisions a parent-owned behavior-output root; presents every scenario workspace root read-only to the child with no writable child root; permits writes only through the parent exact-byte materializer after the unchanged-workspace gate; and keeps the private runtime home and credentials outside sandbox-readable roots. |
 | Immutable run publisher and reconciler | Functions in `scripts/boundary_proof_behavior.py` | Acquires the persistent publisher lock, validates global publication/recovery state, creates a run-bound publisher lease, builds a deterministic non-authoritative staged run, writes the durable exclusive receipt before installation or pointer mutation, and reconciles every interruption without reinvoking lifecycle skills. Completed recovery history is preserved but excluded from active candidacy. |
 | Boundary validator | `scripts/validate-boundary-proof.py` | Validates scoped feature specs, matching test specs, fixture evidence, and the capability report without scoring semantic adequacy. |
 | Regression suite | `scripts/test-boundary-proof.py` | Proves known and unknown values, duplicates, orphans, version mismatch, aggregate behavior, and the compact simple fixture. |
@@ -626,9 +627,11 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
    and example-only remediation.
 6. For canonical simple-change behavior, the standalone harness derives the
    exact five-skill package set from current resource maps, discovers the
-   applicable repository instruction chain, binds current contract and
-   scenario inputs, and creates a fresh isolated workspace and configuration
-   home.
+   applicable repository instruction chain, binds current contract, scenario,
+   and comparison-candidate identities, and creates a fresh isolated workspace
+   and configuration home. Only the authoritative scenario enters the
+   child-readable workspace or lifecycle requests. Comparison candidates
+   remain parent-only inputs.
 7. The parent adapter records runtime version and executable identity and
    launches the identified Codex app-server over stdio from a fresh,
    mode-restricted `CODEX_HOME`. The app-server `thread/start` response must
@@ -1283,9 +1286,25 @@ Structural validation and semantic review remain separate:
 
 - validators own marker and scope parity, exact fields, known values, ID
   grammar, uniqueness, referential integrity, required registration, evidence
-  presence, and deterministic aggregate calculation;
+  presence, the closed simple-change invariant projection, and deterministic
+  aggregate calculation;
 - reviewers own applicability, meaningful partitions, hazard-selected
-  interactions, manual-proof adequacy, and sibling reasoning.
+  interactions, manual-proof adequacy, sibling reasoning, and semantic fidelity
+  to the exact authoritative scenario.
+
+For the simple-change behavior run, the invariant oracle evaluator compares
+only model version, scope, requirement IDs, core-dimension IDs, extension IDs,
+and proof-map governing requirement IDs.
+Every complete feature and proof record must still pass R28s-R28w.
+Stable IDs, rationale prose, applicability choices, boundary decomposition,
+examples, interactions, automation levels, proof grouping, and test-case IDs
+remain stage-owned and review-owned choices.
+The harness binds the exact scenario into both formal review requests.
+Candidate differences in those excluded choices cannot block a structurally
+valid artifact before review.
+Deterministic invariant failure emits `boundary-oracle-mismatch`; it is not
+classified as a protocol, permission, or prohibited-event failure and is not a
+preflight outcome.
 
 The shared reference uses the copied-resource pattern.
 `templates/shared/boundary-proof-model.md` is the reviewed copy source; every
