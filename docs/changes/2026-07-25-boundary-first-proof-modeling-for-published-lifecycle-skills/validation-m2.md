@@ -439,3 +439,22 @@ git diff --check
 
 Fresh canonical behavior generation and immutable-run validation remain
 required before M2 can return to code review.
+
+The first fresh generation attempt, `run-11b506b6fdc788d62ffac3de092dfb83`,
+completed all four stage turns with approved reviews but failed before
+publication as `runtime-identity-unstable`. The zero-correction assembler had
+not projected the new finding-projection fields into its review bundles.
+Explicit discard recovery also proved that assembled-but-unpublished artifacts
+needed their own closed working-orphan allowlist.
+
+The correction now:
+
+- projects `finding_projection`, `finding_projection_identity`, and
+  `correction_eligibility` into initial approved bundles;
+- accepts only the closed assembled artifact path set during working-orphan
+  recovery and rejects extra paths;
+- preserves the failed attempt in an identity-bound recovery quarantine;
+- records the exact user-authorized discard decision and completed recovery.
+
+`python scripts/test-boundary-proof.py` then passed 104 tests. No failed
+attempt was promoted to `current.json`.
