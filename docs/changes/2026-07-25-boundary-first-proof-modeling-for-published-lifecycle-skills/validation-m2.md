@@ -3,7 +3,57 @@
 Stage: implement
 Milestone: M2
 Result: blocked
-Diagnostic: exact-semantic-oracle-overconstrains-independent-authoring
+Diagnostic: canonical-generation-not-yet-published
+
+## 2026-07-27 invariant-oracle implementation correction
+
+The R54 invariant-oracle contract is now implemented and locally proved:
+
+- candidate and produced artifacts are normalized independently;
+- deterministic comparison uses only version, scope, requirement, core
+  dimension, extension, and proof-governing-requirement invariants;
+- stage-owned IDs, applicability, rationale, decomposition, examples,
+  interactions, automation levels, proof grouping, and test IDs are excluded
+  from candidate equality;
+- candidate paths, identities, and bytes are checked across serialized child
+  requests, child workspace inventory, and bounded access surfaces;
+- both formal reviews receive the exact authoritative scenario;
+- deterministic stage structure failures emit `boundary-oracle-mismatch`;
+- valid formal nonapproval emits `review-nonapproval`; and
+- mutually exclusive approval and nonapproval artifact sets retain their bound
+  occurrence and reconcile independently.
+
+The public boundary reference now states the previously implicit executable
+boundaries: exact dotted stable-ID grammar, the allowed uppercase numeric test
+ID grammar, ASCII empty-cell sentinel, applicability-dependent fields, global
+boundary uniqueness, example ownership, interaction selection, proof-map
+coverage, and contiguous boundary-record ordering. These are general
+serialization and proof rules, not fixture-candidate examples.
+
+Focused validation passes:
+
+- `python scripts/test-boundary-proof.py` — passed 73 tests.
+- `python scripts/validate-skills.py` — validated 24 skills.
+- `python scripts/test-skill-validator.py` — passed 259 tests.
+- `python scripts/build-skills.py --check` — passed.
+- `python -m py_compile scripts/boundary_proof_behavior.py
+  scripts/boundary_proof_model.py scripts/validate-boundary-proof.py
+  scripts/test-boundary-proof.py` — passed.
+- `git diff --check` — passed.
+
+The live capability-bound path advanced through accepted `spec`,
+`spec-review`, and `test-spec` envelopes in multiple attempts. Independent
+review correctly found omitted interaction and record-ordering boundaries
+before the published guidance was corrected; later review passed those gates.
+The proof parser now accepts equivalent Markdown test headings rather than
+requiring the fixture candidate's bare-heading presentation.
+
+No fresh immutable run has been published. The most recent two clean attempts
+stopped before the first accepted envelope at the fixed transport boundary.
+Earlier failed attempts stopped with deterministic `boundary-oracle-mismatch`
+or semantic `review-nonapproval` and changed neither immutable staging nor the
+current pointer. The historical pointer remains non-current. M2 therefore
+remains `resolution-needed` and is not ready for code review.
 
 ## 2026-07-27 current implementation discovery
 
