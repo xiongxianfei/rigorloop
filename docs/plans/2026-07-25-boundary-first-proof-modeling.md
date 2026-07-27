@@ -94,12 +94,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r52.md
-- Review status: changes-requested; stage=spec-review; round=r52
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r53.md
+- Review status: approved; stage=spec-review; round=r53
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec
+- Next stage: architecture
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=10; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-SR49-1,BFP-SR49-2,BFP-SR49-3,BFP-SR50-1,BFP-SR50-2,BFP-SR51-1,BFP-SR52-1
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
 ## Milestones
 
@@ -825,6 +825,10 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Spec-review R53 approved the stable eleven-field 3/4/89
+  projection contract with no findings. The next gate is focused architecture
+  synchronization and rereview before plan and proof-map identities settle.
 
 - 2026-07-27: Spec-review R52 found one remaining named R50 pending cell.
   The next candidate removes round-specific pending references from the proof

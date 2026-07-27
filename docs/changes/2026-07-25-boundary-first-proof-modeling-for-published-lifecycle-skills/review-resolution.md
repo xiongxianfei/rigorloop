@@ -3245,7 +3245,7 @@ and approved both synchronized R48/R22/R17 proof maps for M2 implementation.
 
 Finding ID: BFP-SR49-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec author
 Owning stage: spec revision
 Decision owner: approved feature-classification contract
@@ -3258,13 +3258,13 @@ contrasts with recomputed identities.
 Rationale: Counts, disjointness, and exhaustiveness alone do not preserve
 semantic category ownership.
 Validation target: spec-review-r50
-Validation evidence: pending
+Validation evidence: spec-review-r53 approved exact category equality and pairwise swap rejection.
 
 #### BFP-SR49-2 — Discovery receipt uses a forbidden diagnostic phase
 
 Finding ID: BFP-SR49-2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec and implementation authors
 Owning stage: spec revision
 Decision owner: closed file-change cause-to-phase table
@@ -3278,13 +3278,13 @@ Chosen action: Preserve the 96-row observation, reject the old
 Rationale: Failing closed does not make an invalid diagnostic tuple conforming
 evidence.
 Validation target: spec-review-r50 and test-spec-review after upstream approval
-Validation evidence: pending
+Validation evidence: spec-review-r53 approved negative-receipt classification and closed phase preservation.
 
 #### BFP-SR49-3 — Proof-map identities and readiness are stale
 
 Finding ID: BFP-SR49-3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec synchronization
 Decision owner: active-plan handoff
@@ -3296,7 +3296,7 @@ rereview sequence, then synchronize exact identities before test-spec review.
 Rationale: A proof map cannot authorize implementation against superseded
 upstream artifacts.
 Validation target: focused test-spec review after spec, architecture, and plan approval
-Validation evidence: pending
+Validation evidence: spec-review-r53 approved pending downstream identities and readiness.
 
 ### spec-review-r50
 
@@ -3304,7 +3304,7 @@ Validation evidence: pending
 
 Finding ID: BFP-SR50-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: focused spec/test-spec revision
 Decision owner: active-plan handoff
@@ -3316,13 +3316,13 @@ pending spec, architecture, plan, identity-sync, and test-spec gates.
 Rationale: Pending input rows cannot coexist with an implementation-ready
 summary.
 Validation target: spec-review-r51
-Validation evidence: pending
+Validation evidence: spec-review-r53 confirmed no stale R48/R22/R17 readiness claims remain.
 
 #### BFP-SR50-2 — Change metadata is not synchronized with R49
 
 Finding ID: BFP-SR50-2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: workflow state maintainer
 Owning stage: review recording
 Decision owner: formal review recording contract
@@ -3334,7 +3334,7 @@ closed; on R51 approval, close the five focused spec findings and synchronize
 the counters again.
 Rationale: Chat review state cannot outrank stale durable metadata.
 Validation target: spec-review-r51
-Validation evidence: pending
+Validation evidence: spec-review-r53 confirmed synchronized durable metadata.
 
 ### spec-review-r51
 
@@ -3342,7 +3342,7 @@ Validation evidence: pending
 
 Finding ID: BFP-SR51-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: focused spec/test-spec revision
 Decision owner: formal review recording contract
@@ -3354,7 +3354,7 @@ required clean focused rereview without predicting a durable artifact that
 does not yet exist.
 Rationale: Review recording must not create a new stale-reference defect.
 Validation target: next focused spec review
-Validation evidence: pending
+Validation evidence: spec-review-r53 approved stable unnamed pending-review references.
 
 ### spec-review-r52
 
@@ -3362,7 +3362,7 @@ Validation evidence: pending
 
 Finding ID: BFP-SR52-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: focused spec/test-spec revision
 Decision owner: formal review recording contract
@@ -3374,4 +3374,10 @@ and an unnamed clean focused rereview while leaving the identity pending.
 Rationale: One stale status cell can contradict an otherwise coherent proof
 map.
 Validation target: next focused spec review
-Validation evidence: pending
+Validation evidence: spec-review-r53 confirmed the final stale named round was removed.
+
+### spec-review-r53
+
+No new material findings. R53 independently confirmed BFP-SR49-1 through
+BFP-SR52-1 resolved and approved the focused three-category runtime-projection
+contract for architecture synchronization.
