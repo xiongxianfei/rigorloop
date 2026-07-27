@@ -1372,3 +1372,14 @@ Detailed record: reviews/architecture-review-r25.md
 Resolution: review-resolution.md#architecture-review-r25
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: plan-review-r18
+Stage: plan-review
+Round: 18
+Reviewed artifact: R53/R25 synchronized plan at 236d5cf3
+Status: changes-requested
+Detailed record: reviews/plan-review-r18.md
+Resolution: review-resolution.md#plan-review-r18
+Material findings: BFP-PL18-1
+Open findings: BFP-PL18-1

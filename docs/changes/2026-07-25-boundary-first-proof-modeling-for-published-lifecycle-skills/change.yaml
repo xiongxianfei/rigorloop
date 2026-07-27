@@ -204,9 +204,9 @@ changed_files:
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r14.md
 review:
   status: changes-requested
-  unresolved_items: 3
-  material_findings: 165
-  open_findings: 3
+  unresolved_items: 4
+  material_findings: 166
+  open_findings: 4
   closed_findings: 162
   architecture_review: reviews/architecture-review-r25.md
   spec_review: reviews/spec-review-r53.md

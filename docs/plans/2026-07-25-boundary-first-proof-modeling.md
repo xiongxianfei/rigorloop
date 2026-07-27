@@ -95,12 +95,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r25.md
-- Review status: approved; stage=architecture-review; round=r25
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r18.md
+- Review status: changes-requested; stage=plan-review; round=r18
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: plan-review
+- Next stage: plan
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-PL18-1
 
 ## Milestones
 
@@ -206,10 +206,15 @@ resource through generated, packed, and installed outputs.
   - Exact Codex 0.145.0 canonical schema and protocol-classification
     identities; exact launcher and runtime-package identities; exact
     eleven-field runtime-projection identity; exact 96-row feature partition;
-    and explicit disabled `review-agent` within the six-row system roster.
+    exact equality between each projection collection and its corresponding
+    feature-classification category; and explicit disabled `review-agent`
+    within the six-row system roster.
     Prove no match, multiple matches, duplicate ID/key/identity, unknown field,
     identity/content disagreement, and changed runtime bytes with unchanged
-    version/schema/protocol/feature declarations.
+    version/schema/protocol/feature declarations. Swap one member between every
+    category pair while preserving 3/4/89 counts, uniqueness, disjointness,
+    exhaustiveness, and a recomputed identity; every swap must fail before
+    `thread/start`.
   - Empty runtime roots in the exact 0.145.0 `thread/start` response while
     both outbound thread and turn requests bind one exact isolated workspace
     root; missing, added, substituted, or reordered-root contrasts
@@ -252,7 +257,10 @@ resource through generated, packed, and installed outputs.
     file-change event as drift. Event absence alone is never sufficient.
   - Closed file-change cause-to-phase and diagnostic precedence rows,
     including unknown and cross-phase rejection plus separation of successful
-    attestation fields from failure-only diagnostic evidence.
+    attestation fields from failure-only diagnostic evidence. Directly prove
+    `required-disabled-feature-enabled` maps only to
+    `file-change-control-mismatch` at `pre-turn-start`; reject the stale
+    `pre-thread-start` pair and every alternate phase before runtime execution.
   - One shared file-change policy and handler identity across denial probe,
     materialization canary, lifecycle stage, and fresh retry; missing,
     substituted, widened, or response-selected handlers fail before output
@@ -339,6 +347,11 @@ resource through generated, packed, and installed outputs.
     cause/phase/precedence, exact opaque-v1 registry, and unsupported-v2
     treatment. Unknown fields, values, identities, policies, causes, phases,
     and tuples fail closed before consistency checks.
+    In this same first slice, require exact collection-to-classification
+    equality, reject all three pairwise count-preserving category swaps before
+    `thread/start`, and prove
+    `required-disabled-feature-enabled → file-change-control-mismatch /
+    pre-turn-start` while rejecting the historical `pre-thread-start` pair.
   - Implement only the minimal evidence-only `check-environment` preflight as
     the first runtime-executing M2 correction slice.
   - Require the exact change ID, select only its existing non-symlink change
@@ -827,6 +840,11 @@ resource through generated, packed, and installed outputs.
 
 ## Progress
 
+- 2026-07-27: Plan-review R18 approved sequencing and recovery but required
+  R53's exact category-equality, pairwise swap, and corrected diagnostic-phase
+  contrasts in the first pure-model slice. The R19 candidate adds them before
+  the live preflight.
+
 - 2026-07-27: Architecture-review R25 approved the append-only successor and
   canonical architecture. Their statuses and lifecycle wording were normalized
   together; this plan now binds R53/R25 and routes to focused plan review.
@@ -1241,7 +1259,7 @@ resource through generated, packed, and installed outputs.
 | 2026-07-26 | Restore normative M1-M4 ownership and make runtime feasibility the first M2 promotion gate. | R28y explicitly assigns synthetic proof, upstream behavior, downstream preservation, and aggregation to M1-M4. | Renumber the approved phases; amend the spec only to preserve an unnecessary fifth phase. |
 | 2026-07-26 | Keep one M2 milestone but order its correction as immutable projection/tests, read-only preflight, integrity-gated envelope transport, workflow-owned generation, then durable publication. | The approved R45/R18 contract resolves the three open M2 findings without changing normative milestone ownership; each internal slice has a fail-closed promotion gate before the next riskier slice. | Reopen milestone numbering; implement the live runtime before closed validators; retain child writes; allow the harness to render normative artifacts. |
 | 2026-07-26 | Use staged validation, durable exclusive prepared receipt, immutable install, installed-run validation, atomic pointer replacement, and receipt cleanup as the only publication order. | This is the approved recovery transaction and closes the governing-artifact half of BFP-CR-M2-8. | Install before receipt; validate only after pointer publication; adopt orphan output. |
-| 2026-07-27 | Select file-change proof through one exact-runtime-bound immutable projection and make pure-model-validated production-dispatch conformance common to both branches. | The approved R48/R22 contract proves enforcement without asking a model to invoke an operation the reviewed runtime does not expose, and validation before branch selection prevents malformed or stale conformance evidence from authorizing capability-specific work. | Version-only gating; feature flags alone; event absence alone; unconditional live probing; branching before conformance validation; removing the deny-only handler. |
+| 2026-07-27 | Select file-change proof through one exact-runtime-bound immutable projection and make pure-model-validated production-dispatch conformance common to both branches. | The approved R53/R25 contract proves enforcement without asking a model to invoke an operation the reviewed runtime does not expose, binds all 96 features to exact tool/non-tool/disabled categories, and validates conformance before branch selection. | Version-only gating; feature flags alone; event absence alone; unconditional live probing; binary feature partitions; branching before conformance validation; removing the deny-only handler. |
 
 ## Surprises and discoveries
 

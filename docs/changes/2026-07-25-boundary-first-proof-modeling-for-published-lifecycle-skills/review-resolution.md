@@ -3427,3 +3427,23 @@ Validation evidence: architecture-review-r25 approved the complete successor fol
 No new material findings. R25 independently confirmed BFP-AR23-1 and
 BFP-AR24-1 resolved and approved the three-category architecture package for
 plan synchronization.
+
+### plan-review-r18
+
+#### BFP-PL18-1 — R53 decisive contrast proofs remain implicit
+
+Finding ID: BFP-PL18-1
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan revision
+Decision owner: approved R53 projection and diagnostic contract
+Decision needed: none
+Required outcome: Make category equality, pairwise count-preserving swaps, and
+the corrected diagnostic phase direct preflight prerequisites.
+Chosen action: Add them to M2 tests and the first pure-model implementation
+slice before any live `check-environment` execution.
+Rationale: Structural partition counts do not prove semantic category
+ownership, and a fail-closed diagnostic can still be nonconforming.
+Validation target: plan-review-r19
+Validation evidence: pending
