@@ -25,14 +25,14 @@ resumes.
 
 - Proposal: `docs/proposals/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills.md`
 - Specs: `specs/rigorloop-workflow.md` R28-R28z and `specs/skill-contract.md` R56-R56q
-- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r55.md` (approved extension-oracle correction)
-- Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R27)
+- Latest spec review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r57.md` (approved correction-authority contract)
+- Architecture: `docs/architecture/system/architecture.md` (approved by architecture-review R29)
 - ADR: `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` (accepted by architecture-review R15)
 - Transport ADR: `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md` (accepted; scoped clauses superseded by the capability-projection ADR)
 - Capability-projection ADR: `docs/adr/ADR-20260727-capability-projected-file-change-control.md` (accepted by architecture-review R22)
 - Three-category projection ADR: `docs/adr/ADR-20260727-three-category-runtime-feature-projection.md` (accepted by architecture-review R25)
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
-- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r27.md`
+- Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r29.md`
 - Plan review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r21.md` (approved extension-oracle synchronization)
 - Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; R55/R27/R21 identity synchronization is complete and focused test-spec review remains pending
 
@@ -96,9 +96,9 @@ resource through generated, packed, and installed outputs.
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r29.md
-- Review status: approved; stage=architecture-review; round=r29
+- Review status: review-requested; stage=plan-review; round=r22
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: plan
+- Next stage: plan-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BFP-CR-M2-14,BFP-CR-M2-15
 
@@ -349,9 +349,31 @@ resource through generated, packed, and installed outputs.
     interactions, automation levels, proof grouping, and test-case IDs; every
     R28s-R28w-valid alternative reaches formal review instead of failing
     candidate comparison
-  - Candidate files absent from child-readable roots and every lifecycle
-    request; exact scenario request present in both formal review invocations;
-    `check-environment` cannot emit `boundary-oracle-mismatch`
+  - Candidate files, scenario path and bytes, `expected_branch`, and
+    `corrected_role` absent from child-readable roots and every lifecycle
+    request; only the exact scenario request present in both formal review
+    invocations; `check-environment` cannot emit
+    `boundary-oracle-mismatch`
+  - Exact stable-ID-sorted review finding projection and canonical identity;
+    unknown, missing, repeated, empty, out-of-order, or mismatched recognized
+    labels and finding IDs fail before correction. Prove approved/blocked
+    reviews are `not-applicable`, all-`none` complete finding sets are
+    `automatic-eligible`, any non-`none` needs-decision rationale is
+    `owner-decision-required`, and only the automatic value can invoke
+    attempt 2.
+  - Owner-decision correction stop writes and fsyncs one exact
+    `correction-stop.json`, retains the complete accepted review evidence,
+    returns non-retryable `correction-authorization-required` at `in-turn`,
+    and creates no staged run, prepared receipt, immutable run, pointer, or
+    passing result. Prove automatic reconciliation and lifecycle reinvocation
+    are impossible, explicit discard recovery preserves the quarantined stop
+    identity, equal input is rejected before allocation or stage invocation,
+    and clarified unequal input may start a fresh run.
+  - Derive observed `zero-correction`/`one-correction` and corrected role only
+    from the complete event trace, then compare them with scenario
+    expectations. Mutating only either expectation must preserve serialized
+    requests, invocation order, events, diagnostics, and outputs until the
+    final comparison, where every branch/role mismatch fails closed.
 - Implementation steps:
   - First correct the pure immutable projection and tests in
     `boundary_proof_model.py`: add the exact eleven-field runtime row, selection
@@ -474,10 +496,12 @@ resource through generated, packed, and installed outputs.
     architecture without a weaker fallback.
   - Create and validate `evidence/boundary-proof-baseline.json` from the harness-derived current HEAD before the first participating-skill edit. If an immutable baseline already exists with a different value, stop.
   - Freeze the two-module AST import policy and exact manifest/input-set schemas.
-  - Assemble the five skill packages, applicable instructions, contracts, and
-    authoritative scenario into a fresh child-readable workspace. Bind
-    candidate identities in the input set but retain their bytes in a separate
-    parent-only comparison root.
+  - Assemble only the five skill packages, applicable instructions, and
+    contracts into a fresh child-readable workspace. Resolve and identity-bind
+    the complete authoritative scenario in the parent, project only its
+    non-empty request value into serialized lifecycle input, and retain the
+    scenario path, bytes, expectations, candidate identities, and candidate
+    bytes in parent-only roots.
   - Launch the identified runtime through the preflight-proven read-only
     sandbox and private runtime home; independently repeat command and
     capability-state-appropriate file-change proof, then derive a fresh
@@ -520,6 +544,24 @@ resource through generated, packed, and installed outputs.
     structure or projection failure to `boundary-oracle-mismatch`. Remove all
     substantive harness renderers and keep candidate oracles parent-only and
     comparison-only.
+  - After each accepted formal review, parse the exact bound review-record
+    bytes into the normalized finding projection, recompute its canonical
+    identity in staged and immutable validation, and derive the closed
+    correction eligibility. Invoke attempt 2 only for
+    `automatic-eligible`. For `owner-decision-required`, exclusively write and
+    fsync the exact correction-stop receipt in the lease-bound working root,
+    return the non-retryable in-turn diagnostic, and perform no staging,
+    publication, pointer update, or lifecycle reinvocation.
+  - Treat a correction-stop working root as a generating orphan that cannot be
+    adopted or resumed. Permit only the existing explicit
+    discard-and-regenerate recovery, preserve the stopped input identity in
+    quarantine, and derive current input before later allocation or invocation.
+    Reject equality as `correction-authorization-required`; permit a fresh run
+    only for clarified unequal input.
+  - Once the complete event trace exists, derive the observed correction
+    branch and corrected role without reading scenario expectations. Read and
+    compare `expected_branch` and `corrected_role` only afterward, using the
+    same pure comparison during generation and staged/current validation.
   - Build and validate the sibling temporary run; move it to the deterministic
     non-authoritative staging root and fsync; exclusively write and fsync the
     prepared receipt; install and fsync the immutable run; validate it;
@@ -586,6 +628,12 @@ resource through generated, packed, and installed outputs.
     reach formal review, invariant mutations fail with
     `boundary-oracle-mismatch`, candidate bytes never reach a child, and
     preflight never emits that generation-only diagnostic
+  - exact finding projection and eligibility evidence; terminal
+    correction-stop durability and nonpublication evidence; discard-only
+    recovery plus equal-input rejection and unequal-input regeneration
+    contrasts
+  - request-only child projection and post-observation expectation comparison
+    evidence proving expectation mutations cannot influence invocation
   - exact registered v1 path/raw-byte identity recognized only as opaque
     history and absent from every current authority chain; all v2 evidence
     rejected as unsupported history
@@ -631,6 +679,9 @@ resource through generated, packed, and installed outputs.
     `boundary-oracle-mismatch`; fail review or enter only the governed
     correction branch for semantic nonapproval. Do not relabel either case as
     `unexpected-prohibited-event`.
+  - Stop before attempt 2 on incomplete or owner-decision finding authority,
+    before fresh allocation on a recovered equal input identity, and before
+    publication on any observed scenario branch or corrected-role mismatch.
 - Expected observable result: The upstream skills require complete boundary/proof maps and one input-bound immutable behavior run proves the real upstream workflow with zero false blocking and no new universal artifact.
 - Commit message: `M2: implement and prove hermetic upstream behavior`
 - Milestone closeout:
@@ -669,6 +720,9 @@ resource through generated, packed, and installed outputs.
     current-pointer and manifest coherence, skill/resource parity, and absence
     of dangling v3 authority before declaring rollback complete. Retain the M1
     deterministic engine.
+  - Recover a correction stop only through explicitly authorized discard,
+    preserve its quarantine identity for the unchanged-input guard, and never
+    reinterpret owner-decision evidence as correction authority.
 
 ### M3. Downstream skill projection and preservation
 
@@ -873,6 +927,12 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: The M2 plan now projects approved spec-review R57 and
+  architecture-review R29 into request-only child input, identity-bound
+  correction eligibility, durable owner-decision stop, discard-only recovery,
+  unequal-input regeneration, and post-observation scenario comparison. Plan
+  review R22 is the next gate.
 
 - 2026-07-27: Spec-review R57 approved the identity-bound correction
   eligibility, correction-stop receipt, recovery, and unequal-input fresh-run
@@ -1499,6 +1559,7 @@ resource through generated, packed, and installed outputs.
 | 2026-07-26 | Use staged validation, durable exclusive prepared receipt, immutable install, installed-run validation, atomic pointer replacement, and receipt cleanup as the only publication order. | This is the approved recovery transaction and closes the governing-artifact half of BFP-CR-M2-8. | Install before receipt; validate only after pointer publication; adopt orphan output. |
 | 2026-07-27 | Select file-change proof through one exact-runtime-bound immutable projection and make pure-model-validated production-dispatch conformance common to both branches. | The approved R53/R25 contract proves enforcement without asking a model to invoke an operation the reviewed runtime does not expose, binds all 96 features to exact tool/non-tool/disabled categories, and validates conformance before branch selection. | Version-only gating; feature flags alone; event absence alone; unconditional live probing; binary feature partitions; branching before conformance validation; removing the deny-only handler. |
 | 2026-07-27 | Exclude extension identity from the fixture-candidate oracle and prove structurally valid extension alternatives reach review. | R28y assigns extension modeling to the stage and reviewer; exact candidate equality made that authority contradictory and hidden. | Forbid all extensions in the scenario; inject candidate extension choices into child stages; let the evaluator judge extension semantics. |
+| 2026-07-27 | Separate correction outcome, correction authority, and scenario expectation into three ordered M2 gates. | A `changes-requested` outcome does not authorize mutation, and comparison expectations must remain non-influential until observed behavior exists. | Treat review outcome as authority; expose expectations to the child; add a resumable mid-run owner-decision cursor. |
 
 ## Surprises and discoveries
 
