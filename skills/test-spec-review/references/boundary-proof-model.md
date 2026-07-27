@@ -127,6 +127,12 @@ includes commit, partial, retry, reconciliation, conflict, and replay paths.
 Composed behavior proves the public path and every material sibling path, not
 only a helper.
 
+The feature boundary record owns boundary and interaction definitions. A test
+spec consumes those exact IDs; it does not define, rename, infer, or repair
+them. Before returning a proof map, audit every boundary or interaction
+reference for exact membership in the governing feature record. If a needed ID
+is absent, stop for feature-spec correction instead of coining a replacement.
+
 Structural validation checks closed shape and references. Semantic review
 decides applicability, requirement ownership, interaction selection, evidence
 adequacy, and whether a boundary is missing. Neither examples nor validators
