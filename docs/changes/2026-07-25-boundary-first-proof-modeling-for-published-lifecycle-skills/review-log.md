@@ -1262,3 +1262,14 @@ Detailed record: reviews/plan-review-r17.md
 Resolution: review-resolution.md#plan-review-r17
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r18
+Stage: test-spec-review
+Round: 18
+Reviewed artifact: specs/rigorloop-workflow.test.md and specs/skill-contract.test.md at bc8815ff
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r18.md
+Resolution: review-resolution.md#test-spec-review-r18
+Material findings: BFP-TSR18-1
+Open findings: BFP-TSR18-1

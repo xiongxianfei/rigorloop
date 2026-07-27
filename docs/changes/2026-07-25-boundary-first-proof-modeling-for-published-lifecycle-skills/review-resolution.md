@@ -3210,3 +3210,24 @@ surfaces.
 No new material findings. R17 independently confirmed BFP-PL16-1 and
 BFP-PL16-2 resolved and approved the capability-projected M2 execution plan for
 test-spec revision.
+
+### test-spec-review-r18
+
+#### BFP-TSR18-1 — Companion preflight command omits the required change identity
+
+Finding ID: BFP-TSR18-1
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec revision
+Decision owner: approved R48 change-root-bound preflight contract
+Decision needed: none
+Required outcome: Synchronize CMD-SBFP-8 with the exact executable primary
+preflight command and its failure, evidence, and side-effect boundaries.
+Chosen action: Add the exact change ID, stop M2 before other mutation on
+failure, name both durable evidence surfaces, and classify the command as an
+evidence-only parent-observed feasibility transaction.
+Rationale: A mandatory proof command cannot omit an input the approved contract
+rejects before runtime discovery.
+Validation target: test-spec-review-r19
+Validation evidence: pending test-spec-review-r19
