@@ -3167,7 +3167,7 @@ v3 capability-projected architecture and scoped successor ADR.
 
 Finding ID: BFP-PL16-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: plan author
 Owning stage: plan revision
 Decision owner: approved R48/R22 common conformance gate
@@ -3180,13 +3180,14 @@ branch, canary, lifecycle turn, or successful attestation.
 Rationale: Executing a gate is not equivalent to validating its closed result
 before dependent behavior.
 Validation target: plan-review-r17
-Validation evidence: pending plan-review-r17
+Validation evidence: plan-review-r17 approved pure-model validation before
+either capability branch and zero-invocation failure proof.
 
 #### BFP-PL16-2 — M2 rollback does not restore a coherent authority and evidence state
 
 Finding ID: BFP-PL16-2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: plan author
 Owning stage: plan revision
 Decision owner: accepted v3 publication and opaque-history contracts
@@ -3200,4 +3201,12 @@ authority remains.
 Rationale: Reverting skill text and a pointer alone can leave current evidence
 bound to removed code or package identities.
 Validation target: plan-review-r17
-Validation evidence: pending plan-review-r17
+Validation evidence: plan-review-r17 approved phase-aware rollback across all
+current authority, transaction, compatibility-unit, and retained-history
+surfaces.
+
+### plan-review-r17
+
+No new material findings. R17 independently confirmed BFP-PL16-1 and
+BFP-PL16-2 resolved and approved the capability-projected M2 execution plan for
+test-spec revision.

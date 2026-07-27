@@ -1250,4 +1250,15 @@ Status: changes-requested
 Detailed record: reviews/plan-review-r16.md
 Resolution: review-resolution.md#plan-review-r16
 Material findings: BFP-PL16-1, BFP-PL16-2
-Open findings: BFP-PL16-1, BFP-PL16-2
+Open findings: None
+
+### Review entry
+Review ID: plan-review-r17
+Stage: plan-review
+Round: 17
+Reviewed artifact: docs/plans/2026-07-25-boundary-first-proof-modeling.md at 371d18af
+Status: approved
+Detailed record: reviews/plan-review-r17.md
+Resolution: review-resolution.md#plan-review-r17
+Material findings: None
+Open findings: None

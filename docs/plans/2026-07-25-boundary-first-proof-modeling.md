@@ -32,7 +32,7 @@ resumes.
 - Capability-projection ADR: `docs/adr/ADR-20260727-capability-projected-file-change-control.md` (accepted by architecture-review R22)
 - Runtime-attestation ADR: `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md`
 - Architecture review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r22.md`
-- Plan review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r15.md`
+- Plan review: `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r17.md`
 - Test specs: `specs/rigorloop-workflow.test.md` R28-R28z and `specs/skill-contract.test.md` R56-R56q; the approved R17 proof map predates R48/R22 and must be revised after this plan is approved
 
 ## Context and orientation
@@ -94,12 +94,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r16.md
-- Review status: changes-requested; stage=plan-review; round=r16
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r17.md
+- Review status: approved; stage=plan-review; round=r17
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: plan-review
+- Next stage: test-spec
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-PL16-1,BFP-PL16-2
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
 ## Milestones
 
