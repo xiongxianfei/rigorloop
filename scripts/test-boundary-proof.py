@@ -1908,6 +1908,10 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             stage_request["prompt"],
         )
         self.assertIn("contiguous in that exact order", stage_request["prompt"])
+        self.assertIn(
+            "never put prose in the Rationale cell",
+            stage_request["prompt"],
+        )
         self.assertIn("must overlap each cited boundary", stage_request["prompt"])
         self.assertIn(
             "audit each example independently",
@@ -2345,6 +2349,17 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             [row.interaction_id for row in parsed.interactions],
             ["interaction.mode-outcome"],
         )
+        unknown_rationale = raw.replace(
+            "| composed-path |",
+            "| prose rationale |",
+        )
+        with self.assertRaisesRegex(
+            BoundaryProofError,
+            "unknown interaction rationale",
+        ):
+            normalize_feature_model(
+                _parse_feature_markdown(unknown_rationale)
+            )
         malformed = raw.replace(
             "| Interaction ID | Governing requirement IDs | Boundary IDs | "
             "Rationale |",

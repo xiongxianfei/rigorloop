@@ -33,6 +33,9 @@ Extensions: <none or extension records>
 
 When no interaction is selected, replace the interaction table with an
 explicit none-selected rationale.
+For a selected interaction, `Rationale` is exactly one of:
+`state-coupling`, `trust-or-authority`, `mutation-or-recovery`,
+`compatibility-or-migration`, `composed-path`, or `incident-evidence`.
 
 The `## Boundary model`, `Extensions:`, `## Examples`, and `## Interactions`
 surfaces form one contiguous boundary record in exactly that order. Do not
