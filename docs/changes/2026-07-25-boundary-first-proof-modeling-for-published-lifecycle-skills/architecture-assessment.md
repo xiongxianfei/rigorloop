@@ -2,7 +2,7 @@
 
 Stage: architecture-assessment
 Applicability: required
-Spec identity: sha256:754151c5404f6c2bf02ed85cdec39f24333c721eb9cb16148d5c8e72d5244907
+Spec identity: sha256:92637e7c7cb28a289da981c53024422c88f225e66e8a1952d4e5871b14f62563
 
 Architecture is required because the approved amendment changes the ownership
 and interaction of canonical workflow specifications, eight published skills,
@@ -46,19 +46,28 @@ writes, carry stage-authored semantic bytes. Architecture must therefore:
 - preserve immutable publication, recovery, runtime confinement, and the
   standalone two-module implementation boundary.
 
-The approved R45 amendment strengthens that transport boundary:
+The approved R48 amendment strengthens that transport boundary:
 
 - child commands and detached descendants have read-only workspace access and
   no writable root;
-- one deny-only file-change authorization policy governs probe, canary,
-  lifecycle, retry, and no-child reconciliation behavior;
+- one deny-only file-change authorization policy governs capability-state-
+  appropriate proof, canary, lifecycle, retry, and no-child reconciliation
+  behavior;
 - the parent retains a root descriptor and completes bounded no-follow
   baseline/post-turn integrity inspection before materialization;
+- one immutable typed projection binds exact launcher and runtime-package
+  bytes, schemas, protocol and feature classifications, enabled/disabled
+  features, and file-change capability state;
+- exposed capability requires a correlated live decline trace, while reviewed
+  non-exposure requires a complete effective-tool projection, fresh
+  invocation-owned handler conformance, and drift-event rejection;
 - current runtime attestation, preflight, and implementation-manifest evidence
-  use v2; and
+  use v3; v2 is unsupported historical evidence; and
 - the sole registered v1 manifest is exact-identity opaque history and cannot
   satisfy a current role.
 
 Architecture must update the Runtime View, crosscutting trust and transport
-boundaries, component diagram, permission-profile relationship, and proposed
-stage-envelope ADR without reopening the approved semantic-envelope contract.
+boundaries, component diagram, permission-profile relationship, and one
+acceptance-conditional superseding ADR without reopening the approved
+semantic-envelope contract. Architecture-review approval is required before
+the plan or test spec may project the v3 contract.

@@ -6,10 +6,10 @@ flowchart LR
   templates["Shared boundary reference source<br/>[Template container]"]:::container
   fixtures["Boundary and skill fixtures<br/>[Test fixture container]"]:::container
   report["Capability report<br/>[Change-local evidence]"]:::container
-  preflight_attestation["Runtime preflight attestation v2<br/>[Feasibility only; non-authorizing]"]:::container
-  generation_attestation["Fresh generation attestation v2<br/>[Read-only boundary + exact inventory]"]:::container
-  implementation_manifest["Behavior implementation manifest v2<br/>[Binds generation attestation]"]:::container
-  historical_registry["Historical v1 registry<br/>[Exact path + bytes; opaque only]"]:::container
+  preflight_attestation["Runtime preflight attestation v3<br/>[Feasibility only; non-authorizing]"]:::container
+  generation_attestation["Fresh generation attestation v3<br/>[Projection + read-only boundary]"]:::container
+  implementation_manifest["Behavior implementation manifest v3<br/>[Binds generation attestation]"]:::container
+  historical_registry["Historical evidence registry<br/>[Exact v1 opaque; v2 unsupported]"]:::container
   transport_policy["Transport policy<br/>[Manifest-bound positive deadlines]"]:::container
   file_change_policy["File-change authorization policy<br/>[Decline-only for every governed turn]"]:::container
   artifact_policy["Artifact policies<br/>[Lifecycle manifest + preflight canary]"]:::container
@@ -33,7 +33,9 @@ flowchart LR
     evaluator["Capability evaluator<br/>[Pure aggregate]"]:::component
     harness["Standalone behavior harness<br/>[One workflow invocation]"]:::component
     assembler["Package + workspace assembler<br/>[Manifest-bound inputs]"]:::component
-    runtime_adapter["Child-runtime adapter + candidate collector<br/>[App-server + deny-only request handler]"]:::component
+    projection_registry["Runtime projection registry<br/>[Exact bytes + declarations + capability state]"]:::component
+    runtime_adapter["Child-runtime adapter + candidate collector<br/>[App-server + capability-state proof]"]:::component
+    handler_conformance["File-change handler conformance<br/>[Fresh dispatch proof + closed negative set]"]:::component
     transport["Envelope transport reconciler<br/>[Policy, timeout, candidates, retry]"]:::component
     integrity["Workspace integrity guard<br/>[Root-anchored baseline + post-turn scan]"]:::component
     materializer["Exact-byte materializer<br/>[Write + complete reread observation]"]:::component
@@ -58,6 +60,8 @@ flowchart LR
   assembler -->|fresh config home + closed workspace| isolated_workspace
   harness --> assembler
   harness --> runtime_adapter
+  projection_registry -->|unique exact projection| runtime_adapter
+  runtime_adapter -->|installed dispatch implementation| handler_conformance
   runtime_adapter -->|provisions runtime-only auth| credential_channel
   credential_channel -->|authenticates runtime outside tool sandbox| child_runtime
   runtime_adapter -->|thread/start + one workflow turn over stdio| child_runtime
@@ -78,11 +82,13 @@ flowchart LR
   isolated_workspace -->|materialized artifact set| content_validator
   content_validator -->|value-free structural validation observation| transport
   transport -->|terminal validated bundle| harness
-  runtime_adapter -->|preflight schema + effective config/inventories + managed-profile probes| preflight_attestation
-  file_change_policy -->|policy identity + denial proof| preflight_attestation
+  runtime_adapter -->|preflight schema + exact runtime bytes + effective config/inventories + capability-state proof| preflight_attestation
+  handler_conformance -->|fresh value-free result identity| preflight_attestation
+  file_change_policy -->|policy identity + conditional denial proof| preflight_attestation
   preflight_attestation -->|feasibility gate only; never copied as authority| harness
-  runtime_adapter -->|fresh generation schema, denial probes, exact inventory| generation_attestation
-  file_change_policy -->|policy identity + pass result| generation_attestation
+  runtime_adapter -->|fresh generation projection, denial proof, exact inventory| generation_attestation
+  handler_conformance -->|fresh generation result identity| generation_attestation
+  file_change_policy -->|policy identity + capability-state pass| generation_attestation
   generation_attestation -->|required fresh identity| implementation_manifest
   file_change_policy -->|required deny-only policy| implementation_manifest
   transport_policy -->|required closed policy| implementation_manifest

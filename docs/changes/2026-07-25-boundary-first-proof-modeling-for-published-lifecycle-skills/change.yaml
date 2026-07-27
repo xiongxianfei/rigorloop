@@ -117,6 +117,7 @@ changed_files:
   - docs/architecture/system/diagrams/component-boundary-proof.mmd
   - docs/adr/ADR-20260725-boundary-first-proof-modeling.md
   - docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md
+  - docs/adr/ADR-20260727-capability-projected-file-change-control.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r1.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r2.md
   - docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r3.md
