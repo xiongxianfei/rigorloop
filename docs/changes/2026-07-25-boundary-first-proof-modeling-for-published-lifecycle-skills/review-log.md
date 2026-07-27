@@ -19,6 +19,17 @@ Material findings: BFP-PR1, BFP-PR2, BFP-PR3, BFP-PR4
 Open findings: None
 
 ### Review entry
+Review ID: test-spec-review-r24
+Stage: test-spec-review
+Round: 24
+Reviewed artifact: focused publisher-recovery proof-map amendment at 0e145316
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r24.md
+Resolution: review-resolution.md#test-spec-review-r24
+Material findings: BFP-TSR24-1
+Open findings: BFP-TSR24-1
+
+### Review entry
 Review ID: code-review-m2-r4
 Stage: code-review
 Round: 4

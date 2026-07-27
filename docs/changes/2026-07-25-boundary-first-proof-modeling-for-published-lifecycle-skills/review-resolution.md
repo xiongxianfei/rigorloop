@@ -268,6 +268,26 @@ Rationale: C4 must not imply probes plus thread metadata alone close the boundar
 Validation target: architecture-review-r6
 Validation evidence: architecture decision list and component-boundary-proof.mmd.
 
+### test-spec-review-r24
+
+#### BFP-TSR24-1 - T51 steps begin working-run mutation before the lease
+
+Finding ID: BFP-TSR24-1
+Disposition: accepted
+Status: in-progress
+Owner: test-spec author
+Owning stage: test-spec correction
+Decision owner: approved R28y ordering
+Decision needed: none
+Required outcome: Make T51 executable steps enforce lease-first publication
+before lifecycle invocation or working-run construction.
+Chosen action: Prepend exact lock, discovery, identity allocation, lease
+durability, working-root durability, and invocation-observation steps.
+Rationale: The expected result and property table already select the behavior;
+the steps must not preserve the obsolete unleased ordering.
+Validation target: test-spec-review-r25
+Validation evidence: Pending.
+
 ### proposal-review-r1
 
 #### BFP-PR1 - The first-release capability baseline is undefined
