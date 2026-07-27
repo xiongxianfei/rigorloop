@@ -62,7 +62,7 @@ Boundary model scope: R28-R28z
 | Transport ADR | `docs/adr/ADR-20260726-stage-authored-artifact-envelope-transport.md` | accepted with scoped capability-projection supersession | `sha256:e357094a48c9a3410cc661d2f5e28c50afd8aa4dcdd375ec074a355103ea8263` |
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted with scoped writable-child supersession | `sha256:b80c4a494ae1e08abea77d74fb270a959ebbde5cf5e01e1f8606791f0e0b5434` |
 | Capability-projection ADR | `docs/adr/ADR-20260727-capability-projected-file-change-control.md` | accepted by architecture-review R22 | `sha256:b9d75ea29d528ef0e1f835ab796d6aa6936d362520ce1a424f5f0bb1112568ef` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; test-spec-review is next | `sha256:82b8f2ee7edad1316b36c182a4d282335f8830b12170d6cef57ebcda8426c75d` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; test-spec-review is next | `sha256:4bdf7041a737f0918a6253afa0776c395c3900950162a1d0f4b3041b5f7462fe` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r17.md` | approved | `sha256:42d0bad827656bc01ab1a8dd0eb8b888e37417744782771a346fdb728cf0a2bc` |
 
 ## Testing strategy
