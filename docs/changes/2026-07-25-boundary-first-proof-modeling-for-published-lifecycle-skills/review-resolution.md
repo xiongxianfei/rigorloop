@@ -3089,3 +3089,42 @@ Rationale: The plan must not choose executable ownership or infer diagram
 semantics.
 Validation target: architecture-review-r20
 Validation evidence: pending
+
+### architecture-review-r20
+
+#### BFP-AR20-1 — Architecture assessment still scopes handler conformance only to non-exposure
+
+Finding ID: BFP-AR20-1
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: approved R48 handler-conformance contract
+Decision needed: none
+Required outcome: State conformance as a common pre-branch gate in the
+architecture assessment.
+Chosen action: Replace the stale asymmetric bullets with common conformance,
+exposed live-trace addition, and non-exposed projection/effective-tool/drift
+addition.
+Rationale: Architecture assessment must classify the same design accepted by
+the canonical package.
+Validation target: architecture-review-r21
+Validation evidence: pending
+
+#### BFP-AR20-2 — Component diagram bypasses the pure validation boundary for runtime evidence
+
+Finding ID: BFP-AR20-2
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture revision
+Decision owner: accepted two-module harness boundary
+Decision needed: none
+Required outcome: Route runtime and conformance observations through pure
+validation before attestation evidence.
+Chosen action: Replace direct attestation flows with observation-to-validator
+and validated-evidence-to-attestation relationships.
+Rationale: The diagram must not imply that unvalidated runtime evidence can
+authorize v3 attestation fields.
+Validation target: architecture-review-r21
+Validation evidence: pending

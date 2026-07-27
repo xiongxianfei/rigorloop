@@ -91,12 +91,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r19.md
-- Review status: changes-requested; stage=architecture-review; round=r19
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r20.md
+- Review status: changes-requested; stage=architecture-review; round=r20
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture-review
+- Next stage: architecture
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=5; open-findings=BFP-AR19-1,BFP-AR19-2,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=7; open-findings=BFP-AR19-1,BFP-AR19-2,BFP-AR20-1,BFP-AR20-2,BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
 ## Milestones
 
@@ -756,6 +756,11 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Architecture-review R20 found two residual synchronization
+  defects: the assessment retained asymmetric conformance wording, and the
+  diagram bypassed pure validation for runtime evidence. Both route to a
+  narrow R21 candidate.
 
 - 2026-07-27: The R20 architecture candidate resolves R19 by making fresh
   production-dispatch conformance a common gate before either capability
