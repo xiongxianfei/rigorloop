@@ -98,7 +98,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r56.md
 - Review status: changes-requested; stage=spec-review; round=r56
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: spec
+- Next stage: spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-14,BFP-CR-M2-15,BFP-SR56-1,BFP-SR56-2
 
@@ -873,6 +873,13 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: The R56 correction defines an exact stable-ID-sorted finding
+  projection and identity derived from the bound review-record bytes. It also
+  makes `correction-authorization-required` an in-turn, non-retryable,
+  nonpublishing stop that retains one lease-bound working orphan and permits
+  only the existing explicit discard-and-regenerate recovery. The focused
+  amendment is ready for spec-review R57.
 
 - 2026-07-27: Spec-review R56 requested two focused corrections: an exact
   identity-bound finding projection for correction eligibility and a closed

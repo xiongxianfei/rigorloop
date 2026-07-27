@@ -2641,9 +2641,51 @@ MUST NOT change invocation, produced events, structural results, observed
 results, or diagnostics.
 
 Formal review outcome and correction authority are separate.
-For each material finding in a `changes-requested` review, the harness parses
-the required review fields `Evidence`, `Required outcome`,
-`Safe resolution path`, and `needs-decision rationale`.
+For each material finding in a `changes-requested` review, the harness derives
+one normalized finding row containing exactly:
+
+```text
+finding_id
+evidence
+required_outcome
+safe_resolution_path
+needs_decision_rationale
+```
+
+The review record contains one finding block per
+`material_finding_ids` member.
+Each block begins with the exact line
+`## Finding <finding_id>` and contains each of these exact single-line labels
+once:
+
+```text
+- Finding ID:
+- Evidence:
+- Required outcome:
+- Safe resolution path:
+- needs-decision rationale:
+```
+
+`Finding ID` exactly equals the heading ID.
+The other four values are the nonempty text after their labels with leading
+and trailing ASCII space removed; internal bytes are otherwise preserved.
+`needs-decision rationale` is either the exact lowercase ASCII value `none` or
+nonempty decision text.
+Finding IDs are unique and stable-ID sorted in both the review metadata and
+the normalized projection.
+Unknown prose outside these labels remains review evidence but does not alter
+the projection.
+Missing, repeated, empty, out-of-order, extra recognized labels, mismatched
+heading and label IDs, duplicate IDs, or a projection whose IDs differ from
+`material_finding_ids` fails closed as `protocol-shape-incompatible`.
+
+The normalized projection is the stable-ID-sorted list of those exact rows.
+`finding_projection_identity` is the SHA-256 identity of its canonical JSON
+using UTF-8, sorted object keys, compact separators, and recorded list order.
+The projection and identity are derived directly from the exact
+`review-record` bytes referenced by the same bundle and are recomputed during
+staged and immutable-run validation.
+
 The closed correction-eligibility values are:
 
 ```text
@@ -2653,18 +2695,30 @@ owner-decision-required
 ```
 
 An initial `changes-requested` review is `automatic-eligible` only when every
-material finding has non-empty evidence, required outcome, and safe resolution
-path, and every `needs-decision rationale` is exactly `none`.
+normalized finding row has non-empty evidence, required outcome, and safe
+resolution path, and every `needs_decision_rationale` is exactly `none`.
 If any finding has a non-`none` `needs-decision rationale`, the complete review
 is `owner-decision-required`.
-Missing, duplicate, contradictory, or unparseable finding fields fail closed
-as `protocol-shape-incompatible`; they do not default to correction authority.
 Approved and blocked reviews use `not-applicable`.
 
 Only `automatic-eligible` authorizes authoring attempt 2 within the existing
 one-correction budget.
 `owner-decision-required` terminates generation before authoring attempt 2 with
 `correction-authorization-required`.
+That diagnostic is a behavior-generation terminal diagnostic with phase
+`in-turn`.
+It is non-retryable and is not a transport-attempt diagnostic.
+The accepted review event and its complete review record, log, resolution,
+bundle, normalized finding projection, and identities remain in the
+lease-bound working root.
+No staged root, prepared receipt, immutable run, current-pointer replacement,
+or passing typed result is created.
+The publisher lease and minimum-valid working root remain as the single
+H-false `generating` orphan state; automatic reconciliation and lifecycle
+reinvocation are forbidden.
+The only permitted mutation is the existing explicitly authorized
+`discard-and-regenerate` manual recovery transaction, which preserves
+quarantine and removes the lease through its closed resume table.
 The first release does not resume that interrupted behavior run or consume a
 future-contingent owner decision.
 The owner must instead clarify the authoritative scenario request or other
@@ -4151,13 +4205,14 @@ approving review evidence, and produces exactly one review-evidence
 bundle-manifest snapshot.
 
 Every review-evidence bundle manifest contains exactly `review_id`, `outcome`,
-`reviewed_snapshot_id`, `material_finding_ids`, `correction_eligibility`, and
-`artifact_refs`.
+`reviewed_snapshot_id`, `material_finding_ids`, `finding_projection`,
+`finding_projection_identity`, `correction_eligibility`, and `artifact_refs`.
 `artifact_refs` is role-keyed and contains exactly one `review-record` and one
 `review-log` current path-and-identity reference.
 For an initial `approved` review, `material_finding_ids` is empty and
 `review-resolution` is absent, and `correction_eligibility` is
-`not-applicable`.
+`not-applicable`; `finding_projection` is empty and its identity is the
+canonical identity of the empty list.
 For an approving rereview, `material_finding_ids` is the exact prior finding
 set and `artifact_refs` additionally contains exactly one closed
 `review-resolution` reference; `correction_eligibility` is
@@ -4168,6 +4223,8 @@ reference.
 For `changes-requested`, `correction_eligibility` is the deterministically
 derived `automatic-eligible` or `owner-decision-required` value.
 For `blocked`, it is `not-applicable`.
+For every outcome, the bundle projection and identity equal the values
+recomputed from the referenced review record.
 The referenced files MUST satisfy the formal review-recording contract; the
 bundle manifest does not replace or weaken them.
 The review event's `evidence_refs` includes the bundle manifest and every
