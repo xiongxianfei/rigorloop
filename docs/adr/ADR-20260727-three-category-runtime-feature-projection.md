@@ -2,7 +2,7 @@
 
 ## Status
 
-proposed
+accepted
 
 ## Context
 
@@ -21,8 +21,7 @@ weakening the read-only child or parent-only materialization boundary.
 
 ## Decision
 
-On acceptance, this ADR supersedes only the binary feature-partition clauses
-of
+This ADR supersedes only the binary feature-partition clauses of
 [`ADR-20260727-capability-projected-file-change-control`](ADR-20260727-capability-projected-file-change-control.md).
 All runtime-byte binding, capability-state, handler-conformance, evidence-v3,
 opaque-v1, and unsupported-v2 decisions in that ADR remain accepted.
@@ -84,7 +83,7 @@ evidence created under another identity.
 
 ## Supersession
 
-On acceptance, this ADR supersedes only the binary-partition clauses of
+This ADR supersedes only the binary-partition clauses of
 `ADR-20260727-capability-projected-file-change-control`.
 
 ## Follow-up

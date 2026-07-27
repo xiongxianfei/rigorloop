@@ -3388,7 +3388,7 @@ contract for architecture synchronization.
 
 Finding ID: BFP-AR23-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture author
 Owning stage: architecture revision
 Decision owner: architecture package method R47-R48
@@ -3401,7 +3401,7 @@ statuses only after approval.
 Rationale: Accepted decision history is evidence and cannot be rewritten as
 though a later discovery was always known.
 Validation target: architecture-review-r24
-Validation evidence: pending
+Validation evidence: architecture-review-r25 approved restored history and the append-only successor.
 
 ### architecture-review-r24
 
@@ -3409,7 +3409,7 @@ Validation evidence: pending
 
 Finding ID: BFP-AR24-1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture author
 Owning stage: architecture revision
 Decision owner: architecture package method R46
@@ -3420,4 +3420,10 @@ Chosen action: Record approval-gated status normalization, downstream artifact
 identity synchronization, M2 resume conditions, and predecessor preservation.
 Rationale: A proposed ADR is incomplete without its required follow-up.
 Validation target: architecture-review-r25
-Validation evidence: pending
+Validation evidence: architecture-review-r25 approved the complete successor follow-up.
+
+### architecture-review-r25
+
+No new material findings. R25 independently confirmed BFP-AR23-1 and
+BFP-AR24-1 resolved and approved the three-category architecture package for
+plan synchronization.

@@ -1349,7 +1349,7 @@ Status: changes-requested
 Detailed record: reviews/architecture-review-r23.md
 Resolution: review-resolution.md#architecture-review-r23
 Material findings: BFP-AR23-1
-Open findings: BFP-AR23-1
+Open findings: None
 
 ### Review entry
 Review ID: architecture-review-r24
@@ -1360,4 +1360,15 @@ Status: changes-requested
 Detailed record: reviews/architecture-review-r24.md
 Resolution: review-resolution.md#architecture-review-r24
 Material findings: BFP-AR24-1
-Open findings: BFP-AR24-1
+Open findings: None
+
+### Review entry
+Review ID: architecture-review-r25
+Stage: architecture-review
+Round: 25
+Reviewed artifact: complete append-only architecture package at 26147ae0
+Status: approved
+Detailed record: reviews/architecture-review-r25.md
+Resolution: review-resolution.md#architecture-review-r25
+Material findings: None
+Open findings: None
