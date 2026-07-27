@@ -94,11 +94,11 @@ resource through generated, packed, and installed outputs.
 ## Current Handoff Summary
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
-- Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r21.md
-- Review status: approved; stage=plan-review; round=r21
+- Current milestone state: implementing
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r23.md
+- Review status: approved; stage=test-spec-review; round=r23
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: test-spec-review
+- Next stage: implement
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=4; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8,BFP-CR-M2-9
 
@@ -156,7 +156,7 @@ resource through generated, packed, and installed outputs.
 
 ### M2. Hermetic harness, upstream skills, and fresh upstream behavior
 
-- Milestone state: resolution-needed
+- Milestone state: implementing
 - Goal: Prove runtime feasibility, freeze the pre-mutation baseline, implement the standalone recoverable harness, update the five participating skill packages, and publish the one fresh upstream behavior run owned by R28y M2.
 - Requirements: R28y, R56-R56e, R56j-R56k, R56p
 - Files/components likely touched:

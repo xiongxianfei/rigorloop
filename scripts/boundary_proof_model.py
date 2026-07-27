@@ -693,7 +693,6 @@ class FeatureInvariantProjection:
     boundary_model_scope: str
     requirement_ids: tuple[str, ...]
     core_dimension_ids: tuple[str, ...]
-    extension_ids: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -1220,7 +1219,6 @@ def feature_invariant_projection(
         core_dimension_ids=tuple(
             sorted(row.dimension_id for row in model.core_dimensions)
         ),
-        extension_ids=tuple(sorted(row.extension_id for row in model.extensions)),
     )
 
 
