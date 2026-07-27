@@ -1736,10 +1736,11 @@ Boundary model scope: R28-R28z
   completed normative content. Bind the exact scenario request into both
   formal review invocations. Normalize each fixture candidate and produced
   artifact independently; compare only the closed version, scope, requirement,
-  core-dimension, extension, and governing-requirement invariant projection;
-  then vary stable IDs, non-applicability prose, applicable core rows,
-  boundary decomposition, examples, selected interactions, automation levels,
-  proof grouping, and test-case IDs while preserving R28s-R28w validity.
+  core-dimension, and governing-requirement invariant projection; then vary
+  stable IDs, extension presence and decomposition, non-applicability prose,
+  applicable core rows, boundary decomposition, examples, selected
+  interactions, automation levels, proof grouping, and test-case IDs while
+  preserving R28s-R28w validity.
   Require those alternative decompositions to proceed to independent review,
   not fail candidate comparison. Independently remove, add, duplicate, or
   substitute each invariant projection member and require

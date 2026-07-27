@@ -2676,7 +2676,6 @@ feature-spec:
   boundary_model_scope
   requirement_ids
   core_dimension_ids
-  extension_ids
 
 test-spec:
   boundary_model_version
@@ -2687,7 +2686,7 @@ test-spec:
 Every projection list is stable-ID sorted.
 For this scenario, both feature projections contain exactly `v1`, `R1-R4`,
 `R1`, `R2`, `R3`, and `R4`, all twelve closed R28a core dimension IDs exactly
-once, and no extension IDs.
+once.
 Both test-spec projections contain exactly `v1`, `R1-R4`, and the same four
 governing requirement IDs.
 The complete produced feature record MUST also satisfy R28s-R28v, contain no
@@ -2699,6 +2698,9 @@ projection fields fail with `boundary-oracle-mismatch`.
 
 Stable boundary, extension, example, interaction, proof-obligation, regression,
 manual-procedure, and test-case IDs are stage-owned modeling choices.
+Extension presence and decomposition are also stage-owned modeling choices;
+they are structurally validated and independently reviewed, but they are not
+compared with the fixture candidate.
 Core applicability decisions, non-applicability rationale wording, boundary
 row decomposition, examples, selected interactions, automation levels, and
 proof grouping are also stage-owned choices subject to R28s-R28w and the
