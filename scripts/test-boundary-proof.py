@@ -38,7 +38,9 @@ from boundary_proof_behavior import (
     _assemble_test_spec_correction_run,
     _build_behavior_manifest,
     _classify_historical_evidence,
+    _create_publisher_lease,
     _dispatch_file_change_request,
+    _discover_global_candidate,
     _invoke_with_reconciliation,
     _load_transport_fixture,
     _derive_config_origin_paths,
@@ -64,6 +66,8 @@ from boundary_proof_behavior import (
     _thread_start_request,
     _turn_start_request,
     _validate_review_payload,
+    _validate_prepared_receipt,
+    _validate_publisher_lease,
     _validate_attestation,
     _validate_runtime_projection,
     _validated_thread_metadata,
@@ -1941,6 +1945,20 @@ class BoundaryProofModelTests(unittest.TestCase):
                         [],
                         [],
                         correction,
+                        "publisher-" + ("1" if index == 0 else "2") * 32,
+                        (
+                            repo_root
+                            / "docs"
+                            / "changes"
+                            / change_id
+                            / "evidence"
+                            / "simple-change"
+                            / (
+                                ".working-run-"
+                                + ("1" if index == 0 else "2")
+                                + "0" * 31
+                            )
+                        ),
                     )
                     self.assertTrue((temporary / "manifest.json").is_file())
                     self.assertFalse((temporary / "run.json").exists())
@@ -3161,6 +3179,153 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertEqual(_artifact_kind(path, change_id), expected)
 
+    def test_t51_publisher_identity_exact_schema_and_binding(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            publisher_id = "publisher-" + "1" * 32
+            lease, _ = _create_publisher_lease(
+                root, change_id, "run-" + "a" * 32, publisher_id,
+                "sha256:" + "b" * 64,
+            )
+            _validate_publisher_lease(root, change_id, lease)
+            for field in tuple(lease):
+                with self.subTest(field=field):
+                    invalid = dict(lease)
+                    invalid.pop(field)
+                    with self.assertRaises(BoundaryRuntimeError):
+                        _validate_publisher_lease(root, change_id, invalid)
+            invalid = dict(lease)
+            invalid["publisher_instance_id"] = "publisher-invalid"
+            with self.assertRaises(BoundaryRuntimeError):
+                _validate_publisher_lease(root, change_id, invalid)
+
+    def test_t51_lease_before_stage_observation(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            lease, working = _create_publisher_lease(
+                root, change_id, "run-" + "a" * 32,
+                "publisher-" + "1" * 32, "sha256:" + "b" * 64,
+            )
+            observed = json.loads(
+                (working.parent / "publisher.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(observed, lease)
+            self.assertTrue(working.is_dir())
+
+    def test_t51_root_binding_rejects_each_substitution(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            lease, _ = _create_publisher_lease(
+                root, change_id, "run-" + "a" * 32,
+                "publisher-" + "1" * 32, "sha256:" + "b" * 64,
+            )
+            for field in ("working_root", "staging_root", "target_root"):
+                with self.subTest(field=field):
+                    invalid = dict(lease)
+                    invalid[field] = str(invalid[field]) + "-other"
+                    with self.assertRaises(BoundaryRuntimeError):
+                        _validate_publisher_lease(root, change_id, invalid)
+
+    def test_t51_global_discovery_rejects_cross_run_and_unknown_transients(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            lease, _ = _create_publisher_lease(
+                root, change_id, "run-" + "a" * 32,
+                "publisher-" + "1" * 32, "sha256:" + "b" * 64,
+            )
+            self.assertEqual(
+                _discover_global_candidate(root, change_id), lease["run_id"]
+            )
+            simple = root / "docs/changes" / change_id / "evidence/simple-change"
+            cross_run = simple / (".prepared-run-" + "c" * 32)
+            cross_run.mkdir()
+            with self.assertRaises(BoundaryRuntimeError):
+                _discover_global_candidate(root, change_id)
+            cross_run.rmdir()
+            (simple / ".working-not-a-run").mkdir()
+            with self.assertRaises(BoundaryRuntimeError):
+                _discover_global_candidate(root, change_id)
+
+    def test_t51_same_live_publisher_is_not_reconstructed_on_resume(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            _create_publisher_lease(
+                root, change_id, "run-" + "a" * 32,
+                "publisher-" + "1" * 32, "sha256:" + "b" * 64,
+            )
+            with self.assertRaises(BoundaryRuntimeError):
+                _reconcile_prepared(root, change_id)
+
+    def test_t51_receipt_binding_rejects_lease_identity_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            lease, _ = _create_publisher_lease(
+                root, change_id, "run-" + "a" * 32,
+                "publisher-" + "1" * 32, "sha256:" + "b" * 64,
+            )
+            identity = "sha256:" + "c" * 64
+            receipt = {
+                "publisher_instance_id": lease["publisher_instance_id"],
+                "run_id": lease["run_id"],
+                "input_set_identity": lease["input_set_identity"],
+                "staged_manifest_snapshot": {
+                    "path": str(lease["staging_root"]) + "/manifest.json",
+                    "identity": identity,
+                },
+                "target_manifest": {
+                    "path": str(lease["target_root"]) + "/manifest.json",
+                    "identity": identity,
+                },
+                "prior_pointer": lease["prior_pointer"],
+            }
+            _validate_prepared_receipt(root, change_id, receipt, lease)
+            for field in (
+                "publisher_instance_id", "run_id",
+                "input_set_identity", "prior_pointer",
+            ):
+                with self.subTest(field=field):
+                    invalid = copy.deepcopy(receipt)
+                    invalid[field] = "different"
+                    with self.assertRaises(BoundaryRuntimeError):
+                        _validate_prepared_receipt(
+                            root, change_id, invalid, lease
+                        )
+
+    def test_t51_manual_recovery_intent_never_adopts_or_reinvokes(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            run_id = "run-" + "a" * 32
+            _, working = _create_publisher_lease(
+                root, change_id, run_id, "publisher-" + "1" * 32,
+                "sha256:" + "b" * 64,
+            )
+            marker = working / "partial-output"
+            marker.write_text("untrusted", encoding="utf-8")
+            (working.parent / f"manual-recovery-{run_id}.json").write_text(
+                "{}", encoding="utf-8"
+            )
+            before = marker.read_bytes()
+            with self.assertRaises(BoundaryRuntimeError):
+                _reconcile_prepared(root, change_id)
+            self.assertEqual(marker.read_bytes(), before)
+            self.assertFalse((working.parent / "runs" / run_id).exists())
+
     def test_prepared_publication_reconciles_without_reinvocation(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
@@ -3173,11 +3338,21 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 / "evidence"
                 / "simple-change"
             )
-            temporary = simple / ".candidate"
-            temporary.mkdir(parents=True)
+            (root / "docs" / "changes" / change_id).mkdir(parents=True)
+            run_id = "run-" + "a" * 32
+            publisher_id = "publisher-" + "1" * 32
+            input_identity = "sha256:" + "b" * 64
+            _, temporary = _create_publisher_lease(
+                root,
+                change_id,
+                run_id,
+                publisher_id,
+                input_identity,
+            )
             manifest = {
-                "run_id": "run-" + "a" * 32,
-                "input_set_identity": "sha256:" + "b" * 64,
+                "run_id": run_id,
+                "publisher_instance_id": publisher_id,
+                "input_set_identity": input_identity,
                 "snapshots": [],
             }
             (temporary / "manifest.json").write_text(
@@ -3207,6 +3382,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 competing.mkdir()
                 competing_manifest = {
                     "run_id": "run-" + "c" * 32,
+                    "publisher_instance_id": "publisher-" + "2" * 32,
                     "input_set_identity": "sha256:" + "d" * 64,
                     "snapshots": [],
                 }
@@ -3231,7 +3407,9 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                 self.assertFalse((simple / "prepared.json").exists())
                 self.assertEqual(validate.call_count, 1)
 
-    def test_every_post_prepare_crash_boundary_is_recoverable(self) -> None:
+    def test_t51_publication_states_recover_every_post_prepare_crash(
+        self,
+    ) -> None:
         boundaries = (
             "after-receipt-fsync",
             "after-run-install",
@@ -3252,11 +3430,21 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
                     / "evidence"
                     / "simple-change"
                 )
-                temporary = simple / ".candidate"
-                temporary.mkdir(parents=True)
+                (root / "docs" / "changes" / change_id).mkdir(parents=True)
+                run_id = "run-" + format(index + 1, "032x")
+                publisher_id = "publisher-" + format(index + 1, "032x")
+                input_identity = "sha256:" + "e" * 64
+                _, temporary = _create_publisher_lease(
+                    root,
+                    change_id,
+                    run_id,
+                    publisher_id,
+                    input_identity,
+                )
                 manifest = {
-                    "run_id": "run-" + format(index + 1, "032x"),
-                    "input_set_identity": "sha256:" + "e" * 64,
+                    "run_id": run_id,
+                    "publisher_instance_id": publisher_id,
+                    "input_set_identity": input_identity,
                     "snapshots": [],
                 }
                 (temporary / "manifest.json").write_text(
