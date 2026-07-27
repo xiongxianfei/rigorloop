@@ -2,7 +2,7 @@
 
 ## Status
 
-Plan lifecycle state: blocked
+Plan lifecycle state: active
 Terminal disposition: none
 
 - Owner: maintainer
@@ -94,7 +94,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r17.md
 - Review status: approved; stage=test-spec-review; round=r17
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: architecture
+- Next stage: spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
@@ -756,6 +756,13 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Reopened R28y as the R46 candidate after the live preflight
+  proved its file-change event unreachable. The candidate replaces
+  repository-wide single-version gating with immutable capability projections,
+  distinguishes live-probe-required from projection-proven non-exposure,
+  advances current evidence to v3, and fails closed on projection drift. The
+  next gate is independent spec review before architecture alignment.
 
 - 2026-07-26: The R45 read-only preflight now passes direct and detached
   descendant create, overwrite, remove, and mode-change denial, but fails
