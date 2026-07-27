@@ -3491,3 +3491,34 @@ is required.
 
 No new material findings. R20 independently approved the focused R54/R26 M2
 execution sequence and routed the change to test-spec synchronization.
+
+### test-spec-review-r21
+
+#### BFP-TSR21-1 - Parent-only candidate isolation lacks direct proof
+
+Finding ID: BFP-TSR21-1
+
+Disposition: accepted
+
+Status: in-progress
+
+Owner: test-spec author
+
+Owning stage: test-spec revision
+
+Decision owner: approved R54/R26 parent-only comparison boundary
+
+Decision needed: none
+
+Required outcome: Directly prove candidate paths, identities, and bytes remain
+unavailable to every child lifecycle stage.
+
+Chosen action: Extend T52 with complete child-workspace, serialized request,
+and child-access inspection plus a deliberate candidate-exposure contrast that
+fails before output acceptance or publication.
+
+Rationale: Input binding does not prove child non-exposure.
+
+Validation target: test-spec-review-r22
+
+Validation evidence: pending test-spec revision

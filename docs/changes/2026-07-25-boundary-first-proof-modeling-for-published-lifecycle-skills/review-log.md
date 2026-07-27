@@ -1449,3 +1449,14 @@ Detailed record: reviews/plan-review-r20.md
 Resolution: review-resolution.md#plan-review-r20
 Material findings: None
 Open findings: None
+
+### Review entry
+Review ID: test-spec-review-r21
+Stage: test-spec-review
+Round: 21
+Reviewed artifact: R54/R26/R20-synchronized proof map at 688fff3c
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r21.md
+Resolution: review-resolution.md#test-spec-review-r21
+Material findings: BFP-TSR21-1
+Open findings: BFP-TSR21-1
