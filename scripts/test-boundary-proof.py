@@ -3608,6 +3608,139 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             with self.assertRaises(BoundaryRuntimeError):
                 _discover_global_candidate(root, change_id)
 
+    def test_t51_completed_history_does_not_hide_same_run_staging(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            run_id = "run-" + "a" * 32
+            _, working = _create_publisher_lease(
+                root, change_id, run_id, "publisher-" + "1" * 32,
+                "sha256:" + "b" * 64,
+            )
+            authority = (
+                root / "docs/changes" / change_id / "review-resolution.md"
+            )
+            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            discard_interrupted_publication(
+                change_id,
+                authority,
+                authorized_by="test-maintainer",
+                repo_root=root,
+            )
+            (working.parent / f".prepared-{run_id}").mkdir()
+            with self.assertRaises(BoundaryRuntimeError):
+                _discover_global_candidate(root, change_id)
+
+    def test_t51_manual_recovery_rejects_semantically_empty_staged_run(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            run_id = "run-" + "a" * 32
+            publisher_id = "publisher-" + "1" * 32
+            fake_ref = {
+                "path": "missing",
+                "identity": "sha256:" + "b" * 64,
+            }
+            input_set = {
+                "schema_version": "simple-change-input-v1",
+                "scenario_ref": fake_ref,
+                "baseline_commit": "git:" + "c" * 40,
+                "skill_resource_refs": [],
+                "oracle_refs": [],
+                "implementation_manifest_ref": fake_ref,
+            }
+            input_identity = (
+                "sha256:"
+                + hashlib.sha256(
+                    json.dumps(
+                        input_set,
+                        ensure_ascii=False,
+                        separators=(",", ":"),
+                        sort_keys=True,
+                    ).encode()
+                ).hexdigest()
+            )
+            lease, working = _create_publisher_lease(
+                root,
+                change_id,
+                run_id,
+                publisher_id,
+                input_identity,
+            )
+            staging = root / str(lease["staging_root"])
+            working.rename(staging)
+            manifest = {
+                "run_id": run_id,
+                "publisher_instance_id": publisher_id,
+                "input_set": input_set,
+                "input_set_identity": input_identity,
+                "baseline_commit": input_set["baseline_commit"],
+                "before_artifact_inventory": [],
+                "after_artifact_inventory": [],
+                "snapshots": [],
+                "events": [],
+                "transport_attempts": [],
+            }
+            (staging / "manifest.json").write_text(
+                json.dumps(
+                    manifest,
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                    sort_keys=True,
+                ),
+                encoding="utf-8",
+            )
+            authority = (
+                root / "docs/changes" / change_id / "review-resolution.md"
+            )
+            authority.write_text("# Authorized recovery\n", encoding="utf-8")
+            with self.assertRaises(BoundaryRuntimeError):
+                discard_interrupted_publication(
+                    change_id,
+                    authority,
+                    authorized_by="test-maintainer",
+                    repo_root=root,
+                )
+
+    def test_t51_manual_recovery_requires_change_local_authority(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            (root / "docs/changes" / change_id).mkdir(parents=True)
+            _create_publisher_lease(
+                root, change_id, "run-" + "a" * 32,
+                "publisher-" + "1" * 32, "sha256:" + "b" * 64,
+            )
+            authority = root / "unrelated-owner-note.md"
+            authority.write_text("# Unrelated\n", encoding="utf-8")
+            with self.assertRaises(BoundaryRuntimeError):
+                discard_interrupted_publication(
+                    change_id,
+                    authority,
+                    authorized_by="test-maintainer",
+                    repo_root=root,
+                )
+
+    def test_t51_global_discovery_rejects_invalid_fixed_root_kind(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            change_id = "2026-07-25-example"
+            simple = (
+                root / "docs/changes" / change_id / "evidence/simple-change"
+            )
+            simple.mkdir(parents=True)
+            (simple / "runs").write_text("not a directory", encoding="utf-8")
+            with self.assertRaises(BoundaryRuntimeError):
+                _discover_global_candidate(root, change_id)
+
     def test_t51_manual_recovery_resumes_every_durable_crash_row(self) -> None:
         boundaries = (
             "after-recovery-temp-fsync",
