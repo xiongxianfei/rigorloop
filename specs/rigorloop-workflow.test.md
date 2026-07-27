@@ -65,7 +65,7 @@ Boundary model scope: R28-R28z
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted with scoped writable-child supersession | `sha256:b80c4a494ae1e08abea77d74fb270a959ebbde5cf5e01e1f8606791f0e0b5434` |
 | Capability-projection ADR | `docs/adr/ADR-20260727-capability-projected-file-change-control.md` | focused three-category amendment pending architecture review | pending |
 | Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; focused plan rereview pending | pending |
-| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r17.md` | approved | `sha256:42d0bad827656bc01ab1a8dd0eb8b888e37417744782771a346fdb728cf0a2bc` |
+| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r17.md` | prior binary projection only; successor pending | pending |
 
 ## Testing strategy
 
