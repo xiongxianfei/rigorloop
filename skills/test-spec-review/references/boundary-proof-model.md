@@ -59,6 +59,26 @@ invalid. In table cells with no
 IDs or no applicable value, write the literal ASCII `-` sentinel. Do not use
 an em dash, another Unicode dash, or a blank cell.
 
+Apply these closed serialization rules:
+
+- list every core dimension exactly once;
+- for `applicable`, provide nonempty requirement and boundary IDs and use `-`
+  for the non-applicability rationale;
+- for `not-applicable`, use `-` for requirement and boundary IDs and provide a
+  nonempty rationale;
+- define each boundary ID in exactly one core or extension row;
+- give each example a unique ID, cite only defined boundaries, and cite
+  requirements that own every cited boundary;
+- use `illustration` with requirement and boundary IDs and no regression or
+  discovery ID; use `regression` with those links plus one regression ID;
+- either provide an interaction table with unique IDs, at least two defined
+  boundary IDs, a closed rationale, and governing requirements, or state
+  explicitly that no interaction is selected; and
+- in the proof map, use unique proof IDs, cite only approved requirements and
+  defined boundaries or interactions, cover every applicable boundary and
+  selected interaction, provide at least one test-case ID per row, use no
+  manual procedure for `automated`, and require one for `manual` or `hybrid`.
+
 Classify every example as `illustration`, `regression`, `discovery`, or
 `non-normative`. Illustrations and regressions link to governing requirements
 and boundary IDs. Discovery examples expose an explicit contract gap.
