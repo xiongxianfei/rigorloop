@@ -2300,6 +2300,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "gpt-5.6-sol",
             Path("/runtime-home"),
             "Author the artifact.",
+            "# Boundary-first proof model\n",
             {"type": "object"},
             PARTICIPATING_SKILLS,
         )
@@ -2309,6 +2310,14 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         self.assertEqual(
             [item["name"] for item in skill_inputs],
             list(PARTICIPATING_SKILLS),
+        )
+        text_inputs = [
+            item for item in request["input"] if item["type"] == "text"
+        ]
+        self.assertEqual(len(text_inputs), 2)
+        self.assertIn(
+            "Required installed boundary-proof reference",
+            text_inputs[0]["text"],
         )
 
     def test_review_payload_requires_durable_identity_bound_evidence(self) -> None:
@@ -2672,6 +2681,7 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "gpt-5.6-sol",
             runtime_home,
             "Return a closed result.",
+            "# Boundary-first proof model\n",
             {"type": "object"},
         )
         self.assertEqual(
