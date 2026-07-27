@@ -4236,6 +4236,51 @@ def _discover_global_candidate(
         lease = _read_publisher_lease(repo_root, change_id)
         _validate_prepared_receipt(repo_root, change_id, prepared, lease)
         run_ids.add(str(prepared["run_id"]))
+    completed_ids: set[str] = set()
+    for state_path in simple_root.glob("manual-recovery-state-run-*.json"):
+        match = re.fullmatch(
+            r"manual-recovery-state-(run-[0-9a-f]{32})\.json",
+            state_path.name,
+        )
+        if match is None or state_path.is_symlink():
+            raise BoundaryRuntimeError("runtime-identity-unstable")
+        history_run_id = match.group(1)
+        state = _read_json(state_path)
+        basis_path = simple_root / f"manual-recovery-{history_run_id}.json"
+        if (
+            set(state)
+            != {"schema_version", "recovery_id", "basis_identity", "state"}
+            or state.get("schema_version")
+            != "simple-change-manual-recovery-state-v1"
+            or state.get("state") != "completed"
+            or not basis_path.is_file()
+            or basis_path.is_symlink()
+            or state.get("basis_identity")
+            != _read_file_identity(basis_path).digest
+        ):
+            continue
+        basis = _read_json(basis_path)
+        orphan = basis.get("orphan_snapshot")
+        if (
+            basis.get("run_id") != history_run_id
+            or not isinstance(orphan, dict)
+            or basis.get("recovery_id") != state.get("recovery_id")
+        ):
+            continue
+        quarantine_path = orphan.get("quarantine_path")
+        if quarantine_path is not None:
+            if (
+                not isinstance(quarantine_path, str)
+                or not (repo_root / quarantine_path).is_dir()
+                or (repo_root / quarantine_path).is_symlink()
+            ):
+                continue
+        completed_ids.add(history_run_id)
+    if lease_path.exists() and str(
+        _read_publisher_lease(repo_root, change_id)["run_id"]
+    ) in completed_ids:
+        raise BoundaryRuntimeError("runtime-identity-unstable")
+    run_ids.difference_update(completed_ids)
     if len(run_ids) > 1:
         raise BoundaryRuntimeError("runtime-identity-unstable")
     return next(iter(run_ids), None)
@@ -7317,6 +7362,10 @@ def _collect_runtime_attestation(
         workspace = Path(work_raw)
         runtime_home.chmod(0o700)
         workspace.chmod(0o700)
+        # The durable working root lives below the repository. Give each
+        # ephemeral child workspace its own project boundary so Codex does not
+        # inherit repository-local skills or instruction files from ancestors.
+        (workspace / ".git").mkdir(mode=0o700)
         completed = _run_runtime(
             (
                 str(executable),
