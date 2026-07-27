@@ -1635,4 +1635,15 @@ Status: changes-requested
 Detailed record: reviews/architecture-review-r28.md
 Resolution: review-resolution.md#architecture-review-r28
 Material findings: BFP-AR28-1
-Open findings: BFP-AR28-1
+Open findings: None
+
+### Review entry
+Review ID: architecture-review-r29
+Stage: architecture-review
+Round: 29
+Reviewed artifact: request-only child scenario projection at f11fba76
+Status: approved
+Detailed record: reviews/architecture-review-r29.md
+Resolution: review-resolution.md#architecture-review-r29
+Material findings: None
+Open findings: None

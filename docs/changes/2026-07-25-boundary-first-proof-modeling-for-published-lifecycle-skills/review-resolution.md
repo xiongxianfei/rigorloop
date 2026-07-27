@@ -3816,7 +3816,7 @@ Finding ID: BFP-AR28-1
 
 Disposition: accepted
 
-Status: open
+Status: resolved
 
 Owner: architecture author
 
@@ -3839,4 +3839,11 @@ the child can inspect it.
 
 Validation target: architecture-review-r29
 
-Validation evidence: pending
+Validation evidence: Architecture-review R29 approved the request-only child
+projection and parent-only post-observation expectation comparison.
+
+### architecture-review-r29
+
+No new material findings. R29 independently confirmed BFP-AR28-1 resolved and
+approved the correction-authority and scenario-expectation architecture for
+plan synchronization.
