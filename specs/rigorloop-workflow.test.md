@@ -66,9 +66,10 @@ Boundary model scope: R28-R28z
 | Runtime ADR | `docs/adr/ADR-20260726-codex-permission-profile-boundary-harness.md` | accepted with scoped writable-child supersession | `sha256:b80c4a494ae1e08abea77d74fb270a959ebbde5cf5e01e1f8606791f0e0b5434` |
 | Capability-projection ADR | `docs/adr/ADR-20260727-capability-projected-file-change-control.md` | accepted base decision; binary clauses superseded narrowly | `sha256:b9d75ea29d528ef0e1f835ab796d6aa6936d362520ce1a424f5f0bb1112568ef` |
 | Three-category projection ADR | `docs/adr/ADR-20260727-three-category-runtime-feature-projection.md` | accepted by architecture-review R25 | `sha256:b2d8997a97114f2b055efc2bec627b39c26d4fea95e5b86ae4bacae3a9c724eb` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; approved for proof-map synchronization | `sha256:4c9f7281ea6d9e2e6e946b5954aa1fd7d66627828245d309e0afa914bfe593b1` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; M2 resolution-needed; approved for proof-map synchronization | `sha256:a69734aa09a23de3baef6ce1f5f08f5a231417e0d8452f970187aa426943ba97` |
 | Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r21.md` | approved | `sha256:3a4167f23f829247775b5743f5b7c4bdd1c1a4deb47b415779a5c81ea93573ed` |
 | M2 code review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r4.md` | changes requested; `BFP-CR-M2-10` open | `sha256:83c8b9fa5842194d3e30b650badd1fe0a7de9989b340616b48fb79e440e13b37` |
+| Focused test-spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/test-spec-review-r24.md` | changes requested; `BFP-TSR24-1` correction applied pending rereview | `sha256:518644fd855c28be4abce6d80fd1fe3b07aec32bdb65d92dca756a99c79e27f3` |
 
 ## Testing strategy
 
@@ -77,7 +78,7 @@ Boundary model scope: R28-R28z
 - Use focused skill-validator assertions only for stable, machine-checkable skill guidance such as required labels, forbidden stale labels, handoff boundaries, and generated-output drift.
 - Use selector-selected targeted proof as the first validation layer for changed paths; use broad smoke only when an authoritative trigger elevates it.
 - Treat `specs/rigorloop-workflow.test.md` as a pending focused proof-map
-  amendment. M2 remains blocked until test-spec-review R24 confirms that T51
+  amendment. M2 remains blocked until test-spec-review R25 confirms that T51
   decomposes every `BFP-CR-M2-10` publisher property into direct executable
   proof and approves the current input identities.
 - Keep deferred project-map lifecycle mechanics out of this test spec except for explicit non-goal checks.
@@ -1631,7 +1632,18 @@ Boundary model scope: R28-R28z
   Each property ID MUST map to at least one separately named test. A broad
   publication happy-path test cannot satisfy a property row or a negative
   mutation obligation.
-- Steps: Build and fsync the working run, then validate all of its events,
+- Steps: Acquire and retain the nonblocking exclusive publisher lock, perform
+  global discovery in the fixed R28y order, and prove that no lifecycle stage
+  has run. For a clean state, derive the current input identity and prior
+  pointer, allocate fresh run and publisher instance IDs, exclusively create
+  and fsync the exact publisher lease, then create and fsync its deterministic
+  working root. Instrument the first lifecycle invocation and assert that the
+  valid durable lease and working root already exist and remain bound to the
+  invocation's run, publisher, and input identities. Inject failure before and
+  after lease fsync and working-root fsync; assert no lifecycle invocation,
+  staging rename, receipt, immutable installation, or pointer mutation.
+  Only after those gates pass, build and fsync the working run, then validate
+  all of its events,
   bundles, snapshots, inventories, and metrics before any staging rename. For
   each malformed or inconsistent working-run object, assert failure before
   staging rename. After successful working-run validation, rename and fsync it
