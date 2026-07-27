@@ -2,7 +2,7 @@
 
 ## Status
 
-proposed
+accepted
 
 ## Context
 
@@ -117,7 +117,7 @@ immutable executable projections with exhaustive conformance tests.
 
 ## Supersession
 
-On acceptance, this ADR supersedes only:
+This ADR supersedes only:
 
 - the unconditional live file-change-probe clause in
   `ADR-20260726-stage-authored-artifact-envelope-transport`; and
@@ -127,8 +127,7 @@ It preserves the accepted read-only child boundary, deny-only policy,
 workspace-integrity gate, stage-authored envelope, parent-only exact-byte
 materialization, and scoped relationship to predecessor ADRs.
 
-Until architecture review accepts this ADR, the predecessor clauses remain the
-accepted architecture and implementation remains blocked.
+Architecture-review R22 accepted this scoped successor.
 
 ## Acceptance conditions
 
