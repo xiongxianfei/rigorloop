@@ -1537,13 +1537,21 @@ def _workflow_stage_request(
             "`## Boundary model`, `## Examples`, and `## Interactions`. "
             "The Boundary model and Examples tables must use the exact "
             "columns defined by the attached boundary-proof reference. "
+            "Use all twelve closed core dimension IDs exactly once, no "
+            "extensions, and governing requirement IDs R1, R2, R3, and R4. "
+            "Every authored stable ID must match `[a-z0-9][a-z0-9._-]*`. "
+            "Use the literal ASCII `-` for every empty table value; never "
+            "use a blank cell or a Unicode dash. "
         ),
         "test-spec": (
             "Use the exact markers `Boundary model version: v1` and "
             "`Boundary model scope: R1-R4`, followed by exact sections "
             "`## Proof map` and `## Test cases`. The Proof map table must "
             "use the exact columns defined by the attached boundary-proof "
-            "reference. "
+            "reference and collectively govern exactly R1, R2, R3, and R4. "
+            "Every authored stable ID must match `[a-z0-9][a-z0-9._-]*`. "
+            "Use the literal ASCII `-` for every empty table value; never "
+            "use a blank cell or a Unicode dash. "
         ),
         "spec-review": "",
         "test-spec-review": "",
