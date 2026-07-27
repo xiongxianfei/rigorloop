@@ -31,11 +31,13 @@ Boundary model scope: R56-R56q
 - Historical skill-normalization architecture: not required for those completed
   slices.
 - Boundary-first architecture: [Canonical System Architecture](../docs/architecture/system/architecture.md),
-  approved by `architecture-review-r4`, with
+  approved by `architecture-review-r22`, with
   [ADR-20260725](../docs/adr/ADR-20260725-boundary-first-proof-modeling.md)
-  accepted and the
+  accepted,
+  [ADR-20260727](../docs/adr/ADR-20260727-capability-projected-file-change-control.md)
+  accepted, and the
   [Boundary-First Plan](../docs/plans/2026-07-25-boundary-first-proof-modeling.md)
-  approved by `plan-review-r5`.
+  approved by `plan-review-r17`.
 - Project map: `docs/project-map.md` is present and was read for repository orientation. This test spec relies on the approved spec, active plan, workflow specs, stage skills, shared templates, generator scripts, existing validator patterns, and change-local pilot evidence.
 - Related proof surfaces:
   - `scripts/test-skill-validator.py`
@@ -53,13 +55,14 @@ Boundary model scope: R56-R56q
 | Input | Path | Status / Review state | Identity |
 | --- | --- | --- | --- |
 | Feature spec | `specs/skill-contract.md` | approved; spec-review-r13 | `sha256:a0532f572dc471243c91de9f3dcbf02530ec48e10481af4e2805a904066b31cc` |
-| Companion workflow spec | `specs/rigorloop-workflow.md` | approved; spec-review-r13 | `sha256:cce7047761aaa99d81263cf226261e73de3de35e9064e93732274d3a3a8ae1f8` |
-| Spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r13.md` | approved | `sha256:063f0bd15ff4ed9861179cc4be9da2f063276c01c2d536498a8c67974e4a3fe0` |
-| Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review-r4 | `sha256:a766457e13872dcb01af9587fd3e23d1a7cd3cf7162a27457a70e076a9e6e9f0` |
-| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r4.md` | approved | `sha256:dad098aaf2800f3e8762ac9c05ac5b5067ba5c35925afadb69f97fa662225477` |
-| ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted | `sha256:dac4993ec648a4c6ed72c50b5c22954760ea4b6c28f6686b7f7aeec246fdc216` |
-| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; plan-review-r5 | `sha256:e761d02218270dca568deab8cdf7f27d316d471fd850dc79d5e2a62c0ad59e90` |
-| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r5.md` | approved | `sha256:41eca0f767652f05201becbe9a4a75a03935d506bdf0695fce4454f090e54ac3` |
+| Companion workflow spec | `specs/rigorloop-workflow.md` | approved; spec-review-r48 | `sha256:c34ce7291f7a2df9deec56e8d364514f05905136656dcec00af4787435353eff` |
+| Spec review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/spec-review-r48.md` | approved | `sha256:656fafdd5660f5e95b53fd5ec49407661473ac5c0eccf9a4ff95aa63b0a579cf` |
+| Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review-r22 | `sha256:ed5a12592117adc3a8c2ddfea77e41c1e819086467dd9b5928ab7e7e5ed25042` |
+| Architecture review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/architecture-review-r22.md` | approved | `sha256:dfd0fd1aac0ff08c8c6ac6064d0dfe96bdb59cc30093b8de76d0b170daf8d68a` |
+| ADR | `docs/adr/ADR-20260725-boundary-first-proof-modeling.md` | accepted | `sha256:0bd0cc5b7964b45f61b020b31c6781d360d072e15120feaf2a7f106cae05df15` |
+| Capability-projection ADR | `docs/adr/ADR-20260727-capability-projected-file-change-control.md` | accepted | `sha256:b9d75ea29d528ef0e1f835ab796d6aa6936d362520ce1a424f5f0bb1112568ef` |
+| Plan | `docs/plans/2026-07-25-boundary-first-proof-modeling.md` | active; plan-review-r17 approved; test-spec-review is next | `sha256:82b8f2ee7edad1316b36c182a4d282335f8830b12170d6cef57ebcda8426c75d` |
+| Plan review | `docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r17.md` | approved | `sha256:42d0bad827656bc01ab1a8dd0eb8b888e37417744782771a346fdb728cf0a2bc` |
 
 ## Testing strategy
 
@@ -1843,15 +1846,18 @@ Boundary model scope: R56-R56q
   CMD-SBFP-17
 - Fixture/setup: Exact five-stage simple-change scenario; isolated child home;
   parent-observed sandbox; caller-instruction, tool, connector, subagent,
-  network, unmanifested-read, runtime-identity, and model-identity contrasts.
+  network, unmanifested-read, exact runtime-projection, common
+  handler-conformance, capability-branch, runtime-identity, and model-identity
+  contrasts.
 - Steps: Run preflight and controlled fixture; freeze the baseline before the
   first participating-skill mutation; generate once; inspect complete outputs
   and reviews; validate repeatedly; then alter each behavior-affecting input
   class.
 - Expected result: The accepted run uses only manifested packages and the
-  closed invocation profile; validation never reinvokes a skill; changed
-  identities make the run stale; unsafe or unavailable profiles stop before
-  output acceptance.
+  closed invocation profile; exact implementation identities and validated
+  common conformance precede capability-specific file-change proof; validation
+  never reinvokes a skill; changed identities make the run stale; unsafe,
+  unavailable, or projection-drift states stop before output acceptance.
 - Failure proves: Upstream behavior evidence is asserted, non-hermetic, or
   reusable across a different runtime/package contract.
 - Evidence artifact: M2 immutable run, current pointer, manifest, and trace
@@ -2140,9 +2146,9 @@ Boundary model scope: R56-R56q
 
 ## Next artifacts
 
-- Boundary-first amendment: independent `test-spec-review` for this R13/R4/R5
-  proof map, then resume M1 correction under the recorded implementation
-  authorization.
+- Boundary-first amendment: independent `test-spec-review` for this
+  R48/R22/R17 proof map, then resume M2 correction under the recorded
+  implementation authorization.
 - Current structural-hygiene rollout: `implement` M1 under [Spec and Test-Spec Structural Hygiene Execution Plan](../docs/plans/2026-05-19-spec-and-test-spec-structural-hygiene.md).
 - Current rollout: `implement` M1 under [Assets-First Progressive Disclosure Pilot Execution Plan](../docs/plans/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md).
 - Current rollout: `implement` M2 under [Test-Spec Contract Normalization Plan](../docs/plans/2026-05-20-test-spec-contract-normalization.md).
@@ -2160,7 +2166,8 @@ Boundary model scope: R56-R56q
 
 Active proof-planning surface for public skill portability and the
 boundary-first R56-R56q amendment, alongside the previously listed initiatives.
-The R13/R4/R5 revision is approved by `test-spec-review-r4` and is the active
-proof map for implementation.
+The R48/R22/R17 boundary-first revision is ready for independent
+`test-spec-review`; M2 implementation remains paused until that review
+approves the synchronized workflow and skill-contract proof maps.
 The active plan `Current Handoff Summary` for each initiative owns its current
 workflow action.

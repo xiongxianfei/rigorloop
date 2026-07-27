@@ -97,7 +97,7 @@ resource through generated, packed, and installed outputs.
 - Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/plan-review-r17.md
 - Review status: approved; stage=plan-review; round=r17
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: test-spec
+- Next stage: test-spec-review
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=3; open-findings=BFP-CR-M2-1,BFP-CR-M2-7,BFP-CR-M2-8
 
@@ -822,6 +822,13 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Revised both active test specifications to the approved
+  R48/R22/R17 contract. The proof map now binds exact runtime implementation
+  identities, the ten-field projection, pure-model-validated common handler
+  conformance, both capability branches, v3-only current evidence,
+  opaque-v1/unsupported-v2 history, success/failure separation, and
+  phase-aware rollback. The next gate is independent test-spec review.
 
 - 2026-07-27: Resolved plan-review R16 by making pure-model validation of the
   complete production-dispatch conformance result the common pre-branch gate
