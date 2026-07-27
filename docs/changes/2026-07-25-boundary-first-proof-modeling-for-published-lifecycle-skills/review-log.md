@@ -19,6 +19,17 @@ Material findings: BFP-PR1, BFP-PR2, BFP-PR3, BFP-PR4
 Open findings: None
 
 ### Review entry
+Review ID: code-review-m2-r9
+Stage: code-review
+Round: 9
+Reviewed artifact: immutable run run-8f095d95abb863dbcbd642fe61abd65e
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r9.md
+Resolution: review-resolution.md#code-review-m2-r9
+Material findings: BFP-CR-M2-15
+Open findings: BFP-CR-M2-15
+
+### Review entry
 Review ID: code-review-m2-r8
 Stage: code-review
 Round: 8

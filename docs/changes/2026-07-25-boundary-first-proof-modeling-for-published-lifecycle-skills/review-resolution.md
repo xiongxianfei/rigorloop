@@ -2028,6 +2028,28 @@ Validation target: spec-review, affected downstream reviews, then
 code-review-m2-r9
 Validation evidence: Pending.
 
+### code-review-m2-r9
+
+#### BFP-CR-M2-15 - Scenario expectations are parsed but never compared
+
+Finding ID: BFP-CR-M2-15
+Disposition: accepted
+Status: in-progress
+Owner: M2 implementation and code-review owners
+Owning stage: implementation correction and code review
+Decision owner: approved R28y comparison-only expectation contract
+Decision needed: none
+Required outcome: Compare trace-derived branch and corrected role with the
+scenario expectations after derivation and before success.
+Chosen action: Add one pure observed-expectation projection shared by
+generation and validation, direct mismatch/non-influence contrasts, clarify
+the scenario request, regenerate canonical evidence, and rereview.
+Rationale: The spec already defines both expectation values as comparison-only
+and forbids them from influencing invocation.
+Validation target: focused M2 tests, regenerated canonical evidence, and
+code-review-m2-r10
+Validation evidence: Pending.
+
 ### spec-review-r27
 
 #### BFP-SR-R27-1 - Separate transport retry from lifecycle correction

@@ -95,12 +95,12 @@ resource through generated, packed, and installed outputs.
 
 - Current milestone: M2. Hermetic harness, upstream skills, and fresh upstream behavior
 - Current milestone state: resolution-needed
-- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r8.md
-- Review status: blocked; stage=code-review; round=r8
+- Latest review evidence: docs/changes/2026-07-25-boundary-first-proof-modeling-for-published-lifecycle-skills/reviews/code-review-m2-r9.md
+- Review status: changes-requested; stage=code-review; round=r9
 - Remaining in-scope implementation milestones: M2, M3, M4
 - Next stage: spec
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=1; open-findings=BFP-CR-M2-14
+- Reason final closeout is or is not ready: lifecycle-gates-open, implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending, pr-handoff-pending — review-state=open; open-count=2; open-findings=BFP-CR-M2-14,BFP-CR-M2-15
 
 ## Milestones
 
@@ -873,6 +873,12 @@ resource through generated, packed, and installed outputs.
 - Separate verification authorization only after implementation closeout and final review evidence exist.
 
 ## Progress
+
+- 2026-07-27: Code-review M2 R9 opened `BFP-CR-M2-15`. The canonical
+  scenario expects zero correction, but the current run contains `spec#2` and
+  still passes because expectation fields are shape-validated but never
+  compared with the derived trace. This implementation finding remains queued
+  behind the focused `BFP-CR-M2-14` spec revision.
 
 - 2026-07-27: Code-review M2 R8 confirmed the exact recovery-decision
   correction and opened spec-blocking `BFP-CR-M2-14`. Fresh behavior evidence
