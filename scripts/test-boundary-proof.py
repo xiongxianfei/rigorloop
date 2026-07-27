@@ -2062,6 +2062,10 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
             "requirement IDs | Boundary IDs | Non-applicability rationale",
             stage_request["prompt"],
         )
+        self.assertIn(
+            "^x\\.[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$",
+            stage_request["prompt"],
+        )
         self.assertNotIn(
             "all twelve closed core dimension IDs exactly once, no extensions",
             stage_request["prompt"],

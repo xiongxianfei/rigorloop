@@ -82,6 +82,8 @@ invalid. Test-case IDs may instead use the repository's uppercase numeric
 grammar such as `T1`. In table cells with no
 IDs or no applicable value, write the literal ASCII `-` sentinel. Do not use
 an em dash, another Unicode dash, or a blank cell.
+Extension IDs have the narrower required grammar
+`^x\.[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)+$`.
 
 Apply these closed serialization rules:
 
