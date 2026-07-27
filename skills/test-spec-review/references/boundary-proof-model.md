@@ -27,8 +27,12 @@ Extensions: <none or extension records>
 
 ## Interactions
 
-<selected interaction records or an explicit none-selected rationale>
+| Interaction ID | Governing requirement IDs | Boundary IDs | Rationale |
+| --- | --- | --- | --- |
 ```
+
+When no interaction is selected, replace the interaction table with an
+explicit none-selected rationale.
 
 The `## Boundary model`, `Extensions:`, `## Examples`, and `## Interactions`
 surfaces form one contiguous boundary record in exactly that order. Do not

@@ -1322,21 +1322,21 @@ def _parse_feature_markdown(raw: str) -> dict[str, object]:
         for row in example_rows
     ]
     interactions: list[dict[str, object]] = []
-    if any(line == "| Interaction ID | Boundary IDs | Rationale | Governing requirement IDs |" for line in lines):
+    if any(line.startswith("| Interaction ID |") for line in lines):
         interaction_header, interaction_rows = _table_after(lines, "## Interactions")
         if interaction_header != [
             "Interaction ID",
+            "Governing requirement IDs",
             "Boundary IDs",
             "Rationale",
-            "Governing requirement IDs",
         ]:
             raise BoundaryRuntimeError("runtime-identity-unstable")
         interactions = [
             {
                 "interaction_id": row[0],
-                "boundary_ids": _csv(row[1]),
-                "rationale": row[2],
-                "governing_requirement_ids": _csv(row[3]),
+                "governing_requirement_ids": _csv(row[1]),
+                "boundary_ids": _csv(row[2]),
+                "rationale": row[3],
             }
             for row in interaction_rows
         ]

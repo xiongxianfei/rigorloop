@@ -2327,6 +2327,33 @@ class BoundaryProofEnvironmentTests(unittest.TestCase):
         proof = normalize_proof_map(_parse_test_spec_markdown(raw), feature)
         self.assertEqual(len(proof.proof_obligations), 4)
 
+    def test_feature_parser_preserves_canonical_interaction_table(self) -> None:
+        raw = (
+            FIXTURES / "simple-change" / "candidates" / "feature-spec.md"
+        ).read_text(encoding="utf-8")
+        raw = raw.replace(
+            "None selected. The closed mode and outcome partitions do not "
+            "create a\ncross-boundary hazard.",
+            "| Interaction ID | Governing requirement IDs | Boundary IDs | "
+            "Rationale |\n"
+            "| --- | --- | --- | --- |\n"
+            "| interaction.mode-outcome | R1, R4 | text.mode.unknown, "
+            "text.outcome.error | composed-path |",
+        )
+        parsed = normalize_feature_model(_parse_feature_markdown(raw))
+        self.assertEqual(
+            [row.interaction_id for row in parsed.interactions],
+            ["interaction.mode-outcome"],
+        )
+        malformed = raw.replace(
+            "| Interaction ID | Governing requirement IDs | Boundary IDs | "
+            "Rationale |",
+            "| Interaction ID | Boundary IDs | Rationale | Governing "
+            "requirement IDs |",
+        )
+        with self.assertRaises(BoundaryRuntimeError):
+            _parse_feature_markdown(malformed)
+
     def test_invariant_projection_accepts_stage_owned_alternative_modeling(
         self,
     ) -> None:
