@@ -6,6 +6,7 @@ Closeout status: closed
 
 Review closeout: test-spec-review-r4
 Review closeout: test-spec-review-r5
+Review closeout: code-review-m3-r6
 Review closeout: test-spec-review-r3
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
@@ -97,6 +98,14 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### code-review-m3-r6
+
+Review closeout: code-review-m3-r6
+
+No implementation finding was evaluated.
+R6 stopped because the declared full-commit diff identity was a scoped-diff
+identity. A corrected R7 invocation is required.
 
 ### test-spec-review-r5
 

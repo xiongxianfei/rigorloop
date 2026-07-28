@@ -9,6 +9,19 @@ capability proposal.
 
 ### Review entry
 
+Review ID: code-review-m3-r6
+Stage: code-review
+Round: 6
+Reviewed artifact: commit 95c71180
+Status: blocked
+Detailed record: reviews/code-review-m3-r6.md
+Resolution: review-resolution.md#code-review-m3-r6
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: test-spec-review-r5
 Stage: test-spec-review
 Round: 5

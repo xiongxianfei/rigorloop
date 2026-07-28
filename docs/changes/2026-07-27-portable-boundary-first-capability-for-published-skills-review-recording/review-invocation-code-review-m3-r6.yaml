@@ -4,8 +4,8 @@ review_stage: code-review
 review_target: commit:95c71180
 base_revision: 15b5f69f
 head_revision: 95c71180
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: blocked
+review_gate_outcome: blocked
 independence_level: L1
 author_context_id: run-pbf-20260728-lightweight-m3
 reviewer_context_id: isolated-m3-r6-primary
