@@ -105,13 +105,13 @@ an explicit blocking gap before implementation begins.
 
 - Current milestone: M4. Package parity and prospective activation
 - Current milestone state: resolution-needed
-- Latest review evidence: plan-review R5 recorded PBF-PLR5 because the handoff review cursor remained partially stale
+- Latest review evidence: plan-review R6 approved the adapter-applicable M4 plan and resolved PBF-PLR4 and PBF-PLR5
 - Last reviewed milestone: M3
-- Review status: review-requested; stage=plan-review; round=r6
+- Review status: review-requested; stage=test-spec-review; round=r8
 - Remaining in-scope implementation milestones: M4
-- Next stage: plan-review R6 for complete Current Handoff synchronization
+- Next stage: test-spec-review R8 for adapter-applicable package coverage
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=open; open-count=3; open-findings=PBF-PLR4,PBF-PLR5,PBF-TSR7-1
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=open; open-count=1; open-findings=PBF-TSR7-1
 
 ## Milestones
 
