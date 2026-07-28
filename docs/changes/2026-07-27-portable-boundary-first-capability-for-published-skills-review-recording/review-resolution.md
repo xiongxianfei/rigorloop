@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
@@ -21,6 +21,7 @@ Review closeout: spec-review-r4
 Review closeout: spec-review-r5
 Review closeout: architecture-review-r1
 Review closeout: architecture-review-r2
+Review closeout: architecture-review-r3
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: code-review-m1-r1
@@ -30,13 +31,14 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 42
-- Unresolved findings: 0
-- Final result: PBF-SR9 is resolved by deriving grandfathered membership only from the activating reviewed change's parent revision.
+- Unresolved findings: 1
+- Final result: Architecture-review R3 accepts the simplified design and requests removal of three stale risk controls.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-AR3 | accepted | in-progress | Align three stale risk controls with the approved release-manifest contract. |
 | PBF-SR9 | accepted | resolved | Derive grandfathered membership from the activating change's parent revision. |
 | PBF-SR4 | accepted | resolved | In-flight opt-in is active-only. |
 | PBF-SR5 | accepted | resolved | Active state requires immutable activating and rollback release tags. |
@@ -81,6 +83,23 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### architecture-review-r3
+
+#### PBF-AR3 - Risk controls retain superseded activation assumptions
+
+Finding ID: PBF-AR3
+Disposition: accepted
+Status: in-progress
+Owner: architecture author
+Owning stage: architecture revision
+Chosen action: Replace activation-time hashes, pending opt-in, and mechanical
+projection language with the immutable parent revision, active-only opt-in, and
+reviewed two-state manifest.
+Rationale: Current architecture must not preserve behavior removed from the
+approved contract.
+Validation target: Revised risk table and architecture-review R4.
+Validation evidence: Pending.
 
 ### spec-review-r5
 

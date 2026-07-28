@@ -9,6 +9,19 @@ capability proposal.
 
 ### Review entry
 
+Review ID: architecture-review-r3
+Stage: architecture-review
+Round: 3
+Reviewed artifact: docs/architecture/system/architecture.md
+Status: changes-requested
+Detailed record: reviews/architecture-review-r3.md
+Resolution: review-resolution.md#architecture-review-r3
+Material findings: PBF-AR3
+Open findings: PBF-AR3
+Recording status: recorded
+
+### Review entry
+
 Review ID: spec-review-r5
 Stage: spec-review
 Round: 5

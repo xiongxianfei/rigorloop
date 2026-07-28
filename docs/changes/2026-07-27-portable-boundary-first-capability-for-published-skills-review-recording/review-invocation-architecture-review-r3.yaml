@@ -4,8 +4,8 @@ review_stage: architecture-review
 review_target: docs/architecture/system/architecture.md
 base_revision: 011fc64d
 head_revision: 545d17af
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
 independence_level: L1
 author_context_id: run-pbf-20260728-lightweight-architecture
 reviewer_context_id: isolated-architecture-r3
