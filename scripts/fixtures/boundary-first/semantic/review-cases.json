@@ -1,0 +1,56 @@
+[
+  {
+    "case_id": "semantic.missing-owner",
+    "owning_skill": "workflow",
+    "required_guidance": "Stop routing and name the owning upstream stage",
+    "forbidden_claim": "Structural validation proves semantic completeness."
+  },
+  {
+    "case_id": "semantic.example-only-behavior",
+    "owning_skill": "spec",
+    "required_guidance": "an example would be the only source of behavior",
+    "forbidden_claim": "Structural validation proves semantic completeness."
+  },
+  {
+    "case_id": "semantic.undecidable-applicability",
+    "owning_skill": "spec-review",
+    "required_guidance": "a dimension is unjustifiably inapplicable",
+    "forbidden_claim": "Structural validation proves semantic completeness."
+  },
+  {
+    "case_id": "semantic.coupled-primary-boundaries",
+    "owning_skill": "plan-review",
+    "required_guidance": "a primary trust boundary is coupled to another closeout unit",
+    "forbidden_claim": "Structural validation proves semantic completeness."
+  },
+  {
+    "case_id": "semantic.stale-contract-id",
+    "owning_skill": "test-spec",
+    "required_guidance": "when an ID is missing, stale, unknown, renamed",
+    "forbidden_claim": "Structural validation proves semantic completeness."
+  },
+  {
+    "case_id": "semantic.helper-only-proof",
+    "owning_skill": "test-spec-review",
+    "required_guidance": "helper-only proof substitutes for a public or sibling path",
+    "forbidden_claim": "Structural validation proves semantic completeness."
+  },
+  {
+    "case_id": "semantic.missing-proof-before-mutation",
+    "owning_skill": "implement",
+    "required_guidance": "Stop implementation before mutation",
+    "forbidden_claim": "Structural validation proves semantic completeness."
+  },
+  {
+    "case_id": "semantic.escaped-boundary-path",
+    "owning_skill": "code-review",
+    "required_guidance": "implementation escapes the approved boundary class",
+    "forbidden_claim": "Structural validation proves semantic completeness."
+  },
+  {
+    "case_id": "semantic.stale-verification-evidence",
+    "owning_skill": "verify",
+    "required_guidance": "evidence is missing or stale",
+    "forbidden_claim": "Structural validation proves semantic completeness."
+  }
+]

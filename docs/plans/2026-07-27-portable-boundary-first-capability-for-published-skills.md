@@ -103,12 +103,12 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M2. Governed lifecycle skill behavior
-- Current milestone state: planned
-- Latest review evidence: code-review-m1-r4 closes M1 with PBF-M1-CR1 through PBF-M1-CR4 resolved
+- Current milestone state: review-requested
+- Latest review evidence: M2 implementation evidence records passing stage-behavior, skill validation, and generated-output checks
 - Last reviewed milestone: M1
-- Review status: approved; stage=code-review; round=r4
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: implement M2
+- Next stage: code-review M2
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -150,7 +150,7 @@ an explicit blocking gap before implementation begins.
 
 ### M2. Governed lifecycle skill behavior
 
-- Milestone state: planned
+- Milestone state: review-requested
    - primary trust boundary: stage-local authoring, review, stop, and handoff
      behavior
    - deliverables:
@@ -172,8 +172,8 @@ an explicit blocking gap before implementation begins.
    - recovery: revert the ten resource-map and stage-local behavior edits;
      M1 projections may remain dormant and activation remains `pending`.
    - implementation handoff:
-     - [ ] targeted validation passed
-     - [ ] hand off to code-review for M2
+     - [x] targeted validation passed
+     - [x] hand off to code-review for M2
    - review closeout:
      - [ ] code-review completed
      - [ ] material findings resolved or explicitly dispositioned
@@ -288,6 +288,11 @@ A material review finding reopens its owning milestone and blocks the next one.
 - 2026-07-28: implemented M1 with one authored method, a closed ten-consumer
   projection inventory, shared digest serialization, raw-byte write/check
   modes, and seven focused tests; handed M1 to code-review.
+- 2026-07-28: implemented M2 with one stage-specific `READ` mapping for each
+  governed skill, stage-owned semantic responsibilities and stop behavior,
+  semantic-gap routing fixtures, and a narrow validator exception for the
+  approved shared reference; all targeted checks passed and M2 was handed to
+  code-review.
 
 ## Decision log
 
@@ -340,8 +345,11 @@ A material review finding reopens its owning milestone and blocks the next one.
 - M1 aligned-surface audit: `SKILL.md` mappings are deferred to M2;
   structural/activation validation is deferred to M3; package/install parity
   is deferred to M4. These surfaces are unaffected by M1 with rationale.
-- M2 through M4 implementation validation commands remain planned and have
-  not run.
+- M2: `python scripts/validate-skills.py`,
+  `python scripts/test-skill-validator.py`, and
+  `python scripts/build-skills.py --check` passed.
+- M3 and M4 implementation validation commands remain planned and have not
+  run.
 
 ## Outcome and retrospective
 

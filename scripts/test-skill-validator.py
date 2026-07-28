@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 import shutil
 import subprocess
@@ -7602,6 +7603,116 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
             for term in required_terms:
                 with self.subTest(skill=skill_path, term=term):
                     self.assertIn(term, text)
+
+
+class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
+    def test_governed_skills_map_one_reference_with_owned_behavior(self) -> None:
+        expected = {
+            "workflow": (
+                "routing a change that declares `boundary_contract: boundary-first-v1` or depends on an approved boundary or proof record.",
+                "Route the method, locate governing artifacts, and stop on missing applicable ownership.",
+                "Stop routing and name the owning upstream stage",
+            ),
+            "spec": (
+                "authoring a new or substantively revised behavior contract that must adopt or has opted into `boundary-first-v1`.",
+                "Author the normative applicability, boundary, interaction, and example-ownership record.",
+                "Stop spec authoring and route the gap upstream",
+            ),
+            "spec-review": (
+                "reviewing an adopting boundary record or deciding whether a grandfathered spec revision is substantive.",
+                "Judge applicability, boundary completeness, interactions, invariants, outcomes, and example ownership.",
+                "Stop review with a material finding",
+            ),
+            "plan": (
+                "planning implementation for an approved feature spec that declares `boundary_contract: boundary-first-v1`.",
+                "Map applicable boundaries to independently closeable milestones, dependencies, affected surfaces, rollback units, and proof timing.",
+                "Stop planning when an applicable boundary lacks",
+            ),
+            "plan-review": (
+                "reviewing a plan governed by an approved `boundary-first-v1` feature spec.",
+                "Reject coupled primary boundaries, omitted dependencies, unsafe rollback, and proof sequencing that cannot close independently.",
+                "Stop review and request plan revision",
+            ),
+            "test-spec": (
+                "authoring the proof map for a feature spec that declares `boundary_contract: boundary-first-v1`.",
+                "Map every applicable boundary and selected interaction to proof without inventing contract IDs.",
+                "Stop test-spec authoring and return to the feature spec",
+            ),
+            "test-spec-review": (
+                "reviewing a proof map governed by a `boundary-first-v1` feature spec.",
+                "Judge proof adequacy, negative coverage, fixtures, command ownership, and manual-proof boundaries.",
+                "Stop review with a material finding",
+            ),
+            "implement": (
+                "implementing a change governed by an approved `boundary-first-v1` boundary record and proof map.",
+                "Stop on missing boundary or proof ownership and implement against the approved model and proof map.",
+                "Stop implementation before mutation",
+            ),
+            "code-review": (
+                "reviewing implementation governed by an approved `boundary-first-v1` boundary record and proof map.",
+                "Inspect composed public, helper, sibling, failure, stale, recovery, and escaped-boundary paths.",
+                "Stop clean handoff and record a finding",
+            ),
+            "verify": (
+                "verifying a change governed by an approved `boundary-first-v1` contract and proof map.",
+                "Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure.",
+                "Stop verification before readiness claims",
+            ),
+        }
+        reference_bytes = (
+            ROOT / "specs" / "references" / "boundary-first-method-v1.md"
+        ).read_bytes()
+
+        for skill_name, (load_condition, responsibility, stop_phrase) in expected.items():
+            skill_root = ROOT / "skills" / skill_name
+            body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
+            entry = (
+                "- READ `references/boundary-first-method-v1.md` when "
+                + load_condition
+            )
+            with self.subTest(skill=skill_name):
+                self.assertIn(entry, body)
+                self.assertIn("## Boundary-first method", body)
+                self.assertIn(responsibility, body)
+                self.assertIn(stop_phrase, body)
+                self.assertEqual(
+                    (
+                        skill_root
+                        / "references"
+                        / "boundary-first-method-v1.md"
+                    ).read_bytes(),
+                    reference_bytes,
+                )
+
+        for excluded in ("proposal", "proposal-review"):
+            body = (
+                ROOT / "skills" / excluded / "SKILL.md"
+            ).read_text(encoding="utf-8")
+            with self.subTest(excluded=excluded):
+                self.assertNotIn(
+                    "references/boundary-first-method-v1.md",
+                    body,
+                )
+
+    def test_semantic_gap_fixtures_route_to_the_owning_skill(self) -> None:
+        fixture_path = (
+            ROOT
+            / "scripts"
+            / "fixtures"
+            / "boundary-first"
+            / "semantic"
+            / "review-cases.json"
+        )
+        cases = json.loads(fixture_path.read_text(encoding="utf-8"))
+        self.assertGreaterEqual(len(cases), 7)
+        for case in cases:
+            skill_name = case["owning_skill"]
+            body = (
+                ROOT / "skills" / skill_name / "SKILL.md"
+            ).read_text(encoding="utf-8")
+            with self.subTest(case=case["case_id"], skill=skill_name):
+                self.assertIn(case["required_guidance"], body)
+                self.assertNotIn(case["forbidden_claim"], body)
 
 
 if __name__ == "__main__":

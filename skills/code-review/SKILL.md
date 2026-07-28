@@ -132,6 +132,7 @@ Do not read all validation history by default when reviewing code behavior. Esca
 
 ## Resource map
 
+- READ `references/boundary-first-method-v1.md` when reviewing implementation governed by an approved `boundary-first-v1` boundary record and proof map.
 - COPY `assets/material-finding.md` once per material finding.
   Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path, and needs-decision rationale when needed.
   Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
@@ -139,6 +140,12 @@ Do not read all validation history by default when reviewing code behavior. Esca
 - COPY `assets/review-result-skeleton.md` when producing the review result block.
   Fill: status, artifacts changed, blockers, next stage, review status, material findings, recording fields, review paths, milestone fields, required review-resolution, finding IDs, and verify-readiness field.
   Do not emit unfilled placeholders.
+
+## Boundary-first method
+
+Inspect composed public, helper, sibling, failure, stale, recovery, and escaped-boundary paths.
+
+Compare the actual diff and tests with exact approved boundary and interaction IDs. Stop clean handoff and record a finding when helper proof substitutes for a public or sibling path, a failure or recovery path is unproved, implementation escapes the approved boundary class, or cited evidence is stale or broader than its claim.
 
 ## Outputs
 
