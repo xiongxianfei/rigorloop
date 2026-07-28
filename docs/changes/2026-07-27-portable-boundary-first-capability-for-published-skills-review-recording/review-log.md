@@ -17,7 +17,7 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r3.md
 Resolution: review-resolution.md#spec-review-r3
 Material findings: PBF-SR4, PBF-SR5, PBF-SR6, PBF-SR7, PBF-SR8
-Open findings: PBF-SR4, PBF-SR5, PBF-SR6, PBF-SR7, PBF-SR8
+Open findings: None
 Recording status: recorded
 
 ### Review entry
