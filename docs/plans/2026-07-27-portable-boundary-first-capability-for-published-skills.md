@@ -104,14 +104,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M4. Package parity and prospective activation
-- Current milestone state: resolution-needed
-- Latest review evidence: test-spec-review R8 confirmed adapter-applicable coverage and recorded PBF-TSR8-1 for stale governing-plan identities
+- Current milestone state: implementing
+- Latest review evidence: test-spec-review R9 approved the adapter-applicable proof map and exact R6 plan identities
 - Last reviewed milestone: M3
-- Review status: review-requested; stage=test-spec-review; round=r9
+- Review status: approved; stage=test-spec-review; round=r9
 - Remaining in-scope implementation milestones: M4
-- Next stage: test-spec-review R9 for exact plan identity closure
+- Next stage: implement M4 without a standalone packaging script
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=open; open-count=2; open-findings=PBF-TSR7-1,PBF-TSR8-1
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
