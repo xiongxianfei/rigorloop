@@ -36,7 +36,7 @@ reviewable slices.
 - Skill contract amendment: `specs/skill-contract.md`
 - Architecture: `docs/architecture/system/architecture.md`
 - ADR:
-  `docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md`
+  `docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md`
 - Change record:
   `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/change.yaml`
 - Test spec: `specs/boundary-first-proof-model.test.md`
@@ -105,13 +105,13 @@ an explicit blocking gap before implementation begins.
 
 - Current milestone: M3. Structural and activation validation
 - Current milestone state: planned
-- Latest review evidence: plan-review R2 records PBF-PLR1 through PBF-PLR3 for current ADR ownership, rollback proof isolation, and local recovery
+- Latest review evidence: PBF-PLR1 through PBF-PLR3 are resolved in the revised M3/M4 plan and await plan-review R3
 - Last reviewed milestone: M2
-- Review status: changes-requested; stage=plan-review; round=r2
+- Review status: review-requested; stage=plan-review; round=r3
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: plan revision for PBF-PLR1 through PBF-PLR3
+- Next stage: plan-review R3 for the simplified M3 and M4 scope
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=3; open-findings=PBF-PLR1,PBF-PLR2,PBF-PLR3
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -199,9 +199,9 @@ an explicit blocking gap before implementation begins.
        diagnostic, and selector behavior that remains governed;
      - remove rollback receipt, writer, historical-hash, and repository
        rollback-state behavior and tests;
-     - validate rollback package readiness from the selected release's
-       existing adapter artifact metadata and current adapter manifest without
-       external mutation;
+     - validate rollback manifest and adapter-matrix schema behavior with
+       isolated fixtures, including missing, additional, duplicated, failing,
+       and mixed-version entries;
      - route changed grandfathered specs to `spec-review` without inferring
        whether a revision is substantive;
      - add positive, negative, unknown-value, stale-evidence, cross-feature ID,
@@ -251,11 +251,12 @@ an explicit blocking gap before implementation begins.
      - `python scripts/build-skills.py --check`
      - `python scripts/project-boundary-first-reference.py --check`
      - `python scripts/validate-boundary-first.py --check`
+     - `python scripts/test-boundary-first-validation.py -k active_rollback_release_matches_current_adapter_metadata`
    - broad validation:
      - `bash scripts/ci.sh --mode broad-smoke`
-   - recovery: retain the reviewed pending manifest and reinstall the previous
-     immutable package only through the operator-owned release process; no
-     repository rollback state is written.
+   - recovery: retain or restore the reviewed pending manifest and remove only
+     incomplete package-readiness evidence. External package installation or
+     publication remains outside this plan.
    - implementation handoff:
      - [ ] targeted and broad validation passed
      - [ ] installed cold-read evidence recorded
@@ -266,7 +267,7 @@ an explicit blocking gap before implementation begins.
      - [ ] all in-scope implementation milestones closed
      - [ ] hand off to explain-change
    - milestone commit message:
-     `M4: activate portable boundary-first skill capability`
+     `M4: prove portable boundary-first release readiness`
 
 ## Sequencing and proof timing
 
@@ -276,6 +277,7 @@ an explicit blocking gap before implementation begins.
 | Stage-local semantic fixture behavior | M2 | code-review M2 |
 | Boundary/proof shape and unknown-value failures | M3 | code-review M3 |
 | Grandfathered inventory and activation-state coherence | M3 | code-review M4 |
+| Active rollback-release selection against current adapter metadata | M4 | code-review M4 |
 | Generated, packed, and installed parity | M4 | verify |
 | Contract-to-proof-to-implementation coherence | after explain-change | verify |
 
