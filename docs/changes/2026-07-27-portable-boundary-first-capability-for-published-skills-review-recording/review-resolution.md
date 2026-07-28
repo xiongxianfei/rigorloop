@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
@@ -28,15 +28,15 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 41
-- Unresolved findings: 1
-- Final result: Spec-review R4 confirms the minimal capability boundary and requests one immutable pre-activation baseline for grandfathering.
+- Findings resolved: 42
+- Unresolved findings: 0
+- Final result: PBF-SR9 is resolved by deriving grandfathered membership only from the activating reviewed change's parent revision.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-SR9 | accepted | in-progress | Derive grandfathered membership from the activating change's parent revision. |
+| PBF-SR9 | accepted | resolved | Derive grandfathered membership from the activating change's parent revision. |
 | PBF-SR4 | accepted | resolved | In-flight opt-in is active-only. |
 | PBF-SR5 | accepted | resolved | Active state requires immutable activating and rollback release tags. |
 | PBF-SR6 | accepted | resolved | Grandfathered membership has exact eligibility, exclusions, paths, capture time, and sorting. |
@@ -87,7 +87,7 @@ Review closeout: code-review-m1-r4
 
 Finding ID: PBF-SR9
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: spec author
 Owning stage: spec revision
 Chosen action: Define the activating reviewed change's parent revision as the
@@ -96,7 +96,8 @@ change.
 Rationale: Prospective adoption must not allow a new spec to classify itself as
 historical.
 Validation target: Revised PBF-R005c and spec-review R5.
-Validation evidence: Pending.
+Validation evidence: PBF-R005a records the full parent commit identity and
+PBF-R005c excludes every path first introduced after that baseline.
 
 ### spec-review-r3
 

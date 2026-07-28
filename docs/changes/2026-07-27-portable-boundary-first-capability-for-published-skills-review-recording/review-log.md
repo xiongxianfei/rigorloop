@@ -17,7 +17,7 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r4.md
 Resolution: review-resolution.md#spec-review-r4
 Material findings: PBF-SR9
-Open findings: PBF-SR9
+Open findings: None
 Recording status: recorded
 
 ### Review entry
