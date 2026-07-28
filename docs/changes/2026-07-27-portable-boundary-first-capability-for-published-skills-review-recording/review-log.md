@@ -9,6 +9,19 @@ capability proposal.
 
 ### Review entry
 
+Review ID: code-review-m3-r3
+Stage: code-review
+Round: 3
+Reviewed artifact: commit 834c780b
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r3.md
+Resolution: review-resolution.md#code-review-m3-r3
+Material findings: PBF-M3-CR14, PBF-M3-CR15
+Open findings: PBF-M3-CR14, PBF-M3-CR15
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m3-r2
 Stage: code-review
 Round: 2

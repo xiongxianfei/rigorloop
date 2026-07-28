@@ -103,14 +103,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M3. Structural and activation validation
-- Current milestone state: review-requested
-- Latest review evidence: PBF-M3-CR9 through PBF-M3-CR13 resolved with 44 focused tests; code-review M3 R3 requested
+- Current milestone state: resolution-needed
+- Latest review evidence: code-review-m3-r3 confirms CR9-CR13 resolved and records PBF-M3-CR14 and PBF-M3-CR15
 - Last reviewed milestone: M2
-- Review status: review-requested; stage=code-review; round=r3
+- Review status: changes-requested; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review M3 R3
+- Next stage: review-resolution M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=2; open-findings=PBF-M3-CR14,PBF-M3-CR15
 
 ## Milestones
 
@@ -183,7 +183,7 @@ an explicit blocking gap before implementation begins.
 
 ### M3. Structural and activation validation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
    - primary trust boundary: deterministic shape/reference enforcement without
      semantic overclaiming
    - deliverables:
@@ -319,6 +319,9 @@ A material review finding reopens its owning milestone and blocks the next one.
   regressions covering adoption and rollback history, explicit and derived
   containment, aligned separators, deletion handling, and historical
   inventory symlinks; M3 returned to independent R3.
+- 2026-07-28: code-review M3 R3 confirmed CR9-CR13 resolved and recorded
+  PBF-M3-CR14 and PBF-M3-CR15 for new adoption after rollback and external
+  symlinks on fixed authoritative inputs. M3 entered correction cycle 3.
 
 ## Decision log
 
