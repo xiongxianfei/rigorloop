@@ -22,13 +22,13 @@ tests:
 validation:
   -
     command: python scripts/test-skill-validator.py -k BoundaryFirstLifecycleSkillTests
-    result: pass_2_tests_M2
+    result: pass_4_tests_M2_after_PBF-M2-CR1
   -
     command: python scripts/validate-skills.py
     result: pass_24_skill_files_M2
   -
     command: python scripts/test-skill-validator.py
-    result: pass_261_tests_M2
+    result: pass_263_tests_M2_after_PBF-M2-CR1
   -
     command: python scripts/build-skills.py --check
     result: pass_generated_skills_M2
@@ -123,11 +123,11 @@ changed_files:
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m2-r1.md
 review:
   status: changes-requested
-  unresolved_items: 1
+  unresolved_items: 0
   material_findings: 19
-  closed_findings: 18
-  open_findings: 1
-  unresolved_items: 1
+  closed_findings: 19
+  open_findings: 0
+  unresolved_items: 0
   proposal_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r3.md
   spec_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r2.md
   architecture_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/architecture-review-r2.md
