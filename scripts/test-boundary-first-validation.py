@@ -514,6 +514,25 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 )
                 self.assertEqual(validate_activation(root)[0].code, expected)
 
+    def test_unknown_activation_field_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "specs").mkdir()
+            data = json.loads(
+                (ROOT / "specs" / "boundary-first-activation.yaml").read_text(
+                    encoding="utf-8"
+                )
+            )
+            data["future_inventory"] = []
+            (root / "specs" / "boundary-first-activation.yaml").write_text(
+                json.dumps(data),
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                validate_activation(root)[0].code,
+                "BFR-ACTIVATION-FIELDS",
+            )
+
     def test_activation_state_mismatch_fails_closed(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -821,6 +840,16 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             self.assertEqual(validate_activation(root), ())
 
             data["state"] = "rolled-back"
+            rollback_records = {
+                "specs/historical.md": raw_sha256(historical.read_bytes()),
+            }
+            data["rollback_preserved_specs"] = [
+                {"path": path, "sha256": rollback_records[path]}
+                for path in sorted(rollback_records)
+            ]
+            data["rollback_preserved_inventory_sha256"] = inventory_digest(
+                rollback_records
+            )
             activation_path.write_text(json.dumps(data), encoding="utf-8")
             proof_model.write_text(
                 proof_model.read_text(encoding="utf-8").replace(
@@ -829,10 +858,82 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
+            self.assertEqual(validate_activation(root), ())
             self.assertEqual(
                 validate_changed_spec(root, "specs/historical.md"),
                 (),
             )
+
+    def test_rollback_rejects_new_markers_outside_preserved_inventory(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "specs").mkdir()
+            preserved = root / "specs" / "preserved.md"
+            preserved_proof = root / "specs" / "preserved.test.md"
+            preserved.write_text(valid_feature(), encoding="utf-8")
+            preserved_proof.write_text(valid_proof(), encoding="utf-8")
+            records = {
+                "specs/preserved.md": raw_sha256(preserved.read_bytes()),
+            }
+            data = json.loads(
+                (ROOT / "specs" / "boundary-first-activation.yaml").read_text(
+                    encoding="utf-8"
+                )
+            )
+            data["state"] = "rolled-back"
+            data["activated_at"] = "2026-07-28T00:00:00Z"
+            data["rollback_preserved_specs"] = [
+                {"path": path, "sha256": records[path]}
+                for path in sorted(records)
+            ]
+            data["rollback_preserved_inventory_sha256"] = inventory_digest(records)
+            (root / "specs" / "boundary-first-activation.yaml").write_text(
+                json.dumps(data), encoding="utf-8"
+            )
+            self.assertEqual(
+                validate_changed_spec(root, "specs/preserved.md"),
+                (),
+            )
+            (root / "specs" / "new-after-rollback.md").write_text(
+                valid_feature(), encoding="utf-8"
+            )
+            (root / "specs" / "new-after-rollback.test.md").write_text(
+                valid_proof(), encoding="utf-8"
+            )
+            self.assertEqual(
+                validate_changed_spec(
+                    root,
+                    "specs/new-after-rollback.md",
+                )[0].code,
+                "BFR-MARKER-INACTIVE",
+            )
+
+    def test_fixed_authoritative_inputs_reject_external_symlinks(self) -> None:
+        for relative in (
+            Path("specs/boundary-first-activation.yaml"),
+            Path("specs/boundary-first-proof-model.md"),
+        ):
+            with self.subTest(relative=relative), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                copy_activation_surfaces(root)
+                outside = root.parent / f"{root.name}-{relative.name}"
+                outside.write_bytes((root / relative).read_bytes())
+                self.addCleanup(outside.unlink, missing_ok=True)
+                (root / relative).unlink()
+                (root / relative).symlink_to(outside)
+                self.assertEqual(
+                    validate_activation(root)[0].code,
+                    "BFR-AUTHORITATIVE-PATH-UNSAFE",
+                )
+                if relative == Path("specs/boundary-first-activation.yaml"):
+                    (root / "specs" / "feature.md").write_text(
+                        valid_feature(),
+                        encoding="utf-8",
+                    )
+                    self.assertEqual(
+                        validate_changed_spec(root, "specs/feature.md")[0].code,
+                        "BFR-AUTHORITATIVE-PATH-UNSAFE",
+                    )
 
     def test_historical_inventory_rejects_leaf_and_specs_root_symlinks(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

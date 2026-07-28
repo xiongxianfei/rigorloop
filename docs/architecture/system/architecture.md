@@ -1166,7 +1166,8 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
   `references/` path.
 - boundary-first activation record: repository-local YAML binding contract
   state, method identity, projection identity, governed skills, activation
-  time, and the grandfathered feature-spec inventory.
+  time, grandfathered feature-spec inventory, and the closed path-and-byte
+  inventory of accepted marked artifacts preserved by rollback.
 - transition release: a stable release that preserves repository-tree adapter installation from `dist/adapters/` while `.codex/skills/` remains ignored local runtime state and adapter archives remain a follow-on migration by default.
 - compatibility-window release: a stable release that preserves repository-tree adapter packages while also providing release archives and install guidance, giving downstream users one release to transition install models.
 - adapter artifact metadata: tracked YAML under `docs/reports/adapter-artifacts/releases/<version>.yaml` that records source commit, generator command, archive paths, checksums, and validation evidence for generated adapter release artifacts.
