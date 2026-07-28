@@ -4,8 +4,8 @@ review_stage: code-review
 review_target: commit:95c71180
 base_revision: 15b5f69f
 head_revision: 95c71180
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: changes-requested
+review_gate_outcome: revise
 independence_level: L1
 author_context_id: run-pbf-20260728-lightweight-m3-r7
 reviewer_context_id: isolated-m3-r7-primary
@@ -53,9 +53,9 @@ phase_receipts:
   - evidence-menu-released
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: isolated-m3-r7-second
-  result: pending
+  result: changes-requested
 risk_map:
   affected_behavior: two-state release manifest, parent-revision grandfathering, marker routing, and removal of receipt and historical-hash machinery
   highest_impact_failure_modes: child paths self-grandfather, eligible parent paths are omitted, older rollback releases pass, pending markers pass, or removed machinery remains authoritative

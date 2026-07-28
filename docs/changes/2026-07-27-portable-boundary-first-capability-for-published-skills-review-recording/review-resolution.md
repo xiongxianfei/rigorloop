@@ -2,8 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
+Review closeout: code-review-m3-r7
 Review closeout: test-spec-review-r4
 Review closeout: test-spec-review-r5
 Review closeout: code-review-m3-r6
@@ -38,13 +39,18 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 51
-- Unresolved findings: 0
-- Final result: PBF-TSR6 and PBF-TSR7 are resolved by exact release ordering, lifecycle inventory, and complete rollback-input non-mutation proof.
+- Unresolved findings: 5
+- Final result: PBF-M3-CR18 through PBF-M3-CR22 require one bounded M3 correction before M4.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-M3-CR18 | accepted | in-progress | Bind the baseline to the exact parent of the pending-to-active transition commit. |
+| PBF-M3-CR19 | accepted | in-progress | Validate immutable tag existence and immediate predecessor ordering. |
+| PBF-M3-CR20 | accepted | in-progress | Contain the adapter manifest across every path component. |
+| PBF-M3-CR21 | accepted | in-progress | Enumerate baseline paths as raw NUL-delimited UTF-8. |
+| PBF-M3-CR22 | accepted | in-progress | Reject non-regular baseline tree modes. |
 | PBF-TSR6 | accepted | resolved | Prove immediate-predecessor release selection and all three eligible parent lifecycle states. |
 | PBF-TSR7 | accepted | resolved | Include adapter and selected release metadata in success and failure non-mutation snapshots. |
 | PBF-TSR3 | accepted | resolved | Make parent-revision proof executable and assert the complete two-state manifest contract. |
@@ -98,6 +104,70 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### code-review-m3-r7
+
+#### PBF-M3-CR18 - Baseline is not bound to the activation transition parent
+
+Finding ID: PBF-M3-CR18
+Disposition: accepted
+Status: in-progress
+Owner: M3 implementation
+Owning stage: review-resolution
+Chosen action: Derive the pending-to-active transition commit from Git history
+and require its exact full parent identity.
+Rationale: The manifest cannot safely trust a caller-selected readable commit.
+Validation target: Code-review M3 R8.
+Validation evidence: Pending.
+
+#### PBF-M3-CR19 - Release ordering authority is incomplete
+
+Finding ID: PBF-M3-CR19
+Disposition: accepted
+Status: in-progress
+Owner: M3 implementation
+Owning stage: review-resolution
+Chosen action: Validate exact immutable tags and semantic-version adjacency.
+Rationale: The support-manifest version is not published-release ordering.
+Validation target: Code-review M3 R8.
+Validation evidence: Pending.
+
+#### PBF-M3-CR20 - Adapter manifest authority can escape
+
+Finding ID: PBF-M3-CR20
+Disposition: accepted
+Status: in-progress
+Owner: M3 implementation
+Owning stage: review-resolution
+Chosen action: Reject leaf and ancestor symlinks and outside resolution before
+reading the adapter manifest.
+Rationale: Fixed authority must remain repository-contained.
+Validation target: Code-review M3 R8.
+Validation evidence: Pending.
+
+#### PBF-M3-CR21 - Quoted Git paths omit Unicode feature specs
+
+Finding ID: PBF-M3-CR21
+Disposition: accepted
+Status: in-progress
+Owner: M3 implementation
+Owning stage: review-resolution
+Chosen action: Use raw NUL-delimited tree output and raw-UTF-8 ordering.
+Rationale: Every eligible parent path must be inventoried.
+Validation target: Code-review M3 R8.
+Validation evidence: Pending.
+
+#### PBF-M3-CR22 - Baseline symlink blobs are eligible
+
+Finding ID: PBF-M3-CR22
+Disposition: accepted
+Status: in-progress
+Owner: M3 implementation
+Owning stage: review-resolution
+Chosen action: Parse tree modes and accept only regular blobs.
+Rationale: Historical authority must not follow or interpret symlinks.
+Validation target: Code-review M3 R8.
+Validation evidence: Pending.
 
 ### code-review-m3-r6
 
