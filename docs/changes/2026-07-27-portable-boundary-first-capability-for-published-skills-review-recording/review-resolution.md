@@ -26,15 +26,15 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 35
-- Unresolved findings: 1
-- Final result: R5 confirms PBF-M3-CR14 and PBF-M3-CR16 safely deferred to M4, but PBF-M3-CR17 blocks M3 until a rollback-writer command owner is selected and authorized.
+- Findings resolved: 36
+- Unresolved findings: 0
+- Final result: PBF-M3-CR17 is resolved by removing rollback mutation machinery from the draft contract; independent spec-review must confirm the restored published-skill boundary before downstream alignment.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-M3-CR17 | needs-decision | needs-decision | Choose an executable M4 rollback receipt writer and validation contract. |
+| PBF-M3-CR17 | accepted | resolved | Remove rollback mutation machinery; use previous-release package rollback. |
 | PBF-M3-CR16 | deferred | resolved | M3 fails closed; M4 must validate paired feature/proof identities. |
 | PBF-M3-CR14 | deferred | resolved | M3 fails closed; M4 owns pre-transition receipt provenance. |
 | PBF-M3-CR15 | accepted | resolved | Fixed activation and proof-model inputs are contained before reads. |
@@ -78,16 +78,16 @@ Review closeout: code-review-m1-r4
 #### PBF-M3-CR17 - M4 receipt has no executable writer contract
 
 Finding ID: PBF-M3-CR17
-Disposition: needs-decision
-Status: needs-decision
-Owner: user and test-spec/plan owner
+Disposition: accepted
+Status: resolved
+Owner: spec, architecture, test-spec, and plan owners
 Decision owner: user
-Decision needed: Choose a dedicated rollback writer or extend CMD12, then authorize another correction cycle.
+Decision needed: Resolved 2026-07-28; no rollback writer or receipt is part of the published-skill capability.
 Owning stage: review-resolution M3
-Chosen action: pending owner decision
-Rationale: The current command contract forbids the receipt mutation required by PBF-R057.
-Validation target: command table, T13, milestone proof map, M4 validation and recovery, code-review M3 R6.
-Validation evidence: R5 confirms M3 fail-closed tests pass but no command owns the M4 receipt transaction.
+Chosen action: Restore the proposal boundary: activation is a reviewed release-scoped manifest change and rollback installs or republishes the previous immutable package release.
+Rationale: The project publishes skills; temporal rollback attestation and repository mutation protocols are unnecessary supporting machinery and contradict the accepted proposal.
+Validation target: spec-review R3, architecture review, revised test spec and plan, package rollback proof, and removal of stale receipt/state branches.
+Validation evidence: The draft feature spec now forbids activation and rollback writers, receipts, attestation stores, and repository rollback states; it defines rollback as restoring the previous immutable adapter package. Markdown readability and lifecycle structure pass; spec-review R3 is pending.
 
 ### code-review-m3-r4
 
