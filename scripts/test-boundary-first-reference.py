@@ -164,37 +164,60 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
 
     def test_unexpected_consumer_symlink_topologies_fail_closed(self) -> None:
         for topology in ("skill-root", "references"):
-            with self.subTest(topology=topology):
-                _, root = self.make_repository()
-                project_reference(root, mode="write")
-                outside = self.make_outside_directory()
-                if topology == "skill-root":
-                    outside_reference = outside / PROJECTED_REFERENCE
-                    outside_reference.parent.mkdir()
-                    outside_reference.write_bytes(b"outside method")
-                    (root / "skills" / "proposal").symlink_to(
-                        outside,
-                        target_is_directory=True,
-                    )
-                    expected_path = "skills/proposal"
-                else:
-                    outside_reference = outside / PROJECTED_REFERENCE.name
-                    outside_reference.write_bytes(b"outside method")
-                    proposal = root / "skills" / "proposal"
-                    proposal.mkdir()
-                    (proposal / "references").symlink_to(
-                        outside,
-                        target_is_directory=True,
-                    )
-                    expected_path = "skills/proposal/references"
+            for mode in ("check", "write"):
+                with self.subTest(topology=topology, mode=mode):
+                    _, root = self.make_repository()
+                    project_reference(root, mode="write")
+                    outside = self.make_outside_directory()
+                    outside_bytes = b"outside sentinel"
+                    if topology == "skill-root":
+                        outside_reference = outside / PROJECTED_REFERENCE
+                        outside_reference.parent.mkdir()
+                        outside_reference.write_bytes(outside_bytes)
+                        (root / "skills" / "proposal").symlink_to(
+                            outside,
+                            target_is_directory=True,
+                        )
+                        expected_path = "skills/proposal"
+                    else:
+                        outside_reference = outside / PROJECTED_REFERENCE.name
+                        outside_reference.write_bytes(outside_bytes)
+                        proposal = root / "skills" / "proposal"
+                        proposal.mkdir()
+                        (proposal / "references").symlink_to(
+                            outside,
+                            target_is_directory=True,
+                        )
+                        expected_path = "skills/proposal/references"
 
-                result = project_reference(root, mode="check")
+                    expected_errors = [
+                        "BFR-UNEXPECTED-CONSUMER-SYMLINK: "
+                        + expected_path
+                    ]
+                    if mode == "check":
+                        (
+                            root
+                            / "skills"
+                            / "workflow"
+                            / PROJECTED_REFERENCE
+                        ).unlink()
+                        expected_errors.append(
+                            "BFR-PROJECTION-MISSING: "
+                            "skills/workflow/references/"
+                            "boundary-first-method-v1.md"
+                        )
 
-                self.assertFalse(result.ok)
-                self.assertIn(
-                    f"BFR-UNEXPECTED-CONSUMER-SYMLINK: {expected_path}",
-                    result.errors,
-                )
+                    result = project_reference(root, mode=mode)
+
+                    self.assertFalse(result.ok)
+                    self.assertEqual(
+                        result.errors,
+                        tuple(sorted(expected_errors)),
+                    )
+                    self.assertEqual(
+                        outside_reference.read_bytes(),
+                        outside_bytes,
+                    )
 
     def test_inventory_digest_uses_sorted_posix_path_and_raw_hash_records(
         self,
