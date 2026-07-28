@@ -2,7 +2,7 @@
 
 ## Status
 
-Plan lifecycle state: blocked
+Plan lifecycle state: active
 Terminal disposition: none
 
 - Owner: maintainers
@@ -108,7 +108,7 @@ an explicit blocking gap before implementation begins.
 - Last reviewed milestone: M1
 - Review status: changes-requested; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: blocked pending renewed correction authority for review-resolution M1
+- Next stage: review-resolution M1 for PBF-M1-CR4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=1; open-findings=PBF-M1-CR4
 
