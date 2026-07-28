@@ -105,13 +105,13 @@ an explicit blocking gap before implementation begins.
 
 - Current milestone: M4. Package parity and prospective activation
 - Current milestone state: resolution-needed
-- Latest review evidence: plan-review R6 approved the adapter-applicable M4 plan and resolved PBF-PLR4 and PBF-PLR5
+- Latest review evidence: test-spec-review R8 confirmed adapter-applicable coverage and recorded PBF-TSR8-1 for stale governing-plan identities
 - Last reviewed milestone: M3
-- Review status: review-requested; stage=test-spec-review; round=r8
+- Review status: review-requested; stage=test-spec-review; round=r9
 - Remaining in-scope implementation milestones: M4
-- Next stage: test-spec-review R8 for adapter-applicable package coverage
+- Next stage: test-spec-review R9 for exact plan identity closure
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=open; open-count=1; open-findings=PBF-TSR7-1
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=open; open-count=2; open-findings=PBF-TSR7-1,PBF-TSR8-1
 
 ## Milestones
 
