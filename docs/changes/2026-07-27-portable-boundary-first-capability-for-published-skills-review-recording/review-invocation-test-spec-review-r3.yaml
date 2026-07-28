@@ -4,8 +4,8 @@ review_stage: test-spec-review
 review_target: specs/boundary-first-proof-model.test.md
 base_revision: 1b7e2c6b
 head_revision: 0fbf287e
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: blocked
+review_gate_outcome: blocked
 independence_level: L1
 author_context_id: run-pbf-20260728-lightweight-proof-map
 reviewer_context_id: isolated-test-spec-r3
