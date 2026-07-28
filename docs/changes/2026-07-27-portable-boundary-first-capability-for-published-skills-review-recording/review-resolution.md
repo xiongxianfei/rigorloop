@@ -16,8 +16,8 @@ Review closeout: test-spec-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 15
-- Unresolved findings: 0
-- Final result: Upstream authoring reviews and the M1 R1 correction are closed; M1 awaits code-review R2.
+- Unresolved findings: 2
+- Final result: M1 R2 confirms the original containment correction and requires closed-inventory symlink rejection plus temporary-fixture cleanup.
 
 ## Resolution Overview
 
@@ -38,6 +38,8 @@ Review closeout: test-spec-review-r2
 | PBF-TSR1 | accepted | resolved | Acceptance criteria, exact edge cases, and supplemental normative surfaces have stable direct proof. |
 | PBF-TSR2 | accepted | resolved | M4 and final-verify broad-smoke invocations have separate stage owners and gates. |
 | PBF-M1-CR1 | accepted | resolved | Parent-directory symlink escape is rejected before outside reads or writes. |
+| PBF-M1-CR2 | accepted | open | Symlinked unexpected consumers require fail-closed inventory rejection. |
+| PBF-M1-CR3 | accepted | open | Symlink regression outside fixtures require managed cleanup. |
 
 ## Finding Details
 
@@ -292,3 +294,29 @@ Chosen action: Add source-parent and destination-parent symlink-escape regressio
 Rationale: The correction is fully determined by the approved security boundary and remains inside M1 implementation scope.
 Validation target: `python scripts/test-boundary-first-reference.py`; `python scripts/project-boundary-first-reference.py --check`
 Validation evidence: Commit `0b198866`; `python scripts/test-boundary-first-reference.py` passed nine tests including source-parent and destination-parent escape cases; `python scripts/project-boundary-first-reference.py --check` passed all ten consumers.
+
+### code-review-m1-r2
+
+#### PBF-M1-CR2 - Symlinked unexpected consumers evade closed-inventory validation
+
+Finding ID: PBF-M1-CR2
+Disposition: accepted
+Status: open
+Owner: implementation
+Owning stage: review-resolution M1
+Chosen action: Add both unexpected-consumer symlink regressions and reject the encountered symlink topology without traversal.
+Rationale: Closed consumer membership and symlink-escape rejection are explicit approved requirements.
+Validation target: `python scripts/test-boundary-first-reference.py`; `python scripts/project-boundary-first-reference.py --check`
+Validation evidence: pending correction
+
+#### PBF-M1-CR3 - Symlink regressions leak their outside fixtures
+
+Finding ID: PBF-M1-CR3
+Disposition: accepted
+Status: open
+Owner: implementation
+Owning stage: review-resolution M1
+Chosen action: Allocate each outside fixture with its own registered `TemporaryDirectory` cleanup.
+Rationale: The correction is deterministic test-fixture hygiene and does not alter product behavior or the approved contract.
+Validation target: `python scripts/test-boundary-first-reference.py`; `python scripts/project-boundary-first-reference.py --check`
+Validation evidence: pending correction
