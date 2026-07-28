@@ -104,11 +104,11 @@ an explicit blocking gap before implementation begins.
 
 - Current milestone: M3. Structural and activation validation
 - Current milestone state: resolution-needed
-- Latest review evidence: PBF-AR3 is resolved in the canonical risk controls and awaits architecture-review R4
+- Latest review evidence: architecture-review R4 approved the simplified release-manifest and package-rollback architecture
 - Last reviewed milestone: M2
-- Review status: review-requested; stage=architecture-review; round=r4
+- Review status: approved; stage=architecture-review; round=r4
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: architecture-review R4 for PBF-AR3 closure
+- Next stage: plan revision for the simplified M3 and M4 scope
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 

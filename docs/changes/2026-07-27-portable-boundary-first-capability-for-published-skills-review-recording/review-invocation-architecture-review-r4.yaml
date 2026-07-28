@@ -4,8 +4,8 @@ review_stage: architecture-review
 review_target: docs/architecture/system/architecture.md
 base_revision: 545d17af
 head_revision: 2f3e699a
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: approved
+review_gate_outcome: approved
 independence_level: L1
 author_context_id: run-pbf-20260728-architecture-risk-closure
 reviewer_context_id: isolated-architecture-r4

@@ -22,6 +22,7 @@ Review closeout: spec-review-r5
 Review closeout: architecture-review-r1
 Review closeout: architecture-review-r2
 Review closeout: architecture-review-r3
+Review closeout: architecture-review-r4
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: code-review-m1-r1
@@ -83,6 +84,13 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### architecture-review-r4
+
+Review closeout: architecture-review-r4
+
+No material findings.
+R4 confirms PBF-AR3 resolved and approves the simplified architecture.
 
 ### architecture-review-r3
 
