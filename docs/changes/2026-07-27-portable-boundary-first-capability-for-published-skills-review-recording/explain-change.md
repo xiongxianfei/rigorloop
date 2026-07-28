@@ -89,7 +89,7 @@ declared missing plan.
 | `python scripts/validate-boundary-first.py --check` | pass; pending manifest |
 | `python scripts/test-select-validation.py` | pass; 135 tests |
 | `python scripts/test-artifact-lifecycle-validator.py` | pass; 157 tests |
-| `bash scripts/ci.sh --mode pr --base f4c9354eacca4963910242da4ef46a04aaea87d7 --head HEAD` | pass; 22 selected checks |
+| `bash scripts/ci.sh --mode pr --base f4c9354eacca4963910242da4ef46a04aaea87d7 --head HEAD` | pass; 23 selected checks on the committed correction and review state |
 | `python scripts/test-adapter-distribution.py -k boundary_first` | pass; 2 tests |
 | `python scripts/test-adapter-distribution.py` | pass; 133 tests |
 | `bash scripts/ci.sh --mode broad-smoke` | pass; 12 checks |

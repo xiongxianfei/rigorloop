@@ -23,6 +23,9 @@ tests:
 validation:
   -
     command: bash scripts/ci.sh --mode pr --base f4c9354eacca4963910242da4ef46a04aaea87d7 --head HEAD
+    result: pass_23_selected_checks_final_committed_ci_correction_verify
+  -
+    command: bash scripts/ci.sh --mode pr --base f4c9354eacca4963910242da4ef46a04aaea87d7 --head HEAD
     result: pass_22_selected_checks_post_pr_ci_correction
   -
     command: python scripts/test-artifact-lifecycle-validator.py

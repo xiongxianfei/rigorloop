@@ -454,7 +454,9 @@ A material review finding reopens its owning milestone and blocks the next one.
   declared missing plan. No new validation script or workflow was added.
   `python scripts/test-select-validation.py` passed 135 tests,
   `python scripts/test-artifact-lifecycle-validator.py` passed 157 tests, and
-  exact PR-mode validation passed all 22 selected checks.
+  exact PR-mode validation first passed all 22 selected checks and then passed
+  all 23 checks after the lifecycle regression and review evidence were part
+  of committed `HEAD`.
 
 ## Outcome and retrospective
 
