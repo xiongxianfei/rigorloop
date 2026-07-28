@@ -67,13 +67,37 @@ def _relative_posix(path: Path, root: Path) -> str:
     return path.relative_to(root).as_posix()
 
 
+def _repository_path(root: Path, relative: Path) -> Path:
+    if relative.is_absolute() or ".." in relative.parts:
+        raise ProjectionContractError(
+            f"BFR-PATH-OUTSIDE: {relative.as_posix()}"
+        )
+    current = root
+    for part in relative.parts:
+        current = current / part
+        if current.is_symlink():
+            raise ProjectionContractError(
+                "BFR-PATH-SYMLINK: "
+                + _relative_posix(current, root)
+            )
+    return current
+
+
 def _unexpected_projections(root: Path) -> tuple[Path, ...]:
     expected = {root / path for path in projected_paths()}
-    found = set(
-        (root / "skills").glob(
-            "*/references/boundary-first-method-v1.md"
-        )
-    )
+    skills_root = _repository_path(root, Path("skills"))
+    if not skills_root.is_dir():
+        return ()
+    found: set[Path] = set()
+    for skill_root in skills_root.iterdir():
+        if skill_root.is_symlink() or not skill_root.is_dir():
+            continue
+        references = skill_root / "references"
+        if references.is_symlink() or not references.is_dir():
+            continue
+        candidate = references / PROJECTED_REFERENCE.name
+        if candidate.is_symlink() or candidate.is_file():
+            found.add(candidate)
     return tuple(sorted(found - expected))
 
 
@@ -86,8 +110,8 @@ def project_reference(root: Path, *, mode: str) -> ProjectionResult:
         )
 
     repository_root = root.resolve()
-    source = repository_root / CANONICAL_REFERENCE
-    if source.is_symlink() or not source.is_file():
+    source = _repository_path(repository_root, CANONICAL_REFERENCE)
+    if not source.is_file():
         raise ProjectionContractError(
             f"BFR-SOURCE-MISSING: {CANONICAL_REFERENCE.as_posix()}"
         )
@@ -97,19 +121,14 @@ def project_reference(root: Path, *, mode: str) -> ProjectionResult:
 
     if mode == "write":
         for relative in projected_paths():
-            target = repository_root / relative
-            if target.is_symlink():
-                target.unlink()
+            target = _repository_path(repository_root, relative)
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(source_bytes)
 
     records: dict[str, str] = {}
     for relative in projected_paths():
-        target = repository_root / relative
+        target = _repository_path(repository_root, relative)
         relative_text = relative.as_posix()
-        if target.is_symlink():
-            errors.append(f"BFR-PROJECTION-SYMLINK: {relative_text}")
-            continue
         if not target.is_file():
             errors.append(f"BFR-PROJECTION-MISSING: {relative_text}")
             continue

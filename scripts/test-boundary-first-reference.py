@@ -118,14 +118,46 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         target.unlink()
         target.symlink_to(root / CANONICAL_REFERENCE)
 
-        result = project_reference(root, mode="check")
-
-        self.assertFalse(result.ok)
-        self.assertIn(
-            "BFR-PROJECTION-SYMLINK: skills/workflow/references/"
+        with self.assertRaisesRegex(
+            ProjectionContractError,
+            "BFR-PATH-SYMLINK: skills/workflow/references/"
             "boundary-first-method-v1.md",
-            result.errors,
-        )
+        ):
+            project_reference(root, mode="check")
+
+    def test_parent_symlink_escape_fails_without_outside_mutation(self) -> None:
+        _, root = self.make_repository()
+        outside = root.parent / f"{root.name}-outside"
+        outside.mkdir()
+        sentinel = outside / PROJECTED_REFERENCE.name
+        sentinel.write_bytes(b"outside sentinel")
+        references = root / "skills" / "workflow" / "references"
+        references.symlink_to(outside, target_is_directory=True)
+
+        for mode in ("check", "write"):
+            with self.subTest(mode=mode):
+                with self.assertRaisesRegex(
+                    ProjectionContractError,
+                    "BFR-PATH-SYMLINK: skills/workflow/references",
+                ):
+                    project_reference(root, mode=mode)
+                self.assertEqual(sentinel.read_bytes(), b"outside sentinel")
+
+    def test_source_parent_symlink_escape_fails_before_read(self) -> None:
+        _, root = self.make_repository()
+        source = root / CANONICAL_REFERENCE
+        source.unlink()
+        source.parent.rmdir()
+        outside = root.parent / f"{root.name}-source"
+        outside.mkdir()
+        (outside / CANONICAL_REFERENCE.name).write_bytes(b"outside method")
+        source.parent.symlink_to(outside, target_is_directory=True)
+
+        with self.assertRaisesRegex(
+            ProjectionContractError,
+            "BFR-PATH-SYMLINK: specs/references",
+        ):
+            project_reference(root, mode="check")
 
     def test_inventory_digest_uses_sorted_posix_path_and_raw_hash_records(
         self,
