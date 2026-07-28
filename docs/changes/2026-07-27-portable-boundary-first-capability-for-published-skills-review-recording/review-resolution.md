@@ -24,16 +24,16 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 32
-- Unresolved findings: 2
-- Final result: R3 confirms PBF-M3-CR9 through PBF-M3-CR13 resolved; M3 remains resolution-needed for PBF-M3-CR14 and PBF-M3-CR15.
+- Findings resolved: 34
+- Unresolved findings: 0
+- Final result: PBF-M3-CR14 and PBF-M3-CR15 are resolved with direct regression evidence; M3 awaits independent code-review R4.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-M3-CR14 | accepted | in-progress | Restrict rollback markers to a durable pre-rollback accepted inventory. |
-| PBF-M3-CR15 | accepted | in-progress | Contain fixed activation and proof-model inputs before reads. |
+| PBF-M3-CR14 | accepted | resolved | Rollback markers require a durable preserved path-and-byte inventory member. |
+| PBF-M3-CR15 | accepted | resolved | Fixed activation and proof-model inputs are contained before reads. |
 | PBF-M3-CR9 | accepted | resolved | Immutable activation history survives later marked adoption and rollback. |
 | PBF-M3-CR10 | accepted | resolved | Explicit and derived feature/proof paths are contained before reads. |
 | PBF-M3-CR11 | accepted | resolved | Valid aligned separators pass while malformed cells fail. |
@@ -75,25 +75,25 @@ Review closeout: code-review-m1-r4
 
 Finding ID: PBF-M3-CR14
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implement
 Owning stage: review-resolution M3
 Chosen action: Add a closed accepted-marker inventory to activation state and require rolled-back marked paths to belong to it.
 Rationale: Current artifact text cannot prove the artifact was accepted before rollback.
 Validation target: CMD6, CMD7, and code-review M3 R4.
-Validation evidence: pending correction.
+Validation evidence: CMD6 passes 47 tests; a new post-rollback approved marker fails while an exact preserved member passes, and CMD7 validates the empty pending inventory.
 
 #### PBF-M3-CR15 - Fixed authoritative inputs may follow external symlinks
 
 Finding ID: PBF-M3-CR15
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implement
 Owning stage: review-resolution M3
 Chosen action: Apply repository containment and no-symlink checks to the fixed activation and proof-model paths before reads.
 Rationale: Repository-local authority cannot be delegated through an external symlink.
 Validation target: CMD6, CMD7, direct symlink attacks, and code-review M3 R4.
-Validation evidence: pending correction.
+Validation evidence: CMD6 rejects outside symlinks for both fixed inputs and for changed-spec activation lookup; CMD7 passes.
 
 ### code-review-m3-r2
 

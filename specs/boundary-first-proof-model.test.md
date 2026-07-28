@@ -260,8 +260,8 @@ they do not invent bootstrap boundary IDs.
 - Covers: PBF-R003, PBF-R005-PBF-R007, PBF-R049a-PBF-R049b, PBF-R053, EC8-EC10
 - Level: integration
 - Command IDs: CMD6, CMD7, CMD11, CMD12
-- Fixture/setup: pending, active, interrupted, mismatched, incomplete, and mixed-version activation worktrees.
-- Steps: Generate accepted-spec inventory and digests; check readiness; exercise the writer in temporary worktrees; interrupt between prepared and committed states.
+- Fixture/setup: pending, active, interrupted, mismatched, incomplete, mixed-version, and fixed-authority-symlink activation worktrees.
+- Steps: Generate accepted-spec inventory and digests; reject symlinked activation and proof-model authority before reads; check readiness; exercise the writer in temporary worktrees; interrupt between prepared and committed states.
 - Expected result: Only a complete verified baseline becomes active, authoritative spec and YAML states agree, and interrupted or mixed baselines fail closed.
 - Failure proves: repository activation can be partial, ambiguous, or unauditable.
 - Evidence artifact: `boundary-activation-evidence.yaml`
@@ -325,9 +325,9 @@ they do not invent bootstrap boundary IDs.
 - Covers: PBF-R057-PBF-R058, E4, EC10
 - Level: integration
 - Command IDs: CMD6, CMD7, CMD10, CMD11, CMD12
-- Fixture/setup: an active temporary worktree with accepted marked artifacts and complete package evidence.
-- Steps: Execute the rollback path, validate all governed surfaces, and inspect preexisting accepted marked specs/test specs and activation history.
-- Expected result: State becomes `rolled-back`, new adoption stops, package/validator behavior is coherent, and accepted records plus historical evidence remain.
+- Fixture/setup: an active temporary worktree with accepted marked artifacts, a new post-rollback self-declared `approved` marker, and complete package evidence.
+- Steps: Snapshot the accepted marked path-and-byte inventory, execute the rollback path, validate all governed surfaces, attempt the new marker, and inspect preexisting accepted marked specs/test specs and activation history.
+- Expected result: State becomes `rolled-back`, only exact rollback-inventory members retain markers, the new marker fails, package/validator behavior is coherent, and accepted records plus historical evidence remain.
 - Failure proves: recovery can invalidate history or leave mixed versions.
 - Evidence artifact: `boundary-rollback-evidence.yaml`
 - Automation location: `scripts/test-boundary-first-validation.py`
@@ -419,8 +419,9 @@ specs only, excludes `README.md` and `*.test.md`, and records exact raw-byte
 identities.
 Historical path membership is structural; substantive revision remains a
 `spec-review` judgment.
-Rollback preserves accepted marked artifacts and historical activation
-evidence.
+Rollback preserves only accepted marked artifacts captured by the durable
+pre-rollback path-and-byte inventory plus historical activation evidence.
+A new self-declared accepted or approved status cannot authorize adoption.
 
 ## Observability verification
 
@@ -434,8 +435,9 @@ bounded artifact paths without claiming semantic completeness.
 
 Archive and installed-tree proof remains local, uses temporary projects, and
 performs no network access or publication.
-Path validation rejects traversal, symlink escape, and consumers outside the
-closed governed roots by reusing existing package safety helpers.
+Path validation rejects traversal, symlink escape, fixed-authority symlinks,
+and consumers outside the closed governed roots by reusing existing package
+safety helpers.
 Evidence contains repository paths and digests only; no credentials, model
 identity, hidden reasoning, or user data is recorded.
 

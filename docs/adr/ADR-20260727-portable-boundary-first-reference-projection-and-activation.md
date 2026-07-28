@@ -77,6 +77,8 @@ canonical_reference
 canonical_reference_sha256
 grandfathered_specs
 grandfathered_inventory_sha256
+rollback_preserved_specs
+rollback_preserved_inventory_sha256
 governed_skills
 projection_sha256
 ```
@@ -107,6 +109,11 @@ algorithm:
 `projection_sha256` covers exactly the ten governed projected reference paths.
 `grandfathered_inventory_sha256` covers exactly the eligible historical spec
 paths recorded in `grandfathered_specs`.
+`rollback_preserved_specs` is empty before rollback. The rollback transaction
+snapshots every accepted, approved, or active marked feature spec as a sorted
+path and raw-byte SHA-256 before changing state. Its digest uses the same
+inventory algorithm. Rolled-back validation permits markers only for exact
+path-and-byte members of that closed inventory.
 The generator and validator import the same helper rather than reimplementing
 serialization.
 

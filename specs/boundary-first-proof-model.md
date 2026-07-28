@@ -128,7 +128,9 @@ PBF-R002. An adopting feature spec MUST record the literal metadata line
 lifecycle status value.
 
 PBF-R003. A feature spec MUST NOT record the activation marker while the
-repository activation state is `pending` or `rolled-back`.
+repository activation state is `pending`. While `rolled-back`, only a feature
+spec preserved by the closed PBF-R057 rollback inventory may retain the
+marker.
 
 PBF-R004. An adopting feature spec MUST contain the boundary record in that
 same feature spec and MUST NOT require a standalone boundary artifact.
@@ -139,7 +141,8 @@ PBF-R005. The repository activation state MUST use exactly one of `pending`,
 PBF-R005a. Before activation becomes `active`, one durable activation record
 MUST identify the contract version, activation state, activation time,
 activation baseline identity, and grandfathered feature-spec inventory
-identity.
+identity. The same record MUST carry the closed rollback-preservation
+inventory and identity, empty until rollback.
 
 PBF-R005b. Architecture MUST select the activation-record path and format.
 The record MUST be repository-local, deterministic, validator-readable, and
@@ -443,6 +446,10 @@ substantively revised and MUST NOT require automatic migration.
 PBF-R057. Rollback MUST change activation to `rolled-back` and stop new
 adoption without deleting or invalidating already accepted boundary records or
 proof maps.
+The activation record MUST snapshot those already accepted marked feature
+specs as a sorted path and raw-byte identity inventory before the state
+changes. While rolled back, structural validation MUST accept a marked
+feature spec only when its path and bytes match that closed inventory.
 
 PBF-R058. Rollback MUST restore the governed skill projections, validators,
 fixtures, generated output, and package surfaces as one coherent compatibility

@@ -8,9 +8,9 @@ Durable fixture roots:
   - scripts/fixtures/boundary-first/feature-records/
   - scripts/fixtures/boundary-first/proof-maps/
   - scripts/fixtures/boundary-first/activation/
-Structural test count: 44
+Structural test count: 47
 Selector regression test count: 134
-CMD6 result: passed_44_tests_after_PBF-M3-CR1_through_PBF-M3-CR13
+CMD6 result: passed_47_tests_after_PBF-M3-CR1_through_PBF-M3-CR15
 CMD7 result: passed_pending_activation_baseline
 CMD8 result: passed_134_tests_from_committed_coordinator_baseline
 Privacy-bounded diagnostic fields:
@@ -33,3 +33,5 @@ PBF-M3-CR10 result: explicit_and_derived_companion_paths_are_contained
 PBF-M3-CR11 result: valid_CommonMark_alignment_separators_are_accepted
 PBF-M3-CR12 result: deleted_proofs_and_orphaned_tests_fail_closed
 PBF-M3-CR13 result: historical_inventory_roots_and_entries_reject_symlinks
+PBF-M3-CR14 result: rollback_markers_require_closed_preserved_path_and_bytes
+PBF-M3-CR15 result: fixed_authoritative_inputs_reject_external_symlinks
