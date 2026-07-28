@@ -1,0 +1,82 @@
+schema_version: 1
+review_id: code-review-m3-r9
+review_stage: code-review
+review_target: commit:604306dd
+base_revision: 15b5f69f
+head_revision: 604306dd
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L1
+author_context_id: run-pbf-20260728-lightweight-m3-r9
+reviewer_context_id: isolated-m3-r9-primary
+context_separation_mechanism: fresh-reviewer-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - activation-schema
+  - source-control-baseline
+  - release-ordering
+governing_artifacts:
+  - specs/boundary-first-proof-model.md
+  - specs/boundary-first-proof-model.test.md
+  - docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  - docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-proof-model.md
+    revision: 011fc64d
+    sha256: 7d10f72e7dfca18c08c4f7117846c5a655f060f5087ec196725a2c5494af25d1
+  - path: specs/boundary-first-proof-model.test.md
+    revision: 3a94786e
+    sha256: bf19aac58cc2a9c065178662ca67d5df511c404176b14640c72736012cf71a83
+  - path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+    revision: 604306dd
+    sha256: 3843aeaadee531e5bd02dbbbdaec46e91cc385a702dc9cd84654cf21aa19db22
+  - path: docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md
+    revision: b15b8b44
+    sha256: 3d09255eb51dacb2fd2fe756a656fc9719edd6de99763f23ae9ad09fd1b1c1e2
+  - path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m3-implementation.md
+    revision: 604306dd
+    sha256: d9c4c5451c4709f4f32c4cacebf6a84e0eb1004d54e9f14400ecd0841338de0b
+  - path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
+    revision: 604306dd
+    sha256: a87fddb2d4cdaad520e8c7e48f342e9255ceb5ecf737225335a4d066b29519fa
+  - path: commit:604306dd.diff
+    revision: 604306dd
+    sha256: fbcf32d14e3a688e6742093661461e8365960a6074b7b984c5c35e3810799cb6
+initial_packet_sha256: fbcf32d14e3a688e6742093661461e8365960a6074b7b984c5c35e3810799cb6
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+second_review:
+  required: true
+  satisfied: false
+  reviewer_context_id: isolated-m3-r9-second
+  result: pending
+risk_map:
+  affected_behavior: merge-aware first-parent activation ownership, exact activating-tag identity, immutable release fields, and transition-parent grandfather inventory
+  highest_impact_failure_modes: a side-branch transition becomes authority, a tag identifies the wrong commit, release fields are rewritten, or inventory is derived from a caller-selected revision
+  changed_boundaries: activation history, integration ancestry, release identity, and grandfather inventory
+  evidence_expected: 51 focused tests, pending validation, 134 selector tests, and direct PBF-M3-CR23 regressions
+  direct_inspection_areas: first-parent transition discovery, merge integration behavior, tag-to-transition binding, active-state field immutability, and inventory source revision
+  intentionally_out_of_scope: activation writing, package installation, publication, external rollback, runtime certification, and semantic completeness
+  applicable_risk_classes:
+    - requirement-fidelity
+    - compatibility
+    - negative-proof
+    - source-control
+  non_applicable_risk_classes:
+    - network-api
+    - credential-storage
+    - release-publication
+    - runtime-attestation
+  falsifiable_questions:
+    - Can an activation commit reachable only through a merge parent become the transition owner?
+    - Can the activating release tag resolve anywhere other than the transition commit?
+    - Can a later active commit rewrite activating_release or rollback_release?
+    - Can grandfather membership be selected by a false manifest baseline?
