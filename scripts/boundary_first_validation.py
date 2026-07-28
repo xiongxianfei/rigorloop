@@ -255,14 +255,16 @@ def _table_separator_issue(
     if len(lines) < 2:
         return None
     separator = tuple(cell.strip() for cell in lines[1].strip("|").split("|"))
-    expected = tuple("---" for _ in range(expected_width))
-    if separator != expected:
+    valid_cells = len(separator) == expected_width and all(
+        re.fullmatch(r":?-{3,}:?", cell) for cell in separator
+    )
+    if not valid_cells:
         return _issue(
             "BFR-INVALID-TABLE-SEPARATOR",
             path,
             f"{surface} table separator is not exact",
             separator,
-            expected,
+            f"{expected_width} cells matching ^:?-{{3,}}:?$",
         )
     return None
 
@@ -833,25 +835,94 @@ def _lifecycle_status(text: str) -> str | None:
     return None
 
 
-def _eligible_grandfathered_specs(root: Path) -> tuple[str, ...]:
+def _specs_root_issue(root: Path) -> ValidationIssue | None:
+    specs_root = root / "specs"
+    if specs_root.is_symlink():
+        return _issue(
+            "BFR-SPECS-ROOT-UNSAFE",
+            "specs",
+            "specs root must not be a symlink",
+            "symlink",
+            "repository-owned directory",
+        )
+    resolved_root = root.resolve()
+    resolved_specs = specs_root.resolve(strict=False)
+    if not resolved_specs.is_relative_to(resolved_root):
+        return _issue(
+            "BFR-SPECS-ROOT-UNSAFE",
+            "specs",
+            "specs root resolves outside the repository",
+            resolved_specs,
+            resolved_root / "specs",
+        )
+    return None
+
+
+def _historical_spec_path(
+    root: Path,
+    relative_path: str,
+) -> tuple[Path | None, ValidationIssue | None]:
+    if not re.fullmatch(r"specs/[^/]+\.md", relative_path):
+        return None, _issue(
+            "BFR-GRANDFATHERED-PATH-UNSAFE",
+            "<grandfathered-spec-path>",
+            "historical path is not a top-level feature spec",
+            relative_path,
+            "specs/<name>.md",
+        )
+    specs_issue = _specs_root_issue(root)
+    if specs_issue:
+        return None, specs_issue
+    candidate = root / relative_path
+    resolved_specs = (root / "specs").resolve()
+    resolved_candidate = candidate.resolve(strict=False)
+    if (
+        candidate.is_symlink()
+        or resolved_candidate.parent != resolved_specs
+    ):
+        return None, _issue(
+            "BFR-GRANDFATHERED-PATH-UNSAFE",
+            relative_path,
+            "historical spec path must be repository-contained and non-symlink",
+            relative_path,
+            "repository-owned regular file",
+        )
+    return candidate, None
+
+
+def _eligible_grandfathered_specs(
+    root: Path,
+) -> tuple[tuple[str, ...], tuple[ValidationIssue, ...]]:
     eligible: list[str] = []
+    issues: list[ValidationIssue] = []
+    specs_issue = _specs_root_issue(root)
+    if specs_issue:
+        return (), (specs_issue,)
     specs_root = root / "specs"
     if not specs_root.is_dir():
-        return ()
+        return (), ()
     for path in sorted(specs_root.glob("*.md")):
         relative = path.relative_to(root).as_posix()
         if path.name == "README.md" or path.name.endswith(".test.md"):
             continue
-        text = path.read_text(encoding="utf-8")
+        safe_path, path_issue = _historical_spec_path(root, relative)
+        if path_issue:
+            issues.append(path_issue)
+            continue
+        assert safe_path is not None
+        text = safe_path.read_text(encoding="utf-8")
         if _lifecycle_status(text) not in {"accepted", "approved", "active"}:
             continue
         if _line_value(_live_markdown(text), "boundary_contract") is not None:
             continue
         eligible.append(relative)
-    return tuple(eligible)
+    return tuple(eligible), tuple(issues)
 
 
 def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
+    specs_issue = _specs_root_issue(root)
+    if specs_issue:
+        return (specs_issue,)
     record_path = root / ACTIVATION_RECORD
     data, parse_issue = _activation_data(record_path)
     if parse_issue:
@@ -935,6 +1006,7 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
         issues.append(_issue("BFR-GRANDFATHERED-SHAPE", ACTIVATION_RECORD.as_posix(), "grandfathered_specs must be a list", type(grandfathered).__name__, "list"))
     else:
         records: dict[str, str] = {}
+        preserved_marked: set[str] = set()
         previous = ""
         for item in grandfathered:
             if not isinstance(item, dict) or set(item) != {"path", "sha256"}:
@@ -954,19 +1026,81 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                 issues.append(_issue("BFR-GRANDFATHERED-ORDER", ACTIVATION_RECORD.as_posix(), "grandfathered paths must be sorted unique top-level feature specs", item_path, "sorted specs/*.md"))
             previous = item_path
             records[item_path] = item_hash
-            grandfathered_path = root / item_path
+            grandfathered_path, grandfathered_path_issue = _historical_spec_path(
+                root,
+                item_path,
+            )
+            if grandfathered_path_issue:
+                issues.append(grandfathered_path_issue)
+                continue
+            assert grandfathered_path is not None
             if not grandfathered_path.is_file():
                 issues.append(_issue("BFR-GRANDFATHERED-MISSING", item_path, "grandfathered spec is missing", "-", "file with recorded raw-byte identity"))
             else:
-                actual_hash = raw_sha256(grandfathered_path.read_bytes())
-                if actual_hash != item_hash:
-                    issues.append(_issue("BFR-GRANDFATHERED-STALE", item_path, "grandfathered spec bytes differ from activation baseline", actual_hash, item_hash))
+                current_text = grandfathered_path.read_text(encoding="utf-8")
+                current_marker = _line_value(
+                    _live_markdown(current_text),
+                    "boundary_contract",
+                )
+                if current_marker == METHOD_VERSION:
+                    if _lifecycle_status(current_text) not in {
+                        "accepted",
+                        "approved",
+                        "active",
+                    }:
+                        issues.append(
+                            _issue(
+                                "BFR-GRANDFATHERED-REVISION-STATUS",
+                                item_path,
+                                "marked historical revision must have an accepted lifecycle status",
+                                _lifecycle_status(current_text),
+                                "accepted, approved, or active",
+                            )
+                        )
+                    else:
+                        preserved_marked.add(item_path)
+                    issues.extend(validate_feature_record(current_text, item_path))
+                    proof_relative = item_path.removesuffix(".md") + ".test.md"
+                    proof_path, proof_path_issue = _changed_spec_path(
+                        root,
+                        proof_relative,
+                    )
+                    if proof_path_issue:
+                        issues.append(proof_path_issue)
+                    elif proof_path is None or not proof_path.is_file():
+                        issues.append(
+                            _issue(
+                                "BFR-PROOF-MAP-MISSING",
+                                proof_relative,
+                                "marked historical revision requires a matching proof map",
+                                "-",
+                                "matching test spec",
+                            )
+                        )
+                    else:
+                        issues.extend(
+                            validate_proof_map(
+                                proof_path.read_text(encoding="utf-8"),
+                                current_text,
+                                proof_relative,
+                            )
+                        )
+                elif item_path == PROOF_MODEL_SPEC.as_posix() and state == "rolled-back":
+                    pass
+                else:
+                    actual_hash = raw_sha256(grandfathered_path.read_bytes())
+                    if actual_hash != item_hash:
+                        issues.append(_issue("BFR-GRANDFATHERED-STALE", item_path, "grandfathered spec bytes differ from activation baseline", actual_hash, item_hash))
         actual_inventory = inventory_digest(records)
         if data.get("grandfathered_inventory_sha256") != actual_inventory:
             issues.append(_issue("BFR-GRANDFATHERED-HASH", ACTIVATION_RECORD.as_posix(), "grandfathered inventory identity differs", data.get("grandfathered_inventory_sha256"), actual_inventory))
         if state in {"active", "rolled-back"}:
             actual_membership = tuple(records)
-            expected_membership = _eligible_grandfathered_specs(root)
+            eligible_membership, eligibility_issues = _eligible_grandfathered_specs(root)
+            issues.extend(eligibility_issues)
+            expected_membership = tuple(
+                sorted(set(eligible_membership) | preserved_marked)
+            )
             if actual_membership != expected_membership:
                 issues.append(
                     _issue(
@@ -979,10 +1113,10 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                 )
 
     activated_at = data.get("activated_at")
-    if state == "active" and not isinstance(activated_at, str):
-        issues.append(_issue("BFR-ACTIVATED-AT", ACTIVATION_RECORD.as_posix(), "active record requires activation time", activated_at, "timestamp"))
-    if state != "active" and activated_at is not None:
-        issues.append(_issue("BFR-ACTIVATED-AT", ACTIVATION_RECORD.as_posix(), "inactive record must use null activation time", activated_at, "null"))
+    if state in {"active", "rolled-back"} and not isinstance(activated_at, str):
+        issues.append(_issue("BFR-ACTIVATED-AT", ACTIVATION_RECORD.as_posix(), "active or rolled-back record preserves activation time", activated_at, "timestamp"))
+    if state == "pending" and activated_at is not None:
+        issues.append(_issue("BFR-ACTIVATED-AT", ACTIVATION_RECORD.as_posix(), "pending record must use null activation time", activated_at, "null"))
     return tuple(issues)
 
 
@@ -1005,6 +1139,9 @@ def _changed_spec_path(
             relative_path,
             "specs/<name>.md or specs/<name>.test.md",
         )
+    specs_issue = _specs_root_issue(root)
+    if specs_issue:
+        return None, specs_issue
     resolved_root = root.resolve()
     candidate = root / relative_path
     resolved_candidate = candidate.resolve(strict=False)
@@ -1032,25 +1169,32 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
     activation, parse_issue = _activation_data(root / ACTIVATION_RECORD)
     if parse_issue or activation is None:
         return (parse_issue,) if parse_issue else ()
-    if not path.is_file():
-        return ()
     is_test_spec = relative_path.endswith(".test.md")
     feature_relative = (
         relative_path.removesuffix(".test.md") + ".md"
         if is_test_spec
         else relative_path
     )
-    feature_path = root / feature_relative
+    proof_relative = feature_relative.removesuffix(".md") + ".test.md"
+    feature_path, feature_path_issue = _changed_spec_path(root, feature_relative)
+    if feature_path_issue:
+        return (feature_path_issue,)
+    proof_path, proof_path_issue = _changed_spec_path(root, proof_relative)
+    if proof_path_issue:
+        return (proof_path_issue,)
+    assert feature_path is not None and proof_path is not None
     if not feature_path.is_file():
-        return (
-            _issue(
-                "BFR-FEATURE-CONTRACT-MISSING",
-                feature_relative,
-                "test spec has no governing feature spec",
-                "-",
-                "matching feature spec",
-            ),
-        )
+        if proof_path.is_file():
+            return (
+                _issue(
+                    "BFR-FEATURE-CONTRACT-MISSING",
+                    feature_relative,
+                    "test spec has no governing feature spec",
+                    "-",
+                    "matching feature spec",
+                ),
+            )
+        return ()
     feature_text = feature_path.read_text(encoding="utf-8")
     marker = _line_value(_live_markdown(feature_text), "boundary_contract")
     state = activation.get("state")
@@ -1059,8 +1203,14 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
         for item in activation.get("grandfathered_specs", [])
         if isinstance(item, dict) and isinstance(item.get("path"), str)
     }
-    if state in {"pending", "rolled-back"} and marker is not None:
+    if state == "pending" and marker is not None:
         return (_issue("BFR-MARKER-INACTIVE", feature_relative, "marker is forbidden while activation is inactive", marker, "-"),)
+    if (
+        state == "rolled-back"
+        and marker is not None
+        and _lifecycle_status(feature_text) not in {"accepted", "approved", "active"}
+    ):
+        return (_issue("BFR-MARKER-INACTIVE", feature_relative, "rollback preserves only already accepted marked artifacts", marker, "accepted marked artifact"),)
     if state == "active" and feature_relative not in grandfathered and marker != METHOD_VERSION:
         return (_issue("BFR-NEW-SPEC-MARKER", feature_relative, "new feature spec requires active boundary marker", marker, METHOD_VERSION),)
     if (
@@ -1073,8 +1223,6 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
         return (_issue("BFR-GRANDFATHERED-REVIEW", feature_relative, "changed grandfathered spec requires spec-review classification", "-", "semantic spec-review"),)
     if marker == METHOD_VERSION:
         issues = list(validate_feature_record(feature_text, feature_relative))
-        proof_relative = feature_relative.removesuffix(".md") + ".test.md"
-        proof_path = root / proof_relative
         if not proof_path.is_file():
             issues.append(
                 _issue(
