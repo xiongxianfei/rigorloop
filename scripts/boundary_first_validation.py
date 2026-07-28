@@ -1269,6 +1269,17 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                     ],
                 )
             )
+        transition_baseline = transition_data.get("grandfathering_baseline_revision")
+        if transition and transition_baseline != expected_baseline:
+            issues.append(
+                _issue(
+                    "BFR-BASELINE-PARENT",
+                    ACTIVATION_RECORD.as_posix(),
+                    "activation transition snapshot must record its exact first parent",
+                    transition_baseline,
+                    expected_baseline or "transition parent commit",
+                )
+            )
         if not isinstance(baseline_revision, str) or not re.fullmatch(
             r"[0-9a-f]{40,64}",
             baseline_revision,
@@ -1341,6 +1352,33 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                 expected_baseline,
             )
             issues.extend(eligibility_issues)
+            transition_inventory = transition_data.get("grandfathered_specs")
+            if (
+                not isinstance(transition_inventory, list)
+                or tuple(transition_inventory) != eligible_membership
+            ):
+                issues.append(
+                    _issue(
+                        "BFR-GRANDFATHERED-MEMBERSHIP",
+                        ACTIVATION_RECORD.as_posix(),
+                        "activation transition snapshot inventory does not match its first parent",
+                        transition_inventory,
+                        eligible_membership,
+                    )
+                )
+            if transition and (
+                baseline_revision != transition_baseline
+                or grandfathered != transition_inventory
+            ):
+                issues.append(
+                    _issue(
+                        "BFR-ACTIVATION-IMMUTABLE",
+                        ACTIVATION_RECORD.as_posix(),
+                        "active baseline and inventory must match the activation transition snapshot",
+                        [baseline_revision, grandfathered],
+                        [transition_baseline, transition_inventory],
+                    )
+                )
             if tuple(valid_paths) != eligible_membership:
                 issues.append(
                     _issue(

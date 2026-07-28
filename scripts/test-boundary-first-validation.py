@@ -47,6 +47,7 @@ def initialize_active_fixture(
     root: Path,
     *,
     symlink_parent: bool = False,
+    invalid_transition_snapshot: bool = False,
 ) -> tuple[Path, str]:
     copy_activation_surfaces(root)
     subprocess.run(["git", "init", "-q"], cwd=root, check=True)
@@ -108,13 +109,19 @@ def initialize_active_fixture(
             "state": "active",
             "activating_release": "v1.1.0",
             "rollback_release": "v1.0.0",
-            "grandfathering_baseline_revision": baseline,
-            "grandfathered_specs": [
-                "specs/accepted.md",
-                "specs/active.md",
-                "specs/approved.md",
-                "specs/é.md",
-            ],
+            "grandfathering_baseline_revision": (
+                bootstrap if invalid_transition_snapshot else baseline
+            ),
+            "grandfathered_specs": (
+                []
+                if invalid_transition_snapshot
+                else [
+                    "specs/accepted.md",
+                    "specs/active.md",
+                    "specs/approved.md",
+                    "specs/é.md",
+                ]
+            ),
         }
     )
     activation_path.write_text(json.dumps(data), encoding="utf-8")
@@ -829,6 +836,30 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 "BFR-ACTIVATION-IMMUTABLE",
                 {issue.code for issue in validate_activation(root)},
             )
+
+    def test_invalid_transition_snapshot_cannot_be_repaired_later(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            activation_path, baseline = initialize_active_fixture(
+                root,
+                invalid_transition_snapshot=True,
+            )
+            data = json.loads(activation_path.read_text(encoding="utf-8"))
+            data["grandfathering_baseline_revision"] = baseline
+            data["grandfathered_specs"] = [
+                "specs/accepted.md",
+                "specs/active.md",
+                "specs/approved.md",
+                "specs/é.md",
+            ]
+            activation_path.write_text(json.dumps(data), encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-qm", "repair active snapshot"], cwd=root, check=True)
+
+            codes = {issue.code for issue in validate_activation(root)}
+            self.assertIn("BFR-BASELINE-PARENT", codes)
+            self.assertIn("BFR-GRANDFATHERED-MEMBERSHIP", codes)
+            self.assertIn("BFR-ACTIVATION-IMMUTABLE", codes)
 
     def test_unicode_parent_path_is_inventoried_and_symlink_mode_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
