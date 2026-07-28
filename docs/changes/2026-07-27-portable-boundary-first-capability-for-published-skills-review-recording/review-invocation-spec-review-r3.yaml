@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: spec-review-r3
+review_stage: spec-review
+review_target: specs/boundary-first-proof-model.md
+base_revision: 7cc22ca1
+head_revision: 31dfa88d
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L1
+author_context_id: run-pbf-20260727-contract-simplification
+reviewer_context_id: isolated-spec-r3
+context_separation_mechanism: fresh-reviewer
+risk_tier: elevated
+risk_tier_triggers:
+  - contract-scope-reduction
+  - activation-compatibility
+  - rollback-semantics
+governing_artifacts:
+  - docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  - specs/boundary-first-proof-model.md
+formal_criteria:
+  - spec-review-v1
+prompt_template_version: spec-review-v1
+initial_packet_inventory:
+  - path: docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+    revision: 71af80d1
+    sha256: d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+  - path: specs/boundary-first-proof-model.md
+    revision: 31dfa88d
+    sha256: aaff977da837653bcf059086e087f873d4a79301b44a3b3fbe374937760e070d
+  - path: specs/boundary-first-proof-model.md.diff
+    revision: 31dfa88d
+    sha256: 163957bbf908442663c71491cf3dfc5e9e17f07f9b0211839455f64e49d1d985
+initial_packet_sha256: b780535f15af0eaa2e524c01af0d807bb7f14d34274a3cb5c6b5c44c938fbc95
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - alignment with the accepted portable published-content proposal
+  - observable and testable pending/active activation semantics
+  - previous-release package rollback without repository mutation machinery
+  - historical compatibility and grandfathering
+  - structural versus semantic claim boundaries
+  - downstream artifact invalidation and architecture assessment
