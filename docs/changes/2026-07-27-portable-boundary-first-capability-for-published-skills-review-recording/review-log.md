@@ -9,6 +9,19 @@ capability proposal.
 
 ### Review entry
 
+Review ID: spec-review-r4
+Stage: spec-review
+Round: 4
+Reviewed artifact: specs/boundary-first-proof-model.md
+Status: changes-requested
+Detailed record: reviews/spec-review-r4.md
+Resolution: review-resolution.md#spec-review-r4
+Material findings: PBF-SR9
+Open findings: PBF-SR9
+Recording status: recorded
+
+### Review entry
+
 Review ID: spec-review-r3
 Stage: spec-review
 Round: 3

@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
@@ -17,6 +17,7 @@ Review closeout: proposal-review-r3
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: spec-review-r3
+Review closeout: spec-review-r4
 Review closeout: architecture-review-r1
 Review closeout: architecture-review-r2
 Review closeout: test-spec-review-r1
@@ -28,13 +29,14 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 41
-- Unresolved findings: 0
-- Final result: PBF-SR4 through PBF-SR8 are resolved by a closed active-only adoption rule, exact activation manifest fields, deterministic grandfathering, existing release metadata, and operator-owned external rollback.
+- Unresolved findings: 1
+- Final result: Spec-review R4 confirms the minimal capability boundary and requests one immutable pre-activation baseline for grandfathering.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-SR9 | accepted | in-progress | Derive grandfathered membership from the activating change's parent revision. |
 | PBF-SR4 | accepted | resolved | In-flight opt-in is active-only. |
 | PBF-SR5 | accepted | resolved | Active state requires immutable activating and rollback release tags. |
 | PBF-SR6 | accepted | resolved | Grandfathered membership has exact eligibility, exclusions, paths, capture time, and sorting. |
@@ -78,6 +80,23 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### spec-review-r4
+
+#### PBF-SR9 - Activating-change additions can grandfather themselves
+
+Finding ID: PBF-SR9
+Disposition: accepted
+Status: in-progress
+Owner: spec author
+Owning stage: spec revision
+Chosen action: Define the activating reviewed change's parent revision as the
+immutable inventory baseline and exclude paths introduced by the activating
+change.
+Rationale: Prospective adoption must not allow a new spec to classify itself as
+historical.
+Validation target: Revised PBF-R005c and spec-review R5.
+Validation evidence: Pending.
 
 ### spec-review-r3
 
