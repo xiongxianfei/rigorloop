@@ -17,6 +17,12 @@ from boundary_first_reference import (
     ProjectionContractError,
     project_reference,
 )
+from adapter_distribution import (
+    AdapterArtifactEntry,
+    adapter_archive_name,
+    parse_adapter_artifact_metadata_yaml,
+    parse_manifest_yaml,
+)
 
 
 ACTIVATION_RECORD = Path("specs/boundary-first-activation.yaml")
@@ -139,6 +145,13 @@ class ValidationIssue:
             "offending_value": _redacted_value(self.offending_value),
             "expected": self.expected,
         }
+
+
+@dataclass(frozen=True)
+class RollbackArtifactIdentity:
+    adapter: str
+    archive: str
+    sha256: str
 
 
 def _issue(
@@ -881,6 +894,185 @@ def _fixed_authoritative_path(
             "repository-owned regular file",
         )
     return candidate, None
+
+
+def _contained_regular_file(
+    root: Path,
+    relative_path: Path,
+) -> tuple[Path | None, ValidationIssue | None]:
+    candidate = root / relative_path
+    current = root
+    for part in relative_path.parts:
+        current = current / part
+        if current.is_symlink():
+            return None, _issue(
+                "BFR-ROLLBACK-PATH-UNSAFE",
+                relative_path.as_posix(),
+                "rollback metadata path must not traverse a symlink",
+                relative_path.as_posix(),
+                "repository-contained regular file",
+            )
+    resolved_root = root.resolve()
+    resolved_candidate = candidate.resolve(strict=False)
+    if (
+        not resolved_candidate.is_relative_to(resolved_root)
+        or not candidate.is_file()
+    ):
+        return None, _issue(
+            "BFR-ROLLBACK-PATH-UNSAFE",
+            relative_path.as_posix(),
+            "rollback metadata input must be a repository-contained regular file",
+            relative_path.as_posix(),
+            "repository-contained regular file",
+        )
+    return candidate, None
+
+
+def rollback_package_matrix(
+    root: Path,
+    activation_data: dict[str, object],
+) -> tuple[tuple[RollbackArtifactIdentity, ...], tuple[ValidationIssue, ...]]:
+    """Select existing rollback package identities without mutation or installation."""
+
+    rollback_release = activation_data.get("rollback_release")
+    if (
+        activation_data.get("state") != "active"
+        or not isinstance(rollback_release, str)
+        or not re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", rollback_release)
+    ):
+        return (), (
+            _issue(
+                "BFR-ROLLBACK-SELECTION",
+                ACTIVATION_RECORD.as_posix(),
+                "rollback package selection requires an active manifest and release tag",
+                [activation_data.get("state"), rollback_release],
+                ["active", "v<major>.<minor>.<patch>"],
+            ),
+        )
+
+    manifest_relative = Path("dist/adapters/manifest.yaml")
+    metadata_relative = (
+        Path("docs/reports/adapter-artifacts/releases")
+        / f"{rollback_release}.yaml"
+    )
+    manifest_path, manifest_issue = _contained_regular_file(root, manifest_relative)
+    metadata_path, metadata_issue = _contained_regular_file(root, metadata_relative)
+    path_issues = tuple(
+        issue for issue in (manifest_issue, metadata_issue) if issue is not None
+    )
+    if path_issues:
+        return (), path_issues
+    assert manifest_path is not None
+    assert metadata_path is not None
+
+    try:
+        manifest = parse_manifest_yaml(
+            manifest_path.read_text(encoding="utf-8"),
+            manifest_path,
+        )
+        metadata = parse_adapter_artifact_metadata_yaml(
+            metadata_path.read_text(encoding="utf-8"),
+            metadata_path,
+        )
+    except (OSError, ValueError) as exc:
+        return (), (
+            _issue(
+                "BFR-ROLLBACK-METADATA",
+                metadata_relative.as_posix(),
+                "rollback package metadata is malformed or unreadable",
+                str(exc),
+                "valid existing adapter support and artifact metadata",
+            ),
+        )
+
+    expected_adapters = tuple(
+        sorted(
+            {
+                adapter
+                for skill in manifest.skills.values()
+                for adapter in skill.adapters
+            },
+            key=lambda value: value.encode("utf-8"),
+        )
+    )
+    by_adapter: dict[str, list[AdapterArtifactEntry]] = {}
+    for artifact in metadata.artifacts:
+        by_adapter.setdefault(artifact.adapter, []).append(artifact)
+
+    issues: list[ValidationIssue] = []
+    if metadata.version != rollback_release:
+        issues.append(
+            _issue(
+                "BFR-ROLLBACK-MIXED-VERSION",
+                metadata_relative.as_posix(),
+                "rollback artifact metadata release differs from the selected release",
+                metadata.version,
+                rollback_release,
+            )
+        )
+    if tuple(sorted(by_adapter, key=lambda value: value.encode("utf-8"))) != expected_adapters:
+        issues.append(
+            _issue(
+                "BFR-ROLLBACK-ADAPTER-SET",
+                metadata_relative.as_posix(),
+                "rollback artifacts must match the adapter support inventory exactly",
+                sorted(by_adapter),
+                expected_adapters,
+            )
+        )
+    if metadata.validation_result != "pass":
+        issues.append(
+            _issue(
+                "BFR-ROLLBACK-RESULT",
+                metadata_relative.as_posix(),
+                "rollback release validation result must pass",
+                metadata.validation_result,
+                "pass",
+            )
+        )
+
+    matrix: list[RollbackArtifactIdentity] = []
+    for adapter in expected_adapters:
+        artifacts = by_adapter.get(adapter, [])
+        if len(artifacts) != 1:
+            issues.append(
+                _issue(
+                    "BFR-ROLLBACK-ADAPTER-COUNT",
+                    metadata_relative.as_posix(),
+                    "rollback metadata must contain exactly one artifact per adapter",
+                    [adapter, len(artifacts)],
+                    [adapter, 1],
+                )
+            )
+            continue
+        artifact = artifacts[0]
+        expected_archive = adapter_archive_name(adapter, rollback_release)
+        if (
+            artifact.archive != expected_archive
+            or artifact.result != "pass"
+            or not SHA256_RE.fullmatch(artifact.sha256)
+        ):
+            issues.append(
+                _issue(
+                    "BFR-ROLLBACK-ARTIFACT",
+                    metadata_relative.as_posix(),
+                    "rollback artifact identity must match the selected release and pass",
+                    [adapter, artifact.archive, artifact.sha256, artifact.result],
+                    [adapter, expected_archive, "64 lowercase hex characters", "pass"],
+                )
+            )
+            continue
+        matrix.append(
+            RollbackArtifactIdentity(
+                adapter=adapter,
+                archive=artifact.archive,
+                sha256=artifact.sha256,
+            )
+        )
+
+    if issues:
+        return (), tuple(issues)
+    return tuple(matrix), ()
 
 
 def _eligible_grandfathered_specs(

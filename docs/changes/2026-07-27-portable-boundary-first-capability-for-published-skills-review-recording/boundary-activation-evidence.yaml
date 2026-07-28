@@ -1,0 +1,30 @@
+Stage: implement
+Milestone: M4
+Result: passed
+Contract version: boundary-first-v1
+Repository activation state: pending
+Selected fixture rollback release: v0.3.5
+Adapter manifest sha256: 8ca18bd34be44fd7c4f331b4325234ddc03c1b3dc3fead53b3921a528b233ef4
+Selected metadata sha256: bb0e92c36541df0b8fd9c1ecc1c5581ea51944324fcedda91e8e6d5c0bdd91e6
+Command: python scripts/test-boundary-first-validation.py -k active_rollback_release_matches_current_adapter_metadata
+Command result: passed_1_test
+Ordered adapter matrix:
+  - adapter: claude
+    archive: rigorloop-adapter-claude-v0.3.5.zip
+    sha256: 38a375fb5ad7a18219dd25a4ac30c401b8d665d649d4ead5a4427b3e84b7ec88
+  - adapter: codex
+    archive: rigorloop-adapter-codex-v0.3.5.zip
+    sha256: 5f076e948b3b46d0063382e1a67887e6f60a79ec59b3d5db22c75d0e1b6b3382
+  - adapter: opencode
+    archive: rigorloop-adapter-opencode-v0.3.5.zip
+    sha256: 59d0c152b08a55a384ac52ae9736dcaada1a339d6a3c3ed35a7d368e0cffde39
+Negative matrices:
+  - missing
+  - additional
+  - duplicated
+  - failing
+  - mixed-version
+Repository mutation performed: false
+Installation performed: false
+Publication performed: false
+Writer or receipt added: false

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import subprocess
 import tempfile
@@ -16,6 +17,7 @@ from boundary_first_reference import (
     raw_sha256,
 )
 from boundary_first_validation import (
+    rollback_package_matrix,
     validate_activation,
     validate_changed_spec,
     validate_feature_record,
@@ -860,6 +862,125 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             self.assertIn("BFR-BASELINE-PARENT", codes)
             self.assertIn("BFR-GRANDFATHERED-MEMBERSHIP", codes)
             self.assertIn("BFR-ACTIVATION-IMMUTABLE", codes)
+
+    def test_active_rollback_release_matches_current_adapter_metadata(self) -> None:
+        activation = {
+            "state": "active",
+            "rollback_release": "v0.3.5",
+        }
+        protected = (
+            ROOT / "specs" / "boundary-first-activation.yaml",
+            ROOT / "specs" / "boundary-first-proof-model.md",
+            ROOT / "specs" / "boundary-first-proof-model.test.md",
+            ROOT / "dist" / "adapters" / "manifest.yaml",
+            ROOT
+            / "docs"
+            / "reports"
+            / "adapter-artifacts"
+            / "releases"
+            / "v0.3.5.yaml",
+        )
+        before = {path: path.read_bytes() for path in protected}
+
+        matrix, issues = rollback_package_matrix(ROOT, activation)
+
+        self.assertEqual(issues, ())
+        self.assertEqual(
+            tuple(row.adapter for row in matrix),
+            ("claude", "codex", "opencode"),
+        )
+        self.assertEqual(
+            tuple(row.archive for row in matrix),
+            tuple(
+                f"rigorloop-adapter-{adapter}-v0.3.5.zip"
+                for adapter in ("claude", "codex", "opencode")
+            ),
+        )
+        self.assertTrue(all(re.fullmatch(r"[0-9a-f]{64}", row.sha256) for row in matrix))
+        self.assertEqual(before, {path: path.read_bytes() for path in protected})
+
+    def test_rollback_metadata_rejects_incomplete_or_mixed_matrices_without_mutation(self) -> None:
+        source_manifest = ROOT / "dist" / "adapters" / "manifest.yaml"
+        source_metadata = (
+            ROOT
+            / "docs"
+            / "reports"
+            / "adapter-artifacts"
+            / "releases"
+            / "v0.3.5.yaml"
+        )
+        original = source_metadata.read_text(encoding="utf-8")
+        codex_block = re.search(
+            r"  - adapter: codex\n(?:    .+\n){4}",
+            original,
+        )
+        self.assertIsNotNone(codex_block)
+        assert codex_block is not None
+        cases = {
+            "missing": re.sub(
+                r"  - adapter: claude\n(?:    .+\n){4}",
+                "",
+                original,
+                count=1,
+            ),
+            "additional": original.replace(
+                "\ncombined_artifact:",
+                "\n"
+                "  - adapter: extra\n"
+                "    archive: rigorloop-adapter-extra-v0.3.5.zip\n"
+                f"    sha256: {'a' * 64}\n"
+                "    install_root: .extra/skills/\n"
+                "    result: pass\n"
+                "\ncombined_artifact:",
+                1,
+            ),
+            "duplicated": original.replace(
+                codex_block.group(0),
+                codex_block.group(0) + codex_block.group(0),
+                1,
+            ),
+            "failing": original.replace("    result: pass", "    result: fail", 1),
+            "mixed-version": original.replace(
+                "  version: v0.3.5",
+                "  version: v0.3.4",
+                1,
+            ),
+        }
+        for name, metadata_text in cases.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                manifest = root / "dist" / "adapters" / "manifest.yaml"
+                metadata = (
+                    root
+                    / "docs"
+                    / "reports"
+                    / "adapter-artifacts"
+                    / "releases"
+                    / "v0.3.5.yaml"
+                )
+                manifest.parent.mkdir(parents=True)
+                metadata.parent.mkdir(parents=True)
+                manifest.write_bytes(source_manifest.read_bytes())
+                metadata.write_text(metadata_text, encoding="utf-8")
+                before = {
+                    manifest: manifest.read_bytes(),
+                    metadata: metadata.read_bytes(),
+                }
+
+                matrix, issues = rollback_package_matrix(
+                    root,
+                    {"state": "active", "rollback_release": "v0.3.5"},
+                )
+
+                self.assertEqual(matrix, ())
+                self.assertTrue(issues, name)
+                self.assertEqual(
+                    before,
+                    {
+                        manifest: manifest.read_bytes(),
+                        metadata: metadata.read_bytes(),
+                    },
+                )
 
     def test_unicode_parent_path_is_inventoried_and_symlink_mode_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

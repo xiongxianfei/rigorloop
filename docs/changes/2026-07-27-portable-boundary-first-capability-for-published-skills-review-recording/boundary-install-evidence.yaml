@@ -1,0 +1,27 @@
+Stage: implement
+Milestone: M4
+Result: passed
+Contract version: boundary-first-v1
+Canonical reference sha256: 5e26f3ea23ecbbea24b4f48181a33f5bf02704608a31b9990caae3785c53f64e
+Supported targets:
+  - claude
+  - codex
+  - opencode
+Governed canonical skills: 10
+Adapter-included target-skill pairs: 28
+Excluded pairs owned by existing adapter portability evaluation:
+  - claude/workflow
+  - opencode/workflow
+Focused command: python scripts/test-adapter-distribution.py -k boundary_first
+Focused result: passed_2_tests
+Full command: python scripts/test-adapter-distribution.py
+Full result: passed_133_tests
+Proof:
+  - generated and archive mapped-reference bytes match canonical bytes
+  - every adapter-included governed SKILL.md is readable after local installation
+  - every adapter-included installed reference matches canonical bytes
+  - perturbed archive reports target, skill, path, canonical hash, and archive hash
+Network used: false
+Repository fallback used by installed projects: false
+Publication performed: false
+Standalone packaging script added: false
