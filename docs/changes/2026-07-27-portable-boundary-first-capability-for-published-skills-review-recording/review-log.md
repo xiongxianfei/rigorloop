@@ -17,7 +17,7 @@ Status: changes-requested
 Detailed record: reviews/architecture-review-r3.md
 Resolution: review-resolution.md#architecture-review-r3
 Material findings: PBF-AR3
-Open findings: PBF-AR3
+Open findings: None
 Recording status: recorded
 
 ### Review entry
