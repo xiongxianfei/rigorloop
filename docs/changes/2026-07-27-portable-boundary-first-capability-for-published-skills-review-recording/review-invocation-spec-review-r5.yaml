@@ -1,0 +1,35 @@
+schema_version: 1
+review_id: spec-review-r5
+review_stage: spec-review
+review_target: specs/boundary-first-proof-model.md
+base_revision: b721c676
+head_revision: ee79ee48
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L1
+author_context_id: run-pbf-20260728-grandfather-baseline
+reviewer_context_id: isolated-spec-r5
+context_separation_mechanism: fresh-reviewer
+risk_tier: elevated
+risk_tier_triggers:
+  - activation-compatibility
+governing_artifacts:
+  - docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  - specs/boundary-first-proof-model.md
+formal_criteria:
+  - spec-review-v1
+prompt_template_version: spec-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-proof-model.md
+    revision: ee79ee48
+    sha256: e817386dfe866550547a44510cc11334ef6ebb197941b528283e0c3b798f7960
+  - path: specs/boundary-first-proof-model.md.diff
+    revision: ee79ee48
+    sha256: 214db0a454666c873560368027a6124a831c16f2ae9073a55341933b802ebc2f
+initial_packet_sha256: 741fc966fe15d7e03efdd012cf77594a655d118969607da1220554f72ab01d7e
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - closure of PBF-SR9
+  - immutable pre-activation grandfathering baseline
+  - no added writer, receipt, transaction, or attestation machinery
