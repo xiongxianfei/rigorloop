@@ -103,14 +103,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M3. Structural and activation validation
-- Current milestone state: review-requested
-- Latest review evidence: PBF-M3-CR1 through PBF-M3-CR8 corrections pass 39 focused tests and all three M3 commands
+- Current milestone state: resolution-needed
+- Latest review evidence: code-review-m3-r2 confirms CR1-CR8 resolved and records PBF-M3-CR9 through PBF-M3-CR13
 - Last reviewed milestone: M2
-- Review status: review-requested; stage=code-review; round=r2
+- Review status: changes-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review M3 R2
+- Next stage: review-resolution M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=5; open-findings=PBF-M3-CR10,PBF-M3-CR11,PBF-M3-CR12,PBF-M3-CR13,PBF-M3-CR9
 
 ## Milestones
 
@@ -183,7 +183,7 @@ an explicit blocking gap before implementation begins.
 
 ### M3. Structural and activation validation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
    - primary trust boundary: deterministic shape/reference enforcement without
      semantic overclaiming
    - deliverables:
@@ -311,6 +311,10 @@ A material review finding reopens its owning milestone and blocks the next one.
   membership, contained and redacted diagnostics, shared feature/test
   activation gating, and committed coordinator baseline `197d150b`; M3
   returned to independent R2.
+- 2026-07-28: code-review M3 R2 confirmed CR1-CR8 resolved and recorded
+  PBF-M3-CR9 through PBF-M3-CR13 for historical adoption/rollback
+  preservation, companion and inventory containment, aligned separators, and
+  deleted proof-map handling. M3 entered correction cycle 2.
 
 ## Decision log
 

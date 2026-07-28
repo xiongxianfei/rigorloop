@@ -83,6 +83,8 @@ changed_files:
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m3-implementation.md
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m3-r1.yaml
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m3-r1.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m3-r2.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m3-r2.md
   - docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/change.yaml
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md
@@ -151,22 +153,22 @@ changed_files:
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m2-r2.md
 review:
   status: changes-requested
-  unresolved_items: 0
-  material_findings: 27
+  unresolved_items: 5
+  material_findings: 32
   closed_findings: 27
-  open_findings: 0
+  open_findings: 5
   proposal_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r3.md
   spec_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r2.md
   architecture_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/architecture-review-r2.md
   plan_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/plan-review-r1.md
   test_spec_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/test-spec-review-r2.md
-  code_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m3-r1.md
+  code_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m3-r2.md
   review_log: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md
   review_resolution: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
   review_gate:
-    manifest: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m3-r1.yaml
+    manifest: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m3-r2.yaml
     independence_level: L1
-    initial_packet_sha256: sha256:2f78402a69879a5a1cff3edc5ba388a87f1d916485b5afc4d748b138edfc3723
+    initial_packet_sha256: sha256:8cf35d3f29eda5a33d32eec16f820acf72b65f1d0e5af00dc2ac67b6a60c652b
     phase_receipts:
       - risk-map-recorded
       - evidence-menu-released
