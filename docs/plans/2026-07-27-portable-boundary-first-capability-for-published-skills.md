@@ -103,13 +103,13 @@ an explicit blocking gap before implementation begins.
 
 ## Current Handoff Summary
 
-- Current milestone: M3. Structural and activation validation
-- Current milestone state: review-requested
-- Latest review evidence: PBF-M3-CR24 is resolved by validating the tagged transition snapshot and rejecting later baseline or inventory repair
-- Last reviewed milestone: M2
-- Review status: review-requested; stage=code-review; round=r10
-- Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review M3 R10 for transition snapshot immutability
+- Current milestone: M4. Package parity and prospective activation
+- Current milestone state: planned
+- Latest review evidence: code-review M3 R10 approved the transition snapshot contract with no material findings
+- Last reviewed milestone: M3
+- Review status: clean-with-notes; stage=code-review; round=r10
+- Remaining in-scope implementation milestones: M4
+- Next stage: amend and rereview the M4 proof command before implementation
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -184,7 +184,7 @@ an explicit blocking gap before implementation begins.
 
 ### M3. Structural and activation validation
 
-- Milestone state: review-requested
+- Milestone state: closed
    - primary trust boundary: deterministic shape/reference enforcement without
      semantic overclaiming
    - deliverables:
@@ -216,12 +216,12 @@ an explicit blocking gap before implementation begins.
    - recovery: remove selector routing and the new structural validators;
      leave the method and governed skills present but inactive.
    - implementation handoff:
-     - [ ] targeted validation passed
-     - [ ] hand off to code-review for M3
+     - [x] targeted validation passed
+     - [x] hand off to code-review for M3
    - review closeout:
-     - [ ] code-review completed
-     - [ ] material findings resolved or explicitly dispositioned
-     - [ ] M3 lifecycle projection updated before starting M4
+     - [x] code-review completed
+     - [x] material findings resolved or explicitly dispositioned
+     - [x] M3 lifecycle projection updated before starting M4
    - milestone commit message:
      `M3: enforce boundary records and activation structure`
 
