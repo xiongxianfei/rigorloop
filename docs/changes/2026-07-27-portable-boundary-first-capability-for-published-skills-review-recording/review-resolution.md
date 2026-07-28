@@ -15,9 +15,9 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 14
-- Unresolved findings: 1
-- Final result: Upstream authoring reviews are closed; M1 code review requires resolution of PBF-M1-CR1.
+- Findings resolved: 15
+- Unresolved findings: 0
+- Final result: Upstream authoring reviews and the M1 R1 correction are closed; M1 awaits code-review R2.
 
 ## Resolution Overview
 
@@ -37,7 +37,7 @@ Review closeout: test-spec-review-r2
 | PBF-AR2 | accepted | resolved | One shared helper defines reproducible projection and inventory digests. |
 | PBF-TSR1 | accepted | resolved | Acceptance criteria, exact edge cases, and supplemental normative surfaces have stable direct proof. |
 | PBF-TSR2 | accepted | resolved | M4 and final-verify broad-smoke invocations have separate stage owners and gates. |
-| PBF-M1-CR1 | accepted | open | Parent-directory symlink escape requires focused M1 correction and rereview. |
+| PBF-M1-CR1 | accepted | resolved | Parent-directory symlink escape is rejected before outside reads or writes. |
 
 ## Finding Details
 
@@ -285,10 +285,10 @@ for M1 under separate implementation authority.
 
 Finding ID: PBF-M1-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation
 Owning stage: review-resolution M1
 Chosen action: Add source-parent and destination-parent symlink-escape regressions, then apply one repository-contained path-component guard before projection filesystem operations.
 Rationale: The correction is fully determined by the approved security boundary and remains inside M1 implementation scope.
 Validation target: `python scripts/test-boundary-first-reference.py`; `python scripts/project-boundary-first-reference.py --check`
-Validation evidence: pending correction
+Validation evidence: Commit `0b198866`; `python scripts/test-boundary-first-reference.py` passed nine tests including source-parent and destination-parent escape cases; `python scripts/project-boundary-first-reference.py --check` passed all ten consumers.
