@@ -7,6 +7,7 @@ Closeout status: open
 Review closeout: test-spec-review-r7
 Review closeout: plan-review-r4
 Review closeout: plan-review-r5
+Review closeout: plan-review-r6
 Review closeout: test-spec-review-r6
 Review closeout: code-review-m3-r10
 Review closeout: code-review-m3-r9
@@ -45,16 +46,16 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 58
-- Unresolved findings: 3
-- Final result: PBF-TSR7-1, PBF-PLR4, and PBF-PLR5 remain open pending synchronized M4 plan rereview.
+- Findings resolved: 60
+- Unresolved findings: 1
+- Final result: PBF-PLR4 and PBF-PLR5 are resolved; PBF-TSR7-1 awaits test-spec-review R8.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-PLR5 | accepted | in-progress | Synchronize the complete Current Handoff cursor. |
-| PBF-PLR4 | accepted | in-progress | Synchronize the Current Handoff Summary with the open review state. |
+| PBF-PLR5 | accepted | resolved | Synchronize the complete Current Handoff cursor. |
+| PBF-PLR4 | accepted | resolved | Synchronize the Current Handoff Summary with the open review state. |
 | PBF-TSR7-1 | accepted | in-progress | Align M4 package proof with the existing adapter portability decision. |
 | PBF-M3-CR24 | accepted | resolved | Bind the tagged transition snapshot and current state to its exact first-parent baseline and inventory. |
 | PBF-M3-CR23 | accepted | resolved | Bind merge-aware transition parent, activating tag, and current release fields to one immutable transition. |
@@ -117,20 +118,29 @@ Review closeout: code-review-m1-r4
 
 ## Finding Details
 
+### plan-review-r6
+
+Review closeout: plan-review-r6
+Review result: approved
+Material findings: None
+Resolution required: no
+Validation evidence: PBF-PLR4 and PBF-PLR5 are reconciled and the
+adapter-applicable M4 correction remains intact.
+
 ### plan-review-r5
 
 #### PBF-PLR5 - Review cursor remains partially stale
 
 Finding ID: PBF-PLR5
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: plan
 Owning stage: plan revision
 Chosen action: Update latest evidence, review stage/round, and next stage as
 one state-sync transaction.
 Rationale: Partial cursor updates cannot authorize a downstream handoff.
 Validation target: plan-review R6.
-Validation evidence: Pending.
+Validation evidence: Plan-review R6 approved the complete handoff cursor.
 
 ### plan-review-r4
 
@@ -138,13 +148,13 @@ Validation evidence: Pending.
 
 Finding ID: PBF-PLR4
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: plan
 Owning stage: plan revision
 Chosen action: Correct the handoff reason to name the open review and finding.
 Rationale: The active plan must own one coherent downstream state.
 Validation target: plan-review R5.
-Validation evidence: Pending.
+Validation evidence: Plan-review R6 approved the synchronized open state.
 
 ### test-spec-review-r7
 
