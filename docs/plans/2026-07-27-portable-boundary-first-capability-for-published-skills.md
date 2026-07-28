@@ -103,12 +103,12 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M3. Structural and activation validation
-- Current milestone state: planned
-- Latest review evidence: code-review-m2-r2 independently confirms PBF-M2-CR1 resolved and closes M2
+- Current milestone state: review-requested
+- Latest review evidence: M3 implementation evidence records 30 structural/activation tests and 134 selector tests passing
 - Last reviewed milestone: M2
-- Review status: approved; stage=code-review; round=r2
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: implement M3
+- Next stage: code-review M3
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -183,7 +183,7 @@ an explicit blocking gap before implementation begins.
 
 ### M3. Structural and activation validation
 
-- Milestone state: planned
+- Milestone state: review-requested
    - primary trust boundary: deterministic shape/reference enforcement without
      semantic overclaiming
    - deliverables:
@@ -206,8 +206,8 @@ an explicit blocking gap before implementation begins.
    - recovery: remove selector routing and the new structural validators;
      leave the method and governed skills present but inactive.
    - implementation handoff:
-     - [ ] targeted validation passed
-     - [ ] hand off to code-review for M3
+     - [x] targeted validation passed
+     - [x] hand off to code-review for M3
    - review closeout:
      - [ ] code-review completed
      - [ ] material findings resolved or explicitly dispositioned
@@ -297,6 +297,10 @@ A material review finding reopens its owning milestone and blocks the next one.
   fixture proved prose presence rather than lifecycle behavior. The accepted
   declared-safe correction now supplies exact ten-stage packets, semantic
   owners, outcomes, handoffs, and negative mutation proof; M2 returned to R2.
+- 2026-07-28: implemented M3 structural feature/proof validation, pending
+  activation-baseline validation, grandfathered-spec review routing, durable
+  positive and failure fixtures, privacy-bounded diagnostics, and selector
+  integration; handed M3 to code-review after all targeted commands passed.
 
 ## Decision log
 
@@ -353,8 +357,10 @@ A material review finding reopens its owning milestone and blocks the next one.
   `python scripts/test-skill-validator.py`, and
   `python scripts/build-skills.py --check` passed after PBF-M2-CR1; the suite
   now contains 263 tests and four focused boundary-first lifecycle tests.
-- M3 and M4 implementation validation commands remain planned and have not
-  run.
+- M3: `python scripts/test-boundary-first-validation.py` passed 30 tests,
+  `python scripts/validate-boundary-first.py --check` passed the pending
+  baseline, and `python scripts/test-select-validation.py` passed 134 tests.
+- M4 implementation validation commands remain planned and have not run.
 
 ## Outcome and retrospective
 

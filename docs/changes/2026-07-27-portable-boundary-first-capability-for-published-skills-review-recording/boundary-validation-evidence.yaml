@@ -1,0 +1,22 @@
+Stage: implement
+Milestone: M3
+Result: passed
+Contract version: boundary-first-v1
+Activation state: pending
+Semantic completeness claimed: false
+Durable fixture roots:
+  - scripts/fixtures/boundary-first/feature-records/
+  - scripts/fixtures/boundary-first/proof-maps/
+  - scripts/fixtures/boundary-first/activation/
+Structural test count: 30
+Selector regression test count: 134
+CMD6 result: passed_30_tests
+CMD7 result: passed_pending_activation_baseline
+CMD8 result: passed_134_tests
+Privacy-bounded diagnostic fields:
+  - check_id
+  - path
+  - message
+  - offending_value
+  - expected
+Validated claim boundary: shape_references_activation_and_packaging_only

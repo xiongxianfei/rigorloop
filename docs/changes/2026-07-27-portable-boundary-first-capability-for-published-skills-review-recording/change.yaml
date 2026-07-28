@@ -21,6 +21,15 @@ tests:
   - Spec-review independently approves the boundary-first contract amendment before architecture.
 validation:
   -
+    command: python scripts/test-boundary-first-validation.py
+    result: pass_30_tests_M3
+  -
+    command: python scripts/validate-boundary-first.py --check
+    result: pass_pending_activation_baseline_M3
+  -
+    command: python scripts/test-select-validation.py
+    result: pass_134_tests_M3
+  -
     command: python scripts/test-skill-validator.py -k BoundaryFirstLifecycleSkillTests
     result: pass_4_tests_M2_after_PBF-M2-CR1
   -
@@ -57,6 +66,21 @@ validation:
     command: python scripts/validate-markdown-readability.py docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r1.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r2.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r3.md
     result: pass_with_audit_only_warnings_MDREAD-002_70_MDREAD-003_43
 changed_files:
+  - specs/boundary-first-activation.yaml
+  - scripts/boundary_first_validation.py
+  - scripts/validate-boundary-first.py
+  - scripts/test-boundary-first-validation.py
+  - scripts/test-select-validation.py
+  - scripts/validation_selection.py
+  - scripts/fixtures/boundary-first/feature-records/minimal.md
+  - scripts/fixtures/boundary-first/feature-records/complex.md
+  - scripts/fixtures/boundary-first/feature-records/semantic-omission.md
+  - scripts/fixtures/boundary-first/proof-maps/complete.md
+  - scripts/fixtures/boundary-first/proof-maps/complex-complete.md
+  - scripts/fixtures/boundary-first/proof-maps/gap.md
+  - scripts/fixtures/boundary-first/activation/unknown-state.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-validation-evidence.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m3-implementation.md
   - docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/change.yaml
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md
