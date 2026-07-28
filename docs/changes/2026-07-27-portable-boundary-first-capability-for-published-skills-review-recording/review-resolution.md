@@ -2,8 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
+Review closeout: code-review-m2-r1
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
@@ -20,13 +21,14 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 18
-- Unresolved findings: 0
-- Final result: PBF-M1-CR1 through PBF-M1-CR4 are resolved and code-review R4 closes M1.
+- Unresolved findings: 1
+- Final result: PBF-M2-CR1 requires a declared-safe M2 correction and same-stage rereview.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-M2-CR1 | accepted | in-progress | Replace phrase-only semantic fixtures with structured ten-stage packets and direct outcome/handoff assertions. |
 | PBC-PR1 | accepted | resolved | R3 confirmed the ten-skill scope, proposal-stage exclusion, and governed-resource consumer rule. |
 | PBC-PR2 | accepted | resolved | R3 confirmed bounded independent semantic-review evidence and claim limits. |
 | PBC-PR3 | accepted | resolved | R3 confirmed the corrected lifecycle sequence. |
@@ -47,6 +49,20 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### code-review-m2-r1
+
+#### PBF-M2-CR1 - Semantic behavior fixtures do not exercise the approved contract
+
+Finding ID: PBF-M2-CR1
+Disposition: accepted
+Status: in-progress
+Owner: M2 implement
+Owning stage: review-resolution M2
+Chosen action: Replace phrase-only fixture cases with an exact ten-skill packet matrix carrying structured input, semantic owner, expected outcome, and expected handoff; add negative mutation proof.
+Rationale: T10 and T16 require stage behavior and handoff proof, not only published-text substring checks.
+Validation target: CMD3, CMD4, CMD5, focused lifecycle tests, and same-stage code-review M2 R2.
+Validation evidence: Pending correction.
 
 ### proposal-review-r1
 

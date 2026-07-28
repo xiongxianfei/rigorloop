@@ -9,6 +9,19 @@ capability proposal.
 
 ### Review entry
 
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit e96791be
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: PBF-M2-CR1
+Open findings: PBF-M2-CR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m1-r4
 Stage: code-review
 Round: 4
