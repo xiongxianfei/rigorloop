@@ -25,16 +25,16 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 33
-- Unresolved findings: 2
-- Final result: R4 confirms PBF-M3-CR15 resolved; PBF-M3-CR14 remains partially resolved and PBF-M3-CR16 is open pending renewed correction authority and an upstream trust-owner decision.
+- Findings resolved: 35
+- Unresolved findings: 0
+- Final result: M3 now fails every rolled-back state closed. PBF-M3-CR14 and PBF-M3-CR16 are finally dispositioned to the M4 transaction receipt and await independent M3 R5 confirmation.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-M3-CR16 | accepted | in-progress | Bind accepted proof-map identities to the M4 rollback transaction receipt. |
-| PBF-M3-CR14 | accepted | in-progress | Use the M4 rollback transaction receipt as pre-transition authority. |
+| PBF-M3-CR16 | deferred | resolved | M3 fails closed; M4 must validate paired feature/proof identities. |
+| PBF-M3-CR14 | deferred | resolved | M3 fails closed; M4 owns pre-transition receipt provenance. |
 | PBF-M3-CR15 | accepted | resolved | Fixed activation and proof-model inputs are contained before reads. |
 | PBF-M3-CR9 | accepted | resolved | Immutable activation history survives later marked adoption and rollback. |
 | PBF-M3-CR10 | accepted | resolved | Explicit and derived feature/proof paths are contained before reads. |
@@ -78,8 +78,8 @@ R4 partially resolves PBF-M3-CR14 and updates its original disposition below.
 #### PBF-M3-CR16 - Rollback inventory omits accepted proof maps
 
 Finding ID: PBF-M3-CR16
-Disposition: accepted
-Status: in-progress
+Disposition: deferred
+Status: resolved
 Owner: M3 implement and M4 rollback transaction
 Decision owner: user
 Decision needed: Resolved 2026-07-28; use paired feature/proof identities in the M4 rollback transaction receipt.
@@ -87,15 +87,15 @@ Owning stage: review-resolution M3
 Chosen action: Include proof-map identities in the same trusted pre-transition evidence model selected for PBF-M3-CR14.
 Rationale: PBF-R057 preserves boundary records and proof maps; feature-only identity is incomplete.
 Validation target: missing, stale, symlinked, and mismatched preserved proof maps, CMD6, CMD7, and code-review M3 R5.
-Validation evidence: R4 shows activation passes with an exact preserved feature and missing proof map.
+Validation evidence: CMD6 passes 48 tests and M3 now returns `BFR-ROLLBACK-RECEIPT-REQUIRED` before any rolled-back proof omission can pass. M4 owns paired receipt validation.
 
 ### code-review-m3-r3
 
 #### PBF-M3-CR14 - Rollback trusts self-declared current lifecycle status
 
 Finding ID: PBF-M3-CR14
-Disposition: accepted
-Status: in-progress
+Disposition: deferred
+Status: resolved
 Owner: M3 implement and M4 rollback transaction
 Decision owner: user
 Decision needed: Resolved 2026-07-28; the M4 rollback transaction receipt owns pre-transition evidence.
@@ -103,7 +103,7 @@ Owning stage: review-resolution M3
 Chosen action: Select and bind a trusted pre-transition evidence owner before another correction begins.
 Rationale: Current rolled-back files and a recomputable digest cannot prove that membership existed before the transition.
 Validation target: add-new plus recomputed-inventory rejection, CMD6, CMD7, and code-review M3 R5.
-Validation evidence: The unchanged-inventory regression passes, but R4 shows a new post-rollback approved marker passes after current path/hash insertion and digest recomputation.
+Validation evidence: CMD6 passes 48 tests; both the preserved marker and a current-state recomputed marker fail in M3, and activation returns `BFR-ROLLBACK-RECEIPT-REQUIRED`. M4 owns receipt provenance.
 
 #### PBF-M3-CR15 - Fixed authoritative inputs may follow external symlinks
 

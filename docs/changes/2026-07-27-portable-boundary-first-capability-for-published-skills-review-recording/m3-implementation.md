@@ -56,18 +56,20 @@ contains explicit and derived companion paths before any read, accepts valid
 CommonMark alignment separators, treats deletion as a changed contract
 surface, and rejects symlinked historical inventory roots and entries.
 
-Code-review M3 R3 confirmed those five corrections and found two remaining
-fail-open paths. The final correction adds a closed rollback-preservation
-path-and-byte inventory so a new self-declared accepted marker cannot adopt
-after rollback. It also contains the fixed activation record and authoritative
-proof-model spec before any read. The governing spec, test spec, architecture,
-ADR, and pending activation record now describe the same rollback inventory.
+Code-review M3 R3 and R4 exposed that current rolled-back files cannot prove
+pre-transition provenance and that feature-only identity omits required proof
+maps. The authorized fourth correction assigns that temporal boundary to the
+M4 rollback transaction receipt. M3 reserves the fixed receipt path and
+activation binding but rejects every rolled-back state and marker until M4
+implements receipt preparation and validation. The receipt contract requires
+paired feature/proof identities bound to the source active activation record.
+Fixed activation and proof-model inputs remain contained before reads.
 
 ## Validation
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-boundary-first-validation.py` | pass; 47 tests after R3 |
+| `python scripts/test-boundary-first-validation.py` | pass; 48 tests after R4 |
 | `python scripts/validate-boundary-first.py --check` | pass; pending activation baseline |
 | `python scripts/test-select-validation.py` | pass; 134 tests |
 | `python -m py_compile scripts/boundary_first_validation.py scripts/validate-boundary-first.py scripts/test-boundary-first-validation.py` | pass |
@@ -75,6 +77,6 @@ ADR, and pending activation record now describe the same rollback inventory.
 
 ## Handoff
 
-M3 is ready for independent code-review R4 against the approved proof-model
+M3 is ready for independent code-review R5 against the approved proof-model
 spec, test spec, architecture decision, plan, implementation diff, fixtures,
 and bounded validation evidence. M4 remains blocked until M3 review closes.

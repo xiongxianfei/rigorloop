@@ -77,8 +77,8 @@ canonical_reference
 canonical_reference_sha256
 grandfathered_specs
 grandfathered_inventory_sha256
-rollback_preserved_specs
-rollback_preserved_inventory_sha256
+rollback_receipt
+rollback_receipt_sha256
 governed_skills
 projection_sha256
 ```
@@ -109,11 +109,14 @@ algorithm:
 `projection_sha256` covers exactly the ten governed projected reference paths.
 `grandfathered_inventory_sha256` covers exactly the eligible historical spec
 paths recorded in `grandfathered_specs`.
-`rollback_preserved_specs` is empty before rollback. The rollback transaction
-snapshots every accepted, approved, or active marked feature spec as a sorted
-path and raw-byte SHA-256 before changing state. Its digest uses the same
-inventory algorithm. Rolled-back validation permits markers only for exact
-path-and-byte members of that closed inventory.
+`rollback_receipt_sha256` is null before rollback. M4 prepares the fixed
+repository-local rollback receipt while activation is still `active`, binding
+the source activation-record SHA-256 and a sorted inventory of paired feature
+and proof-map paths and raw-byte SHA-256 values. The state transition then
+binds the receipt's raw-byte identity in the activation record. Rolled-back
+validation permits markers only for exact, coherent feature/proof pairs in
+that bound receipt. M3 fails every rolled-back state closed until the M4
+transaction writer and receipt validator are present.
 The generator and validator import the same helper rather than reimplementing
 serialization.
 
