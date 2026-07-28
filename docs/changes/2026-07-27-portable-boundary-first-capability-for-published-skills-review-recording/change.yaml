@@ -23,6 +23,42 @@ tests:
 validation:
   -
     command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_12_checks_final_verify_461s
+  -
+    command: python scripts/test-adapter-distribution.py
+    result: pass_133_tests_final_verify_232s
+  -
+    command: python scripts/test-boundary-first-reference.py
+    result: pass_10_tests_final_verify
+  -
+    command: python scripts/project-boundary-first-reference.py --check
+    result: pass_10_consumers_final_verify
+  -
+    command: python scripts/validate-skills.py
+    result: pass_24_skill_files_final_verify
+  -
+    command: python scripts/test-skill-validator.py
+    result: pass_263_tests_final_verify
+  -
+    command: python scripts/build-skills.py --check
+    result: pass_generated_skills_final_verify
+  -
+    command: python scripts/test-boundary-first-validation.py
+    result: pass_56_tests_final_verify
+  -
+    command: python scripts/validate-boundary-first.py --check
+    result: pass_pending_manifest_final_verify
+  -
+    command: python scripts/test-select-validation.py
+    result: pass_134_tests_final_verify
+  -
+    command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+    result: pass_45_reviews_64_findings_final_verify
+  -
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md --path specs/boundary-first-proof-model.md --path specs/boundary-first-proof-model.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md --path docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md --path docs/plan.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/change.yaml --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/explain-change.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
+    result: pass_final_verify
+  -
+    command: bash scripts/ci.sh --mode broad-smoke
     result: pass_12_checks_M4
   -
     command: python scripts/test-adapter-distribution.py -k boundary_first
