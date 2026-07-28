@@ -21,7 +21,6 @@ from boundary_first_reference import (
 
 ACTIVATION_RECORD = Path("specs/boundary-first-activation.yaml")
 PROOF_MODEL_SPEC = Path("specs/boundary-first-proof-model.md")
-ADAPTER_MANIFEST = Path("dist/adapters/manifest.yaml")
 ACTIVATION_STATES = frozenset({"pending", "active"})
 CORE_DIMENSIONS = (
     "input-domain",
@@ -901,12 +900,11 @@ def _eligible_grandfathered_specs(
         )
     try:
         listing = subprocess.run(
-            ["git", "ls-tree", "-r", "--name-only", baseline_revision, "--", "specs"],
+            ["git", "ls-tree", "-rz", baseline_revision, "--", "specs"],
             cwd=root,
             check=True,
             capture_output=True,
-            text=True,
-        ).stdout.splitlines()
+        ).stdout.split(b"\0")
     except (OSError, subprocess.CalledProcessError):
         return (), (
             _issue(
@@ -917,7 +915,23 @@ def _eligible_grandfathered_specs(
                 "readable source-control commit",
             ),
         )
-    for relative in sorted(listing, key=lambda value: value.encode("utf-8")):
+    for entry in listing:
+        if not entry:
+            continue
+        try:
+            header, raw_relative = entry.split(b"\t", 1)
+            mode, object_type, object_id = header.decode("ascii").split(" ", 2)
+            relative = raw_relative.decode("utf-8")
+        except (UnicodeDecodeError, ValueError):
+            return (), (
+                _issue(
+                    "BFR-BASELINE-TREE",
+                    ACTIVATION_RECORD.as_posix(),
+                    "baseline tree entry is malformed or not UTF-8",
+                    entry,
+                    "regular UTF-8 Git tree entry",
+                ),
+            )
         if (
             not re.fullmatch(r"specs/[^/]+\.md", relative)
             or relative == "specs/README.md"
@@ -925,15 +939,25 @@ def _eligible_grandfathered_specs(
             or relative == PROOF_MODEL_SPEC.as_posix()
         ):
             continue
+        if object_type != "blob" or mode not in {"100644", "100755"}:
+            return (), (
+                _issue(
+                    "BFR-BASELINE-MODE",
+                    relative,
+                    "baseline feature spec must be a regular blob",
+                    f"{mode} {object_type}",
+                    "100644 blob or 100755 blob",
+                ),
+            )
         try:
-            text = subprocess.run(
-                ["git", "show", f"{baseline_revision}:{relative}"],
+            raw_text = subprocess.run(
+                ["git", "cat-file", "blob", object_id],
                 cwd=root,
                 check=True,
                 capture_output=True,
-                text=True,
             ).stdout
-        except (OSError, subprocess.CalledProcessError):
+            text = raw_text.decode("utf-8")
+        except (OSError, subprocess.CalledProcessError, UnicodeDecodeError):
             return (), (
                 _issue(
                     "BFR-BASELINE-UNAVAILABLE",
@@ -948,15 +972,134 @@ def _eligible_grandfathered_specs(
         if _line_value(_live_markdown(text), "boundary_contract") is not None:
             continue
         eligible.append(relative)
-    return tuple(eligible), ()
+    return tuple(sorted(eligible, key=lambda value: value.encode("utf-8"))), ()
 
 
-def _adapter_manifest_version(root: Path) -> str | None:
-    path = root / ADAPTER_MANIFEST
-    if not path.is_file() or path.is_symlink():
-        return None
-    match = re.search(r"(?m)^version:\s*(\S+)\s*$", path.read_text(encoding="utf-8"))
-    return match.group(1) if match else None
+def _activation_transition_parent(
+    root: Path,
+) -> tuple[str | None, tuple[ValidationIssue, ...]]:
+    try:
+        commits = subprocess.run(
+            ["git", "log", "--format=%H", "--", ACTIVATION_RECORD.as_posix()],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
+    except (OSError, subprocess.CalledProcessError):
+        commits = []
+    transitions: list[tuple[str, str]] = []
+    for commit in commits:
+        try:
+            ancestry = subprocess.run(
+                ["git", "rev-list", "--parents", "-n", "1", commit],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.split()
+            if len(ancestry) != 2:
+                continue
+            parent = ancestry[1]
+            current = json.loads(
+                subprocess.run(
+                    ["git", "show", f"{commit}:{ACTIVATION_RECORD.as_posix()}"],
+                    cwd=root,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout
+            )
+            previous = json.loads(
+                subprocess.run(
+                    ["git", "show", f"{parent}:{ACTIVATION_RECORD.as_posix()}"],
+                    cwd=root,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout
+            )
+        except (OSError, subprocess.CalledProcessError, json.JSONDecodeError):
+            continue
+        if current.get("state") == "active" and previous.get("state") == "pending":
+            transitions.append((commit, parent))
+    if len(transitions) != 1:
+        return None, (
+            _issue(
+                "BFR-ACTIVATION-TRANSITION",
+                ACTIVATION_RECORD.as_posix(),
+                "source control must contain exactly one pending-to-active transition",
+                len(transitions),
+                1,
+            ),
+        )
+    return transitions[0][1], ()
+
+
+def _release_predecessor(
+    root: Path,
+    activating_release: object,
+) -> tuple[str | None, tuple[ValidationIssue, ...]]:
+    if not isinstance(activating_release, str) or not re.fullmatch(
+        r"v[0-9]+\.[0-9]+\.[0-9]+", activating_release
+    ):
+        return None, (
+            _issue(
+                "BFR-ACTIVATING-RELEASE",
+                ACTIVATION_RECORD.as_posix(),
+                "active manifest requires an immutable semantic-version tag",
+                activating_release,
+                "existing v<major>.<minor>.<patch> tag",
+            ),
+        )
+    try:
+        tag_names = subprocess.run(
+            ["git", "tag", "--list", "v[0-9]*"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
+    except (OSError, subprocess.CalledProcessError):
+        tag_names = []
+    versions: list[tuple[tuple[int, int, int], str]] = []
+    for tag in tag_names:
+        match = re.fullmatch(r"v([0-9]+)\.([0-9]+)\.([0-9]+)", tag)
+        if not match:
+            continue
+        try:
+            subprocess.run(
+                ["git", "rev-parse", "--verify", f"refs/tags/{tag}^{{commit}}"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+            )
+        except (OSError, subprocess.CalledProcessError):
+            continue
+        versions.append((tuple(int(part) for part in match.groups()), tag))
+    ordered = [tag for _, tag in sorted(versions)]
+    if activating_release not in ordered:
+        return None, (
+            _issue(
+                "BFR-ACTIVATING-RELEASE",
+                ACTIVATION_RECORD.as_posix(),
+                "activating release tag does not exist",
+                activating_release,
+                "existing immutable release tag",
+            ),
+        )
+    index = ordered.index(activating_release)
+    if index == 0:
+        return None, (
+            _issue(
+                "BFR-ROLLBACK-RELEASE",
+                ACTIVATION_RECORD.as_posix(),
+                "activating release has no published predecessor",
+                activating_release,
+                "release tag with an immediate predecessor",
+            ),
+        )
+    return ordered[index - 1], ()
 
 
 def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
@@ -1070,19 +1213,11 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                     )
                 )
     else:
-        if not isinstance(activating_release, str) or not re.fullmatch(
-            r"v[0-9]+\.[0-9]+\.[0-9]+", activating_release
-        ):
-            issues.append(
-                _issue(
-                    "BFR-ACTIVATING-RELEASE",
-                    ACTIVATION_RECORD.as_posix(),
-                    "active manifest requires an immutable release tag",
-                    activating_release,
-                    "v<major>.<minor>.<patch>",
-                )
-            )
-        expected_rollback = _adapter_manifest_version(root)
+        expected_rollback, release_issues = _release_predecessor(
+            root,
+            activating_release,
+        )
+        issues.extend(release_issues)
         if rollback_release != expected_rollback:
             issues.append(
                 _issue(
@@ -1090,7 +1225,32 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                     ACTIVATION_RECORD.as_posix(),
                     "rollback release must be the immediately preceding published release",
                     rollback_release,
-                    expected_rollback or "tracked adapter manifest version",
+                    expected_rollback or "immediate predecessor tag",
+                )
+            )
+        expected_baseline, transition_issues = _activation_transition_parent(root)
+        issues.extend(transition_issues)
+        if not isinstance(baseline_revision, str) or not re.fullmatch(
+            r"[0-9a-f]{40,64}",
+            baseline_revision,
+        ):
+            issues.append(
+                _issue(
+                    "BFR-BASELINE-REVISION",
+                    ACTIVATION_RECORD.as_posix(),
+                    "active baseline must be a full commit identity",
+                    baseline_revision,
+                    "full source-control commit identity",
+                )
+            )
+        elif baseline_revision != expected_baseline:
+            issues.append(
+                _issue(
+                    "BFR-BASELINE-PARENT",
+                    ACTIVATION_RECORD.as_posix(),
+                    "baseline must be the exact parent of the pending-to-active transition",
+                    baseline_revision,
+                    expected_baseline or "transition parent commit",
                 )
             )
 
@@ -1132,7 +1292,11 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                     [],
                 )
             )
-        if state == "active" and isinstance(baseline_revision, str):
+        if (
+            state == "active"
+            and isinstance(baseline_revision, str)
+            and re.fullmatch(r"[0-9a-f]{40,64}", baseline_revision)
+        ):
             eligible_membership, eligibility_issues = _eligible_grandfathered_specs(
                 root,
                 baseline_revision,
