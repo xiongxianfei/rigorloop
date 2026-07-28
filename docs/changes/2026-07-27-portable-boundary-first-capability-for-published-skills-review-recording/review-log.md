@@ -17,7 +17,7 @@ Status: blocked
 Detailed record: reviews/test-spec-review-r3.md
 Resolution: review-resolution.md#test-spec-review-r3
 Material findings: PBF-TSR3, PBF-TSR4, PBF-TSR5
-Open findings: PBF-TSR3, PBF-TSR4, PBF-TSR5
+Open findings: None
 Recording status: recorded
 
 ### Review entry

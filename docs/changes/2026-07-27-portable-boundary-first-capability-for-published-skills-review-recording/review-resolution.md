@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: test-spec-review-r3
 Review closeout: code-review-m3-r1
@@ -34,17 +34,17 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 46
-- Unresolved findings: 3
-- Final result: PBF-TSR3 through PBF-TSR5 require test-spec revision and a byte-consistent R4 invocation before M3 implementation.
+- Findings resolved: 49
+- Unresolved findings: 0
+- Final result: PBF-TSR3 through PBF-TSR5 are resolved in the revised proof map; a byte-consistent R4 invocation remains required before M3 implementation.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-TSR3 | accepted | in-progress | Make parent-revision proof executable and assert the complete two-state manifest contract. |
-| PBF-TSR4 | accepted | in-progress | Prove deterministic rollback selection, non-mutation, and absence of install or publish actions. |
-| PBF-TSR5 | accepted | in-progress | Route the approved proof map to M3 rather than closed M1. |
+| PBF-TSR3 | accepted | resolved | Make parent-revision proof executable and assert the complete two-state manifest contract. |
+| PBF-TSR4 | accepted | resolved | Prove deterministic rollback selection, non-mutation, and absence of install or publish actions. |
+| PBF-TSR5 | accepted | resolved | Route the approved proof map to M3 rather than closed M1. |
 | PBF-PLR1 | accepted | resolved | Replace the superseded ADR link. |
 | PBF-PLR2 | accepted | resolved | Split M3 fixture logic from M4 real-metadata integration proof. |
 | PBF-PLR3 | accepted | resolved | Keep M4 recovery local and rename activation claims as readiness. |
@@ -100,7 +100,7 @@ Review closeout: code-review-m1-r4
 
 Finding ID: PBF-TSR3
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec revision
 Chosen action: Add an isolated parent-and-activating revision fixture and exact
@@ -108,13 +108,15 @@ manifest, inventory, exclusion, uniqueness, and ordering assertions.
 Rationale: Parent-derived grandfathering must be reproducible without relying
 on the ambient repository history.
 Validation target: Test-spec-review R4.
-Validation evidence: Pending.
+Validation evidence: T8 names every manifest identity, eligibility rule,
+exclusion, uniqueness rule, and ordering rule; T9 owns a temporary
+parent-and-activating Git history and rejects child self-grandfathering.
 
 #### PBF-TSR4 - Rollback readiness proof omits read-only guarantees
 
 Finding ID: PBF-TSR4
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec revision
 Chosen action: Assert the selected release tag, raw-UTF-8 package ordering,
@@ -122,20 +124,23 @@ before-and-after governed-file bytes, and a no-action sentinel.
 Rationale: A read-only validator must prove both package selection and absence
 of release-side effects.
 Validation target: Test-spec-review R4.
-Validation evidence: Pending.
+Validation evidence: T13 requires selected-tag output, raw-UTF-8 adapter
+ordering, byte-for-byte pre/post snapshots, and fail-if-called install and
+publish sentinels.
 
 #### PBF-TSR5 - Downstream implementation handoff is stale
 
 Finding ID: PBF-TSR5
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec revision
 Chosen action: Route only to M3 after clean rereview and separate implementation
 authority.
 Rationale: M1 and M2 are already closed.
 Validation target: Test-spec-review R4.
-Validation evidence: Pending.
+Validation evidence: Next artifacts routes to M3 only after approved
+test-spec-review and separate implementation authority.
 
 ### plan-review-r3
 
