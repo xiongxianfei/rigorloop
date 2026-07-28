@@ -13,6 +13,7 @@
 - [Spec and Test-Spec Structural Hygiene](../docs/proposals/2026-05-19-spec-and-test-spec-structural-hygiene.md)
 - [Test-Spec Contract Normalization](../docs/proposals/2026-05-20-test-spec-contract-normalization.md)
 - [Published Skill Resource Integrity with an Architecture-Skill Pilot](../docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md)
+- [Portable Boundary-First Capability for Published Skills](../docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md)
 
 ## Goal and context
 
@@ -37,6 +38,13 @@ This amendment defines structural hygiene for this spec and its matching test sp
 This amendment defines the contract gap found by the test-spec contract normalization proposal. It makes normalized-skill front-matter metadata explicit, requires visible stop-condition sections for invocation-blocking boundaries, and requires preservation proof when an existing artifact-producing skill gains an output skeleton.
 
 This amendment defines published-skill resource integrity. It makes skill-local resource references explicit through resource maps, adds bounded legacy-reference migration lint, defines raw-byte parity for generated and installed mapped resources, separates runtime fallback from package validity, and uses the architecture skill as the first resource-chain pilot.
+
+This amendment adopts the portable boundary-first method defined by
+`specs/boundary-first-proof-model.md`.
+It requires ten governed skills to map one versioned `READ` reference,
+preserves skill-local package self-containment, and requires deterministic
+one-source projection and raw-byte parity without moving stage-specific
+workflow policy into the shared reference.
 
 ## Spec growth strategy
 
@@ -97,6 +105,7 @@ This spec covers five current concerns, organized by slice:
 | Published-skill design pilot | R27-R36 | E8-E12 | [RigorLoop Published Skill Design Contract](../docs/proposals/2026-05-19-rigorloop-published-skill-design-contract.md) |
 | Assets-first plan pilot | R37-R45 | E13-E16 | [Assets-First Progressive Disclosure Pilot for Published Skills](../docs/proposals/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills.md) |
 | Published-skill resource integrity pilot | R46-R55 | E18-E22 | [Published Skill Resource Integrity with an Architecture-Skill Pilot](../docs/proposals/2026-06-22-published-skill-resource-integrity-architecture-pilot.md) |
+| Portable boundary-first capability | R56-R63 | E23 | [Portable Boundary-First Capability for Published Skills](../docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md) |
 
 The Examples section remains a single sequence because some examples are cross-cutting. The Requirement and Acceptance criteria sections use slice headers for direct navigation.
 
@@ -110,6 +119,9 @@ This spec uses two rollout labels:
 - `published-skill design pilot`: the R27 through R36 amendment slice covering `proposal`, `proposal-review`, validator changes needed for the pilot, and generated adapter validation for changed skills.
 - `assets-first plan pilot`: the R37 through R45 amendment slice covering `skills/plan/SKILL.md`, exactly four normative assets under `skills/plan/assets/`, validator and adapter proof for packaged assets, token-cost measurement, and plan behavior-parity evidence.
 - `published-skill resource integrity pilot`: the R46 through R55 amendment slice covering generic mapped-resource integrity rules, bounded legacy-reference migration lint, raw-byte parity, packed clean-install proof, and architecture-skill pilot evidence.
+- `portable boundary-first capability`: the R56 through R63 amendment slice
+  covering the ten governed skill mappings, one-source deterministic
+  projection, byte parity, and the shared-reference content boundary.
 
 Do not use the unqualified phrase `first implementation slice` when the intended slice could be ambiguous.
 
@@ -272,6 +284,16 @@ Given a mapped redundant convenience resource is unexpectedly missing at runtime
 And `SKILL.md` already contains the complete contract needed for the current invocation
 When the agent continues with a disclosed fallback
 Then package validation still fails for the missing mapped resource.
+
+### Example E23: governed skills share one packaged method
+
+Given the boundary-first contract is active
+When a user installs any supported adapter
+Then each governed skill maps
+`references/boundary-first-method-v1.md` with `READ`
+And every mapped copy has the same raw bytes
+And each skill retains its own stage-specific stop, review, handoff, and claim
+rules outside the shared reference.
 
 ## Requirements
 
@@ -886,6 +908,75 @@ R55d. The architecture pilot MUST classify diagram conventions as `references/` 
 
 R55e. The architecture pilot MUST preserve architecture trigger behavior, arc42 section obligations, C4 obligations, ADR structure, architecture-review boundaries, and handoff semantics unless a later approved spec explicitly changes them.
 
+### Portable boundary-first capability (R56-R63)
+
+R56. The portable boundary-first method MUST conform to
+`specs/boundary-first-proof-model.md`.
+
+R56a. The governed published skills MUST be exactly `workflow`, `spec`,
+`spec-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`,
+`implement`, `code-review`, and `verify`.
+
+R57. Every governed skill MUST package and map
+`references/boundary-first-method-v1.md`.
+
+R57a. Each resource-map entry MUST use the literal verb `READ`.
+
+R57b. Each resource-map entry MUST state the stage-specific condition under
+which the method is loaded.
+
+R57c. A governed skill MUST stop with a package-integrity blocker when the
+reference is required for the current invocation but is missing.
+
+R58. All governed skill-local references MUST be deterministic projections of
+one declared canonical source.
+
+R58a. Projected copies MUST NOT be hand-edited.
+
+R58b. Projection metadata MUST identify the method version and canonical owner
+in a repository-maintainer surface that is not shipped as stage policy.
+
+R59. The canonical source, governed skill-local projections, generated skill
+output, locally packed adapter output, and installed target skill trees MUST
+preserve the same skill-root-relative path and raw-byte SHA-256.
+
+R59a. Byte drift or a missing governed projection MUST fail before adapter
+publication.
+
+R59b. Clean-install proof MUST inspect Codex, Claude Code, and opencode target
+skill trees from locally packed release candidates.
+
+R60. The shared reference MAY own only the closed dimension vocabulary,
+feature and proof record fields, identifier grammar, example classification,
+interaction-selection method, and portable worked examples.
+
+R60a. Stage-specific stop conditions, formal review approval semantics,
+artifact placement, lifecycle routing, mutation authority, and readiness
+claims MUST remain in the governing skill or workflow contract.
+
+R61. Published governed skills MUST describe the method with project-portable
+language and MUST NOT require the RigorLoop repository's canonical source,
+projection script, validators, adapter paths, or package internals in customer
+projects.
+
+R62. Deterministic skill and package validation MUST check mapped-resource
+existence, allowed verb and class, containment, governed-skill coverage,
+projection identity, generated parity, packed parity, and installed parity.
+
+R62a. Deterministic validation MUST NOT claim that the method was applied
+semantically or completely.
+
+R63. Boundary-first activation MUST be atomic across all governed skills and
+supported adapter packages.
+
+R63a. Existing accepted historical skill packages and feature artifacts remain
+valid according to the compatibility rules in
+`specs/boundary-first-proof-model.md`.
+
+R63b. Package activation evidence MUST bind the canonical reference identity,
+all governed projections, generated output, locally packed output, installed
+target output, and the durable feature-spec grandfathering baseline.
+
 ## Inputs and outputs
 
 Inputs:
@@ -950,6 +1041,9 @@ Outputs:
 - The assets-first plan pilot keeps workflow rules and lifecycle handoff semantics in `SKILL.md` or governing workflow artifacts, not hidden in assets.
 - Normative asset structure is checked for drift through metadata, structural fingerprints, and section-set parity.
 - Runtime fallback can preserve useful work only within the fallback boundary; it does not prove package validity.
+- All boundary-first governed skills package the same mapped reference bytes.
+- The shared boundary-first reference does not own stage-specific workflow or
+  review policy.
 - Structural hygiene amendments preserve R-clause IDs, clause text, acceptance-criterion text, test-case IDs, and cross-references.
 
 ## Error and boundary behavior
@@ -976,6 +1070,8 @@ Outputs:
 - If clean-install smoke uses an unpackaged source directory or dry-run plan as proof, the clean-install proof MUST be rejected.
 - If a runtime fallback continues after a mapped resource is missing, package validation MUST still fail for the missing resource.
 - If a missing resource owns required normative, schema, security, legal, or non-obvious structural content, runtime execution MUST stop with a package-integrity blocker.
+- If any governed boundary-first skill lacks its mapped reference or carries
+  divergent bytes, activation and package publication MUST stop.
 - If a published skill requires an unavailable repository-root internal path as a customer-project dependency, portability validation MUST fail.
 - If a validator cannot distinguish repository-root `scripts/` from packaged skill-local scripts, the validator MUST be narrowed before it is relied on.
 - If routing fixtures are used without an approved routing harness, review output MUST NOT claim deterministic model auto-selection.
@@ -1185,6 +1281,21 @@ This change has no user-interface surface. The relevant user experience is contr
 - A reviewer can confirm the architecture pilot identifies the first divergent layer in the resource chain before resource creation or removal.
 - A reviewer can confirm architecture behavior-preservation evidence covers trigger behavior, arc42 sections, C4 obligations, ADR structure, architecture-review boundaries, and handoff semantics.
 
+### Portable boundary-first capability (R56-R63)
+
+- A reviewer can confirm all ten governed skills map the same versioned
+  `READ` reference with stage-specific load conditions.
+- A reviewer can confirm one canonical source deterministically projects
+  byte-identical skill-local copies.
+- A reviewer can confirm generated, packed, and installed Codex, Claude Code,
+  and opencode skill trees preserve the mapped path and raw bytes.
+- A reviewer can confirm the shared reference owns the portable method but not
+  stage-specific stop, review, handoff, authority, or readiness policy.
+- A reviewer can confirm deterministic validation does not claim semantic
+  boundary completeness.
+- A reviewer can confirm boundary-first activation cannot leave governed
+  skills or adapters on mixed method versions.
+
 ### Structural hygiene
 
 No acceptance criteria are added in this amendment. Structural hygiene is reviewed by preserving the existing acceptance-criterion text while adding navigation headers.
@@ -1195,6 +1306,8 @@ No acceptance criteria are added in this amendment. Structural hygiene is review
 
 ## Next artifacts
 
+- Current draft amendment: spec-review for the portable boundary-first
+  capability and its matching workflow amendment.
 - Current amendment: plan for the audit-first `proposal` and `proposal-review` pilot.
 - Current draft amendment: spec-review for the assets-first `plan` progressive disclosure pilot.
 - Current draft amendment: spec-review for the spec and test-spec structural hygiene amendment.
@@ -1233,4 +1346,5 @@ No acceptance criteria are added in this amendment. Structural hygiene is review
 
 ## Readiness
 
-Approved published-skill resource integrity amendment. Current downstream workflow state is owned by the active plan for each initiative.
+Approved portable boundary-first amendment ready for architecture assessment.
+Previously approved amendment history remains recorded in Follow-on artifacts.
