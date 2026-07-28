@@ -22,6 +22,15 @@ tests:
   - Spec-review independently approves the boundary-first contract amendment before architecture.
 validation:
   -
+    command: bash scripts/ci.sh --mode pr --base f4c9354eacca4963910242da4ef46a04aaea87d7 --head HEAD
+    result: pass_22_selected_checks_post_pr_ci_correction
+  -
+    command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_157_tests_post_pr_ci_correction
+  -
+    command: python scripts/test-select-validation.py
+    result: pass_135_tests_post_pr_ci_correction
+  -
     command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/change.yaml --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/explain-change.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
     result: pass_after_pr_126_handoff
   -
@@ -118,6 +127,9 @@ validation:
     command: python scripts/validate-markdown-readability.py docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r1.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r2.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r3.md
     result: pass_with_audit_only_warnings_MDREAD-002_70_MDREAD-003_43
 changed_files:
+  - scripts/lifecycle_state_sync.py
+  - scripts/test-artifact-lifecycle-validator.py
+  - specs/single-source-of-workflow-state.test.md
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/explain-change.md
   - docs/plan-archive.md
   - scripts/adapter_distribution.py

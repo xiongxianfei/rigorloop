@@ -44,7 +44,8 @@ packaged reference the capability.
 | `scripts/boundary_first_reference.py` and existing projection entry point | Added the closed consumer inventory, safe path handling, deterministic digest, and check/write projection | The canonical source must project reproducibly without hand-maintained copies | 10 reference tests and projection check |
 | Ten governed `SKILL.md` files | Added stage-specific `READ` mappings, responsibilities, and stop behavior | PBF-R041-PBF-R045 and PBF-R059-PBF-R064 keep semantic ownership with existing stages | T3, T6, T10, T16; four focused lifecycle tests |
 | `scripts/skill_validation.py` and semantic fixtures | Allowed only the approved shared reference and proved exact owner/outcome/handoff behavior | Published skills must remain self-contained while validators avoid semantic-completeness claims | 263 skill-validator tests and 24-skill validation |
-| `scripts/boundary_first_validation.py`, CLI, fixtures, and selector integration | Added closed feature/proof grammar, exact references, two-state activation, source-control baseline proof, and authoritative read-only rollback selection | PBF-R002-PBF-R040 and PBF-R049-PBF-R058 require fail-closed structure and prospective compatibility | T4-T9, T13, T15; 56 boundary tests and 134 selector tests |
+| `scripts/boundary_first_validation.py`, CLI, fixtures, and selector integration | Added closed feature/proof grammar, exact references, two-state activation, source-control baseline proof, and authoritative read-only rollback selection | PBF-R002-PBF-R040 and PBF-R049-PBF-R058 require fail-closed structure and prospective compatibility | T4-T9, T13, T15; 56 boundary tests and 135 selector tests |
+| Existing validation selector and lifecycle state-sync paths | Registered deterministic boundary-first checks/evidence and stopped applying planned-initiative identity rules to unplanned change metadata | Hosted PR validation must route existing proof without adding support scripts, and `single-source-of-workflow-state` scopes live plan ownership to planned initiatives | Selector regression suite; lifecycle validator regression suite; exact PR-mode CI |
 | `scripts/adapter_distribution.py` and its existing test suite | Preserved mapped resources through supported archives and clean local installs; made installed skill files part of the cold read | PBF-R046-PBF-R048 and PBF-R065 require portable packaged bytes without repository or network lookup | T11, T12, T14; 2 focused and 133 full adapter tests |
 | `specs/boundary-first-activation.yaml` and change-local evidence | Recorded pending release state and implementation evidence | Activation must remain pending until a real reviewed release transition provides immutable tags | Activation, validation, and install evidence files |
 | Proposal, specs, architecture, ADR, plan, and review records | Closed vocabulary, ownership, rollout, proof, sequencing, and review decisions before implementation | The contract and rationale must remain auditable outside chat | Approved lifecycle artifacts; 45 formal review entries |
@@ -52,6 +53,18 @@ packaged reference the capability.
 The workflow-coordinator correction encountered during execution is governed
 by its own bugfix change. This explanation does not treat that unrelated
 implementation as part of the boundary-first product diff.
+
+The first hosted PR run exposed two validation-integration defects. The
+selector knew that boundary-first paths required structural validation but
+did not route their existing reference and validator regression suites, and
+it had no registered routes for the initiative's deterministic evidence
+filenames. The correction extends the existing selector catalog and evidence
+registry; it adds no workflow or helper script. PR-mode validation then
+exposed a lifecycle false positive that required every `change.yaml` to match
+a plan even though the governing contract scopes plan-state synchronization
+to planned initiatives. The lifecycle check now requires plan identity only
+when change metadata declares a plan, while retaining failure coverage for a
+declared missing plan.
 
 ## Tests added or changed
 
@@ -74,7 +87,9 @@ implementation as part of the boundary-first product diff.
 | `python scripts/build-skills.py --check` | pass |
 | `python scripts/test-boundary-first-validation.py` | pass; 56 tests |
 | `python scripts/validate-boundary-first.py --check` | pass; pending manifest |
-| `python scripts/test-select-validation.py` | pass; 134 tests |
+| `python scripts/test-select-validation.py` | pass; 135 tests |
+| `python scripts/test-artifact-lifecycle-validator.py` | pass; 157 tests |
+| `bash scripts/ci.sh --mode pr --base f4c9354eacca4963910242da4ef46a04aaea87d7 --head HEAD` | pass; 22 selected checks |
 | `python scripts/test-adapter-distribution.py -k boundary_first` | pass; 2 tests |
 | `python scripts/test-adapter-distribution.py` | pass; 133 tests |
 | `bash scripts/ci.sh --mode broad-smoke` | pass; 12 checks |

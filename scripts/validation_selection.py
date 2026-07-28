@@ -36,6 +36,16 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/validate-boundary-first.py --check",
         "boundary-first",
     ),
+    "boundary_first.reference_regression": CheckCatalogEntry(
+        "boundary_first.reference_regression",
+        "python scripts/test-boundary-first-reference.py",
+        "boundary-first",
+    ),
+    "boundary_first.regression": CheckCatalogEntry(
+        "boundary_first.regression",
+        "python scripts/test-boundary-first-validation.py",
+        "boundary-first",
+    ),
     "skills.validate": CheckCatalogEntry(
         "skills.validate",
         "python scripts/validate-skills.py",
@@ -546,6 +556,30 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         allowed_when=("boundary-first structural and activation validation evidence is recorded",),
     ),
     EvidenceClassRegistration(
+        evidence_class_id="boundary-reference",
+        patterns=("boundary-reference-evidence.yaml",),
+        selector_routes=("artifact_lifecycle.validate", "boundary_first.reference_regression"),
+        required_validator="test-boundary-first-reference",
+        lifecycle_stage="implementation",
+        allowed_when=("boundary-first reference projection evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="boundary-activation",
+        patterns=("boundary-activation-evidence.yaml",),
+        selector_routes=("artifact_lifecycle.validate", "boundary_first.validate"),
+        required_validator="validate-boundary-first",
+        lifecycle_stage="implementation",
+        allowed_when=("boundary-first activation evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
+        evidence_class_id="boundary-install",
+        patterns=("boundary-install-evidence.yaml",),
+        selector_routes=("artifact_lifecycle.validate", "adapters.regression"),
+        required_validator="test-adapter-distribution",
+        lifecycle_stage="implementation",
+        allowed_when=("boundary-first installed-package evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
         evidence_class_id="project-map-output-proof",
         patterns=("cold-read-proof.md", "representative-project-map-outputs.md"),
         selector_routes=("artifact_lifecycle.validate",),
@@ -563,7 +597,7 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
     ),
     EvidenceClassRegistration(
         evidence_class_id="implementation-note",
-        patterns=("implementation-notes.md", "cold-read-report.md", "adapter-packaging.md"),
+        patterns=("implementation-notes.md", "m*-implementation.md", "cold-read-report.md", "adapter-packaging.md"),
         selector_routes=("artifact_lifecycle.validate",),
         required_validator="validate-artifact-lifecycle",
         lifecycle_stage="implementation",
@@ -1239,6 +1273,20 @@ def _apply_path_selection(
             "Changed boundary-first contract, skill, validator, or package surface requires boundary validation.",
             path=path,
         )
+    if _is_boundary_first_reference_surface(path):
+        _add_check(
+            selected,
+            "boundary_first.reference_regression",
+            "Changed boundary-first reference surface requires reference projection regression fixtures.",
+            path=path,
+        )
+    if _is_boundary_first_validation_surface(path):
+        _add_check(
+            selected,
+            "boundary_first.regression",
+            "Changed boundary-first validator or fixture requires boundary validation regression fixtures.",
+            path=path,
+        )
 
     if _is_tier_b_documentation_prose_path(path):
         _add_check(
@@ -1610,6 +1658,9 @@ def _apply_path_selection(
             else "Changed selector code requires selector regression fixtures."
         )
         _add_check(selected, "selector.regression", reason)
+        return
+
+    if category == "boundary-first":
         return
 
     if category == "token-cost":
@@ -2142,12 +2193,8 @@ def _path_category(path: str) -> str | None:
         "scripts/validate-adapters.py",
     }:
         return "adapters"
-    if path in {
-        "scripts/boundary_first_validation.py",
-        "scripts/validate-boundary-first.py",
-        "scripts/test-boundary-first-validation.py",
-    }:
-        return "selector"
+    if _is_boundary_first_reference_surface(path) or _is_boundary_first_validation_surface(path):
+        return "boundary-first"
     if path in {
         "scripts/select-validation.py",
         "scripts/validation_selection.py",
@@ -2261,7 +2308,11 @@ def _path_category(path: str) -> str | None:
     if path.startswith("docs/changes/") and len(parts) >= 4:
         if parts[3] == "change.yaml":
             return "change-metadata"
-        if parts[3] in {"review-log.md", "review-resolution.md"} or parts[3] == "reviews":
+        if (
+            parts[3] in {"review-log.md", "review-resolution.md"}
+            or parts[3] == "reviews"
+            or fnmatch.fnmatch(parts[3], "review-invocation-*.yaml")
+        ):
             return "review-artifacts"
         if len(parts) == 4:
             matches = _matching_evidence_classes(parts[3])
@@ -2362,6 +2413,27 @@ def _is_boundary_first_surface(path: str) -> bool:
             "scripts/test-boundary-first-reference.py",
         }
     )
+
+
+def _is_boundary_first_reference_surface(path: str) -> bool:
+    return (
+        path == "specs/references/boundary-first-method-v1.md"
+        or path.endswith("/references/boundary-first-method-v1.md")
+        or path
+        in {
+            "scripts/boundary_first_reference.py",
+            "scripts/project-boundary-first-reference.py",
+            "scripts/test-boundary-first-reference.py",
+        }
+    )
+
+
+def _is_boundary_first_validation_surface(path: str) -> bool:
+    return path.startswith("scripts/fixtures/boundary-first/") or path in {
+        "scripts/boundary_first_validation.py",
+        "scripts/validate-boundary-first.py",
+        "scripts/test-boundary-first-validation.py",
+    }
 
 
 def _matching_evidence_classes(

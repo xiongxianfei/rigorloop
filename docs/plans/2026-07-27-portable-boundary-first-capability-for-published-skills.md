@@ -447,6 +447,14 @@ A material review finding reopens its owning milestone and blocks the next one.
   boundary tests, 134 selector tests, 133 adapter tests, generated-skill and
   projection parity, lifecycle and review closeout validation, and the
   12-check broad-smoke suite. All passed.
+- Post-PR CI correction: the selector now registers the existing
+  boundary-first reference and validator regressions plus deterministic
+  change-local evidence names. A lifecycle-validator regression also
+  preserves direct unplanned bugfix change metadata while still rejecting a
+  declared missing plan. No new validation script or workflow was added.
+  `python scripts/test-select-validation.py` passed 135 tests,
+  `python scripts/test-artifact-lifecycle-validator.py` passed 157 tests, and
+  exact PR-mode validation passed all 22 selected checks.
 
 ## Outcome and retrospective
 
