@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
@@ -32,17 +32,17 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 43
-- Unresolved findings: 3
-- Final result: Plan-review R2 requests current ADR ownership, isolated rollback proof timing, and repository-local M4 recovery.
+- Findings resolved: 46
+- Unresolved findings: 0
+- Final result: PBF-PLR1 through PBF-PLR3 are resolved by current ADR ownership, isolated M3/M4 proof timing, and repository-local M4 recovery.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-PLR1 | accepted | in-progress | Replace the superseded ADR link. |
-| PBF-PLR2 | accepted | in-progress | Split M3 fixture logic from M4 real-metadata integration proof. |
-| PBF-PLR3 | accepted | in-progress | Keep M4 recovery local and rename activation claims as readiness. |
+| PBF-PLR1 | accepted | resolved | Replace the superseded ADR link. |
+| PBF-PLR2 | accepted | resolved | Split M3 fixture logic from M4 real-metadata integration proof. |
+| PBF-PLR3 | accepted | resolved | Keep M4 recovery local and rename activation claims as readiness. |
 | PBF-AR3 | accepted | resolved | Align three stale risk controls with the approved release-manifest contract. |
 | PBF-SR9 | accepted | resolved | Derive grandfathered membership from the activating change's parent revision. |
 | PBF-SR4 | accepted | resolved | In-flight opt-in is active-only. |
@@ -95,40 +95,43 @@ Review closeout: code-review-m1-r4
 
 Finding ID: PBF-PLR1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: plan author
 Owning stage: plan revision
 Chosen action: Replace the superseded ADR with the accepted release-manifest
 ADR.
 Rationale: The plan must be self-contained against current durable decisions.
 Validation target: Plan-review R3.
-Validation evidence: Pending.
+Validation evidence: The governing artifact list names the accepted
+ADR-20260728 decision.
 
 #### PBF-PLR2 - Rollback proof ownership is duplicated
 
 Finding ID: PBF-PLR2
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: plan author
 Owning stage: plan revision
 Chosen action: Assign validator/schema fixtures to M3 and real release-metadata
 integration to M4 with an exact command and proof-timing row.
 Rationale: Each milestone needs one independently closeable proof boundary.
 Validation target: Plan-review R3.
-Validation evidence: Pending.
+Validation evidence: M3 owns isolated schema fixtures; M4 owns an exact
+active-release integration test and the sequencing table records that proof.
 
 #### PBF-PLR3 - M4 recovery crosses the release boundary
 
 Finding ID: PBF-PLR3
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: plan author
 Owning stage: plan revision
 Chosen action: Use repository-local pending-manifest recovery and rename the
 milestone commit as release readiness.
 Rationale: External release operations are explicitly outside this plan.
 Validation target: Plan-review R3.
-Validation evidence: Pending.
+Validation evidence: M4 recovery retains or restores pending repository bytes,
+excludes external operations, and uses a release-readiness commit identity.
 
 ### architecture-review-r4
 

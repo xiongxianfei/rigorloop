@@ -17,7 +17,7 @@ Status: changes-requested
 Detailed record: reviews/plan-review-r2.md
 Resolution: review-resolution.md#plan-review-r2
 Material findings: PBF-PLR1, PBF-PLR2, PBF-PLR3
-Open findings: PBF-PLR1, PBF-PLR2, PBF-PLR3
+Open findings: None
 Recording status: recorded
 
 ### Review entry
