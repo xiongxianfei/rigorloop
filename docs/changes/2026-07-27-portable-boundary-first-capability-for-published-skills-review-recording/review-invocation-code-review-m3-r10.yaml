@@ -4,8 +4,8 @@ review_stage: code-review
 review_target: commit:dd90b76e
 base_revision: 15b5f69f
 head_revision: dd90b76e
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: clean-with-notes
+review_gate_outcome: approve
 independence_level: L1
 author_context_id: run-pbf-20260728-lightweight-m3-r10
 reviewer_context_id: isolated-m3-r10-primary
@@ -55,9 +55,9 @@ phase_receipts:
   - evidence-menu-released
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: isolated-m3-r10-second
-  result: pending
+  result: clean-with-notes
 risk_map:
   affected_behavior: immutable activation transition baseline and grandfather inventory across later active commits
   highest_impact_failure_modes: an invalid tagged transition becomes valid through a later repair or current state diverges from a valid snapshot

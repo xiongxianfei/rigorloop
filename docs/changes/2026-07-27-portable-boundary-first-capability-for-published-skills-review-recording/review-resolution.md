@@ -4,6 +4,7 @@
 
 Closeout status: closed
 
+Review closeout: code-review-m3-r10
 Review closeout: code-review-m3-r9
 Review closeout: code-review-m3-r8
 Review closeout: code-review-m3-r7
@@ -108,6 +109,15 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### code-review-m3-r10
+
+Review closeout: code-review-m3-r10
+Review result: clean-with-notes
+Material findings: None
+Resolution required: no
+Validation evidence: Two independent reviewers confirmed PBF-M3-CR23 and
+PBF-M3-CR24 resolved; 52 focused tests and 134 selector tests passed.
 
 ### code-review-m3-r9
 
