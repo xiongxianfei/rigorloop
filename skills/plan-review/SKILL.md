@@ -126,6 +126,16 @@ Direct or review-only requests remain isolated by default.
 
 When a plan is intended to support a final `verify` automation target, review that implementation authority is separate from authoring and verification authority, milestones are explicitly ordered, commands are approved, promotion evidence is defined, and execution stops before PR. A clean plan-review does not authorize implementation by itself.
 
+## Resource map
+
+- READ `references/boundary-first-method-v1.md` when reviewing a plan governed by an approved `boundary-first-v1` feature spec.
+
+## Boundary-first method
+
+Reject coupled primary boundaries, omitted dependencies, unsafe rollback, and proof sequencing that cannot close independently.
+
+Trace every applicable boundary and selected interaction into the plan. Stop review and request plan revision when a primary trust boundary is coupled to another closeout unit, a dependency or affected surface is omitted, rollback is unsafe, or proof timing cannot close the milestone independently.
+
 ## Rules
 
 - Do not rubber-stamp organized-looking plans.

@@ -107,9 +107,16 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Resource map
 
+- READ `references/boundary-first-method-v1.md` when authoring a new or substantively revised behavior contract that must adopt or has opted into `boundary-first-v1`.
 - COPY `assets/spec-skeleton.md` when creating or fully rewriting a feature spec.
   Fill: spec title, required-section structures, examples, requirements, acceptance criteria, next artifacts, follow-on artifacts, and readiness.
   Do not emit unfilled placeholders.
+
+## Boundary-first method
+
+Author the normative applicability, boundary, interaction, and example-ownership record.
+
+Use the shared reference for the closed record shape while keeping feature behavior and stage policy in the spec. Stop spec authoring and route the gap upstream when the governing requirements cannot own an applicable boundary, an example would be the only source of behavior, or applicability cannot be decided safely.
 
 ## Generated Markdown readability
 

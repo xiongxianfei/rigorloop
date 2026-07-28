@@ -121,6 +121,7 @@ Do not broad-search authoritative documents just to find paths. Use the project 
 
 ## Resource map
 
+- READ `references/boundary-first-method-v1.md` when reviewing a proof map governed by a `boundary-first-v1` feature spec.
 - COPY `assets/review-result-skeleton.md` when recording the review result.
   Fill: skill, review status, material findings, recording fields, review paths, blockers, immediate next stage, implementation handoff, and stop condition.
   Do not emit unfilled placeholders.
@@ -128,6 +129,12 @@ Do not broad-search authoritative documents just to find paths. Use the project 
   Fill: the fields defined in the asset, including Finding ID:.
   Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
   Do not emit unfilled placeholders.
+
+## Boundary-first method
+
+Judge proof adequacy, negative coverage, fixtures, command ownership, and manual-proof boundaries.
+
+Structural validity cannot establish proof adequacy. Stop review with a material finding when an applicable boundary or selected interaction lacks direct proof, helper-only proof substitutes for a public or sibling path, negative partitions are omitted, command ownership is unclear, or manual evidence lacks an exact procedure.
 
 ## Review dimensions
 

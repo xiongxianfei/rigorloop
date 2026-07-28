@@ -67,6 +67,7 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Resource map
 
+- READ `references/boundary-first-method-v1.md` when reviewing an adopting boundary record or deciding whether a grandfathered spec revision is substantive.
 - COPY `assets/review-result-skeleton.md` when recording the review result.
   Fill: review title, result fields, findings summary, immediate next stage, eventual test-spec readiness, and stop condition.
   Do not emit unfilled placeholders.
@@ -74,6 +75,12 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
   Fill: the fields defined in the asset, including Finding ID:.
   Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
   Do not emit unfilled placeholders.
+
+## Boundary-first method
+
+Judge applicability, boundary completeness, interactions, invariants, outcomes, and example ownership.
+
+Structural validation proves only shape, closed values, and references. Stop review with a material finding when semantic ownership is absent, a dimension is unjustifiably inapplicable, an interaction or outcome is missing, an example invents behavior, or a substantive revision has not adopted the contract.
 
 ## Review dimensions
 
