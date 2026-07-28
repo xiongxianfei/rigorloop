@@ -2,8 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
+Review closeout: test-spec-review-r7
 Review closeout: test-spec-review-r6
 Review closeout: code-review-m3-r10
 Review closeout: code-review-m3-r9
@@ -43,13 +44,14 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 58
-- Unresolved findings: 0
-- Final result: PBF-M3-CR24 is resolved by validating the tagged transition snapshot and rejecting later baseline or inventory repair.
+- Unresolved findings: 1
+- Final result: PBF-TSR7-1 remains open pending M4 plan alignment and plan review.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-TSR7-1 | accepted | in-progress | Align M4 package proof with the existing adapter portability decision. |
 | PBF-M3-CR24 | accepted | resolved | Bind the tagged transition snapshot and current state to its exact first-parent baseline and inventory. |
 | PBF-M3-CR23 | accepted | resolved | Bind merge-aware transition parent, activating tag, and current release fields to one immutable transition. |
 | PBF-M3-CR18 | accepted | resolved | Bind the baseline to the exact parent of the pending-to-active transition commit. |
@@ -110,6 +112,23 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### test-spec-review-r7
+
+#### PBF-TSR7-1 - M4 plan contradicts adapter-applicable proof coverage
+
+Finding ID: PBF-TSR7-1
+Disposition: accepted
+Status: in-progress
+Owner: plan
+Owning stage: plan revision
+Chosen action: Replace the fixed all-ten-per-target deliverable with every
+adapter-included governed combination across all three target trees; retain
+CMD9 ownership of inclusions and exclusions.
+Rationale: Boundary-first packaging must prove every published surface without
+silently expanding or overriding the established adapter portability contract.
+Validation target: plan-review and test-spec-review R8.
+Validation evidence: Pending.
 
 ### test-spec-review-r6
 

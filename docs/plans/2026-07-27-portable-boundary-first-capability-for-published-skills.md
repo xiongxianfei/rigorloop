@@ -104,12 +104,12 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M4. Package parity and prospective activation
-- Current milestone state: planned
-- Latest review evidence: M4 implementation discovered that the existing adapter support decision publishes workflow only for Codex, so the proof matrix must cover adapter-included combinations
+- Current milestone state: resolution-needed
+- Latest review evidence: test-spec-review R7 recorded PBF-TSR7-1 because the M4 plan still required all ten skills on every target
 - Last reviewed milestone: M3
-- Review status: review-requested; stage=test-spec-review; round=r7
+- Review status: resolution-needed; stage=plan; round=r7
 - Remaining in-scope implementation milestones: M4
-- Next stage: test-spec-review R7 for adapter-applicable package coverage
+- Next stage: plan-review for the adapter-applicable M4 proof population
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -235,8 +235,10 @@ an explicit blocking gap before implementation begins.
        raw bytes for Codex, Claude Code, and opencode;
      - prove the reviewed pending manifest and active fixtures use the exact
        release, baseline, and path-inventory contract;
-     - perform clean installed-skill cold-read proof for all ten governed
-       skills on each supported target;
+     - perform clean installed-skill cold-read proof for every governed skill
+       included by each supported adapter, inspect all three target trees, and
+       leave inclusion and exclusion validity with the existing adapter
+       portability evaluation and CMD9;
      - prove existing release metadata supports read-only rollback selection
        for every current adapter;
      - keep repository activation `pending` until a real reviewed release
