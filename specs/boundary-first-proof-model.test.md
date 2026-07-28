@@ -7,7 +7,7 @@
 
 ## Status
 
-draft
+active
 
 ## Related spec and plan
 
@@ -24,7 +24,7 @@ draft
 | --- | --- | --- | --- |
 | Feature spec | `specs/boundary-first-proof-model.md` | approved; spec-review R5 | `sha256:7d10f72e7dfca18c08c4f7117846c5a655f060f5087ec196725a2c5494af25d1` |
 | Spec review | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r5.md` | approved | `sha256:4ed509fc263fc8c14b1a7508ebc0d9d30968af55cc96be77a4093d352da2ea89` |
-| Plan | `docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md` | active; plan-review R3 approved | `sha256:b90ed82fc688368f5b6ae7dd642defa2355fde71235be6c598d24dc9879587b1` |
+| Plan | `docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md` | active; plan-review R3 approved | `sha256:262decf9d2804bbb854505d479c788c3ece87e0d09af2441102ade5098fbb20d` |
 | Plan review | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/plan-review-r3.md` | approved | `sha256:dbfe83fe10fedc10456842b121c32b1889f627e6aa8d083c80d41e67cab6f2ae` |
 | Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review R4 | `sha256:65bc44c6d8a8a6de23879144dca6c524b69558a178ab9127f03907b1f3761843` |
 | ADR | `docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md` | accepted | `sha256:3d09255eb51dacb2fd2fe756a656fc9719edd6de99763f23ae9ad09fd1b1c1e2` |
