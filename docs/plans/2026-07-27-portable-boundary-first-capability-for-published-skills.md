@@ -103,20 +103,20 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M1. Canonical reference and projection foundation
-- Current milestone state: resolution-needed
-- Latest review evidence: code-review-m1-r3; PBF-M1-CR1 through PBF-M1-CR3 resolved; PBF-M1-CR4 open
+- Current milestone state: review-requested
+- Latest review evidence: code-review-m1-r3 plus correction commit 877a697f; PBF-M1-CR1 through PBF-M1-CR4 resolved
 - Last reviewed milestone: M1
-- Review status: changes-requested; stage=code-review; round=r3
+- Review status: review-requested; stage=code-review; round=r4
 - Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: review-resolution M1 for PBF-M1-CR4
+- Next stage: code-review M1 R4
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=1; open-findings=PBF-M1-CR4
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
 ### M1. Canonical reference and projection foundation
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
    - primary trust boundary: one authored method and a closed deterministic
      projection inventory
    - deliverables:
