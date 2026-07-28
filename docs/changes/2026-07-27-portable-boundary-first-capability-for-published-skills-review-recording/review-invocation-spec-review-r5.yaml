@@ -4,8 +4,8 @@ review_stage: spec-review
 review_target: specs/boundary-first-proof-model.md
 base_revision: b721c676
 head_revision: ee79ee48
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: approved
+review_gate_outcome: approved
 independence_level: L1
 author_context_id: run-pbf-20260728-grandfather-baseline
 reviewer_context_id: isolated-spec-r5

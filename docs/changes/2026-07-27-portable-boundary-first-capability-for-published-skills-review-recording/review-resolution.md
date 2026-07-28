@@ -18,6 +18,7 @@ Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: spec-review-r3
 Review closeout: spec-review-r4
+Review closeout: spec-review-r5
 Review closeout: architecture-review-r1
 Review closeout: architecture-review-r2
 Review closeout: test-spec-review-r1
@@ -80,6 +81,14 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### spec-review-r5
+
+Review closeout: spec-review-r5
+
+No material findings.
+R5 confirms PBF-SR9 resolved and approves the simplified published-skill
+contract for architecture alignment.
 
 ### spec-review-r4
 

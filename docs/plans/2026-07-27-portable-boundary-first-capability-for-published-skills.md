@@ -104,11 +104,11 @@ an explicit blocking gap before implementation begins.
 
 - Current milestone: M3. Structural and activation validation
 - Current milestone state: resolution-needed
-- Latest review evidence: PBF-SR9 is resolved by deriving grandfathered membership only from the immutable parent revision and awaits spec-review R5
+- Latest review evidence: spec-review R5 approved the simplified published-skill contract with no material findings
 - Last reviewed milestone: M2
-- Review status: review-requested; stage=spec-review; round=r5
+- Review status: approved; stage=spec-review; round=r5
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: spec-review R5 for the grandfathering baseline
+- Next stage: architecture revision for the simplified activation contract
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
