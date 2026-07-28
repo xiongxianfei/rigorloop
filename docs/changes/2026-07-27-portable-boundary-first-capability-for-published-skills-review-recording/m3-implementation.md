@@ -3,80 +3,75 @@
 ## Result
 
 - Milestone: PBF-M3
-- Status: review-requested after R3 correction
-- Scope: structural boundary records, proof maps, activation baseline, and
-  validation selection
+- Status: review-requested
+- Scope: structural boundary records and the two-state release manifest
 - Next stage: code-review M3
 
 ## Implementation
 
-The new deterministic validator checks the closed boundary-first-v1 record
-shape without claiming semantic completeness. It validates exact headings,
-contiguous feature records, columns, dimension and proof vocabularies, ASCII
-sentinels, identifier grammars and prefixes, feature-local references,
-boundary ownership, proof coverage, and the distinction between covered rows
-and blocking gaps.
+The structural validator continues to check the closed boundary record and
+proof-map grammar without claiming semantic completeness.
 
-Activation validation reads the repository-local JSON-compatible YAML record,
-fails unknown contract, state, consumer, and field values before consistency
-checks, and then checks the authoritative spec state, canonical and projection
-identities, governed skill order, grandfathered inventory identity, historical
-file bytes, and activation-time rules. Changed grandfathered specs route to
-`spec-review`; the validator does not decide whether their edits are
-substantive.
+Activation validation now implements the approved lightweight contract:
 
-Validation selection now includes the boundary validator for affected specs,
-governed skills and reference projections, adapter surfaces, activation state,
-fixtures, and validator code. The boundary validation evidence class is
-registered explicitly rather than relying on a broad YAML pattern.
+- state is exactly `pending` or `active`;
+- pending release and baseline fields use `-`;
+- active state binds immutable activating and immediately preceding rollback
+  release tags;
+- the ten governed skills and canonical/projection byte identities remain
+  closed;
+- the baseline is a full source-control commit identity;
+- grandfathered paths are derived from that exact commit, contain only
+  accepted, approved, or active unmarked top-level feature specs, exclude the
+  bootstrap spec, README, test specs, marked specs, nonterminal specs, and
+  child-introduced paths, and use unique raw-UTF-8 order.
+
+The previous `rolled-back` state, activation timestamp, historical file
+hashes, inventory digest, rollback receipt path, and receipt identity are
+removed. Source control owns historical bytes. The tracked adapter manifest
+owns the immediately preceding published version. There is no activation
+writer, rollback writer, transaction, or attestation store.
+
+Changed unmarked grandfathered specs continue to route to `spec-review`.
+Marked feature/test pairs continue to receive structural validation.
 
 ## Test-first evidence
 
-The first focused run failed because the boundary validation module did not
-exist. The implemented suite now includes durable minimal,
-semantic-omission, complete-proof, proof-gap, and activation fixtures plus
-isolated mutations for each new closed vocabulary. The semantic-omission
-fixture passes structural validation by design; semantic ownership remains
-with the stage review skills.
+The focused activation suite now builds a minimal temporary Git history with a
+parent and activating worktree. Direct regressions prove:
 
-Code-review M3 R1 found eight issues. The correction makes Markdown parsing
-fence-aware, requires the contract marker after the lifecycle value in
-`## Status`, validates exact separators and every proof reference/gap ID,
-short-circuits malformed governing records, compares every projection with
-canonical bytes, compares active historical inventory membership, shares the
-feature activation gate with changed test specs, contains changed paths,
-and redacts serialized offending values. The separately authorized
-coordinator repair is committed as `197d150b`, so CMD8 no longer depends on
-hidden worktree state.
+- accepted, approved, and active parent specs are included;
+- draft, marked, excluded, and child-introduced specs are omitted;
+- an older but valid release tag cannot serve as rollback release;
+- duplicate and incorrectly ordered inventories fail;
+- unknown states, fields, contract versions, and governed skills fail closed;
+- canonical projection divergence and authoritative symlinks fail.
 
-Code-review M3 R2 found five additional issues. The second correction
-preserves the immutable activation inventory when a historical contract later
-adopts the marker, retains accepted marked artifacts through rollback,
-contains explicit and derived companion paths before any read, accepts valid
-CommonMark alignment separators, treats deletion as a changed contract
-surface, and rejects symlinked historical inventory roots and entries.
-
-Code-review M3 R3 and R4 exposed that current rolled-back files cannot prove
-pre-transition provenance and that feature-only identity omits required proof
-maps. The authorized fourth correction assigns that temporal boundary to the
-M4 rollback transaction receipt. M3 reserves the fixed receipt path and
-activation binding but rejects every rolled-back state and marker until M4
-implements receipt preparation and validation. The receipt contract requires
-paired feature/proof identities bound to the source active activation record.
-Fixed activation and proof-model inputs remain contained before reads.
+Obsolete receipt, rolled-back-state, historical-hash, and transaction tests
+were removed rather than preserved as compatibility behavior.
 
 ## Validation
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-boundary-first-validation.py` | pass; 48 tests after R4 |
-| `python scripts/validate-boundary-first.py --check` | pass; pending activation baseline |
+| `python scripts/test-boundary-first-validation.py` | pass; 46 tests |
+| `python scripts/validate-boundary-first.py --check` | pass; pending two-state manifest |
 | `python scripts/test-select-validation.py` | pass; 134 tests |
 | `python -m py_compile scripts/boundary_first_validation.py scripts/validate-boundary-first.py scripts/test-boundary-first-validation.py` | pass |
-| `git diff --check -- <M3 implementation paths>` | pass |
+| `git diff --check` | pass |
+
+## Aligned-surface audit
+
+- Feature spec, architecture, ADR, plan, and approved test spec already own the
+  lightweight release-manifest contract.
+- M1 reference projection and M2 governed skill instructions are unaffected;
+  their byte and semantic tests remain in place.
+- Existing adapter-distribution parsers and fixtures continue to own release
+  metadata shape. M4 owns the narrow current-metadata selection integration,
+  archive/package parity, and installed cold-read proof; M3 adds no parallel
+  package parser or script.
 
 ## Handoff
 
-M3 is ready for independent code-review R5 against the approved proof-model
-spec, test spec, architecture decision, plan, implementation diff, fixtures,
-and bounded validation evidence. M4 remains blocked until M3 review closes.
+M3 is ready for independent code-review against the approved R5 proof map.
+M4 remains blocked until M3 review closes.

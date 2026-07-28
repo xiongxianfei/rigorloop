@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 
@@ -14,16 +15,14 @@ from boundary_first_reference import (
     GOVERNED_SKILLS,
     METHOD_VERSION,
     ProjectionContractError,
-    inventory_digest,
     project_reference,
-    raw_sha256,
 )
 
 
 ACTIVATION_RECORD = Path("specs/boundary-first-activation.yaml")
 PROOF_MODEL_SPEC = Path("specs/boundary-first-proof-model.md")
-ROLLBACK_RECEIPT = Path("specs/boundary-first-rollback-receipt.yaml")
-ACTIVATION_STATES = frozenset({"pending", "active", "rolled-back"})
+ADAPTER_MANIFEST = Path("dist/adapters/manifest.yaml")
+ACTIVATION_STATES = frozenset({"pending", "active"})
 CORE_DIMENSIONS = (
     "input-domain",
     "state-lifecycle",
@@ -113,13 +112,12 @@ ACTIVATION_FIELDS = frozenset(
     {
         "contract_version",
         "state",
-        "activated_at",
+        "activating_release",
+        "rollback_release",
         "canonical_reference",
         "canonical_reference_sha256",
+        "grandfathering_baseline_revision",
         "grandfathered_specs",
-        "grandfathered_inventory_sha256",
-        "rollback_receipt",
-        "rollback_receipt_sha256",
         "governed_skills",
         "projection_sha256",
     }
@@ -886,65 +884,79 @@ def _fixed_authoritative_path(
     return candidate, None
 
 
-def _historical_spec_path(
-    root: Path,
-    relative_path: str,
-) -> tuple[Path | None, ValidationIssue | None]:
-    if not re.fullmatch(r"specs/[^/]+\.md", relative_path):
-        return None, _issue(
-            "BFR-GRANDFATHERED-PATH-UNSAFE",
-            "<grandfathered-spec-path>",
-            "historical path is not a top-level feature spec",
-            relative_path,
-            "specs/<name>.md",
-        )
-    specs_issue = _specs_root_issue(root)
-    if specs_issue:
-        return None, specs_issue
-    candidate = root / relative_path
-    resolved_specs = (root / "specs").resolve()
-    resolved_candidate = candidate.resolve(strict=False)
-    if (
-        candidate.is_symlink()
-        or resolved_candidate.parent != resolved_specs
-    ):
-        return None, _issue(
-            "BFR-GRANDFATHERED-PATH-UNSAFE",
-            relative_path,
-            "historical spec path must be repository-contained and non-symlink",
-            relative_path,
-            "repository-owned regular file",
-        )
-    return candidate, None
-
-
 def _eligible_grandfathered_specs(
     root: Path,
+    baseline_revision: str,
 ) -> tuple[tuple[str, ...], tuple[ValidationIssue, ...]]:
     eligible: list[str] = []
-    issues: list[ValidationIssue] = []
-    specs_issue = _specs_root_issue(root)
-    if specs_issue:
-        return (), (specs_issue,)
-    specs_root = root / "specs"
-    if not specs_root.is_dir():
-        return (), ()
-    for path in sorted(specs_root.glob("*.md")):
-        relative = path.relative_to(root).as_posix()
-        if path.name == "README.md" or path.name.endswith(".test.md"):
+    if not re.fullmatch(r"[0-9a-f]{40,64}", baseline_revision):
+        return (), (
+            _issue(
+                "BFR-BASELINE-REVISION",
+                ACTIVATION_RECORD.as_posix(),
+                "grandfathering baseline must be a full commit identity",
+                baseline_revision,
+                "full source-control commit identity",
+            ),
+        )
+    try:
+        listing = subprocess.run(
+            ["git", "ls-tree", "-r", "--name-only", baseline_revision, "--", "specs"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
+    except (OSError, subprocess.CalledProcessError):
+        return (), (
+            _issue(
+                "BFR-BASELINE-UNAVAILABLE",
+                ACTIVATION_RECORD.as_posix(),
+                "grandfathering baseline is unavailable",
+                baseline_revision,
+                "readable source-control commit",
+            ),
+        )
+    for relative in sorted(listing, key=lambda value: value.encode("utf-8")):
+        if (
+            not re.fullmatch(r"specs/[^/]+\.md", relative)
+            or relative == "specs/README.md"
+            or relative.endswith(".test.md")
+            or relative == PROOF_MODEL_SPEC.as_posix()
+        ):
             continue
-        safe_path, path_issue = _historical_spec_path(root, relative)
-        if path_issue:
-            issues.append(path_issue)
-            continue
-        assert safe_path is not None
-        text = safe_path.read_text(encoding="utf-8")
+        try:
+            text = subprocess.run(
+                ["git", "show", f"{baseline_revision}:{relative}"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout
+        except (OSError, subprocess.CalledProcessError):
+            return (), (
+                _issue(
+                    "BFR-BASELINE-UNAVAILABLE",
+                    relative,
+                    "baseline feature spec cannot be read",
+                    baseline_revision,
+                    "readable source-control object",
+                ),
+            )
         if _lifecycle_status(text) not in {"accepted", "approved", "active"}:
             continue
         if _line_value(_live_markdown(text), "boundary_contract") is not None:
             continue
         eligible.append(relative)
-    return tuple(eligible), tuple(issues)
+    return tuple(eligible), ()
+
+
+def _adapter_manifest_version(root: Path) -> str | None:
+    path = root / ADAPTER_MANIFEST
+    if not path.is_file() or path.is_symlink():
+        return None
+    match = re.search(r"(?m)^version:\s*(\S+)\s*$", path.read_text(encoding="utf-8"))
+    return match.group(1) if match else None
 
 
 def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
@@ -1038,155 +1050,105 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
     if governed_skills != list(GOVERNED_SKILLS):
         issues.append(_issue("BFR-GOVERNED-SKILLS", ACTIVATION_RECORD.as_posix(), "governed skill inventory differs", data.get("governed_skills"), list(GOVERNED_SKILLS)))
 
-    rollback_receipt = data.get("rollback_receipt")
-    if rollback_receipt != ROLLBACK_RECEIPT.as_posix():
-        issues.append(
-            _issue(
-                "BFR-ROLLBACK-RECEIPT-PATH",
-                ACTIVATION_RECORD.as_posix(),
-                "rollback receipt path differs",
-                rollback_receipt,
-                ROLLBACK_RECEIPT.as_posix(),
+    activating_release = data.get("activating_release")
+    rollback_release = data.get("rollback_release")
+    baseline_revision = data.get("grandfathering_baseline_revision")
+    if state == "pending":
+        for field, value in (
+            ("activating_release", activating_release),
+            ("rollback_release", rollback_release),
+            ("grandfathering_baseline_revision", baseline_revision),
+        ):
+            if value != "-":
+                issues.append(
+                    _issue(
+                        "BFR-PENDING-ACTIVATION-VALUE",
+                        ACTIVATION_RECORD.as_posix(),
+                        f"pending {field} must use the sentinel",
+                        value,
+                        "-",
+                    )
+                )
+    else:
+        if not isinstance(activating_release, str) or not re.fullmatch(
+            r"v[0-9]+\.[0-9]+\.[0-9]+", activating_release
+        ):
+            issues.append(
+                _issue(
+                    "BFR-ACTIVATING-RELEASE",
+                    ACTIVATION_RECORD.as_posix(),
+                    "active manifest requires an immutable release tag",
+                    activating_release,
+                    "v<major>.<minor>.<patch>",
+                )
             )
-        )
-    rollback_receipt_sha256 = data.get("rollback_receipt_sha256")
-    if state in {"pending", "active"} and rollback_receipt_sha256 is not None:
-        issues.append(
-            _issue(
-                "BFR-ROLLBACK-RECEIPT-PREMATURE",
-                ACTIVATION_RECORD.as_posix(),
-                "rollback receipt identity must be null before rollback",
-                rollback_receipt_sha256,
-                "null",
+        expected_rollback = _adapter_manifest_version(root)
+        if rollback_release != expected_rollback:
+            issues.append(
+                _issue(
+                    "BFR-ROLLBACK-RELEASE",
+                    ACTIVATION_RECORD.as_posix(),
+                    "rollback release must be the immediately preceding published release",
+                    rollback_release,
+                    expected_rollback or "tracked adapter manifest version",
+                )
             )
-        )
-    if state == "rolled-back":
-        issues.append(
-            _issue(
-                "BFR-ROLLBACK-RECEIPT-REQUIRED",
-                ROLLBACK_RECEIPT.as_posix(),
-                "rolled-back validation requires the M4 transaction receipt validator",
-                rollback_receipt_sha256,
-                "validated paired pre-transition receipt",
-            )
-        )
 
     grandfathered = data.get("grandfathered_specs")
     if not isinstance(grandfathered, list):
         issues.append(_issue("BFR-GRANDFATHERED-SHAPE", ACTIVATION_RECORD.as_posix(), "grandfathered_specs must be a list", type(grandfathered).__name__, "list"))
     else:
-        records: dict[str, str] = {}
-        preserved_marked: set[str] = set()
-        previous = ""
-        for item in grandfathered:
-            if not isinstance(item, dict) or set(item) != {"path", "sha256"}:
-                issues.append(_issue("BFR-GRANDFATHERED-ENTRY", ACTIVATION_RECORD.as_posix(), "grandfathered entry must contain path and sha256", item, "path and sha256"))
-                continue
-            item_path = item.get("path")
-            item_hash = item.get("sha256")
-            if not isinstance(item_path, str) or not isinstance(item_hash, str) or not SHA256_RE.fullmatch(item_hash):
-                issues.append(_issue("BFR-GRANDFATHERED-ENTRY", ACTIVATION_RECORD.as_posix(), "grandfathered entry values are invalid", item, "spec path and sha256"))
-                continue
+        previous: bytes | None = None
+        valid_paths: list[str] = []
+        for item_path in grandfathered:
+            encoded = item_path.encode("utf-8") if isinstance(item_path, str) else b""
             if (
-                item_path <= previous
+                not isinstance(item_path, str)
+                or (previous is not None and encoded <= previous)
                 or not re.fullmatch(r"specs/[^/]+\.md", item_path)
                 or item_path.endswith(".test.md")
                 or item_path == "specs/README.md"
+                or item_path == PROOF_MODEL_SPEC.as_posix()
             ):
-                issues.append(_issue("BFR-GRANDFATHERED-ORDER", ACTIVATION_RECORD.as_posix(), "grandfathered paths must be sorted unique top-level feature specs", item_path, "sorted specs/*.md"))
-            previous = item_path
-            records[item_path] = item_hash
-            grandfathered_path, grandfathered_path_issue = _historical_spec_path(
-                root,
-                item_path,
-            )
-            if grandfathered_path_issue:
-                issues.append(grandfathered_path_issue)
-                continue
-            assert grandfathered_path is not None
-            if not grandfathered_path.is_file():
-                issues.append(_issue("BFR-GRANDFATHERED-MISSING", item_path, "grandfathered spec is missing", "-", "file with recorded raw-byte identity"))
-            else:
-                current_text = grandfathered_path.read_text(encoding="utf-8")
-                current_marker = _line_value(
-                    _live_markdown(current_text),
-                    "boundary_contract",
-                )
-                if current_marker == METHOD_VERSION:
-                    if _lifecycle_status(current_text) not in {
-                        "accepted",
-                        "approved",
-                        "active",
-                    }:
-                        issues.append(
-                            _issue(
-                                "BFR-GRANDFATHERED-REVISION-STATUS",
-                                item_path,
-                                "marked historical revision must have an accepted lifecycle status",
-                                _lifecycle_status(current_text),
-                                "accepted, approved, or active",
-                            )
-                        )
-                    else:
-                        preserved_marked.add(item_path)
-                    issues.extend(validate_feature_record(current_text, item_path))
-                    proof_relative = item_path.removesuffix(".md") + ".test.md"
-                    proof_path, proof_path_issue = _changed_spec_path(
-                        root,
-                        proof_relative,
+                issues.append(
+                    _issue(
+                        "BFR-GRANDFATHERED-ORDER",
+                        ACTIVATION_RECORD.as_posix(),
+                        "grandfathered paths must be eligible unique top-level feature specs sorted by raw UTF-8 bytes",
+                        item_path,
+                        "eligible sorted specs/*.md paths",
                     )
-                    if proof_path_issue:
-                        issues.append(proof_path_issue)
-                    elif proof_path is None or not proof_path.is_file():
-                        issues.append(
-                            _issue(
-                                "BFR-PROOF-MAP-MISSING",
-                                proof_relative,
-                                "marked historical revision requires a matching proof map",
-                                "-",
-                                "matching test spec",
-                            )
-                        )
-                    else:
-                        issues.extend(
-                            validate_proof_map(
-                                proof_path.read_text(encoding="utf-8"),
-                                current_text,
-                                proof_relative,
-                            )
-                        )
-                elif item_path == PROOF_MODEL_SPEC.as_posix() and state == "rolled-back":
-                    pass
-                else:
-                    actual_hash = raw_sha256(grandfathered_path.read_bytes())
-                    if actual_hash != item_hash:
-                        issues.append(_issue("BFR-GRANDFATHERED-STALE", item_path, "grandfathered spec bytes differ from activation baseline", actual_hash, item_hash))
-        actual_inventory = inventory_digest(records)
-        if data.get("grandfathered_inventory_sha256") != actual_inventory:
-            issues.append(_issue("BFR-GRANDFATHERED-HASH", ACTIVATION_RECORD.as_posix(), "grandfathered inventory identity differs", data.get("grandfathered_inventory_sha256"), actual_inventory))
-        if state in {"active", "rolled-back"}:
-            actual_membership = tuple(records)
-            eligible_membership, eligibility_issues = _eligible_grandfathered_specs(root)
-            issues.extend(eligibility_issues)
-            expected_membership = tuple(
-                sorted(set(eligible_membership) | preserved_marked)
+                )
+                continue
+            previous = encoded
+            valid_paths.append(item_path)
+        if state == "pending" and grandfathered:
+            issues.append(
+                _issue(
+                    "BFR-PENDING-GRANDFATHERED",
+                    ACTIVATION_RECORD.as_posix(),
+                    "pending manifest must have an empty grandfathered inventory",
+                    grandfathered,
+                    [],
+                )
             )
-            if actual_membership != expected_membership:
+        if state == "active" and isinstance(baseline_revision, str):
+            eligible_membership, eligibility_issues = _eligible_grandfathered_specs(
+                root,
+                baseline_revision,
+            )
+            issues.extend(eligibility_issues)
+            if tuple(valid_paths) != eligible_membership:
                 issues.append(
                     _issue(
                         "BFR-GRANDFATHERED-MEMBERSHIP",
                         ACTIVATION_RECORD.as_posix(),
-                        "grandfathered inventory does not match lifecycle-eligible historical specs",
-                        actual_membership,
-                        expected_membership,
+                        "grandfathered inventory does not match eligible parent-revision feature specs",
+                        valid_paths,
+                        eligible_membership,
                     )
                 )
 
-    activated_at = data.get("activated_at")
-    if state in {"active", "rolled-back"} and not isinstance(activated_at, str):
-        issues.append(_issue("BFR-ACTIVATED-AT", ACTIVATION_RECORD.as_posix(), "active or rolled-back record preserves activation time", activated_at, "timestamp"))
-    if state == "pending" and activated_at is not None:
-        issues.append(_issue("BFR-ACTIVATED-AT", ACTIVATION_RECORD.as_posix(), "pending record must use null activation time", activated_at, "null"))
     return tuple(issues)
 
 
@@ -1276,14 +1238,12 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
     marker = _line_value(_live_markdown(feature_text), "boundary_contract")
     state = activation.get("state")
     grandfathered = {
-        item["path"]
+        item
         for item in activation.get("grandfathered_specs", [])
-        if isinstance(item, dict) and isinstance(item.get("path"), str)
+        if isinstance(item, str)
     }
     if state == "pending" and marker is not None:
         return (_issue("BFR-MARKER-INACTIVE", feature_relative, "marker is forbidden while activation is inactive", marker, "-"),)
-    if state == "rolled-back" and marker is not None:
-        return (_issue("BFR-MARKER-INACTIVE", feature_relative, "M3 cannot authorize a rolled-back marker without the M4 transaction receipt", marker, "M4-validated paired rollback receipt"),)
     if state == "active" and feature_relative not in grandfathered and marker != METHOD_VERSION:
         return (_issue("BFR-NEW-SPEC-MARKER", feature_relative, "new feature spec requires active boundary marker", marker, METHOD_VERSION),)
     if (

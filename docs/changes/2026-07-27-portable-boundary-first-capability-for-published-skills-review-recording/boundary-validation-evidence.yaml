@@ -3,36 +3,33 @@ Milestone: M3
 Result: passed
 Contract version: boundary-first-v1
 Activation state: pending
+Activation states:
+  - pending
+  - active
 Semantic completeness claimed: false
 Durable fixture roots:
   - scripts/fixtures/boundary-first/feature-records/
   - scripts/fixtures/boundary-first/proof-maps/
   - scripts/fixtures/boundary-first/activation/
-Structural test count: 48
+Structural test count: 46
 Selector regression test count: 134
-CMD6 result: passed_48_tests_with_M4_receipt_fail_closed_boundary
-CMD7 result: passed_pending_activation_baseline
-CMD8 result: passed_134_tests_from_committed_coordinator_baseline
+CMD6 result: passed_46_tests_two_state_parent_revision_contract
+CMD7 result: passed_pending_two_state_manifest
+CMD8 result: passed_134_tests
 Privacy-bounded diagnostic fields:
   - check_id
   - path
   - message
   - offending_value
   - expected
-Validated claim boundary: shape_references_activation_and_packaging_only
-PBF-M3-CR1 result: fenced_records_status_marker_and_separators_fail_closed
-PBF-M3-CR2 result: malformed_rows_and_identifiers_are_bounded
-PBF-M3-CR3 result: every_projection_matches_canonical_bytes
-PBF-M3-CR4 result: feature_and_test_paths_share_activation_gate
-PBF-M3-CR5 result: active_historical_membership_is_exact
-PBF-M3-CR6 result: changed_paths_are_repository_contained
-PBF-M3-CR7 result: serialized_offending_values_are_redacted
-PBF-M3-CR8 result: coordinator_commit_197d150b_makes_CMD8_reproducible
-PBF-M3-CR9 result: later_adoption_and_rollback_preserve_activation_history
-PBF-M3-CR10 result: explicit_and_derived_companion_paths_are_contained
-PBF-M3-CR11 result: valid_CommonMark_alignment_separators_are_accepted
-PBF-M3-CR12 result: deleted_proofs_and_orphaned_tests_fail_closed
-PBF-M3-CR13 result: historical_inventory_roots_and_entries_reject_symlinks
-PBF-M3-CR14 result: all_rolled_back_state_fails_closed_until_M4_receipt_validation
-PBF-M3-CR15 result: fixed_authoritative_inputs_reject_external_symlinks
-PBF-M3-CR16 result: M4_receipt_contract_requires_paired_feature_and_proof_identities
+Validated claim boundary: shape_references_activation_only
+Grandfathering evidence owner: source_control_parent_revision
+Rollback release owner: dist/adapters/manifest.yaml
+Removed machinery:
+  - rolled_back_state
+  - activation_timestamp
+  - historical_file_hashes
+  - grandfathered_inventory_digest
+  - rollback_receipt
+  - transaction_writer
+  - historical_attestation_store

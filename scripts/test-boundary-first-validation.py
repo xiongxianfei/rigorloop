@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import shutil
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -40,6 +41,74 @@ def copy_activation_surfaces(root: Path) -> None:
         destination = root / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_bytes((ROOT / relative).read_bytes())
+
+
+def initialize_active_fixture(root: Path) -> tuple[Path, str]:
+    copy_activation_surfaces(root)
+    (root / "dist" / "adapters").mkdir(parents=True)
+    (root / "dist" / "adapters" / "manifest.yaml").write_text(
+        "version: v1.0.0\n"
+        "skills:\n"
+        "  workflow:\n"
+        "    portable: true\n"
+        "    adapters: [codex, claude, opencode]\n",
+        encoding="utf-8",
+    )
+    lifecycle_specs = {
+        "accepted.md": "accepted",
+        "approved.md": "approved",
+        "active.md": "active",
+        "draft.md": "draft",
+    }
+    for name, status in lifecycle_specs.items():
+        (root / "specs" / name).write_text(
+            f"# {name}\n\n## Status\n\n{status}\n",
+            encoding="utf-8",
+        )
+    (root / "specs" / "marked.md").write_text(valid_feature(), encoding="utf-8")
+    (root / "specs" / "README.md").write_text("# index\n", encoding="utf-8")
+    (root / "specs" / "ignored.test.md").write_text("# proof\n", encoding="utf-8")
+    subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+    subprocess.run(["git", "config", "user.email", "fixture@example.test"], cwd=root, check=True)
+    subprocess.run(["git", "config", "user.name", "Fixture"], cwd=root, check=True)
+    subprocess.run(["git", "add", "."], cwd=root, check=True)
+    subprocess.run(["git", "commit", "-qm", "parent"], cwd=root, check=True)
+    baseline = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    (root / "specs" / "child.md").write_text(
+        "# child\n\n## Status\n\napproved\n",
+        encoding="utf-8",
+    )
+    proof_model = root / "specs" / "boundary-first-proof-model.md"
+    proof_model.write_text(
+        proof_model.read_text(encoding="utf-8").replace(
+            "Boundary-first contract activation: pending",
+            "Boundary-first contract activation: active",
+        ),
+        encoding="utf-8",
+    )
+    activation_path = root / "specs" / "boundary-first-activation.yaml"
+    data = json.loads(activation_path.read_text(encoding="utf-8"))
+    data.update(
+        {
+            "state": "active",
+            "activating_release": "v1.1.0",
+            "rollback_release": "v1.0.0",
+            "grandfathering_baseline_revision": baseline,
+            "grandfathered_specs": [
+                "specs/accepted.md",
+                "specs/active.md",
+                "specs/approved.md",
+            ],
+        }
+    )
+    activation_path.write_text(json.dumps(data), encoding="utf-8")
+    return activation_path, baseline
 
 
 def valid_feature() -> str:
@@ -533,53 +602,68 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 "BFR-ACTIVATION-FIELDS",
             )
 
-    def test_activation_state_mismatch_fails_closed(self) -> None:
+    def test_active_manifest_uses_parent_inventory_and_immediate_release(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            (root / "specs").mkdir()
-            for name in (
-                "boundary-first-activation.yaml",
-                "boundary-first-proof-model.md",
-            ):
-                (root / "specs" / name).write_bytes((ROOT / "specs" / name).read_bytes())
-            data = json.loads(
-                (root / "specs" / "boundary-first-activation.yaml").read_text(
-                    encoding="utf-8"
-                )
-            )
-            data["state"] = "rolled-back"
-            (root / "specs" / "boundary-first-activation.yaml").write_text(
-                json.dumps(data), encoding="utf-8"
-            )
-            issues = validate_activation(root)
-            self.assertIn("BFR-ACTIVATION-STATE-MISMATCH", {issue.code for issue in issues})
+            initialize_active_fixture(root)
+            self.assertEqual(validate_activation(root), ())
 
-    def test_stale_grandfathered_identity_fails_closed(self) -> None:
+    def test_child_cannot_self_grandfather_and_all_parent_statuses_are_required(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            (root / "specs").mkdir()
-            historical = root / "specs" / "historical.md"
-            historical.write_text("# Current bytes\n", encoding="utf-8")
-            for name in (
-                "boundary-first-activation.yaml",
-                "boundary-first-proof-model.md",
+            activation_path, _ = initialize_active_fixture(root)
+            data = json.loads(activation_path.read_text(encoding="utf-8"))
+            for inventory in (
+                ["specs/accepted.md", "specs/active.md"],
+                [
+                    "specs/accepted.md",
+                    "specs/active.md",
+                    "specs/approved.md",
+                    "specs/child.md",
+                ],
+                [
+                    "specs/accepted.md",
+                    "specs/active.md",
+                    "specs/approved.md",
+                    "specs/draft.md",
+                ],
             ):
-                (root / "specs" / name).write_bytes((ROOT / "specs" / name).read_bytes())
-            data = json.loads(
-                (root / "specs" / "boundary-first-activation.yaml").read_text(
-                    encoding="utf-8"
-                )
-            )
-            data["grandfathered_specs"] = [
-                {"path": "specs/historical.md", "sha256": "0" * 64}
-            ]
-            (root / "specs" / "boundary-first-activation.yaml").write_text(
-                json.dumps(data), encoding="utf-8"
-            )
+                with self.subTest(inventory=inventory):
+                    data["grandfathered_specs"] = inventory
+                    activation_path.write_text(json.dumps(data), encoding="utf-8")
+                    self.assertIn(
+                        "BFR-GRANDFATHERED-MEMBERSHIP",
+                        {issue.code for issue in validate_activation(root)},
+                    )
+
+    def test_older_rollback_release_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            activation_path, _ = initialize_active_fixture(root)
+            data = json.loads(activation_path.read_text(encoding="utf-8"))
+            data["rollback_release"] = "v0.9.0"
+            activation_path.write_text(json.dumps(data), encoding="utf-8")
             self.assertIn(
-                "BFR-GRANDFATHERED-STALE",
+                "BFR-ROLLBACK-RELEASE",
                 {issue.code for issue in validate_activation(root)},
             )
+
+    def test_grandfathered_inventory_requires_raw_utf8_order_and_uniqueness(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            activation_path, _ = initialize_active_fixture(root)
+            data = json.loads(activation_path.read_text(encoding="utf-8"))
+            for inventory in (
+                ["specs/active.md", "specs/accepted.md", "specs/approved.md"],
+                ["specs/accepted.md", "specs/accepted.md", "specs/approved.md"],
+            ):
+                with self.subTest(inventory=inventory):
+                    data["grandfathered_specs"] = inventory
+                    activation_path.write_text(json.dumps(data), encoding="utf-8")
+                    self.assertIn(
+                        "BFR-GRANDFATHERED-ORDER",
+                        {issue.code for issue in validate_activation(root)},
+                    )
 
     def test_mixed_projection_bytes_fail_even_with_recomputed_inventory(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -605,30 +689,6 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 {issue.code for issue in validate_activation(root)},
             )
 
-    def test_active_inventory_membership_is_exact(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            copy_activation_surfaces(root)
-            historical = root / "specs" / "historical.md"
-            historical.write_text(
-                "# Historical\n\n## Status\n\napproved\n",
-                encoding="utf-8",
-            )
-            data = json.loads(
-                (root / "specs" / "boundary-first-activation.yaml").read_text(
-                    encoding="utf-8"
-                )
-            )
-            data["state"] = "active"
-            data["activated_at"] = "2026-07-28T00:00:00Z"
-            (root / "specs" / "boundary-first-activation.yaml").write_text(
-                json.dumps(data), encoding="utf-8"
-            )
-            self.assertIn(
-                "BFR-GRANDFATHERED-MEMBERSHIP",
-                {issue.code for issue in validate_activation(root)},
-            )
-
     def test_issue_evidence_is_privacy_bounded(self) -> None:
         issue = validate_feature_record(
             valid_feature().replace("input-domain | applicable", "secret | applicable"),
@@ -651,10 +711,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 )
             )
             data["state"] = "active"
-            data["activated_at"] = "2026-07-28T00:00:00Z"
-            data["grandfathered_specs"] = [
-                {"path": "specs/historical.md", "sha256": "0" * 64}
-            ]
+            data["grandfathered_specs"] = ["specs/historical.md"]
             (root / "specs" / "boundary-first-activation.yaml").write_text(
                 json.dumps(data), encoding="utf-8"
             )
@@ -681,7 +738,6 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 )
             )
             data["state"] = "active"
-            data["activated_at"] = "2026-07-28T00:00:00Z"
             (root / "specs" / "boundary-first-activation.yaml").write_text(
                 json.dumps(data), encoding="utf-8"
             )
@@ -773,7 +829,6 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 )
             )
             data["state"] = "active"
-            data["activated_at"] = "2026-07-28T00:00:00Z"
             (root / "specs" / "boundary-first-activation.yaml").write_text(
                 json.dumps(data), encoding="utf-8"
             )
@@ -794,148 +849,6 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             self.assertEqual(
                 validate_changed_spec(root, "specs/feature.test.md"),
                 (),
-            )
-
-    def test_later_adoption_preserves_history_and_rollback_waits_for_m4(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            copy_activation_surfaces(root)
-            proof_model = root / "specs" / "boundary-first-proof-model.md"
-            proof_model.write_text(
-                proof_model.read_text(encoding="utf-8").replace(
-                    "Boundary-first contract activation: pending",
-                    "Boundary-first contract activation: active",
-                ),
-                encoding="utf-8",
-            )
-            historical = root / "specs" / "historical.md"
-            historical.write_text(
-                "# Historical\n\n## Status\n\napproved\n",
-                encoding="utf-8",
-            )
-            records = {
-                "specs/boundary-first-proof-model.md": raw_sha256(
-                    proof_model.read_bytes()
-                ),
-                "specs/historical.md": raw_sha256(historical.read_bytes()),
-            }
-            data = json.loads(
-                (root / "specs" / "boundary-first-activation.yaml").read_text(
-                    encoding="utf-8"
-                )
-            )
-            data["state"] = "active"
-            data["activated_at"] = "2026-07-28T00:00:00Z"
-            data["grandfathered_specs"] = [
-                {"path": path, "sha256": records[path]}
-                for path in sorted(records)
-            ]
-            data["grandfathered_inventory_sha256"] = inventory_digest(records)
-            activation_path = root / "specs" / "boundary-first-activation.yaml"
-            activation_path.write_text(json.dumps(data), encoding="utf-8")
-            historical.write_text(valid_feature(), encoding="utf-8")
-            (root / "specs" / "historical.test.md").write_text(
-                valid_proof(), encoding="utf-8"
-            )
-            self.assertEqual(validate_activation(root), ())
-
-            data["state"] = "rolled-back"
-            data["rollback_receipt_sha256"] = "0" * 64
-            activation_path.write_text(json.dumps(data), encoding="utf-8")
-            proof_model.write_text(
-                proof_model.read_text(encoding="utf-8").replace(
-                    "Boundary-first contract activation: active",
-                    "Boundary-first contract activation: rolled-back",
-                ),
-                encoding="utf-8",
-            )
-            self.assertIn(
-                "BFR-ROLLBACK-RECEIPT-REQUIRED",
-                {issue.code for issue in validate_activation(root)},
-            )
-            self.assertEqual(
-                validate_changed_spec(root, "specs/historical.md")[0].code,
-                "BFR-MARKER-INACTIVE",
-            )
-
-    def test_rollback_rejects_recomputed_current_state_until_m4_receipt(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            copy_activation_surfaces(root)
-            preserved = root / "specs" / "preserved.md"
-            preserved_proof = root / "specs" / "preserved.test.md"
-            preserved.write_text(valid_feature(), encoding="utf-8")
-            preserved_proof.write_text(valid_proof(), encoding="utf-8")
-            receipt = {
-                "source_state": "active",
-                "target_state": "rolled-back",
-                "pairs": [
-                    {
-                        "feature_path": "specs/preserved.md",
-                        "feature_sha256": raw_sha256(preserved.read_bytes()),
-                        "proof_path": "specs/preserved.test.md",
-                        "proof_sha256": raw_sha256(preserved_proof.read_bytes()),
-                    }
-                ],
-            }
-            receipt_path = root / "specs" / "boundary-first-rollback-receipt.yaml"
-            receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
-            data = json.loads(
-                (root / "specs" / "boundary-first-activation.yaml").read_text(
-                    encoding="utf-8"
-                )
-            )
-            data["state"] = "rolled-back"
-            data["activated_at"] = "2026-07-28T00:00:00Z"
-            data["rollback_receipt_sha256"] = raw_sha256(receipt_path.read_bytes())
-            (root / "specs" / "boundary-first-activation.yaml").write_text(
-                json.dumps(data), encoding="utf-8"
-            )
-            self.assertEqual(
-                validate_changed_spec(root, "specs/preserved.md")[0].code,
-                "BFR-MARKER-INACTIVE",
-            )
-            (root / "specs" / "new-after-rollback.md").write_text(
-                valid_feature(), encoding="utf-8"
-            )
-            (root / "specs" / "new-after-rollback.test.md").write_text(
-                valid_proof(), encoding="utf-8"
-            )
-            self.assertEqual(
-                validate_changed_spec(
-                    root,
-                    "specs/new-after-rollback.md",
-                )[0].code,
-                "BFR-MARKER-INACTIVE",
-            )
-            self.assertIn(
-                "BFR-ROLLBACK-RECEIPT-REQUIRED",
-                {issue.code for issue in validate_activation(root)},
-            )
-
-    def test_rollback_cannot_omit_proof_map_before_m4_receipt_validation(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            copy_activation_surfaces(root)
-            (root / "specs" / "preserved.md").write_text(
-                valid_feature(),
-                encoding="utf-8",
-            )
-            data = json.loads(
-                (root / "specs" / "boundary-first-activation.yaml").read_text(
-                    encoding="utf-8"
-                )
-            )
-            data["state"] = "rolled-back"
-            data["activated_at"] = "2026-07-28T00:00:00Z"
-            data["rollback_receipt_sha256"] = "0" * 64
-            (root / "specs" / "boundary-first-activation.yaml").write_text(
-                json.dumps(data),
-                encoding="utf-8",
-            )
-            self.assertIn(
-                "BFR-ROLLBACK-RECEIPT-REQUIRED",
-                {issue.code for issue in validate_activation(root)},
             )
 
     def test_fixed_authoritative_inputs_reject_external_symlinks(self) -> None:
@@ -965,40 +878,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                         "BFR-AUTHORITATIVE-PATH-UNSAFE",
                     )
 
-    def test_historical_inventory_rejects_leaf_and_specs_root_symlinks(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            copy_activation_surfaces(root)
-            outside = root.parent / "outside-grandfathered.md"
-            outside.write_text(
-                "# Outside\n\n## Status\n\napproved\n",
-                encoding="utf-8",
-            )
-            self.addCleanup(outside.unlink, missing_ok=True)
-            historical = root / "specs" / "historical.md"
-            historical.symlink_to(outside)
-            data = json.loads(
-                (root / "specs" / "boundary-first-activation.yaml").read_text(
-                    encoding="utf-8"
-                )
-            )
-            data["grandfathered_specs"] = [
-                {
-                    "path": "specs/historical.md",
-                    "sha256": raw_sha256(outside.read_bytes()),
-                }
-            ]
-            data["grandfathered_inventory_sha256"] = inventory_digest(
-                {"specs/historical.md": raw_sha256(outside.read_bytes())}
-            )
-            (root / "specs" / "boundary-first-activation.yaml").write_text(
-                json.dumps(data), encoding="utf-8"
-            )
-            self.assertIn(
-                "BFR-GRANDFATHERED-PATH-UNSAFE",
-                {issue.code for issue in validate_activation(root)},
-            )
-
+    def test_specs_root_symlink_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             outside_specs = root.parent / f"{root.name}-outside-specs"

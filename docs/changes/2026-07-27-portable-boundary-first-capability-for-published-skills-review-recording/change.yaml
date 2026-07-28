@@ -22,10 +22,10 @@ tests:
 validation:
   -
     command: python scripts/test-boundary-first-validation.py
-    result: pass_48_tests_M3_with_M4_receipt_fail_closed_boundary
+    result: pass_46_tests_M3_two_state_parent_revision_contract
   -
     command: python scripts/validate-boundary-first.py --check
-    result: pass_pending_activation_baseline_M3
+    result: pass_pending_two_state_manifest_M3
   -
     command: python scripts/test-select-validation.py
     result: pass_134_tests_M3_from_committed_coordinator_baseline
