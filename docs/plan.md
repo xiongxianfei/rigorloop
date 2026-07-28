@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Portable Boundary-First Capability for Published Skills](plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md) | active | plan-review R3 for the simplified M3 and M4 scope | 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording |
+| [Portable Boundary-First Capability for Published Skills](plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md) | active | test-spec revision for the approved release-manifest contract | 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked
