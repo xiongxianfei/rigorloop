@@ -5,6 +5,7 @@
 Closeout status: closed
 
 Review closeout: test-spec-review-r4
+Review closeout: test-spec-review-r5
 Review closeout: test-spec-review-r3
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
@@ -96,6 +97,14 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### test-spec-review-r5
+
+Review closeout: test-spec-review-r5
+
+No material findings.
+R5 confirms PBF-TSR3 through PBF-TSR7 resolved and approves M3
+implementation under separate authority.
 
 ### test-spec-review-r4
 
