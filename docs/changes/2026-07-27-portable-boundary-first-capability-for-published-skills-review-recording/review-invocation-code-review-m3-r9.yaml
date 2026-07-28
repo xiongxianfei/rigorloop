@@ -4,8 +4,8 @@ review_stage: code-review
 review_target: commit:604306dd
 base_revision: 15b5f69f
 head_revision: 604306dd
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: changes-requested
+review_gate_outcome: revise
 independence_level: L1
 author_context_id: run-pbf-20260728-lightweight-m3-r9
 reviewer_context_id: isolated-m3-r9-primary
@@ -55,9 +55,9 @@ phase_receipts:
   - evidence-menu-released
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: isolated-m3-r9-second
-  result: pending
+  result: changes-requested
 risk_map:
   affected_behavior: merge-aware first-parent activation ownership, exact activating-tag identity, immutable release fields, and transition-parent grandfather inventory
   highest_impact_failure_modes: a side-branch transition becomes authority, a tag identifies the wrong commit, release fields are rewritten, or inventory is derived from a caller-selected revision

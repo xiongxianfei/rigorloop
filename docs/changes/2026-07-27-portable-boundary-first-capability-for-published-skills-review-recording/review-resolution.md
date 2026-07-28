@@ -2,8 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
+Review closeout: code-review-m3-r9
 Review closeout: code-review-m3-r8
 Review closeout: code-review-m3-r7
 Review closeout: test-spec-review-r4
@@ -40,13 +41,14 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 57
-- Unresolved findings: 0
-- Final result: PBF-M3-CR23 is resolved by merge-aware first-parent transition discovery and immutable tag and release-field binding.
+- Unresolved findings: 1
+- Final result: PBF-M3-CR24 remains open because the tagged transition snapshot's baseline and inventory are not yet validated.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-M3-CR24 | accepted | in-progress | Bind the tagged transition snapshot and current state to its exact first-parent baseline and inventory. |
 | PBF-M3-CR23 | accepted | resolved | Bind merge-aware transition parent, activating tag, and current release fields to one immutable transition. |
 | PBF-M3-CR18 | accepted | resolved | Bind the baseline to the exact parent of the pending-to-active transition commit. |
 | PBF-M3-CR19 | accepted | resolved | Validate immutable tag existence and immediate predecessor ordering. |
@@ -106,6 +108,23 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### code-review-m3-r9
+
+#### PBF-M3-CR24 - Tagged transition snapshot remains repairable
+
+Finding ID: PBF-M3-CR24
+Disposition: accepted
+Status: in-progress
+Owner: M3 implementation
+Owning stage: review-resolution
+Chosen action: Validate the transition snapshot's baseline and inventory
+against its first parent, then require the current manifest to retain those
+values.
+Rationale: A later active commit cannot retroactively make an invalid tagged
+activation release compliant.
+Validation target: Code-review M3 R10.
+Validation evidence: Pending implementation.
 
 ### code-review-m3-r8
 
