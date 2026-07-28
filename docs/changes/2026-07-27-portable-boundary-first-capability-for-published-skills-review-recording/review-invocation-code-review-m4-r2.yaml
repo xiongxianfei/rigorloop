@@ -4,8 +4,8 @@ review_stage: code-review
 review_target: commit:75456f92
 base_revision: 93d5b58b
 head_revision: 75456f92
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: clean-with-notes
+review_gate_outcome: approve
 independence_level: L1
 author_context_id: run-pbf-20260728-m4-r2
 reviewer_context_id: isolated-m4-r2-primary
@@ -54,9 +54,9 @@ phase_receipts:
   - evidence-menu-released
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: isolated-m4-r2-second
-  result: pending
+  result: clean
 risk_map:
   affected_behavior: authoritative active rollback selection, production enforcement and output, path containment, and non-mutation proof
   highest_impact_failure_modes: caller-selected release, active validation bypass, omitted selected release, path escape, or input mutation

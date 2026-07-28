@@ -175,7 +175,7 @@ changed_files:
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m2-r2.yaml
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m2-r2.md
 review:
-  status: changes-requested
+  status: clean-with-notes
   unresolved_items: 0
   material_findings: 64
   closed_findings: 64
@@ -185,13 +185,13 @@ review:
   architecture_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/architecture-review-r4.md
   plan_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/plan-review-r6.md
   test_spec_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/test-spec-review-r9.md
-  code_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m4-r1.md
+  code_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m4-r2.md
   review_log: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md
   review_resolution: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
   review_gate:
-    manifest: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m4-r1.yaml
+    manifest: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m4-r2.yaml
     independence_level: L1
-    initial_packet_sha256: sha256:4b23638b4b82e0d4ae7bad3ec37a270b8eb83ad70d80651b649092c26af128f2
+    initial_packet_sha256: sha256:3e1b1f84db8f04c0ae16e0a16758b09b34767429192b40d737e176a413986e84
     phase_receipts:
       - risk-map-recorded
       - evidence-menu-released

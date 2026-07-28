@@ -4,6 +4,7 @@
 
 Closeout status: closed
 
+Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r1
 Review closeout: test-spec-review-r9
 Review closeout: test-spec-review-r7
@@ -123,6 +124,17 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### code-review-m4-r2
+
+Review closeout: code-review-m4-r2
+Review result: clean-with-notes
+Material findings: None
+Resolution required: no
+Validation evidence: Two independent reviewers confirmed PBF-M4-CR1 and
+PBF-M4-CR2 resolved, exact packet integrity, authoritative read-only rollback
+selection, complete containment/non-mutation proof, and no expansion into
+publication, mutation, transaction, receipt, attestation, or runtime scope.
 
 ### code-review-m4-r1
 
