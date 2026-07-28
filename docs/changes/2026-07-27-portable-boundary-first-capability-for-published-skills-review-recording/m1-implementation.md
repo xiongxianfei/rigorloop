@@ -39,7 +39,7 @@ git diff --check -- <M1 implementation paths>
 ```
 
 All commands passed after the R1 correction.
-The test suite ran nine tests.
+The test suite ran ten tests.
 The projection check found ten current consumers with inventory identity
 `a764f05f5427e13ac69e44210fe6b006313afca0fa9d94135095358c64cec2d9`.
 
@@ -49,3 +49,7 @@ PBF-M1-CR1 is resolved by commit `0b198866`.
 Every existing source or destination path component is checked for symlinks before reading, creating parents, checking, or writing.
 Unexpected-projection enumeration no longer follows skill-root or reference-directory symlinks.
 The two adversarial regressions prove the command fails before outside reads or writes while the original M1 proof remains green.
+
+PBF-M1-CR2 and PBF-M1-CR3 are resolved by commit `ffa692c0`.
+Ungoverned symlinked skill and references directories now fail closed without traversal.
+All outside regression fixtures use separately managed temporary directories, and a before/after probe confirmed the ten-test suite creates no new legacy sibling directories.

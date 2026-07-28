@@ -8,8 +8,11 @@ Projected relative path: references/boundary-first-method-v1.md
 Governed consumer count: 10
 Projection inventory SHA-256: a764f05f5427e13ac69e44210fe6b006313afca0fa9d94135095358c64cec2d9
 Governed consumers: workflow, spec, spec-review, plan, plan-review, test-spec, test-spec-review, implement, code-review, verify
-CMD1 result: passed_9_tests_after_PBF-M1-CR1
+CMD1 result: passed_10_tests_after_PBF-M1-CR1_PBF-M1-CR2_PBF-M1-CR3
 CMD2 result: passed_count_10
 CMD15 result: passed
 PBF-M1-CR1 correction commit: 0b198866
 PBF-M1-CR1 outside mutation result: rejected_before_mutation
+PBF-M1-CR2 correction commit: ffa692c0
+PBF-M1-CR2 unexpected symlink result: rejected_without_traversal
+PBF-M1-CR3 cleanup result: no_new_legacy_fixture_directories
