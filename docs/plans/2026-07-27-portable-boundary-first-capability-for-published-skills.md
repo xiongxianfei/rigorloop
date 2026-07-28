@@ -105,13 +105,13 @@ an explicit blocking gap before implementation begins.
 
 - Current milestone: M3. Structural and activation validation
 - Current milestone state: planned
-- Latest review evidence: architecture-review R4 approved the simplified release-manifest and package-rollback architecture; this revision removes stale M3 and M4 transaction work
+- Latest review evidence: plan-review R2 records PBF-PLR1 through PBF-PLR3 for current ADR ownership, rollback proof isolation, and local recovery
 - Last reviewed milestone: M2
-- Review status: review-requested; stage=plan-review; round=r2
+- Review status: changes-requested; stage=plan-review; round=r2
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: plan-review R2 for the simplified M3 and M4 scope
+- Next stage: plan revision for PBF-PLR1 through PBF-PLR3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=3; open-findings=PBF-PLR1,PBF-PLR2,PBF-PLR3
 
 ## Milestones
 
