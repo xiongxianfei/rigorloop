@@ -1,5 +1,9 @@
 # Minimal boundary-first fixture
 
+## Status
+
+approved
+
 boundary_contract: boundary-first-v1
 
 ## Boundary model

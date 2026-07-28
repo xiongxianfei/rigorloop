@@ -1,5 +1,9 @@
 # Structurally valid semantic-omission fixture
 
+## Status
+
+approved
+
 boundary_contract: boundary-first-v1
 
 ## Boundary model
