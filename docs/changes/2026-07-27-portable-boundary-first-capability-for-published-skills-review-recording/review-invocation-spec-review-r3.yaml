@@ -4,8 +4,8 @@ review_stage: spec-review
 review_target: specs/boundary-first-proof-model.md
 base_revision: 7cc22ca1
 head_revision: 31dfa88d
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
 independence_level: L1
 author_context_id: run-pbf-20260727-contract-simplification
 reviewer_context_id: isolated-spec-r3

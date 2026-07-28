@@ -16,6 +16,7 @@ Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
+Review closeout: spec-review-r3
 Review closeout: architecture-review-r1
 Review closeout: architecture-review-r2
 Review closeout: test-spec-review-r1
@@ -27,13 +28,18 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 36
-- Unresolved findings: 0
-- Final result: PBF-M3-CR17 is resolved by removing rollback mutation machinery from the draft contract; independent spec-review must confirm the restored published-skill boundary before downstream alignment.
+- Unresolved findings: 5
+- Final result: Spec-review R3 accepts the simplified published-skill boundary and requests five deterministic activation and rollback clarifications.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-SR4 | accepted | in-progress | Close the pending-state opt-in rule. |
+| PBF-SR5 | accepted | in-progress | Require an immutable release identity in active state. |
+| PBF-SR6 | accepted | in-progress | Define exact grandfathered membership and sorting. |
+| PBF-SR7 | accepted | in-progress | Define the previous-release target and package identity evidence. |
+| PBF-SR8 | accepted | in-progress | Keep external rollback execution operator-owned. |
 | PBF-M3-CR17 | accepted | resolved | Remove rollback mutation machinery; use previous-release package rollback. |
 | PBF-M3-CR16 | deferred | resolved | M3 fails closed; M4 must validate paired feature/proof identities. |
 | PBF-M3-CR14 | deferred | resolved | M3 fails closed; M4 owns pre-transition receipt provenance. |
@@ -72,6 +78,78 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### spec-review-r3
+
+#### PBF-SR4 - Pending-state marker rule conflicts with in-flight opt-in
+
+Finding ID: PBF-SR4
+Disposition: accepted
+Status: in-progress
+Owner: spec author
+Owning stage: spec revision
+Chosen action: Define in-flight opt-in as active-only.
+Rationale: One activation rule is simpler and avoids a partially available
+published capability.
+Validation target: Revised PBF-R003, PBF-R053, and compatibility text.
+Validation evidence: Pending.
+
+#### PBF-SR5 - Active release identity is optional
+
+Finding ID: PBF-SR5
+Disposition: accepted
+Status: in-progress
+Owner: spec author
+Owning stage: spec revision
+Chosen action: Use `-` while pending and require one immutable release
+identifier while active.
+Rationale: State and release identity must be deterministic without retaining a
+historical evidence store.
+Validation target: Revised activation manifest and observability contract.
+Validation evidence: Pending.
+
+#### PBF-SR6 - Grandfathered membership is undefined
+
+Finding ID: PBF-SR6
+Disposition: accepted
+Status: in-progress
+Owner: spec author
+Owning stage: spec revision
+Chosen action: Define one activation-time inventory of eligible top-level
+feature specs using sorted repository-relative POSIX paths.
+Rationale: Path membership is sufficient for prospective compatibility and
+avoids historical content attestation.
+Validation target: Revised PBF-R005a and PBF-R049b.
+Validation evidence: Pending.
+
+#### PBF-SR7 - Rollback target and identity evidence are not closed
+
+Finding ID: PBF-SR7
+Disposition: accepted
+Status: in-progress
+Owner: spec author
+Owning stage: spec revision
+Chosen action: Use the immediately preceding published release from ordinary
+release metadata and its complete supported-adapter package identity matrix.
+Rationale: Existing immutable release artifacts are the natural rollback
+boundary; no transaction protocol is needed.
+Validation target: Revised PBF-R057, PBF-R058, state, and error behavior.
+Validation evidence: Pending.
+
+#### PBF-SR8 - Rollback action contradicts the external-action non-goal
+
+Finding ID: PBF-SR8
+Disposition: accepted
+Status: in-progress
+Owner: spec author
+Owning stage: spec revision
+Chosen action: Limit the capability to selecting and validating the rollback
+bundle; an authorized release operator owns external installation or
+publication.
+Rationale: Published skills should provide portable guidance and deterministic
+package checks, not operate deployment systems.
+Validation target: Revised rollback requirements and non-goals.
+Validation evidence: Pending.
 
 ### code-review-m3-r5
 
