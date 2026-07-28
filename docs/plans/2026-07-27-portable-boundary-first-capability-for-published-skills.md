@@ -105,11 +105,11 @@ an explicit blocking gap before implementation begins.
 
 - Current milestone: M3. Structural and activation validation
 - Current milestone state: review-requested
-- Latest review evidence: M3 implements the approved two-state manifest with parent-revision grandfathering and removes receipt, transaction, and historical-hash machinery; targeted validation passes
+- Latest review evidence: code-review M3 R6 stopped at packet integrity because a scoped diff hash was labeled as the full commit diff; no implementation verdict was issued
 - Last reviewed milestone: M2
-- Review status: review-requested; stage=code-review; round=r6
+- Review status: blocked; stage=code-review; round=r6
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review M3 R6 for the lightweight activation implementation
+- Next stage: issue an exact full-commit code-review M3 R7 packet
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
