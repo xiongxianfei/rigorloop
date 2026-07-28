@@ -124,6 +124,74 @@ def initialize_active_fixture(
     return activation_path, baseline
 
 
+def initialize_merge_activation_fixture(root: Path) -> Path:
+    copy_activation_surfaces(root)
+    subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+    subprocess.run(["git", "config", "user.email", "fixture@example.test"], cwd=root, check=True)
+    subprocess.run(["git", "config", "user.name", "Fixture"], cwd=root, check=True)
+    subprocess.run(["git", "add", "."], cwd=root, check=True)
+    subprocess.run(["git", "commit", "-qm", "pending"], cwd=root, check=True)
+    main_branch = subprocess.run(
+        ["git", "branch", "--show-current"],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    subprocess.run(["git", "tag", "v0.9.0"], cwd=root, check=True)
+    subprocess.run(["git", "checkout", "-qb", "activation"], cwd=root, check=True)
+    (root / "specs" / "branch.md").write_text(
+        "# branch\n\n## Status\n\napproved\n",
+        encoding="utf-8",
+    )
+    subprocess.run(["git", "add", "."], cwd=root, check=True)
+    subprocess.run(["git", "commit", "-qm", "activation parent"], cwd=root, check=True)
+    branch_parent = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    subprocess.run(["git", "tag", "v1.0.0"], cwd=root, check=True)
+    proof_model = root / "specs" / "boundary-first-proof-model.md"
+    proof_model.write_text(
+        proof_model.read_text(encoding="utf-8").replace(
+            "Boundary-first contract activation: pending",
+            "Boundary-first contract activation: active",
+        ),
+        encoding="utf-8",
+    )
+    activation_path = root / "specs" / "boundary-first-activation.yaml"
+    data = json.loads(activation_path.read_text(encoding="utf-8"))
+    data.update(
+        {
+            "state": "active",
+            "activating_release": "v1.1.0",
+            "rollback_release": "v1.0.0",
+            "grandfathering_baseline_revision": branch_parent,
+            "grandfathered_specs": ["specs/branch.md"],
+        }
+    )
+    activation_path.write_text(json.dumps(data), encoding="utf-8")
+    subprocess.run(["git", "add", "."], cwd=root, check=True)
+    subprocess.run(["git", "commit", "-qm", "activate branch"], cwd=root, check=True)
+    subprocess.run(["git", "tag", "v1.1.0"], cwd=root, check=True)
+    subprocess.run(["git", "checkout", "-q", main_branch], cwd=root, check=True)
+    (root / "specs" / "main.md").write_text(
+        "# main\n\n## Status\n\napproved\n",
+        encoding="utf-8",
+    )
+    subprocess.run(["git", "add", "."], cwd=root, check=True)
+    subprocess.run(["git", "commit", "-qm", "target parent"], cwd=root, check=True)
+    subprocess.run(
+        ["git", "merge", "--no-ff", "-qm", "integrate activation", "activation"],
+        cwd=root,
+        check=True,
+    )
+    return activation_path
+
+
 def valid_feature() -> str:
     dimensions = [
         "| input-domain | applicable | FIX-R001 | BND-INPUT-001 | - |",
@@ -715,6 +783,52 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                         {"BFR-BASELINE-REVISION", "BFR-BASELINE-PARENT"}
                         & {issue.code for issue in validate_activation(root)}
                     )
+
+    def test_merge_activation_uses_integration_first_parent(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            initialize_merge_activation_fixture(root)
+            codes = {issue.code for issue in validate_activation(root)}
+            self.assertIn("BFR-BASELINE-PARENT", codes)
+            self.assertIn("BFR-ACTIVATING-TAG-COMMIT", codes)
+            self.assertIn("BFR-GRANDFATHERED-MEMBERSHIP", codes)
+
+    def test_activating_tag_and_release_fields_are_transition_immutable(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            initialize_active_fixture(root)
+            pending = subprocess.run(
+                ["git", "rev-parse", "v0.9.0"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            subprocess.run(
+                ["git", "tag", "-f", "v1.1.0", pending],
+                cwd=root,
+                check=True,
+                capture_output=True,
+            )
+            self.assertIn(
+                "BFR-ACTIVATING-TAG-COMMIT",
+                {issue.code for issue in validate_activation(root)},
+            )
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            activation_path, _ = initialize_active_fixture(root)
+            data = json.loads(activation_path.read_text(encoding="utf-8"))
+            data["activating_release"] = "v1.2.0"
+            data["rollback_release"] = "v1.1.0"
+            activation_path.write_text(json.dumps(data), encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-qm", "rewrite releases"], cwd=root, check=True)
+            subprocess.run(["git", "tag", "v1.2.0"], cwd=root, check=True)
+            self.assertIn(
+                "BFR-ACTIVATION-IMMUTABLE",
+                {issue.code for issue in validate_activation(root)},
+            )
 
     def test_unicode_parent_path_is_inventoried_and_symlink_mode_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
