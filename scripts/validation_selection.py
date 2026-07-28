@@ -31,6 +31,11 @@ class CheckCatalogEntry:
 
 
 CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
+    "boundary_first.validate": CheckCatalogEntry(
+        "boundary_first.validate",
+        "python scripts/validate-boundary-first.py --check",
+        "boundary-first",
+    ),
     "skills.validate": CheckCatalogEntry(
         "skills.validate",
         "python scripts/validate-skills.py",
@@ -533,6 +538,14 @@ CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
         allowed_when=("validator fixture evidence is recorded",),
     ),
     EvidenceClassRegistration(
+        evidence_class_id="boundary-validation",
+        patterns=("boundary-validation-evidence.yaml",),
+        selector_routes=("artifact_lifecycle.validate", "boundary_first.validate"),
+        required_validator="validate-boundary-first",
+        lifecycle_stage="implementation",
+        allowed_when=("boundary-first structural and activation validation evidence is recorded",),
+    ),
+    EvidenceClassRegistration(
         evidence_class_id="project-map-output-proof",
         patterns=("cold-read-proof.md", "representative-project-map-outputs.md"),
         selector_routes=("artifact_lifecycle.validate",),
@@ -766,6 +779,17 @@ def catalog_command(
             "scripts/test-adapter-distribution.py",
             "AdapterDistributionTests.test_build_adapter_archives_creates_required_release_archives",
         )
+    if check_id == "boundary_first.validate":
+        args = ["python", "scripts/validate-boundary-first.py", "--check"]
+        spec_paths: set[str] = set()
+        for path in paths:
+            if re.fullmatch(r"specs/[^/]+\.test\.md", path):
+                spec_paths.add(path)
+            elif re.fullmatch(r"specs/[^/]+\.md", path) and path != "specs/README.md":
+                spec_paths.add(path)
+        for path in sorted(spec_paths):
+            args.extend(["--path", path])
+        return _join(*args)
     if check_id == "adapters.validate":
         return _join(
             "python",
@@ -1208,6 +1232,14 @@ def _apply_path_selection(
     repo_root: Path,
     changed_sections_by_path: dict[str, tuple[str, ...]],
 ) -> None:
+    if _is_boundary_first_surface(path):
+        _add_check(
+            selected,
+            "boundary_first.validate",
+            "Changed boundary-first contract, skill, validator, or package surface requires boundary validation.",
+            path=path,
+        )
+
     if _is_tier_b_documentation_prose_path(path):
         _add_check(
             selected,
@@ -2075,6 +2107,8 @@ def _build_result(
 
 def _path_category(path: str) -> str | None:
     parts = path.split("/")
+    if path == "specs/boundary-first-activation.yaml":
+        return "lifecycle"
     if path == "README.md":
         return "readme"
     if path == ROOT_VISION_PATH:
@@ -2108,6 +2142,12 @@ def _path_category(path: str) -> str | None:
         "scripts/validate-adapters.py",
     }:
         return "adapters"
+    if path in {
+        "scripts/boundary_first_validation.py",
+        "scripts/validate-boundary-first.py",
+        "scripts/test-boundary-first-validation.py",
+    }:
+        return "selector"
     if path in {
         "scripts/select-validation.py",
         "scripts/validation_selection.py",
@@ -2296,6 +2336,32 @@ def _path_category(path: str) -> str | None:
     if path.startswith("scripts/"):
         return "script-unsupported"
     return None
+
+
+def _is_boundary_first_surface(path: str) -> bool:
+    return (
+        path == "specs/boundary-first-activation.yaml"
+        or path == "specs/references/boundary-first-method-v1.md"
+        or (path.startswith("specs/") and path.endswith(".md"))
+        or (
+            path.startswith("skills/")
+            and (
+                path.endswith("/SKILL.md")
+                or path.endswith("/references/boundary-first-method-v1.md")
+            )
+        )
+        or path.startswith("dist/adapters/")
+        or path.startswith("scripts/fixtures/boundary-first/")
+        or path
+        in {
+            "scripts/boundary_first_validation.py",
+            "scripts/validate-boundary-first.py",
+            "scripts/test-boundary-first-validation.py",
+            "scripts/boundary_first_reference.py",
+            "scripts/project-boundary-first-reference.py",
+            "scripts/test-boundary-first-reference.py",
+        }
+    )
 
 
 def _matching_evidence_classes(

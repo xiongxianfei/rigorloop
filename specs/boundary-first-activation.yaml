@@ -1,0 +1,22 @@
+{
+  "contract_version": "boundary-first-v1",
+  "state": "pending",
+  "activated_at": null,
+  "canonical_reference": "specs/references/boundary-first-method-v1.md",
+  "canonical_reference_sha256": "5e26f3ea23ecbbea24b4f48181a33f5bf02704608a31b9990caae3785c53f64e",
+  "grandfathered_specs": [],
+  "grandfathered_inventory_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "governed_skills": [
+    "workflow",
+    "spec",
+    "spec-review",
+    "plan",
+    "plan-review",
+    "test-spec",
+    "test-spec-review",
+    "implement",
+    "code-review",
+    "verify"
+  ],
+  "projection_sha256": "a764f05f5427e13ac69e44210fe6b006313afca0fa9d94135095358c64cec2d9"
+}

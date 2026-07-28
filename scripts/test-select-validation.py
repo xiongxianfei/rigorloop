@@ -55,6 +55,7 @@ ADAPTER_REGRESSION_COMMAND = (
 )
 
 EXPECTED_CATALOG = {
+    "boundary_first.validate": "python scripts/validate-boundary-first.py --check",
     "skills.validate": "python scripts/validate-skills.py",
     "skills.regression": "python scripts/test-skill-validator.py",
     "skills.generation_regression": "python scripts/test-build-skills.py",
@@ -5111,6 +5112,52 @@ raise SystemExit(3)
         normalized = normalize_path(str(outside), repo_root=temp_root)
         self.assertFalse(normalized.ok)
         self.assertEqual(normalized.blocking_code, "outside-repository-path")
+
+    def test_boundary_first_surfaces_select_boundary_validation(self) -> None:
+        repo = self.make_git_repo()
+        paths = (
+            "specs/boundary-first-activation.yaml",
+            "specs/feature.md",
+            "specs/feature.test.md",
+            "skills/spec/references/boundary-first-method-v1.md",
+            "dist/adapters/manifest.yaml",
+        )
+        for path in paths:
+            target = repo / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("fixture\n", encoding="utf-8")
+        subprocess.run(
+            ["git", "add", "."],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        subprocess.run(
+            ["git", "commit", "-m", "boundary fixtures"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        for path in paths:
+            result = select_validation(
+                SelectionRequest(mode="explicit", paths=(path,), repo_root=repo)
+            )
+            with self.subTest(path=path):
+                self.assertIn(
+                    "boundary_first.validate",
+                    selected_ids(result.to_json_dict()),
+                )
+                command = next(
+                    check["command"]
+                    for check in result.to_json_dict()["selected_checks"]
+                    if check["id"] == "boundary_first.validate"
+                )
+                if path in {"specs/feature.md", "specs/feature.test.md"}:
+                    self.assertIn(f"--path {path}", command)
+                else:
+                    self.assertNotIn("--path", command)
 
     def test_output_contract_red_tests_are_unmasked_and_separate(self) -> None:
         source = Path(__file__).read_text(encoding="utf-8")
