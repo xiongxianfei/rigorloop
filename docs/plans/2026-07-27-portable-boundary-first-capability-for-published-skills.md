@@ -2,14 +2,14 @@
 
 ## Status
 
-Plan lifecycle state: active
-Terminal disposition: none
+Plan lifecycle state: done
+Terminal disposition: closed
 
 - Owner: maintainers
 - Change ID: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
 - Start date: 2026-07-27
 - Last updated: 2026-07-28
-- Related issue or PR: none
+- Related issue or PR: PR #126, https://github.com/xiongxianfei/rigorloop/pull/126
 - Supersedes: none
 
 ## Goal
@@ -103,13 +103,13 @@ an explicit blocking gap before implementation begins.
 
 ## Current Handoff Summary
 
-- Current milestone: M4. Package parity and prospective activation
+- Current milestone: PR handoff
 - Current milestone state: closed
-- Latest review evidence: code-review M4 R2 is clean-with-notes; two independent reviewers confirmed PBF-M4-CR1 and PBF-M4-CR2 resolved
+- Latest review evidence: PR #126 opened after final verify; code-review M4 R2 approved the final implementation
 - Last reviewed milestone: M4
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
-- Next stage: pr
+- Next stage: none
 - Final closeout readiness: ready
 - Reason final closeout is or is not ready: ready — review-state=closed; open-count=0; open-findings=none
 
@@ -457,6 +457,8 @@ A material review finding reopens its owning milestone and blocks the next one.
 - Existing validation and adapter-distribution paths provide the necessary
   proof; no standalone packaging, activation, rollback, transaction, receipt,
   publication, or runtime-certification machinery was introduced.
+- PR #126 was opened for human review and the plan lifecycle was closed in the
+  PR branch.
 
 ## Readiness
 
