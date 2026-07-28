@@ -104,12 +104,12 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M3. Structural and activation validation
-- Current milestone state: planned
-- Latest review evidence: test-spec-review R5 approved the complete lightweight release proof map with no findings
+- Current milestone state: review-requested
+- Latest review evidence: M3 implements the approved two-state manifest with parent-revision grandfathering and removes receipt, transaction, and historical-hash machinery; targeted validation passes
 - Last reviewed milestone: M2
-- Review status: approved; stage=test-spec-review; round=r5
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: implement M3 under the active workflow implementation authority
+- Next stage: code-review M3 R1 for the lightweight activation implementation
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -184,7 +184,7 @@ an explicit blocking gap before implementation begins.
 
 ### M3. Structural and activation validation
 
-- Milestone state: planned
+- Milestone state: review-requested
    - primary trust boundary: deterministic shape/reference enforcement without
      semantic overclaiming
    - deliverables:
