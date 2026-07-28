@@ -102,21 +102,21 @@ an explicit blocking gap before implementation begins.
 
 ## Current Handoff Summary
 
-- Current milestone: M1. Canonical reference and projection foundation
-- Current milestone state: review-requested
-- Latest review evidence: code-review-m1-r3 plus correction commit 877a697f; PBF-M1-CR1 through PBF-M1-CR4 resolved
+- Current milestone: M2. Governed lifecycle skill behavior
+- Current milestone state: planned
+- Latest review evidence: code-review-m1-r4 closes M1 with PBF-M1-CR1 through PBF-M1-CR4 resolved
 - Last reviewed milestone: M1
-- Review status: review-requested; stage=code-review; round=r4
-- Remaining in-scope implementation milestones: M1, M2, M3, M4
-- Next stage: code-review M1 R4
+- Review status: approved; stage=code-review; round=r4
+- Remaining in-scope implementation milestones: M2, M3, M4
+- Next stage: implement M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
 ### M1. Canonical reference and projection foundation
 
-- Milestone state: review-requested
+- Milestone state: closed
    - primary trust boundary: one authored method and a closed deterministic
      projection inventory
    - deliverables:
@@ -142,9 +142,9 @@ an explicit blocking gap before implementation begins.
      - [x] targeted validation passed
      - [x] hand off to code-review for M1
    - review closeout:
-     - [ ] code-review completed
-     - [ ] material findings resolved or explicitly dispositioned
-     - [ ] M1 lifecycle projection updated before starting M2
+     - [x] code-review completed
+     - [x] material findings resolved or explicitly dispositioned
+     - [x] M1 lifecycle projection updated before starting M2
    - milestone commit message:
      `M1: add deterministic boundary reference projection`
 

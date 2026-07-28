@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -13,11 +13,15 @@ Review closeout: architecture-review-r1
 Review closeout: architecture-review-r2
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
+Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
+Review closeout: code-review-m1-r3
+Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 18
 - Unresolved findings: 0
-- Final result: PBF-M1-CR4 is resolved under the user-authorized additional correction cycle; M1 awaits code-review R4.
+- Final result: PBF-M1-CR1 through PBF-M1-CR4 are resolved and code-review R4 closes M1.
 
 ## Resolution Overview
 
@@ -335,3 +339,10 @@ Chosen action: Extend the focused regression over check/write and add immutable 
 Rationale: The user authorized one additional correction cycle for this deterministic test-only change.
 Validation target: `python scripts/test-boundary-first-reference.py`; `python scripts/project-boundary-first-reference.py --check`
 Validation evidence: Commit `877a697f`; `python scripts/test-boundary-first-reference.py` passed ten tests covering both topology and mode pairs, exact combined errors, and outside sentinel preservation; live ten-consumer projection check passed.
+
+### code-review-m1-r4
+
+Review closeout: code-review-m1-r4
+
+No material findings.
+R4 independently confirms PBF-M1-CR1 through PBF-M1-CR4 resolved and closes M1.

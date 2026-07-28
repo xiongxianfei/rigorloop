@@ -91,8 +91,11 @@ changed_files:
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m1-r2.md
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m1-r3.yaml
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m1-r3.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m1-r4.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m1-r4.md
 review:
-  status: changes-requested
+  status: clean
+  reviewed_artifact: commit:877a697f
   unresolved_items: 0
   material_findings: 18
   closed_findings: 18
@@ -103,13 +106,13 @@ review:
   architecture_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/architecture-review-r2.md
   plan_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/plan-review-r1.md
   test_spec_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/test-spec-review-r2.md
-  code_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m1-r3.md
+  code_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m1-r4.md
   review_log: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md
   review_resolution: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
   review_gate:
-    manifest: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m1-r3.yaml
+    manifest: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m1-r4.yaml
     independence_level: L1
-    initial_packet_sha256: sha256:a752c38220c98c637c847776b1655beef8e5588244fbeb3c891e22dd51d0da83
+    initial_packet_sha256: sha256:0c055dca52934c2bb5ef7020774cc2d45bccc110e7aaab5e6cf1d33f39361906
     phase_receipts:
       - risk-map-recorded
       - evidence-menu-released
