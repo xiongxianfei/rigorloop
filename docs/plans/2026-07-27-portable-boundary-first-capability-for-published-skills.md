@@ -107,9 +107,9 @@ an explicit blocking gap before implementation begins.
 - Current milestone state: planned
 - Latest review evidence: code-review M3 R10 approved the transition snapshot contract with no material findings
 - Last reviewed milestone: M3
-- Review status: clean-with-notes; stage=code-review; round=r10
+- Review status: review-requested; stage=test-spec-review; round=r6
 - Remaining in-scope implementation milestones: M4
-- Next stage: amend and rereview the M4 proof command before implementation
+- Next stage: test-spec-review R6 for existing-suite packaging proof
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
