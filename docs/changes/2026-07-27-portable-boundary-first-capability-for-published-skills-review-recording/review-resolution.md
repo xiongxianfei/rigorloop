@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: test-spec-review-r4
 Review closeout: test-spec-review-r3
@@ -35,16 +35,16 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 49
-- Unresolved findings: 2
-- Final result: PBF-TSR6 and PBF-TSR7 require one focused proof-map correction before M3 implementation.
+- Findings resolved: 51
+- Unresolved findings: 0
+- Final result: PBF-TSR6 and PBF-TSR7 are resolved by exact release ordering, lifecycle inventory, and complete rollback-input non-mutation proof.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-TSR6 | accepted | in-progress | Prove immediate-predecessor release selection and all three eligible parent lifecycle states. |
-| PBF-TSR7 | accepted | in-progress | Include adapter and selected release metadata in success and failure non-mutation snapshots. |
+| PBF-TSR6 | accepted | resolved | Prove immediate-predecessor release selection and all three eligible parent lifecycle states. |
+| PBF-TSR7 | accepted | resolved | Include adapter and selected release metadata in success and failure non-mutation snapshots. |
 | PBF-TSR3 | accepted | resolved | Make parent-revision proof executable and assert the complete two-state manifest contract. |
 | PBF-TSR4 | accepted | resolved | Prove deterministic rollback selection, non-mutation, and absence of install or publish actions. |
 | PBF-TSR5 | accepted | resolved | Route the approved proof map to M3 rather than closed M1. |
@@ -103,7 +103,7 @@ Review closeout: code-review-m1-r4
 
 Finding ID: PBF-TSR6
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec revision
 Chosen action: Add controlled published-release ordering and explicit accepted,
@@ -111,20 +111,24 @@ approved, active, and nonterminal parent fixtures to T8 and T9.
 Rationale: The proof map must prevent both an older rollback selection and an
 incomplete grandfather inventory.
 Validation target: Test-spec-review R5.
-Validation evidence: Pending.
+Validation evidence: T8 now rejects an older but valid rollback tag against a
+controlled release sequence; T9 explicitly includes accepted, approved, and
+active paths and excludes nonterminal paths in controlled parent history.
 
 #### PBF-TSR7 - Rollback metadata inputs are absent from non-mutation proof
 
 Finding ID: PBF-TSR7
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec revision
 Chosen action: Snapshot adapter support and selected release metadata bytes on
 every success and failure path.
 Rationale: Read-only validation includes all authoritative inputs it reads.
 Validation target: Test-spec-review R5.
-Validation evidence: Pending.
+Validation evidence: T13 snapshots the adapter-support manifest and selected
+tracked release metadata, in addition to other governed files, after success
+and every failure.
 
 ### test-spec-review-r3
 

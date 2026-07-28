@@ -17,7 +17,7 @@ Status: changes-requested
 Detailed record: reviews/test-spec-review-r4.md
 Resolution: review-resolution.md#test-spec-review-r4
 Material findings: PBF-TSR6, PBF-TSR7
-Open findings: PBF-TSR6, PBF-TSR7
+Open findings: None
 Recording status: recorded
 
 ### Review entry
