@@ -154,11 +154,15 @@ PBF-R005. The published capability state MUST use exactly one of `pending` or
 PBF-R005a. Before activation becomes `active`, one small release-activation
 manifest MUST identify the contract version, state, activating release,
 rollback release, governed skills, canonical reference identity, projection
-identity, and sorted grandfathered feature-spec paths.
+identity, grandfathering baseline revision, and sorted grandfathered
+feature-spec paths.
 The activating release MUST be `-` while pending and MUST be one immutable
 release tag while active.
 The rollback release MUST be `-` while pending and MUST be the immutable tag of
 the immediately preceding published release while active.
+The grandfathering baseline revision MUST be `-` while pending and MUST be the
+full source-control commit identity of the activating reviewed change's parent
+revision while active.
 Source control and release archives own historical byte identity; the
 activation manifest MUST NOT duplicate a historical attestation store.
 
@@ -169,12 +173,15 @@ available without chat history or a network service.
 Maintainers MUST settle it through an ordinary reviewed source change; this
 capability MUST NOT require a state-writing activation script.
 
-PBF-R005c. The grandfathered inventory MUST be captured in the reviewed change
-that activates the contract.
-It MUST contain each top-level `specs/*.md` feature spec whose lifecycle status
-is `accepted`, `approved`, or `active` at capture time, except this bootstrap
-spec, `README.md`, and files ending in `.test.md`.
+PBF-R005c. The grandfathered inventory MUST be derived only from the
+grandfathering baseline revision recorded by the reviewed change that activates
+the contract.
+It MUST contain each top-level `specs/*.md` feature spec present at that
+revision whose lifecycle status is `accepted`, `approved`, or `active`, except
+this bootstrap spec, `README.md`, and files ending in `.test.md`.
 It MUST exclude specs that already carry the activation marker.
+Any feature-spec path first introduced after the baseline revision, including
+by the activating reviewed change, MUST NOT be grandfathered.
 Entries MUST be unique repository-relative POSIX paths sorted by raw UTF-8
 bytes.
 
@@ -549,10 +556,12 @@ No runtime certification report is an output of this capability.
 ## State and invariants
 
 - The published capability state is one of `pending` or `active`.
-- Pending state records `-` as both the activating and rollback release.
+- Pending state records `-` as the activating release, rollback release, and
+  grandfathering baseline revision.
 - Active state has one reviewed release-activation manifest, one immutable
-  activating release tag, one immutable rollback release tag, and one sorted
-  grandfathered-spec path inventory.
+  activating release tag, one immutable rollback release tag, one full
+  grandfathering baseline commit identity, and one sorted grandfathered-spec
+  path inventory.
 - The boundary contract version remains `boundary-first-v1`.
 - The eight core dimensions and two applicability values are closed.
 - A feature spec owns boundary and interaction definitions.
