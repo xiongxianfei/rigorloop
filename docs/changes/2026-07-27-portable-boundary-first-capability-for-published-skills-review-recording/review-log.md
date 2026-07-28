@@ -9,6 +9,19 @@ capability proposal.
 
 ### Review entry
 
+Review ID: test-spec-review-r6
+Stage: test-spec-review
+Round: 6
+Reviewed artifact: specs/boundary-first-proof-model.test.md
+Status: approved
+Detailed record: reviews/test-spec-review-r6.md
+Resolution: review-resolution.md#test-spec-review-r6
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m3-r10
 Stage: code-review
 Round: 10

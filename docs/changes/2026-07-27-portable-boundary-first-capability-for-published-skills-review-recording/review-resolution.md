@@ -4,6 +4,7 @@
 
 Closeout status: closed
 
+Review closeout: test-spec-review-r6
 Review closeout: code-review-m3-r10
 Review closeout: code-review-m3-r9
 Review closeout: code-review-m3-r8
@@ -109,6 +110,15 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### test-spec-review-r6
+
+Review closeout: test-spec-review-r6
+Review result: approved
+Material findings: None
+Resolution required: no
+Validation evidence: The existing adapter suite owns archive and clean-install
+proof; the focused selector fails closed until M4 adds matching tests.
 
 ### code-review-m3-r10
 

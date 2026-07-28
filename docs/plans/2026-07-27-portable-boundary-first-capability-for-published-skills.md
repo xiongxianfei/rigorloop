@@ -104,12 +104,12 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M4. Package parity and prospective activation
-- Current milestone state: planned
-- Latest review evidence: code-review M3 R10 approved the transition snapshot contract with no material findings
+- Current milestone state: implementing
+- Latest review evidence: test-spec-review R6 approved reuse of the existing adapter-distribution suite
 - Last reviewed milestone: M3
-- Review status: review-requested; stage=test-spec-review; round=r6
+- Review status: approved; stage=test-spec-review; round=r6
 - Remaining in-scope implementation milestones: M4
-- Next stage: test-spec-review R6 for existing-suite packaging proof
+- Next stage: implement M4 without a standalone packaging script
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
