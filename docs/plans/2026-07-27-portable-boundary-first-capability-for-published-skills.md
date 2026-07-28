@@ -102,15 +102,15 @@ an explicit blocking gap before implementation begins.
 
 ## Current Handoff Summary
 
-- Current milestone: M2. Governed lifecycle skill behavior
-- Current milestone state: review-requested
-- Latest review evidence: PBF-M2-CR1 correction adds structured ten-stage packets and passing negative mutation proof
-- Last reviewed milestone: M1
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: code-review M2 R2
+- Current milestone: M3. Structural and activation validation
+- Current milestone state: planned
+- Latest review evidence: code-review-m2-r2 independently confirms PBF-M2-CR1 resolved and closes M2
+- Last reviewed milestone: M2
+- Review status: approved; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: M3, M4
+- Next stage: implement M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -150,7 +150,7 @@ an explicit blocking gap before implementation begins.
 
 ### M2. Governed lifecycle skill behavior
 
-- Milestone state: review-requested
+- Milestone state: closed
    - primary trust boundary: stage-local authoring, review, stop, and handoff
      behavior
    - deliverables:
@@ -175,9 +175,9 @@ an explicit blocking gap before implementation begins.
      - [x] targeted validation passed
      - [x] hand off to code-review for M2
    - review closeout:
-     - [ ] code-review completed
-     - [ ] material findings resolved or explicitly dispositioned
-     - [ ] M2 lifecycle projection updated before starting M3
+     - [x] code-review completed
+     - [x] material findings resolved or explicitly dispositioned
+     - [x] M2 lifecycle projection updated before starting M3
    - milestone commit message:
      `M2: teach lifecycle skills the boundary-first contract`
 
