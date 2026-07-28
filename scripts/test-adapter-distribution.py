@@ -35,6 +35,7 @@ from adapter_distribution import (  # noqa: E402
     build_required_benchmark_context,
     collect_adapter_drift,
     collect_adapter_drift_entries,
+    collect_skill_reports,
     evaluate_skill,
     generated_adapter_skill_owner,
     expected_adapter_files,
@@ -50,6 +51,7 @@ from adapter_distribution import (  # noqa: E402
     validate_clean_install_smoke,
     validate_release_output,
 )
+from boundary_first_reference import GOVERNED_SKILLS, PROJECTED_REFERENCE  # noqa: E402
 
 
 def load_validate_release_module():
@@ -1070,6 +1072,100 @@ release_gate:
                 any(
                     "mapped resource parity mismatch: codex/portable-with-assets: "
                     "assets/template.md" in error
+                    and "canonical sha256=" in error
+                    and "archive sha256=" in error
+                    for error in errors
+                ),
+                errors,
+            )
+
+    def test_boundary_first_archives_and_clean_installs_preserve_reference(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "release-output"
+            version = "v0.3.6"
+            build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
+
+            self.assertEqual(
+                [],
+                validate_adapter_archives(
+                    version,
+                    output_dir,
+                    skills_root=ROOT / "skills",
+                ),
+            )
+            canonical = (
+                ROOT / "specs" / "references" / "boundary-first-method-v1.md"
+            ).read_bytes()
+            reports = {
+                report.name: report
+                for report in collect_skill_reports(ROOT / "skills")
+            }
+            seen: set[tuple[str, str]] = set()
+            for adapter_name in SUPPORTED_ADAPTERS:
+                config = ADAPTERS[adapter_name]
+                archive_path = output_dir / adapter_archive_name(adapter_name, version)
+                with zipfile.ZipFile(archive_path) as archive:
+                    for skill_name in GOVERNED_SKILLS:
+                        if adapter_name not in reports[skill_name].included_adapters:
+                            continue
+                        skill_entry = config.skill_path(skill_name).as_posix()
+                        reference_entry = (
+                            config.skill_root
+                            / skill_name
+                            / PROJECTED_REFERENCE
+                        ).as_posix()
+                        self.assertTrue(archive.read(skill_entry))
+                        self.assertEqual(archive.read(reference_entry), canonical)
+                        seen.add((adapter_name, skill_name))
+            expected = {
+                (adapter_name, skill_name)
+                for skill_name in GOVERNED_SKILLS
+                for adapter_name in reports[skill_name].included_adapters
+            }
+            self.assertEqual(seen, expected)
+
+            self.assertEqual(
+                [],
+                validate_clean_install_smoke(
+                    version,
+                    output_dir,
+                    skills_root=ROOT / "skills",
+                    skill_names=GOVERNED_SKILLS,
+                ),
+            )
+
+    def test_boundary_first_archive_drift_reports_exact_layer_and_hashes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "release-output"
+            version = "v0.3.6"
+            build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
+            archive_path = output_dir / adapter_archive_name("codex", version)
+            entry_name = (
+                ADAPTERS["codex"].skill_root
+                / "workflow"
+                / PROJECTED_REFERENCE
+            ).as_posix()
+            with zipfile.ZipFile(archive_path) as archive:
+                entries = {
+                    name: archive.read(name)
+                    for name in archive.namelist()
+                    if not name.endswith("/")
+                }
+            entries[entry_name] = b"stale boundary reference\n"
+            with zipfile.ZipFile(archive_path, "w") as archive:
+                for name, content in sorted(entries.items()):
+                    archive.writestr(name, content)
+
+            errors = validate_adapter_archives(
+                version,
+                output_dir,
+                skills_root=ROOT / "skills",
+            )
+
+            self.assertTrue(
+                any(
+                    "mapped resource parity mismatch: codex/workflow: "
+                    "references/boundary-first-method-v1.md" in error
                     and "canonical sha256=" in error
                     and "archive sha256=" in error
                     for error in errors

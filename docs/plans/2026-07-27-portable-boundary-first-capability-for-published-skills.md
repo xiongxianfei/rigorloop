@@ -104,12 +104,12 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M4. Package parity and prospective activation
-- Current milestone state: implementing
-- Latest review evidence: test-spec-review R9 approved the adapter-applicable proof map and exact R6 plan identities
+- Current milestone state: review-requested
+- Latest review evidence: M4 passed focused package, install, rollback-metadata, full adapter, full boundary, and 12-check broad-smoke validation
 - Last reviewed milestone: M3
-- Review status: approved; stage=test-spec-review; round=r9
+- Review status: review-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M4
-- Next stage: implement M4 without a standalone packaging script
+- Next stage: code-review M4 R1
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -227,7 +227,7 @@ an explicit blocking gap before implementation begins.
 
 ### M4. Package parity and prospective activation
 
-- Milestone state: planned
+- Milestone state: review-requested
    - primary trust boundary: release readiness across canonical, generated,
      packed, and installed skill surfaces
    - deliverables:
@@ -260,9 +260,9 @@ an explicit blocking gap before implementation begins.
      incomplete package-readiness evidence. External package installation or
      publication remains outside this plan.
    - implementation handoff:
-     - [ ] targeted and broad validation passed
-     - [ ] installed cold-read evidence recorded
-     - [ ] hand off to code-review for M4
+     - [x] targeted and broad validation passed
+     - [x] installed cold-read evidence recorded
+     - [x] hand off to code-review for M4
    - review closeout:
      - [ ] code-review completed
      - [ ] material findings resolved or explicitly dispositioned
