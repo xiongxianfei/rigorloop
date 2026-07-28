@@ -4,8 +4,8 @@ review_stage: code-review
 review_target: commit:95c7f72d
 base_revision: c335e8a5
 head_revision: 95c7f72d
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: changes-requested
+review_gate_outcome: revise
 independence_level: L1
 author_context_id: run-pbf-20260727-verify-correction-m3-r4
 reviewer_context_id: isolated-m3-r5-primary
@@ -49,11 +49,14 @@ forbidden_initial_context_excluded: true
 phase_receipts:
   - risk-map-recorded
   - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: isolated-m3-r5-second
-  result: pending
+  result: disagreement-changes-requested
 risk_map:
   affected_behavior: M3 removes current-state rollback authorization, reserves the fixed M4 receipt binding, fails all rolled-back states closed, and assigns paired feature/proof provenance to M4
   highest_impact_failure_modes: M3 still accepts a rolled-back marker or state, pending or active validation regresses, the receipt contract omits proof identity or source activation binding, or M3 prematurely claims M4 proof

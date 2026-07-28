@@ -8,6 +8,7 @@ Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
 Review closeout: code-review-m3-r4
+Review closeout: code-review-m3-r5
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m2-r1
 Review closeout: proposal-review-r1
@@ -26,13 +27,14 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 35
-- Unresolved findings: 0
-- Final result: M3 now fails every rolled-back state closed. PBF-M3-CR14 and PBF-M3-CR16 are finally dispositioned to the M4 transaction receipt and await independent M3 R5 confirmation.
+- Unresolved findings: 1
+- Final result: R5 confirms PBF-M3-CR14 and PBF-M3-CR16 safely deferred to M4, but PBF-M3-CR17 blocks M3 until a rollback-writer command owner is selected and authorized.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-M3-CR17 | needs-decision | needs-decision | Choose an executable M4 rollback receipt writer and validation contract. |
 | PBF-M3-CR16 | deferred | resolved | M3 fails closed; M4 must validate paired feature/proof identities. |
 | PBF-M3-CR14 | deferred | resolved | M3 fails closed; M4 owns pre-transition receipt provenance. |
 | PBF-M3-CR15 | accepted | resolved | Fixed activation and proof-model inputs are contained before reads. |
@@ -70,6 +72,22 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### code-review-m3-r5
+
+#### PBF-M3-CR17 - M4 receipt has no executable writer contract
+
+Finding ID: PBF-M3-CR17
+Disposition: needs-decision
+Status: needs-decision
+Owner: user and test-spec/plan owner
+Decision owner: user
+Decision needed: Choose a dedicated rollback writer or extend CMD12, then authorize another correction cycle.
+Owning stage: review-resolution M3
+Chosen action: pending owner decision
+Rationale: The current command contract forbids the receipt mutation required by PBF-R057.
+Validation target: command table, T13, milestone proof map, M4 validation and recovery, code-review M3 R6.
+Validation evidence: R5 confirms M3 fail-closed tests pass but no command owns the M4 receipt transaction.
 
 ### code-review-m3-r4
 

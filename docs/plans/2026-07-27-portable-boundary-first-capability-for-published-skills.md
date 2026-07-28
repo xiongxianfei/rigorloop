@@ -2,7 +2,7 @@
 
 ## Status
 
-Plan lifecycle state: active
+Plan lifecycle state: blocked
 Terminal disposition: none
 
 - Owner: maintainers
@@ -103,14 +103,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M3. Structural and activation validation
-- Current milestone state: review-requested
-- Latest review evidence: M3 fails all rolled-back state closed pending the M4 paired transaction receipt; 48 focused tests pass and code-review M3 R5 is requested
+- Current milestone state: resolution-needed
+- Latest review evidence: code-review-m3-r5 confirms M3 fail-closed behavior and records PBF-M3-CR17 because no executable M4 command owns receipt mutation
 - Last reviewed milestone: M2
-- Review status: review-requested; stage=code-review; round=r5
+- Review status: changes-requested; stage=code-review; round=r5
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review M3 R5
+- Next stage: blocked pending owner decision and renewed correction authority for PBF-M3-CR17
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=1; open-findings=PBF-M3-CR17
 
 ## Milestones
 
@@ -183,7 +183,7 @@ an explicit blocking gap before implementation begins.
 
 ### M3. Structural and activation validation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
    - primary trust boundary: deterministic shape/reference enforcement without
      semantic overclaiming
    - deliverables:
@@ -343,6 +343,11 @@ A material review finding reopens its owning milestone and blocks the next one.
   rolled-back state and marker closed; M4 owns pre-transition provenance and
   paired feature/proof validation. All 48 focused tests, pending activation
   validation, and 134 selector tests pass; M3 returned to R5.
+- 2026-07-28: code-review M3 R5 confirmed the fail-closed M3 boundary but
+  recorded PBF-M3-CR17 because CMD12 excludes the receipt and no other command
+  owns M4 rollback mutation, recovery, or validation. The fourth correction
+  cycle is consumed; workflow paused for a command-owner decision and renewed
+  authority.
 
 ## Decision log
 
