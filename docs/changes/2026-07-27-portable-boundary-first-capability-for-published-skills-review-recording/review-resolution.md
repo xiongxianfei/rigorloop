@@ -7,6 +7,7 @@ Closeout status: open
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
 Review closeout: code-review-m3-r3
+Review closeout: code-review-m3-r4
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m2-r1
 Review closeout: proposal-review-r1
@@ -24,15 +25,16 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 34
-- Unresolved findings: 0
-- Final result: PBF-M3-CR14 and PBF-M3-CR15 are resolved with direct regression evidence; M3 awaits independent code-review R4.
+- Findings resolved: 33
+- Unresolved findings: 2
+- Final result: R4 confirms PBF-M3-CR15 resolved; PBF-M3-CR14 remains partially resolved and PBF-M3-CR16 is open pending renewed correction authority and an upstream trust-owner decision.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-M3-CR14 | accepted | resolved | Rollback markers require a durable preserved path-and-byte inventory member. |
+| PBF-M3-CR16 | needs-decision | needs-decision | Bind accepted proof-map identities to the trusted pre-transition rollback evidence. |
+| PBF-M3-CR14 | needs-decision | needs-decision | Current-state recomputation cannot prove pre-transition rollback membership. |
 | PBF-M3-CR15 | accepted | resolved | Fixed activation and proof-model inputs are contained before reads. |
 | PBF-M3-CR9 | accepted | resolved | Immutable activation history survives later marked adoption and rollback. |
 | PBF-M3-CR10 | accepted | resolved | Explicit and derived feature/proof paths are contained before reads. |
@@ -69,19 +71,39 @@ Review closeout: code-review-m1-r4
 
 ## Finding Details
 
+### code-review-m3-r4
+
+R4 partially resolves PBF-M3-CR14 and updates its original disposition below.
+
+#### PBF-M3-CR16 - Rollback inventory omits accepted proof maps
+
+Finding ID: PBF-M3-CR16
+Disposition: needs-decision
+Status: needs-decision
+Owner: user and architecture/spec owner
+Decision owner: user and architecture/spec owner
+Decision needed: Choose whether proof identities share the feature inventory or use a separate closed inventory, then authorize another correction cycle.
+Owning stage: review-resolution M3
+Chosen action: Include proof-map identities in the same trusted pre-transition evidence model selected for PBF-M3-CR14.
+Rationale: PBF-R057 preserves boundary records and proof maps; feature-only identity is incomplete.
+Validation target: missing, stale, symlinked, and mismatched preserved proof maps, CMD6, CMD7, and code-review M3 R5.
+Validation evidence: R4 shows activation passes with an exact preserved feature and missing proof map.
+
 ### code-review-m3-r3
 
 #### PBF-M3-CR14 - Rollback trusts self-declared current lifecycle status
 
 Finding ID: PBF-M3-CR14
-Disposition: accepted
-Status: resolved
-Owner: M3 implement
+Disposition: needs-decision
+Status: needs-decision
+Owner: user and architecture/spec owner
+Decision owner: user and architecture/spec owner
+Decision needed: Choose the trusted pre-transition evidence owner and authorize another correction cycle.
 Owning stage: review-resolution M3
-Chosen action: Add a closed accepted-marker inventory to activation state and require rolled-back marked paths to belong to it.
-Rationale: Current artifact text cannot prove the artifact was accepted before rollback.
-Validation target: CMD6, CMD7, and code-review M3 R4.
-Validation evidence: CMD6 passes 47 tests; a new post-rollback approved marker fails while an exact preserved member passes, and CMD7 validates the empty pending inventory.
+Chosen action: Select and bind a trusted pre-transition evidence owner before another correction begins.
+Rationale: Current rolled-back files and a recomputable digest cannot prove that membership existed before the transition.
+Validation target: add-new plus recomputed-inventory rejection, CMD6, CMD7, and code-review M3 R5.
+Validation evidence: The unchanged-inventory regression passes, but R4 shows a new post-rollback approved marker passes after current path/hash insertion and digest recomputation.
 
 #### PBF-M3-CR15 - Fixed authoritative inputs may follow external symlinks
 
