@@ -107,11 +107,11 @@ an explicit blocking gap before implementation begins.
 - Current milestone state: closed
 - Latest review evidence: code-review M4 R2 is clean-with-notes; two independent reviewers confirmed PBF-M4-CR1 and PBF-M4-CR2 resolved
 - Last reviewed milestone: M4
-- Review status: clean-with-notes; stage=code-review; round=r2
+- Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
-- Next stage: explain-change
+- Next stage: verify
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -440,6 +440,9 @@ A material review finding reopens its owning milestone and blocks the next one.
   closed all in-scope implementation milestones without adding a writer,
   receipt, transaction, publication action, runtime certification, or
   standalone support script.
+- `explain-change.md` traces the accepted portable direction through the
+  contract, four implementation boundaries, tests, and review closeout
+  without claiming final verification.
 
 ## Outcome and retrospective
 

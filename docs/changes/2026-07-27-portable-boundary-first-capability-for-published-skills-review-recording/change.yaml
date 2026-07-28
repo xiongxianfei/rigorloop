@@ -9,6 +9,7 @@ artifacts:
   architecture: docs/architecture/system/architecture.md
   adr: docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md
   plan: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  explain_change: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/explain-change.md
   review_resolution: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
 requirements:
   - Record the isolated formal proposal review before any review-driven revision.
@@ -78,6 +79,7 @@ validation:
     command: python scripts/validate-markdown-readability.py docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r1.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r2.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r3.md
     result: pass_with_audit_only_warnings_MDREAD-002_70_MDREAD-003_43
 changed_files:
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/explain-change.md
   - scripts/adapter_distribution.py
   - scripts/test-adapter-distribution.py
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-install-evidence.yaml
