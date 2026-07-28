@@ -2,8 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
+Review closeout: test-spec-review-r4
 Review closeout: test-spec-review-r3
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m3-r2
@@ -35,13 +36,15 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 49
-- Unresolved findings: 0
-- Final result: PBF-TSR3 through PBF-TSR5 are resolved in the revised proof map; a byte-consistent R4 invocation remains required before M3 implementation.
+- Unresolved findings: 2
+- Final result: PBF-TSR6 and PBF-TSR7 require one focused proof-map correction before M3 implementation.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-TSR6 | accepted | in-progress | Prove immediate-predecessor release selection and all three eligible parent lifecycle states. |
+| PBF-TSR7 | accepted | in-progress | Include adapter and selected release metadata in success and failure non-mutation snapshots. |
 | PBF-TSR3 | accepted | resolved | Make parent-revision proof executable and assert the complete two-state manifest contract. |
 | PBF-TSR4 | accepted | resolved | Prove deterministic rollback selection, non-mutation, and absence of install or publish actions. |
 | PBF-TSR5 | accepted | resolved | Route the approved proof map to M3 rather than closed M1. |
@@ -93,6 +96,35 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### test-spec-review-r4
+
+#### PBF-TSR6 - Release ordering and eligible lifecycle proof are incomplete
+
+Finding ID: PBF-TSR6
+Disposition: accepted
+Status: in-progress
+Owner: test-spec author
+Owning stage: test-spec revision
+Chosen action: Add controlled published-release ordering and explicit accepted,
+approved, active, and nonterminal parent fixtures to T8 and T9.
+Rationale: The proof map must prevent both an older rollback selection and an
+incomplete grandfather inventory.
+Validation target: Test-spec-review R5.
+Validation evidence: Pending.
+
+#### PBF-TSR7 - Rollback metadata inputs are absent from non-mutation proof
+
+Finding ID: PBF-TSR7
+Disposition: accepted
+Status: in-progress
+Owner: test-spec author
+Owning stage: test-spec revision
+Chosen action: Snapshot adapter support and selected release metadata bytes on
+every success and failure path.
+Rationale: Read-only validation includes all authoritative inputs it reads.
+Validation target: Test-spec-review R5.
+Validation evidence: Pending.
 
 ### test-spec-review-r3
 
