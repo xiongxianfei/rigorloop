@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m3-r9
 Review closeout: code-review-m3-r8
@@ -40,15 +40,15 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 57
-- Unresolved findings: 1
-- Final result: PBF-M3-CR24 remains open because the tagged transition snapshot's baseline and inventory are not yet validated.
+- Findings resolved: 58
+- Unresolved findings: 0
+- Final result: PBF-M3-CR24 is resolved by validating the tagged transition snapshot and rejecting later baseline or inventory repair.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-M3-CR24 | accepted | in-progress | Bind the tagged transition snapshot and current state to its exact first-parent baseline and inventory. |
+| PBF-M3-CR24 | accepted | resolved | Bind the tagged transition snapshot and current state to its exact first-parent baseline and inventory. |
 | PBF-M3-CR23 | accepted | resolved | Bind merge-aware transition parent, activating tag, and current release fields to one immutable transition. |
 | PBF-M3-CR18 | accepted | resolved | Bind the baseline to the exact parent of the pending-to-active transition commit. |
 | PBF-M3-CR19 | accepted | resolved | Validate immutable tag existence and immediate predecessor ordering. |
@@ -115,7 +115,7 @@ Review closeout: code-review-m1-r4
 
 Finding ID: PBF-M3-CR24
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implementation
 Owning stage: review-resolution
 Chosen action: Validate the transition snapshot's baseline and inventory
@@ -124,7 +124,8 @@ values.
 Rationale: A later active commit cannot retroactively make an invalid tagged
 activation release compliant.
 Validation target: Code-review M3 R10.
-Validation evidence: Pending implementation.
+Validation evidence: The invalid-transition-then-repair regression fails with
+baseline, membership, and immutability diagnostics; 52 focused tests pass.
 
 ### code-review-m3-r8
 
