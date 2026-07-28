@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 import shutil
 import subprocess
@@ -7602,6 +7603,340 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
             for term in required_terms:
                 with self.subTest(skill=skill_path, term=term):
                     self.assertIn(term, text)
+
+
+class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
+    GOVERNED_SKILLS = {
+        "workflow",
+        "spec",
+        "spec-review",
+        "plan",
+        "plan-review",
+        "test-spec",
+        "test-spec-review",
+        "implement",
+        "code-review",
+        "verify",
+    }
+    CORE_DIMENSIONS = {
+        "input-domain",
+        "state-lifecycle",
+        "identity-authority",
+        "composition-path",
+        "temporal-retry",
+        "failure-recovery",
+        "compatibility-migration",
+        "external-environment",
+    }
+    EXPECTED_OUTCOMES = {
+        "workflow": "stopped",
+        "spec": "stopped",
+        "spec-review": "changes-requested",
+        "plan": "stopped",
+        "plan-review": "changes-requested",
+        "test-spec": "stopped",
+        "test-spec-review": "changes-requested",
+        "implement": "stopped",
+        "code-review": "changes-requested",
+        "verify": "blocked",
+    }
+    EXPECTED_HANDOFFS = {
+        "workflow": "owning-upstream-stage",
+        "spec": "governing-requirement-owner",
+        "spec-review": "spec",
+        "plan": "spec",
+        "plan-review": "plan",
+        "test-spec": "feature-spec",
+        "test-spec-review": "test-spec",
+        "implement": "test-spec",
+        "code-review": "review-resolution",
+        "verify": "owning-upstream-stage",
+    }
+
+    def semantic_fixture_errors(self, document: dict[str, object]) -> list[str]:
+        errors: list[str] = []
+        if set(document) != {"boundary_record", "proof_map", "cases"}:
+            errors.append("fixture must contain boundary_record, proof_map, and cases")
+            return errors
+
+        boundary_record = document["boundary_record"]
+        proof_map = document["proof_map"]
+        cases = document["cases"]
+        if not isinstance(boundary_record, dict):
+            errors.append("boundary_record must be an object")
+            return errors
+        if not isinstance(proof_map, dict):
+            errors.append("proof_map must be an object")
+            return errors
+        if not isinstance(cases, list):
+            errors.append("cases must be a list")
+            return errors
+
+        if boundary_record.get("model_version") != "boundary-first-v1":
+            errors.append("boundary_record model_version must be boundary-first-v1")
+        dimensions = boundary_record.get("dimensions")
+        if not isinstance(dimensions, list):
+            errors.append("boundary_record dimensions must be a list")
+        else:
+            dimension_ids = {
+                row.get("dimension_id")
+                for row in dimensions
+                if isinstance(row, dict)
+            }
+            if dimension_ids != self.CORE_DIMENSIONS:
+                errors.append("boundary_record must classify every core dimension exactly once")
+            for row in dimensions:
+                if not isinstance(row, dict):
+                    errors.append("dimension rows must be objects")
+                    continue
+                if row.get("applicability") not in {"applicable", "not-applicable"}:
+                    errors.append("dimension applicability must use the closed vocabulary")
+
+        boundary_ids = {
+            row.get("boundary_id")
+            for row in boundary_record.get("boundaries", [])
+            if isinstance(row, dict)
+        }
+        if not boundary_ids or None in boundary_ids:
+            errors.append("boundary_record must define stable boundaries")
+
+        proof_ids = {
+            row.get("proof_obligation_id")
+            for row in proof_map.get("obligations", [])
+            if isinstance(row, dict)
+        }
+        if not proof_ids or None in proof_ids:
+            errors.append("proof_map must define stable proof obligations")
+        for row in proof_map.get("obligations", []):
+            if not isinstance(row, dict):
+                errors.append("proof obligations must be objects")
+                continue
+            if row.get("boundary_or_interaction_id") not in boundary_ids:
+                errors.append("proof obligations must cite defined boundary IDs")
+
+        seen_skills: set[str] = set()
+        required_case_fields = {
+            "case_id",
+            "owning_skill",
+            "packet",
+            "expected_semantic_owner",
+            "expected_outcome",
+            "expected_handoff",
+            "required_guidance",
+            "forbidden_claim",
+        }
+        required_packet_fields = {
+            "current_stage",
+            "boundary_record_id",
+            "proof_map_id",
+            "condition",
+            "evidence_state",
+        }
+        for case in cases:
+            if not isinstance(case, dict):
+                errors.append("semantic cases must be objects")
+                continue
+            if set(case) != required_case_fields:
+                errors.append("semantic cases must use the closed packet contract")
+                continue
+            skill = case["owning_skill"]
+            if skill in seen_skills:
+                errors.append(f"duplicate semantic case for {skill}")
+            seen_skills.add(skill)
+            packet = case["packet"]
+            if not isinstance(packet, dict) or set(packet) != required_packet_fields:
+                errors.append(f"{skill} must provide a complete lifecycle packet")
+            elif (
+                packet["current_stage"] != skill
+                or packet["boundary_record_id"] != boundary_record.get("record_id")
+                or packet["proof_map_id"] != proof_map.get("record_id")
+                or not packet["condition"]
+                or not packet["evidence_state"]
+            ):
+                errors.append(f"{skill} lifecycle packet references must be exact and nonempty")
+            if case["expected_semantic_owner"] != skill:
+                errors.append(f"{skill} must own its semantic result")
+            if case["expected_outcome"] != self.EXPECTED_OUTCOMES.get(skill):
+                errors.append(f"{skill} expected outcome is not stage-specific")
+            if case["expected_handoff"] != self.EXPECTED_HANDOFFS.get(skill):
+                errors.append(f"{skill} expected handoff is not stage-specific")
+            if not isinstance(case["required_guidance"], list) or not case["required_guidance"]:
+                errors.append(f"{skill} must identify outcome and handoff guidance")
+
+        if seen_skills != self.GOVERNED_SKILLS:
+            errors.append("semantic cases must cover the exact governed skill set")
+        return errors
+
+    def test_governed_skills_map_one_reference_with_owned_behavior(self) -> None:
+        expected = {
+            "workflow": (
+                "routing a change that declares `boundary_contract: boundary-first-v1` or depends on an approved boundary or proof record.",
+                "Route the method, locate governing artifacts, and stop on missing applicable ownership.",
+                "Stop routing and name the owning upstream stage",
+            ),
+            "spec": (
+                "authoring a new or substantively revised behavior contract that must adopt or has opted into `boundary-first-v1`.",
+                "Author the normative applicability, boundary, interaction, and example-ownership record.",
+                "Stop spec authoring and route the gap upstream",
+            ),
+            "spec-review": (
+                "reviewing an adopting boundary record or deciding whether a grandfathered spec revision is substantive.",
+                "Judge applicability, boundary completeness, interactions, invariants, outcomes, and example ownership.",
+                "Stop review with a material finding",
+            ),
+            "plan": (
+                "planning implementation for an approved feature spec that declares `boundary_contract: boundary-first-v1`.",
+                "Map applicable boundaries to independently closeable milestones, dependencies, affected surfaces, rollback units, and proof timing.",
+                "Stop planning when an applicable boundary lacks",
+            ),
+            "plan-review": (
+                "reviewing a plan governed by an approved `boundary-first-v1` feature spec.",
+                "Reject coupled primary boundaries, omitted dependencies, unsafe rollback, and proof sequencing that cannot close independently.",
+                "Stop review and request plan revision",
+            ),
+            "test-spec": (
+                "authoring the proof map for a feature spec that declares `boundary_contract: boundary-first-v1`.",
+                "Map every applicable boundary and selected interaction to proof without inventing contract IDs.",
+                "Stop test-spec authoring and return to the feature spec",
+            ),
+            "test-spec-review": (
+                "reviewing a proof map governed by a `boundary-first-v1` feature spec.",
+                "Judge proof adequacy, negative coverage, fixtures, command ownership, and manual-proof boundaries.",
+                "Stop review with a material finding",
+            ),
+            "implement": (
+                "implementing a change governed by an approved `boundary-first-v1` boundary record and proof map.",
+                "Stop on missing boundary or proof ownership and implement against the approved model and proof map.",
+                "Stop implementation before mutation",
+            ),
+            "code-review": (
+                "reviewing implementation governed by an approved `boundary-first-v1` boundary record and proof map.",
+                "Inspect composed public, helper, sibling, failure, stale, recovery, and escaped-boundary paths.",
+                "Stop clean handoff and record a finding",
+            ),
+            "verify": (
+                "verifying a change governed by an approved `boundary-first-v1` contract and proof map.",
+                "Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure.",
+                "Stop verification before readiness claims",
+            ),
+        }
+        reference_bytes = (
+            ROOT / "specs" / "references" / "boundary-first-method-v1.md"
+        ).read_bytes()
+
+        for skill_name, (load_condition, responsibility, stop_phrase) in expected.items():
+            skill_root = ROOT / "skills" / skill_name
+            body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
+            entry = (
+                "- READ `references/boundary-first-method-v1.md` when "
+                + load_condition
+            )
+            with self.subTest(skill=skill_name):
+                self.assertIn(entry, body)
+                self.assertIn("## Boundary-first method", body)
+                self.assertIn(responsibility, body)
+                self.assertIn(stop_phrase, body)
+                self.assertEqual(
+                    (
+                        skill_root
+                        / "references"
+                        / "boundary-first-method-v1.md"
+                    ).read_bytes(),
+                    reference_bytes,
+                )
+
+        for excluded in ("proposal", "proposal-review"):
+            body = (
+                ROOT / "skills" / excluded / "SKILL.md"
+            ).read_text(encoding="utf-8")
+            with self.subTest(excluded=excluded):
+                self.assertNotIn(
+                    "references/boundary-first-method-v1.md",
+                    body,
+                )
+
+    def test_semantic_gap_fixtures_route_to_the_owning_skill(self) -> None:
+        fixture_path = (
+            ROOT
+            / "scripts"
+            / "fixtures"
+            / "boundary-first"
+            / "semantic"
+            / "review-cases.json"
+        )
+        document = json.loads(fixture_path.read_text(encoding="utf-8"))
+        self.assertEqual(self.semantic_fixture_errors(document), [])
+        for case in document["cases"]:
+            skill_name = case["owning_skill"]
+            body = (
+                ROOT / "skills" / skill_name / "SKILL.md"
+            ).read_text(encoding="utf-8")
+            with self.subTest(case=case["case_id"], skill=skill_name):
+                for guidance in case["required_guidance"]:
+                    self.assertIn(guidance, body)
+                self.assertNotIn(case["forbidden_claim"], body)
+
+    def test_phrase_only_semantic_cases_cannot_satisfy_the_fixture_contract(self) -> None:
+        fixture_path = (
+            ROOT
+            / "scripts"
+            / "fixtures"
+            / "boundary-first"
+            / "semantic"
+            / "review-cases.json"
+        )
+        document = json.loads(fixture_path.read_text(encoding="utf-8"))
+        phrase_only = {
+            "boundary_record": document["boundary_record"],
+            "proof_map": document["proof_map"],
+            "cases": [
+                {
+                    "case_id": case["case_id"],
+                    "owning_skill": case["owning_skill"],
+                    "required_guidance": case["required_guidance"],
+                    "forbidden_claim": case["forbidden_claim"],
+                }
+                for case in document["cases"]
+            ],
+        }
+        errors = self.semantic_fixture_errors(phrase_only)
+        self.assertEqual(
+            errors,
+            ["semantic cases must use the closed packet contract"] * 10
+            + ["semantic cases must cover the exact governed skill set"],
+        )
+
+    def test_semantic_fixture_rejects_wrong_owner_outcome_handoff_and_coverage(self) -> None:
+        fixture_path = (
+            ROOT
+            / "scripts"
+            / "fixtures"
+            / "boundary-first"
+            / "semantic"
+            / "review-cases.json"
+        )
+        document = json.loads(fixture_path.read_text(encoding="utf-8"))
+        mutations = (
+            ("wrong-owner", 0, "expected_semantic_owner", "spec"),
+            ("wrong-outcome", 1, "expected_outcome", "continued"),
+            ("wrong-handoff", 2, "expected_handoff", "implement"),
+        )
+        for name, index, field, value in mutations:
+            mutated = json.loads(json.dumps(document))
+            mutated["cases"][index][field] = value
+            with self.subTest(mutation=name):
+                self.assertNotEqual(self.semantic_fixture_errors(mutated), [])
+
+        missing_plan = json.loads(json.dumps(document))
+        missing_plan["cases"] = [
+            case
+            for case in missing_plan["cases"]
+            if case["owning_skill"] != "plan"
+        ]
+        self.assertIn(
+            "semantic cases must cover the exact governed skill set",
+            self.semantic_fixture_errors(missing_plan),
+        )
 
 
 if __name__ == "__main__":

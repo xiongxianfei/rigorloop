@@ -79,6 +79,10 @@
 - Published Skill Resource Integrity spec amendment: `specs/skill-contract.md` R46-R55
 - Published Skill Resource Integrity spec-review: `docs/changes/2026-06-22-published-skill-resource-integrity-architecture-pilot/reviews/spec-review-r1.md`
 - Published Skill Resource Integrity ADR: `docs/adr/ADR-20260623-published-skill-resource-integrity.md`
+- Portable Boundary-First Capability proposal: `docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md`
+- Boundary-First Proof Model spec: `specs/boundary-first-proof-model.md`
+- Portable Boundary Reference Projection and Activation ADR: `docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md`
+- Portable Boundary Release Manifest and Package Rollback ADR: `docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md`
 - Evidence-Bound and Incremental `project-map` proposal: `docs/proposals/2026-06-23-evidence-bound-incremental-project-map.md`
 - Evidence-Bound and Incremental `project-map` spec: `specs/project-map.md`
 - Evidence-Bound and Incremental `project-map` proposal-review: `docs/changes/2026-06-23-evidence-bound-incremental-project-map/reviews/proposal-review-r1.md`
@@ -152,6 +156,10 @@ The goals are:
 - make default target-native init install-only while keeping explicit `--write-state` as the managed project-state path for target-oriented `rigorloop.yaml` and `rigorloop.lock` schemas;
 - require release smoke for target-native init to use real non-dry-run packed-package and live-registry install paths rather than dry-run output alone;
 - make published skill-local resource dependencies explicit, packageable, hash-verifiable, and present across canonical source, generated output, packed release candidates, and clean installed target trees;
+- publish one portable boundary-first method through ten governed skills while
+  preserving one authored reference source, byte-identical skill-local
+  projections, deterministic activation evidence, and independent semantic
+  review;
 - keep `project-map` as a current-state orientation reference with freshness metadata, cited material claims, visible inference, root/area registration, and downstream reliance boundaries;
 - improve enterprise-network recovery through bounded proxy diagnostics while deferring programmatic proxy dispatcher support;
 - let the CLI scaffold a draft change-local artifact pack for `docs/changes/<change-id>/change.yaml` without claiming lifecycle stage completion or creating durable-looking placeholder artifacts;
@@ -316,6 +324,7 @@ It is separate from `Architecture`: project maps describe observed repository re
 | Workflow automation tooling | Normalizes public and legacy commands, binds structured targets, derives canonical position and complete final-code state, evaluates bounded authority, coordinates receipt-backed stage transitions, reconciles interrupted work, validates state, and migrates active legacy state without becoming a workflow cursor, state owner, or stage-artifact owner | Python in `scripts/workflow_automation.py`, `scripts/workflow_automation_policy.py`, `scripts/workflow_automation_state.py`, `scripts/workflow_code_state.py`, and `scripts/validate_workflow_automation.py` |
 | Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
 | Canonical skills and adapter templates | Source instructions, packaged skill-local resources, workflow stages, and thin adapter entrypoints | Markdown in `skills/`, skill-local resources under each skill root, templates in `scripts/adapter_templates/` |
+| Boundary-first method and activation | Owns one authored portable method, its closed governed-skill projection inventory, and the prospective grandfathering baseline | Markdown under `specs/references/`, activation YAML under `specs/`, tracked derived references under governed `skills/*/references/` |
 | Validation and generation scripts | Select checks, route registered change-local evidence, compute validation cache keys for eligible explicit-path lifecycle validation, validate artifacts, compare workflow-state owners and projections, query bounded change-record slices, refresh generated output, prove drift status, validate mapped skill-local resources, and compare resource parity across generated, packed, and installed outputs | Python and shell under `scripts/` |
 | Generated runtime state and adapters | Derived local Codex runtime state and public adapter packages for supported agent tools; local runtime state and public adapter packages are generated from canonical sources and are not authored sources | Ignored local files under `.codex/skills/`, tracked adapter support metadata under `dist/adapters/`, generated temporary or release-output package directories, and release asset archives |
 | Release evidence | Durable release profiles, generated release-prep surfaces, authored release contract, release notes narrative, standing process evidence, timing evidence, adapter artifact metadata, package publication evidence, public closeout evidence, registry verification, checksums, emergency deferrals, and maintainer smoke evidence | Markdown/YAML under `docs/releases/profiles/`, `docs/releases/v<version>.md`, `docs/releases/<version>/`, and `docs/reports/adapter-artifacts/releases/` |
@@ -488,6 +497,40 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
 8. Pre-publish clean-install smoke installs the locally packed release candidate into empty Codex, Claude, and opencode target projects, then inspects the real installed skill roots for mapped resources at the expected relative paths and raw-byte identities.
 9. Live registry installation remains release-owned post-publish evidence unless the release contract explicitly requires it before implementation closeout.
 10. Runtime fallback is not package proof: missing mapped resources still fail package validation, and missing normative, schema, security, legal, or non-obvious structural resources stop execution with a package-integrity blocker.
+
+### Boundary-first reference projection and activation flow
+
+1. Maintainers edit only
+   `specs/references/boundary-first-method-v1.md` for shared portable method
+   content.
+2. The repository projection command reads the closed source path, version,
+   and ten-skill consumer inventory from one Python module.
+3. Write mode copies raw bytes to each governed
+   `skills/<skill>/references/boundary-first-method-v1.md`; check mode reports
+   missing, unexpected, or byte-divergent projections without mutation.
+4. Each governed `SKILL.md` maps its local reference with `READ` and a
+   stage-specific load condition.
+5. Canonical skill validation checks governed coverage, resource-map shape,
+   source identity, and projection identity before ordinary consistency checks.
+6. Existing skill and adapter generators copy complete governed skill roots;
+   existing resource-integrity checks compare the mapped path and raw-byte
+   SHA-256 in generated, packed, and installed target trees.
+7. The activating reviewed change settles
+   `specs/boundary-first-activation.yaml` as a small release manifest after
+   checks pass. No state-writing activation command is required.
+8. Activation becomes `active` only after canonical, projected, generated,
+   packed, installed, fixture, validator, and inventory evidence passes
+   together. The manifest records immutable activating and rollback release
+   tags plus the full parent commit identity used as the grandfathering
+   baseline.
+9. New top-level feature specs absent from the grandfathered inventory require
+   the marker; edits to unmarked grandfathered specs route to `spec-review`
+   for substantive-revision classification.
+10. Rollback validation reads the manifest's rollback release and existing
+    adapter artifact metadata, then verifies one passing archive identity for
+    every supported adapter without changing repository or external state.
+11. An authorized release operator performs any external installation or
+    publication outside this capability.
 
 ### Project-map authoring and refresh flow
 
@@ -717,6 +760,50 @@ The migration lint is intentionally bounded. It catches legacy resource-loading 
 
 Runtime fallback is an emergency work-continuation rule, not package validation. A missing mapped resource keeps package validation failing; runtime may continue only for redundant convenience resources whose complete contract is already in `SKILL.md` and whose contents do not require invention.
 
+### Portable boundary-first reference
+
+The boundary-first shared method is a specialization of published skill
+resource integrity.
+Its only authored content source is
+`specs/references/boundary-first-method-v1.md`.
+The ten skill-local copies are tracked deterministic projections so canonical
+skill packages remain self-contained before adapter generation.
+
+The projection module is the only executable owner of the method version,
+canonical source path, and governed consumer inventory.
+Skill validation imports that inventory and rejects unknown skills, missing
+consumers, unapproved extra projections, and byte drift before checking
+dependent consistency.
+The shared reference contains portable method rules only; stage-specific
+workflow, review, stop, mutation-authority, and readiness behavior stays in the
+owning skill and approved specs.
+
+The approved proof-model spec owns the closed `pending` and `active` states.
+`specs/boundary-first-activation.yaml` is one reviewed release manifest, not a
+state-transition log.
+It records the activating release, rollback release, governed skills,
+reference and projection identities, and the full parent commit identity of
+the activating change.
+Only eligible top-level feature specs present at that immutable parent revision
+are grandfathered; paths introduced later cannot grandfather themselves.
+The grandfathered path inventory supports structural new-spec detection;
+semantic classification of grandfathered edits stays with `spec-review`.
+
+Projection identities use the existing shared digest helper.
+For each sorted POSIX repository path, it emits UTF-8
+`<path>\\0<lowercase-raw-byte-sha256>\\n` and hashes the concatenated bytes.
+The projection digest covers the ten governed projected reference paths.
+The record is repository-local release and validation evidence, not a runtime
+attestation, model certificate, network service, or customer-project
+dependency.
+
+Package rollback reuses
+`docs/reports/adapter-artifacts/releases/<version>.yaml`.
+Validation selects the manifest's rollback release and checks an ordered
+adapter, archive, and SHA-256 matrix against `dist/adapters/manifest.yaml`.
+It does not install, publish, write rollback state, create a transaction
+receipt, or retain a historical attestation store.
+
 ### Project-map current-state orientation
 
 Project maps are living orientation references. They are useful for locating likely modules, entry points, tests, CI surfaces, external boundaries, risks, and known gaps, but they do not outrank source, runtime configuration, schemas, build manifests, tests, CI workflows, or governing workflow artifacts.
@@ -894,6 +981,8 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260523-release-process-contract.md`: standing release-process boundary, routine publish evidence under `docs/releases/v<version>.md`, preferred trusted publishing, manual fallback limits, emergency deferral contract, and fix-forward/deprecate recovery for bad package content.
 - `docs/adr/ADR-20260524-target-native-init-state-boundary.md`: target-native init, explicit state-write boundary, target-oriented state schemas, default state byte preservation with safety reads, and real non-dry-run release smoke gates.
 - `docs/adr/ADR-20260623-published-skill-resource-integrity.md`: mapped skill-local resource integrity, bounded legacy-reference lint, raw-byte parity, packed clean-install proof, and runtime fallback/package-validity separation.
+- `docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md`: superseded historical activation and rollback-transaction design.
+- `docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md`: one reviewed release manifest, immutable source-control grandfathering baseline, existing adapter metadata, and read-only package rollback validation.
 - `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md`: accepted historical profile decision proposed for supersession; its gate and review-independence rationale is rebound through the unified mechanism.
 - `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md`: accepted historical profile decision proposed for supersession; its risk separation, reviewer-owned correction, fresh verify, and stop-before-PR rules remain.
 - `docs/adr/ADR-20260625-independent-adversarial-review-gates.md`: orchestrator-owned neutral review manifests, fresh-context enforcement, blind-first evidence staging, risk-tiered escalation, clean-review sufficiency receipts, second-review disagreement handling, and calibration for workflow-managed automated reviews.
@@ -939,6 +1028,9 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | Release smoke fidelity | A maintainer prepares the target-native `0.3.0` release. | Packed-package pre-publish smoke and live registry/download post-publish smoke run real non-dry-run init for `codex`, `claude`, and `opencode`; dry-run output alone is not accepted as install proof. |
 | Routine release transaction safety | A maintainer prepares a routine release. | `docs/releases/profiles/<tag>.yaml` owns release state; `prepare-release` generates only profile-owned surfaces, preflight catches cheap deterministic drift, `release-verify.sh <tag>` remains the full gate, closeout writes validator-compatible public evidence, and timing evidence is recorded without weakening release checks. |
 | Skill resource self-containment | A published skill maps a skill-local resource. | The resource exists in canonical source, generated output, locally packed release candidates, and clean installed target skill roots with matching relative path and raw-byte SHA-256 unless a transformation contract applies. |
+| Boundary-method parity | A maintainer changes the boundary-first method or a governed skill. | One source projects raw-byte-identical references into all ten governed skill roots, and generated, packed, and installed Codex, Claude Code, and opencode trees retain the same mapped path and SHA-256. |
+| Boundary activation safety | The repository activates `boundary-first-v1`. | The proof-model spec owns the two-state contract; one reviewed manifest binds immutable activating and rollback releases, method and projection identity, governed skills, and the parent-revision grandfathering baseline; mixed, missing, unknown, or divergent surfaces fail before activation. |
+| Boundary rollback safety | A maintainer must withdraw the active skill release. | Read-only validation selects the manifest's rollback release and proves one passing archive identity for every supported adapter from existing release metadata; an authorized release operator owns external action. |
 | Project-map reliance safety | A downstream skill uses a project map to orient work. | The map exposes status, baseline, coverage, exclusions, known gaps, material path citations, inference labels, unknowns, correction notes when applicable, and configured-versus-executed command evidence; stale, partial, inferred, unknown, conflicting, or missing-path claims require direct source inspection before reliance. |
 | Legacy resource migration safety | A skill contains legacy `templates/...` instructions outside the `Resource map`. | Bounded migration lint reports the unmapped skill-local resource reference without classifying ordinary artifact paths or examples as package dependencies. |
 | opencode command alias integrity | A user installs opencode from an archive whose metadata declares command aliases. | The CLI installs `.opencode/skills` and `.opencode/commands` or fails verification; older compatible skills-only archives emit `opencode-command-aliases-not-declared` and record only installed roots. |
@@ -1058,6 +1150,12 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | Second-review cost could erase automation value | Rollout sampling uses a 20% floor plus a minimum evidence count for standard-risk clean reviews, then adjusts standard-risk sampling from measured material-disagreement confidence; elevated-risk clean reviews remain second-reviewed. |
 | Resource-integrity lint could over-classify examples as dependencies | Migration lint is bounded to recognized resource-loading instructions and approved skill-local prefixes; ordinary artifact paths, customer-project paths, and code examples stay outside the package contract unless used as load/copy/read/run instructions. |
 | Runtime fallback could hide a broken package | Package validation remains failing for missing mapped resources, and fallback is allowed only for redundant convenience resources whose full contract already exists in `SKILL.md`. |
+| Tracked projections could be hand-edited as if authored | The projection check binds every governed copy to one source and fails before dependent validation or packaging; contributor guidance identifies the copies as derived. |
+| Grandfathering could become a blanket bypass | The manifest records the full parent commit identity and a sorted eligible path inventory derived only from that revision; later paths require the marker, while spec-review classifies substantive edits to grandfathered paths. |
+| Draft specs could become accidental historical exemptions | Only `accepted`, `approved`, or `active` feature specs present at the immutable parent revision enter the inventory; in-flight opt-in is available only after activation is active. |
+| Activation facts could be incomplete or mixed | The reviewed manifest uses only `pending` or `active`, validators check its closed fields and package identities, and no projection or state writer may repair incomplete evidence. |
+| Digest implementations could disagree across platforms | One shared helper uses sorted POSIX paths, raw-byte SHA-256, fixed NUL/newline UTF-8 records, and lowercase hexadecimal output. |
+| Shared method content could absorb stage policy | The method source has a closed content boundary; skill and workflow review reject stage-specific routing, authority, approval, or readiness semantics in the reference. |
 | Project maps could be mistaken for source-of-truth behavior contracts | The `project-map` contract makes maps living references only, requires source-ranked evidence for material current-state claims, and forces direct source inspection when map evidence is stale, partial, inferred, unknown, conflicting, security-sensitive, or exact-behavior critical. |
 | Area maps could fragment repository orientation | The root map remains the required entry point whenever area maps exist, area maps require durable boundaries and root registration, and overlap names one detail owner rather than duplicating descriptions. |
 | Project-map validation could overfit natural language | The first slice validates contract structure, skeleton presence, resource-map mapping, generated adapter inclusion, and small representative outputs; a dedicated artifact validator stays deferred until repeated produced-map drift appears. |
@@ -1073,6 +1171,16 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 - mapped skill-local resource: a packaged resource under a skill root that is declared in that skill's `Resource map`.
 - resource parity identity: the skill-root relative path plus raw-byte SHA-256 for an untransformed mapped resource.
 - transformation contract: explicit ownership and expected identity for a resource intentionally changed between canonical source and generated, packed, or installed output.
+- boundary-first method projection: raw-byte copy of the one authored
+  `boundary-first-method-v1.md` source into each governed skill-local
+  `references/` path.
+- boundary-first activation record: repository-local YAML binding contract
+  state, activating and rollback release tags, method identity, projection
+  identity, governed skills, immutable parent-revision baseline, and
+  grandfathered feature-spec paths.
+- boundary-first package rollback validation: read-only comparison of the
+  selected immutable release's adapter archive identities with the current
+  supported-adapter inventory.
 - transition release: a stable release that preserves repository-tree adapter installation from `dist/adapters/` while `.codex/skills/` remains ignored local runtime state and adapter archives remain a follow-on migration by default.
 - compatibility-window release: a stable release that preserves repository-tree adapter packages while also providing release archives and install guidance, giving downstream users one release to transition install models.
 - adapter artifact metadata: tracked YAML under `docs/reports/adapter-artifacts/releases/<version>.yaml` that records source commit, generator command, archive paths, checksums, and validation evidence for generated adapter release artifacts.
@@ -1150,7 +1258,8 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Next artifacts
 
-- Architecture-review for the unified bounded-review-fix architecture update, component diagram, and superseding ADR.
+- Architecture-review for the simplified portable boundary-first release
+  manifest and package rollback ADR.
 
 ## Follow-on artifacts
 
@@ -1193,7 +1302,8 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Readiness
 
-This approved canonical package revision records one writable bounded-review-fix workflow-automation mechanism at `docs/changes/<change-id>/change.yaml#workflow.automation`. Public semantics live in `skills/workflow/SKILL.md`; named Python modules own command coordination, the complete immutable stage-policy projection, state access and reconciliation, and validation. Prepared receipts bind the original effective capability and only the state adapter writes automation state. The revision preserves active-plan state ownership, stage-owned artifacts, independent review gates, stage-specific correction authority, fresh verification, and the stop before PR or other external actions. Architecture-review R3 approved the revision for planning reliance.
+Approved portable boundary-first architecture revision ready for plan
+alignment.
 
 ADR `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md` records the accepted durable consolidation and supersedes the three earlier profile ADRs; their descriptions below are historical context, not current writable-mechanism authority under the approved spec.
 

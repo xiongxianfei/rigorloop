@@ -490,6 +490,7 @@
   - Assert the finding-closure summary predicate and closeout-mode review artifact validation agree across negative and positive closeout fixtures.
   - Assert missing, duplicate, unsupported, or unparseable closeout evidence keeps findings open across summary, closeout-mode review validation, change metadata, and lifecycle validation.
   - Fail when `change.yaml` unresolved finding count or `change_id` consistency differs from owning review or plan evidence.
+  - Pass a direct unplanned bugfix `change.yaml` with no `artifacts.plan`; plan-body identity consistency applies only when the change declares or matches a plan.
   - Fail when a next-stage-like `change.yaml` field acts as competing live next-stage authority.
 - Expected result:
   - Review artifacts and derived metadata block incompatible owner states while preserving review-resolution ownership of finding dispositions.

@@ -105,6 +105,7 @@ class CleanInstallMappedResource:
     skill_name: str
     relative_path: str
     sha256: str
+    adapters: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -2491,6 +2492,10 @@ def _mapped_resources_for_clean_install(
 ) -> tuple[CleanInstallMappedResource, ...]:
     selected = set(skill_names)
     resources: list[CleanInstallMappedResource] = []
+    reports = {
+        report.name: report
+        for report in collect_skill_reports(skills_root)
+    }
     for skill_dir in discover_source_skill_dirs(skills_root):
         identities = mapped_resource_identities_for_skill(skill_dir)
         if not identities:
@@ -2498,11 +2503,13 @@ def _mapped_resources_for_clean_install(
         if selected and skill_dir.name not in selected and identities[0].skill_name not in selected:
             continue
         for identity in identities:
+            report = reports.get(identity.skill_name)
             resources.append(
                 CleanInstallMappedResource(
                     skill_name=identity.skill_name,
                     relative_path=identity.relative_path,
                     sha256=identity.sha256,
+                    adapters=report.included_adapters if report is not None else (),
                 )
             )
     return tuple(resources)
@@ -2563,10 +2570,27 @@ def validate_clean_install_smoke(
                 )
                 continue
             for resource in resources:
+                if adapter_name not in resource.adapters:
+                    continue
                 skill_root = project_root / _path_from_posix(config.skill_root) / resource.skill_name
                 if not skill_root.is_dir():
                     errors.append(
                         f"clean-install skill root missing: {adapter_name}/{resource.skill_name}: {skill_root}"
+                    )
+                    continue
+                skill_file = skill_root / "SKILL.md"
+                if not skill_file.is_file():
+                    errors.append(
+                        f"clean-install skill file missing: {adapter_name}/{resource.skill_name}: "
+                        f"{skill_file}"
+                    )
+                    continue
+                try:
+                    skill_file.read_bytes()
+                except OSError as exc:
+                    errors.append(
+                        f"clean-install skill file unreadable: {adapter_name}/{resource.skill_name}: "
+                        f"{exc}"
                     )
                     continue
                 installed_resource = skill_root / resource.relative_path

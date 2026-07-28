@@ -100,8 +100,19 @@ PRE_PLAN_SEQUENCE = (
     "architecture",
     "architecture-review",
     "plan",
+    "plan-review",
+    "test-spec",
+    "test-spec-review",
 )
-REVIEW_POSITIONS = frozenset({"proposal-review", "spec-review", "architecture-review"})
+REVIEW_POSITIONS = frozenset(
+    {
+        "proposal-review",
+        "spec-review",
+        "architecture-review",
+        "plan-review",
+        "test-spec-review",
+    }
+)
 REVIEW_OUTCOMES = frozenset({"approved", "changes-requested", "blocked", "inconclusive"})
 TRANSITION_EVIDENCE_POSITIONS = frozenset(PRE_PLAN_SEQUENCE[1:])
 CANONICAL_BASIS_FIELDS = {
@@ -3789,6 +3800,9 @@ def _resolve_pre_plan(evidence: PrePlanEvidence) -> CanonicalPosition:
     if "plan" in observed and evidence.architecture_applicability == "required":
         if evidence.review_outcomes.get("architecture-review") != "approved":
             raise AutomationContractError("contradictory architecture-review evidence")
+    if "test-spec" in observed:
+        if evidence.review_outcomes.get("plan-review") != "approved":
+            raise AutomationContractError("contradictory plan-review evidence")
     if "spec" in observed and not evidence.review_resolution_closed:
         raise AutomationContractError("required review resolution is not closed")
 
@@ -3840,6 +3854,22 @@ def _resolve_plan(plan: ActivePlanContext) -> CanonicalPosition:
         )
     current = candidates[0]
     state = current.state
+    authoring_position = (
+        {
+            WorkflowStage.PLAN_REVIEW.value: WorkflowPosition.PLAN.value,
+            WorkflowStage.TEST_SPEC.value: WorkflowPosition.PLAN_REVIEW.value,
+            WorkflowStage.TEST_SPEC_REVIEW.value: WorkflowPosition.TEST_SPEC.value,
+        }.get(plan.handoff.next_stage)
+        if state == "planned"
+        else None
+    )
+    if authoring_position is not None:
+        return CanonicalPosition(
+            authoring_position,
+            "plan-current-handoff-summary",
+            {"plan": plan.plan_identity},
+            milestone_id=current.milestone_id,
+        )
     if state == "review-requested":
         position = WorkflowPosition.IMPLEMENT.value
     elif state == "resolution-needed":
