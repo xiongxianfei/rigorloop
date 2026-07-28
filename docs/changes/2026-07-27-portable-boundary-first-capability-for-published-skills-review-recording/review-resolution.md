@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -16,8 +16,8 @@ Review closeout: test-spec-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 14
-- Unresolved findings: 0
-- Final result: Proposal, spec, architecture, plan, and test-spec reviews approve the revised capability and proof map.
+- Unresolved findings: 1
+- Final result: Upstream authoring reviews are closed; M1 code review requires resolution of PBF-M1-CR1.
 
 ## Resolution Overview
 
@@ -37,6 +37,7 @@ Review closeout: test-spec-review-r2
 | PBF-AR2 | accepted | resolved | One shared helper defines reproducible projection and inventory digests. |
 | PBF-TSR1 | accepted | resolved | Acceptance criteria, exact edge cases, and supplemental normative surfaces have stable direct proof. |
 | PBF-TSR2 | accepted | resolved | M4 and final-verify broad-smoke invocations have separate stage owners and gates. |
+| PBF-M1-CR1 | accepted | open | Parent-directory symlink escape requires focused M1 correction and rereview. |
 
 ## Finding Details
 
@@ -277,3 +278,17 @@ Review closeout: test-spec-review-r2
 No material findings.
 R2 confirms PBF-TSR1 and PBF-TSR2 resolved and approves implementation handoff
 for M1 under separate implementation authority.
+
+### code-review-m1-r1
+
+#### PBF-M1-CR1 - Projection paths can escape the repository through symlinked parents
+
+Finding ID: PBF-M1-CR1
+Disposition: accepted
+Status: open
+Owner: implementation
+Owning stage: review-resolution M1
+Chosen action: Add source-parent and destination-parent symlink-escape regressions, then apply one repository-contained path-component guard before projection filesystem operations.
+Rationale: The correction is fully determined by the approved security boundary and remains inside M1 implementation scope.
+Validation target: `python scripts/test-boundary-first-reference.py`; `python scripts/project-boundary-first-reference.py --check`
+Validation evidence: pending correction
