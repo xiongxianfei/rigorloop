@@ -17,13 +17,12 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
+| [Portable Boundary-First Capability for Published Skills](plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md) | active | implement M3 correction cycle 4 | 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked
 
-| Plan | State | Next stage | Change ID |
-| --- | --- | --- | --- |
-| [Portable Boundary-First Capability for Published Skills](plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md) | blocked | blocked pending renewed correction authority for review-resolution M3 | 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording |
+No blocked plans.
 
 ## Done (recent)
 
