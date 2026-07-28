@@ -214,7 +214,17 @@ workflow:
           on_policy_change: pause
         external_actions: prohibited
         correction_budget:
-          cycles: 2
+          cycles: 3
+        correction_budget_amendments:
+          -
+            amendment_id: authorization-extension-PBF-M1-CR4
+            authorized_by: user
+            authorized_at: 2026-07-28T08:54:42Z
+            finding_id: PBF-M1-CR4
+            additional_cycles: 1
+            prior_cycles: 2
+            resulting_cycles: 3
+            maximum_target: verify
     effective_capabilities:
       cap-pbf-spec:
         capability_id: cap-pbf-spec
