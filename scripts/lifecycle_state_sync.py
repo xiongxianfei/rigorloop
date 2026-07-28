@@ -1687,29 +1687,21 @@ def validate_workflow_state_sync(
                         )
                     )
 
-        if yaml_id and not matching_plan_states:
-            if artifact_plan:
-                artifact_plan_path = (root / artifact_plan).resolve()
-                artifact_state = plan_states.get(artifact_plan_path)
-                if artifact_state is not None:
-                    matching_plan_states = [(artifact_plan_path, artifact_state)]
-                elif artifact_plan_path.exists():
-                    terminal_state = parse_plan_body_state(artifact_plan_path.read_text(encoding="utf-8"))
-                    if terminal_state.change_id == yaml_id and terminal_state.lifecycle_state not in LIVE_INDEX_STATES:
-                        continue
-                    findings.append(
-                        StateSyncFinding(
-                            change_yaml_path,
-                            f"change.yaml change_id has no matching plan-body Change ID: {yaml_id}",
-                        )
+        if yaml_id and not matching_plan_states and artifact_plan:
+            artifact_plan_path = (root / artifact_plan).resolve()
+            artifact_state = plan_states.get(artifact_plan_path)
+            if artifact_state is not None:
+                matching_plan_states = [(artifact_plan_path, artifact_state)]
+            elif artifact_plan_path.exists():
+                terminal_state = parse_plan_body_state(artifact_plan_path.read_text(encoding="utf-8"))
+                if terminal_state.change_id == yaml_id and terminal_state.lifecycle_state not in LIVE_INDEX_STATES:
+                    continue
+                findings.append(
+                    StateSyncFinding(
+                        change_yaml_path,
+                        f"change.yaml change_id has no matching plan-body Change ID: {yaml_id}",
                     )
-                else:
-                    findings.append(
-                        StateSyncFinding(
-                            change_yaml_path,
-                            f"change.yaml change_id has no matching plan-body Change ID: {yaml_id}",
-                        )
-                    )
+                )
             else:
                 findings.append(
                     StateSyncFinding(

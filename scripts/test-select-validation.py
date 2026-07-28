@@ -56,6 +56,8 @@ ADAPTER_REGRESSION_COMMAND = (
 
 EXPECTED_CATALOG = {
     "boundary_first.validate": "python scripts/validate-boundary-first.py --check",
+    "boundary_first.reference_regression": "python scripts/test-boundary-first-reference.py",
+    "boundary_first.regression": "python scripts/test-boundary-first-validation.py",
     "skills.validate": "python scripts/validate-skills.py",
     "skills.regression": "python scripts/test-skill-validator.py",
     "skills.generation_regression": "python scripts/test-build-skills.py",
@@ -5121,6 +5123,11 @@ raise SystemExit(3)
             "specs/feature.test.md",
             "skills/spec/references/boundary-first-method-v1.md",
             "dist/adapters/manifest.yaml",
+            "scripts/boundary_first_reference.py",
+            "scripts/project-boundary-first-reference.py",
+            "scripts/test-boundary-first-reference.py",
+            "scripts/boundary_first_validation.py",
+            "scripts/fixtures/boundary-first/feature-records/minimal.md",
         )
         for path in paths:
             target = repo / path
@@ -5145,10 +5152,29 @@ raise SystemExit(3)
                 SelectionRequest(mode="explicit", paths=(path,), repo_root=repo)
             )
             with self.subTest(path=path):
+                self.assertEqual(result.status, "ok", result.to_json_dict())
                 self.assertIn(
                     "boundary_first.validate",
                     selected_ids(result.to_json_dict()),
                 )
+                if path in {
+                    "skills/spec/references/boundary-first-method-v1.md",
+                    "scripts/boundary_first_reference.py",
+                    "scripts/project-boundary-first-reference.py",
+                    "scripts/test-boundary-first-reference.py",
+                }:
+                    self.assertIn(
+                        "boundary_first.reference_regression",
+                        selected_ids(result.to_json_dict()),
+                    )
+                if path in {
+                    "scripts/boundary_first_validation.py",
+                    "scripts/fixtures/boundary-first/feature-records/minimal.md",
+                }:
+                    self.assertIn(
+                        "boundary_first.regression",
+                        selected_ids(result.to_json_dict()),
+                    )
                 command = next(
                     check["command"]
                     for check in result.to_json_dict()["selected_checks"]
@@ -5158,6 +5184,44 @@ raise SystemExit(3)
                     self.assertIn(f"--path {path}", command)
                 else:
                     self.assertNotIn("--path", command)
+
+    def test_boundary_first_change_evidence_has_deterministic_routes(self) -> None:
+        repo = self.make_git_repo()
+        change_root = (
+            repo
+            / "docs"
+            / "changes"
+            / "2026-07-27-portable-boundary-first-capability"
+        )
+        paths = (
+            change_root / "change.yaml",
+            change_root / "boundary-reference-evidence.yaml",
+            change_root / "boundary-validation-evidence.yaml",
+            change_root / "boundary-activation-evidence.yaml",
+            change_root / "boundary-install-evidence.yaml",
+            change_root / "m1-implementation.md",
+            change_root / "review-invocation-code-review-m1-r1.yaml",
+        )
+        for path in paths:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("fixture\n", encoding="utf-8")
+
+        result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=tuple(path.relative_to(repo).as_posix() for path in paths),
+                repo_root=repo,
+            )
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok", payload)
+        self.assertEqual(payload["blocking_results"], [])
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertIn("boundary_first.validate", selected_ids(payload))
+        self.assertIn("boundary_first.reference_regression", selected_ids(payload))
+        self.assertIn("adapters.regression", selected_ids(payload))
+        self.assertIn("review_artifacts.validate", selected_ids(payload))
 
     def test_output_contract_red_tests_are_unmasked_and_separate(self) -> None:
         source = Path(__file__).read_text(encoding="utf-8")

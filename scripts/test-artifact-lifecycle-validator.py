@@ -984,7 +984,12 @@ review:
                 {"slug": "plan-a", "change_id": "change-a"},
                 {"slug": "plan-b", "change_id": "change-b"},
             ],
-            extra_change_yamls=[{"change_id": "change-orphan"}],
+            extra_change_yamls=[
+                {
+                    "change_id": "change-orphan",
+                    "artifact_plan": "docs/plans/change-orphan.md",
+                }
+            ],
         )
 
         result = validate_repository(fixture_root, mode="explicit-paths", paths=paths)
@@ -993,6 +998,23 @@ review:
         self.assertTrue(result.blocking_findings)
         self.assertIn("change-orphan", messages)
         self.assertIn("no matching plan-body Change ID", messages)
+
+    def test_unplanned_change_yaml_does_not_require_plan_body(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-unplanned-change-"))
+        self.addCleanupTree(fixture_root)
+        paths = self.write_multi_active_workflow_state_fixture(
+            fixture_root,
+            [
+                {"slug": "plan-a", "change_id": "change-a"},
+                {"slug": "plan-b", "change_id": "change-b"},
+            ],
+            extra_change_yamls=[{"change_id": "unplanned-bugfix"}],
+        )
+
+        result = validate_repository(fixture_root, mode="explicit-paths", paths=paths)
+        messages = "\n".join(f"{f.path.relative_to(fixture_root)}: {f.message}" for f in result.blocking_findings)
+
+        self.assertFalse(result.blocking_findings, msg=messages)
 
     def test_audit_pairs_by_key_not_order(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-multi-keyed-"))
