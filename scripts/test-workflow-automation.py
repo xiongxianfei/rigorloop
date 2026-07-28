@@ -163,6 +163,7 @@ def plan_text(
     current_state: str = "implementing",
     remaining: str = "M2, M3",
     next_stage: str = "implement M2",
+    milestone_one_state: str = "closed",
     milestone_two_state: str | None = None,
     milestone_three_state: str = "planned",
     duplicate_m2: bool = False,
@@ -196,7 +197,7 @@ Change ID: 2026-07-20-example
 
 ### M1. Prior Slice
 
-- Milestone state: closed
+- Milestone state: {milestone_one_state}
 
 ### M2. Engine Slice
 
@@ -2340,6 +2341,71 @@ Planned validation rule: proposal-exact-append
         self.assertEqual(position.source, "authoritative-artifact-review-evidence")
         self.assertNotIn("current_stage", position.observed_identities)
 
+    def test_position_artifact_sequence_reaches_test_spec_review(self) -> None:
+        evidence = PrePlanEvidence(
+            positions={
+                "proposal": ("sha256:proposal",),
+                "proposal-review": ("sha256:proposal-review",),
+                "spec": ("sha256:spec",),
+                "spec-review": ("sha256:spec-review",),
+                "architecture-assessment": ("sha256:assessment",),
+                "architecture": ("sha256:architecture",),
+                "architecture-review": ("sha256:architecture-review",),
+                "plan": ("sha256:plan",),
+                "plan-review": ("sha256:plan-review",),
+                "test-spec": ("sha256:test-spec",),
+                "test-spec-review": ("sha256:test-spec-review",),
+            },
+            review_outcomes={
+                "proposal-review": "approved",
+                "spec-review": "approved",
+                "architecture-review": "approved",
+                "plan-review": "approved",
+                "test-spec-review": "approved",
+            },
+            review_resolution_closed=True,
+            architecture_applicability="required",
+        )
+
+        position = resolve_canonical_position(pre_plan=evidence)
+
+        self.assertEqual(position.position, "test-spec-review")
+        self.assertEqual(
+            position.observed_identities["plan-review"],
+            "sha256:plan-review",
+        )
+        self.assertEqual(
+            position.observed_identities["test-spec"],
+            "sha256:test-spec",
+        )
+
+    def test_position_active_plan_represents_post_plan_authoring_handoffs(
+        self,
+    ) -> None:
+        cases = (
+            ("plan-review", "plan"),
+            ("test-spec", "plan-review"),
+            ("test-spec-review", "test-spec"),
+            ("implement M1", "test-spec-review"),
+        )
+        for next_stage, expected_position in cases:
+            with self.subTest(next_stage=next_stage):
+                plan = ActivePlanContext.from_text(
+                    plan_text(
+                        current="M1. Prior Slice",
+                        current_state="planned",
+                        remaining="M1, M2, M3",
+                        next_stage=next_stage,
+                        milestone_one_state="planned",
+                    ),
+                    plan_identity="sha256:plan-v1",
+                )
+
+                position = resolve_canonical_position(active_plan=plan)
+
+                self.assertEqual(position.position, expected_position)
+                self.assertEqual(position.milestone_id, "M1")
+
     def test_position_preplan_ambiguity_staleness_and_contradiction_pause(self) -> None:
         base = {
             "positions": {"proposal": ("sha256:proposal",), "proposal-review": ("sha256:review",)},
@@ -4080,6 +4146,114 @@ Planned validation rule: proposal-exact-append
         self.assertEqual(
             (recovered.action, recovered.reason),
             ("continue", "completed-evidence-current"),
+        )
+
+    def test_test_spec_transition_is_authorized_after_plan_review(self) -> None:
+        target = bind_target(
+            "test-spec-review",
+            bound_at="2026-07-22T00:00:00Z",
+        )
+        parent = create_parent_authorization(
+            authorization_id="auth-authoring",
+            authorization_class="authoring",
+            change_id="2026-07-20-example",
+            authorized_by="user",
+            authorized_at="2026-07-22T00:00:00Z",
+            maximum_target=target,
+            allowed_capability_kinds=("post-proposal-authoring",),
+            maximum_path_roots=("specs/",),
+            maximum_mutation_categories=("downstream-authoring-artifacts",),
+        )
+        state = copy.deepcopy(FIXTURES.valid_automation())
+        state["run"]["target"] = target
+        state["parent_authorizations"] = {"auth-authoring": parent}
+        state["effective_capabilities"] = {}
+        state["transition_receipts"] = {}
+        state["canonical_position_source"] = "plan-current-handoff-summary"
+        state["observed_identities"] = {"plan": "sha256:plan-v1"}
+        store = self.make_store(state)
+        basis = {
+            "proposal_identity": "sha256:proposal",
+            "approved_proposal_review_identity": "sha256:proposal-review",
+            "closed_review_resolution_identity": "sha256:resolution",
+            "stage_scope_identity": "sha256:test-spec-scope",
+        }
+        inputs = {
+            **basis,
+            "spec": "sha256:spec",
+            "plan": "sha256:plan-v1",
+            "plan-review": "sha256:plan-review",
+        }
+        plan = ActivePlanContext.from_text(
+            plan_text(
+                current="M1. Prior Slice",
+                current_state="planned",
+                remaining="M1, M2, M3",
+                next_stage="test-spec",
+                milestone_one_state="planned",
+            ),
+            plan_identity="sha256:plan-v1",
+        )
+
+        def invoke() -> StageExecutionResult:
+            relative = Path("specs/example.test.md")
+            artifact = store.repository_root / relative
+            artifact.parent.mkdir(parents=True, exist_ok=True)
+            artifact.write_text(
+                (
+                    ROOT
+                    / "specs/single-bounded-review-fix-workflow-automation.test.md"
+                ).read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+            evidence = ArtifactEvidence(
+                relative.as_posix(),
+                "sha256:" + hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            )
+            return StageExecutionResult(
+                (evidence,),
+                {"test-spec": evidence},
+            )
+
+        coordinated = coordinate_non_public_authoring_stage(
+            invocation_context="non-public-test-harness",
+            target_stage="test-spec-review",
+            store=store,
+            repository_root=store.repository_root,
+            parent_authorization_id="auth-authoring",
+            capability_id="cap-test-spec-transaction",
+            stage="test-spec",
+            occurrence={"kind": "singleton"},
+            basis=basis,
+            affected_path_roots=("specs/",),
+            mutation_categories=("downstream-authoring-artifacts",),
+            derived_at="2026-07-22T00:01:00Z",
+            transition_id="transition-test-spec-001",
+            input_identities=inputs,
+            invoke_stage=invoke,
+            synchronize_canonical_state=lambda result: CanonicalSyncResult(
+                "synchronized", result.completion_evidence
+            ),
+            active_plan=plan,
+            previously_observed={"plan": "sha256:plan-v1"},
+        )
+
+        self.assertEqual(coordinated.coordination.status, "completed")
+        self.assertEqual(
+            (coordinated.route.status, coordinated.route.next_stage),
+            ("continue", "test-spec-review"),
+        )
+        persisted = store.read().automation
+        receipt = persisted["transition_receipts"][
+            "transition-test-spec-001"
+        ]
+        self.assertEqual(receipt["from_position"], "plan-review")
+        self.assertEqual(receipt["status"], "completed")
+        self.assertEqual(
+            persisted["effective_capabilities"][
+                "cap-test-spec-transaction"
+            ]["status"],
+            "consumed",
         )
 
     def test_completed_recovery_is_stage_semantic_for_assessment_and_plan(

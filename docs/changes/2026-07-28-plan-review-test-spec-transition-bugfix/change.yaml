@@ -1,0 +1,29 @@
+change_id: 2026-07-28-plan-review-test-spec-transition-bugfix
+title: Plan Review to Test Spec Workflow Transition Bugfix
+classification: workflow-governance
+risk: medium
+artifacts:
+  spec: specs/single-bounded-review-fix-workflow-automation.md
+requirements:
+  - Represent plan-review, test-spec, and test-spec-review as canonical pre-implementation workflow positions.
+  - Authorize test-spec authoring only after an approved plan review.
+  - Preserve the existing implementation handoff once test-spec-review is complete.
+tests:
+  - Artifact evidence resolves through test-spec-review without an unknown-position error.
+  - An active plan represents each post-plan authoring handoff before implementation.
+  - A test-spec transaction completes after plan-review and routes to test-spec-review.
+changed_files:
+  - scripts/workflow_automation.py
+  - scripts/test-workflow-automation.py
+  - docs/changes/2026-07-28-plan-review-test-spec-transition-bugfix/change.yaml
+  - docs/changes/2026-07-28-plan-review-test-spec-transition-bugfix/explain-change.md
+review:
+  status: not-reviewed
+  unresolved_items: 0
+validation:
+  - command: python scripts/test-workflow-automation.py
+    result: pass_76_tests
+  - command: python scripts/test-workflow-automation-state.py
+    result: pass_60_tests
+  - command: python scripts/test-validate-workflow-automation.py
+    result: pass_68_tests
