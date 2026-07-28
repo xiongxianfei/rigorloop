@@ -4,6 +4,7 @@
 
 Closeout status: closed
 
+Review closeout: code-review-post-pr-ci-r1
 Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r1
 Review closeout: test-spec-review-r9
@@ -124,6 +125,16 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### code-review-post-pr-ci-r1
+
+Review closeout: code-review-post-pr-ci-r1
+Review result: clean-with-notes
+Material findings: None
+Resolution required: no
+Validation evidence: The scoped review inspected commit `5dc3042f`, its
+selector and lifecycle regressions, and the exact PR-mode result in which all
+22 selected checks passed. Hosted CI remained intentionally unclaimed.
 
 ### code-review-m4-r2
 
