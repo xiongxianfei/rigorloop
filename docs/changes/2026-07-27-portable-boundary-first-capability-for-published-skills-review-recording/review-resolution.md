@@ -33,8 +33,8 @@ Review closeout: code-review-m1-r4
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-M3-CR16 | needs-decision | needs-decision | Bind accepted proof-map identities to the trusted pre-transition rollback evidence. |
-| PBF-M3-CR14 | needs-decision | needs-decision | Current-state recomputation cannot prove pre-transition rollback membership. |
+| PBF-M3-CR16 | accepted | in-progress | Bind accepted proof-map identities to the M4 rollback transaction receipt. |
+| PBF-M3-CR14 | accepted | in-progress | Use the M4 rollback transaction receipt as pre-transition authority. |
 | PBF-M3-CR15 | accepted | resolved | Fixed activation and proof-model inputs are contained before reads. |
 | PBF-M3-CR9 | accepted | resolved | Immutable activation history survives later marked adoption and rollback. |
 | PBF-M3-CR10 | accepted | resolved | Explicit and derived feature/proof paths are contained before reads. |
@@ -78,11 +78,11 @@ R4 partially resolves PBF-M3-CR14 and updates its original disposition below.
 #### PBF-M3-CR16 - Rollback inventory omits accepted proof maps
 
 Finding ID: PBF-M3-CR16
-Disposition: needs-decision
-Status: needs-decision
-Owner: user and architecture/spec owner
-Decision owner: user and architecture/spec owner
-Decision needed: Choose whether proof identities share the feature inventory or use a separate closed inventory, then authorize another correction cycle.
+Disposition: accepted
+Status: in-progress
+Owner: M3 implement and M4 rollback transaction
+Decision owner: user
+Decision needed: Resolved 2026-07-28; use paired feature/proof identities in the M4 rollback transaction receipt.
 Owning stage: review-resolution M3
 Chosen action: Include proof-map identities in the same trusted pre-transition evidence model selected for PBF-M3-CR14.
 Rationale: PBF-R057 preserves boundary records and proof maps; feature-only identity is incomplete.
@@ -94,11 +94,11 @@ Validation evidence: R4 shows activation passes with an exact preserved feature 
 #### PBF-M3-CR14 - Rollback trusts self-declared current lifecycle status
 
 Finding ID: PBF-M3-CR14
-Disposition: needs-decision
-Status: needs-decision
-Owner: user and architecture/spec owner
-Decision owner: user and architecture/spec owner
-Decision needed: Choose the trusted pre-transition evidence owner and authorize another correction cycle.
+Disposition: accepted
+Status: in-progress
+Owner: M3 implement and M4 rollback transaction
+Decision owner: user
+Decision needed: Resolved 2026-07-28; the M4 rollback transaction receipt owns pre-transition evidence.
 Owning stage: review-resolution M3
 Chosen action: Select and bind a trusted pre-transition evidence owner before another correction begins.
 Rationale: Current rolled-back files and a recomputable digest cannot prove that membership existed before the transition.

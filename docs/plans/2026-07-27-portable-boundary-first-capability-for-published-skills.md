@@ -2,7 +2,7 @@
 
 ## Status
 
-Plan lifecycle state: blocked
+Plan lifecycle state: active
 Terminal disposition: none
 
 - Owner: maintainers
@@ -104,11 +104,11 @@ an explicit blocking gap before implementation begins.
 
 - Current milestone: M3. Structural and activation validation
 - Current milestone state: resolution-needed
-- Latest review evidence: code-review-m3-r4 resolves PBF-M3-CR15, leaves PBF-M3-CR14 partially resolved, and records PBF-M3-CR16
+- Latest review evidence: user authorized correction cycle 4 and selected the M4 rollback transaction receipt with paired feature/proof identities for PBF-M3-CR14 and PBF-M3-CR16
 - Last reviewed milestone: M2
 - Review status: changes-requested; stage=code-review; round=r4
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: blocked pending renewed correction authority for review-resolution M3
+- Next stage: implement M3 correction cycle 4
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=2; open-findings=PBF-M3-CR14,PBF-M3-CR16
 
@@ -331,6 +331,10 @@ A material review finding reopens its owning milestone and blocks the next one.
   PBF-M3-CR16 is new. All three authorized M3 correction cycles are consumed,
   so the workflow paused for renewed authority and an upstream trust-owner
   decision.
+- 2026-07-28: the user authorized one additional M3 correction cycle and
+  selected the M4 rollback transaction receipt as the pre-transition evidence
+  owner with paired feature-spec and proof-map identities. M3 correction
+  cycle 4 began.
 
 ## Decision log
 
