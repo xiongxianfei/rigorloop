@@ -103,14 +103,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M3. Structural and activation validation
-- Current milestone state: resolution-needed
-- Latest review evidence: code-review-m3-r1 records PBF-M3-CR1 through PBF-M3-CR8
+- Current milestone state: review-requested
+- Latest review evidence: PBF-M3-CR1 through PBF-M3-CR8 corrections pass 39 focused tests and all three M3 commands
 - Last reviewed milestone: M2
-- Review status: changes-requested; stage=code-review; round=r1
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: review-resolution M3
+- Next stage: code-review M3 R2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=8; open-findings=PBF-M3-CR1,PBF-M3-CR2,PBF-M3-CR3,PBF-M3-CR4,PBF-M3-CR5,PBF-M3-CR6,PBF-M3-CR7,PBF-M3-CR8
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -183,7 +183,7 @@ an explicit blocking gap before implementation begins.
 
 ### M3. Structural and activation validation
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
    - primary trust boundary: deterministic shape/reference enforcement without
      semantic overclaiming
    - deliverables:
@@ -306,6 +306,11 @@ A material review finding reopens its owning milestone and blocks the next one.
   parity, shared feature/test activation gating, historical membership,
   changed-path containment, diagnostic redaction, and clean-commit selector
   reproducibility. M4 remains blocked pending correction and R2.
+- 2026-07-28: resolved PBF-M3-CR1 through PBF-M3-CR8 with 39 focused
+  regressions, direct canonical projection checks, exact active historical
+  membership, contained and redacted diagnostics, shared feature/test
+  activation gating, and committed coordinator baseline `197d150b`; M3
+  returned to independent R2.
 
 ## Decision log
 
@@ -362,7 +367,7 @@ A material review finding reopens its owning milestone and blocks the next one.
   `python scripts/test-skill-validator.py`, and
   `python scripts/build-skills.py --check` passed after PBF-M2-CR1; the suite
   now contains 263 tests and four focused boundary-first lifecycle tests.
-- M3: `python scripts/test-boundary-first-validation.py` passed 30 tests,
+- M3: `python scripts/test-boundary-first-validation.py` passed 39 tests,
   `python scripts/validate-boundary-first.py --check` passed the pending
   baseline, and `python scripts/test-select-validation.py` passed 134 tests.
 - M4 implementation validation commands remain planned and have not run.

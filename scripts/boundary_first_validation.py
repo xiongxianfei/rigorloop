@@ -7,15 +7,15 @@ import hashlib
 import json
 import re
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from boundary_first_reference import (
     CANONICAL_REFERENCE,
     GOVERNED_SKILLS,
     METHOD_VERSION,
-    PROJECTED_REFERENCE,
+    ProjectionContractError,
     inventory_digest,
-    projected_paths,
+    project_reference,
     raw_sha256,
 )
 
@@ -136,7 +136,7 @@ class ValidationIssue:
             "check_id": self.code,
             "path": self.path,
             "message": self.message,
-            "offending_value": self.offending_value,
+            "offending_value": _redacted_value(self.offending_value),
             "expected": self.expected,
         }
 
@@ -149,6 +149,43 @@ def _issue(
     expected: object = "-",
 ) -> ValidationIssue:
     return ValidationIssue(code, path, message, str(value), str(expected))
+
+
+def _redacted_value(value: str) -> str:
+    encoded = value.encode("utf-8")
+    return (
+        "redacted:sha256:"
+        + hashlib.sha256(encoded).hexdigest()
+        + f":bytes={len(encoded)}"
+    )
+
+
+def _live_markdown(text: str) -> str:
+    """Preserve line positions while removing fenced-code content."""
+
+    output: list[str] = []
+    fence_character: str | None = None
+    fence_length = 0
+    for line in text.splitlines():
+        match = re.match(r"^ {0,3}(`{3,}|~{3,})(?:[^`]*)$", line)
+        if fence_character is None:
+            if match:
+                token = match.group(1)
+                fence_character = token[0]
+                fence_length = len(token)
+                output.append("")
+            else:
+                output.append(line)
+            continue
+        close = re.match(
+            rf"^ {{0,3}}{re.escape(fence_character)}{{{fence_length},}}\s*$",
+            line,
+        )
+        output.append("")
+        if close:
+            fence_character = None
+            fence_length = 0
+    return "\n".join(output)
 
 
 def _split_ids(value: str) -> tuple[str, ...]:
@@ -203,9 +240,80 @@ def _table(section: str) -> tuple[tuple[str, ...], tuple[tuple[str, ...], ...]]:
     return header, rows
 
 
+def _table_separator_issue(
+    section: str,
+    *,
+    path: str,
+    surface: str,
+    expected_width: int,
+) -> ValidationIssue | None:
+    lines = [
+        line.strip()
+        for line in section.splitlines()
+        if line.strip().startswith("|")
+    ]
+    if len(lines) < 2:
+        return None
+    separator = tuple(cell.strip() for cell in lines[1].strip("|").split("|"))
+    expected = tuple("---" for _ in range(expected_width))
+    if separator != expected:
+        return _issue(
+            "BFR-INVALID-TABLE-SEPARATOR",
+            path,
+            f"{surface} table separator is not exact",
+            separator,
+            expected,
+        )
+    return None
+
+
 def _line_value(text: str, label: str) -> str | None:
     match = re.search(rf"(?m)^{re.escape(label)}:\s*(\S(?:.*\S)?)\s*$", text)
     return match.group(1) if match else None
+
+
+def _marker_issues(text: str, path: str) -> list[ValidationIssue]:
+    marker_pattern = re.compile(r"(?m)^boundary_contract:\s*(\S+)\s*$")
+    markers = tuple(marker_pattern.finditer(text))
+    if len(markers) != 1:
+        return [
+            _issue(
+                "BFR-MARKER-COUNT",
+                path,
+                "adopting feature spec requires exactly one boundary contract marker",
+                len(markers),
+                1,
+            )
+        ]
+    status = _section(text, "Status")
+    status_markers = tuple(marker_pattern.finditer(status))
+    if len(status_markers) != 1:
+        return [
+            _issue(
+                "BFR-MARKER-PLACEMENT",
+                path,
+                "boundary contract marker must be inside the Status section",
+                "outside-status",
+                "after lifecycle status value",
+            )
+        ]
+    marker_line = status[: status_markers[0].start()].splitlines()
+    lifecycle_lines = [
+        line.strip()
+        for line in marker_line
+        if line.strip() and not line.lstrip().startswith("<!--")
+    ]
+    if not lifecycle_lines:
+        return [
+            _issue(
+                "BFR-MARKER-PLACEMENT",
+                path,
+                "boundary contract marker must follow the lifecycle status value",
+                "before-status",
+                "after lifecycle status value",
+            )
+        ]
+    return []
 
 
 def _id_list_vocabulary_issues(
@@ -250,7 +358,11 @@ def validate_feature_record(
     text: str,
     path: str = "<feature-record>",
 ) -> tuple[ValidationIssue, ...]:
+    text = _live_markdown(text)
     vocabulary: list[ValidationIssue] = []
+    marker_structure = _marker_issues(text, path)
+    if marker_structure:
+        return tuple(marker_structure)
     marker = _line_value(text, "boundary_contract")
     if marker is not None and marker != METHOD_VERSION:
         vocabulary.append(
@@ -334,10 +446,32 @@ def validate_feature_record(
             vocabulary.append(
                 _issue("BFR-UNKNOWN-COLUMNS", path, f"{surface} columns are not closed", actual, expected)
             )
+    for section, surface, width in (
+        (model, "Boundary model", len(BOUNDARY_MODEL_COLUMNS)),
+        (_section(text, "Boundary definitions"), "Boundary definitions", len(BOUNDARY_DEFINITION_COLUMNS)),
+        (_section(text, "Example ownership"), "Example ownership", len(EXAMPLE_COLUMNS)),
+    ):
+        separator_issue = _table_separator_issue(
+            section,
+            path=path,
+            surface=surface,
+            expected_width=width,
+        )
+        if separator_issue:
+            vocabulary.append(separator_issue)
     if interaction_header and interaction_header != INTERACTION_COLUMNS:
         vocabulary.append(
             _issue("BFR-UNKNOWN-COLUMNS", path, "Selected interactions columns are not closed", interaction_header, INTERACTION_COLUMNS)
         )
+    if interaction_header:
+        separator_issue = _table_separator_issue(
+            interaction_section,
+            path=path,
+            surface="Selected interactions",
+            expected_width=len(INTERACTION_COLUMNS),
+        )
+        if separator_issue:
+            vocabulary.append(separator_issue)
 
     for row in model_rows:
         if len(row) != len(BOUNDARY_MODEL_COLUMNS):
@@ -525,13 +659,16 @@ def validate_feature_record(
 def _feature_contract(
     text: str,
 ) -> tuple[dict[str, set[str]], dict[str, set[str]], str, str]:
+    text = _live_markdown(text)
     boundaries = {
         row[0]: set(_split_ids(row[2]))
         for row in _table(_section(text, "Boundary definitions"))[1]
+        if len(row) == len(BOUNDARY_DEFINITION_COLUMNS)
     }
     interactions = {
         row[0]: set(_split_ids(row[1]))
         for row in _table(_section(text, "Selected interactions"))[1]
+        if len(row) == len(INTERACTION_COLUMNS)
     }
     model = _section(text, "Boundary model")
     return (
@@ -547,6 +684,10 @@ def validate_proof_map(
     feature_text: str,
     path: str = "<proof-map>",
 ) -> tuple[ValidationIssue, ...]:
+    feature_issues = validate_feature_record(feature_text)
+    if feature_issues:
+        return feature_issues
+    text = _live_markdown(text)
     vocabulary: list[ValidationIssue] = []
     version = _line_value(text, "Boundary model version")
     scope = _line_value(text, "Boundary model scope")
@@ -555,6 +696,14 @@ def validate_proof_map(
     header, rows = _table(_section(text, "Proof map"))
     if header != PROOF_COLUMNS:
         vocabulary.append(_issue("BFR-UNKNOWN-COLUMNS", path, "proof columns are not closed", header, PROOF_COLUMNS))
+    separator_issue = _table_separator_issue(
+        _section(text, "Proof map"),
+        path=path,
+        surface="Proof map",
+        expected_width=len(PROOF_COLUMNS),
+    )
+    if separator_issue:
+        vocabulary.append(separator_issue)
     vocabulary.extend(_sentinel_issues(rows, path=path, surface="Proof map"))
     for row in rows:
         if len(row) != len(PROOF_COLUMNS):
@@ -570,11 +719,36 @@ def validate_proof_map(
             vocabulary.append(_issue("BFR-UNKNOWN-AUTOMATION-MODE", path, "unknown automation mode", row[6], ", ".join(sorted(AUTOMATION_MODES))))
         for value, code in (
             (row[2], "BFR-INVALID-REQUIREMENT-ID"),
+            (row[3], "BFR-INVALID-PROOF-REFERENCE"),
             (row[4], "BFR-INVALID-TEST-ID"),
             (row[7], "BFR-INVALID-COMMAND-ID"),
             (row[10], "BFR-INVALID-MANUAL-ID"),
         ):
             vocabulary.extend(_id_list_vocabulary_issues(value, path=path, code=code))
+        for reference_id in _split_ids(row[3]):
+            if not (
+                BOUNDARY_ID_RE.fullmatch(reference_id)
+                or INTERACTION_ID_RE.fullmatch(reference_id)
+            ):
+                vocabulary.append(
+                    _issue(
+                        "BFR-INVALID-PROOF-REFERENCE",
+                        path,
+                        "proof reference is not a boundary or interaction ID",
+                        reference_id,
+                        "BND-... or INT-...",
+                    )
+                )
+        if row[11] != "-" and not STABLE_ID_RE.fullmatch(row[11]):
+            vocabulary.append(
+                _issue(
+                    "BFR-INVALID-GAP-ID",
+                    path,
+                    "uncovered gap ID is not a stable project ID",
+                    row[11],
+                    "stable project ID",
+                )
+            )
     if vocabulary:
         priority = {
             "BFR-UNKNOWN-MODEL-VERSION": 0,
@@ -650,6 +824,33 @@ def _activation_data(path: Path) -> tuple[dict[str, object] | None, ValidationIs
     return data, None
 
 
+def _lifecycle_status(text: str) -> str | None:
+    status_section = _section(_live_markdown(text), "Status")
+    for line in status_section.splitlines():
+        value = line.strip().lstrip("-").strip().strip("`").rstrip(".").casefold()
+        if value:
+            return value
+    return None
+
+
+def _eligible_grandfathered_specs(root: Path) -> tuple[str, ...]:
+    eligible: list[str] = []
+    specs_root = root / "specs"
+    if not specs_root.is_dir():
+        return ()
+    for path in sorted(specs_root.glob("*.md")):
+        relative = path.relative_to(root).as_posix()
+        if path.name == "README.md" or path.name.endswith(".test.md"):
+            continue
+        text = path.read_text(encoding="utf-8")
+        if _lifecycle_status(text) not in {"accepted", "approved", "active"}:
+            continue
+        if _line_value(_live_markdown(text), "boundary_contract") is not None:
+            continue
+        eligible.append(relative)
+    return tuple(eligible)
+
+
 def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
     record_path = root / ACTIVATION_RECORD
     data, parse_issue = _activation_data(record_path)
@@ -690,30 +891,44 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
     if spec_state != state:
         issues.append(_issue("BFR-ACTIVATION-STATE-MISMATCH", PROOF_MODEL_SPEC.as_posix(), "activation YAML and authoritative spec state differ", state, spec_state))
 
-    source_path = root / CANONICAL_REFERENCE
     expected_source = data.get("canonical_reference")
     if expected_source != CANONICAL_REFERENCE.as_posix():
         issues.append(_issue("BFR-CANONICAL-PATH", ACTIVATION_RECORD.as_posix(), "canonical reference path differs", expected_source, CANONICAL_REFERENCE.as_posix()))
-    if source_path.is_file():
-        actual_source_hash = raw_sha256(source_path.read_bytes())
+    try:
+        projection_result = project_reference(root, mode="check")
+    except ProjectionContractError as exc:
+        projection_result = None
+        issues.append(
+            _issue(
+                "BFR-PROJECTION-PATH",
+                CANONICAL_REFERENCE.as_posix(),
+                "canonical or governed projection path is unsafe",
+                str(exc),
+                "repository-contained non-symlink paths",
+            )
+        )
+    if projection_result is not None:
+        actual_source_hash = projection_result.source_sha256
         if data.get("canonical_reference_sha256") != actual_source_hash:
             issues.append(_issue("BFR-CANONICAL-HASH", CANONICAL_REFERENCE.as_posix(), "canonical reference hash differs", data.get("canonical_reference_sha256"), actual_source_hash))
-    else:
-        issues.append(_issue("BFR-CANONICAL-MISSING", CANONICAL_REFERENCE.as_posix(), "canonical reference is missing", "-", "file"))
+        for error in projection_result.errors:
+            code, _, affected_path = error.partition(": ")
+            issues.append(
+                _issue(
+                    "BFR-PROJECTION-DIVERGENT"
+                    if code == "BFR-PROJECTION-STALE"
+                    else code,
+                    affected_path or ACTIVATION_RECORD.as_posix(),
+                    "governed projection check failed",
+                    code,
+                    "canonical raw-byte projection",
+                )
+            )
+        if data.get("projection_sha256") != projection_result.projection_sha256:
+            issues.append(_issue("BFR-PROJECTION-HASH", ACTIVATION_RECORD.as_posix(), "projection identity differs", data.get("projection_sha256"), projection_result.projection_sha256))
 
     if governed_skills != list(GOVERNED_SKILLS):
         issues.append(_issue("BFR-GOVERNED-SKILLS", ACTIVATION_RECORD.as_posix(), "governed skill inventory differs", data.get("governed_skills"), list(GOVERNED_SKILLS)))
-    projection_records: dict[str, str] = {}
-    for relative in projected_paths():
-        projected = root / relative
-        if not projected.is_file():
-            issues.append(_issue("BFR-PROJECTION-MISSING", relative.as_posix(), "governed projection is missing", "-", "file"))
-            continue
-        projection_records[relative.as_posix()] = raw_sha256(projected.read_bytes())
-    if len(projection_records) == len(projected_paths()):
-        actual_projection = inventory_digest(projection_records)
-        if data.get("projection_sha256") != actual_projection:
-            issues.append(_issue("BFR-PROJECTION-HASH", ACTIVATION_RECORD.as_posix(), "projection identity differs", data.get("projection_sha256"), actual_projection))
 
     grandfathered = data.get("grandfathered_specs")
     if not isinstance(grandfathered, list):
@@ -749,6 +964,19 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
         actual_inventory = inventory_digest(records)
         if data.get("grandfathered_inventory_sha256") != actual_inventory:
             issues.append(_issue("BFR-GRANDFATHERED-HASH", ACTIVATION_RECORD.as_posix(), "grandfathered inventory identity differs", data.get("grandfathered_inventory_sha256"), actual_inventory))
+        if state in {"active", "rolled-back"}:
+            actual_membership = tuple(records)
+            expected_membership = _eligible_grandfathered_specs(root)
+            if actual_membership != expected_membership:
+                issues.append(
+                    _issue(
+                        "BFR-GRANDFATHERED-MEMBERSHIP",
+                        ACTIVATION_RECORD.as_posix(),
+                        "grandfathered inventory does not match lifecycle-eligible historical specs",
+                        actual_membership,
+                        expected_membership,
+                    )
+                )
 
     activated_at = data.get("activated_at")
     if state == "active" and not isinstance(activated_at, str):
@@ -758,40 +986,73 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
     return tuple(issues)
 
 
+def _changed_spec_path(
+    root: Path,
+    relative_path: str,
+) -> tuple[Path | None, ValidationIssue | None]:
+    if (
+        not relative_path
+        or "\\" in relative_path
+        or PurePosixPath(relative_path).is_absolute()
+        or ".." in PurePosixPath(relative_path).parts
+        or not re.fullmatch(r"specs/[^/]+(?:\.test)?\.md", relative_path)
+        or relative_path == "specs/README.md"
+    ):
+        return None, _issue(
+            "BFR-INVALID-CHANGED-PATH",
+            "<changed-spec-path>",
+            "changed path must be a repository-relative top-level feature or test spec",
+            relative_path,
+            "specs/<name>.md or specs/<name>.test.md",
+        )
+    resolved_root = root.resolve()
+    candidate = root / relative_path
+    resolved_candidate = candidate.resolve(strict=False)
+    resolved_specs_root = (resolved_root / "specs").resolve(strict=False)
+    if (
+        candidate.is_symlink()
+        or not resolved_candidate.is_relative_to(resolved_root)
+        or resolved_candidate.parent != resolved_specs_root
+    ):
+        return None, _issue(
+            "BFR-CHANGED-PATH-ESCAPE",
+            "<changed-spec-path>",
+            "changed spec path resolves outside the repository",
+            relative_path,
+            "repository-contained path",
+        )
+    return candidate, None
+
+
 def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIssue, ...]:
+    path, path_issue = _changed_spec_path(root, relative_path)
+    if path_issue:
+        return (path_issue,)
+    assert path is not None
     activation, parse_issue = _activation_data(root / ACTIVATION_RECORD)
     if parse_issue or activation is None:
         return (parse_issue,) if parse_issue else ()
-    path = root / relative_path
     if not path.is_file():
         return ()
-    if relative_path.endswith(".test.md"):
-        feature_relative = relative_path.removesuffix(".test.md") + ".md"
-        feature_path = root / feature_relative
-        if not feature_path.is_file():
-            return (
-                _issue(
-                    "BFR-FEATURE-CONTRACT-MISSING",
-                    feature_relative,
-                    "test spec has no governing feature spec",
-                    "-",
-                    "matching feature spec",
-                ),
-            )
-        feature_text = feature_path.read_text(encoding="utf-8")
-        if _line_value(feature_text, "boundary_contract") != METHOD_VERSION:
-            return ()
-        issues = list(validate_feature_record(feature_text, feature_relative))
-        issues.extend(
-            validate_proof_map(
-                path.read_text(encoding="utf-8"),
-                feature_text,
-                relative_path,
-            )
+    is_test_spec = relative_path.endswith(".test.md")
+    feature_relative = (
+        relative_path.removesuffix(".test.md") + ".md"
+        if is_test_spec
+        else relative_path
+    )
+    feature_path = root / feature_relative
+    if not feature_path.is_file():
+        return (
+            _issue(
+                "BFR-FEATURE-CONTRACT-MISSING",
+                feature_relative,
+                "test spec has no governing feature spec",
+                "-",
+                "matching feature spec",
+            ),
         )
-        return tuple(issues)
-    text = path.read_text(encoding="utf-8")
-    marker = _line_value(text, "boundary_contract")
+    feature_text = feature_path.read_text(encoding="utf-8")
+    marker = _line_value(_live_markdown(feature_text), "boundary_contract")
     state = activation.get("state")
     grandfathered = {
         item["path"]
@@ -799,14 +1060,20 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
         if isinstance(item, dict) and isinstance(item.get("path"), str)
     }
     if state in {"pending", "rolled-back"} and marker is not None:
-        return (_issue("BFR-MARKER-INACTIVE", relative_path, "marker is forbidden while activation is inactive", marker, "-"),)
-    if state == "active" and relative_path not in grandfathered and marker != METHOD_VERSION:
-        return (_issue("BFR-NEW-SPEC-MARKER", relative_path, "new feature spec requires active boundary marker", marker, METHOD_VERSION),)
-    if state == "active" and relative_path in grandfathered and marker is None:
-        return (_issue("BFR-GRANDFATHERED-REVIEW", relative_path, "changed grandfathered spec requires spec-review classification", "-", "semantic spec-review"),)
+        return (_issue("BFR-MARKER-INACTIVE", feature_relative, "marker is forbidden while activation is inactive", marker, "-"),)
+    if state == "active" and feature_relative not in grandfathered and marker != METHOD_VERSION:
+        return (_issue("BFR-NEW-SPEC-MARKER", feature_relative, "new feature spec requires active boundary marker", marker, METHOD_VERSION),)
+    if (
+        state == "active"
+        and feature_relative in grandfathered
+        and marker is None
+    ):
+        if is_test_spec:
+            return ()
+        return (_issue("BFR-GRANDFATHERED-REVIEW", feature_relative, "changed grandfathered spec requires spec-review classification", "-", "semantic spec-review"),)
     if marker == METHOD_VERSION:
-        issues = list(validate_feature_record(text, relative_path))
-        proof_relative = relative_path.removesuffix(".md") + ".test.md"
+        issues = list(validate_feature_record(feature_text, feature_relative))
+        proof_relative = feature_relative.removesuffix(".md") + ".test.md"
         proof_path = root / proof_relative
         if not proof_path.is_file():
             issues.append(
@@ -822,7 +1089,7 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
             issues.extend(
                 validate_proof_map(
                     proof_path.read_text(encoding="utf-8"),
-                    text,
+                    feature_text,
                     proof_relative,
                 )
             )

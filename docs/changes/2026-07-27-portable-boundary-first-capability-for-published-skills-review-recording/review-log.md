@@ -17,7 +17,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m3-r1.md
 Resolution: review-resolution.md#code-review-m3-r1
 Material findings: PBF-M3-CR1, PBF-M3-CR2, PBF-M3-CR3, PBF-M3-CR4, PBF-M3-CR5, PBF-M3-CR6, PBF-M3-CR7, PBF-M3-CR8
-Open findings: PBF-M3-CR1, PBF-M3-CR2, PBF-M3-CR3, PBF-M3-CR4, PBF-M3-CR5, PBF-M3-CR6, PBF-M3-CR7, PBF-M3-CR8
+Open findings: None
 Recording status: recorded
 
 ### Review entry

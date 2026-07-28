@@ -4,10 +4,16 @@
 from __future__ import annotations
 
 import json
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
 
+from boundary_first_reference import (
+    inventory_digest,
+    projected_paths,
+    raw_sha256,
+)
 from boundary_first_validation import (
     validate_activation,
     validate_changed_spec,
@@ -18,6 +24,22 @@ from boundary_first_validation import (
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "scripts" / "fixtures" / "boundary-first"
+
+
+def copy_activation_surfaces(root: Path) -> None:
+    (root / "specs" / "references").mkdir(parents=True)
+    for relative in (
+        Path("specs/boundary-first-activation.yaml"),
+        Path("specs/boundary-first-proof-model.md"),
+        Path("specs/references/boundary-first-method-v1.md"),
+    ):
+        destination = root / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes((ROOT / relative).read_bytes())
+    for relative in projected_paths():
+        destination = root / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes((ROOT / relative).read_bytes())
 
 
 def valid_feature() -> str:
@@ -80,7 +102,7 @@ def valid_proof() -> str:
             "## Proof map",
             "",
             "| Proof obligation ID | Coverage state | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Proof level | Automation mode | Command IDs | Evidence artifact | Required milestone | Manual procedure IDs | Uncovered gap ID |",
-            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
             "| PRF-001 | covered | FIX-R001 | BND-INPUT-001 | T1 | unit | automated | CMD1 | fixture-evidence | M3 | - | - |",
             "",
         ]
@@ -142,6 +164,44 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
             )
         )
         self.assertEqual(issues[0].code, "BFR-UNKNOWN-CONTRACT-VERSION")
+
+    def test_marker_must_follow_lifecycle_value_inside_status(self) -> None:
+        misplaced = valid_feature().replace(
+            "approved\nboundary_contract: boundary-first-v1",
+            "approved",
+        ).replace(
+            "## Boundary model",
+            "## Boundary model\n\nboundary_contract: boundary-first-v1",
+        )
+        self.assertEqual(
+            validate_feature_record(misplaced)[0].code,
+            "BFR-MARKER-PLACEMENT",
+        )
+        duplicated = valid_feature().replace(
+            "boundary_contract: boundary-first-v1",
+            "boundary_contract: boundary-first-v1\nboundary_contract: boundary-first-v1",
+            1,
+        )
+        self.assertEqual(
+            validate_feature_record(duplicated)[0].code,
+            "BFR-MARKER-COUNT",
+        )
+
+    def test_fenced_record_and_malformed_separator_fail_closed(self) -> None:
+        fenced = "```md\n" + valid_feature() + "\n```\n"
+        self.assertIn(
+            validate_feature_record(fenced)[0].code,
+            {"BFR-MARKER-COUNT", "BFR-MISSING-HEADING"},
+        )
+        malformed = valid_feature().replace(
+            "| --- | --- | --- | --- | --- |",
+            "| -- | --- | --- | --- | --- |",
+            1,
+        )
+        self.assertEqual(
+            validate_feature_record(malformed)[0].code,
+            "BFR-INVALID-TABLE-SEPARATOR",
+        )
 
     def test_unknown_model_version_fails_before_consistency(self) -> None:
         issues = validate_feature_record(
@@ -330,6 +390,50 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
                 )
                 self.assertEqual(issues[0].code, expected)
 
+    def test_malformed_feature_does_not_crash_proof_validation(self) -> None:
+        malformed_feature = valid_feature().replace(
+            "| BND-INPUT-001 | input-domain | FIX-R001 | present, missing, unknown | known values only | accept, reject | FIX-R001 |",
+            "| BND-INPUT-001 | input-domain |",
+        )
+        issues = validate_proof_map(valid_proof(), malformed_feature)
+        self.assertTrue(issues)
+        self.assertEqual(issues[0].code, "BFR-ROW-SHAPE")
+
+    def test_proof_reference_serialization_and_gap_id_are_vocabulary_checked(
+        self,
+    ) -> None:
+        feature = (FIXTURES / "feature-records" / "complex.md").read_text(
+            encoding="utf-8"
+        )
+        proof = (FIXTURES / "proof-maps" / "complex-complete.md").read_text(
+            encoding="utf-8"
+        )
+        malformed_refs = proof.replace(
+            "BND-INPUT-001, BND-STATE-001",
+            "BND-INPUT-001,BND-STATE-001",
+        )
+        # Use a valid multi-reference proof row so the mutation reaches the
+        # proof-reference vocabulary rather than feature consistency.
+        malformed_refs = malformed_refs.replace(
+            "INT-001 | T3",
+            "BND-INPUT-001,BND-STATE-001 | T3",
+        )
+        self.assertEqual(
+            validate_proof_map(malformed_refs, feature)[0].code,
+            "BFR-INVALID-PROOF-REFERENCE",
+        )
+        gap = (FIXTURES / "proof-maps" / "gap.md").read_text(encoding="utf-8")
+        invalid_gap = gap.replace("FIX-GAP-001", "not a stable id")
+        self.assertEqual(
+            validate_proof_map(
+                invalid_gap,
+                (FIXTURES / "feature-records" / "minimal.md").read_text(
+                    encoding="utf-8"
+                ),
+            )[0].code,
+            "BFR-INVALID-GAP-ID",
+        )
+
     def test_gap_row_cannot_carry_proof_metadata(self) -> None:
         text = valid_proof().replace(
             "| PRF-001 | covered | FIX-R001 | BND-INPUT-001 | T1 | unit | automated | CMD1 | fixture-evidence | M3 | - | - |",
@@ -441,6 +545,54 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 {issue.code for issue in validate_activation(root)},
             )
 
+    def test_mixed_projection_bytes_fail_even_with_recomputed_inventory(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            changed = root / projected_paths()[0]
+            changed.write_text("# divergent\n", encoding="utf-8")
+            data = json.loads(
+                (root / "specs" / "boundary-first-activation.yaml").read_text(
+                    encoding="utf-8"
+                )
+            )
+            records = {
+                relative.as_posix(): raw_sha256((root / relative).read_bytes())
+                for relative in projected_paths()
+            }
+            data["projection_sha256"] = inventory_digest(records)
+            (root / "specs" / "boundary-first-activation.yaml").write_text(
+                json.dumps(data), encoding="utf-8"
+            )
+            self.assertIn(
+                "BFR-PROJECTION-DIVERGENT",
+                {issue.code for issue in validate_activation(root)},
+            )
+
+    def test_active_inventory_membership_is_exact(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            historical = root / "specs" / "historical.md"
+            historical.write_text(
+                "# Historical\n\n## Status\n\napproved\n",
+                encoding="utf-8",
+            )
+            data = json.loads(
+                (root / "specs" / "boundary-first-activation.yaml").read_text(
+                    encoding="utf-8"
+                )
+            )
+            data["state"] = "active"
+            data["activated_at"] = "2026-07-28T00:00:00Z"
+            (root / "specs" / "boundary-first-activation.yaml").write_text(
+                json.dumps(data), encoding="utf-8"
+            )
+            self.assertIn(
+                "BFR-GRANDFATHERED-MEMBERSHIP",
+                {issue.code for issue in validate_activation(root)},
+            )
+
     def test_issue_evidence_is_privacy_bounded(self) -> None:
         issue = validate_feature_record(
             valid_feature().replace("input-domain | applicable", "secret | applicable"),
@@ -501,6 +653,60 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 validate_changed_spec(root, "specs/feature.test.md"),
                 (),
             )
+
+    def test_pending_marker_gate_applies_to_changed_test_spec(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "specs").mkdir()
+            (root / "specs" / "feature.md").write_text(
+                valid_feature(), encoding="utf-8"
+            )
+            (root / "specs" / "feature.test.md").write_text(
+                valid_proof(), encoding="utf-8"
+            )
+            (root / "specs" / "boundary-first-activation.yaml").write_bytes(
+                (ROOT / "specs" / "boundary-first-activation.yaml").read_bytes()
+            )
+            self.assertEqual(
+                validate_changed_spec(root, "specs/feature.test.md")[0].code,
+                "BFR-MARKER-INACTIVE",
+            )
+
+    def test_changed_spec_paths_are_repository_contained(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "specs").mkdir()
+            (root / "specs" / "boundary-first-activation.yaml").write_bytes(
+                (ROOT / "specs" / "boundary-first-activation.yaml").read_bytes()
+            )
+            outside = root.parent / "outside-boundary-first.md"
+            outside.write_text("# outside\n", encoding="utf-8")
+            self.addCleanup(outside.unlink, missing_ok=True)
+            for path in (
+                "/etc/passwd",
+                "../outside-boundary-first.md",
+                "README.md",
+            ):
+                with self.subTest(path=path):
+                    self.assertEqual(
+                        validate_changed_spec(root, path)[0].code,
+                        "BFR-INVALID-CHANGED-PATH",
+                    )
+            (root / "specs" / "escape.md").symlink_to(outside)
+            self.assertEqual(
+                validate_changed_spec(root, "specs/escape.md")[0].code,
+                "BFR-CHANGED-PATH-ESCAPE",
+            )
+
+    def test_serialized_issue_redacts_private_payload(self) -> None:
+        secret = "credential=super-secret-private-value"
+        issue = validate_feature_record(
+            valid_feature().replace("input-domain | applicable", f"{secret} | applicable"),
+            path="specs/fixture.md",
+        )[0]
+        serialized = json.dumps(issue.as_dict(), sort_keys=True)
+        self.assertNotIn(secret, serialized)
+        self.assertIn("redacted:sha256:", serialized)
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@
 ## Result
 
 - Milestone: PBF-M3
-- Status: review-requested
+- Status: review-requested after R1 correction
 - Scope: structural boundary records, proof maps, activation baseline, and
   validation selection
 - Next stage: code-review M3
@@ -39,11 +39,21 @@ isolated mutations for each new closed vocabulary. The semantic-omission
 fixture passes structural validation by design; semantic ownership remains
 with the stage review skills.
 
+Code-review M3 R1 found eight issues. The correction makes Markdown parsing
+fence-aware, requires the contract marker after the lifecycle value in
+`## Status`, validates exact separators and every proof reference/gap ID,
+short-circuits malformed governing records, compares every projection with
+canonical bytes, compares active historical inventory membership, shares the
+feature activation gate with changed test specs, contains changed paths,
+and redacts serialized offending values. The separately authorized
+coordinator repair is committed as `197d150b`, so CMD8 no longer depends on
+hidden worktree state.
+
 ## Validation
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-boundary-first-validation.py` | pass; 30 tests |
+| `python scripts/test-boundary-first-validation.py` | pass; 39 tests after R1 |
 | `python scripts/validate-boundary-first.py --check` | pass; pending activation baseline |
 | `python scripts/test-select-validation.py` | pass; 134 tests |
 | `python -m py_compile scripts/boundary_first_validation.py scripts/validate-boundary-first.py scripts/test-boundary-first-validation.py` | pass |

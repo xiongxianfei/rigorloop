@@ -8,11 +8,11 @@ Durable fixture roots:
   - scripts/fixtures/boundary-first/feature-records/
   - scripts/fixtures/boundary-first/proof-maps/
   - scripts/fixtures/boundary-first/activation/
-Structural test count: 30
+Structural test count: 39
 Selector regression test count: 134
-CMD6 result: passed_30_tests
+CMD6 result: passed_39_tests_after_PBF-M3-CR1_through_PBF-M3-CR7
 CMD7 result: passed_pending_activation_baseline
-CMD8 result: passed_134_tests
+CMD8 result: passed_134_tests_from_committed_coordinator_baseline
 Privacy-bounded diagnostic fields:
   - check_id
   - path
@@ -20,3 +20,11 @@ Privacy-bounded diagnostic fields:
   - offending_value
   - expected
 Validated claim boundary: shape_references_activation_and_packaging_only
+PBF-M3-CR1 result: fenced_records_status_marker_and_separators_fail_closed
+PBF-M3-CR2 result: malformed_rows_and_identifiers_are_bounded
+PBF-M3-CR3 result: every_projection_matches_canonical_bytes
+PBF-M3-CR4 result: feature_and_test_paths_share_activation_gate
+PBF-M3-CR5 result: active_historical_membership_is_exact
+PBF-M3-CR6 result: changed_paths_are_repository_contained
+PBF-M3-CR7 result: serialized_offending_values_are_redacted
+PBF-M3-CR8 result: coordinator_commit_197d150b_makes_CMD8_reproducible
