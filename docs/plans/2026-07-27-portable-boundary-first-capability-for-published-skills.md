@@ -103,14 +103,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M2. Governed lifecycle skill behavior
-- Current milestone state: review-requested
-- Latest review evidence: M2 implementation evidence records passing stage-behavior, skill validation, and generated-output checks
+- Current milestone state: resolution-needed
+- Latest review evidence: code-review-m2-r1 recorded PBF-M2-CR1 against phrase-only semantic fixture proof
 - Last reviewed milestone: M1
-- Review status: review-requested; stage=code-review; round=r1
+- Review status: changes-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: code-review M2
+- Next stage: review-resolution M2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=1; open-findings=PBF-M2-CR1
 
 ## Milestones
 
@@ -150,7 +150,7 @@ an explicit blocking gap before implementation begins.
 
 ### M2. Governed lifecycle skill behavior
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
    - primary trust boundary: stage-local authoring, review, stop, and handoff
      behavior
    - deliverables:
