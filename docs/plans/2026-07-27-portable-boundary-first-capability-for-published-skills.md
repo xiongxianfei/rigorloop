@@ -104,14 +104,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M3. Structural and activation validation
-- Current milestone state: review-requested
-- Latest review evidence: PBF-M3-CR23 is resolved with first-parent merge transition ownership and immutable activating-tag and release-field binding
+- Current milestone state: resolution-needed
+- Latest review evidence: code-review M3 R9 recorded PBF-M3-CR24 because the tagged transition snapshot's baseline and inventory remain repairable
 - Last reviewed milestone: M2
-- Review status: review-requested; stage=code-review; round=r9
+- Review status: resolution-needed; stage=review-resolution; round=r9
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review M3 R9 for immutable transition identity
+- Next stage: resolve PBF-M3-CR24, then code-review M3 R10
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=open; open-count=1; open-findings=PBF-M3-CR24
 
 ## Milestones
 
