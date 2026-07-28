@@ -104,14 +104,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M3. Structural and activation validation
-- Current milestone state: resolution-needed
-- Latest review evidence: code-review M3 R7 records PBF-M3-CR18 through PBF-M3-CR22 for parent provenance, release ordering, Unicode paths, and symlink authority
+- Current milestone state: review-requested
+- Latest review evidence: PBF-M3-CR18 through PBF-M3-CR22 are resolved with exact transition-parent binding, immutable tag adjacency, raw Unicode tree enumeration, and regular-blob enforcement
 - Last reviewed milestone: M2
-- Review status: changes-requested; stage=code-review; round=r7
+- Review status: review-requested; stage=code-review; round=r8
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: review-resolution for PBF-M3-CR18 through PBF-M3-CR22
+- Next stage: code-review M3 R8 for the bounded lightweight correction
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=5; open-findings=PBF-M3-CR18,PBF-M3-CR19,PBF-M3-CR20,PBF-M3-CR21,PBF-M3-CR22
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -184,7 +184,7 @@ an explicit blocking gap before implementation begins.
 
 ### M3. Structural and activation validation
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
    - primary trust boundary: deterministic shape/reference enforcement without
      semantic overclaiming
    - deliverables:

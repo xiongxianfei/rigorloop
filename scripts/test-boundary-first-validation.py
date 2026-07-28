@@ -43,22 +43,31 @@ def copy_activation_surfaces(root: Path) -> None:
         destination.write_bytes((ROOT / relative).read_bytes())
 
 
-def initialize_active_fixture(root: Path) -> tuple[Path, str]:
+def initialize_active_fixture(
+    root: Path,
+    *,
+    symlink_parent: bool = False,
+) -> tuple[Path, str]:
     copy_activation_surfaces(root)
-    (root / "dist" / "adapters").mkdir(parents=True)
-    (root / "dist" / "adapters" / "manifest.yaml").write_text(
-        "version: v1.0.0\n"
-        "skills:\n"
-        "  workflow:\n"
-        "    portable: true\n"
-        "    adapters: [codex, claude, opencode]\n",
-        encoding="utf-8",
-    )
+    subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+    subprocess.run(["git", "config", "user.email", "fixture@example.test"], cwd=root, check=True)
+    subprocess.run(["git", "config", "user.name", "Fixture"], cwd=root, check=True)
+    subprocess.run(["git", "add", "."], cwd=root, check=True)
+    subprocess.run(["git", "commit", "-qm", "bootstrap"], cwd=root, check=True)
+    bootstrap = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    subprocess.run(["git", "tag", "v0.9.0", bootstrap], cwd=root, check=True)
     lifecycle_specs = {
         "accepted.md": "accepted",
         "approved.md": "approved",
         "active.md": "active",
         "draft.md": "draft",
+        "é.md": "approved",
     }
     for name, status in lifecycle_specs.items():
         (root / "specs" / name).write_text(
@@ -68,9 +77,8 @@ def initialize_active_fixture(root: Path) -> tuple[Path, str]:
     (root / "specs" / "marked.md").write_text(valid_feature(), encoding="utf-8")
     (root / "specs" / "README.md").write_text("# index\n", encoding="utf-8")
     (root / "specs" / "ignored.test.md").write_text("# proof\n", encoding="utf-8")
-    subprocess.run(["git", "init", "-q"], cwd=root, check=True)
-    subprocess.run(["git", "config", "user.email", "fixture@example.test"], cwd=root, check=True)
-    subprocess.run(["git", "config", "user.name", "Fixture"], cwd=root, check=True)
+    if symlink_parent:
+        (root / "specs" / "symlinked.md").symlink_to("approved.md")
     subprocess.run(["git", "add", "."], cwd=root, check=True)
     subprocess.run(["git", "commit", "-qm", "parent"], cwd=root, check=True)
     baseline = subprocess.run(
@@ -80,6 +88,7 @@ def initialize_active_fixture(root: Path) -> tuple[Path, str]:
         capture_output=True,
         text=True,
     ).stdout.strip()
+    subprocess.run(["git", "tag", "v1.0.0", baseline], cwd=root, check=True)
     (root / "specs" / "child.md").write_text(
         "# child\n\n## Status\n\napproved\n",
         encoding="utf-8",
@@ -104,10 +113,14 @@ def initialize_active_fixture(root: Path) -> tuple[Path, str]:
                 "specs/accepted.md",
                 "specs/active.md",
                 "specs/approved.md",
+                "specs/é.md",
             ],
         }
     )
     activation_path.write_text(json.dumps(data), encoding="utf-8")
+    subprocess.run(["git", "add", "."], cwd=root, check=True)
+    subprocess.run(["git", "commit", "-qm", "activate"], cwd=root, check=True)
+    subprocess.run(["git", "tag", "v1.1.0"], cwd=root, check=True)
     return activation_path, baseline
 
 
@@ -614,18 +627,24 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             activation_path, _ = initialize_active_fixture(root)
             data = json.loads(activation_path.read_text(encoding="utf-8"))
             for inventory in (
-                ["specs/accepted.md", "specs/active.md"],
+                [
+                    "specs/accepted.md",
+                    "specs/active.md",
+                    "specs/approved.md",
+                ],
                 [
                     "specs/accepted.md",
                     "specs/active.md",
                     "specs/approved.md",
                     "specs/child.md",
+                    "specs/é.md",
                 ],
                 [
                     "specs/accepted.md",
                     "specs/active.md",
                     "specs/approved.md",
                     "specs/draft.md",
+                    "specs/é.md",
                 ],
             ):
                 with self.subTest(inventory=inventory):
@@ -648,6 +667,68 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 {issue.code for issue in validate_activation(root)},
             )
 
+    def test_release_tags_must_exist_and_be_adjacent(self) -> None:
+        for activating, rollback in (
+            ("v2.0.0", "v1.1.0"),
+            ("v1.1.0", "v1.1.0"),
+        ):
+            with (
+                self.subTest(activating=activating, rollback=rollback),
+                tempfile.TemporaryDirectory() as temporary,
+            ):
+                root = Path(temporary)
+                activation_path, _ = initialize_active_fixture(root)
+                data = json.loads(activation_path.read_text(encoding="utf-8"))
+                data["activating_release"] = activating
+                data["rollback_release"] = rollback
+                activation_path.write_text(json.dumps(data), encoding="utf-8")
+                self.assertTrue(
+                    {"BFR-ACTIVATING-RELEASE", "BFR-ROLLBACK-RELEASE"}
+                    & {issue.code for issue in validate_activation(root)}
+                )
+
+    def test_baseline_must_be_exact_transition_parent(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            activation_path, baseline = initialize_active_fixture(root)
+            child = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            grandparent = subprocess.run(
+                ["git", "rev-parse", f"{baseline}^"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            original = json.loads(activation_path.read_text(encoding="utf-8"))
+            for invalid in (7, child, grandparent):
+                with self.subTest(invalid=invalid):
+                    data = dict(original)
+                    data["grandfathering_baseline_revision"] = invalid
+                    activation_path.write_text(json.dumps(data), encoding="utf-8")
+                    self.assertTrue(
+                        {"BFR-BASELINE-REVISION", "BFR-BASELINE-PARENT"}
+                        & {issue.code for issue in validate_activation(root)}
+                    )
+
+    def test_unicode_parent_path_is_inventoried_and_symlink_mode_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            initialize_active_fixture(root)
+            self.assertEqual(validate_activation(root), ())
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            initialize_active_fixture(root, symlink_parent=True)
+            self.assertIn(
+                "BFR-BASELINE-MODE",
+                {issue.code for issue in validate_activation(root)},
+            )
+
     def test_grandfathered_inventory_requires_raw_utf8_order_and_uniqueness(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -655,7 +736,12 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             data = json.loads(activation_path.read_text(encoding="utf-8"))
             for inventory in (
                 ["specs/active.md", "specs/accepted.md", "specs/approved.md"],
-                ["specs/accepted.md", "specs/accepted.md", "specs/approved.md"],
+                [
+                    "specs/accepted.md",
+                    "specs/accepted.md",
+                    "specs/approved.md",
+                    "specs/é.md",
+                ],
             ):
                 with self.subTest(inventory=inventory):
                     data["grandfathered_specs"] = inventory

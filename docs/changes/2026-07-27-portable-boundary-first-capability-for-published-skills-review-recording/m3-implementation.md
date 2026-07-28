@@ -16,21 +16,25 @@ Activation validation now implements the approved lightweight contract:
 
 - state is exactly `pending` or `active`;
 - pending release and baseline fields use `-`;
-- active state binds immutable activating and immediately preceding rollback
-  release tags;
+- active state binds existing immutable activating and immediately preceding
+  rollback release tags;
 - the ten governed skills and canonical/projection byte identities remain
   closed;
-- the baseline is a full source-control commit identity;
+- the baseline is the exact full parent identity of the repository's single
+  pending-to-active manifest transition;
 - grandfathered paths are derived from that exact commit, contain only
   accepted, approved, or active unmarked top-level feature specs, exclude the
   bootstrap spec, README, test specs, marked specs, nonterminal specs, and
-  child-introduced paths, and use unique raw-UTF-8 order.
+  child-introduced paths, and use unique raw-UTF-8 order;
+- baseline inventory reads NUL-delimited Git tree entries, accepts only regular
+  blobs, and reads blobs by object identity.
 
 The previous `rolled-back` state, activation timestamp, historical file
 hashes, inventory digest, rollback receipt path, and receipt identity are
-removed. Source control owns historical bytes. The tracked adapter manifest
-owns the immediately preceding published version. There is no activation
-writer, rollback writer, transaction, or attestation store.
+removed. Source control owns historical bytes and immutable release-tag
+ordering. The adapter support manifest is no longer an M3 release-order
+authority. There is no activation writer, rollback writer, transaction, or
+attestation store.
 
 Changed unmarked grandfathered specs continue to route to `spec-review`.
 Marked feature/test pairs continue to receive structural validation.
@@ -43,6 +47,10 @@ parent and activating worktree. Direct regressions prove:
 - accepted, approved, and active parent specs are included;
 - draft, marked, excluded, and child-introduced specs are omitted;
 - an older but valid release tag cannot serve as rollback release;
+- nonexistent and equal activating/rollback tags fail;
+- integer, child, and grandparent baselines fail;
+- Unicode parent paths remain present through raw Git tree enumeration;
+- baseline symlink modes fail before blob interpretation;
 - duplicate and incorrectly ordered inventories fail;
 - unknown states, fields, contract versions, and governed skills fail closed;
 - canonical projection divergence and authoritative symlinks fail.
@@ -54,7 +62,7 @@ were removed rather than preserved as compatibility behavior.
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-boundary-first-validation.py` | pass; 46 tests |
+| `python scripts/test-boundary-first-validation.py` | pass; 49 tests |
 | `python scripts/validate-boundary-first.py --check` | pass; pending two-state manifest |
 | `python scripts/test-select-validation.py` | pass; 134 tests |
 | `python -m py_compile scripts/boundary_first_validation.py scripts/validate-boundary-first.py scripts/test-boundary-first-validation.py` | pass |
