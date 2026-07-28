@@ -6,6 +6,7 @@ Closeout status: open
 
 Review closeout: test-spec-review-r7
 Review closeout: plan-review-r4
+Review closeout: plan-review-r5
 Review closeout: test-spec-review-r6
 Review closeout: code-review-m3-r10
 Review closeout: code-review-m3-r9
@@ -45,13 +46,14 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 58
-- Unresolved findings: 2
-- Final result: PBF-TSR7-1 and PBF-PLR4 remain open pending synchronized M4 plan rereview.
+- Unresolved findings: 3
+- Final result: PBF-TSR7-1, PBF-PLR4, and PBF-PLR5 remain open pending synchronized M4 plan rereview.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-PLR5 | accepted | in-progress | Synchronize the complete Current Handoff cursor. |
 | PBF-PLR4 | accepted | in-progress | Synchronize the Current Handoff Summary with the open review state. |
 | PBF-TSR7-1 | accepted | in-progress | Align M4 package proof with the existing adapter portability decision. |
 | PBF-M3-CR24 | accepted | resolved | Bind the tagged transition snapshot and current state to its exact first-parent baseline and inventory. |
@@ -114,6 +116,21 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### plan-review-r5
+
+#### PBF-PLR5 - Review cursor remains partially stale
+
+Finding ID: PBF-PLR5
+Disposition: accepted
+Status: in-progress
+Owner: plan
+Owning stage: plan revision
+Chosen action: Update latest evidence, review stage/round, and next stage as
+one state-sync transaction.
+Rationale: Partial cursor updates cannot authorize a downstream handoff.
+Validation target: plan-review R6.
+Validation evidence: Pending.
 
 ### plan-review-r4
 

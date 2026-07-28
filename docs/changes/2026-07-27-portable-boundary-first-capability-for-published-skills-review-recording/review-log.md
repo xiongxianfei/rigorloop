@@ -9,6 +9,19 @@ capability proposal.
 
 ### Review entry
 
+Review ID: plan-review-r5
+Stage: plan-review
+Round: 5
+Reviewed artifact: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+Status: changes-requested
+Detailed record: reviews/plan-review-r5.md
+Resolution: review-resolution.md#plan-review-r5
+Material findings: PBF-PLR5
+Open findings: PBF-PLR5
+Recording status: recorded
+
+### Review entry
+
 Review ID: plan-review-r4
 Stage: plan-review
 Round: 4
