@@ -7,6 +7,7 @@ import json
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -17,7 +18,7 @@ from boundary_first_reference import (
     raw_sha256,
 )
 from boundary_first_validation import (
-    rollback_package_matrix,
+    rollback_package_selection,
     validate_activation,
     validate_changed_spec,
     validate_feature_record,
@@ -27,6 +28,23 @@ from boundary_first_validation import (
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "scripts" / "fixtures" / "boundary-first"
+
+
+def relevant_tree_snapshot(root: Path) -> dict[str, bytes]:
+    snapshot: dict[str, bytes] = {}
+    for top_level in ("specs", "dist", "docs"):
+        base = root / top_level
+        if not base.exists():
+            continue
+        for path in sorted(base.rglob("*")):
+            relative = path.relative_to(root).as_posix()
+            if path.is_symlink():
+                snapshot[relative] = b"symlink:" + str(path.readlink()).encode("utf-8")
+            elif path.is_file():
+                snapshot[relative] = path.read_bytes()
+            elif path.is_dir():
+                snapshot[relative] = b"directory"
+    return snapshot
 
 
 def copy_activation_surfaces(root: Path) -> None:
@@ -45,13 +63,41 @@ def copy_activation_surfaces(root: Path) -> None:
         destination.write_bytes((ROOT / relative).read_bytes())
 
 
+def copy_rollback_surfaces(root: Path, version: str) -> None:
+    manifest = root / "dist" / "adapters" / "manifest.yaml"
+    manifest.parent.mkdir(parents=True, exist_ok=True)
+    manifest.write_bytes((ROOT / "dist" / "adapters" / "manifest.yaml").read_bytes())
+    metadata = (
+        root
+        / "docs"
+        / "reports"
+        / "adapter-artifacts"
+        / "releases"
+        / f"{version}.yaml"
+    )
+    metadata.parent.mkdir(parents=True, exist_ok=True)
+    source = (
+        ROOT
+        / "docs"
+        / "reports"
+        / "adapter-artifacts"
+        / "releases"
+        / "v0.3.5.yaml"
+    ).read_text(encoding="utf-8")
+    metadata.write_text(source.replace("v0.3.5", version), encoding="utf-8")
+
+
 def initialize_active_fixture(
     root: Path,
     *,
     symlink_parent: bool = False,
     invalid_transition_snapshot: bool = False,
+    bootstrap_release: str = "v0.9.0",
+    rollback_release: str = "v1.0.0",
+    activating_release: str = "v1.1.0",
 ) -> tuple[Path, str]:
     copy_activation_surfaces(root)
+    copy_rollback_surfaces(root, rollback_release)
     subprocess.run(["git", "init", "-q"], cwd=root, check=True)
     subprocess.run(["git", "config", "user.email", "fixture@example.test"], cwd=root, check=True)
     subprocess.run(["git", "config", "user.name", "Fixture"], cwd=root, check=True)
@@ -64,7 +110,7 @@ def initialize_active_fixture(
         capture_output=True,
         text=True,
     ).stdout.strip()
-    subprocess.run(["git", "tag", "v0.9.0", bootstrap], cwd=root, check=True)
+    subprocess.run(["git", "tag", bootstrap_release, bootstrap], cwd=root, check=True)
     lifecycle_specs = {
         "accepted.md": "accepted",
         "approved.md": "approved",
@@ -91,7 +137,7 @@ def initialize_active_fixture(
         capture_output=True,
         text=True,
     ).stdout.strip()
-    subprocess.run(["git", "tag", "v1.0.0", baseline], cwd=root, check=True)
+    subprocess.run(["git", "tag", rollback_release, baseline], cwd=root, check=True)
     (root / "specs" / "child.md").write_text(
         "# child\n\n## Status\n\napproved\n",
         encoding="utf-8",
@@ -109,8 +155,8 @@ def initialize_active_fixture(
     data.update(
         {
             "state": "active",
-            "activating_release": "v1.1.0",
-            "rollback_release": "v1.0.0",
+            "activating_release": activating_release,
+            "rollback_release": rollback_release,
             "grandfathering_baseline_revision": (
                 bootstrap if invalid_transition_snapshot else baseline
             ),
@@ -129,12 +175,13 @@ def initialize_active_fixture(
     activation_path.write_text(json.dumps(data), encoding="utf-8")
     subprocess.run(["git", "add", "."], cwd=root, check=True)
     subprocess.run(["git", "commit", "-qm", "activate"], cwd=root, check=True)
-    subprocess.run(["git", "tag", "v1.1.0"], cwd=root, check=True)
+    subprocess.run(["git", "tag", activating_release], cwd=root, check=True)
     return activation_path, baseline
 
 
 def initialize_merge_activation_fixture(root: Path) -> Path:
     copy_activation_surfaces(root)
+    copy_rollback_surfaces(root, "v1.0.0")
     subprocess.run(["git", "init", "-q"], cwd=root, check=True)
     subprocess.run(["git", "config", "user.email", "fixture@example.test"], cwd=root, check=True)
     subprocess.run(["git", "config", "user.name", "Fixture"], cwd=root, check=True)
@@ -864,43 +911,42 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             self.assertIn("BFR-ACTIVATION-IMMUTABLE", codes)
 
     def test_active_rollback_release_matches_current_adapter_metadata(self) -> None:
-        activation = {
-            "state": "active",
-            "rollback_release": "v0.3.5",
-        }
-        protected = (
-            ROOT / "specs" / "boundary-first-activation.yaml",
-            ROOT / "specs" / "boundary-first-proof-model.md",
-            ROOT / "specs" / "boundary-first-proof-model.test.md",
-            ROOT / "dist" / "adapters" / "manifest.yaml",
-            ROOT
-            / "docs"
-            / "reports"
-            / "adapter-artifacts"
-            / "releases"
-            / "v0.3.5.yaml",
-        )
-        before = {path: path.read_bytes() for path in protected}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            initialize_active_fixture(
+                root,
+                bootstrap_release="v0.3.4",
+                rollback_release="v0.3.5",
+                activating_release="v0.3.6",
+            )
+            before = relevant_tree_snapshot(root)
 
-        matrix, issues = rollback_package_matrix(ROOT, activation)
+            selection, issues = rollback_package_selection(root)
 
-        self.assertEqual(issues, ())
-        self.assertEqual(
-            tuple(row.adapter for row in matrix),
-            ("claude", "codex", "opencode"),
-        )
-        self.assertEqual(
-            tuple(row.archive for row in matrix),
-            tuple(
-                f"rigorloop-adapter-{adapter}-v0.3.5.zip"
-                for adapter in ("claude", "codex", "opencode")
-            ),
-        )
-        self.assertTrue(all(re.fullmatch(r"[0-9a-f]{64}", row.sha256) for row in matrix))
-        self.assertEqual(before, {path: path.read_bytes() for path in protected})
+            self.assertEqual(issues, ())
+            self.assertIsNotNone(selection)
+            assert selection is not None
+            self.assertEqual(selection.release, "v0.3.5")
+            self.assertEqual(
+                tuple(row.adapter for row in selection.artifacts),
+                ("claude", "codex", "opencode"),
+            )
+            self.assertEqual(
+                tuple(row.archive for row in selection.artifacts),
+                tuple(
+                    f"rigorloop-adapter-{adapter}-v0.3.5.zip"
+                    for adapter in ("claude", "codex", "opencode")
+                ),
+            )
+            self.assertTrue(
+                all(
+                    re.fullmatch(r"[0-9a-f]{64}", row.sha256)
+                    for row in selection.artifacts
+                )
+            )
+            self.assertEqual(before, relevant_tree_snapshot(root))
 
     def test_rollback_metadata_rejects_incomplete_or_mixed_matrices_without_mutation(self) -> None:
-        source_manifest = ROOT / "dist" / "adapters" / "manifest.yaml"
         source_metadata = (
             ROOT
             / "docs"
@@ -949,7 +995,12 @@ class BoundaryFirstActivationTests(unittest.TestCase):
         for name, metadata_text in cases.items():
             with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
-                manifest = root / "dist" / "adapters" / "manifest.yaml"
+                initialize_active_fixture(
+                    root,
+                    bootstrap_release="v0.3.4",
+                    rollback_release="v0.3.5",
+                    activating_release="v0.3.6",
+                )
                 metadata = (
                     root
                     / "docs"
@@ -958,29 +1009,108 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                     / "releases"
                     / "v0.3.5.yaml"
                 )
-                manifest.parent.mkdir(parents=True)
-                metadata.parent.mkdir(parents=True)
-                manifest.write_bytes(source_manifest.read_bytes())
                 metadata.write_text(metadata_text, encoding="utf-8")
-                before = {
-                    manifest: manifest.read_bytes(),
-                    metadata: metadata.read_bytes(),
-                }
+                before = relevant_tree_snapshot(root)
 
-                matrix, issues = rollback_package_matrix(
-                    root,
-                    {"state": "active", "rollback_release": "v0.3.5"},
-                )
+                selection, issues = rollback_package_selection(root)
 
-                self.assertEqual(matrix, ())
+                self.assertIsNone(selection)
                 self.assertTrue(issues, name)
-                self.assertEqual(
-                    before,
-                    {
-                        manifest: manifest.read_bytes(),
-                        metadata: metadata.read_bytes(),
-                    },
-                )
+                self.assertEqual(before, relevant_tree_snapshot(root))
+
+    def test_rollback_authoritative_paths_fail_closed_without_mutation(self) -> None:
+        relative_paths = (
+            Path("dist/adapters/manifest.yaml"),
+            Path("docs/reports/adapter-artifacts/releases/v0.3.5.yaml"),
+        )
+        for relative_path in relative_paths:
+            for mutation in ("missing", "directory", "symlink"):
+                with (
+                    self.subTest(path=relative_path, mutation=mutation),
+                    tempfile.TemporaryDirectory() as temporary,
+                ):
+                    outer = Path(temporary)
+                    root = outer / "repository"
+                    root.mkdir()
+                    initialize_active_fixture(
+                        root,
+                        bootstrap_release="v0.3.4",
+                        rollback_release="v0.3.5",
+                        activating_release="v0.3.6",
+                    )
+                    target = root / relative_path
+                    target.unlink()
+                    outside = outer / "outside-sentinel"
+                    outside.write_bytes(b"outside remains unchanged\n")
+                    if mutation == "directory":
+                        target.mkdir()
+                    elif mutation == "symlink":
+                        target.symlink_to(outside)
+                    before = relevant_tree_snapshot(root)
+                    outside_before = outside.read_bytes()
+
+                    selection, issues = rollback_package_selection(root)
+
+                    self.assertIsNone(selection)
+                    self.assertIn(
+                        "BFR-ROLLBACK-PATH-UNSAFE",
+                        {issue.code for issue in issues},
+                    )
+                    self.assertEqual(before, relevant_tree_snapshot(root))
+                    self.assertEqual(outside_before, outside.read_bytes())
+
+    def test_active_validation_cli_emits_authoritative_rollback_selection(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            initialize_active_fixture(
+                root,
+                bootstrap_release="v0.3.4",
+                rollback_release="v0.3.5",
+                activating_release="v0.3.6",
+            )
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "validate-boundary-first.py"),
+                    "--check",
+                    "--root",
+                    str(root),
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            output = json.loads(result.stdout)
+            self.assertEqual(output["rollback_release"], "v0.3.5")
+            self.assertEqual(
+                tuple(row["adapter"] for row in output["rollback_artifacts"]),
+                ("claude", "codex", "opencode"),
+            )
+
+            (
+                root
+                / "docs"
+                / "reports"
+                / "adapter-artifacts"
+                / "releases"
+                / "v0.3.5.yaml"
+            ).unlink()
+            failed = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "validate-boundary-first.py"),
+                    "--check",
+                    "--root",
+                    str(root),
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(failed.returncode, 0)
+            self.assertIn("BFR-ROLLBACK-PATH-UNSAFE", failed.stdout)
 
     def test_unicode_parent_path_is_inventoried_and_symlink_mode_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

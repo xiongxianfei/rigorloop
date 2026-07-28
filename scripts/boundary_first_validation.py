@@ -154,6 +154,12 @@ class RollbackArtifactIdentity:
     sha256: str
 
 
+@dataclass(frozen=True)
+class RollbackSelection:
+    release: str
+    artifacts: tuple[RollbackArtifactIdentity, ...]
+
+
 def _issue(
     code: str,
     path: str,
@@ -928,7 +934,7 @@ def _contained_regular_file(
     return candidate, None
 
 
-def rollback_package_matrix(
+def _rollback_package_matrix(
     root: Path,
     activation_data: dict[str, object],
 ) -> tuple[tuple[RollbackArtifactIdentity, ...], tuple[ValidationIssue, ...]]:
@@ -1073,6 +1079,39 @@ def rollback_package_matrix(
     if issues:
         return (), tuple(issues)
     return tuple(matrix), ()
+
+
+def rollback_package_selection(
+    root: Path,
+) -> tuple[RollbackSelection | None, tuple[ValidationIssue, ...]]:
+    """Select rollback identities from the fixed, validated activation manifest."""
+
+    record_path, path_issue = _fixed_authoritative_path(root, ACTIVATION_RECORD)
+    if path_issue:
+        return None, (path_issue,)
+    assert record_path is not None
+    data, parse_issue = _activation_data(record_path)
+    if parse_issue:
+        return None, (parse_issue,)
+    assert data is not None
+    activation_issues = validate_activation(root)
+    if activation_issues:
+        return None, activation_issues
+    rollback_release = data.get("rollback_release")
+    if data.get("state") != "active" or not isinstance(rollback_release, str):
+        return None, (
+            _issue(
+                "BFR-ROLLBACK-SELECTION",
+                ACTIVATION_RECORD.as_posix(),
+                "authoritative activation manifest is not active",
+                data.get("state"),
+                "active",
+            ),
+        )
+    matrix, matrix_issues = _rollback_package_matrix(root, data)
+    if matrix_issues:
+        return None, matrix_issues
+    return RollbackSelection(release=rollback_release, artifacts=matrix), ()
 
 
 def _eligible_grandfathered_specs(
@@ -1581,6 +1620,10 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                         eligible_membership,
                     )
                 )
+
+    if state == "active":
+        _, rollback_issues = _rollback_package_matrix(root, data)
+        issues.extend(rollback_issues)
 
     return tuple(issues)
 
