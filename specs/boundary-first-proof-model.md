@@ -8,7 +8,7 @@
 
 ## Status
 
-approved
+draft
 
 Boundary-first contract activation: pending
 Activation record identity: -
@@ -128,31 +128,34 @@ PBF-R002. An adopting feature spec MUST record the literal metadata line
 lifecycle status value.
 
 PBF-R003. A feature spec MUST NOT record the activation marker while the
-repository activation state is `pending`. While `rolled-back`, only a feature
-spec and proof map preserved by the validated PBF-R057 rollback transaction
-receipt may retain the marker.
+published capability state is `pending`.
 
 PBF-R004. An adopting feature spec MUST contain the boundary record in that
 same feature spec and MUST NOT require a standalone boundary artifact.
 
-PBF-R005. The repository activation state MUST use exactly one of `pending`,
-`active`, or `rolled-back`.
+PBF-R005. The published capability state MUST use exactly one of `pending` or
+`active`.
 
-PBF-R005a. Before activation becomes `active`, one durable activation record
-MUST identify the contract version, activation state, activation time,
-activation baseline identity, and grandfathered feature-spec inventory
-identity. The same record MUST carry the closed rollback-preservation
-receipt path and its raw-byte identity, which remains null until rollback.
+PBF-R005a. Before activation becomes `active`, one small release-activation
+manifest MUST identify the contract version, state, activating release when
+known, governed skills, canonical reference identity, projection identity,
+and sorted grandfathered feature-spec paths.
+Source control and release archives own historical byte identity; the
+activation manifest MUST NOT duplicate a historical attestation store.
 
-PBF-R005b. Architecture MUST select the activation-record path and format.
-The record MUST be repository-local, deterministic, validator-readable, and
+PBF-R005b. Architecture MUST select the release-activation manifest path and
+format.
+The manifest MUST be repository-local, deterministic, validator-readable, and
 available without chat history or a network service.
+Maintainers MUST settle it through an ordinary reviewed source change; this
+capability MUST NOT require a state-writing activation script.
 
 PBF-R006. Activation MUST change from `pending` to `active` only when the
 shared method, all governed skill mappings and projections, structural
 validators, review fixtures, generated output, adapter packages, and installed
-skill cold-read proof are current together and the activation record contains
-the exact verified baseline identities.
+skill cold-read proof are current together.
+The activating reviewed change MUST update the release-activation manifest
+only after those checks pass.
 
 PBF-R007. Activation MUST fail closed if any governed skill or required
 package surface is missing, stale, mixed-version, or byte-divergent.
@@ -404,7 +407,7 @@ PBF-R049a. After activation, structural validation MUST reject new
 behavior-changing feature specs without the marker and MUST validate marker
 and record shape when present.
 
-PBF-R049b. Structural validation MUST use the durable activation baseline to
+PBF-R049b. Structural validation MUST use the release-activation manifest to
 distinguish grandfathered feature specs from new feature specs.
 It MUST NOT infer whether an edit to a grandfathered spec is substantively
 normative.
@@ -443,21 +446,16 @@ substantive change.
 PBF-R056. Existing accepted historical specs MUST remain valid until
 substantively revised and MUST NOT require automatic migration.
 
-PBF-R057. Rollback MUST change activation to `rolled-back` and stop new
-adoption without deleting or invalidating already accepted boundary records or
-proof maps.
-Before changing state, the M4 rollback transaction MUST prepare a durable
-receipt bound to the active activation-record identity. The receipt MUST
-snapshot every preserved feature spec and its exact proof map as one paired,
-sorted path-and-raw-byte identity record. The rolled-back activation record
-MUST bind the receipt's raw-byte identity. Rolled-back structural validation
-MUST accept a marker only when the bound receipt, feature bytes, proof bytes,
-and feature/proof coherence all validate. Until that M4 receipt validator is
-available, M3 validation MUST fail every rolled-back state closed.
+PBF-R057. Operational rollback MUST install or republish the previous
+known-good immutable skill release for each supported adapter.
+Rollback MUST NOT rewrite accepted feature specs, proof maps, or project-local
+boundary records.
 
-PBF-R058. Rollback MUST restore the governed skill projections, validators,
-fixtures, generated output, and package surfaces as one coherent compatibility
-change rather than leave mixed versions.
+PBF-R058. Rollback validation MUST compare the restored package identities
+with the recorded previous release identities and MUST reject mixed adapter or
+skill versions.
+No repository rollback state, transaction receipt, historical attestation
+store, or custom rollback writer is part of this capability.
 
 ### Semantic review and stop behavior
 
@@ -506,15 +504,15 @@ Outputs:
 - one shared method reference projected into every governed skill;
 - deterministic structural, fixture, packaging, and parity validation;
 - independent review evidence for semantic judgments;
-- activation and rollback evidence.
+- release-activation and package-version evidence.
 
 No runtime certification report is an output of this capability.
 
 ## State and invariants
 
-- The activation state is one of `pending`, `active`, or `rolled-back`.
-- Active state has one durable activation record and grandfathered-spec
-  inventory identity.
+- The published capability state is one of `pending` or `active`.
+- Active state has one reviewed release-activation manifest and sorted
+  grandfathered-spec path inventory.
 - The boundary contract version remains `boundary-first-v1`.
 - The eight core dimensions and two applicability values are closed.
 - A feature spec owns boundary and interaction definitions.
@@ -540,25 +538,28 @@ No runtime certification report is an output of this capability.
 
 ## Compatibility and migration
 
-Activation is prospective and atomic.
+Activation is prospective and release-scoped.
 Historical accepted feature specs remain valid without migration.
 New or substantively revised behavior contracts adopt only after activation is
 `active`.
 In-flight opt-in is permitted only before test-spec approval and only with a
 complete governed skill chain.
 
-Rollback stops new adoption and restores the published bundle coherently.
+Operational rollback installs or republishes the previous known-good release
+archive as a complete adapter bundle.
 Artifacts already approved under `boundary-first-v1` remain valid historical
 contracts.
+Rollback does not mutate project-local feature specs or proof maps.
 
 ## Observability
 
 Structural validation output MUST identify the artifact, record surface,
 stable check ID, offending value or reference, and expected closed contract.
 
-Activation validation output MUST identify the activation-record identity,
-baseline identity, grandfathered inventory identity, and any new or changed
-feature spec that cannot be classified structurally.
+Activation validation output MUST identify the capability state, activating
+release when known, canonical and projection identities, grandfathered path
+inventory, and any new or changed feature spec that cannot be classified
+structurally.
 
 Packaging and parity output MUST identify the skill, relative reference path,
 expected raw-byte SHA-256, actual SHA-256, and first divergent package layer.
@@ -651,6 +652,8 @@ but the mapped reference must still be present in its installed package.
 - Do not automatically generate tests from boundary records.
 - Do not retroactively migrate accepted historical artifacts.
 - Do not partially activate across governed skills.
+- Do not add an activation writer, rollback writer, transaction receipt,
+  historical attestation store, or repository mutation protocol.
 - Do not decide progressive-disclosure optimization beyond the required
   packaged reference.
 - Do not open, publish, or mutate external systems as part of the capability.
@@ -659,7 +662,7 @@ but the mapped reference must still be present in its installed package.
 
 | ID | Criterion |
 | --- | --- |
-| `PBF-AC001` | The version, activation state and evidence, eight dimensions, prefix mapping, applicability values, sentinels, delimiters, record headings, columns, coverage states, and identifier grammars are closed. |
+| `PBF-AC001` | The version, published capability state and release evidence, eight dimensions, prefix mapping, applicability values, sentinels, delimiters, record headings, columns, coverage states, and identifier grammars are closed. |
 | `PBF-AC002` | Feature specs own normalized applicability, boundary, interaction, and example-ownership records. |
 | `PBF-AC003` | Test specs consume exact approved IDs, distinguish covered proof from blocking gaps, and cover every applicable boundary and selected interaction before implementation. |
 | `PBF-AC004` | Examples are illustrations, regressions, or discoveries and never become implicit normative owners. |
@@ -669,7 +672,7 @@ but the mapped reference must still be present in its installed package.
 | `PBF-AC008` | Structural validators reject unknown closed values before consistency checks and do not claim semantic completeness. |
 | `PBF-AC009` | Independent spec, plan, test-spec, code, and verify gates retain their named semantic responsibilities. |
 | `PBF-AC010` | Simple changes can use concise non-applicability rationales without a standalone artifact or Cartesian interaction set. |
-| `PBF-AC011` | Prospective activation evidence, semantic substantive-revision classification, in-flight opt-in, historical grandfathering, and rollback are deterministic. |
+| `PBF-AC011` | Prospective release activation, semantic substantive-revision classification, in-flight opt-in, historical grandfathering, and previous-release package rollback are deterministic. |
 | `PBF-AC012` | Activation cannot become active while governed skills or package surfaces are mixed, missing, stale, or byte-divergent. |
 | `PBF-AC013` | The capability requires no runtime, model, network, sandbox, workspace-interception, or attestation dependency. |
 | `PBF-AC014` | Structurally valid but semantically incomplete fixtures are judged by the owning review skills rather than semantic validator assertions. |
@@ -702,6 +705,6 @@ contract.
 
 ## Readiness
 
-Approved for architecture assessment and architecture.
-Repository activation remains `pending` until the complete governed skill and
-package bundle passes the activation contract.
+Draft revision ready for independent spec-review.
+Published activation remains `pending` until the complete governed skill and
+package bundle passes the release-scoped activation contract.

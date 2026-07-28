@@ -2,7 +2,7 @@
 
 ## Status
 
-Plan lifecycle state: blocked
+Plan lifecycle state: active
 Terminal disposition: none
 
 - Owner: maintainers
@@ -104,13 +104,13 @@ an explicit blocking gap before implementation begins.
 
 - Current milestone: M3. Structural and activation validation
 - Current milestone state: resolution-needed
-- Latest review evidence: code-review-m3-r5 confirms M3 fail-closed behavior and records PBF-M3-CR17 because no executable M4 command owns receipt mutation
+- Latest review evidence: user selected release-scoped activation and previous-release package rollback; the revised feature spec removes receipt and writer machinery and awaits spec-review R3
 - Last reviewed milestone: M2
-- Review status: changes-requested; stage=code-review; round=r5
+- Review status: review-requested; stage=spec-review; round=r3
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: blocked pending owner decision and renewed correction authority for PBF-M3-CR17
+- Next stage: spec-review R3 for simplified published-skill contract
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=1; open-findings=PBF-M3-CR17
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -348,6 +348,14 @@ A material review finding reopens its owning milestone and blocks the next one.
   owns M4 rollback mutation, recovery, or validation. The fourth correction
   cycle is consumed; workflow paused for a command-owner decision and renewed
   authority.
+- 2026-07-28: the user rejected the transaction-heavy rollback direction and
+  restored the accepted proposal boundary. The draft contract now uses only
+  `pending` and `active`, settles activation through an ordinary reviewed
+  release-manifest change, and defines rollback as reinstalling or
+  republishing the previous immutable skill package. Receipt, writer,
+  repository rollback-state, and attestation requirements are removed.
+  Downstream test-spec, architecture, plan, and implementation surfaces are
+  stale until their owning stages align after spec-review R3.
 
 ## Decision log
 
@@ -358,6 +366,9 @@ A material review finding reopens its owning milestone and blocks the next one.
   while the repository state is `pending`.
 - 2026-07-27: use dedicated projection and structural-validation commands so a
   mutating writer is not hidden inside ordinary validation.
+- 2026-07-28: keep activation metadata declarative and reviewed; do not add
+  activation or rollback mutation commands. Operational rollback belongs to
+  immutable package release selection.
 
 ## Surprises and discoveries
 
