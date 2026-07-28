@@ -1,0 +1,41 @@
+schema_version: 1
+review_id: test-spec-review-r8
+review_stage: test-spec-review
+review_target: specs/boundary-first-proof-model.test.md
+base_revision: c9a3d997
+head_revision: 9a172d19
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L1
+author_context_id: run-pbf-20260728-adapter-applicable-r8
+reviewer_context_id: isolated-test-spec-r8
+context_separation_mechanism: fresh-reviewer
+risk_tier: medium
+risk_tier_triggers:
+  - proof-matrix-correction
+governing_artifacts:
+  - specs/boundary-first-proof-model.md
+  - specs/skill-contract.md
+  - docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+formal_criteria:
+  - test-spec-review-v1
+prompt_template_version: test-spec-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-proof-model.test.md
+    revision: c631da01
+    sha256: 6122af0c4841ab6f27198c2ca8b1686594bac13141aee6a488c05c8ad320449c
+  - path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+    revision: 9a172d19
+    sha256: 3a6f39b1c79d31ef8057de7782b60ee86f18a9b6b1cb6494daea72b505b293a6
+  - path: test-spec.diff
+    revision: c631da01
+    sha256: ea0cb5e1eb64a4cf4186c24b0b67e85cd9c7deffb9d910873691f81c7e86c870
+initial_packet_sha256: ea0cb5e1eb64a4cf4186c24b0b67e85cd9c7deffb9d910873691f81c7e86c870
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - closure of PBF-TSR7-1
+  - approved adapter-applicable plan alignment
+  - every included archive and installed reference
+  - CMD9 inclusion and exclusion ownership
+  - M4 implementation readiness
