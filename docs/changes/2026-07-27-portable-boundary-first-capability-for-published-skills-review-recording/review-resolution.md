@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m3-r8
 Review closeout: code-review-m3-r7
@@ -39,15 +39,15 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 56
-- Unresolved findings: 1
-- Final result: PBF-M3-CR23 requires immutable, merge-aware transition identity binding.
+- Findings resolved: 57
+- Unresolved findings: 0
+- Final result: PBF-M3-CR23 is resolved by merge-aware first-parent transition discovery and immutable tag and release-field binding.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-M3-CR23 | accepted | in-progress | Bind merge-aware transition parent, activating tag, and current release fields to one immutable transition. |
+| PBF-M3-CR23 | accepted | resolved | Bind merge-aware transition parent, activating tag, and current release fields to one immutable transition. |
 | PBF-M3-CR18 | accepted | resolved | Bind the baseline to the exact parent of the pending-to-active transition commit. |
 | PBF-M3-CR19 | accepted | resolved | Validate immutable tag existence and immediate predecessor ordering. |
 | PBF-M3-CR20 | accepted | resolved | Remove the adapter manifest from M3 release-order authority; immutable tags own ordering. |
@@ -113,7 +113,7 @@ Review closeout: code-review-m1-r4
 
 Finding ID: PBF-M3-CR23
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implementation
 Owning stage: review-resolution
 Chosen action: Inspect first-parent integration history, bind the baseline to
@@ -122,7 +122,8 @@ commit, and retain the transition's release fields.
 Rationale: One transition must own historical membership and immutable release
 identity across linear and merge integration.
 Validation target: Code-review M3 R9.
-Validation evidence: Pending.
+Validation evidence: Merge integration detects target-parent membership and
+tag mismatch; moved-tag and active-to-active rewrite regressions fail.
 
 ### code-review-m3-r7
 

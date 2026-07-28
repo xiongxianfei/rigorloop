@@ -21,7 +21,9 @@ Activation validation now implements the approved lightweight contract:
 - the ten governed skills and canonical/projection byte identities remain
   closed;
 - the baseline is the exact full parent identity of the repository's single
-  pending-to-active manifest transition;
+  pending-to-active manifest transition on first-parent integration history;
+- the activating tag resolves to that transition commit and current release
+  fields remain identical to the transition snapshot;
 - grandfathered paths are derived from that exact commit, contain only
   accepted, approved, or active unmarked top-level feature specs, exclude the
   bootstrap spec, README, test specs, marked specs, nonterminal specs, and
@@ -51,6 +53,10 @@ parent and activating worktree. Direct regressions prove:
 - integer, child, and grandparent baselines fail;
 - Unicode parent paths remain present through raw Git tree enumeration;
 - baseline symlink modes fail before blob interpretation;
+- merge integration uses the target branch's first parent and inventories
+  target-only historical specs;
+- a tag moved to a pending commit and an active-to-active release rewrite
+  fail;
 - duplicate and incorrectly ordered inventories fail;
 - unknown states, fields, contract versions, and governed skills fail closed;
 - canonical projection divergence and authoritative symlinks fail.
@@ -62,7 +68,7 @@ were removed rather than preserved as compatibility behavior.
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-boundary-first-validation.py` | pass; 49 tests |
+| `python scripts/test-boundary-first-validation.py` | pass; 51 tests |
 | `python scripts/validate-boundary-first.py --check` | pass; pending two-state manifest |
 | `python scripts/test-select-validation.py` | pass; 134 tests |
 | `python -m py_compile scripts/boundary_first_validation.py scripts/validate-boundary-first.py scripts/test-boundary-first-validation.py` | pass |

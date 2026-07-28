@@ -11,9 +11,9 @@ Durable fixture roots:
   - scripts/fixtures/boundary-first/feature-records/
   - scripts/fixtures/boundary-first/proof-maps/
   - scripts/fixtures/boundary-first/activation/
-Structural test count: 49
+Structural test count: 51
 Selector regression test count: 134
-CMD6 result: passed_49_tests_exact_parent_tag_order_and_raw_tree_contract
+CMD6 result: passed_51_tests_merge_aware_immutable_activation_contract
 CMD7 result: passed_pending_two_state_manifest
 CMD8 result: passed_134_tests
 Privacy-bounded diagnostic fields:

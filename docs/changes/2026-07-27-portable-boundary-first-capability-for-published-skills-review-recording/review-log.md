@@ -17,7 +17,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m3-r8.md
 Resolution: review-resolution.md#code-review-m3-r8
 Material findings: PBF-M3-CR23
-Open findings: PBF-M3-CR23
+Open findings: None
 Recording status: recorded
 
 ### Review entry

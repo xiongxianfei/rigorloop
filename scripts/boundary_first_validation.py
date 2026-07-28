@@ -975,12 +975,12 @@ def _eligible_grandfathered_specs(
     return tuple(sorted(eligible, key=lambda value: value.encode("utf-8"))), ()
 
 
-def _activation_transition_parent(
+def _activation_transition(
     root: Path,
-) -> tuple[str | None, tuple[ValidationIssue, ...]]:
+) -> tuple[tuple[str, str, dict[str, object]] | None, tuple[ValidationIssue, ...]]:
     try:
         commits = subprocess.run(
-            ["git", "log", "--format=%H", "--", ACTIVATION_RECORD.as_posix()],
+            ["git", "rev-list", "--first-parent", "HEAD"],
             cwd=root,
             check=True,
             capture_output=True,
@@ -988,7 +988,7 @@ def _activation_transition_parent(
         ).stdout.splitlines()
     except (OSError, subprocess.CalledProcessError):
         commits = []
-    transitions: list[tuple[str, str]] = []
+    transitions: list[tuple[str, str, dict[str, object]]] = []
     for commit in commits:
         try:
             ancestry = subprocess.run(
@@ -998,7 +998,7 @@ def _activation_transition_parent(
                 capture_output=True,
                 text=True,
             ).stdout.split()
-            if len(ancestry) != 2:
+            if len(ancestry) < 2:
                 continue
             parent = ancestry[1]
             current = json.loads(
@@ -1021,8 +1021,13 @@ def _activation_transition_parent(
             )
         except (OSError, subprocess.CalledProcessError, json.JSONDecodeError):
             continue
-        if current.get("state") == "active" and previous.get("state") == "pending":
-            transitions.append((commit, parent))
+        if (
+            isinstance(current, dict)
+            and isinstance(previous, dict)
+            and current.get("state") == "active"
+            and previous.get("state") == "pending"
+        ):
+            transitions.append((commit, parent, current))
     if len(transitions) != 1:
         return None, (
             _issue(
@@ -1033,17 +1038,17 @@ def _activation_transition_parent(
                 1,
             ),
         )
-    return transitions[0][1], ()
+    return transitions[0], ()
 
 
 def _release_predecessor(
     root: Path,
     activating_release: object,
-) -> tuple[str | None, tuple[ValidationIssue, ...]]:
+) -> tuple[str | None, str | None, tuple[ValidationIssue, ...]]:
     if not isinstance(activating_release, str) or not re.fullmatch(
         r"v[0-9]+\.[0-9]+\.[0-9]+", activating_release
     ):
-        return None, (
+        return None, None, (
             _issue(
                 "BFR-ACTIVATING-RELEASE",
                 ACTIVATION_RECORD.as_posix(),
@@ -1062,24 +1067,26 @@ def _release_predecessor(
         ).stdout.splitlines()
     except (OSError, subprocess.CalledProcessError):
         tag_names = []
-    versions: list[tuple[tuple[int, int, int], str]] = []
+    versions: list[tuple[tuple[int, int, int], str, str]] = []
     for tag in tag_names:
         match = re.fullmatch(r"v([0-9]+)\.([0-9]+)\.([0-9]+)", tag)
         if not match:
             continue
         try:
-            subprocess.run(
+            commit = subprocess.run(
                 ["git", "rev-parse", "--verify", f"refs/tags/{tag}^{{commit}}"],
                 cwd=root,
                 check=True,
                 capture_output=True,
-            )
+                text=True,
+            ).stdout.strip()
         except (OSError, subprocess.CalledProcessError):
             continue
-        versions.append((tuple(int(part) for part in match.groups()), tag))
-    ordered = [tag for _, tag in sorted(versions)]
-    if activating_release not in ordered:
-        return None, (
+        versions.append((tuple(int(part) for part in match.groups()), tag, commit))
+    ordered = [(tag, commit) for _, tag, commit in sorted(versions)]
+    ordered_tags = [tag for tag, _ in ordered]
+    if activating_release not in ordered_tags:
+        return None, None, (
             _issue(
                 "BFR-ACTIVATING-RELEASE",
                 ACTIVATION_RECORD.as_posix(),
@@ -1088,9 +1095,9 @@ def _release_predecessor(
                 "existing immutable release tag",
             ),
         )
-    index = ordered.index(activating_release)
+    index = ordered_tags.index(activating_release)
     if index == 0:
-        return None, (
+        return None, ordered[index][1], (
             _issue(
                 "BFR-ROLLBACK-RELEASE",
                 ACTIVATION_RECORD.as_posix(),
@@ -1099,7 +1106,7 @@ def _release_predecessor(
                 "release tag with an immediate predecessor",
             ),
         )
-    return ordered[index - 1], ()
+    return ordered[index - 1][0], ordered[index][1], ()
 
 
 def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
@@ -1213,7 +1220,9 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                     )
                 )
     else:
-        expected_rollback, release_issues = _release_predecessor(
+        transition, transition_issues = _activation_transition(root)
+        issues.extend(transition_issues)
+        expected_rollback, activating_tag_commit, release_issues = _release_predecessor(
             root,
             activating_release,
         )
@@ -1228,8 +1237,38 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                     expected_rollback or "immediate predecessor tag",
                 )
             )
-        expected_baseline, transition_issues = _activation_transition_parent(root)
-        issues.extend(transition_issues)
+        transition_commit = transition[0] if transition else None
+        expected_baseline = transition[1] if transition else None
+        transition_data = transition[2] if transition else {}
+        if activating_tag_commit != transition_commit:
+            issues.append(
+                _issue(
+                    "BFR-ACTIVATING-TAG-COMMIT",
+                    ACTIVATION_RECORD.as_posix(),
+                    "activating release tag must resolve to the activation transition commit",
+                    activating_tag_commit,
+                    transition_commit or "pending-to-active transition commit",
+                )
+            )
+        if (
+            transition
+            and (
+                activating_release != transition_data.get("activating_release")
+                or rollback_release != transition_data.get("rollback_release")
+            )
+        ):
+            issues.append(
+                _issue(
+                    "BFR-ACTIVATION-IMMUTABLE",
+                    ACTIVATION_RECORD.as_posix(),
+                    "active release fields must match the activation transition snapshot",
+                    [activating_release, rollback_release],
+                    [
+                        transition_data.get("activating_release"),
+                        transition_data.get("rollback_release"),
+                    ],
+                )
+            )
         if not isinstance(baseline_revision, str) or not re.fullmatch(
             r"[0-9a-f]{40,64}",
             baseline_revision,
@@ -1294,12 +1333,12 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
             )
         if (
             state == "active"
-            and isinstance(baseline_revision, str)
-            and re.fullmatch(r"[0-9a-f]{40,64}", baseline_revision)
+            and isinstance(expected_baseline, str)
+            and re.fullmatch(r"[0-9a-f]{40,64}", expected_baseline)
         ):
             eligible_membership, eligibility_issues = _eligible_grandfathered_specs(
                 root,
-                baseline_revision,
+                expected_baseline,
             )
             issues.extend(eligibility_issues)
             if tuple(valid_paths) != eligible_membership:
