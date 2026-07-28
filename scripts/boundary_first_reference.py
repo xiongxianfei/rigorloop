@@ -83,22 +83,37 @@ def _repository_path(root: Path, relative: Path) -> Path:
     return current
 
 
-def _unexpected_projections(root: Path) -> tuple[Path, ...]:
+def _unexpected_projections(
+    root: Path,
+) -> tuple[tuple[Path, ...], tuple[str, ...]]:
     expected = {root / path for path in projected_paths()}
     skills_root = _repository_path(root, Path("skills"))
     if not skills_root.is_dir():
-        return ()
+        return (), ()
     found: set[Path] = set()
+    errors: list[str] = []
     for skill_root in skills_root.iterdir():
-        if skill_root.is_symlink() or not skill_root.is_dir():
+        if skill_root.is_symlink():
+            errors.append(
+                "BFR-UNEXPECTED-CONSUMER-SYMLINK: "
+                + _relative_posix(skill_root, root)
+            )
+            continue
+        if not skill_root.is_dir():
             continue
         references = skill_root / "references"
-        if references.is_symlink() or not references.is_dir():
+        if references.is_symlink():
+            errors.append(
+                "BFR-UNEXPECTED-CONSUMER-SYMLINK: "
+                + _relative_posix(references, root)
+            )
+            continue
+        if not references.is_dir():
             continue
         candidate = references / PROJECTED_REFERENCE.name
         if candidate.is_symlink() or candidate.is_file():
             found.add(candidate)
-    return tuple(sorted(found - expected))
+    return tuple(sorted(found - expected)), tuple(sorted(errors))
 
 
 def project_reference(root: Path, *, mode: str) -> ProjectionResult:
@@ -137,7 +152,11 @@ def project_reference(root: Path, *, mode: str) -> ProjectionResult:
         if actual != source_sha256:
             errors.append(f"BFR-PROJECTION-STALE: {relative_text}")
 
-    for unexpected in _unexpected_projections(repository_root):
+    unexpected_projections, unexpected_errors = _unexpected_projections(
+        repository_root
+    )
+    errors.extend(unexpected_errors)
+    for unexpected in unexpected_projections:
         errors.append(
             "BFR-PROJECTION-UNEXPECTED: "
             + _relative_posix(unexpected, repository_root)
