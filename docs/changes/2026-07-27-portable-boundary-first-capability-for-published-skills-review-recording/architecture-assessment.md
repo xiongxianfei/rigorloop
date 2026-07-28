@@ -2,19 +2,21 @@
 
 Stage: architecture-assessment
 Applicability: required
-Spec identity: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+Spec identity: approved at commit 011fc64d
 
 ## Rationale
 
 The approved boundary-first contract changes the source and projection model
 for a shared published-skill reference, the canonical and generated skill
 trees, adapter archives, installed Codex, Claude Code, and opencode trees,
-structural validation, activation evidence, and compatibility enforcement.
+structural validation, release activation evidence, and package rollback
+validation.
 
 Those surfaces cross authored-source, generated-output, package, validation,
 and release boundaries.
 The change also needs durable decisions for the canonical reference owner,
-projection command, activation baseline, and rollback unit.
+projection command, activation manifest, immutable grandfathering baseline,
+and operator boundary for rollback.
 
 ## Result
 

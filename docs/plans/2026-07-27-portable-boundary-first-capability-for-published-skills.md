@@ -104,11 +104,11 @@ an explicit blocking gap before implementation begins.
 
 - Current milestone: M3. Structural and activation validation
 - Current milestone state: resolution-needed
-- Latest review evidence: spec-review R5 approved the simplified published-skill contract with no material findings
+- Latest review evidence: the canonical architecture and superseding ADR now implement the approved release-manifest and read-only package-rollback boundary
 - Last reviewed milestone: M2
-- Review status: approved; stage=spec-review; round=r5
+- Review status: review-requested; stage=architecture-review; round=r3
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: architecture revision for the simplified activation contract
+- Next stage: architecture-review R3 for the simplified activation contract
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 

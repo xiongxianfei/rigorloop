@@ -2,7 +2,10 @@
 
 ## Status
 
-accepted
+superseded
+
+Superseded by:
+`ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md`.
 
 ## Context
 
@@ -199,3 +202,8 @@ tracked state and should not depend on shallow-history availability.
 - Extend generated, packed, and clean-installed parity proof.
 - Record architecture-review before execution planning.
 - Architecture-review R2 approved this decision on 2026-07-27.
+
+## Follow-on artifacts
+
+- Superseding decision:
+  `ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md`.
