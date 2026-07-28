@@ -2,8 +2,9 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
+Review closeout: test-spec-review-r9
 Review closeout: test-spec-review-r7
 Review closeout: plan-review-r4
 Review closeout: plan-review-r5
@@ -47,18 +48,18 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 60
-- Unresolved findings: 2
-- Final result: PBF-TSR7-1 and PBF-TSR8-1 await exact governing-plan identity correction and test-spec rereview.
+- Findings resolved: 62
+- Unresolved findings: 0
+- Final result: PBF-TSR7-1 and PBF-TSR8-1 are resolved by the approved adapter-applicable proof map and exact R6 plan identities.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-TSR8-1 | accepted | in-progress | Replace stale plan and plan-review identities with approved R6 inputs. |
+| PBF-TSR8-1 | accepted | resolved | Replace stale plan and plan-review identities with approved R6 inputs. |
 | PBF-PLR5 | accepted | resolved | Synchronize the complete Current Handoff cursor. |
 | PBF-PLR4 | accepted | resolved | Synchronize the Current Handoff Summary with the open review state. |
-| PBF-TSR7-1 | accepted | in-progress | Align M4 package proof with the existing adapter portability decision. |
+| PBF-TSR7-1 | accepted | resolved | Align M4 package proof with the existing adapter portability decision. |
 | PBF-M3-CR24 | accepted | resolved | Bind the tagged transition snapshot and current state to its exact first-parent baseline and inventory. |
 | PBF-M3-CR23 | accepted | resolved | Bind merge-aware transition parent, activating tag, and current release fields to one immutable transition. |
 | PBF-M3-CR18 | accepted | resolved | Bind the baseline to the exact parent of the pending-to-active transition commit. |
@@ -120,20 +121,29 @@ Review closeout: code-review-m1-r4
 
 ## Finding Details
 
+### test-spec-review-r9
+
+Review closeout: test-spec-review-r9
+Review result: approved
+Material findings: None
+Resolution required: no
+Validation evidence: Exact R6 plan identities and complete adapter-applicable
+package/install coverage were approved.
+
 ### test-spec-review-r8
 
 #### PBF-TSR8-1 - Test spec cites superseded plan identities
 
 Finding ID: PBF-TSR8-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: test-spec
 Owning stage: test-spec revision
 Chosen action: Update the plan and plan-review identity rows to the approved
 R6 artifacts.
 Rationale: The proof map must pin the plan that owns its proof population.
 Validation target: test-spec-review R9.
-Validation evidence: Pending.
+Validation evidence: Test-spec-review R9 approved the exact R6 identities.
 
 ### plan-review-r6
 
@@ -179,7 +189,7 @@ Validation evidence: Plan-review R6 approved the synchronized open state.
 
 Finding ID: PBF-TSR7-1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: plan
 Owning stage: plan revision
 Chosen action: Replace the fixed all-ten-per-target deliverable with every
@@ -188,7 +198,7 @@ CMD9 ownership of inclusions and exclusions.
 Rationale: Boundary-first packaging must prove every published surface without
 silently expanding or overriding the established adapter portability contract.
 Validation target: plan-review and test-spec-review R8.
-Validation evidence: Pending.
+Validation evidence: Test-spec-review R9 approved the adapter-applicable proof population.
 
 ### test-spec-review-r6
 
