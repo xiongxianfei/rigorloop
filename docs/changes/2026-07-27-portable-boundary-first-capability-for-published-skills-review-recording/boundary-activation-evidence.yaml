@@ -7,7 +7,7 @@ Selected fixture rollback release: v0.3.5
 Adapter manifest sha256: 8ca18bd34be44fd7c4f331b4325234ddc03c1b3dc3fead53b3921a528b233ef4
 Selected metadata sha256: bb0e92c36541df0b8fd9c1ecc1c5581ea51944324fcedda91e8e6d5c0bdd91e6
 Command: python scripts/test-boundary-first-validation.py -k active_rollback_release_matches_current_adapter_metadata
-Command result: passed_1_test
+Command result: passed_1_authoritative_active_fixture_test
 Ordered adapter matrix:
   - adapter: claude
     archive: rigorloop-adapter-claude-v0.3.5.zip
@@ -28,3 +28,14 @@ Repository mutation performed: false
 Installation performed: false
 Publication performed: false
 Writer or receipt added: false
+Production integration:
+  - active validation fails closed on missing or invalid rollback metadata
+  - CLI output names selected release and ordered adapter matrix
+  - pending validation remains metadata-independent
+Containment proof:
+  - missing authoritative path
+  - non-regular authoritative path
+  - symlinked manifest path
+  - symlinked metadata path
+  - outside sentinel unchanged
+  - complete relevant fixture tree unchanged

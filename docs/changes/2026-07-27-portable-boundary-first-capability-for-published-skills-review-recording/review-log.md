@@ -17,7 +17,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m4-r1.md
 Resolution: review-resolution.md#code-review-m4-r1
 Material findings: PBF-M4-CR1, PBF-M4-CR2
-Open findings: PBF-M4-CR1, PBF-M4-CR2
+Open findings: None
 Recording status: recorded
 
 ### Review entry
