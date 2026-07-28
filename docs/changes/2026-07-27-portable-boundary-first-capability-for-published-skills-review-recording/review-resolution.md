@@ -8,6 +8,7 @@ Review closeout: test-spec-review-r7
 Review closeout: plan-review-r4
 Review closeout: plan-review-r5
 Review closeout: plan-review-r6
+Review closeout: test-spec-review-r8
 Review closeout: test-spec-review-r6
 Review closeout: code-review-m3-r10
 Review closeout: code-review-m3-r9
@@ -47,13 +48,14 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 60
-- Unresolved findings: 1
-- Final result: PBF-PLR4 and PBF-PLR5 are resolved; PBF-TSR7-1 awaits test-spec-review R8.
+- Unresolved findings: 2
+- Final result: PBF-TSR7-1 and PBF-TSR8-1 await exact governing-plan identity correction and test-spec rereview.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-TSR8-1 | accepted | in-progress | Replace stale plan and plan-review identities with approved R6 inputs. |
 | PBF-PLR5 | accepted | resolved | Synchronize the complete Current Handoff cursor. |
 | PBF-PLR4 | accepted | resolved | Synchronize the Current Handoff Summary with the open review state. |
 | PBF-TSR7-1 | accepted | in-progress | Align M4 package proof with the existing adapter portability decision. |
@@ -117,6 +119,21 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### test-spec-review-r8
+
+#### PBF-TSR8-1 - Test spec cites superseded plan identities
+
+Finding ID: PBF-TSR8-1
+Disposition: accepted
+Status: in-progress
+Owner: test-spec
+Owning stage: test-spec revision
+Chosen action: Update the plan and plan-review identity rows to the approved
+R6 artifacts.
+Rationale: The proof map must pin the plan that owns its proof population.
+Validation target: test-spec-review R9.
+Validation evidence: Pending.
 
 ### plan-review-r6
 
