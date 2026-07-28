@@ -103,14 +103,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M2. Governed lifecycle skill behavior
-- Current milestone state: resolution-needed
-- Latest review evidence: code-review-m2-r1 recorded PBF-M2-CR1 against phrase-only semantic fixture proof
+- Current milestone state: review-requested
+- Latest review evidence: PBF-M2-CR1 correction adds structured ten-stage packets and passing negative mutation proof
 - Last reviewed milestone: M1
-- Review status: changes-requested; stage=code-review; round=r1
+- Review status: review-requested; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: M2, M3, M4
-- Next stage: review-resolution M2
+- Next stage: code-review M2 R2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=1; open-findings=PBF-M2-CR1
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -150,7 +150,7 @@ an explicit blocking gap before implementation begins.
 
 ### M2. Governed lifecycle skill behavior
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
    - primary trust boundary: stage-local authoring, review, stop, and handoff
      behavior
    - deliverables:
@@ -293,6 +293,10 @@ A material review finding reopens its owning milestone and blocks the next one.
   semantic-gap routing fixtures, and a narrow validator exception for the
   approved shared reference; all targeted checks passed and M2 was handed to
   code-review.
+- 2026-07-28: code-review M2 R1 recorded PBF-M2-CR1 because the semantic
+  fixture proved prose presence rather than lifecycle behavior. The accepted
+  declared-safe correction now supplies exact ten-stage packets, semantic
+  owners, outcomes, handoffs, and negative mutation proof; M2 returned to R2.
 
 ## Decision log
 
@@ -347,7 +351,8 @@ A material review finding reopens its owning milestone and blocks the next one.
   is deferred to M4. These surfaces are unaffected by M1 with rationale.
 - M2: `python scripts/validate-skills.py`,
   `python scripts/test-skill-validator.py`, and
-  `python scripts/build-skills.py --check` passed.
+  `python scripts/build-skills.py --check` passed after PBF-M2-CR1; the suite
+  now contains 263 tests and four focused boundary-first lifecycle tests.
 - M3 and M4 implementation validation commands remain planned and have not
   run.
 
