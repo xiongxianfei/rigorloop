@@ -23,19 +23,19 @@ Review closeout: code-review-m1-r3
 Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 27
-- Unresolved findings: 5
-- Final result: R2 confirms PBF-M3-CR1 through PBF-M3-CR8 resolved; M3 remains resolution-needed for PBF-M3-CR9 through PBF-M3-CR13.
+- Findings resolved: 32
+- Unresolved findings: 0
+- Final result: PBF-M3-CR9 through PBF-M3-CR13 are resolved with direct regression evidence; M3 awaits independent code-review R3.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| PBF-M3-CR9 | accepted | in-progress | Separate immutable activation history from later marked adoption and rollback preservation. |
-| PBF-M3-CR10 | accepted | in-progress | Contain every explicit and derived feature/proof path before reads. |
-| PBF-M3-CR11 | accepted | in-progress | Accept valid aligned separators while rejecting malformed cells. |
-| PBF-M3-CR12 | accepted | in-progress | Make deleted proof maps and orphaned test specs fail when counterparts survive. |
-| PBF-M3-CR13 | accepted | in-progress | Reject symlinked historical inventory roots, candidates, and entries before reads. |
+| PBF-M3-CR9 | accepted | resolved | Immutable activation history survives later marked adoption and rollback. |
+| PBF-M3-CR10 | accepted | resolved | Explicit and derived feature/proof paths are contained before reads. |
+| PBF-M3-CR11 | accepted | resolved | Valid aligned separators pass while malformed cells fail. |
+| PBF-M3-CR12 | accepted | resolved | Deleted proof maps and orphaned test specs fail when counterparts survive. |
+| PBF-M3-CR13 | accepted | resolved | Symlinked historical inventory roots, candidates, and entries fail before reads. |
 | PBF-M3-CR1 | accepted | resolved | Markdown parsing is fence-aware, the marker is Status-owned, and separators are exact. |
 | PBF-M3-CR2 | accepted | resolved | Malformed records are bounded and proof references and gap IDs fail in vocabulary validation. |
 | PBF-M3-CR3 | accepted | resolved | Every governed projection is compared directly with canonical bytes. |
@@ -72,61 +72,61 @@ Review closeout: code-review-m1-r4
 
 Finding ID: PBF-M3-CR9
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implement
 Owning stage: review-resolution M3
 Chosen action: Preserve immutable activation membership and identities while validating later marked current artifacts independently and retaining accepted marked artifacts through rollback.
 Rationale: Prospective adoption must not rewrite or invalidate activation-time history.
 Validation target: CMD6, CMD7, and code-review M3 R3.
-Validation evidence: pending correction.
+Validation evidence: CMD6 passes 44 tests, including later adoption and rollback preservation; CMD7 passes.
 
 #### PBF-M3-CR10 - Derived companion paths bypass containment
 
 Finding ID: PBF-M3-CR10
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implement
 Owning stage: review-resolution M3
 Chosen action: Apply one contained no-symlink resolver to explicit and derived feature/proof paths.
 Rationale: A safe selected path must not authorize reads through an unsafe companion.
 Validation target: CMD6, direct symlink attacks, and code-review M3 R3.
-Validation evidence: pending correction.
+Validation evidence: CMD6 rejects explicit and derived companion symlink escapes before reads.
 
 #### PBF-M3-CR11 - Valid aligned Markdown separators are rejected
 
 Finding ID: PBF-M3-CR11
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implement
 Owning stage: review-resolution M3
 Chosen action: Accept CommonMark alignment separator cells with at least three hyphens while retaining exact width.
 Rationale: The contract closes semantic columns, not harmless Markdown alignment.
 Validation target: CMD6 and code-review M3 R3.
-Validation evidence: pending correction.
+Validation evidence: CMD6 accepts left-, right-, and center-aligned CommonMark separators and retains malformed-separator failures.
 
 #### PBF-M3-CR12 - Deleted adopting test specs bypass validation
 
 Finding ID: PBF-M3-CR12
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implement
 Owning stage: review-resolution M3
 Chosen action: Evaluate surviving counterparts before treating an absent selected path as irrelevant.
 Rationale: Deletion is a changed surface and cannot silently remove required proof.
 Validation target: CMD6, CMD8, and code-review M3 R3.
-Validation evidence: pending correction.
+Validation evidence: CMD6 rejects deleted adopting proofs and orphaned tests while permitting paired deletion; CMD8 passes 134 tests.
 
 #### PBF-M3-CR13 - Historical inventory paths may follow symlinks outside the repository
 
 Finding ID: PBF-M3-CR13
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implement
 Owning stage: review-resolution M3
 Chosen action: Reject symlinked specs roots, eligibility candidates, and recorded historical paths before reading bytes.
 Rationale: Activation evidence must depend only on repository-owned regular files.
 Validation target: CMD6, CMD7, and code-review M3 R3.
-Validation evidence: pending correction.
+Validation evidence: CMD6 rejects symlinked historical entries and the `specs/` inventory root before reads; CMD7 passes.
 
 ### code-review-m3-r1
 

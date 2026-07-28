@@ -103,14 +103,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M3. Structural and activation validation
-- Current milestone state: resolution-needed
-- Latest review evidence: code-review-m3-r2 confirms CR1-CR8 resolved and records PBF-M3-CR9 through PBF-M3-CR13
+- Current milestone state: review-requested
+- Latest review evidence: PBF-M3-CR9 through PBF-M3-CR13 resolved with 44 focused tests; code-review M3 R3 requested
 - Last reviewed milestone: M2
-- Review status: changes-requested; stage=code-review; round=r2
+- Review status: review-requested; stage=code-review; round=r3
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: review-resolution M3
+- Next stage: code-review M3 R3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=5; open-findings=PBF-M3-CR10,PBF-M3-CR11,PBF-M3-CR12,PBF-M3-CR13,PBF-M3-CR9
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -183,7 +183,7 @@ an explicit blocking gap before implementation begins.
 
 ### M3. Structural and activation validation
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
    - primary trust boundary: deterministic shape/reference enforcement without
      semantic overclaiming
    - deliverables:
@@ -315,6 +315,10 @@ A material review finding reopens its owning milestone and blocks the next one.
   PBF-M3-CR9 through PBF-M3-CR13 for historical adoption/rollback
   preservation, companion and inventory containment, aligned separators, and
   deleted proof-map handling. M3 entered correction cycle 2.
+- 2026-07-28: resolved PBF-M3-CR9 through PBF-M3-CR13 with 44 focused
+  regressions covering adoption and rollback history, explicit and derived
+  containment, aligned separators, deletion handling, and historical
+  inventory symlinks; M3 returned to independent R3.
 
 ## Decision log
 
@@ -371,7 +375,7 @@ A material review finding reopens its owning milestone and blocks the next one.
   `python scripts/test-skill-validator.py`, and
   `python scripts/build-skills.py --check` passed after PBF-M2-CR1; the suite
   now contains 263 tests and four focused boundary-first lifecycle tests.
-- M3: `python scripts/test-boundary-first-validation.py` passed 39 tests,
+- M3: `python scripts/test-boundary-first-validation.py` passed 44 tests,
   `python scripts/validate-boundary-first.py --check` passed the pending
   baseline, and `python scripts/test-select-validation.py` passed 134 tests.
 - M4 implementation validation commands remain planned and have not run.

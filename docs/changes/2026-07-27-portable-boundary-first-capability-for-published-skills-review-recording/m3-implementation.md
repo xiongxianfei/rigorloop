@@ -3,7 +3,7 @@
 ## Result
 
 - Milestone: PBF-M3
-- Status: review-requested after R1 correction
+- Status: review-requested after R2 correction
 - Scope: structural boundary records, proof maps, activation baseline, and
   validation selection
 - Next stage: code-review M3
@@ -49,11 +49,18 @@ and redacts serialized offending values. The separately authorized
 coordinator repair is committed as `197d150b`, so CMD8 no longer depends on
 hidden worktree state.
 
+Code-review M3 R2 found five additional issues. The second correction
+preserves the immutable activation inventory when a historical contract later
+adopts the marker, retains accepted marked artifacts through rollback,
+contains explicit and derived companion paths before any read, accepts valid
+CommonMark alignment separators, treats deletion as a changed contract
+surface, and rejects symlinked historical inventory roots and entries.
+
 ## Validation
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-boundary-first-validation.py` | pass; 39 tests after R1 |
+| `python scripts/test-boundary-first-validation.py` | pass; 44 tests after R2 |
 | `python scripts/validate-boundary-first.py --check` | pass; pending activation baseline |
 | `python scripts/test-select-validation.py` | pass; 134 tests |
 | `python -m py_compile scripts/boundary_first_validation.py scripts/validate-boundary-first.py scripts/test-boundary-first-validation.py` | pass |
@@ -61,6 +68,6 @@ hidden worktree state.
 
 ## Handoff
 
-M3 is ready for an independent code review against the approved proof-model
+M3 is ready for independent code-review R3 against the approved proof-model
 spec, test spec, architecture decision, plan, implementation diff, fixtures,
 and bounded validation evidence. M4 remains blocked until M3 review closes.

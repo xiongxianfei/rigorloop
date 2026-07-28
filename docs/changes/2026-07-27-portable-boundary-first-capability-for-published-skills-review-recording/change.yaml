@@ -22,7 +22,7 @@ tests:
 validation:
   -
     command: python scripts/test-boundary-first-validation.py
-    result: pass_39_tests_M3_after_PBF-M3-CR1_through_PBF-M3-CR7
+    result: pass_44_tests_M3_after_PBF-M3-CR1_through_PBF-M3-CR13
   -
     command: python scripts/validate-boundary-first.py --check
     result: pass_pending_activation_baseline_M3
@@ -153,10 +153,10 @@ changed_files:
   - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m2-r2.md
 review:
   status: changes-requested
-  unresolved_items: 5
+  unresolved_items: 0
   material_findings: 32
-  closed_findings: 27
-  open_findings: 5
+  closed_findings: 32
+  open_findings: 0
   proposal_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r3.md
   spec_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r2.md
   architecture_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/architecture-review-r2.md
