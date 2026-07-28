@@ -8,7 +8,7 @@
 
 ## Status
 
-draft
+approved
 
 Boundary-first contract activation: pending
 Activation record identity: -
@@ -760,9 +760,10 @@ contract.
 - Workflow contract amendment: [RigorLoop Workflow](rigorloop-workflow.md).
 - Published-skill contract amendment: [Skill Contract](skill-contract.md).
 - Spec-review R2: [approved](../docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r2.md).
+- Spec-review R5: [approved](../docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r5.md).
 
 ## Readiness
 
-Draft revision ready for independent spec-review.
+Approved for architecture alignment.
 Published activation remains `pending` until the complete governed skill and
 package bundle passes the release-scoped activation contract.
