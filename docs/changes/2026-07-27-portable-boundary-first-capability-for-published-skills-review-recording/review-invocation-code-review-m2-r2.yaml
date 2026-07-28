@@ -1,0 +1,80 @@
+schema_version: 1
+review_id: code-review-m2-r2
+review_stage: code-review
+review_target: commit:2cff6401
+base_revision: e7fe4d20
+head_revision: 2cff6401
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: run-pbf-20260727-verify-correction-m2-r1
+reviewer_context_id: isolated-m2-r2-primary
+context_separation_mechanism: fresh-reviewer-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - published-multi-surface-contract
+  - generated-output-machinery
+  - requirement-fidelity
+risk_tier_classifier: affected-path-and-surface-v1
+governing_artifacts:
+  - specs/boundary-first-proof-model.md
+  - specs/boundary-first-proof-model.test.md
+  - docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  - docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-proof-model.md
+    revision: 71af80d1
+    sha256: d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+  - path: specs/boundary-first-proof-model.test.md
+    revision: 71af80d1
+    sha256: c7666cb2205e150cf8e43487087ab4cd3401b532d87d93d51832a211926a71c1
+  - path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+    revision: 2cff6401
+    sha256: 143ad98162410593693bfecc856b2224836de6f0cd27d1c6dcf3c0e2a916af28
+  - path: docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md
+    revision: 71af80d1
+    sha256: 030caf8fe3920810b603d53c3b449b1caeb81c676a8ed336a1e93af769503740
+  - path: commit:2cff6401.diff
+    revision: 2cff6401
+    sha256: 82aee43fe96cff80e83c6aed2c760a50d83dbc6d2dfc76c70a35517d1243d150
+initial_packet_sha256: cf10e81e271bdbbfb528d2c06317a0aeb297c9c0dde748015cf204de29970d6f
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
+second_review:
+  required: true
+  satisfied: true
+  reviewer_context_id: isolated-m2-r2-second
+  result: clean-with-notes
+risk_map:
+  affected_behavior: direct proof for ten stage-owned semantic outcomes and handoffs
+  highest_impact_failure_modes: phrase-only proof, missing stage, wrong owner or routing, semantic validator overclaim, or scope escape
+  changed_boundaries: semantic fixture schema, fixture-to-skill guidance, and review-resolution lifecycle state
+  evidence_expected: structured records, exact ten-stage packets, negative mutations, generated parity, and allowed-path containment
+  direct_inspection_areas: fixture record linkage, closed matrices, mutation cases, skill guidance, and correction diff
+  intentionally_out_of_scope: M3 structural parsing, M4 package parity and activation, runtime certification, and external actions
+  applicable_risk_classes:
+    - requirement-fidelity
+    - negative-proof
+    - test-validity
+    - lifecycle-state
+  non_applicable_risk_classes:
+    - network-api
+    - credential-handling
+    - active-activation
+    - release-publication
+  falsifiable_questions:
+    - Can phrase-only fixture data satisfy the corrected contract?
+    - Does every governed stage have exactly one packet and exact owner, outcome, and handoff?
+    - Do wrong owners, outcomes, handoffs, and missing coverage fail?
+    - Did the correction alter semantic production validation or a forbidden surface?

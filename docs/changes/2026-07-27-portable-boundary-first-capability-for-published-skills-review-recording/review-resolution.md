@@ -2,8 +2,9 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
+Review closeout: code-review-m2-r2
 Review closeout: code-review-m2-r1
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -22,7 +23,7 @@ Review closeout: code-review-m1-r4
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 19
 - Unresolved findings: 0
-- Final result: PBF-M2-CR1 is resolved by validated correction and awaits same-stage code-review R2.
+- Final result: PBF-M2-CR1 is resolved and code-review M2 R2 closes M2.
 
 ## Resolution Overview
 
@@ -49,6 +50,13 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### code-review-m2-r2
+
+Review closeout: code-review-m2-r2
+
+No material findings.
+R2 independently confirms PBF-M2-CR1 resolved and closes M2.
 
 ### code-review-m2-r1
 
