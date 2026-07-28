@@ -105,11 +105,11 @@ an explicit blocking gap before implementation begins.
 
 - Current milestone: M3. Structural and activation validation
 - Current milestone state: planned
-- Latest review evidence: plan-review R3 approved the simplified M3/M4 plan with no material findings
+- Latest review evidence: the test spec now maps the approved two-state manifest and read-only rollback package proof and awaits test-spec-review R3
 - Last reviewed milestone: M2
-- Review status: approved; stage=plan-review; round=r3
+- Review status: review-requested; stage=test-spec-review; round=r3
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: test-spec revision for the approved release-manifest contract
+- Next stage: test-spec-review R3 for the approved release-manifest contract
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 

@@ -7,7 +7,7 @@
 
 ## Status
 
-active
+draft
 
 ## Related spec and plan
 
@@ -16,18 +16,18 @@ active
   `docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md`
 - Architecture: `docs/architecture/system/architecture.md`
 - ADR:
-  `docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md`
+  `docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md`
 
 ## Input artifact identities
 
 | Input | Path | Status / Review state | Identity |
 | --- | --- | --- | --- |
-| Feature spec | `specs/boundary-first-proof-model.md` | approved | `sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b` |
-| Spec review | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r2.md` | approved | `sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68` |
-| Plan | `docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md` | active; plan-review approved; test-spec-review R1 findings resolved pending R2 | `sha256:78d38838f9a88a2b697b8028dc38381a3f9bba9603d9faea7081173ca55067fd` |
-| Plan review | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/plan-review-r1.md` | approved | `sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495` |
-| Architecture | `docs/architecture/system/architecture.md` | approved | `sha256:176721282860df20ea71eb403c20bf725e86a99d90092ecc42c9605622066325` |
-| ADR | `docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md` | accepted | `sha256:030caf8fe3920810b603d53c3b449b1caeb81c676a8ed336a1e93af769503740` |
+| Feature spec | `specs/boundary-first-proof-model.md` | approved; spec-review R5 | `sha256:7d10f72e7dfca18c08c4f7117846c5a655f060f5087ec196725a2c5494af25d1` |
+| Spec review | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r5.md` | approved | `sha256:4ed509fc263fc8c14b1a7508ebc0d9d30968af55cc96be77a4093d352da2ea89` |
+| Plan | `docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md` | active; plan-review R3 approved | `sha256:b90ed82fc688368f5b6ae7dd642defa2355fde71235be6c598d24dc9879587b1` |
+| Plan review | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/plan-review-r3.md` | approved | `sha256:dbfe83fe10fedc10456842b121c32b1889f627e6aa8d083c80d41e67cab6f2ae` |
+| Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review R4 | `sha256:65bc44c6d8a8a6de23879144dca6c524b69558a178ab9127f03907b1f3761843` |
+| ADR | `docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md` | accepted | `sha256:3d09255eb51dacb2fd2fe756a656fc9719edd6de99763f23ae9ad09fd1b1c1e2` |
 
 ## Testing strategy
 
@@ -41,10 +41,11 @@ End-to-end local tests build adapter archives, install Codex, Claude Code, and
 opencode into empty temporary projects, and inspect every governed installed
 skill without network access.
 Smoke proof runs repository broad smoke only after all milestone-local tests.
-Migration proof verifies deterministic grandfathering, prospective adoption,
-nonterminal in-flight blocking, and coherent rollback.
+Migration proof verifies parent-revision grandfathering, prospective adoption,
+active-only in-flight opt-in, and read-only rollback package selection.
 Manual proof is unnecessary because byte identity, package presence, cold-read
-availability, and state transitions are deterministically observable.
+availability, manifest states, and rollback package identities are
+deterministically observable.
 
 This bootstrap feature spec does not carry
 `boundary_contract: boundary-first-v1` while activation is pending, so
@@ -95,7 +96,7 @@ they do not invent bootstrap boundary IDs.
 | Normative surface | Covered by | Command IDs | Required milestone | Direct proof |
 | --- | --- | --- | --- | --- |
 | Structural diagnostic fields | T5 | CMD6, CMD7 | M3 | Failure assertions include artifact, record surface, stable check ID, offending value or reference, and expected closed contract. |
-| Activation diagnostic fields | T8, T9 | CMD6, CMD7, CMD11, CMD12 | M3 and M4 | Evidence includes activation-record, baseline, inventory, and structurally unclassified-spec identities. |
+| Activation diagnostic fields | T8, T9, T13 | CMD6, CMD7, CMD11 | M3 and M4 | Evidence includes state, release tags, parent baseline, path inventory, package matrix, and structurally unclassified-spec identities. |
 | Packaging diagnostic fields | T11 | CMD9, CMD10 | M4 | A divergent fixture reports skill, path, expected and actual SHA-256, and first divergent layer. |
 | Review-record semantic fields | T10, T16 | CMD4, CMD14 | M2 | Review fixtures name reviewed identity, semantic owner, findings, required outcomes, and disposition state. |
 | Structural validators do not claim semantic completeness | T6, T15 | CMD4, CMD6, CMD7 | M2 and M3 | Validator output forbids approval/completeness claims while review fixtures own semantic findings. |
@@ -109,7 +110,8 @@ they do not invent bootstrap boundary IDs.
 | E1 | T4, T6 | A simple adopting fixture uses concise non-applicability without a separate artifact or interaction matrix. |
 | E2 | T6, T16 | A retry example without requirement ownership becomes a discovery and blocks downstream work. |
 | E3 | T7, T10 | Helper-only proof fails when public and sibling paths are admitted. |
-| E4 | T9, T13 | A grandfathered accepted spec remains valid through activation and rollback. |
+| E4 | T9, T13 | A grandfathered accepted spec remains valid through activation and package rollback. |
+| E5 | T13 | Existing immutable release metadata proves rollback readiness without repository or external mutation. |
 
 ## Edge case coverage
 
@@ -146,8 +148,7 @@ they do not invent bootstrap boundary IDs.
 | CMD8 | `python scripts/test-select-validation.py` | existing/configured | implement | M3 | code-review M3 | block selector integration | zero tests is failure | change metadata validation entry | local tests only |
 | CMD9 | `python scripts/test-adapter-distribution.py` | existing/configured | implement | M4 | code-review M4 | block adapter package proof | zero tests is failure | change metadata validation entry | local fixtures and temporary archives only |
 | CMD10 | `python scripts/test-boundary-first-packaging.py` | planned-for-implementation | implement | M4 | code-review M4 | block packed and installed parity | zero tests is failure | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-install-evidence.yaml` | builds local archives and installs only into temporary projects; no network or publication |
-| CMD11 | `python scripts/activate-boundary-first.py --check` | planned-for-implementation | implement | M4 | before activation write | block activation on incomplete baseline | not applicable; deterministic check | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-activation-evidence.yaml` | read-only readiness check |
-| CMD12 | `python scripts/activate-boundary-first.py --write` | planned-for-implementation | implement | M4 | M4 activation settlement | fail before mutation or restore pre-write bytes on interruption | not applicable; state writer | `specs/boundary-first-activation.yaml`; activation evidence | repository-local bounded mutation of the proof-model status and activation record only; no external action |
+| CMD11 | `python scripts/test-boundary-first-validation.py -k active_rollback_release_matches_current_adapter_metadata` | planned-for-implementation | implement | M4 | code-review M4 | block rollback-readiness proof | zero tests is failure | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-activation-evidence.yaml` | read-only current metadata integration; no install or publication |
 | CMD13 | `bash scripts/ci.sh --mode broad-smoke` | existing/configured | implement | M4 | code-review M4 | block M4 closeout | zero selected tests is failure | change metadata validation entry | local repository validation; no publication |
 | CMD14 | `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording` | existing/configured | test-spec-review / verify | lifecycle | test-spec-review | block malformed review evidence | not applicable; validator | review log | local read-only validation |
 | CMD15 | `python scripts/validate-change-metadata.py docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/change.yaml` | existing/configured | test-spec / verify | lifecycle | test-spec authoring | block stale change metadata | not applicable; validator | change metadata | local read-only validation |
@@ -160,7 +161,7 @@ they do not invent bootstrap boundary IDs.
 | M1 | T1, T2 | none | CMD1, CMD2, CMD15 | canonical and projected references; `boundary-reference-evidence.yaml` | code-review M1 | Proves one source, closed consumers, byte projection, digest, and portable method content. |
 | M2 | T3, T6, T10, T16, T17 | none | CMD3, CMD4, CMD5, CMD15 | governed `SKILL.md` files; semantic review fixtures | code-review M2 | Proves stage-local responsibility, readable published content, and stage-owned semantics while every stage reads the same method. |
 | M3 | T4, T5, T7, T8, T9, T15, T17 | none | CMD6, CMD7, CMD8, CMD15 | validator fixtures; pending activation record; `boundary-validation-evidence.yaml` | code-review M3 | Proves shape/reference enforcement, privacy-bounded evidence, baseline classification, selection, and semantic claim limits. |
-| M4 | T11, T12, T13, T14 | none | CMD2, CMD5, CMD7, CMD9, CMD10, CMD11, CMD12, CMD13, CMD14, CMD15, CMD16 | generated trees; local archives; installed trees; activation, install, and rollback evidence | code-review M4 | CMD13 is required before code-review M4; CMD16 is explicitly deferred to final verify for an independent coherent-surface rerun. |
+| M4 | T11, T12, T13, T14 | none | CMD2, CMD5, CMD7, CMD9, CMD10, CMD11, CMD13, CMD14, CMD15, CMD16 | generated trees; local archives; installed trees; activation, install, and rollback evidence | code-review M4 | CMD11 proves current release-metadata integration; CMD13 is required before code-review M4; CMD16 is deferred to final verify. |
 
 ## Test cases
 
@@ -255,18 +256,18 @@ they do not invent bootstrap boundary IDs.
 - Automation location: `scripts/test-boundary-first-validation.py`
 - Required by milestone: M3
 
-### T8. Activation record and authoritative state form one complete baseline
+### T8. Release manifest has one closed two-state contract
 
 - Covers: PBF-R003, PBF-R005-PBF-R007, PBF-R049a-PBF-R049b, PBF-R053, EC8-EC10
 - Level: integration
-- Command IDs: CMD6, CMD7, CMD11, CMD12
-- Fixture/setup: pending, active, interrupted, mismatched, incomplete, mixed-version, and fixed-authority-symlink activation worktrees.
-- Steps: Generate accepted-spec inventory and digests; reject symlinked activation and proof-model authority before reads; check readiness; exercise the writer in temporary worktrees; interrupt between prepared and committed states.
-- Expected result: Only a complete verified baseline becomes active, authoritative spec and YAML states agree, and interrupted or mixed baselines fail closed.
-- Failure proves: repository activation can be partial, ambiguous, or unauditable.
+- Command IDs: CMD6, CMD7
+- Fixture/setup: pending, active, incomplete, mixed-version, and fixed-authority-symlink release manifests.
+- Steps: Validate closed states and fields; require `-` release and baseline values while pending; require immutable activating and rollback tags plus the full parent commit while active; reject symlinked authoritative inputs before reads.
+- Expected result: Complete pending and active fixtures pass, while unknown, incomplete, mixed, or unsafe manifests fail closed.
+- Failure proves: release activation evidence can be ambiguous or unauditable.
 - Evidence artifact: `boundary-activation-evidence.yaml`
 - Automation location: `scripts/test-boundary-first-validation.py`
-- Required by milestone: M3 for pending validation; M4 for active transition
+- Required by milestone: M3
 
 ### T9. Prospective compatibility distinguishes historical paths without semantic inference
 
@@ -275,7 +276,7 @@ they do not invent bootstrap boundary IDs.
 - Command IDs: CMD6, CMD7
 - Fixture/setup: accepted historical specs, nonterminal in-flight specs, new specs, marked specs, and grandfathered edits.
 - Steps: Build the activation inventory and validate each post-activation case.
-- Expected result: Accepted paths remain valid, new behavior specs require the marker, in-flight specs opt in or block, and grandfathered edits route to `spec-review` without validator classification.
+- Expected result: Accepted baseline paths remain valid, paths introduced by the activating change cannot self-grandfather, new behavior specs require the marker after activation, in-flight opt-in is active-only, and grandfathered edits route to `spec-review` without validator classification.
 - Failure proves: rollout either invalidates history or creates an unintended exemption.
 - Evidence artifact: `boundary-validation-evidence.yaml`
 - Automation location: `scripts/test-boundary-first-validation.py`
@@ -320,16 +321,16 @@ they do not invent bootstrap boundary IDs.
 - Automation location: `scripts/test-boundary-first-packaging.py`
 - Required by milestone: M4
 
-### T13. Rollback is coherent and preserves accepted boundary-first artifacts
+### T13. Rollback package selection is read-only and complete
 
 - Covers: PBF-R057-PBF-R058, E4, EC10
 - Level: integration
-- Command IDs: CMD6, CMD7, CMD10, CMD11, CMD12
-- Fixture/setup: an active temporary worktree with accepted marked feature/proof pairs, a new post-rollback self-declared `approved` pair, and complete package evidence.
-- Steps: Prepare the M4 transaction receipt while state is active; bind its source activation identity and paired feature/proof path-and-byte identities; change state; validate all governed surfaces; attempt current-state receipt recomputation and proof deletion; inspect accepted artifacts and activation history.
-- Expected result: M3 rejects every rolled-back state until the M4 receipt validator exists. M4 then accepts only exact receipt-bound feature/proof pairs; current-state recomputation, missing or stale proofs, and new markers fail.
-- Failure proves: recovery can invalidate history or leave mixed versions.
-- Evidence artifact: `boundary-rollback-evidence.yaml`
+- Command IDs: CMD6, CMD7, CMD11
+- Fixture/setup: active manifests selecting valid and invalid rollback releases, current `dist/adapters/manifest.yaml`, isolated adapter-metadata fixtures, and one real tracked release metadata file.
+- Steps: Validate missing, additional, duplicated, failing, and mixed-version fixture entries; then run the focused integration proof against current adapter support and tracked release metadata.
+- Expected result: Exactly one passing archive identity per supported adapter produces an ordered adapter/archive/SHA-256 matrix; every incomplete or mixed matrix fails without mutation.
+- Failure proves: rollback readiness can select an incomplete or inconsistent package bundle.
+- Evidence artifact: `boundary-activation-evidence.yaml`
 - Automation location: `scripts/test-boundary-first-validation.py`
 - Required by milestone: M4
 
@@ -393,8 +394,8 @@ they do not invent bootstrap boundary IDs.
   malformed, semantic-omission, discovery, and interaction fixtures.
 - `scripts/fixtures/boundary-first/proof-maps/`: complete, gap, invalid
   reference, transition, mutation, retry, recovery, and composed-path fixtures.
-- `scripts/fixtures/boundary-first/activation/`: pending, active, rolled-back,
-  mismatched, interrupted, historical, in-flight, and new-spec fixtures.
+- `scripts/fixtures/boundary-first/activation/`: pending, active, mismatched,
+  incomplete, historical, in-flight, new-spec, and rollback-metadata fixtures.
 - Existing skill and adapter fixture helpers should be extended rather than
   duplicating archive construction or clean-install logic.
 
@@ -404,8 +405,7 @@ or caller-asserted runtime identity.
 
 ## Mocking/stubbing policy
 
-Filesystem and interruption behavior may use temporary directories and an
-injected atomic-replace failure hook.
+Filesystem behavior may use temporary directories.
 Adapter cold-read tests must use real locally built archives and the existing
 installer path; they must not mock resource copying or installed-tree reads.
 Network, model, sandbox, and runtime-attestation services are neither mocked
@@ -415,19 +415,17 @@ nor invoked because they are outside the capability.
 
 T8, T9, and T13 own migration coverage.
 The activation inventory uses accepted, approved, and active top-level feature
-specs only, excludes `README.md` and `*.test.md`, and records exact raw-byte
-identities.
+spec paths present at the full parent commit only and excludes `README.md`,
+`*.test.md`, this bootstrap spec, marked specs, and later-introduced paths.
 Historical path membership is structural; substantive revision remains a
 `spec-review` judgment.
-Rollback preserves only accepted feature/proof pairs captured by the M4
-pre-transition receipt plus historical activation evidence. The rolled-back
-activation record binds that receipt's raw bytes. A new self-declared status
-or a receipt reconstructed solely from rolled-back files cannot authorize
-adoption.
+Rollback validation reads the manifest-selected immutable release's existing
+adapter metadata and compares it with current adapter support.
+It writes no repository state and performs no installation or publication.
 
 ## Observability verification
 
-Projection, validation, activation, packaging, and rollback commands emit
+Projection, validation, packaging, and rollback-readiness checks emit
 stable failure codes plus affected path, skill, target, expected value, and
 actual value where applicable.
 Evidence YAML records command ID, result, relevant aggregate identity, and
@@ -455,7 +453,7 @@ CMD16 independently reruns broad smoke during final verify.
 ## Manual QA checklist
 
 Not applicable.
-All required content, byte, reference, package, install, state, and rollback
+All required content, byte, reference, package, install, manifest, and rollback
 claims have deterministic automated proof.
 
 ## What not to test and why
