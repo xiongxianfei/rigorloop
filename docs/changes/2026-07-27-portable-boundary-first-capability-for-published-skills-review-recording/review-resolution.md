@@ -2,8 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
+Review closeout: code-review-m4-r1
 Review closeout: test-spec-review-r9
 Review closeout: test-spec-review-r7
 Review closeout: plan-review-r4
@@ -49,13 +50,15 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 62
-- Unresolved findings: 0
-- Final result: PBF-TSR7-1 and PBF-TSR8-1 are resolved by the approved adapter-applicable proof map and exact R6 plan identities.
+- Unresolved findings: 2
+- Final result: PBF-M4-CR1 and PBF-M4-CR2 remain open for authoritative production rollback validation and direct containment proof.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-M4-CR1 | accepted | in-progress | Bind rollback selection to the fixed validated activation manifest and production CLI. |
+| PBF-M4-CR2 | accepted | in-progress | Prove authoritative-path containment and complete non-mutation. |
 | PBF-TSR8-1 | accepted | resolved | Replace stale plan and plan-review identities with approved R6 inputs. |
 | PBF-PLR5 | accepted | resolved | Synchronize the complete Current Handoff cursor. |
 | PBF-PLR4 | accepted | resolved | Synchronize the Current Handoff Summary with the open review state. |
@@ -120,6 +123,35 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### code-review-m4-r1
+
+#### PBF-M4-CR1 - Rollback selection lacks authoritative production integration
+
+Finding ID: PBF-M4-CR1
+Disposition: accepted
+Status: in-progress
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Add an authoritative selector/result and enforce it in active
+validation and CLI output.
+Rationale: Only the fixed validated activation manifest may select rollback.
+Validation target: code-review M4 R2.
+Validation evidence: Pending.
+
+#### PBF-M4-CR2 - Containment and full non-mutation lack direct proof
+
+Finding ID: PBF-M4-CR2
+Disposition: accepted
+Status: in-progress
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Add missing, non-regular, symlink, outside-sentinel, and full
+fixture-tree non-mutation regressions.
+Rationale: Read-only claims require direct negative proof at authoritative
+paths.
+Validation target: code-review M4 R2.
+Validation evidence: Pending.
 
 ### test-spec-review-r9
 

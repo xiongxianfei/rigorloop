@@ -104,14 +104,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M4. Package parity and prospective activation
-- Current milestone state: review-requested
-- Latest review evidence: M4 passed focused package, install, rollback-metadata, full adapter, full boundary, and 12-check broad-smoke validation
+- Current milestone state: resolution-needed
+- Latest review evidence: code-review M4 R1 recorded PBF-M4-CR1 and PBF-M4-CR2
 - Last reviewed milestone: M3
-- Review status: review-requested; stage=code-review; round=r1
+- Review status: resolution-needed; stage=review-resolution; round=r1
 - Remaining in-scope implementation milestones: M4
-- Next stage: code-review M4 R1
+- Next stage: resolve PBF-M4-CR1 and PBF-M4-CR2, then code-review M4 R2
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=open; open-count=2; open-findings=PBF-M4-CR1,PBF-M4-CR2
 
 ## Milestones
 
@@ -227,7 +227,7 @@ an explicit blocking gap before implementation begins.
 
 ### M4. Package parity and prospective activation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
    - primary trust boundary: release readiness across canonical, generated,
      packed, and installed skill surfaces
    - deliverables:
