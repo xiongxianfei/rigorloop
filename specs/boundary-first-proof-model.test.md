@@ -301,7 +301,7 @@ they do not invent bootstrap boundary IDs.
 - Level: integration
 - Command IDs: CMD2, CMD5, CMD9, CMD10
 - Fixture/setup: generated skill mirrors and local Codex, Claude Code, and opencode release archives.
-- Steps: Build each surface, enumerate all ten mapped references, compare relative paths and raw-byte SHA-256, then perturb one archive fixture.
+- Steps: Build each surface, enumerate every governed reference included by the existing adapter support decision, compare relative paths and raw-byte SHA-256, then perturb one archive fixture.
 - Expected result: Every surface matches canonical bytes and one perturbed package fails with target, skill, path, expected hash, and actual hash.
 - Failure proves: a correct canonical source can ship as a stale or incomplete package.
 - Evidence artifact: `boundary-install-evidence.yaml`
@@ -315,7 +315,7 @@ they do not invent bootstrap boundary IDs.
 - Command IDs: CMD10
 - Fixture/setup: empty temporary projects and locally packed archives for all three targets.
 - Steps: Install each target locally, cold-read every governed `SKILL.md` and mapped reference, and compare bytes while network access and repository-root lookup are unavailable.
-- Expected result: All thirty target/skill combinations are self-contained and byte-identical.
+- Expected result: Every adapter-included governed target/skill combination is self-contained and byte-identical; exclusions remain owned by the existing adapter portability decision rather than this capability.
 - Failure proves: the user-visible capability depends on maintainer infrastructure or an omitted package resource.
 - Evidence artifact: `boundary-install-evidence.yaml`
 - Automation location: `scripts/test-adapter-distribution.py`
@@ -445,8 +445,9 @@ identity, hidden reasoning, or user data is recorded.
 ## Performance checks
 
 Unit and structural suites should remain bounded by the fixture inventory.
-The thirty-combination cold-read matrix may share each target's locally built
-archive and installation but must inspect every governed skill independently.
+The cold-read matrix may share each target's locally built archive and
+installation but must inspect every adapter-included governed skill
+independently.
 CMD13 runs broad smoke after M4 milestone-local checks and before code-review
 M4.
 CMD16 independently reruns broad smoke during final verify.

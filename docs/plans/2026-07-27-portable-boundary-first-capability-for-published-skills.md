@@ -104,12 +104,12 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M4. Package parity and prospective activation
-- Current milestone state: implementing
-- Latest review evidence: test-spec-review R6 approved reuse of the existing adapter-distribution suite
+- Current milestone state: planned
+- Latest review evidence: M4 implementation discovered that the existing adapter support decision publishes workflow only for Codex, so the proof matrix must cover adapter-included combinations
 - Last reviewed milestone: M3
-- Review status: approved; stage=test-spec-review; round=r6
+- Review status: review-requested; stage=test-spec-review; round=r7
 - Remaining in-scope implementation milestones: M4
-- Next stage: implement M4 without a standalone packaging script
+- Next stage: test-spec-review R7 for adapter-applicable package coverage
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
