@@ -16,8 +16,8 @@ Review closeout: test-spec-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 17
-- Unresolved findings: 0
-- Final result: All M1 R1 and R2 findings are resolved; M1 awaits code-review R3.
+- Unresolved findings: 1
+- Final result: M1 R3 requires direct write-mode and combined-error proof; automatic correction authority is exhausted.
 
 ## Resolution Overview
 
@@ -40,6 +40,7 @@ Review closeout: test-spec-review-r2
 | PBF-M1-CR1 | accepted | resolved | Parent-directory symlink escape is rejected before outside reads or writes. |
 | PBF-M1-CR2 | accepted | resolved | Symlinked unexpected consumers fail closed without traversal. |
 | PBF-M1-CR3 | accepted | resolved | Symlink regression outside fixtures use managed cleanup. |
+| PBF-M1-CR4 | accepted | open | Unexpected-consumer symlink proof requires write-mode non-mutation and combined-error coverage. |
 
 ## Finding Details
 
@@ -320,3 +321,17 @@ Chosen action: Allocate each outside fixture with its own registered `TemporaryD
 Rationale: The correction is deterministic test-fixture hygiene and does not alter product behavior or the approved contract.
 Validation target: `python scripts/test-boundary-first-reference.py`; `python scripts/project-boundary-first-reference.py --check`
 Validation evidence: Commit `ffa692c0`; outside fixtures now use registered `TemporaryDirectory` cleanup, and the legacy sibling-directory count remained unchanged across the ten-test run.
+
+### code-review-m1-r3
+
+#### PBF-M1-CR4 - Unexpected-consumer symlink proof omits write mode and combined errors
+
+Finding ID: PBF-M1-CR4
+Disposition: accepted
+Status: open
+Owner: implementation
+Owning stage: review-resolution M1
+Chosen action: Pending renewed correction authority, extend the focused regression over check/write and add immutable outside-sentinel plus combined-error assertions.
+Rationale: The required test shape is deterministic, but the active two-cycle automatic correction budget is exhausted.
+Validation target: `python scripts/test-boundary-first-reference.py`; `python scripts/project-boundary-first-reference.py --check`
+Validation evidence: blocked pending renewed correction authority
