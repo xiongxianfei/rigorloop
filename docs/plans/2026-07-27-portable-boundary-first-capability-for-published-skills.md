@@ -104,14 +104,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M4. Package parity and prospective activation
-- Current milestone state: review-requested
-- Latest review evidence: PBF-M4-CR1 and PBF-M4-CR2 are resolved by authoritative active validation and containment/non-mutation proof
-- Last reviewed milestone: M3
-- Review status: review-requested; stage=code-review; round=r2
-- Remaining in-scope implementation milestones: M4
-- Next stage: code-review M4 R2
+- Current milestone state: closed
+- Latest review evidence: code-review M4 R2 is clean-with-notes; two independent reviewers confirmed PBF-M4-CR1 and PBF-M4-CR2 resolved
+- Last reviewed milestone: M4
+- Review status: clean-with-notes; stage=code-review; round=r2
+- Remaining in-scope implementation milestones: none
+- Next stage: explain-change
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -227,7 +227,7 @@ an explicit blocking gap before implementation begins.
 
 ### M4. Package parity and prospective activation
 
-- Milestone state: review-requested
+- Milestone state: closed
    - primary trust boundary: release readiness across canonical, generated,
      packed, and installed skill surfaces
    - deliverables:
@@ -264,10 +264,10 @@ an explicit blocking gap before implementation begins.
      - [x] installed cold-read evidence recorded
      - [x] hand off to code-review for M4
    - review closeout:
-     - [ ] code-review completed
-     - [ ] material findings resolved or explicitly dispositioned
-     - [ ] all in-scope implementation milestones closed
-     - [ ] hand off to explain-change
+     - [x] code-review completed
+     - [x] material findings resolved or explicitly dispositioned
+     - [x] all in-scope implementation milestones closed
+     - [x] hand off to explain-change
    - milestone commit message:
      `M4: prove portable boundary-first release readiness`
 
@@ -434,7 +434,12 @@ A material review finding reopens its owning milestone and blocks the next one.
 - Historical M3 validation passed 48 focused tests and 134 selector tests, but
   its activation and rollback assertions are invalidated by the approved
   two-state release-manifest contract and must be replaced before reliance.
-- M4 implementation validation commands remain planned and have not run.
+- M4 targeted validation passed 56 boundary tests, 133 adapter tests, two
+  focused package/install tests, and the 12-check broad-smoke suite.
+- Code-review M4 R2 was clean-with-notes from two independent reviewers and
+  closed all in-scope implementation milestones without adding a writer,
+  receipt, transaction, publication action, runtime certification, or
+  standalone support script.
 
 ## Outcome and retrospective
 
