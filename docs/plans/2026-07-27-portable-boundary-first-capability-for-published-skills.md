@@ -52,13 +52,14 @@ reviewable slices.
   `test-spec-review`, `implement`, `code-review`, and `verify`.
 - Closed structural validation for boundary records, proof maps, activation
   state, source/consumer inventory, identifiers, and references.
-- Deterministic activation and grandfathered-spec inventory evidence.
+- One reviewed release-activation manifest and deterministic grandfathered
+  path inventory derived from its immutable parent revision.
 - Generated, packed, and installed parity proof for Codex, Claude Code, and
   opencode.
 - Review fixtures that distinguish structural validity from semantic
   completeness.
-- Atomic lifecycle settlement of the contract, activation record, governed
-  skills, validators, package evidence, and plan state.
+- Coherent release readiness across the contract, activation manifest,
+  governed skills, validators, package evidence, and plan state.
 
 ### Out of scope
 
@@ -103,12 +104,12 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M3. Structural and activation validation
-- Current milestone state: resolution-needed
-- Latest review evidence: architecture-review R4 approved the simplified release-manifest and package-rollback architecture
+- Current milestone state: planned
+- Latest review evidence: architecture-review R4 approved the simplified release-manifest and package-rollback architecture; this revision removes stale M3 and M4 transaction work
 - Last reviewed milestone: M2
-- Review status: approved; stage=architecture-review; round=r4
+- Review status: review-requested; stage=plan-review; round=r2
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: plan revision for the simplified M3 and M4 scope
+- Next stage: plan-review R2 for the simplified M3 and M4 scope
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
@@ -183,15 +184,24 @@ an explicit blocking gap before implementation begins.
 
 ### M3. Structural and activation validation
 
-- Milestone state: resolution-needed
+- Milestone state: planned
    - primary trust boundary: deterministic shape/reference enforcement without
      semantic overclaiming
    - deliverables:
      - add boundary-record and proof-map structural validation with exact
        headings, columns, vocabulary, identifiers, sentinels, and references;
      - reject unknown closed values before downstream consistency checks;
-     - validate `specs/boundary-first-activation.yaml`, the authoritative spec
-       state, grandfathered inventory membership, and both specified digests;
+     - replace the superseded three-state activation schema with the closed
+       `pending` and `active` release-manifest fields;
+     - validate immutable activating and rollback release tags, the full
+       parent-revision baseline, and the sorted eligible path inventory;
+     - retain existing boundary-record, proof-map, projection, containment,
+       diagnostic, and selector behavior that remains governed;
+     - remove rollback receipt, writer, historical-hash, and repository
+       rollback-state behavior and tests;
+     - validate rollback package readiness from the selected release's
+       existing adapter artifact metadata and current adapter manifest without
+       external mutation;
      - route changed grandfathered specs to `spec-review` without inferring
        whether a revision is substantive;
      - add positive, negative, unknown-value, stale-evidence, cross-feature ID,
@@ -206,8 +216,8 @@ an explicit blocking gap before implementation begins.
    - recovery: remove selector routing and the new structural validators;
      leave the method and governed skills present but inactive.
    - implementation handoff:
-     - [x] targeted validation passed
-     - [x] hand off to code-review for M3
+     - [ ] targeted validation passed
+     - [ ] hand off to code-review for M3
    - review closeout:
      - [ ] code-review completed
      - [ ] material findings resolved or explicitly dispositioned
@@ -218,23 +228,21 @@ an explicit blocking gap before implementation begins.
 ### M4. Package parity and prospective activation
 
 - Milestone state: planned
-   - primary trust boundary: one reviewed activation baseline across canonical,
-     generated, packed, and installed surfaces
+   - primary trust boundary: release readiness across canonical, generated,
+     packed, and installed skill surfaces
    - deliverables:
      - extend adapter and installed-tree tests to verify the reference path and
        raw bytes for Codex, Claude Code, and opencode;
-     - generate and validate the complete grandfathered accepted-spec
-       inventory and deterministic identities;
-     - prepare the rollback transaction receipt while activation is active,
-       bind its source activation identity and paired feature/proof path and
-       byte identities, then validate the bound receipt after rollback;
+     - prove the reviewed pending manifest and active fixtures use the exact
+       release, baseline, and path-inventory contract;
      - perform clean installed-skill cold-read proof for all ten governed
        skills on each supported target;
-     - settle `specs/boundary-first-activation.yaml`, the proof-model spec
-       activation state and record identity, generated surfaces, fixtures, and
-       package evidence together;
-     - prove rollback changes state coherently while preserving accepted
-       marked artifacts and historical activation evidence;
+     - prove existing release metadata supports read-only rollback selection
+       for every current adapter;
+     - keep repository activation `pending` until a real reviewed release
+       change can provide immutable activating and rollback release tags;
+     - do not add an activation writer, rollback writer, receipt, transaction,
+       attestation store, or external release action;
      - update plan and change-local lifecycle evidence to the final
        explain-change handoff.
    - dependencies: M3 reviewed and closed
@@ -245,9 +253,9 @@ an explicit blocking gap before implementation begins.
      - `python scripts/validate-boundary-first.py --check`
    - broad validation:
      - `bash scripts/ci.sh --mode broad-smoke`
-   - recovery: set activation to `rolled-back` through the approved activation
-     path, restore coherent inactive validator/skill behavior, preserve the
-     accepted contract and activation history, and rerun package parity.
+   - recovery: retain the reviewed pending manifest and reinstall the previous
+     immutable package only through the operator-owned release process; no
+     repository rollback state is written.
    - implementation handoff:
      - [ ] targeted and broad validation passed
      - [ ] installed cold-read evidence recorded
@@ -356,16 +364,20 @@ A material review finding reopens its owning milestone and blocks the next one.
   repository rollback-state, and attestation requirements are removed.
   Downstream test-spec, architecture, plan, and implementation surfaces are
   stale until their owning stages align after spec-review R3.
+- 2026-07-28: spec-review R5 and architecture-review R4 approved the
+  release-manifest design. This plan revision resets M3 to planned, removes
+  receipt/writer/rolled-back work, and limits M4 to package and release
+  readiness while activation remains pending for a real release change.
 
 ## Decision log
 
 - 2026-07-27: split execution by four primary trust boundaries so the shared
-  source, skill semantics, deterministic enforcement, and activation/package
-  transaction can each close independently.
+  source, skill semantics, deterministic enforcement, and package readiness
+  can each close independently.
 - 2026-07-27: keep activation in M4; earlier milestones remain recoverable
   while the repository state is `pending`.
-- 2026-07-27: use dedicated projection and structural-validation commands so a
-  mutating writer is not hidden inside ordinary validation.
+- 2026-07-27: use the existing projection command and read-only structural
+  validation; activation remains an ordinary reviewed release-manifest edit.
 - 2026-07-28: keep activation metadata declarative and reviewed; do not add
   activation or rollback mutation commands. Operational rollback belongs to
   immutable package release selection.
@@ -415,9 +427,9 @@ A material review finding reopens its owning milestone and blocks the next one.
   `python scripts/test-skill-validator.py`, and
   `python scripts/build-skills.py --check` passed after PBF-M2-CR1; the suite
   now contains 263 tests and four focused boundary-first lifecycle tests.
-- M3: `python scripts/test-boundary-first-validation.py` passed 48 tests,
-  `python scripts/validate-boundary-first.py --check` passed the pending
-  baseline, and `python scripts/test-select-validation.py` passed 134 tests.
+- Historical M3 validation passed 48 focused tests and 134 selector tests, but
+  its activation and rollback assertions are invalidated by the approved
+  two-state release-manifest contract and must be replaced before reliance.
 - M4 implementation validation commands remain planned and have not run.
 
 ## Outcome and retrospective
@@ -434,7 +446,8 @@ A material review finding reopens its owning milestone and blocks the next one.
   inventory and byte-parity tests bound that risk.
 - Structural validation could overclaim semantic completeness; semantic
   omission fixtures and stage ownership keep that boundary explicit.
-- Activation could create mixed skill behavior; M4 blocks state settlement
-  until all canonical, generated, packed, and installed surfaces agree.
+- Activation could create mixed skill behavior; M4 proves release readiness,
+  while the later reviewed release change remains responsible for changing the
+  manifest from `pending` to `active`.
 - Historical specs could be misclassified; structural validation uses path
   membership while `spec-review` alone classifies substantive revisions.
