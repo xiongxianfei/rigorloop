@@ -147,7 +147,7 @@ they do not invent bootstrap boundary IDs.
 | CMD7 | `python scripts/validate-boundary-first.py --check` | planned-for-implementation | implement | M3 | code-review M3 | block on invalid record, activation, inventory, or parity | not applicable; deterministic check | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-validation-evidence.yaml` | read-only repository check |
 | CMD8 | `python scripts/test-select-validation.py` | existing/configured | implement | M3 | code-review M3 | block selector integration | zero tests is failure | change metadata validation entry | local tests only |
 | CMD9 | `python scripts/test-adapter-distribution.py` | existing/configured | implement | M4 | code-review M4 | block adapter package proof | zero tests is failure | change metadata validation entry | local fixtures and temporary archives only |
-| CMD10 | `python scripts/test-boundary-first-packaging.py` | planned-for-implementation | implement | M4 | code-review M4 | block packed and installed parity | zero tests is failure | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-install-evidence.yaml` | builds local archives and installs only into temporary projects; no network or publication |
+| CMD10 | `python scripts/test-adapter-distribution.py -k boundary_first` | existing/configured | implement | M4 | code-review M4 | block packed and installed parity | zero tests is failure | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-install-evidence.yaml` | extends existing archive and clean-install fixtures; no network or publication |
 | CMD11 | `python scripts/test-boundary-first-validation.py -k active_rollback_release_matches_current_adapter_metadata` | planned-for-implementation | implement | M4 | code-review M4 | block rollback-readiness proof | zero tests is failure | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-activation-evidence.yaml` | read-only current metadata integration; no install or publication |
 | CMD13 | `bash scripts/ci.sh --mode broad-smoke` | existing/configured | implement | M4 | code-review M4 | block M4 closeout | zero selected tests is failure | change metadata validation entry | local repository validation; no publication |
 | CMD14 | `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording` | existing/configured | test-spec-review / verify | lifecycle | test-spec-review | block malformed review evidence | not applicable; validator | review log | local read-only validation |
@@ -305,7 +305,7 @@ they do not invent bootstrap boundary IDs.
 - Expected result: Every surface matches canonical bytes and one perturbed package fails with target, skill, path, expected hash, and actual hash.
 - Failure proves: a correct canonical source can ship as a stale or incomplete package.
 - Evidence artifact: `boundary-install-evidence.yaml`
-- Automation location: `scripts/test-boundary-first-packaging.py`
+- Automation location: `scripts/test-adapter-distribution.py`
 - Required by milestone: M4
 
 ### T12. Clean installed skills expose the same method without repository or network access
@@ -318,7 +318,7 @@ they do not invent bootstrap boundary IDs.
 - Expected result: All thirty target/skill combinations are self-contained and byte-identical.
 - Failure proves: the user-visible capability depends on maintainer infrastructure or an omitted package resource.
 - Evidence artifact: `boundary-install-evidence.yaml`
-- Automation location: `scripts/test-boundary-first-packaging.py`
+- Automation location: `scripts/test-adapter-distribution.py`
 - Required by milestone: M4
 
 ### T13. Rollback package selection is read-only and complete
@@ -344,7 +344,7 @@ they do not invent bootstrap boundary IDs.
 - Expected result: The method remains usable from packaged content and project-local artifacts alone.
 - Failure proves: the initiative has regressed into the excluded trusted runtime system.
 - Evidence artifact: `boundary-install-evidence.yaml`
-- Automation location: `scripts/test-skill-validator.py`; `scripts/test-boundary-first-packaging.py`
+- Automation location: `scripts/test-skill-validator.py`; `scripts/test-adapter-distribution.py`
 - Required by milestone: M4
 
 ### T15. Validation selection includes boundary checks and unknown values fail closed
