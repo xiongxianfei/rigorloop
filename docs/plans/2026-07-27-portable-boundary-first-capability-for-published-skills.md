@@ -109,9 +109,9 @@ an explicit blocking gap before implementation begins.
 - Last reviewed milestone: M4
 - Review status: approved; stage=code-review; round=r2
 - Remaining in-scope implementation milestones: none
-- Next stage: verify
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: verify-pending — review-state=closed; open-count=0; open-findings=none
+- Next stage: pr
+- Final closeout readiness: ready
+- Reason final closeout is or is not ready: ready — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -443,10 +443,20 @@ A material review finding reopens its owning milestone and blocks the next one.
 - `explain-change.md` traces the accepted portable direction through the
   contract, four implementation boundaries, tests, and review closeout
   without claiming final verification.
+- Final verify reran 10 reference tests, 263 skill-validator tests, 56
+  boundary tests, 134 selector tests, 133 adapter tests, generated-skill and
+  projection parity, lifecycle and review closeout validation, and the
+  12-check broad-smoke suite. All passed.
 
 ## Outcome and retrospective
 
-- Pending implementation and final verification.
+- The portable capability is implemented, independently reviewed, explained,
+  and branch-ready.
+- The same canonical method is projected into every governed skill while each
+  installed skill remains self-contained.
+- Existing validation and adapter-distribution paths provide the necessary
+  proof; no standalone packaging, activation, rollback, transaction, receipt,
+  publication, or runtime-certification machinery was introduced.
 
 ## Readiness
 
