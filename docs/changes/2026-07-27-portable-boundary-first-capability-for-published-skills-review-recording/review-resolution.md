@@ -5,6 +5,7 @@
 Closeout status: open
 
 Review closeout: test-spec-review-r7
+Review closeout: plan-review-r4
 Review closeout: test-spec-review-r6
 Review closeout: code-review-m3-r10
 Review closeout: code-review-m3-r9
@@ -44,13 +45,14 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 58
-- Unresolved findings: 1
-- Final result: PBF-TSR7-1 remains open pending M4 plan alignment and plan review.
+- Unresolved findings: 2
+- Final result: PBF-TSR7-1 and PBF-PLR4 remain open pending synchronized M4 plan rereview.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-PLR4 | accepted | in-progress | Synchronize the Current Handoff Summary with the open review state. |
 | PBF-TSR7-1 | accepted | in-progress | Align M4 package proof with the existing adapter portability decision. |
 | PBF-M3-CR24 | accepted | resolved | Bind the tagged transition snapshot and current state to its exact first-parent baseline and inventory. |
 | PBF-M3-CR23 | accepted | resolved | Bind merge-aware transition parent, activating tag, and current release fields to one immutable transition. |
@@ -112,6 +114,20 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### plan-review-r4
+
+#### PBF-PLR4 - Current handoff contradicts open review state
+
+Finding ID: PBF-PLR4
+Disposition: accepted
+Status: in-progress
+Owner: plan
+Owning stage: plan revision
+Chosen action: Correct the handoff reason to name the open review and finding.
+Rationale: The active plan must own one coherent downstream state.
+Validation target: plan-review R5.
+Validation evidence: Pending.
 
 ### test-spec-review-r7
 
