@@ -104,14 +104,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M3. Structural and activation validation
-- Current milestone state: resolution-needed
-- Latest review evidence: test-spec-review R3 is blocked by an inconsistent invocation identity and records PBF-TSR3 through PBF-TSR5
+- Current milestone state: planned
+- Latest review evidence: PBF-TSR3 through PBF-TSR5 are resolved in the revised proof map, which awaits a byte-consistent test-spec-review R4
 - Last reviewed milestone: M2
-- Review status: blocked; stage=test-spec-review; round=r3
+- Review status: review-requested; stage=test-spec-review; round=r4
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: test-spec revision for PBF-TSR3 through PBF-TSR5, then a corrected test-spec-review R4 invocation
+- Next stage: test-spec-review R4 for the corrected portable release proof map
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=3; open-findings=PBF-TSR3,PBF-TSR4,PBF-TSR5
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -184,7 +184,7 @@ an explicit blocking gap before implementation begins.
 
 ### M3. Structural and activation validation
 
-- Milestone state: resolution-needed
+- Milestone state: planned
    - primary trust boundary: deterministic shape/reference enforcement without
      semantic overclaiming
    - deliverables:

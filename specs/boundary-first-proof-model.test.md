@@ -24,7 +24,7 @@ active
 | --- | --- | --- | --- |
 | Feature spec | `specs/boundary-first-proof-model.md` | approved; spec-review R5 | `sha256:7d10f72e7dfca18c08c4f7117846c5a655f060f5087ec196725a2c5494af25d1` |
 | Spec review | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r5.md` | approved | `sha256:4ed509fc263fc8c14b1a7508ebc0d9d30968af55cc96be77a4093d352da2ea89` |
-| Plan | `docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md` | active; plan-review R3 approved | `sha256:262decf9d2804bbb854505d479c788c3ece87e0d09af2441102ade5098fbb20d` |
+| Plan | `docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md` | approved plan content at `3a5388bb`; plan-review R3 approved | `sha256:2e9a29b5206d2298d5bbf2a59912ee5642defab68d8b63c6e473321d6ae4c273` |
 | Plan review | `docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/plan-review-r3.md` | approved | `sha256:dbfe83fe10fedc10456842b121c32b1889f627e6aa8d083c80d41e67cab6f2ae` |
 | Architecture | `docs/architecture/system/architecture.md` | approved; architecture-review R4 | `sha256:65bc44c6d8a8a6de23879144dca6c524b69558a178ab9127f03907b1f3761843` |
 | ADR | `docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md` | accepted | `sha256:3d09255eb51dacb2fd2fe756a656fc9719edd6de99763f23ae9ad09fd1b1c1e2` |
@@ -261,9 +261,9 @@ they do not invent bootstrap boundary IDs.
 - Covers: PBF-R003, PBF-R005-PBF-R007, PBF-R049a-PBF-R049b, PBF-R053, EC8-EC10
 - Level: integration
 - Command IDs: CMD6, CMD7
-- Fixture/setup: pending, active, incomplete, mixed-version, and fixed-authority-symlink release manifests.
-- Steps: Validate closed states and fields; require `-` release and baseline values while pending; require immutable activating and rollback tags plus the full parent commit while active; reject symlinked authoritative inputs before reads.
-- Expected result: Complete pending and active fixtures pass, while unknown, incomplete, mixed, or unsafe manifests fail closed.
+- Fixture/setup: pending, active, incomplete, mixed-version, and fixed-authority-symlink release manifests with the exact ten governed skills and canonical/projection content identities.
+- Steps: Validate the closed version, state, activating-release, rollback-release, governed-skill, canonical-reference, projection, parent-commit, and grandfather-path fields. Require `-` release and baseline values while pending. While active, require immutable release tags, a full parent commit, the exact ten-skill governed set, canonical and projected raw-byte identities, and a unique repository-relative POSIX path inventory sorted by raw UTF-8 bytes. Reject absolute, traversal, duplicate, unsorted, bootstrap-spec, `README.md`, `*.test.md`, marked-spec, and symlinked-authority entries before reads.
+- Expected result: Complete pending and active fixtures pass; unknown, incomplete, mixed, unsafe, incorrectly ordered, or ineligible manifests fail closed.
 - Failure proves: release activation evidence can be ambiguous or unauditable.
 - Evidence artifact: `boundary-activation-evidence.yaml`
 - Automation location: `scripts/test-boundary-first-validation.py`
@@ -274,9 +274,9 @@ they do not invent bootstrap boundary IDs.
 - Covers: PBF-R049a-PBF-R056, E4, EC8
 - Level: integration
 - Command IDs: CMD6, CMD7
-- Fixture/setup: accepted historical specs, nonterminal in-flight specs, new specs, marked specs, and grandfathered edits.
-- Steps: Build the activation inventory and validate each post-activation case.
-- Expected result: Accepted baseline paths remain valid, paths introduced by the activating change cannot self-grandfather, new behavior specs require the marker after activation, in-flight opt-in is active-only, and grandfathered edits route to `spec-review` without validator classification.
+- Fixture/setup: an isolated temporary Git repository with a parent commit containing accepted historical specs, nonterminal in-flight specs, marked specs, and excluded files, followed by an activating child commit that adds an otherwise eligible unmarked spec.
+- Steps: Derive the inventory from the controlled parent revision, activate from the child revision, and validate historical edits, active-only in-flight opt-in, new marked and unmarked specs, and the child-introduced candidate.
+- Expected result: Only eligible accepted paths present in the parent revision are grandfathered; the child-introduced spec cannot self-grandfather; new behavior specs require the marker after activation; in-flight opt-in is active-only; and grandfathered edits route to `spec-review` without validator classification.
 - Failure proves: rollout either invalidates history or creates an unintended exemption.
 - Evidence artifact: `boundary-validation-evidence.yaml`
 - Automation location: `scripts/test-boundary-first-validation.py`
@@ -327,8 +327,8 @@ they do not invent bootstrap boundary IDs.
 - Level: integration
 - Command IDs: CMD6, CMD7, CMD11
 - Fixture/setup: active manifests selecting valid and invalid rollback releases, current `dist/adapters/manifest.yaml`, isolated adapter-metadata fixtures, and one real tracked release metadata file.
-- Steps: Validate missing, additional, duplicated, failing, and mixed-version fixture entries; then run the focused integration proof against current adapter support and tracked release metadata.
-- Expected result: Exactly one passing archive identity per supported adapter produces an ordered adapter/archive/SHA-256 matrix; every incomplete or mixed matrix fails without mutation.
+- Steps: Snapshot the raw bytes of the activation manifest, governed feature specs, and proof maps; validate missing, additional, duplicated, failing, and mixed-version fixture entries; then run the focused integration proof against current adapter support and tracked release metadata with install and publish hooks replaced by fail-if-called sentinels.
+- Expected result: Output names the selected rollback release tag and exactly one passing archive identity per supported adapter in an adapter/archive/SHA-256 matrix sorted by raw UTF-8 adapter name. Before-and-after snapshots are byte-identical, no install or publish sentinel is called, and every incomplete or mixed matrix fails without mutation.
 - Failure proves: rollback readiness can select an incomplete or inconsistent package bundle.
 - Evidence artifact: `boundary-activation-evidence.yaml`
 - Automation location: `scripts/test-boundary-first-validation.py`
@@ -400,8 +400,9 @@ they do not invent bootstrap boundary IDs.
   duplicating archive construction or clean-install logic.
 
 All hashes derive from raw fixture bytes.
-Tests must not depend on Git history, wall-clock ordering, a network service,
-or caller-asserted runtime identity.
+Tests must not depend on ambient repository Git history, wall-clock ordering,
+a network service, or caller-asserted runtime identity. T9 creates and owns a
+minimal temporary Git history solely to prove the parent-revision contract.
 
 ## Mocking/stubbing policy
 
@@ -477,7 +478,7 @@ None.
 ## Next artifacts
 
 - `test-spec-review`
-- M1 implementation only after approved test-spec-review and separate
+- M3 implementation only after approved test-spec-review and separate
   implementation authority
 
 ## Follow-on artifacts
