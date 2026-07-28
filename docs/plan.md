@@ -17,7 +17,7 @@ Index policy:
 
 | Plan | State | Next stage | Change ID |
 | --- | --- | --- | --- |
-| [Portable Boundary-First Capability for Published Skills](plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md) | active | issue an exact full-commit code-review M3 R7 packet | 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording |
+| [Portable Boundary-First Capability for Published Skills](plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md) | active | code-review M3 R7 with the exact full-commit packet | 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
 
 ## Blocked

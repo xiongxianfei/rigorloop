@@ -107,9 +107,9 @@ an explicit blocking gap before implementation begins.
 - Current milestone state: review-requested
 - Latest review evidence: code-review M3 R6 stopped at packet integrity because a scoped diff hash was labeled as the full commit diff; no implementation verdict was issued
 - Last reviewed milestone: M2
-- Review status: blocked; stage=code-review; round=r6
+- Review status: review-requested; stage=code-review; round=r7
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: issue an exact full-commit code-review M3 R7 packet
+- Next stage: code-review M3 R7 with the exact full-commit packet
 - Final closeout readiness: not ready
 - Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
