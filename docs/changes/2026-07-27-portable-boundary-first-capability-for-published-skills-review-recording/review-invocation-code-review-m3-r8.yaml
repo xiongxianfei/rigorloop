@@ -4,8 +4,8 @@ review_stage: code-review
 review_target: commit:82592456
 base_revision: 15b5f69f
 head_revision: 82592456
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: changes-requested
+review_gate_outcome: revise
 independence_level: L1
 author_context_id: run-pbf-20260728-lightweight-m3-r8
 reviewer_context_id: isolated-m3-r8-primary
@@ -56,9 +56,9 @@ phase_receipts:
   - evidence-menu-released
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: isolated-m3-r8-second
-  result: pending
+  result: changes-requested
 risk_map:
   affected_behavior: exact activation-transition parent, immutable release-tag adjacency, raw Unicode Git tree enumeration, and regular-blob enforcement
   highest_impact_failure_modes: wrong parent passes, release tags are non-adjacent, Unicode specs disappear, or symlink tree entries become authority

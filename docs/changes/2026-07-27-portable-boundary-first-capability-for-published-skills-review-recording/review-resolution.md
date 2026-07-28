@@ -2,8 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
+Review closeout: code-review-m3-r8
 Review closeout: code-review-m3-r7
 Review closeout: test-spec-review-r4
 Review closeout: test-spec-review-r5
@@ -39,13 +40,14 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 56
-- Unresolved findings: 0
-- Final result: PBF-M3-CR18 through PBF-M3-CR22 are resolved by exact transition-parent binding, immutable tag adjacency, raw Git tree entries, and regular-blob enforcement.
+- Unresolved findings: 1
+- Final result: PBF-M3-CR23 requires immutable, merge-aware transition identity binding.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-M3-CR23 | accepted | in-progress | Bind merge-aware transition parent, activating tag, and current release fields to one immutable transition. |
 | PBF-M3-CR18 | accepted | resolved | Bind the baseline to the exact parent of the pending-to-active transition commit. |
 | PBF-M3-CR19 | accepted | resolved | Validate immutable tag existence and immediate predecessor ordering. |
 | PBF-M3-CR20 | accepted | resolved | Remove the adapter manifest from M3 release-order authority; immutable tags own ordering. |
@@ -104,6 +106,23 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### code-review-m3-r8
+
+#### PBF-M3-CR23 - Activation transition identity is not immutable or merge-aware
+
+Finding ID: PBF-M3-CR23
+Disposition: accepted
+Status: in-progress
+Owner: M3 implementation
+Owning stage: review-resolution
+Chosen action: Inspect first-parent integration history, bind the baseline to
+the transition's first parent, bind the activating tag to the transition
+commit, and retain the transition's release fields.
+Rationale: One transition must own historical membership and immutable release
+identity across linear and merge integration.
+Validation target: Code-review M3 R9.
+Validation evidence: Pending.
 
 ### code-review-m3-r7
 
