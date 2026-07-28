@@ -53,3 +53,6 @@ The two adversarial regressions prove the command fails before outside reads or 
 PBF-M1-CR2 and PBF-M1-CR3 are resolved by commit `ffa692c0`.
 Ungoverned symlinked skill and references directories now fail closed without traversal.
 All outside regression fixtures use separately managed temporary directories, and a before/after probe confirmed the ten-test suite creates no new legacy sibling directories.
+
+PBF-M1-CR4 is resolved by commit `877a697f`.
+The unexpected-consumer regression now exercises both topology shapes in check and write modes, proves outside sentinel bytes remain unchanged, and checks the exact combined error set when a governed projection is also missing.

@@ -16,3 +16,6 @@ PBF-M1-CR1 outside mutation result: rejected_before_mutation
 PBF-M1-CR2 correction commit: ffa692c0
 PBF-M1-CR2 unexpected symlink result: rejected_without_traversal
 PBF-M1-CR3 cleanup result: no_new_legacy_fixture_directories
+PBF-M1-CR4 correction commit: 877a697f
+PBF-M1-CR4 write outside mutation result: unchanged
+PBF-M1-CR4 combined error result: exact_sorted_set
