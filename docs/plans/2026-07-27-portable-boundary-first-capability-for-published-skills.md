@@ -104,13 +104,13 @@ an explicit blocking gap before implementation begins.
 
 - Current milestone: M3. Structural and activation validation
 - Current milestone state: resolution-needed
-- Latest review evidence: spec-review R3 retained the simplified published-skill boundary and requested five deterministic activation and rollback clarifications
+- Latest review evidence: PBF-SR4 through PBF-SR8 are resolved in the simplified feature contract and await spec-review R4
 - Last reviewed milestone: M2
-- Review status: changes-requested; stage=spec-review; round=r3
+- Review status: review-requested; stage=spec-review; round=r4
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: spec revision for PBF-SR4 through PBF-SR8
+- Next stage: spec-review R4 for the simplified published-skill contract
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=5; open-findings=PBF-SR4,PBF-SR5,PBF-SR6,PBF-SR7,PBF-SR8
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
