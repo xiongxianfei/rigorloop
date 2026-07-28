@@ -9,6 +9,9 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
+from boundary_first_reference import GOVERNED_SKILLS as BOUNDARY_FIRST_GOVERNED_SKILLS
+from boundary_first_reference import PROJECTED_REFERENCE as BOUNDARY_FIRST_PROJECTED_REFERENCE
+
 
 ROOT = Path(__file__).resolve().parents[1]
 CANONICAL_SKILLS_DIR = ROOT / "skills"
@@ -97,6 +100,19 @@ RESOURCE_MAP_ENTRY_PATTERN = re.compile(
     r"^\s*-\s*(?P<verb>COPY|READ|RUN)\s+`(?P<path>[^`]+)`",
     re.IGNORECASE,
 )
+BOUNDARY_FIRST_PACKAGED_REFERENCE = BOUNDARY_FIRST_PROJECTED_REFERENCE.as_posix()
+
+
+def _is_approved_packaged_non_asset_resource(
+    skill_name: str | None,
+    relative_resource: str,
+) -> bool:
+    return (
+        skill_name in BOUNDARY_FIRST_GOVERNED_SKILLS
+        and relative_resource == BOUNDARY_FIRST_PACKAGED_REFERENCE
+    )
+
+
 MARKDOWN_LIST_ITEM_PATTERN = re.compile(
     r"^(?P<indent>[ \t]*)(?P<marker>[-+*]|\d+[.)])(?P<spacing>[ \t]+)(?P<body>.*)$"
 )
@@ -2589,6 +2605,10 @@ def _validate_review_family_asset_rollout(
         resource.relative_to(skill_dir).as_posix()
         for resource in resources
         if not resource.relative_to(skill_dir).as_posix().startswith("assets/")
+        and not _is_approved_packaged_non_asset_resource(
+            skill_name,
+            resource.relative_to(skill_dir).as_posix(),
+        )
     ]
     for relative_resource in unexpected_resource_classes:
         errors.append(
@@ -2791,6 +2811,10 @@ def _validate_spec_family_asset_rollout(
         resource.relative_to(skill_dir).as_posix()
         for resource in resources
         if not resource.relative_to(skill_dir).as_posix().startswith("assets/")
+        and not _is_approved_packaged_non_asset_resource(
+            skill_name,
+            resource.relative_to(skill_dir).as_posix(),
+        )
     ]
     for relative_resource in unexpected_resource_classes:
         errors.append(

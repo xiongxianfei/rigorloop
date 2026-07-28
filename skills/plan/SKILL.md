@@ -34,6 +34,7 @@ Do not require RigorLoop repository-internal specs, docs, reports, follow-up fil
 
 ## Resource map
 
+- READ `references/boundary-first-method-v1.md` when planning implementation for an approved feature spec that declares `boundary_contract: boundary-first-v1`.
 - COPY `assets/plan-skeleton.md` when creating a new plan or replacing the full plan structure.
   Fill: sections and placeholders.
   Sections: Status; Purpose / big picture; Source artifacts; Context and orientation; Non-goals; Requirements covered; Current Handoff Summary; Milestones; Validation plan; Risks and recovery; Dependencies; Progress; Decision log; Surprises and discoveries; Validation notes; Outcome and retrospective; Readiness.
@@ -131,6 +132,12 @@ Produce or update the plan body and, when starting or replanning, the `docs/plan
 - Artifacts changed: <paths or none>
 - Open blockers: <blockers or none>
 - Next stage: <plan-review | test-spec after plan-review | blocked>
+
+## Boundary-first method
+
+Map applicable boundaries to independently closeable milestones, dependencies, affected surfaces, rollback units, and proof timing.
+
+Use only approved boundary and interaction IDs. Stop planning when an applicable boundary lacks an owning milestone, dependency, rollback unit, affected surface, or timed proof obligation; route a contract gap upstream instead of repairing it in the plan.
 
 ## Handoff
 

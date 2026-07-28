@@ -1,0 +1,81 @@
+schema_version: 1
+review_id: code-review-m3-r7
+review_stage: code-review
+review_target: commit:95c71180
+base_revision: 15b5f69f
+head_revision: 95c71180
+native_review_status: changes-requested
+review_gate_outcome: revise
+independence_level: L1
+author_context_id: run-pbf-20260728-lightweight-m3-r7
+reviewer_context_id: isolated-m3-r7-primary
+context_separation_mechanism: fresh-reviewer-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - activation-schema
+  - source-control-baseline
+  - requirement-fidelity
+risk_tier_classifier: affected-path-and-surface-v1
+governing_artifacts:
+  - specs/boundary-first-proof-model.md
+  - specs/boundary-first-proof-model.test.md
+  - docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  - docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-proof-model.md
+    revision: 011fc64d
+    sha256: 7d10f72e7dfca18c08c4f7117846c5a655f060f5087ec196725a2c5494af25d1
+  - path: specs/boundary-first-proof-model.test.md
+    revision: 3a94786e
+    sha256: bf19aac58cc2a9c065178662ca67d5df511c404176b14640c72736012cf71a83
+  - path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+    revision: 3a5388bb
+    sha256: 2e9a29b5206d2298d5bbf2a59912ee5642defab68d8b63c6e473321d6ae4c273
+  - path: docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md
+    revision: b15b8b44
+    sha256: 3d09255eb51dacb2fd2fe756a656fc9719edd6de99763f23ae9ad09fd1b1c1e2
+  - path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m3-implementation.md
+    revision: 95c71180
+    sha256: b82185eee8a8f84314e0f7d7793b60c321602b207206db593c9f62f79edd01b1
+  - path: commit:95c71180.diff
+    revision: 95c71180
+    sha256: 5560b5a8cc8eddd250a1608b4ded982218e71e3caadfa245e0b04fc28efc44b5
+initial_packet_sha256: 5560b5a8cc8eddd250a1608b4ded982218e71e3caadfa245e0b04fc28efc44b5
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+second_review:
+  required: true
+  satisfied: true
+  reviewer_context_id: isolated-m3-r7-second
+  result: changes-requested
+risk_map:
+  affected_behavior: two-state release manifest, parent-revision grandfathering, marker routing, and removal of receipt and historical-hash machinery
+  highest_impact_failure_modes: child paths self-grandfather, eligible parent paths are omitted, older rollback releases pass, pending markers pass, or removed machinery remains authoritative
+  changed_boundaries: activation fields, source-control baseline reads, release ordering, grandfather inventory, and changed-spec routing
+  evidence_expected: direct temporary-history tests, unknown-value failures, immediate-predecessor rejection, 46 focused tests, pending validation, and 134 selector tests
+  direct_inspection_areas: Git command containment, raw-UTF8 ordering, pending/active field consistency, baseline exclusions, release-version ownership, symlink handling, and deleted receipt paths
+  intentionally_out_of_scope: activation writing, package installation, publication, external rollback, runtime certification, and semantic completeness
+  applicable_risk_classes:
+    - requirement-fidelity
+    - compatibility
+    - negative-proof
+    - lifecycle-state
+  non_applicable_risk_classes:
+    - network-api
+    - credential-storage
+    - release-publication
+    - runtime-attestation
+  falsifiable_questions:
+    - Can a child-introduced path grandfather itself?
+    - Can an accepted, approved, or active parent path be omitted?
+    - Can an older published release pass as the immediate rollback release?
+    - Can pending state carry active values or markers?
+    - Does any receipt, transaction, writer, or historical-hash path remain authoritative?

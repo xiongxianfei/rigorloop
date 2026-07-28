@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: architecture-review-r3
+review_stage: architecture-review
+review_target: docs/architecture/system/architecture.md
+base_revision: 011fc64d
+head_revision: 545d17af
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L1
+author_context_id: run-pbf-20260728-lightweight-architecture
+reviewer_context_id: isolated-architecture-r3
+context_separation_mechanism: fresh-reviewer
+risk_tier: elevated
+risk_tier_triggers:
+  - durable-architecture-decision
+  - release-compatibility
+governing_artifacts:
+  - specs/boundary-first-proof-model.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md
+formal_criteria:
+  - architecture-review-v1
+prompt_template_version: architecture-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-proof-model.md
+    revision: 011fc64d
+    sha256: 7d10f72e7dfca18c08c4f7117846c5a655f060f5087ec196725a2c5494af25d1
+  - path: docs/architecture/system/architecture.md
+    revision: 545d17af
+    sha256: b9ec848ccdb433eec578d0bcf67f193c4ee8d96faf48f030ffca5e3f2f65fb4b
+  - path: docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md
+    revision: 545d17af
+    sha256: 3d09255eb51dacb2fd2fe756a656fc9719edd6de99763f23ae9ad09fd1b1c1e2
+  - path: architecture.diff
+    revision: 545d17af
+    sha256: 79b52c1694ea0aba4e17684b8c4b4582c172349ccfe7d910dbee88a47cc7b139
+initial_packet_sha256: 79b52c1694ea0aba4e17684b8c4b4582c172349ccfe7d910dbee88a47cc7b139
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - alignment with approved two-state release-manifest contract
+  - source-control grandfathering baseline
+  - existing adapter metadata ownership
+  - read-only rollback validation and operator-owned external actions
+  - absence of writer, receipt, transaction, and attestation machinery

@@ -4,6 +4,7 @@ Completed plan history moved out of the common-read plan index.
 
 ## Done (archive)
 
+- [2026-06-26 Requirement-Fidelity Gate for Spec-Canonical Reviews](plans/2026-06-26-requirement-fidelity-gate-for-spec-canonical-reviews.md) - done; terminal state: done; PR #113 merged.
 - [2026-06-26 Independent Test-Spec-Review Gate](plans/2026-06-25-independent-test-spec-review-gate.md) - done; terminal state: done; PR #111 merged.
 - [2026-06-25 Independent Adversarial Review Gates](plans/2026-06-25-independent-adversarial-review-gates.md) - done; terminal state: done; PR #110 merged.
 - [2026-07-04 Dated Change-Root Convention](plans/2026-07-04-dated-change-root-convention.md) - done; terminal state: closed; PR #121 merged.

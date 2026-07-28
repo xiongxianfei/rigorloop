@@ -68,6 +68,7 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Resource map
 
+- READ `references/boundary-first-method-v1.md` when authoring the proof map for a feature spec that declares `boundary_contract: boundary-first-v1`.
 - COPY `assets/test-spec-skeleton.md` when creating or fully rewriting a test spec.
   Fill: title, sections, coverage maps, test cases, artifacts, and readiness.
   Do not emit unfilled placeholders.
@@ -252,6 +253,12 @@ for repeated structures.
 ```
 
 Required sections are listed above. Do not emit unfilled placeholders.
+
+## Boundary-first method
+
+Map every applicable boundary and selected interaction to proof without inventing contract IDs.
+
+Consume exact IDs from the approved feature boundary record and map each to direct automated, manual, or hybrid proof. Stop test-spec authoring and return to the feature spec when an ID is missing, stale, unknown, renamed, or insufficient to own the required behavior.
 
 ## Rules
 

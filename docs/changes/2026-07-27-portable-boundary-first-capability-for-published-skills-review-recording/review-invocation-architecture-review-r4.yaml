@@ -1,0 +1,35 @@
+schema_version: 1
+review_id: architecture-review-r4
+review_stage: architecture-review
+review_target: docs/architecture/system/architecture.md
+base_revision: 545d17af
+head_revision: 2f3e699a
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L1
+author_context_id: run-pbf-20260728-architecture-risk-closure
+reviewer_context_id: isolated-architecture-r4
+context_separation_mechanism: fresh-reviewer
+risk_tier: elevated
+risk_tier_triggers:
+  - durable-architecture-decision
+governing_artifacts:
+  - specs/boundary-first-proof-model.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md
+formal_criteria:
+  - architecture-review-v1
+prompt_template_version: architecture-review-v1
+initial_packet_inventory:
+  - path: docs/architecture/system/architecture.md
+    revision: 2f3e699a
+    sha256: 27d19841d5b1d5272476e45d3df724262cc2624cfe5e7b8d48a3fd2729721158
+  - path: architecture.diff
+    revision: 2f3e699a
+    sha256: 7d7a911fdd302adc9060b6d47173b92dec5ae776c8273247caf111d5f222bf95
+initial_packet_sha256: 7d7a911fdd302adc9060b6d47173b92dec5ae776c8273247caf111d5f222bf95
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - closure of PBF-AR3
+  - no regression of the approved lightweight architecture

@@ -1,0 +1,85 @@
+schema_version: 1
+review_id: code-review-m3-r3
+review_stage: code-review
+review_target: commit:834c780b
+base_revision: 157843ea
+head_revision: 834c780b
+native_review_status: changes-requested
+review_gate_outcome: revise
+independence_level: L1
+author_context_id: run-pbf-20260727-verify-correction-m3-r2
+reviewer_context_id: isolated-m3-r3-primary
+context_separation_mechanism: fresh-reviewer-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - activation-compatibility
+  - path-containment
+  - deletion-semantics
+  - contract-parser
+  - requirement-fidelity
+risk_tier_classifier: affected-path-and-surface-v1
+governing_artifacts:
+  - specs/boundary-first-proof-model.md
+  - specs/boundary-first-proof-model.test.md
+  - docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  - docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-proof-model.md
+    revision: 71af80d1
+    sha256: d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+  - path: specs/boundary-first-proof-model.test.md
+    revision: 71af80d1
+    sha256: c7666cb2205e150cf8e43487087ab4cd3401b532d87d93d51832a211926a71c1
+  - path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+    revision: 834c780b
+    sha256: 7e84ed4bb56c5a0cfb5168ef4e6aae2965a8a8f2a02db525e5d94949de19d8a6
+  - path: docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md
+    revision: 71af80d1
+    sha256: 030caf8fe3920810b603d53c3b449b1caeb81c676a8ed336a1e93af769503740
+  - path: commit:834c780b.diff
+    revision: 834c780b
+    sha256: dbada1aef53a029d906771d8800ae8ccfaf07557913cfc99e0fd354ab5e41ab0
+initial_packet_sha256: 843169e5ec525676069623fd914a470c15684d8d3fedc469523757dd225b92d0
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
+second_review:
+  required: true
+  satisfied: true
+  reviewer_context_id: isolated-m3-r3-second
+  result: changes-requested
+risk_map:
+  affected_behavior: M3 R2 corrections for activation-time history, later adoption, rollback, explicit and derived containment, Markdown alignment, deletion handling, and historical inventory symlinks
+  highest_impact_failure_modes: activation history is rewritten, accepted marked contracts become invalid after rollback, companion or inventory paths escape the repository, deletion removes required proof silently, or valid Markdown is rejected
+  changed_boundaries: activation history versus current adoption, rollback marker gate, explicit and derived spec resolvers, table separator grammar, absent counterpart handling, and historical inventory enumeration
+  evidence_expected: direct adversarial reproductions for PBF-M3-CR9 through PBF-M3-CR13, 44 focused tests, pending baseline validation, 134 selector tests, and bounded diagnostics
+  direct_inspection_areas: active and rolled-back membership, marked historical contracts, companion symlinks, specs-root and leaf symlinks, paired versus orphan deletion, aligned separator cells, and unknown-value ordering
+  intentionally_out_of_scope: active-state writer, final inventory generation, adapter/install parity, M4 activation transaction, runtime certification, and external actions
+  applicable_risk_classes:
+    - requirement-fidelity
+    - compatibility
+    - path-containment
+    - parser-correctness
+    - negative-proof
+    - lifecycle-state
+  non_applicable_risk_classes:
+    - network-api
+    - credential-storage
+    - release-publication
+    - runtime-attestation
+  falsifiable_questions:
+    - Can later adoption or rollback invalidate immutable activation history?
+    - Can any explicit, derived, or inventory path follow a symlink outside repository ownership?
+    - Can deleting an adopting proof or leaving an orphan test bypass validation?
+    - Can a valid CommonMark alignment separator fail or a malformed separator pass?
+    - Can any PBF-M3-CR9 through PBF-M3-CR13 reproduction still pass unexpectedly or traceback?

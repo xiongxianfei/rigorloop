@@ -1,0 +1,42 @@
+schema_version: 1
+review_id: spec-review-r4
+review_stage: spec-review
+review_target: specs/boundary-first-proof-model.md
+base_revision: 31dfa88d
+head_revision: b721c676
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L1
+author_context_id: run-pbf-20260728-contract-closure
+reviewer_context_id: isolated-spec-r4
+context_separation_mechanism: fresh-reviewer
+risk_tier: elevated
+risk_tier_triggers:
+  - contract-scope-reduction
+  - activation-compatibility
+  - rollback-semantics
+governing_artifacts:
+  - docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  - specs/boundary-first-proof-model.md
+formal_criteria:
+  - spec-review-v1
+prompt_template_version: spec-review-v1
+initial_packet_inventory:
+  - path: docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+    revision: 71af80d1
+    sha256: d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+  - path: specs/boundary-first-proof-model.md
+    revision: b721c676
+    sha256: 4a885dd4e439a98863a0045391d2091fac6cee5753d3433adc960cc69a5a3a4b
+  - path: specs/boundary-first-proof-model.md.diff
+    revision: b721c676
+    sha256: ea5a1eaf227ab685b019c07153eb4014e095aee4d441d1a330e53aab32731158
+initial_packet_sha256: 7b311e63916013c55dff3d9ad8774c17b932584d1b7c8768ee637085b9781de5
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - closure of PBF-SR4 through PBF-SR8
+  - minimal published-skill capability boundary
+  - deterministic activation and grandfathering
+  - read-only rollback package validation
+  - absence of writer, receipt, transaction, and attestation machinery

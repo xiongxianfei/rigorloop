@@ -118,6 +118,16 @@ Use bounded evidence first, but do not under-read. Expand beyond the milestone w
 
 Produce tests or proof surfaces first where feasible, implementation changes, updated plan progress and validation notes, and a milestone handoff commit that sets the milestone to `review-requested`.
 
+## Resource map
+
+- READ `references/boundary-first-method-v1.md` when implementing a change governed by an approved `boundary-first-v1` boundary record and proof map.
+
+## Boundary-first method
+
+Stop on missing boundary or proof ownership and implement against the approved model and proof map.
+
+Before changing production behavior, confirm every implemented boundary or selected interaction has an approved owner and proof obligation. Stop implementation before mutation when an owner is absent, an ID is stale or unknown, required proof is missing, or implementation exposes a new boundary that requires an upstream decision.
+
 ## Handoff
 
 - Normal next stage: `code-review` for the implemented milestone.

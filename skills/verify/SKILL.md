@@ -96,6 +96,16 @@ Escalate from bounded helper output to full `change.yaml` when verifying forensi
 
 Produce a verification verdict, traceability and drift assessment, validation evidence summary, blocker list if any, and the next valid handoff toward `pr` or stop.
 
+## Resource map
+
+- READ `references/boundary-first-method-v1.md` when verifying a change governed by an approved `boundary-first-v1` contract and proof map.
+
+## Boundary-first method
+
+Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure.
+
+Trace exact approved boundary and interaction IDs through the proof map, implementation, tests, and current evidence. Stop verification before readiness claims when an applicable boundary or selected interaction lacks direct proof, evidence is missing or stale, an ID is unknown, or a discovery still requires upstream ownership.
+
 ## Handoff
 
 - Normal next stage: `pr` when branch readiness passes.

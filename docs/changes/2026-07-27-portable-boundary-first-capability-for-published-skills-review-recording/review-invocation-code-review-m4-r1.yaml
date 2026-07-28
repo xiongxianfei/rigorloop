@@ -1,0 +1,87 @@
+schema_version: 1
+review_id: code-review-m4-r1
+review_stage: code-review
+review_target: commit:59b56fec
+base_revision: 93d5b58b
+head_revision: 59b56fec
+native_review_status: changes-requested
+review_gate_outcome: revise
+independence_level: L1
+author_context_id: run-pbf-20260728-m4
+reviewer_context_id: isolated-m4-r1-primary
+context_separation_mechanism: fresh-reviewer-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - package-install-parity
+  - rollback-metadata-selection
+governing_artifacts:
+  - specs/boundary-first-proof-model.md
+  - specs/boundary-first-proof-model.test.md
+  - docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  - docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-proof-model.md
+    revision: 011fc64d
+    sha256: 7d10f72e7dfca18c08c4f7117846c5a655f060f5087ec196725a2c5494af25d1
+  - path: specs/boundary-first-proof-model.test.md
+    revision: f5069f99
+    sha256: c57ac0b74f6209dbab09741cb97f0139750cced084297dd1ba61da7cec3366c8
+  - path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+    revision: 59b56fec
+    sha256: 89ff66399e5ad3f235990142399031de1d8ad6560722408c5f23c6167873dd2a
+  - path: docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md
+    revision: b15b8b44
+    sha256: 3d09255eb51dacb2fd2fe756a656fc9719edd6de99763f23ae9ad09fd1b1c1e2
+  - path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m4-implementation.md
+    revision: 59b56fec
+    sha256: 6e781e13395f27660d7bcc41e1fe13478aa7107579cffe6e7259d9c9255fec9b
+  - path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
+    revision: 93d5b58b
+    sha256: f7db48ed2e7fe63c8ed012f25ac233f8f6b1e9f646d16d015e547b3f3d4aa1b5
+  - path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-install-evidence.yaml
+    revision: 59b56fec
+    sha256: 7b0d0ce4efb8dd1286fdf3e9127d57fe3d7eb99d688cc45ef184f31a9fa5e447
+  - path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-activation-evidence.yaml
+    revision: 59b56fec
+    sha256: 5f6550d09fdb4e878172324557a9fb9b18471c202227ce33ad6c7835c6847d8f
+  - path: commit:59b56fec.diff
+    revision: 59b56fec
+    sha256: 5ed8e42c4969062efd024279d00c5e62a8d041476ac39fe196a1a85f964bf5ac
+initial_packet_sha256: 5ed8e42c4969062efd024279d00c5e62a8d041476ac39fe196a1a85f964bf5ac
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+second_review:
+  required: true
+  satisfied: true
+  reviewer_context_id: isolated-m4-r1-second
+  result: changes-requested
+risk_map:
+  affected_behavior: adapter-applicable archive and clean-install parity plus read-only rollback metadata selection
+  highest_impact_failure_modes: omitted published skill, stale installed reference, invented exclusion, incomplete rollback matrix, mutation, or hidden publication action
+  changed_boundaries: existing adapter clean-install validation and boundary rollback metadata validation
+  evidence_expected: 2 focused package tests, 133 adapter tests, 54 boundary tests, one current-metadata test, and 12 broad-smoke checks
+  direct_inspection_areas: adapter applicability, all three target trees, skill/reference reads, archive drift diagnostics, metadata containment, exact adapter matrix, and non-mutation
+  intentionally_out_of_scope: external installation, publication, activation writing, rollback writing, receipts, transactions, attestations, and runtime certification
+  applicable_risk_classes:
+    - requirement-fidelity
+    - compatibility
+    - packaging
+    - negative-proof
+  non_applicable_risk_classes:
+    - network-api
+    - credential-storage
+    - release-publication
+    - runtime-attestation
+  falsifiable_questions:
+    - Can an included governed pair disappear without failure?
+    - Can an exclusion bypass CMD9 portability ownership?
+    - Can stale archive or installed reference bytes pass?
+    - Can an incomplete or mixed rollback matrix pass or mutate inputs?

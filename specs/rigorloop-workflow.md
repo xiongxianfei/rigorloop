@@ -25,6 +25,7 @@ Requirements outside that registry remain current lifecycle and artifact-orderin
 - [Proposal-Gated Authoring Autoprogression Through Plan Review](../docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md)
 - [Separately Armed Implementation Autoprogression Through Verify](../docs/proposals/2026-06-24-separately-armed-implementation-autoprogression-through-verify.md)
 - [Independent Test-Spec-Review Gate](../docs/proposals/2026-06-25-independent-test-spec-review-gate.md)
+- [Portable Boundary-First Capability for Published Skills](../docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md)
 
 ## Goal and context
 
@@ -39,6 +40,13 @@ This amendment also defines the bounded `authoring-through-plan-review` autoprog
 This amendment also defines the separately armed `implementation-through-verify` autoprogression profile. The profile is change-local, requires clean planning and its own authorization, uses deterministic test-spec settlement, runs implementation and independent code-review loops only within persisted phase authority, may run fresh `verify` in Phase C, and stops before `pr`.
 
 This amendment also defines the independent `test-spec-review` gate. The gate runs after an active test spec and before implementation for formal workflow-managed test specs. It reviews proof-map adequacy without changing the test-spec settlement state from `active`.
+
+This amendment also routes the portable boundary-first proof model through the
+existing lifecycle.
+The normative boundary record begins in `spec`, planning isolates applicable
+boundaries, `test-spec` maps them to proof, implementation consumes the
+approved model, and the existing independent review and verification stages
+retain distinct semantic ownership.
 
 `specs/skill-contract.md` owns skill-contract behavior. It owns standard skill shape, claim boundaries, result output expectations, shared-block rules, generated-output boundaries, evidence-reading guidance, and minimum viable skill rules. `specs/rigorloop-workflow.md` continues to own stage order, stage obligation, handoff, and downstream-blocking semantics.
 
@@ -108,6 +116,9 @@ RigorLoop is a Git-first starter kit. It does not replace pull requests, CI, or 
 - `gate-ready proposal`: a proposal whose artifacts and review evidence satisfy the proposal gate, independent of user authorization.
 - `armed profile`: a user-authorized profile that is waiting for its activation gate.
 - `architecture assessment`: the recorded workflow-managed micro-stage after approved `spec-review` that returns `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`.
+- `boundary-first contract`: the activated portable method defined by
+  `specs/boundary-first-proof-model.md` for connecting governed requirements,
+  applicable boundaries, selected interactions, and proof obligations.
 
 ## Examples first
 
@@ -252,6 +263,17 @@ Then the workflow reports `pr` as next and stops without opening a PR.
 Given a formal workflow-managed change has an active test spec
 When no current approved `test-spec-review` exists, or a substantive test-spec edit makes the review stale
 Then `implement` does not begin until the review is approved, current, recorded when required, and has no open material findings.
+
+### Example E23: boundary ownership remains stage-local
+
+Given a feature spec adopts `boundary-first-v1`
+When the change proceeds through planning, proof design, implementation,
+review, and verification
+Then each stage loads the same shared method
+And `spec-review` approves semantic boundary completeness
+And `plan-review` approves isolation and sequencing
+And `test-spec-review` approves proof adequacy
+And no structural validator replaces those review judgments.
 
 ## Requirements
 
@@ -981,6 +1003,97 @@ R26. The starter kit MUST support phased enforcement maturity:
 
 R27. The starter kit MUST preserve Git, pull requests, CI, and human review as the source of truth rather than replacing them with orchestration state.
 
+R28. The workflow MUST apply the boundary-first method according to
+`specs/boundary-first-proof-model.md` when a feature spec carries
+`boundary_contract: boundary-first-v1`.
+
+R29. Boundary-first responsibility MUST remain in the existing lifecycle
+stages and MUST NOT create a separate boundary-review stage.
+
+R29a. `workflow` MUST route adopting changes through the governing feature
+spec, boundary record, proof map, active plan, and required independent review
+gates and MUST stop when an applicable owner is missing.
+
+R29b. `spec` MUST author the normative dimension applicability, boundary,
+interaction, and example-ownership record.
+
+R29c. `spec-review` MUST judge applicability, boundary completeness,
+interactions, invariants, outcomes, and example ownership.
+
+R29d. `plan` MUST map applicable boundaries to independently closeable
+milestones, dependencies, affected surfaces, rollback units, and proof timing.
+
+R29e. `plan-review` MUST reject coupled primary boundaries, omitted boundary
+dependencies, unsafe rollback, and proof sequencing that cannot close
+independently.
+
+R29f. `test-spec` MUST map every applicable boundary and selected interaction
+to proof using the exact approved IDs.
+
+R29g. `test-spec-review` MUST judge proof adequacy, negative coverage,
+fixtures, command ownership, and manual-proof boundaries.
+
+R29h. `implement` MUST stop when required boundary or proof ownership is
+missing and otherwise implement against the approved model and proof map.
+
+R29i. `code-review` MUST inspect composed public, helper, sibling, failure,
+stale, recovery, and escaped-boundary paths admitted by the approved model.
+
+R29j. `verify` MUST confirm contract-to-proof-to-implementation coherence and
+unresolved-gap closure without reapproving upstream semantic gates.
+
+R30. A stage MUST stop and route upstream when it encounters an unknown or
+stale boundary ID, a required missing owner, an example that is the sole owner
+of behavior, an applicable boundary or selected interaction without proof, a
+helper-only substitute for an admitted public or sibling path, or a discovery
+requiring a normative decision.
+
+R31. Boundary-first interaction selection MUST follow requirement-owned
+hazards and MUST NOT require a Cartesian product.
+
+R32. Independent review responsibilities MUST remain distinct from
+deterministic validation.
+
+R32a. Structural validation MAY establish shape, closed values, identifiers,
+references, fixtures, packaging, and parity.
+
+R32b. Structural validation MUST NOT approve semantic boundary completeness,
+milestone isolation, proof adequacy, implementation fidelity, or final
+coherence.
+
+R33. The workflow MUST treat boundary-first activation as prospective and
+atomic.
+
+R33a. New and substantively revised behavior-changing specs MUST adopt only
+after the boundary-first activation state is `active`.
+
+R33b. Accepted historical artifacts MUST remain valid until substantively
+revised.
+
+R33c. In-flight opt-in MUST occur before test-spec approval and MUST stop if
+the governed downstream skill chain is mixed or incomplete.
+
+R33d. Activation MUST have a durable baseline and grandfathered-spec inventory
+identity before the state becomes `active`.
+
+R33e. Structural validation owns new-spec and marker-shape enforcement.
+`spec-review` owns substantive-revision classification for changed
+grandfathered specs.
+
+R34. A boundary-first adopting change MUST complete `spec-review`,
+`plan-review` when planning is triggered, and `test-spec-review` before
+implementation authority is established.
+
+R35. The normal per-change stage sequence remains unchanged by the
+boundary-first method.
+The shared method adds stage-local obligations and does not authorize stage
+skips or automatic downstream continuation.
+
+R36. The boundary-first method MUST remain usable from published skill
+packages and project-local artifacts without a specific runtime, model,
+network service, repository-local attestation store, or workspace mutation
+mechanism.
+
 ## Inputs and outputs
 
 ### Inputs
@@ -1267,6 +1380,18 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 - `RLW-AC-A7`: A reviewer can verify that profile policy metadata does not own live workflow state.
 - `RLW-AC-A8`: A reviewer can verify that profile authorization is recorded durably before activation and that missing, malformed, incomplete, or failed authorization persistence pauses the profile before any profile-driven transition.
 - `RLW-AC-A9`: A reviewer can verify that future profiles require separate proposal and spec amendments.
+- A contributor can follow one unchanged lifecycle sequence while the ten
+  governed stages apply distinct boundary-first responsibilities.
+- A reviewer can distinguish spec semantic completeness, plan isolation,
+  proof adequacy, implementation fidelity, and final coherence ownership.
+- A reviewer can confirm structural validators do not replace independent
+  semantic review.
+- A contributor can see that missing boundary ownership, proof, or admitted
+  public and sibling path coverage stops and routes upstream.
+- A reviewer can confirm activation is prospective and atomic and historical
+  accepted artifacts are grandfathered.
+- A user can apply the method from published skill packages and project-local
+  artifacts without a runtime-specific certification mechanism.
 
 ## Open questions
 
@@ -1275,6 +1400,8 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 
 ## Next artifacts
 
+- Spec-review for the boundary-first proof-model, workflow, and skill-contract
+  amendment set.
 - Architecture assessment for implementation-profile policy, phase gating, workflow orchestration, review classification, correction loops, verify-boundary behavior, and generated adapter impact.
 - Architecture and architecture-review when the assessment requires architecture.
 - Plan and plan-review before implementation.
@@ -1318,5 +1445,7 @@ R27. The starter kit MUST preserve Git, pull requests, CI, and human review as t
 
 ## Readiness
 
-- Approved amendment for separately armed implementation autoprogression through verify.
-- Ready for architecture assessment before downstream planning or implementation relies on the new profile.
+- Approved portable boundary-first workflow amendment ready for architecture
+  assessment.
+- Previously approved workflow amendments remain recorded in Follow-on
+  artifacts.

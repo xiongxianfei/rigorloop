@@ -1,0 +1,301 @@
+{
+  "boundary_record": {
+    "record_id": "BF-FIX-001",
+    "model_version": "boundary-first-v1",
+    "scope": ["PBF-FIX-R001"],
+    "dimensions": [
+      {
+        "dimension_id": "input-domain",
+        "applicability": "applicable",
+        "governing_requirement_ids": ["PBF-FIX-R001"],
+        "boundary_ids": ["BND-INPUT-001"],
+        "non_applicability_rationale": "-"
+      },
+      {
+        "dimension_id": "state-lifecycle",
+        "applicability": "not-applicable",
+        "governing_requirement_ids": [],
+        "boundary_ids": [],
+        "non_applicability_rationale": "The fixture owns no state transition."
+      },
+      {
+        "dimension_id": "identity-authority",
+        "applicability": "not-applicable",
+        "governing_requirement_ids": [],
+        "boundary_ids": [],
+        "non_applicability_rationale": "The fixture owns no identity or authority rule."
+      },
+      {
+        "dimension_id": "composition-path",
+        "applicability": "not-applicable",
+        "governing_requirement_ids": [],
+        "boundary_ids": [],
+        "non_applicability_rationale": "The fixture defines one direct contract path."
+      },
+      {
+        "dimension_id": "temporal-retry",
+        "applicability": "not-applicable",
+        "governing_requirement_ids": [],
+        "boundary_ids": [],
+        "non_applicability_rationale": "The fixture owns no ordering or retry behavior."
+      },
+      {
+        "dimension_id": "failure-recovery",
+        "applicability": "not-applicable",
+        "governing_requirement_ids": [],
+        "boundary_ids": [],
+        "non_applicability_rationale": "The fixture owns no mutation or recovery behavior."
+      },
+      {
+        "dimension_id": "compatibility-migration",
+        "applicability": "not-applicable",
+        "governing_requirement_ids": [],
+        "boundary_ids": [],
+        "non_applicability_rationale": "The fixture owns no historical representation."
+      },
+      {
+        "dimension_id": "external-environment",
+        "applicability": "not-applicable",
+        "governing_requirement_ids": [],
+        "boundary_ids": [],
+        "non_applicability_rationale": "The fixture owns no external dependency."
+      }
+    ],
+    "boundaries": [
+      {
+        "boundary_id": "BND-INPUT-001",
+        "dimension_id": "input-domain",
+        "governing_requirement_ids": ["PBF-FIX-R001"],
+        "partitions_or_transitions": ["present", "missing", "unknown"],
+        "invariants": ["Only requirement-owned values are accepted."],
+        "outcomes": ["accept", "reject"],
+        "owner_requirement_id": "PBF-FIX-R001"
+      }
+    ],
+    "interactions": [],
+    "no_interaction_rationale": "Only one boundary is applicable.",
+    "examples": [
+      {
+        "example_id": "PBF-FIX-E001",
+        "classification": "illustration",
+        "governing_requirement_ids": ["PBF-FIX-R001"],
+        "boundary_ids": ["BND-INPUT-001"],
+        "regression_id": "-",
+        "discovery_gap_id": "-"
+      }
+    ]
+  },
+  "proof_map": {
+    "record_id": "BF-FIX-PROOF-001",
+    "model_version": "boundary-first-v1",
+    "scope": ["PBF-FIX-R001"],
+    "obligations": [
+      {
+        "proof_obligation_id": "PRF-001",
+        "coverage_state": "covered",
+        "governing_requirement_ids": ["PBF-FIX-R001"],
+        "boundary_or_interaction_id": "BND-INPUT-001",
+        "test_case_ids": ["T1"],
+        "proof_level": "unit",
+        "automation_mode": "automated",
+        "command_ids": ["CMD4"],
+        "evidence_artifact": "semantic-skill-fixture-results",
+        "required_milestone": "M2",
+        "manual_procedure_ids": [],
+        "uncovered_gap_id": "-"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "case_id": "semantic.workflow.missing-owner",
+      "owning_skill": "workflow",
+      "packet": {
+        "current_stage": "workflow",
+        "boundary_record_id": "BF-FIX-001",
+        "proof_map_id": "BF-FIX-PROOF-001",
+        "condition": "The adopting change has no approved applicable owner.",
+        "evidence_state": "missing-owner"
+      },
+      "expected_semantic_owner": "workflow",
+      "expected_outcome": "stopped",
+      "expected_handoff": "owning-upstream-stage",
+      "required_guidance": [
+        "Stop routing and name the owning upstream stage",
+        "approved feature boundary record and proof map"
+      ],
+      "forbidden_claim": "Structural validation proves semantic completeness."
+    },
+    {
+      "case_id": "semantic.spec.example-only-behavior",
+      "owning_skill": "spec",
+      "packet": {
+        "current_stage": "spec",
+        "boundary_record_id": "BF-FIX-001",
+        "proof_map_id": "BF-FIX-PROOF-001",
+        "condition": "A proposed example is the only owner of new behavior.",
+        "evidence_state": "example-only"
+      },
+      "expected_semantic_owner": "spec",
+      "expected_outcome": "stopped",
+      "expected_handoff": "governing-requirement-owner",
+      "required_guidance": [
+        "Stop spec authoring and route the gap upstream",
+        "an example would be the only source of behavior"
+      ],
+      "forbidden_claim": "Structural validation proves semantic completeness."
+    },
+    {
+      "case_id": "semantic.spec-review.undecidable-applicability",
+      "owning_skill": "spec-review",
+      "packet": {
+        "current_stage": "spec-review",
+        "boundary_record_id": "BF-FIX-001",
+        "proof_map_id": "BF-FIX-PROOF-001",
+        "condition": "The record is structurally valid but its non-applicability rationale conflicts with the reviewed behavior.",
+        "evidence_state": "semantic-omission"
+      },
+      "expected_semantic_owner": "spec-review",
+      "expected_outcome": "changes-requested",
+      "expected_handoff": "spec",
+      "required_guidance": [
+        "Stop review with a material finding",
+        "a dimension is unjustifiably inapplicable"
+      ],
+      "forbidden_claim": "Structural validation proves semantic completeness."
+    },
+    {
+      "case_id": "semantic.plan.missing-boundary-milestone",
+      "owning_skill": "plan",
+      "packet": {
+        "current_stage": "plan",
+        "boundary_record_id": "BF-FIX-001",
+        "proof_map_id": "BF-FIX-PROOF-001",
+        "condition": "An applicable boundary has no independently closeable milestone.",
+        "evidence_state": "missing-milestone-owner"
+      },
+      "expected_semantic_owner": "plan",
+      "expected_outcome": "stopped",
+      "expected_handoff": "spec",
+      "required_guidance": [
+        "Stop planning when an applicable boundary lacks",
+        "route a contract gap upstream"
+      ],
+      "forbidden_claim": "Structural validation proves semantic completeness."
+    },
+    {
+      "case_id": "semantic.plan-review.coupled-primary-boundaries",
+      "owning_skill": "plan-review",
+      "packet": {
+        "current_stage": "plan-review",
+        "boundary_record_id": "BF-FIX-001",
+        "proof_map_id": "BF-FIX-PROOF-001",
+        "condition": "Two primary boundaries are coupled in one uncloseable milestone.",
+        "evidence_state": "coupled-milestone"
+      },
+      "expected_semantic_owner": "plan-review",
+      "expected_outcome": "changes-requested",
+      "expected_handoff": "plan",
+      "required_guidance": [
+        "Stop review and request plan revision",
+        "a primary trust boundary is coupled to another closeout unit"
+      ],
+      "forbidden_claim": "Structural validation proves semantic completeness."
+    },
+    {
+      "case_id": "semantic.test-spec.stale-contract-id",
+      "owning_skill": "test-spec",
+      "packet": {
+        "current_stage": "test-spec",
+        "boundary_record_id": "BF-FIX-001",
+        "proof_map_id": "BF-FIX-PROOF-001",
+        "condition": "The requested proof cites a stale boundary ID.",
+        "evidence_state": "stale-id"
+      },
+      "expected_semantic_owner": "test-spec",
+      "expected_outcome": "stopped",
+      "expected_handoff": "feature-spec",
+      "required_guidance": [
+        "Stop test-spec authoring and return to the feature spec",
+        "when an ID is missing, stale, unknown, renamed"
+      ],
+      "forbidden_claim": "Structural validation proves semantic completeness."
+    },
+    {
+      "case_id": "semantic.test-spec-review.helper-only-proof",
+      "owning_skill": "test-spec-review",
+      "packet": {
+        "current_stage": "test-spec-review",
+        "boundary_record_id": "BF-FIX-001",
+        "proof_map_id": "BF-FIX-PROOF-001",
+        "condition": "Helper-only proof substitutes for an admitted public path.",
+        "evidence_state": "inadequate-proof"
+      },
+      "expected_semantic_owner": "test-spec-review",
+      "expected_outcome": "changes-requested",
+      "expected_handoff": "test-spec",
+      "required_guidance": [
+        "Stop review with a material finding",
+        "helper-only proof substitutes for a public or sibling path"
+      ],
+      "forbidden_claim": "Structural validation proves semantic completeness."
+    },
+    {
+      "case_id": "semantic.implement.missing-proof",
+      "owning_skill": "implement",
+      "packet": {
+        "current_stage": "implement",
+        "boundary_record_id": "BF-FIX-001",
+        "proof_map_id": "BF-FIX-PROOF-001",
+        "condition": "Required direct proof is missing before behavior mutation.",
+        "evidence_state": "missing-proof"
+      },
+      "expected_semantic_owner": "implement",
+      "expected_outcome": "stopped",
+      "expected_handoff": "test-spec",
+      "required_guidance": [
+        "Stop implementation before mutation",
+        "required proof is missing"
+      ],
+      "forbidden_claim": "Structural validation proves semantic completeness."
+    },
+    {
+      "case_id": "semantic.code-review.escaped-boundary",
+      "owning_skill": "code-review",
+      "packet": {
+        "current_stage": "code-review",
+        "boundary_record_id": "BF-FIX-001",
+        "proof_map_id": "BF-FIX-PROOF-001",
+        "condition": "The implementation adds an unapproved sibling path.",
+        "evidence_state": "escaped-boundary"
+      },
+      "expected_semantic_owner": "code-review",
+      "expected_outcome": "changes-requested",
+      "expected_handoff": "review-resolution",
+      "required_guidance": [
+        "Stop clean handoff and record a finding",
+        "implementation escapes the approved boundary class"
+      ],
+      "forbidden_claim": "Structural validation proves semantic completeness."
+    },
+    {
+      "case_id": "semantic.verify.stale-evidence",
+      "owning_skill": "verify",
+      "packet": {
+        "current_stage": "verify",
+        "boundary_record_id": "BF-FIX-001",
+        "proof_map_id": "BF-FIX-PROOF-001",
+        "condition": "The evidence identity is stale and a discovery lacks upstream ownership.",
+        "evidence_state": "stale-evidence"
+      },
+      "expected_semantic_owner": "verify",
+      "expected_outcome": "blocked",
+      "expected_handoff": "owning-upstream-stage",
+      "required_guidance": [
+        "Stop verification before readiness claims",
+        "a discovery still requires upstream ownership"
+      ],
+      "forbidden_claim": "Structural validation proves semantic completeness."
+    }
+  ]
+}

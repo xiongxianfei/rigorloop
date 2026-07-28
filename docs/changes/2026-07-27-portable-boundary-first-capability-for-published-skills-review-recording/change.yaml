@@ -1,0 +1,1703 @@
+change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+title: Portable Boundary-First Capability for Published Skills
+classification: default
+risk: medium
+artifacts:
+  proposal: docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  spec: specs/boundary-first-proof-model.md
+  test_spec: specs/boundary-first-proof-model.test.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md
+  plan: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  explain_change: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/explain-change.md
+  review_resolution: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
+requirements:
+  - Record the isolated formal proposal review before any review-driven revision.
+  - Preserve complete material findings for boundary vocabulary, lifecycle ownership, packaging, activation, semantic proof, and lifecycle sequencing.
+  - Require proposal revision and same-stage rereview before specification reliance.
+  - Define the portable boundary record, proof map, activation, lifecycle ownership, and published-resource contract.
+tests:
+  - Review artifact validation accepts the detailed review, log, and resolution relationships.
+  - Change metadata validation accepts the initial review-record root.
+  - Spec-review independently approves the boundary-first contract amendment before architecture.
+validation:
+  -
+    command: bash scripts/ci.sh --mode pr --base f4c9354eacca4963910242da4ef46a04aaea87d7 --head HEAD
+    result: pass_23_selected_checks_final_committed_ci_correction_verify
+  -
+    command: bash scripts/ci.sh --mode pr --base f4c9354eacca4963910242da4ef46a04aaea87d7 --head HEAD
+    result: pass_22_selected_checks_post_pr_ci_correction
+  -
+    command: python scripts/test-artifact-lifecycle-validator.py
+    result: pass_157_tests_post_pr_ci_correction
+  -
+    command: python scripts/test-select-validation.py
+    result: pass_135_tests_post_pr_ci_correction
+  -
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md --path docs/plan.md --path docs/plan-archive.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/change.yaml --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/explain-change.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
+    result: pass_after_pr_126_handoff
+  -
+    command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_12_checks_final_verify_461s
+  -
+    command: python scripts/test-adapter-distribution.py
+    result: pass_133_tests_final_verify_232s
+  -
+    command: python scripts/test-boundary-first-reference.py
+    result: pass_10_tests_final_verify
+  -
+    command: python scripts/project-boundary-first-reference.py --check
+    result: pass_10_consumers_final_verify
+  -
+    command: python scripts/validate-skills.py
+    result: pass_24_skill_files_final_verify
+  -
+    command: python scripts/test-skill-validator.py
+    result: pass_263_tests_final_verify
+  -
+    command: python scripts/build-skills.py --check
+    result: pass_generated_skills_final_verify
+  -
+    command: python scripts/test-boundary-first-validation.py
+    result: pass_56_tests_final_verify
+  -
+    command: python scripts/validate-boundary-first.py --check
+    result: pass_pending_manifest_final_verify
+  -
+    command: python scripts/test-select-validation.py
+    result: pass_134_tests_final_verify
+  -
+    command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+    result: pass_45_reviews_64_findings_final_verify
+  -
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md --path specs/boundary-first-proof-model.md --path specs/boundary-first-proof-model.test.md --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md --path docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md --path docs/plan.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/change.yaml --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/explain-change.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
+    result: pass_final_verify
+  -
+    command: bash scripts/ci.sh --mode broad-smoke
+    result: pass_12_checks_M4
+  -
+    command: python scripts/test-adapter-distribution.py -k boundary_first
+    result: pass_2_tests_M4_adapter_applicable_package_and_install_parity
+  -
+    command: python scripts/test-adapter-distribution.py
+    result: pass_133_tests_M4
+  -
+    command: python scripts/test-boundary-first-validation.py -k active_rollback_release_matches_current_adapter_metadata
+    result: pass_1_test_M4_read_only_v0_3_5_metadata_selection
+  -
+    command: python scripts/test-boundary-first-validation.py
+    result: pass_56_tests_M4_authoritative_rollback_selection
+  -
+    command: python scripts/validate-boundary-first.py --check
+    result: pass_pending_two_state_manifest_M3
+  -
+    command: python scripts/test-select-validation.py
+    result: pass_134_tests_M3_from_committed_coordinator_baseline
+  -
+    command: python scripts/test-skill-validator.py -k BoundaryFirstLifecycleSkillTests
+    result: pass_4_tests_M2_after_PBF-M2-CR1
+  -
+    command: python scripts/validate-skills.py
+    result: pass_24_skill_files_M2
+  -
+    command: python scripts/test-skill-validator.py
+    result: pass_263_tests_M2_after_PBF-M2-CR1
+  -
+    command: python scripts/build-skills.py --check
+    result: pass_generated_skills_M2
+  -
+    command: python scripts/test-boundary-first-reference.py
+    result: pass_10_tests_M1_after_PBF-M1-CR1_through_PBF-M1-CR3
+  -
+    command: python scripts/project-boundary-first-reference.py --check
+    result: pass_10_consumers_M1
+  -
+    command: git diff --check -- scripts/boundary_first_reference.py scripts/project-boundary-first-reference.py scripts/test-boundary-first-reference.py specs/references skills/workflow/references skills/spec/references skills/spec-review/references skills/plan/references skills/plan-review/references skills/test-spec/references skills/test-spec-review/references skills/implement/references skills/code-review/references skills/verify/references
+    result: pass_M1
+  -
+    command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+    result: pass_reviews_3_findings_7_log_entries_3_resolution_entries_7
+  -
+    command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+    result: pass_reviews_3_findings_7_log_entries_3_resolution_entries_7
+  -
+    command: python scripts/validate-change-metadata.py docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/change.yaml
+    result: pass
+  -
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/change.yaml --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md --path docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
+    result: pass_validated_1_lifecycle_artifact
+  -
+    command: python scripts/validate-markdown-readability.py docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r1.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r2.md docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r3.md
+    result: pass_with_audit_only_warnings_MDREAD-002_70_MDREAD-003_43
+changed_files:
+  - scripts/lifecycle_state_sync.py
+  - scripts/test-artifact-lifecycle-validator.py
+  - specs/single-source-of-workflow-state.test.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-post-pr-ci-r1.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/explain-change.md
+  - docs/plan-archive.md
+  - scripts/adapter_distribution.py
+  - scripts/test-adapter-distribution.py
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-install-evidence.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-activation-evidence.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m4-implementation.md
+  - specs/boundary-first-activation.yaml
+  - scripts/boundary_first_validation.py
+  - scripts/validate-boundary-first.py
+  - scripts/test-boundary-first-validation.py
+  - scripts/test-select-validation.py
+  - scripts/validation_selection.py
+  - scripts/fixtures/boundary-first/feature-records/minimal.md
+  - scripts/fixtures/boundary-first/feature-records/complex.md
+  - scripts/fixtures/boundary-first/feature-records/semantic-omission.md
+  - scripts/fixtures/boundary-first/proof-maps/complete.md
+  - scripts/fixtures/boundary-first/proof-maps/complex-complete.md
+  - scripts/fixtures/boundary-first/proof-maps/gap.md
+  - scripts/fixtures/boundary-first/activation/unknown-state.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-validation-evidence.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m3-implementation.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m3-r1.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m3-r1.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m3-r2.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m3-r2.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m3-r3.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m3-r3.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m3-r4.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m3-r4.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m3-r5.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m3-r5.md
+  - docs/proposals/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/change.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r1.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r2.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r3.md
+  - specs/boundary-first-proof-model.md
+  - specs/boundary-first-proof-model.test.md
+  - specs/rigorloop-workflow.md
+  - specs/skill-contract.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r1.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r2.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/architecture-assessment.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/architecture-review-r1.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/architecture-review-r2.md
+  - docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  - docs/plan.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/plan-review-r1.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/test-spec-review-r1.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/test-spec-review-r2.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-reference-evidence.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m1-implementation.md
+  - specs/references/boundary-first-method-v1.md
+  - scripts/boundary_first_reference.py
+  - scripts/project-boundary-first-reference.py
+  - scripts/test-boundary-first-reference.py
+  - skills/workflow/references/boundary-first-method-v1.md
+  - skills/spec/references/boundary-first-method-v1.md
+  - skills/spec-review/references/boundary-first-method-v1.md
+  - skills/plan/references/boundary-first-method-v1.md
+  - skills/plan-review/references/boundary-first-method-v1.md
+  - skills/test-spec/references/boundary-first-method-v1.md
+  - skills/test-spec-review/references/boundary-first-method-v1.md
+  - skills/implement/references/boundary-first-method-v1.md
+  - skills/code-review/references/boundary-first-method-v1.md
+  - skills/verify/references/boundary-first-method-v1.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m1-r1.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m1-r1.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m1-r2.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m1-r2.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m1-r3.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m1-r3.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m1-r4.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m1-r4.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m2-implementation.md
+  - scripts/skill_validation.py
+  - scripts/test-skill-validator.py
+  - scripts/fixtures/boundary-first/semantic/review-cases.json
+  - skills/workflow/SKILL.md
+  - skills/spec/SKILL.md
+  - skills/spec-review/SKILL.md
+  - skills/plan/SKILL.md
+  - skills/plan-review/SKILL.md
+  - skills/test-spec/SKILL.md
+  - skills/test-spec-review/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/verify/SKILL.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m2-r1.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m2-r1.md
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m2-r2.yaml
+  - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-m2-r2.md
+review:
+  status: clean-with-notes
+  unresolved_items: 0
+  material_findings: 64
+  closed_findings: 64
+  open_findings: 0
+  proposal_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/proposal-review-r3.md
+  spec_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r5.md
+  architecture_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/architecture-review-r4.md
+  plan_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/plan-review-r6.md
+  test_spec_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/test-spec-review-r9.md
+  code_review: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/code-review-post-pr-ci-r1.md
+  review_log: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-log.md
+  review_resolution: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-resolution.md
+  review_gate:
+    manifest: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/review-invocation-code-review-m4-r2.yaml
+    independence_level: L1
+    initial_packet_sha256: sha256:3e1b1f84db8f04c0ae16e0a16758b09b34767429192b40d737e176a413986e84
+    phase_receipts:
+      - risk-map-recorded
+      - evidence-menu-released
+      - evidence-results-released
+      - prior-findings-released
+      - verdict-recorded
+  requirement_fidelity:
+    applicability: applicable
+    matched_path_triggers:
+      - skills/
+    matched_category_triggers:
+      - generated-output or package parity validators
+    review_stage: code-review
+    receipt_valid: true
+architecture:
+  assessment: architecture-required
+  rationale: The change spans shared source ownership, deterministic projections, structural validation, generated adapters, installed target trees, activation evidence, and rollback.
+  package: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    schema_version: 1
+    run:
+      run_id: run-pbf-20260727-verify
+      change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+      status: active
+      policy_version: 1
+      target:
+        stage: verify
+        occurrence:
+          kind: final
+        bound_at: 2026-07-27T23:43:53Z
+        completion:
+          rule: fresh verification passes
+    parent_authorizations:
+      authorization-authoring-run-pbf-20260727-verify:
+        authorization_id: authorization-authoring-run-pbf-20260727-verify
+        authorization_class: authoring
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        authorized_by: user
+        authorized_at: 2026-07-27T23:43:53Z
+        maximum_target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        allowed_capability_kinds:
+          - proposal-review
+          - post-proposal-authoring
+        maximum_path_roots:
+          - docs/proposals/
+          - specs/
+          - docs/architecture/
+          - docs/adr/
+          - docs/plans/
+          - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/
+        maximum_mutation_categories:
+          - change-local-review-evidence
+          - downstream-authoring-artifacts
+          - change-local-evidence
+        status: active
+        revocation:
+          revoked: false
+        invalidation:
+          on_policy_change: pause
+        external_actions: prohibited
+      authorization-implementation-run-pbf-20260727-verify:
+        authorization_id: authorization-implementation-run-pbf-20260727-verify
+        authorization_class: implementation
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        authorized_by: user
+        authorized_at: 2026-07-28T09:15:00Z
+        maximum_target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        allowed_capability_kinds:
+          - implementation
+          - implementation-correction
+        maximum_path_roots:
+          - docs/
+          - scripts/
+          - skills/
+          - specs/
+        maximum_mutation_categories:
+          - tests
+          - production-code
+          - change-local-review-evidence
+          - change-local-evidence
+        status: active
+        revocation:
+          revoked: false
+        invalidation:
+          on_policy_change: pause
+        external_actions: prohibited
+        correction_budget:
+          cycles: 4
+        correction_budget_amendments:
+          -
+            amendment_id: authorization-extension-PBF-M1-CR4
+            authorized_by: user
+            authorized_at: 2026-07-28T08:54:42Z
+            finding_id: PBF-M1-CR4
+            additional_cycles: 1
+            prior_cycles: 2
+            resulting_cycles: 3
+            maximum_target: verify
+          -
+            amendment_id: authorization-extension-PBF-M3-CR14-PBF-M3-CR16
+            authorized_by: user
+            authorized_at: 2026-07-28T11:33:50Z
+            finding_id: PBF-M3-CR14,PBF-M3-CR16
+            additional_cycles: 1
+            prior_cycles: 3
+            resulting_cycles: 4
+            maximum_target: verify
+    effective_capabilities:
+      cap-pbf-spec:
+        capability_id: cap-pbf-spec
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: spec
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-contract-amendment
+        scope:
+          affected_path_roots:
+            - specs/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-27T23:58:26Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      cap-pbf-spec-review:
+        capability_id: cap-pbf-spec-review
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: spec-review
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-spec-review
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/
+          mutation_categories:
+            - change-local-review-evidence
+        derived_at: 2026-07-27T23:58:43Z
+        status: invalidated
+        invalidation:
+          on_parent_revocation: invalidate
+        invalidation_reason: review-record-shape-corrected
+      cap-pbf-spec-review-r2:
+        capability_id: cap-pbf-spec-review-r2
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: spec-review
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-spec-review-r2
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/
+          mutation_categories:
+            - change-local-review-evidence
+        derived_at: 2026-07-27T23:59:53Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      cap-pbf-architecture-assessment:
+        capability_id: cap-pbf-architecture-assessment
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: architecture-assessment
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-architecture-assessment
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/
+          mutation_categories:
+            - change-local-evidence
+        derived_at: 2026-07-28T00:00:27Z
+        status: invalidated
+        invalidation:
+          on_parent_revocation: invalidate
+        invalidation_reason: architecture-assessment-shape-corrected
+      cap-pbf-architecture-assessment-r2:
+        capability_id: cap-pbf-architecture-assessment-r2
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: architecture-assessment
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-architecture-assessment-r2
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/
+          mutation_categories:
+            - change-local-evidence
+        derived_at: 2026-07-28T00:01:08Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      cap-pbf-architecture:
+        capability_id: cap-pbf-architecture
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: architecture
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-architecture
+        scope:
+          affected_path_roots:
+            - docs/architecture/
+            - docs/adr/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-28T00:04:09Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      cap-pbf-architecture-review-r2:
+        capability_id: cap-pbf-architecture-review-r2
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: architecture-review
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:85c6a1b6cefe732be3a00d21d760c1d79660eac4b169017be123e4caa32d0967
+          stage_scope_identity: sha256:boundary-first-architecture-review-r2
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/
+          mutation_categories:
+            - change-local-review-evidence
+        derived_at: 2026-07-28T00:07:17Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      cap-pbf-plan:
+        capability_id: cap-pbf-plan
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: plan
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:85c6a1b6cefe732be3a00d21d760c1d79660eac4b169017be123e4caa32d0967
+          stage_scope_identity: sha256:portable-boundary-first-plan-v1
+        scope:
+          affected_path_roots:
+            - docs/plans/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-28T00:20:00Z
+        status: invalidated
+        invalidation:
+          on_parent_revocation: invalidate
+        invalidation_reason: plan-completion-evidence-shape-corrected
+      cap-pbf-plan-r2:
+        capability_id: cap-pbf-plan-r2
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: plan
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:85c6a1b6cefe732be3a00d21d760c1d79660eac4b169017be123e4caa32d0967
+          stage_scope_identity: sha256:portable-boundary-first-plan-v1
+        scope:
+          affected_path_roots:
+            - docs/plans/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-28T00:21:00Z
+        status: invalidated
+        invalidation:
+          on_parent_revocation: invalidate
+        invalidation_reason: plan-native-handoff-shape-corrected
+      cap-pbf-plan-r3:
+        capability_id: cap-pbf-plan-r3
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: plan
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:85c6a1b6cefe732be3a00d21d760c1d79660eac4b169017be123e4caa32d0967
+          stage_scope_identity: sha256:portable-boundary-first-plan-v1
+        scope:
+          affected_path_roots:
+            - docs/plans/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-28T00:22:00Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      cap-pbf-plan-review-r1:
+        capability_id: cap-pbf-plan-review-r1
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: plan-review
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:810c89378e2d420df380cf68c09b3f44500587b5404ff7d9b02fd9bfdff9ddd2
+          stage_scope_identity: sha256:portable-boundary-first-plan-review-r1
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/
+          mutation_categories:
+            - change-local-review-evidence
+        derived_at: 2026-07-28T00:25:00Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      cap-pbf-test-spec-resumed:
+        capability_id: cap-pbf-test-spec-resumed
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: test-spec
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-test-spec
+        scope:
+          affected_path_roots:
+            - specs/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-28T08:00:00Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      cap-pbf-test-spec-review-r1:
+        capability_id: cap-pbf-test-spec-review-r1
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: test-spec-review
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:3886614f050ba8012ae72b0e0e7b04d13f56fddab10391a76cd8b471106a2b87
+          stage_scope_identity: sha256:boundary-first-test-spec-review-r1
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/
+          mutation_categories:
+            - change-local-review-evidence
+        derived_at: 2026-07-28T08:05:00Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      cap-pbf-test-spec-r2:
+        capability_id: cap-pbf-test-spec-r2
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: test-spec
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:485341c58a8d83a7bfecacf55893f4f62aa812e8e0d62c876b551ce1dde7e7c3
+          stage_scope_identity: sha256:boundary-first-test-spec-r2
+        scope:
+          affected_path_roots:
+            - specs/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-28T09:00:00Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      cap-pbf-test-spec-r3:
+        capability_id: cap-pbf-test-spec-r3
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: test-spec
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:c9c94110ec522818918b539f0ec368c56d6822d11ab322d23cb42b056f9d9709
+          stage_scope_identity: sha256:boundary-first-test-spec-r3
+        scope:
+          affected_path_roots:
+            - specs/
+          mutation_categories:
+            - downstream-authoring-artifacts
+        derived_at: 2026-07-28T09:02:00Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      cap-pbf-test-spec-review-r2:
+        capability_id: cap-pbf-test-spec-review-r2
+        capability_kind: post-proposal-authoring
+        parent_authorization_id: authorization-authoring-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: test-spec-review
+          occurrence:
+            kind: singleton
+        basis:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:202f9157f0623f030dc83a70818fb0ad5d2e2570dfec72737b43ebf8ffd2d765
+          stage_scope_identity: sha256:boundary-first-test-spec-review-r2
+        scope:
+          affected_path_roots:
+            - docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/
+          mutation_categories:
+            - change-local-review-evidence
+        derived_at: 2026-07-28T09:10:00Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+      cap-pbf-implement-M1:
+        capability_id: cap-pbf-implement-M1
+        capability_kind: implementation
+        parent_authorization_id: authorization-implementation-run-pbf-20260727-verify
+        policy_version: 1
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        stage:
+          name: implement
+          occurrence:
+            kind: milestone
+            milestone_id: M1
+        basis:
+          plan_identity: sha256:d6600843569fb89dd7b1cee3ec77778c92c4d6f910be9e55f94d6fdefaedd72a
+          plan_review_identity: sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495
+          test_spec_identity: sha256:c7666cb2205e150cf8e43487087ab4cd3401b532d87d93d51832a211926a71c1
+          test_spec_review_identity: sha256:b48d07017ac4561deabc45edf21ddcff4992fae2aaddf049186b9222b8153ce0
+          milestone_identity: sha256:1552542cc0660a52b945ac7aa881a4e3dc298c3a4a336dd12f426a1a1db324e3
+          affected_paths_identity: sha256:8e439c22cfa76b9e241e7f3edb078cc4c46f7afc46d6ebccdf12eef89538c82c
+          mutation_categories_identity: sha256:a8f8d763bedb3b3e11879e5b1f5c21ddb5d9362aad408d86b40f062ab9dce8f0
+          validation_commands_identity: sha256:22d5c0a3ad3fa871758a026c5c48139132b53295331729591726dc5e9ed37adf
+        scope:
+          affected_path_roots:
+            - docs/
+            - scripts/
+            - skills/
+            - specs/
+          mutation_categories:
+            - production-code
+        derived_at: 2026-07-28T09:40:00Z
+        status: consumed
+        invalidation:
+          on_parent_revocation: invalidate
+    transition_receipts:
+      transition-pbf-spec:
+        transition_id: transition-pbf-spec
+        transition_key: sha256:37fa3c59887af5c7d0122d1ea4966552e9314d58edadfc607decc0c7ff9d7e0f
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: proposal-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-spec
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-contract-amendment
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+        expected_postcondition:
+          completion_rule: spec is authored against current upstream identities
+          required_evidence:
+            - spec
+        status: completed
+        outputs:
+          -
+            path: specs/boundary-first-proof-model.md
+            identity: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+        canonical_sync:
+          status: synchronized
+          evidence:
+            spec:
+              path: specs/boundary-first-proof-model.md
+              identity: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          observed_identities:
+            spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+      transition-pbf-spec-review:
+        transition_id: transition-pbf-spec-review
+        transition_key: sha256:d4321284afc82b3ce7fb737e632d408b2135f12e126f73da87d133cd03ec4ebd
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: spec
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-spec-review
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-spec-review
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+        expected_postcondition:
+          completion_rule: formal spec review is recorded
+          required_evidence:
+            - spec-review
+        status: paused
+        outputs:
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r2.md
+            identity: sha256:f036628498699d813e0946732f83b368f6306592a8b7d39e00e14f7c1b0dfacc
+        canonical_sync:
+          status: failed
+      transition-pbf-spec-review-r2:
+        transition_id: transition-pbf-spec-review-r2
+        transition_key: sha256:41f4f262226b238c7ba747f2d7b9870e6ec791e40e3d0dfea5eff40a07e53784
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: spec
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-spec-review-r2
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-spec-review-r2
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+        expected_postcondition:
+          completion_rule: formal spec review is recorded
+          required_evidence:
+            - spec-review
+        status: completed
+        outputs:
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r2.md
+            identity: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+        canonical_sync:
+          status: synchronized
+          evidence:
+            spec-review:
+              path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/spec-review-r2.md
+              identity: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+          observed_identities:
+            spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+            spec-review-log: sha256:25dd5285e9013759fc6ca7664d435978f16bc9f90e7be87831733e6e1119f085
+      transition-pbf-architecture-assessment:
+        transition_id: transition-pbf-architecture-assessment
+        transition_key: sha256:57bb0364504193a53b6317c24e29e1786f0df2ff35a55aff02af1cf09141da03
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: spec-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-architecture-assessment
+        retry_policy: idempotent-retry
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-architecture-assessment
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+        expected_postcondition:
+          completion_rule: architecture applicability is recorded
+          required_evidence:
+            - architecture-assessment
+        status: paused
+        outputs:
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/architecture-assessment.md
+            identity: sha256:1dc5c76cdbfc80eae638ecd5c31bd5c5f8b40f23fe5c01869247db4aac6de78a
+        canonical_sync:
+          status: failed
+      transition-pbf-architecture-assessment-r2:
+        transition_id: transition-pbf-architecture-assessment-r2
+        transition_key: sha256:6b12e76c86c66f0cbf4ffb3a399ea39ed87ed4742d752c5075f0430fcc5546fe
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: spec-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-architecture-assessment-r2
+        retry_policy: idempotent-retry
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-architecture-assessment-r2
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+        expected_postcondition:
+          completion_rule: architecture applicability is recorded
+          required_evidence:
+            - architecture-assessment
+        status: completed
+        outputs:
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/architecture-assessment.md
+            identity: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+        canonical_sync:
+          status: synchronized
+          evidence:
+            architecture-assessment:
+              path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/architecture-assessment.md
+              identity: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+          observed_identities:
+            architecture-assessment: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+      transition-pbf-architecture:
+        transition_id: transition-pbf-architecture
+        transition_key: sha256:ebba326927b60d51b18d4df5b7e91f21100e0c3620d69e56ce56860e47cb14d1
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: architecture-assessment
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-architecture
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-architecture
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+          architecture-assessment: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+          architecture_applicability: required
+          architecture_applicability_identity: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+        expected_postcondition:
+          completion_rule: architecture package is complete
+          required_evidence:
+            - architecture
+        status: completed
+        outputs:
+          -
+            path: docs/architecture/system/architecture.md
+            identity: sha256:ccc16d13361a8f94dd25b0a242aff5b890adb0a2d11328997593eb9f1ead079c
+        canonical_sync:
+          status: synchronized
+          evidence:
+            architecture:
+              path: docs/architecture/system/architecture.md
+              identity: sha256:ccc16d13361a8f94dd25b0a242aff5b890adb0a2d11328997593eb9f1ead079c
+          observed_identities:
+            architecture: sha256:ccc16d13361a8f94dd25b0a242aff5b890adb0a2d11328997593eb9f1ead079c
+      transition-pbf-architecture-review-r2:
+        transition_id: transition-pbf-architecture-review-r2
+        transition_key: sha256:b3af70435fe773f1244f5aa97aae2a37dd8960a7c57433d1885506eb2e63ee22
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: architecture
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-architecture-review-r2
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:85c6a1b6cefe732be3a00d21d760c1d79660eac4b169017be123e4caa32d0967
+          stage_scope_identity: sha256:boundary-first-architecture-review-r2
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+          architecture-assessment: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+          architecture: sha256:176721282860df20ea71eb403c20bf725e86a99d90092ecc42c9605622066325
+          architecture_applicability: required
+          architecture_applicability_identity: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+        expected_postcondition:
+          completion_rule: formal architecture review is recorded
+          required_evidence:
+            - architecture-review
+        status: completed
+        outputs:
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/architecture-review-r2.md
+            identity: sha256:f5c913f10823649380b0a60d994577f09e13907b04ce8ee05eb074d91df504b5
+        canonical_sync:
+          status: synchronized
+          evidence:
+            architecture-review:
+              path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/architecture-review-r2.md
+              identity: sha256:f5c913f10823649380b0a60d994577f09e13907b04ce8ee05eb074d91df504b5
+          observed_identities:
+            architecture-review: sha256:f5c913f10823649380b0a60d994577f09e13907b04ce8ee05eb074d91df504b5
+            architecture-review-log: sha256:4ab41b7280aab5424fafd6c92baca2183ee114e41cca059e4d8e90d70cf95de7
+      transition-pbf-plan:
+        transition_id: transition-pbf-plan
+        transition_key: sha256:4e5c7dbef4750e8c5e507255188b53ac0aa6fa70920aab422005a1a0ff64a468
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: architecture-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-plan
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:85c6a1b6cefe732be3a00d21d760c1d79660eac4b169017be123e4caa32d0967
+          stage_scope_identity: sha256:portable-boundary-first-plan-v1
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+          architecture-assessment: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+          architecture: sha256:176721282860df20ea71eb403c20bf725e86a99d90092ecc42c9605622066325
+          architecture-review: sha256:f5c913f10823649380b0a60d994577f09e13907b04ce8ee05eb074d91df504b5
+          architecture_applicability: required
+        expected_postcondition:
+          completion_rule: valid active plan handoff is established
+          required_evidence:
+            - current-handoff-summary
+            - plan
+        status: paused
+        outputs:
+          -
+            path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+            identity: sha256:538976f4d85184d88e09ee7f3eb40d2c3faa4d84d1dcce0d3213bfde58ede00b
+        canonical_sync:
+          status: failed
+      transition-pbf-plan-r2:
+        transition_id: transition-pbf-plan-r2
+        transition_key: sha256:2641a4f332639082d8634fd41894f4b3bc5bd48659198b8ecba9e0f527b0f61c
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: architecture-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-plan-r2
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:85c6a1b6cefe732be3a00d21d760c1d79660eac4b169017be123e4caa32d0967
+          stage_scope_identity: sha256:portable-boundary-first-plan-v1
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+          architecture-assessment: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+          architecture: sha256:176721282860df20ea71eb403c20bf725e86a99d90092ecc42c9605622066325
+          architecture-review: sha256:f5c913f10823649380b0a60d994577f09e13907b04ce8ee05eb074d91df504b5
+          architecture_applicability: required
+        expected_postcondition:
+          completion_rule: valid active plan handoff is established
+          required_evidence:
+            - current-handoff-summary
+            - plan
+        status: paused
+        outputs:
+          -
+            path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+            identity: sha256:538976f4d85184d88e09ee7f3eb40d2c3faa4d84d1dcce0d3213bfde58ede00b
+        canonical_sync:
+          status: failed
+      transition-pbf-plan-r3:
+        transition_id: transition-pbf-plan-r3
+        transition_key: sha256:d28d1d66180b6d6cfd9e46e3e79bc58774095972f17040ce2f4fd41f033d689f
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: architecture-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-plan-r3
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:85c6a1b6cefe732be3a00d21d760c1d79660eac4b169017be123e4caa32d0967
+          stage_scope_identity: sha256:portable-boundary-first-plan-v1
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+          architecture-assessment: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+          architecture: sha256:176721282860df20ea71eb403c20bf725e86a99d90092ecc42c9605622066325
+          architecture-review: sha256:f5c913f10823649380b0a60d994577f09e13907b04ce8ee05eb074d91df504b5
+          architecture_applicability: required
+        expected_postcondition:
+          completion_rule: valid active plan handoff is established
+          required_evidence:
+            - current-handoff-summary
+            - plan
+        status: completed
+        outputs:
+          -
+            path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+            identity: sha256:3d54856be653f8f1ad0bd8b81c44e66a3be3f247d469d52f337737dcda93dcad
+        canonical_sync:
+          status: synchronized
+          evidence:
+            current-handoff-summary:
+              path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+              identity: sha256:3d54856be653f8f1ad0bd8b81c44e66a3be3f247d469d52f337737dcda93dcad
+            plan:
+              path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+              identity: sha256:3d54856be653f8f1ad0bd8b81c44e66a3be3f247d469d52f337737dcda93dcad
+          observed_identities:
+            current-handoff-summary: sha256:3d54856be653f8f1ad0bd8b81c44e66a3be3f247d469d52f337737dcda93dcad
+            plan: sha256:3d54856be653f8f1ad0bd8b81c44e66a3be3f247d469d52f337737dcda93dcad
+      transition-pbf-plan-review-r1:
+        transition_id: transition-pbf-plan-review-r1
+        transition_key: sha256:604e9b7e77e2770586b38379e37f4a2e605c0bdde03df7c96e04668257512b03
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: plan
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-plan-review-r1
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:810c89378e2d420df380cf68c09b3f44500587b5404ff7d9b02fd9bfdff9ddd2
+          stage_scope_identity: sha256:portable-boundary-first-plan-review-r1
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+          architecture-assessment: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+          architecture: sha256:176721282860df20ea71eb403c20bf725e86a99d90092ecc42c9605622066325
+          architecture-review: sha256:f5c913f10823649380b0a60d994577f09e13907b04ce8ee05eb074d91df504b5
+          plan: sha256:3d54856be653f8f1ad0bd8b81c44e66a3be3f247d469d52f337737dcda93dcad
+        expected_postcondition:
+          completion_rule: formal plan review is recorded
+          required_evidence:
+            - plan-review
+        status: completed
+        outputs:
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/plan-review-r1.md
+            identity: sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495
+        canonical_sync:
+          status: synchronized
+          evidence:
+            plan-review:
+              path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/plan-review-r1.md
+              identity: sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495
+          observed_identities:
+            plan-review: sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495
+            plan-review-log: sha256:69641abde131a863890d18fa2fcc515d973b0d0f2fa9866e1ec4779b3e25e564
+      transition-pbf-test-spec-resumed:
+        transition_id: transition-pbf-test-spec-resumed
+        transition_key: sha256:44a00d4b7aa542d013be12691ea219053417404c338f951ff07c1407b73eb268
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: plan-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-test-spec-resumed
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:103d1a71a3ad7206fe3097ed56db61e6800116e89c84bf4c3e019337fe93771b
+          stage_scope_identity: sha256:boundary-first-test-spec
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+          architecture-assessment: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+          architecture: sha256:176721282860df20ea71eb403c20bf725e86a99d90092ecc42c9605622066325
+          architecture-review: sha256:f5c913f10823649380b0a60d994577f09e13907b04ce8ee05eb074d91df504b5
+          plan: sha256:de19115ade81fbc3d8ed4a84be57a78b742d9f550dbedfd8093b5ff86eed4f91
+          plan-review: sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495
+        expected_postcondition:
+          completion_rule: active test spec is authored
+          required_evidence:
+            - test-spec
+        status: completed
+        outputs:
+          -
+            path: specs/boundary-first-proof-model.test.md
+            identity: sha256:c06221adfc63d1e1e47d06efa77130b62aec61cad280c7967e0fd37e9892f717
+        canonical_sync:
+          status: synchronized
+          evidence:
+            test-spec:
+              path: specs/boundary-first-proof-model.test.md
+              identity: sha256:c06221adfc63d1e1e47d06efa77130b62aec61cad280c7967e0fd37e9892f717
+          observed_identities:
+            test-spec: sha256:c06221adfc63d1e1e47d06efa77130b62aec61cad280c7967e0fd37e9892f717
+      transition-pbf-test-spec-review-r1:
+        transition_id: transition-pbf-test-spec-review-r1
+        transition_key: sha256:0b7ce1322c0cf99f4be025a619229b1ba0331e4db01099a5f32a20b00e70bbc6
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: test-spec
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-test-spec-review-r1
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:3886614f050ba8012ae72b0e0e7b04d13f56fddab10391a76cd8b471106a2b87
+          stage_scope_identity: sha256:boundary-first-test-spec-review-r1
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+          architecture-assessment: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+          architecture: sha256:176721282860df20ea71eb403c20bf725e86a99d90092ecc42c9605622066325
+          architecture-review: sha256:f5c913f10823649380b0a60d994577f09e13907b04ce8ee05eb074d91df504b5
+          plan: sha256:de19115ade81fbc3d8ed4a84be57a78b742d9f550dbedfd8093b5ff86eed4f91
+          plan-review: sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495
+          test-spec: sha256:c06221adfc63d1e1e47d06efa77130b62aec61cad280c7967e0fd37e9892f717
+        expected_postcondition:
+          completion_rule: formal test-spec review is recorded
+          required_evidence:
+            - test-spec-review
+        status: completed
+        outputs:
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/test-spec-review-r1.md
+            identity: sha256:167fc2d75a426807a594b22c58eae97aaa6088ccd28b882057e626b0746e0c7d
+        canonical_sync:
+          status: synchronized
+          evidence:
+            test-spec-review:
+              path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/test-spec-review-r1.md
+              identity: sha256:167fc2d75a426807a594b22c58eae97aaa6088ccd28b882057e626b0746e0c7d
+          observed_identities:
+            test-spec-review: sha256:167fc2d75a426807a594b22c58eae97aaa6088ccd28b882057e626b0746e0c7d
+            test-spec-review-log: sha256:5f26e4c131d4fdca08e457d3f152d823831690fa98d75a21994134b712a1c835
+      transition-pbf-test-spec-r2:
+        transition_id: transition-pbf-test-spec-r2
+        transition_key: sha256:4de6069c68faf1d434809dedad3d4a272752d44bfb2a1a445824086d21ee266b
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: plan-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-test-spec-r2
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:485341c58a8d83a7bfecacf55893f4f62aa812e8e0d62c876b551ce1dde7e7c3
+          stage_scope_identity: sha256:boundary-first-test-spec-r2
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+          architecture-assessment: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+          architecture: sha256:176721282860df20ea71eb403c20bf725e86a99d90092ecc42c9605622066325
+          architecture-review: sha256:f5c913f10823649380b0a60d994577f09e13907b04ce8ee05eb074d91df504b5
+          plan: sha256:78d38838f9a88a2b697b8028dc38381a3f9bba9603d9faea7081173ca55067fd
+          plan-review: sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495
+        expected_postcondition:
+          completion_rule: active test spec is authored
+          required_evidence:
+            - test-spec
+        status: completed
+        outputs:
+          -
+            path: specs/boundary-first-proof-model.test.md
+            identity: sha256:0a05b72598e96647e48abdc300d40956e292f001f7c27442ec5713d36905e4da
+        canonical_sync:
+          status: synchronized
+          evidence:
+            test-spec:
+              path: specs/boundary-first-proof-model.test.md
+              identity: sha256:0a05b72598e96647e48abdc300d40956e292f001f7c27442ec5713d36905e4da
+          observed_identities:
+            test-spec: sha256:0a05b72598e96647e48abdc300d40956e292f001f7c27442ec5713d36905e4da
+      transition-pbf-test-spec-r3:
+        transition_id: transition-pbf-test-spec-r3
+        transition_key: sha256:de8de052c7dde7ada37fe176837fba69a3307e30b968ef6288636f6833ee4545
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: plan-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-test-spec-r3
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:c9c94110ec522818918b539f0ec368c56d6822d11ab322d23cb42b056f9d9709
+          stage_scope_identity: sha256:boundary-first-test-spec-r3
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+          architecture-assessment: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+          architecture: sha256:176721282860df20ea71eb403c20bf725e86a99d90092ecc42c9605622066325
+          architecture-review: sha256:f5c913f10823649380b0a60d994577f09e13907b04ce8ee05eb074d91df504b5
+          plan: sha256:78d38838f9a88a2b697b8028dc38381a3f9bba9603d9faea7081173ca55067fd
+          plan-review: sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495
+        expected_postcondition:
+          completion_rule: active test spec is authored
+          required_evidence:
+            - test-spec
+        status: completed
+        outputs:
+          -
+            path: specs/boundary-first-proof-model.test.md
+            identity: sha256:c7666cb2205e150cf8e43487087ab4cd3401b532d87d93d51832a211926a71c1
+        canonical_sync:
+          status: synchronized
+          evidence:
+            test-spec:
+              path: specs/boundary-first-proof-model.test.md
+              identity: sha256:c7666cb2205e150cf8e43487087ab4cd3401b532d87d93d51832a211926a71c1
+          observed_identities:
+            test-spec: sha256:c7666cb2205e150cf8e43487087ab4cd3401b532d87d93d51832a211926a71c1
+      transition-pbf-test-spec-review-r2:
+        transition_id: transition-pbf-test-spec-review-r2
+        transition_key: sha256:433070dde542aab30f8e2ee0643c6fa525bf7c40e2bb91fb1b2322a3921e0811
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: test-spec
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-test-spec-review-r2
+        retry_policy: reconcile-only
+        input_identities:
+          proposal_identity: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          approved_proposal_review_identity: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          closed_review_resolution_identity: sha256:202f9157f0623f030dc83a70818fb0ad5d2e2570dfec72737b43ebf8ffd2d765
+          stage_scope_identity: sha256:boundary-first-test-spec-review-r2
+          proposal: sha256:d216a0f0ff94dedd3ace3ddeb93a07ee0aa11c48e50c2a5b1b31cda3d09691c5
+          proposal-review: sha256:f973d1e5b9cea24614b8ff1ee7a095190d9fb6b79fdf92b57f0b364dc176d174
+          spec: sha256:d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+          spec-review: sha256:7a056b890be5b891178610adc8b3c5a1c1b8f58e5f24ef649b6d5f928d5dab68
+          architecture-assessment: sha256:15369a352e21357e22d33e315fa78da1ce65e04cf56bf2df1d7f8537a406d4ca
+          architecture: sha256:176721282860df20ea71eb403c20bf725e86a99d90092ecc42c9605622066325
+          architecture-review: sha256:f5c913f10823649380b0a60d994577f09e13907b04ce8ee05eb074d91df504b5
+          plan: sha256:78d38838f9a88a2b697b8028dc38381a3f9bba9603d9faea7081173ca55067fd
+          plan-review: sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495
+          test-spec: sha256:c7666cb2205e150cf8e43487087ab4cd3401b532d87d93d51832a211926a71c1
+        expected_postcondition:
+          completion_rule: formal test-spec review is recorded
+          required_evidence:
+            - test-spec-review
+        status: completed
+        outputs:
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/test-spec-review-r2.md
+            identity: sha256:b48d07017ac4561deabc45edf21ddcff4992fae2aaddf049186b9222b8153ce0
+        canonical_sync:
+          status: synchronized
+          evidence:
+            test-spec-review:
+              path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/reviews/test-spec-review-r2.md
+              identity: sha256:b48d07017ac4561deabc45edf21ddcff4992fae2aaddf049186b9222b8153ce0
+          observed_identities:
+            test-spec-review: sha256:b48d07017ac4561deabc45edf21ddcff4992fae2aaddf049186b9222b8153ce0
+            test-spec-review-log: sha256:f60702411657852f0bd279f475790ee3f3530494bb71d1ee0fe8da116fc3fc5d
+      transition-pbf-implement-M1:
+        transition_id: transition-pbf-implement-M1
+        transition_key: sha256:d6ca12782eeec498de568afa9a9d1e963afeee4ac2a78ab37b9274e4c1fb28ab
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: test-spec-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-implement-M1
+        retry_policy: manual-recovery
+        input_identities:
+          plan_identity: sha256:d6600843569fb89dd7b1cee3ec77778c92c4d6f910be9e55f94d6fdefaedd72a
+          plan_review_identity: sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495
+          test_spec_identity: sha256:c7666cb2205e150cf8e43487087ab4cd3401b532d87d93d51832a211926a71c1
+          test_spec_review_identity: sha256:b48d07017ac4561deabc45edf21ddcff4992fae2aaddf049186b9222b8153ce0
+          milestone_identity: sha256:1552542cc0660a52b945ac7aa881a4e3dc298c3a4a336dd12f426a1a1db324e3
+          affected_paths_identity: sha256:8e439c22cfa76b9e241e7f3edb078cc4c46f7afc46d6ebccdf12eef89538c82c
+          mutation_categories_identity: sha256:a8f8d763bedb3b3e11879e5b1f5c21ddb5d9362aad408d86b40f062ab9dce8f0
+          validation_commands_identity: sha256:22d5c0a3ad3fa871758a026c5c48139132b53295331729591726dc5e9ed37adf
+          plan: sha256:d6600843569fb89dd7b1cee3ec77778c92c4d6f910be9e55f94d6fdefaedd72a
+        expected_postcondition:
+          completion_rule: bound implementation exists, validation passes, and plan requests review
+          required_evidence:
+            - implementation-diff
+            - plan-handoff
+            - validation
+        status: paused
+        outputs:
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m1-implementation.md
+            identity: sha256:4cd47d9752e6f21e0582017ddfea1984b76d27399dc4b0e749c8670bdb7a2220
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-reference-evidence.yaml
+            identity: sha256:161eb2a8fead78f3ecc3332dcec764eb71aca2a9845d348fb31a2886aa14e5ae
+          -
+            path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+            identity: sha256:f3db88d5ea8b6d00e65c27e5fa52fe87f530bcdcc18ff417b6958b9a13f4a3ae
+        canonical_sync:
+          status: failed
+      transition-pbf-implement-M1-r2:
+        transition_id: transition-pbf-implement-M1-r2
+        transition_key: sha256:d6ca12782eeec498de568afa9a9d1e963afeee4ac2a78ab37b9274e4c1fb28ab
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: test-spec-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-implement-M1
+        retry_policy: manual-recovery
+        input_identities:
+          plan_identity: sha256:d6600843569fb89dd7b1cee3ec77778c92c4d6f910be9e55f94d6fdefaedd72a
+          plan_review_identity: sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495
+          test_spec_identity: sha256:c7666cb2205e150cf8e43487087ab4cd3401b532d87d93d51832a211926a71c1
+          test_spec_review_identity: sha256:b48d07017ac4561deabc45edf21ddcff4992fae2aaddf049186b9222b8153ce0
+          milestone_identity: sha256:1552542cc0660a52b945ac7aa881a4e3dc298c3a4a336dd12f426a1a1db324e3
+          affected_paths_identity: sha256:8e439c22cfa76b9e241e7f3edb078cc4c46f7afc46d6ebccdf12eef89538c82c
+          mutation_categories_identity: sha256:a8f8d763bedb3b3e11879e5b1f5c21ddb5d9362aad408d86b40f062ab9dce8f0
+          validation_commands_identity: sha256:22d5c0a3ad3fa871758a026c5c48139132b53295331729591726dc5e9ed37adf
+          plan: sha256:d6600843569fb89dd7b1cee3ec77778c92c4d6f910be9e55f94d6fdefaedd72a
+        expected_postcondition:
+          completion_rule: bound implementation exists, validation passes, and plan requests review
+          required_evidence:
+            - implementation-diff
+            - plan-handoff
+            - validation
+        status: paused
+        outputs:
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m1-implementation.md
+            identity: sha256:4cd47d9752e6f21e0582017ddfea1984b76d27399dc4b0e749c8670bdb7a2220
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-reference-evidence.yaml
+            identity: sha256:dc87fb40aa5add66c652bda64be388341bb9a76e42789a45c5abd21a9e1db810
+          -
+            path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+            identity: sha256:f3db88d5ea8b6d00e65c27e5fa52fe87f530bcdcc18ff417b6958b9a13f4a3ae
+        canonical_sync:
+          status: failed
+      transition-pbf-implement-M1-r3:
+        transition_id: transition-pbf-implement-M1-r3
+        transition_key: sha256:d6ca12782eeec498de568afa9a9d1e963afeee4ac2a78ab37b9274e4c1fb28ab
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: test-spec-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-implement-M1
+        retry_policy: manual-recovery
+        input_identities:
+          plan_identity: sha256:d6600843569fb89dd7b1cee3ec77778c92c4d6f910be9e55f94d6fdefaedd72a
+          plan_review_identity: sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495
+          test_spec_identity: sha256:c7666cb2205e150cf8e43487087ab4cd3401b532d87d93d51832a211926a71c1
+          test_spec_review_identity: sha256:b48d07017ac4561deabc45edf21ddcff4992fae2aaddf049186b9222b8153ce0
+          milestone_identity: sha256:1552542cc0660a52b945ac7aa881a4e3dc298c3a4a336dd12f426a1a1db324e3
+          affected_paths_identity: sha256:8e439c22cfa76b9e241e7f3edb078cc4c46f7afc46d6ebccdf12eef89538c82c
+          mutation_categories_identity: sha256:a8f8d763bedb3b3e11879e5b1f5c21ddb5d9362aad408d86b40f062ab9dce8f0
+          validation_commands_identity: sha256:22d5c0a3ad3fa871758a026c5c48139132b53295331729591726dc5e9ed37adf
+          plan: sha256:d6600843569fb89dd7b1cee3ec77778c92c4d6f910be9e55f94d6fdefaedd72a
+        expected_postcondition:
+          completion_rule: bound implementation exists, validation passes, and plan requests review
+          required_evidence:
+            - implementation-diff
+            - plan-handoff
+            - validation
+        status: paused
+        outputs:
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m1-implementation.md
+            identity: sha256:4cd47d9752e6f21e0582017ddfea1984b76d27399dc4b0e749c8670bdb7a2220
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-reference-evidence.yaml
+            identity: sha256:ab59f55cf98dfaa54bd00da8fae92d7513f70d0d59f64f86e49e85280eb533b0
+          -
+            path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+            identity: sha256:f3db88d5ea8b6d00e65c27e5fa52fe87f530bcdcc18ff417b6958b9a13f4a3ae
+        canonical_sync:
+          status: failed
+      transition-pbf-implement-M1-r4:
+        transition_id: transition-pbf-implement-M1-r4
+        transition_key: sha256:d6ca12782eeec498de568afa9a9d1e963afeee4ac2a78ab37b9274e4c1fb28ab
+        policy_version: 1
+        run_id: run-pbf-20260727-verify
+        change_id: 2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording
+        from_position: test-spec-review
+        target:
+          stage: verify
+          occurrence:
+            kind: final
+          bound_at: 2026-07-27T23:43:53Z
+          completion:
+            rule: fresh verification passes
+        effective_capability_id: cap-pbf-implement-M1
+        retry_policy: manual-recovery
+        input_identities:
+          plan_identity: sha256:d6600843569fb89dd7b1cee3ec77778c92c4d6f910be9e55f94d6fdefaedd72a
+          plan_review_identity: sha256:03a192bfa26e0b88556d4cb8f20403d78d3ca09bf3f197fb5fcf692be8a8f495
+          test_spec_identity: sha256:c7666cb2205e150cf8e43487087ab4cd3401b532d87d93d51832a211926a71c1
+          test_spec_review_identity: sha256:b48d07017ac4561deabc45edf21ddcff4992fae2aaddf049186b9222b8153ce0
+          milestone_identity: sha256:1552542cc0660a52b945ac7aa881a4e3dc298c3a4a336dd12f426a1a1db324e3
+          affected_paths_identity: sha256:8e439c22cfa76b9e241e7f3edb078cc4c46f7afc46d6ebccdf12eef89538c82c
+          mutation_categories_identity: sha256:a8f8d763bedb3b3e11879e5b1f5c21ddb5d9362aad408d86b40f062ab9dce8f0
+          validation_commands_identity: sha256:22d5c0a3ad3fa871758a026c5c48139132b53295331729591726dc5e9ed37adf
+          plan: sha256:d6600843569fb89dd7b1cee3ec77778c92c4d6f910be9e55f94d6fdefaedd72a
+        expected_postcondition:
+          completion_rule: bound implementation exists, validation passes, and plan requests review
+          required_evidence:
+            - implementation-diff
+            - plan-handoff
+            - validation
+        status: completed
+        outputs:
+          -
+            path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+            identity: sha256:f3db88d5ea8b6d00e65c27e5fa52fe87f530bcdcc18ff417b6958b9a13f4a3ae
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-reference-evidence.yaml
+            identity: sha256:5cf9e6bb9a8a020a2e2c4fbc2d596f109beaed4f8e586ded91b0b8cf11bad49f
+          -
+            path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m1-implementation.md
+            identity: sha256:4cd47d9752e6f21e0582017ddfea1984b76d27399dc4b0e749c8670bdb7a2220
+        canonical_sync:
+          status: synchronized
+          evidence:
+            plan-handoff:
+              path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+              identity: sha256:f3db88d5ea8b6d00e65c27e5fa52fe87f530bcdcc18ff417b6958b9a13f4a3ae
+            validation:
+              path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/boundary-reference-evidence.yaml
+              identity: sha256:5cf9e6bb9a8a020a2e2c4fbc2d596f109beaed4f8e586ded91b0b8cf11bad49f
+            implementation-diff:
+              path: docs/changes/2026-07-27-portable-boundary-first-capability-for-published-skills-review-recording/m1-implementation.md
+              identity: sha256:4cd47d9752e6f21e0582017ddfea1984b76d27399dc4b0e749c8670bdb7a2220
+          observed_identities:
+            plan-handoff: sha256:f3db88d5ea8b6d00e65c27e5fa52fe87f530bcdcc18ff417b6958b9a13f4a3ae
+            validation: sha256:5cf9e6bb9a8a020a2e2c4fbc2d596f109beaed4f8e586ded91b0b8cf11bad49f
+            implementation-diff: sha256:4cd47d9752e6f21e0582017ddfea1984b76d27399dc4b0e749c8670bdb7a2220
+    canonical_position_source: plan-current-handoff-summary
+    observed_identities:
+      plan: sha256:f3db88d5ea8b6d00e65c27e5fa52fe87f530bcdcc18ff417b6958b9a13f4a3ae
+    external_actions: prohibited

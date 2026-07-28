@@ -1,0 +1,72 @@
+schema_version: 1
+review_id: code-review-m1-r3
+review_stage: code-review
+review_target: commit:ffa692c0
+base_revision: 686ecc3f
+head_revision: ffa692c0
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L1
+author_context_id: run-pbf-20260727-verify-correction-r2
+reviewer_context_id: run-pbf-20260727-verify-code-review-m1-r3
+context_separation_mechanism: blind-first-assumption-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - generated-output-machinery
+  - filesystem-integrity
+risk_tier_classifier: affected-path-and-surface-v1
+governing_artifacts:
+  - specs/boundary-first-proof-model.md
+  - specs/boundary-first-proof-model.test.md
+  - docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+  - docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-proof-model.md
+    revision: 71af80d1
+    sha256: d56e3ce553f2970f7ac872f7d4372bd24d138de8617dba240190f9dbd378e16b
+  - path: specs/boundary-first-proof-model.test.md
+    revision: 71af80d1
+    sha256: c7666cb2205e150cf8e43487087ab4cd3401b532d87d93d51832a211926a71c1
+  - path: docs/plans/2026-07-27-portable-boundary-first-capability-for-published-skills.md
+    revision: 90dcb7fb
+    sha256: 42cee517dbfb9844c63ab3976e6d95e4df6b1cac75fe0f400a459d33e298cf0d
+  - path: docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md
+    revision: 71af80d1
+    sha256: 030caf8fe3920810b603d53c3b449b1caeb81c676a8ed336a1e93af769503740
+  - path: commit:ffa692c0.diff
+    revision: ffa692c0
+    sha256: 3b8c2dc5778e50f52e0f28a6ebbcbfaf4a5d076f5e9f04ec2bd3589b08effe13
+initial_packet_sha256: a752c38220c98c637c847776b1655beef8e5588244fbeb3c891e22dd51d0da83
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
+risk_map:
+  affected_behavior: unexpected-consumer symlink classification and temporary fixture lifecycle
+  highest_impact_failure_modes: following an outside link, accepting unsafe membership drift, rejecting legitimate non-symlink entries, or leaking test state
+  changed_boundaries: closed consumer enumeration, error aggregation, and test isolation
+  evidence_expected: both unsafe topology errors, no traversal, ordinary unexpected-file preservation, managed cleanup, and unchanged ten-consumer parity
+  direct_inspection_areas: non-recursive enumeration branches, error ordering, fixture cleanup registration, and existing negative tests
+  intentionally_out_of_scope: write atomicity, hard-link threat model, skill mappings, activation, packages, installed targets, and later milestones
+  applicable_risk_classes:
+    - filesystem-integrity
+    - generated-output-currency
+    - regression-safety
+    - test-isolation
+  non_applicable_risk_classes:
+    - external-action
+    - credential-handling
+    - network-access
+  falsifiable_questions:
+    - Do both ungoverned symlink placements fail without reading through the link?
+    - Does the ordinary unexpected projection diagnostic remain unchanged?
+    - Does a complete test run leave the managed outside fixture count unchanged?

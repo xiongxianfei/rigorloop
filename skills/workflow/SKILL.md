@@ -72,12 +72,19 @@ Produce a routing decision, current stage assessment, blockers or assumptions, a
 
 ## Resource map
 
+- READ `references/boundary-first-method-v1.md` when routing a change that declares `boundary_contract: boundary-first-v1` or depends on an approved boundary or proof record.
 - COPY `assets/workflows-skeleton.md` when creating a new project-local
   `docs/workflows.md` or fully rewriting a stale workflow guide.
   Fill metadata, source rank, lifecycle graph, stage obligations, artifact
   registry, artifact-location table, review placement, plan surfaces,
   customization rules, migration notes, and validation notes.
   Do not emit unfilled placeholders.
+
+## Boundary-first method
+
+Route the method, locate governing artifacts, and stop on missing applicable ownership.
+
+For an adopting change, identify the approved feature boundary record and proof map before routing a downstream stage. Stop routing and name the owning upstream stage when ownership is absent, an ID is stale or unknown, or a discovery requires a new normative decision. Structural validity supports routing but does not prove semantic completeness.
 
 ## Handoff
 
