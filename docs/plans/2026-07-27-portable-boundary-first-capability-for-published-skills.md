@@ -111,7 +111,7 @@ an explicit blocking gap before implementation begins.
 - Remaining in-scope implementation milestones: M4
 - Next stage: plan-review for the adapter-applicable M4 proof population
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=open; open-count=2; open-findings=PBF-PLR4,PBF-TSR7-1
 
 ## Milestones
 
