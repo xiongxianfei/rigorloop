@@ -22,6 +22,7 @@ from boundary_first_reference import (
 
 ACTIVATION_RECORD = Path("specs/boundary-first-activation.yaml")
 PROOF_MODEL_SPEC = Path("specs/boundary-first-proof-model.md")
+ROLLBACK_RECEIPT = Path("specs/boundary-first-rollback-receipt.yaml")
 ACTIVATION_STATES = frozenset({"pending", "active", "rolled-back"})
 CORE_DIMENSIONS = (
     "input-domain",
@@ -117,8 +118,8 @@ ACTIVATION_FIELDS = frozenset(
         "canonical_reference_sha256",
         "grandfathered_specs",
         "grandfathered_inventory_sha256",
-        "rollback_preserved_specs",
-        "rollback_preserved_inventory_sha256",
+        "rollback_receipt",
+        "rollback_receipt_sha256",
         "governed_skills",
         "projection_sha256",
     }
@@ -946,35 +947,6 @@ def _eligible_grandfathered_specs(
     return tuple(eligible), tuple(issues)
 
 
-def _eligible_rollback_preserved_specs(
-    root: Path,
-) -> tuple[dict[str, str], tuple[ValidationIssue, ...]]:
-    records: dict[str, str] = {}
-    issues: list[ValidationIssue] = []
-    specs_issue = _specs_root_issue(root)
-    if specs_issue:
-        return {}, (specs_issue,)
-    specs_root = root / "specs"
-    if not specs_root.is_dir():
-        return {}, ()
-    for path in sorted(specs_root.glob("*.md")):
-        relative = path.relative_to(root).as_posix()
-        if path.name == "README.md" or path.name.endswith(".test.md"):
-            continue
-        safe_path, path_issue = _historical_spec_path(root, relative)
-        if path_issue:
-            issues.append(path_issue)
-            continue
-        assert safe_path is not None
-        text = safe_path.read_text(encoding="utf-8")
-        if _line_value(_live_markdown(text), "boundary_contract") != METHOD_VERSION:
-            continue
-        if _lifecycle_status(text) not in {"accepted", "approved", "active"}:
-            continue
-        records[relative] = raw_sha256(safe_path.read_bytes())
-    return records, tuple(issues)
-
-
 def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
     record_path, record_path_issue = _fixed_authoritative_path(
         root,
@@ -1066,113 +1038,38 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
     if governed_skills != list(GOVERNED_SKILLS):
         issues.append(_issue("BFR-GOVERNED-SKILLS", ACTIVATION_RECORD.as_posix(), "governed skill inventory differs", data.get("governed_skills"), list(GOVERNED_SKILLS)))
 
-    rollback_preserved = data.get("rollback_preserved_specs")
-    rollback_records: dict[str, str] = {}
-    if not isinstance(rollback_preserved, list):
+    rollback_receipt = data.get("rollback_receipt")
+    if rollback_receipt != ROLLBACK_RECEIPT.as_posix():
         issues.append(
             _issue(
-                "BFR-ROLLBACK-PRESERVED-SHAPE",
+                "BFR-ROLLBACK-RECEIPT-PATH",
                 ACTIVATION_RECORD.as_posix(),
-                "rollback_preserved_specs must be a list",
-                type(rollback_preserved).__name__,
-                "list",
+                "rollback receipt path differs",
+                rollback_receipt,
+                ROLLBACK_RECEIPT.as_posix(),
             )
         )
-    else:
-        previous_rollback = ""
-        for item in rollback_preserved:
-            if not isinstance(item, dict) or set(item) != {"path", "sha256"}:
-                issues.append(
-                    _issue(
-                        "BFR-ROLLBACK-PRESERVED-ENTRY",
-                        ACTIVATION_RECORD.as_posix(),
-                        "rollback-preserved entry must contain path and sha256",
-                        item,
-                        "path and sha256",
-                    )
-                )
-                continue
-            item_path = item.get("path")
-            item_hash = item.get("sha256")
-            if (
-                not isinstance(item_path, str)
-                or not isinstance(item_hash, str)
-                or not SHA256_RE.fullmatch(item_hash)
-                or item_path <= previous_rollback
-            ):
-                issues.append(
-                    _issue(
-                        "BFR-ROLLBACK-PRESERVED-ENTRY",
-                        ACTIVATION_RECORD.as_posix(),
-                        "rollback-preserved entries must be sorted valid paths and hashes",
-                        item,
-                        "sorted spec path and sha256",
-                    )
-                )
-                continue
-            previous_rollback = item_path
-            preserved_path, preserved_issue = _historical_spec_path(root, item_path)
-            if preserved_issue:
-                issues.append(preserved_issue)
-                continue
-            assert preserved_path is not None
-            rollback_records[item_path] = item_hash
-            if not preserved_path.is_file():
-                issues.append(
-                    _issue(
-                        "BFR-ROLLBACK-PRESERVED-MISSING",
-                        item_path,
-                        "rollback-preserved spec is missing",
-                        "-",
-                        "recorded accepted marked spec",
-                    )
-                )
-            elif raw_sha256(preserved_path.read_bytes()) != item_hash:
-                issues.append(
-                    _issue(
-                        "BFR-ROLLBACK-PRESERVED-STALE",
-                        item_path,
-                        "rollback-preserved spec bytes differ from rollback baseline",
-                        raw_sha256(preserved_path.read_bytes()),
-                        item_hash,
-                    )
-                )
-        actual_rollback_digest = inventory_digest(rollback_records)
-        if data.get("rollback_preserved_inventory_sha256") != actual_rollback_digest:
-            issues.append(
-                _issue(
-                    "BFR-ROLLBACK-PRESERVED-HASH",
-                    ACTIVATION_RECORD.as_posix(),
-                    "rollback-preserved inventory identity differs",
-                    data.get("rollback_preserved_inventory_sha256"),
-                    actual_rollback_digest,
-                )
+    rollback_receipt_sha256 = data.get("rollback_receipt_sha256")
+    if state in {"pending", "active"} and rollback_receipt_sha256 is not None:
+        issues.append(
+            _issue(
+                "BFR-ROLLBACK-RECEIPT-PREMATURE",
+                ACTIVATION_RECORD.as_posix(),
+                "rollback receipt identity must be null before rollback",
+                rollback_receipt_sha256,
+                "null",
             )
-        if state != "rolled-back" and rollback_records:
-            issues.append(
-                _issue(
-                    "BFR-ROLLBACK-PRESERVED-STATE",
-                    ACTIVATION_RECORD.as_posix(),
-                    "rollback-preserved inventory must be empty outside rolled-back state",
-                    tuple(rollback_records),
-                    (),
-                )
+        )
+    if state == "rolled-back":
+        issues.append(
+            _issue(
+                "BFR-ROLLBACK-RECEIPT-REQUIRED",
+                ROLLBACK_RECEIPT.as_posix(),
+                "rolled-back validation requires the M4 transaction receipt validator",
+                rollback_receipt_sha256,
+                "validated paired pre-transition receipt",
             )
-        if state == "rolled-back":
-            expected_rollback, rollback_eligibility_issues = (
-                _eligible_rollback_preserved_specs(root)
-            )
-            issues.extend(rollback_eligibility_issues)
-            if rollback_records != expected_rollback:
-                issues.append(
-                    _issue(
-                        "BFR-ROLLBACK-PRESERVED-MEMBERSHIP",
-                        ACTIVATION_RECORD.as_posix(),
-                        "rollback-preserved inventory must exactly match accepted marked specs",
-                        tuple(rollback_records),
-                        tuple(expected_rollback),
-                    )
-                )
+        )
 
     grandfathered = data.get("grandfathered_specs")
     if not isinstance(grandfathered, list):
@@ -1383,24 +1280,10 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
         for item in activation.get("grandfathered_specs", [])
         if isinstance(item, dict) and isinstance(item.get("path"), str)
     }
-    rollback_preserved = {
-        item["path"]: item["sha256"]
-        for item in activation.get("rollback_preserved_specs", [])
-        if isinstance(item, dict)
-        and isinstance(item.get("path"), str)
-        and isinstance(item.get("sha256"), str)
-    }
     if state == "pending" and marker is not None:
         return (_issue("BFR-MARKER-INACTIVE", feature_relative, "marker is forbidden while activation is inactive", marker, "-"),)
     if state == "rolled-back" and marker is not None:
-        preserved_hash = rollback_preserved.get(feature_relative)
-        if (
-            _lifecycle_status(feature_text) not in {"accepted", "approved", "active"}
-            or preserved_hash is None
-        ):
-            return (_issue("BFR-MARKER-INACTIVE", feature_relative, "rollback preserves only already accepted marked artifacts", marker, "rollback-preserved marked artifact"),)
-        if raw_sha256(feature_path.read_bytes()) != preserved_hash:
-            return (_issue("BFR-ROLLBACK-PRESERVED-STALE", feature_relative, "rollback-preserved spec bytes differ from rollback baseline", raw_sha256(feature_path.read_bytes()), preserved_hash),)
+        return (_issue("BFR-MARKER-INACTIVE", feature_relative, "M3 cannot authorize a rolled-back marker without the M4 transaction receipt", marker, "M4-validated paired rollback receipt"),)
     if state == "active" and feature_relative not in grandfathered and marker != METHOD_VERSION:
         return (_issue("BFR-NEW-SPEC-MARKER", feature_relative, "new feature spec requires active boundary marker", marker, METHOD_VERSION),)
     if (

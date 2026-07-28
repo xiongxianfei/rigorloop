@@ -129,8 +129,8 @@ lifecycle status value.
 
 PBF-R003. A feature spec MUST NOT record the activation marker while the
 repository activation state is `pending`. While `rolled-back`, only a feature
-spec preserved by the closed PBF-R057 rollback inventory may retain the
-marker.
+spec and proof map preserved by the validated PBF-R057 rollback transaction
+receipt may retain the marker.
 
 PBF-R004. An adopting feature spec MUST contain the boundary record in that
 same feature spec and MUST NOT require a standalone boundary artifact.
@@ -142,7 +142,7 @@ PBF-R005a. Before activation becomes `active`, one durable activation record
 MUST identify the contract version, activation state, activation time,
 activation baseline identity, and grandfathered feature-spec inventory
 identity. The same record MUST carry the closed rollback-preservation
-inventory and identity, empty until rollback.
+receipt path and its raw-byte identity, which remains null until rollback.
 
 PBF-R005b. Architecture MUST select the activation-record path and format.
 The record MUST be repository-local, deterministic, validator-readable, and
@@ -446,10 +446,14 @@ substantively revised and MUST NOT require automatic migration.
 PBF-R057. Rollback MUST change activation to `rolled-back` and stop new
 adoption without deleting or invalidating already accepted boundary records or
 proof maps.
-The activation record MUST snapshot those already accepted marked feature
-specs as a sorted path and raw-byte identity inventory before the state
-changes. While rolled back, structural validation MUST accept a marked
-feature spec only when its path and bytes match that closed inventory.
+Before changing state, the M4 rollback transaction MUST prepare a durable
+receipt bound to the active activation-record identity. The receipt MUST
+snapshot every preserved feature spec and its exact proof map as one paired,
+sorted path-and-raw-byte identity record. The rolled-back activation record
+MUST bind the receipt's raw-byte identity. Rolled-back structural validation
+MUST accept a marker only when the bound receipt, feature bytes, proof bytes,
+and feature/proof coherence all validate. Until that M4 receipt validator is
+available, M3 validation MUST fail every rolled-back state closed.
 
 PBF-R058. Rollback MUST restore the governed skill projections, validators,
 fixtures, generated output, and package surfaces as one coherent compatibility

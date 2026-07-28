@@ -325,9 +325,9 @@ they do not invent bootstrap boundary IDs.
 - Covers: PBF-R057-PBF-R058, E4, EC10
 - Level: integration
 - Command IDs: CMD6, CMD7, CMD10, CMD11, CMD12
-- Fixture/setup: an active temporary worktree with accepted marked artifacts, a new post-rollback self-declared `approved` marker, and complete package evidence.
-- Steps: Snapshot the accepted marked path-and-byte inventory, execute the rollback path, validate all governed surfaces, attempt the new marker, and inspect preexisting accepted marked specs/test specs and activation history.
-- Expected result: State becomes `rolled-back`, only exact rollback-inventory members retain markers, the new marker fails, package/validator behavior is coherent, and accepted records plus historical evidence remain.
+- Fixture/setup: an active temporary worktree with accepted marked feature/proof pairs, a new post-rollback self-declared `approved` pair, and complete package evidence.
+- Steps: Prepare the M4 transaction receipt while state is active; bind its source activation identity and paired feature/proof path-and-byte identities; change state; validate all governed surfaces; attempt current-state receipt recomputation and proof deletion; inspect accepted artifacts and activation history.
+- Expected result: M3 rejects every rolled-back state until the M4 receipt validator exists. M4 then accepts only exact receipt-bound feature/proof pairs; current-state recomputation, missing or stale proofs, and new markers fail.
 - Failure proves: recovery can invalidate history or leave mixed versions.
 - Evidence artifact: `boundary-rollback-evidence.yaml`
 - Automation location: `scripts/test-boundary-first-validation.py`
@@ -419,9 +419,11 @@ specs only, excludes `README.md` and `*.test.md`, and records exact raw-byte
 identities.
 Historical path membership is structural; substantive revision remains a
 `spec-review` judgment.
-Rollback preserves only accepted marked artifacts captured by the durable
-pre-rollback path-and-byte inventory plus historical activation evidence.
-A new self-declared accepted or approved status cannot authorize adoption.
+Rollback preserves only accepted feature/proof pairs captured by the M4
+pre-transition receipt plus historical activation evidence. The rolled-back
+activation record binds that receipt's raw bytes. A new self-declared status
+or a receipt reconstructed solely from rolled-back files cannot authorize
+adoption.
 
 ## Observability verification
 

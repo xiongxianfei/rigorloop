@@ -796,7 +796,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 (),
             )
 
-    def test_later_adoption_and_rollback_preserve_historical_contracts(self) -> None:
+    def test_later_adoption_preserves_history_and_rollback_waits_for_m4(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             copy_activation_surfaces(root)
@@ -840,16 +840,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             self.assertEqual(validate_activation(root), ())
 
             data["state"] = "rolled-back"
-            rollback_records = {
-                "specs/historical.md": raw_sha256(historical.read_bytes()),
-            }
-            data["rollback_preserved_specs"] = [
-                {"path": path, "sha256": rollback_records[path]}
-                for path in sorted(rollback_records)
-            ]
-            data["rollback_preserved_inventory_sha256"] = inventory_digest(
-                rollback_records
-            )
+            data["rollback_receipt_sha256"] = "0" * 64
             activation_path.write_text(json.dumps(data), encoding="utf-8")
             proof_model.write_text(
                 proof_model.read_text(encoding="utf-8").replace(
@@ -858,41 +849,51 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
-            self.assertEqual(validate_activation(root), ())
+            self.assertIn(
+                "BFR-ROLLBACK-RECEIPT-REQUIRED",
+                {issue.code for issue in validate_activation(root)},
+            )
             self.assertEqual(
-                validate_changed_spec(root, "specs/historical.md"),
-                (),
+                validate_changed_spec(root, "specs/historical.md")[0].code,
+                "BFR-MARKER-INACTIVE",
             )
 
-    def test_rollback_rejects_new_markers_outside_preserved_inventory(self) -> None:
+    def test_rollback_rejects_recomputed_current_state_until_m4_receipt(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            (root / "specs").mkdir()
+            copy_activation_surfaces(root)
             preserved = root / "specs" / "preserved.md"
             preserved_proof = root / "specs" / "preserved.test.md"
             preserved.write_text(valid_feature(), encoding="utf-8")
             preserved_proof.write_text(valid_proof(), encoding="utf-8")
-            records = {
-                "specs/preserved.md": raw_sha256(preserved.read_bytes()),
+            receipt = {
+                "source_state": "active",
+                "target_state": "rolled-back",
+                "pairs": [
+                    {
+                        "feature_path": "specs/preserved.md",
+                        "feature_sha256": raw_sha256(preserved.read_bytes()),
+                        "proof_path": "specs/preserved.test.md",
+                        "proof_sha256": raw_sha256(preserved_proof.read_bytes()),
+                    }
+                ],
             }
+            receipt_path = root / "specs" / "boundary-first-rollback-receipt.yaml"
+            receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
             data = json.loads(
-                (ROOT / "specs" / "boundary-first-activation.yaml").read_text(
+                (root / "specs" / "boundary-first-activation.yaml").read_text(
                     encoding="utf-8"
                 )
             )
             data["state"] = "rolled-back"
             data["activated_at"] = "2026-07-28T00:00:00Z"
-            data["rollback_preserved_specs"] = [
-                {"path": path, "sha256": records[path]}
-                for path in sorted(records)
-            ]
-            data["rollback_preserved_inventory_sha256"] = inventory_digest(records)
+            data["rollback_receipt_sha256"] = raw_sha256(receipt_path.read_bytes())
             (root / "specs" / "boundary-first-activation.yaml").write_text(
                 json.dumps(data), encoding="utf-8"
             )
             self.assertEqual(
-                validate_changed_spec(root, "specs/preserved.md"),
-                (),
+                validate_changed_spec(root, "specs/preserved.md")[0].code,
+                "BFR-MARKER-INACTIVE",
             )
             (root / "specs" / "new-after-rollback.md").write_text(
                 valid_feature(), encoding="utf-8"
@@ -906,6 +907,35 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                     "specs/new-after-rollback.md",
                 )[0].code,
                 "BFR-MARKER-INACTIVE",
+            )
+            self.assertIn(
+                "BFR-ROLLBACK-RECEIPT-REQUIRED",
+                {issue.code for issue in validate_activation(root)},
+            )
+
+    def test_rollback_cannot_omit_proof_map_before_m4_receipt_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            (root / "specs" / "preserved.md").write_text(
+                valid_feature(),
+                encoding="utf-8",
+            )
+            data = json.loads(
+                (root / "specs" / "boundary-first-activation.yaml").read_text(
+                    encoding="utf-8"
+                )
+            )
+            data["state"] = "rolled-back"
+            data["activated_at"] = "2026-07-28T00:00:00Z"
+            data["rollback_receipt_sha256"] = "0" * 64
+            (root / "specs" / "boundary-first-activation.yaml").write_text(
+                json.dumps(data),
+                encoding="utf-8",
+            )
+            self.assertIn(
+                "BFR-ROLLBACK-RECEIPT-REQUIRED",
+                {issue.code for issue in validate_activation(root)},
             )
 
     def test_fixed_authoritative_inputs_reject_external_symlinks(self) -> None:

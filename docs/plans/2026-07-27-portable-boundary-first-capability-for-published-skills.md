@@ -103,14 +103,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M3. Structural and activation validation
-- Current milestone state: resolution-needed
-- Latest review evidence: user authorized correction cycle 4 and selected the M4 rollback transaction receipt with paired feature/proof identities for PBF-M3-CR14 and PBF-M3-CR16
+- Current milestone state: review-requested
+- Latest review evidence: M3 fails all rolled-back state closed pending the M4 paired transaction receipt; 48 focused tests pass and code-review M3 R5 is requested
 - Last reviewed milestone: M2
-- Review status: changes-requested; stage=code-review; round=r4
+- Review status: review-requested; stage=code-review; round=r5
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: implement M3 correction cycle 4
+- Next stage: code-review M3 R5
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=2; open-findings=PBF-M3-CR14,PBF-M3-CR16
+- Reason final closeout is or is not ready: implementation-milestones-open, milestone-review-pending, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
 
 ## Milestones
 
@@ -183,7 +183,7 @@ an explicit blocking gap before implementation begins.
 
 ### M3. Structural and activation validation
 
-- Milestone state: resolution-needed
+- Milestone state: review-requested
    - primary trust boundary: deterministic shape/reference enforcement without
      semantic overclaiming
    - deliverables:
@@ -225,6 +225,9 @@ an explicit blocking gap before implementation begins.
        raw bytes for Codex, Claude Code, and opencode;
      - generate and validate the complete grandfathered accepted-spec
        inventory and deterministic identities;
+     - prepare the rollback transaction receipt while activation is active,
+       bind its source activation identity and paired feature/proof path and
+       byte identities, then validate the bound receipt after rollback;
      - perform clean installed-skill cold-read proof for all ten governed
        skills on each supported target;
      - settle `specs/boundary-first-activation.yaml`, the proof-model spec
@@ -335,6 +338,11 @@ A material review finding reopens its owning milestone and blocks the next one.
   selected the M4 rollback transaction receipt as the pre-transition evidence
   owner with paired feature-spec and proof-map identities. M3 correction
   cycle 4 began.
+- 2026-07-28: correction cycle 4 removed current-state rollback
+  self-authorization. M3 reserves the M4 receipt binding and fails every
+  rolled-back state and marker closed; M4 owns pre-transition provenance and
+  paired feature/proof validation. All 48 focused tests, pending activation
+  validation, and 134 selector tests pass; M3 returned to R5.
 
 ## Decision log
 
@@ -391,7 +399,7 @@ A material review finding reopens its owning milestone and blocks the next one.
   `python scripts/test-skill-validator.py`, and
   `python scripts/build-skills.py --check` passed after PBF-M2-CR1; the suite
   now contains 263 tests and four focused boundary-first lifecycle tests.
-- M3: `python scripts/test-boundary-first-validation.py` passed 47 tests,
+- M3: `python scripts/test-boundary-first-validation.py` passed 48 tests,
   `python scripts/validate-boundary-first.py --check` passed the pending
   baseline, and `python scripts/test-select-validation.py` passed 134 tests.
 - M4 implementation validation commands remain planned and have not run.
