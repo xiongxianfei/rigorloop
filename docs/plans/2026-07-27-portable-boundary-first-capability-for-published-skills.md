@@ -103,14 +103,14 @@ an explicit blocking gap before implementation begins.
 ## Current Handoff Summary
 
 - Current milestone: M3. Structural and activation validation
-- Current milestone state: review-requested
-- Latest review evidence: M3 implementation evidence records 30 structural/activation tests and 134 selector tests passing
+- Current milestone state: resolution-needed
+- Latest review evidence: code-review-m3-r1 records PBF-M3-CR1 through PBF-M3-CR8
 - Last reviewed milestone: M2
-- Review status: review-requested; stage=code-review; round=r1
+- Review status: changes-requested; stage=code-review; round=r1
 - Remaining in-scope implementation milestones: M3, M4
-- Next stage: code-review M3
+- Next stage: review-resolution M3
 - Final closeout readiness: not ready
-- Reason final closeout is or is not ready: implementation-milestones-open, explain-change-pending, verify-pending — review-state=closed; open-count=0; open-findings=none
+- Reason final closeout is or is not ready: implementation-milestones-open, review-findings-open, explain-change-pending, verify-pending — review-state=open; open-count=8; open-findings=PBF-M3-CR1,PBF-M3-CR2,PBF-M3-CR3,PBF-M3-CR4,PBF-M3-CR5,PBF-M3-CR6,PBF-M3-CR7,PBF-M3-CR8
 
 ## Milestones
 
@@ -183,7 +183,7 @@ an explicit blocking gap before implementation begins.
 
 ### M3. Structural and activation validation
 
-- Milestone state: review-requested
+- Milestone state: resolution-needed
    - primary trust boundary: deterministic shape/reference enforcement without
      semantic overclaiming
    - deliverables:
@@ -301,6 +301,11 @@ A material review finding reopens its owning milestone and blocks the next one.
   activation-baseline validation, grandfathered-spec review routing, durable
   positive and failure fixtures, privacy-bounded diagnostics, and selector
   integration; handed M3 to code-review after all targeted commands passed.
+- 2026-07-28: code-review M3 R1 requested changes for Markdown context and
+  marker placement, bounded malformed-input handling, direct projection
+  parity, shared feature/test activation gating, historical membership,
+  changed-path containment, diagnostic redaction, and clean-commit selector
+  reproducibility. M4 remains blocked pending correction and R2.
 
 ## Decision log
 

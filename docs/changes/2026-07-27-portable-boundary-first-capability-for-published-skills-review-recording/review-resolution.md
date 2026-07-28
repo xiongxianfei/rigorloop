@@ -2,8 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
+Review closeout: code-review-m3-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m2-r1
 Review closeout: proposal-review-r1
@@ -22,13 +23,21 @@ Review closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 19
-- Unresolved findings: 0
-- Final result: PBF-M2-CR1 is resolved and code-review M2 R2 closes M2.
+- Unresolved findings: 8
+- Final result: M3 remains resolution-needed for PBF-M3-CR1 through PBF-M3-CR8.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| PBF-M3-CR1 | accepted | in-progress | Make Markdown parsing fence-aware, require the Status-owned marker, and validate separators. |
+| PBF-M3-CR2 | accepted | in-progress | Make malformed records bounded and validate proof references and gap IDs before consistency. |
+| PBF-M3-CR3 | accepted | in-progress | Compare each governed projection directly with canonical bytes. |
+| PBF-M3-CR4 | accepted | in-progress | Share activation-marker enforcement across feature and test-spec paths. |
+| PBF-M3-CR5 | accepted | in-progress | Compare active historical inventory with the exact lifecycle-eligible set. |
+| PBF-M3-CR6 | accepted | in-progress | Reject absolute, traversal, non-spec, and symlink-escaping changed paths. |
+| PBF-M3-CR7 | accepted | in-progress | Redact offending values to deterministic bounded identities. |
+| PBF-M3-CR8 | accepted | in-progress | Commit the separately authorized coordinator correction and rerun CMD8 from committed state. |
 | PBF-M2-CR1 | accepted | resolved | Structured ten-stage packets and negative mutations now prove exact semantic owners, outcomes, handoffs, and closed coverage. |
 | PBC-PR1 | accepted | resolved | R3 confirmed the ten-skill scope, proposal-stage exclusion, and governed-resource consumer rule. |
 | PBC-PR2 | accepted | resolved | R3 confirmed bounded independent semantic-review evidence and claim limits. |
@@ -50,6 +59,104 @@ Review closeout: code-review-m1-r4
 | PBF-M1-CR4 | accepted | resolved | Unexpected-consumer symlink proof covers write-mode non-mutation and combined errors. |
 
 ## Finding Details
+
+### code-review-m3-r1
+
+#### PBF-M3-CR1 - Markdown structure is not context-safe
+
+Finding ID: PBF-M3-CR1
+Disposition: accepted
+Status: in-progress
+Owner: M3 implement
+Owning stage: review-resolution M3
+Chosen action: Add fence-aware parsing, exact Status marker placement, table-separator validation, corrected fixtures, and adversarial regressions.
+Rationale: Closed structural validation must reject quoted examples and malformed serialization without claiming semantic completeness.
+Validation target: CMD6, CMD7, CMD8, and code-review M3 R2.
+Validation evidence: pending correction.
+
+#### PBF-M3-CR2 - Malformed rows and identifiers bypass bounded vocabulary handling
+
+Finding ID: PBF-M3-CR2
+Disposition: accepted
+Status: in-progress
+Owner: M3 implement
+Owning stage: review-resolution M3
+Chosen action: Short-circuit malformed governing records, harden feature extraction, and validate proof references and gap IDs in the vocabulary phase.
+Rationale: Invalid input must produce deterministic diagnostics, never a traceback or later misleading consistency error.
+Validation target: CMD6, CMD7, and code-review M3 R2.
+Validation evidence: pending correction.
+
+#### PBF-M3-CR3 - Aggregate projection identity can bless mixed bytes
+
+Finding ID: PBF-M3-CR3
+Disposition: accepted
+Status: in-progress
+Owner: M3 implement
+Owning stage: review-resolution M3
+Chosen action: Require each governed projection hash to equal the canonical raw-byte hash before validating the aggregate digest.
+Rationale: An internally consistent mixed inventory is still a mixed-version activation baseline.
+Validation target: CMD6, CMD7, and code-review M3 R2.
+Validation evidence: pending correction.
+
+#### PBF-M3-CR4 - Test-spec validation bypasses inactive marker enforcement
+
+Finding ID: PBF-M3-CR4
+Disposition: accepted
+Status: in-progress
+Owner: M3 implement
+Owning stage: review-resolution M3
+Chosen action: Apply one feature activation-marker gate before either feature or test-spec validation.
+Rationale: Selector routing must not change contract enforcement for the same governing feature.
+Validation target: CMD6, CMD8, and code-review M3 R2.
+Validation evidence: pending correction.
+
+#### PBF-M3-CR5 - Active grandfathered inventory membership is not validated
+
+Finding ID: PBF-M3-CR5
+Disposition: accepted
+Status: in-progress
+Owner: M3 implement
+Owning stage: review-resolution M3
+Chosen action: Enumerate lifecycle-eligible top-level feature specs and compare exact active or rolled-back membership.
+Rationale: Inventory membership is structural; substantive-revision classification remains with spec-review.
+Validation target: CMD6, CMD7, and code-review M3 R2.
+Validation evidence: pending correction.
+
+#### PBF-M3-CR6 - Changed paths can escape the repository
+
+Finding ID: PBF-M3-CR6
+Disposition: accepted
+Status: in-progress
+Owner: M3 implement
+Owning stage: review-resolution M3
+Chosen action: Enforce lexical and resolved repository containment and the top-level feature/test-spec path grammar before reads.
+Rationale: Validation must not read arbitrary caller-selected filesystem paths.
+Validation target: CMD6, direct CLI adversarial cases, and code-review M3 R2.
+Validation evidence: pending correction.
+
+#### PBF-M3-CR7 - Diagnostics expose offending private payloads
+
+Finding ID: PBF-M3-CR7
+Disposition: accepted
+Status: in-progress
+Owner: M3 implement
+Owning stage: review-resolution M3
+Chosen action: Replace offending values with deterministic redacted identities and test credential/private-payload omission.
+Rationale: Stable diagnostics do not require echoing the invalid payload.
+Validation target: CMD6, CMD7, and code-review M3 R2.
+Validation evidence: pending correction.
+
+#### PBF-M3-CR8 - Recorded selector evidence is not reproducible
+
+Finding ID: PBF-M3-CR8
+Disposition: accepted
+Status: in-progress
+Owner: authorized workflow-coordinator bugfix, then M3 implement
+Owning stage: review-resolution M3
+Chosen action: Complete the separately authorized coordinator correction as an isolated commit, then rerun CMD8 from committed repository state.
+Rationale: M3 evidence cannot depend on hidden worktree changes, and the user already authorized the owning bugfix.
+Validation target: coordinator regression, full CMD8, and code-review M3 R2.
+Validation evidence: pending correction.
 
 ### code-review-m2-r2
 
