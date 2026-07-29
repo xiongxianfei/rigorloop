@@ -19,6 +19,9 @@
 | R4 fixed-code commit | `9fec30f078aefa65e6d77f9e9c3b15ddb74a7701` |
 | R4 fixed-code tree | `9af9d16adf7ccf1dd476d0bf41dbdd2134e508a6` |
 | R4 fixed-code diff SHA-256 (`63e50156..9fec30f0`) | `2afc32641c779392f15f7e24e2f4f59a018c3ed7b6a16918bd7cd163a73576c6` |
+| R5 fixed-code commit | `dd594f95e320281ef434edb43091357e7be9ff31` |
+| R5 fixed-code tree | `bb8302de652f780c4a5ec108f564fa35abf70ad8` |
+| R5 fixed-code diff SHA-256 (`4052f86a..dd594f95`) | `c2e9151d8f8743865da8ee2df49fa4301e9e78ee1e45d7746ef1c801d745d012` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -100,7 +103,8 @@ clean-install check. Exact invocation equivalents are closed over the workflow
 identity and shared target/status/off argument semantics. Unknown, noncanonical,
 or duplicate explicit skill selections fail before archive or install work.
 Every recognized additive Codex, Claude, or OpenCode invocation occurrence is
-also checked, so a valid equivalence block cannot mask a contradictory form.
+also checked across plain text, Markdown code spans, and HTML code markup, so a
+valid equivalence block cannot mask a contradictory or composed malformed form.
 
 ## Activation and rollback proof
 

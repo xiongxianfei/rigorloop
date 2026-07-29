@@ -41,9 +41,9 @@ Review closeout: code-review-m4-r5
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
   `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`,
   `code-review-m4-r5`
-- Findings resolved: 34
-- Unresolved findings: 1
-- Current result: M4 code-review R5 found a whole-body and composed-corruption invocation parsing gap.
+- Findings resolved: 35
+- Unresolved findings: 0
+- Current result: M4 code-review R5 finding is resolved and awaits independent R6 confirmation.
 
 ## Resolution Overview
 
@@ -83,7 +83,7 @@ Review closeout: code-review-m4-r5
 | CR-M4-R3-002 | accepted | resolved | Unknown, noncanonical, and duplicate explicit mapped-skill selections fail closed. |
 | CR-M4-R4-001 | accepted | resolved | Every recognized adapter invocation occurrence must match the approved identity, operation, argument, and case. |
 | CR-M4-R4-002 | accepted | resolved | Explicit skill-name preflight runs before archive validation. |
-| CR-M4-R5-001 | accepted | open | Use one whole-body adapter-labeled invocation occurrence domain. |
+| CR-M4-R5-001 | accepted | resolved | One normalized whole-body occurrence domain rejects formatting and composed invocation corruption. |
 
 ## Finding Details
 
@@ -259,13 +259,13 @@ Validation evidence: Unknown selection with an empty archive root reports the se
 
 Finding ID: CR-M4-R5-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Discover whole-body adapter-labeled candidates before validating their fields.
 Rationale: Formatting and multiple invalid fields must not remove a contradictory occurrence from validation.
 Validation target: code-review-m4-r6
-Validation evidence: pending
+Validation evidence: Plain-text, HTML, whitespace, replacement, additive, pairwise, and all-field corruptions fail; all 142 adapter tests and the planned ten-skill command pass.
 
 ### code-review-m1-r1
 
