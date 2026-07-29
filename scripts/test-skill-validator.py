@@ -7623,6 +7623,14 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
 
 
 class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
+    AUTHORING_ENTRY_KINDS = {
+        "proposal": "proposal",
+        "spec": "spec",
+        "architecture": "architecture or ADR",
+        "plan": "plan",
+        "test-spec": "test-spec",
+    }
+
     REVIEW_SETTLEMENT_PHRASES = {
         "proposal-review": "settle only the matching proposal entry",
         "spec-review": "settle only the matching spec entry",
@@ -7638,6 +7646,30 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
         "verify": "plan and upstream artifacts as read-only",
         "pr": "upstream artifacts as read-only",
     }
+
+    def test_authoring_peers_define_an_executable_change_record_transition(self) -> None:
+        required = (
+            "read the complete `change.yaml` before writing",
+            "`lifecycle_contract: stage-owned-change-local-v1`",
+            "artifact ID, `kind`, and normalized `path`",
+            "create only that entry with a unique stable ID",
+            "`authoring`",
+            "remove any prior `review`",
+            "`authoring_evidence`",
+            "`review-required`",
+            "Preserve every other entry",
+            "failed available change-metadata validation",
+        )
+        for skill_name, entry_kind in self.AUTHORING_ENTRY_KINDS.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            normalized = " ".join(body.split())
+            with self.subTest(skill=skill_name):
+                self.assertIn("## Change-record authoring transition", normalized)
+                self.assertIn(entry_kind, normalized)
+                for phrase in required:
+                    self.assertIn(" ".join(phrase.split()), normalized)
 
     def test_review_peers_settle_only_the_matching_change_local_entry(self) -> None:
         for skill_name, phrase in self.REVIEW_SETTLEMENT_PHRASES.items():
@@ -7656,6 +7688,55 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                     ),
                     "review peer must keep the reviewed artifact read-only",
                 )
+
+    def test_review_peers_define_evidence_first_independent_settlement(self) -> None:
+        expected_settlement = {
+            "proposal-review": "`approved` to `accepted`",
+            "spec-review": "`approved` to `approved`",
+            "architecture-review": "architecture to `approved`",
+            "plan-review": "`approved` to `active`",
+            "test-spec-review": "`approved` to `active`",
+        }
+        required = (
+            "read the complete `change.yaml`",
+            "`lifecycle_contract: stage-owned-change-local-v1`",
+            "Require `review-required` and complete authoring evidence",
+            "Write the durable review record first",
+            "remove `authoring_evidence`",
+            "`id`, `artifact_id`, `outcome`, `record`, and `round`",
+            "`changes-requested` to `revision-required`",
+            "`blocked` or `inconclusive` to `blocked`",
+            "Retry identical incomplete settlement without rerunning the review",
+            "failed available change-metadata validation",
+            "stops without advancing routing",
+        )
+        for skill_name, settlement in expected_settlement.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            normalized = " ".join(body.split())
+            with self.subTest(skill=skill_name):
+                self.assertIn("## Change-record review settlement", normalized)
+                self.assertIn(settlement, normalized)
+                for phrase in required:
+                    self.assertIn(" ".join(phrase.split()), normalized)
+
+    def test_workflow_defines_bounded_change_record_mutation(self) -> None:
+        body = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        for phrase in (
+            "read the complete `change.yaml`",
+            "`lifecycle_contract: stage-owned-change-local-v1`",
+            "Derive routing only from",
+            "Update only",
+            "preserve `artifact_states`",
+            "`planned_work` only when a primary",
+            "failed available change-metadata validation",
+            "instead of repairing another",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, body)
 
     def test_downstream_skills_keep_upstream_surfaces_read_only(self) -> None:
         for skill_name, phrase in self.DOWNSTREAM_READ_ONLY_PHRASES.items():
