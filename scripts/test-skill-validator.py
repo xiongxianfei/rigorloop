@@ -7868,18 +7868,57 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
                     body,
                 )
 
-    def test_progressive_semantic_scenarios_are_closed_and_supported(self) -> None:
-        fixture = json.loads(
-            (
-                ROOT
-                / "scripts"
-                / "fixtures"
-                / "boundary-first"
-                / "semantic"
-                / "progressive-cases.json"
-            ).read_text(encoding="utf-8")
-        )
-        self.assertEqual(set(fixture), {"cases"})
+    @staticmethod
+    def progressive_decision(case: dict[str, object]) -> tuple[str, str, bool, bool, str]:
+        invalid_identities = {
+            "missing",
+            "stale",
+            "unknown",
+            "ambiguous",
+            "conflicting",
+            "escaped",
+            "insufficient",
+        }
+        if case["identity_state"] in invalid_identities:
+            return ("expand", "none", False, False, "none")
+        if case["outcome_state"] == "semantic-gap":
+            return ("changes-requested", "spec", True, False, "none")
+        if case["revision_state"] == "undecidable":
+            return ("changes-requested", "spec", True, False, "none")
+        if case["outcome_state"] == "new-normative" or case["path_state"] == "ownerless":
+            return ("stop", "spec", True, False, "none")
+        if case["outcome_state"] == "proof-gap":
+            return ("stop", "test-spec", True, False, "none")
+        if case["path_state"] in {"sibling-material", "recovery"}:
+            return ("add-proof", "none", False, False, "add")
+        if case["outcome_state"] == "already-proved" or case["path_state"] == "duplicate":
+            return ("stop-scenarios", "none", False, False, "stop")
+        if case["capability_state"] == "pending" and case["behavior_change"]:
+            return ("no-active-claim", "none", False, False, "none")
+        if (
+            case["identity_state"] == "grandfathered"
+            and case["revision_state"] == "non-substantive"
+        ):
+            return ("remain-valid", "none", False, False, "none")
+        if (
+            case["identity_state"] == "grandfathered"
+            and case["revision_state"] == "substantive"
+        ):
+            return ("judge-formal", "none", False, False, "none")
+        if not case["behavior_change"] and case["identity_state"] == "none":
+            return ("continue-ordinary", "none", False, False, "none")
+        if (
+            case["skill"] == "spec"
+            and case["capability_state"] == "active"
+            and case["behavior_change"]
+        ):
+            return ("formalize", "none", True, False, "none")
+        return ("proceed-slice", "none", False, False, "none")
+
+    def progressive_semantic_errors(self, fixture: dict[str, object]) -> list[str]:
+        errors: list[str] = []
+        if set(fixture) != {"cases"} or not isinstance(fixture["cases"], list):
+            return ["fixture must contain a cases list"]
         required_fields = {
             "case_id",
             "skill",
@@ -7889,55 +7928,131 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
             "identity_state",
             "outcome_state",
             "path_state",
+            "revision_state",
+            "structural_state",
             "expected_action",
             "expected_route",
+            "expected_explain",
+            "expected_consent",
+            "expected_scenario",
+            "required_guidance",
+            "forbidden_guidance",
         }
-        actions = {
-            "formalize",
-            "continue-ordinary",
-            "no-active-claim",
-            "remain-valid",
-            "expand",
-            "stop",
-            "stop-scenarios",
-        }
-        routes = {"none", "spec", "test-spec"}
         seen: set[str] = set()
         for case in fixture["cases"]:
-            self.assertEqual(set(case), required_fields)
-            self.assertNotIn(case["case_id"], seen)
+            if not isinstance(case, dict) or set(case) != required_fields:
+                errors.append("case must use the closed progressive contract")
+                continue
+            if case["case_id"] in seen:
+                errors.append(f"duplicate case {case['case_id']}")
             seen.add(case["case_id"])
-            self.assertIn(case["skill"], self.GOVERNED_SKILLS)
-            self.assertIn(case["expected_action"], actions)
-            self.assertIn(case["expected_route"], routes)
+            if case["skill"] not in self.GOVERNED_SKILLS:
+                errors.append(f"{case['case_id']}: unknown skill")
+                continue
+            if (
+                case["outcome_state"] in {"new-normative", "semantic-gap"}
+                or case["path_state"] == "ownerless"
+            ) and not case["behavior_change"]:
+                errors.append(f"{case['case_id']}: semantic change must be behavioral")
+            actual = self.progressive_decision(case)
+            expected = (
+                case["expected_action"],
+                case["expected_route"],
+                case["expected_explain"],
+                case["expected_consent"],
+                case["expected_scenario"],
+            )
+            if actual != expected:
+                errors.append(
+                    f"{case['case_id']}: expected decision {expected!r} does not match {actual!r}"
+                )
+            body = (ROOT / "skills" / str(case["skill"]) / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            for phrase in case["required_guidance"]:
+                if phrase not in body:
+                    errors.append(f"{case['case_id']}: missing guidance {phrase!r}")
+            for phrase in case["forbidden_guidance"]:
+                if phrase in body:
+                    errors.append(f"{case['case_id']}: forbidden guidance {phrase!r}")
 
+        covered_skills = {
+            case["skill"] for case in fixture["cases"] if isinstance(case, dict)
+        }
+        if covered_skills != self.GOVERNED_SKILLS:
+            errors.append("progressive cases must cover every governed skill")
+        covered_identities = {
+            case["identity_state"] for case in fixture["cases"] if isinstance(case, dict)
+        }
+        required_identities = {
+            "missing",
+            "stale",
+            "unknown",
+            "ambiguous",
+            "conflicting",
+            "escaped",
+            "insufficient",
+        }
+        if not required_identities <= covered_identities:
+            errors.append("progressive cases must cover every expansion identity")
+        return errors
+
+    def progressive_fixture(self) -> dict[str, object]:
+        return json.loads(
+            (
+                ROOT
+                / "scripts"
+                / "fixtures"
+                / "boundary-first"
+                / "semantic"
+                / "progressive-cases.json"
+            ).read_text(encoding="utf-8")
+        )
+
+    def test_progressive_semantic_scenarios_are_closed_and_supported(self) -> None:
+        fixture = self.progressive_fixture()
+        self.assertEqual(self.progressive_semantic_errors(fixture), [])
         by_id = {case["case_id"]: case for case in fixture["cases"]}
-        self.assertFalse(by_id["progressive.unnamed-active-behavior"]["user_named_method"])
-        self.assertEqual(
-            by_id["progressive.unnamed-active-behavior"]["expected_action"],
-            "formalize",
-        )
-        self.assertTrue(by_id["progressive.named-non-behavior"]["user_named_method"])
-        self.assertEqual(
-            by_id["progressive.named-non-behavior"]["expected_action"],
-            "continue-ordinary",
-        )
-        self.assertEqual(
-            by_id["progressive.pending-behavior"]["expected_action"],
-            "no-active-claim",
-        )
-        self.assertEqual(
-            by_id["progressive.new-outcome"]["expected_route"],
-            "spec",
-        )
-        self.assertEqual(
-            by_id["progressive.proof-only-gap"]["expected_route"],
-            "test-spec",
-        )
-        self.assertEqual(
-            by_id["progressive.duplicate-combination"]["expected_action"],
-            "stop-scenarios",
-        )
+        named = by_id["progressive.named-active-behavior"]
+        unnamed = by_id["progressive.unnamed-active-behavior"]
+        self.assertNotEqual(named["user_named_method"], unnamed["user_named_method"])
+        self.assertEqual(self.progressive_decision(named), self.progressive_decision(unnamed))
+
+    def test_progressive_semantic_oracle_rejects_contradictions_and_gaps(self) -> None:
+        fixture = self.progressive_fixture()
+        mutations = []
+
+        known_unknown = json.loads(json.dumps(fixture))
+        known_unknown["cases"][10]["identity_state"] = "known"
+        mutations.append(known_unknown)
+
+        wrong_action = json.loads(json.dumps(fixture))
+        wrong_action["cases"][10]["expected_action"] = "formalize"
+        mutations.append(wrong_action)
+
+        wrong_route = json.loads(json.dumps(fixture))
+        wrong_route["cases"][15]["expected_route"] = "test-spec"
+        mutations.append(wrong_route)
+
+        non_behavioral_new_outcome = json.loads(json.dumps(fixture))
+        non_behavioral_new_outcome["cases"][15]["behavior_change"] = False
+        mutations.append(non_behavioral_new_outcome)
+
+        missing_trigger = json.loads(json.dumps(fixture))
+        missing_trigger["cases"] = [
+            case for case in missing_trigger["cases"] if case["identity_state"] != "stale"
+        ]
+        mutations.append(missing_trigger)
+
+        missing_skill = json.loads(json.dumps(fixture))
+        missing_skill["cases"] = [
+            case for case in missing_skill["cases"] if case["skill"] != "verify"
+        ]
+        mutations.append(missing_skill)
+
+        for index, mutation in enumerate(mutations):
+            with self.subTest(mutation=index):
+                self.assertNotEqual(self.progressive_semantic_errors(mutation), [])
 
     def test_skill_validation_bounds_manifest_contract_failures(self) -> None:
         for case in ("missing", "unknown-schema"):

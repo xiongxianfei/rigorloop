@@ -33,7 +33,7 @@ The exact shared-block test failed once for each of the ten governed skills befo
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-skill-validator.py` | pass, 277 tests with 16 documented skips |
+| `python scripts/test-skill-validator.py` | pass, 278 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skill files |
 | `python scripts/build-skills.py --check` | pass using temporary generated output |
 | `python scripts/project-boundary-first-reference.py --check` | pass, 14 projections |
@@ -43,3 +43,12 @@ The exact shared-block test failed once for each of the ten governed skills befo
 ## Follow-up
 
 M2 requires independent code review before M3 begins. Repository activation remains `pending`.
+
+## R1 finding correction
+
+- `CR-M2-R1-001`: the semantic fixture now covers all ten skills, every expansion identity, named and unnamed active behavior, pending and grandfathered states, sufficient slices, normative and proof gaps, material sibling and recovery paths, duplicate outcomes, ownerless discovery, and structural-pass semantic failure.
+- A test-owned decision oracle derives action, route, explanation, consent, and scenario outcomes independently from fixture expectations.
+- Required and forbidden phrases bind every scenario to its owning shipped skill.
+- Negative mutations prove contradictory inputs, wrong actions or routes, missing expansion states, and missing skill coverage fail.
+
+The complete M2 skill suite passed after the correction and is awaiting independent R2 review.
