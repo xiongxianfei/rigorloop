@@ -73,18 +73,19 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: implement
-  next_stage: code-review
+  current_stage: code-review
+  next_stage: review-resolution
   blocker: null
   evidence:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-r2.md
+    - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/m1-resource-projection.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M1
     milestones:
       M1:
         kind: implementation
-        state: implementing
+        state: review-requested
       M2:
         kind: implementation
         state: planned
@@ -100,13 +101,14 @@ workflow_state:
       - M3
       - M4
     latest_review:
-      status: not-started
-      stage: none
-      round: none
-      artifact_id: none
-      occurrence: none
-      milestone_id: none
-      evidence: []
+      status: review-requested
+      stage: code-review
+      round: r1
+      artifact_id: plan
+      occurrence: milestone
+      milestone_id: M1
+      evidence:
+        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/m1-resource-projection.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -252,6 +254,18 @@ validation:
     result: pass_with_99_nonblocking_warnings
   - command: git diff --check -- specs/progressive-boundary-first-skill-guidance.test.md docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/test-spec-authoring.md docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-r2.md docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/review-log.md docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/review-resolution.md
     result: pass_after_test_spec_review_r2
+  - command: python scripts/test-boundary-first-reference.py
+    result: pass_16_tests_m1
+  - command: python scripts/project-boundary-first-reference.py --check
+    result: pass_14_projections_m1
+  - command: python scripts/test-boundary-first-validation.py
+    result: pass_57_tests_m1
+  - command: python scripts/validate-boundary-first.py --check
+    result: pass_m1
+  - command: python scripts/test-skill-validator.py
+    result: pass_272_tests_16_documented_skips_m1
+  - command: python scripts/validate-skills.py
+    result: pass_24_skills_m1
 changed_files:
   - docs/proposals/2026-07-29-progressive-boundary-first-skill-guidance.md
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml
@@ -292,6 +306,42 @@ changed_files:
   - docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md
   - scripts/test-change-metadata-validator.py
   - scripts/test-skill-validator.py
+  - scripts/skill_validation.py
+  - scripts/boundary_first_reference.py
+  - scripts/project-boundary-first-reference.py
+  - scripts/boundary_first_validation.py
+  - scripts/test-boundary-first-reference.py
+  - scripts/test-boundary-first-validation.py
+  - specs/boundary-first-resources.yaml
+  - specs/boundary-first-activation.yaml
+  - specs/references/boundary-first-method-v1.md
+  - specs/references/boundary-first-feature-authoring-v1.md
+  - specs/references/boundary-first-proof-v1.md
+  - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/m1-resource-projection.md
+  - skills/workflow/SKILL.md
+  - skills/workflow/references/boundary-first-method-v1.md
+  - skills/spec/SKILL.md
+  - skills/spec/references/boundary-first-method-v1.md
+  - skills/spec/references/boundary-first-feature-authoring-v1.md
+  - skills/spec-review/SKILL.md
+  - skills/spec-review/references/boundary-first-method-v1.md
+  - skills/spec-review/references/boundary-first-feature-authoring-v1.md
+  - skills/plan/SKILL.md
+  - skills/plan/references/boundary-first-method-v1.md
+  - skills/plan-review/SKILL.md
+  - skills/plan-review/references/boundary-first-method-v1.md
+  - skills/test-spec/SKILL.md
+  - skills/test-spec/references/boundary-first-method-v1.md
+  - skills/test-spec/references/boundary-first-proof-v1.md
+  - skills/test-spec-review/SKILL.md
+  - skills/test-spec-review/references/boundary-first-method-v1.md
+  - skills/test-spec-review/references/boundary-first-proof-v1.md
+  - skills/implement/SKILL.md
+  - skills/implement/references/boundary-first-method-v1.md
+  - skills/code-review/SKILL.md
+  - skills/code-review/references/boundary-first-method-v1.md
+  - skills/verify/SKILL.md
+  - skills/verify/references/boundary-first-method-v1.md
 review:
   status: approved
   unresolved_items: 0

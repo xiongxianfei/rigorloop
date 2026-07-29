@@ -4,7 +4,9 @@
   "activating_release": "-",
   "rollback_release": "-",
   "canonical_reference": "specs/references/boundary-first-method-v1.md",
-  "canonical_reference_sha256": "e65a42359f45d3a0104963386a12aa7a136cdbe18b954d9a62beef044fde134d",
+  "canonical_reference_sha256": "2af62565f637d5eddacd26534df506a8fa2332470ccfe099ed93c8dc2551039f",
+  "resource_manifest": "specs/boundary-first-resources.yaml",
+  "resource_manifest_sha256": "6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113",
   "grandfathering_baseline_revision": "-",
   "grandfathered_specs": [],
   "governed_skills": [
@@ -19,5 +21,5 @@
     "code-review",
     "verify"
   ],
-  "projection_sha256": "0248de2d43f064bd86cb89027f6f89554bfd833179dc5a92d9543c5a51cd1daa"
+  "projection_sha256": "e6c7178cef86cbd7ca9d1e09c783ca2566e14274e36afde81b5163e757ebf10c"
 }

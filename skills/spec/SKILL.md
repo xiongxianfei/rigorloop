@@ -82,7 +82,8 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Resource map
 
-- READ `references/boundary-first-method-v1.md` when authoring a new or substantively revised behavior contract that must adopt or has opted into `boundary-first-v1`.
+- READ `references/boundary-first-method-v1.md` when a behavior contract is governed by `boundary-first-v1`.
+- READ `references/boundary-first-feature-authoring-v1.md` when authoring or revising the formal feature boundary record.
 - COPY `assets/spec-skeleton.md` when creating or fully rewriting a feature spec.
   Fill: spec title, required-section structures, examples, requirements, acceptance criteria, next artifacts, follow-on artifacts, and readiness.
   Do not emit unfilled placeholders.

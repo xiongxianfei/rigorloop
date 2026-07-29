@@ -72,7 +72,7 @@ Produce a routing decision, current stage assessment, blockers or assumptions, a
 
 ## Resource map
 
-- READ `references/boundary-first-method-v1.md` when routing a change that declares `boundary_contract: boundary-first-v1` or depends on an approved boundary or proof record.
+- READ `references/boundary-first-method-v1.md` when an approved boundary, interaction, or proof ID is missing, stale, unknown, ambiguous, conflicting, or insufficient for routing.
 - COPY `assets/workflows-skeleton.md` when creating a new project-local `docs/workflows.md` or fully rewriting a stale workflow guide.
   Fill metadata, source rank, lifecycle graph, stage obligations, artifact registry, artifact-location table, review placement, plan surfaces, customization rules, migration notes, and validation notes.
   Do not emit unfilled placeholders.

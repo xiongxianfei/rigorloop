@@ -7940,55 +7940,55 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
             errors.append("semantic cases must cover the exact governed skill set")
         return errors
 
-    def test_governed_skills_map_one_reference_with_owned_behavior(self) -> None:
+    def test_governed_skills_map_exact_owned_resources_with_behavior(self) -> None:
         expected = {
             "workflow": (
-                "routing a change that declares `boundary_contract: boundary-first-v1` or depends on an approved boundary or proof record.",
+                "an approved boundary, interaction, or proof ID is missing, stale, unknown, ambiguous, conflicting, or insufficient for routing.",
                 "Route the method, locate governing artifacts, and stop on missing applicable ownership.",
                 "Stop routing and name the owning upstream stage",
             ),
             "spec": (
-                "authoring a new or substantively revised behavior contract that must adopt or has opted into `boundary-first-v1`.",
+                "a behavior contract is governed by `boundary-first-v1`.",
                 "Author the normative applicability, boundary, interaction, and example-ownership record.",
                 "Stop spec authoring and route the gap upstream",
             ),
             "spec-review": (
-                "reviewing an adopting boundary record or deciding whether a grandfathered spec revision is substantive.",
+                "reviewing a `boundary-first-v1` behavior contract.",
                 "Judge applicability, boundary completeness, interactions, invariants, outcomes, and example ownership.",
                 "Stop review with a material finding",
             ),
             "plan": (
-                "planning implementation for an approved feature spec that declares `boundary_contract: boundary-first-v1`.",
+                "cited approved boundary or interaction rows are missing, stale, unknown, ambiguous, conflicting, or insufficient for planning.",
                 "Map applicable boundaries to independently closeable milestones, dependencies, affected surfaces, rollback units, and proof timing.",
                 "Stop planning when an applicable boundary lacks",
             ),
             "plan-review": (
-                "reviewing a plan governed by an approved `boundary-first-v1` feature spec.",
+                "cited approved boundary or interaction rows are missing, stale, unknown, ambiguous, conflicting, or insufficient for plan review.",
                 "Reject coupled primary boundaries, omitted dependencies, unsafe rollback, and proof sequencing that cannot close independently.",
                 "Stop review and request plan revision",
             ),
             "test-spec": (
-                "authoring the proof map for a feature spec that declares `boundary_contract: boundary-first-v1`.",
+                "a proof map consumes a `boundary-first-v1` feature record.",
                 "Map every applicable boundary and selected interaction to proof without inventing contract IDs.",
                 "Stop test-spec authoring and return to the feature spec",
             ),
             "test-spec-review": (
-                "reviewing a proof map governed by a `boundary-first-v1` feature spec.",
+                "reviewing a proof map governed by a `boundary-first-v1` feature record.",
                 "Judge proof adequacy, negative coverage, fixtures, command ownership, and manual-proof boundaries.",
                 "Stop review with a material finding",
             ),
             "implement": (
-                "implementing a change governed by an approved `boundary-first-v1` boundary record and proof map.",
+                "approved boundary, interaction, or proof IDs are missing, stale, unknown, ambiguous, conflicting, or insufficient for implementation.",
                 "Stop on missing boundary or proof ownership and implement against the approved model and proof map.",
                 "Stop implementation before mutation",
             ),
             "code-review": (
-                "reviewing implementation governed by an approved `boundary-first-v1` boundary record and proof map.",
+                "approved diff-related boundary, interaction, or proof IDs are missing, stale, unknown, ambiguous, conflicting, or insufficient for review.",
                 "Inspect composed public, helper, sibling, failure, stale, recovery, and escaped-boundary paths.",
                 "Stop clean handoff and record a finding",
             ),
             "verify": (
-                "verifying a change governed by an approved `boundary-first-v1` contract and proof map.",
+                "the final approved boundary, interaction, or proof trace is missing, stale, unknown, ambiguous, conflicting, or insufficient for verification.",
                 "Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure.",
                 "Stop verification before readiness claims",
             ),
@@ -8017,6 +8017,37 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
                     ).read_bytes(),
                     reference_bytes,
                 )
+
+        owned_family_resources = {
+            "spec": "boundary-first-feature-authoring-v1.md",
+            "spec-review": "boundary-first-feature-authoring-v1.md",
+            "test-spec": "boundary-first-proof-v1.md",
+            "test-spec-review": "boundary-first-proof-v1.md",
+        }
+        for skill_name in self.GOVERNED_SKILLS:
+            skill_root = ROOT / "skills" / skill_name
+            references = {
+                path.name
+                for path in (skill_root / "references").glob(
+                    "boundary-first-*-v1.md"
+                )
+            }
+            expected_references = {"boundary-first-method-v1.md"}
+            family_resource = owned_family_resources.get(skill_name)
+            if family_resource:
+                expected_references.add(family_resource)
+                self.assertIn(
+                    f"- READ `references/{family_resource}` when ",
+                    (skill_root / "SKILL.md").read_text(encoding="utf-8"),
+                )
+                self.assertEqual(
+                    (skill_root / "references" / family_resource).read_bytes(),
+                    (
+                        ROOT / "specs" / "references" / family_resource
+                    ).read_bytes(),
+                )
+            with self.subTest(skill=skill_name, resource_set=True):
+                self.assertEqual(references, expected_references)
 
         for excluded in ("proposal", "proposal-review"):
             body = (

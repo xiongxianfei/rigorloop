@@ -74,7 +74,8 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Resource map
 
-- READ `references/boundary-first-method-v1.md` when authoring the proof map for a feature spec that declares `boundary_contract: boundary-first-v1`.
+- READ `references/boundary-first-method-v1.md` when a proof map consumes a `boundary-first-v1` feature record.
+- READ `references/boundary-first-proof-v1.md` when authoring proof obligations or selecting proof coverage.
 - COPY `assets/test-spec-skeleton.md` when creating or fully rewriting a test spec.
   Fill: title, sections, coverage maps, test cases, artifacts, and readiness.
   Do not emit unfilled placeholders.

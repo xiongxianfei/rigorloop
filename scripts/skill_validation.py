@@ -9,8 +9,10 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from boundary_first_reference import GOVERNED_SKILLS as BOUNDARY_FIRST_GOVERNED_SKILLS
-from boundary_first_reference import PROJECTED_REFERENCE as BOUNDARY_FIRST_PROJECTED_REFERENCE
+from boundary_first_reference import (
+    GOVERNED_SKILLS as BOUNDARY_FIRST_GOVERNED_SKILLS,
+)
+from boundary_first_reference import load_resource_manifest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -100,16 +102,17 @@ RESOURCE_MAP_ENTRY_PATTERN = re.compile(
     r"^\s*-\s*(?P<verb>COPY|READ|RUN)\s+`(?P<path>[^`]+)`",
     re.IGNORECASE,
 )
-BOUNDARY_FIRST_PACKAGED_REFERENCE = BOUNDARY_FIRST_PROJECTED_REFERENCE.as_posix()
-
-
 def _is_approved_packaged_non_asset_resource(
     skill_name: str | None,
     relative_resource: str,
 ) -> bool:
-    return (
-        skill_name in BOUNDARY_FIRST_GOVERNED_SKILLS
-        and relative_resource == BOUNDARY_FIRST_PACKAGED_REFERENCE
+    if skill_name not in BOUNDARY_FIRST_GOVERNED_SKILLS:
+        return False
+    manifest = load_resource_manifest(ROOT)
+    return any(
+        skill_name in resource.consumers
+        and relative_resource == resource.target.as_posix()
+        for resource in manifest.resources
     )
 
 

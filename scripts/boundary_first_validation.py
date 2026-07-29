@@ -14,6 +14,7 @@ from boundary_first_reference import (
     CANONICAL_REFERENCE,
     GOVERNED_SKILLS,
     METHOD_VERSION,
+    RESOURCE_MANIFEST,
     ProjectionContractError,
     project_reference,
 )
@@ -121,6 +122,8 @@ ACTIVATION_FIELDS = frozenset(
         "rollback_release",
         "canonical_reference",
         "canonical_reference_sha256",
+        "resource_manifest",
+        "resource_manifest_sha256",
         "grandfathering_baseline_revision",
         "grandfathered_specs",
         "governed_skills",
@@ -1395,6 +1398,9 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
     expected_source = data.get("canonical_reference")
     if expected_source != CANONICAL_REFERENCE.as_posix():
         issues.append(_issue("BFR-CANONICAL-PATH", ACTIVATION_RECORD.as_posix(), "canonical reference path differs", expected_source, CANONICAL_REFERENCE.as_posix()))
+    expected_manifest = data.get("resource_manifest")
+    if expected_manifest != RESOURCE_MANIFEST.as_posix():
+        issues.append(_issue("BFR-RESOURCE-MANIFEST-PATH", ACTIVATION_RECORD.as_posix(), "resource manifest path differs", expected_manifest, RESOURCE_MANIFEST.as_posix()))
     try:
         projection_result = project_reference(root, mode="check")
     except ProjectionContractError as exc:
@@ -1412,6 +1418,8 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
         actual_source_hash = projection_result.source_sha256
         if data.get("canonical_reference_sha256") != actual_source_hash:
             issues.append(_issue("BFR-CANONICAL-HASH", CANONICAL_REFERENCE.as_posix(), "canonical reference hash differs", data.get("canonical_reference_sha256"), actual_source_hash))
+        if data.get("resource_manifest_sha256") != projection_result.manifest_sha256:
+            issues.append(_issue("BFR-RESOURCE-MANIFEST-HASH", RESOURCE_MANIFEST.as_posix(), "resource manifest hash differs", data.get("resource_manifest_sha256"), projection_result.manifest_sha256))
         for error in projection_result.errors:
             code, _, affected_path = error.partition(": ")
             issues.append(

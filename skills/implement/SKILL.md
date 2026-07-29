@@ -122,7 +122,7 @@ Produce tests or proof surfaces first where feasible, implementation changes, im
 
 ## Resource map
 
-- READ `references/boundary-first-method-v1.md` when implementing a change governed by an approved `boundary-first-v1` boundary record and proof map.
+- READ `references/boundary-first-method-v1.md` when approved boundary, interaction, or proof IDs are missing, stale, unknown, ambiguous, conflicting, or insufficient for implementation.
 
 ## Boundary-first method
 

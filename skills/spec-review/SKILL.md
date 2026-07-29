@@ -72,7 +72,8 @@ Require `review-required` and complete authoring evidence. Write the durable rev
 
 ## Resource map
 
-- READ `references/boundary-first-method-v1.md` when reviewing an adopting boundary record or deciding whether a grandfathered spec revision is substantive.
+- READ `references/boundary-first-method-v1.md` when reviewing a `boundary-first-v1` behavior contract.
+- READ `references/boundary-first-feature-authoring-v1.md` when judging formal boundary-record completeness or a substantive grandfathered revision.
 - COPY `assets/review-result-skeleton.md` when recording the review result.
   Fill: review title, result fields, findings summary, immediate next stage, eventual test-spec readiness, and stop condition.
   Do not emit unfilled placeholders.

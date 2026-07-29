@@ -126,7 +126,7 @@ When a plan is intended to support a final `verify` automation target, review th
 
 ## Resource map
 
-- READ `references/boundary-first-method-v1.md` when reviewing a plan governed by an approved `boundary-first-v1` feature spec.
+- READ `references/boundary-first-method-v1.md` when cited approved boundary or interaction rows are missing, stale, unknown, ambiguous, conflicting, or insufficient for plan review.
 
 ## Boundary-first method
 

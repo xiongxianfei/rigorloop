@@ -34,7 +34,7 @@ Do not require RigorLoop repository-internal specs, docs, reports, follow-up fil
 
 ## Resource map
 
-- READ `references/boundary-first-method-v1.md` when planning implementation for an approved feature spec that declares `boundary_contract: boundary-first-v1`.
+- READ `references/boundary-first-method-v1.md` when cited approved boundary or interaction rows are missing, stale, unknown, ambiguous, conflicting, or insufficient for planning.
 - COPY `assets/plan-skeleton.md` when creating a new plan or replacing the full plan structure.
   Fill: sections, placeholders, and the stable owning change-record pointer.
   Sections: Purpose / big picture; Current Handoff Summary; Source artifacts; Context and orientation; Non-goals; Requirements covered; Milestones; Validation plan; Risks and recovery; Dependencies; Decision log; Readiness.
