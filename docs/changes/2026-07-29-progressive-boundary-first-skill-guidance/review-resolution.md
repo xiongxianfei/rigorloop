@@ -28,6 +28,7 @@ Review closeout: code-review-m2-r4
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
+Review closeout: code-review-m4-r3
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -36,10 +37,10 @@ Review closeout: code-review-m4-r2
   `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`,
   `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`,
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
-  `code-review-m4-r2`
+  `code-review-m4-r2`, `code-review-m4-r3`
 - Findings resolved: 30
-- Unresolved findings: 0
-- Current result: M4 code-review R2 findings are resolved and await independent R3 confirmation.
+- Unresolved findings: 2
+- Current result: M4 code-review R3 found fail-open invocation-equivalence and explicit-selection checks.
 
 ## Resolution Overview
 
@@ -75,6 +76,8 @@ Review closeout: code-review-m4-r2
 | CR-M4-R1-003 | accepted | resolved | Evidence records reproducible baseline, candidate, and adapter-layer identities. |
 | CR-M4-R2-001 | accepted | resolved | The comparable pre-split downstream operation records one initially loaded 8,318-byte resource. |
 | CR-M4-R2-002 | accepted | resolved | Workflow and every requested governed resource are required in all supported adapters. |
+| CR-M4-R3-001 | accepted | open | Validate exact cross-adapter workflow invocation equivalents. |
+| CR-M4-R3-002 | accepted | open | Reject every unknown explicitly selected mapped skill. |
 
 ## Finding Details
 
@@ -191,6 +194,32 @@ Chosen action: Make workflow adapter-portable, require each requested governed s
 Rationale: Report-derived portability filtering must not turn a requested all-adapter completeness check into a partial check.
 Validation target: code-review-m4-r3
 Validation evidence: Workflow documents Codex, Claude, and OpenCode invocation equivalents; exact generated, archive, and installed identities are 14 resources with digest `68c6f88c...004329` for each adapter; deleting requested Claude workflow fails; 137 adapter tests, the explicit v0.1.5 clean-install command, and 12-check broad smoke pass.
+
+### code-review-m4-r3
+
+#### CR-M4-R3-001 - Invocation-equivalence detection is fail-open
+
+Finding ID: CR-M4-R3-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Bind portability to exact workflow identities and identical `auto: <target-stage>` arguments, with mutation coverage.
+Rationale: Loose prose fragments cannot prove usable adapter commands.
+Validation target: code-review-m4-r4
+Validation evidence: pending
+
+#### CR-M4-R3-002 - Explicit selection ignores unknown names
+
+Finding ID: CR-M4-R3-002
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Reject unresolved and duplicate explicit mapped-skill selections before install validation.
+Rationale: A completeness command must fail closed on every requested identity.
+Validation target: code-review-m4-r4
+Validation evidence: pending
 
 ### code-review-m1-r1
 
