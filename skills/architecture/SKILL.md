@@ -27,31 +27,18 @@ Read, if present:
 
 ## Upstream settlement check
 
-Before relying on a spec, read its matching `change.yaml` artifact entry and
-formal review evidence.
-Require an `approved` settlement, no later contradictory review, no open
-findings, and closed review resolution when required.
+Before relying on a spec, read its matching `change.yaml` artifact entry and formal review evidence.
+Require an `approved` settlement, no later contradictory review, no open findings, and closed review resolution when required.
 
 Treat the spec and its lifecycle state as read-only.
 Do not normalize status in the spec or settle its change-local entry.
-If settlement is missing or contradictory, record the blocker and route to
-`spec-review`.
+If settlement is missing or contradictory, record the blocker and route to `spec-review`.
 
 ## Change-record authoring transition
 
 For a governed change, read the complete `change.yaml` before writing.
-Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing
-marker to `workflow` for creation or migration instead of inventing state.
-Resolve each architecture or ADR target by its exact artifact ID, `kind`, and
-normalized `path`; never select by kind alone. For a new target, create only
-that entry with a unique stable ID, the exact architecture or ADR kind,
-normalized path, and explicit role. Before creating or substantively revising
-one target, set only its entry to `authoring`, remove any prior `review`, and
-set `authoring_evidence` to its architecture-authoring record path. After that
-artifact and authoring record are complete, set the same entry to
-`review-required`. Preserve every other entry and `workflow_state`. Stop on an
-ambiguous entry, illegal transition, or failed available change-metadata
-validation.
+Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing marker to `workflow` for creation or migration instead of inventing state.
+Resolve each architecture or ADR target by its exact artifact ID, `kind`, and normalized `path`; never select by kind alone. For a new target, create only that entry with a unique stable ID, the exact architecture or ADR kind, normalized path, and explicit role. Before creating or substantively revising one target, set only its entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to its architecture-authoring record path. After that artifact and authoring record are complete, set the same entry to `review-required`. Preserve every other entry and `workflow_state`. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
 
 ## Architecture Surface Decision
 
@@ -110,10 +97,8 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 - COPY `assets/architecture-skeleton.md` when creating a new canonical architecture package or replacing an incomplete package scaffold. Fill all required sections. Do not emit unfilled placeholders.
 
-- COPY `assets/adr-skeleton.md` when recording a material architecture
-  decision.
-  Fill the change-record pointer, decision, context, consequences,
-  alternatives considered, and follow-up.
+- COPY `assets/adr-skeleton.md` when recording a material architecture decision.
+  Fill the change-record pointer, decision, context, consequences, alternatives considered, and follow-up.
 
 - COPY `assets/diagram-styles.mmd` when Mermaid flowchart or graph diagrams need copied role styles for people, systems, external systems, and containers.
 
@@ -189,8 +174,7 @@ Create an ADR when the change introduces or revises a durable architecture decis
 - major workflow architecture decisions
 
 Use the ADR skeleton and store real ADRs under `docs/adr/`.
-Each ADR includes a title, owning change-record pointer, context, decision,
-alternatives considered, consequences, and follow-up.
+Each ADR includes a title, owning change-record pointer, context, decision, alternatives considered, consequences, and follow-up.
 
 Accepted or active ADRs are decision history. Later changes should supersede or deprecate an old ADR with a new ADR or explicit lifecycle update rather than rewriting the old decision as if it had always been different.
 

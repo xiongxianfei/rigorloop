@@ -61,9 +61,7 @@ Before drafting or opening a PR, check:
 6. for planned initiatives, lifecycle closeout is already reflected in both `docs/plan.md` and the plan body before the PR opens for review when final state is known; if completion depends on a true downstream completion event, the plan remains `Active` and names it; merge itself is not that event;
 7. for ordinary non-trivial work, the required docs-changes artifacts exist, including `docs/changes/<change-id>/change.yaml` plus durable reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` unless an approved equivalent surface applies;
 8. material review findings are closed in `review-resolution.md`, with no `needs-decision` dispositions and no `review-log.md` open findings remaining;
-8a. `Closeout status: open` blocks PR handoff, and `Closeout status: closed` requires final dispositions for all material findings;
-8b. a stage-owned non-approval outcome that blocks downstream progress or requires revision has a same-stage later review round or explicit reviewer or owner closeout naming the original Review ID; `review-resolution.md` alone is not a silent substitute;
-8c. for no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`;
+8a. `Closeout status: open` blocks PR handoff, and `Closeout status: closed` requires final dispositions for all material findings; 8b. a stage-owned non-approval outcome that blocks downstream progress or requires revision has a same-stage later review round or explicit reviewer or owner closeout naming the original Review ID; `review-resolution.md` alone is not a silent substitute; 8c. for no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`;
 9. artifacts are updated;
 10. no secrets, credentials, local paths, or debug-only changes are included;
 11. generated files and migrations are intentional;
@@ -73,10 +71,8 @@ Apply the same readiness checks for workflow-managed and direct-`pr` invocation.
 
 `verify` owns `branch-ready`. This stage owns `pr-body-ready` and `pr-open-ready`.
 
-PR handoff is scoped evidence and must not own artifact settlement, milestone
-state, or routing.
-Summarize planned-initiative state from `change.yaml` and treat the plan and
-upstream artifacts as read-only.
+PR handoff is scoped evidence and must not own artifact settlement, milestone state, or routing.
+Summarize planned-initiative state from `change.yaml` and treat the plan and upstream artifacts as read-only.
 PR handoff is blocked when the latest verify evidence does not include a passing state-sync gate for touched, referenced, active, and blocked workflow-state artifacts.
 
 ## Artifact placement
@@ -98,14 +94,10 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Change-record bounded reads
 
-For planned change records, summarize current workflow state from
-`change.yaml`.
-When the project provides query helpers, use them as bounded views of the
-change record, not as another state owner.
+For planned change records, summarize current workflow state from `change.yaml`.
+When the project provides query helpers, use them as bounded views of the change record, not as another state owner.
 
-Escalate from bounded helper output to full `change.yaml` when PR handoff
-depends on forensic reconstruction, unsupported-shape diagnostics, disputed
-evidence, migration compatibility, or whole-record review.
+Escalate from bounded helper output to full `change.yaml` when PR handoff depends on forensic reconstruction, unsupported-shape diagnostics, disputed evidence, migration compatibility, or whole-record review.
 Do not treat the PR body as an authoritative state owner.
 
 ## Outputs

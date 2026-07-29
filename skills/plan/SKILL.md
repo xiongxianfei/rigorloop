@@ -42,8 +42,7 @@ Do not require RigorLoop repository-internal specs, docs, reports, follow-up fil
 - COPY `assets/milestone.md` when adding each reviewable implementation milestone.
   Fill: ID, state, goal, requirements, files, tests, steps, validation, result, risks, rollback.
   Do not emit unfilled placeholders.
-- COPY `assets/current-handoff-summary.md` to record only the stable pointer
-  from a plan to its owning change record.
+- COPY `assets/current-handoff-summary.md` to record only the stable pointer from a plan to its owning change record.
   Fill: owning change-record path.
   Do not add mutable workflow fields or emit unfilled placeholders.
 - COPY `assets/decision-log-row.md` when recording a material planning or sequencing decision.
@@ -76,31 +75,20 @@ Use bounded evidence first. Use broader-section or full-file reading when the ta
 
 ## Upstream settlement check
 
-Before relying on a spec, architecture package, or ADR, read each matching
-`change.yaml` artifact entry and formal review evidence.
-Require the artifact-specific settled state, no later contradictory review, no
-open findings, and closed review resolution when required.
+Before relying on a spec, architecture package, or ADR, read each matching `change.yaml` artifact entry and formal review evidence.
+Require the artifact-specific settled state, no later contradictory review, no open findings, and closed review resolution when required.
 
 Treat every upstream artifact and lifecycle entry as read-only.
 Do not normalize embedded status or settle an upstream entry.
-If settlement is missing, contradictory, unknown, or unmapped, record the
-blocker and route to the matching review stage.
+If settlement is missing, contradictory, unknown, or unmapped, record the blocker and route to the matching review stage.
 
 ## Change-record authoring transition
 
 For a governed change, read the complete `change.yaml` before writing.
-Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing
-marker to `workflow` for creation or migration instead of inventing state.
+Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing marker to `workflow` for creation or migration instead of inventing state.
 Resolve exactly one plan entry by artifact ID, `kind`, and normalized `path`.
-For a new plan, create only that entry with a unique stable ID, `kind: plan`,
-normalized path, and explicit role. Before creating or substantively revising
-the plan, set only that entry to `authoring`, remove any prior `review`, and
-set `authoring_evidence` to the plan-authoring record path. After the plan and
-authoring record are complete, set the same entry to `review-required`.
-Preserve every other entry and `workflow_state`; plan milestones remain stable
-intent and do not authorize writing `workflow_state.planned_work`. Stop on an
-ambiguous entry, illegal transition, or failed available change-metadata
-validation.
+For a new plan, create only that entry with a unique stable ID, `kind: plan`, normalized path, and explicit role. Before creating or substantively revising the plan, set only that entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to the plan-authoring record path. After the plan and authoring record are complete, set the same entry to `review-required`.
+Preserve every other entry and `workflow_state`; plan milestones remain stable intent and do not authorize writing `workflow_state.planned_work`. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
 
 ## Artifact placement
 
@@ -124,15 +112,11 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Change-record bounded reads
 
-For planned change records, read current workflow and milestone state from
-`docs/changes/<change-id>/change.yaml`.
+For planned change records when present, read current workflow and milestone state from `docs/changes/<change-id>/change.yaml`.
 Use the plan body only for stable milestone intent.
-When the project provides a query helper, use it as a bounded view of the
-change record, not as a second state owner.
+When the project provides a query helper, use it as a bounded view of the change record, not as a second state owner.
 
-Escalate from bounded helper output to full `change.yaml` when planning depends
-on forensic reconstruction, unsupported-shape diagnostics, disputed evidence,
-migration compatibility, or whole-record review.
+Escalate from bounded helper output to full `change.yaml` when planning depends on forensic reconstruction, unsupported-shape diagnostics, disputed evidence, migration compatibility, or whole-record review.
 
 ## Expected output
 
@@ -140,11 +124,9 @@ Output a compact result plus a plan artifact. Copy `assets/plan-skeleton.md` for
 
 ## Outputs
 
-Produce or update the stable plan body and, when needed, its navigation entry
-in `docs/plan.md`.
+Produce or update the stable plan body and, when needed, its navigation entry in `docs/plan.md`.
 Name milestones, validation, recovery, and dependencies.
-The plan stage may record its own authoring transition in the matching
-`change.yaml` artifact entry; it must not write review settlement or routing.
+The plan stage may record its own authoring transition in the matching `change.yaml` artifact entry; it must not write review settlement or routing.
 
 ## Result
 
@@ -195,12 +177,8 @@ Use `Readiness is not Done` as the default interpretation for handoff lines. Kee
 - Do not omit validation commands.
 - Keep `docs/plan.md` as stable navigation, not a lifecycle-state owner or second long-form plan body.
 - In `docs/plan.md` and `docs/plan-archive.md`, write plan references as clickable Markdown links relative to the index file, for example `[Title](plans/YYYY-MM-DD-slug.md)`; do not leave bare `docs/plans/...` text as the index entry.
-- Do not put mutable lifecycle state, current milestone state, review status,
-  progress, routing, blockers, or final closeout state in the plan body or
-  navigation index.
-- Preserve plan revisions as changes to execution intent and send the revised
-  artifact through `plan-review`; do not use plan edits as workflow-state
-  updates.
+- Do not put mutable lifecycle state, current milestone state, review status, progress, routing, blockers, or final closeout state in the plan body or navigation index.
+- Preserve plan revisions as changes to execution intent and send the revised artifact through `plan-review`; do not use plan edits as workflow-state updates.
 - `implement`, reviews, `verify`, and `pr` treat the plan as read-only.
 - `verify` challenges any mutable workflow state embedded in a governed plan.
 - If completion depends on a true downstream completion event, keep the plan `Active` and name that event; merge itself is not that event.
@@ -211,9 +189,7 @@ Use `Readiness is not Done` as the default interpretation for handoff lines. Kee
 ## Milestone-aware plans
 
 The plan defines ordered milestone IDs and stable intent.
-`change.yaml` gives each implementation milestone exactly one current
-`Milestone state`: `planned`, `implementing`, `review-requested`,
-`resolution-needed`, or `closed`.
+`change.yaml` gives each implementation milestone exactly one current `Milestone state`: `planned`, `implementing`, `review-requested`, `resolution-needed`, or `closed`.
 
 For a final `verify` automation target, record target selection separately from implementation and verification authorization; neither owns live next-stage state. Plans must keep ordered implementation milestones, approved validation commands, promotion evidence expectations, separate verification authority, and stop-before-PR boundaries explicit.
 
@@ -238,11 +214,8 @@ Use `lifecycle-closeout` for a milestone or section that tracks only downstream 
 ## Change-local handoff rules
 
 The plan identifies its owning change record.
-Current milestone, milestone state, last reviewed milestone, review status,
-remaining milestones, next stage, blockers, and final-closeout readiness live
-only in that record.
-Plan and review stages write their scoped evidence; workflow consumes that
-evidence and owns routing updates.
+Current milestone, milestone state, last reviewed milestone, review status, remaining milestones, next stage, blockers, and final-closeout readiness live only in that record.
+Plan and review stages write their scoped evidence; workflow consumes that evidence and owns routing updates.
 
 ## Stop conditions
 

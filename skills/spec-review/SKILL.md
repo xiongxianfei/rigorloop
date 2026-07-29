@@ -67,18 +67,8 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Change-record review settlement
 
-Before settlement, read the complete `change.yaml` and require
-`lifecycle_contract: stage-owned-change-local-v1`. Resolve exactly one spec
-entry by the artifact ID, `kind`, and normalized `path` named by the review.
-Require `review-required` and complete authoring evidence. Write the durable
-review record first, then remove `authoring_evidence`, set the exact `review`
-mapping (`id`, `artifact_id`, `outcome`, `record`, and `round`), and map
-`approved` to `approved`, `changes-requested` to `revision-required`, and
-`blocked` or `inconclusive` to `blocked`. Preserve every other entry and
-`workflow_state`. Retry identical incomplete settlement without rerunning the
-review; stop on conflicting review-ID reuse, ambiguity, an illegal transition,
-or failed available change-metadata validation. An independent invocation
-settles this entry and stops without advancing routing.
+Before settlement, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Resolve exactly one spec entry by the artifact ID, `kind`, and normalized `path` named by the review.
+Require `review-required` and complete authoring evidence. Write the durable review record first, then remove `authoring_evidence`, set the exact `review` mapping (`id`, `artifact_id`, `outcome`, `record`, and `round`), and map `approved` to `approved`, `changes-requested` to `revision-required`, and `blocked` or `inconclusive` to `blocked`. Preserve every other entry and `workflow_state`. Retry identical incomplete settlement without rerunning the review; stop on conflicting review-ID reuse, ambiguity, an illegal transition, or failed available change-metadata validation. An independent invocation settles this entry and stops without advancing routing.
 
 ## Resource map
 
@@ -185,8 +175,7 @@ If required inputs are missing, use `Review status: inconclusive`, `Immediate ne
 
 Isolation governs handoff. Recording follows formal review triggers.
 
-A direct or review-only request remains isolated by default: it does
-not automatically continue into downstream workflow stages.
+A direct or review-only request remains isolated by default: it does not automatically continue into downstream workflow stages.
 
 Isolation does not suppress recording.
 
@@ -194,30 +183,21 @@ Every formal lifecycle review result must be recorded or explicitly blocked.
 
 Use:
 
-- `Recording status: recorded` when the required review evidence was created
-  or updated.
-- `Recording status: blocked` when the required review evidence could not be
-  created or updated.
+- `Recording status: recorded` when the required review evidence was created or updated.
+- `Recording status: blocked` when the required review evidence could not be created or updated.
 
-`not-required` is reserved for non-formal review-like requests outside the
-formal lifecycle review model.
+`not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
 
-For a clean review, create the lightweight review receipt required by the
-formal review recording spec and index it in `review-log.md`. Do not create an
-empty `review-resolution.md` solely for a clean review.
+For a clean review, create the lightweight review receipt required by the formal review recording spec and index it in `review-log.md`. Do not create an empty `review-resolution.md` solely for a clean review.
 
-For material findings or blocking outcomes, create the required detailed review
-record and disposition artifacts.
+For material findings or blocking outcomes, create the required detailed review record and disposition artifacts.
 Use a detailed review record for material or blocking review outcomes.
 
 Use `assets/material-finding.md` for each material finding block.
 
-Do not merely tell the user that review artifacts should be created. Create
-or update them before final output, or report `Recording status: blocked` with
-the blocker and smallest next action.
+Do not merely tell the user that review artifacts should be created. Create or update them before final output, or report `Recording status: blocked` with the blocker and smallest next action.
 
-For an isolated review with material findings, the final review output
-must state:
+For an isolated review with material findings, the final review output must state:
 
 - no automatic downstream handoff
 - material Finding IDs
@@ -250,8 +230,7 @@ Direct or review-only requests remain isolated by default.
 - Do not collapse spec review into plan or code review.
 - Do not require implementation detail unless it is needed for the observable contract.
 - Do not edit the spec unless the user explicitly asks.
-- When the review outcome is `approved`, write the review evidence first and
-  then settle only the matching spec entry in `change.yaml`.
+- When the review outcome is `approved`, write the review evidence first and then settle only the matching spec entry in `change.yaml`.
   Do not edit the spec, other artifact entries, milestone state, or routing.
 - Follow the routing and testability assessment contract for every review result.
 
@@ -286,5 +265,4 @@ Do not emit unfilled placeholders.
 ## Expected output
 
 Use the `## Output skeleton` guidance and review-result asset structure.
-Include Review record, Review log, Review resolution, findings, exact wording
-suggestions, next stage, `test-spec` readiness, and any stop condition.
+Include Review record, Review log, Review resolution, findings, exact wording suggestions, next stage, `test-spec` readiness, and any stop condition.

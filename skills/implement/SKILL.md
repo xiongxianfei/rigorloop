@@ -13,11 +13,9 @@ You are implementing the smallest scope-complete change for the approved slice w
 
 Do not expand scope. Do not silently alter the spec. Do not declare success without verification evidence.
 
-For planned initiatives, `implement` treats the plan and upstream artifacts as
-read-only.
+For planned initiatives, `implement` treats the plan and upstream artifacts as read-only.
 It writes implementation, tests, and implementation evidence only.
-Workflow consumes that evidence and owns milestone and routing updates in
-`change.yaml`.
+Workflow consumes that evidence and owns milestone and routing updates in `change.yaml`.
 
 ## Workflow role
 
@@ -120,9 +118,7 @@ Use bounded evidence first, but do not under-read. Expand beyond the milestone w
 
 ## Outputs
 
-Produce tests or proof surfaces first where feasible, implementation changes,
-implementation validation evidence, and a milestone handoff for workflow to
-record as `review-requested`.
+Produce tests or proof surfaces first where feasible, implementation changes, implementation validation evidence, and a milestone handoff for workflow to record as `review-requested`.
 
 ## Resource map
 
@@ -220,8 +216,7 @@ For each milestone:
 7. Run the narrow tests again.
 8. Refactor only within milestone scope.
 9. Run milestone targeted validation commands before any optional broad smoke.
-10. Record implementation decisions, surprises, aligned-surface audit, and
-    validation results in implementation evidence.
+10. Record implementation decisions, surprises, aligned-surface audit, and validation results in implementation evidence.
 11. When implementation work for the milestone is complete, create an implementation handoff commit using the subject format `M<n>: <implemented milestone outcome>` and include milestone validation in the commit body or referenced evidence.
 12. Stop before the next milestone unless the user asked to continue.
 
@@ -229,8 +224,7 @@ Stopping before the next milestone does not cancel a required downstream workflo
 
 ## Handoff inspection budget
 
-When checking milestone readiness or handoff state, start with the owning
-`change.yaml`.
+When checking milestone readiness or handoff state, start with the owning `change.yaml`.
 
 Use this order:
 
@@ -244,20 +238,15 @@ For milestone readiness, do not run broad repository searches to infer milestone
 
 Avoid broad repository searches before checking change-local state.
 
-If `change.yaml` does not identify the current milestone or next stage, stop
-and report the missing state instead of writing it.
+If `change.yaml` does not identify the current milestone or next stage, stop and report the missing state instead of writing it.
 
 ## Milestone-aware handoff
 
 For milestone-based plans, `implement` works on one in-scope implementation milestone at a time.
 
-- Workflow transitions the current milestone from `planned` to `implementing`
-  before invoking implementation.
-- After implementation and targeted validation complete, record targeted
-  validation evidence, decisions, surprises, and follow-ups in implementation
-  evidence.
-- When no stop condition applies, report a review-requested handoff to
-  workflow; workflow updates the milestone and routes to `code-review`.
+- Workflow transitions the current milestone from `planned` to `implementing` before invoking implementation.
+- After implementation and targeted validation complete, record targeted validation evidence, decisions, surprises, and follow-ups in implementation evidence.
+- When no stop condition applies, report a review-requested handoff to workflow; workflow updates the milestone and routes to `code-review`.
 - Perform a state-sync check before claiming readiness for `code-review`.
 - Run the project artifact-lifecycle state-sync check before claiming readiness for `code-review`.
 - Implementation completion is handoff evidence, not milestone closeout. `implementation-complete` may appear as an evidence description, but it is not a milestone state.
@@ -315,10 +304,8 @@ Before Phase C can enter `explain-change` or `verify`, require final holistic co
 
 ## Evidence update requirements
 
-Record implementation decisions, discoveries, validation commands and
-results, and follow-ups in implementation evidence.
-Do not update the plan, upstream artifacts, artifact settlement, or workflow
-routing.
+Record implementation decisions, discoveries, validation commands and results, and follow-ups in implementation evidence.
+Do not update the plan, upstream artifacts, artifact settlement, or workflow routing.
 
 ## Stop conditions
 
@@ -389,8 +376,5 @@ Start with:
 - Milestone state: <review-requested | blocked>
 ```
 
-Then include the milestone implemented, tests or proof added first, validation
-results, blockers or spec gaps, and readiness for `code-review` or a clear
-blocked state.
-Do not imply review findings, final verification, final closeout readiness, or
-`branch-ready`.
+Then include the milestone implemented, tests or proof added first, validation results, blockers or spec gaps, and readiness for `code-review` or a clear blocked state.
+Do not imply review findings, final verification, final closeout readiness, or `branch-ready`.

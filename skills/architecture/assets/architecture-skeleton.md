@@ -61,8 +61,7 @@ Summarize and link relevant ADRs with one concise line per decision, or state th
 
 ## Quality Requirements
 
-<!--
-Quality scenarios use stimulus / environment / response / measure.
+<!-- Quality scenarios use stimulus / environment / response / measure.
 Example:
 
 | Quality | Scenario | Measure |
