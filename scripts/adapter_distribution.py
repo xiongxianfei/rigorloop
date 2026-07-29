@@ -3,9 +3,10 @@
 
 from __future__ import annotations
 
+import hashlib
+import html
 import importlib.util
 import json
-import hashlib
 import re
 import shutil
 import subprocess
@@ -376,7 +377,9 @@ def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
 def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     """Recognize the exact workflow invocation-equivalence contract."""
 
-    plain_text = re.sub(r"</?code>", "", text, flags=re.IGNORECASE).replace("`", "")
+    plain_text = html.unescape(
+        re.sub(r"</?code>", "", text, flags=re.IGNORECASE)
+    ).replace("`", "")
     normalized = re.sub(r"\s+", " ", plain_text)
     expected = (
         "Adapter invocation equivalents preserve the same arguments: Codex uses "
@@ -400,17 +403,7 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
         return False
     if re.search(r"(?<![\w.])/workflow\b", remaining, flags=re.IGNORECASE):
         return False
-    if re.search(
-        r"\bClaude\b[^.]*\b(?:uses|run|invokes)\b",
-        remaining,
-        flags=re.IGNORECASE,
-    ):
-        return False
-    if re.search(
-        r"\bOpenCode\b[^.]*\b(?:uses|run|invokes)\b",
-        remaining,
-        flags=re.IGNORECASE,
-    ):
+    if re.search(r"\b(?:Codex|Claude|OpenCode)\b", remaining, flags=re.IGNORECASE):
         return False
     return True
 
