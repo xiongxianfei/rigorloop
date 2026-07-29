@@ -29,6 +29,7 @@ Review closeout: code-review-m3-r1
 Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r3
+Review closeout: code-review-m4-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -37,10 +38,10 @@ Review closeout: code-review-m4-r3
   `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`,
   `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`,
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
-  `code-review-m4-r2`, `code-review-m4-r3`
+  `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`
 - Findings resolved: 32
-- Unresolved findings: 0
-- Current result: M4 code-review R3 findings are resolved and await independent R4 confirmation.
+- Unresolved findings: 2
+- Current result: M4 code-review R4 found incomplete additive invocation closure and CLI preflight ordering.
 
 ## Resolution Overview
 
@@ -78,6 +79,8 @@ Review closeout: code-review-m4-r3
 | CR-M4-R2-002 | accepted | resolved | Workflow and every requested governed resource are required in all supported adapters. |
 | CR-M4-R3-001 | accepted | resolved | Exact workflow identity and shared argument semantics govern cross-adapter invocation equivalence. |
 | CR-M4-R3-002 | accepted | resolved | Unknown, noncanonical, and duplicate explicit mapped-skill selections fail closed. |
+| CR-M4-R4-001 | accepted | open | Reject every contradictory adapter invocation occurrence. |
+| CR-M4-R4-002 | accepted | open | Preflight explicit skill names before archive validation. |
 
 ## Finding Details
 
@@ -220,6 +223,32 @@ Chosen action: Reject unresolved and duplicate explicit mapped-skill selections 
 Rationale: A completeness command must fail closed on every requested identity.
 Validation target: code-review-m4-r4
 Validation evidence: Mixed valid/unknown, noncanonical case, duplicate selection, and the real CLI fail before install success; 141 adapter tests, the ten-skill clean-install command, and 11-check broad smoke pass.
+
+### code-review-m4-r4
+
+#### CR-M4-R4-001 - Additive invocation forms evade closure
+
+Finding ID: CR-M4-R4-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Parse all adapter invocation occurrences and reject unapproved identity, operation, argument, or case.
+Rationale: A valid block cannot neutralize a contradictory invocation elsewhere.
+Validation target: code-review-m4-r5
+Validation evidence: pending
+
+#### CR-M4-R4-002 - Explicit-name preflight runs too late
+
+Finding ID: CR-M4-R4-002
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Share a selection-preflight helper and call it before archive validation.
+Rationale: Archive state must not mask invalid requested identities.
+Validation target: code-review-m4-r5
+Validation evidence: pending
 
 ### code-review-m1-r1
 
