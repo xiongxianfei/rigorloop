@@ -53,6 +53,125 @@ class MappedResourceIdentity:
     sha256: str
 
 
+@dataclass(frozen=True)
+class BoundaryLoadingMeasurement:
+    skill_name: str
+    mapped_resource_ids: tuple[str, ...]
+    initial_resource_ids: tuple[str, ...]
+    permitted_expansion_ids: tuple[str, ...]
+    mapped_resource_count: int
+    initial_resource_count: int
+    expanded_resource_count: int
+    mapped_resource_bytes: int
+    initial_resource_bytes: int
+    expanded_resource_bytes: int
+
+
+def measure_boundary_loading_profiles(
+    repo_root: Path,
+    fixture_path: Path,
+) -> dict[str, BoundaryLoadingMeasurement]:
+    """Validate and measure the closed representative boundary loading profiles."""
+
+    try:
+        document = json.loads(fixture_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise ValueError("loading profile fixture must be readable JSON-compatible YAML") from error
+    if not isinstance(document, dict) or set(document) != {
+        "schema_version",
+        "profiles",
+    }:
+        raise ValueError("loading profile fixture must use the closed top-level shape")
+    if document["schema_version"] != 1:
+        raise ValueError("loading profile schema version is not supported")
+    if not isinstance(document["profiles"], list):
+        raise ValueError("loading profile profiles must be a list")
+
+    try:
+        manifest = load_resource_manifest(repo_root)
+    except ProjectionContractError as error:
+        raise ValueError(f"loading profile resource manifest is invalid: {error.code}") from error
+    resources = {resource.resource_id: resource for resource in manifest.resources}
+    expected_by_skill = {
+        skill_name: tuple(
+            resource.resource_id
+            for resource in manifest.resources
+            if skill_name in resource.consumers
+        )
+        for skill_name in sorted(BOUNDARY_FIRST_GOVERNED_SKILLS)
+    }
+    measurements: dict[str, BoundaryLoadingMeasurement] = {}
+    profile_fields = {
+        "skill",
+        "mapped_resource_ids",
+        "initial_resource_ids",
+        "permitted_expansion_ids",
+    }
+    for profile in document["profiles"]:
+        if not isinstance(profile, dict) or set(profile) != profile_fields:
+            raise ValueError("loading profile row must use the closed field set")
+        skill_name = profile["skill"]
+        if (
+            not isinstance(skill_name, str)
+            or skill_name not in BOUNDARY_FIRST_GOVERNED_SKILLS
+        ):
+            raise ValueError("loading profile skill is not in the closed vocabulary")
+        if skill_name in measurements:
+            raise ValueError("loading profile skill must appear exactly once")
+
+        lists: dict[str, tuple[str, ...]] = {}
+        for field in (
+            "mapped_resource_ids",
+            "initial_resource_ids",
+            "permitted_expansion_ids",
+        ):
+            value = profile[field]
+            if (
+                not isinstance(value, list)
+                or any(not isinstance(item, str) for item in value)
+                or len(value) != len(set(value))
+            ):
+                raise ValueError(f"loading profile {field} must be a unique string list")
+            unknown = set(value) - set(resources)
+            if unknown:
+                raise ValueError(
+                    f"loading profile {field} contains an unknown resource"
+                )
+            lists[field] = tuple(value)
+
+        mapped = lists["mapped_resource_ids"]
+        initial = lists["initial_resource_ids"]
+        expansion = lists["permitted_expansion_ids"]
+        if mapped != expected_by_skill[skill_name]:
+            raise ValueError("loading profile mapped resources do not match the manifest")
+        if set(initial) & set(expansion) or set(initial) | set(expansion) != set(mapped):
+            raise ValueError(
+                "loading profile initial and expansion resources must partition mapped resources"
+            )
+
+        byte_counts = {
+            resource_id: (repo_root / resources[resource_id].source).stat().st_size
+            for resource_id in mapped
+        }
+        expanded = tuple(resource_id for resource_id in mapped)
+        measurements[skill_name] = BoundaryLoadingMeasurement(
+            skill_name=skill_name,
+            mapped_resource_ids=mapped,
+            initial_resource_ids=initial,
+            permitted_expansion_ids=expansion,
+            mapped_resource_count=len(mapped),
+            initial_resource_count=len(initial),
+            expanded_resource_count=len(expanded),
+            mapped_resource_bytes=sum(byte_counts.values()),
+            initial_resource_bytes=sum(byte_counts[item] for item in initial),
+            expanded_resource_bytes=sum(byte_counts[item] for item in expanded),
+        )
+
+    if set(measurements) != set(BOUNDARY_FIRST_GOVERNED_SKILLS):
+        raise ValueError("loading profile fixture must cover every governed skill")
+    return measurements
+
+
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD)\b")
 READABILITY_SCHEMA_VERSION = "skill-readability-v1"
 READABILITY_STAGE_VALUES = {

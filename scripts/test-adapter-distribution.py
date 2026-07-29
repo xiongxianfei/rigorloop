@@ -51,7 +51,10 @@ from adapter_distribution import (  # noqa: E402
     validate_clean_install_smoke,
     validate_release_output,
 )
-from boundary_first_reference import GOVERNED_SKILLS, PROJECTED_REFERENCE  # noqa: E402
+from boundary_first_reference import (  # noqa: E402
+    GOVERNED_SKILLS,
+    load_resource_manifest,
+)
 
 
 def load_validate_release_module():
@@ -1066,7 +1069,7 @@ release_gate:
                 errors,
             )
 
-    def test_boundary_first_archives_and_clean_installs_preserve_reference(self) -> None:
+    def test_boundary_first_archives_and_clean_installs_preserve_all_resources(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "release-output"
             version = "v0.3.6"
@@ -1080,14 +1083,12 @@ release_gate:
                     skills_root=ROOT / "skills",
                 ),
             )
-            canonical = (
-                ROOT / "specs" / "references" / "boundary-first-method-v1.md"
-            ).read_bytes()
+            manifest = load_resource_manifest(ROOT)
             reports = {
                 report.name: report
                 for report in collect_skill_reports(ROOT / "skills")
             }
-            seen: set[tuple[str, str]] = set()
+            seen: set[tuple[str, str, str]] = set()
             for adapter_name in SUPPORTED_ADAPTERS:
                 config = ADAPTERS[adapter_name]
                 archive_path = output_dir / adapter_archive_name(adapter_name, version)
@@ -1096,18 +1097,28 @@ release_gate:
                         if adapter_name not in reports[skill_name].included_adapters:
                             continue
                         skill_entry = config.skill_path(skill_name).as_posix()
-                        reference_entry = (
-                            config.skill_root
-                            / skill_name
-                            / PROJECTED_REFERENCE
-                        ).as_posix()
                         self.assertTrue(archive.read(skill_entry))
-                        self.assertEqual(archive.read(reference_entry), canonical)
-                        seen.add((adapter_name, skill_name))
+                        for resource in manifest.resources:
+                            if skill_name not in resource.consumers:
+                                continue
+                            reference_entry = (
+                                config.skill_root
+                                / skill_name
+                                / resource.target
+                            ).as_posix()
+                            self.assertEqual(
+                                archive.read(reference_entry),
+                                (ROOT / resource.source).read_bytes(),
+                            )
+                            seen.add(
+                                (adapter_name, skill_name, resource.resource_id)
+                            )
             expected = {
-                (adapter_name, skill_name)
+                (adapter_name, skill_name, resource.resource_id)
                 for skill_name in GOVERNED_SKILLS
                 for adapter_name in reports[skill_name].included_adapters
+                for resource in manifest.resources
+                if skill_name in resource.consumers
             }
             self.assertEqual(seen, expected)
 
@@ -1122,43 +1133,49 @@ release_gate:
             )
 
     def test_boundary_first_archive_drift_reports_exact_layer_and_hashes(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            output_dir = Path(tmp) / "release-output"
-            version = "v0.3.6"
-            build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
-            archive_path = output_dir / adapter_archive_name("codex", version)
-            entry_name = (
-                ADAPTERS["codex"].skill_root
-                / "workflow"
-                / PROJECTED_REFERENCE
-            ).as_posix()
-            with zipfile.ZipFile(archive_path) as archive:
-                entries = {
-                    name: archive.read(name)
-                    for name in archive.namelist()
-                    if not name.endswith("/")
-                }
-            entries[entry_name] = b"stale boundary reference\n"
-            with zipfile.ZipFile(archive_path, "w") as archive:
-                for name, content in sorted(entries.items()):
-                    archive.writestr(name, content)
+        cases = (
+            ("workflow", "references/boundary-first-method-v1.md"),
+            ("spec", "references/boundary-first-feature-authoring-v1.md"),
+            ("test-spec", "references/boundary-first-proof-v1.md"),
+        )
+        for skill_name, relative_resource in cases:
+            with self.subTest(layer=relative_resource), tempfile.TemporaryDirectory() as tmp:
+                output_dir = Path(tmp) / "release-output"
+                version = "v0.3.6"
+                build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
+                archive_path = output_dir / adapter_archive_name("codex", version)
+                entry_name = (
+                    ADAPTERS["codex"].skill_root
+                    / skill_name
+                    / relative_resource
+                ).as_posix()
+                with zipfile.ZipFile(archive_path) as archive:
+                    entries = {
+                        name: archive.read(name)
+                        for name in archive.namelist()
+                        if not name.endswith("/")
+                    }
+                entries[entry_name] = b"stale boundary reference\n"
+                with zipfile.ZipFile(archive_path, "w") as archive:
+                    for name, content in sorted(entries.items()):
+                        archive.writestr(name, content)
 
-            errors = validate_adapter_archives(
-                version,
-                output_dir,
-                skills_root=ROOT / "skills",
-            )
+                errors = validate_adapter_archives(
+                    version,
+                    output_dir,
+                    skills_root=ROOT / "skills",
+                )
 
-            self.assertTrue(
-                any(
-                    "mapped resource parity mismatch: codex/workflow: "
-                    "references/boundary-first-method-v1.md" in error
-                    and "canonical sha256=" in error
-                    and "archive sha256=" in error
-                    for error in errors
-                ),
-                errors,
-            )
+                self.assertTrue(
+                    any(
+                        f"mapped resource parity mismatch: codex/{skill_name}: "
+                        f"{relative_resource}" in error
+                        and "canonical sha256=" in error
+                        and "archive sha256=" in error
+                        for error in errors
+                    ),
+                    errors,
+                )
 
     def test_validate_adapter_output_rejects_missing_mapped_resource(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
