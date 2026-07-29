@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -13,15 +13,15 @@ Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
+Review pending closeout: code-review-m1-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
   `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`,
-  `test-spec-review-r1`, `test-spec-review-r2`
+  `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`
 - Findings resolved: 5
-- Unresolved findings: 0
-- Current result: Test-spec-review R2 approves the revised proof map and
-  allows the isolated M1 implementation handoff.
+- Unresolved findings: 4
+- Current result: M1 code-review R1 requests four in-scope corrections before rereview.
 
 ## Resolution Overview
 
@@ -32,8 +32,62 @@ Review closeout: test-spec-review-r2
 | PBS-AR1 | accepted | resolved | ADR-20260729 defines the exact closed projection-manifest schema and the canonical package identifies it as the sole resource matrix. |
 | PBS-AR2 | accepted | resolved | The architecture separates tracked activation state and rollback from derived package, archive, and clean-install proof. |
 | PBS-TSR1 | accepted | resolved | M2 directly proves its compatibility-guidance state matrix and includes every plan-required M2 command; M4 retains composed activation and rollback proof. |
+| CR-M1-R1-001 | accepted | open | Close exact resource tuples and canonical resource versions before projection. |
+| CR-M1-R1-002 | accepted | open | Restore the four-question compact scan to the compact core. |
+| CR-M1-R1-003 | accepted | open | Restore prior target state after a handled projection write failure. |
+| CR-M1-R1-004 | accepted | open | Preserve structured manifest failure identity through activation validation. |
 
 ## Finding Details
+
+### code-review-m1-r1
+
+#### CR-M1-R1-001 - Exact resource authority is not closed
+
+Finding ID: CR-M1-R1-001
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution
+Chosen action: Validate the manifest against one immutable exact resource contract and validate every canonical resource version before projection.
+Rationale: Generic containment and known-consumer membership do not prove the ADR-exact ownership matrix.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### CR-M1-R1-002 - Compact core omits the compact scan
+
+Finding ID: CR-M1-R1-002
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution
+Chosen action: Add the exact PBS-R007 questions to the compact core, reproject, and refresh identities.
+Rationale: PBS-R012 assigns compact scan semantics to the compact resource independently of M2 stage-local invocation.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### CR-M1-R1-003 - Interrupted writes leave a mixed tree
+
+Finding ID: CR-M1-R1-003
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution
+Chosen action: Snapshot target state after preflight, restore on handled write failure, and prove early, middle, final, and retry paths.
+Rationale: T2 requires an interrupted-write proof, while current code proves only invalid-input preflight.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### CR-M1-R1-004 - Activation diagnostics erase manifest failure identity
+
+Finding ID: CR-M1-R1-004
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution
+Chosen action: Use structured projection errors and retain source check, path, expectation, and reason through activation validation.
+Rationale: PBS-R037 requires the actual affected resource and blocking reason.
+Validation target: code-review-m1-r2
+Validation evidence: pending
 
 ### proposal-review-r1
 
@@ -196,5 +250,5 @@ Evidence: reviews/test-spec-review-r2.md
 - [x] Every rejected finding has rationale.
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
-- [x] Validation evidence is recorded for all accepted findings.
+- [ ] Validation evidence is recorded for all accepted findings.
 - [x] Closeout status is correct.
