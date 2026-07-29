@@ -1,7 +1,7 @@
-<!-- Template: plan-skeleton-v2 -->
+<!-- Template: plan-skeleton-v3 -->
 <!-- Skill: plan -->
 <!-- Template status: normative -->
-<!-- Structural-fingerprint: sha256:04420a4b6c9d726f89f3e7ebc923a88126aacca535a3c45dbfc81e6f69f7d776 -->
+<!-- Structural-fingerprint: sha256:0470fc97e393450e93f5fde427bce22a6627f7f5d0f19679e290ab4c9de06712 -->
 <!-- Maintained alongside: skills/plan/SKILL.md -->
 <!-- Readability contract: use semantic source lines; keep stable IDs and tables for repeated proof or mapping structures. -->
 
@@ -11,10 +11,9 @@
 
 ## Current Handoff Summary
 
-<copy assets/current-handoff-summary.md without duplicating its heading>
+- Owning change record: <docs/changes/change-id/change.yaml>
 
-Mutable lifecycle state, current milestone state, review status, blockers,
-routing, and closeout readiness live only in this record.
+Mutable lifecycle state, current milestone state, review status, blockers, routing, and closeout readiness live only in this record.
 
 ## Source artifacts
 

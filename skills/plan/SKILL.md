@@ -36,15 +36,12 @@ Do not require RigorLoop repository-internal specs, docs, reports, follow-up fil
 
 - READ `references/boundary-first-method-v1.md` when planning implementation for an approved feature spec that declares `boundary_contract: boundary-first-v1`.
 - COPY `assets/plan-skeleton.md` when creating a new plan or replacing the full plan structure.
-  Fill: sections and placeholders.
+  Fill: sections, placeholders, and the stable owning change-record pointer.
   Sections: Purpose / big picture; Current Handoff Summary; Source artifacts; Context and orientation; Non-goals; Requirements covered; Milestones; Validation plan; Risks and recovery; Dependencies; Decision log; Readiness.
   Do not emit unfilled placeholders.
 - COPY `assets/milestone.md` when adding each reviewable implementation milestone.
   Fill: ID, state, goal, requirements, files, tests, steps, validation, result, risks, rollback.
   Do not emit unfilled placeholders.
-- COPY `assets/current-handoff-summary.md` to record only the stable pointer from a plan to its owning change record.
-  Fill: owning change-record path.
-  Do not add mutable workflow fields or emit unfilled placeholders.
 - COPY `assets/decision-log-row.md` when recording a material planning or sequencing decision.
   Fill: date, decision, reason, and rejected alternatives.
   Do not emit unfilled placeholders.
