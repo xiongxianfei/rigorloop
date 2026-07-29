@@ -4322,6 +4322,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
         ]
         for skill_name in FORMAL_REVIEW_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            normalized_body = " ".join(body.split())
             material_asset = ""
             if skill_name == "spec-review":
                 material_asset = (
@@ -4332,7 +4333,7 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                     if skill_name == "spec-review" and term in asset_owned_material_terms:
                         self.assertIn(f"- {term}:", material_asset)
                     else:
-                        self.assertIn(term, body)
+                        self.assertIn(" ".join(term.split()), normalized_body)
             for term in skill_forbidden_terms:
                 with self.subTest(skill=skill_name, forbidden_term=term):
                     self.assertNotIn(term, body)

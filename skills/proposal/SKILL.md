@@ -23,17 +23,9 @@ You turn exploration into a reviewable direction. A proposal answers why this ch
 ## Change-record authoring transition
 
 For a governed change, read the complete `change.yaml` before writing.
-Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing
-marker to `workflow` for creation or migration instead of inventing state.
-Resolve exactly one proposal entry by artifact ID, `kind`, and normalized
-`path`; for a new proposal, create only that entry with a unique stable ID,
-`kind: proposal`, normalized path, and explicit role. Before creating or
-substantively revising the proposal, set only that entry to `authoring`, remove
-any prior `review`, and set
-`authoring_evidence` to the proposal-authoring record path. After the proposal
-and authoring record are complete, set the same entry to `review-required`.
-Preserve every other entry and `workflow_state`. Stop on an ambiguous entry,
-illegal transition, or failed available change-metadata validation.
+Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing marker to `workflow` for creation or migration instead of inventing state.
+Resolve exactly one proposal entry by artifact ID, `kind`, and normalized `path`; for a new proposal, create only that entry with a unique stable ID, `kind: proposal`, normalized path, and explicit role. Before creating or substantively revising the proposal, set only that entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to the proposal-authoring record path. After the proposal and authoring record are complete, set the same entry to `review-required`.
+Preserve every other entry and `workflow_state`. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
 
 ## Project-local evidence
 
@@ -93,8 +85,7 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 ## Resource map
 
 - COPY `assets/proposal-skeleton.md` when creating a new proposal artifact.
-  Fill: required proposal sections, plus `Initial intent preservation` and
-  `Scope budget` when this skill's trigger rules apply.
+  Fill: required proposal sections, plus `Initial intent preservation` and `Scope budget` when this skill's trigger rules apply.
   Do not emit unfilled placeholders.
 
 ## Generated Markdown readability
@@ -136,8 +127,7 @@ If `Follow-on artifacts` appears before real follow-ons exist, write `None yet`.
 
 Include `Vision fit` in new or substantively revised proposals after the vision spec is adopted.
 
-Legacy proposals that predate the vision contract do not require retroactive
-edits unless they are substantively revised.
+Legacy proposals that predate the vision contract do not require retroactive edits unless they are substantively revised.
 
 Closed enum: Vision fit
 
@@ -157,8 +147,7 @@ If root `VISION.md` exists, choose one of the current-vision outcomes and do not
 Retired root `vision.md` must not prevent `no vision exists yet` when root `VISION.md` is absent.
 
 A short explanatory paragraph may follow the Vision fit value.
-A proposal must not silently redefine project vision outside the `Vision fit`
-section and normal proposal rationale.
+A proposal must not silently redefine project vision outside the `Vision fit` section and normal proposal rationale.
 
 ## Standing artifact gates
 
@@ -297,6 +286,4 @@ Do not emit unfilled placeholders.
 
 ## Expected output
 
-Use `assets/proposal-skeleton.md` to include the proposal path, recommendation,
-rationale, risks, open questions, and readiness for `proposal-review` or blocker
-state.
+Use `assets/proposal-skeleton.md` to include the proposal path, recommendation, rationale, risks, open questions, and readiness for `proposal-review` or blocker state.

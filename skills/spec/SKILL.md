@@ -38,29 +38,20 @@ A concrete execution plan is not required before writing the spec. In this workf
 
 ## Upstream settlement check
 
-Before relying on a proposal, read its matching `change.yaml` artifact entry
-and formal review evidence.
-Require an `accepted` settlement, no later contradictory review, no open
-findings, and closed review resolution when required.
+Before relying on a proposal, read its matching `change.yaml` artifact entry and formal review evidence.
+Require an `accepted` settlement, no later contradictory review, no open findings, and closed review resolution when required.
 
 Treat the proposal and its lifecycle state as read-only.
 Do not normalize status in the proposal or settle its change-local entry.
-If settlement is missing or contradictory, record the blocker and route to
-`proposal-review`.
+If settlement is missing or contradictory, record the blocker and route to `proposal-review`.
 
 ## Change-record authoring transition
 
 For a governed change, read the complete `change.yaml` before writing.
-Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing
-marker to `workflow` for creation or migration instead of inventing state.
+Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing marker to `workflow` for creation or migration instead of inventing state.
 Resolve exactly one spec entry by artifact ID, `kind`, and normalized `path`.
-For a new spec, create only that entry with a unique stable ID, `kind: spec`,
-normalized path, and explicit role. Before creating or substantively revising
-the spec, set only that entry to `authoring`, remove any prior `review`, and
-set `authoring_evidence` to the spec-authoring record path. After the spec and
-authoring record are complete, set the same entry to `review-required`.
-Preserve every other entry and `workflow_state`. Stop on an ambiguous entry,
-illegal transition, or failed available change-metadata validation.
+For a new spec, create only that entry with a unique stable ID, `kind: spec`, normalized path, and explicit role. Before creating or substantively revising the spec, set only that entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to the spec-authoring record path. After the spec and authoring record are complete, set the same entry to `review-required`.
+Preserve every other entry and `workflow_state`. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
 
 ## Output path
 

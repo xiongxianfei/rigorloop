@@ -18,8 +18,7 @@ Use this skill to: route, resume, or audit the standard workflow without replaci
 Read first:
 
 - the user request and invocation context;
-- `docs/changes/<change-id>/change.yaml` for current lifecycle, milestone,
-  routing, and blocker state;
+- `docs/changes/<change-id>/change.yaml` for current lifecycle, milestone, routing, and blocker state;
 - stable upstream artifacts and the active plan when one exists;
 - the specific needed section first; use broader-section or full-file reading only when bounded evidence is insufficient.
 
@@ -74,11 +73,8 @@ Produce a routing decision, current stage assessment, blockers or assumptions, a
 ## Resource map
 
 - READ `references/boundary-first-method-v1.md` when routing a change that declares `boundary_contract: boundary-first-v1` or depends on an approved boundary or proof record.
-- COPY `assets/workflows-skeleton.md` when creating a new project-local
-  `docs/workflows.md` or fully rewriting a stale workflow guide.
-  Fill metadata, source rank, lifecycle graph, stage obligations, artifact
-  registry, artifact-location table, review placement, plan surfaces,
-  customization rules, migration notes, and validation notes.
+- COPY `assets/workflows-skeleton.md` when creating a new project-local `docs/workflows.md` or fully rewriting a stale workflow guide.
+  Fill metadata, source rank, lifecycle graph, stage obligations, artifact registry, artifact-location table, review placement, plan surfaces, customization rules, migration notes, and validation notes.
   Do not emit unfilled placeholders.
 
 ## Boundary-first method
@@ -119,8 +115,7 @@ Do not claim:
 4. **Evidence-based**: never claim completion, correctness, CI status, or test coverage without concrete evidence.
 5. **Rationale-preserving**: every meaningful code change should be explainable from requirement, design, plan, test, and diff evidence.
 6. **Small-batch**: prefer one reviewable milestone or PR at a time.
-7. **Stable artifacts**: route contract or plan changes back to their owning
-   authoring and review peers; do not use downstream execution as write-back.
+7. **Stable artifacts**: route contract or plan changes back to their owning authoring and review peers; do not use downstream execution as write-back.
 
 ## Workflow Categories
 
@@ -142,31 +137,16 @@ The stable stage-obligation values are `mandatory`, `conditional`, `on-demand`, 
 
 ## Planned initiative state
 
-For planned work, `change.yaml` is the sole owner of the current milestone,
-milestone state, review state, remaining milestones, blockers, next stage, and
-final-closeout readiness.
-The plan body contains stable execution intent and `docs/plan.md` contains
-stable navigation.
+For planned work, `change.yaml` is the sole owner of the current milestone, milestone state, review state, remaining milestones, blockers, next stage, and final-closeout readiness.
+The plan body contains stable execution intent and `docs/plan.md` contains stable navigation.
 
 Authoring stages write their own artifacts and authoring transitions.
 Review peers write review evidence and the matching artifact settlement only.
 Implementation and evidence stages write their scoped outputs only.
-Workflow consumes settled evidence and owns routing and planned-work
-transitions.
+Workflow consumes settled evidence and owns routing and planned-work transitions.
 No stage may update an upstream artifact as workflow bookkeeping.
 
-Before mutating a governed record, read the complete `change.yaml` and require
-`lifecycle_contract: stage-owned-change-local-v1`. Create that marker for a
-new governed change or migrate resumed nonterminal historical work before its
-first mutation; never mutate a historical read. Derive routing only from
-current artifact settlement and stage-owned evidence. Update only
-`workflow_state`, the selected `workflow.automation` target state, and
-workflow-owned transition evidence; preserve `artifact_states` and all
-stage-owned evidence. Keep `workflow_state` to lifecycle state, current and
-next stage, blocker, evidence pointers, and `planned_work` only when a primary
-plan exists. Stop on stale or contradictory evidence, an illegal transition,
-or failed available change-metadata validation instead of repairing another
-stage's state.
+Before mutating a governed record, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Create that marker for a new governed change or migrate resumed nonterminal historical work before its first mutation; never mutate a historical read. Derive routing only from current artifact settlement and stage-owned evidence. Update only `workflow_state`, the selected `workflow.automation` target state, and workflow-owned transition evidence; preserve `artifact_states` and all stage-owned evidence. Keep `workflow_state` to lifecycle state, current and next stage, blocker, evidence pointers, and `planned_work` only when a primary plan exists. Stop on stale or contradictory evidence, an illegal transition, or failed available change-metadata validation instead of repairing another stage's state.
 
 ## Project workflow guide
 
@@ -193,9 +173,7 @@ For ordinary routing where the guide is current, reference the guide rather than
 
 When changing the workflow guide, record the update reason in a tracked artifact or review-visible surface: affected artifact types, old path or placement representation, new path or placement representation, whether migration is needed, affected skills, and validation run.
 
-For path or state lookup, start from the change record, stable artifact
-metadata, `docs/workflows.md`, default paths, and targeted headings before
-broader searches.
+For path or state lookup, start from the change record, stable artifact metadata, `docs/workflows.md`, default paths, and targeted headings before broader searches.
 
 The workflow skill must not author proposals, specs, plans, reviews, ADRs, or exact schemas solely because it owns the artifact-location map. Route users to the owning stage skill for artifact content.
 
@@ -207,21 +185,17 @@ Unknown artifact types are blockers. If the workflow guide is present but silent
 
 Route future work to the artifact that can act on it.
 
-Use change artifacts, the stable plan, review-resolution, release report,
-learn session, proposal, or `docs/follow-ups.md` according to
-`docs/workflows.md`.
+Use change artifacts, the stable plan, review-resolution, release report, learn session, proposal, or `docs/follow-ups.md` according to `docs/workflows.md`.
 
 Do not put deferred execution work in `project-map`.
 
 ## Lifecycle-managed artifacts
 
-Top-level proposals, specs, test specs, architecture docs, ADRs, and plans do
-not own mutable workflow status.
+Top-level proposals, specs, test specs, architecture docs, ADRs, and plans do not own mutable workflow status.
 Their matching entries in `change.yaml` own authoring and review settlement.
 
 Keep planned next steps separate from terminal closeout.
-`verify` blocks on mutable state embedded in governed artifacts, stale
-change-local settlement, or inconsistent lifecycle evidence.
+`verify` blocks on mutable state embedded in governed artifacts, stale change-local settlement, or inconsistent lifecycle evidence.
 
 ## Standard workflow and manual skill invocation
 
@@ -322,42 +296,25 @@ Classify the request into one of these contexts before deciding whether to conti
 
 Rules:
 
-- Workflow-managed automation uses one target-driven
-  `bounded-review-fix` mechanism under `workflow.automation`.
-- For every new governed change, create
-  `lifecycle_contract: stage-owned-change-local-v1` in the change-local
-  record without requiring another parameter.
-  Before the first mutation of resumed nonterminal historical work, migrate
-  that record once; read-only historical inspection never creates the marker.
+- Workflow-managed automation uses one target-driven `bounded-review-fix` mechanism under `workflow.automation`.
+- For every new governed change, create `lifecycle_contract: stage-owned-change-local-v1` in the change-local record without requiring another parameter.
+  Before the first mutation of resumed nonterminal historical work, migrate that record once; read-only historical inspection never creates the marker.
 - `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
 - `$workflow auto: status` is read-only.
-  `$workflow auto: off` durably cancels the unified run and preserves
-  transition evidence.
+  `$workflow auto: off` durably cancels the unified run and preserves transition evidence.
 - The requested target is the complete automation boundary.
-  Do not add a second authorization, capability, activation selector, or
-  inferred continuation parameter.
+  Do not add a second authorization, capability, activation selector, or inferred continuation parameter.
 - Authoring routes through `proposal-review -> spec -> spec-review -> recorded architecture assessment -> architecture/architecture-review when required -> plan -> plan-review -> test-spec -> test-spec-review`.
 - Architecture assessment records exactly one of `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; ambiguity pauses the unified run.
-- Stop the unified run on non-clean review status that cannot enter a bounded
-  correction, a material finding requiring a decision, open
-  `needs-decision`, user pause or cancellation, contradictory workflow state,
-  unreliable partial completion, exhausted transition budget, or an
-  out-of-scope stage request.
+- Stop the unified run on non-clean review status that cannot enter a bounded correction, a material finding requiring a decision, open `needs-decision`, user pause or cancellation, contradictory workflow state, unreliable partial completion, exhausted transition budget, or an out-of-scope stage request.
 - Resume uses tracked artifact and review evidence. Do not rerun completed artifacts or clean reviews, do not infer completion from file existence alone, and pause when completion evidence is ambiguous.
 - Reaching a target stops the run at that exact stage occurrence. Repeated `implement` and `code-review` targets bind the unique current plan milestone before persistence and never silently rebind on resume.
 - Direct review invocations do not activate, resume, or advance automation, even when persisted unified state exists.
 - After approved recorded `spec-review`, record exactly one architecture assessment: `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`. Required routes through architecture stages; not-required skips them; ambiguous pauses for owner decision.
 - If the user requested a skipped conditional target, stop with `target-not-applicable` rather than claiming the target was reached.
-- A target that reaches implementation may run ordered milestone
-  implementation, independent milestone review, reviewer-declared correction
-  loops, triggered CI maintenance, and final holistic review only when those
-  stages occur at or before the selected target.
-- Missing promotion evidence, unrelated dirty state, owner decisions, new
-  findings, non-shrinking correction loops, verify failure, or any attempt to
-  cross the PR boundary pauses the unified run.
-- Every result reports the target, canonical position source, stage outcome,
-  review and clean-gate state when applicable, transitions, fixes, decisions,
-  artifacts, stop reason, and next action.
+- A target that reaches implementation may run ordered milestone implementation, independent milestone review, reviewer-declared correction loops, triggered CI maintenance, and final holistic review only when those stages occur at or before the selected target.
+- Missing promotion evidence, unrelated dirty state, owner decisions, new findings, non-shrinking correction loops, verify failure, or any attempt to cross the PR boundary pauses the unified run.
+- Every result reports the target, canonical position source, stage outcome, review and clean-gate state when applicable, transitions, fixes, decisions, artifacts, stop reason, and next action.
 - The mechanism never opens a PR, pushes, publishes, releases, deploys, merges, performs destructive Git operations, accesses credentials, or mutates an external system.
 - Autoprogressed `code-review` emits a first-pass review before any review-driven fix begins.
 - First-pass `blocked` and `inconclusive` stop instead of entering review-resolution.
