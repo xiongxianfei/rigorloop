@@ -1,0 +1,46 @@
+schema_version: 1
+review_id: code-review-m4-r1
+review_stage: code-review
+review_target: commit:72259213
+base_revision: 19d49e1e
+head_revision: 72259213
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-implementation
+reviewer_context_id: m4-r1-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [package-parity, fail-closed-validation, measurement-evidence]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:72259213.diff
+    revision: 72259213
+    sha256: f5ed5e4a91c2395b23cc90518259a154cb9dbad217e396d68bb7692cbcb7c1a8
+initial_packet_sha256: f5ed5e4a91c2395b23cc90518259a154cb9dbad217e396d68bb7692cbcb7c1a8
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r1-second-review}
+requirement_fidelity:
+  applicability: applicable
+  reason: M4 changes package parity validation and spec-derived loading evidence.
+risk_map:
+  affected_behavior: clean-install resource parity, loading-profile validation, and package-readiness evidence
+  highest_impact_failure_modes: accepting unowned installed resources, accepting malformed schema versions, or overstating candidate proof
+  changed_boundaries: canonical resources, generated output, archives, clean installs, measurement fixtures, lifecycle evidence
+  evidence_expected: exact inventory rejection, closed-schema mutations, and reproducible before-and-after identities
+  direct_inspection_areas: clean-install validator, loading-profile parser, M4 evidence
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [package-parity, closed-vocabulary, evidence-integrity]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Can an unowned boundary resource survive clean-install validation?
+    - Can a non-integer schema version compare equal to version 1?
+    - Does the evidence identify both the baseline and exact candidate?
