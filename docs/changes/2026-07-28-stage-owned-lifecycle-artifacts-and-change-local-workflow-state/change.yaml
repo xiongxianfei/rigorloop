@@ -73,14 +73,14 @@ artifact_states:
       round: r3
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: code-review
+  current_stage: final-holistic-code-review
+  next_stage: final-holistic-code-review
   blocker: null
   evidence:
     - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m5-parity-and-preactivation.md
   planned_work:
     plan_artifact_id: plan
-    current_milestone: M6
+    current_milestone: M7
     milestones:
       M1:
         kind: implementation
@@ -99,26 +99,24 @@ workflow_state:
         state: closed
       M6:
         kind: implementation
-        state: review-requested
+        state: closed
       M7:
         kind: lifecycle-closeout
         state: planned
-    remaining_implementation_milestones:
-      - M6
+    remaining_implementation_milestones: []
     latest_review:
-      status: review-requested
+      status: approved
       stage: code-review
-      round: r1
+      round: r2
       artifact_id: plan
       occurrence: milestone
       milestone_id: M6
       evidence:
-        - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m6-activation.md
+        - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/code-review-m6-r2.md
     final_closeout:
       readiness: not-ready
       reasons:
-        - implementation-milestones-open
-        - milestone-review-pending
+        - lifecycle-gates-open
         - explain-change-pending
         - verify-pending
         - pr-handoff-pending
@@ -346,7 +344,7 @@ workflow:
       completion:
         rule: fresh verification passes
     status: active
-    current_stage: code-review
+    current_stage: final-holistic-code-review
     stop_reason: null
     evidence:
       - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m5-parity-and-preactivation.md

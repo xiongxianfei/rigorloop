@@ -26,6 +26,8 @@ Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m4-r1
 Review closeout: code-review-m5-r1
+Review closeout: code-review-m6-r1
+Review closeout: code-review-m6-r2
 
 - Reviews covered: `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `plan-review-r1`, `plan-review-r2`, `architecture-review-r1`,
   `architecture-review-r2`,
@@ -602,3 +604,33 @@ Material findings: none
 Resolution required: no
 Validation evidence: canonical skill, generated build, adapter distribution,
 and broad-smoke gates passed.
+
+### code-review-m6-r1
+
+Review result: changes-requested
+Material findings: SLA-CR-M6-1
+Resolution required: yes
+
+#### SLA-CR-M6-1 - Activation wording lacked focused regression proof
+
+Finding ID: SLA-CR-M6-1
+Disposition: accepted
+Status: resolved
+Owner: implement
+Chosen action: Add exact workflow-skill assertions to the existing
+stage-owned skill-contract test class.
+Owning stage: implement
+Stop state: M6 may close after clean code-review R2.
+Rationale: the single activation source needs direct regression proof without
+creating another activation mechanism.
+Safe resolution path: focused published-skill test only.
+Validation target: M6 focused skill validation
+Validation evidence: `python scripts/test-skill-validator.py` passed 269
+tests with 17 explicitly superseded historical projections skipped.
+
+### code-review-m6-r2
+
+Review result: approved
+Material findings: none
+Resolution required: no
+Validation evidence: SLA-CR-M6-1 is resolved and focused validation passed.

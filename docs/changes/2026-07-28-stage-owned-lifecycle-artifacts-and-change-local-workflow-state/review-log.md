@@ -9,6 +9,32 @@ artifacts and change-local workflow-state proposal.
 
 ### Review entry
 
+Review ID: code-review-m6-r2
+Stage: code-review
+Round: M6 R2
+Reviewed artifact: M6 activation diff and focused regression test
+Status: approved
+Detailed record: reviews/code-review-m6-r2.md
+Resolution: review-resolution.md#code-review-m6-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m6-r1
+Stage: code-review
+Round: M6 R1
+Reviewed artifact: commit e3b421fa
+Status: changes-requested
+Detailed record: reviews/code-review-m6-r1.md
+Resolution: review-resolution.md#code-review-m6-r1
+Material findings: SLA-CR-M6-1
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m5-r1
 Stage: code-review
 Round: M5 R1

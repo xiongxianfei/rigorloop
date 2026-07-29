@@ -7721,6 +7721,20 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             with self.subTest(retired=retired):
                 self.assertNotIn(retired, body.lower())
 
+    def test_workflow_activates_stage_owned_contract_without_another_parameter(self) -> None:
+        body = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        for phrase in (
+            "For every new governed change, create",
+            "`lifecycle_contract: stage-owned-change-local-v1`",
+            "without requiring another parameter",
+            "Before the first mutation of resumed nonterminal historical work",
+            "read-only historical inspection never creates the marker",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, body)
+
 
 class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
     GOVERNED_SKILLS = {
