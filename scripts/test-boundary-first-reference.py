@@ -240,23 +240,33 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         self,
     ) -> None:
         variants = {
-            "missing-compact-consumer": MANIFEST_BYTES.replace(
-                b"      - verify\n", b"", 1
+            "missing-compact-consumer": (
+                MANIFEST_BYTES.replace(b"      - verify\n", b"", 1),
+                "compact-core",
             ),
-            "unowned-feature-consumer": MANIFEST_BYTES.replace(
-                b"      - spec-review\n  - id: proof",
-                b"      - spec-review\n      - plan\n  - id: proof",
+            "unowned-feature-consumer": (
+                MANIFEST_BYTES.replace(
+                    b"      - spec-review\n  - id: proof",
+                    b"      - spec-review\n      - plan\n  - id: proof",
+                ),
+                "feature-authoring",
             ),
-            "wrong-source": MANIFEST_BYTES.replace(
-                b"specs/references/boundary-first-proof-v1.md",
-                b"specs/references/alternate-proof-v1.md",
+            "wrong-source": (
+                MANIFEST_BYTES.replace(
+                    b"specs/references/boundary-first-proof-v1.md",
+                    b"specs/references/alternate-proof-v1.md",
+                ),
+                "proof",
             ),
-            "wrong-target": MANIFEST_BYTES.replace(
-                b"    target: references/boundary-first-proof-v1.md",
-                b"    target: references/alternate-proof-v1.md",
+            "wrong-target": (
+                MANIFEST_BYTES.replace(
+                    b"    target: references/boundary-first-proof-v1.md",
+                    b"    target: references/alternate-proof-v1.md",
+                ),
+                "proof",
             ),
         }
-        for name, raw in variants.items():
+        for name, (raw, expected_layer) in variants.items():
             with self.subTest(name=name):
                 _, root = self.make_repository()
                 if name == "wrong-source":
@@ -267,8 +277,9 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                 with self.assertRaisesRegex(
                     ProjectionContractError,
                     "BFR-MANIFEST-IDENTITY",
-                ):
+                ) as raised:
                     project_reference(root, mode="write")
+                self.assertIn(expected_layer, raised.exception.message)
 
     def test_projection_module_does_not_restate_the_resource_matrix(self) -> None:
         module = (
@@ -476,13 +487,15 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             calls = 0
             failed = False
 
-            def fail_once(path: Path, data: bytes) -> None:
+            def fail_once(
+                write_root: Path, path: Path, data: bytes
+            ) -> None:
                 nonlocal calls, failed
                 calls += 1
                 if calls == failure_index and not failed:
                     failed = True
                     raise OSError("injected write interruption")
-                _write_target_bytes(path, data)
+                _write_target_bytes(write_root, path, data)
 
             with self.subTest(failure_index=failure_index):
                 with patch(
@@ -529,12 +542,14 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
 
                 calls = 0
 
-                def interrupt(path: Path, data: bytes) -> None:
+                def interrupt(
+                    write_root: Path, path: Path, data: bytes
+                ) -> None:
                     nonlocal calls
                     calls += 1
                     if calls == 7:
                         raise KeyboardInterrupt
-                    _write_target_bytes(path, data)
+                    _write_target_bytes(write_root, path, data)
 
                 with patch(
                     "boundary_first_reference._write_target_bytes",
@@ -583,10 +598,12 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                     before_input = input_path.read_bytes()
                     calls = 0
 
-                    def mutate_input(path: Path, data: bytes) -> None:
+                    def mutate_input(
+                        write_root: Path, path: Path, data: bytes
+                    ) -> None:
                         nonlocal calls
                         calls += 1
-                        _write_target_bytes(path, data)
+                        _write_target_bytes(write_root, path, data)
                         if calls == mutation_index:
                             input_path.write_bytes(
                                 before_input + b"\n# concurrent mutation\n"
@@ -611,6 +628,60 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                     )
                     input_path.write_bytes(before_input)
                     self.assertTrue(project_reference(root, mode="write").ok)
+
+    def test_target_parent_swap_never_writes_outside_and_recovery_continues(
+        self,
+    ) -> None:
+        from boundary_first_reference import _write_target_bytes
+
+        _, root = self.make_repository()
+        project_reference(root, mode="write")
+        paths = projected_paths(root)
+        before = {
+            path: (root / path).read_bytes()
+            for path in paths
+        }
+        (root / CANONICAL_REFERENCE).write_bytes(
+            b"# revised compact\n\n"
+            b"Boundary model version: boundary-first-v1\n"
+        )
+        outside = self.make_outside_directory()
+        references = root / "skills/workflow/references"
+        displaced = root / "skills/workflow/references-displaced"
+        calls = 0
+
+        def swap_then_fail(
+            write_root: Path, relative: Path, data: bytes
+        ) -> None:
+            nonlocal calls
+            calls += 1
+            if calls == 7:
+                references.rename(displaced)
+                references.symlink_to(outside, target_is_directory=True)
+                raise OSError("injected topology drift")
+            _write_target_bytes(write_root, relative, data)
+
+        with patch(
+            "boundary_first_reference._write_target_bytes",
+            side_effect=swap_then_fail,
+        ):
+            with self.assertRaisesRegex(
+                ProjectionContractError,
+                "BFR-PROJECTION-RESTORE",
+            ):
+                project_reference(root, mode="write")
+
+        self.assertFalse(
+            (outside / "boundary-first-method-v1.md").exists()
+        )
+        for relative in paths:
+            if relative.parts[:3] == (
+                "skills",
+                "workflow",
+                "references",
+            ):
+                continue
+            self.assertEqual((root / relative).read_bytes(), before[relative])
 
     def test_missing_manifest_cli_diagnostic_preserves_identity(self) -> None:
         _, root = self.make_repository()

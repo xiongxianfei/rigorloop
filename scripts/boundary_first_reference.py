@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import hashlib
+import os
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Mapping
@@ -30,6 +31,17 @@ GOVERNED_SKILLS = (
     "verify",
 )
 RESOURCE_IDS = ("compact-core", "feature-authoring", "proof")
+RESOURCE_IDENTITY_SHA256 = {
+    "compact-core": (
+        "f4cb04ac883f143c392c49d949e1bd6a644608b5fc2dcc8f2856eda11834f377"
+    ),
+    "feature-authoring": (
+        "e30e555649d56b43848587c63a4b7c0f0e15a2ec6b5d78873c7b6e3b80525ec6"
+    ),
+    "proof": (
+        "fbb2015d93de95a5be3f2ee89344c5a00955f86628ca20f13a46323ea749ffda"
+    ),
+}
 PROJECTION_MODES = frozenset({"check", "write"})
 _TOP_LEVEL_FIELDS = frozenset(
     {"schema_version", "contract_version", "resources"}
@@ -99,6 +111,21 @@ class ResourceManifest:
     sha256: str
 
 
+def _resource_identity(resource: Resource) -> str:
+    serialized = (
+        "\0".join(
+            (
+                resource.resource_id,
+                resource.source.as_posix(),
+                resource.target.as_posix(),
+                *resource.consumers,
+            )
+        )
+        + "\n"
+    ).encode("utf-8")
+    return raw_sha256(serialized)
+
+
 @dataclass(frozen=True)
 class ProjectionResult:
     ok: bool
@@ -129,12 +156,16 @@ def _manifest_error(
     detail: str,
     *,
     expected: str = "exact boundary-first resource manifest contract",
+    safe_message: str | None = None,
 ) -> ProjectionContractError:
     normalized_code = code.lower().replace("-", " ")
     return ProjectionContractError(
         f"BFR-MANIFEST-{code}",
         path=RESOURCE_MANIFEST.as_posix(),
-        message=f"resource manifest failed {normalized_code} validation",
+        message=(
+            safe_message
+            or f"resource manifest failed {normalized_code} validation"
+        ),
         offending_value=f"sha256:{raw_sha256(detail.encode('utf-8'))}",
         expected=expected,
     )
@@ -385,11 +416,22 @@ def load_resource_manifest(root: Path) -> ResourceManifest:
 
     manifest_sha256 = raw_sha256(raw)
     if manifest_sha256 != RESOURCE_MANIFEST_SHA256:
+        affected_layers = [
+            resource.resource_id
+            for resource in resources
+            if _resource_identity(resource)
+            != RESOURCE_IDENTITY_SHA256[resource.resource_id]
+        ]
+        layer_message = "affected resource layers: " + (
+            ", ".join(affected_layers)
+            if affected_layers
+            else "manifest-metadata"
+        )
         raise _manifest_error(
             "IDENTITY",
-            "resource manifest differs from the approved "
-            "boundary-first-v1 identity",
+            layer_message,
             expected=RESOURCE_MANIFEST_SHA256,
+            safe_message=layer_message,
         )
 
     return ResourceManifest(
@@ -468,8 +510,60 @@ def _validate_resource_version(relative: Path, data: bytes) -> None:
         )
 
 
-def _write_target_bytes(path: Path, data: bytes) -> None:
-    path.write_bytes(data)
+def _open_parent_directory(
+    root: Path, relative: Path, *, create: bool
+) -> int:
+    flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    descriptor = os.open(root, flags)
+    try:
+        for part in relative.parent.parts:
+            try:
+                child = os.open(part, flags, dir_fd=descriptor)
+            except FileNotFoundError:
+                if not create:
+                    raise
+                os.mkdir(part, dir_fd=descriptor)
+                child = os.open(part, flags, dir_fd=descriptor)
+            os.close(descriptor)
+            descriptor = child
+        return descriptor
+    except BaseException:
+        os.close(descriptor)
+        raise
+
+
+def _write_target_bytes(root: Path, relative: Path, data: bytes) -> None:
+    parent_fd = _open_parent_directory(root, relative, create=True)
+    try:
+        descriptor = os.open(
+            relative.name,
+            os.O_WRONLY | os.O_CREAT | os.O_TRUNC | os.O_NOFOLLOW,
+            0o666,
+            dir_fd=parent_fd,
+        )
+        try:
+            view = memoryview(data)
+            while view:
+                written = os.write(descriptor, view)
+                view = view[written:]
+        finally:
+            os.close(descriptor)
+    finally:
+        os.close(parent_fd)
+
+
+def _remove_target(root: Path, relative: Path) -> None:
+    try:
+        parent_fd = _open_parent_directory(root, relative, create=False)
+    except FileNotFoundError:
+        return
+    try:
+        try:
+            os.unlink(relative.name, dir_fd=parent_fd)
+        except FileNotFoundError:
+            pass
+    finally:
+        os.close(parent_fd)
 
 
 def _restore_targets(
@@ -478,15 +572,12 @@ def _restore_targets(
 ) -> tuple[str, ...]:
     errors: list[str] = []
     for relative, previous in reversed(tuple(snapshots.items())):
-        target = _repository_path(root, relative)
         try:
             if previous is None:
-                if target.exists():
-                    target.unlink()
+                _remove_target(root, relative)
             else:
-                target.parent.mkdir(parents=True, exist_ok=True)
-                _write_target_bytes(target, previous)
-        except OSError:
+                _write_target_bytes(root, relative, previous)
+        except (OSError, ProjectionContractError):
             errors.append(relative.as_posix())
     return tuple(errors)
 
@@ -658,9 +749,7 @@ def project_reference(root: Path, *, mode: str) -> ProjectionResult:
         }
         try:
             for relative, data, _resource_id in operations:
-                target = _repository_path(repository_root, relative)
-                target.parent.mkdir(parents=True, exist_ok=True)
-                _write_target_bytes(target, data)
+                _write_target_bytes(repository_root, relative, data)
         except BaseException as exc:
             restore_errors = _restore_targets(
                 repository_root, snapshots
