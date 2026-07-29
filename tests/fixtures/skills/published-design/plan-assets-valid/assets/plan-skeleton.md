@@ -1,7 +1,7 @@
-<!-- Template: plan-skeleton-v1 -->
+<!-- Template: plan-skeleton-v2 -->
 <!-- Skill: plan -->
 <!-- Template status: normative -->
-<!-- Structural-fingerprint: sha256:3bc2ddc4643057a28945235f5fda2af6bc6afb6e550228cf473e4c47bf0af3ff -->
+<!-- Structural-fingerprint: sha256:e563fc4a3afbe84caff7a210f111f0c159377fc1c1096e04b6d17e8967c52034 -->
 <!-- Maintained alongside: skills/plan/SKILL.md -->
 
 ## Status
@@ -26,4 +26,4 @@
 
 ## Current Handoff Summary
 
-<handoff summary>
+- Owning change record: <change record path>

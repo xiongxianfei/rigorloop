@@ -31,7 +31,7 @@ This amendment also tightens token-cost discipline for normalized skills. Token-
 
 This amendment defines the published-skill design contract for portable operating documentation. It makes `description` the routing source, distinguishes repository-root internals from packaged skill-local resources, requires resource maps when packaged resources exist, defines published-skill design pilot routing-test evidence, and constrains the published-skill design pilot to an audit plus a `proposal` and `proposal-review` pilot.
 
-This amendment defines the assets-first progressive disclosure pilot for published skills. It adds a follow-on `plan` pilot that ships exactly four normative structural templates under `skills/plan/assets/`, keeps rules in `skills/plan/SKILL.md`, requires deterministic asset resource-map validation, proves adapter packaging for non-empty skill-local assets, and requires both behavior parity and measurable common-path improvement.
+This amendment defines the assets-first progressive disclosure pilot for published skills. It adds a follow-on `plan` pilot that ships exactly three normative structural templates under `skills/plan/assets/`, keeps rules in `skills/plan/SKILL.md`, requires deterministic asset resource-map validation, proves adapter packaging for non-empty skill-local assets, and requires both behavior parity and measurable common-path improvement.
 
 This amendment defines structural hygiene for this spec and its matching test spec. It adds slice navigation and grouping while preserving existing R-clause IDs, clause text, acceptance-criterion text, test-case IDs, and cross-references.
 
@@ -117,7 +117,7 @@ This spec uses two rollout labels:
 
 - `baseline normalization first slice`: the historical skill-contract optimization slice covering `workflow`, `plan`, `implement`, `code-review`, `verify`, `pr`, and `learn`.
 - `published-skill design pilot`: the R27 through R36 amendment slice covering `proposal`, `proposal-review`, validator changes needed for the pilot, and generated adapter validation for changed skills.
-- `assets-first plan pilot`: the R37 through R45 amendment slice covering `skills/plan/SKILL.md`, exactly four normative assets under `skills/plan/assets/`, validator and adapter proof for packaged assets, token-cost measurement, and plan behavior-parity evidence.
+- `assets-first plan pilot`: the R37 through R45 amendment slice covering `skills/plan/SKILL.md`, exactly three normative assets under `skills/plan/assets/`, validator and adapter proof for packaged assets, token-cost measurement, and plan behavior-parity evidence.
 - `published-skill resource integrity pilot`: the R46 through R55 amendment slice covering generic mapped-resource integrity rules, bounded legacy-reference migration lint, raw-byte parity, packed clean-install proof, and architecture-skill pilot evidence.
 - `portable boundary-first capability`: the R56 through R63 amendment slice
   covering the ten governed skill mappings, one-source deterministic
@@ -228,12 +228,12 @@ Then `SKILL.md` includes only a compact output expectation summary
 And `assets/plan-skeleton.md` owns canonical section order, headers, and placeholders
 And the full section layout is not duplicated in both files.
 
-### Example E15: handoff asset is not hidden lifecycle policy
+### Example E15: the plan skeleton carries only a stable handoff pointer
 
-Given the assets-first plan pilot ships `assets/current-handoff-summary.md`
-When an agent copies that asset
-Then the asset provides headings, labels, and placeholders only
-And lifecycle status values, transition rules, claim ownership, readiness semantics, and validation requirements remain in `SKILL.md` or governing workflow artifacts.
+Given the assets-first plan pilot ships `assets/plan-skeleton.md`
+When an agent fills its Current Handoff Summary
+Then that section contains only the stable owning change-record pointer
+And lifecycle status values, transition rules, claim ownership, readiness semantics, and validation requirements remain in `change.yaml`, `SKILL.md`, or governing workflow artifacts.
 
 ### Example E16: historical plans are coverage evidence only
 
@@ -738,19 +738,18 @@ R37c. The assets-first plan pilot MUST NOT modify `proposal`, `proposal-review`,
 
 R37d. The assets-first plan pilot MUST NOT introduce packaged `references/`, packaged `scripts/`, build-time partials, adapter install-root changes, lockfile changes, or CLI behavior changes.
 
-R38. The assets-first plan pilot MUST ship exactly these four normative assets under `skills/plan/assets/`:
+R38. The assets-first plan pilot MUST ship exactly these three normative assets under `skills/plan/assets/`:
 - `plan-skeleton.md`;
 - `milestone.md`;
-- `current-handoff-summary.md`;
 - `decision-log-row.md`.
 
-R38a. The assets-first plan pilot MUST NOT ship optional, example, deprecated, or fifth asset files unless this spec is amended.
+R38a. The assets-first plan pilot MUST NOT ship optional, example, deprecated, or fourth asset files unless this spec is amended.
 
-R38b. The four normative assets MUST contain structural templates copied and filled by the agent, not paragraph-length workflow procedure, filled example narratives, hidden trigger logic, or policy text that belongs in `SKILL.md` or governing specs.
+R38b. The three normative assets MUST contain structural templates copied and filled by the agent, not paragraph-length workflow procedure, filled example narratives, hidden trigger logic, or policy text that belongs in `SKILL.md` or governing specs.
 
-R38c. The four normative assets MUST NOT require repository-root internal paths as normal customer-project dependencies.
+R38c. The three normative assets MUST NOT require repository-root internal paths as normal customer-project dependencies.
 
-R39. `skills/plan/SKILL.md` MUST include a `Resource map` for the four normative assets.
+R39. `skills/plan/SKILL.md` MUST include a `Resource map` for the three normative assets.
 
 R39a. Each assets-first plan pilot resource-map entry MUST use the literal verb `COPY`.
 
@@ -768,13 +767,13 @@ R40b. `skills/plan/SKILL.md` MUST retain a compact output expectation summary th
 
 R40c. `skills/plan/SKILL.md` and `assets/plan-skeleton.md` MUST NOT duplicate the full plan section layout.
 
-R41. `assets/current-handoff-summary.md` MUST contain only section headings, field labels, and placeholders.
+R41. The Current Handoff Summary in `assets/plan-skeleton.md` MUST contain only one stable pointer to the owning change record.
 
-R41a. `assets/current-handoff-summary.md` MUST NOT define lifecycle status values, next-stage transition rules, claim ownership, branch-ready semantics, PR-ready semantics, or validation requirements.
+R41a. The Current Handoff Summary MUST NOT define lifecycle status values, next-stage transition rules, claim ownership, branch-ready semantics, PR-ready semantics, or validation requirements.
 
-R41b. `skills/plan/SKILL.md` MUST retain the rule that the Current Handoff Summary stays consistent with the active plan, plan index, and change metadata.
+R41b. `skills/plan/SKILL.md` MUST retain the rule that mutable workflow and milestone state lives only in the owning change record.
 
-R41c. If `current-handoff-summary.md` cannot satisfy `R41` through `R41b`, the handoff summary template MUST remain inline in `skills/plan/SKILL.md` for this pilot.
+R41c. The assets-first plan pilot MUST NOT ship a separate `assets/current-handoff-summary.md` file.
 
 R41d. `skills/plan/SKILL.md` MUST instruct plan authors to write `docs/plan.md` and `docs/plan-archive.md` plan references as clickable Markdown links relative to the index file, such as `[Title](plans/YYYY-MM-DD-slug.md)`, instead of bare repository-root plan paths.
 
@@ -1003,7 +1002,7 @@ Outputs:
 - a routing coverage table for each changed published-skill design pilot skill;
 - a behavior-preservation note for each changed published-skill design pilot skill;
 - behavior-parity evidence for representative proposal and proposal-review artifacts;
-- four normative `plan` assets and their resource-map entries for the assets-first plan pilot;
+- three normative `plan` assets and their resource-map entries for the assets-first plan pilot;
 - structural fingerprint and section-set drift evidence for normative `plan` assets;
 - behavior-parity reference and historical corpus evidence for the assets-first plan pilot;
 - preservation evidence for existing artifact-producing skills that gain a fenced output skeleton;
@@ -1037,7 +1036,7 @@ Outputs:
 - Untransformed mapped resources preserve skill-root relative path and raw-byte SHA-256 across canonical, generated, packed, and installed outputs.
 - Repository-root internal paths are not normal customer-project dependencies.
 - The published-skill design pilot does not merge, retire, rename, remove, or change ownership of skills.
-- The assets-first plan pilot is limited to `plan`, exactly four normative `assets/` templates, and deterministic validator and adapter proof.
+- The assets-first plan pilot is limited to `plan`, exactly three normative `assets/` templates, and deterministic validator and adapter proof.
 - The assets-first plan pilot keeps workflow rules and lifecycle handoff semantics in `SKILL.md` or governing workflow artifacts, not hidden in assets.
 - Normative asset structure is checked for drift through metadata, structural fingerprints, and section-set parity.
 - Runtime fallback can preserve useful work only within the fallback boundary; it does not prove package validity.
@@ -1079,11 +1078,11 @@ Outputs:
 - If a changed published-skill design pilot skill lacks a routing coverage table, the pilot MUST NOT claim routing coverage validation is complete.
 - If a changed published-skill design pilot skill lacks a behavior-preservation note, the pilot MUST NOT claim behavior-significant wording was safely preserved.
 - If behavior-parity evidence shows weakened material review status, finding format, recording obligations, stop conditions, validation obligations, or claim boundaries, the pilot MUST stop for revision before closeout.
-- If the assets-first plan pilot ships more or fewer than four assets, validation MUST fail unless this spec is amended.
+- If the assets-first plan pilot ships more or fewer than three assets, validation MUST fail unless this spec is amended.
 - If a `plan` asset lacks required metadata comments, validation MUST fail.
 - If a normative `plan` asset structural fingerprint drifts without a template-version update, validation MUST fail.
 - If the `plan` resource map omits an asset, uses a verb other than `COPY` for an asset, omits trigger conditions, or omits fields to fill, validation MUST fail.
-- If `assets/current-handoff-summary.md` defines lifecycle transition rules or readiness semantics, the pilot MUST stop for revision or keep that template inline in `SKILL.md`.
+- If `assets/current-handoff-summary.md` is packaged separately, validation MUST fail because the stable pointer belongs directly in `assets/plan-skeleton.md`.
 - If `skills/plan/SKILL.md` common-path body token count does not decrease by at least 15 percent, the assets-first plan pilot MUST NOT roll out unless this spec is amended.
 - If behavior-parity evidence treats historical plans as strict structural references, the pilot evidence MUST be revised before closeout.
 - If a structural hygiene amendment changes existing R-clause text, clause IDs, acceptance-criterion text, test-case IDs, or cross-references, the amendment MUST stop for revision before spec-review approval.
@@ -1257,10 +1256,10 @@ This change has no user-interface surface. The relevant user experience is contr
 
 ### Assets-first plan pilot (R37-R45)
 
-- A reviewer can confirm the assets-first plan pilot is a follow-on slice limited to `plan` and exactly four normative assets.
+- A reviewer can confirm the assets-first plan pilot is a follow-on slice limited to `plan` and exactly three normative assets.
 - A reviewer can confirm `skills/plan/SKILL.md` uses a `Resource map` with literal `COPY` entries for every asset.
 - A reviewer can confirm `assets/plan-skeleton.md` owns canonical plan section order while `SKILL.md` keeps only a compact output expectation summary.
-- A reviewer can confirm `assets/current-handoff-summary.md` contains no lifecycle transition rules or readiness semantics.
+- A reviewer can confirm `assets/plan-skeleton.md` carries only the stable owning change-record pointer in Current Handoff Summary and no separate handoff asset ships.
 - A reviewer can confirm every `plan` asset has metadata comments, normative status, and structural fingerprint coverage.
 - A reviewer can confirm deterministic validation covers asset count, approved paths, metadata, resource-map coverage, `COPY`, placeholders, repository-root path exclusion, structural fingerprint, section-set parity, and adapter asset presence.
 - A reviewer can confirm the assets-first plan pilot records behavior parity, at least 15 percent common-path body token reduction, total packaged content budget evidence, and milestone substructure reuse evidence.

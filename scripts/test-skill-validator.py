@@ -1378,6 +1378,19 @@ class SkillValidatorFixtureTests(unittest.TestCase):
             "plan-skeleton section set does not match SKILL.md expected sections",
         )
 
+    def test_published_plan_inlines_stable_handoff_pointer(self) -> None:
+        plan_dir = ROOT / "skills" / "plan"
+        skeleton = (plan_dir / "assets" / "plan-skeleton.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("## Current Handoff Summary", skeleton)
+        self.assertIn(
+            "- Owning change record: <docs/changes/change-id/change.yaml>",
+            skeleton,
+        )
+        self.assertFalse((plan_dir / "assets" / "current-handoff-summary.md").exists())
+
     def test_ci_maintenance_contract_validates_canonical_skill(self) -> None:
         result = run_validator(ROOT / "skills" / "ci-maintenance" / "SKILL.md")
         self.assertEqual(
@@ -7766,7 +7779,6 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             ROOT / "skills" / "architecture" / "assets" / "architecture-skeleton.md",
             ROOT / "skills" / "architecture" / "assets" / "adr-skeleton.md",
             ROOT / "skills" / "plan" / "assets" / "plan-skeleton.md",
-            ROOT / "skills" / "plan" / "assets" / "current-handoff-summary.md",
             ROOT / "skills" / "test-spec" / "assets" / "test-spec-skeleton.md",
         ]
         forbidden = (

@@ -14,9 +14,6 @@ description: Use this fixture for the plan asset pilot missing resource-map entr
 - COPY `assets/milestone.md` when adding each milestone.
   Fill: milestone id, goal, requirements, tests, validation commands, rollback.
   Do not emit unfilled placeholders.
-- COPY `assets/current-handoff-summary.md` when updating the active handoff section.
-  Fill: current milestone, milestone state, review status, next stage, final closeout readiness.
-  Do not emit unfilled placeholders.
 
 ## Expected output
 
