@@ -33,6 +33,7 @@ Review closeout: code-review-m4-r4
 Review closeout: code-review-m4-r5
 Review closeout: code-review-m4-r6
 Review closeout: code-review-m4-r7
+Review closeout: code-review-m4-r8
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -42,10 +43,11 @@ Review closeout: code-review-m4-r7
   `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`,
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
   `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`,
-  `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`
+  `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
+  `code-review-m4-r8`
 - Findings resolved: 38
-- Unresolved findings: 0
-- Current result: M4 code-review R7 findings are resolved and await independent R8 confirmation.
+- Unresolved findings: 2
+- Current result: M4 code-review R8 requires rendered-text normalization and exact command-owning records.
 
 ## Resolution Overview
 
@@ -89,6 +91,8 @@ Review closeout: code-review-m4-r7
 | CR-M4-R6-001 | accepted | resolved | HTML-normalized exact-block subtraction rejects every residual adapter label. |
 | CR-M4-R7-001 | accepted | resolved | Bounded inline-HTML normalization exposes residual adapter labels. |
 | CR-M4-R7-002 | accepted | resolved | Exact Codex code-span multisets reject prefixes, suffixes, and trailing arguments. |
+| CR-M4-R8-001 | accepted | open | Parser-derived rendered text must expose labels hidden by HTML or Markdown formatting. |
+| CR-M4-R8-002 | accepted | open | Exact command spans must also have complete owning-record boundaries. |
 
 ## Finding Details
 
@@ -311,6 +315,32 @@ Chosen action: Validate the exact multiset of dollar-command code spans before r
 Rationale: An approved command substring does not make a malformed invocation valid.
 Validation target: code-review-m4-r8
 Validation evidence: Prefix, suffix, trailing-argument, HTML-suffix, and exact-block-suffix mutations fail; all 142 adapter tests and the planned ten-skill clean-install command pass.
+
+### code-review-m4-r8
+
+#### CR-M4-R8-001 - Rendered formatting still hides adapter labels
+
+Finding ID: CR-M4-R8-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Derive visible HTML text with a bounded parser, normalize supported Markdown inline constructs, and add representative cross-adapter regressions.
+Rationale: Residual-label closure must follow rendered visible text rather than raw formatting syntax.
+Validation target: code-review-m4-r9
+Validation evidence: pending
+
+#### CR-M4-R8-002 - Adjacent text extends exact command code spans
+
+Finding ID: CR-M4-R8-002
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Validate the complete Markdown list items owning target, status, and off commands and add adjacent-token regressions.
+Rationale: Exact code-span content is insufficient when surrounding text remains part of the same command token.
+Validation target: code-review-m4-r9
+Validation evidence: pending
 
 ### code-review-m1-r1
 
