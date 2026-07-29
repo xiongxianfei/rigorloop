@@ -9,6 +9,32 @@ artifacts and change-local workflow-state proposal.
 
 ### Review entry
 
+Review ID: code-review-final-r3
+Stage: code-review
+Round: Final R3
+Reviewed artifact: complete current stage-owned lifecycle implementation diff
+Status: approved
+Detailed record: reviews/code-review-final-r3.md
+Resolution: review-resolution.md#code-review-final-r3
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-ci-r2
+Stage: code-review
+Round: CI R2
+Reviewed artifact: GUIDE-005 validator and regression fixture diff
+Status: approved
+Detailed record: reviews/code-review-ci-r2.md
+Resolution: review-resolution.md#code-review-ci-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-final-r2
 Stage: code-review
 Round: Final R2

@@ -27,6 +27,7 @@ change-local entry; workflow alone owns routing.
 | Generated adapter parity is rebuilt from canonical skills | Keeps published behavior aligned across supported adapters | SLA-R070, SLA-R072-R074b | 133 adapter tests and broad smoke |
 | Workflow skill creates `stage-owned-change-local-v1` by default | Makes the approved mechanism the sole forward model with no selector | SLA-R001-R002, M6 activation owner | Focused activation test and post-cutover broad smoke |
 | Change-local milestone evidence | Existing PR routing treated the required `evidence/` directory as unsupported | One exact directory boundary reuses lifecycle validation; unknown paths still fail closed | 136 selector tests |
+| Plan-index guide validation | Legacy GUIDE-005 still required live status headings | Navigation, owning-change, and plan-body boundaries now match the approved contract | 10 guide tests |
 
 ## Review-driven corrections
 

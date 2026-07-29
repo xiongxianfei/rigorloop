@@ -24,3 +24,11 @@ external action, or hosted workflow.
 Focused command owned by the existing CI contract:
 
 - `python scripts/test-select-validation.py` — 136 passed.
+
+The first complete PR-mode retry then exposed GUIDE-005 as a second retired
+projection: it still required live-work and superseded status sections in
+`docs/plan.md`. The existing guide validator now requires a navigation index
+to stable plan bodies and owning `change.yaml` records instead.
+
+- `python scripts/test-guide-system-validator.py` — 10 passed.
+- `python scripts/validate-guide-system.py` — passed.

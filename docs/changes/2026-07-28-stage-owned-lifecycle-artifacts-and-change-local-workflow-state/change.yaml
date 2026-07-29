@@ -109,12 +109,12 @@ workflow_state:
     latest_review:
       status: approved
       stage: code-review
-      round: r2
+      round: r3
       artifact_id: plan
       occurrence: final
       milestone_id: none
       evidence:
-        - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/code-review-final-r2.md
+        - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/code-review-final-r3.md
     final_closeout:
       readiness: not-ready
       reasons:

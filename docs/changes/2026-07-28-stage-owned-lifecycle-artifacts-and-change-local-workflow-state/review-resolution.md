@@ -31,6 +31,8 @@ Review closeout: code-review-m6-r2
 Review closeout: code-review-final-r1
 Review closeout: code-review-ci-r1
 Review closeout: code-review-final-r2
+Review closeout: code-review-ci-r2
+Review closeout: code-review-final-r3
 
 - Reviews covered: `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `plan-review-r1`, `plan-review-r2`, `architecture-review-r1`,
   `architecture-review-r2`,
@@ -660,3 +662,19 @@ Material findings: none
 Resolution required: no
 Validation evidence: complete prior review plus the bounded CI-maintenance
 correction and its focused regression proof were reviewed clean.
+
+### code-review-ci-r2
+
+Review result: approved
+Material findings: none
+Resolution required: no
+Validation evidence: guide-system tests passed 10 tests and current guide
+validation passed.
+
+### code-review-final-r3
+
+Review result: approved
+Material findings: none
+Resolution required: no
+Validation evidence: complete review refreshed through both triggered CI
+maintenance corrections.
