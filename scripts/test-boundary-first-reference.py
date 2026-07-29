@@ -266,9 +266,16 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                 (root / RESOURCE_MANIFEST).write_bytes(raw)
                 with self.assertRaisesRegex(
                     ProjectionContractError,
-                    "BFR-MANIFEST-RESOURCE-TUPLE",
+                    "BFR-MANIFEST-IDENTITY",
                 ):
                     project_reference(root, mode="write")
+
+    def test_projection_module_does_not_restate_the_resource_matrix(self) -> None:
+        module = (
+            ROOT / "scripts" / "boundary_first_reference.py"
+        ).read_text(encoding="utf-8")
+
+        self.assertNotIn("RESOURCE_CONTRACTS", module)
 
     def test_mixed_canonical_resource_version_fails_before_write(self) -> None:
         _, root = self.make_repository()
@@ -497,6 +504,80 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
 
         retry = project_reference(root, mode="write")
         self.assertTrue(retry.ok)
+
+    def test_keyboard_interrupt_restores_prior_targets_before_reraise(
+        self,
+    ) -> None:
+        from boundary_first_reference import _write_target_bytes
+
+        for preexisting in (False, True):
+            with self.subTest(preexisting=preexisting):
+                _, root = self.make_repository()
+                paths = projected_paths(root)
+                if preexisting:
+                    project_reference(root, mode="write")
+                    before = {
+                        relative: (root / relative).read_bytes()
+                        for relative in paths
+                    }
+                    (root / CANONICAL_REFERENCE).write_bytes(
+                        b"# revised compact\n\n"
+                        b"Boundary model version: boundary-first-v1\n"
+                    )
+                else:
+                    before = {relative: None for relative in paths}
+
+                calls = 0
+
+                def interrupt(path: Path, data: bytes) -> None:
+                    nonlocal calls
+                    calls += 1
+                    if calls == 7:
+                        raise KeyboardInterrupt
+                    _write_target_bytes(path, data)
+
+                with patch(
+                    "boundary_first_reference._write_target_bytes",
+                    side_effect=interrupt,
+                ):
+                    with self.assertRaises(KeyboardInterrupt):
+                        project_reference(root, mode="write")
+
+                after = {
+                    relative: (
+                        (root / relative).read_bytes()
+                        if (root / relative).is_file()
+                        else None
+                    )
+                    for relative in paths
+                }
+                self.assertEqual(after, before)
+                self.assertTrue(project_reference(root, mode="write").ok)
+
+    def test_missing_manifest_cli_diagnostic_preserves_identity(self) -> None:
+        _, root = self.make_repository()
+        (root / RESOURCE_MANIFEST).unlink()
+
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts/project-boundary-first-reference.py"),
+                "--check",
+                "--root",
+                str(root),
+            ],
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn("BFR-MANIFEST-MISSING", completed.stdout)
+        self.assertIn(
+            "path=specs/boundary-first-resources.yaml",
+            completed.stdout,
+        )
+        self.assertIn("expected=existing resource manifest", completed.stdout)
+        self.assertNotIn(str(root), completed.stdout)
 
     def test_source_parent_symlink_escape_fails_before_read(self) -> None:
         _, root = self.make_repository()
