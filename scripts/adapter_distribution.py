@@ -376,47 +376,43 @@ def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
 def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     """Recognize the exact workflow invocation-equivalence contract."""
 
-    normalized = re.sub(r"\s+", " ", text)
+    plain_text = re.sub(r"</?code>", "", text, flags=re.IGNORECASE).replace("`", "")
+    normalized = re.sub(r"\s+", " ", plain_text)
     expected = (
         "Adapter invocation equivalents preserve the same arguments: Codex uses "
-        "`$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, "
-        "and OpenCode invokes the installed `workflow` skill with "
-        "`auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or "
-        "`off`."
+        "$workflow auto: <argument>, Claude uses /workflow auto: <argument>, "
+        "and OpenCode invokes the installed workflow skill with "
+        "auto: <argument>. Here <argument> is <target-stage>, status, or off."
     )
-    code_spans = re.findall(r"`([^`\n]+)`", text)
-    dollar_spans = [
-        span
-        for span in code_spans
-        if re.search(r"\$[A-Za-z][A-Za-z0-9-]*", span)
-    ]
-    allowed_dollar_spans = {
-        "$workflow auto: <argument>",
+    if normalized.count(expected) != 1:
+        return False
+    remaining = normalized.replace(expected, "", 1)
+    allowed_remaining_codex = (
         "$workflow auto: <target-stage>",
         "$workflow auto: status",
         "$workflow auto: off",
-    }
-    slash_spans = [
-        span
-        for span in code_spans
-        if span.startswith("/")
-        and ("workflow" in span.lower() or "auto:" in span.lower())
-    ]
-    open_code_records = [
-        (skill_name, invocation)
-        for skill_name, invocation in re.findall(
-            r"`([^`\n]+)`(?:\s+skill)?\s+with\s+`([^`\n]+)`",
-            text,
-        )
-        if skill_name.lower() == "workflow" or invocation.lower().startswith("auto:")
-    ]
-    return (
-        expected in normalized
-        and set(dollar_spans) == allowed_dollar_spans
-        and len(dollar_spans) == len(allowed_dollar_spans)
-        and slash_spans == ["/workflow auto: <argument>"]
-        and open_code_records == [("workflow", "auto: <argument>")]
     )
+    for invocation in allowed_remaining_codex:
+        if remaining.count(invocation) != 1:
+            return False
+        remaining = remaining.replace(invocation, "", 1)
+    if re.search(r"\$[A-Za-z][A-Za-z0-9-]*", remaining):
+        return False
+    if re.search(r"(?<![\w.])/workflow\b", remaining, flags=re.IGNORECASE):
+        return False
+    if re.search(
+        r"\bClaude\b[^.]*\b(?:uses|run|invokes)\b",
+        remaining,
+        flags=re.IGNORECASE,
+    ):
+        return False
+    if re.search(
+        r"\bOpenCode\b[^.]*\b(?:uses|run|invokes)\b",
+        remaining,
+        flags=re.IGNORECASE,
+    ):
+        return False
+    return True
 
 
 def _target_adapter_reasons(text: str) -> dict[str, tuple[str, ...]]:
