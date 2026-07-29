@@ -1339,11 +1339,6 @@ def _apply_path_selection(
         )
         _add_check(selected, "skills.drift", "Changed canonical skill source requires generated skill mirror validation.")
         _add_check(selected, "adapters.drift", "Public adapter output can be affected by canonical skill changes.")
-        _add_lifecycle_warning_check(
-            selected,
-            path,
-            "Changed canonical skill source can carry lifecycle guidance and requires lifecycle-language warning validation.",
-        )
         return
 
     if category == "generated-skills":

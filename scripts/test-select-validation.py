@@ -1697,6 +1697,89 @@ raise SystemExit({exit_code})
             self.assertIn(check["phase"], {"focused", "boundary"})
             self.assertEqual(check["cache_status"], "not-applicable")
 
+    def test_canonical_skill_only_uses_purpose_built_checks_without_lifecycle(self) -> None:
+        path = "skills/spec/SKILL.md"
+        payload = self.select([path]).to_json_dict()
+
+        self.assertEqual(payload["status"], "ok")
+        self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertTrue(
+            {
+                "boundary_first.validate",
+                "skills.validate",
+                "skills.regression",
+                "skills.generation_regression",
+                "skills.drift",
+                "adapters.drift",
+                "documentation_prose.audit",
+            }.issubset(selected_ids(payload))
+        )
+        self.assertIn("skills/spec", payload["affected_roots"])
+
+    def test_generated_skill_only_uses_derivation_checks_without_lifecycle(self) -> None:
+        path = ".codex/skills/spec/SKILL.md"
+        payload = self.select([path]).to_json_dict()
+
+        self.assertEqual(payload["status"], "ok")
+        self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
+        self.assertEqual(
+            {"skills.generation_regression", "skills.drift"},
+            selected_ids(payload),
+        )
+
+    def test_lifecycle_artifact_classes_retain_owned_lifecycle_paths(self) -> None:
+        paths = [
+            "docs/proposals/2026-07-29-example.md",
+            "specs/example.md",
+            "specs/example.test.md",
+            "docs/architecture/system/example.md",
+            "docs/adr/ADR-20260729-example.md",
+            "docs/plans/2026-07-29-example.md",
+            "docs/changes/2026-07-29-example/review-resolution.md",
+            "docs/changes/2026-07-29-example/change.yaml",
+        ]
+        payload = self.select(paths).to_json_dict()
+
+        self.assertEqual(payload["status"], "ok")
+        lifecycle = next(
+            check
+            for check in payload["selected_checks"]
+            if check["id"] == "artifact_lifecycle.validate"
+        )
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertIn(path, lifecycle["paths"])
+
+    def test_mixed_skill_and_spec_scope_each_check_to_its_owner(self) -> None:
+        skill_path = "skills/spec/SKILL.md"
+        spec_path = "specs/progressive-boundary-first-skill-guidance.md"
+        payload = self.select([skill_path, spec_path]).to_json_dict()
+
+        self.assertEqual(payload["status"], "ok")
+        self.assertIn("skills.validate", selected_ids(payload))
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+        lifecycle = next(
+            check
+            for check in payload["selected_checks"]
+            if check["id"] == "artifact_lifecycle.validate"
+        )
+        self.assertEqual(lifecycle["paths"], [spec_path])
+        boundary = next(
+            check
+            for check in payload["selected_checks"]
+            if check["id"] == "boundary_first.validate"
+        )
+        self.assertEqual(boundary["paths"], [skill_path, spec_path])
+
+    def test_lifecycle_words_do_not_change_skill_path_classification(self) -> None:
+        path = "skills/spec/SKILL.md"
+        first = self.select([path]).to_json_dict()
+        second = self.select([path]).to_json_dict()
+
+        self.assertEqual(first["classified_paths"], second["classified_paths"])
+        self.assertEqual(selected_ids(first), selected_ids(second))
+        self.assertNotIn("artifact_lifecycle.validate", selected_ids(first))
+
     def test_selector_marks_broad_smoke_as_boundary_phase(self) -> None:
         result = select_validation(
             SelectionRequest(
@@ -2789,7 +2872,7 @@ raise SystemExit({exit_code})
         self.assertIn("selector.regression", selected_ids(payload))
         self.assertFalse(payload["blocking_results"])
 
-    def test_pr_contained_lifecycle_warning_surfaces_select_lifecycle_validation(self) -> None:
+    def test_pr_contained_lifecycle_surfaces_exclude_published_skill_path(self) -> None:
         paths = [
             "AGENTS.md",
             "CONSTITUTION.md",
@@ -2807,7 +2890,11 @@ raise SystemExit({exit_code})
         lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
         for path in paths:
             with self.subTest(path=path):
-                self.assertIn(path, lifecycle_check["paths"])
+                if path == "skills/workflow/SKILL.md":
+                    self.assertNotIn(path, lifecycle_check["paths"])
+                else:
+                    self.assertIn(path, lifecycle_check["paths"])
+        self.assertIn("skills.validate", selected_ids(payload))
 
     def test_readme_path_selects_lightweight_readme_validation(self) -> None:
         temp_root = Path(tempfile.mkdtemp(prefix="validation-selection-readme-no-markers-"))
