@@ -31,6 +31,7 @@ Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r3
 Review closeout: code-review-m4-r4
 Review closeout: code-review-m4-r5
+Review closeout: code-review-m4-r6
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -40,10 +41,10 @@ Review closeout: code-review-m4-r5
   `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`,
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
   `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`,
-  `code-review-m4-r5`
+  `code-review-m4-r5`, `code-review-m4-r6`
 - Findings resolved: 35
-- Unresolved findings: 0
-- Current result: M4 code-review R5 finding is resolved and awaits independent R6 confirmation.
+- Unresolved findings: 1
+- Current result: M4 code-review R6 found incomplete residual adapter-label closure.
 
 ## Resolution Overview
 
@@ -84,6 +85,7 @@ Review closeout: code-review-m4-r5
 | CR-M4-R4-001 | accepted | resolved | Every recognized adapter invocation occurrence must match the approved identity, operation, argument, and case. |
 | CR-M4-R4-002 | accepted | resolved | Explicit skill-name preflight runs before archive validation. |
 | CR-M4-R5-001 | accepted | resolved | One normalized whole-body occurrence domain rejects formatting and composed invocation corruption. |
+| CR-M4-R6-001 | accepted | open | Reject every normalized residual adapter label after exact-block subtraction. |
 
 ## Finding Details
 
@@ -266,6 +268,20 @@ Chosen action: Discover whole-body adapter-labeled candidates before validating 
 Rationale: Formatting and multiple invalid fields must not remove a contradictory occurrence from validation.
 Validation target: code-review-m4-r6
 Validation evidence: Plain-text, HTML, whitespace, replacement, additive, pairwise, and all-field corruptions fail; all 142 adapter tests and the planned ten-skill command pass.
+
+### code-review-m4-r6
+
+#### CR-M4-R6-001 - Residual adapter-label closure is incomplete
+
+Finding ID: CR-M4-R6-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Decode HTML, subtract the exact equivalence block, and reject every residual adapter label.
+Rationale: Candidate discovery must not depend on a verb, identity, operation, argument, or formatting already being valid.
+Validation target: code-review-m4-r7
+Validation evidence: pending
 
 ### code-review-m1-r1
 
