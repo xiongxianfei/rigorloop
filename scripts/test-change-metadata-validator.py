@@ -1956,6 +1956,12 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
         errors = validate_stage_owned_lifecycle_metadata(record)
         self.assertTrue(any("automation.status: unknown_value" in error for error in errors))
 
+    def test_review_outcome_must_match_settled_state(self) -> None:
+        record = self.valid_record()
+        record["artifact_states"]["proposal"]["review"]["outcome"] = "changes-requested"
+        errors = validate_stage_owned_lifecycle_metadata(record)
+        self.assertTrue(any("requires revision-required" in error for error in errors))
+
     def test_duplicate_paths_and_mixed_legacy_writer_fail(self) -> None:
         record = self.valid_record()
         record["artifact_states"]["spec"] = copy.deepcopy(record["artifact_states"]["proposal"])

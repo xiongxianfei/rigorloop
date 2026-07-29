@@ -389,6 +389,34 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
                 errors.append(f"{base}.review.record: expected normalized repository-relative path")
             if _ROUND_RE.fullmatch(str(review.get("round"))) is None:
                 errors.append(f"{base}.review.round: expected r<n>")
+            outcome = review.get("outcome")
+            expected_state = {
+                "changes-requested": "revision-required",
+                "blocked": "blocked",
+                "inconclusive": "blocked",
+            }.get(outcome)
+            if outcome == "approved":
+                expected_state = {
+                    "proposal": "accepted",
+                    "spec": "approved",
+                    "architecture": "approved",
+                    "plan": "active",
+                    "test-spec": "active",
+                }.get(kind)
+                if kind == "adr":
+                    settlement = review.get("adr_settlement")
+                    if settlement not in {"accepted", "active"}:
+                        errors.append(f"{base}.review.adr_settlement: expected accepted or active")
+                    else:
+                        expected_state = settlement
+                elif "adr_settlement" in review:
+                    errors.append(f"{base}.review.adr_settlement: allowed only for approved ADR")
+            elif "adr_settlement" in review:
+                errors.append(f"{base}.review.adr_settlement: allowed only for approved ADR")
+            if expected_state is not None and state != expected_state:
+                errors.append(
+                    f"{base}.lifecycle_state: review outcome {outcome} requires {expected_state}"
+                )
         elif review is not None:
             errors.append(f"{base}.review: not allowed for {state}")
         if state == "superseded":
