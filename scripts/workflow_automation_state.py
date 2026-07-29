@@ -2435,6 +2435,18 @@ class StageOwnedChangeStateStore:
                     status = run.get("status", status)
                 if status in TERMINAL_LEGACY_STATES:
                     raise StateContractError("terminal historical state is read-only")
+                source = run if isinstance(run, dict) else legacy
+                source_target = source.get("target")
+                if source_target is not None and automation.get("target") != source_target:
+                    raise StateContractError("migration must preserve the structured target")
+                source_stop = source.get("stop_reason", source.get("pause_reason"))
+                if source_stop is not None and automation.get("stop_reason") != source_stop:
+                    raise StateContractError("migration must preserve the current stop reason")
+                receipts = legacy.get("transition_receipts")
+                if isinstance(receipts, dict) and receipts and not automation.get("evidence"):
+                    raise StateContractError(
+                        "migration must point to preserved transition evidence"
+                    )
         document["lifecycle_contract"] = STAGE_OWNED_CONTRACT
         document["artifact_states"] = copy.deepcopy(artifact_states)
         document["workflow_state"] = copy.deepcopy(workflow_state)
