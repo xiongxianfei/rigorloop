@@ -7779,6 +7779,91 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
 
 
 class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
+    COMPACT_SCAN_PATH = ROOT / "templates" / "shared" / "boundary-first-compact-scan.md"
+
+    def test_governed_skills_embed_the_exact_compact_scan_once(self) -> None:
+        compact_scan = self.COMPACT_SCAN_PATH.read_text(encoding="utf-8").strip()
+        questions = (
+            "Which inputs or actors can change the outcome?",
+            "Which state or timing conditions can change the outcome?",
+            "Which public, sibling, helper, or alternate path can change the outcome?",
+            "Which failure, retry, recovery, compatibility, or external condition can change the outcome?",
+        )
+        for skill_name in self.GOVERNED_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertEqual(body.count(compact_scan), 1)
+                for question in questions:
+                    self.assertEqual(body.count(question), 1)
+                self.assertIn("Do not wait for the user to name the method.", body)
+                self.assertIn(
+                    "The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.",
+                    body,
+                )
+                self.assertIn("do not build a Cartesian inventory.", body)
+
+    def test_progressive_guidance_keeps_stage_ownership_and_slice_routing(self) -> None:
+        expected_owner_text = {
+            "spec": "Author the normative applicability, boundary, interaction, and example-ownership record.",
+            "spec-review": "Judge applicability, boundary completeness, interactions, invariants, outcomes, and example ownership.",
+            "test-spec": "Map every applicable boundary and selected interaction to proof without inventing contract IDs.",
+            "test-spec-review": "Judge proof adequacy, negative coverage, fixtures, command ownership, and manual-proof boundaries.",
+        }
+        for skill_name, phrase in expected_owner_text.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertIn(phrase, body)
+
+        downstream = {
+            "plan",
+            "plan-review",
+            "implement",
+            "code-review",
+            "verify",
+        }
+        for skill_name in downstream:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertIn(
+                    "Start with the exact approved rows cited for the current decision.",
+                    body,
+                )
+                self.assertIn(
+                    "A new or changed normative outcome routes to `spec`; a proof-only gap routes to `test-spec`.",
+                    body,
+                )
+                self.assertNotIn(
+                    "references/boundary-first-feature-authoring-v1.md",
+                    body,
+                )
+                self.assertNotIn("references/boundary-first-proof-v1.md", body)
+
+    def test_progressive_guidance_distinguishes_activation_and_revision_states(self) -> None:
+        for skill_name in self.GOVERNED_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertIn("`pending` never claims active adoption", body)
+                self.assertIn(
+                    "after activation, new behavior-changing specs adopt automatically",
+                    body,
+                )
+                self.assertIn(
+                    "grandfathered non-substantive revisions remain valid",
+                    body,
+                )
+                self.assertIn(
+                    "`spec-review` must block an undecidable substantive-revision classification",
+                    body,
+                )
+
     def test_skill_validation_bounds_manifest_contract_failures(self) -> None:
         for case in ("missing", "unknown-schema"):
             with self.subTest(case=case), tempfile.TemporaryDirectory() as temporary:

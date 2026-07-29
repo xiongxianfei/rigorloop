@@ -146,6 +146,21 @@ Escalate to full `change.yaml` reads for forensic reconstruction, unsupported-sh
 
 ## Boundary-first method
 
+Run this compact scan before any stage-owned decision that can change observable behavior, and whenever the input cites an active boundary contract or stable boundary, interaction, or proof ID. Do not wait for the user to name the method.
+
+1. Which inputs or actors can change the outcome?
+2. Which state or timing conditions can change the outcome?
+3. Which public, sibling, helper, or alternate path can change the outcome?
+4. Which failure, retry, recovery, compatibility, or external condition can change the outcome?
+
+If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
+
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`; a proof-only gap routes to `test-spec`. Downstream stages do not redefine or rename upstream IDs.
+
+Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
+
+Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Structural validation cannot author, repair, or approve semantic content.
+
 Inspect composed public, helper, sibling, failure, stale, recovery, and escaped-boundary paths.
 
 Compare the actual diff and tests with exact approved boundary and interaction IDs. Stop clean handoff and record a finding when helper proof substitutes for a public or sibling path, a failure or recovery path is unproved, implementation escapes the approved boundary class, or cited evidence is stale or broader than its claim.
