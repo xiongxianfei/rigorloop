@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import unittest
+from unittest import mock
 import math
 import tempfile
 import textwrap
@@ -8017,14 +8018,23 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
             "forbidden_guidance",
         }
         seen: set[str] = set()
+        valid_rows: list[dict[str, object]] = []
         for case in fixture["cases"]:
             if not isinstance(case, dict) or set(case) != required_fields:
                 errors.append("case must use the closed progressive contract")
                 continue
-            if case["case_id"] in seen:
-                errors.append(f"duplicate case {case['case_id']}")
-            seen.add(case["case_id"])
-            if case["skill"] not in self.GOVERNED_SKILLS:
+            case_id = case["case_id"]
+            if (
+                not isinstance(case_id, str)
+                or case_id not in self.REQUIRED_PROGRESSIVE_CASE_IDS
+            ):
+                errors.append("case_id value is not in the closed vocabulary")
+                continue
+            if case_id in seen:
+                errors.append(f"duplicate case {case_id}")
+                continue
+            skill = case["skill"]
+            if not isinstance(skill, str) or skill not in self.GOVERNED_SKILLS:
                 errors.append(f"{case['case_id']}: unknown skill")
                 continue
             vocabulary_error = False
@@ -8056,6 +8066,8 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
                     vocabulary_error = True
             if vocabulary_error:
                 continue
+            seen.add(case_id)
+            valid_rows.append(case)
             if (
                 case["outcome_state"] in {"new-normative", "semantic-gap"}
                 or case["path_state"] == "ownerless"
@@ -8083,16 +8095,12 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
                 if phrase in body:
                     errors.append(f"{case['case_id']}: forbidden guidance {phrase!r}")
 
-        covered_skills = {
-            case["skill"] for case in fixture["cases"] if isinstance(case, dict)
-        }
+        covered_skills = {case["skill"] for case in valid_rows}
         if covered_skills != self.GOVERNED_SKILLS:
             errors.append("progressive cases must cover every governed skill")
         if seen != self.REQUIRED_PROGRESSIVE_CASE_IDS:
             errors.append("progressive cases must cover every required semantic property")
-        covered_identities = {
-            case["identity_state"] for case in fixture["cases"] if isinstance(case, dict)
-        }
+        covered_identities = {case["identity_state"] for case in valid_rows}
         required_identities = {
             "missing",
             "stale",
@@ -8215,6 +8223,62 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
                     "every required semantic property",
                     " ".join(self.progressive_semantic_errors(mutated)),
                 )
+
+    def test_progressive_semantic_oracle_rejects_identity_and_shape_before_decision(
+        self,
+    ) -> None:
+        fixture = self.progressive_fixture()
+        target_index = next(
+            index
+            for index, case in enumerate(fixture["cases"])
+            if case["case_id"] == "progressive.sufficient-slice"
+        )
+        mutations: list[dict[str, object]] = []
+
+        unknown_case = json.loads(json.dumps(fixture))
+        unknown_case["cases"][target_index]["case_id"] = "progressive.future-property"
+        mutations.append(unknown_case)
+
+        invalid_case_type = json.loads(json.dumps(fixture))
+        invalid_case_type["cases"][target_index]["case_id"] = ["not", "hashable"]
+        mutations.append(invalid_case_type)
+
+        unknown_skill = json.loads(json.dumps(fixture))
+        unknown_skill["cases"][target_index]["skill"] = "future-skill"
+        mutations.append(unknown_skill)
+
+        invalid_skill_type = json.loads(json.dumps(fixture))
+        invalid_skill_type["cases"][target_index]["skill"] = ["plan"]
+        mutations.append(invalid_skill_type)
+
+        missing_field = json.loads(json.dumps(fixture))
+        del missing_field["cases"][target_index]["identity_state"]
+        mutations.append(missing_field)
+
+        extra_field = json.loads(json.dumps(fixture))
+        extra_field["cases"][target_index]["future_field"] = "value"
+        mutations.append(extra_field)
+
+        non_dictionary_row = json.loads(json.dumps(fixture))
+        non_dictionary_row["cases"][target_index] = "invalid-row"
+        mutations.append(non_dictionary_row)
+
+        for mutation in mutations:
+            mutation["cases"] = [mutation["cases"][target_index]]
+
+        for index, mutation in enumerate(mutations):
+            with self.subTest(mutation=index), mock.patch.object(
+                self,
+                "progressive_decision",
+                wraps=self.progressive_decision,
+            ) as decision:
+                errors = self.progressive_semantic_errors(mutation)
+                self.assertNotEqual(errors, [])
+                decision.assert_not_called()
+
+        reordered = self.progressive_fixture()
+        reordered["cases"].reverse()
+        self.assertEqual(self.progressive_semantic_errors(reordered), [])
 
     def test_skill_validation_bounds_manifest_contract_failures(self) -> None:
         for case in ("missing", "unknown-schema"):

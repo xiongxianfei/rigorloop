@@ -33,7 +33,7 @@ The exact shared-block test failed once for each of the ten governed skills befo
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-skill-validator.py` | pass, 279 tests with 16 documented skips |
+| `python scripts/test-skill-validator.py` | pass, 280 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skill files |
 | `python scripts/build-skills.py --check` | pass using temporary generated output |
 | `python scripts/project-boundary-first-reference.py --check` | pass, 14 projections |
@@ -60,3 +60,12 @@ The complete M2 skill suite passed after the correction and is awaiting independ
 - Unknown-value mutations cover every closed field. Invalid-type mutations cover every boolean. Removal mutations cover every required semantic property by stable case ID.
 
 The complete M2 skill suite passed after the correction and is awaiting independent R3 review.
+
+## R3 finding correction
+
+- `CR-M2-R3-001`: row shape, closed case IDs, and closed skill IDs are validated before duplicate checks, guidance access, decision evaluation, or coverage aggregation.
+- Only fully validated rows contribute to coverage.
+- Unknown and invalid-type case or skill identities, missing and extra fields, and non-dictionary rows return bounded errors without invoking the oracle.
+- Reordered valid cases still pass, proving coverage is stable-ID based.
+
+The complete M2 skill suite passed after the correction and is awaiting independent R4 review.
