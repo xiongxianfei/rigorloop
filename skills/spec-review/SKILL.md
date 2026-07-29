@@ -65,6 +65,21 @@ Use `docs/workflows.md` only for artifact types it specifies. If it is present b
 
 Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
 
+## Change-record review settlement
+
+Before settlement, read the complete `change.yaml` and require
+`lifecycle_contract: stage-owned-change-local-v1`. Resolve exactly one spec
+entry by the artifact ID, `kind`, and normalized `path` named by the review.
+Require `review-required` and complete authoring evidence. Write the durable
+review record first, then remove `authoring_evidence`, set the exact `review`
+mapping (`id`, `artifact_id`, `outcome`, `record`, and `round`), and map
+`approved` to `approved`, `changes-requested` to `revision-required`, and
+`blocked` or `inconclusive` to `blocked`. Preserve every other entry and
+`workflow_state`. Retry identical incomplete settlement without rerunning the
+review; stop on conflicting review-ID reuse, ambiguity, an illegal transition,
+or failed available change-metadata validation. An independent invocation
+settles this entry and stops without advancing routing.
+
 ## Resource map
 
 - READ `references/boundary-first-method-v1.md` when reviewing an adopting boundary record or deciding whether a grandfathered spec revision is substantive.

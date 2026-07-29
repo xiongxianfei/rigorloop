@@ -95,6 +95,21 @@ scope, option, or vision-fit questions.
 Full `change.yaml` reads remain valid for forensic reconstruction,
 unsupported-shape diagnostics, disputed evidence, and whole-record review.
 
+## Change-record review settlement
+
+Before settlement, read the complete `change.yaml` and require
+`lifecycle_contract: stage-owned-change-local-v1`. Resolve exactly one
+proposal entry by the artifact ID, `kind`, and normalized `path` named by the
+review. Require `review-required` and complete authoring evidence. Write the
+durable review record first, then remove `authoring_evidence`, set the exact
+`review` mapping (`id`, `artifact_id`, `outcome`, `record`, and `round`), and
+map `approved` to `accepted`, `changes-requested` to `revision-required`, and
+`blocked` or `inconclusive` to `blocked`. Preserve every other entry and
+`workflow_state`. Retry identical incomplete settlement without rerunning the
+review; stop on conflicting review-ID reuse, ambiguity, an illegal transition,
+or failed available change-metadata validation. An independent invocation
+settles this entry and stops without advancing routing.
+
 ## Resource map
 
 - COPY `assets/review-result-skeleton.md` when producing the proposal-review result artifact.

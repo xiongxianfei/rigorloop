@@ -155,6 +155,19 @@ Workflow consumes settled evidence and owns routing and planned-work
 transitions.
 No stage may update an upstream artifact as workflow bookkeeping.
 
+Before mutating a governed record, read the complete `change.yaml` and require
+`lifecycle_contract: stage-owned-change-local-v1`. Create that marker for a
+new governed change or migrate resumed nonterminal historical work before its
+first mutation; never mutate a historical read. Derive routing only from
+current artifact settlement and stage-owned evidence. Update only
+`workflow_state`, the selected `workflow.automation` target state, and
+workflow-owned transition evidence; preserve `artifact_states` and all
+stage-owned evidence. Keep `workflow_state` to lifecycle state, current and
+next stage, blocker, evidence pointers, and `planned_work` only when a primary
+plan exists. Stop on stale or contradictory evidence, an illegal transition,
+or failed available change-metadata validation instead of repairing another
+stage's state.
+
 ## Project workflow guide
 
 The workflow skill creates or refreshes the project workflow guide and artifact-location map. The guide tells users where artifacts go; the owning stage skill still authors its own artifact content, artifact schemas, stage-specific rules, and portable defaults.

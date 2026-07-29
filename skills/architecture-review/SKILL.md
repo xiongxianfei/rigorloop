@@ -29,6 +29,24 @@ Read:
 
 Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, arc42 section numbers, ADR IDs, diagram paths, file paths, and line citations. Expand from targeted sections only when the narrower evidence is insufficient.
 
+## Change-record review settlement
+
+Before settlement, read the complete `change.yaml` and require
+`lifecycle_contract: stage-owned-change-local-v1`. Resolve every reviewed
+architecture or ADR entry by the artifact ID, `kind`, and normalized `path`
+named by the review; never select by kind alone. Require `review-required` and
+complete authoring evidence. Write the durable review record first, then
+remove `authoring_evidence` and set each target's exact `review` mapping
+(`id`, `artifact_id`, `outcome`, `record`, and `round`). Map an approved
+architecture to `approved`; for an approved ADR, also record
+`adr_settlement: accepted` or `active` and use that exact state. Map
+`changes-requested` to `revision-required`, and `blocked` or `inconclusive` to
+`blocked`. Preserve every other entry and `workflow_state`. Retry identical
+incomplete settlement without rerunning the review; stop on conflicting
+review-ID reuse, ambiguity, an illegal transition, or failed available
+change-metadata validation. An independent invocation settles only its named
+targets and stops without advancing routing.
+
 ## Artifact placement
 
 Use the project workflow guide for artifact locations when placement matters.

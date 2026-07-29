@@ -27,6 +27,22 @@ Write review evidence first, then settle only the matching plan entry in
 Treat the plan, upstream artifacts, other artifact entries, milestone state,
 and routing as read-only.
 
+## Change-record review settlement
+
+Before settlement, read the complete `change.yaml` and require
+`lifecycle_contract: stage-owned-change-local-v1`. Resolve exactly one plan
+entry by the artifact ID, `kind`, and normalized `path` named by the review.
+Require `review-required` and complete authoring evidence. Write the durable
+review record first, then remove `authoring_evidence`, set the exact `review`
+mapping (`id`, `artifact_id`, `outcome`, `record`, and `round`), and map
+`approved` to `active`, `changes-requested` to `revision-required`, and
+`blocked` or `inconclusive` to `blocked`. Preserve every other entry,
+milestone state, and routing. Retry identical incomplete settlement without
+rerunning the review; stop on conflicting review-ID reuse, ambiguity, an
+illegal transition, or failed available change-metadata validation. An
+independent invocation settles this entry and stops without advancing
+routing.
+
 ## Inputs to read
 
 Read the concrete plan file first, not just an index. Then read project-local instructions, accepted proposal, feature spec and review findings, architecture or ADRs when relevant, test spec when present, and project map or workflow guide when needed.

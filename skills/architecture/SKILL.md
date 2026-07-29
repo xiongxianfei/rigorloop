@@ -37,6 +37,22 @@ Do not normalize status in the spec or settle its change-local entry.
 If settlement is missing or contradictory, record the blocker and route to
 `spec-review`.
 
+## Change-record authoring transition
+
+For a governed change, read the complete `change.yaml` before writing.
+Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing
+marker to `workflow` for creation or migration instead of inventing state.
+Resolve each architecture or ADR target by its exact artifact ID, `kind`, and
+normalized `path`; never select by kind alone. For a new target, create only
+that entry with a unique stable ID, the exact architecture or ADR kind,
+normalized path, and explicit role. Before creating or substantively revising
+one target, set only its entry to `authoring`, remove any prior `review`, and
+set `authoring_evidence` to its architecture-authoring record path. After that
+artifact and authoring record are complete, set the same entry to
+`review-required`. Preserve every other entry and `workflow_state`. Stop on an
+ambiguous entry, illegal transition, or failed available change-metadata
+validation.
+
 ## Architecture Surface Decision
 
 Choose the smallest valid architecture action.

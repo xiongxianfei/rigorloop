@@ -20,6 +20,21 @@ You turn exploration into a reviewable direction. A proposal answers why this ch
 - summary: Author the proposal artifact recording problem, options, recommendation, scope, risks, and readiness.
 - must_not_claim: proposal-review approval, spec readiness, implementation readiness, verification, branch readiness, or PR readiness.
 
+## Change-record authoring transition
+
+For a governed change, read the complete `change.yaml` before writing.
+Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing
+marker to `workflow` for creation or migration instead of inventing state.
+Resolve exactly one proposal entry by artifact ID, `kind`, and normalized
+`path`; for a new proposal, create only that entry with a unique stable ID,
+`kind: proposal`, normalized path, and explicit role. Before creating or
+substantively revising the proposal, set only that entry to `authoring`, remove
+any prior `review`, and set
+`authoring_evidence` to the proposal-authoring record path. After the proposal
+and authoring record are complete, set the same entry to `review-required`.
+Preserve every other entry and `workflow_state`. Stop on an ambiguous entry,
+illegal transition, or failed available change-metadata validation.
+
 ## Project-local evidence
 
 Public skills operate in customer-project mode by default.
