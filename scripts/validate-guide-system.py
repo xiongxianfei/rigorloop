@@ -25,10 +25,9 @@ PRIMARY_GUIDE_LINKS = (
 )
 
 PLAN_INDEX_REQUIRED_HEADINGS = (
-    "## Active",
-    "## Blocked",
+    "## Current plan references",
     "## Done (recent)",
-    "## Superseded",
+    "## Historical replacements",
 )
 
 PLAN_INDEX_FORBIDDEN_HEADINGS = (
@@ -156,7 +155,11 @@ def _validate_plan_index(repo: Path, messages: list[str]) -> None:
     missing = [heading for heading in PLAN_INDEX_REQUIRED_HEADINGS if not _has_heading(text, heading)]
     forbidden = [heading for heading in PLAN_INDEX_FORBIDDEN_HEADINGS if _has_heading(text, heading)]
     lower = text.lower()
-    index_boundary_present = "bounded lifecycle index" in lower or "not the body of a plan" in lower
+    index_boundary_present = (
+        "navigation index" in lower
+        and "owning change" in lower
+        and "change.yaml" in lower
+    )
     if missing or forbidden or not index_boundary_present:
         detail = []
         if missing:
@@ -165,7 +168,10 @@ def _validate_plan_index(repo: Path, messages: list[str]) -> None:
             detail.append("forbidden " + ", ".join(forbidden))
         if not index_boundary_present:
             detail.append("missing bounded-index boundary wording")
-        messages.append("GUIDE-005: docs/plan.md must remain a bounded live-work index; " + "; ".join(detail))
+        messages.append(
+            "GUIDE-005: docs/plan.md must remain a navigation index to stable "
+            "plan bodies and owning change records; " + "; ".join(detail)
+        )
 
 
 def _validate_learn_sessions(repo: Path, messages: list[str]) -> None:
