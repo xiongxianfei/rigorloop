@@ -32,6 +32,7 @@ Review closeout: code-review-m4-r3
 Review closeout: code-review-m4-r4
 Review closeout: code-review-m4-r5
 Review closeout: code-review-m4-r6
+Review closeout: code-review-m4-r7
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -41,10 +42,10 @@ Review closeout: code-review-m4-r6
   `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`,
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
   `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`,
-  `code-review-m4-r5`, `code-review-m4-r6`
+  `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`
 - Findings resolved: 36
-- Unresolved findings: 0
-- Current result: M4 code-review R6 finding is resolved and awaits independent R7 confirmation.
+- Unresolved findings: 2
+- Current result: M4 code-review R7 requires HTML visible-text normalization and exact Codex command records.
 
 ## Resolution Overview
 
@@ -86,6 +87,8 @@ Review closeout: code-review-m4-r6
 | CR-M4-R4-002 | accepted | resolved | Explicit skill-name preflight runs before archive validation. |
 | CR-M4-R5-001 | accepted | resolved | One normalized whole-body occurrence domain rejects formatting and composed invocation corruption. |
 | CR-M4-R6-001 | accepted | resolved | HTML-normalized exact-block subtraction rejects every residual adapter label. |
+| CR-M4-R7-001 | accepted | open | Ordinary inline HTML must not hide residual adapter labels. |
+| CR-M4-R7-002 | accepted | open | Approved Codex commands must not be accepted as prefixes or substrings. |
 
 ## Finding Details
 
@@ -282,6 +285,32 @@ Chosen action: Decode HTML, subtract the exact equivalence block, and reject eve
 Rationale: Candidate discovery must not depend on a verb, identity, operation, argument, or formatting already being valid.
 Validation target: code-review-m4-r7
 Validation evidence: Codex, Claude, and OpenCode residual labels with alternate verbs, noun syntax, HTML, entities, wrong identity, and wrong operation all fail; all 142 adapter tests and the planned ten-skill command pass.
+
+### code-review-m4-r7
+
+#### CR-M4-R7-001 - Inline HTML hides residual adapter labels
+
+Finding ID: CR-M4-R7-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Normalize bounded inline HTML to visible text before residual-label rejection and add split-tag regressions for each adapter.
+Rationale: Residual-label closure must not depend on the absence of ordinary formatting tags.
+Validation target: code-review-m4-r8
+Validation evidence: pending
+
+#### CR-M4-R7-002 - Approved Codex commands are accepted as invalid prefixes
+
+Finding ID: CR-M4-R7-002
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Validate the exact multiset of dollar-command code spans before removing approved forms, then add prefix, suffix, and trailing-argument regressions.
+Rationale: An approved command substring does not make a malformed invocation valid.
+Validation target: code-review-m4-r8
+Validation evidence: pending
 
 ### code-review-m1-r1
 

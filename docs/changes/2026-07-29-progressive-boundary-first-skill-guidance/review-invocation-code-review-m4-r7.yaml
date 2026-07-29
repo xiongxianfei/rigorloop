@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: code-review-m4-r7
+review_stage: code-review
+review_target: commit:0ef98a01
+base_revision: 1dd4136b
+head_revision: 0ef98a01
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r6-resolution
+reviewer_context_id: m4-r7-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [html-visible-text-normalization, exact-command-boundaries, fail-closed-parsing]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:0ef98a01.diff
+    revision: 0ef98a01
+    sha256: 0f5a915ea1ec26b427c7995b8e51a6309a135a9b729fa022b1db628c85b7b963
+initial_packet_sha256: 0f5a915ea1ec26b427c7995b8e51a6309a135a9b729fa022b1db628c85b7b963
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r7-second-review}
+requirement_fidelity:
+  applicability: applicable
+  reason: Adapter invocation closure and portability are spec-derived.
+risk_map:
+  affected_behavior: cross-adapter workflow invocation portability
+  highest_impact_failure_modes: markup hides adapter labels or approved commands are accepted as invalid prefixes
+  changed_boundaries: inline HTML, code spans, command prefixes, suffixes, and trailing arguments
+  evidence_expected: normalized visible-text closure and exact approved command records
+  direct_inspection_areas: portability parser and mutation matrix
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, fail-closed-input]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Can inline HTML split a residual adapter label?
+    - Can an approved Codex command survive as a prefix or substring of an invalid command?
