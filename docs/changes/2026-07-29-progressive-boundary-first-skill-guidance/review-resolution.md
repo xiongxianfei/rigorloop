@@ -21,15 +21,17 @@ Review closeout: code-review-m1-r5
 Review closeout: code-review-m1-r6
 Review closeout: code-review-m1-r7
 Review closeout: code-review-m1-r8
+Review closeout: code-review-m2-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
   `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`,
   `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`,
-  `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`
+  `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`,
+  `code-review-m2-r1`
 - Findings resolved: 22
-- Unresolved findings: 0
-- Current result: M1 code-review R8 is clean-with-notes; M1 is closed and M2 may begin.
+- Unresolved findings: 1
+- Current result: M2 code-review R1 requests changes; implementation must resolve CR-M2-R1-001 before rereview.
 
 ## Resolution Overview
 
@@ -57,8 +59,23 @@ Review closeout: code-review-m1-r8
 | CR-M1-R7-001 | rejected | resolved | The approved contract does not require exclusion of non-cooperative writes after the linearization read. |
 | CR-M1-R7-002 | accepted | resolved | Descriptor-relative no-follow writes prevent outside mutation and recovery aggregates unsafe paths. |
 | CR-M1-R7-003 | accepted | resolved | Identity diagnostics name affected stable resource layers. |
+| CR-M2-R1-001 | accepted | open | Replace the self-asserting semantic fixture check with independent decision derivation and complete M2 partitions. |
 
 ## Finding Details
+
+### code-review-m2-r1
+
+#### CR-M2-R1-001 - Semantic scenario proof does not validate scenario decisions
+
+Finding ID: CR-M2-R1-001
+Disposition: accepted
+Status: open
+Owner: M2 implementation
+Owning stage: review-resolution
+Chosen action: Add an independent test oracle, complete the distinct scenario matrix, bind cases to shipped guidance, and prove contradictory mutations fail.
+Rationale: Fixture-authored expected values cannot prove their own semantic correctness.
+Validation target: code-review-m2-r2
+Validation evidence: pending
 
 ### code-review-m1-r1
 

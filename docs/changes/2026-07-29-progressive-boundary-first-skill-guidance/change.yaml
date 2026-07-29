@@ -73,8 +73,8 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: implement
-  next_stage: code-review
+  current_stage: review-resolution
+  next_stage: implement
   blocker: null
   evidence:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-r2.md
@@ -88,6 +88,7 @@ workflow_state:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r7.md
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r8.md
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/m2-skill-guidance.md
+    - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m2-r1.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M2
@@ -109,14 +110,14 @@ workflow_state:
       - M3
       - M4
     latest_review:
-      status: not-started
+      status: changes-requested
       stage: code-review
       round: r1
       artifact_id: plan
       occurrence: milestone
       milestone_id: M2
       evidence:
-        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r8.md
+        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m2-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -451,6 +452,6 @@ changed_files:
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/review-invocation-code-review-m1-r8.yaml
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r8.md
 review:
-  status: approved
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 1
 workflow: {}
