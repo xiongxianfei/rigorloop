@@ -13,22 +13,23 @@ Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
-Review pending closeout: code-review-m1-r1
-Review pending closeout: code-review-m1-r2
-Review pending closeout: code-review-m1-r3
-Review pending closeout: code-review-m1-r4
-Review pending closeout: code-review-m1-r5
-Review pending closeout: code-review-m1-r6
-Review pending closeout: code-review-m1-r7
+Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
+Review closeout: code-review-m1-r3
+Review closeout: code-review-m1-r4
+Review closeout: code-review-m1-r5
+Review closeout: code-review-m1-r6
+Review closeout: code-review-m1-r7
+Review closeout: code-review-m1-r8
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
   `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`,
   `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`,
   `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`
-- Findings resolved: 20
-- Unresolved findings: 2
-- Current result: M1 code-review R7 requires containment-safe writes and resource-layer diagnostics; its unbounded post-read concurrency request is rejected against the approved contract.
+- Findings resolved: 22
+- Unresolved findings: 0
+- Current result: M1 code-review R8 is clean-with-notes; M1 is closed and M2 may begin.
 
 ## Resolution Overview
 
@@ -54,8 +55,8 @@ Review pending closeout: code-review-m1-r7
 | CR-M1-R5-002 | accepted | resolved | Symlink inventory is scoped to governed boundary resources. |
 | CR-M1-R6-001 | accepted | resolved | Drift through the final stability barrier restores targets; success binds the reported snapshot identity. |
 | CR-M1-R7-001 | rejected | resolved | The approved contract does not require exclusion of non-cooperative writes after the linearization read. |
-| CR-M1-R7-002 | accepted | open | Prevent symlink-following writes and aggregate unsafe restoration paths. |
-| CR-M1-R7-003 | accepted | open | Name affected stable resource layers in identity diagnostics. |
+| CR-M1-R7-002 | accepted | resolved | Descriptor-relative no-follow writes prevent outside mutation and recovery aggregates unsafe paths. |
+| CR-M1-R7-003 | accepted | resolved | Identity diagnostics name affected stable resource layers. |
 
 ## Finding Details
 
@@ -258,7 +259,7 @@ Validation evidence: Static contract interpretation plus existing snapshot-ident
 
 Finding ID: CR-M1-R7-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Use descriptor-relative no-follow target operations and aggregate restoration path failures.
@@ -270,13 +271,20 @@ Validation evidence: A target-parent swap cannot write outside; restoration cont
 
 Finding ID: CR-M1-R7-003
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Add opaque per-layer diagnostic identities and report differing stable resource IDs.
 Rationale: PBS-R037 requires the affected resource layer without requiring disclosure of rejected values.
 Validation target: code-review-m1-r8
 Validation evidence: Exact compact, feature-authoring, and proof tuple mutations identify the affected stable layer while retaining one-way offending identities in the 28-test projection suite; independent R8 confirmation remains pending.
+
+### code-review-m1-r8
+
+Status: approved
+Material findings: none
+Resolution required: no new findings
+Evidence: reviews/code-review-m1-r8.md
 
 ### proposal-review-r1
 
