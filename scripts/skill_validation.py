@@ -12,7 +12,11 @@ from pathlib import Path
 from boundary_first_reference import (
     GOVERNED_SKILLS as BOUNDARY_FIRST_GOVERNED_SKILLS,
 )
-from boundary_first_reference import load_resource_manifest
+from boundary_first_reference import (
+    ProjectionContractError,
+    format_contract_error,
+    load_resource_manifest,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -3553,7 +3557,20 @@ def validate_skill_tree(target: Path, *, allow_generated: bool = False) -> Valid
             errors.append(f"{path}: missing required skill file")
             continue
         checked_files.append(path)
-        file_errors, name = validate_skill_file(path, schema)
+        try:
+            file_errors, name = validate_skill_file(path, schema)
+        except ProjectionContractError as exc:
+            try:
+                diagnostic_path = path.resolve().relative_to(
+                    ROOT.resolve()
+                ).as_posix()
+            except ValueError:
+                diagnostic_path = "<external-skill>"
+            file_errors = [
+                f"{diagnostic_path}: boundary resource contract invalid: "
+                f"{format_contract_error(exc)}"
+            ]
+            name = None
         errors.extend(file_errors)
         if (
             name in REVIEW_FAMILY_FIRST_SLICE_SKILLS

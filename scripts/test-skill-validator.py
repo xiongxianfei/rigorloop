@@ -7779,6 +7779,41 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
 
 
 class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
+    def test_skill_validation_bounds_manifest_contract_failures(self) -> None:
+        for case in ("missing", "unknown-schema"):
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                shutil.copytree(ROOT / "scripts", root / "scripts")
+                shutil.copytree(ROOT / "schemas", root / "schemas")
+                shutil.copytree(ROOT / "skills" / "spec", root / "skills" / "spec")
+                (root / "specs").mkdir()
+                if case == "unknown-schema":
+                    manifest = (
+                        ROOT / "specs" / "boundary-first-resources.yaml"
+                    ).read_text(encoding="utf-8")
+                    (root / "specs" / "boundary-first-resources.yaml").write_text(
+                        manifest.replace("schema_version: 1", "schema_version: 2"),
+                        encoding="utf-8",
+                    )
+
+                completed = subprocess.run(
+                    [
+                        sys.executable,
+                        str(root / "scripts" / "validate-skills.py"),
+                        str(root / "skills" / "spec"),
+                    ],
+                    capture_output=True,
+                    text=True,
+                    cwd=root,
+                )
+                combined = completed.stdout + completed.stderr
+
+                self.assertEqual(completed.returncode, 1)
+                self.assertIn("boundary resource contract invalid", combined)
+                self.assertIn("specs/boundary-first-resources.yaml", combined)
+                self.assertNotIn("Traceback", combined)
+                self.assertNotIn(str(root), combined)
+
     GOVERNED_SKILLS = {
         "workflow",
         "spec",
