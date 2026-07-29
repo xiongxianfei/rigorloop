@@ -1,0 +1,100 @@
+{
+  "cases": [
+    {
+      "case_id": "progressive.unnamed-active-behavior",
+      "skill": "spec",
+      "behavior_change": true,
+      "user_named_method": false,
+      "capability_state": "active",
+      "identity_state": "none",
+      "outcome_state": "owned",
+      "path_state": "direct",
+      "expected_action": "formalize",
+      "expected_route": "none"
+    },
+    {
+      "case_id": "progressive.named-non-behavior",
+      "skill": "workflow",
+      "behavior_change": false,
+      "user_named_method": true,
+      "capability_state": "active",
+      "identity_state": "none",
+      "outcome_state": "unchanged",
+      "path_state": "direct",
+      "expected_action": "continue-ordinary",
+      "expected_route": "none"
+    },
+    {
+      "case_id": "progressive.pending-behavior",
+      "skill": "spec",
+      "behavior_change": true,
+      "user_named_method": false,
+      "capability_state": "pending",
+      "identity_state": "none",
+      "outcome_state": "owned",
+      "path_state": "direct",
+      "expected_action": "no-active-claim",
+      "expected_route": "none"
+    },
+    {
+      "case_id": "progressive.grandfathered-formatting",
+      "skill": "spec-review",
+      "behavior_change": false,
+      "user_named_method": false,
+      "capability_state": "active",
+      "identity_state": "grandfathered",
+      "outcome_state": "unchanged",
+      "path_state": "direct",
+      "expected_action": "remain-valid",
+      "expected_route": "none"
+    },
+    {
+      "case_id": "progressive.unknown-id",
+      "skill": "implement",
+      "behavior_change": true,
+      "user_named_method": false,
+      "capability_state": "active",
+      "identity_state": "unknown",
+      "outcome_state": "owned",
+      "path_state": "direct",
+      "expected_action": "expand",
+      "expected_route": "none"
+    },
+    {
+      "case_id": "progressive.new-outcome",
+      "skill": "code-review",
+      "behavior_change": true,
+      "user_named_method": false,
+      "capability_state": "active",
+      "identity_state": "known",
+      "outcome_state": "new-normative",
+      "path_state": "escaped",
+      "expected_action": "stop",
+      "expected_route": "spec"
+    },
+    {
+      "case_id": "progressive.proof-only-gap",
+      "skill": "verify",
+      "behavior_change": true,
+      "user_named_method": false,
+      "capability_state": "active",
+      "identity_state": "known",
+      "outcome_state": "proof-gap",
+      "path_state": "sibling-material",
+      "expected_action": "stop",
+      "expected_route": "test-spec"
+    },
+    {
+      "case_id": "progressive.duplicate-combination",
+      "skill": "test-spec",
+      "behavior_change": true,
+      "user_named_method": false,
+      "capability_state": "active",
+      "identity_state": "known",
+      "outcome_state": "already-proved",
+      "path_state": "duplicate",
+      "expected_action": "stop-scenarios",
+      "expected_route": "none"
+    }
+  ]
+}

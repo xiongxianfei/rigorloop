@@ -7864,6 +7864,77 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
                     body,
                 )
 
+    def test_progressive_semantic_scenarios_are_closed_and_supported(self) -> None:
+        fixture = json.loads(
+            (
+                ROOT
+                / "scripts"
+                / "fixtures"
+                / "boundary-first"
+                / "semantic"
+                / "progressive-cases.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(set(fixture), {"cases"})
+        required_fields = {
+            "case_id",
+            "skill",
+            "behavior_change",
+            "user_named_method",
+            "capability_state",
+            "identity_state",
+            "outcome_state",
+            "path_state",
+            "expected_action",
+            "expected_route",
+        }
+        actions = {
+            "formalize",
+            "continue-ordinary",
+            "no-active-claim",
+            "remain-valid",
+            "expand",
+            "stop",
+            "stop-scenarios",
+        }
+        routes = {"none", "spec", "test-spec"}
+        seen: set[str] = set()
+        for case in fixture["cases"]:
+            self.assertEqual(set(case), required_fields)
+            self.assertNotIn(case["case_id"], seen)
+            seen.add(case["case_id"])
+            self.assertIn(case["skill"], self.GOVERNED_SKILLS)
+            self.assertIn(case["expected_action"], actions)
+            self.assertIn(case["expected_route"], routes)
+
+        by_id = {case["case_id"]: case for case in fixture["cases"]}
+        self.assertFalse(by_id["progressive.unnamed-active-behavior"]["user_named_method"])
+        self.assertEqual(
+            by_id["progressive.unnamed-active-behavior"]["expected_action"],
+            "formalize",
+        )
+        self.assertTrue(by_id["progressive.named-non-behavior"]["user_named_method"])
+        self.assertEqual(
+            by_id["progressive.named-non-behavior"]["expected_action"],
+            "continue-ordinary",
+        )
+        self.assertEqual(
+            by_id["progressive.pending-behavior"]["expected_action"],
+            "no-active-claim",
+        )
+        self.assertEqual(
+            by_id["progressive.new-outcome"]["expected_route"],
+            "spec",
+        )
+        self.assertEqual(
+            by_id["progressive.proof-only-gap"]["expected_route"],
+            "test-spec",
+        )
+        self.assertEqual(
+            by_id["progressive.duplicate-combination"]["expected_action"],
+            "stop-scenarios",
+        )
+
     def test_skill_validation_bounds_manifest_contract_failures(self) -> None:
         for case in ("missing", "unknown-schema"):
             with self.subTest(case=case), tempfile.TemporaryDirectory() as temporary:

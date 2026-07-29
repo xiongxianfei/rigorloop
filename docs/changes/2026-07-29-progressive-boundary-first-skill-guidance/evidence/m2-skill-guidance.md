@@ -33,7 +33,7 @@ The exact shared-block test failed once for each of the ten governed skills befo
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-skill-validator.py` | pass, 276 tests with 16 documented skips |
+| `python scripts/test-skill-validator.py` | pass, 277 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skill files |
 | `python scripts/build-skills.py --check` | pass using temporary generated output |
 | `python scripts/project-boundary-first-reference.py --check` | pass, 14 projections |
