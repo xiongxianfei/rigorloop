@@ -772,6 +772,31 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                     {issue.code for issue in validate_activation(root)},
                 )
 
+    def test_activation_preserves_manifest_error_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            manifest = root / "specs/boundary-first-resources.yaml"
+            manifest.write_text(
+                manifest.read_text(encoding="utf-8").replace(
+                    "contract_version: boundary-first-v1",
+                    "contract_version: boundary-first-v2",
+                ),
+                encoding="utf-8",
+            )
+
+            issue = validate_activation(root)[0]
+
+            self.assertEqual(
+                issue.code,
+                "BFR-MANIFEST-CONTRACT-VERSION-UNKNOWN",
+            )
+            self.assertEqual(
+                issue.path,
+                "specs/boundary-first-resources.yaml",
+            )
+            self.assertIn("boundary-first-v1", issue.expected)
+
     def test_active_manifest_uses_parent_inventory_and_immediate_release(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

@@ -51,7 +51,7 @@ Owning stage: review-resolution
 Chosen action: Validate the manifest against one immutable exact resource contract and validate every canonical resource version before projection.
 Rationale: Generic containment and known-consumer membership do not prove the ADR-exact ownership matrix.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Exact known-consumer, source, target, and mixed-version mutations pass in `python scripts/test-boundary-first-reference.py`; full M1 validation passes pending independent R2 confirmation.
 
 #### CR-M1-R1-002 - Compact core omits the compact scan
 
@@ -63,7 +63,7 @@ Owning stage: review-resolution
 Chosen action: Add the exact PBS-R007 questions to the compact core, reproject, and refresh identities.
 Rationale: PBS-R012 assigns compact scan semantics to the compact resource independently of M2 stage-local invocation.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: The compact-core exact-question regression and 10 raw-byte projections pass in `python scripts/test-boundary-first-reference.py`; independent R2 confirmation remains pending.
 
 #### CR-M1-R1-003 - Interrupted writes leave a mixed tree
 
@@ -75,7 +75,7 @@ Owning stage: review-resolution
 Chosen action: Snapshot target state after preflight, restore on handled write failure, and prove early, middle, final, and retry paths.
 Rationale: T2 requires an interrupted-write proof, while current code proves only invalid-input preflight.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Injected early, middle, and final write failures restore all 14 targets, and retry passes in `python scripts/test-boundary-first-reference.py`; independent R2 confirmation remains pending.
 
 #### CR-M1-R1-004 - Activation diagnostics erase manifest failure identity
 
@@ -87,7 +87,7 @@ Owning stage: review-resolution
 Chosen action: Use structured projection errors and retain source check, path, expectation, and reason through activation validation.
 Rationale: PBS-R037 requires the actual affected resource and blocking reason.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Activation-level unknown-manifest-version proof preserves `BFR-MANIFEST-CONTRACT-VERSION-UNKNOWN` and the manifest path in `python scripts/test-boundary-first-validation.py`; independent R2 confirmation remains pending.
 
 ### proposal-review-r1
 

@@ -73,8 +73,8 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: review-resolution
-  next_stage: implement
+  current_stage: code-review
+  next_stage: review-resolution
   blocker: null
   evidence:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-r2.md
@@ -86,7 +86,7 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: resolution-needed
+        state: review-requested
       M2:
         kind: implementation
         state: planned
@@ -102,14 +102,14 @@ workflow_state:
       - M3
       - M4
     latest_review:
-      status: changes-requested
+      status: review-requested
       stage: code-review
-      round: r1
+      round: r2
       artifact_id: plan
       occurrence: milestone
       milestone_id: M1
       evidence:
-        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r1.md
+        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/m1-resource-projection.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -267,6 +267,18 @@ validation:
     result: pass_272_tests_16_documented_skips_m1
   - command: python scripts/validate-skills.py
     result: pass_24_skills_m1
+  - command: python scripts/test-boundary-first-reference.py
+    result: pass_19_tests_after_m1_review_resolution
+  - command: python scripts/project-boundary-first-reference.py --check
+    result: pass_14_projections_after_m1_review_resolution
+  - command: python scripts/test-boundary-first-validation.py
+    result: pass_58_tests_after_m1_review_resolution
+  - command: python scripts/validate-boundary-first.py --check
+    result: pass_after_m1_review_resolution
+  - command: python scripts/test-skill-validator.py
+    result: pass_272_tests_16_documented_skips_after_m1_review_resolution
+  - command: python scripts/validate-skills.py
+    result: pass_24_skills_after_m1_review_resolution
 changed_files:
   - docs/proposals/2026-07-29-progressive-boundary-first-skill-guidance.md
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml

@@ -27,6 +27,28 @@ GOVERNED_SKILLS = (
     "verify",
 )
 RESOURCE_IDS = ("compact-core", "feature-authoring", "proof")
+RESOURCE_CONTRACTS = (
+    (
+        "compact-core",
+        Path("specs/references/boundary-first-method-v1.md"),
+        Path("references/boundary-first-method-v1.md"),
+        GOVERNED_SKILLS,
+    ),
+    (
+        "feature-authoring",
+        Path(
+            "specs/references/boundary-first-feature-authoring-v1.md"
+        ),
+        Path("references/boundary-first-feature-authoring-v1.md"),
+        ("spec", "spec-review"),
+    ),
+    (
+        "proof",
+        Path("specs/references/boundary-first-proof-v1.md"),
+        Path("references/boundary-first-proof-v1.md"),
+        ("test-spec", "test-spec-review"),
+    ),
+)
 PROJECTION_MODES = frozenset({"check", "write"})
 _TOP_LEVEL_FIELDS = frozenset(
     {"schema_version", "contract_version", "resources"}
@@ -36,6 +58,27 @@ _RESOURCE_FIELDS = frozenset({"id", "source", "target", "consumers"})
 
 class ProjectionContractError(ValueError):
     """Raised when a closed projection input is invalid."""
+
+    def __init__(
+        self,
+        code_or_text: str,
+        *,
+        path: str = "-",
+        message: str = "",
+        offending_value: str = "-",
+        expected: str = "-",
+    ) -> None:
+        if ": " in code_or_text and not message:
+            code, detail = code_or_text.split(": ", 1)
+            message = detail
+        else:
+            code = code_or_text
+        self.code = code
+        self.path = path
+        self.message = message
+        self.offending_value = offending_value
+        self.expected = expected
+        super().__init__(f"{code}: {message}")
 
 
 @dataclass(frozen=True)
@@ -79,8 +122,18 @@ def inventory_digest(records: Mapping[str, str]) -> str:
     return raw_sha256(serialized)
 
 
-def _manifest_error(code: str, detail: str) -> ProjectionContractError:
-    return ProjectionContractError(f"BFR-MANIFEST-{code}: {detail}")
+def _manifest_error(
+    code: str,
+    detail: str,
+    *,
+    expected: str = "exact boundary-first resource manifest contract",
+) -> ProjectionContractError:
+    return ProjectionContractError(
+        f"BFR-MANIFEST-{code}",
+        path=RESOURCE_MANIFEST.as_posix(),
+        message=detail,
+        expected=expected,
+    )
 
 
 def _split_mapping(
@@ -242,12 +295,14 @@ def load_resource_manifest(root: Path) -> ResourceManifest:
         raise _manifest_error(
             "SCHEMA-VERSION-UNKNOWN",
             f"expected 1, got {schema_version!r}",
+            expected="1",
         )
     contract_version = data["contract_version"]
     if contract_version != METHOD_VERSION:
         raise _manifest_error(
             "CONTRACT-VERSION-UNKNOWN",
             f"expected {METHOD_VERSION}, got {contract_version!r}",
+            expected=METHOD_VERSION,
         )
 
     raw_resources = data["resources"]
@@ -321,6 +376,22 @@ def load_resource_manifest(root: Path) -> ResourceManifest:
             )
         )
 
+    actual_contract = tuple(
+        (
+            resource.resource_id,
+            resource.source,
+            resource.target,
+            resource.consumers,
+        )
+        for resource in resources
+    )
+    if actual_contract != RESOURCE_CONTRACTS:
+        raise _manifest_error(
+            "RESOURCE-TUPLE",
+            "resource source, target, or consumer tuple differs from "
+            "the closed boundary-first-v1 contract",
+        )
+
     return ResourceManifest(
         schema_version=1,
         contract_version=METHOD_VERSION,
@@ -358,6 +429,54 @@ def _repository_path(root: Path, relative: Path) -> Path:
                 + _relative_posix(current, root)
             )
     return current
+
+
+def _validate_resource_version(relative: Path, data: bytes) -> None:
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise ProjectionContractError(
+            "BFR-RESOURCE-ENCODING",
+            path=relative.as_posix(),
+            message="canonical resource must be UTF-8",
+            expected="UTF-8 text",
+        ) from exc
+    versions = [
+        line.partition(":")[2].strip()
+        for line in text.splitlines()
+        if line.startswith("Boundary model version:")
+    ]
+    if not versions or set(versions) != {METHOD_VERSION}:
+        raise ProjectionContractError(
+            "BFR-RESOURCE-VERSION-UNKNOWN",
+            path=relative.as_posix(),
+            message="canonical resource version is missing or unknown",
+            offending_value=", ".join(versions) if versions else "-",
+            expected=METHOD_VERSION,
+        )
+
+
+def _write_target_bytes(path: Path, data: bytes) -> None:
+    path.write_bytes(data)
+
+
+def _restore_targets(
+    root: Path,
+    snapshots: Mapping[Path, bytes | None],
+) -> tuple[str, ...]:
+    errors: list[str] = []
+    for relative, previous in reversed(tuple(snapshots.items())):
+        target = _repository_path(root, relative)
+        try:
+            if previous is None:
+                if target.exists():
+                    target.unlink()
+            else:
+                target.parent.mkdir(parents=True, exist_ok=True)
+                _write_target_bytes(target, previous)
+        except OSError:
+            errors.append(relative.as_posix())
+    return tuple(errors)
 
 
 def _unexpected_projections(
@@ -414,6 +533,7 @@ def project_reference(root: Path, *, mode: str) -> ProjectionResult:
                 f"BFR-SOURCE-MISSING: {resource.source.as_posix()}"
             )
         data = source.read_bytes()
+        _validate_resource_version(resource.source, data)
         source_bytes[resource.resource_id] = data
         source_hashes[resource.resource_id] = raw_sha256(data)
         for consumer in resource.consumers:
@@ -443,10 +563,36 @@ def project_reference(root: Path, *, mode: str) -> ProjectionResult:
         )
 
     if mode == "write":
-        for relative, data, _resource_id in operations:
-            target = _repository_path(repository_root, relative)
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(data)
+        snapshots = {
+            relative: (
+                _repository_path(repository_root, relative).read_bytes()
+                if _repository_path(repository_root, relative).is_file()
+                else None
+            )
+            for relative, _data, _resource_id in operations
+        }
+        try:
+            for relative, data, _resource_id in operations:
+                target = _repository_path(repository_root, relative)
+                target.parent.mkdir(parents=True, exist_ok=True)
+                _write_target_bytes(target, data)
+        except OSError as exc:
+            restore_errors = _restore_targets(
+                repository_root, snapshots
+            )
+            if restore_errors:
+                raise ProjectionContractError(
+                    "BFR-PROJECTION-RESTORE",
+                    path=", ".join(restore_errors),
+                    message="projection write failed and restoration was incomplete",
+                    expected="all prior target bytes restored",
+                ) from exc
+            raise ProjectionContractError(
+                "BFR-PROJECTION-WRITE",
+                path=relative.as_posix(),
+                message="projection write failed; prior target state restored",
+                expected="successful complete projection write",
+            ) from exc
 
     records: dict[str, str] = {}
     errors = list(preflight_errors)

@@ -5,6 +5,18 @@ Boundary model version: boundary-first-v1
 Use this compact core when a stage needs the shared boundary vocabulary or must interpret approved boundary, interaction, or proof IDs.
 Examples illustrate governed behavior; they never define the complete boundary.
 
+## Compact scan
+
+Before a qualifying stage-owned decision, ask:
+
+1. Which inputs or actors can change the outcome?
+2. Which state or timing conditions can change the outcome?
+3. Which public, sibling, helper, or alternate path can change the outcome?
+4. Which failure, retry, recovery, compatibility, or external condition can change the outcome?
+
+The scan identifies potentially outcome-changing conditions.
+It does not by itself create records, IDs, proof maps, artifacts, or a user-visible scenario inventory.
+
 ## Core dimensions
 
 Classify every core dimension exactly once.

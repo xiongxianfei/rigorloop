@@ -1407,11 +1407,15 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
         projection_result = None
         issues.append(
             _issue(
-                "BFR-PROJECTION-PATH",
-                CANONICAL_REFERENCE.as_posix(),
-                "canonical or governed projection path is unsafe",
-                str(exc),
-                "repository-contained non-symlink paths",
+                exc.code,
+                (
+                    exc.path
+                    if exc.path != "-"
+                    else CANONICAL_REFERENCE.as_posix()
+                ),
+                exc.message,
+                exc.offending_value,
+                exc.expected,
             )
         )
     if projection_result is not None:

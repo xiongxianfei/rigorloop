@@ -26,9 +26,9 @@ Milestone M1 replaces the one-reference projection with the reviewed three-resou
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-boundary-first-reference.py` | pass, 16 tests |
+| `python scripts/test-boundary-first-reference.py` | pass, 19 tests |
 | `python scripts/project-boundary-first-reference.py --check` | pass, 14 projections |
-| `python scripts/test-boundary-first-validation.py` | pass, 57 tests |
+| `python scripts/test-boundary-first-validation.py` | pass, 58 tests |
 | `python scripts/validate-boundary-first.py --check` | pass |
 | `python scripts/test-skill-validator.py` | pass, 272 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skill files |
@@ -41,3 +41,12 @@ Generated adapter, archive, and clean-install parity remain M4 scope.
 ## Follow-up
 
 M2 will add the automatic compact scan and stage-owned behavior guidance.
+
+## R1 finding corrections
+
+- `CR-M1-R1-001`: exact resource tuples and canonical resource versions now fail closed before projection.
+- `CR-M1-R1-002`: the compact core owns the exact four-question scan; automatic stage invocation remains M2 scope.
+- `CR-M1-R1-003`: handled write failures restore every prior target snapshot, with injected early, middle, and final failures followed by a successful retry.
+- `CR-M1-R1-004`: activation validation preserves structured manifest error identity, path, expectation, and reason.
+
+The full M1 command set passed after these corrections and is awaiting independent R2 review.
