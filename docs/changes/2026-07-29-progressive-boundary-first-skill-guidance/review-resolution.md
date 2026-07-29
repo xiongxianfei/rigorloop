@@ -19,15 +19,16 @@ Review pending closeout: code-review-m1-r3
 Review pending closeout: code-review-m1-r4
 Review pending closeout: code-review-m1-r5
 Review pending closeout: code-review-m1-r6
+Review pending closeout: code-review-m1-r7
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
   `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`,
   `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`,
   `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`
-- Findings resolved: 18
-- Unresolved findings: 1
-- Current result: M1 code-review R6 requests a projection input-stability barrier before rereview.
+- Findings resolved: 20
+- Unresolved findings: 2
+- Current result: M1 code-review R7 requires containment-safe writes and resource-layer diagnostics; its unbounded post-read concurrency request is rejected against the approved contract.
 
 ## Resolution Overview
 
@@ -51,7 +52,10 @@ Review pending closeout: code-review-m1-r6
 | CR-M1-R4-002 | accepted | resolved | Manifest scalars are represented by one-way identities. |
 | CR-M1-R5-001 | accepted | resolved | Canonical resource-version values use one-way diagnostic identities. |
 | CR-M1-R5-002 | accepted | resolved | Symlink inventory is scoped to governed boundary resources. |
-| CR-M1-R6-001 | accepted | open | Reject and recover from in-operation canonical input drift. |
+| CR-M1-R6-001 | accepted | resolved | Drift through the final stability barrier restores targets; success binds the reported snapshot identity. |
+| CR-M1-R7-001 | rejected | resolved | The approved contract does not require exclusion of non-cooperative writes after the linearization read. |
+| CR-M1-R7-002 | accepted | open | Prevent symlink-following writes and aggregate unsafe restoration paths. |
+| CR-M1-R7-003 | accepted | open | Name affected stable resource layers in identity diagnostics. |
 
 ## Finding Details
 
@@ -228,13 +232,51 @@ Validation evidence: Unrelated skill-local and canonical reference symlinks pass
 
 Finding ID: CR-M1-R6-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Snapshot canonical inputs and enforce a final stability barrier, restoring write targets on drift.
 Rationale: Cached-byte target checks cannot prove currency against inputs that change during the transaction.
 Validation target: code-review-m1-r7
-Validation evidence: Twelve manifest/resource and early/middle/final mutation cases reject success, restore prior targets, and retry deterministically in the 27-test projection suite; independent R7 confirmation remains pending.
+Validation evidence: Twelve manifest/resource and early/middle/final mutation cases reject success, restore prior targets, and retry deterministically. Success reports the snapshot identities; later non-cooperative drift is rejected by activation or the next check as required by PBS-R033, PBS-R034, and BND-TEMPORAL-001.
+
+### code-review-m1-r7
+
+#### CR-M1-R7-001 - Final-read race is treated as an unbounded concurrency guarantee
+
+Finding ID: CR-M1-R7-001
+Disposition: rejected
+Status: resolved
+Owner: workflow orchestrator
+Owning stage: review-resolution
+Chosen action: Keep success defined by the reported immutable input snapshot and retain downstream drift rejection.
+Rationale: PBS-R033 requires incomplete or divergent states to fail closed, PBS-R034 governs atomic activation, and BND-TEMPORAL-001 says drift blocks activation. None requires a global lock against non-cooperative writes occurring after the projector's final read.
+Validation target: code-review-m1-r8
+Validation evidence: Static contract interpretation plus existing snapshot-identity, drift, activation, and retry tests.
+
+#### CR-M1-R7-002 - Target topology drift can escape containment or abort recovery
+
+Finding ID: CR-M1-R7-002
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution
+Chosen action: Use descriptor-relative no-follow target operations and aggregate restoration path failures.
+Rationale: Repository containment applies even under a target-parent swap.
+Validation target: code-review-m1-r8
+Validation evidence: pending correction and independent rereview
+
+#### CR-M1-R7-003 - Exact-manifest diagnostics omit the affected resource layer
+
+Finding ID: CR-M1-R7-003
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution
+Chosen action: Add opaque per-layer diagnostic identities and report differing stable resource IDs.
+Rationale: PBS-R037 requires the affected resource layer without requiring disclosure of rejected values.
+Validation target: code-review-m1-r8
+Validation evidence: pending correction and independent rereview
 
 ### proposal-review-r1
 
