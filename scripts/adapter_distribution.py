@@ -16,6 +16,7 @@ import zipfile
 from collections import Counter
 from dataclasses import dataclass
 from enum import Enum
+from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Iterable
 
@@ -394,15 +395,34 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     if actual_codex_code_spans != expected_codex_code_spans:
         return False
 
+    class VisibleTextParser(HTMLParser):
+        def __init__(self) -> None:
+            super().__init__(convert_charrefs=True)
+            self.parts: list[str] = []
+
+        def handle_data(self, data: str) -> None:
+            self.parts.append(data)
+
     def visible_text(value: str) -> str:
-        inline_tag = (
-            r"</?(?:a|abbr|b|bdi|bdo|br|cite|code|data|del|dfn|em|i|ins|kbd|"
-            r"mark|q|ruby|s|samp|small|span|strong|sub|sup|time|u|var|wbr)"
-            r"(?:\s+[^>\n]*)?>"
+        placeholders = {
+            "<argument>": "\uf000argument\uf001",
+            "<target-stage>": "\uf000target-stage\uf001",
+        }
+        protected = value
+        for placeholder, sentinel in placeholders.items():
+            protected = protected.replace(placeholder, sentinel)
+        parser = VisibleTextParser()
+        parser.feed(protected)
+        parser.close()
+        rendered = "".join(parser.parts)
+        for placeholder, sentinel in placeholders.items():
+            rendered = rendered.replace(sentinel, placeholder)
+        rendered = re.sub(
+            r"!?\[([^\]\n]*)\]\([^)\n]*\)",
+            r"\1",
+            rendered,
         )
-        return html.unescape(
-            re.sub(inline_tag, "", value, flags=re.IGNORECASE)
-        ).replace("`", "")
+        return re.sub(r"[*_~]", "", rendered).replace("`", "")
 
     equivalence_blocks = re.findall(
         r"(?ms)^- Adapter invocation equivalents\b.*?(?=^- |\Z)",
@@ -421,6 +441,24 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     )
     normalized_block = re.sub(r"\s+", " ", visible_text(equivalence_blocks[0])).strip()
     if normalized_block != f"- {expected}" or normalized.count(expected) != 1:
+        return False
+    command_blocks = re.findall(
+        r"(?ms)^- `\$workflow auto: (?:<target-stage>|status)`.*?(?=^- |\Z)",
+        text,
+    )
+    normalized_command_blocks = tuple(
+        re.sub(r"\s+", " ", visible_text(block)).strip()
+        for block in command_blocks
+    )
+    expected_command_blocks = (
+        "- $workflow auto: <target-stage> selects a structured target. Supported "
+        "targets are proposal-review, spec, spec-review, architecture, "
+        "architecture-review, plan, plan-review, test-spec, test-spec-review, "
+        "implement, code-review, and verify.",
+        "- $workflow auto: status is read-only. $workflow auto: off durably "
+        "cancels the unified run and preserves transition evidence.",
+    )
+    if normalized_command_blocks != expected_command_blocks:
         return False
     remaining = normalized.replace(expected, "", 1)
     allowed_remaining_codex = (

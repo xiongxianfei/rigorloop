@@ -2033,6 +2033,18 @@ release_gate:
             + "\nCla<strong>ude</strong> starts broken manual.\n",
             "html_split_opencode": lambda text: text
             + "\nOpen<span>Code</span> command: broken manual.\n",
+            "html_comment_codex": lambda text: text
+            + "\nCo<!-- hidden -->dex executes broken manual.\n",
+            "html_attribute_opencode": lambda text: text
+            + '\nOpen<span title=">">Code</span> command: broken manual.\n',
+            "html_unknown_tag_claude": lambda text: text
+            + "\nCla<custom>ude</custom> starts broken manual.\n",
+            "markdown_emphasis_codex": lambda text: text
+            + "\nCo**dex** executes broken manual.\n",
+            "markdown_emphasis_claude": lambda text: text
+            + "\nCla_ude_ starts broken manual.\n",
+            "markdown_link_opencode": lambda text: text
+            + "\nOpen[Code](https://example.invalid) command: broken manual.\n",
             "codex_status_suffix": lambda text: text.replace(
                 "`$workflow auto: status`",
                 "`$workflow auto: status-now`",
@@ -2061,6 +2073,26 @@ release_gate:
             "codex_status_html_suffix": lambda text: text.replace(
                 "`$workflow auto: status`",
                 "`$workflow auto: status<em>-now</em>`",
+                1,
+            ),
+            "codex_status_adjacent_suffix": lambda text: text.replace(
+                "`$workflow auto: status`",
+                "`$workflow auto: status`-now",
+                1,
+            ),
+            "codex_off_adjacent_suffix": lambda text: text.replace(
+                "`$workflow auto: off`",
+                "`$workflow auto: off`-now",
+                1,
+            ),
+            "codex_target_adjacent_suffix": lambda text: text.replace(
+                "`$workflow auto: <target-stage>`",
+                "`$workflow auto: <target-stage>`-extra",
+                1,
+            ),
+            "codex_status_adjacent_argument": lambda text: text.replace(
+                "`$workflow auto: status` is read-only",
+                "`$workflow auto: status` extra is read-only",
                 1,
             ),
             "equivalence_block_suffix": lambda text: text.replace(
