@@ -156,7 +156,7 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
     ),
     "release.validate": CheckCatalogEntry(
         "release.validate",
-        "python scripts/validate-release-ci.py --version <version>",
+        "python scripts/validate-release.py --recorded-source-auto --version <version>",
         "release",
     ),
     "release_transaction.regression": CheckCatalogEntry(
@@ -855,7 +855,12 @@ def catalog_command(
     if check_id == "release.validate":
         if not versions:
             raise ValueError("release.validate requires at least one release version")
-        args = ["python", "scripts/validate-release-ci.py", "--version"]
+        args = [
+            "python",
+            "scripts/validate-release.py",
+            "--recorded-source-auto",
+            "--version",
+        ]
         args.extend(versions)
         return _join(*args)
     if check_id == "token_cost.report_validate":

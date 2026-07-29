@@ -64,19 +64,6 @@ def load_validate_release_module():
     return module
 
 
-def load_validate_release_ci_module():
-    spec = importlib.util.spec_from_file_location(
-        "validate_release_ci_test",
-        ROOT / "scripts" / "validate-release-ci.py",
-    )
-    assert spec is not None
-    assert spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    return module
-
-
 class AdapterDistributionTests(unittest.TestCase):
     maxDiff = None
 
@@ -3746,7 +3733,8 @@ release_gate:
         result = subprocess.run(
             [
                 sys.executable,
-                str(ROOT / "scripts" / "validate-release-ci.py"),
+                str(ROOT / "scripts" / "validate-release.py"),
+                "--recorded-source-auto",
                 "--version",
                 "v0.1.5",
             ],
@@ -3763,8 +3751,28 @@ release_gate:
         self.assertIn("validated release metadata for v0.1.5 from recorded source", result.stdout)
         self.assertNotIn("sha256 mismatch", result.stdout)
 
+    def test_release_ci_compatibility_wrapper_delegates_to_canonical_validator(self) -> None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "validate-release-ci.py"),
+                "--version",
+                "v0.1.5",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+        )
+
+        self.assertEqual(
+            result.returncode,
+            0,
+            msg=f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}",
+        )
+        self.assertIn("validated release metadata for v0.1.5 from recorded source", result.stdout)
+
     def test_release_ci_recorded_source_mode_preserves_release_metadata_validation(self) -> None:
-        module = load_validate_release_ci_module()
+        module = load_validate_release_module()
         source_commit = "0123456789abcdef0123456789abcdef01234567"
         captured: dict[str, object] = {}
 
