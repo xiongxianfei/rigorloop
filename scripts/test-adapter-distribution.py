@@ -2027,6 +2027,47 @@ release_gate:
             + "\nOpenCode executes workflow with auto: wrong.\n",
             "opencode_command": lambda text: text
             + "\nOpenCode command: workflow auto: wrong.\n",
+            "html_split_codex": lambda text: text
+            + "\nCo<em>dex</em> executes broken manual.\n",
+            "html_split_claude": lambda text: text
+            + "\nCla<strong>ude</strong> starts broken manual.\n",
+            "html_split_opencode": lambda text: text
+            + "\nOpen<span>Code</span> command: broken manual.\n",
+            "codex_status_suffix": lambda text: text.replace(
+                "`$workflow auto: status`",
+                "`$workflow auto: status-now`",
+                1,
+            ),
+            "codex_status_trailing_argument": lambda text: text.replace(
+                "`$workflow auto: status`",
+                "`$workflow auto: status extra`",
+                1,
+            ),
+            "codex_off_prefix": lambda text: text.replace(
+                "`$workflow auto: off`",
+                "`$workflow auto: office`",
+                1,
+            ),
+            "codex_target_suffix": lambda text: text.replace(
+                "`$workflow auto: <target-stage>`",
+                "`$workflow auto: <target-stage>-extra`",
+                1,
+            ),
+            "codex_command_prefix": lambda text: text.replace(
+                "`$workflow auto: status`",
+                "`x$workflow auto: status`",
+                1,
+            ),
+            "codex_status_html_suffix": lambda text: text.replace(
+                "`$workflow auto: status`",
+                "`$workflow auto: status<em>-now</em>`",
+                1,
+            ),
+            "equivalence_block_suffix": lambda text: text.replace(
+                "Here `<argument>` is `<target-stage>`, `status`, or `off`.",
+                "Here `<argument>` is `<target-stage>`, `status`, or `off`.extra",
+                1,
+            ),
         }
         source = ROOT / "skills" / "workflow" / "SKILL.md"
         source_text = source.read_text(encoding="utf-8")

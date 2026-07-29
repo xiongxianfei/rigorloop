@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import zipfile
+from collections import Counter
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path, PurePosixPath
@@ -377,9 +378,40 @@ def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
 def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     """Recognize the exact workflow invocation-equivalence contract."""
 
-    plain_text = html.unescape(
-        re.sub(r"</?code>", "", text, flags=re.IGNORECASE)
-    ).replace("`", "")
+    expected_codex_code_spans = Counter(
+        (
+            "$workflow auto: <argument>",
+            "$workflow auto: <target-stage>",
+            "$workflow auto: status",
+            "$workflow auto: off",
+        )
+    )
+    actual_codex_code_spans = Counter(
+        span
+        for span in re.findall(r"`([^`\n]+)`", text)
+        if re.search(r"\$[A-Za-z]", html.unescape(span))
+    )
+    if actual_codex_code_spans != expected_codex_code_spans:
+        return False
+
+    def visible_text(value: str) -> str:
+        inline_tag = (
+            r"</?(?:a|abbr|b|bdi|bdo|br|cite|code|data|del|dfn|em|i|ins|kbd|"
+            r"mark|q|ruby|s|samp|small|span|strong|sub|sup|time|u|var|wbr)"
+            r"(?:\s+[^>\n]*)?>"
+        )
+        return html.unescape(
+            re.sub(inline_tag, "", value, flags=re.IGNORECASE)
+        ).replace("`", "")
+
+    equivalence_blocks = re.findall(
+        r"(?ms)^- Adapter invocation equivalents\b.*?(?=^- |\Z)",
+        text,
+    )
+    if len(equivalence_blocks) != 1:
+        return False
+
+    plain_text = visible_text(text)
     normalized = re.sub(r"\s+", " ", plain_text)
     expected = (
         "Adapter invocation equivalents preserve the same arguments: Codex uses "
@@ -387,7 +419,8 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
         "and OpenCode invokes the installed workflow skill with "
         "auto: <argument>. Here <argument> is <target-stage>, status, or off."
     )
-    if normalized.count(expected) != 1:
+    normalized_block = re.sub(r"\s+", " ", visible_text(equivalence_blocks[0])).strip()
+    if normalized_block != f"- {expected}" or normalized.count(expected) != 1:
         return False
     remaining = normalized.replace(expected, "", 1)
     allowed_remaining_codex = (
