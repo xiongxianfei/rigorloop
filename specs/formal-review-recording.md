@@ -772,3 +772,14 @@ Moving examples to `docs/examples/**` MUST NOT make selector or lifecycle valida
 Approved for architecture review and planning.
 
 This amendment defines the record-every-formal-review receipt contract. Downstream upstream-status settlement remains follow-up scope.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+artifact-local lifecycle settlement and requirements that keep mutable status
+in reviewed artifacts or plans to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Formal review receipts, detailed finding records, review-log indexing, and
+review-resolution obligations remain governed here.

@@ -12,8 +12,9 @@ Observed basis: direct inspection of `README.md`, `CONSTITUTION.md`, `AGENTS.md`
 
 ## Map Metadata
 
-- Last updated: 2026-05-14
-- Observed basis: repository state through `681fb27` plus this project-map/selector update.
+- Last updated: 2026-07-28
+- Observed basis: current repository tree plus the stage-owned lifecycle
+  governance update.
 - Covered areas: repository layout, governance and workflow surfaces, lifecycle artifacts, canonical skills, validation and generation scripts, adapter support, release evidence, token-cost evidence, tests, CI, and known architecture-orientation risks.
 - Known gaps: this map summarizes the canonical architecture package but does not duplicate it; narrow changes still need the governing spec, active plan, matching test spec, and touched files.
 - Refresh trigger: refresh or bypass this map with a no-map rationale when the relied-on area is absent, contradicted by current repository paths, or materially affected by recent changes.
@@ -58,8 +59,8 @@ flowchart LR
 | `docs/architecture/system/` | Canonical current architecture package and C4 Mermaid diagrams. |
 | `docs/architecture/*.md` | Historical or legacy architecture records retained after normalization. |
 | `docs/adr/` | Durable architecture decision records. |
-| `docs/plans/` and `docs/plan.md` | Concrete execution plan bodies and the active/blocked/done/superseded plan index. |
-| `docs/changes/<change-id>/` | Change-local metadata, durable reasoning, review records, review logs, review-resolution, explain-change, and verify evidence. |
+| `docs/plans/` and `docs/plan.md` | Stable execution-plan bodies and their navigation index. |
+| `docs/changes/<change-id>/` | Authoritative mutable lifecycle and routing state plus durable reasoning, review records, review logs, review-resolution, explain-change, and verify evidence. |
 | `docs/examples/` | Non-normative examples, including the example plan scaffold path referenced by governance. |
 | `docs/learn/` | Learn sessions and durable topic notes. |
 | `docs/follow-ups.md` | Optional unowned cross-change follow-up surface when routing rules require it. |
@@ -102,8 +103,9 @@ Important command entry points:
 The repository data model is artifact-based:
 
 - Governance data: Markdown in `CONSTITUTION.md`, `AGENTS.md`, `VISION.md`, and `docs/workflows.md`.
-- Lifecycle state: Markdown status sections in proposals, specs, test specs, architecture records, ADRs, and plan bodies.
-- Plan state: `docs/plan.md` indexes plan lifecycle state; concrete `docs/plans/*.md` files carry active plan handoff state and milestone detail.
+- Lifecycle state: `docs/changes/<change-id>/change.yaml` owns mutable artifact settlement, planned-work progress, blockers, routing, and final closeout.
+- Governed intent: proposals, specs, test specs, architecture records, ADRs, and plan bodies remain stable stage-owned content linked to their owning change record.
+- Plan state: `docs/plan.md` is navigation and concrete `docs/plans/*.md` files carry stable milestone definitions and execution intent; current handoff state lives in change metadata.
 - Change metadata: YAML-like `docs/changes/<change-id>/change.yaml`, validated against `schemas/change.schema.json` plus semantic checks in `scripts/change_metadata_semantics.py`.
 - Review data: `docs/changes/<change-id>/reviews/*.md`, `review-log.md`, and conditional `review-resolution.md`, parsed by `scripts/review_artifact_validation.py`.
 - Skill metadata and bodies: frontmatter plus Markdown in `skills/*/SKILL.md`, validated against `schemas/skill.schema.json` by `scripts/skill_validation.py`.
@@ -194,8 +196,8 @@ python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/<t
 - `skills/` is the only authored skill source; generated `.codex/skills/` is local runtime state.
 - For `v0.1.3` and later, generated public adapter skill bodies are release archives, not tracked source under `dist/adapters/`.
 - GitHub Actions stay thin and delegate validation to repository-owned scripts.
-- Lifecycle-managed artifacts carry status in the artifact, not in PR state or chat.
-- Concrete plan bodies live under `docs/plans/`; `docs/plan.md` is only the lifecycle index.
+- Mutable lifecycle state lives in the owning change record, not in governed artifacts, PR state, or chat.
+- Concrete plan bodies live under `docs/plans/`; `docs/plan.md` is navigation only.
 - Formal lifecycle reviews create durable change-local review evidence.
 - `review-resolution.md` is conditional and reserved for material findings or blocking outcomes that require dispositions.
 - `docs/workflows.md` owns the artifact-location map and follow-up routing summary.
@@ -213,7 +215,7 @@ python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/<t
 ## Risk Areas
 
 - Many workflow concepts are distributed across `CONSTITUTION.md`, `docs/workflows.md`, `specs/rigorloop-workflow.md`, stage skills, and historical change artifacts. The source-of-truth order reduces conflict risk, but stale lower-priority guidance remains possible.
-- Active plan state is split between `docs/plan.md` and concrete plan bodies. The repository has validators and workflow rules for synchronization, but reviewers still need to inspect both surfaces when lifecycle state changes.
+- Current plan and handoff state is centralized in change metadata. Reviewers still compare it with stable plan intent and stage-owned evidence, but plans and indexes are not writable state projections.
 - Adapter release behavior has moved across compatibility windows (`v0.1.1`, `v0.1.2`, `v0.1.3`). Current rules are documented, but older plans and historical artifacts may describe prior tracked adapter package behavior.
 - Some validators use lightweight custom parsers for Markdown or YAML-like files. This keeps dependencies low but raises maintenance risk when artifact shapes grow.
 - Token-cost benchmark evidence depends on external Codex runtime behavior when dynamic benchmarks are run. The repository records local evidence and validates report shape, but hosted or tool-version variance can still affect results.

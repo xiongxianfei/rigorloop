@@ -377,3 +377,13 @@ The exact implementation form of the guide-system validator may be either a dedi
 ## Readiness
 
 Approved after spec-review. Planning and test-spec follow-on artifacts are recorded. Current downstream handoff: `implement M1`.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+`docs/plan.md` as a mutable live-work index to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Guide-surface classification, navigation, source-rank reporting, and bounded
+presentation remain governed here.

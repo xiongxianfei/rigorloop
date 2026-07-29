@@ -36,47 +36,17 @@ Read the smallest relevant set from project-local instructions, accepted proposa
 
 A concrete execution plan is not required before writing the spec. In this workflow, the spec normally comes before the execution plan.
 
-## Upstream status settlement
+## Upstream settlement check
 
-In workflow-managed downstream execution, before relying on a proposal, check whether its tracked status matches clear formal review evidence.
+Before relying on a proposal, read its matching `change.yaml` artifact entry
+and formal review evidence.
+Require an `accepted` settlement, no later contradictory review, no open
+findings, and closed review resolution when required.
 
-Do not run upstream status settlement for review-only, no-edit, or manual inspection requests. Those requests remain isolated.
-
-During normal workflow-managed downstream execution, do not ask whether edits are allowed; the downstream invocation permits minimal settlement.
-
-Settle only lifecycle/status/readiness/follow-on/closeout metadata. Do not rewrite substantive artifact content.
-
-The clear review evidence check requires:
-
-- durable formal review evidence for the upstream artifact;
-- an approving or clean review outcome;
-- no later contradictory review record;
-- no open findings in `review-log.md` when present;
-- closed `review-resolution.md` for material findings when required;
-- an explicit settlement mapping for this skill.
-
-Mapping for this skill:
-
-- proposal-review approved with no unresolved material findings -> proposal `Status: accepted`.
-
-If review evidence is missing, contradictory, unresolved, or the status surface is absent, block instead of guessing.
-
-If the artifact type, lifecycle field, next status, or target status is unknown or unmapped, block instead of inferring a settlement.
-
-Report `## Upstream status settlement` when settlement was updated, blocked, or stale status was detected:
-
-```md
-## Upstream status settlement
-
-- Upstream artifact:
-- Review evidence:
-- Previous status:
-- New status:
-- Settlement result: <settlement result>
-- Settlement blocker:
-```
-
-For blocked settlement with a deterministic target, report that intended target in `New status`. For blocked settlement with no deterministic target, report `New status: not-applicable`. `Settlement blocker` is required for blocked settlement and must distinguish a known target blocked by evidence/state from an unknown target blocked by missing mapping or lifecycle vocabulary.
+Treat the proposal and its lifecycle state as read-only.
+Do not normalize status in the proposal or settle its change-local entry.
+If settlement is missing or contradictory, record the blocker and route to
+`proposal-review`.
 
 ## Output path
 
@@ -134,7 +104,7 @@ Include these sections:
 
 | Section | Requirement |
 | --- | --- |
-| Status | Required section. |
+| Owning change record | Required stable pointer for governed work. |
 | Related proposal | Required section. |
 | Goal and context | Required section. |
 | Glossary | Required section. |
@@ -181,26 +151,6 @@ When ...
 Then ...
 ```
 
-## Closed enums
-
-Spec status:
-
-```text
-draft
-approved
-abandoned
-superseded
-archived
-```
-
-Settlement result:
-
-```text
-updated
-blocked
-not-needed
-```
-
 ## Rules
 
 - Do not bury requirements in prose.
@@ -209,7 +159,8 @@ not-needed
 - Do not skip failure behavior.
 - Do not skip compatibility expectations.
 - Do not invent requirements that the proposal excludes.
-- Do not use `reviewed` as a durable spec status. Once the review outcome is relied on, normalize the tracked spec to `approved` or the appropriate terminal state.
+- Do not write review settlement into the spec.
+  The matching `spec-review` records settlement in `change.yaml`.
 - Preserve `Next artifacts` as planning history. Use `Follow-on artifacts` for actual downstream artifacts, replacement, or terminal closeout.
 - If a spec is superseded, identify the replacement with `superseded_by` or equivalent labeled text.
 - If the behavior is too unclear to specify, return to `explore`, `research`, or `proposal`.

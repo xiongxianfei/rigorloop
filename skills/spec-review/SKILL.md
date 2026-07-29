@@ -235,7 +235,9 @@ Direct or review-only requests remain isolated by default.
 - Do not collapse spec review into plan or code review.
 - Do not require implementation detail unless it is needed for the observable contract.
 - Do not edit the spec unless the user explicitly asks.
-- When the review outcome is `approved`, the tracked spec should be ready to normalize to `approved` before architecture, plan, test-spec, or implementation relies on it. Do not leave a governing spec in durable `reviewed` state.
+- When the review outcome is `approved`, write the review evidence first and
+  then settle only the matching spec entry in `change.yaml`.
+  Do not edit the spec, other artifact entries, milestone state, or routing.
 - Follow the routing and testability assessment contract for every review result.
 
 ## Workflow handoff behavior

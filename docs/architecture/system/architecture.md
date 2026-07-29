@@ -126,6 +126,11 @@
 - Single Bounded Review-Fix Workflow Automation spec-review: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r5.md`
 - Single Bounded Review-Fix Workflow Automation ADR: `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md`
 - Single Bounded Review-Fix Workflow Automation change metadata: `docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/change.yaml`
+- Stage-Owned Lifecycle Artifacts proposal: `docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md`
+- Stage-Owned Lifecycle Artifacts spec: `specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md`
+- Stage-Owned Lifecycle Artifacts spec-review: `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/spec-review-r6.md`
+- Stage-Owned Lifecycle Artifacts ADR: `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md`
+- Stage-Owned Lifecycle Artifacts change metadata: `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml`
 - Record Every Formal Review proposal: `docs/proposals/2026-05-12-record-every-formal-review.md`
 - Formal Review Recording spec: `specs/formal-review-recording.md`
 - Record Every Formal Review change metadata: `docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml`
@@ -172,8 +177,11 @@ The goals are:
 - define the release process once as a standing contract, then execute routine publishes as operations with durable release evidence;
 - make routine releases profile-driven typed transactions whose generated surfaces, cheap preflight, public evidence closeout, and timing evidence preserve the full release gate while reducing duplicated version state;
 - keep first adoption and package-quality refinement review-based until real package usage proves which checks are worth automating.
-- keep planned-initiative workflow state single-owned by the active plan while making plan-index, milestone-state, readiness, review, and change-metadata surfaces mechanically synchronized before downstream readiness claims.
-- reduce redundant workflow routing through one target-driven `bounded-review-fix` automation mechanism while preserving stage-owned artifacts, formal review independence, risk-class authorization boundaries, bounded correction policies, resumable transition evidence, and the human-controlled PR boundary.
+- keep governed artifacts stable while `change.yaml` owns mutable artifact
+  lifecycle, milestone, review, blocker, next-stage, and closeout state;
+- use one target-driven `bounded-review-fix` automation mechanism whose target
+  is sufficient repository-local continuation consent, while every stage keeps
+  a fixed write boundary and external actions remain prohibited;
 - make workflow-managed automated reviews structurally independent and adversarial through fresh review contexts, neutral initial packets, blind-first risk formation, staged evidence release, risk-tiered escalation, clean-review sufficiency receipts, and calibration evidence.
 - make applicable automated reviews spec-canonical by requiring deterministic requirement-fidelity applicability, requirement-property decomposition, property-by-surface matrices, validator assertion comparison against the spec, and compression-defect calibration.
 
@@ -182,7 +190,10 @@ The goals are:
 - `CONSTITUTION.md` is the highest-priority repository governance artifact below external runtime instructions.
 - `specs/architecture-package-method.md` owns the C4, arc42, ADR, template, canonical-package, architecture-surface, and historical change-local evidence contract.
 - `specs/rigorloop-workflow.md` owns only workflow stage routing and handoff language for this method.
-- `specs/single-source-of-workflow-state.md` owns planned-initiative live-state ownership, projection, pointer, ledger, evidence, and state-sync gate behavior.
+- `specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md`
+  owns governed artifact-state placement, transition authority, workflow
+  routing state, planned-work state, automation-target semantics, and
+  prospective migration.
 - The canonical package path is `docs/architecture/system/architecture.md` with default diagrams under `docs/architecture/system/diagrams/`.
 - Architecture and ADR scaffolds live under `templates/`; live architecture and ADR records live under `docs/architecture/` and `docs/adr/`.
 - Architecture work uses the lowest sufficient architecture surface: no-impact rationale for changes with no architecture impact, direct canonical package update for clear current-architecture changes, ADR when a durable decision is introduced or revised, and proposal/spec routing when direction or behavior is not ready.
@@ -248,23 +259,50 @@ The goals are:
 - Emergency release deferrals are narrow owner-approved exceptions to release gate timing, not an alternate normal release path. Release evidence creation, secret suppression, source/package/version/dist-tag recording, publish-path recording, registry verification, and recovery/follow-up recording are non-deferrable.
 - Routine release profiles live at `docs/releases/profiles/<tag>.yaml` and are the source of truth for routine release version state, target set, publication requirements, required evidence classes, generated release-prep surfaces, and validator expectations. Release tooling may read the profile, but scripts are not the source of truth for routine release state.
 - Release preflight owns cheap deterministic local/profile/schema checks. `scripts/release-verify.sh <tag>` remains the authoritative full release gate for generated outputs, archive integrity, package contents, adapter metadata, and full validation.
-- Planned-initiative live state is owned by the active plan `Current Handoff Summary`; `docs/plan.md`, milestone-state fields, `Readiness`, review artifacts, and change metadata are projections, pointers, ledgers, or evidence surfaces and must not become competing live next-stage owners.
-- State-changing handoffs run parser-scoped state-sync validation over bounded live-state surfaces before downstream readiness is claimed. Historical ledgers and review evidence remain append-only and are excluded from stale-token rejection.
-- `bounded-review-fix` is the only writable workflow-automation mechanism. New state is persisted only at `docs/changes/<change-id>/change.yaml#workflow.automation`; retired authoring, implementation, and nested review-fix profile records are compatibility inputs only.
-- A structured target records stage, occurrence identity, and completion predicate. Repeated `implement` and `code-review` targets bind the unique current plan milestone before persistence and never rebind on resume.
-- A destination target is not authority. Bounded parent authorizations define maximum consent inside one risk class; only stage-specific effective capabilities with complete current basis authorize execution or mutation.
-- Before an active plan exists, workflow position is derived from authoritative artifacts, formal reviews, review resolution, architecture applicability, and transition receipts. After plan creation, the active plan's `Current Handoff Summary` is authoritative. Automation metadata never owns a competing cursor.
-- Every mutating transition uses a prepared receipt, stage-owned completion evidence, canonical-state synchronization, and a finalized receipt. At most one transition may be in flight for a change.
+- For a governed change, `docs/changes/<change-id>/change.yaml` is the sole
+  mutable state owner. `artifact_states` owns artifact lifecycle settlement,
+  while `workflow_state` owns the current stage, milestone, blocker, next
+  stage, and closeout readiness.
+- Governed proposals, specs, architecture, ADRs, plans, and test specs retain
+  stable intent and one change-record pointer; they do not carry mutable
+  lifecycle, progress, review, blocker, or routing fields.
+- Authoring and review skills are peers with transition-scoped writes to one
+  matching artifact-state entry. `workflow` writes routing only. Downstream
+  skills write their own evidence and route upstream defects to the owner.
+- `bounded-review-fix` remains the only writable workflow-automation
+  mechanism. One structured target is the complete public consent boundary
+  for repository-local prerequisite stages through that target.
+- The mechanism does not require or persist a second public authorization,
+  capability, activation selector, risk-class parameter, or selector ledger.
+  It validates current prerequisites and fixed stage ownership before each
+  invocation.
+- Planned-work state is a bounded `workflow_state` projection of the stable
+  plan milestone definitions. Repeated implementation and review occurrences
+  bind the exact current milestone and never silently rebind on resume.
+- Review evidence is durable before review settlement. Interrupted identical
+  settlement is idempotently reconciled by the matching review peer;
+  workflow pauses rather than manufacturing approval.
+- Validation checks closed values, legal transitions, evidence consistency,
+  routing consistency, migration state, and generated-adapter parity. It does
+  not use content hashes or claim which process physically wrote a file.
 - Proposal-side deterministic corrections remain driver-owned; implementation correction eligibility remains reviewer-owned; verification failure never authorizes automatic repair.
-- Supported legacy commands and states use dual-read, single-write compatibility. The first mutating resume migrates once to unified state; status reads remain side-effect free; no new legacy-profile write is allowed.
+- Historical changes remain read-only. Resumed nonterminal work migrates once
+  to the new state model before mutation; no migration or rollback restores a
+  retired artifact-local, plan-owned, or profile-owned writer.
 - The mechanism cannot open PRs, push branches, publish, deploy, merge, perform destructive Git operations, or perform other external actions.
 - The requirement-fidelity gate is an additive sibling to the independent adversarial review gate. When both apply, workflow-managed continuation requires both passing receipts.
 - Requirement-fidelity applicability is determined before artifact comparison from affected-path and category triggers, with closed applicability results and justified reviewer override only.
 - Requirement-fidelity review uses the governing spec clause as the canonical comparison point. Implementation and validator agreement is not proof of spec fidelity.
 - Mandatory manual-review applicability classification is outside the first requirement-fidelity slice; manual reviews may voluntarily record fidelity receipts.
-- Automation activation requires a valid structured target, canonical workflow position, active parent authorization for the required risk class, and a basis-complete effective capability. Artifact readiness and user consent remain independent.
-- Unified automation state is durable change-local evidence at `docs/changes/<change-id>/change.yaml#workflow.automation`; it records authority and transition evidence but not live next-stage ownership. Only `scripts/workflow_automation_state.py` writes that subsection.
-- Architecture applicability is a closed stage-policy result. Ambiguity pauses; a conditional target that is not applicable returns `target-not-applicable` rather than silently advancing.
+- Automation continuation requires a valid structured target, current settled
+  prerequisites, unambiguous artifact or milestone identity, and no stop
+  condition. The target never widens the invoked stage's fixed write boundary.
+- Automation target state is change-local and subordinate to
+  `workflow_state`; it does not own artifact settlement or another routing
+  cursor.
+- Architecture applicability is a closed routing result. Ambiguity pauses; a
+  conditional target that is not applicable returns `target-not-applicable`
+  rather than silently advancing.
 - Implementation auto-fix authority belongs to code-review findings, not the coordinator. The coordinator enforces reviewer-declared classifications, affected paths, recipes, command boundaries, shrinking loops, and audit records.
 - First implementation remains review-based for architecture package completeness; required package-shape, C4-file, and ADR-presence enforcement automation is deferred.
 - Top-level legacy documents under `docs/architecture/*.md` are archived historical artifacts after accepted current content has been merged into this canonical package.
@@ -314,18 +352,18 @@ It is separate from `Architecture`: project maps describe observed repository re
 | Container | Responsibility | Technology / source |
 | --- | --- | --- |
 | Governance and workflow guidance | Defines source-of-truth order, repository defaults, workflow routing, and contributor expectations | Markdown in `CONSTITUTION.md`, `AGENTS.md`, `docs/workflows.md` |
-| Lifecycle artifacts and ADRs | Carry proposal, spec, architecture, ADR, plan, test-spec, active plan current-state owners, plan-index projections, queryable change metadata, validation cache-hit evidence, validation cache measurement, and registered change-record evidence states | Markdown/YAML in `docs/proposals/`, `specs/`, `docs/architecture/`, `docs/adr/`, `docs/plans/`, `docs/changes/` |
+| Lifecycle artifacts and ADRs | Carry stable proposal, spec, architecture, ADR, plan, and test-spec intent plus their durable review and decision history | Markdown/YAML in `docs/proposals/`, `specs/`, `docs/architecture/`, `docs/adr/`, and `docs/plans/` |
 | Project maps | Carry living current-state repository orientation, map metadata, cited evidence, inference and unknown labels, root/area registration, risks, and open questions | Markdown in `docs/project-map.md` and `docs/project-map/` |
 | Token-cost benchmark fixtures and reports | Carry executable benchmark prompts, clean downstream fixtures, raw or sanitized run evidence, analyzer summaries, and longitudinal token-friendliness reports | Markdown/YAML/JSONL under `benchmarks/token-cost/` and `docs/reports/token-cost/` |
 | RigorLoop CLI package | Provides the `rigorloop` binary, project scaffolding, change metadata scaffolding, stable human/JSON command envelopes, bundled adapter metadata, verified adapter archive installation for supported adapters, proxy-safe download diagnostics, and durable lockfile writes for verified generated adapter output | Node/npm package under `packages/rigorloop`, published as `@xiongxianfei/rigorloop` only through the approved npm publication boundary |
 | Canonical architecture package | Long-lived current architecture source of truth, including arc42 prose and C4 diagram source | Markdown and Mermaid in `docs/architecture/system/` |
-| Change-local evidence | Owns historical architecture evidence, explicit exceptional architecture evidence, change metadata, registered deterministic evidence files, validation cache-hit evidence, validation cache measurement, explanation, review resolution, verification evidence, and the sole first-version automation state at `change.yaml#workflow.automation` | Markdown/YAML in `docs/changes/<change-id>/` |
+| Change-local lifecycle and evidence | Sole mutable owner of governed artifact lifecycle, workflow routing, planned-work state, blockers, closeout readiness, the selected automation target, and evidence links; also owns review, resolution, explanation, validation, verification, and historical evidence | Markdown/YAML in `docs/changes/<change-id>/`, centered on `change.yaml` |
 | Workflow automation orchestration semantics | Defines public `$workflow auto: <stage>`, status, off, pause, and stage-handoff semantics without implementing the state machine or writing automation state | Markdown in `skills/workflow/SKILL.md` |
-| Workflow automation tooling | Normalizes public and legacy commands, binds structured targets, derives canonical position and complete final-code state, evaluates bounded authority, coordinates receipt-backed stage transitions, reconciles interrupted work, validates state, and migrates active legacy state without becoming a workflow cursor, state owner, or stage-artifact owner | Python in `scripts/workflow_automation.py`, `scripts/workflow_automation_policy.py`, `scripts/workflow_automation_state.py`, `scripts/workflow_code_state.py`, and `scripts/validate_workflow_automation.py` |
+| Workflow lifecycle support | Validates structured targets, current prerequisites, fixed stage write boundaries, closed transitions, evidence consistency, and prospective migration without becoming a second normative workflow or claiming writer attribution | Published skills plus repository-owned validation and generation scripts |
 | Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
 | Canonical skills and adapter templates | Source instructions, packaged skill-local resources, workflow stages, and thin adapter entrypoints | Markdown in `skills/`, skill-local resources under each skill root, templates in `scripts/adapter_templates/` |
 | Boundary-first method and activation | Owns one authored portable method, its closed governed-skill projection inventory, and the prospective grandfathering baseline | Markdown under `specs/references/`, activation YAML under `specs/`, tracked derived references under governed `skills/*/references/` |
-| Validation and generation scripts | Select checks, route registered change-local evidence, compute validation cache keys for eligible explicit-path lifecycle validation, validate artifacts, compare workflow-state owners and projections, query bounded change-record slices, refresh generated output, prove drift status, validate mapped skill-local resources, and compare resource parity across generated, packed, and installed outputs | Python and shell under `scripts/` |
+| Validation and generation scripts | Select checks, route registered evidence, validate change-local state and review consistency, query bounded change-record slices, refresh generated output, prove drift status, validate mapped resources, and compare adapter parity without defining stage authority | Python and shell under `scripts/` |
 | Generated runtime state and adapters | Derived local Codex runtime state and public adapter packages for supported agent tools; local runtime state and public adapter packages are generated from canonical sources and are not authored sources | Ignored local files under `.codex/skills/`, tracked adapter support metadata under `dist/adapters/`, generated temporary or release-output package directories, and release asset archives |
 | Release evidence | Durable release profiles, generated release-prep surfaces, authored release contract, release notes narrative, standing process evidence, timing evidence, adapter artifact metadata, package publication evidence, public closeout evidence, registry verification, checksums, emergency deferrals, and maintainer smoke evidence | Markdown/YAML under `docs/releases/profiles/`, `docs/releases/v<version>.md`, `docs/releases/<version>/`, and `docs/reports/adapter-artifacts/releases/` |
 | Legacy architecture archive | Historical architecture records retained after accepted current content is merged here | Archived Markdown under `docs/architecture/*.md` |
@@ -351,9 +389,17 @@ The validation and generation container has these important internal responsibil
 - selector and CI wrapper: `scripts/validation_selection.py`, `scripts/select-validation.py`, and `scripts/ci.sh` classify paths, select stable check IDs, run repository-owned proof commands, summarize successful selected checks, and surface failed check output with stable check identity;
 - evidence registration: the selector owns deterministic evidence-class matching for recurring change-local evidence files, rejects broad or ambiguous patterns through regression coverage, routes registered classes to declared checks, and surfaces stable `manual-routing-required` diagnostics for unregistered deterministic evidence;
 - validation idempotency: cache helpers compute normalized argv, repository-relative explicit paths, input-surface hashes, implementation manifest hashes, and policy/config hashes for the eligible explicit-path lifecycle command family. Direct `--mode explicit-paths` remains actual-run for closeout and final gates, while helper `--mode explicit-paths-inner-loop` supplies inner-loop cache context, normalizes to canonical direct argv for cache identity, and records displayed-versus-canonical argv in formal helper evidence. Unsupported or uncertain manifests disable caching and run the validator;
-- lifecycle and change validators: `scripts/validate-artifact-lifecycle.py`, `scripts/validate-change-metadata.py`, and `scripts/validate-review-artifacts.py` validate artifact status, planned-initiative owner/projection synchronization, change metadata, and material review closeout structure;
+- lifecycle and change validators: `scripts/validate-artifact-lifecycle.py`,
+  `scripts/validate-change-metadata.py`, and
+  `scripts/validate-review-artifacts.py` validate governed artifact-state and
+  workflow-state shape, legal transitions, evidence consistency, change
+  metadata, and material review closeout structure;
 - requirement-fidelity validation: review artifact and skill validators protect the first-slice closed trigger lists, closed receipt vocabularies, packet-ordering evidence, applicability manifests, property-matrix receipt shape, and selected spec-derived property-list by surface-list assertions. Unknown closed-vocabulary values fail closed before consistency checks;
-- workflow-state synchronization: the lifecycle validator exposes shared parser and comparison helpers for `Current Handoff Summary`, current milestone-state projection, active or blocked `docs/plan.md` projection rows, pointer-only `Readiness`, review-log and review-resolution consistency, and derived change-metadata summaries. Any direct state-sync command is a thin wrapper around the same helpers, not an independent parser;
+- lifecycle-state consistency: validators check the closed `artifact_states`,
+  `workflow_state`, planned-work, blocker, closeout, automation-target, and
+  linked-review shapes; reject mixed writable models; and treat plans and
+  `docs/plan.md` as stable intent and navigation rather than live-state
+  projections;
 - change-record query helper: `scripts/query-change-record.py` exposes bounded `summary`, `artifacts`, `validation --latest`, and `validation --stage <stage>` reads over valid legacy and compact metadata shapes without executing validation commands;
 - skill and adapter generation: `scripts/build-skills.py`, `scripts/build-adapters.py`, and adapter distribution helpers generate local runtime state, public adapter output, and release artifact outputs from canonical sources;
 - release preparation, closeout, and validation: release tooling reads `docs/releases/profiles/<tag>.yaml` as the routine release transaction source of truth, generates profile-owned release-prep surfaces, checks human-authored surfaces for profile consistency, records timing evidence, and generates published evidence from public GitHub/npm/`npx` data after publication. `scripts/validate-adapters.py`, `scripts/validate-release.py`, and `scripts/release-verify.sh` check generated packages, manifests, release metadata, adapter artifact metadata, tracked release notes, package preview, registry verification, emergency deferral records, checksums, and smoke evidence. Release preflight owns cheap deterministic profile/schema/state checks before broad verification. For public releases, `release-verify.sh` is the maintainer-facing full gate and `validate-release.py` owns structured release validation delegated from that gate. For `v0.1.3` and later, these checks validate generated temporary or release-output adapter packages and release archives instead of tracked adapter package trees.
@@ -369,47 +415,43 @@ This decomposition is prose-only for now. A component diagram should be added wh
 
 See [`diagrams/component-workflow-automation.mmd`](diagrams/component-workflow-automation.mmd) for the component view.
 
-The workflow skill owns user-facing command and handoff semantics. It invokes the automation tooling but does not implement policy evaluation or write `change.yaml`. The automation tooling has these internal responsibilities:
+The published skills are the primary ownership surface.
+Repository scripts validate their structured state and generated parity but do
+not define another policy language.
 
-- command and compatibility adapter in `scripts/workflow_automation.py`: parses normalized workflow-skill requests and supported legacy aliases, then emits one normalized command without writing legacy state;
-- structured target binder: maps the closed public stage vocabulary to the required singleton, milestone, or final occurrence and persists a completion predicate only after identity is unique;
-- canonical position resolver: derives pre-plan position from authoritative artifact and review evidence, then reads the active plan's `Current Handoff Summary` after the plan ownership handoff;
-- typed stage-policy registry in `scripts/workflow_automation_policy.py`: provides one immutable executable projection of the approved specifications; it is not a second normative contract;
-- authorization and capability evaluator: validates parent authorization identity and maximum risk-class scope, derives only basis-complete effective capabilities, and invalidates stale or expanded scope;
-- transition coordinator in `scripts/workflow_automation.py`: enforces one in-flight transition, delegates the prepared write to the state adapter before mutation, invokes one stage-owned operation, synchronizes canonical state, and finalizes the receipt;
-- canonical code-state anchor resolver and provider in `scripts/workflow_code_state.py`: discover the repository-owned default target ref, derive its merge base with the exact commit named by the canonical final-review record, bind change/review/target/evidence identities into an immutable anchor, derive the complete anchored Git change set including additions, modifications, deletions, and renames, and reject target-ref drift, unapproved post-review commits, dirty tracked files, and untracked files; only exact basis-validated change-local or plan lifecycle-evidence paths may be exempted after review, code paths cannot be exempted, and a test-only provider is rejected for Git repositories;
-- state adapter and transition reconciler in `scripts/workflow_automation_state.py`: is the only automation-state writer, reads and writes `docs/changes/<change-id>/change.yaml#workflow.automation`, validates stored identities, and reconciles prepared receipts before retry;
-- automation validator in `scripts/validate_workflow_automation.py`: rejects unknown closed-vocabulary values before consistency checks and detects ambiguous targets, stale authority, contradictory evidence, invalid receipt transitions, and mixed writable legacy/unified state.
+The component has five responsibilities:
 
-Every immutable stage-policy record projects exactly these fields:
+- target routing: `workflow` stores one structured target and advances only
+  from current settled artifact state and stage-owned evidence;
+- artifact-state transitions: each authoring or review peer changes only one
+  matching `artifact_states` entry through the closed transition vocabulary;
+- workflow-state transitions: `workflow` alone updates current stage,
+  milestone binding, blocker, next stage, and final-closeout readiness;
+- evidence linking: `change.yaml` points to authoring, review, resolution,
+  validation, verification, and learn evidence without copying their bodies;
+  and
+- compatibility validation: historical records remain readable, while resumed
+  nonterminal work must migrate to the new single-write model before mutation.
 
-- `stage`;
-- `predecessor_rule`;
-- `owning_skill`;
-- `occurrence_rule`;
-- `required_authorization_class`;
-- `capability_kind`;
-- `permitted_mutation_category`;
-- `applicability_rule`;
-- `prerequisite_rule`;
-- `required_input_identities`;
-- `completion_rule`;
-- `completion_evidence`;
-- `next_stage_calculation`;
-- `retry_policy`;
-- `correction_policy`;
-- `stop_behavior`.
+Authoring skills own governed content and the matching transitions into
+`authoring` and `review-required`.
+Review skills own formal review evidence and the matching settlement
+transition.
+Downstream stages own only their implementation or stage evidence.
+They report upstream defects and stop instead of repairing upstream artifacts.
 
-`permitted_mutation_category` is stored as a non-empty immutable set despite
-the historical singular field name. A capability's actual mutation categories
-must be a subset of both that stage-local set and its parent authorization;
-capability-kind scope alone is never sufficient.
+`workflow` coordinates these peers but cannot edit governed content, create a
+review verdict, settle an artifact, or widen a stage's write boundary.
+One automation target covers repository-local prerequisite stages through the
+target without a second authorization, capability, selector, or risk-profile
+layer.
 
-The approved workflow specifications remain normative. Planning may sequence implementation but cannot add, omit, or reinterpret policy fields. Exhaustive conformance tests prove that every automatable public or internal stage has exactly one complete policy and that missing, duplicate, unknown, unsupported, or spec-inconsistent values fail closed. The first version does not add a second hand-authored YAML or JSON policy registry.
-
-Modules other than `scripts/workflow_automation_state.py` return typed decisions such as transition, authorization, capability, reconciliation, and validation results. They do not edit `change.yaml` directly.
-
-Stage-owning skills remain outside this component. They own artifacts, formal review judgments, and stage-native completion evidence. The automation container coordinates them but cannot substitute its state for those artifacts or for active-plan handoff state.
+Deterministic validators reject unknown values before consistency checks,
+illegal transitions, conflicting artifact and workflow state, stale review
+evidence, ambiguous milestone bindings, open blockers, mixed writable models,
+and adapter drift.
+They do not hash governed content or claim which skill process performed an
+arbitrary file write.
 
 ## Runtime View
 
@@ -432,19 +474,41 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
 4. Every supported formal lifecycle review records change-local review evidence or reports blocked recording. Clean no-finding reviews use lightweight receipts; material findings use detailed review records.
 5. `review-log.md` indexes clean receipts and detailed review records so review events are discoverable without chat history.
 6. `review-resolution.md` closes material findings only after final dispositions, actions, rationale, and validation evidence are recorded. Clean no-finding reviews do not create empty `review-resolution.md` solely because a receipt exists.
-7. A workflow-automation command is normalized to one public stage before any run or authorization state is written. The target binder resolves the required occurrence and completion predicate; `implement` and `code-review` require exactly one current in-scope milestone from the active plan.
-8. The canonical-position resolver derives pre-plan position from artifact identity, latest applicable formal review, review-resolution state, architecture applicability, and transition evidence. Once a valid active plan is established, its `Current Handoff Summary` owns current milestone and next-stage state.
-9. The engine validates an active bounded parent authorization for the required risk class, then derives an effective capability only when the stage-policy basis is concrete, current, and no broader than the parent target, paths, mutation categories, and correction budget.
-10. Before mutation, the transition coordinator computes a deterministic transition key and asks the state adapter to persist a `prepared` receipt containing target occurrence, `effective_capability_id`, input identities, expected postcondition, and policy version. The receipt reaches parent authorization evidence only through the effective capability's `parent_authorization_id`; a parent authorization cannot authorize execution directly.
-11. The coordinator invokes exactly one stage-owning skill. The skill writes its own artifact, review, resolution, validation, or plan evidence; automation state cannot claim stage completion independently.
-12. After invocation, the coordinator inspects stage-native completion evidence, synchronizes the canonical workflow owner and projections, and finalizes the receipt as `completed`, `failed`, `paused`, or `cancelled`.
-13. Resume reconciles any prepared receipt against its originally bound `effective_capability_id` before retry. Valid completion evidence is synchronized without rerunning the stage; absent evidence permits retry only when the stage policy declares idempotent retry; an invalidated capability, contradictory or partial evidence, or attempted capability rebinding pauses. Multiple in-flight transitions fail closed.
-14. Proposal review can derive a review capability from the exact proposal, standing gates, review policy, and evidence roots without a pre-existing review identity. Only `approved` satisfies the clean gate; `changes-requested` may enter a bounded correction/rereview loop with a valid correction capability, while `blocked` and `inconclusive` pause.
-15. Proposal-side correction classification remains driver-owned. Milestone implementation correction requires reviewer-owned `mechanical` or `declared-safe` classification and stays inside the reviewed recipe and bounded scope. Verification failure pauses without automatic repair.
-16. A run may target `verify` before verification authority exists. It completes currently authorized work and pauses with `verification-authorization-required` until implementation closeout, final review, promotion, explanation, branch-state, and verification inputs form a concrete verification basis.
-17. Cancellation first reconciles a prepared transition, then marks the run `cancelled`, revokes active parent authorizations, invalidates active effective capabilities, and preserves receipts and stage evidence.
-18. Legacy status is a side-effect-free projection. The first mutating resume or cancellation of active legacy-only state writes a migration receipt and unified `workflow.automation` state; retired profile records become read-only and are never written again.
-19. Workflow-managed automated reviews run through the independent adversarial review gate before their result may advance a profile. The orchestrator creates an immutable review invocation manifest from tracked artifacts, records a verifiable initial-packet inventory and hash, records the reviewer context identity, and fails closed when the context is `L0` or the required independence level cannot be proven.
+7. `$workflow auto: <target>` records one structured repository-local target.
+   It does not pre-set future readiness or create another authorization layer.
+8. Before each invocation, workflow reads the matching settled artifact state,
+   current `workflow_state`, stage-owned evidence, and exact artifact or
+   milestone binding.
+9. Workflow validates that prerequisites are current and that the next stage's
+   fixed write boundary can satisfy the route without modifying an upstream
+   artifact.
+10. The invoked authoring stage changes only its matching artifact entry to
+    `authoring`, writes its artifact and authoring evidence, then changes that
+    entry to `review-required`.
+11. The matching review peer writes durable review evidence first and settles
+    only that artifact entry. An isolated review stops without touching
+    `workflow_state`.
+12. In a workflow-managed run, workflow reads the settled result and updates
+    only routing and planned-work state before invoking the next prerequisite
+    stage.
+13. If settlement is interrupted after evidence is durable, the same review
+    occurrence reconciles idempotently. Workflow never settles on the review
+    peer's behalf.
+14. If a downstream stage discovers an upstream defect, it records the defect
+    in its own evidence and pauses. Workflow routes to the upstream author,
+    whose revision and fresh peer review precede conservative replay.
+15. A target at `verify` remains sufficient consent for repository-local
+    prerequisite stages, but future stages remain incomplete until their
+    concrete prerequisites and evidence exist.
+16. Verification failure pauses without automatic repair. Successful final
+    verification completes the target and reports `pr` as the next stage
+    without opening it.
+17. `off` cancels the current run, preserves evidence, and stops scheduling;
+    it does not restore retired writers or erase stage-owned history.
+18. Historical status reads are side-effect free. The first resumed
+    nonterminal mutation migrates to `stage-owned-change-local-v1`; historical
+    embedded status and retired plan/profile state become read-only.
+19. Workflow-managed automated reviews run through the independent adversarial review gate before their result may advance workflow routing. The orchestrator creates an immutable review invocation manifest from tracked artifacts, records a verifiable initial-packet inventory and hash, records the reviewer context identity, and fails closed when the context is `L0` or the required independence level cannot be proven.
 20. The review gate releases evidence in phases. The reviewer first receives only the review target, governing artifacts, formal criteria, neutral routing metadata, and previous-round existence facts when applicable. After the reviewer records the risk map, the orchestrator records `risk-map-recorded`, releases the evidence menu, then records subsequent receipts for evidence-result release, prior-finding release, and verdict recording.
 21. Risk-tier classification is orchestrator-owned and fail-closed. Standard risk requires L1, elevated risk requires L2 plus required direct proof and second-review policy, and critical risk requires L3 or human authority according to the trigger. Ambiguous trigger matches classify upward.
 22. The reviewer records the stage-native verdict, findings or clean-review sufficiency receipt, confidence, evidence challenge, and reconciliation results. The orchestrator derives `review_gate_outcome` only after manifest, phase-receipt, risk-tier, clean-receipt, second-review, and unresolved-finding gates are evaluated.
@@ -452,10 +516,21 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
 24. Applicable review packets present the relevant spec clauses first, then accepted decompositions when present, expected surfaces, implementation diff, validator assertions, validation evidence, and prior findings. If no accepted decomposition exists, the reviewer records a reviewer-authored decomposition before artifact comparison.
 25. For multi-surface contracts, the reviewer checks each requirement property against each required surface and compares validator assertions to the full spec-derived property list. A global substring match or implementation/validator agreement on a compressed subset is not clean-review evidence.
 26. Applicable clean reviews require a requirement-fidelity receipt. Missing decomposition evidence, free-form `not-applicable` reasons, incomplete property matrices, or validator assertions accepted without spec comparison make automated continuation ineligible.
-27. A derived `stop` from native `changes-requested` does not uniformly pause automation. The orchestrator may route to `review-resolution` only when an active workflow profile independently authorizes that route and the independence, fidelity, evidence, and correction-loop gates pass; otherwise it pauses with a specific unroutable stop reason. Native `blocked` and `inconclusive` pause regardless of profile authorization.
+27. A derived `stop` from native `changes-requested` does not uniformly pause
+    automation. Workflow may route to `review-resolution` only when the
+    selected repository-local target still permits that prerequisite, the
+    fixed stage ownership boundary is satisfied, and the independence,
+    fidelity, evidence, and correction-loop gates pass; otherwise it pauses
+    with a specific unroutable stop reason. Native `blocked` and
+    `inconclusive` always pause.
 28. Required or sampled second-review disagreement is not majority-voted away. A second reviewer material finding, blocked result, or inconclusive result prevents automatic continuation and routes to review-resolution, owner decision, or another authorized review.
-29. The implementation profile requires a final holistic code review over the complete final diff, governing artifacts, review resolutions, validation selection, generated artifacts, and cross-milestone scope before `explain-change` and `verify`.
-30. Final closeout outside the implementation profile runs `ci-maintenance` when triggered, then `explain-change`, `verify`, and `pr`.
+29. Before `explain-change` and `verify`, workflow requires a final holistic
+    code review over the complete final diff, governing artifacts, review
+    resolutions, validation selection, generated artifacts, and
+    cross-milestone scope.
+30. Final closeout runs `ci-maintenance` when triggered, then
+    `explain-change`, `verify`, and `pr`, subject to the selected target and
+    the human-controlled PR boundary.
 31. `explain-change`, `verify`, and `pr` use the change-local evidence pack, plan state, validation output, and review closeout state before claiming readiness.
 
 ### Change-record catalog flow
@@ -475,7 +550,12 @@ Stage-owning skills remain outside this component. They own artifacts, formal re
 2. Supported changed paths are executed through `bash scripts/ci.sh --mode explicit --path ...`.
 3. The selector emits stable check IDs such as `artifact_lifecycle.validate`, `change_metadata.validate`, `change_metadata.regression`, `review_artifacts.validate`, and generated-output checks.
 4. Lifecycle-managed artifacts are checked with `scripts/validate-artifact-lifecycle.py`.
-5. When planned-initiative live-state surfaces are in scope, `scripts/validate-artifact-lifecycle.py` parses exact owner fields, projection fields, and pointer sections; compares owner/projection values; checks review-log, review-resolution, and derived change metadata consistency; and rejects stale live-state tokens only inside bounded live-state surfaces.
+5. When governed lifecycle state is in scope,
+   `scripts/validate-artifact-lifecycle.py` parses exact artifact, workflow,
+   planned-work, blocker, target, and evidence fields; rejects unknown values
+   before consistency checks; and blocks illegal transitions, mixed writers,
+   stale evidence, or open blockers without scanning arbitrary historical
+   prose.
 6. Change metadata is checked with `scripts/validate-change-metadata.py`.
 7. Review artifact closeout is checked with `scripts/validate-review-artifacts.py` when review files are in scope.
 8. Architecture diagram source files and historical or exceptional change-local architecture evidence route only to existing non-enforcement lifecycle checks; C4 sufficiency, arc42 completeness, ADR need, and package shape remain architecture-review or code-review evidence.
@@ -675,7 +755,10 @@ The main execution and publication boundaries are:
 - routine release evidence: `docs/releases/v<version>.md`, a version-scoped standing process record for release type, version decision, gate status, package contents, publish event, registry verification, emergency deferrals, recovery notes, and follow-up;
 - release transaction profiles: `docs/releases/profiles/<tag>.yaml`, durable version-scoped transaction records that drive routine release version state, target support, publication requirements, evidence classes, generated prep surfaces, validator expectations, and timing requirements;
 - downstream change metadata scaffold: `docs/changes/<change-id>/change.yaml` created by `rigorloop new-change`; it is draft traceability state and not proof that proposal, review, verification, or PR stages are complete;
-- unified workflow-automation evidence: the `workflow.automation` subsection of `docs/changes/<change-id>/change.yaml`, containing mechanism/schema version, run, structured target, parent authorizations, effective capabilities, prepared/finalized receipts, migration receipts, observed identities, stop reason, and cancellation evidence; it is not live plan state or review verdict authority;
+- governed lifecycle state: `artifact_states` and `workflow_state` in
+  `docs/changes/<change-id>/change.yaml`, plus one bounded automation target;
+  this repository-local YAML is mutable workflow state, while linked Markdown
+  artifacts remain stable intent or stage-owned evidence;
 - legacy automation evidence: retired `workflow.autoprogression` records remain read-only compatibility inputs and historical audit evidence during migration;
 - GitHub Actions: runs the same repository-owned scripts in hosted CI when configured;
 - local validation execution cache: untracked branch-local, worktree-local, and change-local state that can speed eligible repeated local validation but is not portable and is not lifecycle evidence;
@@ -718,7 +801,12 @@ Architecture work should choose the smallest durable surface that makes the desi
 
 ### Lifecycle status
 
-Lifecycle-managed artifacts keep status in the artifact. Current architecture artifacts use `approved`; ADRs use the ADR lifecycle vocabulary. Terminal or historical artifacts must preserve replacement or closeout evidence where required.
+For governed changes, lifecycle status is stored in the matching
+`change.yaml` artifact-state entry rather than in the governed artifact.
+Authoring and review peers own only their closed matching transitions.
+Historical pre-adoption artifacts may retain embedded status as read-only
+evidence.
+Terminal or superseded state preserves replacement and closeout evidence.
 
 ### Validation layering
 
@@ -734,21 +822,44 @@ The helper mode is an adoption surface, not an expansion of cache power. It make
 
 The local execution cache is an optimization surface, not evidence. Formal cache-hit evidence is change-local YAML that explains why the prior pass still applies. Closeout gates require actual-run evidence and reject cache-only pass claims. Workstream B edit-scoped validation is a separate future architecture decision because it would reduce selected validators based on changed inputs rather than identical input surfaces.
 
-Workflow-state synchronization is a bounded lifecycle-validation responsibility. The parser reads exact owner and projection fields rather than arbitrary prose, treats `Current Handoff Summary` as the active plan live-state owner, treats `docs/plan.md` and current milestone state as projections, treats `Readiness` as a pointer, and treats progress, review logs, review resolutions, validation notes, explain-change, verify, and PR evidence as ledgers or evidence with narrower ownership. This preserves historical text while letting the state-sync gate fail a transition before a stale projection or contradictory evidence reaches downstream review, verify, or PR readiness.
+Lifecycle-state consistency is a bounded validation responsibility.
+Validation reads exact `artifact_states`, `workflow_state`, automation-target,
+and linked-evidence fields rather than arbitrary prose.
+Plans and `docs/plan.md` are stable intent and navigation, not projections of
+mutable current state.
+Review logs, review resolutions, implementation evidence, explain-change,
+verify, and PR evidence retain their narrower stage ownership.
+Unknown values fail before consistency checks, and contradictory or stale
+evidence blocks downstream reliance.
 
 ### Unified workflow automation policy
 
-Workflow automation is opt-in and change-local. `bounded-review-fix` is the sole writable mechanism, while `docs/changes/<change-id>/change.yaml#workflow.automation` is its sole first-version persisted state. Public commands and compatibility aliases resolve to the same structured target and state machine before any state is written.
+Workflow automation is opt-in and change-local.
+`bounded-review-fix` remains the only writable mechanism, and one structured
+target records the requested stopping point.
+That target is sufficient public consent for repository-local prerequisite
+stages through the target; it is never authority for PR creation, push,
+publication, deployment, merge, credentials, destructive Git, or another
+external mutation.
 
-Target, position, and authority are separate concepts. A target is the requested stopping point. Canonical position comes from authoritative artifacts before plan creation and from the active plan afterward. A parent authorization is the user's maximum consent envelope; an effective capability is the exact executable authority for one stage occurrence and current basis.
+The architecture has no parent-authorization, effective-capability,
+activation-selector, risk-profile, or selector-ledger layer.
+Before every invocation, workflow checks current prerequisites, exact
+artifact or milestone identity, the target boundary, and the invoked stage's
+fixed write ownership.
+Future stages are not marked ready or complete early.
 
-The typed stage-policy registry is an immutable executable projection, not a competing source of truth. Approved specifications own all sixteen projected stage-policy fields and the closed target, occurrence, state, capability, completion, applicability, retry, correction, and migration contracts. Registry conformance is exhaustive; missing policies, duplicate stages, missing fields, unknown values, unsupported stage mappings, and spec inconsistencies fail closed before consistency logic.
+Review stages remain distinct peers.
+They write durable formal evidence before settling only the matching artifact
+entry.
+Direct review-only requests remain isolated.
+Workflow reads settlement and updates routing but cannot create a verdict.
 
-Prepared receipts make cross-file transitions recoverable without pretending Markdown and YAML writes are atomic. Resume is evidence-first: reconcile valid stage-owned output, retry only when declared safe, and pause on contradictory, stale, partial, or multiply in-flight state.
-
-Review stages remain distinct formal invocations. Direct review-only requests stay isolated and do not create or advance an automation run. Automated proposal corrections require recorded review evidence and driver-owned deterministic classification; implementation corrections require reviewer-owned classification and recipe; verification failure always pauses.
-
-Legacy profile records are read-only compatibility evidence. Status projection is side-effect free, while mutating resume or off performs a one-way migration into unified state. Ordinary workflow continuation without a persisted automation run remains lifecycle routing, not a second writable automation mechanism.
+Resume is evidence-first and transition-scoped.
+An identical interrupted review settlement may reconcile idempotently;
+conflicting review identity or evidence fails closed.
+Legacy profile, plan-owned, and artifact-local state remains read-only
+compatibility evidence after a one-way migration.
 
 ### Published skill resource integrity
 
@@ -818,7 +929,15 @@ The project-map skeleton owns reusable output structure only. Evidence ranking, 
 
 ### Change-record catalog model
 
-Change records are cataloged by evidence class and queried by bounded slices. `change.yaml` remains authoritative for validation inventory and summary metadata, but current live workflow state belongs to the active plan, durable rationale belongs to `explain-change.md`, and material review status belongs to review artifacts. Full change-record reads remain valid for forensic reconstruction, disputed evidence, selector debugging, migration checks, unsupported query shapes, and whole-record review.
+Change records are cataloged by evidence class and queried by bounded slices.
+For governed changes, `change.yaml` is authoritative for artifact lifecycle,
+workflow routing, planned-work state, blockers, closeout readiness, validation
+inventory, summary metadata, and evidence links.
+Durable rationale belongs to `explain-change.md`, and formal findings and
+dispositions belong to review artifacts.
+Full change-record reads remain valid for forensic reconstruction, disputed
+evidence, selector debugging, migration checks, unsupported query shapes, and
+whole-record review.
 
 ### Diagram source policy
 
@@ -882,17 +1001,39 @@ Public npm publication is an approved deployment boundary for `@xiongxianfei/rig
 
 ### Unified workflow automation boundary
 
-The unified `bounded-review-fix` mechanism is a repository workflow component, not a new service, background worker, external scheduler, CLI deployment boundary, hosted PR actor, or release mechanism. It executes only inside an active workflow-managed interaction and composes existing stage skills, formal review surfaces, active-plan state, and repository validators.
+The unified `bounded-review-fix` mechanism is a repository workflow component, not a new service, background worker, external scheduler, CLI deployment boundary, hosted PR actor, or release mechanism. It executes only inside an active workflow-managed interaction and composes existing stage skills, formal review surfaces, change-local lifecycle state, and repository validators.
 
-Its persistence is change-local only at `docs/changes/<change-id>/change.yaml#workflow.automation`. Change-local evidence owns the data; Python automation tooling owns execution. Only `scripts/workflow_automation_state.py` mutates the subsection. The record may contain mechanism and schema version, run, structured target, parent authorizations, effective capabilities, prepared and finalized transition receipts, migration receipts, observed evidence identities, stop reason, and cancellation evidence. It does not contain secrets, credentials, a competing live workflow cursor, active-plan milestone or next-stage ownership, review verdict authority, branch-readiness authority, PR-readiness authority, or external-action authority.
+Its persistence is change-local in
+`docs/changes/<change-id>/change.yaml`.
+The record separates `artifact_states`, `workflow_state`, and the selected
+automation target.
+Stage-owned Markdown evidence remains linked rather than copied into this
+snapshot.
 
-Risk boundaries are explicit. Authoring authorization cannot derive implementation or verification capability. Implementation authorization cannot derive verification capability. Verification capability is created only from concrete closeout and verification basis. External actions are a prohibited, non-grantable class in the first mechanism version.
+Authority is structural rather than selector-driven:
 
-Rollback is local and evidence preserving. `off` reconciles any prepared transition, marks the run cancelled, revokes active parent authorizations, invalidates active capabilities, and retains stage artifacts and receipts. Compatibility rollback may continue reading legacy records, but no rollback path restores retired profile writers.
+- authoring peers write their governed artifact, authoring evidence, and one
+  matching authoring transition;
+- review peers write review evidence and one matching settlement transition;
+- workflow writes routing and planned-work state;
+- downstream stages write only their code or stage evidence; and
+- every actor treats other governed artifacts and state entries as read-only.
+
+One target is the complete repository-local continuation consent boundary.
+The mechanism validates prerequisites and fixed ownership at each stage but
+does not derive another capability, authorization class, risk profile, or
+selector.
+External actions remain prohibited.
+
+Rollback is local and evidence preserving.
+`off` cancels the run and retains artifact, review, transition, and stage
+evidence.
+Compatibility rollback may continue reading historical state, but no rollback
+path restores retired plan, artifact, or profile writers.
 
 ### Independent adversarial review gate boundary
 
-The independent adversarial review gate is a repository workflow and evidence contract, not a new service, background worker, database, hosted reviewer, or deployment boundary. It executes inside workflow-managed automation and uses existing formal review skills, change-local review artifacts, validation scripts, and profile state.
+The independent adversarial review gate is a repository workflow and evidence contract, not a new service, background worker, database, hosted reviewer, or deployment boundary. It executes inside workflow-managed automation and uses existing formal review skills, change-local review artifacts, validation scripts, and the current `workflow_state`.
 
 The orchestrator owns the review invocation manifest, initial-packet inventory, packet hash, prompt template version, reviewer context identity, risk-tier classification, phase receipts, normalized `review_gate_outcome`, second-review routing, and autoprogression handoff decision. These records are process evidence and must not contain private chain-of-thought or persuasive author self-assessment.
 
@@ -904,7 +1045,12 @@ Review gate records use structured fields where possible, closed vocabularies fo
 
 Calibration is a separate evidence layer. Rollout samples at least 20% of standard-risk clean automated reviews with a minimum evidence floor, second-reviews all elevated-risk clean reviews, and records material disagreement, inconclusive outcomes, downstream escapes, seeded-defect recall, false positives, and clean-receipt quality by risk tier and review skill. Protected rotating fixtures are preferred for calibration runs when practical; public fixtures document defect classes without becoming the whole calibration corpus.
 
-The gate preserves profile-off and manual review compatibility. Direct isolated reviews may still run under existing review recording rules, but workflow-managed automated handoff cannot use `L0`, missing manifests, missing phase receipts, insufficient clean receipts, unresolved findings, failed second-review gates, or blocked/inconclusive results as a clean advance.
+The gate preserves direct isolated and manual review compatibility. Direct
+isolated reviews may still run under existing review recording rules without
+changing workflow routing. Workflow-managed automated handoff cannot use
+`L0`, missing manifests, missing phase receipts, insufficient clean receipts,
+unresolved findings, failed second-review gates, or blocked/inconclusive
+results as a clean advance.
 
 ### Requirement-fidelity gate boundary
 
@@ -989,7 +1135,8 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260626-requirement-fidelity-gate.md`: deterministic requirement-fidelity applicability, spec-canonical packet ordering, requirement-property decomposition, multi-surface property matrices, spec-derived validator assertion matrices, and compression-defect calibration for applicable automated reviews.
 - `docs/adr/ADR-20260629-release-transaction-profile.md`: profile-driven routine release transaction boundary, generated-surface ownership, cheap preflight, authoritative full release gate, rerunnable public closeout, and timing evidence.
 - `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md`: accepted historical proposal-side profile decision proposed for supersession with its nested writer retired by the approved spec.
-- `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md`: proposed decision for one writable target-driven mechanism, exact `change.yaml#workflow.automation` persistence, named Python ownership, complete typed policy projection, structured targets, two-level authority, receipt-backed recovery, and dual-read/single-write migration.
+- `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md`: accepted historical consolidation decision proposed for supersession; its one-target, review-independence, recovery, migration, and stop-before-PR constraints are retained without its capability and plan-owned-state layers.
+- `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md`: proposed stage-owned lifecycle decision placing mutable artifact and workflow state in `change.yaml`, assigning peer transition ownership, keeping one target as sufficient repository-local consent, and removing capability, selector, hash, and write-interception layers.
 
 No additional ADR is required for the 2026-04-29 package-quality refinement because it sharpens the accepted method without changing the durable architecture decision.
 
@@ -1003,7 +1150,14 @@ No additional ADR is required for script output optimization because it refines 
 
 No additional ADR is required for the evidence-bound `project-map` update because it applies existing published skill resource-integrity, generated-output, and living-reference workflow decisions to one skill and one packaged skeleton asset. The durable current behavior is carried by `specs/project-map.md` and this canonical package.
 
-ADR `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md` is required because this change replaces three writable workflow profiles with one durable state, authority, recovery, target-binding, and migration architecture. On acceptance it supersedes the three profile ADRs without discarding their preserved safety constraints; until then, those ADRs retain their accepted lifecycle status.
+ADR `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md` is
+required because this change replaces plan-owned live state and capability-
+driven automation with one change-local lifecycle model and fixed peer-stage
+write boundaries.
+On acceptance it supersedes the current authority and state-placement decision
+in ADR-20260721 while retaining that ADR's one-mechanism, structured-target,
+review-independence, evidence-first recovery, migration, and stop-before-PR
+constraints.
 
 ADR `docs/adr/ADR-20260625-independent-adversarial-review-gates.md` is required because this change introduces a durable workflow orchestration and review-evidence decision: automated review handoff now depends on verifiable fresh context, orchestrator-owned neutral packets and phase receipts, risk-tiered review depth, second-review disagreement gates, and calibration evidence rather than same-context review prompts or finding quotas.
 
@@ -1040,16 +1194,16 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | Bounded readability | A stage needs the latest validation result or canonical artifact paths for a change. | `scripts/query-change-record.py` returns the requested slice without requiring full validation history or executing validation commands. |
 | Cache-hit safety | A repeated explicit-path lifecycle validation command is requested after an unrelated edit. | Cache hit occurs only when previous result was `pass` and normalized command, input-surface hash, implementation hash, and policy/config hash all match; otherwise the validator runs. |
 | Inner-loop helper adoption | A contributor repeats lifecycle validation after change-local evidence edits. | `--mode explicit-paths-inner-loop` supplies cache context by default, normalizes to canonical direct `--mode explicit-paths` cache identity, and records displayed helper argv separately from canonical cache argv in formal evidence. |
-| Workflow-state synchronization | A planned-initiative handoff updates `Current Handoff Summary` but leaves `docs/plan.md`, current milestone state, `Readiness`, review evidence, or change metadata stale. | The lifecycle state-sync check reports the owner/projection or evidence mismatch and blocks downstream readiness until the bounded live-state surfaces agree. |
-| Unified automation single-write safety | A user starts or resumes workflow automation through a current or legacy command. | The command resolves to one structured target and writes only `workflow.automation`; retired profile records remain unchanged. |
-| Stage-policy projection completeness | A maintainer adds or changes an automatable stage. | Registry conformance proves exactly one immutable policy with all sixteen required fields and rejects missing, duplicate, unknown, or spec-inconsistent entries before execution. |
-| Automation-state write isolation | Multiple automation components evaluate one transition. | Only `scripts/workflow_automation_state.py` writes `change.yaml#workflow.automation`; other components return typed decisions and one prepared receipt remains the recoverable write-ahead boundary. |
-| Capability-stable resume | A prepared transition is resumed after its effective capability becomes invalid. | Resume retains the recorded `effective_capability_id`, pauses reconciliation, and never silently binds replacement authority. |
-| Authorization-bound execution | A run targets a later stage across risk boundaries. | Only a basis-complete effective capability within an active parent authorization can invoke the current stage; missing implementation or verification authority pauses without widening consent. |
-| Interrupted-transition recovery | Execution stops after a prepared receipt and before finalization. | Resume inspects stage-owned evidence before retry, reconciles valid completion without rerun, retries only declared idempotent stages, and pauses on contradiction or partial output. |
+| Lifecycle-state consistency | A stage updates one artifact or workflow transition while its linked review, milestone, blocker, or closeout evidence is absent, stale, or contradictory. | Validation reports the exact entry and evidence mismatch and blocks downstream reliance; plans and governed artifacts remain unchanged. |
+| Unified automation single-write safety | A user starts or resumes workflow automation through a current or legacy command. | The command resolves to one structured target, writes routing only through `workflow_state`, and leaves retired artifact, plan, and profile state unchanged. |
+| Published stage-ownership completeness | A maintainer adds or changes an automatable stage. | The canonical skill defines one fixed content, evidence, and lifecycle-state write boundary; workflow routing cannot widen it; generated adapters preserve it byte-for-byte or semantically as required by the adapter contract. |
+| Artifact-state write isolation | Multiple peers participate in one lifecycle transition. | The author or review peer writes only the matching artifact entry, workflow writes only routing, and any cross-owner mutation blocks reliance. |
+| Settlement-stable resume | Review evidence is durable but its matching settlement write is interrupted. | The same review identity reconciles idempotently; conflicting identity or evidence fails closed, and workflow never substitutes its own verdict. |
+| Target-bound execution | A run targets a later stage before its prerequisites exist. | The target remains sufficient repository-local consent, but workflow invokes only the current basis-complete stage and never widens that stage's fixed write boundary. |
+| Interrupted-stage recovery | Execution stops after stage-owned output is partially or fully written. | Resume inspects the owning evidence, reconciles a complete idempotent transition, and pauses on contradiction or partial output rather than inventing completion. |
 | Repeated-target identity | `code-review@M2` resumes after the active plan has advanced to M3. | The run remains bound to M2 and cannot silently reinterpret the target as M3. |
 | External-action containment | Unified automation completes fresh verification. | The run stops at the verify target and performs no PR creation, push, publication, deployment, merge, destructive Git operation, or other external action. |
-| Automated review independence | A workflow-managed profile invokes an automated review. | The review can advance only when the orchestrator records a valid manifest, verifiable initial packet, non-L0 independence level, phase receipts, risk-tier classification, stage-native verdict, and normalized `review_gate_outcome`. |
+| Automated review independence | Workflow-managed automation invokes an automated review. | The review can advance only when the orchestrator records a valid manifest, verifiable initial packet, non-L0 independence level, phase receipts, risk-tier classification, stage-native verdict, and normalized `review_gate_outcome`. |
 | Blind-first review safety | A rereview follows prior findings and existing validation output. | The reviewer records an independent risk map before validation-result summaries, evidence menus, implementation narrative, or prior finding content are released; later reconciliation may still record new, reopened, superseded, or failed-remediation findings. |
 | Clean-review trustworthiness | An automated review reports no material findings. | A clean-review sufficiency receipt records inspected governing artifacts, risk classes, adversarial hypotheses, direct proofs or reproductions, evidence challenge, unreviewed surfaces, confidence, and no-finding rationale before handoff eligibility is considered. |
 | Requirement-fidelity trustworthiness | An applicable automated review implements, validates, teaches, or preserves a normative spec clause. | The review records deterministic applicability, spec-first packet ordering, accepted or reviewer-authored decomposition, property-by-surface verification, validator assertion comparison against the governing spec, compressed-requirement risk, and a structurally valid requirement-fidelity receipt or material finding. |
@@ -1126,20 +1280,20 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | `manual-routing-required` could become a permanent workaround | Deterministic in-repo evidence treats the diagnostic as registration debt, and verify readiness blocks unless debt is resolved or an owner-approved deferral records path, reason, validation impact, and follow-up. |
 | Bounded query output could hide failures or blockers | Query helper outputs include blockers, unsupported-shape diagnostics, and detail pointers; full forensic reads remain required for disputed evidence, summary inconsistency, unsupported shapes, and whole-record review. |
 | Stage-skill guidance could drift from query helper commands | Workstream B updates stage skills only after query helper commands are stable, and generated adapter validation is required whenever canonical stage-skill text changes. |
-| Workflow-state validation could overreach into historical evidence | The state-sync gate parses bounded owner/projection/pointer fields and excludes historical ledgers and review records from stale-token rejection, while review-artifact consistency checks compare only structured finding and closeout evidence. |
-| Workflow-state projections could become competing owners | The architecture assigns ownership to `Current Handoff Summary` and keeps `docs/plan.md`, milestone-state fields, `Readiness`, and change metadata as projections, pointers, or derived evidence; validators compare them to owners instead of deriving live next stage from them. |
-| Unified automation could become blanket autopilot | Target selection and parent authorization are insufficient for execution; each stage requires a basis-complete effective capability inside one risk class, and external actions are non-grantable. |
-| Automation state could compete with canonical workflow state | Pre-plan position is derived from authoritative artifact evidence, post-plan position comes from `Current Handoff Summary`, and automation stores observed identities and receipts rather than a live cursor. |
-| Interrupted writes could repeat or skip work | A prepared receipt precedes mutation, resume reconciles stage-owned evidence before retry, and contradictory or multiple in-flight transitions fail closed. |
+| Workflow-state validation could overreach into historical evidence | Lifecycle validation parses only governed change-local state and linked structured evidence; historical artifacts and ledgers remain read-only and are not rejected merely for retaining pre-adoption status prose. |
+| Governed artifacts could regain mutable status | The architecture makes `change.yaml` the only mutable lifecycle and routing owner; skills and validators reject artifact-local or plan-owned current state for governed changes. |
+| Unified automation could become blanket autopilot | One target covers only repository-local prerequisite stages; fixed stage ownership, current prerequisite checks, explicit stop conditions, and the external-action prohibition remain non-bypassable. |
+| Shared change-local state could blur ownership | `artifact_states` uses transition-scoped author/reviewer ownership, `workflow_state` is workflow-owned, and all other entries are read-only to the current stage. |
+| Interrupted writes could repeat or skip work | Review settlement is evidence-first and idempotent for the same identity; other incomplete or contradictory stage evidence pauses conservative recovery. |
 | Consecutive stages could collapse review independence | Each automated review is a distinct formal invocation over tracked artifacts, governing sources, formal criteria, and recorded findings, with context reset when fresh context is unavailable. |
-| Legacy and unified writers could diverge | Migration is dual-read and single-write; mutating resume creates one migration receipt and unified state, while mixed writable legacy and unified state fails closed. |
+| Legacy and unified writers could diverge | Migration is dual-read and single-write; mutating resume records one migration event and unified state, while mixed writable legacy and unified state fails closed. |
 | Typed stage policy could become a second normative source | Approved specs remain normative; the immutable Python registry is an executable projection with exhaustive conformance tests and policy-version checks. |
 | Repeated stage targets could silently advance | `implement` and `code-review` bind a plan and milestone identity before persistence and never rebind on resume. |
 | Orchestrator could infer auto-fix safety | Code-review owns `auto_fix_class`; missing or unsupported classifications fail closed to pause, and the orchestrator cannot upgrade findings. |
 | Correction loops could oscillate or expand scope | The loop is capped per milestone, must shrink unresolved findings, pauses on new finding IDs or classes, stays path-local, and blocks new dependencies, components, interfaces, integrations, migrations, and generated artifact classes. |
 | Automatic fixes could rewrite the governing authority | Substantive proposal, spec, test-spec, architecture, ADR, plan, constitution, workflow policy, release policy, and security policy edits are hard stops. |
-| Final verify could reuse stale evidence | Verification capability and completion require fresh actual-run evidence for correctness-bearing, security-sensitive, release-sensitive, lifecycle, review closeout, change metadata, generated-output, and required test-suite checks. |
-| Unified automation could cross the PR boundary | Successful verify completion reports `pr` next and stops; external actions are a prohibited capability class and cannot be inferred from the target. |
+| Final verify could reuse stale evidence | Verification prerequisites and completion require fresh actual-run evidence for correctness-bearing, security-sensitive, release-sensitive, lifecycle, review closeout, change metadata, generated-output, and required test-suite checks. |
+| Unified automation could cross the PR boundary | Successful verify completion reports `pr` next and stops; external actions are prohibited and cannot be inferred from the target. |
 | Automated review could collapse into author self-review | The review gate fails closed on `L0`, missing reviewer context identity, invalid initial-packet evidence, missing phase receipts, or early release of forbidden author context. |
 | Requirement-fidelity applicability could be skipped by reviewer discretion | Applicability starts from deterministic affected-path and category triggers recorded before artifact comparison; overrides require closed direction and non-empty justification. |
 | Reviewer-authored decomposition could itself be compressed | Accepted decompositions are preferred when available, reviewer-authored decompositions are marked as such, and Phase B samples reviewer-authored decompositions at the higher approved rate. |
@@ -1226,12 +1380,20 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 - validation cache hit: reuse of a previous passing validator result when the normalized command, input surface, implementation manifest, and policy/config manifest are unchanged.
 - cache-aware inner-loop helper mode: `validate-artifact-lifecycle.py --mode explicit-paths-inner-loop`, the user-facing helper command that supplies approved cache context for repeated inner-loop lifecycle validation.
 - canonical cache argv: the normalized direct `validate-artifact-lifecycle.py --mode explicit-paths` argv used for helper cache identity.
-- state-sync gate: parser-scoped lifecycle validation that compares planned-initiative live-state owners, projections, pointers, and structured evidence before downstream readiness is claimed.
-- workflow automation mechanism: the single writable target-driven `bounded-review-fix` engine persisted under `workflow.automation`.
+- lifecycle-state consistency gate: bounded validation of governed
+  artifact-state, workflow-state, planned-work, blocker, target, and linked
+  evidence fields before downstream reliance.
+- workflow automation mechanism: the single writable target-driven
+  `bounded-review-fix` flow whose target and routing state are persisted in
+  the governed change record.
 - structured target: a requested public stage plus occurrence identity and completion predicate, bound before persistence.
-- parent authorization: durable user consent defining the maximum target and scope inside one risk class; not executable mutation authority.
-- effective capability: stage-specific executable authority derived from one active parent authorization and a complete current basis.
-- transition receipt: write-ahead and finalized evidence for one stage transition, used to reconcile interrupted execution before retry.
+- artifact-state entry: change-local lifecycle record for one stable governed
+  artifact ID, changed only by its matching authoring or review transition.
+- workflow state: the sole change-local current routing and planned-work
+  snapshot, written by `workflow` from settled artifacts and stage evidence.
+- fixed stage write boundary: the published-skill rule that defines the
+  artifact, evidence, or transition a stage may write regardless of manual or
+  automated invocation.
 - independent adversarial review gate: workflow-managed review handoff contract that requires a fresh review context, neutral initial packet, blind-first risk map, staged evidence release, risk-tiered escalation, and structured verdict evidence before automatic continuation.
 - requirement-fidelity gate: workflow-managed review handoff contract that requires deterministic applicability, spec-canonical packet ordering, requirement-property decomposition, property-by-surface verification, validator assertion comparison against the spec, and requirement-compression calibration for applicable automated reviews.
 - requirement compression: defect class where a multi-property, multi-surface, closed-list, or multi-verb requirement is projected as an incomplete subset in implementation, validation, skill guidance, or review evidence.
@@ -1244,11 +1406,17 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 - second-review disagreement: material finding, blocked result, or inconclusive result from a required or sampled second independent review after a first review was clean.
 - failed-remediation: reconciliation category for a prior finding claimed or expected to be fixed but rediscovered independently during a blind-first rereview.
 - gate-ready proposal: proposal artifact and review state proving accepted direction and clean proposal-review evidence, independent of user authorization.
-- automation metadata: change-local run, target, authority, receipt, and migration evidence that does not own live stage or readiness state.
+- automation metadata: change-local mechanism, target, status, current stage,
+  stop reason, and evidence that remains subordinate to `workflow_state` and
+  does not own artifact settlement.
 - architecture assessment: recorded workflow-managed micro-stage after approved `spec-review` that routes to `architecture`, `plan`, or pause for ambiguity.
-- auto-fix classification: reviewer-owned material-finding field that records `none`, `mechanical`, or `declared-safe` eligibility for implementation-profile correction.
+- auto-fix classification: reviewer-owned material-finding field that records
+  `none`, `mechanical`, or `declared-safe` eligibility for bounded
+  implementation correction.
 - test-spec settlement: deterministic evidence that the test spec is active or settled, mapped, gap-free, synchronized with inputs, and ready to authorize implementation.
-- live-state surface: a bounded current-state artifact location, such as `Current Handoff Summary`, current milestone state, `Readiness`, the active or blocked plan-index row, and compact live-state metadata fields.
+- live-state surface: the bounded `change.yaml` fields that own artifact
+  lifecycle, workflow routing, planned work, blockers, next stage, and
+  closeout readiness for a governed change.
 - displayed command argv: the normalized helper argv the user invoked, recorded in formal helper cache-hit evidence separately from canonical cache argv.
 - local execution cache: untracked branch-local, worktree-local, change-local cache state used only to avoid repeated local validation execution.
 - formal cache-hit evidence: tracked change-local YAML that records why a previous validator pass still applies and remains inner-loop evidence only.
@@ -1258,8 +1426,8 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Next artifacts
 
-- Architecture-review for the simplified portable boundary-first release
-  manifest and package rollback ADR.
+- Architecture-review for the stage-owned change-local lifecycle update and
+  ADR.
 
 ## Follow-on artifacts
 
@@ -1288,23 +1456,49 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 - Script Output Optimization: accepted proposal and approved spec define first-slice `scripts/test-select-validation.py` output shaping, reliable-only rerun guidance, silent quiet success, behavior-preservation evidence, and minimal `scripts/ci.sh` wrapper adjustment only when needed to preserve quiet-success and loud-failure behavior.
 - Change-Record Catalog Registration and Bounded Read Model: accepted proposal, approved spec, and accepted ADR define deterministic evidence-class registration, selector routing for recurring change-local evidence, registration-debt handling for `manual-routing-required`, and a bounded query-helper model for common stage-owned reads.
 - Validation Idempotency and Cache-Hit Safety: accepted proposal, approved spec, and accepted ADR define first-slice explicit-path lifecycle validation cache hits, the cache-aware inner-loop helper mode, local-only execution cache state, formal cache-hit evidence, closeout actual-run gates, Workstream A measurement, and Workstream B deferral.
-- Workflow-State Projection and Pre-Transition Synchronization Gate: accepted proposal and approved spec amendment define active-plan live-state ownership, mechanical projections, pointer-only readiness, bounded stale-token detection, review-evidence consistency, and the pre-transition state-sync gate.
+- Workflow-State Projection and Pre-Transition Synchronization Gate:
+  historical pre-adoption design for active-plan live-state ownership and
+  projections; governed changes use the stage-owned change-local model instead.
 - Target-Native Init Commands and Adapter Terminology Retirement: accepted proposal, approved spec, and accepted ADR define the 0.3.0 target-native init boundary, full public removal of `--adapter`, install-only default behavior, explicit `--write-state`, target-oriented state schemas, default state byte preservation with safety reads, and real non-dry-run release smoke gates.
 - Published Skill Resource Integrity with an Architecture-Skill Pilot: accepted proposal, approved spec amendment, and accepted ADR define mapped resource integrity, bounded legacy lint, raw-byte generated and installed parity, locally packed release-candidate clean-install proof, and architecture-skill pilot resource-chain evidence.
 - Evidence-Bound and Incremental `project-map`: accepted proposal and approved spec define evidence-bound map metadata, freshness, root/area registration, source-ranked claims, skeleton asset packaging, generated adapter inclusion, correction notes, and downstream reliance boundaries.
-- Proposal-Gated Authoring Autoprogression: historical profile design proposed for ADR supersession by the unified bounded-review-fix mechanism; its proposal gate and review-independence safeguards remain rebound requirements.
+- Proposal-Gated Authoring Autoprogression: historical profile design whose
+  separate authorization and state ownership are superseded; its proposal
+  gate and review-independence safeguards remain retained review requirements.
 - Release Transaction Automation: accepted proposal and approved spec define a routine release transaction profile under `docs/releases/profiles/<tag>.yaml`, generated-surface ownership, Python-owned release preflight, full-gate preservation, rerunnable public evidence closeout, and timing evidence.
-- Implementation Autoprogression Through Verify: historical profile design proposed for ADR supersession by the unified bounded-review-fix mechanism; its separate implementation authority, reviewer-owned correction, fresh verify, and stop-before-PR safeguards remain rebound requirements.
+- Implementation Autoprogression Through Verify: historical profile design
+  whose separate authorization and state ownership are superseded; its
+  reviewer-owned correction, fresh verify, and stop-before-PR safeguards
+  remain retained workflow requirements.
 - Independent Adversarial Review Gates: accepted proposal and approved spec define verifiable automated review independence through orchestrator-owned neutral manifests, blind-first risk formation, staged evidence release, risk-tiered review depth, clean-review sufficiency receipts, second-review disagreement gates, final holistic code review, and calibration metrics.
 - Requirement-Fidelity Gate: accepted proposal, approved spec, and accepted ADR define deterministic requirement-fidelity applicability, spec-canonical packet ordering, requirement-property decomposition, per-property and per-surface verification, spec-derived validator assertion matrices, clean-review fidelity receipts, and compression-defect calibration as an additive sibling to independent adversarial review gates.
-- Bounded Review-Fix Autoprogression: historical proposal-side profile design proposed for ADR supersession by the unified mechanism and neutral `workflow.automation` state; driver-owned proposal correction, bounded rereview, direct-review isolation, and architecture applicability remain preserved.
-- Single Bounded Review-Fix Workflow Automation: approved proposal and spec define the only writable automation mechanism, structured targets from `proposal-review` through `verify`, two-level authority, prepared transition receipts, canonical-state ownership, and dual-read/single-write migration.
+- Bounded Review-Fix Autoprogression: historical proposal-side profile design
+  whose nested state writer is superseded; driver-owned proposal correction,
+  bounded rereview, direct-review isolation, and architecture applicability
+  remain preserved.
+- Single Bounded Review-Fix Workflow Automation: historical consolidation
+  contract retained for one writable target-driven mechanism, structured
+  targets from `proposal-review` through `verify`, review independence,
+  evidence-first recovery, dual-read/single-write migration, and the
+  stop-before-PR boundary. Its two-level authority, capability, typed-policy,
+  receipt-state, plan-owned live-state, and canonical-position decisions are
+  superseded by the stage-owned change-local lifecycle model.
 
 ## Readiness
 
-Approved portable boundary-first architecture revision ready for plan
-alignment.
+The stage-owned change-local lifecycle architecture revision is ready for
+architecture-review.
+Planning must not rely on this candidate revision until the review is settled.
 
-ADR `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md` records the accepted durable consolidation and supersedes the three earlier profile ADRs; their descriptions below are historical context, not current writable-mechanism authority under the approved spec.
+ADR `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md`
+records the proposed durable state-placement and peer-authority decision.
+On acceptance it supersedes the plan-owned state and capability layers in
+ADR-20260721 while retaining that ADR's one-mechanism, recovery, migration,
+review-independence, and external-action constraints.
+
+References below to earlier authoring, implementation, and review-fix profile
+ADRs are historical decision evidence. They do not restore profile-owned
+lifecycle state, separate workflow authorization, capability, typed-policy,
+or receipt-state layers.
 
 ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md` records the durable `v0.1.3` decision to make release archives the active public adapter install surface and retire tracked generated adapter package fragments. ADR `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md` records the first CLI package boundary, bundled local-archive metadata decision, planned-lockfile boundary, and original publication block. ADR `docs/adr/ADR-20260516-rigorloop-cli-lockfile.md` records the durable lockfile boundary, strict schema handling, drift comparison, and partial-failure write ordering for Codex init. ADR `docs/adr/ADR-20260516-rigorloop-npm-publication.md` records the first public npm publication boundary, package-content and publication-mode decisions, and real install closeout proof. ADR `docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md` records descriptor-driven multi-adapter init, schema v2 mixed-root lockfiles, opencode skills-only compatibility, and proxy-safe diagnostics. ADR `docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md` records the durable decision to treat change records as registered and queryable catalogs. ADR `docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md` records the durable decision to add validation cache hits for unchanged explicit-path lifecycle inputs, including the cache-aware inner-loop helper mode, while preserving actual-run closeout gates. ADR `docs/adr/ADR-20260524-target-native-init-state-boundary.md` records the durable target-native init, explicit state-write, target-oriented schema, state safety, and real smoke-gate decision. ADR `docs/adr/ADR-20260623-published-skill-resource-integrity.md` records the durable mapped-resource identity and clean-install proof decision. ADR `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md` records the durable proposal-gated authoring autoprogression profile, policy persistence, and review-independence decision. ADR `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md` records the durable separately armed implementation autoprogression profile, phase gating, reviewer-owned correction authority, fresh verify requirement, and stop-before-PR boundary. ADR `docs/adr/ADR-20260625-independent-adversarial-review-gates.md` records the durable automated review-independence gate, neutral-packet evidence model, blind-first phase protocol, risk-tiered escalation, second-review disagreement behavior, and calibration boundary. ADR `docs/adr/ADR-20260626-requirement-fidelity-gate.md` records the durable automated requirement-fidelity gate, deterministic applicability model, spec-canonical packet order, decomposition and property-matrix evidence, validator assertion matrix boundary, and compression-defect calibration. ADR `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md` records the durable bounded review-fix profile, nested review-fix state, driver-owned safe-fix classification, same-review rerun boundary, and architecture-assessment routing. No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision. No new ADR is required for the cache-aware inner-loop helper because it amends the existing validation cache-hit safety decision rather than introducing a separate validation architecture. No additional ADR is required for the evidence-bound `project-map` update because it applies existing generated-output, skill resource-integrity, and living-reference workflow decisions to one published skill and one packaged skeleton asset. No new ADR is required for workflow-state synchronization because the accepted spec amends the existing single-source workflow-state contract and composes through the existing lifecycle-validation architecture instead of adding a new system boundary, storage boundary, parser authority, or service. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.

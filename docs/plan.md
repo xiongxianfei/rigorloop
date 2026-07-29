@@ -1,27 +1,36 @@
 # Plan index
 
-`docs/plan.md` is the bounded lifecycle index for active, blocked, recent done, and superseded planned work. It is not the body of a plan.
+`docs/plan.md` is a navigation index to stable plan bodies and owning change
+records.
+Mutable lifecycle state, current milestones, review state, blockers, and next
+stages live in each plan's owning `change.yaml`.
 
 <!--
 Index policy:
-- Active and Blocked are complete and first.
-- Done (recent) keeps the most recent 10 completed plans.
+- Current plan references link stable plan bodies to owning change records.
+- Recent history keeps the most recent 10 completed plan references.
 - Older Done entries move to docs/plan-archive.md.
 - Plan links use relative Markdown targets from this file, for example `[Title](plans/YYYY-MM-DD-slug.md)`.
 - Do not use bare repository-root plan paths in this index; they may not render as clickable links.
-- Done entries are one line: date, title, plan link, terminal state, PR/disposition.
-- Do not place active, blocked, unresolved, or review-needed work in the archive.
+- Do not copy mutable lifecycle or routing state into this index.
 -->
 
 ## Active
 
-| Plan | State | Next stage | Change ID |
-| --- | --- | --- | --- |
-| [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | active | pr | 2026-06-24-preflight-first-measured-script-execution-optimization |
+Compatibility heading only.
+Current lifecycle state is not recorded in this index.
 
 ## Blocked
 
-No blocked plans.
+Compatibility heading only.
+Current blockers are not recorded in this index.
+
+## Current plan references
+
+| Plan | Owning change record |
+| --- | --- |
+| [Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](plans/2026-07-29-stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md) | [change.yaml](changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml) |
+| [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | [change.yaml](changes/2026-06-24-preflight-first-measured-script-execution-optimization/change.yaml) |
 
 ## Done (recent)
 
@@ -38,5 +47,6 @@ Full completed history: see [Plan archive](plan-archive.md).
 - [2026-06-27 Selector-Regression Runtime Reduction](plans/2026-06-27-selector-regression-runtime-reduction.md) - done; terminal state: done; PR #115 opened for review.
 - [2026-06-26 Preflight-First Validation Runtime Optimization](plans/2026-06-26-preflight-first-validation-runtime-optimization.md) - done; terminal state: done; PR #114 opened for review.
 
-## Superseded
-- none yet
+## Historical replacements
+
+- None currently indexed.

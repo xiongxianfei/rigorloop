@@ -423,3 +423,14 @@ pr
 ## Readiness
 
 Approved. Ready for planning and test-spec authoring.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+active-plan metadata as current lifecycle authority or a higher-ranked mutable
+path source to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Artifact-location guidance, example isolation, path lookup, and
+generated-surface validation remain governed here.

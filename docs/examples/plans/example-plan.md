@@ -1,10 +1,5 @@
 # Example plan: replace with a real initiative
 
-## Status
-
-Plan lifecycle state: active
-Terminal disposition: none
-
 - Owner: <maintainer>
 - Start date: 0000-00-00
 - Last updated: 0000-00-00
@@ -31,21 +26,9 @@ Explain why this work matters.
 
 - constraint
 
-## Current Handoff Summary
-
-- Current milestone: M1. First milestone
-- Current milestone state: planned
-- Last reviewed milestone: none
-- Review status: not started
-- Remaining in-scope implementation milestones: M1
-- Next stage: implement M1
-- Final closeout readiness: not ready
-- Reason final closeout is or is not ready: M1 is not implemented or reviewed, final validation has not run, and PR handoff is not prepared.
-
 ## Milestones
 
 1. M1. First milestone
-   - milestone state: planned
    - deliverable
    - verification
    - implementation handoff:
@@ -54,42 +37,25 @@ Explain why this work matters.
    - review closeout:
      - [ ] code-review completed
      - [ ] material findings resolved or explicitly dispositioned
-     - [ ] milestone state updated before starting the next implementation milestone
    - milestone commit message: `M1: <completed milestone outcome>`
    - milestone closeout checklist:
      - [ ] targeted validation passed
-     - [ ] lifecycle state updated in the plan index surfaces and this plan body if the milestone changed it
-     - [ ] progress updated
-     - [ ] decision log updated if needed
-     - [ ] validation notes updated
      - [ ] milestone committed
-
-## Progress
-
-- 0000-00-00: plan created
 
 ## Decision log
 
 - 0000-00-00: example decision -> rationale
 
-## Surprises and discoveries
-
-- none yet
-
-## Validation notes
-
-- none yet
-
-## Outcome and retrospective
-
-- Keep this section final-only or explicitly historical while the plan is active; do not duplicate the current next stage here.
-- When the real lifecycle decision is known, update this plan body's `## Status` marker and the appropriate plan index surface in the same change: `docs/plan.md` for active, blocked, recent done, or active supersession context; `docs/plan-archive.md` for older terminal history.
-
 ## Readiness
 
-- See `Current Handoff Summary`.
-- If the initiative is done, blocked, or superseded, say that here without leaving stale wording such as `ready for code-review` or `ready for PR`.
+- See the owning change record for current workflow state.
 
 ## Risks and follow-ups
 
 - risk
+## Owning change record
+
+- `docs/changes/YYYY-MM-DD-example/change.yaml`
+
+Mutable lifecycle state, current milestone state, review status, blockers,
+routing, and closeout readiness live only in this record.

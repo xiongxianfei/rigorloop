@@ -410,3 +410,14 @@ pr
 ## Readiness
 
 Approved after spec-review. Downstream plan and test spec are active.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+current-change execution or learn follow-ups being written to the active plan
+to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Cross-change follow-up admission, ownership fields, deduplication, and
+terminal dispositions remain governed here.

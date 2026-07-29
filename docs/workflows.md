@@ -159,7 +159,7 @@ Record follow-ups where they can be acted on.
 
 | Follow-up type | Owner |
 | --- | --- |
-| Active implementation follow-up | active plan |
+| Active implementation follow-up | implementation evidence referenced by `change.yaml` |
 | Review finding follow-up | `review-resolution.md` |
 | Change closeout follow-up | `explain-change.md` or `change.yaml` |
 | Release follow-up | release report or release plan |
@@ -271,9 +271,9 @@ artifact_locations:
     path: docs/adr/ADR-YYYYMMDD-slug.md
     required_when: durable architecture decision is recorded
   plan_index:
-    owner: plan / workflow
+    owner: plan
     path: docs/plan.md
-    required_when: planned initiatives exist
+    required_when: navigation across planned initiatives is useful
   change_plan:
     owner: plan
     path: docs/plans/YYYY-MM-DD-slug.md
@@ -287,7 +287,7 @@ artifact_locations:
     path: docs/changes/<change-id>/
     required_when: workflow-managed formal lifecycle evidence exists; new change-id defaults to YYYY-MM-DD-slug
   change_metadata:
-    owner: relevant stage / workflow
+    owner: transition-scoped authoring, review, and workflow stages
     path: docs/changes/<change-id>/change.yaml
     required_when: non-trivial workflow-managed change
   formal_review_record:
@@ -379,15 +379,15 @@ If this project customizes artifact locations, update the registry and this tabl
 
 | Surface | Path | Purpose |
 | --- | --- | --- |
-| Plan index | `docs/plan.md` | Bounded lifecycle index of active, blocked, recent done, and active supersession context. |
-| Plan body | `docs/plans/YYYY-MM-DD-slug.md` | Concrete execution plan for one workflow-managed planned initiative. |
-| Change metadata | `docs/changes/<change-id>/change.yaml` | Compact change metadata and validation ledger. |
+| Plan index | `docs/plan.md` | Navigation to stable plan bodies and owning change records. |
+| Plan body | `docs/plans/YYYY-MM-DD-slug.md` | Stable execution intent for one workflow-managed planned initiative. |
+| Change metadata | `docs/changes/<change-id>/change.yaml` | Authoritative artifact lifecycle, planned-work, routing, and compact validation state. |
 | Change-local evidence | `docs/changes/<change-id>/` | Reviews, rationale, verification, PR handoff evidence, and other scoped lifecycle evidence. |
 
 ## Customization and migration notes
 
 - The registry is the current project-local map; update it and the Markdown projections together when artifact placement changes.
-- `docs/plan.md` remains the plan index. Concrete plan bodies remain under `docs/plans/`.
+- `docs/plan.md` remains navigation only. Concrete stable plan bodies remain under `docs/plans/`.
 - Existing `docs/plans/*.md` files are not migrated by this workflow-map optimization.
 - Formal review records stay under `docs/changes/<change-id>/reviews/` unless a higher-priority explicit path, active metadata, approved spec, schema, safety constraint, or user instruction permits another path.
 - Learn sessions may explain historical decisions, but they are not live placement authority unless the current rule also appears in this guide, an approved spec, a schema, or owning stage-skill guidance.
@@ -403,14 +403,18 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - Summaries are warning-only and not a hard token gate, hard release gate, or CI blocker based on token totals.
 - Before/after dynamic benchmark comparison and exact token telemetry are advisory unless a benchmark actually ran or a later accepted artifact requires them.
 - Use bounded evidence: summarize broad searches, large command outputs, full-skill reads, repeated file reads, generated-output reads, review rounds, and validation runs rather than pasting raw logs.
-- Route recommended follow-up through the active plan, review-resolution, learn, proposal, or the follow-up ownership surface.
+- Route recommended follow-up through the owning change record, review-resolution, learn, proposal, or the follow-up ownership surface.
 
 ## Change-Local Artifacts
 
 - Manual skill invocations may omit `docs/changes/<change-id>/` when they are not used to claim complete workflow delivery.
 - Change ID convention: for new workflow-managed change roots, `<change-id>` defaults to `YYYY-MM-DD-slug`. Use the project-local current date when the change root is first created, then a lowercase hyphen-separated slug from the accepted proposal, active plan title, or user-provided change topic. Select or confirm this ID before writing `docs/changes/<change-id>/`.
-- Existing historical, numbered, undated, or explicitly project-customized change roots remain valid legacy records until touched, migrated, or superseded.
+- Existing historical, numbered, undated, or explicitly project-customized change roots remain readable historical records. Nonterminal work migrates to the current change-local state model before its next lifecycle mutation.
 - For non-trivial work, the baseline change-local pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning.
+- `change.yaml` is the sole owner of mutable artifact lifecycle state, planned-work progress, current review state, blockers, routing, and final-closeout readiness.
+- Governed artifacts and plans keep stable intent and a pointer to the owning change record. They do not mirror mutable current state.
+- Authoring stages update only their own governed content and matching authoring-state transition. Review peers record evidence and settle only the matching artifact entry. `workflow` updates routing only.
+- Downstream and support stages treat upstream governed artifacts and state as read-only and route corrections to the owning stage.
 - For new non-trivial work, the default durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`.
 - PR text remains the reviewer-facing summary surface; it does not replace required durable reasoning for non-trivial work.
 - Standalone `review-resolution.md` and `verify-report.md` remain conditional and are added only when their governing workflow triggers apply.
@@ -429,26 +433,37 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 ## Autoprogression
 
 - Distinguish `workflow-managed` completion flows from isolated stage requests.
-- New workflow automation writes one `bounded-review-fix` mechanism under `docs/changes/<change-id>/change.yaml#workflow.automation`. Legacy `workflow.autoprogression` records are read-only compatibility inputs.
+- Workflow automation writes one mechanism under `docs/changes/<change-id>/change.yaml#workflow.automation`. Legacy automation records are read-only migration inputs and never receive new state.
 - `$workflow auto: <target-stage>` selects a structured target. Supported stages are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
-- `$workflow auto: status` is read-only. `$workflow auto: off` durably cancels the unified run, revokes active parent authorizations, invalidates active capabilities, and preserves transition evidence.
-- Target selection and executable authority are separate. Parent authorizations bound maximum authoring, implementation, or verification consent; only an effective capability with complete current basis authorizes one stage operation.
-- The legacy commands `workflow auto-through: plan-review`, `workflow auto-through: verify`, `workflow auto-through: status`, and `workflow auto-through: off` remain adapters throughout migration and write only unified state.
-- `auto-through: plan-review` maps to a singleton plan-review target and authoring authority only. `auto-through: verify` maps to a final verify target and creates only currently basis-valid authority; it never stores future-contingent verification consent.
-- Proposal gate readiness is artifact/review readiness only and remains separate from user authorization.
-- Authoring may route through proposal review, spec, spec review, architecture assessment, conditional architecture and architecture review, plan and plan review, test spec, and test-spec review when the structured target and current authoring capability permit it.
+- `$workflow auto: status` is read-only.
+  `$workflow auto: off` cancels the run and preserves transition evidence.
+- The selected target is the complete repository-local automation boundary.
+  Do not add another authorization, capability, activation selector, profile,
+  or inferred continuation parameter.
+- Authoring may route through proposal review, spec, spec review, architecture
+  assessment, conditional architecture and architecture review, plan and plan
+  review, test spec, and test-spec review when those stages are at or before
+  the selected target and their current prerequisites pass.
 - Architecture assessment records `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; ambiguity pauses instead of guessing.
 - Automated review stages remain independent formal reviews: reset to the tracked artifact, governing sources, formal criteria, and relevant recorded findings; record the result before downstream routing; do not rely on hidden authoring reasoning or edit the reviewed artifact during review.
-- Stop or pause on an unsatisfied review gate without authorized bounded correction, material findings requiring a decision, `needs-decision`, user pause or cancellation, missing or stale authority, contradictory workflow state, unreliable partial completion, exhausted transition budget, direct review-only invocation, or an out-of-scope stage request.
+- Stop or pause on an unsatisfied review gate without bounded correction,
+  material findings requiring a decision, `needs-decision`, user pause or
+  cancellation, contradictory workflow state, unreliable partial completion,
+  exhausted transition budget, direct review-only invocation, or an
+  out-of-scope stage request.
 - Resume must use tracked artifact and review evidence. Do not recreate completed artifacts, rerun clean reviews without an explicit rereview event, or infer completion from file existence alone.
 - Reaching the exact structured target stops the run. `implement` and `code-review` targets bind the unique current plan milestone before persistence and never silently rebind on resume.
 - Direct review invocations do not activate, resume, or advance automation, even when persisted state exists.
 - After approved recorded `spec-review`, routing requires exactly one architecture assessment: `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`. `architecture-required` routes through architecture and architecture review; `architecture-not-required` skips them; `architecture-ambiguous` pauses for owner decision.
 - If `architecture-not-required` skips a user-requested conditional target such as `architecture` or `architecture-review`, stop with `target-not-applicable` instead of claiming that target was reached.
-- Implementation authority may run ordered milestone implementation, independent milestone review, reviewer-owned bounded correction, triggered CI maintenance, and final holistic review.
-- Verification authority is separate and may exist only after its implementation-closeout, final-review, promotion, explanation-input, branch-state, and verification-input basis is concrete.
+- A target that reaches implementation may run ordered milestone
+  implementation, independent milestone review, reviewer-owned bounded
+  correction, triggered CI maintenance, and final holistic review when those
+  stages are at or before the target.
 - Successful verify reports `pr` as next but never opens a PR. The mechanism never pushes, publishes, releases, deploys, merges, performs destructive Git operations, accesses credentials, or mutates an external system.
-- Results report mechanism, structured target, canonical position source, maximum authorization boundary, effective capability kind, stage outcome, review and clean-gate state, transitions, fixes, decisions, artifacts, stop reason, and next action.
+- Results report the structured target, canonical position source, stage
+  outcome, review and clean-gate state, transitions, fixes, decisions,
+  artifacts, stop reason, and next action.
 - In workflow-managed standard workflow runs, `code-review` first emits a first-pass review record grounded in the actual diff, upstream artifacts, checklist coverage, and validation evidence before any review-driven fixes begin.
 - Workflow-managed automated `code-review` uses the independent adversarial review gate. The orchestrator creates the neutral review invocation manifest and initial packet before invoking review, and it withholds validation-result summaries, evidence menus, implementation notes, and prior finding content until the required phase receipts allow release.
 - Workflow-managed automated `code-review` uses the requirement-fidelity gate when deterministic applicability is `applicable`.
@@ -459,42 +474,37 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - In workflow-managed standard workflow milestone-based plans, first-pass `clean-with-notes` on the final implementation milestone reaches final closeout only when no in-scope implementation milestone remains open or unresolved.
 - Before `explain-change` or `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions.
 - In workflow-managed standard workflow runs, first-pass `changes-requested` continues to `review-resolution`, and first-pass `blocked` or `inconclusive` stops.
-- If the active plan does not clearly identify the reviewed milestone or remaining in-scope implementation milestones, stop for a plan update or inconclusive review instead of inferring final-closeout readiness.
+- If stable plan intent and change-local planned-work state do not identify the reviewed milestone or remaining in-scope implementation milestones consistently, stop and route the mismatch to `plan` and `workflow` instead of inferring final-closeout readiness.
 - Clean reviews require checklist coverage plus no-finding rationale. Positive notes are optional and only useful when they add specific evidence-backed context.
 - Direct `pr` remains in scope and opens the PR when readiness passes.
 - Direct `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, and `explain-change` stay isolated by default unless the user asks to carry the change through completion.
 - Manual skill invocations and bugfix skill invocations stay isolated or explicit-step in v1.
 - On-demand and periodic actions such as `explore`, `research`, and `learn` do not auto-run by default.
 - Stop automatic continuation when the user explicitly pauses, validation fails, a review or design issue needs a real decision, permissions or tooling block the next step, or the next action would be stronger than PR creation such as merge, release, deploy, or destructive Git operations.
-- Autoprogression does not replace lifecycle bookkeeping. After `code-review`, `verify`, or other review gates change the real initiative state, update the active plan, any affected active test spec, and `docs/plan.md` before claiming downstream readiness.
+- Autoprogression does not replace lifecycle bookkeeping. After a stage changes the real initiative state, update only the transition-owned change-local state and stage evidence before claiming downstream readiness.
 - Repo-local lifecycle synchronization happens inside the PR that performs the lifecycle transition, before that PR opens for review. Merge integrates pre-validated state; it is not a routine trigger for further lifecycle closeout.
 
 ## Planned Milestone Work
 
 - Use a concrete plan under `docs/plans/` for multi-file, risky, ambiguous, migration-heavy, or milestone-based work.
-- `docs/plan.md` is the bounded lifecycle index for planned initiatives; concrete plan bodies live under `docs/plans/`.
-- Keep Active and Blocked complete and first in `docs/plan.md`; keep only the recent completed window in `Done (recent)` and move older terminal history to `docs/plan-archive.md`.
-- Plan bodies use the explicit `## Status` lifecycle marker fields `Plan lifecycle state` and `Terminal disposition`; do not infer terminal state from prose.
-- Superseded entries remain in `docs/plan.md` only while they carry `superseded by:` and non-empty `active-context:`; terminal superseded history without active context belongs in `docs/plan-archive.md`.
-- For planned initiatives, the active plan `Current Handoff Summary` is the live state owner.
-- `Readiness` points to `Current Handoff Summary` for current live state instead of duplicating the current next stage.
+- `docs/plan.md` is a navigation index; concrete plan bodies live under `docs/plans/`.
+- Plan bodies own stable scope, milestone definitions, dependencies, validation strategy, and recovery intent.
+- `change.yaml#workflow_state.planned_work` owns the current milestone, milestone states, latest review, remaining implementation milestones, and final-closeout readiness.
 - Each implementation milestone has one `Milestone state`: `planned`, `implementing`, `review-requested`, `resolution-needed`, or `closed`.
 - Use `review-requested` after implementation and targeted validation are complete and the milestone is handed to `code-review`.
 - Use `resolution-needed` when review findings require review-resolution, fixes, owner decision, or re-review.
-- Track the current milestone, current milestone state, last reviewed milestone, review status, remaining in-scope implementation milestones, next stage, final closeout readiness, and the reason in `Current Handoff Summary`.
-- State-sync checks update affected state owners before downstream readiness is claimed.
+- Track live milestone and handoff values only in change-local state and link their stage-owned evidence.
+- State-sync checks compare the one change-local owner with governed intent and stage evidence before downstream readiness is claimed.
 - Run `python scripts/validate-artifact-lifecycle.py --mode explicit-paths` after stage-owned evidence is updated and before claiming `code-review`, `verify`, or PR handoff readiness.
-- A failed state-sync gate blocks the next-stage handoff sentence until the agent either reverts its own in-progress owner/projection edits or records the failure as the current blocker with the rerun command.
-- State-sync checks update `Current Handoff Summary`, milestone state, review-resolution closeout status when findings change, review-log open findings when formal review records change, `change.yaml` compact review/status when metadata changes, and `docs/plan.md` when plan lifecycle state changes.
-- Change metadata, review-resolution, review-log, explain-change, verify output, and PR handoff own scoped evidence; they do not own the active plan's current next stage.
-- Remove or correct stale live next-stage wording in touched artifacts before claiming downstream readiness.
+- A failed state-sync gate blocks handoff until the owning stage corrects its surface or `workflow` records the current blocker.
+- Review-resolution, review-log, explain-change, verify output, and PR handoff own scoped evidence; they do not own current routing.
+- Remove mutable current-state wording from touched governed artifacts before claiming downstream readiness.
 - Use `lifecycle-closeout` for a milestone or section that tracks only downstream gates such as `ci-maintenance`, `explain-change`, `verify`, PR handoff, release, deploy, or final plan closeout.
-- During execution, `implement` keeps the active plan body's progress, decisions, discoveries, and validation notes current.
-- When a planned initiative changes lifecycle state, final lifecycle closeout updates both `docs/plan.md` and the plan body.
-- If a PR completes a planned initiative, move it to `Done (recent)` or `docs/plan-archive.md` as the recent window requires, and update the plan body before opening the PR for review.
-- If completion depends on a true downstream event such as release, deploy, package publication, external migration, or an observed hosted result, keep the plan `Active` and name the downstream event or follow-up condition.
+- During execution, `implement` updates implementation, tests, and its own execution evidence; it does not update the plan body.
+- Final lifecycle closeout updates change-local state and owning stage evidence, not plan content or the plan index.
+- If completion depends on a true downstream event such as release, deploy, package publication, external migration, or an observed hosted result, keep change-local final closeout not-ready and name the event in its reasons and evidence.
 - Do not use merge itself as a routine downstream completion event.
-- `verify` blocks PR readiness when stale lifecycle state remains between the plan index and the plan body.
+- `verify` blocks PR readiness when a governed plan or index carries mutable state or contradicts the change-local owner.
 - Execution plans follow the illustrative structure in `docs/examples/plans/example-plan.md`; examples under `docs/examples/` are not active lifecycle state.
 - Each completed planned milestone ends with a coherent commit using:
   - `M<n>: <completed milestone outcome>`
@@ -503,7 +513,7 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 
 ## Artifact Lifecycle
 
-Lifecycle-managed top-level artifacts keep their own tracked status. Do not treat PR state, branch state, or chat-only review outcomes as a replacement for artifact-local lifecycle state.
+Lifecycle-managed top-level artifacts keep stable governed content and a pointer to the owning change record. Mutable lifecycle state is stored only in the matching `change.yaml` artifact entry; PR state, branch state, and chat outcomes are not substitutes.
 
 | Artifact | Settlement states | Closeout or terminal states |
 | --- | --- | --- |
@@ -515,12 +525,12 @@ Lifecycle-managed top-level artifacts keep their own tracked status. Do not trea
 
 Notes:
 
-- `reviewed` is transitional review output, not a durable relied-on state for proposals, top-level specs, test specs, or architecture docs.
-- `accepted`, `approved`, and `active` are settlement states. `done`, `deprecated`, `rejected`, `abandoned`, `superseded`, and `archived` are closeout or terminal states.
+- `reviewed` is transitional review output and never a durable settlement state.
+- `accepted`, `approved`, and `active` are settlement states in `change.yaml`. `done`, `deprecated`, `rejected`, `abandoned`, `superseded`, and `archived` are closeout or terminal states there.
 - Keep `Next artifacts` as planning history while an artifact is active. Use `Follow-on artifacts` or `Closeout` for actual downstream artifacts or final disposition. If a `Follow-on artifacts` section appears before real follow-ons exist, it must say `None yet`.
-- `superseded` artifacts must identify their replacement with `superseded_by` or equivalent labeled text. `archived` artifacts do not require a replacement pointer.
+- `superseded` state and owning closeout evidence must identify the replacement artifact. `archived` does not require a replacement.
 - `verify` blocks on stale lifecycle-managed artifacts that are touched, referenced, generated, or authoritative for the changed area, and it warns on unrelated stale baseline artifacts.
-- Draft PR-body references participate in `verify` only when draft PR text already exists. Before that, `verify` uses `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, and other touched or referenced authoritative artifacts.
+- Draft PR-body references participate in `verify` only when draft PR text already exists. Before that, `verify` uses `docs/changes/<change-id>/change.yaml`, explain-change artifacts, stable plan intent, and other touched or referenced authoritative artifacts.
 - Broader repo-local lifecycle inconsistency blocks `branch-ready` when the inconsistent artifact is touched, referenced, generated, or authoritative for the changed area.
 - Tracked wording that defers lifecycle state to later repository integration should be treated as a reviewer-attention warning unless it is corrected, classified as a true downstream event, or made blocking by a lifecycle inconsistency.
 

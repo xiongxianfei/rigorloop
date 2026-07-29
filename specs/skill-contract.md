@@ -1348,3 +1348,14 @@ No acceptance criteria are added in this amendment. Structural hygiene is review
 
 Approved portable boundary-first amendment ready for architecture assessment.
 Previously approved amendment history remains recorded in Follow-on artifacts.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+artifact-local lifecycle settlement, embedded mutable status requirements,
+and current-handoff templates that duplicate change-local state to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Normalized skill structure, resource and asset integrity, claim boundaries,
+portability, and generated-adapter parity remain governed here.

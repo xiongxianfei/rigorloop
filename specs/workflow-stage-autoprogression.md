@@ -843,3 +843,14 @@ These questions do not block spec-review for this amendment.
 
 - Approved amendment for separately armed implementation autoprogression through verify.
 - Ready for architecture assessment before downstream planning or implementation relies on the new profile.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+artifact-local status gates and separately armed authoring or implementation
+profiles to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Stage ordering, review gates, bounded correction, resume safety, test-spec
+proof requirements, and stop-before-PR behavior remain governed here.

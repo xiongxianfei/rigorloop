@@ -25,47 +25,17 @@ Read, if present:
 - research artifacts and `docs/project-map.md`
 - existing source interfaces, schemas, APIs, modules, CI, deployment config
 
-## Upstream status settlement
+## Upstream settlement check
 
-In workflow-managed downstream execution, before relying on a spec, check whether its tracked status matches clear formal review evidence.
+Before relying on a spec, read its matching `change.yaml` artifact entry and
+formal review evidence.
+Require an `approved` settlement, no later contradictory review, no open
+findings, and closed review resolution when required.
 
-Do not run upstream status settlement for review-only, no-edit, or manual inspection requests. Those requests remain isolated.
-
-During normal workflow-managed downstream execution, do not ask whether edits are allowed; the downstream invocation permits minimal settlement.
-
-Settle only lifecycle/status/readiness/follow-on/closeout metadata. Do not rewrite substantive artifact content.
-
-The clear review evidence check requires:
-
-- durable formal review evidence for the upstream artifact;
-- an approving or clean review outcome;
-- no later contradictory review record;
-- no open findings in `review-log.md` when present;
-- closed `review-resolution.md` for material findings when required;
-- an explicit settlement mapping for this skill.
-
-Mapping for this skill:
-
-- spec-review approved with no unresolved material findings -> spec `Status: approved`.
-
-If review evidence is missing, contradictory, unresolved, or the status surface is absent, block instead of guessing.
-
-If the artifact type, lifecycle field, next status, or target status is unknown or unmapped, block instead of inferring a settlement.
-
-Report `## Upstream status settlement` when settlement was updated, blocked, or stale status was detected:
-
-```md
-## Upstream status settlement
-
-- Upstream artifact:
-- Review evidence:
-- Previous status:
-- New status:
-- Settlement result: updated | blocked | not-needed
-- Settlement blocker:
-```
-
-For blocked settlement with a deterministic target, report that intended target in `New status`. For blocked settlement with no deterministic target, report `New status: not-applicable`. `Settlement blocker` is required for blocked settlement and must distinguish a known target blocked by evidence/state from an unknown target blocked by missing mapping or lifecycle vocabulary.
+Treat the spec and its lifecycle state as read-only.
+Do not normalize status in the spec or settle its change-local entry.
+If settlement is missing or contradictory, record the blocker and route to
+`spec-review`.
 
 ## Architecture Surface Decision
 
@@ -124,7 +94,10 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 - COPY `assets/architecture-skeleton.md` when creating a new canonical architecture package or replacing an incomplete package scaffold. Fill all required sections. Do not emit unfilled placeholders.
 
-- COPY `assets/adr-skeleton.md` when recording a material architecture decision. Fill decision, context, status, consequences, alternatives considered, and follow-up.
+- COPY `assets/adr-skeleton.md` when recording a material architecture
+  decision.
+  Fill the change-record pointer, decision, context, consequences,
+  alternatives considered, and follow-up.
 
 - COPY `assets/diagram-styles.mmd` when Mermaid flowchart or graph diagrams need copied role styles for people, systems, external systems, and containers.
 
@@ -199,7 +172,9 @@ Create an ADR when the change introduces or revises a durable architecture decis
 - release architecture
 - major workflow architecture decisions
 
-Use the ADR skeleton and store real ADRs under `docs/adr/`. Each ADR includes title, status, context, decision, alternatives considered, consequences, and follow-up.
+Use the ADR skeleton and store real ADRs under `docs/adr/`.
+Each ADR includes a title, owning change-record pointer, context, decision,
+alternatives considered, consequences, and follow-up.
 
 Accepted or active ADRs are decision history. Later changes should supersede or deprecate an old ADR with a new ADR or explicit lifecycle update rather than rewriting the old decision as if it had always been different.
 
@@ -213,7 +188,8 @@ Accepted or active ADRs are decision history. Later changes should supersede or 
 - Do not introduce architecture that the spec does not require.
 - Do not change behavior in the architecture doc without updating the spec.
 - Do not claim compatibility, rollback, or performance safety without explaining the mechanism.
-- Do not use `reviewed` as a durable architecture status. Once the design is relied on, normalize the tracked artifact to `approved` or the appropriate terminal state.
+- Do not write review settlement into the architecture artifact.
+  The matching `architecture-review` records settlement in `change.yaml`.
 - Preserve `Next artifacts` as planning history. Use `Follow-on artifacts` for actual downstream artifacts, replacement, or terminal closeout.
 - If an architecture document is superseded, identify the replacement with `superseded_by` or equivalent labeled text.
 - Do not include secrets, credentials, private keys, tokens, or machine-local debug-only data.

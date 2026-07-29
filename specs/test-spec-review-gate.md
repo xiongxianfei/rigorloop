@@ -243,3 +243,13 @@ None yet
 ## Readiness
 
 Approved after clean recorded `spec-review`. Current workflow state is owned by the active plan.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+active-plan ownership of current workflow state to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Proof-map review, implementation handoff gating, coverage, and review evidence
+remain governed here.

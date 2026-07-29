@@ -321,3 +321,13 @@ R47. Changes to canonical `skills/learn/SKILL.md` MUST be propagated to generate
 ## Readiness
 
 Approved after `spec-review`. The implementation plan passed `plan-review`, and `specs/learn-artifact-model.test.md` is the active proof-planning surface for implementation.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+routing mutable process follow-ups into the active plan to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Learn session and topic ownership, classification, deduplication, and routing
+to an owning surface remain governed here.

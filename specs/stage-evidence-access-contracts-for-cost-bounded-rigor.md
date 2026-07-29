@@ -285,3 +285,13 @@ pr
 ## Readiness
 
 Approved after clean spec-review evidence. The execution plan owns the next planning handoff.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+accepted proposal status settlement as an output or acceptance criterion to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Bounded evidence access, escalation rules, and contributor-visible evidence
+reporting remain governed here.

@@ -240,3 +240,14 @@ pr
 ## Readiness
 
 Approved after clean spec-review. Ready for M2 plan revision or confirmation and plan-review; not ready for test-spec or implementation until the revised plan is reviewed.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+implementation recording mutable rationale or validation evidence in the
+active plan to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Selected-skill reminders, no-change rationale, and contributor-visible
+evidence requirements remain governed here.

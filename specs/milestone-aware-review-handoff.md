@@ -330,3 +330,14 @@ None.
 Approved.
 
 Original follow-on execution plan is done. The matching test spec remains active as the regression surface for current consuming workflow-governance plans. No spec-stage blocker remains.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+code-review requirements to update or require updates to active-plan milestone
+and handoff state to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Milestone identity, review outcomes, finding resolution, and next-milestone
+sequencing remain governed here.

@@ -34,7 +34,9 @@ Produce a learn session record after Frame, topic updates only for contributor-c
 ## Handoff
 
 - Normal next stage: none by default; record the session outcome or no-learn rationale and stop.
-- Conditional next stages: route confirmed `artifact-update`, `decision`, `direction`, or `process-follow-up` to the owning proposal, ADR, spec, workflow, skill, active plan, issue, or other authoritative artifact.
+- Conditional next stages: route confirmed `artifact-update`, `decision`,
+  `direction`, or `process-follow-up` to the owning proposal, ADR, spec,
+  workflow, skill, issue, or other authoritative artifact without editing it.
 - For full stage order and downstream-blocking semantics, route through the `workflow` skill.
 
 ## Claims this skill must not make
@@ -51,7 +53,10 @@ When a learn invocation reaches the Frame phase, create or update a tracked sess
 
 Use `docs/learn/topics/<topic>.md` only when contributor-confirmed durable guidance justifies a topic entry. Do not pre-create empty topic files, a fixed topic taxonomy, session templates, or topic templates.
 
-The session record is the primary output. It links to every derivative topic entry, action-owning artifact update, ADR, proposal, issue, active-plan follow-up, scheduled follow-up, or explicit no-learn rationale produced by the session.
+The session record is the primary output.
+It links to every derivative topic entry, owner-routed artifact update, ADR,
+proposal, issue, change-local follow-up, scheduled follow-up, or explicit
+no-learn rationale produced by the session.
 
 The boundary is simple: topic files are curated guidance, not policy. They must not override `CONSTITUTION.md`, approved specs, accepted ADRs, approved architecture docs, workflow docs, skill files, accepted proposals, active plans, or action-owning artifacts. If a lesson changes behavior, workflow, architecture, validation, skill behavior, examples, or decisions, update the action-owning artifact and link that update from the session record.
 
@@ -122,7 +127,10 @@ Route only contributor-confirmed final classifications:
 - `artifact-update`: update the affected authoritative artifact and link that update from the session record.
 - `decision`: create or update the relevant ADR or decision artifact, then link it from the session record and any relevant topic entry.
 - `direction`: open a proposal or trackable follow-up; do not encode direction as topic-file policy.
-- `process-follow-up`: link an issue when an issue tracker exists, use the active plan when it owns the work, or open a proposal when no tracker or active plan owns it. Do not use `docs/roadmap.md` as the fallback for learn follow-ups.
+- `process-follow-up`: link an issue when an issue tracker exists, record a
+  change-local follow-up for current work, or open a proposal for new
+  direction.
+  Do not edit a plan or use `docs/roadmap.md` as the fallback.
 - `no-durable-lesson`: record the no-learn rationale and whether any follow-up was scheduled in the session record.
 
 ## Topic Curation
