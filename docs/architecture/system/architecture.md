@@ -1,8 +1,8 @@
 # RigorLoop Canonical System Architecture
 
-## Status
+## Owning change record
 
-- approved
+`docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml`
 
 ## Related artifacts
 
@@ -83,6 +83,10 @@
 - Boundary-First Proof Model spec: `specs/boundary-first-proof-model.md`
 - Portable Boundary Reference Projection and Activation ADR: `docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md`
 - Portable Boundary Release Manifest and Package Rollback ADR: `docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md`
+- Progressive Boundary-First Skill Guidance proposal: `docs/proposals/2026-07-29-progressive-boundary-first-skill-guidance.md`
+- Progressive Boundary-First Skill Guidance spec: `specs/progressive-boundary-first-skill-guidance.md`
+- Progressive Boundary Guidance Resources ADR: `docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md`
+- Progressive Boundary-First Skill Guidance change metadata: `docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml`
 - Evidence-Bound and Incremental `project-map` proposal: `docs/proposals/2026-06-23-evidence-bound-incremental-project-map.md`
 - Evidence-Bound and Incremental `project-map` spec: `specs/project-map.md`
 - Evidence-Bound and Incremental `project-map` proposal-review: `docs/changes/2026-06-23-evidence-bound-incremental-project-map/reviews/proposal-review-r1.md`
@@ -161,10 +165,10 @@ The goals are:
 - make default target-native init install-only while keeping explicit `--write-state` as the managed project-state path for target-oriented `rigorloop.yaml` and `rigorloop.lock` schemas;
 - require release smoke for target-native init to use real non-dry-run packed-package and live-registry install paths rather than dry-run output alone;
 - make published skill-local resource dependencies explicit, packageable, hash-verifiable, and present across canonical source, generated output, packed release candidates, and clean installed target trees;
-- publish one portable boundary-first method through ten governed skills while
-  preserving one authored reference source, byte-identical skill-local
-  projections, deterministic activation evidence, and independent semantic
-  review;
+- publish one portable boundary-first method through ten governed skills with
+  an automatic four-question scan, one compact common core, two owner-scoped
+  stage-family resources, artifact-sliced downstream reads, deterministic
+  projections, atomic activation, and independent semantic review;
 - keep `project-map` as a current-state orientation reference with freshness metadata, cited material claims, visible inference, root/area registration, and downstream reliance boundaries;
 - improve enterprise-network recovery through bounded proxy diagnostics while deferring programmatic proxy dispatcher support;
 - let the CLI scaffold a draft change-local artifact pack for `docs/changes/<change-id>/change.yaml` without claiming lifecycle stage completion or creating durable-looking placeholder artifacts;
@@ -240,6 +244,17 @@ The goals are:
 - Historical archive filename values and non-user-visible `dist/adapters/` implementation names may continue to use adapter naming until a separate internal/archive rename is approved.
 - Target-native release readiness requires real non-dry-run packed-package smoke before publish and live registry/download smoke after publish for every supported target. Dry-run output is not release install-smoke proof.
 - Published skills declare required skill-local resources through `Resource map` entries. Untransformed mapped resources preserve skill-root relative path plus raw-byte SHA-256 from canonical source through generated output, packed release candidates, and installed target trees.
+- Progressive boundary guidance keeps the established
+  `boundary-first-method-v1.md` path as the compact core, adds feature-authoring
+  guidance only to `spec` and `spec-review`, and adds proof guidance only to
+  `test-spec` and `test-spec-review`.
+- `specs/boundary-first-resources.yaml` is the sole declarative resource and
+  consumer inventory. Projection, validation, measurement, and activation
+  interpret that manifest rather than owning parallel inventories.
+- The four compact-scan questions are copied from one checked contributor
+  shared block directly into governed skill text. Deeper resources are loaded
+  only for the owning stage family or after an approved artifact slice proves
+  insufficient.
 - Resource-integrity migration starts in audit mode for existing published skills, but new or changed skills cannot introduce unmapped skill-local resource references or missing mapped resources.
 - `templates/` is not an implicit packaged skill resource class. Legacy `templates/...` references are migration lint input until removed, mapped to `assets/` or `references/`, or explicitly excepted.
 - The `project-map` skill describes current repository orientation only. Project maps are living references and do not override source code, runtime configuration, schemas, build manifests, tests, CI, or governing workflow artifacts.
@@ -267,7 +282,9 @@ The goals are:
   stable intent and one change-record pointer; they do not carry mutable
   lifecycle, progress, review, blocker, or routing fields.
 - Authoring and review skills are peers with transition-scoped writes to one
-  matching artifact-state entry. `workflow` writes routing only. Downstream
+  matching artifact-state entry. `plan` also initializes missing planned-work
+  state exactly once for a new primary plan. `workflow` writes routing and
+  every later planned-work transition only. Downstream
   skills write their own evidence and route upstream defects to the owner.
 - `bounded-review-fix` remains the only writable workflow-automation
   mechanism. One structured target is the complete public consent boundary
@@ -337,6 +354,13 @@ The repository keeps structural documentation in C4 Mermaid source diagrams, wri
 
 This strategy keeps the method practical for normal contributors while making architecture review compare structure, runtime flow, deployment boundaries, cross-cutting concerns, quality requirements, risks, and decision history consistently.
 
+For boundary-first guidance, use progressive disclosure without creating a
+second semantic model. All governed skills carry a small compact core and the
+same inline four-question scan. Only feature-contract stages carry formal
+authoring guidance, only proof-map stages carry proof guidance, and downstream
+stages begin with exact approved artifact rows. One declarative resource
+manifest drives projection, parity, measurement, and activation identity.
+
 ## Building Block View
 
 See [`diagrams/container.mmd`](diagrams/container.mmd) for the C4 container view.
@@ -362,11 +386,33 @@ It is separate from `Architecture`: project maps describe observed repository re
 | Workflow lifecycle support | Validates structured targets, current prerequisites, fixed stage write boundaries, closed transitions, evidence consistency, and prospective migration without becoming a second normative workflow or claiming writer attribution | Published skills plus repository-owned validation and generation scripts |
 | Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
 | Canonical skills and adapter templates | Source instructions, packaged skill-local resources, workflow stages, and thin adapter entrypoints | Markdown in `skills/`, skill-local resources under each skill root, templates in `scripts/adapter_templates/` |
-| Boundary-first method and activation | Owns one authored portable method, its closed governed-skill projection inventory, and the prospective grandfathering baseline | Markdown under `specs/references/`, activation YAML under `specs/`, tracked derived references under governed `skills/*/references/` |
+| Progressive boundary guidance and activation | Owns one compact core, two stage-family semantic resources, one closed declarative projection inventory, inline compact-scan source, and the prospective grandfathering baseline | Markdown under `specs/references/` and `templates/shared/`, resource and activation YAML under `specs/`, tracked derived references under governed `skills/*/references/` |
 | Validation and generation scripts | Select checks, route registered evidence, validate change-local state and review consistency, query bounded change-record slices, refresh generated output, prove drift status, validate mapped resources, and compare adapter parity without defining stage authority | Python and shell under `scripts/` |
 | Generated runtime state and adapters | Derived local Codex runtime state and public adapter packages for supported agent tools; local runtime state and public adapter packages are generated from canonical sources and are not authored sources | Ignored local files under `.codex/skills/`, tracked adapter support metadata under `dist/adapters/`, generated temporary or release-output package directories, and release asset archives |
 | Release evidence | Durable release profiles, generated release-prep surfaces, authored release contract, release notes narrative, standing process evidence, timing evidence, adapter artifact metadata, package publication evidence, public closeout evidence, registry verification, checksums, emergency deferrals, and maintainer smoke evidence | Markdown/YAML under `docs/releases/profiles/`, `docs/releases/v<version>.md`, `docs/releases/<version>/`, and `docs/reports/adapter-artifacts/releases/` |
 | Legacy architecture archive | Historical architecture records retained after accepted current content is merged here | Archived Markdown under `docs/architecture/*.md` |
+
+### Level 2 White-Box: Progressive Boundary Guidance
+
+See
+[`diagrams/component-boundary-guidance.mmd`](diagrams/component-boundary-guidance.mmd)
+for the focused component view.
+
+The progressive boundary-guidance component separates four responsibilities:
+
+- governed skill text owns the automatic compact scan, stage decision,
+  mutation authority, stop conditions, review authority, and handoff;
+- the compact core owns shared vocabulary, stable-ID meaning, interaction and
+  example rules, non-Cartesian scenario selection, and upstream-gap routing;
+- feature-authoring and proof resources own only their respective formal
+  authoring and adequacy models; and
+- one declarative projection manifest owns canonical paths, target paths, and
+  consumer membership for projection, validation, measurement, and activation.
+
+Approved feature and proof artifacts remain the downstream context carrier.
+Plan, implementation, review, and verification stages read their cited rows
+first and expand only on a missing, stale, unknown, ambiguous, conflicting, or
+escaped identity. No per-stage context packet or runtime service is introduced.
 
 ### Level 2 White-Box: RigorLoop CLI Package
 
@@ -578,38 +624,82 @@ arbitrary file write.
 9. Live registry installation remains release-owned post-publish evidence unless the release contract explicitly requires it before implementation closeout.
 10. Runtime fallback is not package proof: missing mapped resources still fail package validation, and missing normative, schema, security, legal, or non-obvious structural resources stop execution with a package-integrity blocker.
 
-### Boundary-first reference projection and activation flow
+### Progressive boundary-guidance projection and activation flow
 
-1. Maintainers edit only
-   `specs/references/boundary-first-method-v1.md` for shared portable method
-   content.
-2. The repository projection command reads the closed source path, version,
-   and ten-skill consumer inventory from one Python module.
-3. Write mode copies raw bytes to each governed
-   `skills/<skill>/references/boundary-first-method-v1.md`; check mode reports
-   missing, unexpected, or byte-divergent projections without mutation.
-4. Each governed `SKILL.md` maps its local reference with `READ` and a
-   stage-specific load condition.
-5. Canonical skill validation checks governed coverage, resource-map shape,
-   source identity, and projection identity before ordinary consistency checks.
-6. Existing skill and adapter generators copy complete governed skill roots;
-   existing resource-integrity checks compare the mapped path and raw-byte
-   SHA-256 in generated, packed, and installed target trees.
-7. The activating reviewed change settles
-   `specs/boundary-first-activation.yaml` as a small release manifest after
-   checks pass. No state-writing activation command is required.
-8. Activation becomes `active` only after canonical, projected, generated,
-   packed, installed, fixture, validator, and inventory evidence passes
-   together. The manifest records immutable activating and rollback release
-   tags plus the full parent commit identity used as the grandfathering
-   baseline.
-9. New top-level feature specs absent from the grandfathered inventory require
-   the marker; edits to unmarked grandfathered specs route to `spec-review`
-   for substantive-revision classification.
-10. Rollback validation reads the manifest's rollback release and existing
-    adapter artifact metadata, then verifies one passing archive identity for
-    every supported adapter without changing repository or external state.
-11. An authorized release operator performs any external installation or
+1. A governed skill applies the four inline compact-scan questions before a
+   qualifying stage-owned decision. Non-behavior work continues without a
+   formal record or portable-resource read.
+2. A feature-authoring or proof-owning stage loads the compact core and its one
+   family resource. A downstream stage begins with the exact approved artifact
+   rows cited for its decision and loads the compact core only when those rows
+   cannot explain an observed outcome.
+3. Maintainers edit the three canonical sources only:
+   `specs/references/boundary-first-method-v1.md` for the compact core,
+   `specs/references/boundary-first-feature-authoring-v1.md` for feature
+   semantics, and `specs/references/boundary-first-proof-v1.md` for proof
+   semantics.
+4. `specs/boundary-first-resources.yaml` declares the closed resource IDs,
+   canonical paths, skill-root-relative targets, and consumers. Its only
+   top-level keys are `schema_version: 1`,
+   `contract_version: boundary-first-v1`, and `resources`; its resources are
+   exactly `compact-core`, `feature-authoring`, and `proof` in that order, with
+   the exact paths and consumers defined by ADR-20260729. Entries contain only
+   `id`, `source`, `target`, and `consumers`. The projection module rejects
+   unknown or missing fields, IDs, consumers, unsafe paths, duplicates,
+   missing sources, and unowned mappings before mutation.
+5. Write mode preflights the complete matrix, then copies raw bytes to all
+   expected skill-local targets. Check mode reports missing, additional, stale,
+   mixed, path-divergent, or byte-divergent resources without mutation.
+6. Projection identity uses raw-byte SHA-256 per file plus a sorted
+   `<repository-target-path>\0<digest>\n` aggregate. The activation manifest
+   binds the raw-byte resource-manifest identity and the aggregate projection
+   identity.
+7. Each governed `SKILL.md` maps the compact core with `READ` and a
+   stage-specific load condition. Only `spec` and `spec-review` map
+   feature-authoring guidance; only `test-spec` and `test-spec-review` map
+   proof guidance.
+8. Skill validation checks inline compact-scan drift, resource ownership,
+   manifest closure, mapping shape, containment, canonical identity, and
+   projection identity before dependent consistency checks.
+9. Existing skill and adapter generators copy complete governed skill roots.
+   Resource-integrity checks compare mapped paths and raw-byte SHA-256 through
+   canonical, generated, packed, and clean installed target trees.
+10. The changed-path selector assigns skill-only paths to purpose-built skill,
+    boundary, projection, adapter, and prose checks. It assigns lifecycle
+    validation only to actual governed artifacts and change records. Mixed
+    changed sets retain both families with check-owned affected paths.
+11. A tracked representative fixture records mapped, initially loaded, and
+    permitted expansion resource IDs by stage family. Implementation evidence
+    reports before-and-after canonical bytes, mapped-resource counts, and
+    representative initial and expanded loaded-resource counts without making
+    them release gates.
+12. While the accepted or released state remains `pending`, the reviewed
+    candidate tree may contain the proposed `active` marker so repository
+    tooling can generate temporary adapter trees, packed release candidates,
+    archives, and clean installed targets from the exact tree under review.
+    File presence alone does not establish active capability. Release metadata
+    binds derived proof to the candidate source revision, while the activation
+    manifest binds the resource-manifest and projection-set identities.
+13. The tracked activation transaction contains the manifests, canonical
+    resources, compact shared block, canonical skill bodies and resource maps,
+    tracked projections, projection and validation code, selector behavior,
+    fixtures, and tracked evidence references. Generated packages, archives,
+    and installed target trees remain derived proof and are not tracked
+    rollback state.
+14. A candidate containing `active` may be accepted only after every tracked
+    surface and derived proof layer passes against that same candidate
+    identity. Acceptance of the reviewed tracked tree, not an unreviewed file
+    edit, is the atomic activation boundary. New top-level feature specs absent
+    from the grandfathered parent revision require the marker; edits to
+    grandfathered specs route to `spec-review` for substantive-revision
+    classification.
+15. Before activation, rollback reverts or abandons the tracked
+    progressive-resource and selector transaction, then discards temporary
+    output or regenerates derived output from the restored pending
+    single-reference tree. After activation, rollback validation selects the
+    immutable rollback release and verifies one passing archive identity for
+    every supported adapter.
+16. An authorized release operator performs any external installation or
     publication outside this capability.
 
 ### Project-map authoring and refresh flow
@@ -765,6 +855,21 @@ The main execution and publication boundaries are:
 - local Codex runtime state: `.codex/skills/`, ignored by Git and installed locally from public Codex adapter output when contributors need local Codex use;
 - public adapter packages: tracked `dist/adapters/` output during the compatibility window through `v0.1.2`, then generated temporary or release-output packages and release archives for `v0.1.3` and later;
 - mapped skill-local resource parity: canonical `skills/<skill>/` resources, generated adapter output, locally packed release candidates, and clean installed target skill roots preserve skill-root relative paths and raw-byte SHA-256 unless an explicit transformation contract applies;
+- progressive boundary resource package: every governed target skill contains
+  `references/boundary-first-method-v1.md`; only feature-contract targets also
+  contain `references/boundary-first-feature-authoring-v1.md`; only proof-map
+  targets also contain `references/boundary-first-proof-v1.md`;
+- boundary resource and activation manifests:
+  `specs/boundary-first-resources.yaml` owns the closed projection matrix, and
+  `specs/boundary-first-activation.yaml` binds its raw-byte identity, the
+  complete projection-set identity, activating release, rollback release, and
+  immutable grandfathering baseline;
+- tracked boundary activation transaction: reviewed repository sources,
+  mappings, projections, scripts, fixtures, selector policy, activation
+  marker, and tracked evidence references accepted as one source-tree change;
+- derived boundary proof set: temporary generated adapter trees, packed
+  candidates, release archives, clean installed targets, and their identities;
+  these prove the tracked candidate but remain generated or release output;
 - adapter support metadata: `dist/adapters/manifest.yaml` and `dist/adapters/README.md`, tracked guidance and support surfaces rather than authored skill bodies;
 - adapter artifact metadata: `docs/reports/adapter-artifacts/releases/<version>.yaml`, tracked release evidence with source commit, generator command, required per-adapter archive list, optional combined archive details, checksums, install roots, and validation result;
 - adapter release artifacts: generated per-adapter archives, plus optional combined archive, uploaded as release assets rather than committed by default;
@@ -871,49 +976,59 @@ The migration lint is intentionally bounded. It catches legacy resource-loading 
 
 Runtime fallback is an emergency work-continuation rule, not package validation. A missing mapped resource keeps package validation failing; runtime may continue only for redundant convenience resources whose complete contract is already in `SKILL.md` and whose contents do not require invention.
 
-### Portable boundary-first reference
+### Progressive boundary-first guidance
 
-The boundary-first shared method is a specialization of published skill
-resource integrity.
-Its only authored content source is
-`specs/references/boundary-first-method-v1.md`.
-The ten skill-local copies are tracked deterministic projections so canonical
-skill packages remain self-contained before adapter generation.
+Progressive boundary-first guidance specializes published skill resource
+integrity without creating another semantic contract. The established
+`specs/references/boundary-first-method-v1.md` path becomes the compact core.
+Feature-authoring and proof semantics live in exactly one additional canonical
+source each. Stage-specific workflow, mutation, review, stop, handoff, and
+claim rules remain in the owning skill and approved specs.
 
-The projection module is the only executable owner of the method version,
-canonical source path, and governed consumer inventory.
-Skill validation imports that inventory and rejects unknown skills, missing
-consumers, unapproved extra projections, and byte drift before checking
-dependent consistency.
-The shared reference contains portable method rules only; stage-specific
-workflow, review, stop, mutation-authority, and readiness behavior stays in the
-owning skill and approved specs.
+`specs/boundary-first-resources.yaml` is the only resource-to-consumer
+inventory. Its closed schema has exactly `schema_version`,
+`contract_version`, and `resources` at the top level and exactly `id`,
+`source`, `target`, and `consumers` per resource. ADR-20260729 fixes the three
+resource IDs, paths, order, and consumer lists. Projection and validation code
+interpret that schema and fail closed before consistency checks on unknown,
+missing, or duplicate fields, entries, paths, or consumers. The projection-set
+digest covers every expected skill-local target using sorted POSIX path and
+raw-byte digest records. The activation manifest separately binds the raw-byte
+manifest identity, retaining the established compact-core compatibility
+fields.
+
+The four compact questions live directly in each governed skill so a
+non-behavior decision does not require a portable-resource read. Their
+contributor source is one checked shared block; copied shipped text does not
+expose repository-maintainer projection mechanics to users. Family resources
+load only in their owning stages. Other stages consume exact stable-ID rows
+from approved project artifacts and expand to the compact core only when the
+cited slice is insufficient.
 
 The approved proof-model spec owns the closed `pending` and `active` states.
-`specs/boundary-first-activation.yaml` is one reviewed release manifest, not a
-state-transition log.
-It records the activating release, rollback release, governed skills,
-reference and projection identities, and the full parent commit identity of
-the activating change.
-Only eligible top-level feature specs present at that immutable parent revision
-are grandfathered; paths introduced later cannot grandfather themselves.
-The grandfathered path inventory supports structural new-spec detection;
-semantic classification of grandfathered edits stays with `spec-review`.
+The tracked activation transaction contains repository-owned sources,
+manifests, skill text and maps, projections, scripts, selector behavior,
+fixtures, marker state, and tracked evidence references. Generated, packed,
+archived, and clean installed trees are a derived proof set bound to the exact
+candidate source and resource identities; they do not become tracked state.
+The marker changes to `active` only when both surfaces agree completely, and
+acceptance of that reviewed tracked tree is the atomic state switch.
+Grandfathering still derives from the immutable parent revision, and semantic
+classification of grandfathered edits stays with `spec-review`.
 
-Projection identities use the existing shared digest helper.
-For each sorted POSIX repository path, it emits UTF-8
-`<path>\\0<lowercase-raw-byte-sha256>\\n` and hashes the concatenated bytes.
-The projection digest covers the ten governed projected reference paths.
-The record is repository-local release and validation evidence, not a runtime
-attestation, model certificate, network service, or customer-project
-dependency.
+Before activation, rollback reverts or abandons the tracked transaction and
+discards or regenerates derived output from the restored pending
+single-reference tree. After activation, package rollback continues to reuse
+immutable release and adapter artifact metadata. Validation is read-only and
+does not install, publish, write rollback state, create a transaction receipt,
+retain a historical attestation store, or treat external install trees as Git
+state.
 
-Package rollback reuses
-`docs/reports/adapter-artifacts/releases/<version>.yaml`.
-Validation selects the manifest's rollback release and checks an ordered
-adapter, archive, and SHA-256 matrix against `dist/adapters/manifest.yaml`.
-It does not install, publish, write rollback state, create a transaction
-receipt, or retain a historical attestation store.
+Static resource and representative loading measurements are change evidence,
+not runtime telemetry. A tracked fixture names the resources mapped, initially
+loaded, and permitted for expansion by stage family. Reports record canonical
+bytes, mapped counts, and representative loaded counts; hard context budgets
+require a later approved contract.
 
 ### Project-map current-state orientation
 
@@ -1015,7 +1130,8 @@ Authority is structural rather than selector-driven:
 - authoring peers write their governed artifact, authoring evidence, and one
   matching authoring transition;
 - review peers write review evidence and one matching settlement transition;
-- workflow writes routing and planned-work state;
+- plan initializes missing planned-work state once for a new primary plan;
+- workflow writes routing and every later planned-work transition;
 - downstream stages write only their code or stage evidence; and
 - every actor treats other governed artifacts and state entries as read-only.
 
@@ -1129,6 +1245,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260623-published-skill-resource-integrity.md`: mapped skill-local resource integrity, bounded legacy-reference lint, raw-byte parity, packed clean-install proof, and runtime fallback/package-validity separation.
 - `docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md`: superseded historical activation and rollback-transaction design.
 - `docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md`: one reviewed release manifest, immutable source-control grandfathering baseline, existing adapter metadata, and read-only package rollback validation.
+- `docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md`: compatibility-stable compact core, two owner-scoped family resources, declarative projection manifest, inline checked compact scan, representative loading evidence, path-owned selector routing, and one atomic rollback bundle. It revises only the resource-composition part of ADR-20260728.
 - `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md`: accepted historical profile decision proposed for supersession; its gate and review-independence rationale is rebound through the unified mechanism.
 - `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md`: accepted historical profile decision proposed for supersession; its risk separation, reviewer-owned correction, fresh verify, and stop-before-PR rules remain.
 - `docs/adr/ADR-20260625-independent-adversarial-review-gates.md`: orchestrator-owned neutral review manifests, fresh-context enforcement, blind-first evidence staging, risk-tiered escalation, clean-review sufficiency receipts, second-review disagreement handling, and calibration for workflow-managed automated reviews.
@@ -1182,9 +1299,11 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | Release smoke fidelity | A maintainer prepares the target-native `0.3.0` release. | Packed-package pre-publish smoke and live registry/download post-publish smoke run real non-dry-run init for `codex`, `claude`, and `opencode`; dry-run output alone is not accepted as install proof. |
 | Routine release transaction safety | A maintainer prepares a routine release. | `docs/releases/profiles/<tag>.yaml` owns release state; `prepare-release` generates only profile-owned surfaces, preflight catches cheap deterministic drift, `release-verify.sh <tag>` remains the full gate, closeout writes validator-compatible public evidence, and timing evidence is recorded without weakening release checks. |
 | Skill resource self-containment | A published skill maps a skill-local resource. | The resource exists in canonical source, generated output, locally packed release candidates, and clean installed target skill roots with matching relative path and raw-byte SHA-256 unless a transformation contract applies. |
-| Boundary-method parity | A maintainer changes the boundary-first method or a governed skill. | One source projects raw-byte-identical references into all ten governed skill roots, and generated, packed, and installed Codex, Claude Code, and opencode trees retain the same mapped path and SHA-256. |
-| Boundary activation safety | The repository activates `boundary-first-v1`. | The proof-model spec owns the two-state contract; one reviewed manifest binds immutable activating and rollback releases, method and projection identity, governed skills, and the parent-revision grandfathering baseline; mixed, missing, unknown, or divergent surfaces fail before activation. |
-| Boundary rollback safety | A maintainer must withdraw the active skill release. | Read-only validation selects the manifest's rollback release and proves one passing archive identity for every supported adapter from existing release metadata; an authorized release operator owns external action. |
+| Boundary-resource proportionality | A governed stage makes a decision after the compact scan. | Non-behavior work loads no formal family resource; feature-contract stages map only compact and feature-authoring resources; proof-map stages map only compact and proof resources; other stages begin with cited approved rows and expand only when the slice is insufficient. |
+| Boundary-resource parity | A maintainer changes a boundary resource or governed skill. | One declarative manifest projects exactly the owner-approved resources; canonical, skill-local, generated, packed, and installed Codex, Claude Code, and opencode trees retain the expected mapped path and raw-byte SHA-256 with no missing or additional layer. |
+| Boundary activation safety | The repository activates `boundary-first-v1`. | The tracked transaction and derived proof set bind the same source, resource-manifest, projection-set, package, and install identities before the reviewed activation marker becomes active; mixed, missing, unknown, or divergent surfaces fail without making derived output tracked state. |
+| Boundary rollback safety | A maintainer withdraws the candidate before activation or the active release afterward. | Before activation, the tracked transaction is reverted or abandoned and derived output is discarded or regenerated from the restored pending tree; afterward, read-only validation selects the immutable rollback release and proves every supported adapter archive before an authorized operator acts. |
+| Boundary measurement usefulness | A contributor evaluates progressive loading before activation. | Evidence reports before-and-after canonical bytes, mapped-resource counts per governed skill, and representative initial and expanded loaded-resource counts by stage family; no hard budget is inferred from the baseline. |
 | Project-map reliance safety | A downstream skill uses a project map to orient work. | The map exposes status, baseline, coverage, exclusions, known gaps, material path citations, inference labels, unknowns, correction notes when applicable, and configured-versus-executed command evidence; stale, partial, inferred, unknown, conflicting, or missing-path claims require direct source inspection before reliance. |
 | Legacy resource migration safety | A skill contains legacy `templates/...` instructions outside the `Resource map`. | Bounded migration lint reports the unmapped skill-local resource reference without classifying ordinary artifact paths or examples as package dependencies. |
 | opencode command alias integrity | A user installs opencode from an archive whose metadata declares command aliases. | The CLI installs `.opencode/skills` and `.opencode/commands` or fails verification; older compatible skills-only archives emit `opencode-command-aliases-not-declared` and record only installed roots. |
@@ -1197,7 +1316,7 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | Lifecycle-state consistency | A stage updates one artifact or workflow transition while its linked review, milestone, blocker, or closeout evidence is absent, stale, or contradictory. | Validation reports the exact entry and evidence mismatch and blocks downstream reliance; plans and governed artifacts remain unchanged. |
 | Unified automation single-write safety | A user starts or resumes workflow automation through a current or legacy command. | The command resolves to one structured target, writes routing only through `workflow_state`, and leaves retired artifact, plan, and profile state unchanged. |
 | Published stage-ownership completeness | A maintainer adds or changes an automatable stage. | The canonical skill defines one fixed content, evidence, and lifecycle-state write boundary; workflow routing cannot widen it; generated adapters preserve it byte-for-byte or semantically as required by the adapter contract. |
-| Artifact-state write isolation | Multiple peers participate in one lifecycle transition. | The author or review peer writes only the matching artifact entry, workflow writes only routing, and any cross-owner mutation blocks reliance. |
+| Artifact-state write isolation | Multiple peers participate in one lifecycle transition. | The author or review peer writes only the matching artifact entry; plan may additionally initialize missing planned work once; workflow writes routing and later planned-work transitions; any other cross-owner mutation blocks reliance. |
 | Settlement-stable resume | Review evidence is durable but its matching settlement write is interrupted. | The same review identity reconciles idempotently; conflicting identity or evidence fails closed, and workflow never substitutes its own verdict. |
 | Target-bound execution | A run targets a later stage before its prerequisites exist. | The target remains sufficient repository-local consent, but workflow invokes only the current basis-complete stage and never widens that stage's fixed write boundary. |
 | Interrupted-stage recovery | Execution stops after stage-owned output is partially or fully written. | Resume inspects the owning evidence, reconciles a complete idempotent transition, and pauses on contradiction or partial output rather than inventing completion. |
@@ -1304,6 +1423,12 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | Second-review cost could erase automation value | Rollout sampling uses a 20% floor plus a minimum evidence count for standard-risk clean reviews, then adjusts standard-risk sampling from measured material-disagreement confidence; elevated-risk clean reviews remain second-reviewed. |
 | Resource-integrity lint could over-classify examples as dependencies | Migration lint is bounded to recognized resource-loading instructions and approved skill-local prefixes; ordinary artifact paths, customer-project paths, and code examples stay outside the package contract unless used as load/copy/read/run instructions. |
 | Runtime fallback could hide a broken package | Package validation remains failing for missing mapped resources, and fallback is allowed only for redundant convenience resources whose full contract already exists in `SKILL.md`. |
+| Progressive resource splitting could create competing semantic models | The contract version stays `boundary-first-v1`; the resource manifest assigns non-overlapping ownership, and semantic review checks compact, authoring, proof, and stage-local boundaries. |
+| Inline compact-scan copies could drift | One contributor-owned shared block supplies the copied questions and skill validation checks exact block drift; generated packages derive from canonical skill text. |
+| A declarative manifest could drift from executable projection behavior | Projection, validation, measurement, and activation all interpret the same closed manifest; unknown fields, resources, consumers, duplicates, unsafe paths, and missing or additional mappings fail closed. |
+| Skill-only selector optimization could suppress lifecycle proof for mixed changes | Selector checks compose per changed path; mixed fixtures require purpose-built skill checks and lifecycle validation with independently scoped affected paths. |
+| Resource measurements could be mistaken for actual model context use | Reports identify static bytes, mapped counts, and fixture-declared representative reads only; they make no runtime token claim and cannot become a hard gate without a later approved contract. |
+| Interrupted projection could leave a mixed worktree | Projection preflights the complete matrix and validation rejects mixed output; activation never changes state until the tracked transaction and derived proof set agree, and pre-activation rollback reverts tracked sources while discarding or regenerating derived output. |
 | Tracked projections could be hand-edited as if authored | The projection check binds every governed copy to one source and fails before dependent validation or packaging; contributor guidance identifies the copies as derived. |
 | Grandfathering could become a blanket bypass | The manifest records the full parent commit identity and a sorted eligible path inventory derived only from that revision; later paths require the marker, while spec-review classifies substantive edits to grandfathered paths. |
 | Draft specs could become accidental historical exemptions | Only `accepted`, `approved`, or `active` feature specs present at the immutable parent revision enter the inventory; in-flight opt-in is available only after activation is active. |
@@ -1325,13 +1450,21 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 - mapped skill-local resource: a packaged resource under a skill root that is declared in that skill's `Resource map`.
 - resource parity identity: the skill-root relative path plus raw-byte SHA-256 for an untransformed mapped resource.
 - transformation contract: explicit ownership and expected identity for a resource intentionally changed between canonical source and generated, packed, or installed output.
-- boundary-first method projection: raw-byte copy of the one authored
-  `boundary-first-method-v1.md` source into each governed skill-local
-  `references/` path.
+- boundary-first compact core: the compatibility-stable
+  `boundary-first-method-v1.md` resource containing portable vocabulary,
+  compact routing, stable-ID, interaction, example, and non-Cartesian rules.
+- boundary-first family resource: feature-authoring or proof guidance projected
+  only to the governed stage family that owns those semantics.
+- boundary-first resource manifest: closed declarative YAML inventory of
+  resource IDs, canonical sources, skill-root-relative targets, and consumers.
+- boundary-first projection-set identity: SHA-256 of sorted UTF-8
+  `<repository-target-path>\0<lowercase-raw-byte-sha256>\n` records for every
+  expected projected resource.
 - boundary-first activation record: repository-local YAML binding contract
-  state, activating and rollback release tags, method identity, projection
-  identity, governed skills, immutable parent-revision baseline, and
-  grandfathered feature-spec paths.
+  state, activating and rollback release tags, compact-core compatibility
+  identity, resource-manifest identity, projection-set identity, governed
+  skills, immutable parent-revision baseline, and grandfathered feature-spec
+  paths.
 - boundary-first package rollback validation: read-only comparison of the
   selected immutable release's adapter archive identities with the current
   supported-adapter inventory.
@@ -1390,7 +1523,8 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 - artifact-state entry: change-local lifecycle record for one stable governed
   artifact ID, changed only by its matching authoring or review transition.
 - workflow state: the sole change-local current routing and planned-work
-  snapshot, written by `workflow` from settled artifacts and stage evidence.
+  snapshot; `plan` initializes missing primary-plan state once and `workflow`
+  writes every later transition from settled artifacts and stage evidence.
 - fixed stage write boundary: the published-skill rule that defines the
   artifact, evidence, or transition a stage may write regardless of manual or
   automated invocation.
@@ -1426,8 +1560,8 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Next artifacts
 
-- Architecture-review for the stage-owned change-local lifecycle update and
-  ADR.
+- Architecture-review for the progressive boundary-guidance canonical update,
+  focused component diagram, and resource-composition ADR.
 
 ## Follow-on artifacts
 
@@ -1461,6 +1595,11 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
   projections; governed changes use the stage-owned change-local model instead.
 - Target-Native Init Commands and Adapter Terminology Retirement: accepted proposal, approved spec, and accepted ADR define the 0.3.0 target-native init boundary, full public removal of `--adapter`, install-only default behavior, explicit `--write-state`, target-oriented state schemas, default state byte preservation with safety reads, and real non-dry-run release smoke gates.
 - Published Skill Resource Integrity with an Architecture-Skill Pilot: accepted proposal, approved spec amendment, and accepted ADR define mapped resource integrity, bounded legacy lint, raw-byte generated and installed parity, locally packed release-candidate clean-install proof, and architecture-skill pilot resource-chain evidence.
+- Progressive Boundary-First Skill Guidance: accepted proposal and approved
+  spec define prompt-independent compact scanning, owner-scoped progressive
+  resources, artifact-sliced downstream reads, hazard-driven scenario
+  selection, path-owned validation, atomic activation, and measured rather
+  than budget-gated loading.
 - Evidence-Bound and Incremental `project-map`: accepted proposal and approved spec define evidence-bound map metadata, freshness, root/area registration, source-ranked claims, skeleton asset packaging, generated adapter inclusion, correction notes, and downstream reliance boundaries.
 - Proposal-Gated Authoring Autoprogression: historical profile design whose
   separate authorization and state ownership are superseded; its proposal
@@ -1486,19 +1625,21 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Readiness
 
-The stage-owned change-local lifecycle architecture revision is ready for
-architecture-review.
-Planning must not rely on this candidate revision until the review is settled.
+The progressive boundary-guidance architecture revision is ready for
+architecture-review. Planning must not rely on its resource paths, manifest
+shape, projection identity, compact-scan placement, measurement fixtures, or
+rollback unit until the matching architecture and ADR entries are settled.
 
-ADR `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md`
-records the proposed durable state-placement and peer-authority decision.
-On acceptance it supersedes the plan-owned state and capability layers in
-ADR-20260721 while retaining that ADR's one-mechanism, recovery, migration,
-review-independence, and external-action constraints.
+ADR `docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md`
+records the proposed durable resource-composition, manifest, identity,
+measurement, selector, activation, and rollback decision. On acceptance it
+revises only the resource-composition part of ADR-20260728 while retaining its
+immutable release rollback and external-action boundaries.
 
 References below to earlier authoring, implementation, and review-fix profile
 ADRs are historical decision evidence. They do not restore profile-owned
 lifecycle state, separate workflow authorization, capability, typed-policy,
-or receipt-state layers.
+or receipt-state layers. The stage-owned change-local lifecycle decision is an
+accepted current dependency, not the candidate under this review.
 
 ADR `docs/adr/ADR-20260512-generated-skill-output-release-artifacts.md` records the durable decision to move generated local and public skill copies out of ordinary authored Git state through staged temp-output and release-artifact validation. ADR `docs/adr/ADR-20260513-v0-1-3-adapter-release-archive-install-surface.md` records the durable `v0.1.3` decision to make release archives the active public adapter install surface and retire tracked generated adapter package fragments. ADR `docs/adr/ADR-20260515-rigorloop-cli-package-and-codex-init.md` records the first CLI package boundary, bundled local-archive metadata decision, planned-lockfile boundary, and original publication block. ADR `docs/adr/ADR-20260516-rigorloop-cli-lockfile.md` records the durable lockfile boundary, strict schema handling, drift comparison, and partial-failure write ordering for Codex init. ADR `docs/adr/ADR-20260516-rigorloop-npm-publication.md` records the first public npm publication boundary, package-content and publication-mode decisions, and real install closeout proof. ADR `docs/adr/ADR-20260518-multi-adapter-init-and-proxy-download.md` records descriptor-driven multi-adapter init, schema v2 mixed-root lockfiles, opencode skills-only compatibility, and proxy-safe diagnostics. ADR `docs/adr/ADR-20260522-change-record-catalog-registration-and-bounded-read-model.md` records the durable decision to treat change records as registered and queryable catalogs. ADR `docs/adr/ADR-20260523-validation-idempotency-cache-hit-safety.md` records the durable decision to add validation cache hits for unchanged explicit-path lifecycle inputs, including the cache-aware inner-loop helper mode, while preserving actual-run closeout gates. ADR `docs/adr/ADR-20260524-target-native-init-state-boundary.md` records the durable target-native init, explicit state-write, target-oriented schema, state safety, and real smoke-gate decision. ADR `docs/adr/ADR-20260623-published-skill-resource-integrity.md` records the durable mapped-resource identity and clean-install proof decision. ADR `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md` records the durable proposal-gated authoring autoprogression profile, policy persistence, and review-independence decision. ADR `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md` records the durable separately armed implementation autoprogression profile, phase gating, reviewer-owned correction authority, fresh verify requirement, and stop-before-PR boundary. ADR `docs/adr/ADR-20260625-independent-adversarial-review-gates.md` records the durable automated review-independence gate, neutral-packet evidence model, blind-first phase protocol, risk-tiered escalation, second-review disagreement behavior, and calibration boundary. ADR `docs/adr/ADR-20260626-requirement-fidelity-gate.md` records the durable automated requirement-fidelity gate, deterministic applicability model, spec-canonical packet order, decomposition and property-matrix evidence, validator assertion matrix boundary, and compression-defect calibration. ADR `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md` records the durable bounded review-fix profile, nested review-fix state, driver-owned safe-fix classification, same-review rerun boundary, and architecture-assessment routing. No additional ADR is required for `rigorloop new-change` because it is an additive command inside the existing CLI package boundary and does not introduce a new durable source-of-truth, packaging, release, validation, or persistence decision. No new ADR is required for the cache-aware inner-loop helper because it amends the existing validation cache-hit safety decision rather than introducing a separate validation architecture. No additional ADR is required for the evidence-bound `project-map` update because it applies existing generated-output, skill resource-integrity, and living-reference workflow decisions to one published skill and one packaged skeleton asset. No new ADR is required for workflow-state synchronization because the accepted spec amends the existing single-source workflow-state contract and composes through the existing lifecycle-validation architecture instead of adding a new system boundary, storage boundary, parser authority, or service. No change-local architecture delta is produced because the canonical package carries the intended durable guidance directly.

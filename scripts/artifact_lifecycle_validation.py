@@ -3,12 +3,19 @@
 
 from __future__ import annotations
 
+import importlib.util
 import re
 import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from artifact_lifecycle_contracts import ArtifactContract, classify_artifact
+from change_metadata_semantics import (
+    STAGE_OWNED_CONTRACT,
+    validate_stage_owned_lifecycle_metadata,
+)
 from lifecycle_state_sync import (
     has_structured_workflow_state_marker,
     has_workflow_state_handoff_section,
@@ -21,6 +28,10 @@ PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD|lorem ipsum)\b", re.IGNORECASE)
 RELEASE_EVIDENCE_PATH_PATTERN = re.compile(r"^docs/releases/v[^/]+\.md$")
 REPO_PATH_PATTERN = re.compile(
     r"(?P<path>(?:\.\./|\.\/)?(?:docs|specs|\.codex)/[A-Za-z0-9._/\-]+(?:\.md|\.yaml))"
+)
+MARKDOWN_LINK_TARGET_PATTERN = re.compile(r"\]\((?P<path>[^)#]+)\)")
+CHANGE_RECORD_PATH_PATTERN = re.compile(
+    r"(?P<path>(?:\.\./|\.\/)?(?:docs/)?changes/[A-Za-z0-9._/\-]+/change\.yaml)"
 )
 STALE_READINESS_PATTERN = re.compile(
     r"(ready for `?(proposal-review|spec-review|implement|implementation|pr|code-review)`?|"
@@ -179,6 +190,13 @@ class ArtifactInspection:
 
 
 @dataclass(frozen=True)
+class StageOwnedArtifactState:
+    change_record: Path
+    kind: str
+    lifecycle_state: str
+
+
+@dataclass(frozen=True)
 class PlanLifecycleMarker:
     state: str | None
     disposition: str | None
@@ -232,6 +250,26 @@ def _extract_repo_path_refs_from_text(root: Path, path: Path, text: str) -> set[
     refs: set[Path] = set()
     for match in REPO_PATH_PATTERN.finditer(text):
         resolved = _normalize_repo_path(root, path, match.group("path"))
+        if resolved is not None:
+            refs.add(resolved)
+    return refs
+
+
+def _extract_owning_change_record_refs(root: Path, path: Path, text: str) -> set[Path]:
+    section = _get_section(_parse_sections(text), "Owning change record")
+    if section is None:
+        return set()
+
+    refs: set[Path] = set()
+    raw_paths = [
+        match.group("path")
+        for match in MARKDOWN_LINK_TARGET_PATTERN.finditer(section)
+    ]
+    raw_paths.extend(match.group("path") for match in CHANGE_RECORD_PATH_PATTERN.finditer(section))
+    for raw_path in raw_paths:
+        if not raw_path.endswith("change.yaml"):
+            continue
+        resolved = _normalize_repo_path(root, path, raw_path)
         if resolved is not None:
             refs.add(resolved)
     return refs
@@ -642,9 +680,56 @@ def _validate_release_evidence_checklist(relative_path: Path, text: str) -> list
     return errors
 
 
+def _load_change_metadata_parser() -> Any:
+    validator_path = Path(__file__).resolve().with_name("validate-change-metadata.py")
+    module_name = "change_metadata_validator_for_artifact_lifecycle"
+    existing = sys.modules.get(module_name)
+    if existing is not None:
+        return existing
+    spec = importlib.util.spec_from_file_location(module_name, validator_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("could not load change metadata parser")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def _parse_change_yaml_text(text: str) -> Any:
+    parser = _load_change_metadata_parser()
+    lines = parser.tokenize_yaml(text)
+    if not lines:
+        raise parser.MetadataValidationError("metadata file is empty")
+    data, index = parser.parse_yaml_block(lines, 0, lines[0].indent)
+    if index != len(lines):
+        line = lines[index]
+        raise parser.MetadataValidationError(
+            f"line {line.lineno}: unexpected trailing content at indentation {line.indent}"
+        )
+    return data
+
+
 def _extract_change_yaml_refs(root: Path, path: Path, tracked_revision: str | None = None) -> set[Path]:
     refs: set[Path] = set()
-    lines = _read_repo_text(root, path, tracked_revision).splitlines()
+    text = _read_repo_text(root, path, tracked_revision)
+    try:
+        data = _parse_change_yaml_text(text)
+    except Exception:
+        data = None
+    if isinstance(data, dict) and data.get("lifecycle_contract") == STAGE_OWNED_CONTRACT:
+        states = data.get("artifact_states")
+        if isinstance(states, dict):
+            for entry in states.values():
+                if not isinstance(entry, dict):
+                    continue
+                raw_path = entry.get("path")
+                if not isinstance(raw_path, str):
+                    continue
+                resolved = _normalize_repo_path(root, path, raw_path)
+                if resolved is not None:
+                    refs.add(resolved)
+
+    lines = text.splitlines()
     in_artifacts = False
     artifact_indent = 0
 
@@ -1293,14 +1378,22 @@ def _validate_status_and_sections(
     contract: ArtifactContract,
     sections: dict[str, str],
     text: str,
+    *,
+    stage_owned: bool = False,
+    stage_owned_status: str | None = None,
 ) -> tuple[list[str], str | None]:
     errors: list[str] = []
-    status = _extract_status(sections)
-
-    if status is None:
-        return ["missing required Status section"], None
-    if status not in contract.allowed_statuses:
-        errors.append(f"invalid status '{status}' for {contract.class_name}")
+    embedded_status = _extract_status(sections)
+    if stage_owned:
+        status = stage_owned_status
+        if embedded_status is not None:
+            errors.append("stage-owned governed artifact must not contain embedded Status section")
+    else:
+        status = embedded_status
+        if status is None:
+            return ["missing required Status section"], None
+        if status not in contract.allowed_statuses:
+            errors.append(f"invalid status '{status}' for {contract.class_name}")
 
     if _contains_placeholder_text(text):
         errors.append("placeholder text is not allowed")
@@ -1317,7 +1410,7 @@ def _validate_status_and_sections(
     if identifier and contract.identifier_pattern and not contract.identifier_pattern.fullmatch(identifier):
         errors.append(f"invalid {contract.identifier_label}: {identifier}")
 
-    if status in contract.terminal_statuses:
+    if not stage_owned and status in contract.terminal_statuses:
         if not _has_terminal_closeout(sections):
             errors.append("terminal artifacts must include a Closeout or Follow-on artifacts section")
         follow_on = _get_section(sections, "Follow-on artifacts")
@@ -1339,22 +1432,41 @@ def _validate_status_and_sections(
             pass
 
     readiness = _get_section(sections, "Readiness") or ""
-    if readiness and _requires_readiness_consistency_check(contract, status) and STALE_READINESS_PATTERN.search(
-        readiness
+    if (
+        not stage_owned
+        and readiness
+        and _requires_readiness_consistency_check(contract, status)
+        and STALE_READINESS_PATTERN.search(
+            readiness
+        )
     ):
         errors.append("status and readiness disagree about whether earlier pending stages remain")
 
     return errors, status
 
 
-def _inspect_artifact(path: Path, root: Path, tracked_revision: str | None = None) -> ArtifactInspection | None:
+def _inspect_artifact(
+    path: Path,
+    root: Path,
+    tracked_revision: str | None = None,
+    *,
+    stage_owned: bool = False,
+    stage_owned_status: str | None = None,
+) -> ArtifactInspection | None:
     relative_path = path.relative_to(root)
     text = _read_repo_text(root, path, tracked_revision)
     contract = classify_artifact(relative_path, text)
     if contract is None:
         return None
     sections = _parse_sections(text)
-    errors, status = _validate_status_and_sections(relative_path, contract, sections, text)
+    errors, status = _validate_status_and_sections(
+        relative_path,
+        contract,
+        sections,
+        text,
+        stage_owned=stage_owned,
+        stage_owned_status=stage_owned_status,
+    )
     identifier = _extract_identifier(contract, relative_path)
     return ArtifactInspection(
         path=path,
@@ -1514,6 +1626,15 @@ def _resolve_scope(
         contract = classify_artifact(relative, current_text if current.suffix == ".md" else None)
         if contract is not None:
             related_artifacts.add(current)
+            queue.extend(
+                sorted(
+                    _extract_owning_change_record_refs(
+                        root,
+                        current,
+                        current_text or "",
+                    )
+                )
+            )
 
         if current.name == "change.yaml":
             change_yaml_paths.add(current)
@@ -1574,8 +1695,69 @@ def validate_repository(
     warning_findings: list[ValidationFinding] = []
     root_resolved = root.resolve()
     related_paths = set(scope.related_artifact_paths)
+    stage_owned_records: set[Path] = set()
+    stage_owned_states: dict[Path, list[StageOwnedArtifactState]] = {}
 
     for path in scope.change_yaml_paths:
+        metadata_text = _read_repo_text(
+            root_resolved,
+            path,
+            scope.tracked_revision,
+        )
+        try:
+            metadata = _parse_change_yaml_text(metadata_text)
+        except Exception as exc:
+            if f"lifecycle_contract: {STAGE_OWNED_CONTRACT}" in metadata_text:
+                blocking_findings.append(
+                    ValidationFinding(
+                        severity="block",
+                        path=path,
+                        artifact_class="change_metadata",
+                        status=None,
+                        message=f"could not parse stage-owned change metadata: {exc}",
+                    )
+                )
+            metadata = None
+
+        if (
+            isinstance(metadata, dict)
+            and metadata.get("lifecycle_contract") == STAGE_OWNED_CONTRACT
+        ):
+            stage_owned_records.add(path)
+            for message in validate_stage_owned_lifecycle_metadata(metadata):
+                blocking_findings.append(
+                    ValidationFinding(
+                        severity="block",
+                        path=path,
+                        artifact_class="change_metadata",
+                        status=None,
+                        message=message,
+                    )
+                )
+            states = metadata.get("artifact_states")
+            if isinstance(states, dict):
+                for artifact_id, entry in states.items():
+                    if not isinstance(artifact_id, str) or not isinstance(entry, dict):
+                        continue
+                    raw_artifact_path = entry.get("path")
+                    kind = entry.get("kind")
+                    lifecycle_state = entry.get("lifecycle_state")
+                    if not all(
+                        isinstance(value, str)
+                        for value in (raw_artifact_path, kind, lifecycle_state)
+                    ):
+                        continue
+                    artifact_path = _normalize_repo_path(root_resolved, path, raw_artifact_path)
+                    if artifact_path is None:
+                        continue
+                    stage_owned_states.setdefault(artifact_path, []).append(
+                        StageOwnedArtifactState(
+                            change_record=path,
+                            kind=kind,
+                            lifecycle_state=lifecycle_state,
+                        )
+                    )
+
         for message in _change_yaml_closeout_cache_findings(
             root_resolved,
             path,
@@ -1620,7 +1802,69 @@ def validate_repository(
 
     inspections: dict[Path, ArtifactInspection] = {}
     for path in tuple(sorted(related_paths | set(scope.baseline_paths))):
-        inspection = _inspect_artifact(path, root_resolved, scope.tracked_revision)
+        text = _read_repo_text(root_resolved, path, scope.tracked_revision)
+        owning_refs = _extract_owning_change_record_refs(root_resolved, path, text)
+        stage_owned_refs = owning_refs & stage_owned_records
+        owners = stage_owned_states.get(path, [])
+        stage_owned = bool(stage_owned_refs or owners)
+        stage_owned_status: str | None = None
+        if stage_owned:
+            target_findings = blocking_findings if path in related_paths else warning_findings
+            severity = "block" if path in related_paths else "warn"
+            if len(stage_owned_refs) != 1:
+                target_findings.append(
+                    ValidationFinding(
+                        severity=severity,
+                        path=path,
+                        artifact_class="change_metadata",
+                        status=None,
+                        message="stage-owned governed artifact must identify exactly one owning change record",
+                    )
+                )
+            if len(owners) != 1:
+                target_findings.append(
+                    ValidationFinding(
+                        severity=severity,
+                        path=path,
+                        artifact_class="change_metadata",
+                        status=None,
+                        message="stage-owned governed artifact must have exactly one normalized artifact entry",
+                    )
+                )
+            else:
+                owner = owners[0]
+                stage_owned_status = owner.lifecycle_state
+                contract = classify_artifact(path.relative_to(root_resolved), text)
+                if contract is not None and owner.kind != contract.class_name:
+                    target_findings.append(
+                        ValidationFinding(
+                            severity=severity,
+                            path=path,
+                            artifact_class=contract.class_name,
+                            status=stage_owned_status,
+                            message=(
+                                f"artifact kind '{owner.kind}' does not match "
+                                f"classified kind '{contract.class_name}'"
+                            ),
+                        )
+                    )
+                if len(stage_owned_refs) == 1 and owner.change_record not in stage_owned_refs:
+                    target_findings.append(
+                        ValidationFinding(
+                            severity=severity,
+                            path=path,
+                            artifact_class="change_metadata",
+                            status=stage_owned_status,
+                            message="owning change-record pointer does not match the exact artifact entry owner",
+                        )
+                    )
+        inspection = _inspect_artifact(
+            path,
+            root_resolved,
+            scope.tracked_revision,
+            stage_owned=stage_owned,
+            stage_owned_status=stage_owned_status,
+        )
         if inspection is not None:
             inspections[path] = inspection
 

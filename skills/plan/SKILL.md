@@ -3,7 +3,7 @@ name: plan
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Create or revise a stable execution plan after proposal, spec, and architecture are settled enough to implement. Use for multi-file, multi-component, risky, migration-heavy, or milestone-based work that needs reviewable implementation slices, validation commands, recovery paths, and dependencies. Use spec, test-spec, implement, code-review, verify, or pr for those stages; do not use plan to choose product direction, write code, review diffs, own mutable workflow state, verify branch readiness, or open PRs.
+  Create or revise a stable execution plan after proposal, spec, and architecture are settled enough to implement. Use for multi-file, multi-component, risky, migration-heavy, or milestone-based work that needs reviewable implementation slices, validation commands, recovery paths, and dependencies. Use spec, test-spec, implement, code-review, verify, or pr for those stages; do not use plan to choose product direction, write code, review diffs, update workflow routing or existing planned work, verify branch readiness, or open PRs.
 argument-hint: [feature name, spec path, architecture path, or implementation goal]
 ---
 
@@ -84,8 +84,9 @@ If settlement is missing, contradictory, unknown, or unmapped, record the blocke
 For a governed change, read the complete `change.yaml` before writing.
 Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing marker to `workflow` for creation or migration instead of inventing state.
 Resolve exactly one plan entry by artifact ID, `kind`, and normalized `path`.
-For a new plan, create only that entry with a unique stable ID, `kind: plan`, normalized path, and explicit role. Before creating or substantively revising the plan, set only that entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to the plan-authoring record path. After the plan and authoring record are complete, set the same entry to `review-required`.
-Preserve every other entry and `workflow_state`; plan milestones remain stable intent and do not authorize writing `workflow_state.planned_work`. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
+For a new plan, create only that entry with a unique stable ID, `kind: plan`, normalized path, and explicit role. Before creating or substantively revising the plan, set only that entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to the plan-authoring record path.
+When registering a new primary plan and `planned_work` is absent, initialize `workflow_state.planned_work` exactly once from the plan's ordered milestones: set every implementation milestone to `planned`, set `current_milestone` to the first implementation milestone, list all implementation milestones in `remaining_implementation_milestones`, use `latest_review.status: not-started` with its required empty identity fields and evidence, and use `final_closeout.readiness: not-ready` with the applicable open-gate reasons. The plan must not replace or update existing `planned_work`; workflow owns every later `planned_work` transition.
+After the plan and authoring record are complete, set the same entry to `review-required`. Preserve every other entry and every other `workflow_state` field. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
 
 ## Artifact placement
 
@@ -123,7 +124,7 @@ Output a compact result plus a plan artifact. Copy `assets/plan-skeleton.md` for
 
 Produce or update the stable plan body and, when needed, its navigation entry in `docs/plan.md`.
 Name milestones, validation, recovery, and dependencies.
-The plan stage may record its own authoring transition in the matching `change.yaml` artifact entry; it must not write review settlement or routing.
+The plan stage may record its own authoring transition and one-time deterministic initialization of missing primary-plan `planned_work`; it must not write review settlement, routing, or later planned-work transitions.
 
 ## Result
 
