@@ -21,6 +21,7 @@ Review closeout: spec-review-r3
 Review closeout: spec-review-r4
 Review closeout: spec-review-r5
 Review closeout: spec-review-r6
+Review closeout: code-review-m3-r1
 
 - Reviews covered: `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `plan-review-r1`, `plan-review-r2`, `architecture-review-r1`,
   `architecture-review-r2`,
@@ -543,3 +544,28 @@ compatibility audit, and the boundary-first authority and migration model.
 It confirmed that SLA-SR11 is resolved and that no current same-rank feature
 specification outside the closed table directly assigns governed mutable state
 to a retired writer.
+
+### code-review-m3-r1
+
+Review result: changes-requested
+Material findings: SLA-CR-M3-1
+Resolution required: yes
+
+#### SLA-CR-M3-1 - Review outcome did not constrain settlement state
+
+Finding ID: SLA-CR-M3-1
+Disposition: accepted
+Status: resolved
+Owner: implement
+Chosen action: Enforce the closed outcome-to-state mapping, including approved
+ADR settlement, after unknown-value validation.
+Owning stage: implement
+Stop state: M3 remains closed after focused tests pass.
+Rationale: independently valid vocabularies do not prevent contradictory
+settlement.
+Safe resolution path: keep the check in the existing change-metadata semantic
+validator and add one regression test.
+Validation target: M3 focused metadata and persistence tests
+Validation evidence: `python scripts/test-change-metadata-validator.py`
+passed 61 tests and `python scripts/test-workflow-automation-state.py` passed
+64 tests.
