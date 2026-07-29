@@ -456,11 +456,14 @@ def _validate_resource_version(relative: Path, data: bytes) -> None:
         if line.startswith("Boundary model version:")
     ]
     if not versions or set(versions) != {METHOD_VERSION}:
+        version_detail = ", ".join(versions) if versions else "-"
         raise ProjectionContractError(
             "BFR-RESOURCE-VERSION-UNKNOWN",
             path=relative.as_posix(),
             message="canonical resource version is missing or unknown",
-            offending_value=", ".join(versions) if versions else "-",
+            offending_value=(
+                f"sha256:{raw_sha256(version_detail.encode('utf-8'))}"
+            ),
             expected=METHOD_VERSION,
         )
 
@@ -517,10 +520,11 @@ def _unexpected_projections(
             continue
         for candidate in references.rglob("*"):
             if candidate.is_symlink():
-                errors.append(
-                    "BFR-UNEXPECTED-CONSUMER-SYMLINK: "
-                    + _relative_posix(candidate, root)
-                )
+                if candidate.match("boundary-first-*.md"):
+                    errors.append(
+                        "BFR-UNEXPECTED-CONSUMER-SYMLINK: "
+                        + _relative_posix(candidate, root)
+                    )
                 continue
             if (
                 candidate.is_file()
@@ -541,7 +545,10 @@ def _unexpected_canonical_resources(
     found = {
         candidate
         for candidate in references.rglob("*")
-        if candidate.is_symlink()
+        if (
+            candidate.is_symlink()
+            and candidate.match("boundary-first-*.md")
+        )
         or (
             candidate.is_file()
             and candidate.match("boundary-first-*.md")

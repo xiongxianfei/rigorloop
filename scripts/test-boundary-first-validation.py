@@ -839,6 +839,30 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             self.assertTrue(issue.offending_value.startswith("sha256:"))
             self.assertNotIn(secret, serialized)
 
+    def test_activation_does_not_disclose_resource_version_scalar(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            secret = "token-super-secret-resource-version"
+            resource = (
+                root
+                / "specs/references/"
+                "boundary-first-feature-authoring-v1.md"
+            )
+            resource.write_text(
+                f"# Feature\n\nBoundary model version: {secret}\n",
+                encoding="utf-8",
+            )
+
+            issue = validate_activation(root)[0]
+            serialized = json.dumps(issue.as_dict())
+
+            self.assertEqual(issue.code, "BFR-RESOURCE-VERSION-UNKNOWN")
+            self.assertTrue(issue.offending_value.startswith("sha256:"))
+            self.assertNotIn(secret, serialized)
+
     def test_activation_preserves_missing_family_source_identity(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

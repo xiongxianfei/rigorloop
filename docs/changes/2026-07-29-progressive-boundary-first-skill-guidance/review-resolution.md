@@ -206,7 +206,7 @@ Owning stage: review-resolution
 Chosen action: Hash canonical version offending values and prove public and activation paths.
 Rationale: Resource contents are untrusted diagnostic input.
 Validation target: code-review-m1-r6
-Validation evidence: pending correction and independent rereview
+Validation evidence: Secret-bearing canonical version fixtures preserve stable check, path, reason, and expected version while emitting only a SHA-256 offending identity through CLI and activation; independent R6 confirmation remains pending.
 
 #### CR-M1-R5-002 - Projection inventory rejects unrelated symlinked resources
 
@@ -218,7 +218,7 @@ Owning stage: review-resolution
 Chosen action: Restrict recursive symlink discovery to the boundary resource namespace while retaining governed path ancestor checks.
 Rationale: The boundary validator must not claim unrelated packaged resources.
 Validation target: code-review-m1-r6
-Validation evidence: pending correction and independent rereview
+Validation evidence: Unrelated skill-local and canonical reference symlinks pass, while existing governed and boundary-resource symlink cases fail closed in the 26-test projection suite; independent R6 confirmation remains pending.
 
 ### proposal-review-r1
 

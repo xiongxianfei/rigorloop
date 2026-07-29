@@ -26,9 +26,9 @@ Milestone M1 replaces the one-reference projection with the reviewed three-resou
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-boundary-first-reference.py` | pass, 25 tests |
+| `python scripts/test-boundary-first-reference.py` | pass, 26 tests |
 | `python scripts/project-boundary-first-reference.py --check` | pass, 14 projections |
-| `python scripts/test-boundary-first-validation.py` | pass, 62 tests |
+| `python scripts/test-boundary-first-validation.py` | pass, 63 tests |
 | `python scripts/validate-boundary-first.py --check` | pass |
 | `python scripts/test-skill-validator.py` | pass, 273 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skill files |
@@ -72,3 +72,10 @@ The full M1 command set passed after these corrections and is awaiting independe
 - `CR-M1-R4-002`: manifest-derived diagnostic messages contain only stable validation reasons; rejected payload detail is represented by a one-way SHA-256 identity through projection and activation paths.
 
 The full M1 command set passed after these corrections and is awaiting independent R5 review.
+
+## R5 finding corrections
+
+- `CR-M1-R5-001`: canonical resource-version diagnostics now use a one-way SHA-256 offending-value identity; public CLI and activation fixtures prove secret-like content is absent.
+- `CR-M1-R5-002`: recursive discovery ignores unrelated reference symlinks while still rejecting governed path ancestors and symlinks named in the boundary-resource namespace.
+
+The full M1 command set passed after these corrections and is awaiting independent R6 review.
