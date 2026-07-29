@@ -85,7 +85,7 @@ Use `bugfix` for bugs, `ci-maintenance` when GitHub Actions or related automatio
 - Every approved initiative gets its own living plan file under `docs/plans/YYYY-MM-DD-slug.md`.
 - Never overwrite an older plan when starting a new initiative.
 - If a new plan replaces an older one, preserve the older plan as historical intent and record replacement lifecycle state in the owning change record.
-- Execution plans should follow `docs/examples/plans/example-plan.md`; examples under `docs/examples/` are illustrative and are not active lifecycle state.
+- Execution plans should use `skills/plan/assets/plan-skeleton.md`; do not maintain a second plan scaffold under documentation, templates, or local runtime output.
 
 ## Required reading before implementation
 

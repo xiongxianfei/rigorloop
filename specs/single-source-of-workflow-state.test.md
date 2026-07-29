@@ -125,7 +125,7 @@ This alignment requires `test-spec-review` before M1 relies on it.
 - Level: integration, manual
 - Fixture/setup:
   - `docs/workflows.md`
-  - `docs/examples/plans/example-plan.md`
+  - `skills/plan/assets/plan-skeleton.md`
   - `skills/plan/SKILL.md`
   - active plan after each milestone update
 - Steps:
@@ -146,7 +146,7 @@ This alignment requires `test-spec-review` before M1 relies on it.
 - Covers: `R3`-`R8`, `R28`, `E1`
 - Level: integration, manual
 - Fixture/setup:
-  - `docs/examples/plans/example-plan.md`
+  - `skills/plan/assets/plan-skeleton.md`
   - active plan body
   - `skills/plan/SKILL.md`
 - Steps:

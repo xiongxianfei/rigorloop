@@ -2623,15 +2623,8 @@ raise SystemExit({exit_code})
         self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
         self.assertEqual({"guide_system.validate"}, selected_ids(payload))
 
-    def test_docs_examples_paths_are_known_non_lifecycle_paths(self) -> None:
-        paths = [
-            "docs/examples/README.md",
-            "docs/examples/plans/example-plan.md",
-            "docs/examples/formal-review-recording/README.md",
-            "docs/examples/formal-review-recording/change-id-selection-examples.md",
-            "docs/examples/formal-review-recording/clean-review-receipt-root.md",
-            "docs/examples/formal-review-recording/material-finding-location-examples.md",
-        ]
+    def test_retired_docs_examples_path_is_known_during_deletion_compatibility(self) -> None:
+        paths = ["docs/examples/README.md"]
 
         result = self.select(paths)
         payload = result.to_json_dict()
@@ -2641,7 +2634,10 @@ raise SystemExit({exit_code})
         self.assertEqual(payload["blocking_results"], [])
         for path in paths:
             with self.subTest(path=path):
-                self.assertIn({"path": path, "category": "examples"}, payload["classified_paths"])
+                self.assertIn(
+                    {"path": path, "category": "retired-examples"},
+                    payload["classified_paths"],
+                )
 
         self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
         self.assertNotIn("review_artifacts.validate", selected_ids(payload))

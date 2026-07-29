@@ -213,13 +213,12 @@ This is a release packaging, validation, compatibility, documentation, and evide
 
 - Covers: `R64`-`R67`, `E6`
 - Level: integration
-- Fixture/setup: optional moved path `docs/examples/changes/skill-validator/`
+- Fixture/setup: optional synthetic cases under `tests/fixtures/`
 - Steps:
   - If the proof pack moves, assert all references to the old path in tests, selectors, validators, docs, and release guidance are updated.
-  - Assert `docs/examples/README.md` says examples are non-normative and not active lifecycle state.
-  - Run selector and lifecycle tests proving the moved path is example or fixture content.
-  - Run `python scripts/select-validation.py --mode explicit --path docs/examples/changes/skill-validator/change.yaml` when the path exists.
-- Expected result: moved proof pack is classified as example content and does not look active.
+  - Assert moved cases carry no historical proof and are consumed only as test fixtures.
+  - Run selector and lifecycle tests proving the moved path uses existing test-fixture behavior.
+- Expected result: moved synthetic cases are classified as fixtures and do not look active.
 - Failure proves: moving the proof pack created stale references or false lifecycle state.
 - Automation location: `scripts/test-select-validation.py`, `scripts/test-artifact-lifecycle-validator.py`, `scripts/select-validation.py`
 
@@ -345,7 +344,7 @@ This is a release packaging, validation, compatibility, documentation, and evide
 - `docs/reports/adapter-artifacts/releases/v0.1.2.yaml` metadata fixture.
 - Positive and negative adapter metadata fixtures in `scripts/test-adapter-distribution.py` or `tests/fixtures/adapters/`.
 - Token-cost fixtures under `tests/fixtures/token-cost/`.
-- Optional moved proof pack under `docs/examples/changes/skill-validator/`.
+- Optional synthetic cases under `tests/fixtures/`.
 - Retained proof pack under `docs/changes/0001-skill-validator/`.
 
 ## Mocking/stubbing policy

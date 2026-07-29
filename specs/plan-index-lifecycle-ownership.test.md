@@ -328,8 +328,8 @@ This alignment requires `test-spec-review` before M1 relies on it.
 - Fixture/setup:
   - `docs/workflows.md`
   - `AGENTS.md`
-  - `docs/examples/plans/example-plan.md`
-  - `skills/plan/SKILL.md` if changed
+  - `skills/plan/SKILL.md`
+  - `skills/plan/assets/plan-skeleton.md`
 - Steps:
   - Review touched guidance for plan/index/archive ownership.
   - For each surface named by `R8a`, the workflow summary and plan guidance, confirm all required ownership points are explicit:

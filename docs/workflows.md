@@ -246,10 +246,6 @@ artifact_locations:
     owner: workflow
     path: docs/follow-ups.md
     required_when: unowned cross-change follow-up exists
-  examples:
-    owner: none
-    path: docs/examples/
-    required_when: illustrative examples are maintained
   proposal:
     owner: proposal
     path: docs/proposals/YYYY-MM-DD-slug.md
@@ -344,7 +340,6 @@ If this project customizes artifact locations, update the registry and this tabl
 | Project map | `docs/project-map.md` | `project-map` | Architecture or repository orientation depends on it. |
 | Workflow guide | `docs/workflows.md` | `workflow` | RigorLoop is adopted or artifact locations change. |
 | Follow-up register | `docs/follow-ups.md` | `workflow` | Unowned cross-change follow-up exists. |
-| Examples | `docs/examples/` | none; examples are non-normative | Illustrative examples are maintained. |
 | Proposals | `docs/proposals/YYYY-MM-DD-slug.md` | `proposal` | Proposal stage. |
 | Specs | `specs/slug.md` | `spec` | Spec stage. |
 | Test specs | `specs/slug.test.md` | `test-spec` | Test-spec stage. |
@@ -505,7 +500,7 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - If completion depends on a true downstream event such as release, deploy, package publication, external migration, or an observed hosted result, keep change-local final closeout not-ready and name the event in its reasons and evidence.
 - Do not use merge itself as a routine downstream completion event.
 - `verify` blocks PR readiness when a governed plan or index carries mutable state or contradicts the change-local owner.
-- Execution plans follow the illustrative structure in `docs/examples/plans/example-plan.md`; examples under `docs/examples/` are not active lifecycle state.
+- Execution plans use the packaged scaffold in `skills/plan/assets/plan-skeleton.md`; documentation examples are not a second plan-authoring surface.
 - Each completed planned milestone ends with a coherent commit using:
   - `M<n>: <completed milestone outcome>`
 - A pull request may contain one or more completed milestone commits when that is the clearest review boundary.
@@ -550,7 +545,6 @@ Notes:
 - Public adapter installation uses `dist/adapters/README.md` as the install-contract surface. For `v0.1.3` and later, generated public adapter skill bodies are release archives, not tracked source under `dist/adapters/`.
 - `dist/adapters/README.md` and `dist/adapters/manifest.yaml` are the tracked adapter support surface. Historical note: `v0.1.2` kept repository-tree adapter packages during the compatibility window.
 - Public-surface token-cost benchmarks must use generated public adapter output or release archive output. They must not use `.codex/skills/`, which is repository-local runtime output.
-- Use `docs/examples/plans/example-plan.md` for illustrative plan structure. Do not treat `docs/examples/**` as active lifecycle state or reintroduce a second plan-template path.
 
 ## Validation
 

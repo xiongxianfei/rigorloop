@@ -8,4 +8,4 @@ The fixture remains under `docs/changes/0001-skill-validator/` because tests, va
 
 M4 retention decision for the `v0.1.2` archive-introduction release: retaining this fixture path with the rationale above does not block the v0.1.2 archive-introduction release.
 
-The preferred future move target is `docs/examples/changes/skill-validator/` once references, tests, validators, selectors, and contributor-facing guidance can be updated safely in the same implementation slice.
+If this path stops serving historical proof, move purely synthetic cases under `tests/fixtures/` and remove the retained path only after every compatibility and historical reference is settled.

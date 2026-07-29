@@ -5062,63 +5062,6 @@ class SkillValidatorFixtureTests(unittest.TestCase):
                 self.assertIn(term, plan)
 
     @unittest.skip("superseded for governed changes by CP-002 change-local state proof")
-    def test_single_source_workflow_state_m2_governance_guidance(self) -> None:
-        """Contributor-facing guidance names one live state owner and scoped evidence surfaces."""
-
-        workflows = (ROOT / "docs" / "workflows.md").read_text(encoding="utf-8")
-        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
-        constitution = (ROOT / "CONSTITUTION.md").read_text(encoding="utf-8")
-        example_plan = (ROOT / "docs" / "examples" / "plans" / "example-plan.md").read_text(
-            encoding="utf-8"
-        )
-
-        workflow_terms = [
-            "For planned initiatives, the active plan `Current Handoff Summary` is the live state owner.",
-            "`Readiness` points to `Current Handoff Summary` for current live state instead of duplicating the current next stage.",
-            "State-sync checks update affected state owners before downstream readiness is claimed.",
-            "Change metadata, review-resolution, review-log, explain-change, verify output, and PR handoff own scoped evidence; they do not own the active plan's current next stage.",
-        ]
-        for term in workflow_terms:
-            with self.subTest(surface="docs/workflows.md", term=term):
-                self.assertIn(term, workflows)
-
-        governance_terms = [
-            "Current Handoff Summary",
-            "state-sync check",
-            "scoped evidence",
-            "must not own the active plan's current next stage",
-        ]
-        for body, surface in ((agents, "AGENTS.md"), (constitution, "CONSTITUTION.md")):
-            for term in governance_terms:
-                with self.subTest(surface=surface, term=term):
-                    self.assertIn(term, body)
-
-        example_terms = [
-            "## Current Handoff Summary",
-            "- Current milestone:",
-            "- Current milestone state:",
-            "- Last reviewed milestone:",
-            "- Review status:",
-            "- Remaining in-scope implementation milestones:",
-            "- Next stage:",
-            "- Final closeout readiness:",
-            "- Reason final closeout is or is not ready:",
-            "See `Current Handoff Summary`.",
-        ]
-        for term in example_terms:
-            with self.subTest(surface="example plan", term=term):
-                self.assertIn(term, example_plan)
-
-        stale_workflow_terms = [
-            "in the active plan or review handoff",
-            "If the plan is still active, name the next expected milestone or workflow stage.",
-        ]
-        for term in stale_workflow_terms:
-            with self.subTest(term=term):
-                self.assertNotIn(term, workflows)
-                self.assertNotIn(term, example_plan)
-
-    @unittest.skip("superseded for governed changes by CP-002 change-local state proof")
     def test_single_source_workflow_state_m3_skill_guidance(self) -> None:
         """Canonical skills write live state once and keep final artifacts scoped."""
 
@@ -6428,7 +6371,6 @@ and result format.
             "For exact shapes, use the governing spec, schema, or reference",
             "Project vision",
             "Workflow guide",
-            "Examples",
             "Proposals",
             "Specs",
             "Test specs",
@@ -7018,7 +6960,7 @@ and result format.
             "does not block the v0.1.2 archive-introduction release",
             "M4 retention decision",
             "tests, validators, compatibility references, or historical proof references",
-            "docs/examples/changes/skill-validator/",
+            "tests/fixtures/",
         ]
         for term in required_terms:
             with self.subTest(term=term):
@@ -7051,8 +6993,6 @@ and result format.
         forbidden_terms = [
             "| Artifact type | Default location | Owning skill |",
             "docs/changes/0001-skill-validator",
-            "docs/examples/formal-review-recording/",
-            "docs/examples/plans/example-plan.md",
         ]
 
         for skill_name in PROJECT_ARTIFACT_LOOKUP_SKILLS:

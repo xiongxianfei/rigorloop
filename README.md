@@ -405,8 +405,7 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 - `skills/` is the only authored skill source. `.codex/skills/` is ignored local Codex runtime state; keep it untracked when copying installed Codex adapter skills there for local runtime use, and edit canonical skills under `skills/`.
 - `dist/adapters/README.md` and `dist/adapters/manifest.yaml` are the tracked adapter support surface.
 - Public-surface token-cost benchmarks must identify generated public adapter output or release archive output, not repository-local `.codex/skills/`.
-- Execution plans follow:
-  - `docs/examples/plans/example-plan.md`
+- Execution plans use the packaged `skills/plan/assets/plan-skeleton.md` scaffold.
 
 ## Validation Commands
 
@@ -438,9 +437,6 @@ Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI 
 │   ├── workflows.md
 │   ├── changes/
 │   │   └── 0001-skill-validator/
-│   ├── examples/
-│   │   └── plans/
-│   │       └── example-plan.md
 │   ├── plans/
 │   ├── architecture/
 │   └── adr/
