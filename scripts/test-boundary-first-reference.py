@@ -17,10 +17,44 @@ from boundary_first_reference import (  # noqa: E402
     GOVERNED_SKILLS,
     METHOD_VERSION,
     PROJECTED_REFERENCE,
+    RESOURCE_MANIFEST,
     ProjectionContractError,
     inventory_digest,
+    load_resource_manifest,
     project_reference,
+    projected_paths,
 )
+
+MANIFEST_BYTES = b"""schema_version: 1
+contract_version: boundary-first-v1
+resources:
+  - id: compact-core
+    source: specs/references/boundary-first-method-v1.md
+    target: references/boundary-first-method-v1.md
+    consumers:
+      - workflow
+      - spec
+      - spec-review
+      - plan
+      - plan-review
+      - test-spec
+      - test-spec-review
+      - implement
+      - code-review
+      - verify
+  - id: feature-authoring
+    source: specs/references/boundary-first-feature-authoring-v1.md
+    target: references/boundary-first-feature-authoring-v1.md
+    consumers:
+      - spec
+      - spec-review
+  - id: proof
+    source: specs/references/boundary-first-proof-v1.md
+    target: references/boundary-first-proof-v1.md
+    consumers:
+      - test-spec
+      - test-spec-review
+"""
 
 
 class BoundaryFirstReferenceTests(unittest.TestCase):
@@ -31,6 +65,15 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         source = root / CANONICAL_REFERENCE
         source.parent.mkdir(parents=True)
         source.write_bytes(b"# portable boundary method\n")
+        (root / "specs" / "boundary-first-resources.yaml").write_bytes(
+            MANIFEST_BYTES
+        )
+        (source.parent / "boundary-first-feature-authoring-v1.md").write_bytes(
+            b"# feature authoring\n"
+        )
+        (source.parent / "boundary-first-proof-v1.md").write_bytes(
+            b"# proof guidance\n"
+        )
         for skill in GOVERNED_SKILLS:
             (root / "skills" / skill).mkdir(parents=True)
         return temporary, root
@@ -65,6 +108,153 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             PROJECTED_REFERENCE,
             Path("references/boundary-first-method-v1.md"),
         )
+        self.assertEqual(
+            RESOURCE_MANIFEST,
+            Path("specs/boundary-first-resources.yaml"),
+        )
+
+    def test_manifest_is_the_exact_closed_resource_authority(self) -> None:
+        _, root = self.make_repository()
+
+        manifest = load_resource_manifest(root)
+
+        self.assertEqual(manifest.schema_version, 1)
+        self.assertEqual(manifest.contract_version, METHOD_VERSION)
+        self.assertEqual(
+            tuple(resource.resource_id for resource in manifest.resources),
+            ("compact-core", "feature-authoring", "proof"),
+        )
+        self.assertEqual(
+            projected_paths(root),
+            (
+                *(
+                    Path("skills")
+                    / skill
+                    / "references/boundary-first-method-v1.md"
+                    for skill in GOVERNED_SKILLS
+                ),
+                Path(
+                    "skills/spec/references/"
+                    "boundary-first-feature-authoring-v1.md"
+                ),
+                Path(
+                    "skills/spec-review/references/"
+                    "boundary-first-feature-authoring-v1.md"
+                ),
+                Path(
+                    "skills/test-spec/references/"
+                    "boundary-first-proof-v1.md"
+                ),
+                Path(
+                    "skills/test-spec-review/references/"
+                    "boundary-first-proof-v1.md"
+                ),
+            ),
+        )
+
+    def test_unknown_value_fails_before_consistency_checks(self) -> None:
+        _, root = self.make_repository()
+        manifest = root / RESOURCE_MANIFEST
+        manifest.write_bytes(
+            MANIFEST_BYTES.replace(
+                b"contract_version: boundary-first-v1",
+                b"contract_version: boundary-first-v2",
+            ).replace(
+                b"      - workflow\n",
+                b"      - future-stage\n",
+                1,
+            )
+        )
+
+        with self.assertRaisesRegex(
+            ProjectionContractError,
+            "BFR-MANIFEST-CONTRACT-VERSION-UNKNOWN",
+        ):
+            project_reference(root, mode="write")
+
+    def test_manifest_rejects_unknown_missing_and_duplicate_fields(self) -> None:
+        variants = {
+            "unknown": MANIFEST_BYTES.replace(
+                b"schema_version: 1\n",
+                b"schema_version: 1\nfuture: true\n",
+            ),
+            "missing": MANIFEST_BYTES.replace(
+                b"contract_version: boundary-first-v1\n",
+                b"",
+            ),
+            "duplicate": MANIFEST_BYTES.replace(
+                b"schema_version: 1\n",
+                b"schema_version: 1\nschema_version: 1\n",
+            ),
+        }
+        for name, raw in variants.items():
+            with self.subTest(name=name):
+                _, root = self.make_repository()
+                (root / RESOURCE_MANIFEST).write_bytes(raw)
+                with self.assertRaisesRegex(
+                    ProjectionContractError,
+                    "BFR-MANIFEST-(FIELDS|DUPLICATE-KEY)",
+                ):
+                    project_reference(root, mode="write")
+
+    def test_manifest_rejects_unknown_ids_consumers_and_duplicates(self) -> None:
+        variants = {
+            "unknown-id": MANIFEST_BYTES.replace(
+                b"id: proof", b"id: future"
+            ),
+            "unknown-consumer": MANIFEST_BYTES.replace(
+                b"      - verify\n", b"      - future-stage\n"
+            ),
+            "duplicate-consumer": MANIFEST_BYTES.replace(
+                b"      - verify\n", b"      - verify\n      - verify\n"
+            ),
+            "duplicate-source": MANIFEST_BYTES.replace(
+                b"specs/references/boundary-first-proof-v1.md",
+                b"specs/references/boundary-first-feature-authoring-v1.md",
+                1,
+            ),
+            "duplicate-target": MANIFEST_BYTES.replace(
+                b"references/boundary-first-proof-v1.md",
+                b"references/boundary-first-feature-authoring-v1.md",
+                1,
+            ),
+        }
+        for name, raw in variants.items():
+            with self.subTest(name=name):
+                _, root = self.make_repository()
+                (root / RESOURCE_MANIFEST).write_bytes(raw)
+                with self.assertRaisesRegex(
+                    ProjectionContractError,
+                    "BFR-MANIFEST-",
+                ):
+                    project_reference(root, mode="write")
+
+    def test_manifest_rejects_unsafe_paths_before_mutation(self) -> None:
+        variants = {
+            "absolute": b"/tmp/boundary.md",
+            "dot": b"specs/./references/boundary.md",
+            "escape": b"../boundary.md",
+            "outside-target": b"assets/boundary-first-method-v1.md",
+        }
+        for name, replacement in variants.items():
+            with self.subTest(name=name):
+                _, root = self.make_repository()
+                raw = MANIFEST_BYTES
+                needle = b"specs/references/boundary-first-method-v1.md"
+                if name == "outside-target":
+                    needle = b"references/boundary-first-method-v1.md"
+                (root / RESOURCE_MANIFEST).write_bytes(
+                    raw.replace(needle, replacement, 1)
+                )
+                sentinel = root / "skills/spec/references/sentinel"
+                sentinel.parent.mkdir(parents=True)
+                sentinel.write_bytes(b"unchanged")
+                with self.assertRaisesRegex(
+                    ProjectionContractError,
+                    "BFR-MANIFEST-PATH",
+                ):
+                    project_reference(root, mode="write")
+                self.assertEqual(sentinel.read_bytes(), b"unchanged")
 
     def test_write_is_raw_byte_exact_and_idempotent(self) -> None:
         _, root = self.make_repository()
@@ -78,11 +268,16 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         self.assertTrue(first.ok)
         self.assertTrue(second.ok)
         self.assertEqual(first.projection_sha256, second.projection_sha256)
-        for skill in GOVERNED_SKILLS:
-            self.assertEqual(
-                (root / "skills" / skill / PROJECTED_REFERENCE).read_bytes(),
-                raw,
-            )
+        for relative in projected_paths(root):
+            target = root / relative
+            expected_name = target.name
+            if expected_name == PROJECTED_REFERENCE.name:
+                expected = raw
+            elif expected_name == "boundary-first-feature-authoring-v1.md":
+                expected = b"# feature authoring\n"
+            else:
+                expected = b"# proof guidance\n"
+            self.assertEqual(target.read_bytes(), expected)
 
     def test_check_reports_missing_stale_and_unexpected_projections(self) -> None:
         _, root = self.make_repository()
@@ -147,10 +342,29 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                     project_reference(root, mode=mode)
                 self.assertEqual(sentinel.read_bytes(), b"outside sentinel")
 
+    def test_invalid_late_source_preflight_performs_no_partial_write(self) -> None:
+        _, root = self.make_repository()
+        existing = root / "skills/workflow" / PROJECTED_REFERENCE
+        existing.parent.mkdir(parents=True)
+        existing.write_bytes(b"original")
+        (
+            root
+            / "specs/references/boundary-first-proof-v1.md"
+        ).unlink()
+
+        with self.assertRaisesRegex(
+            ProjectionContractError,
+            "BFR-SOURCE-MISSING.*boundary-first-proof-v1.md",
+        ):
+            project_reference(root, mode="write")
+
+        self.assertEqual(existing.read_bytes(), b"original")
+
     def test_source_parent_symlink_escape_fails_before_read(self) -> None:
         _, root = self.make_repository()
         source = root / CANONICAL_REFERENCE
-        source.unlink()
+        for resource in source.parent.iterdir():
+            resource.unlink()
         source.parent.rmdir()
         outside = self.make_outside_directory()
         (outside / CANONICAL_REFERENCE.name).write_bytes(b"outside method")
@@ -254,16 +468,12 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         required = (
             "Boundary model version: boundary-first-v1",
             "## Core dimensions",
-            "## Feature-spec boundary record",
-            "## Test-spec proof record",
             "applicable",
             "not-applicable",
             "illustration",
             "regression",
             "discovery",
             "No interaction selected:",
-            "covered",
-            "gap",
             "Structural validation",
             "Semantic review",
         )
@@ -280,6 +490,18 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         for token in forbidden:
             with self.subTest(token=token):
                 self.assertNotIn(token, text)
+
+        feature = (
+            ROOT
+            / "specs/references/boundary-first-feature-authoring-v1.md"
+        ).read_text(encoding="utf-8")
+        proof = (
+            ROOT / "specs/references/boundary-first-proof-v1.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("## Feature-spec boundary record", feature)
+        self.assertNotIn("## Test-spec proof record", feature)
+        self.assertIn("## Test-spec proof record", proof)
+        self.assertNotIn("## Feature-spec boundary record", proof)
 
 
 if __name__ == "__main__":

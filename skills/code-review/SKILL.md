@@ -135,7 +135,7 @@ Escalate to full `change.yaml` reads for forensic reconstruction, unsupported-sh
 
 ## Resource map
 
-- READ `references/boundary-first-method-v1.md` when reviewing implementation governed by an approved `boundary-first-v1` boundary record and proof map.
+- READ `references/boundary-first-method-v1.md` when approved diff-related boundary, interaction, or proof IDs are missing, stale, unknown, ambiguous, conflicting, or insufficient for review.
 - COPY `assets/material-finding.md` once per material finding.
   Fill: Finding ID, Severity, Location, Evidence, Required outcome, Safe resolution path, and needs-decision rationale when needed.
   Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.

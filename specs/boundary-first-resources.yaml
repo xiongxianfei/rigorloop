@@ -1,0 +1,29 @@
+schema_version: 1
+contract_version: boundary-first-v1
+resources:
+  - id: compact-core
+    source: specs/references/boundary-first-method-v1.md
+    target: references/boundary-first-method-v1.md
+    consumers:
+      - workflow
+      - spec
+      - spec-review
+      - plan
+      - plan-review
+      - test-spec
+      - test-spec-review
+      - implement
+      - code-review
+      - verify
+  - id: feature-authoring
+    source: specs/references/boundary-first-feature-authoring-v1.md
+    target: references/boundary-first-feature-authoring-v1.md
+    consumers:
+      - spec
+      - spec-review
+  - id: proof
+    source: specs/references/boundary-first-proof-v1.md
+    target: references/boundary-first-proof-v1.md
+    consumers:
+      - test-spec
+      - test-spec-review

@@ -101,7 +101,7 @@ Produce a verification verdict, traceability and drift assessment, validation ev
 
 ## Resource map
 
-- READ `references/boundary-first-method-v1.md` when verifying a change governed by an approved `boundary-first-v1` contract and proof map.
+- READ `references/boundary-first-method-v1.md` when the final approved boundary, interaction, or proof trace is missing, stale, unknown, ambiguous, conflicting, or insufficient for verification.
 
 ## Boundary-first method
 

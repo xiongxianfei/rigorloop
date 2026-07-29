@@ -128,7 +128,8 @@ Do not broad-search authoritative documents just to find paths. Use the project 
 
 ## Resource map
 
-- READ `references/boundary-first-method-v1.md` when reviewing a proof map governed by a `boundary-first-v1` feature spec.
+- READ `references/boundary-first-method-v1.md` when reviewing a proof map governed by a `boundary-first-v1` feature record.
+- READ `references/boundary-first-proof-v1.md` when judging proof-map completeness or proof adequacy.
 - COPY `assets/review-result-skeleton.md` when recording the review result.
   Fill: skill, review status, material findings, recording fields, review paths, blockers, immediate next stage, implementation handoff, and stop condition.
   Do not emit unfilled placeholders.

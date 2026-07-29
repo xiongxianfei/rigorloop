@@ -51,8 +51,11 @@ def copy_activation_surfaces(root: Path) -> None:
     (root / "specs" / "references").mkdir(parents=True)
     for relative in (
         Path("specs/boundary-first-activation.yaml"),
+        Path("specs/boundary-first-resources.yaml"),
         Path("specs/boundary-first-proof-model.md"),
         Path("specs/references/boundary-first-method-v1.md"),
+        Path("specs/references/boundary-first-feature-authoring-v1.md"),
+        Path("specs/references/boundary-first-proof-v1.md"),
     ):
         destination = root / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -738,6 +741,36 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 validate_activation(root)[0].code,
                 "BFR-ACTIVATION-FIELDS",
             )
+
+    def test_manifest_path_and_hash_must_match_projection_authority(self) -> None:
+        source = ROOT / "specs" / "boundary-first-activation.yaml"
+        for field, value, expected in (
+            (
+                "resource_manifest",
+                "specs/future-resources.yaml",
+                "BFR-RESOURCE-MANIFEST-PATH",
+            ),
+            (
+                "resource_manifest_sha256",
+                "0" * 64,
+                "BFR-RESOURCE-MANIFEST-HASH",
+            ),
+        ):
+            with (
+                self.subTest(field=field),
+                tempfile.TemporaryDirectory() as temporary,
+            ):
+                root = Path(temporary)
+                copy_activation_surfaces(root)
+                data = json.loads(source.read_text(encoding="utf-8"))
+                data[field] = value
+                (
+                    root / "specs" / "boundary-first-activation.yaml"
+                ).write_text(json.dumps(data), encoding="utf-8")
+                self.assertIn(
+                    expected,
+                    {issue.code for issue in validate_activation(root)},
+                )
 
     def test_active_manifest_uses_parent_inventory_and_immediate_release(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
