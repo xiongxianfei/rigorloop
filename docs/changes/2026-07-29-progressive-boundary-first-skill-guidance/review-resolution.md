@@ -27,6 +27,7 @@ Review closeout: code-review-m2-r3
 Review closeout: code-review-m2-r4
 Review closeout: code-review-m3-r1
 Review closeout: code-review-m4-r1
+Review closeout: code-review-m4-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -34,10 +35,11 @@ Review closeout: code-review-m4-r1
   `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`,
   `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`,
   `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`,
-  `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`
+  `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
+  `code-review-m4-r2`
 - Findings resolved: 28
-- Unresolved findings: 0
-- Current result: M4 code-review R1 findings are resolved and await independent R2 confirmation.
+- Unresolved findings: 2
+- Current result: M4 code-review R2 found an inaccurate historical load count and an incomplete supported-adapter resource matrix.
 
 ## Resolution Overview
 
@@ -71,6 +73,8 @@ Review closeout: code-review-m4-r1
 | CR-M4-R1-001 | accepted | resolved | Additional installed governed boundary resources now fail exact-inventory validation. |
 | CR-M4-R1-002 | accepted | resolved | Loading profiles require exact integer schema version 1 and a closed top-level shape. |
 | CR-M4-R1-003 | accepted | resolved | Evidence records reproducible baseline, candidate, and adapter-layer identities. |
+| CR-M4-R2-001 | accepted | open | Correct the pre-split downstream initial-load baseline. |
+| CR-M4-R2-002 | accepted | open | Require workflow and all requested governed resources in every supported adapter. |
 
 ## Finding Details
 
@@ -161,6 +165,32 @@ Chosen action: Add pre-split and current byte/load baselines, exact candidate id
 Rationale: Package readiness must be reproducible from accurately labelled evidence.
 Validation target: code-review-m4-r2
 Validation evidence: M4 evidence identifies the pre-split commit and resource, current source and projection inventories, reviewed and fixed commit/tree/diff identities, and normalized generated/archive/install identities for all adapters; broad smoke passes 12 checks.
+
+### code-review-m4-r2
+
+#### CR-M4-R2-001 - Historical downstream initial-load count is inaccurate
+
+Finding ID: CR-M4-R2-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Correct the comparable governed-operation baseline to one 8,318-byte initially loaded resource and explain its derivation.
+Rationale: The cited historical skill rules explicitly load the full shared reference for governed downstream work.
+Validation target: code-review-m4-r3
+Validation evidence: pending
+
+#### CR-M4-R2-002 - Supported-adapter resource matrix is incomplete
+
+Finding ID: CR-M4-R2-002
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Make workflow adapter-portable, require each requested governed skill for each supported adapter, and assert exact per-layer resource identities.
+Rationale: Report-derived portability filtering must not turn a requested all-adapter completeness check into a partial check.
+Validation target: code-review-m4-r3
+Validation evidence: pending
 
 ### code-review-m1-r1
 
