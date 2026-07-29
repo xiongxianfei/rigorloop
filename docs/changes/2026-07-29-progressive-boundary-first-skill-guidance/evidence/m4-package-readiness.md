@@ -22,6 +22,9 @@
 | R5 fixed-code commit | `dd594f95e320281ef434edb43091357e7be9ff31` |
 | R5 fixed-code tree | `bb8302de652f780c4a5ec108f564fa35abf70ad8` |
 | R5 fixed-code diff SHA-256 (`4052f86a..dd594f95`) | `c2e9151d8f8743865da8ee2df49fa4301e9e78ee1e45d7746ef1c801d745d012` |
+| R6 fixed-code commit | `cb222a0138de7cd54b210862409a23a3e968aa71` |
+| R6 fixed-code tree | `17c1641ea354ce03dbdbf0d1e9b1b42b226d7c86` |
+| R6 fixed-code diff SHA-256 (`1dd4136b..cb222a01`) | `182c0567d64a6fdcf220cc801f1e6cfdb7791519b32328b5073fd2c11efee51e` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -105,6 +108,8 @@ or duplicate explicit skill selections fail before archive or install work.
 Every recognized additive Codex, Claude, or OpenCode invocation occurrence is
 also checked across plain text, Markdown code spans, and HTML code markup, so a
 valid equivalence block cannot mask a contradictory or composed malformed form.
+After the exact block is removed, any normalized residual adapter label blocks
+portability; HTML entities are decoded before this check.
 
 ## Activation and rollback proof
 

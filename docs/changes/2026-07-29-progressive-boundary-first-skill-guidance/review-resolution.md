@@ -42,9 +42,9 @@ Review closeout: code-review-m4-r6
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
   `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`,
   `code-review-m4-r5`, `code-review-m4-r6`
-- Findings resolved: 35
-- Unresolved findings: 1
-- Current result: M4 code-review R6 found incomplete residual adapter-label closure.
+- Findings resolved: 36
+- Unresolved findings: 0
+- Current result: M4 code-review R6 finding is resolved and awaits independent R7 confirmation.
 
 ## Resolution Overview
 
@@ -85,7 +85,7 @@ Review closeout: code-review-m4-r6
 | CR-M4-R4-001 | accepted | resolved | Every recognized adapter invocation occurrence must match the approved identity, operation, argument, and case. |
 | CR-M4-R4-002 | accepted | resolved | Explicit skill-name preflight runs before archive validation. |
 | CR-M4-R5-001 | accepted | resolved | One normalized whole-body occurrence domain rejects formatting and composed invocation corruption. |
-| CR-M4-R6-001 | accepted | open | Reject every normalized residual adapter label after exact-block subtraction. |
+| CR-M4-R6-001 | accepted | resolved | HTML-normalized exact-block subtraction rejects every residual adapter label. |
 
 ## Finding Details
 
@@ -275,13 +275,13 @@ Validation evidence: Plain-text, HTML, whitespace, replacement, additive, pairwi
 
 Finding ID: CR-M4-R6-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Decode HTML, subtract the exact equivalence block, and reject every residual adapter label.
 Rationale: Candidate discovery must not depend on a verb, identity, operation, argument, or formatting already being valid.
 Validation target: code-review-m4-r7
-Validation evidence: pending
+Validation evidence: Codex, Claude, and OpenCode residual labels with alternate verbs, noun syntax, HTML, entities, wrong identity, and wrong operation all fail; all 142 adapter tests and the planned ten-skill command pass.
 
 ### code-review-m1-r1
 
