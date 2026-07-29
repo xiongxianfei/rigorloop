@@ -1240,6 +1240,77 @@ release_gate:
             errors,
         )
 
+    def test_clean_install_rejects_unknown_noncanonical_and_duplicate_selections(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "release-output"
+            version = "v0.3.6"
+            build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
+            cases = {
+                "mixed_unknown": (
+                    ("workflow", "does-not-exist"),
+                    "clean-install selected skill is unknown or has no mapped "
+                    "resources: does-not-exist",
+                ),
+                "noncanonical_case": (
+                    ("Workflow",),
+                    "clean-install selected skill is unknown or has no mapped "
+                    "resources: Workflow",
+                ),
+                "duplicate": (
+                    ("workflow", "workflow"),
+                    "clean-install selected skill repeated: workflow",
+                ),
+            }
+            for name, (skill_names, expected) in cases.items():
+                with self.subTest(name=name):
+                    errors = validate_clean_install_smoke(
+                        version,
+                        output_dir,
+                        skills_root=ROOT / "skills",
+                        skill_names=skill_names,
+                    )
+                    self.assertTrue(
+                        any(expected in error for error in errors),
+                        errors,
+                    )
+
+    def test_validate_adapters_cli_rejects_mixed_unknown_skill_selection(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "release-output"
+            version = "v0.3.6"
+            build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "validate-adapters.py"),
+                    "--root",
+                    str(output_dir),
+                    "--version",
+                    version,
+                    "--clean-install-smoke",
+                    "--skill",
+                    "workflow",
+                    "--skill",
+                    "does-not-exist",
+                ],
+                capture_output=True,
+                text=True,
+                cwd=ROOT,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "clean-install selected skill is unknown or has no mapped resources: "
+            "does-not-exist",
+            result.stdout,
+        )
+        self.assertNotIn("validated generated adapter archives", result.stdout)
+
     def test_boundary_first_archive_drift_reports_exact_layer_and_hashes(self) -> None:
         cases = (
             ("workflow", "references/boundary-first-method-v1.md"),
@@ -1866,6 +1937,58 @@ release_gate:
 
         self.assertTrue(report.portable, report.reason)
         self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
+
+    def test_workflow_invocation_equivalence_mutations_are_not_portable(
+        self,
+    ) -> None:
+        mutations = {
+            "codex_skill": ("$workflow auto: <argument>", "$broken auto: <argument>"),
+            "claude_skill": ("/workflow auto: <argument>", "/broken auto: <argument>"),
+            "opencode_skill": (
+                "installed `workflow` skill with `auto: <argument>`",
+                "installed `broken` skill with `auto: <argument>`",
+            ),
+            "shared_argument": (
+                "Here `<argument>` is `<target-stage>`, `status`, or `off`.",
+                "Here `<argument>` is `<stage>`, `status`, or `off`.",
+            ),
+        }
+        source = ROOT / "skills" / "workflow" / "SKILL.md"
+        source_text = source.read_text(encoding="utf-8")
+        for name, (old, new) in mutations.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "workflow"
+                shutil.copytree(source.parent, target)
+                skill_file = target / "SKILL.md"
+                self.assertIn(old, source_text)
+                skill_file.write_text(
+                    source_text.replace(old, new, 1),
+                    encoding="utf-8",
+                )
+
+                report = evaluate_skill(target)
+
+                self.assertEqual(report.included_adapters, ("codex",))
+                self.assertIn("Codex-specific $skill invocation", report.reason)
+
+    def test_unrelated_equivalence_prose_does_not_portabilize_dollar_skill(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "codex-dollar-skill"
+            shutil.copytree(self.fixture("codex-dollar-skill"), target)
+            skill_file = target / "SKILL.md"
+            skill_file.write_text(
+                skill_file.read_text(encoding="utf-8")
+                + "\nAdapter invocation equivalents: Codex uses, Claude uses, "
+                + "and opencode invokes.\n",
+                encoding="utf-8",
+            )
+
+            report = evaluate_skill(target)
+
+        self.assertEqual(report.included_adapters, ("codex",))
+        self.assertIn("Codex-specific $skill invocation", report.reason)
 
     def test_partial_portability_records_exact_adapter_decision(self) -> None:
         report = evaluate_skill(self.fixture("partial-portability"))
