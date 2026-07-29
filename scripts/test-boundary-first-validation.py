@@ -797,6 +797,21 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             )
             self.assertIn("boundary-first-v1", issue.expected)
 
+    def test_activation_preserves_missing_manifest_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            (root / "specs/boundary-first-resources.yaml").unlink()
+
+            issue = validate_activation(root)[0]
+
+            self.assertEqual(issue.code, "BFR-MANIFEST-MISSING")
+            self.assertEqual(
+                issue.path,
+                "specs/boundary-first-resources.yaml",
+            )
+            self.assertEqual(issue.expected, "existing resource manifest")
+
     def test_activation_preserves_missing_family_source_identity(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

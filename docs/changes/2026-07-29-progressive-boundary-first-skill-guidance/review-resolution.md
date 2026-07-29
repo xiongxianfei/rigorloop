@@ -121,7 +121,8 @@ Owning stage: review-resolution
 Chosen action: Structure missing-source and path errors, use one bounded CLI formatter, and prove activation and CLI family-resource failures.
 Rationale: Fixing one manifest-version case does not satisfy PBS-R037 across public and sibling validation paths.
 Validation target: code-review-m1-r3
-Validation evidence: Direct CLI resource-version diagnostics and activation missing/symlink family-source tests pass in the 21-test projection and 60-test activation suites; independent R3 confirmation remains pending.
+Validation target: code-review-m1-r4
+Validation evidence: Family-resource and missing-manifest CLI and activation diagnostics pass in the 24-test projection and 61-test activation suites; independent R4 confirmation remains pending.
 
 ### code-review-m1-r3
 
@@ -135,7 +136,7 @@ Owning stage: review-resolution
 Chosen action: Restore snapshots for catchable in-process interruptions before preserving the original exception.
 Rationale: T2 requires coherent recovery from an interrupted projection, not only `OSError`.
 Validation target: code-review-m1-r4
-Validation evidence: pending correction and independent rereview
+Validation evidence: Both pre-existing and initially absent target-set interruption cases restore exactly, re-raise `KeyboardInterrupt`, and retry successfully in the 24-test projection suite; independent R4 confirmation remains pending.
 
 #### CR-M1-R3-002 - Projection code retains a parallel resource inventory
 
@@ -147,7 +148,7 @@ Owning stage: review-resolution
 Chosen action: Remove the duplicated source, target, and consumer matrix and validate manifest structure through independent invariants.
 Rationale: The ADR assigns sole declarative projection authority to the manifest.
 Validation target: code-review-m1-r4
-Validation evidence: pending correction and independent rereview
+Validation evidence: The source-level no-parallel-matrix regression and approved manifest-identity mutations pass in the 24-test projection suite; independent R4 confirmation remains pending.
 
 #### CR-M1-R3-003 - Missing-manifest diagnostics lose path and expectation
 
@@ -159,7 +160,7 @@ Owning stage: review-resolution
 Chosen action: Raise a structured missing-manifest error and prove exact CLI and activation propagation.
 Rationale: PBS-R037 applies to required manifest absence as well as family resources.
 Validation target: code-review-m1-r4
-Validation evidence: pending correction and independent rereview
+Validation evidence: Missing-manifest CLI and activation regressions preserve exact path and expected condition in the 24-test projection and 61-test activation suites; independent R4 confirmation remains pending.
 
 ### proposal-review-r1
 

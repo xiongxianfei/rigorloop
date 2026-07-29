@@ -26,9 +26,9 @@ Milestone M1 replaces the one-reference projection with the reviewed three-resou
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-boundary-first-reference.py` | pass, 21 tests |
+| `python scripts/test-boundary-first-reference.py` | pass, 24 tests |
 | `python scripts/project-boundary-first-reference.py --check` | pass, 14 projections |
-| `python scripts/test-boundary-first-validation.py` | pass, 60 tests |
+| `python scripts/test-boundary-first-validation.py` | pass, 61 tests |
 | `python scripts/validate-boundary-first.py --check` | pass |
 | `python scripts/test-skill-validator.py` | pass, 272 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skill files |
@@ -57,3 +57,11 @@ The full M1 command set passed after these corrections and is awaiting independe
 - `CR-M1-R2-002` and the remaining `CR-M1-R1-004` path: missing family sources and symlinks now carry structured identity through activation; the projection CLI prints bounded check, path, message, offending value, and expectation fields.
 
 The full M1 command set passed after these corrections and is awaiting independent R3 review.
+
+## R3 finding corrections
+
+- `CR-M1-R3-001` and the reopened `CR-M1-R1-003`: the write transaction restores both pre-existing bytes and initially absent targets before propagating a catchable `KeyboardInterrupt`, then retries deterministically.
+- `CR-M1-R3-002`: the projection module no longer restates the complete source, target, and consumer matrix. The manifest determines projection, while one approved raw manifest identity independently rejects contract drift after structural and closed-vocabulary checks.
+- `CR-M1-R3-003` and the remaining diagnostic paths from `CR-M1-R1-004` and `CR-M1-R2-002`: a missing manifest now reports its exact repository-relative path and expected condition through both the public projection CLI and activation validation.
+
+The full M1 command set passed after these corrections and is awaiting independent R4 review.

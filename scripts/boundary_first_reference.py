@@ -10,6 +10,9 @@ from typing import Mapping
 
 METHOD_VERSION = "boundary-first-v1"
 RESOURCE_MANIFEST = Path("specs/boundary-first-resources.yaml")
+RESOURCE_MANIFEST_SHA256 = (
+    "6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113"
+)
 CANONICAL_REFERENCE = Path(
     "specs/references/boundary-first-method-v1.md"
 )
@@ -27,28 +30,6 @@ GOVERNED_SKILLS = (
     "verify",
 )
 RESOURCE_IDS = ("compact-core", "feature-authoring", "proof")
-RESOURCE_CONTRACTS = (
-    (
-        "compact-core",
-        Path("specs/references/boundary-first-method-v1.md"),
-        Path("references/boundary-first-method-v1.md"),
-        GOVERNED_SKILLS,
-    ),
-    (
-        "feature-authoring",
-        Path(
-            "specs/references/boundary-first-feature-authoring-v1.md"
-        ),
-        Path("references/boundary-first-feature-authoring-v1.md"),
-        ("spec", "spec-review"),
-    ),
-    (
-        "proof",
-        Path("specs/references/boundary-first-proof-v1.md"),
-        Path("references/boundary-first-proof-v1.md"),
-        ("test-spec", "test-spec-review"),
-    ),
-)
 PROJECTION_MODES = frozenset({"check", "write"})
 _TOP_LEVEL_FIELDS = frozenset(
     {"schema_version", "contract_version", "resources"}
@@ -297,7 +278,10 @@ def load_resource_manifest(root: Path) -> ResourceManifest:
     manifest_path = _repository_path(repository_root, RESOURCE_MANIFEST)
     if not manifest_path.is_file():
         raise ProjectionContractError(
-            f"BFR-MANIFEST-MISSING: {RESOURCE_MANIFEST.as_posix()}"
+            "BFR-MANIFEST-MISSING",
+            path=RESOURCE_MANIFEST.as_posix(),
+            message="resource manifest is missing",
+            expected="existing resource manifest",
         )
     raw = manifest_path.read_bytes()
     try:
@@ -397,27 +381,20 @@ def load_resource_manifest(root: Path) -> ResourceManifest:
             )
         )
 
-    actual_contract = tuple(
-        (
-            resource.resource_id,
-            resource.source,
-            resource.target,
-            resource.consumers,
-        )
-        for resource in resources
-    )
-    if actual_contract != RESOURCE_CONTRACTS:
+    manifest_sha256 = raw_sha256(raw)
+    if manifest_sha256 != RESOURCE_MANIFEST_SHA256:
         raise _manifest_error(
-            "RESOURCE-TUPLE",
-            "resource source, target, or consumer tuple differs from "
-            "the closed boundary-first-v1 contract",
+            "IDENTITY",
+            "resource manifest differs from the approved "
+            "boundary-first-v1 identity",
+            expected=RESOURCE_MANIFEST_SHA256,
         )
 
     return ResourceManifest(
         schema_version=1,
         contract_version=METHOD_VERSION,
         resources=tuple(resources),
-        sha256=raw_sha256(raw),
+        sha256=manifest_sha256,
     )
 
 
@@ -648,7 +625,7 @@ def project_reference(root: Path, *, mode: str) -> ProjectionResult:
                 target = _repository_path(repository_root, relative)
                 target.parent.mkdir(parents=True, exist_ok=True)
                 _write_target_bytes(target, data)
-        except OSError as exc:
+        except BaseException as exc:
             restore_errors = _restore_targets(
                 repository_root, snapshots
             )
@@ -659,12 +636,17 @@ def project_reference(root: Path, *, mode: str) -> ProjectionResult:
                     message="projection write failed and restoration was incomplete",
                     expected="all prior target bytes restored",
                 ) from exc
-            raise ProjectionContractError(
-                "BFR-PROJECTION-WRITE",
-                path=relative.as_posix(),
-                message="projection write failed; prior target state restored",
-                expected="successful complete projection write",
-            ) from exc
+            if isinstance(exc, OSError):
+                raise ProjectionContractError(
+                    "BFR-PROJECTION-WRITE",
+                    path=relative.as_posix(),
+                    message=(
+                        "projection write failed; "
+                        "prior target state restored"
+                    ),
+                    expected="successful complete projection write",
+                ) from exc
+            raise
 
     records: dict[str, str] = {}
     errors = list(preflight_errors)
