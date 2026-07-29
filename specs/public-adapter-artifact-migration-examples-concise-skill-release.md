@@ -28,7 +28,7 @@ This spec also defines the conditional handling for separating synthetic skill-v
 - `adapter artifact metadata`: tracked YAML release evidence under `docs/reports/adapter-artifacts/releases/<version>.yaml`.
 - `adapter support matrix`: tracked adapter support metadata under `dist/adapters/manifest.yaml`.
 - `install-contract README`: `dist/adapters/README.md`, the repository-tree surface that explains active adapter installation paths.
-- `skill-validator proof pack`: the retained `docs/changes/0001-skill-validator/` example, fixture, and historical proof pack.
+- `skill-validator fixture`: a synthetic validator input owned under `tests/fixtures/`.
 - `artifact-location map`: the project-local artifact placement table in `docs/workflows.md`.
 - `release-critical scope`: work that must complete before the target release can publish.
 - `deferable scope`: related work that may be included only when it does not block release readiness.
@@ -63,19 +63,19 @@ When the release omits `rigorloop-adapters-v0.1.2.tar.gz`
 Then release validation still passes if metadata records `combined_artifact.required: false`
 And all required per-adapter archive evidence is valid.
 
-### Example E5: unsafe skill-validator move is deferred
+### Example E5: skill-validator fixtures are test-owned
 
-Given validators or selectors still depend on `docs/changes/0001-skill-validator/`
-When the release slice cannot safely update those references
-Then the proof pack remains at the old path with explicit retained-fixture rationale
-And the release may proceed with a tracked follow-up.
+Given validators or selectors need a synthetic skill-validator case
+When the release slice updates that behavior
+Then the case lives under `tests/fixtures/`
+And no production-path exception is retained.
 
 ### Example E6: safe skill-validator move updates references
 
 Given a skill-validator case is purely synthetic and carries no historical proof
 When that case moves under `tests/fixtures/`
 Then repository tests consume it as fixture data
-And the retained historical proof pack remains identifiable at its existing path.
+And historical implementation evidence remains available through Git history.
 
 ### Example E7: skill simplification stays bounded
 
@@ -229,19 +229,19 @@ R62. The first untracking release gate MUST fail when `dist/adapters/manifest.ya
 
 R63. Release validation output SHOULD summarize canonical skill validation, tracked adapter validation when applicable, archive validation, artifact metadata validation, token-cost validation, release notes validation, and security-sensitive scan results.
 
-### Skill-validator proof pack and fixtures
+### Skill-validator fixtures
 
-R64. Purely synthetic skill-validator cases MAY move from `docs/changes/0001-skill-validator/` to `tests/fixtures/` only when they carry no historical proof and all references can be updated safely in the same implementation slice.
+R64. Purely synthetic skill-validator cases MUST live under `tests/fixtures/`, and removal of an old production-path fixture MUST update all current references in the same implementation slice.
 
-R65. If the skill-validator proof pack moves, references to the old path in validation selection, lifecycle validation, tests, docs, and release guidance MUST be updated in the same slice.
+R65. Removing a production-path fixture MUST update references in validation selection, lifecycle validation, tests, docs, and release guidance in the same slice.
 
 R66. Test-only fixture data MUST remain under `tests/fixtures/` and MUST NOT be presented as active lifecycle state.
 
 R67. If synthetic cases move, selector routing and lifecycle validation MUST apply the repository's existing test-fixture behavior rather than creating a new documentation example category.
 
-R68. If the skill-validator proof pack cannot move safely in the release slice, the implementation MUST retain the old path with explicit retained-fixture rationale in a tracked or review-visible surface.
+R68. If a production-path fixture cannot be removed safely in a release slice, that release MAY defer removal without making the path a permanent fixture contract.
 
-R69. Retaining the old skill-validator proof pack path with rationale MUST NOT block the archive-introduction release.
+R69. Deferring unrelated fixture cleanup MUST NOT block the archive-introduction release.
 
 ### Artifact-location guide and skill simplification
 
@@ -298,7 +298,7 @@ Inputs:
 - adapter artifact metadata under `docs/reports/adapter-artifacts/releases/<version>.yaml`;
 - release notes under `docs/releases/<version>/release-notes.md`;
 - token-cost reports under `docs/reports/token-cost/releases/<version>.md` and `.yaml`;
-- optional moved or retained skill-validator proof pack;
+- test-owned skill-validator fixtures;
 - project artifact-location guide under `docs/workflows.md`.
 
 Outputs:
@@ -310,7 +310,7 @@ Outputs:
 - structured release validation result from `scripts/validate-release.py`;
 - token-cost release evidence;
 - updated install guidance;
-- moved example proof pack or retained-fixture rationale.
+- test-owned fixture alignment.
 
 ## State and invariants
 
@@ -332,7 +332,7 @@ Outputs:
 - If generated archives omit adapter output for a supported adapter, release validation MUST fail.
 - If archive generation fails, the release MUST keep the prior repository-tree install model and defer archive publication.
 - If `dist/adapters/**/skills` is removed during the archive-introduction release without an approved compatibility exception, release validation MUST fail.
-- If the skill-validator proof pack move breaks validators or selectors, the move MUST be reverted or deferred with retained-fixture rationale.
+- If fixture cleanup breaks validators or selectors, release readiness MUST stop until the changed slice is internally consistent.
 - If public skill simplification removes safety-critical behavior, the release slice MUST restore the behavior or stop before release readiness.
 - If token-cost dynamic benchmark tooling is unavailable for a final public release, the existing token-cost waiver contract governs whether release may proceed.
 
@@ -395,8 +395,8 @@ No end-user UI is introduced. Documentation UX requirements are:
 2. A maintainer wants same-release archive introduction and untracking: an accepted policy exception must record why the compatibility window is shortened.
 3. One adapter archive validates and another fails: the release is not ready.
 4. The combined archive is omitted: the release can proceed when per-adapter archives pass and metadata marks the combined archive as not required.
-5. The skill-validator proof pack cannot move safely: retain it with rationale and do not block archive publication.
-6. The proof pack moves but one selector still treats it as active lifecycle state: validation must fail or the release must defer the move.
+5. Unrelated fixture cleanup cannot complete safely: defer it from the archive release without creating a permanent exception.
+6. A fixture moves but one selector still treats it as active lifecycle state: validation must fail until the slice is internally consistent.
 7. Token-cost static measurement passes but dynamic metadata uses `.codex/skills/`: token-cost validation must fail.
 8. Release notes mention archives but omit checksums or metadata location: release validation must fail.
 9. Archive metadata records a source commit different from the release commit under validation: release validation must fail unless a reviewed release policy permits that mismatch.
@@ -409,7 +409,7 @@ No end-user UI is introduced. Documentation UX requirements are:
 - Do not rewrite Git history to remove previously committed generated skill copies.
 - Do not make `.codex/skills/` a public adapter install source.
 - Do not require a combined all-adapters archive.
-- Do not make skill-validator proof pack movement a hard blocker for archive publication.
+- Do not make unrelated fixture cleanup a hard blocker for archive publication.
 - Do not perform broad progressive-loading optimization as part of the release-critical archive slice.
 - Do not remove safety-critical skill behavior to reduce token cost.
 - Do not define implementation internals beyond public paths, release artifacts, validation behavior, and metadata contracts.
@@ -423,7 +423,7 @@ No end-user UI is introduced. Documentation UX requirements are:
 - Release notes explain the archive-introduction release and retained compatibility path.
 - Token-cost Markdown and YAML reports exist for `v0.1.2` and use canonical `skills/` plus public adapter output rather than `.codex/skills/`.
 - `bash scripts/release-verify.sh v0.1.2` passes before publication.
-- The skill-validator proof pack is either moved with references updated or retained with explicit rationale and follow-up.
+- Synthetic skill-validator inputs are test-owned whenever fixture cleanup is included.
 - Any public skill simplification is limited to artifact-location lookup wording, portable defaults, and obsolete generated-output references.
 - A later untracking release validates that generated public adapter skill bodies are no longer tracked while manifest and README remain tracked.
 

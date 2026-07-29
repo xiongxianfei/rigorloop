@@ -616,7 +616,7 @@ Outputs:
 - Rollback may remove the new trigger guidance while keeping already-authored upstream review records as valid historical artifacts.
 - Existing historical review skills and generated adapter output do not need migration until the implementation slice updates canonical skill behavior.
 - Moving examples out of active lifecycle directories is a path migration for illustrative fixtures only; it must update tests, selectors, validators, and guidance that reference those paths.
-- If `docs/changes/0001-skill-validator/` is retained temporarily because validator fixtures still depend on it, the implementation must record explicit rationale and follow-up ownership.
+- Synthetic validator cases belong under `tests/fixtures/` and must not require a retained production-path exception.
 
 ## Observability
 
@@ -680,7 +680,7 @@ Test-fixture coverage MUST NOT make selector or lifecycle validation scan active
 22. A no-material formal review reports `Review resolution: not-required`.
 23. A formal review skill contains a standardized `Status sync:` field in the first slice; static validation fails.
 24. A temporary test repository accidentally contributes lifecycle state to the real repository; fixture isolation is wrong.
-25. `docs/changes/0001-skill-validator/` cannot move in the first slice because a validator fixture path still depends on it; the implementation records explicit rationale and follow-up ownership.
+25. A validator case still depends on a deleted production path; the same slice updates it to a test-owned fixture.
 26. An isolated clean `spec-review` with no existing change root creates `change.yaml`, `review-log.md`, and `reviews/spec-review-r1.md`; `review-resolution.md` is absent.
 27. An isolated clean review with an ambiguous reviewed topic or change ID reports `Recording status: blocked` instead of inventing an unrelated change root.
 
@@ -741,7 +741,7 @@ Test-fixture coverage MUST NOT make selector or lifecycle validation scan active
 ## Open questions
 
 - Whether the full change-ID and `Location` rules should stay directly in this spec or move to a small linked formal review recording reference. This does not block spec review because the owning surface requirement is defined.
-- Whether `docs/changes/0001-skill-validator/` can move in the first implementation slice or must be retained temporarily with fixture-coupling rationale. This does not block spec review because both acceptable outcomes are defined.
+- None for fixture ownership; synthetic cases are test-owned.
 - Which downstream status-settlement questions should be answered in a follow-up proposal versus a later implementation plan. This does not block spec review because downstream settlement is excluded from the first implementation slice.
 - Whether clean receipt examples should be validated as fixtures or kept as purely documentation examples. This does not block spec review because the normative receipt contract lives in this spec.
 

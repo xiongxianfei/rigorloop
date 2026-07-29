@@ -3443,16 +3443,6 @@ Ready for proposal-review.
         self.assertTrue(result.blocking_findings)
         self.assertIn("generated output path must not be treated as authored source of truth", combined_messages)
 
-    def test_retained_skill_validator_fixture_readme_documents_non_active_status(self) -> None:
-        fixture_readme = ROOT / "docs" / "changes" / "0001-skill-validator" / "README.md"
-        text = fixture_readme.read_text(encoding="utf-8")
-
-        self.assertIn("retained validator fixture", text)
-        self.assertIn("not an active change root", text)
-        self.assertIn("not the universal template", text)
-        self.assertIn("does not block the v0.1.2 archive-introduction release", text)
-        self.assertIn("tests/fixtures/", text)
-
     def test_dist_adapters_generated_output_path_is_rejected(self) -> None:
         fixture_root = copy_fixture("invalid-generated-source")
         self.addCleanupTree(fixture_root)

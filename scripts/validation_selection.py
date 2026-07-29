@@ -898,10 +898,11 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
     affected_roots: set[str] = set()
     blocking_results: list[dict[str, str]] = []
     blocking_results.extend(normalization_blocks)
+    preflight_context = request.preflight_context or _build_preflight_context(repo_root)
     preflight_results = _preflight_results(
         changed_paths,
         repo_root=repo_root,
-        preflight_context=request.preflight_context,
+        preflight_context=preflight_context,
     )
     blocking_results.extend(
         result for result in preflight_results if result.get("result") == "blocked"
@@ -934,6 +935,9 @@ def select_validation(request: SelectionRequest) -> SelectionResult:
             release_versions=release_versions,
             repo_root=repo_root,
             changed_sections_by_path=changed_sections_by_path,
+            tracked_deletion=(
+                path in preflight_context.tracked_paths and not (repo_root / path).exists()
+            ),
         )
 
     if _readme_marker_validation_required(tuple(changed_paths), repo_root=repo_root):
@@ -1265,7 +1269,28 @@ def _apply_path_selection(
     release_versions: set[str],
     repo_root: Path,
     changed_sections_by_path: dict[str, tuple[str, ...]],
+    tracked_deletion: bool,
 ) -> None:
+    if tracked_deletion and path.startswith("docs/changes/"):
+        _add_check(
+            selected,
+            "artifact_lifecycle.regression",
+            "Deleted tracked change-local artifacts require lifecycle regression coverage without validating missing paths.",
+        )
+        if category == "review-artifacts":
+            _add_check(
+                selected,
+                "review_artifacts.regression",
+                "Deleted tracked review artifacts require review-artifact regression coverage.",
+            )
+        if category == "change-metadata":
+            _add_check(
+                selected,
+                "change_metadata.regression",
+                "Deleted tracked change metadata requires change-metadata regression coverage.",
+            )
+        return
+
     if _is_boundary_first_surface(path):
         _add_check(
             selected,
@@ -2303,8 +2328,6 @@ def _path_category(path: str) -> str | None:
         return "living-reference/project-map"
     if path == "docs/follow-ups.md":
         return "follow-up-register"
-    if path == "docs/changes/0001-skill-validator/README.md":
-        return "retained-change-fixture"
     if path.startswith("docs/changes/") and len(parts) >= 4:
         if parts[3] == "change.yaml":
             return "change-metadata"

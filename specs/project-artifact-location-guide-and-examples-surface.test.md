@@ -195,19 +195,17 @@ Broad smoke is not required by this test spec. Use milestone-specific validation
 - Failure proves: fixture isolation is incomplete.
 - Automation location: `python scripts/test-review-artifact-validator.py`, `python scripts/test-artifact-lifecycle-validator.py`
 
-### T8. Retained skill-validator fixture either moves safely or carries rationale
+### T8. Skill-validator fixtures are test-owned
 
 - Covers: `R7`-`R8a`, `R11d`, `E7`, `EC6`, `EC7`
 - Level: integration, manual
-- Fixture/setup: `docs/changes/0001-skill-validator/**`, optional synthetic cases under `tests/fixtures/**`, validators and references that cite either path
+- Fixture/setup: synthetic cases under `tests/fixtures/**` and validators that consume them
 - Steps:
-  - Search references to `docs/changes/0001-skill-validator/` before deciding whether to move it.
-  - If moved, assert references, tests, validators, selectors, and contributor-facing guidance are updated in the same slice.
-  - If retained, assert a tracked or review-visible rationale says it is a retained validator fixture and historical proof pack, not an active change root or universal template.
-  - Assert retained rationale identifies `tests/fixtures/` as the destination for purely synthetic cases.
-  - Validate retained or moved metadata with the relevant validators.
-- Expected result: the active-looking fixture is either safely moved or visibly explained.
-- Failure proves: contributors and validators can mistake the fixture for current lifecycle state or a universal minimum artifact pack.
+  - Assert synthetic cases and their artifact references remain under `tests/fixtures/`.
+  - Assert no selector or validator has a special production-path fixture category.
+  - Validate the test-owned metadata with the relevant validators.
+- Expected result: validator inputs are test-owned and cannot resemble active project state.
+- Failure proves: contributors and validators can mistake synthetic input for current lifecycle state.
 - Automation location: `python scripts/test-change-metadata-validator.py`, `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/test-select-validation.py`, manual reference review.
 
 ### T9. Generated output is checked after canonical skill changes
@@ -233,7 +231,7 @@ Broad smoke is not required by this test spec. Use milestone-specific validation
 - Fixture/setup: selector, lifecycle, review-artifact, change-metadata, skill, and adapter validation scripts
 - Steps:
   - Run all milestone-specific validator test commands named in the active plan for the touched milestone.
-  - Confirm examples routing, lifecycle behavior, formal-review example behavior, retained-fixture outcome, and skill lookup wording are covered by repository-owned tests or explicit manual checks.
+  - Confirm deleted-path routing, lifecycle behavior, formal-review fixture behavior, test-owned skill-validator fixtures, and skill lookup wording are covered by repository-owned tests or explicit manual checks.
   - Use `bash scripts/ci.sh --mode explicit --path <changed-path>...` when selected-check execution is required for the changed path set.
 - Expected result: every acceptance criterion has executable or explicit manual proof.
 - Failure proves: the artifact-location map can pass by documentation alone without validation coverage.
@@ -296,7 +294,6 @@ Broad smoke is not required by this test spec. Use milestone-specific validation
 
 - `docs/workflows.md` is the contract surface for the artifact-location map.
 - Temporary plan-shaped and review-shaped cases are test fixtures.
-- `docs/changes/0001-skill-validator/**` is the retained fixture or migration candidate for the fixture-rationale path.
 - Temporary validator fixtures may be added under `tests/fixtures/**` when behavior needs reusable negative coverage.
 - The change-local root for this initiative is `docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/`.
 
@@ -308,8 +305,7 @@ Use temporary directories for selector, lifecycle, review-artifact, or change-me
 
 ## Migration or compatibility tests
 
-- Moving `docs/changes/0001-skill-validator/**` requires same-slice reference, selector, validator, test, and guidance updates.
-- Retaining `docs/changes/0001-skill-validator/**` requires durable retained-fixture rationale and validation proof.
+- Removing a production-path fixture requires same-slice reference, selector, validator, test, and guidance updates.
 - Existing downstream project custom paths are verified by preserving map-before-default wording rather than by building a synthetic downstream project.
 - Generated public adapter compatibility is verified through adapter build/check/validation and distribution tests.
 
@@ -340,7 +336,7 @@ No runtime performance checks are needed. Token-efficiency is covered by static/
 - [ ] Public skills use concise lookup wording and short local defaults.
 - [ ] Public skills do not expose maintainer-only validator or adapter internals where portable wording is enough.
 - [ ] No parallel documentation examples surface remains.
-- [ ] `docs/changes/0001-skill-validator/**` is either safely moved or clearly retained with rationale.
+- [ ] Synthetic validator cases live only under test-owned fixture paths.
 - [ ] Generated adapter output is current after canonical skill edits.
 - [ ] Plan, plan index, change metadata, review log, and review-resolution remain synchronized.
 

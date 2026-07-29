@@ -104,7 +104,6 @@ SINGLE_SOURCE_WORKFLOW_STATE_PLAN = (
 SKILL_CONTRACT_WORKFLOW_SPEC = ROOT / "specs" / "rigorloop-workflow.md"
 SKILL_CONTRACT_WORKFLOWS_DOC = ROOT / "docs" / "workflows.md"
 SKILL_CONTRACT_AGENTS = ROOT / "AGENTS.md"
-SKILL_VALIDATOR_FIXTURE_README = ROOT / "docs" / "changes" / "0001-skill-validator" / "README.md"
 IMPLEMENTATION_AUTOPROGRESSION_CHANGE_ROOT = (
     ROOT
     / "docs"
@@ -6949,23 +6948,6 @@ and result format.
             mismatch_errors,
         )
 
-    def test_project_artifact_location_m1_retained_fixture_has_durable_rationale(self) -> None:
-        rationale = SKILL_VALIDATOR_FIXTURE_README.read_text(encoding="utf-8")
-
-        required_terms = [
-            "retained validator fixture",
-            "historical proof pack",
-            "not an active change root",
-            "not the universal template",
-            "does not block the v0.1.2 archive-introduction release",
-            "M4 retention decision",
-            "tests, validators, compatibility references, or historical proof references",
-            "tests/fixtures/",
-        ]
-        for term in required_terms:
-            with self.subTest(term=term):
-                self.assertIn(term, rationale)
-
     @unittest.skip("superseded for governed changes by CP-030 change-local authority proof")
     def test_project_artifact_location_m2_stage_skills_share_lookup_wording(self) -> None:
         required_terms = [
@@ -6992,7 +6974,6 @@ and result format.
     def test_project_artifact_location_m2_stage_skills_avoid_path_table_duplication(self) -> None:
         forbidden_terms = [
             "| Artifact type | Default location | Owning skill |",
-            "docs/changes/0001-skill-validator",
         ]
 
         for skill_name in PROJECT_ARTIFACT_LOOKUP_SKILLS:

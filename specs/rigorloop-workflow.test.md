@@ -131,7 +131,7 @@ This alignment requires `test-spec-review` before M1 relies on it.
 - Formal reviews with no material findings and no detailed-record trigger may settle in the reviewed artifact without empty review artifacts: `T27`
 - Formal reviews with no material findings but a stage-owned non-approval outcome still create an indexed detailed review record without requiring empty `review-resolution.md`: `T27`
 - Material upstream formal review findings open a review-record root before fixes proceed: `T27`
-- The `docs/changes/0001-skill-validator/` example remains richer than the universal minimum: `T15`
+- Synthetic change-metadata fixtures remain test-owned and do not define the universal pack: `T15`
 - Approved legacy top-level explain artifacts remain valid until retired: `T3`, `T16`
 - Historical undated or numbered change roots remain valid legacy records, but new workflow-managed change roots use `YYYY-MM-DD-slug` unless project-local guidance explicitly customizes the convention: `T39`
 - `spec-review` and `plan-review` preserve immediate handoff versus downstream readiness: `T24`
@@ -424,22 +424,21 @@ This alignment requires `test-spec-review` before M1 relies on it.
 - Automation location:
   - Manual workflow review during M4.
 
-### T15. Golden-path skill-validator artifacts remain coherent
+### T15. Skill-validator metadata fixtures remain test-owned
 
 - Covers: `R13`, `R14`, `R14a`, `R14b`, `R25f`, `R25g`, `E1`
 - Level: integration
 - Fixture/setup:
-  - `docs/changes/0001-skill-validator/`
-  - `docs/changes/0001-skill-validator/change.yaml`
-  - top-level proposal/spec/architecture artifacts
+  - `tests/fixtures/change-metadata/valid-basic/change.yaml`
+  - invalid change-metadata fixtures
 - Steps:
-  - Confirm the example artifact directory contains proposal, spec, plan, test-spec, verify report, explain-change, and `change.yaml`.
-  - Run `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml`.
-  - Confirm repository guidance does not present the `0001` artifact set as the minimum pack for every non-trivial change.
+  - Run `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml`.
+  - Confirm synthetic fixture paths remain under `tests/fixtures/`.
+  - Confirm repository guidance does not present fixture artifact mappings as the minimum pack for every non-trivial change.
 - Expected result:
-  - The proof-of-value example remains coherent and clearly richer than the ordinary baseline pack.
+  - Metadata fixtures remain coherent, test-owned, and separate from real change roots.
 - Failure proves:
-  - The advertised golden path is incomplete, invalid, or misleading.
+  - Synthetic validation data can be mistaken for project lifecycle state.
 - Automation location:
   - Existing metadata validation and manual artifact review.
 
@@ -1065,7 +1064,6 @@ This alignment requires `test-spec-review` before M1 relies on it.
   - `tests/fixtures/change-metadata/`
   - `tests/fixtures/artifact-lifecycle/`
   - `tests/fixtures/review-artifacts/` when review-resolution fixtures are added
-  - `docs/changes/0001-skill-validator/`
 - New active change-local artifacts when created:
   - `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/change.yaml`
   - `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/explain-change.md`

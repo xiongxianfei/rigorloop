@@ -160,7 +160,7 @@ Outputs:
 1. A trivial fast-lane change may still omit `docs/changes/<change-id>/` under the approved fast-lane rule.
 2. New ordinary non-trivial work defaults to `docs/changes/<change-id>/explain-change.md` for durable reasoning unless an approved equivalent surface applies.
 3. A non-trivial change with conditional standalone `review-resolution.md` or `verify-report.md` requirements must still carry the baseline pack in addition to those conditional artifacts.
-4. A skill update must not imply that the rich `0001-skill-validator` pack is the universal minimum for all non-trivial work.
+4. A skill update must not imply that synthetic metadata fixtures are real change roots or universal artifact packs.
 5. Generated `.codex/skills/` output must stay synchronized after the canonical skill edits.
 6. The feature may remain stacked on the docs-changes policy branch until that base change merges, but the resulting contract should not depend on long-term stacked-branch state.
 

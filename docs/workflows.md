@@ -423,7 +423,7 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - `Closeout status: closed` means every material finding has a final disposition, `review-log.md` lists no open findings, and the required action, rationale, follow-up, and validation evidence records for that disposition exist.
 - Keep PR and explain-change review summaries concise: summarize counts by disposition and link `review-resolution.md` instead of duplicating detailed review records.
 - Approved legacy top-level artifacts under `docs/explain/` remain valid durable reasoning surfaces until they are migrated or retired.
-- `docs/changes/0001-skill-validator/` is retained as a rich validator fixture and historical proof pack, not the universal minimum for every non-trivial change.
+- Synthetic validator inputs belong under `tests/fixtures/`, not under `docs/changes/`.
 
 ## Autoprogression
 
