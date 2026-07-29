@@ -29,6 +29,10 @@ Read:
 
 Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, arc42 section numbers, ADR IDs, diagram paths, file paths, and line citations. Expand from targeted sections only when the narrower evidence is insufficient.
 
+## Change-record review settlement
+
+Before settlement, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Resolve every reviewed architecture or ADR entry by the artifact ID, `kind`, and normalized `path` named by the review; never select by kind alone. Require `review-required` and complete authoring evidence. Write the durable review record first, then remove `authoring_evidence` and set each target's exact `review` mapping (`id`, `artifact_id`, `outcome`, `record`, and `round`). Map an approved architecture to `approved`; for an approved ADR, also record `adr_settlement: accepted` or `active` and use that exact state. Map `changes-requested` to `revision-required`, and `blocked` or `inconclusive` to `blocked`. Preserve every other entry and `workflow_state`. Retry identical incomplete settlement without rerunning the review; stop on conflicting review-ID reuse, ambiguity, an illegal transition, or failed available change-metadata validation. An independent invocation settles only its named targets and stops without advancing routing.
+
 ## Artifact placement
 
 Use the project workflow guide for artifact locations when placement matters.
@@ -173,8 +177,7 @@ If a safe resolution cannot be chosen without an owner decision, use a `needs-de
 
 Isolation governs handoff. Recording follows formal review triggers.
 
-A direct or review-only request remains isolated by default: it does
-not automatically continue into downstream workflow stages.
+A direct or review-only request remains isolated by default: it does not automatically continue into downstream workflow stages.
 
 Isolation does not suppress recording.
 
@@ -182,20 +185,14 @@ Every formal lifecycle review result must be recorded or explicitly blocked.
 
 Use:
 
-- `Recording status: recorded` when the required review evidence was created
-  or updated.
-- `Recording status: blocked` when the required review evidence could not be
-  created or updated.
+- `Recording status: recorded` when the required review evidence was created or updated.
+- `Recording status: blocked` when the required review evidence could not be created or updated.
 
-`not-required` is reserved for non-formal review-like requests outside the
-formal lifecycle review model.
+`not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
 
-For a clean review, create the lightweight review receipt required by the
-formal review recording spec and index it in `review-log.md`. Do not create an
-empty `review-resolution.md` solely for a clean review.
+For a clean review, create the lightweight review receipt required by the formal review recording spec and index it in `review-log.md`. Do not create an empty `review-resolution.md` solely for a clean review.
 
-For material findings or blocking outcomes, create the required detailed review
-record and disposition artifacts.
+For material findings or blocking outcomes, create the required detailed review record and disposition artifacts.
 Use a detailed review record for material or blocking review outcomes.
 
 Material findings must include:
@@ -207,12 +204,9 @@ Material findings must include:
 - Required outcome
 - Safe resolution path, or `needs-decision` rationale
 
-Do not merely tell the user that review artifacts should be created. Create
-or update them before final output, or report `Recording status: blocked` with
-the blocker and smallest next action.
+Do not merely tell the user that review artifacts should be created. Create or update them before final output, or report `Recording status: blocked` with the blocker and smallest next action.
 
-For an isolated review with material findings, the final review output
-must state:
+For an isolated review with material findings, the final review output must state:
 
 - no automatic downstream handoff
 - material Finding IDs
@@ -234,7 +228,8 @@ For automated `bounded-review-fix` authoring, reset review context to the tracke
 - Do not require component, code-level, or deployment diagrams unless the change needs them.
 - Do not require architecture updates for leaf changes with no architecture impact.
 - Do not edit the architecture doc unless the user explicitly asks.
-- When the review outcome is approval, the tracked architecture artifact should be ready to normalize to `approved` before planning or implementation relies on it. Do not leave a relied-on design in durable `reviewed` state.
+- When the review outcome is approval, write the review evidence first and then settle only the matching architecture entry in `change.yaml`.
+  Do not edit the architecture artifact, other artifact entries, milestone state, or routing.
 - When spec-review or architecture-review identifies required changes, the artifact must not remain in `approved` state until the required changes are resolved and re-reviewed.
 
 ## Requirement-Fidelity Manual Opt-In

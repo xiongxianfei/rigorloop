@@ -4,6 +4,20 @@
 
 active
 
+## Stage-owned lifecycle proof alignment
+
+Compatibility projection: `CP-032`.
+
+For a change governed by `stage-owned-change-local-v1`, proof expectations for
+the replaced subject named by this test spec's matching feature specification
+are superseded by
+`specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.test.md`,
+especially T14.
+Existing rows remain historical evidence or proof of the retained behavior
+named by that feature specification's reciprocal notice.
+They must not authorize the retired writer for governed current work.
+This alignment requires `test-spec-review` before M1 relies on it.
+
 ## Related spec and plan
 
 - Spec: [Test-Spec-Review Gate](test-spec-review-gate.md), approved.

@@ -4,6 +4,20 @@
 
 - active
 
+## Stage-owned lifecycle proof alignment
+
+Compatibility projection: `CP-005`.
+
+For a change governed by `stage-owned-change-local-v1`, proof expectations for
+the replaced subject named by this test spec's matching feature specification
+are superseded by
+`specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.test.md`,
+especially T14.
+Existing rows remain historical evidence or proof of the retained behavior
+named by that feature specification's reciprocal notice.
+They must not authorize the retired writer for governed current work.
+This alignment requires `test-spec-review` before M1 relies on it.
+
 ## Related spec and plan
 
 - Spec: [Formal Review Recording](formal-review-recording.md), approved.
@@ -65,7 +79,7 @@
 | `R29`-`R30b` | `T23` | integration, manual | Concise review-skill recording-status block, stable static assertions, and no standardized status-sync fields |
 | `R31`-`R31l` | `T26` | integration, manual | Deterministic change-ID selection order, fallback format, collision behavior, and blocked-recording behavior |
 | `R31m`-`R31p` | `T24`, `T26`, `T27` | integration, manual | Clean receipt roots use the same change-ID rule and examples stay out of skills |
-| `R32`-`R32f` | `T24` | integration, manual | Examples live under `docs/examples/**` and are not active lifecycle state |
+| `R32`-`R32f` | `T24` | integration, manual | Review shapes stay in owning assets and executable cases stay in tests |
 | Security/privacy `MUST`s | `T14` | manual, integration | Review artifacts do not preserve secrets and structural validation requires no network or secrets |
 | Performance `MUST` | `T14` | integration, manual | Upstream review records do not by themselves require broad smoke |
 
@@ -86,7 +100,7 @@
 | `E11` | `T21`, `T22` | Material review output records artifacts and reports `Recording status: recorded` |
 | `E12` | `T21` | Blocked recording reports blocker and smallest action needed |
 | `E13` | `T22` | Material findings include flexible but specific `Location` |
-| `E14` | `T24` | Examples under `docs/examples/**` are not active lifecycle state |
+| `E14` | `T24` | Review-recording edge cases use test fixtures rather than documentation examples |
 | `E15` | `T23`, `T25` | Review skills do not add standardized status-sync fields |
 | `E16` | `T27` | Clean receipts remain concise and include only required no-finding fields |
 | `E17` | `T3`, `T11`, `T27` | Clean receipts prove review happened but do not settle artifact lifecycle status |
@@ -117,8 +131,8 @@
 - Material finding concerns a missing expected artifact: `T22`
 - No-material formal review output needs `Review resolution: not-required` when no review-resolution trigger applies: `T21`, `T27`
 - Formal review skill contains `- Status sync:` in first-slice output shape: `T23`
-- `docs/examples/plans/example-plan.md` treated as active plan state: `T24`
-- `docs/changes/0001-skill-validator/` retained without fixture-coupling rationale: `T24`
+- A test fixture leaks into active project lifecycle state: `T24`
+- A synthetic validator case remains under a production documentation path: `T24`
 - Existing active `change.yaml` supplies the review-recording change ID: `T26`
 - Active plan or reviewed artifact metadata supplies the change ID: `T26`
 - User-provided change ID supplies the change root when no tracked root exists: `T26`
@@ -139,7 +153,7 @@
 | `2026-05-07` M3 generated output | `T12`, `T19` | Generated Codex mirrors and public adapters reflect canonical formal review skill changes |
 | `2026-05-07` M4 closeout | `T13`, `T15`, `T16`, `T20` | Review artifacts, lifecycle state, paired governing test specs, and final validation remain synchronized |
 | `2026-05-12` Slice 1 recording-status output | `T21`, `T22`, `T23` | Formal review output reports recording completion, preserves complete material-finding shape, and keeps review skills concise |
-| `2026-05-12` Slice 1 examples cleanup | `T24` | Examples move under `docs/examples/**` and selectors/lifecycle validation do not treat them as active lifecycle state |
+| `2026-05-12` Slice 1 examples cleanup | `T24` | Reusable shapes move to owning assets and executable cases stay in tests |
 | `2026-05-12` follow-up boundary | `T25` | Downstream upstream-status settlement remains outside the first implementation slice |
 | `2026-05-12` change-ID selection | `T26` | Required review recording selects a deterministic change root or blocks |
 | `2026-05-12` Record every formal review M1 | `T3`, `T8`, `T21`, `T24`, `T26`, `T27` | Test spec and fixtures for clean receipt roots, no empty review-resolution, log indexing, metadata, examples, and blocked recording |
@@ -665,7 +679,7 @@
 - Fixture/setup:
   - formal review skills
   - `specs/formal-review-recording.md` or linked formal review recording reference
-  - `docs/examples/formal-review-recording/material-finding-location-examples.md`
+  - review-skill material-finding assets
   - review-artifact fixtures with material Finding IDs
 - Steps:
   - Assert formal review guidance requires Finding ID, Severity, Location, Evidence, Required outcome, and Safe resolution path or `needs-decision` rationale for every material finding.
@@ -710,23 +724,21 @@
   - `python scripts/build-adapters.py --version 0.1.1 --check`
   - `python scripts/validate-adapters.py --version 0.1.1`
 
-### T24. Examples live under docs/examples and are not active lifecycle state
+### T24. Review shapes and executable cases have single owners
 
 - Covers: `R31`-`R32f`, `E14`, edge cases 24, 25
 - Level: integration, manual
 - Fixture/setup:
-  - `docs/examples/README.md`
-  - `docs/examples/plans/example-plan.md`
-  - `docs/examples/changes/skill-validator/`
-  - `docs/examples/formal-review-recording/change-id-selection-examples.md`
-  - `docs/examples/formal-review-recording/material-finding-location-examples.md`
-  - validators or selectors that reference `docs/plans/0000-00-00-example-plan.md` or `docs/changes/0001-skill-validator/`
+  - review-skill assets
+  - temporary review-recording fixtures
+  - `tests/fixtures/**`
+  - validators and selectors that consume test-owned fixtures
 - Steps:
-  - Assert `docs/examples/README.md` states examples are illustrative, non-normative, and not active lifecycle artifacts.
-  - Assert the plan example is moved from `docs/plans/0000-00-00-example-plan.md` to `docs/examples/plans/example-plan.md`.
-  - Assert the shipped skill-validator example change pack is moved to `docs/examples/changes/skill-validator/`, or a tracked rationale explains why fixture coupling defers that move.
-  - Update tests, validators, selectors, and guidance that reference moved examples.
-  - Assert selector and lifecycle validation behavior does not treat `docs/examples/**` as active proposal, spec, plan, change, or review state.
+  - Assert the packaged plan skeleton remains the sole maintained plan-authoring scaffold.
+  - Assert reusable review shapes live in owning skill assets or the normative spec.
+  - Assert executable cases use temporary repositories or test-fixture paths.
+  - Assert synthetic validator cases live under test-owned fixture paths.
+  - Assert no production documentation examples directory is required.
 - Expected result:
   - Examples are findable without being mistaken for active lifecycle artifacts.
 - Failure proves:
@@ -765,7 +777,7 @@
 - Fixture/setup:
   - formal review skills
   - `specs/formal-review-recording.md`
-  - `docs/examples/formal-review-recording/change-id-selection-examples.md`
+  - review-skill change-root lookup guidance
   - temporary review-recording scenarios with and without existing change roots
 - Steps:
   - Assert required formal review recording uses an existing active `docs/changes/<change-id>/change.yaml` when present for the reviewed work.
@@ -799,7 +811,7 @@
     - `review-log.md`
     - `reviews/spec-review-r1.md` or another supported formal review stage
   - no `review-resolution.md` file unless a separate trigger is intentionally added
-  - optional filled example under `docs/examples/formal-review-recording/`
+  - optional temporary filled fixture
 - Steps:
   - Assert an isolated or review-only clean formal review with no existing change root creates the minimal clean-receipt root: `change.yaml`, `review-log.md`, and `reviews/<stage>-r<n>.md`.
   - Assert the clean receipt includes review stage, review round, reviewed artifact, review date, reviewer, recording status, review outcome, material findings none, blocking findings none, scope checked, and a no-finding statement.
@@ -830,8 +842,7 @@
 - Use `docs/changes/2026-05-04-formal-review-recording/change.yaml` and `docs/changes/2026-05-04-formal-review-recording/explain-change.md` as durable traceability fixtures once M1 creates the change-local pack.
 - Use `templates/shared/review-isolation-and-recording.md` as the canonical shared-block source for the 2026-05-07 amendment.
 - Use `docs/changes/2026-05-07-review-skill-material-finding-recording/**` as current change-local evidence for material review recording and closeout behavior.
-- Use `docs/examples/**` for illustrative examples after the 2026-05-12 amendment implementation.
-- Do not use `docs/examples/**` as active lifecycle fixture state unless a test is explicitly verifying example routing or ignore behavior.
+- Use owning skill assets for reusable shapes and tests for executable cases.
 
 ## Mocking/stubbing policy
 
@@ -847,8 +858,8 @@
 - No broad backfill is required for old clean reviews unless an active change touches or relies on them as current formal review evidence.
 - Existing review-artifact validation for `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, and `code-review` remains the target stage set.
 - Rollback compatibility is covered by keeping the new behavior on existing review artifact paths and validator code paths rather than adding a second path taxonomy.
-- Moving examples from active lifecycle directories to `docs/examples/**` requires updating all tests, selectors, validators, and guidance that rely on the old paths in the same slice.
-- If the shipped skill-validator example change pack cannot move safely in the first slice, the implementation records fixture-coupling rationale and leaves the old path intentionally until a follow-up move.
+- Removing a parallel examples surface requires updating all tests, selectors, validators, and guidance that relied on it in the same slice.
+- If the retained skill-validator historical proof pack cannot move safely, the implementation keeps its explicit fixture-coupling rationale.
 
 ## Observability verification
 
@@ -857,7 +868,7 @@
 - `T13` verifies failure output remains actionable by naming path, Review ID or Finding ID when available, validation mode, and short reason.
 - `T21` verifies formal review output reports whether recording was recorded or blocked, and reserves `not-required` for non-formal review-like requests.
 - `T27` verifies clean formal review receipts are discoverable through `review-log.md` and retain material findings count `0`.
-- `T24` verifies examples can be located under `docs/examples/**` without becoming active lifecycle state.
+- `T24` verifies reusable shapes and executable cases have distinct owners without a documentation examples surface.
 - Successful validation may report counts for detailed reviews, findings, log entries, and closeout state, but exact counts are not required unless implemented as stable validator output.
 
 ## Security/privacy verification
@@ -890,8 +901,7 @@
 - [ ] Review formal review outputs for `Recording status`, path fields, and blocker fields.
 - [ ] Review material finding examples for complete `Location` values.
 - [ ] Review formal review skills for absence of standardized `Status sync` fields.
-- [ ] Review `docs/examples/README.md` and moved example paths.
-- [ ] Review selector and lifecycle behavior for `docs/examples/**`.
+- [ ] Review owning skill assets and temporary fixture behavior.
 - [ ] Review first-slice scope to ensure downstream status settlement is not implemented.
 
 ## What not to test

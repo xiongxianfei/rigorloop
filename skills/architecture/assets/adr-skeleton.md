@@ -1,10 +1,8 @@
 # ADR-YYYYMMDD-short-title: Decision Title
 
-## Status
+## Owning change record
 
-draft
-
-Allowed statuses: `draft`, `proposed`, `accepted`, `active`, `deprecated`, `superseded`, `archived`, `abandoned`.
+`docs/changes/<change-id>/change.yaml`
 
 ## Context
 

@@ -2,10 +2,8 @@
 
 Boundary model version: boundary-first-v1
 
-Use this method when authoring or evaluating a behavior contract, its proof
-map, or a handoff that depends on those artifacts.
-Examples illustrate governed behavior; they never define the complete
-boundary.
+Use this method when authoring or evaluating a behavior contract, its proof map, or a handoff that depends on those artifacts.
+Examples illustrate governed behavior; they never define the complete boundary.
 
 ## Core dimensions
 
@@ -24,16 +22,13 @@ Classify every core dimension exactly once.
 
 Applicability is exactly `applicable` or `not-applicable`.
 An applicable dimension cites governing requirements and at least one boundary.
-A not-applicable dimension uses the ASCII `-` sentinel for requirement and
-boundary IDs and gives a concise rationale.
+A not-applicable dimension uses the ASCII `-` sentinel for requirement and boundary IDs and gives a concise rationale.
 Undecidable applicability is a review blocker, not a third durable value.
-Feature-specific dimensions and cross-feature boundary imports are not part of
-`boundary-first-v1`.
+Feature-specific dimensions and cross-feature boundary imports are not part of `boundary-first-v1`.
 
 ## Identifier and serialization rules
 
-- Boundary IDs use
-  `^BND-(INPUT|STATE|AUTH|COMPOSE|TEMPORAL|RECOVERY|COMPAT|ENV)-[0-9]{3}$`.
+- Boundary IDs use `^BND-(INPUT|STATE|AUTH|COMPOSE|TEMPORAL|RECOVERY|COMPAT|ENV)-[0-9]{3}$`.
 - Interaction IDs use `^INT-[0-9]{3}$`.
 - Proof obligation IDs use `^PRF-[0-9]{3}$`.
 - An empty or inapplicable cell uses the literal ASCII `-`.
@@ -69,11 +64,9 @@ Use this boundary-definition table:
 | Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |
 | --- | --- | --- | --- | --- | --- | --- |
 
-Partitions and transitions describe only states admitted by governing
-requirements.
+Partitions and transitions describe only states admitted by governing requirements.
 Invariants state what must remain true.
-Outcomes state success, failure, stale, interrupted, recovery, and stop
-behavior where applicable.
+Outcomes state success, failure, stale, interrupted, recovery, and stop behavior where applicable.
 An example cannot create a boundary, invariant, or outcome.
 
 ## Examples
@@ -82,8 +75,7 @@ Classify each behavioral example as exactly one of:
 
 - `illustration`: links governing requirement and boundary IDs;
 - `regression`: carries the same links plus one stable defect or regression ID;
-- `discovery`: carries one stable gap ID and routes upstream without creating
-  normative behavior.
+- `discovery`: carries one stable gap ID and routes upstream without creating normative behavior.
 
 Use this table:
 
@@ -95,13 +87,9 @@ Every cited requirement is governed by every cited boundary.
 
 ## Interactions
 
-Select interactions from actual composed hazards rather than a Cartesian
-product.
-Consider stale authority, partial retry, public or helper bypass, sibling
-drift, compatibility migration, and incident-derived hazards when admitted by
-the requirements.
-Select an interaction whenever one boundary changes another boundary's
-success, failure, stale, interrupted, recovery, or stop outcome.
+Select interactions from actual composed hazards rather than a Cartesian product.
+Consider stale authority, partial retry, public or helper bypass, sibling drift, compatibility migration, and incident-derived hazards when admitted by the requirements.
+Select an interaction whenever one boundary changes another boundary's success, failure, stale, interrupted, recovery, or stop outcome.
 
 Use this table for selected interactions:
 
@@ -117,8 +105,7 @@ No interaction selected: <requirement-grounded rationale>
 
 ## Test-spec proof record
 
-The proof map consumes the exact boundary and interaction IDs from its
-governing feature contract.
+The proof map consumes the exact boundary and interaction IDs from its governing feature contract.
 It never defines, renames, infers, or repairs them.
 Start with the same model version and scope, then use:
 
@@ -126,27 +113,20 @@ Start with the same model version and scope, then use:
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 Coverage state is exactly `covered` or `gap`.
-A covered row supplies every field required by its proof and automation mode
-and uses `-` for the uncovered-gap ID.
-A gap row supplies its requirements, boundary or interaction IDs, required
-milestone, and one stable gap ID.
-It uses `-` for test case, proof level, automation mode, command, evidence, and
-manual-procedure fields.
+A covered row supplies every field required by its proof and automation mode and uses `-` for the uncovered-gap ID.
+A gap row supplies its requirements, boundary or interaction IDs, required milestone, and one stable gap ID.
+It uses `-` for test case, proof level, automation mode, command, evidence, and manual-procedure fields.
 A gap never counts as coverage and blocks downstream reliance.
 
-Proof level is exactly `unit`, `integration`, `contract`, `end-to-end`,
-`smoke`, or `manual`.
+Proof level is exactly `unit`, `integration`, `contract`, `end-to-end`, `smoke`, or `manual`.
 Automation mode is exactly `automated`, `manual`, or `hybrid`.
 Automated proof uses `-` for manual procedures.
 Manual and hybrid proof cite a stable manual procedure and evidence artifact.
 
-Where admitted by a boundary, proof covers valid, invalid, missing,
-additional, stale, substituted, unknown, and conflicting states.
+Where admitted by a boundary, proof covers valid, invalid, missing, additional, stale, substituted, unknown, and conflicting states.
 Stateful proof covers legal and illegal transitions.
-Mutation proof covers commit, partial, retry, reconciliation, conflict, and
-replay.
-Composed proof exercises the public path and every material sibling path, not
-only a helper.
+Mutation proof covers commit, partial, retry, reconciliation, conflict, and replay.
+Composed proof exercises the public path and every material sibling path, not only a helper.
 
 ## Interaction and example ownership audit
 
@@ -161,16 +141,10 @@ Before accepting a record:
 
 ## Structural validation and semantic review
 
-Structural validation checks closed versions, headings, columns, values,
-identifier grammar, uniqueness, references, mapped-resource presence, and byte
-parity.
-It does not prove applicability, completeness, interaction adequacy,
-milestone isolation, proof adequacy, implementation fidelity, or final
-coherence.
+Structural validation checks closed versions, headings, columns, values, identifier grammar, uniqueness, references, mapped-resource presence, and byte parity.
+It does not prove applicability, completeness, interaction adequacy, milestone isolation, proof adequacy, implementation fidelity, or final coherence.
 
-Semantic review judges whether the applicable boundaries, interactions,
-examples, milestones, proof, implementation, and evidence are adequate at the
-reviewer's owned layer.
+Semantic review judges whether the applicable boundaries, interactions, examples, milestones, proof, implementation, and evidence are adequate at the reviewer's owned layer.
 Neither examples nor deterministic validators may invent normative behavior.
 
 ## Portable stop conditions
@@ -182,11 +156,8 @@ Stop and surface a gap when:
 - an example is the only owner of behavior;
 - an applicable boundary or selected interaction lacks direct proof;
 - helper proof substitutes for an admitted public or sibling path;
-- evidence is missing, stale, circular, caller-asserted, or broader than its
-  claim; or
+- evidence is missing, stale, circular, caller-asserted, or broader than its claim; or
 - a discovered boundary requires an upstream owner decision.
 
 The method is self-contained published guidance.
-It requires no specific agent runtime, model identity, network connection,
-sandbox, process-isolation mechanism, workspace mutation interceptor,
-repository-local attestation store, or immutable runtime evidence publication.
+It requires no specific agent runtime, model identity, network connection, sandbox, process-isolation mechanism, workspace mutation interceptor, repository-local attestation store, or immutable runtime evidence publication.

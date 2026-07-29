@@ -1,0 +1,356 @@
+change_id: 2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state
+title: Stage-Owned Lifecycle Artifacts and Change-Local Workflow State
+classification: workflow-governance
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r4
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/proposal-review-r4.md
+      round: r4
+  spec:
+    kind: spec
+    path: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r6
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/spec-review-r6.md
+      round: r6
+  architecture:
+    kind: architecture
+    path: docs/architecture/system/architecture.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: architecture-review-r2
+      artifact_id: architecture
+      outcome: approved
+      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-r2.md
+      round: r2
+  adr:
+    kind: adr
+    path: docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: architecture-review-r2
+      artifact_id: adr
+      outcome: approved
+      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-r2.md
+      round: r2
+      adr_settlement: active
+  plan:
+    kind: plan
+    path: docs/plans/2026-07-29-stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r2
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/plan-review-r2.md
+      round: r2
+  test-spec:
+    kind: test-spec
+    path: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r3
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/test-spec-review-r3.md
+      round: r3
+workflow_state:
+  lifecycle_state: completed
+  current_stage: pr
+  next_stage: none
+  blocker: null
+  evidence:
+    - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m5-parity-and-preactivation.md
+    - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/code-review-final-r1.md
+    - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/explain-change.md
+    - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/verify-report.md
+    - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/pr.md
+  planned_work:
+    plan_artifact_id: plan
+    current_milestone: none
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+      M4:
+        kind: implementation
+        state: closed
+      M5:
+        kind: implementation
+        state: closed
+      M6:
+        kind: implementation
+        state: closed
+      M7:
+        kind: lifecycle-closeout
+        state: closed
+    remaining_implementation_milestones: []
+    latest_review:
+      status: approved
+      stage: code-review
+      round: r3
+      artifact_id: plan
+      occurrence: final
+      milestone_id: none
+      evidence:
+        - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/code-review-final-r3.md
+    final_closeout:
+      readiness: ready
+      reasons:
+        - ready
+      evidence:
+        - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/pr.md
+artifacts:
+  proposal: docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md
+  spec: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md
+  plan: docs/plans/2026-07-29-stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+  test_spec: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.test.md
+  pr_body: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/pr.md
+  review_resolution: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/review-resolution.md
+requirements:
+  - Record the isolated formal proposal review before any review-driven revision.
+  - Resolve artifact settlement, proof attribution, and deferred-follow-up ownership before specification.
+  - Preserve the selected portable stage-ownership direction without adding document hashes or write interception.
+  - Let authoring peers mark only their matching artifact state as review-required before revision.
+  - Let review peers settle only their matching artifact state after durable review evidence exists.
+  - Keep workflow routing separate from authoring invalidation and review settlement.
+  - Treat one workflow automation target as bounded repository-local continuation consent without adding another public authorization parameter.
+  - Define the prospective activation, compatibility, error, and proof contract before implementation.
+  - Apply boundary-first-v1 with all eight dimensions, selected composed hazards, and requirement-owned examples.
+  - Make canonical published skills and generated adapters the primary ownership conformance surface.
+  - Use the stage-owned change-local model as the sole forward lifecycle-state mechanism.
+  - Align Constitution, AGENTS, workflow guidance, and the project map before spec approval.
+  - Replace the canonical plan-owned and capability-driven workflow architecture with stage-owned change-local lifecycle state.
+  - Preserve one target, review independence, evidence-first recovery, migration, and the external-action boundary without a second selector layer.
+  - Sequence implementation into boundary-owned, reviewable milestones with atomic prospective activation.
+tests:
+  - Review artifact validation accepts the detailed review, log, and open resolution records.
+  - Change metadata validation accepts the proposal-review change root.
+  - Proposal review challenges transition-scoped settlement and the automation compatibility amendment.
+  - Spec review challenges the exact state, transition, migration, and authorization contract.
+  - Boundary validation rejects missing dimensions, invalid IDs, unmapped examples, and unowned interactions.
+  - Plan review challenges requirement coverage, boundary ownership, activation sequencing, validation commands, and rollback units before test-spec.
+  - Test-spec review challenges all 122 requirements, 35 acceptance criteria, 13 examples, 25 edge cases, eight boundaries, seven interactions, 26 test cases, two agent semantic-review procedures, and 32 dependent proof-map projections before M1.
+changed_files:
+  - CONSTITUTION.md
+  - AGENTS.md
+  - docs/workflows.md
+  - docs/project-map.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/container.mmd
+  - docs/architecture/system/diagrams/component-workflow-automation.mmd
+  - docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md
+  - docs/plans/2026-07-29-stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+  - docs/plan.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/compatibility-audit.md
+  - docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md
+  - specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+  - specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.test.md
+  - specs/artifact-status-lifecycle-ownership.md
+  - specs/artifact-status-lifecycle-ownership.test.md
+  - specs/single-source-of-workflow-state.md
+  - specs/single-source-of-workflow-state.test.md
+  - specs/rigorloop-workflow.md
+  - specs/rigorloop-workflow.test.md
+  - specs/single-bounded-review-fix-workflow-automation.md
+  - specs/single-bounded-review-fix-workflow-automation.test.md
+  - specs/formal-review-recording.md
+  - specs/formal-review-recording.test.md
+  - specs/downstream-status-settlement-before-reliance.md
+  - specs/downstream-status-settlement-before-reliance.test.md
+  - specs/proposal-family-assets-progressive-disclosure.md
+  - specs/proposal-family-assets-progressive-disclosure.test.md
+  - specs/spec-family-assets-progressive-disclosure.md
+  - specs/spec-family-assets-progressive-disclosure.test.md
+  - specs/review-finding-resolution-contract.md
+  - specs/review-finding-resolution-contract.test.md
+  - specs/review-skill-family-consistency-parser-owned-finding-shape.md
+  - specs/review-skill-family-consistency-parser-owned-finding-shape.test.md
+  - specs/stage-evidence-access-contracts-for-cost-bounded-rigor.md
+  - specs/stage-evidence-access-contracts-for-cost-bounded-rigor.test.md
+  - specs/stop-tracking-generated-public-adapter-skill-bodies.md
+  - specs/stop-tracking-generated-public-adapter-skill-bodies.test.md
+  - specs/workflow-stage-autoprogression.md
+  - specs/workflow-stage-autoprogression.test.md
+  - specs/change-record-catalog-registration-and-bounded-read-model.md
+  - specs/change-record-catalog-registration-and-bounded-read-model.test.md
+  - specs/cost-bounded-rigor-m5-progressive-loading-follow-through.md
+  - specs/cost-bounded-rigor-m5-progressive-loading-follow-through.test.md
+  - specs/learn-artifact-model.md
+  - specs/learn-artifact-model.test.md
+  - specs/milestone-aware-review-handoff.md
+  - specs/milestone-aware-review-handoff.test.md
+  - specs/plan-index-lifecycle-ownership.md
+  - specs/plan-index-lifecycle-ownership.test.md
+  - specs/progressive-loading-high-cost-public-skills.md
+  - specs/progressive-loading-high-cost-public-skills.test.md
+  - specs/release-process-contract.md
+  - specs/release-process-contract.test.md
+  - specs/skill-contract.md
+  - specs/skill-contract.test.md
+  - specs/workflow-skill-artifact-location-map.md
+  - specs/workflow-skill-artifact-location-map.test.md
+  - specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.md
+  - specs/cost-bounded-rigor-after-single-source-skills-and-follow-up-routing.test.md
+  - specs/cost-bounded-rigor-m2-selected-skill-reminders.md
+  - specs/cost-bounded-rigor-m2-selected-skill-reminders.test.md
+  - specs/cost-bounded-rigor-m4-lifecycle-token-cost-summary.md
+  - specs/cost-bounded-rigor-m4-lifecycle-token-cost-summary.test.md
+  - specs/follow-up-ownership-and-deferred-work-register.md
+  - specs/follow-up-ownership-and-deferred-work-register.test.md
+  - specs/guide-system-source-of-truth-alignment.md
+  - specs/guide-system-source-of-truth-alignment.test.md
+  - specs/implement-first-attempt-correctness.md
+  - specs/implement-first-attempt-correctness.test.md
+  - specs/installed-skill-artifact-placement-contract.md
+  - specs/installed-skill-artifact-placement-contract.test.md
+  - specs/project-artifact-location-guide-and-examples-surface.md
+  - specs/project-artifact-location-guide-and-examples-surface.test.md
+  - specs/release-transaction-automation.md
+  - specs/release-transaction-automation.test.md
+  - specs/test-spec-review-gate.md
+  - specs/test-spec-review-gate.test.md
+  - docs/examples/plans/example-plan.md
+  - skills/architecture-review/SKILL.md
+  - skills/architecture/SKILL.md
+  - skills/architecture/assets/adr-skeleton.md
+  - skills/architecture/assets/architecture-skeleton.md
+  - skills/code-review/SKILL.md
+  - skills/explain-change/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/learn/SKILL.md
+  - skills/plan-review/SKILL.md
+  - skills/plan/SKILL.md
+  - skills/plan/assets/current-handoff-summary.md
+  - skills/plan/assets/plan-skeleton.md
+  - skills/pr/SKILL.md
+  - skills/proposal/SKILL.md
+  - skills/proposal/assets/proposal-skeleton.md
+  - skills/proposal-review/SKILL.md
+  - skills/spec-review/SKILL.md
+  - skills/spec/SKILL.md
+  - skills/spec/assets/spec-skeleton.md
+  - skills/test-spec/SKILL.md
+  - skills/test-spec/assets/test-spec-skeleton.md
+  - skills/test-spec-review/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/workflow/SKILL.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/review-log.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/review-resolution.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/proposal-review-r1.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/proposal-review-r2.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/proposal-review-r3.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/proposal-review-r4.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/spec-review-r1.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/spec-review-r2.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/spec-review-r3.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/spec-review-r4.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/spec-review-r5.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/spec-review-r6.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-r1.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-r2.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/plan-review-r1.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/plan-review-r2.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/test-spec-review-r1.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/test-spec-review-r2.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/test-spec-review-r3.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/pr.md
+review:
+  status: approved
+  unresolved_items: 0
+validation:
+  -
+    command: python scripts/validate-change-metadata.py docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml
+    result: pass
+  -
+    command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state
+    result: pass_17_reviews_22_findings
+  -
+    command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state
+    result: pass_closed_22_findings
+  -
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md --path specs/artifact-status-lifecycle-ownership.md --path specs/single-source-of-workflow-state.md --path specs/rigorloop-workflow.md --path specs/single-bounded-review-fix-workflow-automation.md --path docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md
+    result: pass_6_lifecycle_artifacts_with_preexisting_workflow_language_warning
+  -
+    command: python scripts/validate-markdown-readability.py specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+    result: pass_with_nonblocking_warnings
+  -
+    command: python scripts/validate-boundary-first.py --path specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+    result: pass_structural_record_activation_marker_prohibited_by_spec
+  -
+    command: prospective in-memory validate_feature_record with boundary_contract marker
+    result: pass_8_dimensions_8_boundaries_7_interactions_13_examples
+  -
+    command: subject-level reciprocal notice diagnostic
+    result: pass_32_closed_subjects_32_reciprocal_notices_semantic_audit_recorded
+  -
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/system/architecture.md --path docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md --path specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+    result: pass_3_architecture_lifecycle_artifacts
+  -
+    command: python scripts/validate-markdown-readability.py docs/architecture/system/architecture.md
+    result: pass_with_nonblocking_warnings
+  -
+    command: python scripts/validate-markdown-readability.py docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md
+    result: pass_with_nonblocking_warnings
+  -
+    command: plan
+    result: updated_6_implementation_milestones_1_lifecycle_closeout_published_skills_primary_minimal_validation
+  -
+    command: test-spec authoring
+    result: refined_26_test_cases_15_boundary_interaction_proofs_12_command_entries_2_agent_semantic_reviews_32_exact_compatibility_projections
+  -
+    command: test-spec-review
+    result: approved_r3_no_open_findings_implementation_handoff_allowed
+  -
+    command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/plan.md --path docs/plans/2026-07-29-stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+    result: pass_4_artifact_files
+  -
+    command: python scripts/validate-markdown-readability.py docs/plans/2026-07-29-stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/plan-review-r2.md docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/review-log.md docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/review-resolution.md
+    result: pass_with_101_nonblocking_warnings
+  -
+    command: git diff --check
+    result: pass_after_plan_revision
+  -
+    command: bash scripts/ci.sh --mode pr --base f73c0f622d248f54708c580b92e1d4193da4a3e2 --head HEAD
+    result: pass_20_selected_checks_broad_smoke_432_seconds
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: verify
+      occurrence:
+        kind: final
+      bound_at: 2026-07-28T19:31:07Z
+      completion:
+        rule: fresh verification passes
+    status: completed
+    current_stage: verify
+    stop_reason: target-completed
+    evidence:
+      - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/verify-report.md

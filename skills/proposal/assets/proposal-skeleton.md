@@ -6,9 +6,9 @@
 
 # <Proposal title>
 
-## Status
+## Owning change record
 
-<one proposal status value>
+<docs/changes/change-id/change.yaml>
 
 ## Problem
 

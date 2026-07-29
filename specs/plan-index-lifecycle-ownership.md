@@ -463,3 +463,14 @@ None yet.
 ## Readiness
 
 Spec review approved in `docs/changes/2026-05-22-bounded-plan-index-and-completed-plan-archive/reviews/spec-review-r2.md`. Ready for planning and test-spec refresh.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+plan-body and plan-index ownership of mutable lifecycle, progress, blocker,
+and closeout state to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Stable plan navigation, historical plan preservation, archive link integrity,
+and bounded index presentation remain governed here.

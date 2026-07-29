@@ -85,15 +85,15 @@ For public adapter installation, contributors MUST use the active install guidan
 
 Repository validation logic MUST live in repo-owned scripts. GitHub Actions workflows SHOULD remain thin wrappers that set up tooling and delegate to those scripts.
 
-Plans MUST follow the illustrative structure in `docs/examples/plans/example-plan.md`. Files under `docs/examples/` are non-normative examples, not active lifecycle state. `.codex/PLANS.md` MUST NOT be reintroduced as a second planning surface.
+Plans MUST use the packaged scaffold in `skills/plan/assets/plan-skeleton.md`. The repository MUST NOT maintain a second plan scaffold under documentation, `templates/`, or `.codex/PLANS.md`.
 
-For planned initiatives, `docs/plan.md` MUST remain the lifecycle index and concrete files under `docs/plans/` MUST remain the plan bodies that carry initiative detail.
+For planned initiatives, `docs/plan.md` MUST remain a navigation index and concrete files under `docs/plans/` MUST remain the stable plan bodies that carry execution intent.
 
-During execution, `implement` MUST keep the active plan body's progress, decisions, discoveries, and validation notes current enough that later stages can review the real initiative state.
+For current workflow-managed changes, `docs/changes/<change-id>/change.yaml` MUST be the sole owner of mutable artifact lifecycle state, current milestone state, current review state, blockers, next stage, and final-closeout readiness. Plans and other governed artifacts MUST keep stable intent and MUST NOT carry mutable workflow status or execution progress.
 
-For planned initiatives, the active plan `Current Handoff Summary` MUST own current live state. Change metadata, review-resolution records, review logs, explain-change records, verify evidence, and PR handoff text are scoped evidence surfaces and must not own the active plan's current next stage. State-changing handoffs MUST perform a state-sync check across affected owners before downstream readiness is claimed.
+Authoring skills MUST write only their own governed artifacts and matching authoring-state transitions. Review peers MUST write their own review evidence and only the matching artifact settlement transition. `workflow` MUST write routing state and MUST NOT manufacture review settlement. Downstream and support skills MUST treat upstream governed artifacts and state as read-only and route required corrections to the owning stage.
 
-Lifecycle-managed top-level artifacts under `docs/proposals/`, top-level `specs/`, `specs/*.test.md`, `docs/architecture/`, and `docs/adr/` MUST keep status inside the artifact as tracked source of truth. For proposals, top-level specs, test specs, and architecture documents, `reviewed` is transitional review output rather than a durable relied-on state. Durable current states are `accepted`, `approved`, and `active`; terminal or historical states include `deprecated`, `rejected`, `abandoned`, `superseded`, and `archived`.
+Historical pre-adoption artifacts MAY retain embedded status as historical evidence. A current lifecycle stage MUST NOT update that embedded status or resume a retired writable state model; resumed nonterminal work MUST first migrate to the current change-local contract.
 
 For lifecycle-managed artifacts, `Next artifacts` preserves planned next steps while the artifact is active. `Follow-on artifacts` or `Closeout` records actual downstream artifacts or final disposition instead of rewriting planning history. `superseded` artifacts MUST identify their replacement through `superseded_by` or equivalent labeled text.
 
@@ -133,15 +133,15 @@ Hosted CI MUST NOT be claimed as passed unless the hosted run was actually obser
 
 Local validation claims MUST name the commands actually run.
 
-Non-trivial changes MUST leave contributor-visible verification evidence in the plan, verify report, PR body, or change-local artifacts.
+Non-trivial changes MUST leave contributor-visible verification evidence in a verify report, PR body, or change-local artifact.
 
-For planned initiatives, final lifecycle closeout MUST update both `docs/plan.md` and the plan body when lifecycle state changes, and `verify` MUST treat stale lifecycle state between them as blocking PR readiness.
+For planned initiatives, final lifecycle closeout MUST update the authoritative change-local state and stage-owned evidence. `verify` MUST treat mutable lifecycle or routing state in a governed artifact or plan as blocking PR readiness.
 
 Synchronization happens within the PR that performs the lifecycle transition, before the PR opens for review. The merge of a PR is a fast-forward of pre-validated state, not a trigger for further lifecycle changes.
 
 For lifecycle-managed proposals, specs, test specs, architecture documents, and ADRs, `verify` MUST block on stale or inconsistent artifacts that are touched, referenced, generated, or authoritative for the changed area, and it MUST report unrelated stale baseline artifacts as warnings instead of blockers.
 
-Before draft PR text exists, `verify` MUST use pre-PR handoff surfaces such as `docs/changes/<change-id>/change.yaml`, explain-change artifacts, the active plan, and other touched or referenced authoritative artifacts. Final PR text MUST NOT introduce new authoritative artifact references without rerunning `verify`.
+Before draft PR text exists, `verify` MUST use pre-PR handoff surfaces such as `docs/changes/<change-id>/change.yaml`, explain-change artifacts, stable plan intent, and other touched or referenced authoritative artifacts. Final PR text MUST NOT introduce new authoritative artifact references without rerunning `verify`.
 
 Until repository-specific release checks replace the current conservative template behavior, contributors MUST treat `scripts/release-verify.sh` and `release.yml` as non-authoritative for broader completion claims.
 
@@ -172,6 +172,8 @@ When material findings exist for a non-trivial change, dispositions MUST be reco
 Clean required formal reviews with no material findings MUST still create a clean review receipt or report blocked recording. A clean review receipt proves the review happened; it does not by itself settle the reviewed artifact's lifecycle status. A no-material detailed review record requires `review-log.md` but MUST NOT create an empty `review-resolution.md` solely because `reviews/` exists.
 
 `review-resolution.md` MUST use top-level `Closeout status: open` or `Closeout status: closed`. `Closeout status: closed` requires final dispositions, no `review-log.md` open findings, plus the disposition-specific action, rationale, follow-up, and validation evidence records required by the governing spec.
+
+For the current stage-owned lifecycle contract, a formal review MUST record durable review evidence before settling only its matching artifact entry in `change.yaml`. A review MUST NOT edit the artifact it reviewed, another artifact's state, or workflow routing.
 
 ## Documentation rules
 

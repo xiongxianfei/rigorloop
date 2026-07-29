@@ -719,3 +719,14 @@ Outputs:
 
 - Approved amendment for implementation-profile reviewer-owned auto-fix classification and correction evidence.
 - Ready for architecture assessment before downstream planning or implementation relies on the new profile.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+artifact-local settlement and clean-review settlement through proposal status
+or decision-log mutation to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Material-finding shape, review logging, dispositions, resolution closeout, and
+referential integrity remain governed here.

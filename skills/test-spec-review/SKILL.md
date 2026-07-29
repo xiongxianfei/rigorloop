@@ -22,6 +22,13 @@ Your job is to decide whether the active test spec is an adequate, executable, a
 - summary: Independently review whether the active test spec is a complete, executable, and traceable proof map for implementation.
 - must_not_claim: test implementation, production implementation, code-review approval, validation success, branch readiness, PR readiness, or final lifecycle closeout.
 
+Write review evidence first, then settle only the matching test-spec entry in `change.yaml`.
+Treat the test spec, upstream artifacts, other artifact entries, milestone state, and routing as read-only.
+
+## Change-record review settlement
+
+Before settlement, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Resolve exactly one test-spec entry by the artifact ID, `kind`, and normalized `path` named by the review. Require `review-required` and complete authoring evidence. Write the durable review record first, then remove `authoring_evidence`, set the exact `review` mapping (`id`, `artifact_id`, `outcome`, `record`, and `round`), and map `approved` to `active`, `changes-requested` to `revision-required`, and `blocked` or `inconclusive` to `blocked`. Preserve every other entry, milestone state, and routing. Retry identical incomplete settlement without rerunning the review; stop on conflicting review-ID reuse, ambiguity, an illegal transition, or failed available change-metadata validation. An independent invocation settles this entry and stops without advancing routing.
+
 ## Quick operating guide
 
 Use this skill to review proof adequacy after `test-spec` and before `implement`.
@@ -262,8 +269,7 @@ If a safe resolution cannot be chosen without an owner decision, use a `needs-de
 
 Isolation governs handoff. Recording follows formal review triggers.
 
-A direct or review-only request remains isolated by default: it does
-not automatically continue into downstream workflow stages.
+A direct or review-only request remains isolated by default: it does not automatically continue into downstream workflow stages.
 
 Isolation does not suppress recording.
 
@@ -271,20 +277,14 @@ Every formal lifecycle review result must be recorded or explicitly blocked.
 
 Use:
 
-- `Recording status: recorded` when the required review evidence was created
-  or updated.
-- `Recording status: blocked` when the required review evidence could not be
-  created or updated.
+- `Recording status: recorded` when the required review evidence was created or updated.
+- `Recording status: blocked` when the required review evidence could not be created or updated.
 
-`not-required` is reserved for non-formal review-like requests outside the
-formal lifecycle review model.
+`not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
 
-For a clean review, create the lightweight review receipt required by the
-formal review recording spec and index it in `review-log.md`. Do not create an
-empty `review-resolution.md` solely for a clean review.
+For a clean review, create the lightweight review receipt required by the formal review recording spec and index it in `review-log.md`. Do not create an empty `review-resolution.md` solely for a clean review.
 
-For material findings or blocking outcomes, create the required detailed review
-record and disposition artifacts.
+For material findings or blocking outcomes, create the required detailed review record and disposition artifacts.
 Use a detailed review record for material or blocking review outcomes.
 
 Material findings must include:
@@ -296,12 +296,9 @@ Material findings must include:
 - Required outcome
 - Safe resolution path, or `needs-decision` rationale
 
-Do not merely tell the user that review artifacts should be created. Create
-or update them before final output, or report `Recording status: blocked` with
-the blocker and smallest next action.
+Do not merely tell the user that review artifacts should be created. Create or update them before final output, or report `Recording status: blocked` with the blocker and smallest next action.
 
-For an isolated review with material findings, the final review output
-must state:
+For an isolated review with material findings, the final review output must state:
 
 - no automatic downstream handoff
 - material Finding IDs

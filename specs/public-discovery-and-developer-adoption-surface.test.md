@@ -118,7 +118,7 @@ validators, bounded scans, package smoke tests, and manual evidence records.
 - Steps: Search README for a Mermaid `flowchart LR`, the lifecycle stages from idea to PR, caption text that preserves manual invocation boundaries, and required link targets.
 - Expected result: README includes the approved static Mermaid diagram and caption, required link surfaces are visible, and no first-slice GIF/video/screenshot-gallery dependency is introduced.
 - Failure proves: The visual is missing, misleading, or maintenance-heavy beyond the approved first slice.
-- Automation location: `rg -n "```mermaid|flowchart LR|Idea|Proposal|Spec|Test spec|Plan|Implement|Code review|Explain change|Verify|PR|manual skill" README.md`; `rg -n "docs/workflows.md|docs/changes/0001-skill-validator|CONTRIBUTING.md|SECURITY.md|ISSUE_TEMPLATE" README.md`
+- Automation location: `rg -n "```mermaid|flowchart LR|Idea|Proposal|Spec|Test spec|Plan|Implement|Code review|Explain change|Verify|PR|manual skill" README.md`; `rg -n "docs/workflows.md|CONTRIBUTING.md|SECURITY.md|ISSUE_TEMPLATE" README.md`
 
 ### DXA-T005. Cold-read, link-check, command-check, and unsupported-claim review
 

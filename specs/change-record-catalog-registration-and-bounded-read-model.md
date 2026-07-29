@@ -430,3 +430,13 @@ None yet
 ## Readiness
 
 Spec review approved. Ready for `architecture`.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+active-plan `Current Handoff Summary` ownership of current live state to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Change-record registration, bounded artifact discovery, evidence pointers,
+and historical reads remain governed here.

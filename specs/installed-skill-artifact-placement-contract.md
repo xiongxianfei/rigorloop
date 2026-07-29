@@ -269,3 +269,14 @@ pr
 ## Readiness
 
 Approved and ready for `plan`.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+lifecycle state and milestone progress being placed in `docs/plan.md` or the
+plan body to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Artifact-type distinctions, path discovery, portable defaults, and placement
+diagnostics remain governed here.

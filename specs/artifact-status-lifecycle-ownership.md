@@ -381,6 +381,19 @@ EC9. If a `Follow-on artifacts` section appears before any actual downstream art
 
 None.
 
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification
+defers lifecycle-state storage inside governed artifacts and downstream
+normalization of that state to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Lifecycle meanings, terminal history, staleness detection, and explicit
+replacement evidence remain governed here.
+This notice does not activate the new contract before that specification and
+its complete rollout gate are approved.
+
 ## Readiness
 
 This spec is approved.

@@ -67,7 +67,7 @@ Once proposal, spec, and architecture are already settled, execution usually pro
 
 For milestone-based plans, repeat implementation and code-review for each in-scope implementation milestone. A clean non-final milestone review routes to the next implementation milestone; final closeout follows only after all in-scope implementation milestones are closed and required review-resolution is closed.
 
-For planned initiatives, the active plan `Current Handoff Summary` owns the current milestone, milestone state, review status, remaining in-scope implementation milestones, next stage, and final closeout readiness. Other artifacts provide scoped evidence and must not own the active plan's current next stage. Every state-changing handoff performs a state-sync check across affected surfaces before downstream readiness is claimed.
+For planned initiatives, `docs/changes/<change-id>/change.yaml` owns the current milestone, milestone state, review status, remaining in-scope implementation milestones, next stage, and final closeout readiness. Plans carry stable execution intent, while stage-owned artifacts provide scoped evidence. Every state-changing handoff checks the change-local state and affected evidence before downstream readiness is claimed.
 
 In workflow-managed completion flows, continue automatically into the next mandatory or triggered downstream stage when the approved autoprogression contract says to do so. Do not wait for redundant user confirmation to enter a known review or PR gate. Review-only and manual individual-skill invocations stay isolated by default, direct `pr` still opens the PR when readiness passes, and bugfix skill invocations remain explicit-step unless a higher-priority artifact broadens them.
 
@@ -78,14 +78,14 @@ Use `bugfix` for bugs, `ci-maintenance` when GitHub Actions or related automatio
 ## Plan file policy
 
 - `docs/roadmap.md` stores future ideas and unapproved work.
-- `docs/plan.md` is the bounded lifecycle index of active, blocked, recent done, and active supersession context. It is not the body of a plan.
-- `docs/plan-archive.md` stores older terminal plan history. Do not move active, blocked, review-requested, resolution-needed, or otherwise nonterminal work there.
+- `docs/plan.md` is a navigation index to plan bodies and owning change records. It does not own active, blocked, milestone, review, or next-stage state.
+- `docs/plan-archive.md` stores older historical plan references. Do not infer current lifecycle state from it.
 - Concrete plan files under `docs/plans/` are the plan bodies that carry initiative detail.
-- Plan bodies use the explicit `## Status` lifecycle marker fields `Plan lifecycle state` and `Terminal disposition`; do not infer terminal state from prose.
+- Plan bodies carry stable scope, milestones, dependencies, validation strategy, and recovery intent. They do not carry mutable lifecycle status, current milestone progress, blockers, or next-stage state.
 - Every approved initiative gets its own living plan file under `docs/plans/YYYY-MM-DD-slug.md`.
 - Never overwrite an older plan when starting a new initiative.
-- If a new plan replaces an older one, keep the older file and mark it as superseded. Keep superseded entries in `docs/plan.md` only while they include `superseded by:` and non-empty `active-context:`; otherwise archive terminal superseded history.
-- Execution plans should follow `docs/examples/plans/example-plan.md`; examples under `docs/examples/` are illustrative and are not active lifecycle state.
+- If a new plan replaces an older one, preserve the older plan as historical intent and record replacement lifecycle state in the owning change record.
+- Execution plans should use `skills/plan/assets/plan-skeleton.md`; do not maintain a second plan scaffold under documentation, templates, or local runtime output.
 
 ## Required reading before implementation
 
@@ -110,10 +110,12 @@ If the work changes externally observable behavior and no relevant spec exists, 
 
 ## Artifact lifecycle defaults
 
-- Proposal, spec, test-spec, architecture, and ADR status lives inside the artifact, not in PR state or chat-only review outcomes.
-- For proposals, top-level specs, test specs, architecture docs, and ADRs, `reviewed` is transitional only where it exists in older artifacts. Durable current states are `accepted`, `approved`, and `active`. Terminal or historical states include `deprecated`, `rejected`, `abandoned`, `superseded`, and `archived`.
+- Mutable proposal, spec, test-spec, architecture, ADR, and plan lifecycle state lives in the owning `docs/changes/<change-id>/change.yaml`.
+- Governed artifacts contain one stable pointer to their owning change record and keep stable intent, planning history, and explicitly historical evidence.
+- Authoring skills may change only their own governed content and matching authoring-state transition. Review peers may change only their own review evidence and the matching artifact settlement transition.
+- Workflow owns routing. Downstream and support skills treat upstream governed artifacts and lifecycle state as read-only and route corrections to the owning stage.
 - Keep `Next artifacts` as planning history while an artifact is active. Use `Follow-on artifacts` or `Closeout` for actual downstream artifacts or final disposition. If a `Follow-on artifacts` section appears before real follow-ons exist, it must say `None yet`.
-- `superseded` artifacts must identify their replacement with `superseded_by` or equivalent labeled text.
+- A superseded artifact's change-local state and owning closeout evidence must identify its replacement.
 - `verify` blocks on stale touched, referenced, generated, or authoritative lifecycle-managed artifacts and warns on unrelated stale baseline debt.
 
 ## Implementation rules
@@ -122,7 +124,7 @@ If the work changes externally observable behavior and no relevant spec exists, 
 - Write or update tests first when feasible.
 - Run the smallest relevant verification scope first, then expand only as needed.
 - If validation fails, stop and fix the failure before moving to the next milestone.
-- During execution, `implement` owns ongoing plan-body updates. Keep the active plan's progress, decisions, discoveries, and validation notes current as work proceeds.
+- During execution, `implement` writes implementation, tests, and stage-owned execution evidence. It does not update the plan body or artifact lifecycle and routing state.
 - If a spec gap blocks safe implementation, state it explicitly instead of silently guessing.
 
 ## Verification expectations
@@ -131,7 +133,7 @@ If the work changes externally observable behavior and no relevant spec exists, 
 - When repo-owned validation scripts exist, run those named commands before PR instead of inventing substitute checks.
 - For adapter package work, ordinary contributors do not need all supported tools installed locally; non-smoke validation is repository-owned through adapter generation, adapter validation, release metadata validation, and `scripts/release-verify.sh`.
 - Release automation must use tracked release notes under `docs/releases/<tag>/release-notes.md`; do not rely on generated release notes for adapter compatibility claims.
-- For planned initiatives, final lifecycle closeout updates the plan index surfaces and the plan body when lifecycle state changes. Synchronize that lifecycle state inside the PR that performs the transition before review opens; merge is not a routine trigger for later lifecycle closeout. `verify` treats stale lifecycle state between the index surfaces and plan body as blocking PR readiness.
+- For planned initiatives, final lifecycle closeout updates change-local state and stage-owned evidence. Merge is not a routine trigger for later lifecycle closeout. `verify` treats mutable lifecycle or routing state in a governed artifact or plan as blocking PR readiness.
 - Do not report success without naming the commands actually run.
 
 ## Change management
@@ -148,5 +150,5 @@ A task is not done unless all of the following are true:
 - relevant verification was run, or any inability to run it is stated clearly
 - named edge cases and failure paths are handled or explicitly deferred
 - the user-visible scope does not silently exceed what was agreed
-- the active plan reflects what actually happened when a plan was used
+- the owning change record and stage-owned evidence reflect what actually happened when a plan was used
 - meaningful assumptions and open questions are called out in the final response

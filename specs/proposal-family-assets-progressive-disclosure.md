@@ -370,3 +370,13 @@ None yet
 ## Readiness
 
 Approved; downstream plan created at `docs/plans/2026-05-20-proposal-family-assets-progressive-disclosure.md`.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+proposal-status sections, values, and asset-shape preservation requirements to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Proposal-family asset packaging, progressive disclosure, Vision fit, scope
+preservation, review dimensions, and recording behavior remain governed here.

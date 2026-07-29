@@ -9,7 +9,7 @@
 
 ## Goal and context
 
-This spec defines the contributor-visible packaging policy for `docs/changes/<change-id>/` so non-trivial changes consistently include the required machine-readable metadata and durable Markdown reasoning without treating the `0001-skill-validator` example as the minimum pack for every change.
+This spec defines the contributor-visible packaging policy for `docs/changes/<change-id>/` so non-trivial changes consistently include the required machine-readable metadata and durable Markdown reasoning.
 
 The existing workflow contract already requires `change.yaml`, durable Markdown reasoning, PR summary, and conditional standalone review-memory artifacts. What is missing is a concise operational rule for which change-local artifacts are baseline, which are conditional, and which are only example-specific.
 
@@ -48,11 +48,11 @@ Given a change has multiple verification commands across separate environments
 When the verification evidence cannot remain concise inside `explain-change.md`
 Then the change-local artifact pack includes `docs/changes/<change-id>/verify-report.md` as a standalone verification record.
 
-### Example E5: the `0001` example is rich, not minimum
+### Example E5: synthetic validation input is test-owned
 
-Given a contributor inspects `docs/changes/0001-skill-validator/`
-When they use it as a reference model
-Then they treat it as a valid rich example of a fully formed pack, not as proof that every non-trivial change must include the same artifact set.
+Given change-metadata validation needs a synthetic valid or invalid record
+When the case is added to the repository
+Then it lives under `tests/fixtures/` and is not presented as a real change-local record.
 
 ## Requirements
 
@@ -106,13 +106,13 @@ R6. `docs/changes/<change-id>/verify-report.md` MUST be conditionally required o
 
 R6a. When none of the `R6` triggers apply, verification evidence MAY remain inside `explain-change.md` or the PR summary, provided the existing workflow contract's durability and concision requirements remain satisfied.
 
-R6b. A contributor SHOULD NOT add `verify-report.md` only because the `0001-skill-validator` example contains one.
+R6b. A contributor SHOULD NOT add `verify-report.md` without an `R6` trigger.
 
 R7. The change-local artifact pack MUST stay concise and MUST link back to approved top-level artifacts instead of becoming a second long-form source of truth.
 
-R7a. This policy MUST NOT require every non-trivial change to carry the full `0001-skill-validator` artifact set.
+R7a. This policy MUST NOT require conditional artifacts for every non-trivial change.
 
-R7b. `docs/changes/0001-skill-validator/` SHOULD be documented as a valid rich reference example rather than the minimum required pack.
+R7b. Synthetic change-metadata cases MUST live under `tests/fixtures/`, not `docs/changes/`.
 
 R8. The contributor-facing packaging rule MUST make the baseline pack for ordinary non-trivial work observable:
 - `change.yaml`;
@@ -162,7 +162,7 @@ Outputs:
 - Every non-trivial change also has durable Markdown reasoning beyond PR text alone.
 - Change-local artifact roles remain distinct: metadata, rationale, review disposition, and verification evidence do not collapse into one file type.
 - Conditional artifacts appear only when their governing triggers apply.
-- The `0001-skill-validator` example remains a valid rich pack without becoming the minimum pack for every non-trivial change.
+- Synthetic validator inputs remain separate from real lifecycle records.
 - Change-local artifacts remain concise and do not replace approved top-level proposal, spec, architecture, or plan artifacts.
 
 ## Error and boundary behavior
@@ -172,12 +172,12 @@ Outputs:
 - If a contributor claims an equivalent approved reasoning surface that is not explicitly named by the workflow spec, the claim is invalid and the default `explain-change.md` requirement remains.
 - If standalone review-resolution or standalone verification triggers apply and the corresponding artifact is missing, the change is incomplete.
 - If a fast-lane change falls outside the approved fast-lane categories, it must follow the non-trivial packaging rules instead of omitting `docs/changes/`.
-- A richer-than-minimum change-local pack is allowed when its artifact set is truthful, but contributors must not treat the rich example as a blanket requirement for every non-trivial change.
+- A richer-than-minimum change-local pack is allowed when its artifact set is truthful and each conditional artifact has a governing trigger.
 
 ## Compatibility and migration
 
 - This feature clarifies the packaging contract; it does not change the underlying `change.yaml` schema.
-- Existing rich change-local packs such as `docs/changes/0001-skill-validator/` remain valid and do not need to be reduced.
+- Historical records removed from the working tree remain available through Git history.
 - Approved legacy top-level explain artifacts remain valid durable-reasoning surfaces until later migration or retirement.
 - Existing contributor-facing summaries may be updated to match this clarified rule, but the workflow spec remains the normative source.
 - New non-trivial authored change work should default to `docs/changes/<change-id>/explain-change.md`.
@@ -204,13 +204,13 @@ Outputs:
 5. An approved legacy top-level explain artifact may remain the durable reasoning surface for already-shipped work until it is migrated or retired.
 6. A contributor may not cite an ad hoc document or PR text alone as the equivalent durable reasoning surface unless the workflow spec explicitly names it.
 7. The `artifacts` mapping in `change.yaml` uses canonical snake_case keys with scalar string path values rather than nested objects.
-8. The `0001-skill-validator` example may include more artifacts than an ordinary non-trivial change without making those extra artifacts universal.
+8. A synthetic validator fixture may model a rich artifact mapping without becoming a real lifecycle record.
 
 ## Non-goals
 
 - Redesigning the `change.yaml` schema.
 - Making `docs/changes/` optional for non-trivial work.
-- Requiring every non-trivial change to replicate the full `0001-skill-validator` artifact pack.
+- Requiring conditional artifacts without their governing triggers.
 - Replacing PR text as the reviewer-facing summary surface.
 - Reclassifying fast-lane versus non-trivial work beyond the already-approved workflow contract.
 - Promoting change-local artifacts into a second top-level source of truth that duplicates proposal, spec, architecture, or plan artifacts.
@@ -223,7 +223,7 @@ Outputs:
 - A reviewer can distinguish when `review-resolution.md` is required versus optional.
 - A reviewer can distinguish when `verify-report.md` is required versus when verification evidence may remain in `explain-change.md` or the PR summary.
 - A reviewer can determine the canonical `change.yaml` artifact keys and that their values are scalar string paths.
-- The rich `0001-skill-validator` example remains valid without being interpreted as the minimum required pack for every non-trivial change.
+- Synthetic change-metadata cases are test-owned and do not appear as real change roots.
 - The workflow contract remains stronger than contributor summaries, and the summaries do not contradict it.
 
 ## Open questions
