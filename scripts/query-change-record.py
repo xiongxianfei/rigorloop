@@ -9,6 +9,7 @@ import sys
 from pathlib import Path, PurePosixPath
 from typing import Any
 
+from change_metadata_semantics import STAGE_OWNED_CONTRACT
 from workflow_automation_state import (
     AutomationStateContractError,
     WorkflowAutomationStateStore,
@@ -91,6 +92,8 @@ def change_yaml_path(repo_root: Path, change_id: str) -> Path:
 
 
 def metadata_shape(data: dict[str, Any]) -> str:
+    if data.get("lifecycle_contract") == STAGE_OWNED_CONTRACT:
+        return STAGE_OWNED_CONTRACT
     if data.get("schema_version") == 2 and "validation_events" in data:
         return "compact"
     return "legacy"
@@ -108,6 +111,7 @@ def load_change_metadata(repo_root: Path, change_id: str) -> tuple[Path, dict[st
     try:
         data = WorkflowAutomationStateStore(path).read(
             allow_legacy_without_change_id=True,
+            allow_stage_owned_read=True,
         ).document
     except AutomationStateContractError as exc:
         return path, None, error_payload(
@@ -200,6 +204,19 @@ def artifact_paths_from_top_level(data: dict[str, Any]) -> list[str]:
     return paths
 
 
+def artifact_paths_from_stage_owned_state(data: dict[str, Any]) -> list[str]:
+    if data.get("lifecycle_contract") != STAGE_OWNED_CONTRACT:
+        return []
+    artifact_states = data.get("artifact_states")
+    if not isinstance(artifact_states, dict):
+        return []
+    return [
+        entry["path"]
+        for entry in artifact_states.values()
+        if isinstance(entry, dict) and isinstance(entry.get("path"), str)
+    ]
+
+
 def artifact_paths_from_compact_path_vars(data: dict[str, Any]) -> list[str]:
     path_vars = data.get("path_vars")
     if not isinstance(path_vars, dict):
@@ -227,6 +244,7 @@ def artifact_paths_from_compact_path_vars(data: dict[str, Any]) -> list[str]:
 
 def artifact_paths(data: dict[str, Any]) -> list[str]:
     paths: list[str] = []
+    paths.extend(artifact_paths_from_stage_owned_state(data))
     paths.extend(artifact_paths_from_top_level(data))
     paths.extend(artifact_paths_from_compact_path_vars(data))
     return sorted(dict.fromkeys(paths))
@@ -242,6 +260,28 @@ def review_state(data: dict[str, Any], change_id: str) -> dict[str, Any]:
             "review_resolution": f"docs/changes/{change_id}/review-resolution.md",
         },
     }
+    if data.get("lifecycle_contract") == STAGE_OWNED_CONTRACT:
+        workflow_state = data.get("workflow_state")
+        planned_work = (
+            workflow_state.get("planned_work")
+            if isinstance(workflow_state, dict)
+            else None
+        )
+        latest_review = (
+            planned_work.get("latest_review")
+            if isinstance(planned_work, dict)
+            else None
+        )
+        if isinstance(latest_review, dict):
+            status = latest_review.get("status")
+            if isinstance(status, str):
+                state["status"] = status
+            evidence = latest_review.get("evidence")
+            if isinstance(evidence, list):
+                state["evidence"] = [
+                    item for item in evidence if isinstance(item, str)
+                ]
+        return state
     if isinstance(review, dict):
         if isinstance(review.get("status"), str):
             state["status"] = review["status"]
@@ -331,12 +371,27 @@ def validation_slice(event: dict[str, Any]) -> dict[str, Any]:
 
 
 def open_blockers(data: dict[str, Any]) -> list[str]:
+    blockers: list[str] = []
+    if data.get("lifecycle_contract") == STAGE_OWNED_CONTRACT:
+        workflow_state = data.get("workflow_state")
+        blocker = (
+            workflow_state.get("blocker")
+            if isinstance(workflow_state, dict)
+            else None
+        )
+        if isinstance(blocker, dict) and isinstance(blocker.get("code"), str):
+            blockers.append(blocker["code"])
     summary = validation_summary(data)
-    blockers = summary.get("open_validation_blockers")
-    if isinstance(blockers, list):
-        return [item for item in blockers if isinstance(item, str)]
+    validation_blockers = summary.get("open_validation_blockers")
+    if isinstance(validation_blockers, list):
+        blockers.extend(
+            item for item in validation_blockers if isinstance(item, str)
+        )
+        return list(dict.fromkeys(blockers))
     latest = latest_validation_slice(data)
-    return latest.get("blockers", []) if latest else []
+    if latest:
+        blockers.extend(latest.get("blockers", []))
+    return list(dict.fromkeys(blockers))
 
 
 def profile_policy(
@@ -401,7 +456,47 @@ def automation_policy(data: dict[str, Any]) -> dict[str, Any] | None:
     automation = workflow.get("automation") if isinstance(workflow, dict) else None
     if not isinstance(automation, dict):
         return None
+    if data.get("lifecycle_contract") == STAGE_OWNED_CONTRACT:
+        return {
+            "source": "stage-owned",
+            "mechanism": automation.get("mechanism"),
+            "status": automation.get("status"),
+            "current_stage": automation.get("current_stage"),
+            "target": automation.get("target"),
+            "stop_reason": automation.get("stop_reason"),
+            "evidence": (
+                automation.get("evidence")
+                if isinstance(automation.get("evidence"), list)
+                else []
+            ),
+        }
     return project_automation_status(automation)
+
+
+def workflow_state_slice(data: dict[str, Any]) -> dict[str, Any] | None:
+    if data.get("lifecycle_contract") != STAGE_OWNED_CONTRACT:
+        return None
+    workflow_state = data.get("workflow_state")
+    if not isinstance(workflow_state, dict):
+        return None
+    result = {
+        key: workflow_state.get(key)
+        for key in ("lifecycle_state", "current_stage", "next_stage", "blocker")
+        if key in workflow_state
+    }
+    planned_work = workflow_state.get("planned_work")
+    if isinstance(planned_work, dict):
+        result["planned_work"] = {
+            key: planned_work.get(key)
+            for key in (
+                "current_milestone",
+                "remaining_implementation_milestones",
+                "latest_review",
+                "final_closeout",
+            )
+            if key in planned_work
+        }
+    return result
 
 
 def detail_pointers(change_id: str, metadata_path: Path, repo_root: Path) -> dict[str, str]:
@@ -415,7 +510,7 @@ def detail_pointers(change_id: str, metadata_path: Path, repo_root: Path) -> dic
 
 
 def query_summary(change_id: str, metadata_path: Path, data: dict[str, Any], repo_root: Path) -> dict[str, Any]:
-    return {
+    result = {
         "status": "ok",
         "query": "summary",
         "change_id": change_id,
@@ -428,6 +523,10 @@ def query_summary(change_id: str, metadata_path: Path, data: dict[str, Any], rep
         "open_blockers": open_blockers(data),
         "detail_pointers": detail_pointers(change_id, metadata_path, repo_root),
     }
+    state = workflow_state_slice(data)
+    if state is not None:
+        result["workflow_state"] = state
+    return result
 
 
 def query_artifacts(change_id: str, data: dict[str, Any]) -> dict[str, Any]:

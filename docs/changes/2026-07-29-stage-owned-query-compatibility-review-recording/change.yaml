@@ -1,0 +1,60 @@
+change_id: 2026-07-29-stage-owned-query-compatibility-review-recording
+title: Stage-Owned Change Query Compatibility Review
+classification: workflow-governance
+risk: medium
+artifacts:
+  spec: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+  test_spec: specs/change-record-catalog-registration-and-bounded-read-model.test.md
+  review_resolution: docs/changes/2026-07-29-stage-owned-query-compatibility-review-recording/review-resolution.md
+  explain_change: docs/changes/2026-07-29-stage-owned-query-compatibility-review-recording/explain-change.md
+requirements:
+  - Query valid stage-owned change metadata without applying the retired automation schema.
+  - Preserve canonical change identity and authoritative review-ledger ownership.
+  - Keep stage-owned compatibility reads side-effect free and unavailable to legacy writers.
+tests:
+  - Valid stage-owned summaries use the stage-owned metadata contract.
+  - Unknown stage-owned lifecycle values fail closed.
+  - Canonical change identity mismatches fail closed.
+  - Review summaries do not infer finding closeout from routing state.
+changed_files:
+  - scripts/query-change-record.py
+  - scripts/test-query-change-record.py
+  - scripts/workflow_automation_state.py
+  - docs/changes/2026-07-29-stage-owned-query-compatibility-review-recording/change.yaml
+  - docs/changes/2026-07-29-stage-owned-query-compatibility-review-recording/explain-change.md
+  - docs/changes/2026-07-29-stage-owned-query-compatibility-review-recording/review-log.md
+  - docs/changes/2026-07-29-stage-owned-query-compatibility-review-recording/review-resolution.md
+  - docs/changes/2026-07-29-stage-owned-query-compatibility-review-recording/reviews/code-review-r1.md
+  - docs/changes/2026-07-29-stage-owned-query-compatibility-review-recording/reviews/code-review-r2.md
+  - docs/changes/2026-07-29-stage-owned-query-compatibility-review-recording/reviews/spec-review-r1.md
+review:
+  status: approved
+  unresolved_items: 0
+  reviewed_artifact: stage-owned query compatibility implementation
+validation:
+  - command: python scripts/test-query-change-record.py
+    result: pass_24_tests_before_code_review
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_60_tests_before_code_review
+  - command: python scripts/test-workflow-automation-state.py
+    result: pass_65_tests_before_code_review
+  - command: python scripts/test-workflow-automation.py
+    result: pass_76_tests_before_code_review
+  - command: python scripts/test-query-change-record.py
+    result: pass_25_tests_after_SOQ_CR1_SOQ_CR2
+  - command: python scripts/test-change-metadata-validator.py
+    result: pass_60_tests_after_SOQ_CR1_SOQ_CR2
+  - command: python scripts/test-workflow-automation-state.py
+    result: pass_65_tests_after_SOQ_CR1_SOQ_CR2
+  - command: python scripts/test-workflow-automation.py
+    result: pass_76_tests_after_SOQ_CR1_SOQ_CR2
+  - command: python scripts/test-workflow-automation-policy.py
+    result: pass_16_tests_after_SOQ_CR1_SOQ_CR2
+  - command: python scripts/test-validate-workflow-automation.py
+    result: pass_68_tests_after_SOQ_CR1_SOQ_CR2
+  - command: python scripts/validate-boundary-first.py --path specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md --path specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.test.md
+    result: pass_spec_review_r1
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-07-29-stage-owned-query-compatibility-review-recording
+    result: pass_code_review_r2
+  - command: bash scripts/ci.sh --mode explicit --jobs 4 --path <all changed paths>
+    result: pass_11_selector_chosen_checks_final_verify
