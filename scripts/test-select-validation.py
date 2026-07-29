@@ -78,7 +78,7 @@ EXPECTED_CATALOG = {
     "workflow_automation.policy_regression": "python scripts/test-workflow-automation-policy.py",
     "workflow_automation.state_regression": "python scripts/test-workflow-automation-state.py",
     "workflow_automation.validator_regression": "python scripts/test-validate-workflow-automation.py",
-    "release.validate": "python scripts/validate-release-ci.py --version <version>",
+    "release.validate": "python scripts/validate-release.py --recorded-source-auto --version <version>",
     "release_transaction.regression": "python scripts/test-release-transaction.py",
     "readme.validate": "python scripts/validate-readme.py README.md",
     "readme.vision_markers": "python scripts/validate-readme.py README.md --vision-markers",
@@ -1854,7 +1854,10 @@ raise SystemExit({exit_code})
         self.assertIn("release.validate", selected_ids(payload))
         self.assertIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
         release_check = next(check for check in payload["selected_checks"] if check["id"] == "release.validate")
-        self.assertEqual(release_check["command"], "python scripts/validate-release-ci.py --version v0.1.1")
+        self.assertEqual(
+            release_check["command"],
+            "python scripts/validate-release.py --recorded-source-auto --version v0.1.1",
+        )
 
     def test_multiple_release_paths_share_one_release_validation_check(self) -> None:
         result = self.select(
@@ -1870,7 +1873,7 @@ raise SystemExit({exit_code})
         release_check = next(check for check in payload["selected_checks"] if check["id"] == "release.validate")
         self.assertEqual(
             release_check["command"],
-            "python scripts/validate-release-ci.py --version v0.1.1 v0.1.2",
+            "python scripts/validate-release.py --recorded-source-auto --version v0.1.1 v0.1.2",
         )
 
     def test_release_evidence_markdown_path_selects_lifecycle_checklist_validation(self) -> None:
@@ -3597,7 +3600,7 @@ raise SystemExit({exit_code})
                 selected_checks=[
                     {
                         "id": "release.validate",
-                        "command": "python scripts/validate-release-ci.py --version missing-version",
+                        "command": "python scripts/validate-release.py --recorded-source-auto --version missing-version",
                         "reason": "fixture release version should fail validation",
                         "versions": ["missing-version"],
                     }
@@ -4792,7 +4795,7 @@ raise SystemExit(3)
                 selected_checks=[
                     {
                         "id": "release.validate",
-                        "command": "python scripts/validate-release-ci.py --version v0.1.1",
+                        "command": "python scripts/validate-release.py --recorded-source-auto --version v0.1.1",
                         "reason": "fixture command should be unavailable in the temporary workspace",
                         "versions": ["v0.1.1"],
                     }
@@ -4813,7 +4816,7 @@ raise SystemExit(3)
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Run selected check: release.validate", output)
-        self.assertIn("release.validate | unavailable | command unavailable: scripts/validate-release-ci.py |", output)
+        self.assertIn("release.validate | unavailable | command unavailable: scripts/validate-release.py |", output)
 
     def test_ci_wrapper_forwards_mode_arguments_to_selector(self) -> None:
         fixture = self.write_selector_fixture(self.minimal_selector_payload())
