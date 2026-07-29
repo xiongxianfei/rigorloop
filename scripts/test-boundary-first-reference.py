@@ -682,6 +682,25 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                         outside_bytes,
                     )
 
+    def test_unrelated_reference_symlinks_are_outside_projection_scope(
+        self,
+    ) -> None:
+        _, root = self.make_repository()
+        project_reference(root, mode="write")
+        outside = self.make_outside_directory()
+        target = outside / "other-guidance.md"
+        target.write_text("# unrelated\n", encoding="utf-8")
+        skill_link = (
+            root / "skills/workflow/references/other-guidance.md"
+        )
+        skill_link.symlink_to(target)
+        canonical_link = root / "specs/references/other-guidance.md"
+        canonical_link.symlink_to(target)
+
+        result = project_reference(root, mode="check")
+
+        self.assertTrue(result.ok)
+
     def test_inventory_digest_uses_sorted_posix_path_and_raw_hash_records(
         self,
     ) -> None:
@@ -718,8 +737,9 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             root
             / "specs/references/boundary-first-feature-authoring-v1.md"
         )
+        secret = "token-super-secret-resource-version"
         feature.write_text(
-            "# Feature\n\nBoundary model version: boundary-first-v2\n",
+            f"# Feature\n\nBoundary model version: {secret}\n",
             encoding="utf-8",
         )
 
@@ -743,10 +763,9 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             "boundary-first-feature-authoring-v1.md",
             completed.stdout,
         )
-        self.assertIn(
-            "offending_value=boundary-first-v2", completed.stdout
-        )
+        self.assertIn("offending_value=sha256:", completed.stdout)
         self.assertIn("expected=boundary-first-v1", completed.stdout)
+        self.assertNotIn(secret, completed.stdout)
         self.assertNotIn(str(root), completed.stdout)
 
     def test_canonical_method_contains_portable_contract_without_stage_policy(
