@@ -1941,6 +1941,48 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
     def test_stage_owned_valid_record_passes(self) -> None:
         self.assertEqual(validate_stage_owned_lifecycle_metadata(self.valid_record()), [])
 
+    def test_primary_plan_requires_deterministic_initial_planned_work(self) -> None:
+        record = self.valid_record()
+        record["artifact_states"]["plan"] = {
+            "kind": "plan",
+            "path": "docs/plans/example.md",
+            "role": "primary",
+            "lifecycle_state": "authoring",
+            "authoring_evidence": "docs/changes/example/evidence/plan-authoring.md",
+        }
+        initial_planned_work = {
+            "plan_artifact_id": "plan",
+            "current_milestone": "M1",
+            "milestones": {
+                "M1": {"kind": "implementation", "state": "planned"},
+                "M2": {"kind": "implementation", "state": "planned"},
+            },
+            "remaining_implementation_milestones": ["M1", "M2"],
+            "latest_review": {
+                "status": "not-started",
+                "stage": "none",
+                "round": "none",
+                "artifact_id": "none",
+                "occurrence": "none",
+                "milestone_id": "none",
+                "evidence": [],
+            },
+            "final_closeout": {
+                "readiness": "not-ready",
+                "reasons": ["lifecycle-gates-open"],
+                "evidence": [],
+            },
+        }
+
+        errors = validate_stage_owned_lifecycle_metadata(record)
+        self.assertIn(
+            "workflow_state.planned_work: presence must match primary plan registration",
+            errors,
+        )
+
+        record["workflow_state"]["planned_work"] = initial_planned_work
+        self.assertEqual(validate_stage_owned_lifecycle_metadata(record), [])
+
     def test_unmarked_historical_record_remains_readable(self) -> None:
         self.assertEqual(validate_stage_owned_lifecycle_metadata({"workflow": {"autoprogression": {}}}), [])
 

@@ -7673,6 +7673,33 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, body)
 
+    def test_plan_initializes_planned_work_once_and_workflow_owns_later_updates(self) -> None:
+        plan_body = (ROOT / "skills" / "plan" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        workflow_body = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+
+        for phrase in (
+            "initialize `workflow_state.planned_work` exactly once",
+            "every implementation milestone to `planned`",
+            "first implementation milestone",
+            "`latest_review.status: not-started`",
+            "`final_closeout.readiness: not-ready`",
+            "must not replace or update existing `planned_work`",
+            "workflow owns every later `planned_work` transition",
+        ):
+            with self.subTest(surface="plan", phrase=phrase):
+                self.assertIn(phrase, plan_body)
+
+        for phrase in (
+            "Plan owns only the one-time deterministic initialization",
+            "workflow owns every later `planned_work` transition",
+        ):
+            with self.subTest(surface="workflow", phrase=phrase):
+                self.assertIn(phrase, workflow_body)
+
     def test_downstream_skills_keep_upstream_surfaces_read_only(self) -> None:
         for skill_name, phrase in self.DOWNSTREAM_READ_ONLY_PHRASES.items():
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(

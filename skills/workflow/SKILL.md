@@ -141,12 +141,13 @@ For planned work, `change.yaml` is the sole owner of the current milestone, mile
 The plan body contains stable execution intent and `docs/plan.md` contains stable navigation.
 
 Authoring stages write their own artifacts and authoring transitions.
+Plan owns only the one-time deterministic initialization of missing primary-plan `planned_work`; workflow owns every later `planned_work` transition.
 Review peers write review evidence and the matching artifact settlement only.
 Implementation and evidence stages write their scoped outputs only.
 Workflow consumes settled evidence and owns routing and planned-work transitions.
 No stage may update an upstream artifact as workflow bookkeeping.
 
-Before mutating a governed record, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Create that marker for a new governed change or migrate resumed nonterminal historical work before its first mutation; never mutate a historical read. Derive routing only from current artifact settlement and stage-owned evidence. Update only `workflow_state`, the selected `workflow.automation` target state, and workflow-owned transition evidence; preserve `artifact_states` and all stage-owned evidence. Keep `workflow_state` to lifecycle state, current and next stage, blocker, evidence pointers, and `planned_work` only when a primary plan exists. Stop on stale or contradictory evidence, an illegal transition, or failed available change-metadata validation instead of repairing another stage's state.
+Before mutating a governed record, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Create that marker for a new governed change or migrate resumed nonterminal historical work before its first mutation; never mutate a historical read. Derive routing only from current artifact settlement and stage-owned evidence. Update only `workflow_state`, the selected `workflow.automation` target state, and workflow-owned transition evidence; preserve `artifact_states` and all stage-owned evidence. Keep `workflow_state` to lifecycle state, current and next stage, blocker, evidence pointers, and `planned_work` only when a primary plan exists. Accept plan's deterministic one-time initialization, then make every later `planned_work` transition from current stage-owned evidence. Stop on stale or contradictory evidence, an illegal transition, or failed available change-metadata validation instead of repairing another stage's state.
 
 ## Project workflow guide
 
