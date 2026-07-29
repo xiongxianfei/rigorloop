@@ -8,9 +8,11 @@ from pathlib import Path
 
 from adapter_distribution import (
     ADAPTER_OUTPUT_ROOT,
+    CANONICAL_SKILLS_DIR,
     validate_adapter_archives,
     validate_adapter_output,
     validate_clean_install_smoke,
+    validate_clean_install_skill_selection,
 )
 
 
@@ -48,7 +50,16 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     root = Path(args.root) if args.root else ADAPTER_OUTPUT_ROOT
     if args.root:
-        errors = validate_adapter_archives(args.version, root)
+        errors = (
+            validate_clean_install_skill_selection(
+                CANONICAL_SKILLS_DIR,
+                tuple(args.skill),
+            )
+            if args.clean_install_smoke
+            else []
+        )
+        if not errors:
+            errors = validate_adapter_archives(args.version, root)
         if args.clean_install_smoke and not errors:
             errors.extend(
                 validate_clean_install_smoke(

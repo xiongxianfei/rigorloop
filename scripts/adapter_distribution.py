@@ -384,15 +384,38 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
         "`auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or "
         "`off`."
     )
-    dollar_invocations = CODEX_SKILL_INVOCATION_PATTERN.findall(text)
-    workflow_arguments = set(
-        re.findall(r"\$workflow\s+auto:\s*([^`\n]+)", text)
-    )
+    code_spans = re.findall(r"`([^`\n]+)`", text)
+    dollar_spans = [
+        span
+        for span in code_spans
+        if re.search(r"\$[A-Za-z][A-Za-z0-9-]*", span)
+    ]
+    allowed_dollar_spans = {
+        "$workflow auto: <argument>",
+        "$workflow auto: <target-stage>",
+        "$workflow auto: status",
+        "$workflow auto: off",
+    }
+    slash_spans = [
+        span
+        for span in code_spans
+        if span.startswith("/")
+        and ("workflow" in span.lower() or "auto:" in span.lower())
+    ]
+    open_code_records = [
+        (skill_name, invocation)
+        for skill_name, invocation in re.findall(
+            r"`([^`\n]+)`(?:\s+skill)?\s+with\s+`([^`\n]+)`",
+            text,
+        )
+        if skill_name.lower() == "workflow" or invocation.lower().startswith("auto:")
+    ]
     return (
         expected in normalized
-        and set(dollar_invocations) == {"$workflow"}
-        and workflow_arguments
-        == {"<argument>", "<target-stage>", "status", "off"}
+        and set(dollar_spans) == allowed_dollar_spans
+        and len(dollar_spans) == len(allowed_dollar_spans)
+        and slash_spans == ["/workflow auto: <argument>"]
+        and open_code_records == [("workflow", "auto: <argument>")]
     )
 
 
@@ -2546,6 +2569,39 @@ def _mapped_resources_for_clean_install(
     return tuple(resources)
 
 
+def validate_clean_install_skill_selection(
+    skills_root: Path,
+    skill_names: tuple[str, ...],
+) -> list[str]:
+    """Fail closed on every explicitly requested mapped-skill identity."""
+
+    if not skill_names:
+        return []
+    errors: list[str] = []
+    repeated = sorted(
+        {
+            skill_name
+            for skill_name in skill_names
+            if skill_names.count(skill_name) > 1
+        }
+    )
+    for skill_name in repeated:
+        errors.append(f"clean-install selected skill repeated: {skill_name}")
+    mapped_names = {
+        resource.skill_name
+        for resource in _mapped_resources_for_clean_install(
+            skills_root,
+            skill_names=(),
+        )
+    }
+    for skill_name in sorted(set(skill_names) - mapped_names):
+        errors.append(
+            "clean-install selected skill is unknown or has no mapped "
+            f"resources: {skill_name}"
+        )
+    return _dedupe_errors(errors)
+
+
 def validate_clean_install_smoke(
     version: str,
     release_output_dir: Path,
@@ -2558,26 +2614,10 @@ def validate_clean_install_smoke(
 ) -> list[str]:
     """Install locally packed archives into empty target projects and verify mapped resources."""
 
-    errors: list[str] = []
+    errors = validate_clean_install_skill_selection(skills_root, skill_names)
+    if errors:
+        return errors
     resources = _mapped_resources_for_clean_install(skills_root, skill_names=skill_names)
-    if skill_names:
-        repeated = sorted(
-            {
-                skill_name
-                for skill_name in skill_names
-                if skill_names.count(skill_name) > 1
-            }
-        )
-        for skill_name in repeated:
-            errors.append(f"clean-install selected skill repeated: {skill_name}")
-        resolved = {resource.skill_name for resource in resources}
-        for skill_name in sorted(set(skill_names) - resolved):
-            errors.append(
-                "clean-install selected skill is unknown or has no mapped "
-                f"resources: {skill_name}"
-            )
-        if errors:
-            return _dedupe_errors(errors)
     if not resources:
         target = ", ".join(skill_names) if skill_names else "all skills"
         return [f"clean-install smoke has no mapped resources to validate for {target}"]

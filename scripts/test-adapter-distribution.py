@@ -1311,6 +1311,35 @@ release_gate:
         )
         self.assertNotIn("validated generated adapter archives", result.stdout)
 
+    def test_validate_adapters_cli_preflights_selection_before_archives(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "validate-adapters.py"),
+                    "--root",
+                    tmp,
+                    "--version",
+                    "v0.3.6",
+                    "--clean-install-smoke",
+                    "--skill",
+                    "does-not-exist",
+                ],
+                capture_output=True,
+                text=True,
+                cwd=ROOT,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "clean-install selected skill is unknown or has no mapped resources: "
+            "does-not-exist",
+            result.stdout,
+        )
+        self.assertNotIn("clean-install archive missing", result.stdout)
+
     def test_boundary_first_archive_drift_reports_exact_layer_and_hashes(self) -> None:
         cases = (
             ("workflow", "references/boundary-first-method-v1.md"),
@@ -1942,27 +1971,47 @@ release_gate:
         self,
     ) -> None:
         mutations = {
-            "codex_skill": ("$workflow auto: <argument>", "$broken auto: <argument>"),
-            "claude_skill": ("/workflow auto: <argument>", "/broken auto: <argument>"),
-            "opencode_skill": (
+            "codex_skill": lambda text: text.replace(
+                "$workflow auto: <argument>",
+                "$broken auto: <argument>",
+                1,
+            ),
+            "claude_skill": lambda text: text.replace(
+                "/workflow auto: <argument>",
+                "/broken auto: <argument>",
+                1,
+            ),
+            "opencode_skill": lambda text: text.replace(
                 "installed `workflow` skill with `auto: <argument>`",
                 "installed `broken` skill with `auto: <argument>`",
+                1,
             ),
-            "shared_argument": (
+            "shared_argument": lambda text: text.replace(
                 "Here `<argument>` is `<target-stage>`, `status`, or `off`.",
                 "Here `<argument>` is `<stage>`, `status`, or `off`.",
+                1,
             ),
+            "bare_codex": lambda text: text + "\nUse `$workflow`.\n",
+            "non_auto_codex": lambda text: text + "\nUse `$workflow manual`.\n",
+            "case_codex": lambda text: text + "\nUse `$Workflow auto: <argument>`.\n",
+            "wrong_claude_argument": lambda text: text
+            + "\nUse `/workflow auto: <wrong>`.\n",
+            "case_claude": lambda text: text
+            + "\nUse `/Workflow auto: <argument>`.\n",
+            "wrong_opencode_argument": lambda text: text
+            + "\nOpenCode invokes installed `workflow` with `auto: <wrong>`.\n",
+            "case_opencode": lambda text: text
+            + "\nOpenCode invokes installed `Workflow` with `auto: <argument>`.\n",
         }
         source = ROOT / "skills" / "workflow" / "SKILL.md"
         source_text = source.read_text(encoding="utf-8")
-        for name, (old, new) in mutations.items():
+        for name, mutate in mutations.items():
             with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
                 target = Path(tmp) / "workflow"
                 shutil.copytree(source.parent, target)
                 skill_file = target / "SKILL.md"
-                self.assertIn(old, source_text)
                 skill_file.write_text(
-                    source_text.replace(old, new, 1),
+                    mutate(source_text),
                     encoding="utf-8",
                 )
 
