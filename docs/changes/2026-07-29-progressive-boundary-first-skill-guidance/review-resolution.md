@@ -34,6 +34,7 @@ Review closeout: code-review-m4-r5
 Review closeout: code-review-m4-r6
 Review closeout: code-review-m4-r7
 Review closeout: code-review-m4-r8
+Review closeout: code-review-m4-r9
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -44,10 +45,10 @@ Review closeout: code-review-m4-r8
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
   `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`,
   `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
-  `code-review-m4-r8`
+  `code-review-m4-r8`, `code-review-m4-r9`
 - Findings resolved: 40
-- Unresolved findings: 0
-- Current result: M4 code-review R8 findings are resolved and await independent R9 confirmation.
+- Unresolved findings: 2
+- Current result: M4 code-review R9 requires reference-link normalization and collision-free placeholders.
 
 ## Resolution Overview
 
@@ -93,6 +94,8 @@ Review closeout: code-review-m4-r8
 | CR-M4-R7-002 | accepted | resolved | Exact Codex code-span multisets reject prefixes, suffixes, and trailing arguments. |
 | CR-M4-R8-001 | accepted | resolved | Parser-derived rendered text exposes labels hidden by HTML or Markdown formatting. |
 | CR-M4-R8-002 | accepted | resolved | Exact command spans and their owning list items enforce complete boundaries. |
+| CR-M4-R9-001 | accepted | open | Reference-style Markdown labels must be normalized conservatively. |
+| CR-M4-R9-002 | accepted | open | Placeholder handling must be parser-local and collision-free. |
 
 ## Finding Details
 
@@ -341,6 +344,32 @@ Chosen action: Validate the complete Markdown list items owning target, status, 
 Rationale: Exact code-span content is insufficient when surrounding text remains part of the same command token.
 Validation target: code-review-m4-r9
 Validation evidence: Adjacent suffix and trailing-argument mutations fail for target, status, and off owning records; all 142 adapter tests and the planned ten-skill clean-install command pass.
+
+### code-review-m4-r9
+
+#### CR-M4-R9-001 - Reference-style Markdown hides rendered adapter labels
+
+Finding ID: CR-M4-R9-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Conservatively remove reference-link brackets after inline-link normalization and add full, collapsed, and shortcut-reference regressions.
+Rationale: Markdown reference syntax must not interrupt a rendered adapter label.
+Validation target: code-review-m4-r10
+Validation evidence: pending
+
+#### CR-M4-R9-002 - In-band placeholder normalization changes invocation semantics
+
+Finding ID: CR-M4-R9-002
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Remove in-band sentinels and preserve approved placeholder start tags only while parsing exact contract records.
+Rationale: Caller-controlled text must not collide with normalization state or hide labels through globally protected custom tags.
+Validation target: code-review-m4-r10
+Validation evidence: pending
 
 ### code-review-m1-r1
 
