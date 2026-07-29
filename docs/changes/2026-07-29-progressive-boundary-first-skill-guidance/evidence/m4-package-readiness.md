@@ -28,6 +28,9 @@
 | R7 fixed-code commit | `5020d978` |
 | R7 fixed-code tree | `e1b46b005961c58ba79158c0a557a91fb18ebdab` |
 | R7 fixed-code diff SHA-256 (`7bcf48bd..5020d978`) | `e12feb72bbec622264a7a70c6193f974bbeeed8da857a3b609aaae6ff55a7976` |
+| R8 fixed-code commit | `fa0f5ce7` |
+| R8 fixed-code tree | `536bc2f5d2658a42fc41dff2e0a3f450c62ad6eb` |
+| R8 fixed-code diff SHA-256 (`68a33089..fa0f5ce7`) | `3202325c22246f5b474a2b726f7284cb177f188f14523a527c6cc56f82561a82` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -113,9 +116,12 @@ also checked across plain text, Markdown code spans, and HTML code markup, so a
 valid equivalence block cannot mask a contradictory or composed malformed form.
 After the exact block is removed, any normalized residual adapter label blocks
 portability; HTML entities are decoded and bounded ordinary inline HTML is
-reduced to visible text before this check. The four approved Codex command code
-spans must also match one exact multiset, so prefixes, suffixes, and trailing
-arguments cannot inherit portability from an approved substring.
+reduced to parser-derived visible text before this check. HTML comments,
+attributes, unknown elements, and supported Markdown emphasis and links cannot
+split a residual adapter label. The four approved Codex command code spans must
+match one exact multiset, and the two list items that own target, status, and
+off must match exactly, so adjacent prefixes, suffixes, and trailing arguments
+cannot inherit portability from an approved substring.
 
 ## Activation and rollback proof
 
