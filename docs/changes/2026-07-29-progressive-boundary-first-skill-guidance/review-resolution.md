@@ -264,7 +264,7 @@ Owning stage: review-resolution
 Chosen action: Use descriptor-relative no-follow target operations and aggregate restoration path failures.
 Rationale: Repository containment applies even under a target-parent swap.
 Validation target: code-review-m1-r8
-Validation evidence: pending correction and independent rereview
+Validation evidence: A target-parent swap cannot write outside; restoration continues for every unaffected target and reports `BFR-PROJECTION-RESTORE` for the unsafe path in the 28-test projection suite; independent R8 confirmation remains pending.
 
 #### CR-M1-R7-003 - Exact-manifest diagnostics omit the affected resource layer
 
@@ -276,7 +276,7 @@ Owning stage: review-resolution
 Chosen action: Add opaque per-layer diagnostic identities and report differing stable resource IDs.
 Rationale: PBS-R037 requires the affected resource layer without requiring disclosure of rejected values.
 Validation target: code-review-m1-r8
-Validation evidence: pending correction and independent rereview
+Validation evidence: Exact compact, feature-authoring, and proof tuple mutations identify the affected stable layer while retaining one-way offending identities in the 28-test projection suite; independent R8 confirmation remains pending.
 
 ### proposal-review-r1
 

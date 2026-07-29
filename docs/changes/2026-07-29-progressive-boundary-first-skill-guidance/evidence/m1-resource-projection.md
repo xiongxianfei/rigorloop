@@ -26,7 +26,7 @@ Milestone M1 replaces the one-reference projection with the reviewed three-resou
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-boundary-first-reference.py` | pass, 27 tests |
+| `python scripts/test-boundary-first-reference.py` | pass, 28 tests |
 | `python scripts/project-boundary-first-reference.py --check` | pass, 14 projections |
 | `python scripts/test-boundary-first-validation.py` | pass, 63 tests |
 | `python scripts/validate-boundary-first.py --check` | pass |
@@ -85,3 +85,11 @@ The full M1 command set passed after these corrections and is awaiting independe
 - `CR-M1-R6-001`: a final input-stability barrier re-reads the manifest and every canonical resource before success. Drift at early, middle, or final writes restores prior targets and raises a structured error; tests cover all four inputs and deterministic retry.
 
 The full M1 command set passed after this correction and is awaiting independent R7 review.
+
+## R7 finding corrections
+
+- `CR-M1-R7-002`: target writes and removals now traverse repository directories by descriptor with `O_NOFOLLOW`; a parent swap cannot redirect writes, and recovery aggregates unsafe paths while restoring the remaining targets.
+- `CR-M1-R7-003`: approved per-resource identity fingerprints are diagnostic-only and identify affected stable resource IDs without exposing changed tuple values.
+- `CR-M1-R7-001` is rejected as an unbounded concurrency expansion: M1 reports immutable snapshot identities, while later drift is required to block activation or the next check.
+
+The full M1 command set passed after these corrections and is awaiting independent R8 review.
