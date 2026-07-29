@@ -2002,6 +2002,19 @@ release_gate:
             + "\nOpenCode invokes installed `workflow` with `auto: <wrong>`.\n",
             "case_opencode": lambda text: text
             + "\nOpenCode invokes installed `Workflow` with `auto: <argument>`.\n",
+            "plain_codex": lambda text: text
+            + "\nUse $workflow manual to continue.\n",
+            "html_codex": lambda text: text
+            + "\nUse <code>$workflow manual</code> to continue.\n",
+            "plain_claude": lambda text: text
+            + "\nClaude users run /workflow manual to continue.\n",
+            "whitespace_claude": lambda text: text
+            + "\nClaude users run ` /workflow auto: <wrong>`.\n",
+            "plain_opencode": lambda text: text
+            + "\nOpenCode invokes workflow with auto: wrong.\n",
+            "composed_opencode": lambda text: text
+            + "\nOpenCode invokes installed `broken` skill with "
+            + "`manual: <argument>`.\n",
         }
         source = ROOT / "skills" / "workflow" / "SKILL.md"
         source_text = source.read_text(encoding="utf-8")
