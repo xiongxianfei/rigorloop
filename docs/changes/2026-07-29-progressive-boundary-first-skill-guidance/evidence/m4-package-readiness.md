@@ -16,6 +16,9 @@
 | R3 fixed-code commit | `8d2484af0c4fc51867a0ce238ef7199fe0b70f07` |
 | R3 fixed-code tree | `94581d0b4203e86392b90f6538cbcd5a585ccd88` |
 | R3 fixed-code diff SHA-256 (`0afe743e..8d2484af`) | `b9e2bc4e913ec66670c665a4bb977c4dceabfd1a9ff6a5d44785b20e0797875d` |
+| R4 fixed-code commit | `9fec30f078aefa65e6d77f9e9c3b15ddb74a7701` |
+| R4 fixed-code tree | `9af9d16adf7ccf1dd476d0bf41dbdd2134e508a6` |
+| R4 fixed-code diff SHA-256 (`63e50156..9fec30f0`) | `2afc32641c779392f15f7e24e2f4f59a018c3ed7b6a16918bd7cd163a73576c6` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -95,7 +98,9 @@ assets remain permitted. An explicitly requested skill cannot be filtered by a
 portability report: deleting Claude's requested `workflow` tree fails the
 clean-install check. Exact invocation equivalents are closed over the workflow
 identity and shared target/status/off argument semantics. Unknown, noncanonical,
-or duplicate explicit skill selections fail before install work.
+or duplicate explicit skill selections fail before archive or install work.
+Every recognized additive Codex, Claude, or OpenCode invocation occurrence is
+also checked, so a valid equivalence block cannot mask a contradictory form.
 
 ## Activation and rollback proof
 
@@ -119,9 +124,9 @@ The 28-test projection suite proves repeated projection identity, handled interr
 | `python scripts/test-skill-validator.py` | pass, 282 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skills |
 | `python scripts/build-skills.py --check` | pass with temporary output |
-| `python scripts/test-adapter-distribution.py` | pass, 141 tests |
+| `python scripts/test-adapter-distribution.py` | pass, 142 tests |
 | Planned `build-adapters.py` plus `validate-adapters.py --clean-install-smoke` command | pass for all ten governed skills and three adapters |
-| `bash scripts/ci.sh --mode broad-smoke` | pass, 11 checks in 615 seconds |
+| `bash scripts/ci.sh --mode broad-smoke` | pass, 11 checks in 612 seconds |
 | `git diff --check` | pass |
 
 ## Containment

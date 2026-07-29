@@ -39,9 +39,9 @@ Review closeout: code-review-m4-r4
   `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`,
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
   `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`
-- Findings resolved: 32
-- Unresolved findings: 2
-- Current result: M4 code-review R4 found incomplete additive invocation closure and CLI preflight ordering.
+- Findings resolved: 34
+- Unresolved findings: 0
+- Current result: M4 code-review R4 findings are resolved and await independent R5 confirmation.
 
 ## Resolution Overview
 
@@ -79,8 +79,8 @@ Review closeout: code-review-m4-r4
 | CR-M4-R2-002 | accepted | resolved | Workflow and every requested governed resource are required in all supported adapters. |
 | CR-M4-R3-001 | accepted | resolved | Exact workflow identity and shared argument semantics govern cross-adapter invocation equivalence. |
 | CR-M4-R3-002 | accepted | resolved | Unknown, noncanonical, and duplicate explicit mapped-skill selections fail closed. |
-| CR-M4-R4-001 | accepted | open | Reject every contradictory adapter invocation occurrence. |
-| CR-M4-R4-002 | accepted | open | Preflight explicit skill names before archive validation. |
+| CR-M4-R4-001 | accepted | resolved | Every recognized adapter invocation occurrence must match the approved identity, operation, argument, and case. |
+| CR-M4-R4-002 | accepted | resolved | Explicit skill-name preflight runs before archive validation. |
 
 ## Finding Details
 
@@ -230,25 +230,25 @@ Validation evidence: Mixed valid/unknown, noncanonical case, duplicate selection
 
 Finding ID: CR-M4-R4-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Parse all adapter invocation occurrences and reject unapproved identity, operation, argument, or case.
 Rationale: A valid block cannot neutralize a contradictory invocation elsewhere.
 Validation target: code-review-m4-r5
-Validation evidence: pending
+Validation evidence: Replacement and additive mutations cover bare, non-auto, case-variant, wrong-identity, and wrong-argument Codex, Claude, and OpenCode forms; all fail portability.
 
 #### CR-M4-R4-002 - Explicit-name preflight runs too late
 
 Finding ID: CR-M4-R4-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Share a selection-preflight helper and call it before archive validation.
 Rationale: Archive state must not mask invalid requested identities.
 Validation target: code-review-m4-r5
-Validation evidence: pending
+Validation evidence: Unknown selection with an empty archive root reports the selection error before any missing-archive error; 142 adapter tests, the planned ten-skill command, and 11-check broad smoke pass.
 
 ### code-review-m1-r1
 
