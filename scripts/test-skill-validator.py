@@ -7780,6 +7780,84 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
 
 class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
     COMPACT_SCAN_PATH = ROOT / "templates" / "shared" / "boundary-first-compact-scan.md"
+    PROGRESSIVE_VOCABULARIES = {
+        "capability_state": {"pending", "active"},
+        "identity_state": {
+            "none",
+            "known",
+            "missing",
+            "stale",
+            "unknown",
+            "ambiguous",
+            "conflicting",
+            "escaped",
+            "insufficient",
+            "grandfathered",
+        },
+        "outcome_state": {
+            "unchanged",
+            "owned",
+            "new-normative",
+            "proof-gap",
+            "already-proved",
+            "semantic-gap",
+        },
+        "path_state": {
+            "direct",
+            "escaped",
+            "sibling-material",
+            "recovery",
+            "duplicate",
+            "ownerless",
+        },
+        "revision_state": {
+            "new",
+            "not-applicable",
+            "non-substantive",
+            "substantive",
+            "undecidable",
+        },
+        "structural_state": {"valid"},
+        "expected_action": {
+            "formalize",
+            "continue-ordinary",
+            "no-active-claim",
+            "remain-valid",
+            "judge-formal",
+            "proceed-slice",
+            "expand",
+            "stop",
+            "add-proof",
+            "stop-scenarios",
+            "changes-requested",
+        },
+        "expected_route": {"none", "spec", "test-spec"},
+        "expected_scenario": {"none", "add", "stop"},
+    }
+    REQUIRED_PROGRESSIVE_CASE_IDS = {
+        "progressive.unnamed-active-behavior",
+        "progressive.named-active-behavior",
+        "progressive.named-non-behavior",
+        "progressive.pending-behavior",
+        "progressive.grandfathered-formatting",
+        "progressive.grandfathered-substantive",
+        "progressive.grandfathered-undecidable",
+        "progressive.sufficient-slice",
+        "progressive.missing-id",
+        "progressive.stale-id",
+        "progressive.unknown-id",
+        "progressive.ambiguous-id",
+        "progressive.conflicting-id",
+        "progressive.escaped-id",
+        "progressive.insufficient-id",
+        "progressive.new-outcome",
+        "progressive.proof-only-gap",
+        "progressive.material-sibling",
+        "progressive.recovery-outcome",
+        "progressive.duplicate-combination",
+        "progressive.ownerless-discovery",
+        "progressive.structural-pass-semantic-gap",
+    }
 
     def test_governed_skills_embed_the_exact_compact_scan_once(self) -> None:
         compact_scan = self.COMPACT_SCAN_PATH.read_text(encoding="utf-8").strip()
@@ -7949,6 +8027,35 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
             if case["skill"] not in self.GOVERNED_SKILLS:
                 errors.append(f"{case['case_id']}: unknown skill")
                 continue
+            vocabulary_error = False
+            for field, allowed in self.PROGRESSIVE_VOCABULARIES.items():
+                if not isinstance(case[field], str) or case[field] not in allowed:
+                    errors.append(
+                        f"{case['case_id']}: {field} value is not in the closed vocabulary"
+                    )
+                    vocabulary_error = True
+            for field in (
+                "behavior_change",
+                "user_named_method",
+                "expected_explain",
+                "expected_consent",
+            ):
+                if type(case[field]) is not bool:
+                    errors.append(f"{case['case_id']}: {field} must be a boolean")
+                    vocabulary_error = True
+            for field in ("required_guidance", "forbidden_guidance"):
+                value = case[field]
+                if (
+                    not isinstance(value, list)
+                    or not value
+                    or any(not isinstance(item, str) or not item for item in value)
+                ):
+                    errors.append(
+                        f"{case['case_id']}: {field} must be a nonempty string list"
+                    )
+                    vocabulary_error = True
+            if vocabulary_error:
+                continue
             if (
                 case["outcome_state"] in {"new-normative", "semantic-gap"}
                 or case["path_state"] == "ownerless"
@@ -7981,6 +8088,8 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
         }
         if covered_skills != self.GOVERNED_SKILLS:
             errors.append("progressive cases must cover every governed skill")
+        if seen != self.REQUIRED_PROGRESSIVE_CASE_IDS:
+            errors.append("progressive cases must cover every required semantic property")
         covered_identities = {
             case["identity_state"] for case in fixture["cases"] if isinstance(case, dict)
         }
@@ -8021,21 +8130,32 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
     def test_progressive_semantic_oracle_rejects_contradictions_and_gaps(self) -> None:
         fixture = self.progressive_fixture()
         mutations = []
+        cases_by_id = {
+            case["case_id"]: index for index, case in enumerate(fixture["cases"])
+        }
 
         known_unknown = json.loads(json.dumps(fixture))
-        known_unknown["cases"][10]["identity_state"] = "known"
+        known_unknown["cases"][cases_by_id["progressive.unknown-id"]][
+            "identity_state"
+        ] = "known"
         mutations.append(known_unknown)
 
         wrong_action = json.loads(json.dumps(fixture))
-        wrong_action["cases"][10]["expected_action"] = "formalize"
+        wrong_action["cases"][cases_by_id["progressive.unknown-id"]][
+            "expected_action"
+        ] = "formalize"
         mutations.append(wrong_action)
 
         wrong_route = json.loads(json.dumps(fixture))
-        wrong_route["cases"][15]["expected_route"] = "test-spec"
+        wrong_route["cases"][cases_by_id["progressive.new-outcome"]][
+            "expected_route"
+        ] = "test-spec"
         mutations.append(wrong_route)
 
         non_behavioral_new_outcome = json.loads(json.dumps(fixture))
-        non_behavioral_new_outcome["cases"][15]["behavior_change"] = False
+        non_behavioral_new_outcome["cases"][cases_by_id["progressive.new-outcome"]][
+            "behavior_change"
+        ] = False
         mutations.append(non_behavioral_new_outcome)
 
         missing_trigger = json.loads(json.dumps(fixture))
@@ -8053,6 +8173,48 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
         for index, mutation in enumerate(mutations):
             with self.subTest(mutation=index):
                 self.assertNotEqual(self.progressive_semantic_errors(mutation), [])
+
+    def test_progressive_semantic_oracle_rejects_unknown_values_and_removed_properties(
+        self,
+    ) -> None:
+        fixture = self.progressive_fixture()
+        cases_by_id = {
+            case["case_id"]: index for index, case in enumerate(fixture["cases"])
+        }
+        target_index = cases_by_id["progressive.sufficient-slice"]
+        for field in self.PROGRESSIVE_VOCABULARIES:
+            mutated = json.loads(json.dumps(fixture))
+            mutated["cases"][target_index][field] = f"unknown-{field}"
+            with self.subTest(unknown_value=field):
+                self.assertIn(
+                    "closed vocabulary",
+                    " ".join(self.progressive_semantic_errors(mutated)),
+                )
+
+        for field in (
+            "behavior_change",
+            "user_named_method",
+            "expected_explain",
+            "expected_consent",
+        ):
+            mutated = json.loads(json.dumps(fixture))
+            mutated["cases"][target_index][field] = "false"
+            with self.subTest(invalid_type=field):
+                self.assertIn(
+                    "must be a boolean",
+                    " ".join(self.progressive_semantic_errors(mutated)),
+                )
+
+        for case_id in self.REQUIRED_PROGRESSIVE_CASE_IDS:
+            mutated = json.loads(json.dumps(fixture))
+            mutated["cases"] = [
+                case for case in mutated["cases"] if case["case_id"] != case_id
+            ]
+            with self.subTest(removed_property=case_id):
+                self.assertIn(
+                    "every required semantic property",
+                    " ".join(self.progressive_semantic_errors(mutated)),
+                )
 
     def test_skill_validation_bounds_manifest_contract_failures(self) -> None:
         for case in ("missing", "unknown-schema"):
