@@ -1351,6 +1351,64 @@ release_gate:
             errors,
         )
 
+    def test_clean_install_smoke_rejects_unowned_boundary_resources_for_each_adapter(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.3.4", output_dir, skills_root=skills_root)
+
+            def runner(command, **kwargs):
+                result = subprocess.run(command, **kwargs)
+                if result.returncode != 0:
+                    return result
+                adapter_name = command[command.index("init") + 1]
+                project_root = Path(kwargs["cwd"])
+                skill_root = (
+                    project_root
+                    / Path(ADAPTERS[adapter_name].skill_root.as_posix())
+                    / "portable-with-assets"
+                )
+                extra_name = {
+                    "codex": "boundary-first-compact-core.md",
+                    "claude": "boundary-first-feature-authoring.md",
+                    "opencode": "boundary-first-proof.md",
+                }[adapter_name]
+                (skill_root / "references" / extra_name).parent.mkdir(
+                    parents=True,
+                    exist_ok=True,
+                )
+                (skill_root / "references" / extra_name).write_text(
+                    "unowned\n",
+                    encoding="utf-8",
+                )
+                return result
+
+            errors = validate_clean_install_smoke(
+                "v0.3.4",
+                output_dir,
+                skills_root=skills_root,
+                skill_names=("portable-with-assets",),
+                command_runner=runner,
+            )
+
+        for adapter_name, resource_name in {
+            "codex": "boundary-first-compact-core.md",
+            "claude": "boundary-first-feature-authoring.md",
+            "opencode": "boundary-first-proof.md",
+        }.items():
+            self.assertTrue(
+                any(
+                    f"clean-install unowned boundary resource: "
+                    f"{adapter_name}/portable-with-assets: "
+                    f"references/{resource_name}" in error
+                    for error in errors
+                ),
+                errors,
+            )
+
     def test_validate_adapters_cli_rejects_clean_install_smoke_without_archive_root(self) -> None:
         result = subprocess.run(
             [

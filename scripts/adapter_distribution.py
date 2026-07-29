@@ -2569,6 +2569,18 @@ def validate_clean_install_smoke(
                     f"{(result.stderr or result.stdout).strip()}"
                 )
                 continue
+            expected_boundary_resources_by_skill: dict[str, set[str]] = {}
+            for resource in resources:
+                if adapter_name not in resource.adapters:
+                    continue
+                expected_boundary_resources_by_skill.setdefault(
+                    resource.skill_name,
+                    set(),
+                )
+                if Path(resource.relative_path).name.startswith("boundary-first-"):
+                    expected_boundary_resources_by_skill[resource.skill_name].add(
+                        resource.relative_path
+                    )
             for resource in resources:
                 if adapter_name not in resource.adapters:
                     continue
@@ -2606,6 +2618,20 @@ def validate_clean_install_smoke(
                         f"clean-install mapped resource parity mismatch: {adapter_name}/{resource.skill_name}: "
                         f"{resource.relative_path}: canonical sha256={resource.sha256}; "
                         f"installed sha256={installed_sha256}"
+                    )
+            for skill_name, expected_paths in expected_boundary_resources_by_skill.items():
+                skill_root = project_root / _path_from_posix(config.skill_root) / skill_name
+                if not skill_root.is_dir():
+                    continue
+                installed_paths = {
+                    path.relative_to(skill_root).as_posix()
+                    for path in skill_root.rglob("boundary-first-*.md")
+                    if path.is_file()
+                }
+                for unexpected_path in sorted(installed_paths - expected_paths):
+                    errors.append(
+                        f"clean-install unowned boundary resource: "
+                        f"{adapter_name}/{skill_name}: {unexpected_path}"
                     )
     finally:
         shutil.rmtree(cli_path.parents[2], ignore_errors=True)
