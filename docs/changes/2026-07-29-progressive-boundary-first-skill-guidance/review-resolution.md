@@ -14,14 +14,16 @@ Review closeout: plan-review-r2
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review pending closeout: code-review-m1-r1
+Review pending closeout: code-review-m1-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
   `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`,
-  `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`
-- Findings resolved: 5
-- Unresolved findings: 4
-- Current result: M1 code-review R1 requests four in-scope corrections before rereview.
+  `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`,
+  `code-review-m1-r2`
+- Findings resolved: 8
+- Unresolved findings: 3
+- Current result: M1 code-review R2 requests complete additional-resource and diagnostic closure before rereview.
 
 ## Resolution Overview
 
@@ -32,10 +34,12 @@ Review pending closeout: code-review-m1-r1
 | PBS-AR1 | accepted | resolved | ADR-20260729 defines the exact closed projection-manifest schema and the canonical package identifies it as the sole resource matrix. |
 | PBS-AR2 | accepted | resolved | The architecture separates tracked activation state and rollback from derived package, archive, and clean-install proof. |
 | PBS-TSR1 | accepted | resolved | M2 directly proves its compatibility-guidance state matrix and includes every plan-required M2 command; M4 retains composed activation and rollback proof. |
-| CR-M1-R1-001 | accepted | open | Close exact resource tuples and canonical resource versions before projection. |
-| CR-M1-R1-002 | accepted | open | Restore the four-question compact scan to the compact core. |
-| CR-M1-R1-003 | accepted | open | Restore prior target state after a handled projection write failure. |
-| CR-M1-R1-004 | accepted | open | Preserve structured manifest failure identity through activation validation. |
+| CR-M1-R1-001 | accepted | resolved | Exact resource tuples and canonical versions now fail closed. |
+| CR-M1-R1-002 | accepted | resolved | The four-question compact scan is restored to the compact core. |
+| CR-M1-R1-003 | accepted | resolved | Handled write failures restore prior target state and retry succeeds. |
+| CR-M1-R1-004 | accepted | open | Manifest identity is preserved, but missing family-source diagnostics failed remediation. |
+| CR-M1-R2-001 | accepted | open | Close the complete boundary-resource namespace against alternate and nested additions. |
+| CR-M1-R2-002 | accepted | open | Preserve structured diagnostics through the direct CLI and every activation sibling path. |
 
 ## Finding Details
 
@@ -45,37 +49,37 @@ Review pending closeout: code-review-m1-r1
 
 Finding ID: CR-M1-R1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Validate the manifest against one immutable exact resource contract and validate every canonical resource version before projection.
 Rationale: Generic containment and known-consumer membership do not prove the ADR-exact ownership matrix.
 Validation target: code-review-m1-r2
-Validation evidence: Exact known-consumer, source, target, and mixed-version mutations pass in `python scripts/test-boundary-first-reference.py`; full M1 validation passes pending independent R2 confirmation.
+Validation evidence: Code-review M1 R2 confirmed exact tuple and canonical version mutations fail closed.
 
 #### CR-M1-R1-002 - Compact core omits the compact scan
 
 Finding ID: CR-M1-R1-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Add the exact PBS-R007 questions to the compact core, reproject, and refresh identities.
 Rationale: PBS-R012 assigns compact scan semantics to the compact resource independently of M2 stage-local invocation.
 Validation target: code-review-m1-r2
-Validation evidence: The compact-core exact-question regression and 10 raw-byte projections pass in `python scripts/test-boundary-first-reference.py`; independent R2 confirmation remains pending.
+Validation evidence: Code-review M1 R2 confirmed the compact core and all ten projections contain the exact scan.
 
 #### CR-M1-R1-003 - Interrupted writes leave a mixed tree
 
 Finding ID: CR-M1-R1-003
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Snapshot target state after preflight, restore on handled write failure, and prove early, middle, final, and retry paths.
 Rationale: T2 requires an interrupted-write proof, while current code proves only invalid-input preflight.
 Validation target: code-review-m1-r2
-Validation evidence: Injected early, middle, and final write failures restore all 14 targets, and retry passes in `python scripts/test-boundary-first-reference.py`; independent R2 confirmation remains pending.
+Validation evidence: Code-review M1 R2 confirmed early, middle, and final handled failures restore all targets and retry passes.
 
 #### CR-M1-R1-004 - Activation diagnostics erase manifest failure identity
 
@@ -88,6 +92,32 @@ Chosen action: Use structured projection errors and retain source check, path, e
 Rationale: PBS-R037 requires the actual affected resource and blocking reason.
 Validation target: code-review-m1-r2
 Validation evidence: Activation-level unknown-manifest-version proof preserves `BFR-MANIFEST-CONTRACT-VERSION-UNKNOWN` and the manifest path in `python scripts/test-boundary-first-validation.py`; independent R2 confirmation remains pending.
+
+### code-review-m1-r2
+
+#### CR-M1-R2-001 - Alternate-version resources escape inventory validation
+
+Finding ID: CR-M1-R2-001
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution
+Chosen action: Inventory every `boundary-first-*.md` resource in canonical and governed reference roots and reject non-manifest paths.
+Rationale: A version-specific glob cannot prove additional or mixed-version closure.
+Validation target: code-review-m1-r3
+Validation evidence: pending
+
+#### CR-M1-R2-002 - Structured diagnostics remain incomplete on sibling paths
+
+Finding ID: CR-M1-R2-002
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution
+Chosen action: Structure missing-source and path errors, use one bounded CLI formatter, and prove activation and CLI family-resource failures.
+Rationale: Fixing one manifest-version case does not satisfy PBS-R037 across public and sibling validation paths.
+Validation target: code-review-m1-r3
+Validation evidence: pending
 
 ### proposal-review-r1
 

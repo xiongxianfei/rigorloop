@@ -73,20 +73,21 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: review-resolution
+  current_stage: review-resolution
+  next_stage: implement
   blocker: null
   evidence:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-r2.md
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/m1-resource-projection.md
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r1.md
+    - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r2.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M1
     milestones:
       M1:
         kind: implementation
-        state: review-requested
+        state: resolution-needed
       M2:
         kind: implementation
         state: planned
@@ -102,14 +103,14 @@ workflow_state:
       - M3
       - M4
     latest_review:
-      status: review-requested
+      status: changes-requested
       stage: code-review
       round: r2
       artifact_id: plan
       occurrence: milestone
       milestone_id: M1
       evidence:
-        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/m1-resource-projection.md
+        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r2.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -357,7 +358,9 @@ changed_files:
   - skills/verify/references/boundary-first-method-v1.md
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/review-invocation-code-review-m1-r1.yaml
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r1.md
+  - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/review-invocation-code-review-m1-r2.yaml
+  - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r2.md
 review:
   status: changes-requested
-  unresolved_items: 4
+  unresolved_items: 3
 workflow: {}
