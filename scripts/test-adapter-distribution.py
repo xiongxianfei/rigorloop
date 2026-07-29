@@ -2015,6 +2015,18 @@ release_gate:
             "composed_opencode": lambda text: text
             + "\nOpenCode invokes installed `broken` skill with "
             + "`manual: <argument>`.\n",
+            "codex_labeled_composed": lambda text: text
+            + "\nCodex users run broken manual to continue.\n",
+            "codex_labeled_html": lambda text: text
+            + "\nCodex uses <code>broken manual</code>.\n",
+            "codex_entity": lambda text: text
+            + "\nCodex uses &#36;workflow manual.\n",
+            "claude_call": lambda text: text
+            + "\nFor Claude, call /broken auto: wrong.\n",
+            "opencode_execute": lambda text: text
+            + "\nOpenCode executes workflow with auto: wrong.\n",
+            "opencode_command": lambda text: text
+            + "\nOpenCode command: workflow auto: wrong.\n",
         }
         source = ROOT / "skills" / "workflow" / "SKILL.md"
         source_text = source.read_text(encoding="utf-8")
