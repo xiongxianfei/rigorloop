@@ -5,6 +5,8 @@ Stage: code-review
 Round: M2 R1
 Reviewer: Codex code-review skill
 Target: commit 366fa994, M2 workflow routing slice
+Reviewed artifact: commit 366fa994
+Review date: 2026-07-29
 Status: approved
 Material findings: none
 Reviewed milestone: M2. Workflow-skill composition, routing, and recovery

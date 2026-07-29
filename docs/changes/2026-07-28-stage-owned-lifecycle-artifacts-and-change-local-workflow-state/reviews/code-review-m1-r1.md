@@ -5,6 +5,8 @@ Stage: code-review
 Round: M1 R1
 Reviewer: Codex code-review skill
 Target: commit 4947522d, M1 published-skill ownership slice
+Reviewed artifact: commit 4947522d
+Review date: 2026-07-29
 Status: approved
 Material findings: none
 Reviewed milestone: M1. Canonical published-skill ownership and artifact quality

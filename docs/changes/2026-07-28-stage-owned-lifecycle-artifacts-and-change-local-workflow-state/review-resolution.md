@@ -22,6 +22,9 @@ Review closeout: spec-review-r4
 Review closeout: spec-review-r5
 Review closeout: spec-review-r6
 Review closeout: code-review-m3-r1
+Review closeout: code-review-m1-r1
+Review closeout: code-review-m2-r1
+Review closeout: code-review-m4-r1
 
 - Reviews covered: `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `plan-review-r1`, `plan-review-r2`, `architecture-review-r1`,
   `architecture-review-r2`,
@@ -569,3 +572,24 @@ Validation target: M3 focused metadata and persistence tests
 Validation evidence: `python scripts/test-change-metadata-validator.py`
 passed 61 tests and `python scripts/test-workflow-automation-state.py` passed
 64 tests.
+
+### code-review-m1-r1
+
+Review result: approved
+Material findings: none
+Resolution required: no
+Validation evidence: focused canonical skill validation passed.
+
+### code-review-m2-r1
+
+Review result: approved
+Material findings: none
+Resolution required: no
+Validation evidence: focused workflow-skill validation passed.
+
+### code-review-m4-r1
+
+Review result: approved
+Material findings: none
+Resolution required: no
+Validation evidence: focused metadata and migration tests passed.

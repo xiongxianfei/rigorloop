@@ -5,6 +5,8 @@ Stage: code-review
 Round: M3 R1
 Reviewer: Codex code-review skill
 Target: commit ca68eeeb, M3 metadata and persistence slice
+Reviewed artifact: commit ca68eeeb
+Review date: 2026-07-29
 Status: changes-requested
 Material findings: SLA-CR-M3-1
 Reviewed milestone: M3. Minimal change-metadata state and consistency checks
@@ -22,6 +24,7 @@ Recording status: recorded
 
 ## Finding SLA-CR-M3-1
 
+Finding ID: SLA-CR-M3-1
 Severity: high
 Location: `scripts/change_metadata_semantics.py`,
 `validate_stage_owned_lifecycle_metadata`
