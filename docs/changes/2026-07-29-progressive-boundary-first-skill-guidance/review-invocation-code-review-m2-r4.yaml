@@ -1,0 +1,51 @@
+schema_version: 1
+review_id: code-review-m2-r4
+review_stage: code-review
+review_target: commit:1e5f89c7
+base_revision: 4af4edd2
+head_revision: 1e5f89c7
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L2
+author_context_id: root-m2-r3-resolution
+reviewer_context_id: m2-r4-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents-remediation-review
+risk_tier: elevated
+risk_tier_triggers: [public-skill-behavior, semantic-proof, closed-vocabulary]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:1e5f89c7.diff
+    revision: 1e5f89c7
+    sha256: 67d4554f6a5bc9a9a1f5e9dd64c2892ca70ad374e7e377c9ffa249233e5a763d
+  - path: remediation:a5c7170c..1e5f89c7.diff
+    revision: 1e5f89c7
+    sha256: 29dc7d9f4db102247ae00ed14197c598df591a195e9868364a24a11762021601
+initial_packet_sha256: 67d4554f6a5bc9a9a1f5e9dd64c2892ca70ad374e7e377c9ffa249233e5a763d
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, prior-findings-released, verdict-recorded]
+second_review:
+  required: true
+  satisfied: true
+  reviewer_context_id: m2-r4-second-review
+requirement_fidelity:
+  applicability: applicable
+  reason: R4 closes M2 public guidance and semantic proof.
+risk_map:
+  affected_behavior: complete M2 guidance and semantic proof
+  highest_impact_failure_modes: malformed rows, unknown values, missing properties, prompt dependence, or authority leakage
+  changed_boundaries: invocation, state, authority, slices, scenarios, compatibility, validation
+  evidence_expected: adversarial malformed-input proof and all M2 commands
+  direct_inspection_areas: shared block, ten skills, fixture, oracle, negative tests
+  intentionally_out_of_scope: M3, M4, final verification, PR
+  applicable_risk_classes: [contract-fidelity, semantic-proof, closed-vocabulary, authority-separation]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Does any prior finding reproduce?
+    - Can malformed input reach the oracle or produce false success?

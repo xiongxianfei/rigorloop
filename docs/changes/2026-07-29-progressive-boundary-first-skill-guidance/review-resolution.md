@@ -24,16 +24,18 @@ Review closeout: code-review-m1-r8
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m2-r3
+Review closeout: code-review-m2-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
   `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`,
   `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`,
   `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`,
-  `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`
-- Findings resolved: 24
-- Unresolved findings: 1
-- Current result: M2 code-review R3 requests changes; implementation must resolve CR-M2-R3-001 before rereview.
+  `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`,
+  `code-review-m2-r4`
+- Findings resolved: 25
+- Unresolved findings: 0
+- Current result: M2 code-review R4 is clean-with-notes; M2 is closed and M3 may begin.
 
 ## Resolution Overview
 
@@ -63,7 +65,7 @@ Review closeout: code-review-m2-r3
 | CR-M1-R7-003 | accepted | resolved | Identity diagnostics name affected stable resource layers. |
 | CR-M2-R1-001 | accepted | resolved | Independent decision derivation, complete identity coverage, and shipped-guidance bindings replace self-assertion. |
 | CR-M2-R2-001 | accepted | resolved | Closed sets, boolean types, stable property IDs, and unknown/removal mutations now fail closed for valid-shaped rows. |
-| CR-M2-R3-001 | accepted | open | Reject unknown case and skill identities and malformed rows before dependent logic. |
+| CR-M2-R3-001 | accepted | resolved | Unknown identities and malformed rows fail before dependent logic; valid rows remain order-independent. |
 
 ## Finding Details
 
@@ -101,13 +103,17 @@ Validation evidence: Code-review M2 R3 confirmed declared vocabularies, booleans
 
 Finding ID: CR-M2-R3-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementation
 Owning stage: review-resolution
 Chosen action: Validate row shape, case and skill identity, and types before all dependent logic, then aggregate only validated rows.
 Rationale: Closed-vocabulary validators must reject unknowns before consistency evaluation and must not crash on malformed input.
 Validation target: code-review-m2-r4
-Validation evidence: pending
+Validation evidence: Code-review M2 R4 confirmed every malformed category returns bounded errors without oracle invocation and the complete M2 suite passes.
+
+### code-review-m2-r4
+
+No new findings. Both independent reviewers issued clean-with-notes receipts.
 
 ### code-review-m1-r1
 
