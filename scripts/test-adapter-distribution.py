@@ -1663,7 +1663,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 validation_overrides={
                     "adapter_archives": "pass",
                     "adapter_artifact_metadata": "pass",
@@ -3027,7 +3027,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=smoke,
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3054,7 +3054,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=smoke,
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3079,7 +3079,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3116,7 +3116,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3282,7 +3282,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3316,7 +3316,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3408,7 +3408,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3454,7 +3454,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3597,7 +3597,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
