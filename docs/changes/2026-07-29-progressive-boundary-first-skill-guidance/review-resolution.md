@@ -17,15 +17,16 @@ Review pending closeout: code-review-m1-r1
 Review pending closeout: code-review-m1-r2
 Review pending closeout: code-review-m1-r3
 Review pending closeout: code-review-m1-r4
+Review pending closeout: code-review-m1-r5
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
   `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`,
   `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`,
   `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`
-- Findings resolved: 14
+- Findings resolved: 16
 - Unresolved findings: 2
-- Current result: M1 code-review R4 requests skill-validation error translation and secret-safe diagnostics before rereview.
+- Current result: M1 code-review R5 requests canonical scalar privacy and namespace-scoped symlink inventory before rereview.
 
 ## Resolution Overview
 
@@ -45,8 +46,10 @@ Review pending closeout: code-review-m1-r4
 | CR-M1-R3-001 | accepted | resolved | Catchable interruption restores target state before propagation. |
 | CR-M1-R3-002 | accepted | resolved | Projection derives from the manifest without a parallel tuple matrix. |
 | CR-M1-R3-003 | accepted | resolved | Missing-manifest diagnostics are structured through CLI and activation. |
-| CR-M1-R4-001 | accepted | open | Translate manifest contract failures at the skill-validation boundary. |
-| CR-M1-R4-002 | accepted | open | Prevent untrusted manifest scalars from appearing in public diagnostics. |
+| CR-M1-R4-001 | accepted | resolved | Skill validation translates manifest failures without traceback or private roots. |
+| CR-M1-R4-002 | accepted | resolved | Manifest scalars are represented by one-way identities. |
+| CR-M1-R5-001 | accepted | open | Prevent canonical resource-version scalar disclosure. |
+| CR-M1-R5-002 | accepted | open | Restrict symlink inventory to governed boundary resources. |
 
 ## Finding Details
 
@@ -171,7 +174,7 @@ Validation evidence: Missing-manifest CLI and activation regressions preserve ex
 
 Finding ID: CR-M1-R4-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Translate projection contract failures into bounded skill-validation errors and prove missing and malformed CLI paths.
@@ -183,13 +186,39 @@ Validation evidence: Missing and unknown-schema isolated skill-validation CLI ca
 
 Finding ID: CR-M1-R4-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Remove untrusted values from diagnostic messages and consistently redact the offending-value field.
 Rationale: Actionable diagnostics do not require disclosure of the rejected payload.
 Validation target: code-review-m1-r5
 Validation evidence: Secret-bearing consumer fixtures preserve stable identities while excluding the scalar from projection CLI and activation serialization; independent R5 confirmation remains pending.
+
+### code-review-m1-r5
+
+#### CR-M1-R5-001 - Canonical resource diagnostics disclose untrusted version scalars
+
+Finding ID: CR-M1-R5-001
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution
+Chosen action: Hash canonical version offending values and prove public and activation paths.
+Rationale: Resource contents are untrusted diagnostic input.
+Validation target: code-review-m1-r6
+Validation evidence: pending correction and independent rereview
+
+#### CR-M1-R5-002 - Projection inventory rejects unrelated symlinked resources
+
+Finding ID: CR-M1-R5-002
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution
+Chosen action: Restrict recursive symlink discovery to the boundary resource namespace while retaining governed path ancestor checks.
+Rationale: The boundary validator must not claim unrelated packaged resources.
+Validation target: code-review-m1-r6
+Validation evidence: pending correction and independent rereview
 
 ### proposal-review-r1
 

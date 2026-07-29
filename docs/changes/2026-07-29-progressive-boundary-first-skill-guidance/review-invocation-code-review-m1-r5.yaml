@@ -1,0 +1,89 @@
+schema_version: 1
+review_id: code-review-m1-r5
+review_stage: code-review
+review_target: commit:e26ff0c9
+base_revision: 9d16bbe2
+head_revision: e26ff0c9
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m1-r4-resolution
+reviewer_context_id: m1-r5-primary-and-second-fresh-agents
+context_separation_mechanism: fresh-separate-agents-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - validator-behavior
+  - generated-output-machinery
+  - compatibility-identity
+  - multi-component-change
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+  - docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/progressive-boundary-first-skill-guidance.md
+    revision: e26ff0c9
+    sha256: 983a6cab29dd12ff18866f06a2a818ab9c198dd3a3ccddccc06c8e95516d2dd2
+  - path: specs/progressive-boundary-first-skill-guidance.test.md
+    revision: e26ff0c9
+    sha256: 30595f49cb782e772588334dc9b6c31c728f5b6567892784d6fa27488e3f5257
+  - path: docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+    revision: e26ff0c9
+    sha256: 7aa4b69d2636eb0ff6bf6fb77bcf6835ad2dd5c889feaa8b786e1badce65d5c1
+  - path: docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md
+    revision: e26ff0c9
+    sha256: ad78a2f644679a6b0dbaaa6000c1c9b0a8751f9abeb238fcb74cee04e16181c9
+  - path: commit:e26ff0c9.diff
+    revision: e26ff0c9
+    sha256: d4e81185f10b2dd94cb9cbbcea22e5b5aeb7a90ae5531acf79622fdab400195d
+initial_packet_sha256: d4e81185f10b2dd94cb9cbbcea22e5b5aeb7a90ae5531acf79622fdab400195d
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
+second_review:
+  required: true
+  satisfied: true
+  reviewer_context_id: m1-r5-second-review
+requirement_fidelity:
+  applicability: applicable
+  reason: M1 implements closed multi-surface MUST requirements across manifests, validators, resources, and skill maps.
+risk_map:
+  affected_behavior: manifest parsing, 14-target projection, write recovery, pending activation identity, resource maps, skill validation, and diagnostics
+  highest_impact_failure_modes: residual scalar disclosure, incomplete topology recovery, unrelated symlink rejection, authority coupling, or incomplete reusable map enforcement
+  changed_boundaries: authority, composition, temporal recovery, diagnostics, compatibility, pending state, and filesystem environment
+  evidence_expected: T1/T2/T5 matrices, public diagnostic probes, exact map proof, identities, and recovery checks
+  direct_inspection_areas: parser, diagnostics, inventory scans, restoration, activation translation, skill validation, maps, and tests
+  intentionally_out_of_scope: M2 guidance, M3 selector routing, M4 package parity, PR, and final verification
+  applicable_risk_classes:
+    - identity-authority
+    - composition-path
+    - temporal-retry
+    - failure-recovery
+    - compatibility-migration
+    - pending-state
+    - filesystem-containment
+    - diagnostics
+  non_applicable_risk_classes:
+    - network-service
+    - credentials
+    - database-migration
+    - ui-accessibility
+  falsifiable_questions:
+    - Can any malformed resource scalar appear in public output?
+    - Does interruption restore the governed target set and expose residual topology?
+    - Do unrelated symlinks incorrectly block the boundary namespace?
+    - Does the manifest drive projection without a parallel relation matrix?
+    - Are skill-validation manifest failures bounded?
+    - Are all 14 projection identities and ten maps exact?
