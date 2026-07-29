@@ -24,7 +24,6 @@
   - `scripts/validate-change-metadata.py`
   - `scripts/ci.sh`
   - `.github/workflows/ci.yml`
-  - `docs/changes/0001-skill-validator/`
   - `docs/explain/`
 
 ## Testing strategy
@@ -32,9 +31,9 @@
 - Use manual contract review for the workflow spec, workflow test spec, README, and summary surfaces because much of this feature is repository guidance rather than new runtime behavior.
 - Treat stage-local `workflow` and `implement` skills as part of the manual proof surface when they operationalize the approved docs-changes contract.
 - Use integration coverage for `scripts/validate-change-metadata.py` and `tests/fixtures/change-metadata/` because canonical artifact-key enforcement and scalar-path preservation are executable validator behavior.
-- Use the shipped `docs/changes/0001-skill-validator/` pack and approved legacy `docs/explain/*.md` artifacts as real compatibility fixtures rather than synthetic stand-ins.
+- Use test-owned change-metadata fixtures and approved legacy `docs/explain/*.md` artifacts for their separate validation and compatibility roles.
 - Use smoke validation through `bash scripts/ci.sh` after the dedicated change-metadata fixture runner is wired into the repo-owned CI wrapper.
-- Treat workflow-test-spec alignment as part of the proof surface because M1 changes the governing workflow contract and the existing top-level workflow test spec already covers `change.yaml`, `0001`, and durable-review-memory behavior.
+- Treat workflow-test-spec alignment as part of the proof surface because M1 changes the governing workflow contract and the existing top-level workflow test spec already covers `change.yaml` and durable-review-memory behavior.
 - Keep migration/compatibility coverage focused on preserving existing valid artifact shapes and legacy explain surfaces rather than forcing a mass migration.
 
 ## Requirement coverage map
@@ -45,7 +44,7 @@
 | `R2`, `R2a`, `R2b` | `T2` | manual | Fast-lane omission boundary and required `change.yaml` for non-trivial work |
 | `R3`, `R3a`, `R3b`, `R3c`, `R3d`, `R3e`, `R3f` | `T3` | manual | Durable reasoning default, equivalent-surface boundary, and legacy `docs/explain/` compatibility |
 | `R4`, `R4a`, `R4b`, `R4c`, `R4d`, `R5`, `R5a` | `T4` | manual | Distinct artifact roles and standalone review-resolution triggers |
-| `R6`, `R6a`, `R6b`, `R7a`, `R7b` | `T5`, `T8` | manual, smoke | Objective `verify-report.md` triggers and rich-example non-universality |
+| `R6`, `R6a`, `R6b`, `R7a`, `R7b` | `T5`, `T8` | manual, smoke | Objective `verify-report.md` triggers and test-owned fixture separation |
 | `R9`, `R9a`, `R9b`, `R9c` | `T6`, `T7` | integration | Canonical snake_case keys, scalar string values, and actionable validator failures |
 
 ## Example coverage map
@@ -56,7 +55,7 @@
 | `E2` | `T3` | Ordinary non-trivial work uses `change.yaml` plus `explain-change.md` |
 | `E3` | `T4` | `review-resolution.md` becomes standalone only when its trigger applies |
 | `E4` | `T5` | `verify-report.md` is required only when the objective trigger set applies |
-| `E5` | `T8` | `0001-skill-validator/` remains rich reference example, not minimum universal pack |
+| `E5` | `T8` | Synthetic change-metadata input remains test-owned |
 
 ## Edge case coverage
 
@@ -67,7 +66,7 @@
 - Edge case 5: approved legacy top-level explain artifact remains valid until retired: `T3`
 - Edge case 6: PR text or ad hoc docs alone cannot serve as equivalent durable reasoning: `T3`
 - Edge case 7: `artifacts` mapping uses canonical snake_case keys with scalar string path values: `T6`, `T7`
-- Edge case 8: `0001-skill-validator/` may contain more artifacts than an ordinary non-trivial change without making them universal: `T5`, `T8`
+- Edge case 8: a synthetic fixture may model a rich artifact mapping without becoming a real change root: `T5`, `T8`
 
 ## Test cases
 
@@ -90,7 +89,7 @@
   - Confirm `specs/rigorloop-workflow.md` is the normative home for the packaging rule.
   - Confirm `docs/workflows.md`, `AGENTS.md`, `CONSTITUTION.md`, and `README.md` summarize the same baseline-versus-conditional artifact rule without weakening it.
   - Confirm `skills/workflow/SKILL.md` and `skills/implement/SKILL.md` operationalize the same approved baseline-versus-conditional rule rather than treating the change-local pack as optional for ordinary non-trivial work.
-  - Confirm the existing workflow test spec remains aligned where it already covers `change.yaml`, `0001-skill-validator/`, and explain-change/review-resolution behavior.
+  - Confirm the existing workflow test spec remains aligned where it covers `change.yaml` and explain-change/review-resolution behavior.
 - Expected result:
   - Contributors can find one coherent packaging rule across normative workflow docs, summary surfaces, and stage-local execution guidance.
 - Failure proves:
@@ -151,8 +150,6 @@
 - Fixture/setup:
   - `specs/docs-changes-usage-policy.md`
   - `specs/rigorloop-workflow.md`
-  - `docs/changes/0001-skill-validator/explain-change.md`
-  - `docs/changes/0001-skill-validator/review-resolution.md`
 - Steps:
   - Review the approved artifact-role matrix and the workflow contract's review-resolution rules.
   - Confirm `change.yaml`, `explain-change.md`, `review-resolution.md`, and `verify-report.md` are described as distinct artifact types with different roles.
@@ -171,13 +168,12 @@
 - Level: manual
 - Fixture/setup:
   - `specs/docs-changes-usage-policy.md`
-  - `docs/changes/0001-skill-validator/verify-report.md`
   - `README.md`
 - Steps:
   - Review the approved `verify-report.md` trigger list.
   - Confirm standalone `verify-report.md` is required only when one of the objective triggers applies.
-  - Confirm guidance does not imply that `verify-report.md` is always required just because the shipped `0001` example contains one.
-  - Confirm contributor-facing wording still treats `0001-skill-validator/` as a rich reference example rather than the universal minimum pack.
+  - Confirm guidance does not imply that `verify-report.md` is always required without an approved trigger.
+  - Confirm contributor-facing wording does not derive lifecycle requirements from synthetic fixtures.
 - Expected result:
   - `verify-report.md` remains conditional, and the rich example does not expand into a blanket requirement.
 - Failure proves:
@@ -190,20 +186,19 @@
 - Covers: `R9`, `R9a`, `R9b`, `R9c`
 - Level: integration
 - Fixture/setup:
-  - `docs/changes/0001-skill-validator/change.yaml`
   - `tests/fixtures/change-metadata/valid-basic/change.yaml`
   - repo-owned runner: `scripts/test-change-metadata-validator.py`
 - Steps:
   - Run `python scripts/test-change-metadata-validator.py`.
-  - Run `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml tests/fixtures/change-metadata/valid-basic/change.yaml`.
-  - Confirm the shipped `0001` example and the valid fixture both pass with canonical snake_case artifact keys and scalar string path values.
+  - Run `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml`.
+  - Confirm the valid fixture passes with canonical snake_case artifact keys and scalar string path values.
 - Expected result:
   - Repo-owned validation accepts canonical artifact keys and the unchanged scalar-path value shape.
 - Failure proves:
-  - The approved artifact-index contract is not executable or the shipped example drifted from the approved key/value shape.
+  - The approved artifact-index contract is not executable or its test fixture drifted from the approved key/value shape.
 - Automation location:
   - `python scripts/test-change-metadata-validator.py`
-  - `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml tests/fixtures/change-metadata/valid-basic/change.yaml`
+  - `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml`
 
 ### T7. Invalid artifact keys or value shapes fail with actionable validator output
 
@@ -226,28 +221,28 @@
   - `python scripts/test-change-metadata-validator.py`
   - `python scripts/validate-change-metadata.py <invalid-fixture>`
 
-### T8. Repository proof keeps `0001-skill-validator/` valid and includes the metadata test surface
+### T8. Repository proof keeps metadata fixtures test-owned
 
 - Covers: `R6b`, `R7a`, `R7b`, `E5`
 - Level: smoke
 - Fixture/setup:
-  - `docs/changes/0001-skill-validator/`
+  - `tests/fixtures/change-metadata/`
   - `scripts/ci.sh`
   - `.github/workflows/ci.yml`
   - `README.md`
 - Steps:
   - Run `python scripts/test-change-metadata-validator.py`.
-  - Run `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml`.
+  - Run `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml`.
   - Run `bash scripts/ci.sh`.
   - Inspect `.github/workflows/ci.yml` and confirm it stays a thin wrapper over the repo-owned CI script.
-  - Confirm the `0001` example and contributor entrypoints still read as a rich example rather than a mandatory universal pack.
+  - Confirm contributor entrypoints do not present fixture data as a real or universal artifact pack.
 - Expected result:
-  - The repository's standard proof path exercises the change-metadata validator, the shipped `0001` example stays valid, and CI wiring remains thin.
+  - The repository's standard proof path exercises test-owned metadata fixtures and CI wiring remains thin.
 - Failure proves:
-  - The new proof surface is missing from the normal validation path, or contributor entrypoints still imply the rich example is universal.
+  - The proof surface is missing from the normal validation path, or fixture data appears as project lifecycle state.
 - Automation location:
   - `python scripts/test-change-metadata-validator.py`
-  - `python scripts/validate-change-metadata.py docs/changes/0001-skill-validator/change.yaml`
+  - `python scripts/validate-change-metadata.py tests/fixtures/change-metadata/valid-basic/change.yaml`
   - `bash scripts/ci.sh`
 
 ## Fixtures and data
@@ -259,9 +254,7 @@
   - `AGENTS.md`
   - `CONSTITUTION.md`
   - `README.md`
-- Use real change-local and legacy reasoning artifacts:
-  - `docs/changes/0001-skill-validator/`
-  - approved artifacts under `docs/explain/`
+- Use approved legacy reasoning artifacts under `docs/explain/` for compatibility coverage.
 - Use the existing change-metadata fixtures plus the new negative fixtures planned in M2:
   - `tests/fixtures/change-metadata/valid-basic/change.yaml`
   - `tests/fixtures/change-metadata/missing-title/change.yaml`
@@ -284,13 +277,13 @@
 ## Migration or compatibility tests
 
 - Confirm approved legacy top-level `docs/explain/*.md` artifacts remain valid until retired: `T3`.
-- Confirm the shipped `0001-skill-validator/` pack remains valid without reduction: `T5`, `T8`.
+- Confirm synthetic change-metadata fixtures remain test-owned: `T5`, `T8`.
 - Confirm canonical artifact-key enforcement does not redesign the scalar string value shape: `T6`, `T7`.
-- Confirm the existing workflow test spec remains coherent where it already covers `change.yaml`, `0001`, and durable review memory: `T1`.
+- Confirm the existing workflow test spec remains coherent where it covers `change.yaml` and durable review memory: `T1`.
 
 ## Observability verification
 
-- Confirm contributor-facing surfaces make the baseline-versus-conditional rule visible without reverse-engineering `0001`: `T1`, `T5`.
+- Confirm contributor-facing surfaces make the baseline-versus-conditional rule visible without reverse-engineering a fixture: `T1`, `T5`.
 - Confirm validator failures identify invalid artifact-key names or invalid artifact-map value shapes precisely enough to fix: `T7`.
 - Confirm `change.yaml` remains an inspectable index of present artifacts rather than a hidden metadata blob: `T6`, `T8`.
 
@@ -312,8 +305,8 @@
 
 - Review the updated workflow spec, workflow test spec, and summary surfaces together and confirm the packaging rule is consistent.
 - Review the durable reasoning and legacy compatibility wording and confirm PR text alone is never treated as enough for non-trivial work.
-- Review `docs/changes/0001-skill-validator/` and confirm it still reads as a rich example rather than a universal minimum pack.
-- Run the metadata validation commands on the shipped `0001` example and the valid fixture.
+- Confirm synthetic change-metadata cases remain under `tests/fixtures/`.
+- Run the metadata validation commands on the valid fixture.
 - Run the new negative fixtures once M2 lands and confirm the validator errors are specific.
 - Run `bash scripts/ci.sh` after M3 and confirm the repo-wide proof path includes the new change-metadata test surface.
 
@@ -322,7 +315,7 @@
 - Do not add tests for a nested-object `change.yaml` redesign. That behavior is explicitly out of scope.
 - Do not add hosted-GitHub-only checks as the main proof surface. Hosted CI observation belongs to later verify/PR work.
 - Do not force migration tests that require rewriting all approved `docs/explain/*.md` artifacts. The approved contract preserves them until later migration or retirement.
-- Do not treat `0001-skill-validator/` as the required artifact set for every non-trivial change in fixtures or manual review.
+- Do not treat synthetic fixture artifact mappings as required artifact sets for real changes.
 
 ## Uncovered gaps
 

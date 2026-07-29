@@ -991,6 +991,54 @@ raise SystemExit({exit_code})
                 )
             )
 
+    def test_tracked_change_root_deletion_selects_regressions_without_missing_path_validation(self) -> None:
+        repo = self.make_git_repo()
+        change_root = repo / "docs" / "changes" / "retired-change"
+        change_root.mkdir(parents=True)
+        change_yaml = change_root / "change.yaml"
+        review_resolution = change_root / "review-resolution.md"
+        proposal = change_root / "proposal.md"
+        change_yaml.write_text("change_id: retired-change\n", encoding="utf-8")
+        review_resolution.write_text("# Review resolution\n", encoding="utf-8")
+        proposal.write_text("# Proposal\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True)
+        subprocess.run(
+            ["git", "commit", "-m", "add fixture"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        change_yaml.unlink()
+        review_resolution.unlink()
+        proposal.unlink()
+
+        context = build_repository_preflight_context(repo)
+        result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=(
+                    "docs/changes/retired-change/change.yaml",
+                    "docs/changes/retired-change/review-resolution.md",
+                    "docs/changes/retired-change/proposal.md",
+                ),
+                repo_root=repo,
+                preflight_context=context,
+            )
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["blocking_results"], [])
+        self.assertEqual(
+            selected_ids(payload),
+            {
+                "artifact_lifecycle.regression",
+                "change_metadata.regression",
+                "review_artifacts.regression",
+            },
+        )
+
     def test_change_evidence_registry_entries_are_complete_and_stable(self) -> None:
         valid = [
             EvidenceClassRegistration(
@@ -2720,22 +2768,6 @@ raise SystemExit({exit_code})
                 "docs/plan.md",
             ],
         )
-
-    def test_retained_skill_validator_fixture_rationale_has_deterministic_routing(self) -> None:
-        path = "docs/changes/0001-skill-validator/README.md"
-
-        result = self.select([path])
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok")
-        self.assertEqual(payload["unclassified_paths"], [])
-        self.assertEqual(payload["blocking_results"], [])
-        self.assertIn({"path": path, "category": "retained-change-fixture"}, payload["classified_paths"])
-        self.assertIn("artifact_lifecycle.regression", selected_ids(payload))
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
-
-        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
-        self.assertEqual(lifecycle_check["paths"], [path])
 
     def test_selector_and_validation_script_paths_select_regressions(self) -> None:
         result = self.select(["scripts/select-validation.py", "scripts/validate-review-artifacts.py"])

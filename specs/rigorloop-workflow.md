@@ -868,7 +868,7 @@ R13. The first proof-of-value example shipped by the starter kit MUST be a skill
 
 R14. The proof-of-value example MUST include durable artifacts for proposal, spec, plan, test-spec, verify report, and explain-change.
 
-R14a. `docs/changes/0001-skill-validator/` MUST be treated as a rich reference example rather than the minimum universal pack for every non-trivial change.
+R14a. Synthetic change-metadata cases MUST live under `tests/fixtures/` rather than appearing as real change roots.
 
 R14b. The ordinary baseline non-trivial change-local pack MUST be `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning, with standalone `review-resolution.md` and `verify-report.md` remaining conditional when their governing triggers do not apply.
 
@@ -1255,9 +1255,9 @@ mechanism.
 10. An accepted proposal, approved spec, approved architecture document, active test spec, or accepted or active ADR may remain current guidance without immediate closeout as long as its readiness text is truthful and terminal disposition has not occurred.
 11. Final PR text may reference additional authoritative artifacts only after `verify` is rerun against those new references or an equivalent updated pre-PR handoff surface.
 12. An ordinary non-trivial change may satisfy the baseline change-local pack with `docs/changes/<change-id>/change.yaml` plus `docs/changes/<change-id>/explain-change.md` when standalone `review-resolution.md` and `verify-report.md` triggers do not apply.
-13. `docs/changes/0001-skill-validator/` may include more artifacts than an ordinary non-trivial change without making those additional artifacts universal requirements.
+13. A test-owned metadata fixture may model more artifacts than an ordinary non-trivial change without making those additional artifacts universal requirements.
 14. Approved legacy top-level explain artifacts under `docs/explain/` remain valid for already-shipped work until they are migrated, superseded, archived, or otherwise retired.
-14a. Historical change roots such as `docs/changes/0001-skill-validator/` remain valid legacy records; new workflow-managed change roots should use `docs/changes/YYYY-MM-DD-slug/` unless a project-local guide explicitly customizes the convention.
+14a. Deleted historical change roots remain available through Git history; new workflow-managed change roots should use `docs/changes/YYYY-MM-DD-slug/` unless a project-local guide explicitly customizes the convention.
 15. Successful `spec-review` may still report `Immediate next stage: architecture` while separately reporting `Eventual test-spec readiness: conditionally-ready`; `architecture` is a forward repository-stage handoff value.
 16. `inconclusive` `spec-review` uses `Immediate next stage: none`, `Eventual test-spec readiness: not-ready`, and a stop condition naming the missing input, blocker, or ambiguity. The `Immediate next stage` field is not omitted or left empty for inconclusive or missing-input cases.
 17. `plan-review` may mention implementation readiness only after preserving `test-spec` as the immediate next handoff.
@@ -1332,7 +1332,7 @@ mechanism.
 - A reviewer can determine from the PR plus artifacts why a change exists, how it was validated, and which content is canonical versus generated.
 - A reviewer can determine the disposition and rationale of review feedback without guessing whether it lives in PR text, explain-change, or a standalone review-resolution artifact.
 - A reviewer can locate structured traceability for a non-trivial change in `docs/changes/<change-id>/change.yaml` and find at least the required fields defined by `R25b`.
-- A reviewer can distinguish the ordinary baseline non-trivial change-local pack from the richer `docs/changes/0001-skill-validator/` example pack.
+- A reviewer can distinguish real change-local records from synthetic metadata fixtures under `tests/fixtures/`.
 - A reviewer can tell that new non-trivial work defaults to `docs/changes/<change-id>/explain-change.md` while approved legacy top-level explain artifacts remain valid until retired.
 - A reviewer can distinguish milestone commit boundaries from pull-request boundaries by inspecting standardized milestone commit subjects and the associated plan updates.
 - A reviewer can tell that planned implementation milestone state uses one authoritative field and that `review-requested` and `resolution-needed` block premature final closeout readiness.

@@ -23,7 +23,7 @@ This is a release packaging, validation, compatibility, documentation, and evide
 
 - Unit and integration tests in `scripts/test-adapter-distribution.py` prove archive generation, archive validation, metadata schema validation, release validation, release notes, adapter README expectations, and compatibility-window behavior.
 - Token-cost tests in `scripts/test-token-cost-measurement.py`, `scripts/test-token-cost-report-validation.py`, and `scripts/validate-token-cost-report.py` prove canonical static measurement and public adapter dynamic benchmark source behavior.
-- Selector, lifecycle, review-artifact, and skill-validator tests prove optional proof-pack movement or retained-fixture rationale and bounded skill wording behavior.
+- Selector, lifecycle, review-artifact, and skill-validator tests prove test-owned fixture behavior and bounded skill wording behavior.
 - Release-gate smoke through `RELEASE_VERIFY_DRY_RUN=1 bash scripts/release-verify.sh v0.1.2` and final `bash scripts/release-verify.sh v0.1.2` proves maintainer-facing release readiness.
 - Manual verification is allowed only for GitHub release attachment/publication, text quality, and downstream release-channel checks that cannot be proven before publication.
 
@@ -83,7 +83,7 @@ This is a release packaging, validation, compatibility, documentation, and evide
 | `M1. Generate adapter archives without removing tracked adapter skills` | `T1`, `T2`, `T3`, `T14` |
 | `M2. Validate adapter artifact metadata and checksums` | `T4`, `T5`, `T14` |
 | `M3. Update install contract, release notes, and artifact-location guidance` | `T6`, `T7`, `T10`, `T14` |
-| `M4. Settle skill-validator proof pack and bounded skill wording` | `T8`, `T9`, `T10`, `T11`, `T14` |
+| `M4. Settle skill-validator fixtures and bounded skill wording` | `T8`, `T9`, `T10`, `T11`, `T14` |
 | `M5. Produce token-cost and final release-readiness evidence` | `T12`, `T13`, `T14`, `T17` |
 | `M6. Later untracking release gate` | `T15`, `T16` |
 
@@ -195,18 +195,16 @@ This is a release packaging, validation, compatibility, documentation, and evide
 - Failure proves: users can miss the new archive path or lose the old compatibility path unexpectedly.
 - Automation location: `scripts/test-adapter-distribution.py`, `scripts/validate-release.py`
 
-### T8. Unsafe skill-validator proof-pack move is deferred with rationale
+### T8. Skill-validator fixtures remain test-owned
 
 - Covers: `R64`, `R68`, `R69`, `E5`
 - Level: integration, manual
-- Fixture/setup: `docs/changes/0001-skill-validator/`, change-local evidence or tracked rationale surface
+- Fixture/setup: skill-validator cases under `tests/fixtures/`
 - Steps:
-  - Search references to `docs/changes/0001-skill-validator/`.
-  - If references cannot be safely updated in M4, assert the old path remains.
-  - Assert a tracked or review-visible rationale states it is a retained validator fixture and historical proof pack, not active lifecycle state.
-  - Assert release validation does not fail solely because the proof pack remains with rationale.
-- Expected result: unsafe movement is deferred without blocking archive publication.
-- Failure proves: example migration can derail the release or leave ambiguous active-looking state.
+  - Assert synthetic cases remain under `tests/fixtures/`.
+  - Assert no release rule requires a production-path proof-pack exception.
+- Expected result: fixture ownership does not interfere with archive publication.
+- Failure proves: test data can create ambiguous production-looking state.
 - Automation location: `scripts/test-skill-validator.py`, `scripts/test-artifact-lifecycle-validator.py`, manual reference review
 
 ### T9. Safe skill-validator proof-pack move updates references and routing
@@ -345,7 +343,6 @@ This is a release packaging, validation, compatibility, documentation, and evide
 - Positive and negative adapter metadata fixtures in `scripts/test-adapter-distribution.py` or `tests/fixtures/adapters/`.
 - Token-cost fixtures under `tests/fixtures/token-cost/`.
 - Optional synthetic cases under `tests/fixtures/`.
-- Retained proof pack under `docs/changes/0001-skill-validator/`.
 
 ## Mocking/stubbing policy
 

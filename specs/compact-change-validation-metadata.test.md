@@ -161,7 +161,7 @@ active
 
 - Covers: R1, R6, E4, EC2, AC1
 - Level: integration, migration
-- Fixture/setup: Existing legacy fixtures such as `tests/fixtures/change-metadata/valid-basic/change.yaml`, the clean-receipt fixture, and the shipped `docs/changes/0001-skill-validator/change.yaml`.
+- Fixture/setup: Test-owned fixtures such as `tests/fixtures/change-metadata/valid-basic/change.yaml` and the clean-receipt fixture.
 - Steps: Run `python scripts/test-change-metadata-validator.py` and direct `validate-change-metadata.py` commands against legacy valid fixtures.
 - Expected result: Legacy valid files pass without compact fields.
 - Failure proves: Compact support regressed historical metadata compatibility.

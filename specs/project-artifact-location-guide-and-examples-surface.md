@@ -10,7 +10,7 @@ approved
 
 ## Goal and context
 
-This spec defines the contract for the project-local artifact-location map, retained skill-validator fixture handling, and skill lookup behavior.
+This spec defines the contract for the project-local artifact-location map, test-owned fixture handling, and skill lookup behavior.
 
 Public RigorLoop skills are being simplified so they do not carry long duplicated path rules, example directories, review-root algorithms, generated-output details, or repository-maintainer internals. After that simplification, users and agents still need a project-local answer to where proposals, specs, plans, review records, change metadata, examples, reports, and generated outputs belong.
 
@@ -74,12 +74,12 @@ Given review-recording behavior needs a fixture
 When a repository test creates that fixture in a temporary root
 Then the fixture is validated only within that test root.
 
-### Example E7: skill-validator fixture is retained with rationale
+### Example E7: skill-validator fixtures are test-owned
 
-Given `docs/changes/0001-skill-validator/` remains in `docs/changes/`
-When contributors inspect that path
-Then a tracked or review-visible marker explains that it is a retained validator fixture and historical proof pack
-And it is not the universal template or minimum artifact pack for non-trivial work.
+Given a skill-validator case is synthetic
+When it is stored in the repository
+Then it lives under `tests/fixtures/`
+And it cannot be mistaken for an active or historical project change root.
 
 ### Example E8: workflow refreshes stale artifact placement
 
@@ -214,19 +214,19 @@ R6d. The packaged plan skeleton MUST remain the sole maintained plan-authoring s
 
 R6e. Formal-review test fixtures MUST live in tests or temporary test roots rather than production documentation.
 
-R7. `docs/changes/0001-skill-validator/` MUST NOT be treated as the universal template or minimum artifact pack for non-trivial work.
+R7. Synthetic validator cases MUST live under `tests/fixtures/`, not `docs/changes/`.
 
-R7a. If `docs/changes/0001-skill-validator/` remains under `docs/changes/`, the implementation MUST record durable retained-fixture rationale in a tracked or review-visible surface.
+R7a. Tests MUST NOT depend on a production documentation path solely to obtain synthetic validator input.
 
-R7b. The retained-fixture rationale MUST state that the path is not an active change root and exists because tests, validators, compatibility references, or historical proof references still rely on that path.
+R7b. Deleted historical proof MUST remain recoverable through Git history rather than a live special-case directory.
 
-R7c. The retained-fixture rationale MUST identify `tests/fixtures/` as the destination for purely synthetic cases that carry no historical proof.
+R7c. Fixture paths and identifiers SHOULD describe the case they exercise.
 
-R7d. Purely synthetic cases SHOULD move to `tests/fixtures/` only when references can be updated safely and the retained historical proof remains identifiable.
+R7d. Removing a production-path fixture MUST update its references, selectors, validators, tests, and current guidance in the same slice.
 
 R8. When examples or fixtures move, references, tests, validators, selectors, and contributor-facing guidance that cite the moved paths MUST be updated in the same slice.
 
-R8a. If a path cannot move because validator or compatibility coupling remains, the implementation MUST retain it with the retained-fixture rationale from `R7`.
+R8a. If a production-path fixture cannot be removed safely in one slice, the implementation MUST stop and define a bounded migration rather than make the exception permanent.
 
 R9. The artifact-location map MUST preserve custom project paths.
 
@@ -248,7 +248,7 @@ R11b. Lifecycle tests MUST use temporary repositories for plan-shaped negative f
 
 R11c. Review-artifact tests MUST use temporary repositories or test-fixture paths for review-shaped negative cases.
 
-R11d. Validation MUST cover the retained-fixture outcome: either the skill-validator fixture moves with references updated, or durable retained-fixture rationale exists.
+R11d. Validation MUST prove that skill-validator fixtures and their references remain test-owned.
 
 R12. This spec MUST NOT change the standard workflow order.
 
@@ -273,7 +273,7 @@ Outputs:
 - an updated `docs/workflows.md` artifact-location map;
 - concise stage-skill artifact lookup wording;
 - updated owning skill assets or test fixtures when reusable shapes or executable cases change;
-- retained-fixture rationale for `docs/changes/0001-skill-validator/` when it stays under `docs/changes/`;
+- test-owned fixtures for synthetic validator cases;
 - selector, lifecycle, skill, and review-artifact validation evidence for changed behavior;
 - refreshed generated skill or adapter output when canonical skills change.
 
@@ -294,7 +294,7 @@ Outputs:
 - If a stage skill cannot determine artifact placement after applying the source rank, it stops and reports the missing location evidence.
 - If an explicit user path conflicts with a higher-priority governance, schema, security, or safety rule, the skill reports the conflict instead of writing there.
 - If a test fixture contributes active state to the real repository, validation must fail until fixture isolation is corrected.
-- If `docs/changes/0001-skill-validator/` remains without retained-fixture rationale, validation or review must block the implementation slice that relies on retaining it.
+- If a test relies on a synthetic record under `docs/changes/`, validation or review must block until the case moves to test-owned fixtures.
 
 ## Compatibility and migration
 
@@ -304,7 +304,7 @@ Existing active lifecycle artifacts remain valid. This spec does not require his
 
 Historical references to the retired examples surface remain historical evidence and are not rewritten.
 
-`docs/changes/0001-skill-validator/` may remain temporarily or permanently as a retained fixture when tests, validators, compatibility references, or historical proof references still rely on it, provided the retained-fixture rationale is recorded.
+Deleted historical proof remains recoverable through Git history and does not require a live compatibility directory.
 
 Rollback for implementation slices is documentation-first: revert artifact-map and skill lookup wording if they cause ambiguous routing, and restore moved fixtures only when validation coupling breaks.
 
@@ -318,7 +318,7 @@ This behavior is observed through tracked artifacts and validation output:
 - Selector output handles deleted example paths only through bounded compatibility.
 - Lifecycle tests isolate temporary fixtures from active project state.
 - Review artifact validation does not require active closeout for formal-review examples.
-- Retained-fixture rationale is visible in a tracked or review-visible surface when `docs/changes/0001-skill-validator/` remains.
+- Synthetic validator inputs are visibly owned by `tests/fixtures/`.
 
 ## Security and privacy
 
@@ -352,9 +352,9 @@ EC4. A temporary fixture looks like a plan: lifecycle validation remains scoped 
 
 EC5. A formal review example contains review-like headings: validation does not treat it as an active review record unless an explicit fixture opt-in exists.
 
-EC6. `docs/changes/0001-skill-validator/` remains under `docs/changes/`: retained-fixture rationale explains why it is not an active change root or universal template.
+EC6. A synthetic validator input is placed under `docs/changes/`: validation or review requires it to move under `tests/fixtures/`.
 
-EC7. A case under `docs/changes/0001-skill-validator/` becomes purely synthetic: it moves to `tests/fixtures/` while the historical proof pack and its references remain settled.
+EC7. A deleted historical proof pack is needed for investigation: the contributor retrieves it from Git history without restoring it as maintained documentation.
 
 EC8. A skill cannot determine a change root after source-rank lookup: it blocks on ambiguity instead of inventing an unrelated path.
 
@@ -388,7 +388,7 @@ EC10. Canonical skills change: generated public skill and adapter output is chec
 - Selector coverage handles deleted example paths only for transition compatibility.
 - Lifecycle validation uses isolated temporary fixtures for plan-shaped cases.
 - Formal review tests use temporary repositories or test fixtures.
-- `docs/changes/0001-skill-validator/` either moves with all references updated or remains with durable retained-fixture rationale.
+- Synthetic validator cases live under `tests/fixtures/` and production-path special cases are removed.
 - Formal review receipt/root shape remains governed by `specs/formal-review-recording.md`.
 - No public skill hardcodes RigorLoop-only internal validator paths when project-local guide wording is sufficient.
 
@@ -396,7 +396,7 @@ EC10. Canonical skills change: generated public skill and adapter output is chec
 
 None.
 
-Implementation planning still decides whether `docs/changes/0001-skill-validator/` can move in the same slice as its reference updates or remains with retained-fixture rationale.
+None.
 
 ## Next artifacts
 

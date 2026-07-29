@@ -132,7 +132,7 @@ This alignment requires `test-spec-review` before M1 relies on it.
 - No-material formal review output needs `Review resolution: not-required` when no review-resolution trigger applies: `T21`, `T27`
 - Formal review skill contains `- Status sync:` in first-slice output shape: `T23`
 - A test fixture leaks into active project lifecycle state: `T24`
-- `docs/changes/0001-skill-validator/` retained without fixture-coupling rationale: `T24`
+- A synthetic validator case remains under a production documentation path: `T24`
 - Existing active `change.yaml` supplies the review-recording change ID: `T26`
 - Active plan or reviewed artifact metadata supplies the change ID: `T26`
 - User-provided change ID supplies the change root when no tracked root exists: `T26`
@@ -732,12 +732,12 @@ This alignment requires `test-spec-review` before M1 relies on it.
   - review-skill assets
   - temporary review-recording fixtures
   - `tests/fixtures/**`
-  - validators or selectors that reference `docs/changes/0001-skill-validator/`
+  - validators and selectors that consume test-owned fixtures
 - Steps:
   - Assert the packaged plan skeleton remains the sole maintained plan-authoring scaffold.
   - Assert reusable review shapes live in owning skill assets or the normative spec.
   - Assert executable cases use temporary repositories or test-fixture paths.
-  - Assert the retained skill-validator proof pack has explicit fixture-coupling rationale.
+  - Assert synthetic validator cases live under test-owned fixture paths.
   - Assert no production documentation examples directory is required.
 - Expected result:
   - Examples are findable without being mistaken for active lifecycle artifacts.

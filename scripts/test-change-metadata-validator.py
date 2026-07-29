@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "scripts" / "validate-change-metadata.py"
 QUERY_HELPER = ROOT / "scripts" / "query-change-record.py"
 FIXTURES = ROOT / "tests" / "fixtures" / "change-metadata"
-SKILL_VALIDATOR_EXAMPLE = ROOT / "docs" / "changes" / "0001-skill-validator" / "change.yaml"
+VALID_BASIC_FIXTURE = FIXTURES / "valid-basic" / "change.yaml"
 CLEAN_RECEIPT_ROOT = (
     ROOT
     / "tests"
@@ -1643,8 +1643,8 @@ validation_summary:
     def test_clean_receipt_root_metadata_passes(self) -> None:
         self.assertPathPasses(CLEAN_RECEIPT_ROOT)
 
-    def test_shipped_0001_example_passes(self) -> None:
-        self.assertPathPasses(SKILL_VALIDATOR_EXAMPLE)
+    def test_valid_basic_fixture_passes(self) -> None:
+        self.assertPathPasses(VALID_BASIC_FIXTURE)
 
     def test_inline_empty_collections_pass(self) -> None:
         with tempfile.TemporaryDirectory(prefix="change-metadata-inline-empty-") as temp_dir:
