@@ -23,16 +23,17 @@ Review closeout: code-review-m1-r7
 Review closeout: code-review-m1-r8
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
+Review closeout: code-review-m2-r3
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
   `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`,
   `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`,
   `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`,
-  `code-review-m2-r1`, `code-review-m2-r2`
-- Findings resolved: 23
+  `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`
+- Findings resolved: 24
 - Unresolved findings: 1
-- Current result: M2 code-review R2 requests changes; implementation must resolve CR-M2-R2-001 before rereview.
+- Current result: M2 code-review R3 requests changes; implementation must resolve CR-M2-R3-001 before rereview.
 
 ## Resolution Overview
 
@@ -61,7 +62,8 @@ Review closeout: code-review-m2-r2
 | CR-M1-R7-002 | accepted | resolved | Descriptor-relative no-follow writes prevent outside mutation and recovery aggregates unsafe paths. |
 | CR-M1-R7-003 | accepted | resolved | Identity diagnostics name affected stable resource layers. |
 | CR-M2-R1-001 | accepted | resolved | Independent decision derivation, complete identity coverage, and shipped-guidance bindings replace self-assertion. |
-| CR-M2-R2-001 | accepted | open | Reject unknown scenario vocabulary and enforce every required proof partition. |
+| CR-M2-R2-001 | accepted | resolved | Closed sets, boolean types, stable property IDs, and unknown/removal mutations now fail closed for valid-shaped rows. |
+| CR-M2-R3-001 | accepted | open | Reject unknown case and skill identities and malformed rows before dependent logic. |
 
 ## Finding Details
 
@@ -85,12 +87,26 @@ Validation evidence: Code-review M2 R2 confirmed contradictory outcomes, routes,
 
 Finding ID: CR-M2-R2-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementation
 Owning stage: review-resolution
 Chosen action: Validate every closed input and output vocabulary and boolean type before evaluation, enforce stable property coverage, and add unknown-value and removal mutations.
 Rationale: A proof oracle must fail closed before semantic consistency checks.
 Validation target: code-review-m2-r3
+Validation evidence: Code-review M2 R3 confirmed declared vocabularies, booleans, and required property removals fail; malformed row identity remains separately tracked.
+
+### code-review-m2-r3
+
+#### CR-M2-R3-001 - Case identity and malformed rows do not fail closed
+
+Finding ID: CR-M2-R3-001
+Disposition: accepted
+Status: open
+Owner: M2 implementation
+Owning stage: review-resolution
+Chosen action: Validate row shape, case and skill identity, and types before all dependent logic, then aggregate only validated rows.
+Rationale: Closed-vocabulary validators must reject unknowns before consistency evaluation and must not crash on malformed input.
+Validation target: code-review-m2-r4
 Validation evidence: pending
 
 ### code-review-m1-r1

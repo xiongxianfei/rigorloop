@@ -1,0 +1,51 @@
+schema_version: 1
+review_id: code-review-m2-r3
+review_stage: code-review
+review_target: commit:db77a533
+base_revision: 4af4edd2
+head_revision: db77a533
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m2-r2-resolution
+reviewer_context_id: m2-r3-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents-remediation-review
+risk_tier: elevated
+risk_tier_triggers: [semantic-proof, closed-vocabulary]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:db77a533.diff
+    revision: db77a533
+    sha256: 395ff2c096f220ef2ce32aa4d292e677a5b66b0b5fd131becf16a56f672cca72
+  - path: remediation:607de50f..db77a533.diff
+    revision: db77a533
+    sha256: 42108b259279140e86cfa7f2faa9a9b1ba40940fbc38bf675bf3cbf2dc40ef8c
+initial_packet_sha256: 395ff2c096f220ef2ce32aa4d292e677a5b66b0b5fd131becf16a56f672cca72
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, prior-findings-released, verdict-recorded]
+second_review:
+  required: true
+  satisfied: true
+  reviewer_context_id: m2-r3-second-review
+requirement_fidelity:
+  applicability: applicable
+  reason: R3 checks fail-closed semantic fixture validation.
+risk_map:
+  affected_behavior: malformed-row and case-identity validation
+  highest_impact_failure_modes: invalid rows reach the oracle or crash coverage aggregation
+  changed_boundaries: row shape, case identity, skill identity, decision evaluation, coverage aggregation
+  evidence_expected: bounded errors before dependent logic
+  direct_inspection_areas: semantic validator and mutation tests
+  intentionally_out_of_scope: M3, M4, final verification, PR
+  applicable_risk_classes: [closed-vocabulary, malformed-input, semantic-proof]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Can an unknown case ID reach decision evaluation?
+    - Can a malformed row raise instead of returning a bounded error?
