@@ -554,6 +554,64 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                 self.assertEqual(after, before)
                 self.assertTrue(project_reference(root, mode="write").ok)
 
+    def test_input_drift_restores_targets_and_retry_succeeds(self) -> None:
+        from boundary_first_reference import _write_target_bytes
+
+        inputs = (
+            RESOURCE_MANIFEST,
+            CANONICAL_REFERENCE,
+            Path(
+                "specs/references/"
+                "boundary-first-feature-authoring-v1.md"
+            ),
+            Path("specs/references/boundary-first-proof-v1.md"),
+        )
+        for relative_input in inputs:
+            for mutation_index in (1, 7, 14):
+                with self.subTest(
+                    input=relative_input,
+                    mutation_index=mutation_index,
+                ):
+                    _, root = self.make_repository()
+                    project_reference(root, mode="write")
+                    paths = projected_paths(root)
+                    before_targets = {
+                        path: (root / path).read_bytes()
+                        for path in paths
+                    }
+                    input_path = root / relative_input
+                    before_input = input_path.read_bytes()
+                    calls = 0
+
+                    def mutate_input(path: Path, data: bytes) -> None:
+                        nonlocal calls
+                        calls += 1
+                        _write_target_bytes(path, data)
+                        if calls == mutation_index:
+                            input_path.write_bytes(
+                                before_input + b"\n# concurrent mutation\n"
+                            )
+
+                    with patch(
+                        "boundary_first_reference._write_target_bytes",
+                        side_effect=mutate_input,
+                    ):
+                        with self.assertRaisesRegex(
+                            ProjectionContractError,
+                            "BFR-INPUT-CHANGED",
+                        ):
+                            project_reference(root, mode="write")
+
+                    self.assertEqual(
+                        {
+                            path: (root / path).read_bytes()
+                            for path in paths
+                        },
+                        before_targets,
+                    )
+                    input_path.write_bytes(before_input)
+                    self.assertTrue(project_reference(root, mode="write").ok)
+
     def test_missing_manifest_cli_diagnostic_preserves_identity(self) -> None:
         _, root = self.make_repository()
         (root / RESOURCE_MANIFEST).unlink()

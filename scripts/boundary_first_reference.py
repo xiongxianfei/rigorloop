@@ -491,6 +491,32 @@ def _restore_targets(
     return tuple(errors)
 
 
+def _changed_projection_inputs(
+    root: Path,
+    manifest: ResourceManifest,
+    source_hashes: Mapping[str, str],
+) -> tuple[str, ...]:
+    changed: list[str] = []
+    identities = (
+        (RESOURCE_MANIFEST, manifest.sha256),
+        *(
+            (resource.source, source_hashes[resource.resource_id])
+            for resource in manifest.resources
+        ),
+    )
+    for relative, expected_hash in identities:
+        try:
+            path = _repository_path(root, relative)
+            if (
+                not path.is_file()
+                or raw_sha256(path.read_bytes()) != expected_hash
+            ):
+                changed.append(relative.as_posix())
+        except (OSError, ProjectionContractError):
+            changed.append(relative.as_posix())
+    return tuple(changed)
+
+
 def _unexpected_projections(
     root: Path, expected_paths: tuple[Path, ...]
 ) -> tuple[tuple[Path, ...], tuple[str, ...]]:
@@ -620,6 +646,7 @@ def project_reference(root: Path, *, mode: str) -> ProjectionResult:
             errors=tuple(sorted(preflight_errors)),
         )
 
+    snapshots: dict[Path, bytes | None] = {}
     if mode == "write":
         snapshots = {
             relative: (
@@ -669,6 +696,37 @@ def project_reference(root: Path, *, mode: str) -> ProjectionResult:
         records[relative_text] = actual
         if actual != source_hashes[resource_id]:
             errors.append(f"BFR-PROJECTION-STALE: {relative_text}")
+
+    changed_inputs = _changed_projection_inputs(
+        repository_root, manifest, source_hashes
+    )
+    if changed_inputs:
+        if mode == "write":
+            restore_errors = _restore_targets(
+                repository_root, snapshots
+            )
+            if restore_errors:
+                raise ProjectionContractError(
+                    "BFR-PROJECTION-RESTORE",
+                    path=", ".join(restore_errors),
+                    message=(
+                        "projection inputs changed and restoration "
+                        "was incomplete"
+                    ),
+                    expected="all prior target bytes restored",
+                )
+            raise ProjectionContractError(
+                "BFR-INPUT-CHANGED",
+                path=", ".join(changed_inputs),
+                message=(
+                    "projection input changed during the transaction; "
+                    "prior target state restored"
+                ),
+                expected="stable manifest and canonical resources",
+            )
+        errors.extend(
+            f"BFR-INPUT-CHANGED: {path}" for path in changed_inputs
+        )
 
     return ProjectionResult(
         ok=not errors,
