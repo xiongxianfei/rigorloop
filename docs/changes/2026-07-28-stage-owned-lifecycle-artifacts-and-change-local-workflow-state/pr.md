@@ -1,9 +1,11 @@
 # Pull Request Handoff
 
-PR URL: pending
-PR state: prepared
-Base branch: main
-Head branch: stage-owned-lifecycle-artifacts
+| Field | Value |
+| --- | --- |
+| PR URL | https://github.com/xiongxianfei/rigorloop/pull/127 |
+| PR state | open |
+| Base branch | main |
+| Head branch | stage-owned-lifecycle-artifacts |
 
 ## Title
 

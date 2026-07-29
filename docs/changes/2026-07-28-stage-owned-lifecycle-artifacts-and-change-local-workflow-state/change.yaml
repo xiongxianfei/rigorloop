@@ -73,17 +73,18 @@ artifact_states:
       round: r3
 workflow_state:
   lifecycle_state: completed
-  current_stage: verify
-  next_stage: pr
+  current_stage: pr
+  next_stage: none
   blocker: null
   evidence:
     - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m5-parity-and-preactivation.md
     - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/code-review-final-r1.md
     - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/explain-change.md
     - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/verify-report.md
+    - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/pr.md
   planned_work:
     plan_artifact_id: plan
-    current_milestone: M7
+    current_milestone: none
     milestones:
       M1:
         kind: implementation
@@ -105,7 +106,7 @@ workflow_state:
         state: closed
       M7:
         kind: lifecycle-closeout
-        state: implementing
+        state: closed
     remaining_implementation_milestones: []
     latest_review:
       status: approved
@@ -117,11 +118,11 @@ workflow_state:
       evidence:
         - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/code-review-final-r3.md
     final_closeout:
-      readiness: not-ready
+      readiness: ready
       reasons:
-        - pr-handoff-pending
+        - ready
       evidence:
-        - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/verify-report.md
+        - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/pr.md
 artifacts:
   proposal: docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md
   spec: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
