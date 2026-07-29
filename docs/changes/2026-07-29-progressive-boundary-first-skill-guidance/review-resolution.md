@@ -25,6 +25,7 @@ Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m2-r3
 Review closeout: code-review-m2-r4
+Review closeout: code-review-m3-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -32,10 +33,10 @@ Review closeout: code-review-m2-r4
   `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`,
   `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`,
   `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`,
-  `code-review-m2-r4`
+  `code-review-m2-r4`, `code-review-m3-r1`
 - Findings resolved: 25
 - Unresolved findings: 0
-- Current result: M2 code-review R4 is clean-with-notes; M2 is closed and M3 may begin.
+- Current result: M3 code-review R1 is clean-with-notes; M3 is closed and M4 may begin.
 
 ## Resolution Overview
 
@@ -114,6 +115,10 @@ Validation evidence: Code-review M2 R4 confirmed every malformed category return
 ### code-review-m2-r4
 
 No new findings. Both independent reviewers issued clean-with-notes receipts.
+
+### code-review-m3-r1
+
+No findings. Both independent reviewers confirmed exact path-owned routing.
 
 ### code-review-m1-r1
 
