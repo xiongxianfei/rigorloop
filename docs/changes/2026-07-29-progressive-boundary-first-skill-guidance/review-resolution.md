@@ -38,9 +38,9 @@ Review closeout: code-review-m4-r3
   `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`,
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
   `code-review-m4-r2`, `code-review-m4-r3`
-- Findings resolved: 30
-- Unresolved findings: 2
-- Current result: M4 code-review R3 found fail-open invocation-equivalence and explicit-selection checks.
+- Findings resolved: 32
+- Unresolved findings: 0
+- Current result: M4 code-review R3 findings are resolved and await independent R4 confirmation.
 
 ## Resolution Overview
 
@@ -76,8 +76,8 @@ Review closeout: code-review-m4-r3
 | CR-M4-R1-003 | accepted | resolved | Evidence records reproducible baseline, candidate, and adapter-layer identities. |
 | CR-M4-R2-001 | accepted | resolved | The comparable pre-split downstream operation records one initially loaded 8,318-byte resource. |
 | CR-M4-R2-002 | accepted | resolved | Workflow and every requested governed resource are required in all supported adapters. |
-| CR-M4-R3-001 | accepted | open | Validate exact cross-adapter workflow invocation equivalents. |
-| CR-M4-R3-002 | accepted | open | Reject every unknown explicitly selected mapped skill. |
+| CR-M4-R3-001 | accepted | resolved | Exact workflow identity and shared argument semantics govern cross-adapter invocation equivalence. |
+| CR-M4-R3-002 | accepted | resolved | Unknown, noncanonical, and duplicate explicit mapped-skill selections fail closed. |
 
 ## Finding Details
 
@@ -201,25 +201,25 @@ Validation evidence: Workflow documents Codex, Claude, and OpenCode invocation e
 
 Finding ID: CR-M4-R3-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Bind portability to exact workflow identities and identical `auto: <target-stage>` arguments, with mutation coverage.
 Rationale: Loose prose fragments cannot prove usable adapter commands.
 Validation target: code-review-m4-r4
-Validation evidence: pending
+Validation evidence: Exact-form mutations for Codex, Claude, OpenCode, shared arguments, mismatched skill identity, and unrelated prose fail portability; the canonical workflow remains portable.
 
 #### CR-M4-R3-002 - Explicit selection ignores unknown names
 
 Finding ID: CR-M4-R3-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Reject unresolved and duplicate explicit mapped-skill selections before install validation.
 Rationale: A completeness command must fail closed on every requested identity.
 Validation target: code-review-m4-r4
-Validation evidence: pending
+Validation evidence: Mixed valid/unknown, noncanonical case, duplicate selection, and the real CLI fail before install success; 141 adapter tests, the ten-skill clean-install command, and 11-check broad smoke pass.
 
 ### code-review-m1-r1
 

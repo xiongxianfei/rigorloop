@@ -13,6 +13,9 @@
 | R2 resolved candidate commit | `43adcec9bdd5ab0881f54aebf131ac540b1efdb7` |
 | R2 resolved candidate tree | `401b9e5a2b0fcffc8c9a4178ddc9db864928ad67` |
 | R2 resolved diff SHA-256 (`52fbd3e3..43adcec9`) | `10a91b0557e262847cbbea177e9b667aa5a71a148e83c700da3fcc42d05a46f7` |
+| R3 fixed-code commit | `8d2484af0c4fc51867a0ce238ef7199fe0b70f07` |
+| R3 fixed-code tree | `94581d0b4203e86392b90f6538cbcd5a585ccd88` |
+| R3 fixed-code diff SHA-256 (`0afe743e..8d2484af`) | `b9e2bc4e913ec66670c665a4bb977c4dceabfd1a9ff6a5d44785b20e0797875d` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -90,7 +93,9 @@ selected skill. Injected unowned compact, feature-authoring, and proof resources
 are rejected for Codex, Claude, and opencode respectively; unrelated packaged
 assets remain permitted. An explicitly requested skill cannot be filtered by a
 portability report: deleting Claude's requested `workflow` tree fails the
-clean-install check.
+clean-install check. Exact invocation equivalents are closed over the workflow
+identity and shared target/status/off argument semantics. Unknown, noncanonical,
+or duplicate explicit skill selections fail before install work.
 
 ## Activation and rollback proof
 
@@ -114,9 +119,9 @@ The 28-test projection suite proves repeated projection identity, handled interr
 | `python scripts/test-skill-validator.py` | pass, 282 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skills |
 | `python scripts/build-skills.py --check` | pass with temporary output |
-| `python scripts/test-adapter-distribution.py` | pass, 137 tests |
+| `python scripts/test-adapter-distribution.py` | pass, 141 tests |
 | Planned `build-adapters.py` plus `validate-adapters.py --clean-install-smoke` command | pass for all ten governed skills and three adapters |
-| `bash scripts/ci.sh --mode broad-smoke` | pass, 12 checks in 400 seconds |
+| `bash scripts/ci.sh --mode broad-smoke` | pass, 11 checks in 615 seconds |
 | `git diff --check` | pass |
 
 ## Containment
