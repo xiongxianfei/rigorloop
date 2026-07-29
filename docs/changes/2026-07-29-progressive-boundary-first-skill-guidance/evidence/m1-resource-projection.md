@@ -26,7 +26,7 @@ Milestone M1 replaces the one-reference projection with the reviewed three-resou
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-boundary-first-reference.py` | pass, 26 tests |
+| `python scripts/test-boundary-first-reference.py` | pass, 27 tests |
 | `python scripts/project-boundary-first-reference.py --check` | pass, 14 projections |
 | `python scripts/test-boundary-first-validation.py` | pass, 63 tests |
 | `python scripts/validate-boundary-first.py --check` | pass |
@@ -79,3 +79,9 @@ The full M1 command set passed after these corrections and is awaiting independe
 - `CR-M1-R5-002`: recursive discovery ignores unrelated reference symlinks while still rejecting governed path ancestors and symlinks named in the boundary-resource namespace.
 
 The full M1 command set passed after these corrections and is awaiting independent R6 review.
+
+## R6 finding correction
+
+- `CR-M1-R6-001`: a final input-stability barrier re-reads the manifest and every canonical resource before success. Drift at early, middle, or final writes restores prior targets and raises a structured error; tests cover all four inputs and deterministic retry.
+
+The full M1 command set passed after this correction and is awaiting independent R7 review.

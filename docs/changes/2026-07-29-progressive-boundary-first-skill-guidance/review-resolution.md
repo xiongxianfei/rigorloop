@@ -234,7 +234,7 @@ Owning stage: review-resolution
 Chosen action: Snapshot canonical inputs and enforce a final stability barrier, restoring write targets on drift.
 Rationale: Cached-byte target checks cannot prove currency against inputs that change during the transaction.
 Validation target: code-review-m1-r7
-Validation evidence: pending correction and independent rereview
+Validation evidence: Twelve manifest/resource and early/middle/final mutation cases reject success, restore prior targets, and retry deterministically in the 27-test projection suite; independent R7 confirmation remains pending.
 
 ### proposal-review-r1
 
