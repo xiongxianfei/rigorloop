@@ -82,7 +82,10 @@ def measure_boundary_loading_profiles(
         "profiles",
     }:
         raise ValueError("loading profile fixture must use the closed top-level shape")
-    if document["schema_version"] != 1:
+    if (
+        type(document["schema_version"]) is not int
+        or document["schema_version"] != 1
+    ):
         raise ValueError("loading profile schema version is not supported")
     if not isinstance(document["profiles"], list):
         raise ValueError("loading profile profiles must be a list")

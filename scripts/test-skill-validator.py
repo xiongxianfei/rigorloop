@@ -7946,6 +7946,12 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
         fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
         mutations = (
             ("schema", lambda value: value.update(schema_version=2)),
+            ("schema_bool", lambda value: value.update(schema_version=True)),
+            ("schema_float", lambda value: value.update(schema_version=1.0)),
+            ("schema_string", lambda value: value.update(schema_version="1")),
+            ("schema_null", lambda value: value.update(schema_version=None)),
+            ("missing_schema", lambda value: value.pop("schema_version")),
+            ("extra_top_field", lambda value: value.update(extra="unknown")),
             (
                 "unknown_skill",
                 lambda value: value["profiles"][0].update(skill="future-skill"),
