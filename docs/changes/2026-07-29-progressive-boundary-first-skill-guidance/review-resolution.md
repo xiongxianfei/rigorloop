@@ -177,7 +177,7 @@ Owning stage: review-resolution
 Chosen action: Translate projection contract failures into bounded skill-validation errors and prove missing and malformed CLI paths.
 Rationale: PBS-R037 applies consistently across public validator consumers.
 Validation target: code-review-m1-r5
-Validation evidence: pending correction and independent rereview
+Validation evidence: Missing and unknown-schema isolated skill-validation CLI cases return code 1 with structured repository-relative errors, no traceback, and no temporary root; independent R5 confirmation remains pending.
 
 #### CR-M1-R4-002 - Manifest diagnostics expose untrusted scalar values
 
@@ -189,7 +189,7 @@ Owning stage: review-resolution
 Chosen action: Remove untrusted values from diagnostic messages and consistently redact the offending-value field.
 Rationale: Actionable diagnostics do not require disclosure of the rejected payload.
 Validation target: code-review-m1-r5
-Validation evidence: pending correction and independent rereview
+Validation evidence: Secret-bearing consumer fixtures preserve stable identities while excluding the scalar from projection CLI and activation serialization; independent R5 confirmation remains pending.
 
 ### proposal-review-r1
 

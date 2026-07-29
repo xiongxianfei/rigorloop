@@ -130,10 +130,12 @@ def _manifest_error(
     *,
     expected: str = "exact boundary-first resource manifest contract",
 ) -> ProjectionContractError:
+    normalized_code = code.lower().replace("-", " ")
     return ProjectionContractError(
         f"BFR-MANIFEST-{code}",
         path=RESOURCE_MANIFEST.as_posix(),
-        message=detail,
+        message=f"resource manifest failed {normalized_code} validation",
+        offending_value=f"sha256:{raw_sha256(detail.encode('utf-8'))}",
         expected=expected,
     )
 

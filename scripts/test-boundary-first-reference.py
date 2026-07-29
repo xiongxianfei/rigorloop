@@ -579,6 +579,36 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         self.assertIn("expected=existing resource manifest", completed.stdout)
         self.assertNotIn(str(root), completed.stdout)
 
+    def test_untrusted_manifest_scalar_is_not_disclosed_by_cli(self) -> None:
+        _, root = self.make_repository()
+        secret = "token-super-secret-marker"
+        manifest = root / RESOURCE_MANIFEST
+        manifest.write_text(
+            manifest.read_text(encoding="utf-8").replace(
+                "      - verify\n",
+                f"      - {secret}\n",
+                1,
+            ),
+            encoding="utf-8",
+        )
+
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts/project-boundary-first-reference.py"),
+                "--check",
+                "--root",
+                str(root),
+            ],
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(completed.returncode, 2)
+        self.assertIn("BFR-MANIFEST-CONSUMER-UNKNOWN", completed.stdout)
+        self.assertIn("offending_value=sha256:", completed.stdout)
+        self.assertNotIn(secret, completed.stdout)
+
     def test_source_parent_symlink_escape_fails_before_read(self) -> None:
         _, root = self.make_repository()
         source = root / CANONICAL_REFERENCE

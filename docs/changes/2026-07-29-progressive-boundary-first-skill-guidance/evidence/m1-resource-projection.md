@@ -26,11 +26,11 @@ Milestone M1 replaces the one-reference projection with the reviewed three-resou
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-boundary-first-reference.py` | pass, 24 tests |
+| `python scripts/test-boundary-first-reference.py` | pass, 25 tests |
 | `python scripts/project-boundary-first-reference.py --check` | pass, 14 projections |
-| `python scripts/test-boundary-first-validation.py` | pass, 61 tests |
+| `python scripts/test-boundary-first-validation.py` | pass, 62 tests |
 | `python scripts/validate-boundary-first.py --check` | pass |
-| `python scripts/test-skill-validator.py` | pass, 272 tests with 16 documented skips |
+| `python scripts/test-skill-validator.py` | pass, 273 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skill files |
 
 ## Aligned-surface audit
@@ -65,3 +65,10 @@ The full M1 command set passed after these corrections and is awaiting independe
 - `CR-M1-R3-003` and the remaining diagnostic paths from `CR-M1-R1-004` and `CR-M1-R2-002`: a missing manifest now reports its exact repository-relative path and expected condition through both the public projection CLI and activation validation.
 
 The full M1 command set passed after these corrections and is awaiting independent R4 review.
+
+## R4 finding corrections
+
+- `CR-M1-R4-001`: skill validation translates missing and malformed resource-manifest failures into bounded validation errors with no traceback or private repository root.
+- `CR-M1-R4-002`: manifest-derived diagnostic messages contain only stable validation reasons; rejected payload detail is represented by a one-way SHA-256 identity through projection and activation paths.
+
+The full M1 command set passed after these corrections and is awaiting independent R5 review.

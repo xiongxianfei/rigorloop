@@ -272,6 +272,18 @@ validation:
     result: pass_24_skills_after_m1_r3_corrections
   - command: python scripts/validate-boundary-first.py --check
     result: pass_after_m1_r3_corrections
+  - command: python scripts/test-boundary-first-reference.py
+    result: pass_25_tests_after_m1_r4_corrections
+  - command: python scripts/test-boundary-first-validation.py
+    result: pass_62_tests_after_m1_r4_corrections
+  - command: python scripts/test-skill-validator.py
+    result: pass_273_tests_16_documented_skips_after_m1_r4_corrections
+  - command: python scripts/project-boundary-first-reference.py --check
+    result: pass_14_projections_after_m1_r4_corrections
+  - command: python scripts/validate-boundary-first.py --check
+    result: pass_after_m1_r4_corrections
+  - command: python scripts/validate-skills.py
+    result: pass_24_skills_after_m1_r4_corrections
   - command: python scripts/project-boundary-first-reference.py --check
     result: pass_14_projections_m1
   - command: python scripts/test-boundary-first-validation.py

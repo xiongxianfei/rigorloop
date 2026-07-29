@@ -812,6 +812,33 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             )
             self.assertEqual(issue.expected, "existing resource manifest")
 
+    def test_activation_does_not_disclose_untrusted_manifest_scalar(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            secret = "token-super-secret-marker"
+            manifest = root / "specs/boundary-first-resources.yaml"
+            manifest.write_text(
+                manifest.read_text(encoding="utf-8").replace(
+                    "      - verify\n",
+                    f"      - {secret}\n",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            issue = validate_activation(root)[0]
+            serialized = json.dumps(issue.as_dict())
+
+            self.assertEqual(
+                issue.code,
+                "BFR-MANIFEST-CONSUMER-UNKNOWN",
+            )
+            self.assertTrue(issue.offending_value.startswith("sha256:"))
+            self.assertNotIn(secret, serialized)
+
     def test_activation_preserves_missing_family_source_identity(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
