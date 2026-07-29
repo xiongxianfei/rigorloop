@@ -6,9 +6,9 @@
 
 # <Spec title>
 
-## Status
+## Owning change record
 
-<spec status>
+<docs/changes/change-id/change.yaml>
 
 ## Related proposal
 

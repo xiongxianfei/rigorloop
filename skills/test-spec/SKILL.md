@@ -102,9 +102,9 @@ When this skill creates or updates generated or generator-shaped Markdown:
 
 | Section | Requirement |
 | --- | --- |
-| Status | Use `<test spec status>`. |
+| Owning change record | Use the stable change-record path. |
 | Related spec and plan | Include the related spec and plan. |
-| Input artifact identities | Include when implementation or code-review will rely on the test spec. Record input kind, path, status or review state, and identity for the feature spec, relevant review records, plan, plan review, and architecture or ADR inputs when applicable. |
+| Input artifact identities | Include when implementation or code-review will rely on the test spec. Record input kind, path, artifact ID, and review evidence for each governing input. |
 | Testing strategy | Cover unit, integration, end-to-end, smoke, manual, contract, and migration strategy. |
 | Requirement coverage map | Every requirement ID maps to one or more tests or explicit manual verification. |
 | Example coverage map | Every example maps to a test when feasible. |
@@ -206,18 +206,6 @@ Milestone proof-map rules:
 | Migration or compatibility claims | Every migration or compatibility claim needs coverage or explicit manual verification. |
 | Architectural boundaries that could break wiring | Every architectural boundary that could break wiring needs an integration or contract test. |
 | Bugs | Bugs require a regression test that fails before the fix when feasible. |
-
-## Closed enums
-
-Test spec status:
-
-```text
-draft
-active
-abandoned
-superseded
-archived
-```
 
 Test case level:
 

@@ -1,47 +1,45 @@
 flowchart LR
   actor["Contributor or agent"]:::person
-  workflow["Workflow skill<br/>[Markdown: skills/workflow/SKILL.md]"]:::container
-  stage_skills["Stage-owning skills and formal reviewers<br/>[Markdown workflow components]"]:::container
-  lifecycle["Lifecycle artifacts and reviews<br/>[Markdown and YAML]"]:::container
-  plan["Active plan Current Handoff Summary<br/>[Markdown live-state owner]"]:::container
-  evidence["Change-local evidence<br/>[YAML: change.yaml#workflow.automation]"]:::container
+  workflow["Workflow skill<br/>[Routing owner]"]:::component
+  authors["Authoring skills<br/>[Governed content + authoring transition]"]:::component
+  reviewers["Review peers<br/>[Review evidence + matching settlement]"]:::component
+  downstream["Downstream stages<br/>[Implementation or stage evidence]"]:::component
+  artifacts["Governed artifacts<br/>[Stable Markdown intent]"]:::container
+  evidence["Stage-owned evidence<br/>[Markdown review, resolution, proof, and learn records]"]:::container
+  validators["Lifecycle and skill validators<br/>[Repository-owned scripts]"]:::component
+  adapters["Generated public adapters<br/>[Derived skill guidance]"]:::container
 
-  subgraph automation["Automation tooling<br/>[Python: scripts/workflow_automation*.py]"]
-    adapter["Command and compatibility adapter"]:::component
-    position["Target binder and canonical position resolver"]:::component
-    coordinator["Transition coordinator"]:::component
-    policy["Typed stage-policy registry"]:::component
-    authority["Authorization and capability evaluator"]:::component
-    code_state["Canonical code-state anchor resolver and provider"]:::component
-    state["State store adapter"]:::component
-    reconcile["Transition reconciler"]:::component
-    compatibility["Legacy compatibility projector"]:::component
-    validator["Automation validator"]:::component
+  subgraph change["Change-local lifecycle state<br/>[YAML: docs/changes/&lt;change-id&gt;/change.yaml]"]
+    artifact_states["artifact_states<br/>[Transition-scoped lifecycle entries]"]:::component
+    workflow_state["workflow_state<br/>[Routing, planned work, blocker, closeout]"]:::component
+    target["automation target<br/>[Repository-local stopping point]"]:::component
+    links["evidence links<br/>[Paths, not duplicated evidence bodies]"]:::component
   end
 
-  actor -->|starts, resumes, queries, or cancels through| workflow
-  workflow -->|invokes normalized command| adapter
-  adapter -->|normalizes current and legacy forms with| compatibility
-  adapter -->|requests target and position| position
-  position -->|derives pre-plan position from| lifecycle
-  position -->|reads post-plan position from| plan
-  adapter -->|submits structured target to| coordinator
-  coordinator -->|selects complete immutable policy from| policy
-  coordinator -->|requests executable authority from| authority
-  authority -->|checks basis against| lifecycle
-  authority -->|checks scope against| policy
-  authority -->|requires complete final-code identity from| code_state
-  code_state -->|derives reviewed diff and current worktree state from| lifecycle
-  coordinator -->|persists through sole write boundary| state
-  state -->|reads and writes| evidence
-  coordinator -->|reconciles prepared transition through| reconcile
-  reconcile -->|reads original effective capability and completion evidence from| evidence
-  coordinator -->|invokes one stage operation through| stage_skills
-  stage_skills -->|write stage-owned evidence to| lifecycle
-  validator -->|checks complete policies in| policy
-  validator -->|checks automation state through| state
-  validator -->|checks canonical evidence in| lifecycle
-  validator -->|checks active-plan synchronization in| plan
+  actor -->|selects one repository-local target through| workflow
+  workflow -->|records and reads| target
+  workflow -->|updates routing only in| workflow_state
+  workflow -->|invokes the current owner after prerequisite validation| authors
+  workflow -->|invokes matching peer review after authoring completes| reviewers
+  workflow -->|invokes basis-complete downstream work through| downstream
+
+  authors -->|write only owned content in| artifacts
+  authors -->|write authoring evidence and matching authoring transition in| artifact_states
+  reviewers -->|read without editing| artifacts
+  reviewers -->|write formal review evidence in| evidence
+  reviewers -->|settle only the matching entry in| artifact_states
+  downstream -->|read without editing| artifacts
+  downstream -->|write implementation or stage evidence in| evidence
+  downstream -->|route upstream defects through| workflow
+
+  artifact_states -->|link current authoring or review evidence through| links
+  workflow_state -->|links current blocker and completion evidence through| links
+  links -->|resolve to| evidence
+  validators -->|reject unknown values, illegal transitions, stale evidence, cross-owner transition claims, and open blockers in| change
+  authors -->|define fixed stage boundaries copied into| adapters
+  reviewers -->|define peer-review boundaries copied into| adapters
+  workflow -->|defines routing-only behavior copied into| adapters
+  validators -->|prove published ownership and generated parity for| adapters
 
   classDef person fill:#08427b,stroke:#073b6f,color:#fff
   classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff

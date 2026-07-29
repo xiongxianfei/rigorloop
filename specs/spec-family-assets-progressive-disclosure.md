@@ -320,3 +320,14 @@ spec-review for that amendment
 ## Readiness
 
 Approved. The active plan owns downstream milestone handoff state.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+embedded spec-status sections, proposal-status settlement gates, and
+active-plan handoff ownership to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Spec-family asset packaging, progressive disclosure, boundary guidance, and
+evidence-access behavior remain governed here.

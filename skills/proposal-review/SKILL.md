@@ -90,7 +90,10 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 For change-record-backed proposal review, read the proposal under review and user intent first. Use `review-log.md` and `review-resolution.md` only when checking prior findings, prior dispositions, or whether a prior proposal-review concern is still open.
 
-Do not use full `change.yaml` as the default first read for proposal quality, scope, option, or vision-fit questions. Full `change.yaml` reads remain valid for forensic reconstruction, unsupported-shape diagnostics, disputed evidence, selector-routing debugging, and whole-record review.
+Do not use full `change.yaml` as the default first read for proposal quality,
+scope, option, or vision-fit questions.
+Full `change.yaml` reads remain valid for forensic reconstruction,
+unsupported-shape diagnostics, disputed evidence, and whole-record review.
 
 ## Resource map
 
@@ -292,14 +295,21 @@ For automated `bounded-review-fix` authoring, reset review context to the tracke
 - Skill-local rule: do not let vague benefits pass as strategy.
 - Skill-local rule: do not ignore the `do nothing` option.
 - Skill-local rule: do not edit the proposal unless the user explicitly asks.
-- Workflow-wide rule: when the review outcome accepts the direction, ensure the tracked proposal is ready to normalize to `accepted` before downstream stages rely on it. Do not leave a relied-on proposal in a transitional review state.
+- When the review accepts the direction, write the review evidence first and
+  then settle only the matching proposal entry in `change.yaml`.
+  Do not edit the proposal, other artifact entries, milestone state, or
+  routing.
 
 ## Workflow handoff behavior
 
 - Direct or review-only `proposal-review` requests remain isolated by default.
-- In v1, `proposal-review` is a gate, not a default automatic handoff into `spec`; report approval, revision needs, or blocker state without implying `spec` auto-starts.
-- Only an explicitly authorized workflow-managed `bounded-review-fix` run may continue from review into the next authoring stage. When its authoring capability is current and the proposal gate is ready, a clean recorded proposal-review may report `Immediate next stage: spec` for the workflow router.
-- Outside that authorized unified run, continuing into `spec` requires a separate workflow or user request rather than this review stage auto-continuing on its own.
+- `proposal-review` is a gate, not the routing owner.
+  Report approval, revision needs, or blocker state.
+- In a workflow-managed run whose selected target is later than this review,
+  workflow may continue to `spec` after the review evidence and matching
+  proposal settlement are durable.
+- In isolated use, stop after recording review evidence and matching
+  settlement.
 
 Closed enum: recording status
 

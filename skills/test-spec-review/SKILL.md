@@ -22,6 +22,11 @@ Your job is to decide whether the active test spec is an adequate, executable, a
 - summary: Independently review whether the active test spec is a complete, executable, and traceable proof map for implementation.
 - must_not_claim: test implementation, production implementation, code-review approval, validation success, branch readiness, PR readiness, or final lifecycle closeout.
 
+Write review evidence first, then settle only the matching test-spec entry in
+`change.yaml`.
+Treat the test spec, upstream artifacts, other artifact entries, milestone
+state, and routing as read-only.
+
 ## Quick operating guide
 
 Use this skill to review proof adequacy after `test-spec` and before `implement`.

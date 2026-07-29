@@ -290,3 +290,13 @@ Architecture is not expected for this slice because the change defines reporting
 ## Readiness
 
 Approved after clean spec-review. The focused M4 execution plan has clean plan-review approval, and the M4 test spec is active and maintainer-approved for implementation.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+mutable summary triggers, decisions, or follow-ups owned by the active plan to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Lifecycle token-cost summaries, trigger classification, report shape, and
+evidence limits remain governed here.

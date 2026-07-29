@@ -296,3 +296,13 @@ pr
 ## Readiness
 
 Approved after clean spec-review. The active M5 plan has clean plan-review approval, and the M5 test spec is active and maintainer-approved for implementation.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+active-plan handoff state as the first implementation-state read to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Progressive loading, quick operating guides, bounded evidence, and full-read
+escape conditions remain governed here.

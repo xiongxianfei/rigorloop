@@ -234,7 +234,10 @@ For automated `bounded-review-fix` authoring, reset review context to the tracke
 - Do not require component, code-level, or deployment diagrams unless the change needs them.
 - Do not require architecture updates for leaf changes with no architecture impact.
 - Do not edit the architecture doc unless the user explicitly asks.
-- When the review outcome is approval, the tracked architecture artifact should be ready to normalize to `approved` before planning or implementation relies on it. Do not leave a relied-on design in durable `reviewed` state.
+- When the review outcome is approval, write the review evidence first and
+  then settle only the matching architecture entry in `change.yaml`.
+  Do not edit the architecture artifact, other artifact entries, milestone
+  state, or routing.
 - When spec-review or architecture-review identifies required changes, the artifact must not remain in `approved` state until the required changes are resolved and re-reviewed.
 
 ## Requirement-Fidelity Manual Opt-In

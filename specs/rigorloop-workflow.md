@@ -1443,6 +1443,19 @@ mechanism.
 - `proposal-review`: approved in [proposal-review-r1](../docs/changes/2026-06-24-separately-armed-implementation-autoprogression-through-verify/reviews/proposal-review-r1.md)
 - `spec-review`: approved in [spec-review-r1](../docs/changes/2026-06-24-separately-armed-implementation-autoprogression-through-verify/reviews/spec-review-r1.md)
 
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification
+defers peer and downstream write authority, change-local artifact settlement,
+plan-progress storage, and single-target continuation consent to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Lifecycle order, formal review gates, isolation, correction budgets, and stop
+conditions remain governed here.
+This notice does not activate the new contract before that specification and
+its complete rollout gate are approved.
+
 ## Readiness
 
 - Approved portable boundary-first workflow amendment ready for architecture

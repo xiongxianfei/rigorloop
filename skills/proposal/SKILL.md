@@ -96,7 +96,7 @@ When this skill creates or updates generated or generator-shaped Markdown:
 
 | Section | Purpose |
 |---|---|
-| Status | Current artifact lifecycle state. |
+| Owning change record | Stable pointer to the change-local lifecycle state. |
 | Problem | User or system problem being solved. |
 | Goals | Outcomes the change should produce. |
 | Non-goals | Explicitly out-of-scope work. |
@@ -115,23 +115,14 @@ When this skill creates or updates generated or generator-shaped Markdown:
 | Follow-on artifacts | Actual downstream artifacts or terminal disposition after settlement or closeout. |
 | Readiness | Truthful next-stage status. |
 
-Closed enum: proposal status
-
-```text
-draft
-under review
-accepted
-rejected
-abandoned
-superseded
-archived
-```
-
 If `Follow-on artifacts` appears before real follow-ons exist, write `None yet`.
 
 ## Vision fit
 
 Include `Vision fit` in new or substantively revised proposals after the vision spec is adopted.
+
+Legacy proposals that predate the vision contract do not require retroactive
+edits unless they are substantively revised.
 
 Closed enum: Vision fit
 
@@ -150,7 +141,9 @@ If root `VISION.md` exists, choose one of the current-vision outcomes and do not
 
 Retired root `vision.md` must not prevent `no vision exists yet` when root `VISION.md` is absent.
 
-A short explanatory paragraph may follow the status line. A proposal must not silently redefine project vision outside the `Vision fit` section and normal proposal rationale. Legacy proposals are not invalid solely because they lack `Vision fit`; add it only when the proposal is new or substantively revised after adoption.
+A short explanatory paragraph may follow the Vision fit value.
+A proposal must not silently redefine project vision outside the `Vision fit`
+section and normal proposal rationale.
 
 ## Standing artifact gates
 

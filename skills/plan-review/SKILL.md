@@ -22,6 +22,11 @@ Your job is to make sure the plan is safe, complete, sequenced, and verifiable b
 - summary: Review the execution plan as a lifecycle gate and record approval, changes requested, blockers, or inconclusive state.
 - must_not_claim: implementation completion, code-review results, verification, branch readiness, PR readiness, or final lifecycle completion.
 
+Write review evidence first, then settle only the matching plan entry in
+`change.yaml`.
+Treat the plan, upstream artifacts, other artifact entries, milestone state,
+and routing as read-only.
+
 ## Inputs to read
 
 Read the concrete plan file first, not just an index. Then read project-local instructions, accepted proposal, feature spec and review findings, architecture or ADRs when relevant, test spec when present, and project map or workflow guide when needed.

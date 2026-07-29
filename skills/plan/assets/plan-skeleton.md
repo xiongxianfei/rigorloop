@@ -1,17 +1,20 @@
-<!-- Template: plan-skeleton-v1 -->
+<!-- Template: plan-skeleton-v2 -->
 <!-- Skill: plan -->
 <!-- Template status: normative -->
-<!-- Structural-fingerprint: sha256:029e3eb31b53356d2a57440ceefa3b404dc8184f7dc8629f13b10d4206caaba9 -->
+<!-- Structural-fingerprint: sha256:04420a4b6c9d726f89f3e7ebc923a88126aacca535a3c45dbfc81e6f69f7d776 -->
 <!-- Maintained alongside: skills/plan/SKILL.md -->
 <!-- Readability contract: use semantic source lines; keep stable IDs and tables for repeated proof or mapping structures. -->
-
-## Status
-
-- Status: <draft | reviewed | active | blocked | done | superseded>
 
 ## Purpose / big picture
 
 <why this implementation plan exists>
+
+## Current Handoff Summary
+
+<copy assets/current-handoff-summary.md without duplicating its heading>
+
+Mutable lifecycle state, current milestone state, review status, blockers,
+routing, and closeout readiness live only in this record.
 
 ## Source artifacts
 
@@ -32,10 +35,6 @@
 
 - <requirement id>: <milestone or evidence surface>
 
-## Current Handoff Summary
-
-<copy assets/current-handoff-summary.md>
-
 ## Milestones
 
 <copy assets/milestone.md once per implementation milestone>
@@ -53,29 +52,12 @@
 
 - <dependency or sequencing constraint>
 
-## Progress
-
-- <date>: <progress note>
-
 ## Decision log
 
 | Date | Decision | Reason | Alternatives rejected |
 | --- | --- | --- | --- |
 <copy assets/decision-log-row.md once per material decision>
 
-## Surprises and discoveries
-
-- <new fact or none>
-
-## Validation notes
-
-- <command and result>
-
-## Outcome and retrospective
-
-- <filled after completion>
-
 ## Readiness
 
-- See `Current Handoff Summary`.
-- <current readiness statement>
+- See the owning change record for current workflow state.

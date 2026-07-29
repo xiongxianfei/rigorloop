@@ -73,7 +73,10 @@ Apply the same readiness checks for workflow-managed and direct-`pr` invocation.
 
 `verify` owns `branch-ready`. This stage owns `pr-body-ready` and `pr-open-ready`.
 
-PR handoff is scoped evidence and must not own the active plan's current next stage. Summarize planned-initiative state from the active plan `Current Handoff Summary`.
+PR handoff is scoped evidence and must not own artifact settlement, milestone
+state, or routing.
+Summarize planned-initiative state from `change.yaml` and treat the plan and
+upstream artifacts as read-only.
 PR handoff is blocked when the latest verify evidence does not include a passing state-sync gate for touched, referenced, active, and blocked workflow-state artifacts.
 
 ## Artifact placement
@@ -95,9 +98,15 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Change-record bounded reads
 
-For planned change records, summarize current workflow state from the active plan `Current Handoff Summary`. When the project provides the helper, use `scripts/query-change-record.py <change-id> summary` for artifact paths, review state, latest validation state, blockers, and detail pointers; use `scripts/query-change-record.py <change-id> artifacts` for canonical artifact paths only; and use `scripts/query-change-record.py <change-id> validation --latest` for latest validation evidence.
+For planned change records, summarize current workflow state from
+`change.yaml`.
+When the project provides query helpers, use them as bounded views of the
+change record, not as another state owner.
 
-Escalate from bounded helper output to full `change.yaml` when PR handoff depends on forensic reconstruction, unsupported-shape diagnostics, disputed evidence, selector-routing behavior, migration compatibility, or whole-record review. Do not treat the PR body as the authoritative state owner for active plan status.
+Escalate from bounded helper output to full `change.yaml` when PR handoff
+depends on forensic reconstruction, unsupported-shape diagnostics, disputed
+evidence, migration compatibility, or whole-record review.
+Do not treat the PR body as an authoritative state owner.
 
 ## Outputs
 

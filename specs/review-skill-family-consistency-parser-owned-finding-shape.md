@@ -364,3 +364,13 @@ Planned follow-ons after this slice:
 ## Readiness
 
 Approved after `spec-review-r2`. Ready for `plan`.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+downstream reliance on embedded proposal status to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Review-family consistency, parser-owned finding shape, asset policy, and
+formal review evidence requirements remain governed here.

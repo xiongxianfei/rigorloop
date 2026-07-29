@@ -1,8 +1,8 @@
 # Architecture Title
 
-## Status
+## Owning change record
 
-- draft
+- `docs/changes/<change-id>/change.yaml`
 
 ## Related artifacts
 

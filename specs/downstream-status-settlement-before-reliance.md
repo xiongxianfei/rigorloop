@@ -381,3 +381,14 @@ None.
 ## Readiness
 
 Approved. Ready for execution planning before test-spec and implementation.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+every permission or requirement for a downstream stage to edit upstream
+lifecycle, readiness, follow-on, or closeout metadata to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Clear-review-evidence checks, fail-closed reliance, and blocking on
+contradictory or unresolved evidence remain governed here.
