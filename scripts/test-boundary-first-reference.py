@@ -8,6 +8,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -64,15 +65,20 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         root = Path(temporary.name)
         source = root / CANONICAL_REFERENCE
         source.parent.mkdir(parents=True)
-        source.write_bytes(b"# portable boundary method\n")
+        source.write_bytes(
+            b"# portable boundary method\n\n"
+            b"Boundary model version: boundary-first-v1\n"
+        )
         (root / "specs" / "boundary-first-resources.yaml").write_bytes(
             MANIFEST_BYTES
         )
         (source.parent / "boundary-first-feature-authoring-v1.md").write_bytes(
-            b"# feature authoring\n"
+            b"# feature authoring\n\n"
+            b"Boundary model version: boundary-first-v1\n"
         )
         (source.parent / "boundary-first-proof-v1.md").write_bytes(
-            b"# proof guidance\n"
+            b"# proof guidance\n\n"
+            b"Boundary model version: boundary-first-v1\n"
         )
         for skill in GOVERNED_SKILLS:
             (root / "skills" / skill).mkdir(parents=True)
@@ -229,6 +235,54 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
                 ):
                     project_reference(root, mode="write")
 
+    def test_manifest_rejects_known_but_wrong_exact_resource_tuples(
+        self,
+    ) -> None:
+        variants = {
+            "missing-compact-consumer": MANIFEST_BYTES.replace(
+                b"      - verify\n", b"", 1
+            ),
+            "unowned-feature-consumer": MANIFEST_BYTES.replace(
+                b"      - spec-review\n  - id: proof",
+                b"      - spec-review\n      - plan\n  - id: proof",
+            ),
+            "wrong-source": MANIFEST_BYTES.replace(
+                b"specs/references/boundary-first-proof-v1.md",
+                b"specs/references/alternate-proof-v1.md",
+            ),
+            "wrong-target": MANIFEST_BYTES.replace(
+                b"    target: references/boundary-first-proof-v1.md",
+                b"    target: references/alternate-proof-v1.md",
+            ),
+        }
+        for name, raw in variants.items():
+            with self.subTest(name=name):
+                _, root = self.make_repository()
+                if name == "wrong-source":
+                    (
+                        root / "specs/references/alternate-proof-v1.md"
+                    ).write_bytes(b"# alternate\n")
+                (root / RESOURCE_MANIFEST).write_bytes(raw)
+                with self.assertRaisesRegex(
+                    ProjectionContractError,
+                    "BFR-MANIFEST-RESOURCE-TUPLE",
+                ):
+                    project_reference(root, mode="write")
+
+    def test_mixed_canonical_resource_version_fails_before_write(self) -> None:
+        _, root = self.make_repository()
+        proof = root / "specs/references/boundary-first-proof-v1.md"
+        proof.write_text(
+            "# Proof\n\nBoundary model version: boundary-first-v2\n",
+            encoding="utf-8",
+        )
+
+        with self.assertRaisesRegex(
+            ProjectionContractError,
+            "BFR-RESOURCE-VERSION-UNKNOWN",
+        ):
+            project_reference(root, mode="write")
+
     def test_manifest_rejects_unsafe_paths_before_mutation(self) -> None:
         variants = {
             "absolute": b"/tmp/boundary.md",
@@ -260,6 +314,7 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
         _, root = self.make_repository()
         source = root / CANONICAL_REFERENCE
         raw = b"# method\r\n\xce\xbb portable bytes\n"
+        raw += b"Boundary model version: boundary-first-v1\n"
         source.write_bytes(raw)
 
         first = project_reference(root, mode="write")
@@ -274,9 +329,15 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             if expected_name == PROJECTED_REFERENCE.name:
                 expected = raw
             elif expected_name == "boundary-first-feature-authoring-v1.md":
-                expected = b"# feature authoring\n"
+                expected = (
+                    b"# feature authoring\n\n"
+                    b"Boundary model version: boundary-first-v1\n"
+                )
             else:
-                expected = b"# proof guidance\n"
+                expected = (
+                    b"# proof guidance\n\n"
+                    b"Boundary model version: boundary-first-v1\n"
+                )
             self.assertEqual(target.read_bytes(), expected)
 
     def test_check_reports_missing_stale_and_unexpected_projections(self) -> None:
@@ -359,6 +420,55 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             project_reference(root, mode="write")
 
         self.assertEqual(existing.read_bytes(), b"original")
+
+    def test_write_failure_restores_every_prior_target_and_retry_succeeds(
+        self,
+    ) -> None:
+        _, root = self.make_repository()
+        project_reference(root, mode="write")
+        before = {
+            relative: (root / relative).read_bytes()
+            for relative in projected_paths(root)
+        }
+        (root / CANONICAL_REFERENCE).write_bytes(
+            b"# revised compact\n\n"
+            b"Boundary model version: boundary-first-v1\n"
+        )
+
+        from boundary_first_reference import _write_target_bytes
+
+        for failure_index in (1, 7, 14):
+            calls = 0
+            failed = False
+
+            def fail_once(path: Path, data: bytes) -> None:
+                nonlocal calls, failed
+                calls += 1
+                if calls == failure_index and not failed:
+                    failed = True
+                    raise OSError("injected write interruption")
+                _write_target_bytes(path, data)
+
+            with self.subTest(failure_index=failure_index):
+                with patch(
+                    "boundary_first_reference._write_target_bytes",
+                    side_effect=fail_once,
+                ):
+                    with self.assertRaisesRegex(
+                        ProjectionContractError,
+                        "BFR-PROJECTION-WRITE",
+                    ):
+                        project_reference(root, mode="write")
+                self.assertEqual(
+                    {
+                        relative: (root / relative).read_bytes()
+                        for relative in projected_paths(root)
+                    },
+                    before,
+                )
+
+        retry = project_reference(root, mode="write")
+        self.assertTrue(retry.ok)
 
     def test_source_parent_symlink_escape_fails_before_read(self) -> None:
         _, root = self.make_repository()
@@ -476,6 +586,10 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             "No interaction selected:",
             "Structural validation",
             "Semantic review",
+            "Which inputs or actors can change the outcome?",
+            "Which state or timing conditions can change the outcome?",
+            "Which public, sibling, helper, or alternate path can change the outcome?",
+            "Which failure, retry, recovery, compatibility, or external condition can change the outcome?",
         )
         for token in required:
             with self.subTest(token=token):
