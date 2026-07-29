@@ -374,14 +374,25 @@ def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
 
 
 def _documents_cross_adapter_skill_invocation(text: str) -> bool:
-    """Recognize the explicit three-adapter invocation-equivalence contract."""
+    """Recognize the exact workflow invocation-equivalence contract."""
 
-    lowered = text.lower()
+    normalized = re.sub(r"\s+", " ", text)
+    expected = (
+        "Adapter invocation equivalents preserve the same arguments: Codex uses "
+        "`$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, "
+        "and OpenCode invokes the installed `workflow` skill with "
+        "`auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or "
+        "`off`."
+    )
+    dollar_invocations = CODEX_SKILL_INVOCATION_PATTERN.findall(text)
+    workflow_arguments = set(
+        re.findall(r"\$workflow\s+auto:\s*([^`\n]+)", text)
+    )
     return (
-        "adapter invocation equivalents" in lowered
-        and "codex uses" in lowered
-        and "claude uses" in lowered
-        and "opencode invokes" in lowered
+        expected in normalized
+        and set(dollar_invocations) == {"$workflow"}
+        and workflow_arguments
+        == {"<argument>", "<target-stage>", "status", "off"}
     )
 
 
@@ -2515,7 +2526,7 @@ def _mapped_resources_for_clean_install(
         identities = mapped_resource_identities_for_skill(skill_dir)
         if not identities:
             continue
-        if selected and skill_dir.name not in selected and identities[0].skill_name not in selected:
+        if selected and identities[0].skill_name not in selected:
             continue
         for identity in identities:
             report = reports.get(identity.skill_name)
@@ -2549,6 +2560,24 @@ def validate_clean_install_smoke(
 
     errors: list[str] = []
     resources = _mapped_resources_for_clean_install(skills_root, skill_names=skill_names)
+    if skill_names:
+        repeated = sorted(
+            {
+                skill_name
+                for skill_name in skill_names
+                if skill_names.count(skill_name) > 1
+            }
+        )
+        for skill_name in repeated:
+            errors.append(f"clean-install selected skill repeated: {skill_name}")
+        resolved = {resource.skill_name for resource in resources}
+        for skill_name in sorted(set(skill_names) - resolved):
+            errors.append(
+                "clean-install selected skill is unknown or has no mapped "
+                f"resources: {skill_name}"
+            )
+        if errors:
+            return _dedupe_errors(errors)
     if not resources:
         target = ", ".join(skill_names) if skill_names else "all skills"
         return [f"clean-install smoke has no mapped resources to validate for {target}"]
