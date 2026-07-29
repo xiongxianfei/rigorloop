@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import copy
 import os
 import re
 import shlex
@@ -17,6 +18,11 @@ import unittest
 from dataclasses import dataclass
 from io import StringIO
 from pathlib import Path
+
+from change_metadata_semantics import (
+    validate_artifact_transition,
+    validate_stage_owned_lifecycle_metadata,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -1887,6 +1893,86 @@ Validation target: Metadata summary counts derive zero open findings.
                 extra_review_field="  next_stage: code-review M2\n",
             )
             self.assertPathFails(target, "review.next_stage must not author live planned-initiative next stage")
+
+
+class StageOwnedLifecycleMetadataTests(unittest.TestCase):
+    def valid_record(self) -> dict:
+        return {
+            "lifecycle_contract": "stage-owned-change-local-v1",
+            "artifact_states": {
+                "proposal": {
+                    "kind": "proposal",
+                    "path": "docs/proposals/example.md",
+                    "role": "primary",
+                    "lifecycle_state": "accepted",
+                    "review": {
+                        "id": "proposal-review-r1",
+                        "artifact_id": "proposal",
+                        "outcome": "approved",
+                        "record": "docs/changes/example/reviews/proposal-review-r1.md",
+                        "round": "r1",
+                    },
+                }
+            },
+            "workflow_state": {
+                "lifecycle_state": "active",
+                "current_stage": "spec",
+                "next_stage": "spec-review",
+                "blocker": None,
+                "evidence": ["docs/changes/example/reviews/proposal-review-r1.md"],
+            },
+            "workflow": {
+                "automation": {
+                    "mechanism": "bounded-review-fix",
+                    "target": {
+                        "stage": "verify",
+                        "occurrence": {"kind": "final"},
+                        "bound_at": "2026-07-29T00:00:00Z",
+                        "completion": {"rule": "fresh verification passes"},
+                    },
+                    "status": "active",
+                    "current_stage": "spec",
+                    "stop_reason": None,
+                    "evidence": [],
+                }
+            },
+        }
+
+    def test_stage_owned_valid_record_passes(self) -> None:
+        self.assertEqual(validate_stage_owned_lifecycle_metadata(self.valid_record()), [])
+
+    def test_unmarked_historical_record_remains_readable(self) -> None:
+        self.assertEqual(validate_stage_owned_lifecycle_metadata({"workflow": {"autoprogression": {}}}), [])
+
+    def test_unknown_value_fails_before_consistency(self) -> None:
+        record = self.valid_record()
+        record["artifact_states"]["proposal"]["kind"] = "mystery"
+        errors = validate_stage_owned_lifecycle_metadata(record)
+        self.assertTrue(any("unknown_value" in error for error in errors))
+
+    def test_unknown_automation_status_fails_closed(self) -> None:
+        record = self.valid_record()
+        record["workflow"]["automation"]["status"] = "waiting"
+        errors = validate_stage_owned_lifecycle_metadata(record)
+        self.assertTrue(any("automation.status: unknown_value" in error for error in errors))
+
+    def test_duplicate_paths_and_mixed_legacy_writer_fail(self) -> None:
+        record = self.valid_record()
+        record["artifact_states"]["spec"] = copy.deepcopy(record["artifact_states"]["proposal"])
+        record["artifact_states"]["spec"].update({"kind": "spec", "role": "supporting"})
+        record["workflow"]["autoprogression"] = {}
+        errors = validate_stage_owned_lifecycle_metadata(record)
+        self.assertTrue(any("duplicate artifact path" in error for error in errors))
+        self.assertTrue(any("mixed legacy writer" in error for error in errors))
+
+    def test_artifact_transition_rejects_unknown_value(self) -> None:
+        errors = validate_artifact_transition("proposal", "accepted", "mystery")
+        self.assertTrue(any("unknown_value" in error for error in errors))
+
+    def test_artifact_transition_rejects_illegal_and_non_adr_deprecation(self) -> None:
+        self.assertTrue(validate_artifact_transition("spec", "approved", "review-required"))
+        self.assertTrue(validate_artifact_transition("proposal", "accepted", "deprecated"))
+        self.assertEqual(validate_artifact_transition("adr", "active", "deprecated"), [])
 
 
 if __name__ == "__main__":

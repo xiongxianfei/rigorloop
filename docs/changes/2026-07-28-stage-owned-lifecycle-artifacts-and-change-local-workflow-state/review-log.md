@@ -9,6 +9,19 @@ artifacts and change-local workflow-state proposal.
 
 ### Review entry
 
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: M2 R1
+Reviewed artifact: commit 366fa994
+Status: approved
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: none
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m1-r1
 Stage: code-review
 Round: M1 R1
