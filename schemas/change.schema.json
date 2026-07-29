@@ -121,15 +121,7 @@
       "properties": {
         "automation": {
           "type": "object",
-          "required": [
-            "mechanism",
-            "schema_version",
-            "run",
-            "parent_authorizations",
-            "effective_capabilities",
-            "transition_receipts",
-            "external_actions"
-          ],
+          "required": [],
           "properties": {
             "mechanism": {
               "type": "string",
@@ -352,7 +344,7 @@
               ]
             }
           },
-          "additionalProperties": false
+          "additionalProperties": true
         },
         "autoprogression": {
           "type": "object",
