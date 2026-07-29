@@ -18,15 +18,16 @@ Review pending closeout: code-review-m1-r2
 Review pending closeout: code-review-m1-r3
 Review pending closeout: code-review-m1-r4
 Review pending closeout: code-review-m1-r5
+Review pending closeout: code-review-m1-r6
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
   `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`,
   `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`,
   `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`
-- Findings resolved: 16
-- Unresolved findings: 2
-- Current result: M1 code-review R5 requests canonical scalar privacy and namespace-scoped symlink inventory before rereview.
+- Findings resolved: 18
+- Unresolved findings: 1
+- Current result: M1 code-review R6 requests a projection input-stability barrier before rereview.
 
 ## Resolution Overview
 
@@ -48,8 +49,9 @@ Review pending closeout: code-review-m1-r5
 | CR-M1-R3-003 | accepted | resolved | Missing-manifest diagnostics are structured through CLI and activation. |
 | CR-M1-R4-001 | accepted | resolved | Skill validation translates manifest failures without traceback or private roots. |
 | CR-M1-R4-002 | accepted | resolved | Manifest scalars are represented by one-way identities. |
-| CR-M1-R5-001 | accepted | open | Prevent canonical resource-version scalar disclosure. |
-| CR-M1-R5-002 | accepted | open | Restrict symlink inventory to governed boundary resources. |
+| CR-M1-R5-001 | accepted | resolved | Canonical resource-version values use one-way diagnostic identities. |
+| CR-M1-R5-002 | accepted | resolved | Symlink inventory is scoped to governed boundary resources. |
+| CR-M1-R6-001 | accepted | open | Reject and recover from in-operation canonical input drift. |
 
 ## Finding Details
 
@@ -200,7 +202,7 @@ Validation evidence: Secret-bearing consumer fixtures preserve stable identities
 
 Finding ID: CR-M1-R5-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Hash canonical version offending values and prove public and activation paths.
@@ -212,13 +214,27 @@ Validation evidence: Secret-bearing canonical version fixtures preserve stable c
 
 Finding ID: CR-M1-R5-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Restrict recursive symlink discovery to the boundary resource namespace while retaining governed path ancestor checks.
 Rationale: The boundary validator must not claim unrelated packaged resources.
 Validation target: code-review-m1-r6
 Validation evidence: Unrelated skill-local and canonical reference symlinks pass, while existing governed and boundary-resource symlink cases fail closed in the 26-test projection suite; independent R6 confirmation remains pending.
+
+### code-review-m1-r6
+
+#### CR-M1-R6-001 - Projection can return success for an already-stale transaction
+
+Finding ID: CR-M1-R6-001
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution
+Chosen action: Snapshot canonical inputs and enforce a final stability barrier, restoring write targets on drift.
+Rationale: Cached-byte target checks cannot prove currency against inputs that change during the transaction.
+Validation target: code-review-m1-r7
+Validation evidence: pending correction and independent rereview
 
 ### proposal-review-r1
 
