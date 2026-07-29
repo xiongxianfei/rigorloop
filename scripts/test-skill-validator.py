@@ -7802,6 +7802,10 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
                     "The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.",
                     body,
                 )
+                self.assertIn(
+                    "Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption.",
+                    body,
+                )
                 self.assertIn("do not build a Cartesian inventory.", body)
 
     def test_progressive_guidance_keeps_stage_ownership_and_slice_routing(self) -> None:
