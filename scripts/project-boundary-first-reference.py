@@ -9,6 +9,7 @@ from pathlib import Path
 from boundary_first_reference import (
     PROJECTION_MODES,
     ProjectionContractError,
+    format_contract_error,
     project_reference,
 )
 
@@ -34,7 +35,7 @@ def main() -> int:
     try:
         result = project_reference(args.root, mode=selected)
     except ProjectionContractError as error:
-        print(error)
+        print(format_contract_error(error))
         return 2
     for error in result.errors:
         print(error)

@@ -26,9 +26,9 @@ Milestone M1 replaces the one-reference projection with the reviewed three-resou
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-boundary-first-reference.py` | pass, 19 tests |
+| `python scripts/test-boundary-first-reference.py` | pass, 21 tests |
 | `python scripts/project-boundary-first-reference.py --check` | pass, 14 projections |
-| `python scripts/test-boundary-first-validation.py` | pass, 58 tests |
+| `python scripts/test-boundary-first-validation.py` | pass, 60 tests |
 | `python scripts/validate-boundary-first.py --check` | pass |
 | `python scripts/test-skill-validator.py` | pass, 272 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skill files |
@@ -50,3 +50,10 @@ M2 will add the automatic compact scan and stage-owned behavior guidance.
 - `CR-M1-R1-004`: activation validation preserves structured manifest error identity, path, expectation, and reason.
 
 The full M1 command set passed after these corrections and is awaiting independent R2 review.
+
+## R2 finding corrections
+
+- `CR-M1-R2-001`: canonical and governed skill reference inventories now scan the complete recursive `boundary-first-*.md` namespace, rejecting alternate-version, arbitrary, nested, and symlink additions.
+- `CR-M1-R2-002` and the remaining `CR-M1-R1-004` path: missing family sources and symlinks now carry structured identity through activation; the projection CLI prints bounded check, path, message, offending value, and expectation fields.
+
+The full M1 command set passed after these corrections and is awaiting independent R3 review.

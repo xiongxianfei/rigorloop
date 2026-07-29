@@ -797,6 +797,48 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             )
             self.assertIn("boundary-first-v1", issue.expected)
 
+    def test_activation_preserves_missing_family_source_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            missing = (
+                root / "specs/references/boundary-first-proof-v1.md"
+            )
+            missing.unlink()
+
+            issue = validate_activation(root)[0]
+
+            self.assertEqual(issue.code, "BFR-SOURCE-MISSING")
+            self.assertEqual(
+                issue.path,
+                "specs/references/boundary-first-proof-v1.md",
+            )
+            self.assertIn("existing canonical resource", issue.expected)
+
+    def test_activation_preserves_family_source_symlink_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            source = (
+                root
+                / "specs/references/"
+                "boundary-first-feature-authoring-v1.md"
+            )
+            source.unlink()
+            source.symlink_to(
+                root / "specs/references/boundary-first-method-v1.md"
+            )
+
+            issue = validate_activation(root)[0]
+
+            self.assertEqual(issue.code, "BFR-PATH-SYMLINK")
+            self.assertEqual(
+                issue.path,
+                "specs/references/"
+                "boundary-first-feature-authoring-v1.md",
+            )
+            self.assertIn("non-symlink", issue.expected)
+
     def test_active_manifest_uses_parent_inventory_and_immediate_release(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

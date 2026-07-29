@@ -105,7 +105,7 @@ Owning stage: review-resolution
 Chosen action: Inventory every `boundary-first-*.md` resource in canonical and governed reference roots and reject non-manifest paths.
 Rationale: A version-specific glob cannot prove additional or mixed-version closure.
 Validation target: code-review-m1-r3
-Validation evidence: pending
+Validation evidence: Canonical, skill-local, nested, and alternate-version additional-resource tests pass in the 21-test projection suite; independent R3 confirmation remains pending.
 
 #### CR-M1-R2-002 - Structured diagnostics remain incomplete on sibling paths
 
@@ -117,7 +117,7 @@ Owning stage: review-resolution
 Chosen action: Structure missing-source and path errors, use one bounded CLI formatter, and prove activation and CLI family-resource failures.
 Rationale: Fixing one manifest-version case does not satisfy PBS-R037 across public and sibling validation paths.
 Validation target: code-review-m1-r3
-Validation evidence: pending
+Validation evidence: Direct CLI resource-version diagnostics and activation missing/symlink family-source tests pass in the 21-test projection and 60-test activation suites; independent R3 confirmation remains pending.
 
 ### proposal-review-r1
 
