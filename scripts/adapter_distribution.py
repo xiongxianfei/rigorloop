@@ -363,11 +363,26 @@ def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
         reasons.append("Depends on agents/openai.yaml.")
     if _references_codex_skills_as_only_install_location(text):
         reasons.append("References .codex/skills as the only install location.")
-    if CODEX_SKILL_INVOCATION_PATTERN.search(text):
+    if (
+        CODEX_SKILL_INVOCATION_PATTERN.search(text)
+        and not _documents_cross_adapter_skill_invocation(text)
+    ):
         reasons.append("Requires Codex-specific $skill invocation.")
     if _has_codex_runtime_assumption(text):
         reasons.append("Assumes Codex-only tool, UI, approval, or runtime assumption.")
     return reasons
+
+
+def _documents_cross_adapter_skill_invocation(text: str) -> bool:
+    """Recognize the explicit three-adapter invocation-equivalence contract."""
+
+    lowered = text.lower()
+    return (
+        "adapter invocation equivalents" in lowered
+        and "codex uses" in lowered
+        and "claude uses" in lowered
+        and "opencode invokes" in lowered
+    )
 
 
 def _target_adapter_reasons(text: str) -> dict[str, tuple[str, ...]]:
@@ -2504,12 +2519,17 @@ def _mapped_resources_for_clean_install(
             continue
         for identity in identities:
             report = reports.get(identity.skill_name)
+            required_adapters = (
+                SUPPORTED_ADAPTERS
+                if selected
+                else report.included_adapters if report is not None else ()
+            )
             resources.append(
                 CleanInstallMappedResource(
                     skill_name=identity.skill_name,
                     relative_path=identity.relative_path,
                     sha256=identity.sha256,
-                    adapters=report.included_adapters if report is not None else (),
+                    adapters=required_adapters,
                 )
             )
     return tuple(resources)

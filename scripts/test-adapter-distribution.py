@@ -53,7 +53,9 @@ from adapter_distribution import (  # noqa: E402
 )
 from boundary_first_reference import (  # noqa: E402
     GOVERNED_SKILLS,
+    inventory_digest,
     load_resource_manifest,
+    raw_sha256,
 )
 
 
@@ -1071,8 +1073,15 @@ release_gate:
 
     def test_boundary_first_archives_and_clean_installs_preserve_all_resources(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            output_dir = Path(tmp) / "release-output"
+            temporary_root = Path(tmp)
+            output_dir = temporary_root / "release-output"
+            generated_root = temporary_root / "generated"
             version = "v0.3.6"
+            sync_adapter_output(
+                version,
+                skills_root=ROOT / "skills",
+                output_root=generated_root,
+            )
             build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
 
             self.assertEqual(
@@ -1088,14 +1097,21 @@ release_gate:
                 report.name: report
                 for report in collect_skill_reports(ROOT / "skills")
             }
+            for skill_name in GOVERNED_SKILLS:
+                self.assertEqual(
+                    reports[skill_name].included_adapters,
+                    SUPPORTED_ADAPTERS,
+                    skill_name,
+                )
+            expected_digest = "68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329"
             seen: set[tuple[str, str, str]] = set()
             for adapter_name in SUPPORTED_ADAPTERS:
                 config = ADAPTERS[adapter_name]
                 archive_path = output_dir / adapter_archive_name(adapter_name, version)
+                generated_records: dict[str, str] = {}
+                archive_records: dict[str, str] = {}
                 with zipfile.ZipFile(archive_path) as archive:
                     for skill_name in GOVERNED_SKILLS:
-                        if adapter_name not in reports[skill_name].included_adapters:
-                            continue
                         skill_entry = config.skill_path(skill_name).as_posix()
                         self.assertTrue(archive.read(skill_entry))
                         for resource in manifest.resources:
@@ -1110,17 +1126,65 @@ release_gate:
                                 archive.read(reference_entry),
                                 (ROOT / resource.source).read_bytes(),
                             )
+                            logical_path = (
+                                Path("skills") / skill_name / resource.target
+                            ).as_posix()
+                            generated_path = (
+                                generated_root
+                                / adapter_name
+                                / config.skill_root
+                                / skill_name
+                                / resource.target
+                            )
+                            generated_records[logical_path] = raw_sha256(
+                                generated_path.read_bytes()
+                            )
+                            archive_records[logical_path] = raw_sha256(
+                                archive.read(reference_entry)
+                            )
                             seen.add(
                                 (adapter_name, skill_name, resource.resource_id)
                             )
+                self.assertEqual(len(generated_records), 14)
+                self.assertEqual(inventory_digest(generated_records), expected_digest)
+                self.assertEqual(len(archive_records), 14)
+                self.assertEqual(inventory_digest(archive_records), expected_digest)
             expected = {
                 (adapter_name, skill_name, resource.resource_id)
                 for skill_name in GOVERNED_SKILLS
-                for adapter_name in reports[skill_name].included_adapters
+                for adapter_name in SUPPORTED_ADAPTERS
                 for resource in manifest.resources
                 if skill_name in resource.consumers
             }
             self.assertEqual(seen, expected)
+
+            installed_identities: dict[str, tuple[int, str]] = {}
+
+            def capture_runner(command, **kwargs):
+                result = subprocess.run(command, **kwargs)
+                if result.returncode != 0:
+                    return result
+                adapter_name = command[command.index("init") + 1]
+                config = ADAPTERS[adapter_name]
+                project_root = Path(kwargs["cwd"])
+                records: dict[str, str] = {}
+                for resource in manifest.resources:
+                    for skill_name in resource.consumers:
+                        installed_path = (
+                            project_root
+                            / config.skill_root
+                            / skill_name
+                            / resource.target
+                        )
+                        logical_path = (
+                            Path("skills") / skill_name / resource.target
+                        ).as_posix()
+                        records[logical_path] = raw_sha256(installed_path.read_bytes())
+                installed_identities[adapter_name] = (
+                    len(records),
+                    inventory_digest(records),
+                )
+                return result
 
             self.assertEqual(
                 [],
@@ -1129,8 +1193,52 @@ release_gate:
                     output_dir,
                     skills_root=ROOT / "skills",
                     skill_names=GOVERNED_SKILLS,
+                    command_runner=capture_runner,
                 ),
             )
+            self.assertEqual(
+                installed_identities,
+                {
+                    adapter_name: (14, expected_digest)
+                    for adapter_name in SUPPORTED_ADAPTERS
+                },
+            )
+
+    def test_clean_install_requested_skill_cannot_be_filtered_by_portability(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "release-output"
+            version = "v0.3.6"
+            build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
+            archive_path = output_dir / adapter_archive_name("claude", version)
+            workflow_root = (
+                ADAPTERS["claude"].skill_root / "workflow"
+            ).as_posix() + "/"
+            with zipfile.ZipFile(archive_path) as archive:
+                retained = {
+                    name: archive.read(name)
+                    for name in archive.namelist()
+                    if not name.startswith(workflow_root)
+                }
+            with zipfile.ZipFile(archive_path, "w") as archive:
+                for name, content in sorted(retained.items()):
+                    archive.writestr(name, content)
+
+            errors = validate_clean_install_smoke(
+                version,
+                output_dir,
+                skills_root=ROOT / "skills",
+                skill_names=("workflow",),
+            )
+
+        self.assertTrue(
+            any(
+                "clean-install skill root missing: claude/workflow" in error
+                for error in errors
+            ),
+            errors,
+        )
 
     def test_boundary_first_archive_drift_reports_exact_layer_and_hashes(self) -> None:
         cases = (
@@ -1750,6 +1858,14 @@ release_gate:
         self.assertTrue(report.portable)
         self.assertEqual(report.included_adapters, ("codex", "claude", "opencode"))
         self.assertEqual(report.reason, "")
+
+    def test_workflow_explicit_adapter_invocation_equivalents_remain_portable(
+        self,
+    ) -> None:
+        report = evaluate_skill(ROOT / "skills" / "workflow")
+
+        self.assertTrue(report.portable, report.reason)
+        self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
 
     def test_partial_portability_records_exact_adapter_decision(self) -> None:
         report = evaluate_skill(self.fixture("partial-portability"))

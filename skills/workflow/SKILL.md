@@ -313,6 +313,10 @@ Classify the request into one of these contexts before deciding whether to conti
 Rules:
 
 - Workflow-managed automation uses one target-driven `bounded-review-fix` mechanism under `workflow.automation`.
+- Adapter invocation equivalents preserve the same arguments: Codex uses
+  `$workflow auto: <target-stage>`, Claude uses
+  `/workflow auto: <target-stage>`, and OpenCode invokes the installed
+  `workflow` skill with `auto: <target-stage>`.
 - For every new governed change, create `lifecycle_contract: stage-owned-change-local-v1` in the change-local record without requiring another parameter.
   Before the first mutation of resumed nonterminal historical work, migrate that record once; read-only historical inspection never creates the marker.
 - `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
