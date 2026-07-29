@@ -33,7 +33,7 @@ The exact shared-block test failed once for each of the ten governed skills befo
 
 | Command | Result |
 | --- | --- |
-| `python scripts/test-skill-validator.py` | pass, 278 tests with 16 documented skips |
+| `python scripts/test-skill-validator.py` | pass, 279 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skill files |
 | `python scripts/build-skills.py --check` | pass using temporary generated output |
 | `python scripts/project-boundary-first-reference.py --check` | pass, 14 projections |
@@ -52,3 +52,11 @@ M2 requires independent code review before M3 begins. Repository activation rema
 - Negative mutations prove contradictory inputs, wrong actions or routes, missing expansion states, and missing skill coverage fail.
 
 The complete M2 skill suite passed after the correction and is awaiting independent R2 review.
+
+## R2 finding correction
+
+- `CR-M2-R2-001`: every scenario input and expected-output field now has a closed vocabulary, and all boolean fields require actual booleans before the oracle runs.
+- Stable required case IDs enforce every M2 proof property, including pending, substantive and undecidable revisions, sibling and recovery outcomes, ownerless discovery, and structural-pass semantic failure.
+- Unknown-value mutations cover every closed field. Invalid-type mutations cover every boolean. Removal mutations cover every required semantic property by stable case ID.
+
+The complete M2 skill suite passed after the correction and is awaiting independent R3 review.
