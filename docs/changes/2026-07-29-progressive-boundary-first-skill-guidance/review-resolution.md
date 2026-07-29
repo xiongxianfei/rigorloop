@@ -30,6 +30,7 @@ Review closeout: code-review-m4-r1
 Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r3
 Review closeout: code-review-m4-r4
+Review closeout: code-review-m4-r5
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -38,10 +39,11 @@ Review closeout: code-review-m4-r4
   `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`,
   `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`,
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
-  `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`
+  `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`,
+  `code-review-m4-r5`
 - Findings resolved: 34
-- Unresolved findings: 0
-- Current result: M4 code-review R4 findings are resolved and await independent R5 confirmation.
+- Unresolved findings: 1
+- Current result: M4 code-review R5 found a whole-body and composed-corruption invocation parsing gap.
 
 ## Resolution Overview
 
@@ -81,6 +83,7 @@ Review closeout: code-review-m4-r4
 | CR-M4-R3-002 | accepted | resolved | Unknown, noncanonical, and duplicate explicit mapped-skill selections fail closed. |
 | CR-M4-R4-001 | accepted | resolved | Every recognized adapter invocation occurrence must match the approved identity, operation, argument, and case. |
 | CR-M4-R4-002 | accepted | resolved | Explicit skill-name preflight runs before archive validation. |
+| CR-M4-R5-001 | accepted | open | Use one whole-body adapter-labeled invocation occurrence domain. |
 
 ## Finding Details
 
@@ -249,6 +252,20 @@ Chosen action: Share a selection-preflight helper and call it before archive val
 Rationale: Archive state must not mask invalid requested identities.
 Validation target: code-review-m4-r5
 Validation evidence: Unknown selection with an empty archive root reports the selection error before any missing-archive error; 142 adapter tests, the planned ten-skill command, and 11-check broad smoke pass.
+
+### code-review-m4-r5
+
+#### CR-M4-R5-001 - Invocation occurrence parsing is not compositional
+
+Finding ID: CR-M4-R5-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Discover whole-body adapter-labeled candidates before validating their fields.
+Rationale: Formatting and multiple invalid fields must not remove a contradictory occurrence from validation.
+Validation target: code-review-m4-r6
+Validation evidence: pending
 
 ### code-review-m1-r1
 
