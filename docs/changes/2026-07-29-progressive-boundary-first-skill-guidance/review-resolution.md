@@ -16,15 +16,16 @@ Review closeout: test-spec-review-r2
 Review pending closeout: code-review-m1-r1
 Review pending closeout: code-review-m1-r2
 Review pending closeout: code-review-m1-r3
+Review pending closeout: code-review-m1-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
   `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`,
   `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`,
-  `code-review-m1-r2`, `code-review-m1-r3`
-- Findings resolved: 8
-- Unresolved findings: 6
-- Current result: M1 code-review R3 requests interruption, sole-authority, and missing-manifest diagnostic closure before rereview.
+  `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`
+- Findings resolved: 14
+- Unresolved findings: 2
+- Current result: M1 code-review R4 requests skill-validation error translation and secret-safe diagnostics before rereview.
 
 ## Resolution Overview
 
@@ -37,13 +38,15 @@ Review pending closeout: code-review-m1-r3
 | PBS-TSR1 | accepted | resolved | M2 directly proves its compatibility-guidance state matrix and includes every plan-required M2 command; M4 retains composed activation and rollback proof. |
 | CR-M1-R1-001 | accepted | resolved | Exact resource tuples and canonical versions now fail closed. |
 | CR-M1-R1-002 | accepted | resolved | The four-question compact scan is restored to the compact core. |
-| CR-M1-R1-003 | accepted | open | `OSError` recovery works, but catchable interruption still leaves mixed projections. |
-| CR-M1-R1-004 | accepted | open | Family-source identity is preserved, but missing-manifest identity failed remediation. |
+| CR-M1-R1-003 | accepted | resolved | Catchable interruption restores present and absent targets before propagation. |
+| CR-M1-R1-004 | accepted | resolved | Manifest and family-source identity is preserved through public consumers. |
 | CR-M1-R2-001 | accepted | resolved | Canonical and skill-local recursive inventory rejects alternate and nested additions. |
-| CR-M1-R2-002 | accepted | open | Family paths are structured, but missing-manifest public diagnostics remain incomplete. |
-| CR-M1-R3-001 | accepted | open | Restore on catchable interruption before propagating it. |
-| CR-M1-R3-002 | accepted | open | Remove the parallel full resource matrix from projection code. |
-| CR-M1-R3-003 | accepted | open | Structure missing-manifest diagnostics through CLI and activation. |
+| CR-M1-R2-002 | accepted | resolved | Projection and activation diagnostics preserve structured resource identity. |
+| CR-M1-R3-001 | accepted | resolved | Catchable interruption restores target state before propagation. |
+| CR-M1-R3-002 | accepted | resolved | Projection derives from the manifest without a parallel tuple matrix. |
+| CR-M1-R3-003 | accepted | resolved | Missing-manifest diagnostics are structured through CLI and activation. |
+| CR-M1-R4-001 | accepted | open | Translate manifest contract failures at the skill-validation boundary. |
+| CR-M1-R4-002 | accepted | open | Prevent untrusted manifest scalars from appearing in public diagnostics. |
 
 ## Finding Details
 
@@ -53,7 +56,7 @@ Review pending closeout: code-review-m1-r3
 
 Finding ID: CR-M1-R1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Validate the manifest against one immutable exact resource contract and validate every canonical resource version before projection.
@@ -89,7 +92,7 @@ Validation evidence: Code-review M1 R3 reproduced partial mutation on `KeyboardI
 
 Finding ID: CR-M1-R1-004
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Use structured projection errors and retain source check, path, expectation, and reason through activation validation.
@@ -115,7 +118,7 @@ Validation evidence: Code-review M1 R3 confirmed recursive canonical and skill-l
 
 Finding ID: CR-M1-R2-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Structure missing-source and path errors, use one bounded CLI formatter, and prove activation and CLI family-resource failures.
@@ -130,7 +133,7 @@ Validation evidence: Family-resource and missing-manifest CLI and activation dia
 
 Finding ID: CR-M1-R3-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Restore snapshots for catchable in-process interruptions before preserving the original exception.
@@ -142,7 +145,7 @@ Validation evidence: Both pre-existing and initially absent target-set interrupt
 
 Finding ID: CR-M1-R3-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Remove the duplicated source, target, and consumer matrix and validate manifest structure through independent invariants.
@@ -154,13 +157,39 @@ Validation evidence: The source-level no-parallel-matrix regression and approved
 
 Finding ID: CR-M1-R3-003
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementation
 Owning stage: review-resolution
 Chosen action: Raise a structured missing-manifest error and prove exact CLI and activation propagation.
 Rationale: PBS-R037 applies to required manifest absence as well as family resources.
 Validation target: code-review-m1-r4
 Validation evidence: Missing-manifest CLI and activation regressions preserve exact path and expected condition in the 24-test projection and 61-test activation suites; independent R4 confirmation remains pending.
+
+### code-review-m1-r4
+
+#### CR-M1-R4-001 - Skill validation leaks malformed-manifest exceptions
+
+Finding ID: CR-M1-R4-001
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution
+Chosen action: Translate projection contract failures into bounded skill-validation errors and prove missing and malformed CLI paths.
+Rationale: PBS-R037 applies consistently across public validator consumers.
+Validation target: code-review-m1-r5
+Validation evidence: pending correction and independent rereview
+
+#### CR-M1-R4-002 - Manifest diagnostics expose untrusted scalar values
+
+Finding ID: CR-M1-R4-002
+Disposition: accepted
+Status: open
+Owner: M1 implementation
+Owning stage: review-resolution
+Chosen action: Remove untrusted values from diagnostic messages and consistently redact the offending-value field.
+Rationale: Actionable diagnostics do not require disclosure of the rejected payload.
+Validation target: code-review-m1-r5
+Validation evidence: pending correction and independent rereview
 
 ### proposal-review-r1
 
