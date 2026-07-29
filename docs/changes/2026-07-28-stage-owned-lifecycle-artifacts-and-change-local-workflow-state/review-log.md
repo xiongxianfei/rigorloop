@@ -9,6 +9,19 @@ artifacts and change-local workflow-state proposal.
 
 ### Review entry
 
+Review ID: code-review-final-r1
+Stage: code-review
+Round: Final R1
+Reviewed artifact: complete stage-owned lifecycle implementation diff
+Status: approved
+Detailed record: reviews/code-review-final-r1.md
+Resolution: review-resolution.md#code-review-final-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m6-r2
 Stage: code-review
 Round: M6 R2
