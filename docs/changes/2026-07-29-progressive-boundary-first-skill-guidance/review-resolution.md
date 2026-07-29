@@ -35,9 +35,9 @@ Review closeout: code-review-m4-r1
   `code-review-m1-r2`, `code-review-m1-r3`, `code-review-m1-r4`,
   `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`,
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`
-- Findings resolved: 25
-- Unresolved findings: 3
-- Current result: M4 code-review R1 requested three changes; M4 remains open.
+- Findings resolved: 28
+- Unresolved findings: 0
+- Current result: M4 code-review R1 findings are resolved and await independent R2 confirmation.
 
 ## Resolution Overview
 
@@ -68,9 +68,9 @@ Review closeout: code-review-m4-r1
 | CR-M2-R1-001 | accepted | resolved | Independent decision derivation, complete identity coverage, and shipped-guidance bindings replace self-assertion. |
 | CR-M2-R2-001 | accepted | resolved | Closed sets, boolean types, stable property IDs, and unknown/removal mutations now fail closed for valid-shaped rows. |
 | CR-M2-R3-001 | accepted | resolved | Unknown identities and malformed rows fail before dependent logic; valid rows remain order-independent. |
-| CR-M4-R1-001 | accepted | open | Reject additional installed governed boundary resources. |
-| CR-M4-R1-002 | accepted | open | Require an exact integer loading-profile schema version and closed top-level shape. |
-| CR-M4-R1-003 | accepted | open | Record reproducible baseline, candidate, and adapter-layer identities. |
+| CR-M4-R1-001 | accepted | resolved | Additional installed governed boundary resources now fail exact-inventory validation. |
+| CR-M4-R1-002 | accepted | resolved | Loading profiles require exact integer schema version 1 and a closed top-level shape. |
+| CR-M4-R1-003 | accepted | resolved | Evidence records reproducible baseline, candidate, and adapter-layer identities. |
 
 ## Finding Details
 
@@ -130,37 +130,37 @@ No findings. Both independent reviewers confirmed exact path-owned routing.
 
 Finding ID: CR-M4-R1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Compare installed governed boundary-resource inventory with the manifest-derived adapter inventory and add representative regressions.
 Rationale: Required-resource presence alone does not prove exact package ownership.
 Validation target: code-review-m4-r2
-Validation evidence: pending
+Validation evidence: Representative injected compact, feature-authoring, and proof resources fail across Codex, Claude, and opencode; all 135 adapter-distribution tests and the v0.1.5 clean-install command pass.
 
 #### CR-M4-R1-002 - Loading-profile schema version accepts non-integers
 
 Finding ID: CR-M4-R1-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Enforce exact integer version 1 and mutate every top-level shape and version-type boundary.
 Rationale: Closed schemas must fail before measurement or consistency logic.
 Validation target: code-review-m4-r2
-Validation evidence: pending
+Validation evidence: Boolean, float, string, null, missing-version, extra-field, and unknown-version mutations fail; all 282 skill tests pass with 16 documented skips.
 
 #### CR-M4-R1-003 - Package-readiness evidence is incomplete
 
 Finding ID: CR-M4-R1-003
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Add pre-split and current byte/load baselines, exact candidate identities, and per-adapter generated/archive/install identity summaries.
 Rationale: Package readiness must be reproducible from accurately labelled evidence.
 Validation target: code-review-m4-r2
-Validation evidence: pending
+Validation evidence: M4 evidence identifies the pre-split commit and resource, current source and projection inventories, reviewed and fixed commit/tree/diff identities, and normalized generated/archive/install identities for all adapters; broad smoke passes 12 checks.
 
 ### code-review-m1-r1
 

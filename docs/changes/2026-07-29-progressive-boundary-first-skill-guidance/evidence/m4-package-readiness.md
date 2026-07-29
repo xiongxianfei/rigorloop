@@ -4,31 +4,52 @@
 
 | Identity | Value |
 | --- | --- |
-| Source parent | `19d49e1eff94d97bcf9a22940f2a5e16b3ce1445` |
+| Reviewed M4 implementation commit | `72259213` |
+| Reviewed M4 implementation tree | `79e643526a6ed836b5aee17f07062ef407062004` |
+| Reviewed M4 implementation diff SHA-256 (`19d49e1e..72259213`) | `f5ed5e4a91c2395b23cc90518259a154cb9dbad217e396d68bb7692cbcb7c1a8` |
+| R1 fixed-code commit | `941c7632d89ddd9bf21b53c5f91bc082355b8647` |
+| R1 fixed-code tree | `1f80f5eb09234274dfd4fd8f43df8ec869071006` |
+| R1 fixed-code diff SHA-256 (`7e8f5d5b..941c7632`) | `9a2456a1293596ad04a67cd343ff97c3af454e5b9d91184a6729783469ac6687` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
-| Canonical source inventory SHA-256 | `4268fbe89ecdfd7b79ca1321b8d6b19b2ed24e8adeda17cae8c319b087760f6f` |
+| Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
 | Projection count | 14 |
 | Adapter support version | `v0.1.5`, read from `dist/adapters/manifest.yaml` |
 | Repository activation state | `pending` |
 
-The implementation commit binds this evidence to the candidate changes. No active claim is made.
+The source inventory digest covers the three canonical paths and their raw-byte
+hashes. The projection digest covers the 14 manifest-keyed logical skill paths.
+The implementation and fix commits bind the code candidate; this later evidence
+commit records the derived results. No active claim is made.
 
-## Loading measurements
+## Before-and-after loading measurements
 
 Measurements record current raw canonical resource bytes. They are baselines, not budgets or pass/fail thresholds.
 
-| Skill family | Representative skills | Mapped | Initially loaded | Expanded |
-| --- | --- | --- | --- | --- |
-| Routing and downstream | workflow, plan, plan-review, implement, code-review, verify | 1 / 6,346 bytes | 0 / 0 bytes | 1 / 6,346 bytes |
-| Feature authoring and review | spec, spec-review | 2 / 8,670 bytes | 2 / 8,670 bytes | 2 / 8,670 bytes |
-| Proof authoring and review | test-spec, test-spec-review | 2 / 8,651 bytes | 2 / 8,651 bytes | 2 / 8,651 bytes |
+The tracked pre-split baseline is commit `9d16bbe2`. Each governed skill mapped
+the same 8,318-byte resource with SHA-256
+`e65a42359f45d3a0104963386a12aa7a136cdbe18b954d9a62beef044fde134d`.
+Its conditional read rules reconstruct the representative initial and expanded
+counts below. The current counts come from the closed loading fixture.
+
+| Skill family | Pre-split mapped / initial / expanded | Current mapped / initial / expanded |
+| --- | --- | --- |
+| Routing and downstream | 1 / 8,318; 0 / 0; 1 / 8,318 | 1 / 6,346; 0 / 0; 1 / 6,346 |
+| Feature authoring and review | 1 / 8,318; 1 / 8,318; 1 / 8,318 | 2 / 8,670; 2 / 8,670; 2 / 8,670 |
+| Proof authoring and review | 1 / 8,318; 1 / 8,318; 1 / 8,318 | 2 / 8,651; 2 / 8,651; 2 / 8,651 |
+
+| Canonical or projected inventory | Pre-split | Current |
+| --- | --- | --- |
+| Canonical files / bytes | 1 / 8,318 | 3 / 10,975 |
+| Manifest-keyed projections / bytes | 10 / 83,180 | 14 / 72,718 |
 
 The closed loading fixture covers all ten governed skills. Unknown schema, skill, resource, or manifest mapping fails before measurement.
 
 ## Derived package proof
 
-- Canonical resources match all 14 skill-local projections.
+- Canonical resources match all 14 skill-local projections. Per-resource source
+  identities are compact core `4268fbe8...760f6f`, feature authoring
+  `962180f3...df7fe`, and proof `ec8e8239...6cc4d`.
 - Generated skill output is rebuilt and checked only in a temporary directory.
 - Codex, Claude, and opencode `v0.1.5` archives were built in a temporary release-output directory.
 - Clean-install smoke validated all ten governed skills for every supported adapter.
@@ -36,6 +57,23 @@ The closed loading fixture covers all ten governed skills. Unknown schema, skill
 - Layer-specific compact, feature-authoring, and proof mutations each fail with the exact mapped path and canonical/archive hashes.
 - Runtime fallback is not used as package evidence; archive and installed bytes are inspected directly.
 - No external runtime or hosted service is required by this proof, so no unavailable external-tool result was converted into success.
+
+For cross-layer comparison, adapter-specific roots are normalized back to the
+same manifest-keyed logical skill paths before hashing. Every value below covers
+14 resources and equals projection digest
+`68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329`.
+
+| Adapter | Generated | Archive | Clean install |
+| --- | --- | --- | --- |
+| Codex | 14 / `68c6f88c...004329` | 14 / `68c6f88c...004329` | 14 / `68c6f88c...004329` |
+| Claude | 14 / `68c6f88c...004329` | 14 / `68c6f88c...004329` | 14 / `68c6f88c...004329` |
+| opencode | 14 / `68c6f88c...004329` | 14 / `68c6f88c...004329` | 14 / `68c6f88c...004329` |
+
+Clean-install validation also compares the complete installed
+`boundary-first-*.md` inventory with the manifest-derived expected set for each
+selected skill. Injected unowned compact, feature-authoring, and proof resources
+are rejected for Codex, Claude, and opencode respectively; unrelated packaged
+assets remain permitted.
 
 ## Activation and rollback proof
 
@@ -59,9 +97,9 @@ The 28-test projection suite proves repeated projection identity, handled interr
 | `python scripts/test-skill-validator.py` | pass, 282 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skills |
 | `python scripts/build-skills.py --check` | pass with temporary output |
-| `python scripts/test-adapter-distribution.py` | pass, 134 tests |
+| `python scripts/test-adapter-distribution.py` | pass, 135 tests |
 | Planned `build-adapters.py` plus `validate-adapters.py --clean-install-smoke` command | pass for all ten governed skills and three adapters |
-| `bash scripts/ci.sh --mode broad-smoke` | pass, 11 checks in 310 seconds |
+| `bash scripts/ci.sh --mode broad-smoke` | pass, 12 checks in 321 seconds |
 | `git diff --check` | pass |
 
 ## Containment
