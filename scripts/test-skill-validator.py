@@ -7887,6 +7887,91 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
                 )
                 self.assertIn("do not build a Cartesian inventory.", body)
 
+    def test_loading_profiles_measure_exact_proportional_resource_sets(self) -> None:
+        fixture_path = (
+            ROOT
+            / "scripts"
+            / "fixtures"
+            / "boundary-first"
+            / "loading-profiles.yaml"
+        )
+        measurements = skill_validation.measure_boundary_loading_profiles(
+            ROOT,
+            fixture_path,
+        )
+
+        self.assertEqual(set(measurements), self.GOVERNED_SKILLS)
+        for skill_name, measurement in measurements.items():
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    measurement.expanded_resource_count,
+                    measurement.mapped_resource_count,
+                )
+                self.assertGreater(measurement.mapped_resource_bytes, 0)
+                self.assertLessEqual(
+                    measurement.initial_resource_count,
+                    measurement.mapped_resource_count,
+                )
+                self.assertLessEqual(
+                    measurement.initial_resource_bytes,
+                    measurement.mapped_resource_bytes,
+                )
+        for skill_name in {
+            "workflow",
+            "plan",
+            "plan-review",
+            "implement",
+            "code-review",
+            "verify",
+        }:
+            self.assertEqual(measurements[skill_name].initial_resource_count, 0)
+        for skill_name in {"spec", "spec-review", "test-spec", "test-spec-review"}:
+            self.assertEqual(
+                measurements[skill_name].initial_resource_count,
+                measurements[skill_name].mapped_resource_count,
+            )
+
+        fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+        self.assertNotIn("budget", json.dumps(fixture).lower())
+        self.assertNotIn("threshold", json.dumps(fixture).lower())
+
+    def test_loading_profiles_unknown_value_fails_closed(self) -> None:
+        fixture_path = (
+            ROOT
+            / "scripts"
+            / "fixtures"
+            / "boundary-first"
+            / "loading-profiles.yaml"
+        )
+        fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+        mutations = (
+            ("schema", lambda value: value.update(schema_version=2)),
+            (
+                "unknown_skill",
+                lambda value: value["profiles"][0].update(skill="future-skill"),
+            ),
+            (
+                "unknown_resource",
+                lambda value: value["profiles"][0].update(
+                    permitted_expansion_ids=["future-resource"]
+                ),
+            ),
+            (
+                "wrong_mapping",
+                lambda value: value["profiles"][1].update(
+                    mapped_resource_ids=["compact-core"]
+                ),
+            ),
+        )
+        for name, mutate in mutations:
+            changed = json.loads(json.dumps(fixture))
+            mutate(changed)
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
+                path = Path(temporary) / "loading-profiles.yaml"
+                path.write_text(json.dumps(changed), encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, "loading profile"):
+                    skill_validation.measure_boundary_loading_profiles(ROOT, path)
+
     def test_progressive_guidance_keeps_stage_ownership_and_slice_routing(self) -> None:
         expected_owner_text = {
             "spec": "Author the normative applicability, boundary, interaction, and example-ownership record.",
