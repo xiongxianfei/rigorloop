@@ -10,6 +10,9 @@
 | R1 fixed-code commit | `941c7632d89ddd9bf21b53c5f91bc082355b8647` |
 | R1 fixed-code tree | `1f80f5eb09234274dfd4fd8f43df8ec869071006` |
 | R1 fixed-code diff SHA-256 (`7e8f5d5b..941c7632`) | `9a2456a1293596ad04a67cd343ff97c3af454e5b9d91184a6729783469ac6687` |
+| R2 resolved candidate commit | `43adcec9bdd5ab0881f54aebf131ac540b1efdb7` |
+| R2 resolved candidate tree | `401b9e5a2b0fcffc8c9a4178ddc9db864928ad67` |
+| R2 resolved diff SHA-256 (`52fbd3e3..43adcec9`) | `10a91b0557e262847cbbea177e9b667aa5a71a148e83c700da3fcc42d05a46f7` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -34,7 +37,7 @@ counts below. The current counts come from the closed loading fixture.
 
 | Skill family | Pre-split mapped / initial / expanded | Current mapped / initial / expanded |
 | --- | --- | --- |
-| Routing and downstream | 1 / 8,318; 0 / 0; 1 / 8,318 | 1 / 6,346; 0 / 0; 1 / 6,346 |
+| Routing and downstream | 1 / 8,318; 1 / 8,318; 1 / 8,318 | 1 / 6,346; 0 / 0; 1 / 6,346 |
 | Feature authoring and review | 1 / 8,318; 1 / 8,318; 1 / 8,318 | 2 / 8,670; 2 / 8,670; 2 / 8,670 |
 | Proof authoring and review | 1 / 8,318; 1 / 8,318; 1 / 8,318 | 2 / 8,651; 2 / 8,651; 2 / 8,651 |
 
@@ -42,6 +45,13 @@ counts below. The current counts come from the closed loading fixture.
 | --- | --- | --- |
 | Canonical files / bytes | 1 / 8,318 | 3 / 10,975 |
 | Manifest-keyed projections / bytes | 10 / 83,180 | 14 / 72,718 |
+
+The comparison uses the same governed stage operation on both sides. At the
+pre-split commit, every named stage conditionally reads its one full reference
+for that operation. In the current routing/downstream profile, the stage begins
+from approved artifact slices and expands to compact guidance only for a
+missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient ID.
+Feature and proof owners load both of their mapped resources initially.
 
 The closed loading fixture covers all ten governed skills. Unknown schema, skill, resource, or manifest mapping fails before measurement.
 
@@ -69,11 +79,18 @@ same manifest-keyed logical skill paths before hashing. Every value below covers
 | Claude | 14 / `68c6f88c...004329` | 14 / `68c6f88c...004329` | 14 / `68c6f88c...004329` |
 | opencode | 14 / `68c6f88c...004329` | 14 / `68c6f88c...004329` | 14 / `68c6f88c...004329` |
 
+The package proof asserts the exact 14-resource digest independently in each
+temporary generated adapter tree, each archive, and each captured clean install.
+It also requires every governed skill's portability report to include all three
+supported adapters.
+
 Clean-install validation also compares the complete installed
 `boundary-first-*.md` inventory with the manifest-derived expected set for each
 selected skill. Injected unowned compact, feature-authoring, and proof resources
 are rejected for Codex, Claude, and opencode respectively; unrelated packaged
-assets remain permitted.
+assets remain permitted. An explicitly requested skill cannot be filtered by a
+portability report: deleting Claude's requested `workflow` tree fails the
+clean-install check.
 
 ## Activation and rollback proof
 
@@ -97,9 +114,9 @@ The 28-test projection suite proves repeated projection identity, handled interr
 | `python scripts/test-skill-validator.py` | pass, 282 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skills |
 | `python scripts/build-skills.py --check` | pass with temporary output |
-| `python scripts/test-adapter-distribution.py` | pass, 135 tests |
+| `python scripts/test-adapter-distribution.py` | pass, 137 tests |
 | Planned `build-adapters.py` plus `validate-adapters.py --clean-install-smoke` command | pass for all ten governed skills and three adapters |
-| `bash scripts/ci.sh --mode broad-smoke` | pass, 12 checks in 321 seconds |
+| `bash scripts/ci.sh --mode broad-smoke` | pass, 12 checks in 400 seconds |
 | `git diff --check` | pass |
 
 ## Containment

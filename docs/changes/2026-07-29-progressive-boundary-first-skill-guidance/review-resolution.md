@@ -37,9 +37,9 @@ Review closeout: code-review-m4-r2
   `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`,
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
   `code-review-m4-r2`
-- Findings resolved: 28
-- Unresolved findings: 2
-- Current result: M4 code-review R2 found an inaccurate historical load count and an incomplete supported-adapter resource matrix.
+- Findings resolved: 30
+- Unresolved findings: 0
+- Current result: M4 code-review R2 findings are resolved and await independent R3 confirmation.
 
 ## Resolution Overview
 
@@ -73,8 +73,8 @@ Review closeout: code-review-m4-r2
 | CR-M4-R1-001 | accepted | resolved | Additional installed governed boundary resources now fail exact-inventory validation. |
 | CR-M4-R1-002 | accepted | resolved | Loading profiles require exact integer schema version 1 and a closed top-level shape. |
 | CR-M4-R1-003 | accepted | resolved | Evidence records reproducible baseline, candidate, and adapter-layer identities. |
-| CR-M4-R2-001 | accepted | open | Correct the pre-split downstream initial-load baseline. |
-| CR-M4-R2-002 | accepted | open | Require workflow and all requested governed resources in every supported adapter. |
+| CR-M4-R2-001 | accepted | resolved | The comparable pre-split downstream operation records one initially loaded 8,318-byte resource. |
+| CR-M4-R2-002 | accepted | resolved | Workflow and every requested governed resource are required in all supported adapters. |
 
 ## Finding Details
 
@@ -172,25 +172,25 @@ Validation evidence: M4 evidence identifies the pre-split commit and resource, c
 
 Finding ID: CR-M4-R2-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Correct the comparable governed-operation baseline to one 8,318-byte initially loaded resource and explain its derivation.
 Rationale: The cited historical skill rules explicitly load the full shared reference for governed downstream work.
 Validation target: code-review-m4-r3
-Validation evidence: pending
+Validation evidence: The evidence uses one governed-operation comparison, cites the historical conditional read, and records one 8,318-byte initial resource for every pre-split family.
 
 #### CR-M4-R2-002 - Supported-adapter resource matrix is incomplete
 
 Finding ID: CR-M4-R2-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Make workflow adapter-portable, require each requested governed skill for each supported adapter, and assert exact per-layer resource identities.
 Rationale: Report-derived portability filtering must not turn a requested all-adapter completeness check into a partial check.
 Validation target: code-review-m4-r3
-Validation evidence: pending
+Validation evidence: Workflow documents Codex, Claude, and OpenCode invocation equivalents; exact generated, archive, and installed identities are 14 resources with digest `68c6f88c...004329` for each adapter; deleting requested Claude workflow fails; 137 adapter tests, the explicit v0.1.5 clean-install command, and 12-check broad smoke pass.
 
 ### code-review-m1-r1
 
