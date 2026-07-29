@@ -2505,6 +2505,34 @@ class StageOwnedChangeStateStoreTests(unittest.TestCase):
                 expected_document_identity=snapshot.document_identity,
             )
 
+    def test_migration_rejects_target_or_stop_reason_drift(self) -> None:
+        store, path = self.make_historical_store()
+        document = store.read().document
+        document["workflow"]["automation"]["run"].update(
+            {
+                "target": {
+                    "stage": "verify",
+                    "occurrence": {"kind": "final"},
+                    "bound_at": "2026-07-29T00:00:00Z",
+                    "completion": {"rule": "fresh verification passes"},
+                },
+                "stop_reason": "validation-failed",
+            }
+        )
+        path.write_text(dump_yaml(document), encoding="utf-8")
+        snapshot = store.read()
+        artifacts, state, automation = self.current_parts()
+        automation["target"]["stage"] = "code-review"
+        automation["status"] = "paused"
+        automation["stop_reason"] = "different"
+        with self.assertRaisesRegex(StateContractError, "structured target"):
+            store.migrate(
+                artifact_states=artifacts,
+                workflow_state=state,
+                automation=automation,
+                expected_document_identity=snapshot.document_identity,
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
