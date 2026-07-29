@@ -349,3 +349,14 @@ The active test spec and required change-local artifacts now exist.
 `M1` implementation, first-pass `code-review`, `verify`, and `explain-change` are complete under the tracked plan and change-local artifacts.
 
 The next stage is `pr`.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+implementation writing rationale, progress, or alignment state into the
+active plan body to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Same-slice completeness, first-pass proof, validation selection, and
+aligned-surface auditing remain governed here.

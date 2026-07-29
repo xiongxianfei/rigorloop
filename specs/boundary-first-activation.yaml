@@ -4,7 +4,7 @@
   "activating_release": "-",
   "rollback_release": "-",
   "canonical_reference": "specs/references/boundary-first-method-v1.md",
-  "canonical_reference_sha256": "5e26f3ea23ecbbea24b4f48181a33f5bf02704608a31b9990caae3785c53f64e",
+  "canonical_reference_sha256": "e65a42359f45d3a0104963386a12aa7a136cdbe18b954d9a62beef044fde134d",
   "grandfathering_baseline_revision": "-",
   "grandfathered_specs": [],
   "governed_skills": [
@@ -19,5 +19,5 @@
     "code-review",
     "verify"
   ],
-  "projection_sha256": "a764f05f5427e13ac69e44210fe6b006313afca0fa9d94135095358c64cec2d9"
+  "projection_sha256": "0248de2d43f064bd86cb89027f6f89554bfd833179dc5a92d9543c5a51cd1daa"
 }

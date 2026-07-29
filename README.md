@@ -48,13 +48,12 @@ Recommended first pass:
 
 1. Run `init` for one agent adapter.
 2. Read the [short workflow summary](docs/workflows.md).
-3. Inspect the [shipped proof-of-value example](docs/changes/0001-skill-validator/).
-4. Start your first real change with `proposal`.
-5. Move through review gates only when the durable artifacts are current.
+3. Start your first real change with `proposal`.
+4. Move through review gates only when the durable artifacts are current.
 
 Read the [normative workflow contract](specs/rigorloop-workflow.md) when you need to customize the lifecycle or resolve a process question.
 
-Key paths: [workflow](docs/workflows.md) · [proof example](docs/changes/0001-skill-validator/) · [contribute](CONTRIBUTING.md) · [bug report](.github/ISSUE_TEMPLATE/bug.yml) · [feature request](.github/ISSUE_TEMPLATE/feature.yml) · [security](SECURITY.md)
+Key paths: [workflow](docs/workflows.md) · [contribute](CONTRIBUTING.md) · [bug report](.github/ISSUE_TEMPLATE/bug.yml) · [feature request](.github/ISSUE_TEMPLATE/feature.yml) · [security](SECURITY.md)
 
 ## Recommended Use
 
@@ -203,8 +202,6 @@ A RigorLoop change leaves a traceable artifact chain:
 | Validation evidence | `docs/changes/<change>/change.yaml` |
 | Explain change | `docs/changes/<change>/explain-change.md` |
 | PR handoff | linked from change records or release notes |
-
-For a concrete repository example, inspect the shipped proof-of-value pack: [docs/changes/0001-skill-validator/](docs/changes/0001-skill-validator/).
 
 ## When to use / When not to use
 
@@ -383,7 +380,7 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 - canonical workflow sources in `docs/`, `specs/`, `skills/`, `schemas/`, and `scripts/`
 - ignored local Codex runtime state in `.codex/skills/`
 - generated public adapter packages in `dist/adapters/`
-- a change-local artifact pattern under `docs/changes/<change-id>/` for the shipped example and later non-trivial work
+- a change-local artifact pattern under `docs/changes/<change-id>/` for non-trivial work
 
 ## Change-Local Artifact Packs
 
@@ -391,7 +388,6 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 - Ordinary non-trivial work uses the baseline pack: `docs/changes/<change-id>/change.yaml` plus `docs/changes/<change-id>/explain-change.md`.
 - `review-resolution.md` and `verify-report.md` stay conditional and are added only when their governing workflow triggers apply.
 - Approved legacy top-level explain artifacts under `docs/explain/` remain valid until migrated or retired.
-- `docs/changes/0001-skill-validator/` is a rich reference example, not the minimum required pack for every non-trivial change.
 
 ## Source Of Truth
 
@@ -405,8 +401,7 @@ The normative contract lives in [specs/rigorloop-workflow.md](specs/rigorloop-wo
 - `skills/` is the only authored skill source. `.codex/skills/` is ignored local Codex runtime state; keep it untracked when copying installed Codex adapter skills there for local runtime use, and edit canonical skills under `skills/`.
 - `dist/adapters/README.md` and `dist/adapters/manifest.yaml` are the tracked adapter support surface.
 - Public-surface token-cost benchmarks must identify generated public adapter output or release archive output, not repository-local `.codex/skills/`.
-- Execution plans follow:
-  - `docs/examples/plans/example-plan.md`
+- Execution plans use the packaged `skills/plan/assets/plan-skeleton.md` scaffold.
 
 ## Validation Commands
 
@@ -437,10 +432,6 @@ Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI 
 │   ├── roadmap.md
 │   ├── workflows.md
 │   ├── changes/
-│   │   └── 0001-skill-validator/
-│   ├── examples/
-│   │   └── plans/
-│   │       └── example-plan.md
 │   ├── plans/
 │   ├── architecture/
 │   └── adr/
@@ -453,8 +444,6 @@ Use `bash scripts/ci.sh` to run the same checks through the repository-owned CI 
 ├── schemas/
 └── specs/
 ```
-
-The first shipped change-local artifact pack is `docs/changes/0001-skill-validator/`, and it should be read as a rich example rather than the universal minimum pack for every non-trivial change.
 
 ## License
 

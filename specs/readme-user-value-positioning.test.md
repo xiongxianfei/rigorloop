@@ -47,7 +47,7 @@
 
 - The README may keep workflow summary and repository-layout sections, but only after all required opening sections: `T2`
 - Maintainers and small teams may be mentioned prominently later, but not before or equal to individual contributors in the first audience-defining sentence or bullet: `T3`
-- The README may link to `docs/changes/0001-skill-validator/` as a shipped example, but it must not imply that the example pack is universal: `T5`, `T8`
+- The README does not present a historical change root as maintained guidance: `T5`, `T8`
 - Existing repo surfaces may satisfy the help/contribution pointer without a new `CONTRIBUTING.md`, but if they are missing, stale, or placeholder-only the change must stop rather than guess: `T6`, `T7`
 - If `docs/workflows.md` or other linked summary surfaces need alignment, those changes must remain summary-only and must not drift from `specs/rigorloop-workflow.md`: `T9`
 - The placeholder security contact in `.github/ISSUE_TEMPLATE/config.yml` must not become a README help link: `T7`
@@ -124,7 +124,7 @@
 - Automation location:
   - Manual contract review
 
-### T5. Quick-start or adoption checklist points to required deeper workflow/example surfaces
+### T5. Quick-start or adoption checklist points to maintained workflow surfaces
 
 - Covers: `R5`, `R5a`, `R5b`, `E1`
 - Level: manual
@@ -132,18 +132,17 @@
   - `README.md`
   - `docs/workflows.md`
   - `specs/rigorloop-workflow.md`
-  - `docs/changes/0001-skill-validator/`
 - Steps:
   - Review the quick-start path or adoption checklist.
   - Confirm it appears after `When to use / When not to use` and before the help/contribution pointer.
-  - Confirm it links to `docs/workflows.md`, `specs/rigorloop-workflow.md`, and `docs/changes/0001-skill-validator/`.
-  - Confirm the linked surfaces exist and are active repository guidance or shipped example material.
+  - Confirm it links to `docs/workflows.md` and `specs/rigorloop-workflow.md`.
+  - Confirm the linked surfaces exist and are active repository guidance.
 - Expected result:
-  - A reader can go from overview to the right deeper workflow/example surfaces without hunting around the repo.
+  - A reader can go from overview to maintained workflow guidance without hunting around the repo.
 - Failure proves:
   - The README promises a next step but does not route readers to the required deeper surfaces.
 - Automation location:
-  - Manual review supported by `rg -n 'docs/workflows.md|specs/rigorloop-workflow.md|docs/changes/0001-skill-validator' README.md`
+  - Manual review supported by `rg -n 'docs/workflows.md|specs/rigorloop-workflow.md' README.md`
 
 ### T6. Help/contribution pointer answers all three R5d discovery questions
 
@@ -242,7 +241,6 @@
   - `.github/ISSUE_TEMPLATE/feature.yml`
   - `.github/pull_request_template.md`
   - `.github/ISSUE_TEMPLATE/config.yml`
-  - `docs/changes/0001-skill-validator/`
 - The active plan acts as a review fixture for the R5d surface map and the stop-if-insufficient rule:
   - `docs/plans/2026-04-22-readme-user-value-positioning.md`
 
@@ -284,7 +282,7 @@
 - [ ] The first audience-defining sentence or bullet names individual contributors first.
 - [ ] `When to use / When not to use` appears before quick start, help pointer, and mechanics/reference sections.
 - [ ] The `When to use / When not to use` section includes at least one good-fit and one bad-fit case.
-- [ ] The README includes a quick-start path or adoption checklist linking to `docs/workflows.md`, `specs/rigorloop-workflow.md`, and `docs/changes/0001-skill-validator/`.
+- [ ] The README includes a quick-start path or adoption checklist linking to `docs/workflows.md` and `specs/rigorloop-workflow.md`.
 - [ ] The README includes a concise help/contribution pointer that answers all three R5d questions.
 - [ ] The README does not imply a nonexistent `CONTRIBUTING.md`.
 - [ ] The README does not surface the placeholder security contact.

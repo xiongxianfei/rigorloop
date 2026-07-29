@@ -13,10 +13,10 @@ flowchart TB
     token_bench["Token-cost benchmark fixtures and reports<br/>[Markdown, YAML, JSONL]"]:::container
     cli["RigorLoop CLI package<br/>[Node/npm package]"]:::container
     architecture["Canonical architecture package<br/>[Markdown and Mermaid]"]:::container
-    changes["Change-local evidence<br/>[Markdown and YAML, including change.yaml#workflow.automation]"]:::container
+    changes["Change-local lifecycle and evidence<br/>[Markdown and YAML: artifact_states, workflow_state, target, evidence links]"]:::container
     workflow_skill["Workflow skill<br/>[Markdown: public orchestration semantics]"]:::container
     stage_skills["Stage-owning skills and adapter templates<br/>[Markdown and templates]"]:::container
-    automation["Workflow automation tooling<br/>[Python: scripts/workflow_automation*.py]"]:::container
+    automation["Workflow lifecycle support<br/>[Published skills plus repository validators]"]:::container
     validation_cache["Local validation execution cache<br/>[Untracked local state]"]:::container
     templates["Templates and diagram styles<br/>[Markdown and Mermaid]"]:::container
     scripts["Validation and generation scripts<br/>[Python and shell]"]:::container
@@ -45,10 +45,12 @@ flowchart TB
   changes -->|record reviews, explanations, validation gaps, and final closeout evidence for| lifecycle
   governance -->|defines normative stage, target, authority, and migration contracts for| workflow_skill
   workflow_skill -->|invokes normalized automation commands through| automation
-  automation -->|derives canonical position from and invokes stage-owned work through| stage_skills
-  automation -->|reads lifecycle artifacts and active-plan state from| lifecycle
-  automation -->|reads and writes only change.yaml#workflow.automation through its state adapter in| changes
-  scripts -->|validate closed automation state and canonical evidence consistency for| automation
+  automation -->|validates prerequisites and invokes fixed stage-owned work through| stage_skills
+  automation -->|treats governed lifecycle artifacts as stable read-only inputs in| lifecycle
+  automation -->|reads artifact settlement and writes only workflow routing and target state in| changes
+  stage_skills -->|write only their owned governed artifacts in| lifecycle
+  stage_skills -->|write only matching artifact transitions or stage-owned evidence in| changes
+  scripts -->|validate closed lifecycle state, transition, evidence, and adapter consistency for| automation
   templates -->|scaffold architecture and ADR records in| lifecycle
   workflow_skill -->|is transformed by| scripts
   stage_skills -->|are transformed by| scripts

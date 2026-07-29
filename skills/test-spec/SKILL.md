@@ -22,6 +22,12 @@ The test spec defines how the team will know the implementation satisfies the be
 - summary: Design the proof mapping requirements, examples, edge cases, architecture boundaries, and milestones to tests before implementation.
 - must_not_claim: implementation completion, code-review approval, verification, branch readiness, or PR readiness.
 
+## Change-record authoring transition
+
+For a governed change, read the complete `change.yaml` before writing.
+Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing marker to `workflow` for creation or migration instead of inventing state.
+Resolve exactly one test-spec entry by artifact ID, `kind`, and normalized `path`. For a new test spec, create only that entry with a unique stable ID, `kind: test-spec`, normalized path, and explicit role. Before creating or substantively revising the test spec, set only that entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to the test-spec-authoring record path. After the test spec and authoring record are complete, set the same entry to `review-required`. Preserve every other entry and `workflow_state`. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
+
 ## Stop conditions
 
 Stop and report the blocker instead of producing a test spec when:
@@ -102,9 +108,9 @@ When this skill creates or updates generated or generator-shaped Markdown:
 
 | Section | Requirement |
 | --- | --- |
-| Status | Use `<test spec status>`. |
+| Owning change record | Use the stable change-record path. |
 | Related spec and plan | Include the related spec and plan. |
-| Input artifact identities | Include when implementation or code-review will rely on the test spec. Record input kind, path, status or review state, and identity for the feature spec, relevant review records, plan, plan review, and architecture or ADR inputs when applicable. |
+| Input artifact identities | Include when implementation or code-review will rely on the test spec. Record input kind, path, artifact ID, and review evidence for each governing input. |
 | Testing strategy | Cover unit, integration, end-to-end, smoke, manual, contract, and migration strategy. |
 | Requirement coverage map | Every requirement ID maps to one or more tests or explicit manual verification. |
 | Example coverage map | Every example maps to a test when feasible. |
@@ -206,18 +212,6 @@ Milestone proof-map rules:
 | Migration or compatibility claims | Every migration or compatibility claim needs coverage or explicit manual verification. |
 | Architectural boundaries that could break wiring | Every architectural boundary that could break wiring needs an integration or contract test. |
 | Bugs | Bugs require a regression test that fails before the fix when feasible. |
-
-## Closed enums
-
-Test spec status:
-
-```text
-draft
-active
-abandoned
-superseded
-archived
-```
 
 Test case level:
 

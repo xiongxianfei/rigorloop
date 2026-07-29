@@ -6,9 +6,9 @@
 
 # <Test spec title>
 
-## Status
+## Owning change record
 
-<test spec status>
+<docs/changes/change-id/change.yaml>
 
 ## Related spec and plan
 
@@ -18,9 +18,9 @@
 
 ## Input artifact identities
 
-| Input | Path | Status / Review state | Identity |
+| Input | Path | Artifact ID | Review evidence |
 | --- | --- | --- | --- |
-| <input kind> | <path or not applicable> | <status or review state> | <commit, review ID, version, or rationale> |
+| <input kind> | <path or not applicable> | <artifact ID> | <review ID and record path> |
 
 ## Testing strategy
 

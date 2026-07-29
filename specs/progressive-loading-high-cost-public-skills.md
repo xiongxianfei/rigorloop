@@ -318,3 +318,14 @@ None yet.
 ## Readiness
 
 Approved after clean spec-review and ready for planning.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+active-plan `Current Handoff Summary` as the authoritative handoff-state
+source to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Progressive evidence loading, token-cost controls, quick guides, and safety
+escape conditions remain governed here.

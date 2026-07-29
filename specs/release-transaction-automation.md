@@ -332,3 +332,13 @@ Implementation planning should settle exact generated-region marker syntax, base
 ## Readiness
 
 Approved after `spec-review-r1`. Architecture, ADR, architecture-review, plan, plan-review, test spec, and clean test-spec-review are recorded. The active plan `Current Handoff Summary` owns the next workflow action.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+active-plan `Current Handoff Summary` as the next workflow-action owner to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Transactional release stages, evidence, safety checks, rollback, and stop
+conditions remain governed here.

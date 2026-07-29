@@ -908,6 +908,20 @@ None.
 - Co-amended [Workflow Stage Autoprogression test spec](workflow-stage-autoprogression.test.md)
 - Approved [spec-review R4](../docs/changes/2026-07-20-single-bounded-review-fix-workflow-automation-mechanism/reviews/spec-review-r4.md)
 
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification
+defers additional authorization, capability, activation-selector,
+profile-specific writable-state, and selector-ledger mechanisms to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Structured targets, occurrence binding, review independence, bounded
+correction, evidence-first resume, legacy reads, and external-action
+prohibitions remain governed here.
+This notice does not activate the new contract before that specification and
+its complete rollout gate are approved.
+
 ## Readiness
 
 The contract is approved and ready for architecture.

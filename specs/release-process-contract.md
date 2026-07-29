@@ -432,3 +432,13 @@ None yet
 ## Readiness
 
 Approved after `spec-review-r2`.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+release-stage updates to active-plan lifecycle or handoff state to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Release evidence, safety gates, rollback, registry verification, and
+transactional release behavior remain governed here.

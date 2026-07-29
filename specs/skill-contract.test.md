@@ -4,6 +4,20 @@
 
 - active
 
+## Stage-owned lifecycle proof alignment
+
+Compatibility projection: `CP-021`.
+
+For a change governed by `stage-owned-change-local-v1`, proof expectations for
+the replaced subject named by this test spec's matching feature specification
+are superseded by
+`specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.test.md`,
+especially T14.
+Existing rows remain historical evidence or proof of the retained behavior
+named by that feature specification's reciprocal notice.
+They must not authorize the retired writer for governed current work.
+This alignment requires `test-spec-review` before M1 relies on it.
+
 ## Related spec and plan
 
 - Spec: [Skill Contract](skill-contract.md), approved after clean spec-review on 2026-05-08.
@@ -107,7 +121,7 @@
 
 | Requirement IDs | Covered by | Level | Notes |
 | --- | --- | --- | --- |
-| `R37`, `R37a`, `R37b`, `R37c`, `R37d`, `R38`, `R38a`, `R38b`, `R38c`, `R39`, `R39a`, `R39b`, `R39c`, `R39d`, `R40`, `R40a`, `R40b`, `R40c`, `R41`, `R41a`, `R41b`, `R41c`, `R42`, `R42a`, `R42b`, `R42c`, `R42d`, `R42e`, `R43`, `R43a`, `R43b`, `R43c`, `R43d`, `R44`, `R44a`, `R44b`, `R44c`, `R44d`, `R44e`, `R45`, `R45a`, `R45b`, `R45c`, `R45d`, `R45e` | `T33`, `T34`, `T35`, `T36` | integration, manual, smoke | Assets-first plan pilot scope, four normative assets, resource-map contract, output skeleton boundary, handoff asset boundary, metadata and drift checks, deterministic validation, improvement gate, adapter packaging, and parity corpus split |
+| `R37`, `R37a`, `R37b`, `R37c`, `R37d`, `R38`, `R38a`, `R38b`, `R38c`, `R39`, `R39a`, `R39b`, `R39c`, `R39d`, `R40`, `R40a`, `R40b`, `R40c`, `R41`, `R41a`, `R41b`, `R41c`, `R42`, `R42a`, `R42b`, `R42c`, `R42d`, `R42e`, `R43`, `R43a`, `R43b`, `R43c`, `R43d`, `R44`, `R44a`, `R44b`, `R44c`, `R44d`, `R44e`, `R45`, `R45a`, `R45b`, `R45c`, `R45d`, `R45e` | `T33`, `T34`, `T35`, `T36` | integration, manual, smoke | Assets-first plan pilot scope, three normative assets, resource-map contract, output skeleton and inline handoff boundary, metadata and drift checks, deterministic validation, improvement gate, adapter packaging, and parity corpus split |
 | `R29g`, `R29h`, `R30`, `R30a`, `R31e`, `R34`, `R34c` | `T37`, `T38`, `T39`, `T40` | integration, manual, smoke | Test-spec contract normalization frontmatter metadata, Workflow role, surfaced stop conditions, output skeleton, preservation proof, behavior parity, and generated-output validation |
 
 ### Published-skill resource integrity pilot (R46-R55)
@@ -144,7 +158,7 @@
 | `E12` | `T16`, `T20` | Audit records merge/retire candidates without acting on them |
 | `E13` | `T33`, `T34` | `plan` asset resource-map entries use literal `COPY`, triggers, and fields-to-fill |
 | `E14` | `T33`, `T35` | `plan-skeleton.md` owns full plan section layout while `SKILL.md` keeps compact output expectations |
-| `E15` | `T33`, `T35` | `current-handoff-summary.md` remains structure-only and does not hide lifecycle policy |
+| `E15` | `T33`, `T35` | `plan-skeleton.md` carries only the stable owning change-record pointer in Current Handoff Summary |
 | `E16` | `T36` | Historical plans are coverage evidence only, not strict structural parity references |
 | `E17` | `T37`, `T39` | `test-spec` gains contract metadata and structure while preservation evidence maps moved stop conditions and skeletonized obligations back to source wording |
 | `E18` | `T43` | Legacy `templates/...` architecture instructions outside a `Resource map` are detected and resolved through mapping, removal, or approved temporary exception |
@@ -183,10 +197,10 @@
 - EC26, `plan` rewrite touches current handoff summary, upstream status settlement, or readiness-vs-Done language: `T31`
 - EC27, plan-family token cost regresses after moving routing into `description`: `T31`, `T32`
 - EC28, assets-first pilot tries to modify a skill other than `plan`: `T33`
-- EC29, `skills/plan/assets/` has more or fewer than four files or an unapproved asset status: `T33`, `T34`
+- EC29, `skills/plan/assets/` has more or fewer than three files or an unapproved asset status: `T33`, `T34`
 - EC30, a resource-map entry omits `COPY`, a trigger condition, fields-to-fill, or no-unfilled-placeholder guidance: `T34`
 - EC31, `plan-skeleton.md` and `SKILL.md` duplicate or disagree on full section layout: `T34`, `T35`
-- EC32, `current-handoff-summary.md` includes lifecycle transition rules, readiness semantics, validation requirements, or claim ownership: `T35`
+- EC32, the inline Current Handoff Summary includes lifecycle transition rules, readiness semantics, validation requirements, or claim ownership: `T35`
 - EC33, a normative asset fingerprint or section set drifts without explicit version and fingerprint update: `T34`
 - EC34, common-path body token count fails to shrink by at least 15 percent or total packaged content exceeds the approved budget: `T36`
 - EC35, behavior-parity evidence treats historical plans as strict current-contract references: `T36`
@@ -269,10 +283,10 @@
 
 | Acceptance criterion | Covered by |
 | --- | --- |
-| Assets-first plan pilot remains a follow-on slice limited to `plan` and exactly four normative assets | `T33`, `T34` |
+| Assets-first plan pilot remains a follow-on slice limited to `plan` and exactly three normative assets | `T33`, `T34` |
 | `skills/plan/SKILL.md` uses a `Resource map` with literal `COPY` entries for every asset | `T34` |
 | `assets/plan-skeleton.md` owns canonical plan section order while `SKILL.md` keeps only compact output expectations | `T35` |
-| `assets/current-handoff-summary.md` contains no lifecycle transition rules or readiness semantics | `T35` |
+| `assets/plan-skeleton.md` carries one stable owning change-record pointer and no separate handoff asset ships | `T35` |
 | Every `plan` asset has metadata comments, normative status, and structural fingerprint coverage | `T34` |
 | Deterministic validation covers asset count, approved paths, metadata, resource-map coverage, `COPY`, placeholders, repository-root path exclusion, structural fingerprint, section-set parity, and adapter asset presence | `T34`, `T36` |
 | Assets-first plan pilot records behavior parity, at least 15 percent common-path body token reduction, total packaged content budget evidence, and milestone substructure reuse evidence | `T36` |
@@ -1172,8 +1186,8 @@
   - Assert the only skill modified in the asset pilot implementation slice is `skills/plan/SKILL.md`.
   - Assert `proposal`, `proposal-review`, `spec`, `spec-review`, `code-review`, `verify`, and `pr` are not modified by the asset pilot implementation slice.
   - Assert no packaged `references/`, packaged `scripts/`, build-time partials, adapter install-root changes, lockfile changes, or CLI behavior changes are introduced.
-  - Assert `skills/plan/assets/` contains exactly `plan-skeleton.md`, `milestone.md`, `current-handoff-summary.md`, and `decision-log-row.md`.
-  - Assert all four assets use `normative` status and no optional, example, deprecated, or fifth asset ships.
+  - Assert `skills/plan/assets/` contains exactly `plan-skeleton.md`, `milestone.md`, and `decision-log-row.md`.
+  - Assert all three assets use `normative` status and no optional, example, deprecated, or fourth asset ships.
   - Manually confirm assets contain structural templates copied and filled by the agent, not filled examples, hidden trigger logic, or policy text that belongs in `SKILL.md` or governing specs.
   - Manually confirm assets do not require repository-root internal paths as normal customer-project dependencies.
 - Expected result:
@@ -1194,13 +1208,12 @@
   - `skills/plan/SKILL.md`
   - `skills/plan/assets/plan-skeleton.md`
   - `skills/plan/assets/milestone.md`
-  - `skills/plan/assets/current-handoff-summary.md`
   - `skills/plan/assets/decision-log-row.md`
   - valid and invalid fixture skill trees under `tests/fixtures/skills/published-design/` or another existing skill fixture root
   - `scripts/skill_validation.py`
   - `scripts/test-skill-validator.py`
 - Steps:
-  - Assert `skills/plan/SKILL.md` includes a `Resource map` entry for each of the four normative assets.
+  - Assert `skills/plan/SKILL.md` includes a `Resource map` entry for each of the three normative assets.
   - Assert each asset resource-map entry uses literal `COPY`, names the asset path, states the trigger condition, and names the fields or structures the agent must fill.
   - Assert `COPY` is the only accepted asset verb in this pilot, while `READ` and `RUN` remain reserved for future resource classes.
   - Assert the `Resource map` instructs the agent not to emit unfilled placeholders.
@@ -1217,14 +1230,13 @@
   - `python scripts/validate-skills.py`
   - manual validator review during M1 and code-review
 
-#### T35. Plan skeleton and handoff asset preserve output and lifecycle boundaries
+#### T35. Plan skeleton and inline handoff pointer preserve output and lifecycle boundaries
 
 - Covers: `R40`, `R40a`, `R40b`, `R40c`, `R41`, `R41a`, `R41b`, `R41c`, `R43d`, `R44a`, E14, E15, EC31, EC32
 - Level: integration, manual
 - Fixture/setup:
   - `skills/plan/SKILL.md`
   - `skills/plan/assets/plan-skeleton.md`
-  - `skills/plan/assets/current-handoff-summary.md`
   - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-preservation.md`
   - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/behavior-parity.md`
 - Steps:
@@ -1232,11 +1244,11 @@
   - Assert `assets/plan-skeleton.md` owns canonical plan section order, headers, and placeholders.
   - Assert `skills/plan/SKILL.md` retains a compact output expectation summary that names the expected output shape and points to `assets/plan-skeleton.md` through the `Resource map`.
   - Assert `skills/plan/SKILL.md` and `assets/plan-skeleton.md` do not duplicate the full plan section layout.
-  - Assert `assets/current-handoff-summary.md` contains only section headings, field labels, and placeholders.
-  - Assert `assets/current-handoff-summary.md` does not define lifecycle status values, next-stage transition rules, claim ownership, branch-ready semantics, PR-ready semantics, or validation requirements.
-  - Assert `skills/plan/SKILL.md` retains the rule that the Current Handoff Summary stays consistent with the active plan, plan index, and change metadata.
+  - Assert the Current Handoff Summary in `assets/plan-skeleton.md` contains only one stable pointer to the owning change record.
+  - Assert the Current Handoff Summary does not define lifecycle status values, next-stage transition rules, claim ownership, branch-ready semantics, PR-ready semantics, or validation requirements.
+  - Assert `skills/plan/SKILL.md` retains the rule that mutable workflow and milestone state lives only in the owning change record.
   - Assert `skills/plan/SKILL.md` tells plan authors to write `docs/plan.md` and `docs/plan-archive.md` plan references as clickable Markdown links relative to the index file, such as `[Title](plans/YYYY-MM-DD-slug.md)`, instead of bare repository-root plan paths.
-  - If `current-handoff-summary.md` cannot satisfy the boundary, assert the handoff summary template remains inline in `skills/plan/SKILL.md` for this pilot.
+  - Assert `skills/plan/assets/current-handoff-summary.md` does not exist.
   - Manually confirm behavior-preservation evidence maps any moved behavior-significant wording to the preserved rule location.
 - Expected result:
   - The full output skeleton can live in an asset without hiding lifecycle rules, duplicating section authority, or weakening handoff consistency.
@@ -1264,7 +1276,7 @@
   - `docs/changes/2026-05-19-assets-first-progressive-disclosure-pilot-published-skills/token-cost.md`
 - Steps:
   - Build generated skills and temporary adapter archives from canonical `skills/`.
-  - Assert generated adapter output contains all four `skills/plan/assets/*` files and no generated adapter skill body or asset is hand-edited.
+  - Assert generated adapter output contains all three `skills/plan/assets/*` files and no generated adapter skill body or asset is hand-edited.
   - Measure `skills/plan/SKILL.md` common-path body tokens before and after the pilot and assert the body decreases by at least 15 percent.
   - Measure total packaged content as `skills/plan/SKILL.md` plus assets; assert growth up to `+5%` has recorded rationale and growth above `+10%` blocks rollout unless the spec is amended.
   - Assert behavior-parity evidence covers required plan sections, milestone shape, decision log shape, current handoff summary, validation evidence, implementation and review handoff, claim boundaries, and recording discipline.
@@ -1664,7 +1676,6 @@
 - Assets-first plan pilot static fixtures use:
   - `skills/plan/assets/plan-skeleton.md`;
   - `skills/plan/assets/milestone.md`;
-  - `skills/plan/assets/current-handoff-summary.md`;
   - `skills/plan/assets/decision-log-row.md`;
   - valid and invalid asset pilot fixture trees under `tests/fixtures/skills/published-design/` or another existing skill fixture root.
 - Any temporary fixture for validator failure cases should live under existing test fixture roots such as `tests/fixtures/skills/` and must not reference machine-local paths.
@@ -1778,12 +1789,12 @@
 - Confirm `plan-review` formal review recording, material finding shape, blocked recording behavior, and downstream-blocking semantics are preserved after rewrite.
 - Confirm temporary adapter validation uses generated output from canonical `skills/plan` and `skills/plan-review`, not hand-edited generated bodies.
 - Confirm assets-first plan pilot evidence exists before the `plan` asset split closes.
-- Confirm `skills/plan/assets/` contains exactly four normative assets and no `references/`, `scripts/`, fifth asset, optional asset, example asset, or deprecated asset.
+- Confirm `skills/plan/assets/` contains exactly three normative assets and no `references/`, `scripts/`, fourth asset, optional asset, example asset, or deprecated asset.
 - Confirm every `plan` asset is mapped from `skills/plan/SKILL.md` with literal `COPY`, a trigger condition, fields-to-fill, and no-unfilled-placeholder guidance.
 - Confirm `plan-skeleton.md` owns full section layout while `SKILL.md` keeps a compact output expectation summary.
-- Confirm `current-handoff-summary.md` contains no lifecycle transition, readiness, validation, branch-ready, PR-ready, or claim-ownership rules.
+- Confirm `plan-skeleton.md` carries only the stable owning change-record pointer in Current Handoff Summary and no separate handoff asset ships.
 - Confirm behavior-parity evidence separates contract-era reference plans from historical coverage plans.
-- Confirm adapter validation proves the four `plan` assets ship in generated adapter output.
+- Confirm adapter validation proves the three `plan` assets ship in generated adapter output.
 - Confirm token-cost evidence shows at least 15 percent common-path body reduction and total packaged content within the approved budget.
 - Confirm `test-spec` frontmatter includes `version: "1.0.0"` and `schema-version: skill-readability-v1`.
 - Confirm `test-spec` has a `Workflow role` with upstream, downstream, summary, and must-not-claim boundaries.

@@ -30,6 +30,10 @@ from review_artifact_validation import (
     parse_formal_review_resolution,
 )
 from artifact_lifecycle_validation import inspect_lifecycle_artifact
+from change_metadata_semantics import (
+    STAGE_OWNED_CONTRACT,
+    validate_stage_owned_lifecycle_metadata,
+)
 from lifecycle_state_sync import parse_handoff_summary
 from workflow_automation_policy import (
     STAGE_POLICY_BY_STAGE,
@@ -2346,6 +2350,110 @@ class WorkflowAutomationStateStore:
         return mechanism, record
 
 
+class StageOwnedChangeStateStore:
+    """Bounded persistence for the stage-owned change-local contract.
+
+    Reads are side-effect free. Migration or replacement requires optimistic
+    identity matching and validates the complete candidate before one atomic
+    file replacement.
+    """
+
+    def __init__(self, metadata_path: Path):
+        self.metadata_path = Path(metadata_path)
+
+    def read(self) -> StateSnapshot:
+        payload = self.metadata_path.read_bytes()
+        parser = _load_metadata_parser()
+        lines = parser.tokenize_yaml(payload.decode("utf-8"))
+        document, index = parser.parse_yaml_block(lines, 0, lines[0].indent)
+        if index != len(lines) or not isinstance(document, dict):
+            raise StateContractError("change metadata must be one YAML object")
+        errors = validate_stage_owned_lifecycle_metadata(document)
+        if errors:
+            raise StateContractError("invalid stage-owned lifecycle state: " + "; ".join(errors))
+        automation = None
+        workflow = document.get("workflow")
+        if isinstance(workflow, dict) and isinstance(workflow.get("automation"), dict):
+            automation = workflow["automation"]
+        return StateSnapshot(document, automation, _identity(payload))
+
+    def replace(
+        self, document: dict[str, Any], *, expected_document_identity: str
+    ) -> StateMutationResult:
+        if _identity(self.metadata_path.read_bytes()) != expected_document_identity:
+            raise ConcurrentStateChange("change metadata identity changed before transaction")
+        errors = validate_stage_owned_lifecycle_metadata(document)
+        if errors:
+            raise StateContractError("invalid stage-owned lifecycle state: " + "; ".join(errors))
+        payload = dump_yaml(document).encode("utf-8")
+        descriptor, temporary_name = tempfile.mkstemp(
+            prefix=f".{self.metadata_path.name}.", suffix=".tmp",
+            dir=self.metadata_path.parent,
+        )
+        temporary_path = Path(temporary_name)
+        try:
+            os.fchmod(descriptor, self.metadata_path.stat().st_mode & 0o7777)
+            with os.fdopen(descriptor, "wb") as handle:
+                handle.write(payload)
+                handle.flush()
+                os.fsync(handle.fileno())
+            directory_fd = os.open(self.metadata_path.parent, os.O_RDONLY)
+            try:
+                fcntl.flock(directory_fd, fcntl.LOCK_EX)
+                if _identity(self.metadata_path.read_bytes()) != expected_document_identity:
+                    raise ConcurrentStateChange("change metadata identity changed during transaction")
+                os.replace(temporary_path, self.metadata_path)
+                os.fsync(directory_fd)
+            finally:
+                fcntl.flock(directory_fd, fcntl.LOCK_UN)
+        finally:
+            if temporary_path.exists():
+                temporary_path.unlink()
+        return StateMutationResult("updated", True, _identity(payload))
+
+    def migrate(
+        self,
+        *,
+        artifact_states: dict[str, Any],
+        workflow_state: dict[str, Any],
+        automation: dict[str, Any],
+        expected_document_identity: str,
+    ) -> StateMutationResult:
+        snapshot = self.read()
+        if snapshot.document_identity != expected_document_identity:
+            raise ConcurrentStateChange("change metadata identity changed before migration")
+        if snapshot.document.get("lifecycle_contract") == STAGE_OWNED_CONTRACT:
+            return StateMutationResult("already-current", False, snapshot.document_identity)
+        document = copy.deepcopy(snapshot.document)
+        legacy_workflow = document.get("workflow")
+        if isinstance(legacy_workflow, dict):
+            legacy = legacy_workflow.get("automation") or legacy_workflow.get("autoprogression")
+            if isinstance(legacy, dict):
+                status = legacy.get("status")
+                run = legacy.get("run")
+                if isinstance(run, dict):
+                    status = run.get("status", status)
+                if status in TERMINAL_LEGACY_STATES:
+                    raise StateContractError("terminal historical state is read-only")
+                source = run if isinstance(run, dict) else legacy
+                source_target = source.get("target")
+                if source_target is not None and automation.get("target") != source_target:
+                    raise StateContractError("migration must preserve the structured target")
+                source_stop = source.get("stop_reason", source.get("pause_reason"))
+                if source_stop is not None and automation.get("stop_reason") != source_stop:
+                    raise StateContractError("migration must preserve the current stop reason")
+                receipts = legacy.get("transition_receipts")
+                if isinstance(receipts, dict) and receipts and not automation.get("evidence"):
+                    raise StateContractError(
+                        "migration must point to preserved transition evidence"
+                    )
+        document["lifecycle_contract"] = STAGE_OWNED_CONTRACT
+        document["artifact_states"] = copy.deepcopy(artifact_states)
+        document["workflow_state"] = copy.deepcopy(workflow_state)
+        document["workflow"] = {"automation": copy.deepcopy(automation)}
+        return self.replace(document, expected_document_identity=expected_document_identity)
+
+
 __all__ = [
     "ConcurrentStateChange",
     "RecoveryDecision",
@@ -2353,6 +2461,7 @@ __all__ = [
     "StateMutationResult",
     "StateSnapshot",
     "WorkflowAutomationStateStore",
+    "StageOwnedChangeStateStore",
     "compute_transition_key",
     "dump_yaml",
     "evaluate_receipt_recovery",

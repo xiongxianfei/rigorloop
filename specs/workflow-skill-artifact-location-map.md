@@ -488,3 +488,14 @@ pr
 
 Approved by skeleton spec-review R1.
 Downstream implementation routing is tracked by the active skeleton plan.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+plan bodies and `docs/plan.md` as mutable lifecycle-state or current-routing
+owners to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Artifact placement, change-root mapping, review-record locations, portable
+defaults, and workflow-guide ownership remain governed here.

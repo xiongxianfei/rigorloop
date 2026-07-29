@@ -21,8 +21,7 @@
 - Stop condition: <none or exact stop condition>
 
 `Immediate next stage` is the routing field; allowed values exclude `test-spec`.
-Use `Eventual test-spec readiness` to assess whether test-spec authoring will
-be possible after required routing stages.
+Use `Eventual test-spec readiness` to assess whether test-spec authoring will be possible after required routing stages.
 
 ## Findings
 

@@ -17,6 +17,18 @@
     "review"
   ],
   "properties": {
+    "lifecycle_contract": {
+      "type": "string",
+      "enum": [
+        "stage-owned-change-local-v1"
+      ]
+    },
+    "artifact_states": {
+      "type": "object"
+    },
+    "workflow_state": {
+      "type": "object"
+    },
     "change_id": {
       "type": "string",
       "minLength": 1
@@ -109,15 +121,7 @@
       "properties": {
         "automation": {
           "type": "object",
-          "required": [
-            "mechanism",
-            "schema_version",
-            "run",
-            "parent_authorizations",
-            "effective_capabilities",
-            "transition_receipts",
-            "external_actions"
-          ],
+          "required": [],
           "properties": {
             "mechanism": {
               "type": "string",
@@ -340,7 +344,7 @@
               ]
             }
           },
-          "additionalProperties": false
+          "additionalProperties": true
         },
         "autoprogression": {
           "type": "object",

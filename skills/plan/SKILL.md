@@ -3,11 +3,11 @@ name: plan
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Create or revise a living execution plan after proposal, spec, and architecture are stable enough to implement. Use for multi-file, multi-component, risky, migration-heavy, or milestone-based work that needs reviewable implementation slices, validation commands, recovery paths, dependencies, and current handoff state. Use spec, test-spec, implement, code-review, verify, or pr for those stages; do not use plan to choose product direction, write code, review diffs, verify branch readiness, or open PRs.
+  Create or revise a stable execution plan after proposal, spec, and architecture are settled enough to implement. Use for multi-file, multi-component, risky, migration-heavy, or milestone-based work that needs reviewable implementation slices, validation commands, recovery paths, and dependencies. Use spec, test-spec, implement, code-review, verify, or pr for those stages; do not use plan to choose product direction, write code, review diffs, own mutable workflow state, verify branch readiness, or open PRs.
 argument-hint: [feature name, spec path, architecture path, or implementation goal]
 ---
 
-# Living execution plan
+# Stable execution plan
 
 Sequence approved behavior and architecture into reviewable implementation. Do not decide product direction.
 
@@ -21,7 +21,7 @@ Create or revise a concrete execution plan with milestones, validation commands,
 - stage: authoring
 - upstream: accepted proposal, approved or reviewed spec, architecture records or ADRs when relevant, test-spec when already present, and project-local workflow evidence
 - downstream: plan-review
-- summary: Create or revise the execution plan artifact, milestone sequence, validation strategy, recovery path, current handoff summary, and lifecycle readiness.
+- summary: Create or revise the stable execution intent, milestone sequence, validation strategy, and recovery path.
 - must_not_claim: implementation completion, review approval, verification, branch readiness, PR readiness, final closeout readiness, or Done while downstream gates remain.
 
 ## Project-local evidence
@@ -36,14 +36,11 @@ Do not require RigorLoop repository-internal specs, docs, reports, follow-up fil
 
 - READ `references/boundary-first-method-v1.md` when planning implementation for an approved feature spec that declares `boundary_contract: boundary-first-v1`.
 - COPY `assets/plan-skeleton.md` when creating a new plan or replacing the full plan structure.
-  Fill: sections and placeholders.
-  Sections: Status; Purpose / big picture; Source artifacts; Context and orientation; Non-goals; Requirements covered; Current Handoff Summary; Milestones; Validation plan; Risks and recovery; Dependencies; Progress; Decision log; Surprises and discoveries; Validation notes; Outcome and retrospective; Readiness.
+  Fill: sections, placeholders, and the stable owning change-record pointer.
+  Sections: Purpose / big picture; Current Handoff Summary; Source artifacts; Context and orientation; Non-goals; Requirements covered; Milestones; Validation plan; Risks and recovery; Dependencies; Decision log; Readiness.
   Do not emit unfilled placeholders.
 - COPY `assets/milestone.md` when adding each reviewable implementation milestone.
   Fill: ID, state, goal, requirements, files, tests, steps, validation, result, risks, rollback.
-  Do not emit unfilled placeholders.
-- COPY `assets/current-handoff-summary.md` when creating or updating the current handoff summary in a milestone-based plan.
-  Fill: milestone, state, review status, remaining milestones, next stage, readiness, reason.
   Do not emit unfilled placeholders.
 - COPY `assets/decision-log-row.md` when recording a material planning or sequencing decision.
   Fill: date, decision, reason, and rejected alternatives.
@@ -73,23 +70,22 @@ Read needed project-local evidence: `AGENTS.md`, `CONSTITUTION.md` if present, `
 
 Use bounded evidence first. Use broader-section or full-file reading when the target file is the artifact, relevant sections cannot be isolated safely, or surrounding context can change the plan.
 
-## Upstream status settlement
+## Upstream settlement check
 
-Before relying on a spec, architecture package, or ADR in workflow-managed downstream execution, check tracked status against clear review evidence. Skip review-only, no-edit, and manual inspection requests.
+Before relying on a spec, architecture package, or ADR, read each matching `change.yaml` artifact entry and formal review evidence.
+Require the artifact-specific settled state, no later contradictory review, no open findings, and closed review resolution when required.
 
-During normal workflow-managed downstream execution, do not ask whether edits are allowed; the downstream invocation permits minimal settlement.
+Treat every upstream artifact and lifecycle entry as read-only.
+Do not normalize embedded status or settle an upstream entry.
+If settlement is missing, contradictory, unknown, or unmapped, record the blocker and route to the matching review stage.
 
-Settle only lifecycle/status/readiness/follow-on/closeout metadata. Do not rewrite substantive artifact content.
+## Change-record authoring transition
 
-Evidence needs durable review evidence, an approving or clean outcome, no later contradictory review record, no open findings in `review-log.md` when present, closed `review-resolution.md` when required, and explicit mapping.
-
-Mappings:
-
-- spec-review approved with no unresolved material findings -> spec `Status: approved`;
-- architecture-review approved for an architecture package with no unresolved material findings -> architecture `Status: approved`;
-- architecture-review approved for an ADR with no unresolved material findings -> ADR status `accepted` or `active` only when the ADR lifecycle vocabulary clearly supports that target.
-
-If evidence is missing, contradictory, unresolved, unknown, or unmapped, block instead of guessing. If the artifact type, lifecycle field, next status, or target status is unknown or unmapped, block instead of inferring a settlement. Report `## Upstream status settlement` when settlement was updated, blocked, or stale status was detected, with `Settlement result: updated | blocked | not-needed`, `New status`, `not-applicable`, and `Settlement blocker`. Name blocked settlement with a deterministic target, blocked settlement with no deterministic target, known target blocked by evidence/state, unknown target blocked by missing mapping or lifecycle vocabulary, and unknown lifecycle vocabulary.
+For a governed change, read the complete `change.yaml` before writing.
+Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing marker to `workflow` for creation or migration instead of inventing state.
+Resolve exactly one plan entry by artifact ID, `kind`, and normalized `path`.
+For a new plan, create only that entry with a unique stable ID, `kind: plan`, normalized path, and explicit role. Before creating or substantively revising the plan, set only that entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to the plan-authoring record path. After the plan and authoring record are complete, set the same entry to `review-required`.
+Preserve every other entry and `workflow_state`; plan milestones remain stable intent and do not authorize writing `workflow_state.planned_work`. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
 
 ## Artifact placement
 
@@ -98,12 +94,12 @@ Use the project workflow guide for artifact locations when placement matters.
 Plan surfaces:
 
 - Workflow map: `docs/workflows.md` describes project-local workflow and artifact-location customizations.
-- Plan index: `docs/plan.md` summarizes active, blocked, recent done, and supersession context.
-- Plan body: `docs/plans/YYYY-MM-DD-slug.md` carries the concrete execution plan for a planned initiative.
-- Change metadata: `docs/changes/<change-id>/change.yaml` records compact change metadata and validation ledger entries.
+- Plan index: `docs/plan.md` is a stable navigation index.
+- Plan body: `docs/plans/YYYY-MM-DD-slug.md` carries stable execution intent for a planned initiative.
+- Change metadata: `docs/changes/<change-id>/change.yaml` is the sole owner of mutable workflow and milestone state.
 - Change-local evidence: `docs/changes/<change-id>/` contains review, rationale, verification, and related lifecycle evidence.
 
-Lookup order: explicit user path or change ID; active plan, change metadata, reviewed artifact path, or current artifact metadata; known governing spec or schema constraint when directly relevant; `docs/workflows.md` artifact-location table; this skill's portable default path; block on ambiguity.
+Lookup order: explicit user path or change ID; change metadata; reviewed artifact path; plan body; known governing spec or schema constraint when directly relevant; `docs/workflows.md` artifact-location table; this skill's portable default path; block on ambiguity.
 
 This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
 
@@ -113,9 +109,11 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Change-record bounded reads
 
-For planned change records, use the active plan `Current Handoff Summary` as the current workflow-state owner. When the project provides the helper, use `scripts/query-change-record.py <change-id> artifacts` only to discover canonical artifact paths or detail pointers; do not replace active plan state with historical change metadata or query-helper output.
+For planned change records when present, read current workflow and milestone state from `docs/changes/<change-id>/change.yaml`.
+Use the plan body only for stable milestone intent.
+When the project provides a query helper, use it as a bounded view of the change record, not as a second state owner.
 
-Escalate from bounded helper output to full `change.yaml` when planning depends on forensic reconstruction, unsupported-shape diagnostics, disputed evidence, selector-routing behavior, migration compatibility, or whole-record review.
+Escalate from bounded helper output to full `change.yaml` when planning depends on forensic reconstruction, unsupported-shape diagnostics, disputed evidence, migration compatibility, or whole-record review.
 
 ## Expected output
 
@@ -123,7 +121,9 @@ Output a compact result plus a plan artifact. Copy `assets/plan-skeleton.md` for
 
 ## Outputs
 
-Produce or update the plan body and, when starting or replanning, the `docs/plan.md` lifecycle index. Name milestones, validation, recovery, current handoff summary, and Remaining completion gates.
+Produce or update the stable plan body and, when needed, its navigation entry in `docs/plan.md`.
+Name milestones, validation, recovery, and dependencies.
+The plan stage may record its own authoring transition in the matching `change.yaml` artifact entry; it must not write review settlement or routing.
 
 ## Result
 
@@ -172,15 +172,12 @@ Use `Readiness is not Done` as the default interpretation for handoff lines. Kee
 - Do not add behavior not in the spec.
 - Do not hide risky work in vague milestones.
 - Do not omit validation commands.
-- Keep `docs/plan.md` as an index, not a second long-form plan body.
-- Keep `docs/plan.md` bounded: Active and Blocked first, at most the recent completed window in `Done (recent)`, and older terminal history in `docs/plan-archive.md`.
+- Keep `docs/plan.md` as stable navigation, not a lifecycle-state owner or second long-form plan body.
 - In `docs/plan.md` and `docs/plan-archive.md`, write plan references as clickable Markdown links relative to the index file, for example `[Title](plans/YYYY-MM-DD-slug.md)`; do not leave bare `docs/plans/...` text as the index entry.
-- Use the plan body's explicit `## Status` lifecycle marker fields `Plan lifecycle state` and `Terminal disposition`; do not infer terminal state from prose.
-- Update the plan index surfaces and the plan body together when starting, replacing, transitioning, archiving older terminal history, or before the PR opens for review.
-- Keep superseded entries in `docs/plan.md` only while they include `superseded by:` and non-empty `active-context:`; move terminal superseded history without active context to `docs/plan-archive.md`.
-- `implement` owns ongoing plan-body progress, decision, discovery, and validation-note updates during execution.
-- Final lifecycle closeout owns lifecycle state transitions across the plan index surfaces and the plan body.
-- `verify` challenges stale lifecycle state before `branch-ready`.
+- Do not put mutable lifecycle state, current milestone state, review status, progress, routing, blockers, or final closeout state in the plan body or navigation index.
+- Preserve plan revisions as changes to execution intent and send the revised artifact through `plan-review`; do not use plan edits as workflow-state updates.
+- `implement`, reviews, `verify`, and `pr` treat the plan as read-only.
+- `verify` challenges any mutable workflow state embedded in a governed plan.
 - If completion depends on a true downstream completion event, keep the plan `Active` and name that event; merge itself is not that event.
 - Do not create a plan that only the current chat context can understand.
 - Do not proceed to implementation until `plan-review` and `test-spec` are ready unless an isolated manual invocation is requested and recorded.
@@ -188,7 +185,8 @@ Use `Readiness is not Done` as the default interpretation for handoff lines. Kee
 
 ## Milestone-aware plans
 
-Each implementation milestone has exactly one `Milestone state`: `planned`, `implementing`, `review-requested`, `resolution-needed`, or `closed`.
+The plan defines ordered milestone IDs and stable intent.
+`change.yaml` gives each implementation milestone exactly one current `Milestone state`: `planned`, `implementing`, `review-requested`, `resolution-needed`, or `closed`.
 
 For a final `verify` automation target, record target selection separately from implementation and verification authorization; neither owns live next-stage state. Plans must keep ordered implementation milestones, approved validation commands, promotion evidence expectations, separate verification authority, and stop-before-PR boundaries explicit.
 
@@ -210,15 +208,11 @@ Do not hand off to final closeout until all in-scope implementation milestones a
 
 Use `lifecycle-closeout` for a milestone or section that tracks only downstream gates such as `ci-maintenance`, `explain-change`, `verify`, PR handoff, release, deploy, or final plan closeout.
 
-The active plan `Readiness` section points to `Current Handoff Summary` for current live state. Do not duplicate the current next stage outside `Current Handoff Summary` unless the statement is explicitly historical.
+## Change-local handoff rules
 
-## Current Handoff Summary rules
-
-Update a current handoff summary whenever implementation or review changes milestone readiness. The active plan `Current Handoff Summary` owns current milestone, milestone state, last reviewed milestone, review status, remaining in-scope implementation milestones, next stage, final closeout readiness, and reason.
-
-Keep it consistent with the active plan, `docs/plan.md`, and change metadata. It must not claim branch readiness, PR readiness, final verification, final closeout readiness, or Done while downstream gates remain.
-
-Plan validation sections for planned initiatives should name the project artifact-lifecycle state-sync check before downstream handoff.
+The plan identifies its owning change record.
+Current milestone, milestone state, last reviewed milestone, review status, remaining milestones, next stage, blockers, and final-closeout readiness live only in that record.
+Plan and review stages write their scoped evidence; workflow consumes that evidence and owns routing updates.
 
 ## Stop conditions
 
@@ -254,7 +248,7 @@ Result
 Plan
 
 - Plan file: <docs/plans/YYYY-MM-DD-slug.md>
-- Plan index surfaces: <docs/plan.md updated | docs/plan-archive.md updated | not-needed with rationale>
-- Current milestone: <milestone or not-started>
+- Plan navigation: <docs/plan.md updated | not-needed with rationale>
+- Owning change record: <docs/changes/<change-id>/change.yaml>
 - Remaining completion gates: <gates>
 ```

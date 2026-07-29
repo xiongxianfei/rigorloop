@@ -346,3 +346,14 @@ Architecture is not expected for this first slice because the change does not al
 ## Readiness
 
 Approved after clean spec-review. The active plan and active test spec now own the implementation handoff.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+current-handoff or active-plan state as the first current-state source and
+active-plan ownership of implementation handoff to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Bounded evidence order, escalation, follow-up classification, and cost
+controls remain governed here.

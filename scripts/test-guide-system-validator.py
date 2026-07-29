@@ -72,13 +72,10 @@ workflow stage order, exact lifecycle artifact placement, or current milestone s
             "docs/plan.md",
             """# Plan
 
-`docs/plan.md` is the bounded lifecycle index, not a plan body.
+`docs/plan.md` is a navigation index to stable plan bodies and owning change
+records. Mutable state lives in the owning `change.yaml`.
 
-## Active
-
-None.
-
-## Blocked
+## Current plan references
 
 None.
 
@@ -86,7 +83,7 @@ None.
 
 None.
 
-## Superseded
+## Historical replacements
 
 None.
 """,
@@ -173,7 +170,9 @@ Plan body: `docs/plans/YYYY-MM-DD-slug.md`.
 
 ## Done (recent)
 
-## Superseded
+## Current plan references
+
+## Historical replacements
 
 ## Milestones
 """,

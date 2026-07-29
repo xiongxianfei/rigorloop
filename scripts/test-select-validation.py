@@ -78,7 +78,7 @@ EXPECTED_CATALOG = {
     "workflow_automation.policy_regression": "python scripts/test-workflow-automation-policy.py",
     "workflow_automation.state_regression": "python scripts/test-workflow-automation-state.py",
     "workflow_automation.validator_regression": "python scripts/test-validate-workflow-automation.py",
-    "release.validate": "python scripts/validate-release-ci.py --version <version>",
+    "release.validate": "python scripts/validate-release.py --recorded-source-auto --version <version>",
     "release_transaction.regression": "python scripts/test-release-transaction.py",
     "readme.validate": "python scripts/validate-readme.py README.md",
     "readme.vision_markers": "python scripts/validate-readme.py README.md --vision-markers",
@@ -991,6 +991,54 @@ raise SystemExit({exit_code})
                 )
             )
 
+    def test_tracked_change_root_deletion_selects_regressions_without_missing_path_validation(self) -> None:
+        repo = self.make_git_repo()
+        change_root = repo / "docs" / "changes" / "retired-change"
+        change_root.mkdir(parents=True)
+        change_yaml = change_root / "change.yaml"
+        review_resolution = change_root / "review-resolution.md"
+        proposal = change_root / "proposal.md"
+        change_yaml.write_text("change_id: retired-change\n", encoding="utf-8")
+        review_resolution.write_text("# Review resolution\n", encoding="utf-8")
+        proposal.write_text("# Proposal\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True)
+        subprocess.run(
+            ["git", "commit", "-m", "add fixture"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        change_yaml.unlink()
+        review_resolution.unlink()
+        proposal.unlink()
+
+        context = build_repository_preflight_context(repo)
+        result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=(
+                    "docs/changes/retired-change/change.yaml",
+                    "docs/changes/retired-change/review-resolution.md",
+                    "docs/changes/retired-change/proposal.md",
+                ),
+                repo_root=repo,
+                preflight_context=context,
+            )
+        )
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["blocking_results"], [])
+        self.assertEqual(
+            selected_ids(payload),
+            {
+                "artifact_lifecycle.regression",
+                "change_metadata.regression",
+                "review_artifacts.regression",
+            },
+        )
+
     def test_change_evidence_registry_entries_are_complete_and_stable(self) -> None:
         valid = [
             EvidenceClassRegistration(
@@ -1275,6 +1323,22 @@ raise SystemExit({exit_code})
         self.assertIn("owner-approved deferral", debt["next_action"])
         for required_term in ("owner", "path", "reason", "validation impact", "follow-up"):
             self.assertIn(required_term, debt["next_action"])
+
+    def test_change_local_evidence_directory_uses_lifecycle_validation(self) -> None:
+        path = "docs/changes/2026-04-25-example/evidence/m1-implementation.md"
+        result = self.select([path])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertIn(
+            {"path": path, "category": "change-local-lifecycle"},
+            payload["classified_paths"],
+        )
+        self.assertNotIn(
+            "manual-routing-required",
+            {item["code"] for item in payload["blocking_results"]},
+        )
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
 
     def test_diagnostic_broad_smoke_does_not_erase_missing_route_blocker(self) -> None:
         result = select_validation(
@@ -1790,7 +1854,10 @@ raise SystemExit({exit_code})
         self.assertIn("release.validate", selected_ids(payload))
         self.assertIn("docs/changes/2026-04-25-example/", payload["affected_roots"])
         release_check = next(check for check in payload["selected_checks"] if check["id"] == "release.validate")
-        self.assertEqual(release_check["command"], "python scripts/validate-release-ci.py --version v0.1.1")
+        self.assertEqual(
+            release_check["command"],
+            "python scripts/validate-release.py --recorded-source-auto --version v0.1.1",
+        )
 
     def test_multiple_release_paths_share_one_release_validation_check(self) -> None:
         result = self.select(
@@ -1806,7 +1873,7 @@ raise SystemExit({exit_code})
         release_check = next(check for check in payload["selected_checks"] if check["id"] == "release.validate")
         self.assertEqual(
             release_check["command"],
-            "python scripts/validate-release-ci.py --version v0.1.1 v0.1.2",
+            "python scripts/validate-release.py --recorded-source-auto --version v0.1.1 v0.1.2",
         )
 
     def test_release_evidence_markdown_path_selects_lifecycle_checklist_validation(self) -> None:
@@ -2607,15 +2674,8 @@ raise SystemExit({exit_code})
         self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
         self.assertEqual({"guide_system.validate"}, selected_ids(payload))
 
-    def test_docs_examples_paths_are_known_non_lifecycle_paths(self) -> None:
-        paths = [
-            "docs/examples/README.md",
-            "docs/examples/plans/example-plan.md",
-            "docs/examples/formal-review-recording/README.md",
-            "docs/examples/formal-review-recording/change-id-selection-examples.md",
-            "docs/examples/formal-review-recording/clean-review-receipt-root.md",
-            "docs/examples/formal-review-recording/material-finding-location-examples.md",
-        ]
+    def test_retired_docs_examples_path_is_known_during_deletion_compatibility(self) -> None:
+        paths = ["docs/examples/README.md"]
 
         result = self.select(paths)
         payload = result.to_json_dict()
@@ -2625,7 +2685,10 @@ raise SystemExit({exit_code})
         self.assertEqual(payload["blocking_results"], [])
         for path in paths:
             with self.subTest(path=path):
-                self.assertIn({"path": path, "category": "examples"}, payload["classified_paths"])
+                self.assertIn(
+                    {"path": path, "category": "retired-examples"},
+                    payload["classified_paths"],
+                )
 
         self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
         self.assertNotIn("review_artifacts.validate", selected_ids(payload))
@@ -2708,22 +2771,6 @@ raise SystemExit({exit_code})
                 "docs/plan.md",
             ],
         )
-
-    def test_retained_skill_validator_fixture_rationale_has_deterministic_routing(self) -> None:
-        path = "docs/changes/0001-skill-validator/README.md"
-
-        result = self.select([path])
-        payload = result.to_json_dict()
-
-        self.assertEqual(result.status, "ok")
-        self.assertEqual(payload["unclassified_paths"], [])
-        self.assertEqual(payload["blocking_results"], [])
-        self.assertIn({"path": path, "category": "retained-change-fixture"}, payload["classified_paths"])
-        self.assertIn("artifact_lifecycle.regression", selected_ids(payload))
-        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
-
-        lifecycle_check = next(check for check in payload["selected_checks"] if check["id"] == "artifact_lifecycle.validate")
-        self.assertEqual(lifecycle_check["paths"], [path])
 
     def test_selector_and_validation_script_paths_select_regressions(self) -> None:
         result = self.select(["scripts/select-validation.py", "scripts/validate-review-artifacts.py"])
@@ -3553,7 +3600,7 @@ raise SystemExit({exit_code})
                 selected_checks=[
                     {
                         "id": "release.validate",
-                        "command": "python scripts/validate-release-ci.py --version missing-version",
+                        "command": "python scripts/validate-release.py --recorded-source-auto --version missing-version",
                         "reason": "fixture release version should fail validation",
                         "versions": ["missing-version"],
                     }
@@ -4748,7 +4795,7 @@ raise SystemExit(3)
                 selected_checks=[
                     {
                         "id": "release.validate",
-                        "command": "python scripts/validate-release-ci.py --version v0.1.1",
+                        "command": "python scripts/validate-release.py --recorded-source-auto --version v0.1.1",
                         "reason": "fixture command should be unavailable in the temporary workspace",
                         "versions": ["v0.1.1"],
                     }
@@ -4769,7 +4816,7 @@ raise SystemExit(3)
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Run selected check: release.validate", output)
-        self.assertIn("release.validate | unavailable | command unavailable: scripts/validate-release-ci.py |", output)
+        self.assertIn("release.validate | unavailable | command unavailable: scripts/validate-release.py |", output)
 
     def test_ci_wrapper_forwards_mode_arguments_to_selector(self) -> None:
         fixture = self.write_selector_fixture(self.minimal_selector_payload())

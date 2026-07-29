@@ -9,7 +9,6 @@ description: Use this fixture when validating exact plan asset inventory.
 
 - COPY `assets/plan-skeleton.md` when creating a new plan. Fill: Status. Do not emit unfilled placeholders.
 - COPY `assets/milestone.md` when adding each milestone. Fill: milestone id. Do not emit unfilled placeholders.
-- COPY `assets/current-handoff-summary.md` when updating handoff. Fill: current milestone. Do not emit unfilled placeholders.
 
 ## Expected output
 

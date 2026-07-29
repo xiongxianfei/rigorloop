@@ -1,4 +1,4 @@
-# Project Artifact Location Guide and Examples Surface
+# Project Artifact Location Guide and Fixture Ownership
 
 ## Status
 
@@ -10,7 +10,7 @@ approved
 
 ## Goal and context
 
-This spec defines the contract for the project-local artifact-location map, examples surface, retained skill-validator fixture handling, and skill lookup behavior.
+This spec defines the contract for the project-local artifact-location map, test-owned fixture handling, and skill lookup behavior.
 
 Public RigorLoop skills are being simplified so they do not carry long duplicated path rules, example directories, review-root algorithms, generated-output details, or repository-maintainer internals. After that simplification, users and agents still need a project-local answer to where proposals, specs, plans, review records, change metadata, examples, reports, and generated outputs belong.
 
@@ -19,7 +19,7 @@ The contract is intentionally split:
 - `docs/workflows.md` provides the user-facing project-local artifact-location map.
 - Stage skills create or update their own artifacts using the map when placement matters.
 - Specs, schemas, and references define exact artifact shape, lifecycle state, and validation rules.
-- `docs/examples/**` contains non-normative examples and is not active lifecycle state.
+- Reusable authoring shapes live in owning skill assets, while executable cases live in tests.
 
 ## Glossary
 
@@ -28,7 +28,7 @@ The contract is intentionally split:
 - `stage skill`: a skill that creates, reviews, verifies, or hands off a workflow artifact, such as `proposal`, `spec`, `plan`, `proposal-review`, `verify`, or `pr`.
 - `portable default path`: a built-in fallback path that a public skill can use when no project-specific location is configured.
 - `exact shape`: required fields, schema, lifecycle status values, review-record structure, validation behavior, and other normative artifact details beyond default location.
-- `examples surface`: the `docs/examples/**` tree for illustrative, non-normative examples.
+- `test fixture`: temporary or tracked test-only input that must not become project lifecycle state.
 - `retained fixture`: an active-looking path kept temporarily or permanently because validator tests, compatibility checks, or historical proof references still depend on it.
 
 ## Examples first
@@ -64,23 +64,22 @@ Unless a higher-priority governance artifact or safety rule blocks that path.
 
 ### Example E5: examples are not active lifecycle state
 
-Given `docs/examples/plans/example-plan.md` exists
-When selector routing or lifecycle validation classifies active plans
-Then that file is treated as documentation or example content
-And it is not treated as an active plan body.
+Given a lifecycle edge case needs executable proof
+When repository tests create a temporary plan-shaped fixture
+Then the fixture remains isolated from the real repository lifecycle state.
 
 ### Example E6: formal review examples do not trigger closeout
 
-Given `docs/examples/formal-review-recording/clean-review-receipt-root.md` exists
-When review artifact validation evaluates active review records
-Then the example does not require `review-log.md`, `review-resolution.md`, or closeout evidence unless a specific test fixture explicitly opts in.
+Given review-recording behavior needs a fixture
+When a repository test creates that fixture in a temporary root
+Then the fixture is validated only within that test root.
 
-### Example E7: skill-validator fixture is retained with rationale
+### Example E7: skill-validator fixtures are test-owned
 
-Given `docs/changes/0001-skill-validator/` remains in `docs/changes/`
-When contributors inspect that path
-Then a tracked or review-visible marker explains that it is a retained validator fixture and historical proof pack
-And it is not the universal template or minimum artifact pack for non-trivial work.
+Given a skill-validator case is synthetic
+When it is stored in the repository
+Then it lives under `tests/fixtures/`
+And it cannot be mistaken for an active or historical project change root.
 
 ### Example E8: workflow refreshes stale artifact placement
 
@@ -203,31 +202,31 @@ R5g. Public stage skills SHOULD read a governing spec or schema only when:
 - a placement conflict is detected;
 - exact artifact shape is needed, not just default location.
 
-R6. `docs/examples/**` MUST be treated as non-normative example content.
+R6. The repository MUST NOT maintain a parallel documentation examples surface for lifecycle artifacts.
 
-R6a. `docs/examples/README.md` MUST state that examples are illustrative, non-normative, and not active lifecycle artifacts.
+R6a. Reusable authoring shapes MUST live in owning skill assets or normative specifications.
 
-R6b. Selector routing MUST classify `docs/examples/**` as documentation or example content, not active lifecycle state.
+R6b. Selector routing MAY retain a bounded compatibility classification for deleted example paths until the deletion no longer appears in the comparison baseline.
 
-R6c. Lifecycle validation MUST NOT treat `docs/examples/**` as active proposals, active plans, active change roots, active review records, active reports, or active lifecycle-managed artifacts unless a specific test fixture explicitly opts in.
+R6c. Lifecycle validation tests MUST isolate temporary fixtures from the real repository root.
 
-R6d. `docs/examples/plans/example-plan.md` MUST NOT be treated as an active plan body.
+R6d. The packaged plan skeleton MUST remain the sole maintained plan-authoring scaffold.
 
-R6e. `docs/examples/formal-review-recording/**` examples MUST NOT trigger active review-record closeout requirements unless they are copied into an explicit test fixture location or otherwise explicitly opted into validation.
+R6e. Formal-review test fixtures MUST live in tests or temporary test roots rather than production documentation.
 
-R7. `docs/changes/0001-skill-validator/` MUST NOT be treated as the universal template or minimum artifact pack for non-trivial work.
+R7. Synthetic validator cases MUST live under `tests/fixtures/`, not `docs/changes/`.
 
-R7a. If `docs/changes/0001-skill-validator/` remains under `docs/changes/`, the implementation MUST record durable retained-fixture rationale in a tracked or review-visible surface.
+R7a. Tests MUST NOT depend on a production documentation path solely to obtain synthetic validator input.
 
-R7b. The retained-fixture rationale MUST state that the path is not an active change root and exists because tests, validators, compatibility references, or historical proof references still rely on that path.
+R7b. Deleted historical proof MUST remain recoverable through Git history rather than a live special-case directory.
 
-R7c. The retained-fixture rationale MUST identify `docs/examples/changes/skill-validator/` as the preferred move target once references can be updated safely.
+R7c. Fixture paths and identifiers SHOULD describe the case they exercise.
 
-R7d. If references, tests, validators, and selector routing can be updated safely in the same implementation slice, the fixture SHOULD move to `docs/examples/changes/skill-validator/`.
+R7d. Removing a production-path fixture MUST update its references, selectors, validators, tests, and current guidance in the same slice.
 
 R8. When examples or fixtures move, references, tests, validators, selectors, and contributor-facing guidance that cite the moved paths MUST be updated in the same slice.
 
-R8a. If a path cannot move because validator or compatibility coupling remains, the implementation MUST retain it with the retained-fixture rationale from `R7`.
+R8a. If a production-path fixture cannot be removed safely in one slice, the implementation MUST stop and define a bounded migration rather than make the exception permanent.
 
 R9. The artifact-location map MUST preserve custom project paths.
 
@@ -243,13 +242,13 @@ R10b. Public skill text MUST NOT expose repository-maintainer-only generated-out
 
 R11. The artifact-location map MUST be testable through repository-owned validation.
 
-R11a. Validation MUST include selector coverage proving `docs/examples/**` is classified as non-lifecycle example content.
+R11a. Validation MUST include bounded selector coverage for deleted example paths while deletion compatibility is required.
 
-R11b. Validation MUST include lifecycle coverage proving `docs/examples/plans/example-plan.md` is not treated as an active plan.
+R11b. Lifecycle tests MUST use temporary repositories for plan-shaped negative fixtures.
 
-R11c. Validation MUST include review-artifact or lifecycle coverage proving formal review examples under `docs/examples/formal-review-recording/**` do not trigger active review closeout requirements.
+R11c. Review-artifact tests MUST use temporary repositories or test-fixture paths for review-shaped negative cases.
 
-R11d. Validation MUST cover the retained-fixture outcome: either the skill-validator fixture moves with references updated, or durable retained-fixture rationale exists.
+R11d. Validation MUST prove that skill-validator fixtures and their references remain test-owned.
 
 R12. This spec MUST NOT change the standard workflow order.
 
@@ -273,8 +272,8 @@ Outputs:
 
 - an updated `docs/workflows.md` artifact-location map;
 - concise stage-skill artifact lookup wording;
-- updated examples under `docs/examples/**` when examples move or are added;
-- retained-fixture rationale for `docs/changes/0001-skill-validator/` when it stays under `docs/changes/`;
+- updated owning skill assets or test fixtures when reusable shapes or executable cases change;
+- test-owned fixtures for synthetic validator cases;
 - selector, lifecycle, skill, and review-artifact validation evidence for changed behavior;
 - refreshed generated skill or adapter output when canonical skills change.
 
@@ -284,7 +283,7 @@ Outputs:
 - Specs and schemas define exact shapes and validation rules.
 - Stage skills own artifact content and handoff.
 - `workflow` owns guide creation, refresh, routing, and state audit; it does not author every artifact type.
-- `docs/examples/**` is non-normative and not active lifecycle state.
+- Documentation does not own reusable lifecycle scaffolds or executable fixtures.
 - Retained active-looking fixtures require visible rationale.
 - Ambiguous artifact placement blocks instead of silently guessing.
 
@@ -294,8 +293,8 @@ Outputs:
 - If `docs/workflows.md` is stale or contradicts approved specs, schemas, or current paths, `workflow` refreshes it or reports the contradiction before downstream reliance.
 - If a stage skill cannot determine artifact placement after applying the source rank, it stops and reports the missing location evidence.
 - If an explicit user path conflicts with a higher-priority governance, schema, security, or safety rule, the skill reports the conflict instead of writing there.
-- If `docs/examples/**` is accidentally selected as active lifecycle state, selector or lifecycle validation must fail until routing is corrected or a specific test fixture opt-in is recorded.
-- If `docs/changes/0001-skill-validator/` remains without retained-fixture rationale, validation or review must block the implementation slice that relies on retaining it.
+- If a test fixture contributes active state to the real repository, validation must fail until fixture isolation is corrected.
+- If a test relies on a synthetic record under `docs/changes/`, validation or review must block until the case moves to test-owned fixtures.
 
 ## Compatibility and migration
 
@@ -303,11 +302,11 @@ Existing downstream projects may already customize artifact paths. This spec pre
 
 Existing active lifecycle artifacts remain valid. This spec does not require historical proposals, specs, plans, reviews, or change roots to move.
 
-Existing examples already under `docs/examples/**` remain valid non-normative examples.
+Historical references to the retired examples surface remain historical evidence and are not rewritten.
 
-`docs/changes/0001-skill-validator/` may remain temporarily or permanently as a retained fixture when tests, validators, compatibility references, or historical proof references still rely on it, provided the retained-fixture rationale is recorded.
+Deleted historical proof remains recoverable through Git history and does not require a live compatibility directory.
 
-Rollback for implementation slices is documentation-first: revert artifact-map and skill lookup wording if they cause ambiguous routing, restore moved fixtures if validation coupling breaks, and keep already-moved examples under `docs/examples/**` only when selectors and validators classify them consistently as non-lifecycle examples.
+Rollback for implementation slices is documentation-first: revert artifact-map and skill lookup wording if they cause ambiguous routing, and restore moved fixtures only when validation coupling breaks.
 
 ## Observability
 
@@ -315,11 +314,11 @@ This behavior is observed through tracked artifacts and validation output:
 
 - `docs/workflows.md` visibly contains the artifact-location map and source-rank disclaimer.
 - Stage skill text visibly uses concise lookup wording.
-- `docs/examples/README.md` visibly states that examples are non-normative.
-- Selector output classifies `docs/examples/**` as documentation or example content.
-- Lifecycle validation does not classify examples as active lifecycle state.
+- Owning skill assets contain reusable authoring shapes.
+- Selector output handles deleted example paths only through bounded compatibility.
+- Lifecycle tests isolate temporary fixtures from active project state.
 - Review artifact validation does not require active closeout for formal-review examples.
-- Retained-fixture rationale is visible in a tracked or review-visible surface when `docs/changes/0001-skill-validator/` remains.
+- Synthetic validator inputs are visibly owned by `tests/fixtures/`.
 
 ## Security and privacy
 
@@ -349,13 +348,13 @@ EC2. A project customizes proposal paths: `proposal` uses the project map before
 
 EC3. A user provides an explicit path: the skill uses it unless higher-priority governance, schema, security, or safety constraints block it.
 
-EC4. `docs/examples/plans/example-plan.md` looks like a plan: selector and lifecycle validation still treat it as example content.
+EC4. A temporary fixture looks like a plan: lifecycle validation remains scoped to the temporary repository.
 
 EC5. A formal review example contains review-like headings: validation does not treat it as an active review record unless an explicit fixture opt-in exists.
 
-EC6. `docs/changes/0001-skill-validator/` remains under `docs/changes/`: retained-fixture rationale explains why it is not an active change root or universal template.
+EC6. A synthetic validator input is placed under `docs/changes/`: validation or review requires it to move under `tests/fixtures/`.
 
-EC7. `docs/changes/0001-skill-validator/` can move safely: it moves to `docs/examples/changes/skill-validator/` with all references, tests, validators, selectors, and guidance updated in the same slice.
+EC7. A deleted historical proof pack is needed for investigation: the contributor retrieves it from Git history without restoring it as maintained documentation.
 
 EC8. A skill cannot determine a change root after source-rank lookup: it blocks on ambiguity instead of inventing an unrelated path.
 
@@ -385,11 +384,11 @@ EC10. Canonical skills change: generated public skill and adapter output is chec
 - Public skills consult governing specs or schemas only when they are known to constrain the artifact, the guide points to them, a current artifact or metadata cites them, a conflict is detected, or exact shape is needed.
 - Tests or static checks prove shared lookup wording does not bypass the `R2` source-rank rule.
 - Tests or static checks prove public skill wording discourages broad authoritative-document path searches.
-- `docs/examples/README.md` states examples are non-normative and not active lifecycle state.
-- Selector coverage classifies `docs/examples/**` as documentation or example content.
-- Lifecycle validation does not treat `docs/examples/plans/example-plan.md` as an active plan.
-- Formal review examples under `docs/examples/formal-review-recording/**` do not trigger active review closeout requirements.
-- `docs/changes/0001-skill-validator/` either moves with all references updated or remains with durable retained-fixture rationale.
+- The repository has no parallel documentation examples surface.
+- Selector coverage handles deleted example paths only for transition compatibility.
+- Lifecycle validation uses isolated temporary fixtures for plan-shaped cases.
+- Formal review tests use temporary repositories or test fixtures.
+- Synthetic validator cases live under `tests/fixtures/` and production-path special cases are removed.
 - Formal review receipt/root shape remains governed by `specs/formal-review-recording.md`.
 - No public skill hardcodes RigorLoop-only internal validator paths when project-local guide wording is sufficient.
 
@@ -397,7 +396,7 @@ EC10. Canonical skills change: generated public skill and adapter output is chec
 
 None.
 
-Implementation planning still decides whether `docs/changes/0001-skill-validator/` can move in the same slice as its reference updates or remains with retained-fixture rationale.
+None.
 
 ## Next artifacts
 
@@ -423,3 +422,14 @@ pr
 ## Readiness
 
 Approved. Ready for planning and test-spec authoring.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+active-plan metadata as current lifecycle authority or a higher-ranked mutable
+path source to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Artifact-location guidance, example isolation, path lookup, and
+generated-surface validation remain governed here.

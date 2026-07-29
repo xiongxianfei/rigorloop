@@ -22,7 +22,8 @@ Run final verification after durable change rationale exists and before PR hando
 
 `verify` owns validation evidence and branch-ready proof. It does not create the durable explanation and does not prepare the PR body.
 
-Final verification is scoped evidence and must not own the active plan's current next stage. Use the active plan `Current Handoff Summary` to assess current planned-initiative state.
+Final verification is scoped evidence and must not own artifact settlement, milestone state, or routing.
+Use `change.yaml` to assess current planned-initiative state and treat the plan and upstream artifacts as read-only.
 
 ## Project-local evidence
 
@@ -88,9 +89,11 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Change-record bounded reads
 
-For planned change records, use the active plan `Current Handoff Summary` for current workflow state. When the project provides the helper, use `scripts/query-change-record.py <change-id> summary` for artifact paths, review state, latest validation state, blockers, and detail pointers; use `scripts/query-change-record.py <change-id> artifacts` for canonical artifact paths only; and use `scripts/query-change-record.py <change-id> validation --latest` for latest validation evidence.
+For planned change records, use `change.yaml` for current workflow state and the plan for stable execution intent.
+When the project provides query helpers, use them as bounded views of the change record, not as another state owner.
 
-Escalate from bounded helper output to full `change.yaml` when verifying forensic reconstruction, unsupported-shape diagnostics, disputed evidence, selector-routing behavior, migration compatibility, or whole-record review. Do not treat bounded helper output as a replacement for required final validation commands or the active plan's live state.
+Escalate from bounded helper output to full `change.yaml` when verifying forensic reconstruction, unsupported-shape diagnostics, disputed evidence, migration compatibility, or whole-record review.
+Do not treat bounded helper output as a replacement for required final validation commands or change-local state.
 
 ## Outputs
 

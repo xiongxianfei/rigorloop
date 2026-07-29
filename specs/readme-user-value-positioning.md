@@ -94,7 +94,7 @@ R5. The README MUST include a short quick-start path or adoption checklist that 
 R5a. That quick-start path or adoption checklist MUST point readers to all of the following existing surfaces:
 - `docs/workflows.md` for the short workflow summary;
 - `specs/rigorloop-workflow.md` for the normative workflow contract;
-- `docs/changes/0001-skill-validator/` for the shipped proof-of-value example.
+- `CONTRIBUTING.md` and the issue templates for contribution and support routes.
 
 R5b. The quick-start path or adoption checklist MUST appear after the `When to use / When not to use` section and before the help or contribution pointer and any mechanics/reference section.
 
@@ -138,7 +138,7 @@ Inputs:
 - the accepted project-direction proposal
 - `docs/workflows.md`
 - `specs/rigorloop-workflow.md`
-- the shipped proof-of-value example under `docs/changes/0001-skill-validator/`
+- contributor and support routes
 
 Outputs:
 
@@ -201,7 +201,7 @@ Outputs:
 
 1. The README may keep a lifecycle summary and repository layout, but only after the value-first overview, qualification guidance, quick-start or adoption-checklist section, and help or contribution pointer.
 2. The README may mention maintainers and small teams prominently, but it may not displace individual contributors as the lead audience for the first-release entrypoint.
-3. The README may link to `docs/changes/0001-skill-validator/` as a shipped example, but it must not imply that the example's full artifact pack is universal for every non-trivial change.
+3. The README MUST NOT present a historical change root as a maintained example or universal artifact pack.
 4. If only `README.md` requires wording changes to satisfy this spec, no broader doc rewrite is required.
 5. If a touched public summary surface would need normative workflow edits to align with the new README, that broader change is out of scope for this spec and must be handled separately.
 
@@ -220,7 +220,7 @@ Outputs:
 - `README.md` includes a near-top section titled `When to use / When not to use` with at least one good-fit and one bad-fit case.
 - The first audience-defining sentence or bullet names individual contributors first, and any maintainer or small-team mention appears only in a secondary clause or later sentence/section.
 - The README includes a quick-start path or adoption checklist and a concise help or contribution pointer before any mechanics/reference section.
-- The README points readers to active deeper surfaces for workflow, artifact and skill documentation, and contribution or issue reporting, including `docs/workflows.md`, `specs/rigorloop-workflow.md`, and `docs/changes/0001-skill-validator/` where those needs apply.
+- The README points readers to active deeper surfaces for workflow, artifact and skill documentation, and contribution or issue reporting, including `docs/workflows.md`, `specs/rigorloop-workflow.md`, `CONTRIBUTING.md`, and the issue templates where those needs apply.
 - The README no longer presents the first proof-of-value rollout as if it were still active implementation focus.
 - Any touched linked summary surfaces remain truthful and do not alter workflow rules, validation requirements, or source-of-truth ordering.
 

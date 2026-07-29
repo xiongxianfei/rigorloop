@@ -3,7 +3,7 @@ name: implement
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Implement one approved milestone or isolated implementation request with tests or proof first, then hand it to code-review with validation evidence and plan state updated. Use when requirements, scope, and validation commands are clear enough to code. Use bugfix for defect reproduction/fix loops, code-review to review implementation, verify for final readiness, and pr for PR handoff.
+  Implement one approved milestone or isolated implementation request with tests or proof first, then hand it to code-review with validation evidence. Use when requirements, scope, and validation commands are clear enough to code. Use bugfix for defect reproduction/fix loops, code-review to review implementation, verify for final readiness, and pr for PR handoff.
 argument-hint: [plan path, milestone ID, feature name, or implementation request]
 ---
 
@@ -13,7 +13,9 @@ You are implementing the smallest scope-complete change for the approved slice w
 
 Do not expand scope. Do not silently alter the spec. Do not declare success without verification evidence.
 
-For planned initiatives, `implement` owns keeping the active plan body current during execution. Update the plan body's progress, decisions, discoveries, and validation notes as work advances instead of leaving those details to later stages.
+For planned initiatives, `implement` treats the plan and upstream artifacts as read-only.
+It writes implementation, tests, and implementation evidence only.
+Workflow consumes that evidence and owns milestone and routing updates in `change.yaml`.
 
 ## Workflow role
 
@@ -21,7 +23,7 @@ For planned initiatives, `implement` owns keeping the active plan body current d
 - stage: execution
 - upstream: approved spec, active plan, active test spec plus recorded, approved, current test-spec-review evidence when required, accepted review-resolution finding, bugfix request, or isolated implementation request with clear scope
 - downstream: code-review
-- summary: Implement the smallest scope-complete slice with tests or proof first, record validation, update plan state, and hand the milestone to code-review.
+- summary: Implement the smallest scope-complete slice with tests or proof first, record validation evidence, and hand the milestone to code-review.
 - must_not_claim: review passed, clean review, branch readiness, PR readiness, final verification, final closeout readiness, or derived artifact currency without owning proof.
 
 ## Quick operating guide
@@ -30,14 +32,14 @@ Use this skill to: implement one approved milestone with tests or proof first, t
 
 Read first:
 
-- the active plan `Current Handoff Summary`;
-- the current milestone section and its validation notes;
+- `change.yaml` for current milestone and routing state;
+- the stable current milestone definition in the plan;
 - the governing spec, test spec, plan tasks, and relevant code/tests;
 - the specific needed section first; use broader-section or full-file reading only when bounded evidence is insufficient.
 
 Produce:
 
-- test/proof updates, implementation changes, validation evidence, plan updates, and a review-requested milestone handoff.
+- test/proof updates, implementation changes, validation evidence, and a review-requested milestone handoff.
 
 Stop when:
 
@@ -94,7 +96,7 @@ Use the smallest sufficient evidence set for the milestone.
 
 Default evidence:
 
-- active plan `Current Handoff Summary`
+- `change.yaml` workflow and planned-work state
 - current milestone section
 - approved spec
 - test spec
@@ -116,7 +118,7 @@ Use bounded evidence first, but do not under-read. Expand beyond the milestone w
 
 ## Outputs
 
-Produce tests or proof surfaces first where feasible, implementation changes, updated plan progress and validation notes, and a milestone handoff commit that sets the milestone to `review-requested`.
+Produce tests or proof surfaces first where feasible, implementation changes, implementation validation evidence, and a milestone handoff for workflow to record as `review-requested`.
 
 ## Resource map
 
@@ -214,7 +216,7 @@ For each milestone:
 7. Run the narrow tests again.
 8. Refactor only within milestone scope.
 9. Run milestone targeted validation commands before any optional broad smoke.
-10. Update the active plan body’s progress, decisions, surprises, aligned-surface audit, and validation notes.
+10. Record implementation decisions, surprises, aligned-surface audit, and validation results in implementation evidence.
 11. When implementation work for the milestone is complete, create an implementation handoff commit using the subject format `M<n>: <implemented milestone outcome>` and include milestone validation in the commit body or referenced evidence.
 12. Stop before the next milestone unless the user asked to continue.
 
@@ -222,37 +224,36 @@ Stopping before the next milestone does not cancel a required downstream workflo
 
 ## Handoff inspection budget
 
-When checking milestone readiness or handoff state, start with the active plan's `Current Handoff Summary`.
+When checking milestone readiness or handoff state, start with the owning `change.yaml`.
 
 Use this order:
 
-1. active plan `Current Handoff Summary`
-2. current milestone section
-3. validation notes for that milestone
+1. `change.yaml` workflow and planned-work state
+2. stable current milestone section in the plan
+3. implementation validation evidence for that milestone
 4. review-resolution evidence only when findings exist
-5. compact change metadata only for status or artifact pointers
+5. governing artifacts needed for the implementation
 
 For milestone readiness, do not run broad repository searches to infer milestone state.
 
-Avoid searching all documentation, specifications, skills, derived output, historical reviews, or broad `rg` output before checking active plan state.
+Avoid broad repository searches before checking change-local state.
 
-If the active plan does not identify the current milestone or next stage, stop and report the missing state instead of searching broadly.
+If `change.yaml` does not identify the current milestone or next stage, stop and report the missing state instead of writing it.
 
 ## Milestone-aware handoff
 
 For milestone-based plans, `implement` works on one in-scope implementation milestone at a time.
 
-- When implementation work begins, transition the current milestone from `planned` to `implementing`.
-- After implementation and targeted validation complete, record targeted validation evidence, decisions, surprises, and follow-ups in the active plan.
-- When no stop condition applies, set the current milestone to `review-requested` and hand off to `code-review` for that milestone.
+- Workflow transitions the current milestone from `planned` to `implementing` before invoking implementation.
+- After implementation and targeted validation complete, record targeted validation evidence, decisions, surprises, and follow-ups in implementation evidence.
+- When no stop condition applies, report a review-requested handoff to workflow; workflow updates the milestone and routes to `code-review`.
 - Perform a state-sync check before claiming readiness for `code-review`.
 - Run the project artifact-lifecycle state-sync check before claiming readiness for `code-review`.
-- Update the active plan `Current Handoff Summary` when the milestone moves to `review-requested`.
 - Implementation completion is handoff evidence, not milestone closeout. `implementation-complete` may appear as an evidence description, but it is not a milestone state.
 - The milestone becomes `closed` only after clean code-review and any required review-resolution are complete.
 - If accepted review findings return to implementation, keep fixes attached to the same milestone. After fixes and targeted validation evidence are complete, return that same milestone to `review-requested` before rerun review.
 
-`implement` must not set plan readiness to `Ready for final closeout` while any in-scope implementation milestone remains unreviewed, unresolved, or open. `Ready for final closeout` is valid only after all in-scope implementation milestones are closed or explicitly deferred by plan revision, final milestone code-review has completed, and required review-resolution is closed.
+`implement` must not write plan or workflow readiness.
 
 ## Implementation autoprogression
 
@@ -301,19 +302,10 @@ Before Phase C can enter `explain-change` or `verify`, require final holistic co
 - Ordinary later review comments may still happen. A `preventable first-pass miss` is only a finding that should have been caught by the same-slice completeness set, required edge cases, or targeted validation before handoff.
 - This v1 autoprogression rule does not expand manual skill invocation or bugfix execution behavior through the `implement` skill.
 
-## Plan update requirements
+## Evidence update requirements
 
-Update the concrete plan with:
-
-- milestone progress;
-- decisions made during implementation;
-- surprises and discoveries;
-- validation commands run;
-- validation results;
-- known follow-ups or deferred work.
-- for planned initiatives, keep `docs/plan.md` as lifecycle bookkeeping rather than a milestone journal;
-- if lifecycle state changes during implementation, update both `docs/plan.md` and the plan body before the PR opens for review;
-- if completion depends on a true downstream completion event, keep the plan `Active`, name that event, and do not treat merge itself as the event.
+Record implementation decisions, discoveries, validation commands and results, and follow-ups in implementation evidence.
+Do not update the plan, upstream artifacts, artifact settlement, or workflow routing.
 
 ## Stop conditions
 
@@ -384,4 +376,5 @@ Start with:
 - Milestone state: <review-requested | blocked>
 ```
 
-Then include the milestone implemented, tests or proof added first, validation results, plan updates, blockers or spec gaps, and readiness for `code-review` or a clear blocked state. Do not imply review findings, final verification, final closeout readiness, or `branch-ready`.
+Then include the milestone implemented, tests or proof added first, validation results, blockers or spec gaps, and readiness for `code-review` or a clear blocked state.
+Do not imply review findings, final verification, final closeout readiness, or `branch-ready`.

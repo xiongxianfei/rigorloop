@@ -595,6 +595,19 @@ None.
 
 None yet
 
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification
+defers ownership of current milestone, review, blocker, next-stage, and
+closeout state from the active plan and `docs/plan.md` to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Milestone ordering, review evidence, closeout gates, portability, and
+historical plan intent remain governed here.
+This notice does not activate the new contract before that specification and
+its complete rollout gate are approved.
+
 ## Readiness
 
 Approved by spec-review-r2. Ready for downstream planning and test-spec authoring when requested; no architecture, implementation, verification, branch-readiness, or PR-readiness handoff is claimed by this spec approval.

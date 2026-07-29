@@ -475,3 +475,13 @@ release
 ## Readiness
 
 Approved after `spec-review-r2` completed with no material findings and closed `SGPA-SR1`.
+
+## Prospective stage-owned lifecycle amendment notice
+
+For a change declaring
+`lifecycle_contract: stage-owned-change-local-v1`, this specification defers
+accepted proposal status settlement as a downstream-reliance prerequisite to
+[Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md).
+
+Canonical skill-source ownership, adapter archive installation, release
+metadata, and generated-output policy remain governed here.

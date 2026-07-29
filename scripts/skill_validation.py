@@ -231,7 +231,6 @@ PUBLISHED_ALLOWED_PROJECT_LOCAL_TERMS = [
 PLAN_ASSET_PILOT_APPROVED_ASSETS = {
     "assets/plan-skeleton.md",
     "assets/milestone.md",
-    "assets/current-handoff-summary.md",
     "assets/decision-log-row.md",
 }
 PLAN_ASSET_REQUIRED_METADATA_FIELDS = {

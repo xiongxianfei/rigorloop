@@ -15,6 +15,7 @@ from typing import Any
 from change_metadata_semantics import validate_clean_receipt_root_review_metadata
 from change_metadata_semantics import validate_requirement_fidelity_metadata
 from change_metadata_semantics import validate_review_gate_metadata
+from change_metadata_semantics import validate_stage_owned_lifecycle_metadata
 from review_artifact_validation import summarize_review_evidence
 from review_artifact_validation import validate_change_root as validate_review_artifact_root
 from validate_workflow_automation import (
@@ -511,8 +512,9 @@ def validate_metadata_semantics(data: Any, metadata_path: Path | None = None) ->
         return []
 
     errors: list[str] = []
+    errors.extend(validate_stage_owned_lifecycle_metadata(data))
     workflow = data.get("workflow")
-    if isinstance(workflow, dict):
+    if isinstance(workflow, dict) and data.get("lifecycle_contract") != "stage-owned-change-local-v1":
         automation = workflow.get("automation")
         if automation is not None:
             errors.extend(

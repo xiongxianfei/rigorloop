@@ -29,7 +29,7 @@ Use this skill to: independently review an implementation slice against governin
 Read first:
 
 - the actual diff or changed files;
-- the active plan `Current Handoff Summary` when a plan exists;
+- `change.yaml` workflow and planned-work state when a plan exists;
 - the governing spec, test spec, plan milestone, and validation notes;
 - the specific needed section first; use broader-section or full-file reading only when bounded evidence is insufficient.
 
@@ -67,7 +67,7 @@ Read:
 
 - actual diff or changed files;
 - governing spec, test spec, plan milestone, architecture, and ADRs when relevant;
-- plan validation notes, tests, CI results, and selector-selected targeted proof with stable check IDs when in scope;
+- plan validation intent, tests, CI results, and targeted proof with stable check IDs when in scope;
 - invocation context, explicit stop instructions, repository governance, and related code/tests when needed.
 
 Prefer a fresh session, separate reviewer, or separate agent when available. If not, intentionally reset assumptions before reading the diff.
@@ -126,9 +126,12 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 ## Change-record bounded reads
 
-For planned change records, use the active plan `Current Handoff Summary` for current milestone state and handoff. Use `scripts/query-change-record.py <change-id> artifacts` for canonical artifact paths when the project provides the helper. Use `scripts/query-change-record.py <change-id> validation --stage <stage>` only when reviewing validation evidence for a specific stage. Use `review-resolution.md` for the finding disposition under re-review.
+For planned change records, use `change.yaml` for current milestone state and handoff and the plan only for stable milestone intent.
+Use bounded query helpers as views of the change record, not as another state owner.
+Use `review-resolution.md` for finding disposition under re-review.
 
-Do not read all validation history by default when reviewing code behavior. Escalate to full `change.yaml` reads for forensic reconstruction, unsupported-shape diagnostics, disputed evidence, selector-routing debugging, and whole-record review.
+Do not read all validation history by default when reviewing code behavior.
+Escalate to full `change.yaml` reads for forensic reconstruction, unsupported-shape diagnostics, disputed evidence, and whole-record review.
 
 ## Resource map
 
@@ -153,7 +156,7 @@ Produce a first-pass review record with status, inputs, diff summary, findings o
 
 ## Handoff
 
-- Normal next stage: follow the active plan and milestone state after the first-pass review.
+- Normal next stage: report the review outcome to workflow, which routes from the change-local state.
 - Conditional next stages: `review-resolution` for material or required-change findings; `implement <next milestone>` after a clean non-final milestone; final closeout after a clean final milestone; stop on `blocked` or `inconclusive`.
 - A clean non-final milestone closes only that milestone and hands off to `implement <next milestone>`.
 - A clean final milestone reaches final closeout, not direct `verify`; final closeout runs `ci-maintenance` when triggered, then `explain-change`, `verify`, and `pr`.
@@ -251,8 +254,7 @@ If a safe resolution cannot be chosen without an owner decision, use a `needs-de
 
 Isolation governs handoff. Recording follows formal review triggers.
 
-A direct or review-only request remains isolated by default: it does
-not automatically continue into downstream workflow stages.
+A direct or review-only request remains isolated by default: it does not automatically continue into downstream workflow stages.
 
 Isolation does not suppress recording.
 
@@ -260,20 +262,14 @@ Every formal lifecycle review result must be recorded or explicitly blocked.
 
 Use:
 
-- `Recording status: recorded` when the required review evidence was created
-  or updated.
-- `Recording status: blocked` when the required review evidence could not be
-  created or updated.
+- `Recording status: recorded` when the required review evidence was created or updated.
+- `Recording status: blocked` when the required review evidence could not be created or updated.
 
-`not-required` is reserved for non-formal review-like requests outside the
-formal lifecycle review model.
+`not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
 
-For a clean review, create the lightweight review receipt required by the
-formal review recording spec and index it in `review-log.md`. Do not create an
-empty `review-resolution.md` solely for a clean review.
+For a clean review, create the lightweight review receipt required by the formal review recording spec and index it in `review-log.md`. Do not create an empty `review-resolution.md` solely for a clean review.
 
-For material findings or blocking outcomes, create the required detailed review
-record and disposition artifacts.
+For material findings or blocking outcomes, create the required detailed review record and disposition artifacts.
 Use a detailed review record for material or blocking review outcomes.
 
 Material findings must include:
@@ -285,12 +281,9 @@ Material findings must include:
 - Required outcome
 - Safe resolution path, or `needs-decision` rationale
 
-Do not merely tell the user that review artifacts should be created. Create
-or update them before final output, or report `Recording status: blocked` with
-the blocker and smallest next action.
+Do not merely tell the user that review artifacts should be created. Create or update them before final output, or report `Recording status: blocked` with the blocker and smallest next action.
 
-For an isolated review with material findings, the final review output
-must state:
+For an isolated review with material findings, the final review output must state:
 
 - no automatic downstream handoff
 - material Finding IDs
@@ -336,13 +329,13 @@ Stop instead of clean handoff when:
 
 ## Milestone-aware review handoff
 
-For a milestone-based plan, identify the reviewed milestone and inspect the active plan before choosing the next stage.
+For a milestone-based plan, identify the reviewed milestone from `change.yaml` and inspect the stable plan intent before reporting the review outcome.
 
 - A clean non-final milestone closes the reviewed milestone and hands off to the next in-scope implementation milestone.
 - A clean final milestone closes the reviewed milestone and hands off to `ci-maintenance` when triggered; otherwise it hands off to `explain-change`, only when no in-scope implementation milestone remains open or unresolved and no required review-resolution remains open.
 - Findings that require review-resolution, fixes, owner decision, or re-review move the reviewed milestone to `resolution-needed` and keep the workflow on that same milestone.
 - Accepted fixes remain attached to the same milestone. When re-review is required, the milestone returns to `review-requested` before rerun `code-review`.
-- If the reviewed milestone or remaining in-scope implementation milestones cannot be determined from the active plan and review output, return `inconclusive` or require a plan update instead of handing off to final closeout.
+- If the reviewed milestone or remaining in-scope implementation milestones cannot be determined from `change.yaml` and the review output, return `inconclusive`; do not repair state or the plan.
 
 A clean review of one non-final implementation milestone is not proof that the whole plan is ready for final closeout.
 
@@ -392,9 +385,9 @@ Requirement compression is a material finding when an implementation, validator,
 
 Direct or profile-off review behavior remains isolated and does not require requirement-fidelity manifests unless the result is used as a workflow-managed automated handoff gate.
 
-## Plan closeout check
+## Review handoff evidence
 
-For milestone-based plans, the review output must include or require a current handoff summary with:
+For milestone-based plans, the review output must include:
 
 - reviewed milestone;
 - review status;
@@ -404,10 +397,9 @@ For milestone-based plans, the review output must include or require a current h
 - next stage;
 - final closeout readiness and the reason.
 
-Update or require update of the active plan `Current Handoff Summary` before downstream handoff.
-Run the state-sync gate before emitting downstream handoff language for review-resolution, the next milestone, or final closeout.
-
-When review is `clean-with-notes` and no review-resolution is required, update or require update of the reviewed milestone from `review-requested` to `closed`. When findings require review-resolution, update or require update of the reviewed milestone to `resolution-needed`.
+Code-review writes its review evidence only.
+It must not edit implementation, the plan, artifact settlement, milestone state, or routing.
+Workflow consumes the evidence and performs the corresponding change-local state transition.
 
 ## Recommended clean review template
 

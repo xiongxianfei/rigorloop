@@ -22,6 +22,7 @@ from workflow_automation_state import (
     _review_resolution_gate,
     ConcurrentStateChange,
     StateContractError,
+    StageOwnedChangeStateStore,
     WorkflowAutomationStateStore,
     compute_transition_key,
     dump_yaml,
@@ -2389,6 +2390,148 @@ Open findings: BRF-EXAMPLE
             document["workflow"]["autoprogression"] = legacy
         path.write_text(dump_yaml(document), encoding="utf-8")
         return WorkflowAutomationStateStore(path), path
+
+
+class StageOwnedChangeStateStoreTests(unittest.TestCase):
+    def make_historical_store(self, status: str = "paused"):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        path = Path(temp.name) / "change.yaml"
+        document = {
+            "change_id": "example",
+            "title": "Example",
+            "classification": "workflow",
+            "risk": "medium",
+            "artifacts": {},
+            "requirements": [],
+            "tests": [],
+            "validation": [],
+            "changed_files": [],
+            "review": {"status": "approved", "unresolved_items": 0},
+            "workflow": {"automation": {"run": {"status": status}}},
+        }
+        path.write_text(dump_yaml(document), encoding="utf-8")
+        return StageOwnedChangeStateStore(path), path
+
+    def current_parts(self):
+        artifacts = {
+            "proposal": {
+                "kind": "proposal",
+                "path": "docs/proposals/example.md",
+                "role": "primary",
+                "lifecycle_state": "accepted",
+                "review": {
+                    "id": "proposal-review-r1",
+                    "artifact_id": "proposal",
+                    "outcome": "approved",
+                    "record": "docs/changes/example/reviews/proposal-review-r1.md",
+                    "round": "r1",
+                },
+            }
+        }
+        state = {
+            "lifecycle_state": "active",
+            "current_stage": "spec",
+            "next_stage": "spec-review",
+            "blocker": None,
+            "evidence": ["docs/changes/example/reviews/proposal-review-r1.md"],
+        }
+        automation = {
+            "mechanism": "bounded-review-fix",
+            "target": {
+                "stage": "verify",
+                "occurrence": {"kind": "final"},
+                "bound_at": "2026-07-29T00:00:00Z",
+                "completion": {"rule": "fresh verification passes"},
+            },
+            "status": "active",
+            "current_stage": "spec",
+            "stop_reason": None,
+            "evidence": [],
+        }
+        return artifacts, state, automation
+
+    def test_historical_read_is_side_effect_free(self) -> None:
+        store, path = self.make_historical_store()
+        before = path.read_bytes()
+        snapshot = store.read()
+        self.assertEqual(snapshot.document.get("lifecycle_contract"), None)
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_first_nonterminal_mutation_migrates_once(self) -> None:
+        store, _path = self.make_historical_store()
+        snapshot = store.read()
+        artifacts, state, automation = self.current_parts()
+        result = store.migrate(
+            artifact_states=artifacts,
+            workflow_state=state,
+            automation=automation,
+            expected_document_identity=snapshot.document_identity,
+        )
+        self.assertTrue(result.mutated)
+        current = store.read()
+        self.assertEqual(current.document["lifecycle_contract"], "stage-owned-change-local-v1")
+        again = store.migrate(
+            artifact_states=artifacts,
+            workflow_state=state,
+            automation=automation,
+            expected_document_identity=current.document_identity,
+        )
+        self.assertFalse(again.mutated)
+        self.assertEqual(again.status, "already-current")
+
+    def test_terminal_historical_record_does_not_migrate(self) -> None:
+        store, _path = self.make_historical_store("completed")
+        snapshot = store.read()
+        artifacts, state, automation = self.current_parts()
+        with self.assertRaisesRegex(StateContractError, "read-only"):
+            store.migrate(
+                artifact_states=artifacts,
+                workflow_state=state,
+                automation=automation,
+                expected_document_identity=snapshot.document_identity,
+            )
+
+    def test_stale_identity_rejects_migration(self) -> None:
+        store, path = self.make_historical_store()
+        snapshot = store.read()
+        path.write_text(path.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+        artifacts, state, automation = self.current_parts()
+        with self.assertRaises(ConcurrentStateChange):
+            store.migrate(
+                artifact_states=artifacts,
+                workflow_state=state,
+                automation=automation,
+                expected_document_identity=snapshot.document_identity,
+            )
+
+    def test_migration_rejects_target_or_stop_reason_drift(self) -> None:
+        store, path = self.make_historical_store()
+        document = store.read().document
+        document["workflow"]["automation"]["run"].update(
+            {
+                "target": {
+                    "stage": "verify",
+                    "occurrence": {"kind": "final"},
+                    "bound_at": "2026-07-29T00:00:00Z",
+                    "completion": {"rule": "fresh verification passes"},
+                },
+                "stop_reason": "validation-failed",
+            }
+        )
+        path.write_text(dump_yaml(document), encoding="utf-8")
+        snapshot = store.read()
+        artifacts, state, automation = self.current_parts()
+        automation["target"]["stage"] = "code-review"
+        automation["status"] = "paused"
+        automation["stop_reason"] = "different"
+        with self.assertRaisesRegex(StateContractError, "structured target"):
+            store.migrate(
+                artifact_states=artifacts,
+                workflow_state=state,
+                automation=automation,
+                expected_document_identity=snapshot.document_identity,
+            )
 
 
 if __name__ == "__main__":

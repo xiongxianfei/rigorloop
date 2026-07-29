@@ -90,7 +90,12 @@ Do not broad-search authoritative documents just to find paths. Use `docs/workfl
 
 For change-record-backed proposal review, read the proposal under review and user intent first. Use `review-log.md` and `review-resolution.md` only when checking prior findings, prior dispositions, or whether a prior proposal-review concern is still open.
 
-Do not use full `change.yaml` as the default first read for proposal quality, scope, option, or vision-fit questions. Full `change.yaml` reads remain valid for forensic reconstruction, unsupported-shape diagnostics, disputed evidence, selector-routing debugging, and whole-record review.
+Do not use full `change.yaml` as the default first read for proposal quality, scope, option, or vision-fit questions.
+Full `change.yaml` reads remain valid for forensic reconstruction, unsupported-shape diagnostics, disputed evidence, and whole-record review.
+
+## Change-record review settlement
+
+Before settlement, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Resolve exactly one proposal entry by the artifact ID, `kind`, and normalized `path` named by the review. Require `review-required` and complete authoring evidence. Write the durable review record first, then remove `authoring_evidence`, set the exact `review` mapping (`id`, `artifact_id`, `outcome`, `record`, and `round`), and map `approved` to `accepted`, `changes-requested` to `revision-required`, and `blocked` or `inconclusive` to `blocked`. Preserve every other entry and `workflow_state`. Retry identical incomplete settlement without rerunning the review; stop on conflicting review-ID reuse, ambiguity, an illegal transition, or failed available change-metadata validation. An independent invocation settles this entry and stops without advancing routing.
 
 ## Resource map
 
@@ -234,8 +239,7 @@ For every material finding, include Finding ID, Severity, Location, Evidence, Re
 
 Isolation governs handoff. Recording follows formal review triggers.
 
-A direct or review-only request remains isolated by default: it does
-not automatically continue into downstream workflow stages.
+A direct or review-only request remains isolated by default: it does not automatically continue into downstream workflow stages.
 
 Isolation does not suppress recording.
 
@@ -243,20 +247,14 @@ Every formal lifecycle review result must be recorded or explicitly blocked.
 
 Use:
 
-- `Recording status: recorded` when the required review evidence was created
-  or updated.
-- `Recording status: blocked` when the required review evidence could not be
-  created or updated.
+- `Recording status: recorded` when the required review evidence was created or updated.
+- `Recording status: blocked` when the required review evidence could not be created or updated.
 
-`not-required` is reserved for non-formal review-like requests outside the
-formal lifecycle review model.
+`not-required` is reserved for non-formal review-like requests outside the formal lifecycle review model.
 
-For a clean review, create the lightweight review receipt required by the
-formal review recording spec and index it in `review-log.md`. Do not create an
-empty `review-resolution.md` solely for a clean review.
+For a clean review, create the lightweight review receipt required by the formal review recording spec and index it in `review-log.md`. Do not create an empty `review-resolution.md` solely for a clean review.
 
-For material findings or blocking outcomes, create the required detailed review
-record and disposition artifacts.
+For material findings or blocking outcomes, create the required detailed review record and disposition artifacts.
 Use a detailed review record for material or blocking review outcomes.
 
 Material findings must include:
@@ -268,12 +266,9 @@ Material findings must include:
 - Required outcome
 - Safe resolution path, or `needs-decision` rationale
 
-Do not merely tell the user that review artifacts should be created. Create
-or update them before final output, or report `Recording status: blocked` with
-the blocker and smallest next action.
+Do not merely tell the user that review artifacts should be created. Create or update them before final output, or report `Recording status: blocked` with the blocker and smallest next action.
 
-For an isolated review with material findings, the final review output
-must state:
+For an isolated review with material findings, the final review output must state:
 
 - no automatic downstream handoff
 - material Finding IDs
@@ -292,14 +287,16 @@ For automated `bounded-review-fix` authoring, reset review context to the tracke
 - Skill-local rule: do not let vague benefits pass as strategy.
 - Skill-local rule: do not ignore the `do nothing` option.
 - Skill-local rule: do not edit the proposal unless the user explicitly asks.
-- Workflow-wide rule: when the review outcome accepts the direction, ensure the tracked proposal is ready to normalize to `accepted` before downstream stages rely on it. Do not leave a relied-on proposal in a transitional review state.
+- When the review accepts the direction, write the review evidence first and then settle only the matching proposal entry in `change.yaml`.
+  Do not edit the proposal, other artifact entries, milestone state, or routing.
 
 ## Workflow handoff behavior
 
 - Direct or review-only `proposal-review` requests remain isolated by default.
-- In v1, `proposal-review` is a gate, not a default automatic handoff into `spec`; report approval, revision needs, or blocker state without implying `spec` auto-starts.
-- Only an explicitly authorized workflow-managed `bounded-review-fix` run may continue from review into the next authoring stage. When its authoring capability is current and the proposal gate is ready, a clean recorded proposal-review may report `Immediate next stage: spec` for the workflow router.
-- Outside that authorized unified run, continuing into `spec` requires a separate workflow or user request rather than this review stage auto-continuing on its own.
+- `proposal-review` is a gate, not the routing owner.
+  Report approval, revision needs, or blocker state.
+- In a workflow-managed run whose selected target is later than this review, workflow may continue to `spec` after the review evidence and matching proposal settlement are durable.
+- In isolated use, stop after recording review evidence and matching settlement.
 
 Closed enum: recording status
 

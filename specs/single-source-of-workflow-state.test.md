@@ -4,6 +4,20 @@
 
 - active
 
+## Stage-owned lifecycle proof alignment
+
+Compatibility projection: `CP-002`.
+
+For a change governed by `stage-owned-change-local-v1`, proof expectations for
+the replaced subject named by this test spec's matching feature specification
+are superseded by
+`specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.test.md`,
+especially T14.
+Existing rows remain historical evidence or proof of the retained behavior
+named by that feature specification's reciprocal notice.
+They must not authorize the retired writer for governed current work.
+This alignment requires `test-spec-review` before M1 relies on it.
+
 ## Related spec and plan
 
 - Spec: [Single Source of Workflow State](single-source-of-workflow-state.md), approved.
@@ -111,7 +125,7 @@
 - Level: integration, manual
 - Fixture/setup:
   - `docs/workflows.md`
-  - `docs/examples/plans/example-plan.md`
+  - `skills/plan/assets/plan-skeleton.md`
   - `skills/plan/SKILL.md`
   - active plan after each milestone update
 - Steps:
@@ -132,7 +146,7 @@
 - Covers: `R3`-`R8`, `R28`, `E1`
 - Level: integration, manual
 - Fixture/setup:
-  - `docs/examples/plans/example-plan.md`
+  - `skills/plan/assets/plan-skeleton.md`
   - active plan body
   - `skills/plan/SKILL.md`
 - Steps:
