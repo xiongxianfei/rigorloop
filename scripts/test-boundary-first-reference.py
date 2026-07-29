@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import hashlib
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -372,6 +373,33 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             ),
         )
 
+    def test_check_rejects_alternate_version_and_nested_resources(
+        self,
+    ) -> None:
+        _, root = self.make_repository()
+        project_reference(root, mode="write")
+        extras = (
+            root
+            / "skills/workflow/references/boundary-first-method-v2.md",
+            root
+            / "skills/spec/references/nested/boundary-first-extra.md",
+            root
+            / "specs/references/boundary-first-proof-v2.md",
+        )
+        for extra in extras:
+            extra.parent.mkdir(parents=True, exist_ok=True)
+            extra.write_text("# unexpected\n", encoding="utf-8")
+
+        result = project_reference(root, mode="check")
+
+        self.assertFalse(result.ok)
+        for extra in extras:
+            self.assertIn(
+                "BFR-PROJECTION-UNEXPECTED: "
+                + extra.relative_to(root).as_posix(),
+                result.errors,
+            )
+
     def test_check_rejects_symlink_projection(self) -> None:
         _, root = self.make_repository()
         project_reference(root, mode="write")
@@ -570,6 +598,45 @@ class BoundaryFirstReferenceTests(unittest.TestCase):
             "BFR-MODE-UNKNOWN: unknown projection mode 'future'",
         ):
             project_reference(root, mode="future")
+
+    def test_projection_cli_preserves_structured_resource_diagnostic(
+        self,
+    ) -> None:
+        _, root = self.make_repository()
+        feature = (
+            root
+            / "specs/references/boundary-first-feature-authoring-v1.md"
+        )
+        feature.write_text(
+            "# Feature\n\nBoundary model version: boundary-first-v2\n",
+            encoding="utf-8",
+        )
+
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts/project-boundary-first-reference.py"),
+                "--check",
+                "--root",
+                str(root),
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(completed.returncode, 2)
+        self.assertIn("BFR-RESOURCE-VERSION-UNKNOWN", completed.stdout)
+        self.assertIn(
+            "path=specs/references/"
+            "boundary-first-feature-authoring-v1.md",
+            completed.stdout,
+        )
+        self.assertIn(
+            "offending_value=boundary-first-v2", completed.stdout
+        )
+        self.assertIn("expected=boundary-first-v1", completed.stdout)
+        self.assertNotIn(str(root), completed.stdout)
 
     def test_canonical_method_contains_portable_contract_without_stage_policy(
         self,

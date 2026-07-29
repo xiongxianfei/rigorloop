@@ -78,7 +78,28 @@ class ProjectionContractError(ValueError):
         self.message = message
         self.offending_value = offending_value
         self.expected = expected
-        super().__init__(f"{code}: {message}")
+        display = path if path != "-" else message
+        super().__init__(f"{code}: {display}")
+
+
+def _bounded_diagnostic_value(value: object) -> str:
+    text = str(value)
+    home = str(Path.home())
+    if text.startswith("/") or (home and home in text):
+        return "<redacted>"
+    return text.replace("\n", "\\n")[:300]
+
+
+def format_contract_error(error: ProjectionContractError) -> str:
+    """Render a stable, privacy-bounded projection diagnostic."""
+
+    return (
+        f"{error.code}: path={_bounded_diagnostic_value(error.path)}; "
+        f"message={_bounded_diagnostic_value(error.message)}; "
+        "offending_value="
+        f"{_bounded_diagnostic_value(error.offending_value)}; "
+        f"expected={_bounded_diagnostic_value(error.expected)}"
+    )
 
 
 @dataclass(frozen=True)
@@ -418,15 +439,24 @@ def _relative_posix(path: Path, root: Path) -> str:
 def _repository_path(root: Path, relative: Path) -> Path:
     if relative.is_absolute() or ".." in relative.parts:
         raise ProjectionContractError(
-            f"BFR-PATH-OUTSIDE: {relative.as_posix()}"
+            "BFR-PATH-OUTSIDE",
+            path=_bounded_diagnostic_value(relative.as_posix()),
+            message="repository path is outside the repository",
+            offending_value=_bounded_diagnostic_value(
+                relative.as_posix()
+            ),
+            expected="normalized repository-relative path",
         )
     current = root
     for part in relative.parts:
         current = current / part
         if current.is_symlink():
             raise ProjectionContractError(
-                "BFR-PATH-SYMLINK: "
-                + _relative_posix(current, root)
+                "BFR-PATH-SYMLINK",
+                path=_relative_posix(current, root),
+                message="repository path traverses a symlink",
+                offending_value=_relative_posix(current, root),
+                expected="repository-contained non-symlink path",
             )
     return current
 
@@ -506,10 +536,39 @@ def _unexpected_projections(
             continue
         if not references.is_dir():
             continue
-        for candidate in references.glob("boundary-first-*-v1.md"):
-            if candidate.is_symlink() or candidate.is_file():
+        for candidate in references.rglob("*"):
+            if candidate.is_symlink():
+                errors.append(
+                    "BFR-UNEXPECTED-CONSUMER-SYMLINK: "
+                    + _relative_posix(candidate, root)
+                )
+                continue
+            if (
+                candidate.is_file()
+                and candidate.match("boundary-first-*.md")
+            ):
                 found.add(candidate)
     return tuple(sorted(found - expected)), tuple(sorted(errors))
+
+
+def _unexpected_canonical_resources(
+    root: Path,
+    expected_sources: tuple[Path, ...],
+) -> tuple[Path, ...]:
+    references = _repository_path(root, Path("specs/references"))
+    if not references.is_dir():
+        return ()
+    expected = {root / source for source in expected_sources}
+    found = {
+        candidate
+        for candidate in references.rglob("*")
+        if candidate.is_symlink()
+        or (
+            candidate.is_file()
+            and candidate.match("boundary-first-*.md")
+        )
+    }
+    return tuple(sorted(found - expected))
 
 
 def project_reference(root: Path, *, mode: str) -> ProjectionResult:
@@ -530,7 +589,11 @@ def project_reference(root: Path, *, mode: str) -> ProjectionResult:
         source = _repository_path(repository_root, resource.source)
         if not source.is_file():
             raise ProjectionContractError(
-                f"BFR-SOURCE-MISSING: {resource.source.as_posix()}"
+                "BFR-SOURCE-MISSING",
+                path=resource.source.as_posix(),
+                message="canonical resource is missing",
+                offending_value="-",
+                expected="existing canonical resource",
             )
         data = source.read_bytes()
         _validate_resource_version(resource.source, data)
@@ -545,11 +608,20 @@ def project_reference(root: Path, *, mode: str) -> ProjectionResult:
     unexpected, topology_errors = _unexpected_projections(
         repository_root, expected_paths
     )
+    unexpected_canonical = _unexpected_canonical_resources(
+        repository_root,
+        tuple(resource.source for resource in manifest.resources),
+    )
     preflight_errors = list(topology_errors)
     preflight_errors.extend(
         "BFR-PROJECTION-UNEXPECTED: "
         + _relative_posix(path, repository_root)
         for path in unexpected
+    )
+    preflight_errors.extend(
+        "BFR-PROJECTION-UNEXPECTED: "
+        + _relative_posix(path, repository_root)
+        for path in unexpected_canonical
     )
     if mode == "write" and preflight_errors:
         return ProjectionResult(
