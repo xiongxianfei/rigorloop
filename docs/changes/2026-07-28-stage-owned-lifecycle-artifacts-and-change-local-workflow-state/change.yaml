@@ -72,14 +72,15 @@ artifact_states:
       record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/test-spec-review-r3.md
       round: r3
 workflow_state:
-  lifecycle_state: active
+  lifecycle_state: completed
   current_stage: verify
-  next_stage: verify
+  next_stage: pr
   blocker: null
   evidence:
     - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m5-parity-and-preactivation.md
     - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/code-review-final-r1.md
     - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/explain-change.md
+    - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/verify-report.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M7
@@ -118,11 +119,9 @@ workflow_state:
     final_closeout:
       readiness: not-ready
       reasons:
-        - lifecycle-gates-open
-        - verify-pending
         - pr-handoff-pending
       evidence:
-        - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m5-parity-and-preactivation.md
+        - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/verify-report.md
 artifacts:
   proposal: docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md
   spec: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
@@ -334,6 +333,9 @@ validation:
   -
     command: git diff --check
     result: pass_after_plan_revision
+  -
+    command: bash scripts/ci.sh --mode pr --base f73c0f622d248f54708c580b92e1d4193da4a3e2 --head HEAD
+    result: pass_20_selected_checks_broad_smoke_432_seconds
 workflow:
   automation:
     mechanism: bounded-review-fix
@@ -344,8 +346,8 @@ workflow:
       bound_at: 2026-07-28T19:31:07Z
       completion:
         rule: fresh verification passes
-    status: active
+    status: completed
     current_stage: verify
-    stop_reason: null
+    stop_reason: target-completed
     evidence:
-      - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m5-parity-and-preactivation.md
+      - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/verify-report.md
