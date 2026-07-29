@@ -14,7 +14,7 @@ This spec defines the externally observable release, packaging, compatibility, d
 
 The current latest public release as of 2026-05-13 is `v0.1.1`. That release keeps `dist/adapters/` as the public adapter install path and introduces no downloadable adapter archives. This spec therefore makes `v0.1.2` the archive-introduction release by default and keeps tracked generated public adapter skill bodies available during that release. A later stable release, expected to be `v0.1.3` unless versioning changes before planning, may remove tracked generated public adapter skill bodies only after the compatibility window has been satisfied.
 
-This spec also defines the conditional handling for moving the retained skill-validator proof pack into `docs/examples/`, the bounded release-slice skill simplification contract, and the token-cost evidence required before publishing.
+This spec also defines the conditional handling for separating synthetic skill-validator fixtures from the retained historical proof pack, the bounded release-slice skill simplification contract, and the token-cost evidence required before publishing.
 
 ## Glossary
 
@@ -72,10 +72,10 @@ And the release may proceed with a tracked follow-up.
 
 ### Example E6: safe skill-validator move updates references
 
-Given all references to `docs/changes/0001-skill-validator/` can be updated in the same slice
-When the proof pack moves to `docs/examples/changes/skill-validator/`
-Then selectors and lifecycle validation classify the new path as example content
-And active change-root validation no longer treats it as active lifecycle state.
+Given a skill-validator case is purely synthetic and carries no historical proof
+When that case moves under `tests/fixtures/`
+Then repository tests consume it as fixture data
+And the retained historical proof pack remains identifiable at its existing path.
 
 ### Example E7: skill simplification stays bounded
 
@@ -229,15 +229,15 @@ R62. The first untracking release gate MUST fail when `dist/adapters/manifest.ya
 
 R63. Release validation output SHOULD summarize canonical skill validation, tracked adapter validation when applicable, archive validation, artifact metadata validation, token-cost validation, release notes validation, and security-sensitive scan results.
 
-### Skill-validator proof pack and examples
+### Skill-validator proof pack and fixtures
 
-R64. The skill-validator proof pack MAY move from `docs/changes/0001-skill-validator/` to `docs/examples/changes/skill-validator/` only when references, selectors, validators, docs, and release guidance can be updated safely in the same implementation slice.
+R64. Purely synthetic skill-validator cases MAY move from `docs/changes/0001-skill-validator/` to `tests/fixtures/` only when they carry no historical proof and all references can be updated safely in the same implementation slice.
 
 R65. If the skill-validator proof pack moves, references to the old path in validation selection, lifecycle validation, tests, docs, and release guidance MUST be updated in the same slice.
 
-R66. If the skill-validator proof pack moves, `docs/examples/README.md` MUST state or continue to state that examples are non-normative and not active lifecycle state.
+R66. Test-only fixture data MUST remain under `tests/fixtures/` and MUST NOT be presented as active lifecycle state.
 
-R67. If the skill-validator proof pack moves, selector routing and lifecycle validation MUST classify `docs/examples/changes/skill-validator/` as example or fixture content rather than active lifecycle state.
+R67. If synthetic cases move, selector routing and lifecycle validation MUST apply the repository's existing test-fixture behavior rather than creating a new documentation example category.
 
 R68. If the skill-validator proof pack cannot move safely in the release slice, the implementation MUST retain the old path with explicit retained-fixture rationale in a tracked or review-visible surface.
 
@@ -321,7 +321,7 @@ Outputs:
 - `dist/adapters/manifest.yaml` and `dist/adapters/README.md` remain tracked support surfaces.
 - Required release artifacts are reproducible from tracked sources at the recorded source commit.
 - Adapter artifact metadata checksums match the archives they describe.
-- Examples under `docs/examples/**` are non-normative and not active lifecycle state.
+- Reusable authoring shapes remain in owning skill assets, and executable cases remain in test fixtures.
 
 ## Error and boundary behavior
 

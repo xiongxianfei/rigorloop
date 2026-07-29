@@ -184,7 +184,7 @@ This alignment requires `test-spec-review` before M1 relies on it.
 - Level: manual
 - Fixture/setup:
   - `specs/rigorloop-workflow.md`
-  - `docs/examples/plans/example-plan.md`
+  - `skills/plan/assets/plan-skeleton.md`
   - `docs/plan.md`
   - `docs/plans/2026-05-03-workflow-refactor.md`
   - `skills/plan/SKILL.md`
@@ -751,7 +751,7 @@ This alignment requires `test-spec-review` before M1 relies on it.
   - `docs/workflows.md`
   - `AGENTS.md`
   - `docs/learn/topics/plan-lifecycle-closeout.md`
-  - `docs/examples/plans/example-plan.md`
+  - `skills/plan/assets/plan-skeleton.md`
   - `docs/plans/2026-05-05-pr-self-contained-lifecycle-completion.md`
 - Steps:
   - Confirm `CONSTITUTION.md` states that lifecycle synchronization happens in the PR performing the transition before review opens, and that merge is a fast-forward of pre-validated state rather than a trigger for further lifecycle changes.

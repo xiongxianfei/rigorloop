@@ -85,7 +85,7 @@ For public adapter installation, contributors MUST use the active install guidan
 
 Repository validation logic MUST live in repo-owned scripts. GitHub Actions workflows SHOULD remain thin wrappers that set up tooling and delegate to those scripts.
 
-Plans MUST follow the illustrative structure in `docs/examples/plans/example-plan.md`. Files under `docs/examples/` are non-normative examples, not active lifecycle state. `.codex/PLANS.md` MUST NOT be reintroduced as a second planning surface.
+Plans MUST use the packaged scaffold in `skills/plan/assets/plan-skeleton.md`. The repository MUST NOT maintain a second plan scaffold under documentation, `templates/`, or `.codex/PLANS.md`.
 
 For planned initiatives, `docs/plan.md` MUST remain a navigation index and concrete files under `docs/plans/` MUST remain the stable plan bodies that carry execution intent.
 

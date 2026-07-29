@@ -1593,7 +1593,7 @@ def _apply_path_selection(
         )
         return
 
-    if category == "examples":
+    if category == "retired-examples":
         return
 
     if category == "living-reference/project-map":
@@ -2296,7 +2296,7 @@ def _path_category(path: str) -> str | None:
     if path.startswith("tests/fixtures/token-cost/"):
         return "token-cost"
     if path.startswith("docs/examples/"):
-        return "examples"
+        return "retired-examples"
     if path == "docs/project-map.md" or (
         path.startswith("docs/project-map/") and path.endswith(".md")
     ):

@@ -61,7 +61,6 @@ flowchart LR
 | `docs/adr/` | Durable architecture decision records. |
 | `docs/plans/` and `docs/plan.md` | Stable execution-plan bodies and their navigation index. |
 | `docs/changes/<change-id>/` | Authoritative mutable lifecycle and routing state plus durable reasoning, review records, review logs, review-resolution, explain-change, and verify evidence. |
-| `docs/examples/` | Non-normative examples, including the example plan scaffold path referenced by governance. |
 | `docs/learn/` | Learn sessions and durable topic notes. |
 | `docs/follow-ups.md` | Optional unowned cross-change follow-up surface when routing rules require it. |
 | `docs/releases/<version>/` | Authored release metadata and release notes. |

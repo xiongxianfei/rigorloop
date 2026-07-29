@@ -33,7 +33,7 @@ This change is verified through repository-owned static and validator checks rat
 
 - Contract and documentation checks prove `docs/workflows.md` has a concise artifact-location map with source-rank and schema-disclaimer wording.
 - Skill static checks prove public skills use token-efficient lookup wording, do not duplicate long artifact tables, and do not expose repository-internal validator paths.
-- Selector, lifecycle, review-artifact, and change-metadata tests prove `docs/examples/**` remains non-lifecycle example content and retained fixtures are explicit.
+- Selector, lifecycle, review-artifact, and change-metadata tests prove deleted-path compatibility is bounded and retained fixtures are explicit.
 - Generated-output checks prove canonical skill edits are reflected in generated local skill output and public adapter output.
 - Manual review covers judgement-heavy source-rank, no-broad-search, custom-path, and public wording constraints that should not become brittle snapshot-only tests.
 
@@ -158,57 +158,53 @@ Broad smoke is not required by this test spec. Use milestone-specific validation
 - Failure proves: path rules can drift across skills or public skill text can leak maintainer-only repository details.
 - Automation location: `python scripts/test-skill-validator.py`, `python scripts/validate-skills.py`
 
-### T5. `docs/examples/**` is selected as examples, not active lifecycle state
+### T5. Retired example paths have bounded deletion compatibility
 
 - Covers: `R6`-`R6c`, `R11a`, `E5`, `EC4`
 - Level: unit
 - Fixture/setup: `scripts/validation_selection.py`, `scripts/test-select-validation.py`
 - Steps:
-  - Run selector tests for `docs/examples/README.md`, `docs/examples/plans/example-plan.md`, and `docs/examples/formal-review-recording/**`.
-  - Assert each path is classified as `examples` or equivalent documentation/example content.
-  - Assert selector output has no unclassified paths or blocking results for these paths.
-  - Assert `artifact_lifecycle.validate` is not selected solely because an example path resembles a lifecycle artifact.
-- Expected result: examples are known non-lifecycle paths.
-- Failure proves: examples can be routed as active project state.
+  - Run one selector test for a deleted path under the retired examples prefix.
+  - Assert the path uses the bounded retired-example compatibility category.
+  - Assert no lifecycle validator is selected solely for the deleted path.
+- Expected result: deletion diffs remain selectable without preserving an examples feature.
+- Failure proves: removing the directory makes the cleanup diff unclassifiable.
 - Automation location: `python scripts/test-select-validation.py`
 
-### T6. Lifecycle validation does not treat examples as active artifacts
+### T6. Lifecycle fixtures remain isolated
 
 - Covers: `R6c`, `R6d`, `R11b`, `E5`, `EC4`
 - Level: unit, integration
-- Fixture/setup: `scripts/test-artifact-lifecycle-validator.py`, `docs/examples/plans/example-plan.md`
+- Fixture/setup: temporary repositories created by lifecycle validator tests
 - Steps:
-  - Keep or add a lifecycle validator test using `docs/examples/plans/example-plan.md`.
-  - Assert the file is not treated as an active plan body.
-  - Add coverage, if missing, that example proposal, change, review, or report-looking paths under `docs/examples/**` do not become active lifecycle-managed artifacts.
-  - Run explicit-path lifecycle validation against representative example paths.
-- Expected result: lifecycle validation ignores examples unless a specific fixture opts in.
-- Failure proves: example files can make active lifecycle validation fail or create false project state.
-- Automation location: `python scripts/test-artifact-lifecycle-validator.py`, `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/examples/plans/example-plan.md`
+  - Create plan-shaped negative fixtures only inside temporary repositories.
+  - Assert validation results are scoped to the temporary root.
+- Expected result: fixture state cannot become active project lifecycle state.
+- Failure proves: test setup can leak synthetic lifecycle state into the repository.
+- Automation location: `python scripts/test-artifact-lifecycle-validator.py`
 
-### T7. Formal review examples do not trigger active review closeout
+### T7. Formal review fixtures remain test-owned
 
 - Covers: `R6e`, `R11c`, `E2`, `E6`, `EC5`
 - Level: unit, integration
-- Fixture/setup: `docs/examples/formal-review-recording/**`, `scripts/test-review-artifact-validator.py`
+- Fixture/setup: temporary review-artifact repositories and `scripts/test-review-artifact-validator.py`
 - Steps:
-  - Add or keep review-artifact or lifecycle coverage proving files under `docs/examples/formal-review-recording/**` are examples.
-  - Assert review-like headings in examples do not require `review-log.md`, `review-resolution.md`, or active closeout evidence.
-  - Assert copied examples only become active review fixtures when placed in an explicit test fixture or change root.
-- Expected result: formal review examples illustrate shapes without becoming active review records.
-- Failure proves: examples can trigger false review closeout failures.
+  - Create review-shaped negative cases only inside temporary repositories or test-fixture paths.
+  - Assert those cases cannot contribute state to the real repository.
+- Expected result: executable review cases remain test-owned.
+- Failure proves: fixture isolation is incomplete.
 - Automation location: `python scripts/test-review-artifact-validator.py`, `python scripts/test-artifact-lifecycle-validator.py`
 
 ### T8. Retained skill-validator fixture either moves safely or carries rationale
 
 - Covers: `R7`-`R8a`, `R11d`, `E7`, `EC6`, `EC7`
 - Level: integration, manual
-- Fixture/setup: `docs/changes/0001-skill-validator/**`, optional `docs/examples/changes/skill-validator/**`, validators and references that cite either path
+- Fixture/setup: `docs/changes/0001-skill-validator/**`, optional synthetic cases under `tests/fixtures/**`, validators and references that cite either path
 - Steps:
   - Search references to `docs/changes/0001-skill-validator/` before deciding whether to move it.
   - If moved, assert references, tests, validators, selectors, and contributor-facing guidance are updated in the same slice.
   - If retained, assert a tracked or review-visible rationale says it is a retained validator fixture and historical proof pack, not an active change root or universal template.
-  - Assert retained rationale identifies `docs/examples/changes/skill-validator/` as the preferred future move target.
+  - Assert retained rationale identifies `tests/fixtures/` as the destination for purely synthetic cases.
   - Validate retained or moved metadata with the relevant validators.
 - Expected result: the active-looking fixture is either safely moved or visibly explained.
 - Failure proves: contributors and validators can mistake the fixture for current lifecycle state or a universal minimum artifact pack.
@@ -257,17 +253,16 @@ Broad smoke is not required by this test spec. Use milestone-specific validation
 - Failure proves: the change altered governance rank or formal review recording scope.
 - Automation location: manual review; add static assertions in `scripts/test-skill-validator.py` only for stable repeated wording.
 
-### T12. Examples and artifact-location guidance do not introduce sensitive local data
+### T12. Fixtures and artifact-location guidance do not introduce sensitive local data
 
 - Covers: security/privacy `MUST`, `R6`, `R7b`
 - Level: manual, contract
-- Fixture/setup: `docs/workflows.md`, `docs/examples/**`, retained fixture rationale
+- Fixture/setup: `docs/workflows.md`, owning skill assets, test fixtures, retained fixture rationale
 - Steps:
-  - Inspect touched examples and fixture rationale for secrets, credentials, private keys, host-specific debug artifacts, and unjustified machine-local paths.
-  - Confirm any intentionally illustrative local path is clearly marked as reviewed example data.
-  - Confirm examples remain non-normative and not active lifecycle artifacts.
-- Expected result: examples and guidance remain safe to publish.
-- Failure proves: public documentation or examples can leak sensitive or machine-local data.
+  - Inspect touched assets and fixture rationale for secrets, credentials, private keys, host-specific debug artifacts, and unjustified machine-local paths.
+  - Confirm test fixtures remain test-only and reusable shapes remain in owning assets.
+- Expected result: fixtures and guidance remain safe to publish.
+- Failure proves: public guidance or fixtures can leak sensitive or machine-local data.
 - Automation location: manual review plus normal repository diff review.
 
 ### T13. Validation remains targeted unless an authority triggers broad smoke
@@ -300,9 +295,9 @@ Broad smoke is not required by this test spec. Use milestone-specific validation
 ## Fixtures and data
 
 - `docs/workflows.md` is the contract surface for the artifact-location map.
-- `docs/examples/README.md`, `docs/examples/plans/example-plan.md`, and `docs/examples/formal-review-recording/**` are example-content fixtures.
+- Temporary plan-shaped and review-shaped cases are test fixtures.
 - `docs/changes/0001-skill-validator/**` is the retained fixture or migration candidate for the fixture-rationale path.
-- Temporary validator fixtures may be added under `tests/fixtures/**` when a behavior needs negative coverage without treating `docs/examples/**` as active lifecycle state.
+- Temporary validator fixtures may be added under `tests/fixtures/**` when behavior needs reusable negative coverage.
 - The change-local root for this initiative is `docs/changes/2026-05-13-project-artifact-location-guide-and-examples-surface-review-recording/`.
 
 ## Mocking/stubbing policy
@@ -324,13 +319,13 @@ Observability is through tracked artifacts and validator output:
 
 - `docs/workflows.md` visibly contains the artifact-location map, source-rank rule, schema disclaimer, and conditional artifact rows.
 - Public skills visibly contain concise lookup wording.
-- Selector output visibly classifies `docs/examples/**` as examples.
-- Lifecycle and review-artifact validation output proves examples are not active state.
+- Selector output visibly bounds retired-example deletion compatibility.
+- Lifecycle and review-artifact validation output proves fixture isolation.
 - Review logs, review-resolution, change metadata, plan progress, and validation notes record milestone state.
 
 ## Security/privacy verification
 
-Run manual review on touched documentation, examples, fixture rationale, and generated public output. Confirm no secrets, credentials, private keys, sensitive runtime values, or unjustified machine-local paths were added.
+Run manual review on touched documentation, skill assets, fixture rationale, and generated public output. Confirm no secrets, credentials, private keys, sensitive runtime values, or unjustified machine-local paths were added.
 
 ## Performance checks
 
@@ -344,7 +339,7 @@ No runtime performance checks are needed. Token-efficiency is covered by static/
 - [ ] Review rows point to the formal review recording contract for exact shapes.
 - [ ] Public skills use concise lookup wording and short local defaults.
 - [ ] Public skills do not expose maintainer-only validator or adapter internals where portable wording is enough.
-- [ ] `docs/examples/**` reads as examples, not active lifecycle state.
+- [ ] No parallel documentation examples surface remains.
 - [ ] `docs/changes/0001-skill-validator/**` is either safely moved or clearly retained with rationale.
 - [ ] Generated adapter output is current after canonical skill edits.
 - [ ] Plan, plan index, change metadata, review log, and review-resolution remain synchronized.
