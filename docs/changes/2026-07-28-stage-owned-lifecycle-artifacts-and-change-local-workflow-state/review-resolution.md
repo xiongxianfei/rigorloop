@@ -29,6 +29,8 @@ Review closeout: code-review-m5-r1
 Review closeout: code-review-m6-r1
 Review closeout: code-review-m6-r2
 Review closeout: code-review-final-r1
+Review closeout: code-review-ci-r1
+Review closeout: code-review-final-r2
 
 - Reviews covered: `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `plan-review-r1`, `plan-review-r2`, `architecture-review-r1`,
   `architecture-review-r2`,
@@ -643,3 +645,18 @@ Material findings: none
 Resolution required: no
 Validation evidence: complete diff, cross-milestone interactions, prior
 finding closure, Python compilation, and committed-diff whitespace passed.
+
+### code-review-ci-r1
+
+Review result: approved
+Material findings: none
+Resolution required: no
+Validation evidence: the existing selector regression suite passed 136 tests.
+
+### code-review-final-r2
+
+Review result: approved
+Material findings: none
+Resolution required: no
+Validation evidence: complete prior review plus the bounded CI-maintenance
+correction and its focused regression proof were reviewed clean.

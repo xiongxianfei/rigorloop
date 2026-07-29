@@ -26,6 +26,7 @@ change-local entry; workflow alone owns routing.
 | Existing state module adds bounded atomic persistence and prospective migration | Keeps historical reads unchanged and migrates only resumed nonterminal work | SLA-R003-R004, SLA-R065-R068 | 65 state-adapter tests and M4 matrix |
 | Generated adapter parity is rebuilt from canonical skills | Keeps published behavior aligned across supported adapters | SLA-R070, SLA-R072-R074b | 133 adapter tests and broad smoke |
 | Workflow skill creates `stage-owned-change-local-v1` by default | Makes the approved mechanism the sole forward model with no selector | SLA-R001-R002, M6 activation owner | Focused activation test and post-cutover broad smoke |
+| Change-local milestone evidence | Existing PR routing treated the required `evidence/` directory as unsupported | One exact directory boundary reuses lifecycle validation; unknown paths still fail closed | 136 selector tests |
 
 ## Review-driven corrections
 

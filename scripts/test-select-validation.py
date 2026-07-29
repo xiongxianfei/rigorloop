@@ -1276,6 +1276,22 @@ raise SystemExit({exit_code})
         for required_term in ("owner", "path", "reason", "validation impact", "follow-up"):
             self.assertIn(required_term, debt["next_action"])
 
+    def test_change_local_evidence_directory_uses_lifecycle_validation(self) -> None:
+        path = "docs/changes/2026-04-25-example/evidence/m1-implementation.md"
+        result = self.select([path])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertIn(
+            {"path": path, "category": "change-local-lifecycle"},
+            payload["classified_paths"],
+        )
+        self.assertNotIn(
+            "manual-routing-required",
+            {item["code"] for item in payload["blocking_results"]},
+        )
+        self.assertIn("artifact_lifecycle.validate", selected_ids(payload))
+
     def test_diagnostic_broad_smoke_does_not_erase_missing_route_blocker(self) -> None:
         result = select_validation(
             SelectionRequest(

@@ -9,6 +9,32 @@ artifacts and change-local workflow-state proposal.
 
 ### Review entry
 
+Review ID: code-review-final-r2
+Stage: code-review
+Round: Final R2
+Reviewed artifact: complete current stage-owned lifecycle implementation diff
+Status: approved
+Detailed record: reviews/code-review-final-r2.md
+Resolution: review-resolution.md#code-review-final-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-ci-r1
+Stage: code-review
+Round: CI R1
+Reviewed artifact: CI maintenance diff for evidence routing
+Status: approved
+Detailed record: reviews/code-review-ci-r1.md
+Resolution: review-resolution.md#code-review-ci-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-final-r1
 Stage: code-review
 Round: Final R1
