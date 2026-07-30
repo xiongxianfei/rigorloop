@@ -2001,6 +2001,7 @@ release_gate:
             "Invoke $plan -> inspect ${HOME}.",
             "Invoke $plan -> run $(pwd).",
             r"Invoke $plan + 5\$.",
+            r"Invoke \\$plan.",
         )
 
         for line in lines:
@@ -2058,6 +2059,8 @@ release_gate:
             "Let `$plan >= 1$` denote the input.",
             "Let `$plan + -1$` denote the input.",
             r"Let `$plan + \$5$` denote the input.",
+            r"Document \$plan as a literal.",
+            r"Document \\\$plan as a literal.",
             "Read the variable `$plan\u0301_value`.",
             "Read the variable `$workflow\ufe0f`.",
             "Read the variable `$plan\u200c_value`.",
