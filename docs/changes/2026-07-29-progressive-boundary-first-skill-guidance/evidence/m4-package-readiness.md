@@ -67,6 +67,9 @@
 | R20 fixed-code commit | `109e3e1d` |
 | R20 fixed-code tree | `3f793634749559f89760c2d6f6c7fc1d0a3b6fbe` |
 | R20 fixed-code diff SHA-256 (`fa5a15e3..109e3e1d`) | `d4d03362c6583a5aa4227cedec559bc0475bbd0eeff41eaa06d16ec7a7ad247f` |
+| R21 fixed-code commit | `c1eab570` |
+| R21 fixed-code tree | `2c5107d1facedc9a43e440073b1c18c1281653ab` |
+| R21 fixed-code diff SHA-256 (`d8635d32..c1eab570`) | `15ee5dec2f3ae60d0d76c5a0aa87394c8f7478d2fe7d6f2f08914695fa393a11` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -160,6 +163,8 @@ identifier-continuation predicate that includes standard join controls.
 Candidate-local empty or operator-led paired-dollar forms remain outside
 invocation scope through a bounded structural suffix rather than an arithmetic
 grammar, without allowing unrelated later dollars to hide a real command.
+The selected closer must be unescaped and cannot begin an identifier, numeric,
+dollar, or hyphen token.
 Exact slash commands terminate at structural whitespace,
 code-span delimiters, and safe prose punctuation while dotted, slashed, and
 hyphenated leading or trailing path contexts remain outside scope. One closed

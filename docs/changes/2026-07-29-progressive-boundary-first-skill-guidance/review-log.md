@@ -15,7 +15,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m4-r21.md
 Resolution: review-resolution.md#code-review-m4-r21
 Material findings: CR-M4-R21-001
-Open findings: CR-M4-R21-001
+Open findings: None
 Recording status: recorded
 
 ### Review entry
