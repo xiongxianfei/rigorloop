@@ -2045,6 +2045,43 @@ release_gate:
             + "\nCla_ude_ starts broken manual.\n",
             "markdown_link_opencode": lambda text: text
             + "\nOpen[Code](https://example.invalid) command: broken manual.\n",
+            "markdown_full_reference_codex": lambda text: text
+            + "\nCo[dex][vendor] executes broken manual.\n"
+            + "[vendor]: https://example.invalid\n",
+            "markdown_collapsed_reference_claude": lambda text: text
+            + "\nCla[ude][] starts broken manual.\n"
+            + "[ude]: https://example.invalid\n",
+            "markdown_shortcut_reference_opencode": lambda text: text
+            + "\nOpen[Code] command: broken manual.\n"
+            + "[Code]: https://example.invalid\n",
+            "placeholder_tag_opencode": lambda text: text
+            + "\nOpen<argument>Code</argument> command: broken manual.\n",
+            "target_placeholder_tag_opencode": lambda text: text
+            + "\nOpen<target-stage>Code</target-stage> command: broken manual.\n",
+            "private_use_split_opencode": lambda text: text
+            + "\nOpen\uf000\uf001Code command: broken manual.\n",
+            "encoded_zero_width_split_opencode": lambda text: text
+            + "\nOpen&#x200B;Code command: broken manual.\n",
+            "literal_argument_sentinel": lambda text: text.replace(
+                "Claude uses `/workflow auto: <argument>`",
+                "Claude uses `/workflow auto: \uf000argument\uf001`",
+                1,
+            ),
+            "encoded_argument_sentinel": lambda text: text.replace(
+                "Claude uses `/workflow auto: <argument>`",
+                "Claude uses `/workflow auto: &#xF000;argument&#xF001;`",
+                1,
+            ),
+            "encoded_opencode_sentinel": lambda text: text.replace(
+                "`auto: <argument>`",
+                "`auto: &#xF000;argument&#xF001;`",
+                1,
+            ),
+            "literal_target_sentinel": lambda text: text.replace(
+                "Here `<argument>` is `<target-stage>`",
+                "Here `<argument>` is `\uf000target-stage\uf001`",
+                1,
+            ),
             "codex_status_suffix": lambda text: text.replace(
                 "`$workflow auto: status`",
                 "`$workflow auto: status-now`",

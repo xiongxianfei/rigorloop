@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import unicodedata
 import zipfile
 from collections import Counter
 from dataclasses import dataclass
@@ -396,33 +397,46 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
         return False
 
     class VisibleTextParser(HTMLParser):
-        def __init__(self) -> None:
+        def __init__(self, *, preserve_placeholders: bool) -> None:
             super().__init__(convert_charrefs=True)
             self.parts: list[str] = []
+            self.preserve_placeholders = preserve_placeholders
 
         def handle_data(self, data: str) -> None:
             self.parts.append(data)
 
-    def visible_text(value: str) -> str:
-        placeholders = {
-            "<argument>": "\uf000argument\uf001",
-            "<target-stage>": "\uf000target-stage\uf001",
-        }
-        protected = value
-        for placeholder, sentinel in placeholders.items():
-            protected = protected.replace(placeholder, sentinel)
-        parser = VisibleTextParser()
-        parser.feed(protected)
+        def handle_starttag(
+            self,
+            tag: str,
+            attrs: list[tuple[str, str | None]],
+        ) -> None:
+            if self.preserve_placeholders and not attrs and tag in {
+                "argument",
+                "target-stage",
+            }:
+                self.parts.append(f"<{tag}>")
+
+    def visible_text(value: str, *, preserve_placeholders: bool = False) -> str:
+        parser = VisibleTextParser(preserve_placeholders=preserve_placeholders)
+        parser.feed(value)
         parser.close()
         rendered = "".join(parser.parts)
-        for placeholder, sentinel in placeholders.items():
-            rendered = rendered.replace(sentinel, placeholder)
         rendered = re.sub(
             r"!?\[([^\]\n]*)\]\([^)\n]*\)",
             r"\1",
             rendered,
         )
-        return re.sub(r"[*_~]", "", rendered).replace("`", "")
+        rendered = re.sub(
+            r"\[([^\]\n]*)\]\[[^\]\n]*\]",
+            r"\1",
+            rendered,
+        )
+        rendered = "".join(
+            character
+            for character in rendered
+            if unicodedata.category(character) not in {"Cf", "Cn", "Co", "Cs"}
+        )
+        return re.sub(r"[*_~\[\]]", "", rendered).replace("`", "")
 
     equivalence_blocks = re.findall(
         r"(?ms)^- Adapter invocation equivalents\b.*?(?=^- |\Z)",
@@ -431,7 +445,7 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     if len(equivalence_blocks) != 1:
         return False
 
-    plain_text = visible_text(text)
+    plain_text = visible_text(text, preserve_placeholders=True)
     normalized = re.sub(r"\s+", " ", plain_text)
     expected = (
         "Adapter invocation equivalents preserve the same arguments: Codex uses "
@@ -439,7 +453,11 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
         "and OpenCode invokes the installed workflow skill with "
         "auto: <argument>. Here <argument> is <target-stage>, status, or off."
     )
-    normalized_block = re.sub(r"\s+", " ", visible_text(equivalence_blocks[0])).strip()
+    normalized_block = re.sub(
+        r"\s+",
+        " ",
+        visible_text(equivalence_blocks[0], preserve_placeholders=True),
+    ).strip()
     if normalized_block != f"- {expected}" or normalized.count(expected) != 1:
         return False
     command_blocks = re.findall(
@@ -447,7 +465,11 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
         text,
     )
     normalized_command_blocks = tuple(
-        re.sub(r"\s+", " ", visible_text(block)).strip()
+        re.sub(
+            r"\s+",
+            " ",
+            visible_text(block, preserve_placeholders=True),
+        ).strip()
         for block in command_blocks
     )
     expected_command_blocks = (
@@ -460,16 +482,10 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     )
     if normalized_command_blocks != expected_command_blocks:
         return False
-    remaining = normalized.replace(expected, "", 1)
-    allowed_remaining_codex = (
-        "$workflow auto: <target-stage>",
-        "$workflow auto: status",
-        "$workflow auto: off",
-    )
-    for invocation in allowed_remaining_codex:
-        if remaining.count(invocation) != 1:
-            return False
-        remaining = remaining.replace(invocation, "", 1)
+    remaining_source = text
+    for approved_block in (*equivalence_blocks, *command_blocks):
+        remaining_source = remaining_source.replace(approved_block, "", 1)
+    remaining = re.sub(r"\s+", " ", visible_text(remaining_source))
     if re.search(r"\$[A-Za-z][A-Za-z0-9-]*", remaining):
         return False
     if re.search(r"(?<![\w.])/workflow\b", remaining, flags=re.IGNORECASE):
