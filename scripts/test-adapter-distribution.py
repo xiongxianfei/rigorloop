@@ -2042,9 +2042,17 @@ release_gate:
             "markdown_emphasis_codex": lambda text: text
             + "\nCo**dex** executes broken manual.\n",
             "markdown_emphasis_claude": lambda text: text
-            + "\nCla_ude_ starts broken manual.\n",
+            + "\nCla**_ude_** starts broken manual.\n",
             "markdown_link_opencode": lambda text: text
             + "\nOpen[Code](https://example.invalid) command: broken manual.\n",
+            "markdown_triple_emphasis_codex": lambda text: text
+            + "\nCo***dex*** executes broken manual.\n",
+            "markdown_mixed_emphasis_opencode": lambda text: text
+            + "\nOpen**_Code_** command: broken manual.\n",
+            "markdown_nested_strike_opencode": lambda text: text
+            + "\nOpen~~**Code**~~ command: broken manual.\n",
+            "markdown_nested_link_opencode": lambda text: text
+            + "\nOpen[***Code***](https://example.invalid) command: broken manual.\n",
             "markdown_full_reference_codex": lambda text: text
             + "\nCo[dex][vendor] executes broken manual.\n"
             + "[vendor]: https://example.invalid\n",
@@ -2082,6 +2090,12 @@ release_gate:
             + "\nOpen\uffa0Code command: broken manual.\n",
             "encoded_hangul_filler_split_opencode": lambda text: text
             + "\nOpen&#x115F;Code command: broken manual.\n",
+            "mongolian_variation_split_opencode": lambda text: text
+            + "\nOpen\u180bCode command: broken manual.\n",
+            "encoded_mongolian_variation_split_opencode": lambda text: text
+            + "\nOpen&#x180B;Code command: broken manual.\n",
+            "khmer_inherent_vowel_split_opencode": lambda text: text
+            + "\nOpen\u17b4Code command: broken manual.\n",
             "literal_argument_sentinel": lambda text: text.replace(
                 "Claude uses `/workflow auto: <argument>`",
                 "Claude uses `/workflow auto: \uf000argument\uf001`",
@@ -2183,6 +2197,8 @@ release_gate:
             + "\nUse /work\u001cflow manual.\n",
             "slash_next_line_control": lambda text: text
             + "\nUse /work\u0085flow manual.\n",
+            "slash_mongolian_variation": lambda text: text
+            + "\nUse /work\u180bflow manual.\n",
             "codex_status_suffix": lambda text: text.replace(
                 "`$workflow auto: status`",
                 "`$workflow auto: status-now`",
@@ -2263,6 +2279,8 @@ release_gate:
             "Keep open code samples in the fixture.",
             "Review open-code licensing separately.",
             "The cod_ex identifier is illustrative.",
+            "The Co_dex_ key is illustrative.",
+            "The Open_Code_ key is illustrative.",
             "An unrelated /workéflow token is illustrative.",
             "An unrelated /work☃flow token is illustrative.",
         )
