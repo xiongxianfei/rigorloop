@@ -1991,6 +1991,13 @@ release_gate:
             "Invoke `$plan`; the fallback costs $5.",
             r"Invoke `$plan`; document \$value.",
             "Invoke `$workflow auto: status`; let `$plan + 1$` denote input.",
+            "Invoke `$plan` -> then read `$HOME`.",
+            "Invoke `$plan` - then read `$HOME`.",
+            "Invoke `$plan` -> budget $5.",
+            r"Invoke `$plan` -> document \$value.",
+            "Invoke `$plan` --verbose then inspect `$HOME`.",
+            "Invoke `$plan` + compare with `$PATH`.",
+            "Invoke `$plan` < input then inspect `$HOME`.",
         )
 
         for line in lines:

@@ -499,6 +499,7 @@ def _has_codex_skill_invocation(text: str) -> bool:
         closing_dollar = text.find("$", match.end(), line_end)
         if (
             closing_dollar != -1
+            and _is_plausible_closing_dollar(text, closing_dollar)
             and PAIRED_DOLLAR_MATH_SUFFIX_PATTERN.fullmatch(
                 text[match.end():closing_dollar]
             )
@@ -506,6 +507,22 @@ def _has_codex_skill_invocation(text: str) -> bool:
             continue
         return True
     return False
+
+
+def _is_plausible_closing_dollar(text: str, index: int) -> bool:
+    backslashes = 0
+    cursor = index - 1
+    while cursor >= 0 and text[cursor] == "\\":
+        backslashes += 1
+        cursor -= 1
+    if backslashes % 2:
+        return False
+
+    following = text[index + 1] if index + 1 < len(text) else ""
+    return not (
+        _is_identifier_continuation(following)
+        or following in {"$", "-"}
+    )
 
 
 def _target_adapter_reasons(text: str) -> dict[str, tuple[str, ...]]:
