@@ -73,8 +73,8 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: review-resolution
-  next_stage: code-review
+  current_stage: code-review
+  next_stage: review-resolution
   blocker: null
   evidence:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-r2.md
@@ -106,6 +106,7 @@ workflow_state:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m4-r11.md
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m4-r12.md
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m4-r13.md
+    - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m4-r14.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M4
@@ -132,7 +133,7 @@ workflow_state:
       occurrence: milestone
       milestone_id: M4
       evidence:
-        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m4-r13.md
+        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m4-r14.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -468,5 +469,5 @@ changed_files:
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r8.md
 review:
   status: changes-requested
-  unresolved_items: 0
+  unresolved_items: 1
 workflow: {}

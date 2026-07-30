@@ -39,6 +39,7 @@ Review closeout: code-review-m4-r10
 Review closeout: code-review-m4-r11
 Review closeout: code-review-m4-r12
 Review closeout: code-review-m4-r13
+Review closeout: code-review-m4-r14
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -50,10 +51,11 @@ Review closeout: code-review-m4-r13
   `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`,
   `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
-  `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`
+  `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`,
+  `code-review-m4-r14`
 - Findings resolved: 50
-- Unresolved findings: 0
-- Current result: M4 code-review R13 findings are resolved and await independent R14 confirmation.
+- Unresolved findings: 1
+- Current result: M4 code-review R14 requires recognized-only Markdown normalization.
 
 ## Resolution Overview
 
@@ -109,6 +111,7 @@ Review closeout: code-review-m4-r13
 | CR-M4-R12-002 | accepted | resolved | Non-rendering controls are removed before whitespace normalization. |
 | CR-M4-R13-001 | accepted | resolved | Nested Markdown normalizes recursively while intraword underscores remain literal. |
 | CR-M4-R13-002 | accepted | resolved | Mongolian and Khmer variation controls cannot split tokens. |
+| CR-M4-R14-001 | accepted | open | Only recognized Markdown constructs may lose visible delimiters. |
 
 ## Finding Details
 
@@ -487,6 +490,20 @@ Chosen action: Add Mongolian and Khmer ranges with literal, entity, and slash-co
 Rationale: Governed variation controls are non-rendering token joiners.
 Validation target: code-review-m4-r14
 Validation evidence: Literal/entity Mongolian and Khmer label splits plus Mongolian slash-command splits fail; all 143 adapter tests and the planned clean-install command pass.
+
+### code-review-m4-r14
+
+#### CR-M4-R14-001 - Literal delimiters are treated as rendered Markdown
+
+Finding ID: CR-M4-R14-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Normalize recognized code spans, links, references, and paired emphasis before HTML entity decoding, preserving every unmatched or unresolved delimiter.
+Rationale: Visible punctuation must remain a boundary and entity-origin text must not become formatting.
+Validation target: code-review-m4-r15
+Validation evidence: pending
 
 ### code-review-m1-r1
 
