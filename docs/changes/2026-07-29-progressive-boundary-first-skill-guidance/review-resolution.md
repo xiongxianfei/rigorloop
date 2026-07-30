@@ -57,9 +57,9 @@ Review closeout: code-review-m4-r17
   `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`,
   `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`,
   `code-review-m4-r17`
-- Findings resolved: 54
-- Unresolved findings: 2
-- Current result: M4 code-review R17 findings require token-termination resolution.
+- Findings resolved: 56
+- Unresolved findings: 0
+- Current result: M4 code-review R17 findings are resolved and await independent R18 confirmation.
 
 ## Resolution Overview
 
@@ -119,8 +119,8 @@ Review closeout: code-review-m4-r17
 | CR-M4-R15-001 | accepted | resolved | Published-skill portability now follows R3l's narrow phrase/path boundary. |
 | CR-M4-R16-001 | accepted | resolved | One case-insensitive governed-skill vocabulary now drives the trigger and residual check. |
 | CR-M4-R16-002 | accepted | resolved | Variables and longer paths remain portable while actual invocation syntax is rejected. |
-| CR-M4-R17-001 | accepted | open | Require complete governed dollar tokens rather than variable or math prefixes. |
-| CR-M4-R17-002 | accepted | open | Recognize exact slash commands at structural and phrase terminators. |
+| CR-M4-R17-001 | accepted | resolved | Complete governed dollar tokens exclude variable and math continuations. |
+| CR-M4-R17-002 | accepted | resolved | Exact slash commands terminate at structural whitespace and safe phrase punctuation. |
 
 ## Finding Details
 
@@ -130,25 +130,25 @@ Review closeout: code-review-m4-r17
 
 Finding ID: CR-M4-R17-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Exclude Unicode identifier continuation, hyphens, and closing dollar delimiters after governed names.
 Rationale: R3l checks complete invocation tokens, not prefixes in variable or math notation.
 Validation target: code-review-m4-r18
-Validation evidence: pending
+Validation evidence: Underscore, Unicode-subscript, and closing-dollar continuations remain portable while complete lower-, mixed-, and uppercase governed names fail; all 147 adapter tests pass.
 
 #### CR-M4-R17-002 - Exact slash commands escape at phrase terminators
 
 Finding ID: CR-M4-R17-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Permit structural whitespace and safe phrase punctuation as exact slash-command terminators while excluding route and file continuations.
 Rationale: Exact invocation phrases can end before prose without becoming project paths.
 Validation target: code-review-m4-r18
-Validation evidence: pending
+Validation evidence: LF, CRLF, code-span, comma, and sentence-period terminations fail while route/file continuations remain portable; all 147 adapter tests and the planned ten-skill, three-adapter clean install pass.
 
 ### code-review-m4-r16
 

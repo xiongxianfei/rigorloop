@@ -55,6 +55,9 @@
 | R16 fixed-code commit | `f76fdd01` |
 | R16 fixed-code tree | `cbc3a932c852be7675a865d094dfa07fd2911f6d` |
 | R16 fixed-code diff SHA-256 (`4b2f843f..f76fdd01`) | `ffdf3aef69bc5680b8bd3f53c03d4a01a73fb503fe93409c1c243deb0d16bc63` |
+| R17 fixed-code commit | `74daa6c7` |
+| R17 fixed-code tree | `6f2045f110c44eb259bf83a3c4c364078ea6351e` |
+| R17 fixed-code diff SHA-256 (`ea74c581..74daa6c7`) | `f83400a075d13e694fe9405e0cc3e288a29e7601366fb1001ca3ba97c56d6971` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -142,10 +145,14 @@ records match byte-for-byte, the four approved Codex command code spans match
 one exact multiset, and governed dollar-skill or whitespace-delimited
 `/workflow` command phrases outside those records fail. The checker does not
 interpret rendered Markdown, HTML, Unicode, adapter-labeled prose, unrelated
-shell/math variables, or longer route and file paths. One closed published-skill
-vocabulary drives both dollar-token checks, with a drift test against canonical
-skill inventory. The regression matrix records both in-scope failures and
-out-of-scope formatting, prose, variable, and path variants.
+shell/math variables, or longer route and file paths. Complete-dollar-token
+boundaries exclude Unicode identifier continuation, hyphens, and closing math
+delimiters. Exact slash commands terminate at structural whitespace, code-span
+delimiters, and safe prose punctuation while dotted, slashed, and hyphenated
+path continuations remain outside scope. One closed published-skill vocabulary
+drives both dollar-token checks, with a drift test against canonical skill
+inventory. The regression matrix records both in-scope failures and out-of-scope
+formatting, prose, variable, and path variants.
 
 ## Activation and rollback proof
 
@@ -169,7 +176,7 @@ The 28-test projection suite proves repeated projection identity, handled interr
 | `python scripts/test-skill-validator.py` | pass, 282 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skills |
 | `python scripts/build-skills.py --check` | pass with temporary output |
-| `python scripts/test-adapter-distribution.py` | pass, 146 tests |
+| `python scripts/test-adapter-distribution.py` | pass, 147 tests |
 | Planned `build-adapters.py` plus `validate-adapters.py --clean-install-smoke` command | pass for all ten governed skills and three adapters |
 | `bash scripts/ci.sh --mode broad-smoke` | pass, 11 checks in 612 seconds |
 | `git diff --check` | pass |
