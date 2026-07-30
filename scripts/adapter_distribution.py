@@ -65,7 +65,45 @@ PACKAGED_RESOURCE_DIRS = ("assets", "references", "scripts")
 COMMON_FRONTMATTER = frozenset({"name", "description"})
 TRANSFORMABLE_FRONTMATTER = frozenset({"argument-hint", "schema-version", "version"})
 PORTABLE_NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-CODEX_SKILL_INVOCATION_PATTERN = re.compile(r"(?<![A-Za-z0-9_])\$[a-z][a-z0-9-]*\b")
+PUBLISHED_SKILL_INVOCATION_NAMES = (
+    "architecture",
+    "architecture-review",
+    "bugfix",
+    "ci-maintenance",
+    "code-review",
+    "constitution",
+    "explain-change",
+    "explore",
+    "implement",
+    "learn",
+    "plan",
+    "plan-review",
+    "pr",
+    "project-map",
+    "proposal",
+    "proposal-review",
+    "research",
+    "spec",
+    "spec-review",
+    "test-spec",
+    "test-spec-review",
+    "verify",
+    "vision",
+    "workflow",
+)
+CODEX_SKILL_INVOCATION_PATTERN = re.compile(
+    r"(?<![A-Za-z0-9_])\$(?:"
+    + "|".join(
+        re.escape(name)
+        for name in sorted(PUBLISHED_SKILL_INVOCATION_NAMES, key=len, reverse=True)
+    )
+    + r")(?![A-Za-z0-9-])",
+    re.IGNORECASE,
+)
+CLAUDE_WORKFLOW_INVOCATION_PATTERN = re.compile(
+    r"(?<![\w./])/workflow(?=$|[ \t]+)",
+    re.IGNORECASE,
+)
 TARGET_INCOMPATIBILITY_PATTERNS = {
     "claude": re.compile(r"\bnot compatible with Claude Code\b", re.IGNORECASE),
     "opencode": re.compile(r"\bnot compatible with opencode\b", re.IGNORECASE),
@@ -388,7 +426,7 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     actual_codex_code_spans = Counter(
         span
         for span in re.findall(r"`([^`\n]+)`", text)
-        if re.search(r"\$[A-Za-z]", span)
+        if CODEX_SKILL_INVOCATION_PATTERN.search(span)
     )
     if actual_codex_code_spans != expected_codex_code_spans:
         return False
@@ -426,13 +464,9 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     remaining_source = text
     for approved_block in (*equivalence_blocks, *command_blocks):
         remaining_source = remaining_source.replace(approved_block, "", 1)
-    if re.search(r"\$[A-Za-z][A-Za-z0-9-]*", remaining_source):
+    if CODEX_SKILL_INVOCATION_PATTERN.search(remaining_source):
         return False
-    if re.search(
-        r"(?<![\w.])/workflow\b",
-        remaining_source,
-        flags=re.IGNORECASE,
-    ):
+    if CLAUDE_WORKFLOW_INVOCATION_PATTERN.search(remaining_source):
         return False
     return True
 
