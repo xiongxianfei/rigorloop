@@ -65,9 +65,9 @@ Review closeout: code-review-m4-r23
   `code-review-m4-r17`, `code-review-m4-r18`, `code-review-m4-r19`,
   `code-review-m4-r20`, `code-review-m4-r21`, `code-review-m4-r22`,
   `code-review-m4-r23`
-- Findings resolved: 65
-- Unresolved findings: 1
-- Current result: M4 code-review R23 finding requires candidate-dollar parity resolution.
+- Findings resolved: 66
+- Unresolved findings: 0
+- Current result: M4 code-review R23 finding is resolved and awaits independent R24 confirmation.
 
 ## Resolution Overview
 
@@ -138,7 +138,7 @@ Review closeout: code-review-m4-r23
 | CR-M4-R21-001 | accepted | resolved | Paired-math closers must be plausible and unescaped. |
 | CR-M4-R22-001 | accepted | resolved | Braced-variable and command-substitution opener dollars are rejected. |
 | CR-M4-R22-002 | accepted | resolved | Escaped interior dollars are skipped while scanning for a plausible closer. |
-| CR-M4-R23-001 | accepted | open | Apply escape parity to governed candidate dollars. |
+| CR-M4-R23-001 | accepted | resolved | Escape parity is applied to governed candidate dollars. |
 
 ## Finding Details
 
@@ -148,13 +148,13 @@ Review closeout: code-review-m4-r23
 
 Finding ID: CR-M4-R23-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Skip odd-escaped governed candidate matches through the shared parity helper.
 Rationale: Escaped literals are not invocation tokens.
 Validation target: code-review-m4-r24
-Validation evidence: pending
+Validation evidence: Focused public-evaluator controls confirm odd-escaped candidates remain portable while unescaped and even-backslash candidates fail; the planned ten-skill, three-adapter clean install passes.
 
 ### code-review-m4-r22
 
