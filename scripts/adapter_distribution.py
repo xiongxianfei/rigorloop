@@ -105,7 +105,7 @@ CLAUDE_WORKFLOW_INVOCATION_PATTERN = re.compile(
     r"(?=$|[ \t\r\n`\"',;:!?)}\]]|\.(?:$|[ \t\r\n]))",
 )
 PAIRED_DOLLAR_MATH_SUFFIX_PATTERN = re.compile(
-    r"(?:|[ \t]*[+\-*/^=<>][^$\r\n`;,:]*)"
+    r"(?:|[ \t]*[+\-*/^=<>](?:\\\$|[^$\r\n`;,:])*)"
 )
 TARGET_INCOMPATIBILITY_PATTERNS = {
     "claude": re.compile(r"\bnot compatible with Claude Code\b", re.IGNORECASE),
@@ -497,32 +497,42 @@ def _has_codex_skill_invocation(text: str) -> bool:
         if line_end == -1:
             line_end = len(text)
         closing_dollar = text.find("$", match.end(), line_end)
-        if (
-            closing_dollar != -1
-            and _is_plausible_closing_dollar(text, closing_dollar)
-            and PAIRED_DOLLAR_MATH_SUFFIX_PATTERN.fullmatch(
-                text[match.end():closing_dollar]
-            )
-        ):
+        paired_math = False
+        while closing_dollar != -1:
+            if _is_escaped_dollar(text, closing_dollar):
+                closing_dollar = text.find("$", closing_dollar + 1, line_end)
+                continue
+            if _is_plausible_closing_dollar(text, closing_dollar):
+                paired_math = bool(
+                    PAIRED_DOLLAR_MATH_SUFFIX_PATTERN.fullmatch(
+                        text[match.end():closing_dollar]
+                    )
+                )
+            break
+        if paired_math:
             continue
         return True
     return False
 
 
 def _is_plausible_closing_dollar(text: str, index: int) -> bool:
-    backslashes = 0
-    cursor = index - 1
-    while cursor >= 0 and text[cursor] == "\\":
-        backslashes += 1
-        cursor -= 1
-    if backslashes % 2:
+    if _is_escaped_dollar(text, index):
         return False
 
     following = text[index + 1] if index + 1 < len(text) else ""
     return not (
         _is_identifier_continuation(following)
-        or following in {"$", "-"}
+        or following in {"$", "-", "{", "("}
     )
+
+
+def _is_escaped_dollar(text: str, index: int) -> bool:
+    backslashes = 0
+    cursor = index - 1
+    while cursor >= 0 and text[cursor] == "\\":
+        backslashes += 1
+        cursor -= 1
+    return bool(backslashes % 2)
 
 
 def _target_adapter_reasons(text: str) -> dict[str, tuple[str, ...]]:
