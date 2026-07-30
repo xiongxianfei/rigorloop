@@ -37,6 +37,9 @@
 | R10 fixed-code commit | `f5228e15` |
 | R10 fixed-code tree | `fd70fd2756ea1f831767f2ece74e0134f58caebf` |
 | R10 fixed-code diff SHA-256 (`af44db0a..f5228e15`) | `31b71df7da1d181e7b11ccd2f3f5a747a42a458cb1c8963b6c2460b65d6149c6` |
+| R11 fixed-code commit | `bc6ed37a` |
+| R11 fixed-code tree | `5e791aab2d036cadd14070d765c89ec9b30f4ed1` |
+| R11 fixed-code diff SHA-256 (`490fa65f..bc6ed37a`) | `4d7795ef22772f8612e1b38acb5b1e26c1ae13dfaa86e8d73fc8ac8be7d3f5d3` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -136,6 +139,10 @@ Equivalence and command-owning records are approved from exact raw Markdown,
 separately from the aggressive rendered-text normalization used only on
 leftover content. Nonspacing and enclosing combining marks are removed
 conservatively during residual-label discovery.
+The three approved Markdown list records match byte-for-byte. Residual adapter
+labels are detected on a conservative ASCII-alphanumeric projection, while
+dollar and slash syntax uses an ASCII-only view that preserves ordinary
+punctuation and whitespace.
 
 ## Activation and rollback proof
 

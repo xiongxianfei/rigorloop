@@ -49,9 +49,9 @@ Review closeout: code-review-m4-r11
   `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
   `code-review-m4-r11`
-- Findings resolved: 44
-- Unresolved findings: 2
-- Current result: M4 code-review R11 requires byte-exact records and conservative residual-label projection.
+- Findings resolved: 46
+- Unresolved findings: 0
+- Current result: M4 code-review R11 findings are resolved and await independent R12 confirmation.
 
 ## Resolution Overview
 
@@ -101,8 +101,8 @@ Review closeout: code-review-m4-r11
 | CR-M4-R9-002 | accepted | resolved | Placeholder handling is parser-local and collision-free. |
 | CR-M4-R10-001 | accepted | resolved | Exact equivalence approval uses literal raw Markdown records. |
 | CR-M4-R10-002 | accepted | resolved | Combining and variation marks cannot split residual labels. |
-| CR-M4-R11-001 | accepted | open | Approved Markdown records must match byte-for-byte. |
-| CR-M4-R11-002 | accepted | open | Residual labels must survive every intervening non-ASCII or formatting character. |
+| CR-M4-R11-001 | accepted | resolved | Approved Markdown records match byte-for-byte. |
+| CR-M4-R11-002 | accepted | resolved | Residual labels use a conservative ASCII-alphanumeric projection. |
 
 ## Finding Details
 
@@ -410,25 +410,25 @@ Validation evidence: Literal and encoded CGJ and variation-selector label splits
 
 Finding ID: CR-M4-R11-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Compare each approved Markdown list record byte-for-byte with its canonical multiline source.
 Rationale: Exact copyable commands require literal source whitespace.
 Validation target: code-review-m4-r12
-Validation evidence: pending
+Validation evidence: NBSP, EM SPACE, and tab mutations in Claude and OpenCode records fail; all 142 adapter tests and the planned ten-skill clean-install command pass.
 
 #### CR-M4-R11-002 - Invisible controls and Hangul fillers split residual labels
 
 Finding ID: CR-M4-R11-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Detect labels on a conservative ASCII-alphanumeric projection of rendered remaining text.
 Rationale: Enumerating Unicode invisibility categories leaves avoidable fail-open gaps.
 Validation target: code-review-m4-r12
-Validation evidence: pending
+Validation evidence: C0 control, Hangul filler, entity, combining, format, and private-use label splits fail; all 142 adapter tests and the planned ten-skill clean-install command pass.
 
 ### code-review-m1-r1
 
