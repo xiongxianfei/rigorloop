@@ -38,6 +38,7 @@ Review closeout: code-review-m4-r9
 Review closeout: code-review-m4-r10
 Review closeout: code-review-m4-r11
 Review closeout: code-review-m4-r12
+Review closeout: code-review-m4-r13
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -49,10 +50,10 @@ Review closeout: code-review-m4-r12
   `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`,
   `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
-  `code-review-m4-r11`, `code-review-m4-r12`
+  `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`
 - Findings resolved: 48
-- Unresolved findings: 0
-- Current result: M4 code-review R12 findings are resolved and await independent R13 confirmation.
+- Unresolved findings: 2
+- Current result: M4 code-review R13 requires recursive Markdown normalization and omitted variation ranges.
 
 ## Resolution Overview
 
@@ -106,6 +107,8 @@ Review closeout: code-review-m4-r12
 | CR-M4-R11-002 | accepted | resolved | Residual labels use a conservative ASCII-alphanumeric projection. |
 | CR-M4-R12-001 | accepted | resolved | Visible boundaries remain intact and benign negative controls stay portable. |
 | CR-M4-R12-002 | accepted | resolved | Non-rendering controls are removed before whitespace normalization. |
+| CR-M4-R13-001 | accepted | open | Nested Markdown must normalize without erasing literal intraword punctuation. |
+| CR-M4-R13-002 | accepted | open | Mongolian and Khmer variation controls must not split tokens. |
 
 ## Finding Details
 
@@ -458,6 +461,32 @@ Chosen action: Remove governed non-rendering characters before ASCII structural 
 Rationale: Invisible controls join tokens; visible characters and whitespace remain boundaries.
 Validation target: code-review-m4-r13
 Validation evidence: Unit, file, and group separators plus NEL cannot split residual slash commands; all 143 adapter tests and the planned ten-skill clean-install command pass.
+
+### code-review-m4-r13
+
+#### CR-M4-R13-001 - Markdown normalization is not recursively delimiter-aware
+
+Finding ID: CR-M4-R13-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Recursively normalize bounded paired delimiters and add nested positives plus intraword-underscore negatives.
+Rationale: Rendered labels and literal identifier punctuation must both be preserved correctly.
+Validation target: code-review-m4-r14
+Validation evidence: pending
+
+#### CR-M4-R13-002 - Default-ignorable variation ranges remain incomplete
+
+Finding ID: CR-M4-R13-002
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Add Mongolian and Khmer ranges with literal, entity, and slash-command regressions.
+Rationale: Governed variation controls are non-rendering token joiners.
+Validation target: code-review-m4-r14
+Validation evidence: pending
 
 ### code-review-m1-r1
 
