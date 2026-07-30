@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import hashlib
+import html
 import importlib.util
 import json
 import re
@@ -404,21 +405,6 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
             self.parts.append(data)
 
     def visible_text(value: str) -> str:
-        parser = VisibleTextParser()
-        parser.feed(value)
-        parser.close()
-        rendered = "".join(parser.parts)
-        rendered = re.sub(
-            r"!?\[([^\]\n]*)\]\([^)\n]*\)",
-            r"\1",
-            rendered,
-        )
-        rendered = re.sub(
-            r"\[([^\]\n]*)\]\[[^\]\n]*\]",
-            r"\1",
-            rendered,
-        )
-
         def normalize_paired_markdown(value: str) -> str:
             patterns = (
                 r"\*\*\*(?=\S)(.+?)(?<=\S)\*\*\*",
@@ -437,8 +423,66 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
                 )
             return value
 
-        rendered = normalize_paired_markdown(rendered)
-        rendered = re.sub(r"[\[\]]", "", rendered).replace("`", "")
+        decoded_source = html.unescape(value)
+        code_spans: dict[str, str] = {}
+
+        def protect_code_span(match: re.Match[str]) -> str:
+            index = len(code_spans)
+            token = f"\ue000RIGORLOOPCODE{index}\ue001"
+            while token in value or token in decoded_source:
+                index += 1
+                token = f"\ue000RIGORLOOPCODE{index}\ue001"
+            code_spans[token] = match.group(2)
+            return token
+
+        markdown_source = re.sub(
+            r"(?<!`)(`+)([^`\n]*?)\1(?!`)",
+            protect_code_span,
+            value,
+        )
+        reference_ids = {
+            re.sub(r"\s+", " ", match.group(1)).strip().casefold()
+            for match in re.finditer(
+                r"(?m)^[ \t]{0,3}\[([^\]\n]+)\]:[ \t]+\S+",
+                markdown_source,
+            )
+        }
+        markdown_source = re.sub(
+            r"!?\[([^\]\n]*)\]\([^)\n]*\)",
+            r"\1",
+            markdown_source,
+        )
+
+        def resolved_reference(match: re.Match[str]) -> str:
+            label = match.group(1)
+            reference = match.group(2) or label
+            normalized = re.sub(r"\s+", " ", reference).strip().casefold()
+            return label if normalized in reference_ids else match.group(0)
+
+        markdown_source = re.sub(
+            r"\[([^\]\n]+)\]\[([^\]\n]*)\]",
+            resolved_reference,
+            markdown_source,
+        )
+
+        def resolved_shortcut(match: re.Match[str]) -> str:
+            label = match.group(1)
+            normalized = re.sub(r"\s+", " ", label).strip().casefold()
+            return label if normalized in reference_ids else match.group(0)
+
+        markdown_source = re.sub(
+            r"\[([^\]\n]+)\](?!\[)",
+            resolved_shortcut,
+            markdown_source,
+        )
+        markdown_source = normalize_paired_markdown(markdown_source)
+
+        parser = VisibleTextParser()
+        parser.feed(markdown_source)
+        parser.close()
+        rendered = "".join(parser.parts)
+        for token, code_span in code_spans.items():
+            rendered = rendered.replace(token, code_span)
 
         def is_nonrendering(character: str) -> bool:
             codepoint = ord(character)

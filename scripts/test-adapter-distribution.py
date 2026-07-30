@@ -2053,6 +2053,8 @@ release_gate:
             + "\nOpen~~**Code**~~ command: broken manual.\n",
             "markdown_nested_link_opencode": lambda text: text
             + "\nOpen[***Code***](https://example.invalid) command: broken manual.\n",
+            "markdown_code_opencode": lambda text: text
+            + "\nOpen`Code` command: broken manual.\n",
             "markdown_full_reference_codex": lambda text: text
             + "\nCo[dex][vendor] executes broken manual.\n"
             + "[vendor]: https://example.invalid\n",
@@ -2281,6 +2283,16 @@ release_gate:
             "The cod_ex identifier is illustrative.",
             "The Co_dex_ key is illustrative.",
             "The Open_Code_ key is illustrative.",
+            "The Co`dex token is illustrative.",
+            "The Open[Code token is illustrative.",
+            "The Cla]ude token is illustrative.",
+            "The Open[Code] token is illustrative.",
+            "The Open[Code][missing] token is illustrative.",
+            "The Open[Code][] token is illustrative.",
+            "The Open&#42;Code&#42; token is illustrative.",
+            "The Open&#42;&#42;Code&#42;&#42; token is illustrative.",
+            "The Open&#91;Code&#93; token is illustrative.",
+            "The Open&#96;Code&#96; token is illustrative.",
             "An unrelated /workéflow token is illustrative.",
             "An unrelated /work☃flow token is illustrative.",
         )
