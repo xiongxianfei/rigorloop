@@ -61,9 +61,9 @@ Review closeout: code-review-m4-r20
   `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`,
   `code-review-m4-r17`, `code-review-m4-r18`, `code-review-m4-r19`,
   `code-review-m4-r20`
-- Findings resolved: 61
-- Unresolved findings: 1
-- Current result: M4 code-review R20 finding requires structural paired-dollar resolution.
+- Findings resolved: 62
+- Unresolved findings: 0
+- Current result: M4 code-review R20 finding is resolved and awaits independent R21 confirmation.
 
 ## Resolution Overview
 
@@ -130,7 +130,7 @@ Review closeout: code-review-m4-r20
 | CR-M4-R18-003 | accepted | resolved | Hyphenated parent paths are excluded from slash-command scope. |
 | CR-M4-R19-001 | accepted | resolved | ZWNJ and ZWJ are treated as identifier continuation. |
 | CR-M4-R19-002 | accepted | resolved | Paired-dollar suppression is limited to candidate-local arithmetic forms. |
-| CR-M4-R20-001 | accepted | open | Replace the compressed arithmetic atom with a bounded structural suffix. |
+| CR-M4-R20-001 | accepted | resolved | A bounded structural suffix replaces the compressed arithmetic atom. |
 
 ## Finding Details
 
@@ -140,13 +140,13 @@ Review closeout: code-review-m4-r20
 
 Finding ID: CR-M4-R20-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Use an operator-led bounded suffix without interpreting operand grammar.
 Rationale: R3l distinguishes an invocation phrase from structurally paired math; it does not validate arithmetic.
 Validation target: code-review-m4-r21
-Validation evidence: pending
+Validation evidence: Chained, grouped, Unicode, exponent, comparison, and unary paired expressions remain portable while every generic unrelated-later-dollar invocation control still fails; all 148 adapter tests and the planned ten-skill, three-adapter clean install pass.
 
 ### code-review-m4-r19
 

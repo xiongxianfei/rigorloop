@@ -64,6 +64,9 @@
 | R19 fixed-code commit | `c9e84251` |
 | R19 fixed-code tree | `03b42b0af1b1f70864fe90feff8b5f81bf5f7dbc` |
 | R19 fixed-code diff SHA-256 (`3717578b..c9e84251`) | `992aead9222f063f137a866823225801094aa32fff240f28a9eecb15aecbe0d9` |
+| R20 fixed-code commit | `109e3e1d` |
+| R20 fixed-code tree | `3f793634749559f89760c2d6f6c7fc1d0a3b6fbe` |
+| R20 fixed-code diff SHA-256 (`fa5a15e3..109e3e1d`) | `d4d03362c6583a5aa4227cedec559bc0475bbd0eeff41eaa06d16ec7a7ad247f` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -154,9 +157,10 @@ interpret rendered Markdown, HTML, Unicode, adapter-labeled prose, unrelated
 shell/math variables, or longer route and file paths. Complete-dollar-token
 boundaries use ASCII-only command-name identity plus a small Unicode
 identifier-continuation predicate that includes standard join controls.
-Candidate-local empty or arithmetic paired-dollar forms remain outside
-invocation scope without allowing unrelated later dollars to hide a real
-command. Exact slash commands terminate at structural whitespace,
+Candidate-local empty or operator-led paired-dollar forms remain outside
+invocation scope through a bounded structural suffix rather than an arithmetic
+grammar, without allowing unrelated later dollars to hide a real command.
+Exact slash commands terminate at structural whitespace,
 code-span delimiters, and safe prose punctuation while dotted, slashed, and
 hyphenated leading or trailing path contexts remain outside scope. One closed
 published-skill vocabulary drives both dollar-token checks, with a drift test

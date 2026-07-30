@@ -475,5 +475,5 @@ changed_files:
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r8.md
 review:
   status: changes-requested
-  unresolved_items: 1
+  unresolved_items: 0
 workflow: {}
