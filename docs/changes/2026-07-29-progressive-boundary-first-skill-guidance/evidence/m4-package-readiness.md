@@ -61,6 +61,9 @@
 | R18 fixed-code commit | `de5445bf` |
 | R18 fixed-code tree | `e08ac0b9b84314718473989381ef9e1c707054b4` |
 | R18 fixed-code diff SHA-256 (`e31cd971..de5445bf`) | `ad1db63463f0e8e07aa0fc24c04868b3b51a169734bfc018b6a6e23131d54b42` |
+| R19 fixed-code commit | `c9e84251` |
+| R19 fixed-code tree | `03b42b0af1b1f70864fe90feff8b5f81bf5f7dbc` |
+| R19 fixed-code diff SHA-256 (`3717578b..c9e84251`) | `992aead9222f063f137a866823225801094aa32fff240f28a9eecb15aecbe0d9` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -150,8 +153,10 @@ one exact multiset, and governed dollar-skill or whitespace-delimited
 interpret rendered Markdown, HTML, Unicode, adapter-labeled prose, unrelated
 shell/math variables, or longer route and file paths. Complete-dollar-token
 boundaries use ASCII-only command-name identity plus a small Unicode
-identifier-continuation predicate. Same-line paired-dollar math remains outside
-invocation scope. Exact slash commands terminate at structural whitespace,
+identifier-continuation predicate that includes standard join controls.
+Candidate-local empty or arithmetic paired-dollar forms remain outside
+invocation scope without allowing unrelated later dollars to hide a real
+command. Exact slash commands terminate at structural whitespace,
 code-span delimiters, and safe prose punctuation while dotted, slashed, and
 hyphenated leading or trailing path contexts remain outside scope. One closed
 published-skill vocabulary drives both dollar-token checks, with a drift test
@@ -180,7 +185,7 @@ The 28-test projection suite proves repeated projection identity, handled interr
 | `python scripts/test-skill-validator.py` | pass, 282 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skills |
 | `python scripts/build-skills.py --check` | pass with temporary output |
-| `python scripts/test-adapter-distribution.py` | pass, 147 tests |
+| `python scripts/test-adapter-distribution.py` | pass, 148 tests |
 | Planned `build-adapters.py` plus `validate-adapters.py --clean-install-smoke` command | pass for all ten governed skills and three adapters |
 | `bash scripts/ci.sh --mode broad-smoke` | pass, 11 checks in 612 seconds |
 | `git diff --check` | pass |
