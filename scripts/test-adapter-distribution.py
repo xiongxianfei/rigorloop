@@ -2011,9 +2011,18 @@ release_gate:
             "Read the path from `$plan_path`.",
             "Let `$spec₂` denote the input.",
             "Let `$plan$` denote the input.",
+            "Let `$plan + 1$` denote the input.",
+            "Let `$plan^2$` denote the input.",
+            "Read the variable `$plan\u0301_value`.",
+            "Read the variable `$workflow\ufe0f`.",
+            "Do not treat `$ſpec` as a published name.",
+            "Do not treat `$ımplement` as a published name.",
+            "Do not treat `$worKflow` as a published name.",
             "Document `/workflow-guide`.",
             "Document `/workflow.md`.",
             "Document `/workflow/status`.",
+            "Document `docs-/workflow`.",
+            "Do not treat `/worKflow` as a published command.",
         )
         source = ROOT / "skills" / "workflow" / "SKILL.md"
         source_text = source.read_text(encoding="utf-8")
