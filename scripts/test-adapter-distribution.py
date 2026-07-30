@@ -1998,6 +1998,9 @@ release_gate:
             "Invoke `$plan` --verbose then inspect `$HOME`.",
             "Invoke `$plan` + compare with `$PATH`.",
             "Invoke `$plan` < input then inspect `$HOME`.",
+            "Invoke $plan -> inspect ${HOME}.",
+            "Invoke $plan -> run $(pwd).",
+            r"Invoke $plan + 5\$.",
         )
 
         for line in lines:
@@ -2054,6 +2057,7 @@ release_gate:
             "Let `$plan ** 2$` denote the input.",
             "Let `$plan >= 1$` denote the input.",
             "Let `$plan + -1$` denote the input.",
+            r"Let `$plan + \$5$` denote the input.",
             "Read the variable `$plan\u0301_value`.",
             "Read the variable `$workflow\ufe0f`.",
             "Read the variable `$plan\u200c_value`.",
