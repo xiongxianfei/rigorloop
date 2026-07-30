@@ -46,6 +46,9 @@
 | R13 fixed-code commit | `97d29a46` |
 | R13 fixed-code tree | `3e45fc208e31b8d7b7d51f1d1b331430c18aecca` |
 | R13 fixed-code diff SHA-256 (`6203f8ac..97d29a46`) | `b7496a3ca152e629cb50b99dbe177b722cbcda4f9530f56f9f6d0ce3c71b8a7e` |
+| R14 fixed-code commit | `802a69bd` |
+| R14 fixed-code tree | `fac801dc7b6614176c06e37e5aa7b31c50471112` |
+| R14 fixed-code diff SHA-256 (`267362b5..802a69bd`) | `bf864656fa0bb8b69d1f41d3e70779e5bf2e9ddc98dd31ce0ef18115a1bdc036` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -156,6 +159,10 @@ includes benign portable negative controls.
 Supported paired Markdown delimiters normalize recursively, with underscore
 boundaries preserving literal intraword identifiers. Mongolian and Khmer
 variation controls join hidden label or invocation fragments.
+Markdown constructs are recognized before HTML entity decoding. Only matched
+code spans, inline links, resolved references, and valid paired emphasis lose
+delimiters; unmatched, unresolved, and entity-origin punctuation remains a
+visible boundary.
 
 ## Activation and rollback proof
 
