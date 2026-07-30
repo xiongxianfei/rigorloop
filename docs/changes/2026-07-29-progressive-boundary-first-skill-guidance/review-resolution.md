@@ -45,6 +45,7 @@ Review closeout: code-review-m4-r16
 Review closeout: code-review-m4-r17
 Review closeout: code-review-m4-r18
 Review closeout: code-review-m4-r19
+Review closeout: code-review-m4-r20
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -58,10 +59,11 @@ Review closeout: code-review-m4-r19
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
   `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`,
   `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`,
-  `code-review-m4-r17`, `code-review-m4-r18`, `code-review-m4-r19`
+  `code-review-m4-r17`, `code-review-m4-r18`, `code-review-m4-r19`,
+  `code-review-m4-r20`
 - Findings resolved: 61
-- Unresolved findings: 0
-- Current result: M4 code-review R19 findings are resolved and await independent R20 confirmation.
+- Unresolved findings: 1
+- Current result: M4 code-review R20 finding requires structural paired-dollar resolution.
 
 ## Resolution Overview
 
@@ -128,8 +130,23 @@ Review closeout: code-review-m4-r19
 | CR-M4-R18-003 | accepted | resolved | Hyphenated parent paths are excluded from slash-command scope. |
 | CR-M4-R19-001 | accepted | resolved | ZWNJ and ZWJ are treated as identifier continuation. |
 | CR-M4-R19-002 | accepted | resolved | Paired-dollar suppression is limited to candidate-local arithmetic forms. |
+| CR-M4-R20-001 | accepted | open | Replace the compressed arithmetic atom with a bounded structural suffix. |
 
 ## Finding Details
+
+### code-review-m4-r20
+
+#### CR-M4-R20-001 - Paired-dollar arithmetic is compressed to one ASCII atom
+
+Finding ID: CR-M4-R20-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Use an operator-led bounded suffix without interpreting operand grammar.
+Rationale: R3l distinguishes an invocation phrase from structurally paired math; it does not validate arithmetic.
+Validation target: code-review-m4-r21
+Validation evidence: pending
 
 ### code-review-m4-r19
 
