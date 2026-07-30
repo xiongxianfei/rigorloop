@@ -2070,6 +2070,18 @@ release_gate:
             + "\nOpen&#x034F;Code command: broken manual.\n",
             "encoded_variation_selector_split_opencode": lambda text: text
             + "\nOpen&#xFE0F;Code command: broken manual.\n",
+            "null_control_split_opencode": lambda text: text
+            + "\nOpen\u0000Code command: broken manual.\n",
+            "backspace_control_split_opencode": lambda text: text
+            + "\nOpen\u0008Code command: broken manual.\n",
+            "unit_separator_split_opencode": lambda text: text
+            + "\nOpen\u001fCode command: broken manual.\n",
+            "hangul_filler_split_opencode": lambda text: text
+            + "\nOpen\u115fCode command: broken manual.\n",
+            "halfwidth_hangul_filler_split_opencode": lambda text: text
+            + "\nOpen\uffa0Code command: broken manual.\n",
+            "encoded_hangul_filler_split_opencode": lambda text: text
+            + "\nOpen&#x115F;Code command: broken manual.\n",
             "literal_argument_sentinel": lambda text: text.replace(
                 "Claude uses `/workflow auto: <argument>`",
                 "Claude uses `/workflow auto: \uf000argument\uf001`",
@@ -2143,6 +2155,26 @@ release_gate:
             "nested_claude_placeholder": lambda text: text.replace(
                 "`/workflow auto: <argument>`",
                 "`/workflow auto: <custom><argument></custom>`",
+                1,
+            ),
+            "claude_nbsp_separator": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow\u00a0auto: <argument>`",
+                1,
+            ),
+            "claude_em_space_separator": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow\u2003auto: <argument>`",
+                1,
+            ),
+            "claude_tab_separator": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow\tauto: <argument>`",
+                1,
+            ),
+            "opencode_nbsp_separator": lambda text: text.replace(
+                "`auto: <argument>`",
+                "`auto:\u00a0<argument>`",
                 1,
             ),
             "codex_status_suffix": lambda text: text.replace(
