@@ -36,6 +36,7 @@ Review closeout: code-review-m4-r7
 Review closeout: code-review-m4-r8
 Review closeout: code-review-m4-r9
 Review closeout: code-review-m4-r10
+Review closeout: code-review-m4-r11
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -46,10 +47,11 @@ Review closeout: code-review-m4-r10
   `code-review-m2-r4`, `code-review-m3-r1`, `code-review-m4-r1`,
   `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`,
   `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
-  `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`
+  `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
+  `code-review-m4-r11`
 - Findings resolved: 44
-- Unresolved findings: 0
-- Current result: M4 code-review R10 findings are resolved and await independent R11 confirmation.
+- Unresolved findings: 2
+- Current result: M4 code-review R11 requires byte-exact records and conservative residual-label projection.
 
 ## Resolution Overview
 
@@ -99,6 +101,8 @@ Review closeout: code-review-m4-r10
 | CR-M4-R9-002 | accepted | resolved | Placeholder handling is parser-local and collision-free. |
 | CR-M4-R10-001 | accepted | resolved | Exact equivalence approval uses literal raw Markdown records. |
 | CR-M4-R10-002 | accepted | resolved | Combining and variation marks cannot split residual labels. |
+| CR-M4-R11-001 | accepted | open | Approved Markdown records must match byte-for-byte. |
+| CR-M4-R11-002 | accepted | open | Residual labels must survive every intervening non-ASCII or formatting character. |
 
 ## Finding Details
 
@@ -399,6 +403,32 @@ Chosen action: Remove CGJ and variation-selector ranges during rendered residual
 Rationale: Invisible marks must not interrupt a rendered adapter identity.
 Validation target: code-review-m4-r11
 Validation evidence: Literal and encoded CGJ and variation-selector label splits fail; all 142 adapter tests and the planned ten-skill clean-install command pass.
+
+### code-review-m4-r11
+
+#### CR-M4-R11-001 - Whitespace folding bypasses exact source validation
+
+Finding ID: CR-M4-R11-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Compare each approved Markdown list record byte-for-byte with its canonical multiline source.
+Rationale: Exact copyable commands require literal source whitespace.
+Validation target: code-review-m4-r12
+Validation evidence: pending
+
+#### CR-M4-R11-002 - Invisible controls and Hangul fillers split residual labels
+
+Finding ID: CR-M4-R11-002
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Detect labels on a conservative ASCII-alphanumeric projection of rendered remaining text.
+Rationale: Enumerating Unicode invisibility categories leaves avoidable fail-open gaps.
+Validation target: code-review-m4-r12
+Validation evidence: pending
 
 ### code-review-m1-r1
 
