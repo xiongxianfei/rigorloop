@@ -54,9 +54,9 @@ Review closeout: code-review-m4-r15
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
   `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`,
   `code-review-m4-r14`, `code-review-m4-r15`
-- Findings resolved: 51
-- Unresolved findings: 1
-- Current result: M4 code-review R15 requires removal of rendered-Markdown semantics.
+- Findings resolved: 52
+- Unresolved findings: 0
+- Current result: M4 code-review R15 finding is resolved and awaits independent R16 confirmation.
 
 ## Resolution Overview
 
@@ -113,7 +113,7 @@ Review closeout: code-review-m4-r15
 | CR-M4-R13-001 | accepted | resolved | Nested Markdown normalizes recursively while intraword underscores remain literal. |
 | CR-M4-R13-002 | accepted | resolved | Mongolian and Khmer variation controls cannot split tokens. |
 | CR-M4-R14-001 | accepted | resolved | Only recognized Markdown constructs lose visible delimiters. |
-| CR-M4-R15-001 | accepted | open | Published-skill portability must return to R3l's narrow phrase/path boundary. |
+| CR-M4-R15-001 | accepted | resolved | Published-skill portability now follows R3l's narrow phrase/path boundary. |
 
 ## Finding Details
 
@@ -513,13 +513,13 @@ Validation evidence: Recognized code, links, references, and emphasis expose lab
 
 Finding ID: CR-M4-R15-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Keep byte-exact approved records and narrow raw dollar/slash checks; remove residual rendered-label parsing and the speculative CommonMark matrix.
 Rationale: `specs/skill-contract.md` R3l requires narrow phrase- or path-based static validation.
 Validation target: code-review-m4-r16
-Validation evidence: pending
+Validation evidence: Byte-exact records and narrow raw dollar/slash phrases fail as required; rendered Markdown, HTML, Unicode, and adapter-labeled prose remain outside semantic interpretation; all 143 adapter tests and the planned clean-install command pass.
 
 ### code-review-m1-r1
 

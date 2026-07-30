@@ -49,6 +49,9 @@
 | R14 fixed-code commit | `802a69bd` |
 | R14 fixed-code tree | `fac801dc7b6614176c06e37e5aa7b31c50471112` |
 | R14 fixed-code diff SHA-256 (`267362b5..802a69bd`) | `bf864656fa0bb8b69d1f41d3e70779e5bf2e9ddc98dd31ce0ef18115a1bdc036` |
+| R15 fixed-code commit | `6f06d08f` |
+| R15 fixed-code tree | `84f2eacbfa658b20e8b87df6bdc436bb84b594b3` |
+| R15 fixed-code diff SHA-256 (`24f2bcac..6f06d08f`) | `a81020adc621e3d0f3283d889ef51154cda7e68de02cc9b84f11adc8759bf4f4` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -130,39 +133,13 @@ clean-install check. Exact invocation equivalents are closed over the workflow
 identity and shared target/status/off argument semantics. Unknown, noncanonical,
 or duplicate explicit skill selections fail before archive or install work.
 Every recognized additive Codex, Claude, or OpenCode invocation occurrence is
-also checked across plain text, Markdown code spans, and HTML code markup, so a
-valid equivalence block cannot mask a contradictory or composed malformed form.
-After the exact block is removed, any normalized residual adapter label blocks
-portability; HTML entities are decoded and bounded ordinary inline HTML is
-reduced to parser-derived visible text before this check. HTML comments,
-attributes, unknown elements, and supported Markdown emphasis and links cannot
-split a residual adapter label. The four approved Codex command code spans must
-match one exact multiset, and the two list items that own target, status, and
-off must match exactly, so adjacent prefixes, suffixes, and trailing arguments
-cannot inherit portability from an approved substring. Reference-style links
-and invisible Unicode separators are normalized conservatively. Placeholder
-tags are preserved without sentinels only inside the exact contract-record
-parsers; whole-document residual checks treat identically named custom tags as
-ordinary markup.
-Equivalence and command-owning records are approved from exact raw Markdown,
-separately from the aggressive rendered-text normalization used only on
-leftover content. Nonspacing and enclosing combining marks are removed
-conservatively during residual-label discovery.
-The three approved Markdown list records match byte-for-byte. Residual adapter
-labels are detected on a conservative ASCII-alphanumeric projection, while
-dollar and slash syntax uses an ASCII-only view that preserves ordinary
-punctuation and whitespace.
-Rendered normalization removes governed non-rendering characters before
-structural whitespace folding while preserving ordinary visible punctuation,
-whitespace, identifiers, and non-ASCII text as boundaries. The mutation suite
-includes benign portable negative controls.
-Supported paired Markdown delimiters normalize recursively, with underscore
-boundaries preserving literal intraword identifiers. Mongolian and Khmer
-variation controls join hidden label or invocation fragments.
-Markdown constructs are recognized before HTML entity decoding. Only matched
-code spans, inline links, resolved references, and valid paired emphasis lose
-delimiters; unmatched, unresolved, and entity-origin punctuation remains a
-visible boundary.
+checked only through the narrow phrase-based contract in
+`specs/skill-contract.md` R3l. The equivalence and two command-owning list
+records match byte-for-byte, the four approved Codex command code spans match
+one exact multiset, and raw dollar-skill or `/workflow` phrases outside those
+records fail. The checker does not interpret rendered Markdown, HTML, Unicode,
+or adapter-labeled prose. The regression matrix records both in-scope failures
+and out-of-scope formatting/prose variants.
 
 ## Activation and rollback proof
 
