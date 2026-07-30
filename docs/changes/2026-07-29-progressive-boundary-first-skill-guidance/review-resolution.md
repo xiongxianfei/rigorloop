@@ -44,6 +44,7 @@ Review closeout: code-review-m4-r15
 Review closeout: code-review-m4-r16
 Review closeout: code-review-m4-r17
 Review closeout: code-review-m4-r18
+Review closeout: code-review-m4-r19
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -57,10 +58,10 @@ Review closeout: code-review-m4-r18
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
   `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`,
   `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`,
-  `code-review-m4-r17`, `code-review-m4-r18`
+  `code-review-m4-r17`, `code-review-m4-r18`, `code-review-m4-r19`
 - Findings resolved: 59
-- Unresolved findings: 0
-- Current result: M4 code-review R18 findings are resolved and await independent R19 confirmation.
+- Unresolved findings: 2
+- Current result: M4 code-review R19 findings require candidate-local dollar resolution.
 
 ## Resolution Overview
 
@@ -125,8 +126,36 @@ Review closeout: code-review-m4-r18
 | CR-M4-R18-001 | accepted | resolved | Unicode identifiers and paired-dollar math are excluded from governed invocation candidates. |
 | CR-M4-R18-002 | accepted | resolved | Case-insensitive command identity is limited to ASCII spellings. |
 | CR-M4-R18-003 | accepted | resolved | Hyphenated parent paths are excluded from slash-command scope. |
+| CR-M4-R19-001 | accepted | open | Treat ZWNJ and ZWJ as identifier continuation. |
+| CR-M4-R19-002 | accepted | open | Limit paired-dollar suppression to candidate-local arithmetic forms. |
 
 ## Finding Details
+
+### code-review-m4-r19
+
+#### CR-M4-R19-001 - Join-control identifiers match governed prefixes
+
+Finding ID: CR-M4-R19-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Add ZWNJ and ZWJ to the identifier-continuation predicate.
+Rationale: Narrow command detection must not split portable identifier syntax.
+Validation target: code-review-m4-r20
+Validation evidence: pending
+
+#### CR-M4-R19-002 - Any later dollar suppresses a real invocation
+
+Finding ID: CR-M4-R19-002
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Replace the nonlocal later-dollar scan with an empty-or-arithmetic candidate-local form.
+Rationale: An unrelated later dollar is not the current candidate's math delimiter.
+Validation target: code-review-m4-r20
+Validation evidence: pending
 
 ### code-review-m4-r18
 

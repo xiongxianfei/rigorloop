@@ -8,6 +8,17 @@ skill guidance proposal and any downstream artifacts.
 ## Review Entries
 
 ### Review entry
+Review ID: code-review-m4-r19
+Stage: code-review
+Round: 19
+Status: changes-requested
+Detailed record: reviews/code-review-m4-r19.md
+Resolution: review-resolution.md#code-review-m4-r19
+Material findings: CR-M4-R19-001, CR-M4-R19-002
+Open findings: CR-M4-R19-001, CR-M4-R19-002
+Recording status: recorded
+
+### Review entry
 Review ID: code-review-m4-r18
 Stage: code-review
 Round: 18
