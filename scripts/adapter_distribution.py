@@ -92,18 +92,17 @@ PUBLISHED_SKILL_INVOCATION_NAMES = (
     "workflow",
 )
 CODEX_SKILL_INVOCATION_PATTERN = re.compile(
-    r"(?<![\w$])\$(?:"
+    r"\$(?:"
     + "|".join(
         re.escape(name)
         for name in sorted(PUBLISHED_SKILL_INVOCATION_NAMES, key=len, reverse=True)
     )
-    + r")(?![\w$-])",
-    re.IGNORECASE,
+    + r")",
+    re.IGNORECASE | re.ASCII,
 )
 CLAUDE_WORKFLOW_INVOCATION_PATTERN = re.compile(
-    r"(?<![\w./])/workflow"
+    r"(?<![\w./-])/(?ai:workflow)"
     r"(?=$|[ \t\r\n`\"',;:!?)}\]]|\.(?:$|[ \t\r\n]))",
-    re.IGNORECASE,
 )
 TARGET_INCOMPATIBILITY_PATTERNS = {
     "claude": re.compile(r"\bnot compatible with Claude Code\b", re.IGNORECASE),
@@ -404,7 +403,7 @@ def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
     if _references_codex_skills_as_only_install_location(text):
         reasons.append("References .codex/skills as the only install location.")
     if (
-        CODEX_SKILL_INVOCATION_PATTERN.search(text)
+        _has_codex_skill_invocation(text)
         and not _documents_cross_adapter_skill_invocation(text)
     ):
         reasons.append("Requires Codex-specific $skill invocation.")
@@ -427,7 +426,7 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     actual_codex_code_spans = Counter(
         span
         for span in re.findall(r"`([^`\n]+)`", text)
-        if CODEX_SKILL_INVOCATION_PATTERN.search(span)
+        if _has_codex_skill_invocation(span)
     )
     if actual_codex_code_spans != expected_codex_code_spans:
         return False
@@ -465,11 +464,38 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     remaining_source = text
     for approved_block in (*equivalence_blocks, *command_blocks):
         remaining_source = remaining_source.replace(approved_block, "", 1)
-    if CODEX_SKILL_INVOCATION_PATTERN.search(remaining_source):
+    if _has_codex_skill_invocation(remaining_source):
         return False
     if CLAUDE_WORKFLOW_INVOCATION_PATTERN.search(remaining_source):
         return False
     return True
+
+
+def _is_identifier_continuation(character: str) -> bool:
+    return bool(character) and (
+        character.isalnum()
+        or character == "_"
+        or f"a{character}".isidentifier()
+    )
+
+
+def _has_codex_skill_invocation(text: str) -> bool:
+    """Recognize complete governed dollar tokens outside paired-dollar math."""
+
+    for match in CODEX_SKILL_INVOCATION_PATTERN.finditer(text):
+        preceding = text[match.start() - 1] if match.start() else ""
+        following = text[match.end()] if match.end() < len(text) else ""
+        if _is_identifier_continuation(preceding) or preceding == "$":
+            continue
+        if _is_identifier_continuation(following) or following in {"$", "-"}:
+            continue
+        line_end = text.find("\n", match.end())
+        if line_end == -1:
+            line_end = len(text)
+        if "$" in text[match.end():line_end]:
+            continue
+        return True
+    return False
 
 
 def _target_adapter_reasons(text: str) -> dict[str, tuple[str, ...]]:
