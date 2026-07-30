@@ -31,6 +31,9 @@
 | R8 fixed-code commit | `fa0f5ce7` |
 | R8 fixed-code tree | `536bc2f5d2658a42fc41dff2e0a3f450c62ad6eb` |
 | R8 fixed-code diff SHA-256 (`68a33089..fa0f5ce7`) | `3202325c22246f5b474a2b726f7284cb177f188f14523a527c6cc56f82561a82` |
+| R9 fixed-code commit | `df5b32f4` |
+| R9 fixed-code tree | `d14f198b8f50cbfabe25a0a1626f0ebfecbc0b1b` |
+| R9 fixed-code diff SHA-256 (`4c08b788..df5b32f4`) | `65ca8923d5981d3c53f26edd9239f5d952dfae3e5d4956a3ab18e6b5334ddd17` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -121,7 +124,11 @@ attributes, unknown elements, and supported Markdown emphasis and links cannot
 split a residual adapter label. The four approved Codex command code spans must
 match one exact multiset, and the two list items that own target, status, and
 off must match exactly, so adjacent prefixes, suffixes, and trailing arguments
-cannot inherit portability from an approved substring.
+cannot inherit portability from an approved substring. Reference-style links
+and invisible Unicode separators are normalized conservatively. Placeholder
+tags are preserved without sentinels only inside the exact contract-record
+parsers; whole-document residual checks treat identically named custom tags as
+ordinary markup.
 
 ## Activation and rollback proof
 

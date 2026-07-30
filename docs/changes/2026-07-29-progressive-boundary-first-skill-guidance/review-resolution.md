@@ -46,9 +46,9 @@ Review closeout: code-review-m4-r9
   `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`,
   `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
   `code-review-m4-r8`, `code-review-m4-r9`
-- Findings resolved: 40
-- Unresolved findings: 2
-- Current result: M4 code-review R9 requires reference-link normalization and collision-free placeholders.
+- Findings resolved: 42
+- Unresolved findings: 0
+- Current result: M4 code-review R9 findings are resolved and await independent R10 confirmation.
 
 ## Resolution Overview
 
@@ -94,8 +94,8 @@ Review closeout: code-review-m4-r9
 | CR-M4-R7-002 | accepted | resolved | Exact Codex code-span multisets reject prefixes, suffixes, and trailing arguments. |
 | CR-M4-R8-001 | accepted | resolved | Parser-derived rendered text exposes labels hidden by HTML or Markdown formatting. |
 | CR-M4-R8-002 | accepted | resolved | Exact command spans and their owning list items enforce complete boundaries. |
-| CR-M4-R9-001 | accepted | open | Reference-style Markdown labels must be normalized conservatively. |
-| CR-M4-R9-002 | accepted | open | Placeholder handling must be parser-local and collision-free. |
+| CR-M4-R9-001 | accepted | resolved | Reference-style Markdown labels and invisible separators are normalized conservatively. |
+| CR-M4-R9-002 | accepted | resolved | Placeholder handling is parser-local and collision-free. |
 
 ## Finding Details
 
@@ -351,25 +351,25 @@ Validation evidence: Adjacent suffix and trailing-argument mutations fail for ta
 
 Finding ID: CR-M4-R9-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Conservatively remove reference-link brackets after inline-link normalization and add full, collapsed, and shortcut-reference regressions.
 Rationale: Markdown reference syntax must not interrupt a rendered adapter label.
 Validation target: code-review-m4-r10
-Validation evidence: pending
+Validation evidence: Full, collapsed, and shortcut-reference mutations and invisible-separator mutations fail; all 142 adapter tests and the planned ten-skill clean-install command pass.
 
 #### CR-M4-R9-002 - In-band placeholder normalization changes invocation semantics
 
 Finding ID: CR-M4-R9-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Remove in-band sentinels and preserve approved placeholder start tags only while parsing exact contract records.
 Rationale: Caller-controlled text must not collide with normalization state or hide labels through globally protected custom tags.
 Validation target: code-review-m4-r10
-Validation evidence: pending
+Validation evidence: Literal and encoded sentinel mutations and custom placeholder-tag mutations fail while the canonical contract remains portable; all 142 adapter tests and the planned ten-skill clean-install command pass.
 
 ### code-review-m1-r1
 
