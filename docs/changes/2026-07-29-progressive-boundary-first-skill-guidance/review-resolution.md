@@ -49,6 +49,7 @@ Review closeout: code-review-m4-r20
 Review closeout: code-review-m4-r21
 Review closeout: code-review-m4-r22
 Review closeout: code-review-m4-r23
+Review closeout: code-review-m4-r24
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -64,10 +65,10 @@ Review closeout: code-review-m4-r23
   `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`,
   `code-review-m4-r17`, `code-review-m4-r18`, `code-review-m4-r19`,
   `code-review-m4-r20`, `code-review-m4-r21`, `code-review-m4-r22`,
-  `code-review-m4-r23`
+  `code-review-m4-r23`, `code-review-m4-r24`
 - Findings resolved: 66
 - Unresolved findings: 0
-- Current result: M4 code-review R23 finding is resolved and awaits independent R24 confirmation.
+- Current result: M4 is approved and closed; final holistic review is next.
 
 ## Resolution Overview
 
@@ -141,6 +142,11 @@ Review closeout: code-review-m4-r23
 | CR-M4-R23-001 | accepted | resolved | Escape parity is applied to governed candidate dollars. |
 
 ## Finding Details
+
+### code-review-m4-r24
+
+No findings. Both independent reviewers issued clean-with-notes receipts and
+confirmed `CR-M4-R23-001` resolved.
 
 ### code-review-m4-r23
 
@@ -1059,6 +1065,13 @@ the contract or scenario count.
 | Test-spec review R2 | approved | `PBS-TSR1` is resolved; the proof map permits isolated M1 implementation handoff. |
 
 ## Clean review receipts
+
+### code-review-m4-r24
+
+Status: approved
+Material findings: none
+Resolution required: no
+Evidence: reviews/code-review-m4-r24.md
 
 ### proposal-review-r3
 

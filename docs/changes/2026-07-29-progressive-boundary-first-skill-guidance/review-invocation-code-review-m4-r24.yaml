@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: code-review-m4-r24
+review_stage: code-review
+review_target: commit:e9819449
+base_revision: 49a885c8
+head_revision: e9819449
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L2
+author_context_id: root-m4-r23-resolution
+reviewer_context_id: m4-r24-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [candidate-dollar-escape-parity, package-portability]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/skill-contract.md
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:e9819449.diff
+    revision: e9819449
+    sha256: be17a62aabac66bd08a935786cb367ee702b6e063149474d6bb0128a42c02ee0
+initial_packet_sha256: be17a62aabac66bd08a935786cb367ee702b6e063149474d6bb0128a42c02ee0
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r24-second-review}
+requirement_fidelity: {applicability: applicable, reason: R3l requires narrow phrase- or path-based published-skill checks.}
+risk_map:
+  affected_behavior: published workflow portability classification
+  highest_impact_failure_modes: odd-escaped literals reject or even candidates escape
+  changed_boundaries: candidate and closer escape parity
+  evidence_expected: parity probes, focused evaluator tests, package proof
+  direct_inspection_areas: shared escape helper, candidate and closer call sites
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, maintainability]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Does parity hold across candidate and closer boundaries?
