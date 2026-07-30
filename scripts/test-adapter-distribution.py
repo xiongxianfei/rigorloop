@@ -1946,6 +1946,34 @@ release_gate:
                 self.assertFalse(report.adapter_decision("opencode").included)
                 self.assertIn(expected_reason, report.reason)
 
+    def test_case_variant_governed_dollar_invocations_are_codex_only(self) -> None:
+        source = self.fixture("codex-dollar-skill")
+        source_text = (source / "SKILL.md").read_text(encoding="utf-8")
+
+        for token in ("$Proposal", "$PROPOSAL", "$Workflow", "$WORKFLOW"):
+            with self.subTest(token=token), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "codex-dollar-skill"
+                shutil.copytree(source, target)
+                (target / "SKILL.md").write_text(
+                    source_text.replace("$proposal", token),
+                    encoding="utf-8",
+                )
+
+                report = evaluate_skill(target)
+
+                self.assertEqual(report.included_adapters, ("codex",))
+                self.assertIn("Codex-specific $skill invocation", report.reason)
+
+    def test_dollar_invocation_vocabulary_matches_published_skills(self) -> None:
+        published_names = {
+            path.parent.name for path in (ROOT / "skills").glob("*/SKILL.md")
+        }
+
+        self.assertEqual(
+            set(adapter_distribution_module.PUBLISHED_SKILL_INVOCATION_NAMES),
+            published_names,
+        )
+
     def test_generic_artifact_paths_remain_portable(self) -> None:
         report = evaluate_skill(self.fixture("generic-artifact-paths"))
 
@@ -1966,6 +1994,30 @@ release_gate:
 
         self.assertTrue(report.portable, report.reason)
         self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
+
+    def test_workflow_invocation_checks_preserve_variables_and_paths(self) -> None:
+        additions = (
+            "Read the shell variable `$project`.",
+            "Let `$x$` denote the input.",
+            "Document `/workflow-guide`.",
+            "Document `/workflow.md`.",
+            "Document `/workflow/status`.",
+        )
+        source = ROOT / "skills" / "workflow" / "SKILL.md"
+        source_text = source.read_text(encoding="utf-8")
+
+        for addition in additions:
+            with self.subTest(addition=addition), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "workflow"
+                shutil.copytree(source.parent, target)
+                (target / "SKILL.md").write_text(
+                    source_text + f"\n{addition}\n",
+                    encoding="utf-8",
+                )
+
+                report = evaluate_skill(target)
+
+                self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
 
     def test_workflow_invocation_equivalence_uses_narrow_static_scope(
         self,
