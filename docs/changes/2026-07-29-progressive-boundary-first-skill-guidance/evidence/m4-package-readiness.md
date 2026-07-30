@@ -43,6 +43,9 @@
 | R12 fixed-code commit | `caee4782` |
 | R12 fixed-code tree | `e4d6950dd709d777eaee6aab45df01b192df4f3d` |
 | R12 fixed-code diff SHA-256 (`3171fee9..caee4782`) | `3f71f24719968bac6361c75461fa1504301fa4a242946370db26f2ad093e7d53` |
+| R13 fixed-code commit | `97d29a46` |
+| R13 fixed-code tree | `3e45fc208e31b8d7b7d51f1d1b331430c18aecca` |
+| R13 fixed-code diff SHA-256 (`6203f8ac..97d29a46`) | `b7496a3ca152e629cb50b99dbe177b722cbcda4f9530f56f9f6d0ce3c71b8a7e` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -150,6 +153,9 @@ Rendered normalization removes governed non-rendering characters before
 structural whitespace folding while preserving ordinary visible punctuation,
 whitespace, identifiers, and non-ASCII text as boundaries. The mutation suite
 includes benign portable negative controls.
+Supported paired Markdown delimiters normalize recursively, with underscore
+boundaries preserving literal intraword identifiers. Mongolian and Khmer
+variation controls join hidden label or invocation fragments.
 
 ## Activation and rollback proof
 

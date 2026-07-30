@@ -51,9 +51,9 @@ Review closeout: code-review-m4-r13
   `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
   `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`
-- Findings resolved: 48
-- Unresolved findings: 2
-- Current result: M4 code-review R13 requires recursive Markdown normalization and omitted variation ranges.
+- Findings resolved: 50
+- Unresolved findings: 0
+- Current result: M4 code-review R13 findings are resolved and await independent R14 confirmation.
 
 ## Resolution Overview
 
@@ -107,8 +107,8 @@ Review closeout: code-review-m4-r13
 | CR-M4-R11-002 | accepted | resolved | Residual labels use a conservative ASCII-alphanumeric projection. |
 | CR-M4-R12-001 | accepted | resolved | Visible boundaries remain intact and benign negative controls stay portable. |
 | CR-M4-R12-002 | accepted | resolved | Non-rendering controls are removed before whitespace normalization. |
-| CR-M4-R13-001 | accepted | open | Nested Markdown must normalize without erasing literal intraword punctuation. |
-| CR-M4-R13-002 | accepted | open | Mongolian and Khmer variation controls must not split tokens. |
+| CR-M4-R13-001 | accepted | resolved | Nested Markdown normalizes recursively while intraword underscores remain literal. |
+| CR-M4-R13-002 | accepted | resolved | Mongolian and Khmer variation controls cannot split tokens. |
 
 ## Finding Details
 
@@ -468,25 +468,25 @@ Validation evidence: Unit, file, and group separators plus NEL cannot split resi
 
 Finding ID: CR-M4-R13-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Recursively normalize bounded paired delimiters and add nested positives plus intraword-underscore negatives.
 Rationale: Rendered labels and literal identifier punctuation must both be preserved correctly.
 Validation target: code-review-m4-r14
-Validation evidence: pending
+Validation evidence: Triple, mixed, nested strike, and link-label formatting expose labels while intraword underscore keys remain portable; all 143 adapter tests and the planned clean-install command pass.
 
 #### CR-M4-R13-002 - Default-ignorable variation ranges remain incomplete
 
 Finding ID: CR-M4-R13-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Add Mongolian and Khmer ranges with literal, entity, and slash-command regressions.
 Rationale: Governed variation controls are non-rendering token joiners.
 Validation target: code-review-m4-r14
-Validation evidence: pending
+Validation evidence: Literal/entity Mongolian and Khmer label splits plus Mongolian slash-command splits fail; all 143 adapter tests and the planned clean-install command pass.
 
 ### code-review-m1-r1
 

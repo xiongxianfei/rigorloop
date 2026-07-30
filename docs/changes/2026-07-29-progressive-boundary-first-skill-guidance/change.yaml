@@ -73,8 +73,8 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: review-resolution
+  current_stage: review-resolution
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-r2.md
@@ -468,5 +468,5 @@ changed_files:
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r8.md
 review:
   status: changes-requested
-  unresolved_items: 2
+  unresolved_items: 0
 workflow: {}
