@@ -487,6 +487,8 @@ def _has_codex_skill_invocation(text: str) -> bool:
     """Recognize complete governed dollar tokens outside paired-dollar math."""
 
     for match in CODEX_SKILL_INVOCATION_PATTERN.finditer(text):
+        if _is_escaped_dollar(text, match.start()):
+            continue
         preceding = text[match.start() - 1] if match.start() else ""
         following = text[match.end()] if match.end() < len(text) else ""
         if _is_identifier_continuation(preceding) or preceding == "$":
