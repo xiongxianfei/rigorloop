@@ -11,7 +11,6 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import unicodedata
 import zipfile
 from collections import Counter
 from dataclasses import dataclass
@@ -418,12 +417,6 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
             r"\1",
             rendered,
         )
-        rendered = "".join(
-            character
-            for character in rendered
-            if unicodedata.category(character)
-            not in {"Cf", "Cn", "Co", "Cs", "Me", "Mn"}
-        )
         return re.sub(r"[*_~\[\]]", "", rendered).replace("`", "")
 
     equivalence_blocks = re.findall(
@@ -433,43 +426,45 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     if len(equivalence_blocks) != 1:
         return False
 
-    normalized_block = re.sub(r"\s+", " ", equivalence_blocks[0]).strip()
     expected_block = (
-        "- Adapter invocation equivalents preserve the same arguments: Codex uses "
-        "`$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, "
-        "and OpenCode invokes the installed `workflow` skill with "
-        "`auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or "
-        "`off`."
+        "- Adapter invocation equivalents preserve the same arguments: Codex uses\n"
+        "  `$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and\n"
+        "  OpenCode invokes the installed `workflow` skill with `auto: <argument>`.\n"
+        "  Here `<argument>` is `<target-stage>`, `status`, or `off`.\n"
     )
-    if normalized_block != expected_block:
+    if equivalence_blocks[0] != expected_block:
         return False
     command_blocks = re.findall(
         r"(?ms)^- `\$workflow auto: (?:<target-stage>|status)`.*?(?=^- |\Z)",
         text,
     )
-    normalized_command_blocks = tuple(
-        re.sub(r"\s+", " ", block).strip()
-        for block in command_blocks
-    )
     expected_command_blocks = (
         "- `$workflow auto: <target-stage>` selects a structured target. Supported "
         "targets are `proposal-review`, `spec`, `spec-review`, `architecture`, "
         "`architecture-review`, `plan`, `plan-review`, `test-spec`, "
-        "`test-spec-review`, `implement`, `code-review`, and `verify`.",
-        "- `$workflow auto: status` is read-only. `$workflow auto: off` durably "
-        "cancels the unified run and preserves transition evidence.",
+        "`test-spec-review`, `implement`, `code-review`, and `verify`.\n",
+        "- `$workflow auto: status` is read-only.\n"
+        "  `$workflow auto: off` durably cancels the unified run and preserves "
+        "transition evidence.\n",
     )
-    if normalized_command_blocks != expected_command_blocks:
+    if tuple(command_blocks) != expected_command_blocks:
         return False
     remaining_source = text
     for approved_block in (*equivalence_blocks, *command_blocks):
         remaining_source = remaining_source.replace(approved_block, "", 1)
     remaining = re.sub(r"\s+", " ", visible_text(remaining_source))
-    if re.search(r"\$[A-Za-z][A-Za-z0-9-]*", remaining):
+    ascii_syntax = "".join(
+        character
+        for character in remaining
+        if character.isascii()
+        and (character.isprintable() or character in "\n\r\t")
+    )
+    if re.search(r"\$[A-Za-z][A-Za-z0-9-]*", ascii_syntax):
         return False
-    if re.search(r"(?<![\w.])/workflow\b", remaining, flags=re.IGNORECASE):
+    if re.search(r"(?<![\w.])/workflow\b", ascii_syntax, flags=re.IGNORECASE):
         return False
-    if re.search(r"\b(?:Codex|Claude|OpenCode)\b", remaining, flags=re.IGNORECASE):
+    label_projection = re.sub(r"[^A-Za-z0-9]+", "", remaining)
+    if re.search(r"(?:Codex|Claude|OpenCode)", label_projection, flags=re.IGNORECASE):
         return False
     return True
 
