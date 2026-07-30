@@ -48,6 +48,7 @@ Review closeout: code-review-m4-r19
 Review closeout: code-review-m4-r20
 Review closeout: code-review-m4-r21
 Review closeout: code-review-m4-r22
+Review closeout: code-review-m4-r23
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -62,10 +63,11 @@ Review closeout: code-review-m4-r22
   `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`,
   `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`,
   `code-review-m4-r17`, `code-review-m4-r18`, `code-review-m4-r19`,
-  `code-review-m4-r20`, `code-review-m4-r21`, `code-review-m4-r22`
+  `code-review-m4-r20`, `code-review-m4-r21`, `code-review-m4-r22`,
+  `code-review-m4-r23`
 - Findings resolved: 65
-- Unresolved findings: 0
-- Current result: M4 code-review R22 findings are resolved and await independent R23 confirmation.
+- Unresolved findings: 1
+- Current result: M4 code-review R23 finding requires candidate-dollar parity resolution.
 
 ## Resolution Overview
 
@@ -136,8 +138,23 @@ Review closeout: code-review-m4-r22
 | CR-M4-R21-001 | accepted | resolved | Paired-math closers must be plausible and unescaped. |
 | CR-M4-R22-001 | accepted | resolved | Braced-variable and command-substitution opener dollars are rejected. |
 | CR-M4-R22-002 | accepted | resolved | Escaped interior dollars are skipped while scanning for a plausible closer. |
+| CR-M4-R23-001 | accepted | open | Apply escape parity to governed candidate dollars. |
 
 ## Finding Details
+
+### code-review-m4-r23
+
+#### CR-M4-R23-001 - Escape parity is not applied to candidate dollars
+
+Finding ID: CR-M4-R23-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Skip odd-escaped governed candidate matches through the shared parity helper.
+Rationale: Escaped literals are not invocation tokens.
+Validation target: code-review-m4-r24
+Validation evidence: pending
 
 ### code-review-m4-r22
 
