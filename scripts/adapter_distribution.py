@@ -418,11 +418,26 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
             r"\1",
             rendered,
         )
-        rendered = re.sub(
-            r"(\*\*|__|~~|\*|_)(?=\S)(.+?)(?<=\S)\1",
-            r"\2",
-            rendered,
-        )
+
+        def normalize_paired_markdown(value: str) -> str:
+            patterns = (
+                r"\*\*\*(?=\S)(.+?)(?<=\S)\*\*\*",
+                r"(?<!\w)___(?=\S)(.+?)(?<=\S)___(?!\w)",
+                r"\*\*(?=\S)(.+?)(?<=\S)\*\*",
+                r"(?<!\w)__(?=\S)(.+?)(?<=\S)__(?!\w)",
+                r"~~(?=\S)(.+?)(?<=\S)~~",
+                r"\*(?=\S)(.+?)(?<=\S)\*",
+                r"(?<!\w)_(?=\S)(.+?)(?<=\S)_(?!\w)",
+            )
+            for pattern in patterns:
+                value = re.sub(
+                    pattern,
+                    lambda match: normalize_paired_markdown(match.group(1)),
+                    value,
+                )
+            return value
+
+        rendered = normalize_paired_markdown(rendered)
         rendered = re.sub(r"[\[\]]", "", rendered).replace("`", "")
 
         def is_nonrendering(character: str) -> bool:
@@ -433,6 +448,8 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
                 or (category == "Cc" and character not in "\t\n\r")
                 or codepoint == 0x034F
                 or 0x115F <= codepoint <= 0x1160
+                or 0x17B4 <= codepoint <= 0x17B5
+                or 0x180B <= codepoint <= 0x180F
                 or codepoint == 0x3164
                 or 0xFE00 <= codepoint <= 0xFE0F
                 or codepoint == 0xFFA0
