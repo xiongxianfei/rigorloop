@@ -1950,7 +1950,15 @@ release_gate:
         source = self.fixture("codex-dollar-skill")
         source_text = (source / "SKILL.md").read_text(encoding="utf-8")
 
-        for token in ("$Proposal", "$PROPOSAL", "$Workflow", "$WORKFLOW"):
+        for token in (
+            "$Proposal",
+            "$PROPOSAL",
+            "$Workflow",
+            "$WORKFLOW",
+            "$plan",
+            "$PLAN",
+            "$proposal-review",
+        ):
             with self.subTest(token=token), tempfile.TemporaryDirectory() as tmp:
                 target = Path(tmp) / "codex-dollar-skill"
                 shutil.copytree(source, target)
@@ -1999,6 +2007,10 @@ release_gate:
         additions = (
             "Read the shell variable `$project`.",
             "Let `$x$` denote the input.",
+            "Read the shell variable `$workflow_status`.",
+            "Read the path from `$plan_path`.",
+            "Let `$spec₂` denote the input.",
+            "Let `$plan$` denote the input.",
             "Document `/workflow-guide`.",
             "Document `/workflow.md`.",
             "Document `/workflow/status`.",
@@ -2018,6 +2030,31 @@ release_gate:
                 report = evaluate_skill(target)
 
                 self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
+
+    def test_workflow_slash_commands_end_at_phrase_terminators(self) -> None:
+        additions = (
+            "Run /workflow\nThen continue.",
+            "Run /workflow\r\nThen continue.",
+            "Run `/workflow` before continuing.",
+            "Run /workflow, then continue.",
+            "Run /workflow. Then continue.",
+        )
+        source = ROOT / "skills" / "workflow" / "SKILL.md"
+        source_text = source.read_text(encoding="utf-8")
+
+        for addition in additions:
+            with self.subTest(addition=addition), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "workflow"
+                shutil.copytree(source.parent, target)
+                (target / "SKILL.md").write_text(
+                    source_text + f"\n{addition}\n",
+                    encoding="utf-8",
+                )
+
+                report = evaluate_skill(target)
+
+                self.assertEqual(report.included_adapters, ("codex",))
+                self.assertIn("Codex-specific $skill invocation", report.reason)
 
     def test_workflow_invocation_equivalence_uses_narrow_static_scope(
         self,
