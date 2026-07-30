@@ -63,9 +63,9 @@ Review closeout: code-review-m4-r22
   `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`,
   `code-review-m4-r17`, `code-review-m4-r18`, `code-review-m4-r19`,
   `code-review-m4-r20`, `code-review-m4-r21`, `code-review-m4-r22`
-- Findings resolved: 63
-- Unresolved findings: 2
-- Current result: M4 code-review R22 findings require bounded closer-scan resolution.
+- Findings resolved: 65
+- Unresolved findings: 0
+- Current result: M4 code-review R22 findings are resolved and await independent R23 confirmation.
 
 ## Resolution Overview
 
@@ -134,8 +134,8 @@ Review closeout: code-review-m4-r22
 | CR-M4-R19-002 | accepted | resolved | Paired-dollar suppression is limited to candidate-local arithmetic forms. |
 | CR-M4-R20-001 | accepted | resolved | A bounded structural suffix replaces the compressed arithmetic atom. |
 | CR-M4-R21-001 | accepted | resolved | Paired-math closers must be plausible and unescaped. |
-| CR-M4-R22-001 | accepted | open | Reject braced-variable and command-substitution opener dollars. |
-| CR-M4-R22-002 | accepted | open | Scan past escaped interior dollars to a plausible closer. |
+| CR-M4-R22-001 | accepted | resolved | Braced-variable and command-substitution opener dollars are rejected. |
+| CR-M4-R22-002 | accepted | resolved | Escaped interior dollars are skipped while scanning for a plausible closer. |
 
 ## Finding Details
 
@@ -145,25 +145,25 @@ Review closeout: code-review-m4-r22
 
 Finding ID: CR-M4-R22-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Reject `{` and `(` after an alleged closer and add plain command controls.
 Rationale: Opening shell syntax cannot close paired math.
 Validation target: code-review-m4-r23
-Validation evidence: pending
+Validation evidence: Plain generic commands followed by `${HOME}` or `$(pwd)` fail while paired math remains portable; all 148 adapter tests pass.
 
 #### CR-M4-R22-002 - Escaped interior dollar prevents discovery of the closer
 
 Finding ID: CR-M4-R22-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Scan same-line dollar candidates past escaped literals and accept only a plausible closer.
 Rationale: Escape parity applies to each candidate, not only the first later dollar.
 Validation target: code-review-m4-r23
-Validation evidence: pending
+Validation evidence: Escaped interior currency is skipped to the later closer, odd sole closers remain active commands, and all 148 adapter tests plus the planned ten-skill, three-adapter clean install pass.
 
 ### code-review-m4-r21
 
