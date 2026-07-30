@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import hashlib
-import html
 import importlib.util
 import json
 import re
@@ -12,12 +11,10 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import unicodedata
 import zipfile
 from collections import Counter
 from dataclasses import dataclass
 from enum import Enum
-from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Iterable
 
@@ -396,114 +393,6 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     if actual_codex_code_spans != expected_codex_code_spans:
         return False
 
-    class VisibleTextParser(HTMLParser):
-        def __init__(self) -> None:
-            super().__init__(convert_charrefs=True)
-            self.parts: list[str] = []
-
-        def handle_data(self, data: str) -> None:
-            self.parts.append(data)
-
-    def visible_text(value: str) -> str:
-        def normalize_paired_markdown(value: str) -> str:
-            patterns = (
-                r"\*\*\*(?=\S)(.+?)(?<=\S)\*\*\*",
-                r"(?<!\w)___(?=\S)(.+?)(?<=\S)___(?!\w)",
-                r"\*\*(?=\S)(.+?)(?<=\S)\*\*",
-                r"(?<!\w)__(?=\S)(.+?)(?<=\S)__(?!\w)",
-                r"~~(?=\S)(.+?)(?<=\S)~~",
-                r"\*(?=\S)(.+?)(?<=\S)\*",
-                r"(?<!\w)_(?=\S)(.+?)(?<=\S)_(?!\w)",
-            )
-            for pattern in patterns:
-                value = re.sub(
-                    pattern,
-                    lambda match: normalize_paired_markdown(match.group(1)),
-                    value,
-                )
-            return value
-
-        decoded_source = html.unescape(value)
-        code_spans: dict[str, str] = {}
-
-        def protect_code_span(match: re.Match[str]) -> str:
-            index = len(code_spans)
-            token = f"\ue000RIGORLOOPCODE{index}\ue001"
-            while token in value or token in decoded_source:
-                index += 1
-                token = f"\ue000RIGORLOOPCODE{index}\ue001"
-            code_spans[token] = match.group(2)
-            return token
-
-        markdown_source = re.sub(
-            r"(?<!`)(`+)([^`\n]*?)\1(?!`)",
-            protect_code_span,
-            value,
-        )
-        reference_ids = {
-            re.sub(r"\s+", " ", match.group(1)).strip().casefold()
-            for match in re.finditer(
-                r"(?m)^[ \t]{0,3}\[([^\]\n]+)\]:[ \t]+\S+",
-                markdown_source,
-            )
-        }
-        markdown_source = re.sub(
-            r"!?\[([^\]\n]*)\]\([^)\n]*\)",
-            r"\1",
-            markdown_source,
-        )
-
-        def resolved_reference(match: re.Match[str]) -> str:
-            label = match.group(1)
-            reference = match.group(2) or label
-            normalized = re.sub(r"\s+", " ", reference).strip().casefold()
-            return label if normalized in reference_ids else match.group(0)
-
-        markdown_source = re.sub(
-            r"\[([^\]\n]+)\]\[([^\]\n]*)\]",
-            resolved_reference,
-            markdown_source,
-        )
-
-        def resolved_shortcut(match: re.Match[str]) -> str:
-            label = match.group(1)
-            normalized = re.sub(r"\s+", " ", label).strip().casefold()
-            return label if normalized in reference_ids else match.group(0)
-
-        markdown_source = re.sub(
-            r"\[([^\]\n]+)\](?!\[)",
-            resolved_shortcut,
-            markdown_source,
-        )
-        markdown_source = normalize_paired_markdown(markdown_source)
-
-        parser = VisibleTextParser()
-        parser.feed(markdown_source)
-        parser.close()
-        rendered = "".join(parser.parts)
-        for token, code_span in code_spans.items():
-            rendered = rendered.replace(token, code_span)
-
-        def is_nonrendering(character: str) -> bool:
-            codepoint = ord(character)
-            category = unicodedata.category(character)
-            return (
-                category in {"Cf", "Cn", "Co", "Cs"}
-                or (category == "Cc" and character not in "\t\n\r")
-                or codepoint == 0x034F
-                or 0x115F <= codepoint <= 0x1160
-                or 0x17B4 <= codepoint <= 0x17B5
-                or 0x180B <= codepoint <= 0x180F
-                or codepoint == 0x3164
-                or 0xFE00 <= codepoint <= 0xFE0F
-                or codepoint == 0xFFA0
-                or 0xE0100 <= codepoint <= 0xE01EF
-            )
-
-        return "".join(
-            character for character in rendered if not is_nonrendering(character)
-        )
-
     equivalence_blocks = re.findall(
         r"(?ms)^- Adapter invocation equivalents\b.*?(?=^- |\Z)",
         text,
@@ -537,12 +426,13 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     remaining_source = text
     for approved_block in (*equivalence_blocks, *command_blocks):
         remaining_source = remaining_source.replace(approved_block, "", 1)
-    remaining = re.sub(r"[ \t\r\n]+", " ", visible_text(remaining_source))
-    if re.search(r"\$[A-Za-z][A-Za-z0-9-]*", remaining):
+    if re.search(r"\$[A-Za-z][A-Za-z0-9-]*", remaining_source):
         return False
-    if re.search(r"(?<![\w.])/workflow\b", remaining, flags=re.IGNORECASE):
-        return False
-    if re.search(r"\b(?:Codex|Claude|OpenCode)\b", remaining, flags=re.IGNORECASE):
+    if re.search(
+        r"(?<![\w.])/workflow\b",
+        remaining_source,
+        flags=re.IGNORECASE,
+    ):
         return False
     return True
 

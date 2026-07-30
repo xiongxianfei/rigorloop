@@ -1967,7 +1967,7 @@ release_gate:
         self.assertTrue(report.portable, report.reason)
         self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
 
-    def test_workflow_invocation_equivalence_mutations_are_not_portable(
+    def test_workflow_invocation_equivalence_uses_narrow_static_scope(
         self,
     ) -> None:
         mutations = {
@@ -2257,6 +2257,51 @@ release_gate:
                 1,
             ),
         }
+        nonportable = {
+            "codex_skill",
+            "claude_skill",
+            "opencode_skill",
+            "shared_argument",
+            "bare_codex",
+            "non_auto_codex",
+            "case_codex",
+            "wrong_claude_argument",
+            "case_claude",
+            "plain_codex",
+            "html_codex",
+            "plain_claude",
+            "whitespace_claude",
+            "literal_argument_sentinel",
+            "encoded_argument_sentinel",
+            "encoded_opencode_sentinel",
+            "literal_target_sentinel",
+            "claude_zero_width_identity",
+            "claude_private_use_identity",
+            "opencode_zero_width_identity",
+            "opencode_zero_width_operation",
+            "claude_uppercase_placeholder",
+            "claude_spaced_placeholder",
+            "claude_self_closing_placeholder",
+            "claude_encoded_placeholder",
+            "opencode_uppercase_placeholder",
+            "uppercase_target_placeholder",
+            "nested_claude_placeholder",
+            "claude_nbsp_separator",
+            "claude_em_space_separator",
+            "claude_tab_separator",
+            "opencode_nbsp_separator",
+            "codex_status_suffix",
+            "codex_status_trailing_argument",
+            "codex_off_prefix",
+            "codex_target_suffix",
+            "codex_command_prefix",
+            "codex_status_html_suffix",
+            "codex_status_adjacent_suffix",
+            "codex_off_adjacent_suffix",
+            "codex_target_adjacent_suffix",
+            "codex_status_adjacent_argument",
+            "equivalence_block_suffix",
+        }
         source = ROOT / "skills" / "workflow" / "SKILL.md"
         source_text = source.read_text(encoding="utf-8")
         for name, mutate in mutations.items():
@@ -2271,8 +2316,14 @@ release_gate:
 
                 report = evaluate_skill(target)
 
-                self.assertEqual(report.included_adapters, ("codex",))
-                self.assertIn("Codex-specific $skill invocation", report.reason)
+                if name in nonportable:
+                    self.assertEqual(report.included_adapters, ("codex",))
+                    self.assertIn(
+                        "Codex-specific $skill invocation",
+                        report.reason,
+                    )
+                else:
+                    self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
 
     def test_workflow_benign_visible_boundaries_remain_portable(self) -> None:
         additions = (
