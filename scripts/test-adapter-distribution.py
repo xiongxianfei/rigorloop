@@ -2177,6 +2177,12 @@ release_gate:
                 "`auto:\u00a0<argument>`",
                 1,
             ),
+            "slash_unit_separator": lambda text: text
+            + "\nUse /work\u001fflow manual.\n",
+            "slash_file_separator": lambda text: text
+            + "\nUse /work\u001cflow manual.\n",
+            "slash_next_line_control": lambda text: text
+            + "\nUse /work\u0085flow manual.\n",
             "codex_status_suffix": lambda text: text.replace(
                 "`$workflow auto: status`",
                 "`$workflow auto: status-now`",
@@ -2249,6 +2255,31 @@ release_gate:
 
                 self.assertEqual(report.included_adapters, ("codex",))
                 self.assertIn("Codex-specific $skill invocation", report.reason)
+
+    def test_workflow_benign_visible_boundaries_remain_portable(self) -> None:
+        additions = (
+            "Encode XML before parsing.",
+            "Encode X509 certificates consistently.",
+            "Keep open code samples in the fixture.",
+            "Review open-code licensing separately.",
+            "The cod_ex identifier is illustrative.",
+            "An unrelated /workéflow token is illustrative.",
+            "An unrelated /work☃flow token is illustrative.",
+        )
+        source = ROOT / "skills" / "workflow" / "SKILL.md"
+        source_text = source.read_text(encoding="utf-8")
+        for addition in additions:
+            with self.subTest(addition=addition), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "workflow"
+                shutil.copytree(source.parent, target)
+                (target / "SKILL.md").write_text(
+                    source_text + f"\n{addition}\n",
+                    encoding="utf-8",
+                )
+
+                report = evaluate_skill(target)
+
+                self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
 
     def test_unrelated_equivalence_prose_does_not_portabilize_dollar_skill(
         self,
