@@ -105,7 +105,7 @@ CLAUDE_WORKFLOW_INVOCATION_PATTERN = re.compile(
     r"(?=$|[ \t\r\n`\"',;:!?)}\]]|\.(?:$|[ \t\r\n]))",
 )
 PAIRED_DOLLAR_MATH_SUFFIX_PATTERN = re.compile(
-    r"(?:|[ \t]*[+\-*/^=<>][ \t]*[A-Za-z0-9_.]+)"
+    r"(?:|[ \t]*[+\-*/^=<>][^$\r\n`;,:]*)"
 )
 TARGET_INCOMPATIBILITY_PATTERNS = {
     "claude": re.compile(r"\bnot compatible with Claude Code\b", re.IGNORECASE),
