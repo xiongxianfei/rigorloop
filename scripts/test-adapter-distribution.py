@@ -1982,6 +1982,34 @@ release_gate:
             published_names,
         )
 
+    def test_real_dollar_invocation_is_not_hidden_by_later_dollar(self) -> None:
+        source = self.fixture("codex-dollar-skill")
+        source_text = (source / "SKILL.md").read_text(encoding="utf-8")
+        lines = (
+            "Invoke `$plan`; let `$x$` denote the input.",
+            "Invoke `$plan`; then read `$HOME`.",
+            "Invoke `$plan`; the fallback costs $5.",
+            r"Invoke `$plan`; document \$value.",
+            "Invoke `$workflow auto: status`; let `$plan + 1$` denote input.",
+        )
+
+        for line in lines:
+            with self.subTest(line=line), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "codex-dollar-skill"
+                shutil.copytree(source, target)
+                (target / "SKILL.md").write_text(
+                    source_text.replace(
+                        "Invoke this workflow as `$proposal` before continuing.",
+                        line,
+                    ),
+                    encoding="utf-8",
+                )
+
+                report = evaluate_skill(target)
+
+                self.assertEqual(report.included_adapters, ("codex",))
+                self.assertIn("Codex-specific $skill invocation", report.reason)
+
     def test_generic_artifact_paths_remain_portable(self) -> None:
         report = evaluate_skill(self.fixture("generic-artifact-paths"))
 
@@ -2015,6 +2043,8 @@ release_gate:
             "Let `$plan^2$` denote the input.",
             "Read the variable `$plan\u0301_value`.",
             "Read the variable `$workflow\ufe0f`.",
+            "Read the variable `$plan\u200c_value`.",
+            "Read the variable `$plan\u200d_value`.",
             "Do not treat `$ſpec` as a published name.",
             "Do not treat `$ımplement` as a published name.",
             "Do not treat `$worKflow` as a published name.",
