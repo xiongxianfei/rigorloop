@@ -47,9 +47,9 @@ Review closeout: code-review-m4-r10
   `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`,
   `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`
-- Findings resolved: 42
-- Unresolved findings: 2
-- Current result: M4 code-review R10 requires strict literal equivalence records and invisible-mark closure.
+- Findings resolved: 44
+- Unresolved findings: 0
+- Current result: M4 code-review R10 findings are resolved and await independent R11 confirmation.
 
 ## Resolution Overview
 
@@ -97,8 +97,8 @@ Review closeout: code-review-m4-r10
 | CR-M4-R8-002 | accepted | resolved | Exact command spans and their owning list items enforce complete boundaries. |
 | CR-M4-R9-001 | accepted | resolved | Reference-style Markdown labels and invisible separators are normalized conservatively. |
 | CR-M4-R9-002 | accepted | resolved | Placeholder handling is parser-local and collision-free. |
-| CR-M4-R10-001 | accepted | open | Exact equivalence approval must use literal source records, not rendered normalization. |
-| CR-M4-R10-002 | accepted | open | Default-ignorable combining and variation marks must not split residual labels. |
+| CR-M4-R10-001 | accepted | resolved | Exact equivalence approval uses literal raw Markdown records. |
+| CR-M4-R10-002 | accepted | resolved | Combining and variation marks cannot split residual labels. |
 
 ## Finding Details
 
@@ -380,25 +380,25 @@ Validation evidence: Literal and encoded sentinel mutations and custom placehold
 
 Finding ID: CR-M4-R10-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Require one exact raw code-span multiset for every Codex, Claude, OpenCode, and declared-placeholder record before rendered residual checks.
 Rationale: Approval semantics must preserve copyable literal command and placeholder source.
 Validation target: code-review-m4-r11
-Validation evidence: pending
+Validation evidence: Zero-width/private identities, altered operations, uppercase, spaced, self-closing, encoded, and nested placeholders fail; all 142 adapter tests and the planned ten-skill clean-install command pass.
 
 #### CR-M4-R10-002 - Invisible combining and variation marks hide adapter labels
 
 Finding ID: CR-M4-R10-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Remove CGJ and variation-selector ranges during rendered residual normalization and add literal and entity regressions.
 Rationale: Invisible marks must not interrupt a rendered adapter identity.
 Validation target: code-review-m4-r11
-Validation evidence: pending
+Validation evidence: Literal and encoded CGJ and variation-selector label splits fail; all 142 adapter tests and the planned ten-skill clean-install command pass.
 
 ### code-review-m1-r1
 
