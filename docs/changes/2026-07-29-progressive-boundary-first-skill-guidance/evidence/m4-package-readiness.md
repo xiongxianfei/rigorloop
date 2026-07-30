@@ -52,6 +52,9 @@
 | R15 fixed-code commit | `6f06d08f` |
 | R15 fixed-code tree | `84f2eacbfa658b20e8b87df6bdc436bb84b594b3` |
 | R15 fixed-code diff SHA-256 (`24f2bcac..6f06d08f`) | `a81020adc621e3d0f3283d889ef51154cda7e68de02cc9b84f11adc8759bf4f4` |
+| R16 fixed-code commit | `f76fdd01` |
+| R16 fixed-code tree | `cbc3a932c852be7675a865d094dfa07fd2911f6d` |
+| R16 fixed-code diff SHA-256 (`4b2f843f..f76fdd01`) | `ffdf3aef69bc5680b8bd3f53c03d4a01a73fb503fe93409c1c243deb0d16bc63` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -136,10 +139,13 @@ Every recognized additive Codex, Claude, or OpenCode invocation occurrence is
 checked only through the narrow phrase-based contract in
 `specs/skill-contract.md` R3l. The equivalence and two command-owning list
 records match byte-for-byte, the four approved Codex command code spans match
-one exact multiset, and raw dollar-skill or `/workflow` phrases outside those
-records fail. The checker does not interpret rendered Markdown, HTML, Unicode,
-or adapter-labeled prose. The regression matrix records both in-scope failures
-and out-of-scope formatting/prose variants.
+one exact multiset, and governed dollar-skill or whitespace-delimited
+`/workflow` command phrases outside those records fail. The checker does not
+interpret rendered Markdown, HTML, Unicode, adapter-labeled prose, unrelated
+shell/math variables, or longer route and file paths. One closed published-skill
+vocabulary drives both dollar-token checks, with a drift test against canonical
+skill inventory. The regression matrix records both in-scope failures and
+out-of-scope formatting, prose, variable, and path variants.
 
 ## Activation and rollback proof
 
@@ -163,7 +169,7 @@ The 28-test projection suite proves repeated projection identity, handled interr
 | `python scripts/test-skill-validator.py` | pass, 282 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skills |
 | `python scripts/build-skills.py --check` | pass with temporary output |
-| `python scripts/test-adapter-distribution.py` | pass, 143 tests |
+| `python scripts/test-adapter-distribution.py` | pass, 146 tests |
 | Planned `build-adapters.py` plus `validate-adapters.py --clean-install-smoke` command | pass for all ten governed skills and three adapters |
 | `bash scripts/ci.sh --mode broad-smoke` | pass, 11 checks in 612 seconds |
 | `git diff --check` | pass |

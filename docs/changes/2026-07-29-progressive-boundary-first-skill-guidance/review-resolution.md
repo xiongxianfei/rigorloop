@@ -55,9 +55,9 @@ Review closeout: code-review-m4-r16
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
   `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`,
   `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`
-- Findings resolved: 52
-- Unresolved findings: 2
-- Current result: M4 code-review R16 findings require checker-scope resolution.
+- Findings resolved: 54
+- Unresolved findings: 0
+- Current result: M4 code-review R16 findings are resolved and await independent R17 confirmation.
 
 ## Resolution Overview
 
@@ -115,8 +115,8 @@ Review closeout: code-review-m4-r16
 | CR-M4-R13-002 | accepted | resolved | Mongolian and Khmer variation controls cannot split tokens. |
 | CR-M4-R14-001 | accepted | resolved | Only recognized Markdown constructs lose visible delimiters. |
 | CR-M4-R15-001 | accepted | resolved | Published-skill portability now follows R3l's narrow phrase/path boundary. |
-| CR-M4-R16-001 | accepted | open | Reuse one case-insensitive governed-skill vocabulary for the trigger and residual check. |
-| CR-M4-R16-002 | accepted | open | Preserve variables and longer paths while rejecting actual invocation syntax. |
+| CR-M4-R16-001 | accepted | resolved | One case-insensitive governed-skill vocabulary now drives the trigger and residual check. |
+| CR-M4-R16-002 | accepted | resolved | Variables and longer paths remain portable while actual invocation syntax is rejected. |
 
 ## Finding Details
 
@@ -126,25 +126,25 @@ Review closeout: code-review-m4-r16
 
 Finding ID: CR-M4-R16-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Compile one case-insensitive governed-skill pattern and reuse it for outer activation and residual checks.
 Rationale: One vocabulary prevents context-dependent classification of the same token.
 Validation target: code-review-m4-r17
-Validation evidence: pending
+Validation evidence: Standalone mixed- and uppercase governed invocations fail, the vocabulary matches all canonical published skills, and all 146 adapter tests pass.
 
 #### CR-M4-R16-002 - Raw invocation patterns reject variables and longer paths
 
 Finding ID: CR-M4-R16-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Restrict dollar tokens to governed skill names and make slash-command identity terminate before path punctuation.
 Rationale: R3l permits narrow phrase- and path-based validation, not generic variable or path interpretation.
 Validation target: code-review-m4-r17
-Validation evidence: pending
+Validation evidence: Shell and math variables plus hyphenated, dotted, and nested workflow paths remain portable; actual dollar and whitespace-delimited slash commands fail; the planned ten-skill, three-adapter clean install passes.
 
 ### code-review-m2-r1
 
