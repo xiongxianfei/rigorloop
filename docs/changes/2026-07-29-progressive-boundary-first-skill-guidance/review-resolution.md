@@ -41,6 +41,7 @@ Review closeout: code-review-m4-r12
 Review closeout: code-review-m4-r13
 Review closeout: code-review-m4-r14
 Review closeout: code-review-m4-r15
+Review closeout: code-review-m4-r16
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -53,10 +54,10 @@ Review closeout: code-review-m4-r15
   `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
   `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`,
-  `code-review-m4-r14`, `code-review-m4-r15`
+  `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`
 - Findings resolved: 52
-- Unresolved findings: 0
-- Current result: M4 code-review R15 finding is resolved and awaits independent R16 confirmation.
+- Unresolved findings: 2
+- Current result: M4 code-review R16 findings require checker-scope resolution.
 
 ## Resolution Overview
 
@@ -114,8 +115,36 @@ Review closeout: code-review-m4-r15
 | CR-M4-R13-002 | accepted | resolved | Mongolian and Khmer variation controls cannot split tokens. |
 | CR-M4-R14-001 | accepted | resolved | Only recognized Markdown constructs lose visible delimiters. |
 | CR-M4-R15-001 | accepted | resolved | Published-skill portability now follows R3l's narrow phrase/path boundary. |
+| CR-M4-R16-001 | accepted | open | Reuse one case-insensitive governed-skill vocabulary for the trigger and residual check. |
+| CR-M4-R16-002 | accepted | open | Preserve variables and longer paths while rejecting actual invocation syntax. |
 
 ## Finding Details
+
+### code-review-m4-r16
+
+#### CR-M4-R16-001 - Dollar-token trigger and residual vocabulary differ
+
+Finding ID: CR-M4-R16-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Compile one case-insensitive governed-skill pattern and reuse it for outer activation and residual checks.
+Rationale: One vocabulary prevents context-dependent classification of the same token.
+Validation target: code-review-m4-r17
+Validation evidence: pending
+
+#### CR-M4-R16-002 - Raw invocation patterns reject variables and longer paths
+
+Finding ID: CR-M4-R16-002
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Restrict dollar tokens to governed skill names and make slash-command identity terminate before path punctuation.
+Rationale: R3l permits narrow phrase- and path-based validation, not generic variable or path interpretation.
+Validation target: code-review-m4-r17
+Validation evidence: pending
 
 ### code-review-m2-r1
 
