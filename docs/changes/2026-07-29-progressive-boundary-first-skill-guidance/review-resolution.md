@@ -42,6 +42,7 @@ Review closeout: code-review-m4-r13
 Review closeout: code-review-m4-r14
 Review closeout: code-review-m4-r15
 Review closeout: code-review-m4-r16
+Review closeout: code-review-m4-r17
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -54,10 +55,11 @@ Review closeout: code-review-m4-r16
   `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
   `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`,
-  `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`
+  `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`,
+  `code-review-m4-r17`
 - Findings resolved: 54
-- Unresolved findings: 0
-- Current result: M4 code-review R16 findings are resolved and await independent R17 confirmation.
+- Unresolved findings: 2
+- Current result: M4 code-review R17 findings require token-termination resolution.
 
 ## Resolution Overview
 
@@ -117,8 +119,36 @@ Review closeout: code-review-m4-r16
 | CR-M4-R15-001 | accepted | resolved | Published-skill portability now follows R3l's narrow phrase/path boundary. |
 | CR-M4-R16-001 | accepted | resolved | One case-insensitive governed-skill vocabulary now drives the trigger and residual check. |
 | CR-M4-R16-002 | accepted | resolved | Variables and longer paths remain portable while actual invocation syntax is rejected. |
+| CR-M4-R17-001 | accepted | open | Require complete governed dollar tokens rather than variable or math prefixes. |
+| CR-M4-R17-002 | accepted | open | Recognize exact slash commands at structural and phrase terminators. |
 
 ## Finding Details
+
+### code-review-m4-r17
+
+#### CR-M4-R17-001 - Governed names still match variable and math prefixes
+
+Finding ID: CR-M4-R17-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Exclude Unicode identifier continuation, hyphens, and closing dollar delimiters after governed names.
+Rationale: R3l checks complete invocation tokens, not prefixes in variable or math notation.
+Validation target: code-review-m4-r18
+Validation evidence: pending
+
+#### CR-M4-R17-002 - Exact slash commands escape at phrase terminators
+
+Finding ID: CR-M4-R17-002
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Permit structural whitespace and safe phrase punctuation as exact slash-command terminators while excluding route and file continuations.
+Rationale: Exact invocation phrases can end before prose without becoming project paths.
+Validation target: code-review-m4-r18
+Validation evidence: pending
 
 ### code-review-m4-r16
 
