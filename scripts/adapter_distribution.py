@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import hashlib
-import html
 import importlib.util
 import json
 import re
@@ -391,33 +390,21 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     actual_codex_code_spans = Counter(
         span
         for span in re.findall(r"`([^`\n]+)`", text)
-        if re.search(r"\$[A-Za-z]", html.unescape(span))
+        if re.search(r"\$[A-Za-z]", span)
     )
     if actual_codex_code_spans != expected_codex_code_spans:
         return False
 
     class VisibleTextParser(HTMLParser):
-        def __init__(self, *, preserve_placeholders: bool) -> None:
+        def __init__(self) -> None:
             super().__init__(convert_charrefs=True)
             self.parts: list[str] = []
-            self.preserve_placeholders = preserve_placeholders
 
         def handle_data(self, data: str) -> None:
             self.parts.append(data)
 
-        def handle_starttag(
-            self,
-            tag: str,
-            attrs: list[tuple[str, str | None]],
-        ) -> None:
-            if self.preserve_placeholders and not attrs and tag in {
-                "argument",
-                "target-stage",
-            }:
-                self.parts.append(f"<{tag}>")
-
-    def visible_text(value: str, *, preserve_placeholders: bool = False) -> str:
-        parser = VisibleTextParser(preserve_placeholders=preserve_placeholders)
+    def visible_text(value: str) -> str:
+        parser = VisibleTextParser()
         parser.feed(value)
         parser.close()
         rendered = "".join(parser.parts)
@@ -434,7 +421,8 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
         rendered = "".join(
             character
             for character in rendered
-            if unicodedata.category(character) not in {"Cf", "Cn", "Co", "Cs"}
+            if unicodedata.category(character)
+            not in {"Cf", "Cn", "Co", "Cs", "Me", "Mn"}
         )
         return re.sub(r"[*_~\[\]]", "", rendered).replace("`", "")
 
@@ -445,39 +433,30 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     if len(equivalence_blocks) != 1:
         return False
 
-    plain_text = visible_text(text, preserve_placeholders=True)
-    normalized = re.sub(r"\s+", " ", plain_text)
-    expected = (
-        "Adapter invocation equivalents preserve the same arguments: Codex uses "
-        "$workflow auto: <argument>, Claude uses /workflow auto: <argument>, "
-        "and OpenCode invokes the installed workflow skill with "
-        "auto: <argument>. Here <argument> is <target-stage>, status, or off."
+    normalized_block = re.sub(r"\s+", " ", equivalence_blocks[0]).strip()
+    expected_block = (
+        "- Adapter invocation equivalents preserve the same arguments: Codex uses "
+        "`$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, "
+        "and OpenCode invokes the installed `workflow` skill with "
+        "`auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or "
+        "`off`."
     )
-    normalized_block = re.sub(
-        r"\s+",
-        " ",
-        visible_text(equivalence_blocks[0], preserve_placeholders=True),
-    ).strip()
-    if normalized_block != f"- {expected}" or normalized.count(expected) != 1:
+    if normalized_block != expected_block:
         return False
     command_blocks = re.findall(
         r"(?ms)^- `\$workflow auto: (?:<target-stage>|status)`.*?(?=^- |\Z)",
         text,
     )
     normalized_command_blocks = tuple(
-        re.sub(
-            r"\s+",
-            " ",
-            visible_text(block, preserve_placeholders=True),
-        ).strip()
+        re.sub(r"\s+", " ", block).strip()
         for block in command_blocks
     )
     expected_command_blocks = (
-        "- $workflow auto: <target-stage> selects a structured target. Supported "
-        "targets are proposal-review, spec, spec-review, architecture, "
-        "architecture-review, plan, plan-review, test-spec, test-spec-review, "
-        "implement, code-review, and verify.",
-        "- $workflow auto: status is read-only. $workflow auto: off durably "
+        "- `$workflow auto: <target-stage>` selects a structured target. Supported "
+        "targets are `proposal-review`, `spec`, `spec-review`, `architecture`, "
+        "`architecture-review`, `plan`, `plan-review`, `test-spec`, "
+        "`test-spec-review`, `implement`, `code-review`, and `verify`.",
+        "- `$workflow auto: status` is read-only. `$workflow auto: off` durably "
         "cancels the unified run and preserves transition evidence.",
     )
     if normalized_command_blocks != expected_command_blocks:
