@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -50,6 +50,7 @@ Review closeout: code-review-m4-r21
 Review closeout: code-review-m4-r22
 Review closeout: code-review-m4-r23
 Review closeout: code-review-m4-r24
+Review closeout: code-review-final-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -65,10 +66,10 @@ Review closeout: code-review-m4-r24
   `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`,
   `code-review-m4-r17`, `code-review-m4-r18`, `code-review-m4-r19`,
   `code-review-m4-r20`, `code-review-m4-r21`, `code-review-m4-r22`,
-  `code-review-m4-r23`, `code-review-m4-r24`
+  `code-review-m4-r23`, `code-review-m4-r24`, `code-review-final-r1`
 - Findings resolved: 66
 - Unresolved findings: 0
-- Current result: M4 is approved and closed; final holistic review is next.
+- Current result: Final holistic review is approved; review-resolution is closed and explain-change is next.
 
 ## Resolution Overview
 
@@ -142,6 +143,11 @@ Review closeout: code-review-m4-r24
 | CR-M4-R23-001 | accepted | resolved | Escape parity is applied to governed candidate dollars. |
 
 ## Finding Details
+
+### code-review-final-r1
+
+No findings. Both independent reviewers approved the complete initiative and
+confirmed all 66 prior findings resolved.
 
 ### code-review-m4-r24
 
@@ -1066,6 +1072,13 @@ the contract or scenario count.
 
 ## Clean review receipts
 
+### code-review-final-r1
+
+Status: approved
+Material findings: none
+Resolution required: no
+Evidence: reviews/code-review-final-r1.md
+
 ### code-review-m4-r24
 
 Status: approved
@@ -1130,5 +1143,5 @@ Evidence: reviews/test-spec-review-r2.md
 - [x] Every rejected finding has rationale.
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
-- [ ] Validation evidence is recorded for all accepted findings.
+- [x] Validation evidence is recorded for all accepted findings.
 - [x] Closeout status is correct.

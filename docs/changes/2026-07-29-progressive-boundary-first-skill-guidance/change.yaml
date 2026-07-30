@@ -74,7 +74,7 @@ artifact_states:
 workflow_state:
   lifecycle_state: active
   current_stage: code-review
-  next_stage: code-review
+  next_stage: explain-change
   blocker: null
   evidence:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-r2.md
@@ -117,6 +117,7 @@ workflow_state:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m4-r22.md
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m4-r23.md
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m4-r24.md
+    - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-final-r1.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -137,12 +138,12 @@ workflow_state:
     latest_review:
       status: approved
       stage: code-review
-      round: r24
+      round: r1
       artifact_id: plan
-      occurrence: milestone
-      milestone_id: M4
+      occurrence: final
+      milestone_id: none
       evidence:
-        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m4-r24.md
+        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-final-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
