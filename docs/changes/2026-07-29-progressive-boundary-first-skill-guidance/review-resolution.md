@@ -46,6 +46,7 @@ Review closeout: code-review-m4-r17
 Review closeout: code-review-m4-r18
 Review closeout: code-review-m4-r19
 Review closeout: code-review-m4-r20
+Review closeout: code-review-m4-r21
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -60,10 +61,10 @@ Review closeout: code-review-m4-r20
   `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`,
   `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`,
   `code-review-m4-r17`, `code-review-m4-r18`, `code-review-m4-r19`,
-  `code-review-m4-r20`
+  `code-review-m4-r20`, `code-review-m4-r21`
 - Findings resolved: 62
-- Unresolved findings: 0
-- Current result: M4 code-review R20 finding is resolved and awaits independent R21 confirmation.
+- Unresolved findings: 1
+- Current result: M4 code-review R21 finding requires closing-dollar resolution.
 
 ## Resolution Overview
 
@@ -131,8 +132,23 @@ Review closeout: code-review-m4-r20
 | CR-M4-R19-001 | accepted | resolved | ZWNJ and ZWJ are treated as identifier continuation. |
 | CR-M4-R19-002 | accepted | resolved | Paired-dollar suppression is limited to candidate-local arithmetic forms. |
 | CR-M4-R20-001 | accepted | resolved | A bounded structural suffix replaces the compressed arithmetic atom. |
+| CR-M4-R21-001 | accepted | open | Require a plausible unescaped paired-math closer boundary. |
 
 ## Finding Details
+
+### code-review-m4-r21
+
+#### CR-M4-R21-001 - An opening dollar can masquerade as the math closer
+
+Finding ID: CR-M4-R21-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Require an unescaped closer not followed by identifier, digit, dollar, or hyphen continuation.
+Rationale: An opening token dollar is not the current candidate's closing delimiter.
+Validation target: code-review-m4-r22
+Validation evidence: pending
 
 ### code-review-m4-r20
 
