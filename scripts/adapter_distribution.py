@@ -92,16 +92,17 @@ PUBLISHED_SKILL_INVOCATION_NAMES = (
     "workflow",
 )
 CODEX_SKILL_INVOCATION_PATTERN = re.compile(
-    r"(?<![A-Za-z0-9_])\$(?:"
+    r"(?<![\w$])\$(?:"
     + "|".join(
         re.escape(name)
         for name in sorted(PUBLISHED_SKILL_INVOCATION_NAMES, key=len, reverse=True)
     )
-    + r")(?![A-Za-z0-9-])",
+    + r")(?![\w$-])",
     re.IGNORECASE,
 )
 CLAUDE_WORKFLOW_INVOCATION_PATTERN = re.compile(
-    r"(?<![\w./])/workflow(?=$|[ \t]+)",
+    r"(?<![\w./])/workflow"
+    r"(?=$|[ \t\r\n`\"',;:!?)}\]]|\.(?:$|[ \t\r\n]))",
     re.IGNORECASE,
 )
 TARGET_INCOMPATIBILITY_PATTERNS = {
