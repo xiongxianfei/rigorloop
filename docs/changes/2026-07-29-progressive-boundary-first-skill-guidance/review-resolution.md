@@ -37,6 +37,7 @@ Review closeout: code-review-m4-r8
 Review closeout: code-review-m4-r9
 Review closeout: code-review-m4-r10
 Review closeout: code-review-m4-r11
+Review closeout: code-review-m4-r12
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -48,10 +49,10 @@ Review closeout: code-review-m4-r11
   `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`,
   `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
-  `code-review-m4-r11`
+  `code-review-m4-r11`, `code-review-m4-r12`
 - Findings resolved: 46
-- Unresolved findings: 0
-- Current result: M4 code-review R11 findings are resolved and await independent R12 confirmation.
+- Unresolved findings: 2
+- Current result: M4 code-review R12 requires boundary-preserving normalization and control-first checking.
 
 ## Resolution Overview
 
@@ -103,6 +104,8 @@ Review closeout: code-review-m4-r11
 | CR-M4-R10-002 | accepted | resolved | Combining and variation marks cannot split residual labels. |
 | CR-M4-R11-001 | accepted | resolved | Approved Markdown records match byte-for-byte. |
 | CR-M4-R11-002 | accepted | resolved | Residual labels use a conservative ASCII-alphanumeric projection. |
+| CR-M4-R12-001 | accepted | open | Visible boundaries must not synthesize adapter labels. |
+| CR-M4-R12-002 | accepted | open | Non-rendering controls must be removed before whitespace normalization. |
 
 ## Finding Details
 
@@ -429,6 +432,32 @@ Chosen action: Detect labels on a conservative ASCII-alphanumeric projection of 
 Rationale: Enumerating Unicode invisibility categories leaves avoidable fail-open gaps.
 Validation target: code-review-m4-r12
 Validation evidence: C0 control, Hangul filler, entity, combining, format, and private-use label splits fail; all 142 adapter tests and the planned ten-skill clean-install command pass.
+
+### code-review-m4-r12
+
+#### CR-M4-R12-001 - Projection synthesizes labels from visible portable prose
+
+Finding ID: CR-M4-R12-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Preserve visible boundaries, normalize paired Markdown constructs contextually, and add benign negative controls.
+Rationale: Portability detection must remain narrow as well as fail closed.
+Validation target: code-review-m4-r13
+Validation evidence: pending
+
+#### CR-M4-R12-002 - Whitespace folding hides control-split invocations
+
+Finding ID: CR-M4-R12-002
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Remove governed non-rendering characters before ASCII structural whitespace normalization and syntax checks.
+Rationale: Invisible controls join tokens; visible characters and whitespace remain boundaries.
+Validation target: code-review-m4-r13
+Validation evidence: pending
 
 ### code-review-m1-r1
 

@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: code-review-m4-r12
+review_stage: code-review
+review_target: commit:b0eec089
+base_revision: 490fa65f
+head_revision: b0eec089
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r11-resolution
+reviewer_context_id: m4-r12-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [visible-boundary-preservation, control-ordering, false-positive-portability]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:b0eec089.diff
+    revision: b0eec089
+    sha256: d3a324a133b2fe044cfa24854976ea6f9b8212af0a43dadaba0f6dbdafb4ec0b
+initial_packet_sha256: d3a324a133b2fe044cfa24854976ea6f9b8212af0a43dadaba0f6dbdafb4ec0b
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r12-second-review}
+requirement_fidelity: {applicability: applicable, reason: Narrow portability detection and residual closure are spec-derived.}
+risk_map:
+  affected_behavior: cross-adapter workflow invocation portability
+  highest_impact_failure_modes: projection invents labels or whitespace folding hides control-split invocations
+  changed_boundaries: visible punctuation, non-ASCII text, controls, Markdown emphasis
+  evidence_expected: boundary-preserving rendered normalization with positive and negative controls
+  direct_inspection_areas: portability parser and mutation matrix
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, false-positive-input]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Can visible portable prose synthesize an adapter label?
+    - Can whitespace-classified controls split an invocation?
