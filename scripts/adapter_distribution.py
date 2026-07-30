@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import unicodedata
 import zipfile
 from collections import Counter
 from dataclasses import dataclass
@@ -417,7 +418,30 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
             r"\1",
             rendered,
         )
-        return re.sub(r"[*_~\[\]]", "", rendered).replace("`", "")
+        rendered = re.sub(
+            r"(\*\*|__|~~|\*|_)(?=\S)(.+?)(?<=\S)\1",
+            r"\2",
+            rendered,
+        )
+        rendered = re.sub(r"[\[\]]", "", rendered).replace("`", "")
+
+        def is_nonrendering(character: str) -> bool:
+            codepoint = ord(character)
+            category = unicodedata.category(character)
+            return (
+                category in {"Cf", "Cn", "Co", "Cs"}
+                or (category == "Cc" and character not in "\t\n\r")
+                or codepoint == 0x034F
+                or 0x115F <= codepoint <= 0x1160
+                or codepoint == 0x3164
+                or 0xFE00 <= codepoint <= 0xFE0F
+                or codepoint == 0xFFA0
+                or 0xE0100 <= codepoint <= 0xE01EF
+            )
+
+        return "".join(
+            character for character in rendered if not is_nonrendering(character)
+        )
 
     equivalence_blocks = re.findall(
         r"(?ms)^- Adapter invocation equivalents\b.*?(?=^- |\Z)",
@@ -452,19 +476,12 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
     remaining_source = text
     for approved_block in (*equivalence_blocks, *command_blocks):
         remaining_source = remaining_source.replace(approved_block, "", 1)
-    remaining = re.sub(r"\s+", " ", visible_text(remaining_source))
-    ascii_syntax = "".join(
-        character
-        for character in remaining
-        if character.isascii()
-        and (character.isprintable() or character in "\n\r\t")
-    )
-    if re.search(r"\$[A-Za-z][A-Za-z0-9-]*", ascii_syntax):
+    remaining = re.sub(r"[ \t\r\n]+", " ", visible_text(remaining_source))
+    if re.search(r"\$[A-Za-z][A-Za-z0-9-]*", remaining):
         return False
-    if re.search(r"(?<![\w.])/workflow\b", ascii_syntax, flags=re.IGNORECASE):
+    if re.search(r"(?<![\w.])/workflow\b", remaining, flags=re.IGNORECASE):
         return False
-    label_projection = re.sub(r"[^A-Za-z0-9]+", "", remaining)
-    if re.search(r"(?:Codex|Claude|OpenCode)", label_projection, flags=re.IGNORECASE):
+    if re.search(r"\b(?:Codex|Claude|OpenCode)\b", remaining, flags=re.IGNORECASE):
         return False
     return True
 
