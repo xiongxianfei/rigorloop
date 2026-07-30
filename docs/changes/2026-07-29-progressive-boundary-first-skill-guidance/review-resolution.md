@@ -58,9 +58,9 @@ Review closeout: code-review-m4-r18
   `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`,
   `code-review-m4-r14`, `code-review-m4-r15`, `code-review-m4-r16`,
   `code-review-m4-r17`, `code-review-m4-r18`
-- Findings resolved: 56
-- Unresolved findings: 3
-- Current result: M4 code-review R18 findings require narrow token-context resolution.
+- Findings resolved: 59
+- Unresolved findings: 0
+- Current result: M4 code-review R18 findings are resolved and await independent R19 confirmation.
 
 ## Resolution Overview
 
@@ -122,9 +122,9 @@ Review closeout: code-review-m4-r18
 | CR-M4-R16-002 | accepted | resolved | Variables and longer paths remain portable while actual invocation syntax is rejected. |
 | CR-M4-R17-001 | accepted | resolved | Complete governed dollar tokens exclude variable and math continuations. |
 | CR-M4-R17-002 | accepted | resolved | Exact slash commands terminate at structural whitespace and safe phrase punctuation. |
-| CR-M4-R18-001 | accepted | open | Exclude Unicode identifiers and paired-dollar math from governed invocation candidates. |
-| CR-M4-R18-002 | accepted | open | Limit case-insensitive command identity to ASCII spellings. |
-| CR-M4-R18-003 | accepted | open | Exclude hyphenated parent paths from slash-command scope. |
+| CR-M4-R18-001 | accepted | resolved | Unicode identifiers and paired-dollar math are excluded from governed invocation candidates. |
+| CR-M4-R18-002 | accepted | resolved | Case-insensitive command identity is limited to ASCII spellings. |
+| CR-M4-R18-003 | accepted | resolved | Hyphenated parent paths are excluded from slash-command scope. |
 
 ## Finding Details
 
@@ -134,37 +134,37 @@ Review closeout: code-review-m4-r18
 
 Finding ID: CR-M4-R18-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Post-filter governed-name candidates for Unicode identifier continuation and same-line paired dollars.
 Rationale: R3l checks explicit invocation phrases, not identifier or math syntax.
 Validation target: code-review-m4-r19
-Validation evidence: pending
+Validation evidence: Combining-mark and variation-selector identifiers plus immediate and multi-token paired math remain portable; complete governed invocations still fail; all 147 adapter tests pass.
 
 #### CR-M4-R18-002 - Unicode case folding expands command vocabulary
 
 Finding ID: CR-M4-R18-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Use ASCII-only case-insensitive matching for closed command names.
 Rationale: Closed published names do not include Unicode case-fold aliases.
 Validation target: code-review-m4-r19
-Validation evidence: pending
+Validation evidence: Long-s, dotless-i, and Kelvin-sign dollar and slash aliases remain portable while ASCII case variants fail; all 147 adapter tests pass.
 
 #### CR-M4-R18-003 - Hyphenated parent paths match slash commands
 
 Finding ID: CR-M4-R18-003
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Add hyphen to the slash-command left path-context exclusion.
 Rationale: A command identity cannot begin inside a hyphenated route or file component.
 Validation target: code-review-m4-r19
-Validation evidence: pending
+Validation evidence: `docs-/workflow` remains portable while exact punctuation-terminated commands fail; all 147 adapter tests and the planned ten-skill, three-adapter clean install pass.
 
 ### code-review-m4-r17
 

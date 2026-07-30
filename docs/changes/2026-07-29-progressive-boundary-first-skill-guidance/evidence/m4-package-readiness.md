@@ -58,6 +58,9 @@
 | R17 fixed-code commit | `74daa6c7` |
 | R17 fixed-code tree | `6f2045f110c44eb259bf83a3c4c364078ea6351e` |
 | R17 fixed-code diff SHA-256 (`ea74c581..74daa6c7`) | `f83400a075d13e694fe9405e0cc3e288a29e7601366fb1001ca3ba97c56d6971` |
+| R18 fixed-code commit | `de5445bf` |
+| R18 fixed-code tree | `e08ac0b9b84314718473989381ef9e1c707054b4` |
+| R18 fixed-code diff SHA-256 (`e31cd971..de5445bf`) | `ad1db63463f0e8e07aa0fc24c04868b3b51a169734bfc018b6a6e23131d54b42` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -146,13 +149,14 @@ one exact multiset, and governed dollar-skill or whitespace-delimited
 `/workflow` command phrases outside those records fail. The checker does not
 interpret rendered Markdown, HTML, Unicode, adapter-labeled prose, unrelated
 shell/math variables, or longer route and file paths. Complete-dollar-token
-boundaries exclude Unicode identifier continuation, hyphens, and closing math
-delimiters. Exact slash commands terminate at structural whitespace, code-span
-delimiters, and safe prose punctuation while dotted, slashed, and hyphenated
-path continuations remain outside scope. One closed published-skill vocabulary
-drives both dollar-token checks, with a drift test against canonical skill
-inventory. The regression matrix records both in-scope failures and out-of-scope
-formatting, prose, variable, and path variants.
+boundaries use ASCII-only command-name identity plus a small Unicode
+identifier-continuation predicate. Same-line paired-dollar math remains outside
+invocation scope. Exact slash commands terminate at structural whitespace,
+code-span delimiters, and safe prose punctuation while dotted, slashed, and
+hyphenated leading or trailing path contexts remain outside scope. One closed
+published-skill vocabulary drives both dollar-token checks, with a drift test
+against canonical skill inventory. The regression matrix records both in-scope
+failures and out-of-scope formatting, prose, variable, math, and path variants.
 
 ## Activation and rollback proof
 
