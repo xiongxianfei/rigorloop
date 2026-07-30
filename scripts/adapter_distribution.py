@@ -104,6 +104,9 @@ CLAUDE_WORKFLOW_INVOCATION_PATTERN = re.compile(
     r"(?<![\w./-])/(?ai:workflow)"
     r"(?=$|[ \t\r\n`\"',;:!?)}\]]|\.(?:$|[ \t\r\n]))",
 )
+PAIRED_DOLLAR_MATH_SUFFIX_PATTERN = re.compile(
+    r"(?:|[ \t]*[+\-*/^=<>][ \t]*[A-Za-z0-9_.]+)"
+)
 TARGET_INCOMPATIBILITY_PATTERNS = {
     "claude": re.compile(r"\bnot compatible with Claude Code\b", re.IGNORECASE),
     "opencode": re.compile(r"\bnot compatible with opencode\b", re.IGNORECASE),
@@ -475,6 +478,7 @@ def _is_identifier_continuation(character: str) -> bool:
     return bool(character) and (
         character.isalnum()
         or character == "_"
+        or character in {"\u200c", "\u200d"}
         or f"a{character}".isidentifier()
     )
 
@@ -492,7 +496,13 @@ def _has_codex_skill_invocation(text: str) -> bool:
         line_end = text.find("\n", match.end())
         if line_end == -1:
             line_end = len(text)
-        if "$" in text[match.end():line_end]:
+        closing_dollar = text.find("$", match.end(), line_end)
+        if (
+            closing_dollar != -1
+            and PAIRED_DOLLAR_MATH_SUFFIX_PATTERN.fullmatch(
+                text[match.end():closing_dollar]
+            )
+        ):
             continue
         return True
     return False
