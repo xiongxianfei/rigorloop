@@ -2062,6 +2062,14 @@ release_gate:
             + "\nOpen\uf000\uf001Code command: broken manual.\n",
             "encoded_zero_width_split_opencode": lambda text: text
             + "\nOpen&#x200B;Code command: broken manual.\n",
+            "combining_joiner_split_opencode": lambda text: text
+            + "\nOpen\u034fCode command: broken manual.\n",
+            "variation_selector_split_opencode": lambda text: text
+            + "\nOpen\ufe0fCode command: broken manual.\n",
+            "encoded_combining_joiner_split_opencode": lambda text: text
+            + "\nOpen&#x034F;Code command: broken manual.\n",
+            "encoded_variation_selector_split_opencode": lambda text: text
+            + "\nOpen&#xFE0F;Code command: broken manual.\n",
             "literal_argument_sentinel": lambda text: text.replace(
                 "Claude uses `/workflow auto: <argument>`",
                 "Claude uses `/workflow auto: \uf000argument\uf001`",
@@ -2080,6 +2088,61 @@ release_gate:
             "literal_target_sentinel": lambda text: text.replace(
                 "Here `<argument>` is `<target-stage>`",
                 "Here `<argument>` is `\uf000target-stage\uf001`",
+                1,
+            ),
+            "claude_zero_width_identity": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/work\u200bflow auto: <argument>`",
+                1,
+            ),
+            "claude_private_use_identity": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/work\uf000flow auto: <argument>`",
+                1,
+            ),
+            "opencode_zero_width_identity": lambda text: text.replace(
+                "installed `workflow` skill",
+                "installed `work\u200bflow` skill",
+                1,
+            ),
+            "opencode_zero_width_operation": lambda text: text.replace(
+                "`auto: <argument>`",
+                "`au\u200bto: <argument>`",
+                1,
+            ),
+            "claude_uppercase_placeholder": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow auto: <ARGUMENT>`",
+                1,
+            ),
+            "claude_spaced_placeholder": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow auto: <argument >`",
+                1,
+            ),
+            "claude_self_closing_placeholder": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow auto: <argument/>`",
+                1,
+            ),
+            "claude_encoded_placeholder": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow auto: &lt;argument&gt;`",
+                1,
+            ),
+            "opencode_uppercase_placeholder": lambda text: text.replace(
+                "`auto: <argument>`",
+                "`auto: <ARGUMENT>`",
+                1,
+            ),
+            "uppercase_target_placeholder": lambda text: text.replace(
+                "`<target-stage>`",
+                "`<TARGET-STAGE>`",
+                1,
+            ),
+            "nested_claude_placeholder": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow auto: <custom><argument></custom>`",
                 1,
             ),
             "codex_status_suffix": lambda text: text.replace(
