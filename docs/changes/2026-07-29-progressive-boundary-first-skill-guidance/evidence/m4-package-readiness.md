@@ -40,6 +40,9 @@
 | R11 fixed-code commit | `bc6ed37a` |
 | R11 fixed-code tree | `5e791aab2d036cadd14070d765c89ec9b30f4ed1` |
 | R11 fixed-code diff SHA-256 (`490fa65f..bc6ed37a`) | `4d7795ef22772f8612e1b38acb5b1e26c1ae13dfaa86e8d73fc8ac8be7d3f5d3` |
+| R12 fixed-code commit | `caee4782` |
+| R12 fixed-code tree | `e4d6950dd709d777eaee6aab45df01b192df4f3d` |
+| R12 fixed-code diff SHA-256 (`3171fee9..caee4782`) | `3f71f24719968bac6361c75461fa1504301fa4a242946370db26f2ad093e7d53` |
 | Resource manifest SHA-256 | `6741b88ec84c392f5c41829203d24bb2044a526f7662cf2d01063358bfae4113` |
 | Canonical source inventory SHA-256 | `bb128c838accb20a8232b769b615bedf9d4b4c827eb0b90011a2f7f3ad7ccbf3` |
 | Projection-set SHA-256 | `68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329` |
@@ -143,6 +146,10 @@ The three approved Markdown list records match byte-for-byte. Residual adapter
 labels are detected on a conservative ASCII-alphanumeric projection, while
 dollar and slash syntax uses an ASCII-only view that preserves ordinary
 punctuation and whitespace.
+Rendered normalization removes governed non-rendering characters before
+structural whitespace folding while preserving ordinary visible punctuation,
+whitespace, identifiers, and non-ASCII text as boundaries. The mutation suite
+includes benign portable negative controls.
 
 ## Activation and rollback proof
 
@@ -166,7 +173,7 @@ The 28-test projection suite proves repeated projection identity, handled interr
 | `python scripts/test-skill-validator.py` | pass, 282 tests with 16 documented skips |
 | `python scripts/validate-skills.py` | pass, 24 skills |
 | `python scripts/build-skills.py --check` | pass with temporary output |
-| `python scripts/test-adapter-distribution.py` | pass, 142 tests |
+| `python scripts/test-adapter-distribution.py` | pass, 143 tests |
 | Planned `build-adapters.py` plus `validate-adapters.py --clean-install-smoke` command | pass for all ten governed skills and three adapters |
 | `bash scripts/ci.sh --mode broad-smoke` | pass, 11 checks in 612 seconds |
 | `git diff --check` | pass |

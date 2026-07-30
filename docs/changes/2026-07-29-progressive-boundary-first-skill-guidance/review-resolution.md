@@ -50,9 +50,9 @@ Review closeout: code-review-m4-r12
   `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
   `code-review-m4-r11`, `code-review-m4-r12`
-- Findings resolved: 46
-- Unresolved findings: 2
-- Current result: M4 code-review R12 requires boundary-preserving normalization and control-first checking.
+- Findings resolved: 48
+- Unresolved findings: 0
+- Current result: M4 code-review R12 findings are resolved and await independent R13 confirmation.
 
 ## Resolution Overview
 
@@ -104,8 +104,8 @@ Review closeout: code-review-m4-r12
 | CR-M4-R10-002 | accepted | resolved | Combining and variation marks cannot split residual labels. |
 | CR-M4-R11-001 | accepted | resolved | Approved Markdown records match byte-for-byte. |
 | CR-M4-R11-002 | accepted | resolved | Residual labels use a conservative ASCII-alphanumeric projection. |
-| CR-M4-R12-001 | accepted | open | Visible boundaries must not synthesize adapter labels. |
-| CR-M4-R12-002 | accepted | open | Non-rendering controls must be removed before whitespace normalization. |
+| CR-M4-R12-001 | accepted | resolved | Visible boundaries remain intact and benign negative controls stay portable. |
+| CR-M4-R12-002 | accepted | resolved | Non-rendering controls are removed before whitespace normalization. |
 
 ## Finding Details
 
@@ -439,25 +439,25 @@ Validation evidence: C0 control, Hangul filler, entity, combining, format, and p
 
 Finding ID: CR-M4-R12-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Preserve visible boundaries, normalize paired Markdown constructs contextually, and add benign negative controls.
 Rationale: Portability detection must remain narrow as well as fail closed.
 Validation target: code-review-m4-r13
-Validation evidence: pending
+Validation evidence: Encode-X, open-code, cod_ex, and visible non-ASCII slash tokens remain portable; all 143 adapter tests and the planned ten-skill clean-install command pass.
 
 #### CR-M4-R12-002 - Whitespace folding hides control-split invocations
 
 Finding ID: CR-M4-R12-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M4 implementation
 Owning stage: review-resolution
 Chosen action: Remove governed non-rendering characters before ASCII structural whitespace normalization and syntax checks.
 Rationale: Invisible controls join tokens; visible characters and whitespace remain boundaries.
 Validation target: code-review-m4-r13
-Validation evidence: pending
+Validation evidence: Unit, file, and group separators plus NEL cannot split residual slash commands; all 143 adapter tests and the planned ten-skill clean-install command pass.
 
 ### code-review-m1-r1
 
