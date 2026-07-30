@@ -40,6 +40,7 @@ Review closeout: code-review-m4-r11
 Review closeout: code-review-m4-r12
 Review closeout: code-review-m4-r13
 Review closeout: code-review-m4-r14
+Review closeout: code-review-m4-r15
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -52,10 +53,10 @@ Review closeout: code-review-m4-r14
   `code-review-m4-r5`, `code-review-m4-r6`, `code-review-m4-r7`,
   `code-review-m4-r8`, `code-review-m4-r9`, `code-review-m4-r10`,
   `code-review-m4-r11`, `code-review-m4-r12`, `code-review-m4-r13`,
-  `code-review-m4-r14`
+  `code-review-m4-r14`, `code-review-m4-r15`
 - Findings resolved: 51
-- Unresolved findings: 0
-- Current result: M4 code-review R14 finding is resolved and awaits independent R15 confirmation.
+- Unresolved findings: 1
+- Current result: M4 code-review R15 requires removal of rendered-Markdown semantics.
 
 ## Resolution Overview
 
@@ -112,6 +113,7 @@ Review closeout: code-review-m4-r14
 | CR-M4-R13-001 | accepted | resolved | Nested Markdown normalizes recursively while intraword underscores remain literal. |
 | CR-M4-R13-002 | accepted | resolved | Mongolian and Khmer variation controls cannot split tokens. |
 | CR-M4-R14-001 | accepted | resolved | Only recognized Markdown constructs lose visible delimiters. |
+| CR-M4-R15-001 | accepted | open | Published-skill portability must return to R3l's narrow phrase/path boundary. |
 
 ## Finding Details
 
@@ -504,6 +506,20 @@ Chosen action: Normalize recognized code spans, links, references, and paired em
 Rationale: Visible punctuation must remain a boundary and entity-origin text must not become formatting.
 Validation target: code-review-m4-r15
 Validation evidence: Recognized code, links, references, and emphasis expose labels while unmatched, unresolved, and entity-origin delimiters remain portable; all 143 adapter tests and the planned clean-install command pass.
+
+### code-review-m4-r15
+
+#### CR-M4-R15-001 - Reference handling requires a Markdown block parser
+
+Finding ID: CR-M4-R15-001
+Disposition: accepted
+Status: open
+Owner: M4 implementation
+Owning stage: review-resolution
+Chosen action: Keep byte-exact approved records and narrow raw dollar/slash checks; remove residual rendered-label parsing and the speculative CommonMark matrix.
+Rationale: `specs/skill-contract.md` R3l requires narrow phrase- or path-based static validation.
+Validation target: code-review-m4-r16
+Validation evidence: pending
 
 ### code-review-m1-r1
 
