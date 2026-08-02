@@ -166,7 +166,6 @@ workflow_state:
     final_closeout:
       readiness: not-ready
       reasons:
-        - verify-pending
         - pr-handoff-pending
       evidence:
         - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-final-r5.md

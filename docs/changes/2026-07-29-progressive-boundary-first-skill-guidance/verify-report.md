@@ -1,6 +1,6 @@
 # Verify Report: Progressive Boundary-First Skill Guidance
 
-Verification ID: verify-r2
+Verification ID: verify-r3
 Stage: verify
 Verifier: Codex verify
 Verification date: 2026-08-02
@@ -14,7 +14,7 @@ PR readiness: not claimed
 - Artifacts changed by this stage: this report and change-local routing evidence
 - Open blockers for branch readiness: none
 - Next stage: `pr`
-- Validation: PR mode passed 18 selected checks; fresh CMD14 broad smoke passed 12 checks
+- Validation: PR mode passed 18 selected checks; fresh CMD14 broad smoke passed 12 checks; post-R5 focused CI passed 4 checks
 - Readiness: branch-ready; final workflow closeout remains pending on PR handoff
 
 ## Scope and verdict
@@ -23,9 +23,10 @@ Ready.
 
 This verification covers the 191-file branch change from merge base
 `3b180da8db6ae23eff7038d273384ed82680f8cb` through implementation,
-milestone review, PR-readiness corrections, final code-review R4, and durable
-explanation. Code-review R4 approved the correction range through `2320c2bb`;
-the later `65bb5170` commit refreshes only the reviewed change rationale.
+milestone review, PR-readiness corrections, final code-review R5, and durable
+explanation. Code-review R5 approved the final whitespace-only correction at
+`d56b6557`; focused verification was refreshed against reviewed tip
+`2746fddb`.
 
 The implementation and governed artifacts agree on the progressive model:
 ten skills perform a concise prompt-independent scan, stage owners load only
@@ -46,7 +47,7 @@ repository-owned validation.
 | Automatic concise stage guidance | `PBS-R005`-`PBS-R024`; M2; PRF-003-PRF-020 | 282 skill-validator tests passed with 16 documented skips; all 24 canonical skills and generated output validated. |
 | Path-owned checker selection | `PBS-R025`-`PBS-R031`; M3; PRF-014-PRF-021 | 141 selector tests, both explicit selection scenarios, and 162 lifecycle tests passed. |
 | Package and activation readiness | `PBS-R003`-`PBS-R006`, `PBS-R032`-`PBS-R038`; M4; PRF-001-PRF-023 | 148 adapter tests and clean installs for ten governed skills across Codex, Claude, and opencode passed; activation remains pending. |
-| Review and rationale closure | Four clean milestone closeouts, final code-review R4, owner-stage reviews, and `explain-change.md` | 53 review records and 71 resolved findings validated; zero findings remain open. |
+| Review and rationale closure | Four clean milestone closeouts, final code-review R5, owner-stage reviews, and `explain-change.md` | 54 review records and 71 resolved findings validated; zero findings remain open. |
 | Cross-repository integration | Approved CMD14 | Fresh broad smoke passed all 12 checks in 510 seconds. |
 
 The approved test specification maps all 38 `PBS-R*` requirements through
@@ -56,7 +57,8 @@ unapproved behavior was found.
 
 ## Validation evidence
 
-Fresh final commands ran from the repository root against commit `65bb5170`.
+Fresh final commands ran from the repository root through reviewed commit
+`2746fddb`.
 Milestone command evidence remains recorded below; PR mode reran every selected
 affected check and broad smoke refreshed the required integration gate.
 
@@ -64,6 +66,7 @@ affected check and broad smoke refreshed the required integration gate.
 | --- | --- |
 | `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` | pass; 18 selected focused/boundary checks |
 | `bash scripts/ci.sh --mode broad-smoke` | pass; 12 checks in 510 seconds |
+| post-R5 explicit CI over change, verify, review log, resolution, and R5 receipt | pass; 4 selected checks in 16.36 seconds |
 
 | Command ID | Result |
 | --- | --- |
@@ -82,7 +85,7 @@ affected check and broad smoke refreshed the required integration gate.
 | CMD13 exact v0.1.5 adapter build and clean-install smoke | pass for ten governed skills across three adapters |
 | CMD14 `bash scripts/ci.sh --mode broad-smoke` | pass, 12 checks in 510 seconds on 2026-08-02 |
 | CMD15 change-metadata validation | pass |
-| CMD16 review-artifact validation | pass, 53 reviews and 71 resolved findings |
+| CMD16 review-artifact validation | pass, 54 reviews and 71 resolved findings |
 | CMD17 explicit lifecycle validation | pass with two known nonblocking lifecycle-language warnings |
 | `git diff --check` | pass |
 
@@ -95,7 +98,7 @@ explanation and verification surfaces.
 ## Review and drift assessment
 
 - M1 through M4 are closed.
-- Final code-review R4 is clean with notes and independently reviewed at L2.
+- Final code-review R5 is clean with notes and independently reviewed at L2.
 - `review-resolution.md` is closed: 70 findings were accepted and fixed, one
   was rejected with contract-based rationale, and none remains open.
 - Proposal, specification, architecture, ADR, plan, test specification,
