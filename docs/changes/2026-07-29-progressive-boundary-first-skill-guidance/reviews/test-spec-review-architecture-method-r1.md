@@ -7,12 +7,12 @@ Reviewer: independent Codex test-spec-review peer
 Target: specs/architecture-package-method.test.md
 Reviewed artifact: specs/architecture-package-method.test.md
 Review date: 2026-08-02
-Status: changes-requested
-Review status: changes-requested
+Status: approved
+Review status: approved
 Recording status: recorded
-Material findings: APM-TSR1-001
-Immediate next stage: test-spec revision
-Implementation handoff: not-allowed
+Material findings: APM-TSR1-001 (resolved)
+Immediate next stage: implement
+Implementation handoff: allowed
 Automatic downstream handoff: none
 
 ## Material finding
@@ -26,8 +26,15 @@ Evidence: The proof map still uses generic lifecycle metadata/status summaries a
 Required outcome: Explicitly distinguish stable owner pointers, mutable state resolved from the exact matching change-local artifact entry without duplicated status, and embedded status retained only for unmigrated legacy artifacts.
 Safe resolution path: Tighten only the affected coverage summaries and T12 fixture assertion; add no test ID, scenario, command, milestone, or coverage target.
 
+## Rereview
+
+`APM-TSR1-001` is resolved. The R7-R20 and AC7 summaries plus T12 now
+explicitly prove stable owner pointers, exact matching owner-entry state
+without duplicated mutable status, and unmigrated legacy compatibility. All
+test IDs, commands, milestone references, scenarios, and coverage targets are
+unchanged.
+
 ## Recommendation
 
-Changes requested. Apply the bounded traceability wording correction and rerun
-test-spec-review R1. Implementation handoff is not allowed from this isolated
-supporting proof review.
+Approved. Settle only the supporting test-spec entry to `active`; this isolated
+review does not start implementation.

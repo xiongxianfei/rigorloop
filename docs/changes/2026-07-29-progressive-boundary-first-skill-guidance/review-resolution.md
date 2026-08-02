@@ -71,15 +71,15 @@ Review closeout: test-spec-review-architecture-method-r1
   `code-review-m4-r17`, `code-review-m4-r18`, `code-review-m4-r19`,
   `code-review-m4-r20`, `code-review-m4-r21`, `code-review-m4-r22`,
   `code-review-m4-r23`, `code-review-m4-r24`, `code-review-final-r1`
-- Findings resolved: 67
-- Unresolved findings: 3
-- Current result: Supporting test-spec review requests exact owner-entry traceability wording before architecture rereview.
+- Findings resolved: 68
+- Unresolved findings: 2
+- Current result: Supporting spec and test-spec reviews approve the architecture lifecycle contract and proof; owner-stage architecture and proposal evidence remain for final rereview.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| APM-TSR1-001 | accepted | open | Make existing proof summaries and the compatibility fixture distinguish stable pointers, exact owner-entry state, and unmigrated legacy status. |
+| APM-TSR1-001 | accepted | resolved | Existing proof summaries and T12 now distinguish stable pointers, exact owner-entry state, no duplication, and unmigrated legacy status. |
 | APM-SR1-001 | accepted | resolved | New governed architecture and ADR artifacts use stable owner pointers and exact change-local mutable state with explicit legacy compatibility. |
 | LC-CR1-001 | accepted | open | Fresh architecture review must settle the current canonical architecture under its established owner. |
 | LC-CR1-002 | accepted | open | Proposal-review must classify the pointer-only header migration before settlement is preserved. |
@@ -158,14 +158,14 @@ Review closeout: test-spec-review-architecture-method-r1
 
 Finding ID: APM-TSR1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Tighten only the affected coverage summaries and T12 fixture assertion.
 Rationale: Existing tests cover the behavior, but the proof map must state the exact three-part ownership distinction it claims.
 Safe resolution path: Preserve all test IDs, scenarios, commands, milestones, and coverage targets.
 Validation target: test-spec-review-architecture-method-r1 rereview
-Validation evidence: Pending.
+Validation evidence: Test-spec-review R1 rereview approved the corrected R7-R20 and AC7 summaries plus T12; all test, command, scenario, milestone, and coverage identities remain unchanged.
 
 ### spec-review-architecture-method-r1
 

@@ -11,11 +11,11 @@ skill guidance proposal and any downstream artifacts.
 Review ID: test-spec-review-architecture-method-r1
 Stage: test-spec-review
 Round: 1
-Status: changes-requested
+Status: approved
 Detailed record: reviews/test-spec-review-architecture-method-r1.md
 Resolution: review-resolution.md#test-spec-review-architecture-method-r1
 Material findings: APM-TSR1-001
-Open findings: APM-TSR1-001
+Open findings: None
 Recording status: recorded
 
 ### Review entry
