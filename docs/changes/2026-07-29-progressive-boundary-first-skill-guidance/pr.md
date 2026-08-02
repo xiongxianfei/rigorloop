@@ -2,8 +2,8 @@
 
 | Field | Value |
 | --- | --- |
-| PR URL | Pending creation |
-| PR state | pending |
+| PR URL | https://github.com/xiongxianfei/rigorloop/pull/129 |
+| PR state | open |
 | Base branch | main |
 | Head branch | proposal/progressive-boundary-first-guidance |
 
