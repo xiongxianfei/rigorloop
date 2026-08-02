@@ -46,7 +46,7 @@
 | --- | --- | --- |
 | `R1`-`R3` | `T1`, `T8`, `T15` | Focused spec ownership, workflow pointer only, and final proof surfaces. |
 | `R4`-`R6` | `T5`, `T9`, `T15` | Canonical package source of truth, default path, and migration/supersession expectations. |
-| `R7`-`R20` | `T2`, `T5`, `T6`, `T14`, `T15` | All 12 arc42 headings, lifecycle metadata, concise `Not applicable` rationale, section update conditions, ADR summary section, quality/risk/glossary coverage. |
+| `R7`-`R20` | `T2`, `T5`, `T6`, `T14`, `T15` | All 12 arc42 headings, stable owner pointers, exact matching `change.yaml` state without duplicated mutable status, concise `Not applicable` rationale, section update conditions, ADR summary section, quality/risk/glossary coverage. |
 | `R21`-`R29` | `T3`, `T5`, `T11`, `T15` | Default context/container diagrams, conditional diagrams, source-text requirement, Mermaid first implementation, and no binary-only source of truth. |
 | `R30`-`R43` | `T4`, `T5`, `T6`, `T9`, `T15`, `T23` | Feature update scope, lowest-level C4 propagation, non-normal change-local delta status, canonical current truth, same-PR review, runtime timing, and leaf-change exclusion. |
 | `R44`-`R48` | `T7`, `T14`, `T15` | ADR trigger, required fields, exact owner-entry state with legacy compatibility, and append-only decision history. |
@@ -109,7 +109,7 @@
 | `AC4` | `T3`, `T5` | Context/container diagrams are present and component/deployment diagrams remain conditional. |
 | `AC5` | `T3`, `T13` | Required diagrams are source text and binary-only evidence is insufficient. |
 | `AC6` | `T4`, `T6` | Merge-back behavior is explicit and reviewed. |
-| `AC7` | `T7` | ADR triggers, fields, statuses, and append-only expectations are covered. |
+| `AC7` | `T7` | ADR triggers, fields, exact owner-entry state, unmigrated legacy status compatibility, and append-only expectations are covered. |
 | `AC8` | `T2`, `T8` | Templates live under `templates/` and governance declares the boundary. |
 | `AC9` | `T6` | The first positive example is the architecture-method change itself. |
 | `AC10` | `T9` | Legacy normalization follow-on inventories and classifies every current architecture document. |
@@ -386,10 +386,10 @@
   - `scripts/test-artifact-lifecycle-validator.py`
   - `tests/fixtures/artifact-lifecycle/`
 - Steps:
-  - Add a canonical system architecture fixture with stable owner metadata and all 12 official arc42 sections.
+  - Add a canonical system architecture fixture with a stable owner pointer, an exact matching `change.yaml` architecture entry, no duplicated mutable status, and all 12 official arc42 sections.
   - Assert that fixture passes only at `docs/architecture/system/architecture.md`.
-  - Assert existing legacy architecture fixtures still require the older architecture contract unless explicitly out of scope.
-  - Assert missing status, invalid lifecycle status, placeholders, stale readiness, terminal closeout, and generated-output rejection behavior remain unchanged.
+  - Assert existing unmigrated legacy architecture fixtures still use their older embedded-status contract unless explicitly out of scope.
+  - Assert missing or mismatched owner entries for stage-owned fixtures and missing or invalid status for unmigrated legacy fixtures fail closed; placeholder, stale-readiness, terminal-closeout, and generated-output rejection remain unchanged.
   - Assert compatibility does not require C4 diagram files, ADR presence, or package-shape validation.
   - Run the M1 pass-gate commands.
 - Expected result:

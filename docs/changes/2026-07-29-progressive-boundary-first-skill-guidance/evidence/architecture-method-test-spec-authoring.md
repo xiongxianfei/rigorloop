@@ -3,7 +3,7 @@
 - Artifact ID: `test-spec-architecture-package-method`
 - Artifact path: `specs/architecture-package-method.test.md`
 - Authoring stage: `test-spec`
-- Completion status: `in-progress`
+- Completion status: `complete`
 - Resulting review-request path: `docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-architecture-method-r1.md`
 
 ## Scope
@@ -26,3 +26,8 @@ legacy compatibility without adding a new test case.
 
 Test-spec-review finding `APM-TSR1-001` reopens authoring for three exact
 traceability summaries; proof scope and IDs remain unchanged.
+
+The R7-R20 and AC7 coverage rows plus T12 now state stable owner pointers,
+exact matching owner-entry state, absence of duplicated mutable status, and
+unmigrated legacy embedded-status compatibility. No proof identity or scope
+changed.
