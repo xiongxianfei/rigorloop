@@ -73,8 +73,8 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: verify
-  next_stage: pr
+  current_stage: implement
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-r2.md
@@ -120,6 +120,7 @@ workflow_state:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-final-r1.md
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/explain-change.md
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/verify-report.md
+    - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/pr-readiness-selector-bugfix.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -149,9 +150,11 @@ workflow_state:
     final_closeout:
       readiness: not-ready
       reasons:
+        - milestone-review-pending
+        - verify-pending
         - pr-handoff-pending
       evidence:
-        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/verify-report.md
+        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/pr-readiness-selector-bugfix.md
 artifacts:
   proposal: docs/proposals/2026-07-29-progressive-boundary-first-skill-guidance.md
   spec: specs/progressive-boundary-first-skill-guidance.md
@@ -424,6 +427,14 @@ validation:
     result: pass_with_10_nonblocking_warnings_final_verify
   - command: git diff --check
     result: pass_final_verify
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: blocked_unclassified_boundary_first_resources_manifest_before_bugfix
+  - command: python -m unittest scripts.test-select-validation.ValidationSelectionTests.test_boundary_first_surfaces_select_boundary_validation
+    result: fail_expected_before_fix_then_pass_after_fix
+  - command: python scripts/select-validation.py --mode explicit --path specs/boundary-first-resources.yaml
+    result: pass_boundary_first_validate_and_reference_regression_selected
+  - command: python scripts/test-select-validation.py
+    result: pass_141_tests_after_pr_readiness_bugfix
 changed_files:
   - docs/proposals/2026-07-29-progressive-boundary-first-skill-guidance.md
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml
@@ -517,6 +528,10 @@ changed_files:
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/review-invocation-code-review-m1-r8.yaml
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-m1-r8.md
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/verify-report.md
+  - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/pr-readiness-selector-bugfix.md
+  - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/explain-change.md
+  - scripts/validation_selection.py
+  - scripts/test-select-validation.py
 review:
   status: approved
   unresolved_items: 0

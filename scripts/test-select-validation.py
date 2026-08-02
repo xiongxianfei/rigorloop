@@ -5253,6 +5253,7 @@ raise SystemExit(3)
         repo = self.make_git_repo()
         paths = (
             "specs/boundary-first-activation.yaml",
+            "specs/boundary-first-resources.yaml",
             "specs/feature.md",
             "specs/feature.test.md",
             "skills/spec/references/boundary-first-method-v1.md",
@@ -5292,6 +5293,7 @@ raise SystemExit(3)
                     selected_ids(result.to_json_dict()),
                 )
                 if path in {
+                    "specs/boundary-first-resources.yaml",
                     "skills/spec/references/boundary-first-method-v1.md",
                     "scripts/boundary_first_reference.py",
                     "scripts/project-boundary-first-reference.py",

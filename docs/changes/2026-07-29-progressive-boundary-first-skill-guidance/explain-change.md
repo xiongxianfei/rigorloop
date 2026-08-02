@@ -130,5 +130,12 @@ Generated packages and clean-install trees remain temporary and untracked.
 - Hosted CI has not been observed in this local workflow; final verification
   can claim only the repository-owned commands it actually runs.
 
+PR-mode preflight later exposed one selector registration omission for the new
+canonical resource-manifest YAML. The focused
+[PR-readiness selector bug-fix evidence](evidence/pr-readiness-selector-bugfix.md)
+records the failing reproduction, test-first correction, and scoped routing
+result. This does not change the approved contract; it completes the M3 path
+registration required by `PBS-R026` and `PBS-R027`.
+
 The reviewed implementation and durable rationale are ready for final
 verification, not yet for PR handoff.
