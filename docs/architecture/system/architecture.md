@@ -2,7 +2,7 @@
 
 ## Owning change record
 
-`docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml`
+`docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml`
 
 ## Related artifacts
 

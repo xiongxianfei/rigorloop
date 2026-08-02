@@ -4,9 +4,9 @@
 
 # Stage-Owned Lifecycle Artifacts and Change-Local Workflow State
 
-## Status
+## Owning change record
 
-accepted
+`docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml`
 
 ## Problem
 
