@@ -6,6 +6,7 @@ Closeout status: open
 
 Review closeout: proposal-review-r5
 Review closeout: architecture-review-r3
+Review closeout: architecture-review-r4
 
 Review closeout: test-spec-review-r3
 Review closeout: test-spec-review-r2
@@ -43,19 +44,21 @@ Review closeout: code-review-final-r3
   `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`,
   `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`,
   `spec-review-r6`
-- Findings resolved: 23
+- Findings resolved: 25
 - Unresolved findings: 3
-- Current result: Proposal-review R5 approved the non-substantive pointer
-  correction; architecture-review R3 requested three contract and package
-  corrections before architecture settlement.
+- Current result: Architecture-review R4 cleared AR3-001 and AR3-003 but
+  requested two final current-state wording corrections; AR3-002 remains
+  partially resolved.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| AR3-001 | accepted | open | Reconcile architecture-method lifecycle metadata with the active stage-owned owner-pointer contract. |
-| AR3-002 | accepted | open | Describe the active stage-owned ADR and its current effects accurately. |
-| AR3-003 | accepted | open | Correct compact-core initial-versus-expanded loading in the component diagram. |
+| AR4-001 | accepted | open | Classify superseded automation ADRs consistently as historical decisions. |
+| AR4-002 | accepted | open | Make schema-v3 writes and schema-v1/v2 compatibility reads unambiguous in the CLI white-box view. |
+| AR3-001 | accepted | resolved | Approved supporting spec and test-spec amendments align stable owner metadata and exact change-local lifecycle state. |
+| AR3-002 | partially-accepted | open | Active ADR wording is corrected, but predecessor summaries still imply supersession is pending. |
+| AR3-003 | accepted | resolved | The component diagram distinguishes owner-family initial loading from downstream expansion loading. |
 | SLA-PR5-001 | accepted | resolved | Corrected the stale compatibility statement; proposal-review R5 classified the complete correction as non-substantive. |
 | SLA-TSR4 | accepted | resolved | T5, T6, and T19 now align with M3 command availability and evidence ownership. |
 | SLA-TSR1 | accepted | resolved | Staged proof now activates only when its commands and implementation surface exist. |
@@ -82,25 +85,53 @@ Review closeout: code-review-final-r3
 
 ## Finding Details
 
+### architecture-review-r4
+
+#### AR4-001 - Historical automation ADRs still appear to await supersession
+
+Finding ID: AR4-001
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture
+Chosen action: Replace four stale pending-supersession summaries with current historical classification.
+Rationale: Canonical architecture must not contradict the active stage-owned ADR settlement.
+Safe resolution path: Change summaries only; preserve ADR bodies.
+Validation target: architecture-review-r5
+Validation evidence: Pending.
+
+#### AR4-002 - CLI white-box view still specifies schema-v2 writes
+
+Finding ID: AR4-002
+Disposition: accepted
+Status: open
+Owner: architecture author
+Owning stage: architecture
+Chosen action: State schema-v3 current writes and schema-v1/v2 compatibility reads consistently.
+Rationale: The white-box view must match the current serializer contract and container view.
+Safe resolution path: Correct the serializer responsibility and two historical summaries without changing ADRs.
+Validation target: architecture-review-r5
+Validation evidence: Pending.
+
 ### architecture-review-r3
 
 #### AR3-001 - Architecture lifecycle metadata contracts conflict
 
 Finding ID: AR3-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec author
 Owning stage: spec
 Chosen action: Align architecture-package method R8 and its test with the active stable-pointer and change-local mutable-state contract.
 Rationale: Two authoritative contracts cannot prescribe opposite lifecycle metadata placement.
 Safe resolution path: Amend only the conflicting method requirement and proof, then include it in architecture R4 evidence.
 Validation target: architecture-review-r4
-Validation evidence: Pending.
+Validation evidence: Supporting spec and test-spec reviews approved stable owner pointers, exact change-local state, template and skill alignment, and legacy compatibility.
 
 #### AR3-002 - Active ADR decisions are described as pending
 
 Finding ID: AR3-002
-Disposition: accepted
+Disposition: partially-accepted
 Status: open
 Owner: architecture author
 Owning stage: architecture
@@ -108,20 +139,20 @@ Chosen action: Update current Architecture Decisions and Readiness wording to ac
 Rationale: Canonical architecture must describe current decisions, not preserve stale proposal-time wording.
 Safe resolution path: Correct only current architecture summaries; preserve ADR history.
 Validation target: architecture-review-r4
-Validation evidence: Pending.
+Validation evidence: Active ADR and direct supersession wording are corrected; AR4-001 tracks the remaining predecessor summaries.
 
 #### AR3-003 - Component diagram misstates compact-core loading
 
 Finding ID: AR3-003
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture author
 Owning stage: architecture
 Chosen action: Separate owner-family initial loading from downstream expansion loading in the component relationship.
 Rationale: The diagram must match the approved runtime contract.
 Safe resolution path: Relabel the focused component diagram without changing resource ownership.
 Validation target: architecture-review-r4
-Validation evidence: Pending.
+Validation evidence: Architecture-review R4 confirmed the component relationship now distinguishes owner-family initial loading from downstream expansion loading.
 
 ### proposal-review-r5
 

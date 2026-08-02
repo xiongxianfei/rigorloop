@@ -9,6 +9,19 @@ artifacts and change-local workflow-state proposal.
 
 ### Review entry
 
+Review ID: architecture-review-r4
+Stage: architecture-review
+Round: 4
+Reviewed artifact: docs/architecture/system/architecture.md and diagram package
+Status: changes-requested
+Detailed record: reviews/architecture-review-r4.md
+Resolution: review-resolution.md#architecture-review-r4
+Material findings: AR4-001, AR4-002
+Open findings: AR4-001, AR4-002
+Recording status: recorded
+
+### Review entry
+
 Review ID: architecture-review-r3
 Stage: architecture-review
 Round: 3
@@ -17,7 +30,7 @@ Status: changes-requested
 Detailed record: reviews/architecture-review-r3.md
 Resolution: review-resolution.md#architecture-review-r3
 Material findings: AR3-001, AR3-002, AR3-003
-Open findings: AR3-001, AR3-002, AR3-003
+Open findings: AR3-002
 Recording status: recorded
 
 ### Review entry
