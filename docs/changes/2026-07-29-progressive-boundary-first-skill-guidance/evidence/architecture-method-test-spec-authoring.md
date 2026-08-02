@@ -3,7 +3,7 @@
 - Artifact ID: `test-spec-architecture-package-method`
 - Artifact path: `specs/architecture-package-method.test.md`
 - Authoring stage: `test-spec`
-- Completion status: `complete`
+- Completion status: `in-progress`
 - Resulting review-request path: `docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-architecture-method-r1.md`
 
 ## Scope
@@ -16,3 +16,6 @@ T2, T5, and the compatibility fixture now assert stable owner metadata and
 change-local mutable lifecycle state without altering their coverage IDs.
 The revised legacy test spec now carries one stable pointer to this owning
 change record instead of embedded mutable status.
+
+`APM-SR1-001` also requires the existing ADR proof wording to distinguish new
+governed owner pointers from unmigrated historical embedded status.
