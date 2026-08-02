@@ -3,8 +3,8 @@
 - Artifact ID: `architecture`
 - Artifact path: `docs/architecture/system/architecture.md`
 - Authoring stage: `architecture`
-- Completion status: `complete`
-- Resulting review-request path: `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-r3.md`
+- Completion status: `in-progress`
+- Resulting review-request path: `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-r4.md`
 
 ## Revision result
 
@@ -31,3 +31,6 @@ including the progressive-guidance sections and their alignment with:
   `docs/architecture/system/diagrams/`; and
 - the single-owner lifecycle contract represented by this change record.
 
+Architecture-review R3 requested resolution of `AR3-001`, `AR3-002`, and
+`AR3-003`, plus one minor schema-label correction. Authoring is reopened for
+those exact corrections; architecture-review R4 is the resulting review target.
