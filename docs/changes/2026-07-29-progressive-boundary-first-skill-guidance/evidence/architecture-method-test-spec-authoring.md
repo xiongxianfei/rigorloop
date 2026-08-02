@@ -3,7 +3,7 @@
 - Artifact ID: `test-spec-architecture-package-method`
 - Artifact path: `specs/architecture-package-method.test.md`
 - Authoring stage: `test-spec`
-- Completion status: `in-progress`
+- Completion status: `complete`
 - Resulting review-request path: `docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-architecture-method-r1.md`
 
 ## Scope
@@ -19,3 +19,7 @@ change record instead of embedded mutable status.
 
 `APM-SR1-001` also requires the existing ADR proof wording to distinguish new
 governed owner pointers from unmigrated historical embedded status.
+
+T7 and its coverage row now prove exact owner-entry state for new governed
+ADRs, absence of duplicated mutable status in the template, and explicit
+legacy compatibility without adding a new test case.

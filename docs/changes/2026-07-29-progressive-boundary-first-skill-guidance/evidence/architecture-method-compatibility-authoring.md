@@ -3,7 +3,7 @@
 - Artifact ID: `spec-architecture-package-method`
 - Artifact path: `specs/architecture-package-method.md`
 - Authoring stage: `spec`
-- Completion status: `in-progress`
+- Completion status: `complete`
 - Resulting review-request path: `docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/spec-review-architecture-method-r1.md`
 
 ## Trigger
@@ -29,3 +29,8 @@ owning change record instead of embedded mutable status.
 
 Spec-review finding `APM-SR1-001` reopens authoring to align the same contract
 for new governed ADRs while preserving unmigrated historical ADR compatibility.
+
+R46-R48, AC7, observability, compatibility, the ADR template, and the public
+architecture-review checklist now use stable owner pointers and exact
+change-local lifecycle entries for new governed ADRs. Historical unmigrated
+ADRs retain explicit legacy compatibility.

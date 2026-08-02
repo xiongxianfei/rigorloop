@@ -49,7 +49,7 @@
 | `R7`-`R20` | `T2`, `T5`, `T6`, `T14`, `T15` | All 12 arc42 headings, lifecycle metadata, concise `Not applicable` rationale, section update conditions, ADR summary section, quality/risk/glossary coverage. |
 | `R21`-`R29` | `T3`, `T5`, `T11`, `T15` | Default context/container diagrams, conditional diagrams, source-text requirement, Mermaid first implementation, and no binary-only source of truth. |
 | `R30`-`R43` | `T4`, `T5`, `T6`, `T9`, `T15`, `T23` | Feature update scope, lowest-level C4 propagation, non-normal change-local delta status, canonical current truth, same-PR review, runtime timing, and leaf-change exclusion. |
-| `R44`-`R48` | `T7`, `T14`, `T15` | ADR trigger, required fields, status vocabulary, and append-only decision history. |
+| `R44`-`R48` | `T7`, `T14`, `T15` | ADR trigger, required fields, exact owner-entry state with legacy compatibility, and append-only decision history. |
 | `R49`-`R55` | `T2`, `T7`, `T8`, `T11`, `T15` | Template paths, live-artifact separation, `templates/` canonical-source boundary, governance updates, and workflow summary pointer. |
 | `R56`-`R58` | `T10`, `T11`, `T15`, `T21`, `T25` | Architecture skill updates, architecture-review surface classification, and generated output refresh through existing generators only. |
 | `R59`-`R66` | `T6`, `T9`, `T15`, `T23` | Architecture-method change as first real example, prospective adoption, legacy artifact handling, populated legacy normalization follow-on, and no reliance on normal change-local delta authoring. |
@@ -266,8 +266,9 @@
   - `templates/adr.md`
   - `docs/adr/ADR-20260428-architecture-package-method.md`
 - Steps:
-  - Inspect `templates/adr.md` for title, status, context, decision, alternatives considered, consequences, and follow-up fields.
-  - Confirm the template lists or references the approved ADR status vocabulary.
+  - Inspect `templates/adr.md` for title, stable owning-change-record pointer, context, decision, alternatives considered, consequences, and follow-up fields.
+  - Confirm new governed ADR state resolves from the exact matching `change.yaml` entry and the template does not duplicate mutable lifecycle status.
+  - Confirm unmigrated historical ADRs may retain embedded status until substantive revision or explicit migration.
   - Confirm the accepted architecture-method ADR contains required fields and records the durable method decision.
   - Confirm accepted or active ADR guidance is append-only for decision history and supersedes/deprecates later rather than silently rewriting old decisions.
   - Run lifecycle validation for the ADR.
