@@ -3,8 +3,8 @@
 - Artifact ID: `architecture`
 - Artifact path: `docs/architecture/system/architecture.md`
 - Authoring stage: `architecture`
-- Completion status: `complete`
-- Resulting review-request path: `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-r4.md`
+- Completion status: `in-progress`
+- Resulting review-request path: `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-r5.md`
 
 ## Revision result
 
@@ -39,3 +39,7 @@ The revision aligns architecture-method R8, its proof wording, the template,
 and published architecture skills with stable owner metadata; updates active
 ADR wording; distinguishes owner-family initial loading from downstream
 expansion loading; and corrects the schema-v3 container label.
+
+Architecture-review R4 reopens authoring for `AR4-001` and `AR4-002`: four
+stale supersession summaries and the remaining schema-v2 current-write
+descriptions. No ADR body changes.
