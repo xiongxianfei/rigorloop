@@ -92,7 +92,7 @@ Do not use architecture-review to settle product direction.
 Check the approved package model before broader design critique:
 
 - Canonical source: current architecture truth belongs in the project's canonical architecture package.
-- arc42 completeness: lifecycle metadata appears before all 12 official arc42 sections, and the section names remain in order.
+- arc42 completeness: stable owning-change-record metadata appears before all 12 official arc42 sections, mutable lifecycle state remains in the matching `change.yaml` entry, and the section names remain in order.
 - Core sections: Introduction and Goals, Architecture Constraints, Context and Scope, Solution Strategy, and Building Block View contain current-system content for real architecture work.
 - Runtime View: updated when behavior, orchestration, failure paths, command flow, generated-output flow, or operational flow changes.
 - Deployment View: updated when environments, packaging, generated outputs, adapters, release layout, infrastructure, or execution boundaries change.

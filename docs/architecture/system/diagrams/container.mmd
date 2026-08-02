@@ -63,7 +63,7 @@ flowchart TB
   scripts -->|generate temp output, tracked adapter output, and release artifacts for| generated
   scripts -->|runs benchmarks, analyzes JSONL, and validates metadata for| token_bench
   cli -->|uses bundled official adapter metadata, adapter descriptors, and small scaffolds from| release
-  cli -->|writes safe project/change scaffolds, records schema v2 lockfile state, and installs verified adapter output from| generated
+  cli -->|writes safe project/change scaffolds, records schema v3 lockfile state with schema v2 compatibility reads, and installs verified adapter output from| generated
   cli -->|is executed by| package_runner
   cli -->|is published after package-content, smoke, and publication-mode checks to| npm_registry
   npm_registry -->|delivers the published package to| package_runner

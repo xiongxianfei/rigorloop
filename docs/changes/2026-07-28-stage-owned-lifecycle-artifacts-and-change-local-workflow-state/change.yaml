@@ -30,7 +30,7 @@ artifact_states:
     kind: architecture
     path: docs/architecture/system/architecture.md
     role: primary
-    lifecycle_state: authoring
+    lifecycle_state: review-required
     authoring_evidence: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/architecture-progressive-guidance-revision.md
   adr:
     kind: adr

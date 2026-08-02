@@ -1,8 +1,8 @@
 # Architecture Package Method
 
-## Status
+## Owning change record
 
-- approved
+`docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml`
 
 ## Related proposal
 
@@ -150,7 +150,11 @@ R7. The canonical `architecture.md` MUST use these 12 arc42 section headings in 
 11. Risks and Technical Debt
 12. Glossary
 
-R8. The canonical `architecture.md` MUST include repository lifecycle status metadata using the architecture artifact status vocabulary before the arc42 section sequence.
+R8. The canonical `architecture.md` MUST include stable owning-change-record
+metadata before the arc42 section sequence. For artifacts governed by
+`stage-owned-change-local-v1`, the matching `change.yaml` artifact entry is
+the only mutable lifecycle-state source; `architecture.md` MUST NOT duplicate
+mutable lifecycle status.
 
 R9. Repository lifecycle metadata sections MUST NOT replace, remove, or rename any of the 12 required arc42 section headings.
 

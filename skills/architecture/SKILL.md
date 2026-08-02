@@ -118,7 +118,7 @@ Existing change-local architecture evidence can remain valid history. New change
 
 ## arc42 Sections
 
-The canonical `architecture.md` uses repository lifecycle metadata before all 12 official arc42 sections. Keep sections concise; use `Not applicable` only with a short rationale. Do not remove or rename official arc42 sections to make the document lighter.
+The canonical `architecture.md` uses a stable owning-change-record pointer before all 12 official arc42 sections. Mutable lifecycle state belongs only to the matching `change.yaml` artifact entry. Keep sections concise; use `Not applicable` only with a short rationale. Do not remove or rename official arc42 sections to make the document lighter.
 
 Use the architecture skeleton for section structure. In the skill output, name only the sections changed or explicitly unaffected with rationale.
 
