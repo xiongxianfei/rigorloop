@@ -91,8 +91,8 @@ Final `verify` will rerun the required command ledger against the final branch.
 
 ## Review resolution summary
 
-The durable [review resolution](review-resolution.md) closes 66 material
-findings: 65 accepted and fixed, and one rejected with contract-based rationale.
+The durable [review resolution](review-resolution.md) closes 71 material
+findings: 70 accepted and fixed, and one rejected with contract-based rationale.
 No finding remains open, no disposition is `needs-decision`, every milestone has
 a clean closing review, and the final holistic review is clean.
 
@@ -138,6 +138,34 @@ result. This does not change the approved contract; it completes the M3 path
 registration required by `PBS-R026` and `PBS-R027`.
 Independent final code-review R2 approved the correction with no material
 findings before fresh verification.
+
+PR-mode lifecycle preflight then exposed two settlement gaps rather than an
+implementation defect. The shared canonical architecture had been restored to
+its established owner, but that owner's review predated the progressive
+guidance additions; the legacy proposal pointer correction also lacked the
+proposal-review classification required by SLA-R021.
+
+The resolution preserves single ownership instead of registering the shared
+architecture twice:
+
+- proposal-review R5 classified the complete pointer and compatibility-wording
+  correction as non-substantive and restored accepted settlement;
+- architecture reviews R3-R5 reviewed and settled the complete canonical
+  package under its established owner;
+- the architecture-method spec, test spec, templates, and public architecture
+  skills now consistently use stable owner pointers with mutable lifecycle
+  state only in exact `change.yaml` entries;
+- new governed ADRs use the same owner-pointer model while unmigrated legacy
+  ADRs retain explicit compatibility; and
+- current architecture wording now distinguishes active versus superseded ADRs,
+  owner-family initial versus downstream expansion loading, and schema-v3
+  writes versus schema-v1/v2 compatibility inputs.
+
+Supporting spec-review and test-spec-review approved those contract and proof
+amendments. Architecture-review R5 approved the complete package. Final
+code-review R4 closed the original lifecycle findings and one mechanical
+terminal-whitespace finding; both review roots now validate with no open
+finding.
 
 The reviewed implementation and durable rationale are ready for final
 verification, not yet for PR handoff.
