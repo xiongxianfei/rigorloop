@@ -55,6 +55,7 @@ Review closeout: code-review-final-r2
 Review closeout: code-review-final-r3
 Review closeout: spec-review-architecture-method-r1
 Review closeout: test-spec-review-architecture-method-r1
+Review closeout: code-review-final-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -72,13 +73,14 @@ Review closeout: test-spec-review-architecture-method-r1
   `code-review-m4-r20`, `code-review-m4-r21`, `code-review-m4-r22`,
   `code-review-m4-r23`, `code-review-m4-r24`, `code-review-final-r1`
 - Findings resolved: 68
-- Unresolved findings: 2
-- Current result: Supporting spec and test-spec reviews approve the architecture lifecycle contract and proof; owner-stage architecture and proposal evidence remain for final rereview.
+- Unresolved findings: 3
+- Current result: Code-review R4 confirms both lifecycle findings are substantively resolved and requests one mechanical whitespace correction before settlement.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| CR-FR4-001 | accepted | open | Remove extra terminal blank lines from three architecture review records and rerun code-review R4. |
 | APM-TSR1-001 | accepted | resolved | Existing proof summaries and T12 now distinguish stable pointers, exact owner-entry state, no duplication, and unmigrated legacy status. |
 | APM-SR1-001 | accepted | resolved | New governed architecture and ADR artifacts use stable owner pointers and exact change-local mutable state with explicit legacy compatibility. |
 | LC-CR1-001 | accepted | open | Fresh architecture review must settle the current canonical architecture under its established owner. |
@@ -151,6 +153,21 @@ Review closeout: test-spec-review-architecture-method-r1
 | CR-M4-R23-001 | accepted | resolved | Escape parity is applied to governed candidate dollars. |
 
 ## Finding Details
+
+### code-review-final-r4
+
+#### CR-FR4-001 - Architecture review records fail whitespace validation
+
+Finding ID: CR-FR4-001
+Disposition: accepted
+Status: open
+Owner: implement
+Owning stage: review-resolution
+Chosen action: Remove exactly the three extra terminal blank lines.
+Rationale: The complete correction must pass committed-diff whitespace validation.
+Safe resolution path: Whitespace-only edit followed by the same range check and focused rereview.
+Validation target: code-review-final-r4 rereview
+Validation evidence: Pending.
 
 ### test-spec-review-architecture-method-r1
 

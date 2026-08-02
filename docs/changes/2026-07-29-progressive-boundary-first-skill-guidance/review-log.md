@@ -8,6 +8,17 @@ skill guidance proposal and any downstream artifacts.
 ## Review Entries
 
 ### Review entry
+Review ID: code-review-final-r4
+Stage: code-review
+Round: 4
+Status: changes-requested
+Detailed record: reviews/code-review-final-r4.md
+Resolution: review-resolution.md#code-review-final-r4
+Material findings: CR-FR4-001
+Open findings: CR-FR4-001
+Recording status: recorded
+
+### Review entry
 Review ID: test-spec-review-architecture-method-r1
 Stage: test-spec-review
 Round: 1
