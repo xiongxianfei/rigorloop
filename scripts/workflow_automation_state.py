@@ -1763,6 +1763,7 @@ class WorkflowAutomationStateStore:
         self,
         *,
         allow_legacy_without_change_id: bool = False,
+        allow_stage_owned_read: bool = False,
     ) -> StateSnapshot:
         payload = self.metadata_path.read_bytes()
         parser = _load_metadata_parser()
@@ -1780,23 +1781,39 @@ class WorkflowAutomationStateStore:
             if isinstance(workflow, dict)
             else None
         )
+        is_stage_owned = (
+            document.get("lifecycle_contract") == STAGE_OWNED_CONTRACT
+        )
         if self._canonical_change_id is not None:
             change_id = document.get("change_id")
             if (
                 change_id != self._canonical_change_id
                 and (
-                    automation is not None
+                    is_stage_owned
+                    or automation is not None
                     or not allow_legacy_without_change_id
                 )
             ):
                 error_type = (
                     AutomationStateContractError
-                    if automation is not None
+                    if is_stage_owned or automation is not None
                     else StateContractError
                 )
                 raise error_type(
                     "change metadata change_id must match its canonical change directory"
                 )
+        if is_stage_owned:
+            if not allow_stage_owned_read:
+                raise StateContractError(
+                    "stage-owned lifecycle state requires the stage-owned "
+                    "store or an explicit read-only compatibility read"
+                )
+            errors = validate_stage_owned_lifecycle_metadata(document)
+            if errors:
+                raise AutomationStateContractError(
+                    "invalid stage-owned lifecycle state: " + "; ".join(errors)
+                )
+            return StateSnapshot(document, automation, _identity(payload))
         if automation is not None:
             errors = validate_workflow_automation(
                 automation, top_level_change_id=document.get("change_id")

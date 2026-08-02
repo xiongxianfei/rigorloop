@@ -15,6 +15,7 @@ from unittest import mock
 from pathlib import Path
 
 from workflow_automation_state import (
+    StateContractError,
     WorkflowAutomationStateStore,
     compute_transition_key,
     dump_yaml,
@@ -189,6 +190,70 @@ changed_files:
     external_actions: prohibited
 """
 
+    def stage_owned_change_yaml(self) -> str:
+        return dump_yaml(
+            {
+                "change_id": "2026-07-29-stage-owned-query",
+                "title": "Stage-owned query fixture",
+                "classification": "workflow-governance",
+                "risk": "medium",
+                "lifecycle_contract": "stage-owned-change-local-v1",
+                "artifact_states": {
+                    "proposal": {
+                        "kind": "proposal",
+                        "path": "docs/proposals/stage-owned-query.md",
+                        "role": "primary",
+                        "lifecycle_state": "accepted",
+                        "review": {
+                            "id": "proposal-review-r1",
+                            "artifact_id": "proposal",
+                            "outcome": "approved",
+                            "record": (
+                                "docs/changes/2026-07-29-stage-owned-query/"
+                                "reviews/proposal-review-r1.md"
+                            ),
+                            "round": "r1",
+                        },
+                    }
+                },
+                "workflow_state": {
+                    "lifecycle_state": "active",
+                    "current_stage": "spec",
+                    "next_stage": "spec-review",
+                    "blocker": None,
+                    "evidence": [
+                        "docs/changes/2026-07-29-stage-owned-query/"
+                        "reviews/proposal-review-r1.md"
+                    ],
+                },
+                "requirements": [],
+                "tests": [],
+                "validation": [
+                    {
+                        "command": "python scripts/test-query-change-record.py",
+                        "result": "pass",
+                    }
+                ],
+                "changed_files": ["scripts/query-change-record.py"],
+                "review": {"status": "approved", "unresolved_items": 0},
+                "workflow": {
+                    "automation": {
+                        "mechanism": "bounded-review-fix",
+                        "target": {
+                            "stage": "verify",
+                            "occurrence": {"kind": "final"},
+                            "bound_at": "2026-07-29T00:00:00Z",
+                            "completion": {"rule": "fresh verification passes"},
+                        },
+                        "status": "active",
+                        "current_stage": "spec",
+                        "stop_reason": None,
+                        "evidence": [],
+                    }
+                },
+            }
+        )
+
     def make_completed_review_change(
         self,
     ) -> tuple[Path, Path, WorkflowAutomationStateStore]:
@@ -358,6 +423,90 @@ validation_summary:
         self.assertEqual(policy["stop_reason"], "verification-authorization-required")
         self.assertEqual(policy["latest_evidence_identities"], {"plan": "sha256:plan"})
         self.assertEqual(path.read_bytes(), before)
+
+    def test_summary_supports_stage_owned_change_local_metadata(self) -> None:
+        repo = self.make_change(
+            "2026-07-29-stage-owned-query",
+            self.stage_owned_change_yaml(),
+        )
+        path = (
+            repo
+            / "docs"
+            / "changes"
+            / "2026-07-29-stage-owned-query"
+            / "change.yaml"
+        )
+        before = path.read_bytes()
+
+        result = run_query(
+            "2026-07-29-stage-owned-query",
+            "summary",
+            repo_root=repo,
+        )
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(payload["metadata_shape"], "stage-owned-change-local-v1")
+        self.assertEqual(
+            payload["artifact_paths"],
+            ["docs/proposals/stage-owned-query.md"],
+        )
+        self.assertEqual(payload["review_state"]["status"], "unknown")
+        self.assertIsNone(payload["review_state"]["unresolved_items"])
+        self.assertEqual(payload["workflow_state"]["current_stage"], "spec")
+        self.assertEqual(payload["workflow_state"]["next_stage"], "spec-review")
+        self.assertEqual(payload["automation_policy"]["source"], "stage-owned")
+        self.assertEqual(payload["automation_policy"]["target"]["stage"], "verify")
+        self.assertEqual(payload["open_blockers"], [])
+        self.assertEqual(path.read_bytes(), before)
+
+        with self.assertRaisesRegex(
+            StateContractError,
+            "explicit read-only compatibility read",
+        ):
+            WorkflowAutomationStateStore(path).read()
+
+    def test_summary_rejects_stage_owned_change_id_directory_mismatch(self) -> None:
+        body = self.stage_owned_change_yaml().replace(
+            "change_id: 2026-07-29-stage-owned-query",
+            "change_id: 2026-07-29-foreign-change",
+            1,
+        )
+        repo = self.make_change("2026-07-29-stage-owned-query", body)
+
+        result = run_query(
+            "2026-07-29-stage-owned-query",
+            "summary",
+            repo_root=repo,
+        )
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["code"], "invalid-automation-state")
+        self.assertIn(
+            "change_id must match its canonical change directory",
+            payload["detail"],
+        )
+
+    def test_summary_rejects_invalid_stage_owned_state_without_falling_back(self) -> None:
+        body = self.stage_owned_change_yaml().replace(
+            "    status: active",
+            "    status: waiting",
+            1,
+        )
+        repo = self.make_change("2026-07-29-stage-owned-query", body)
+
+        result = run_query(
+            "2026-07-29-stage-owned-query",
+            "summary",
+            repo_root=repo,
+        )
+        payload = parse_json(result)
+
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(payload["code"], "invalid-automation-state")
+        self.assertIn("invalid stage-owned lifecycle state", payload["detail"])
+        self.assertIn("unknown_value", payload["detail"])
 
     def test_summary_rejects_invalid_unified_automation_without_mutation(self) -> None:
         mutations = {
