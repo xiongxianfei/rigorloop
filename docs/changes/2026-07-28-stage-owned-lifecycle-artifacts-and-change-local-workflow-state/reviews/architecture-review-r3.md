@@ -68,4 +68,3 @@ sufficient.
 Changes requested. Resolve `AR3-001` under spec ownership and `AR3-002` plus
 `AR3-003` under architecture ownership, apply the minor label correction, and
 request architecture-review R4.
-

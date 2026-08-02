@@ -39,4 +39,3 @@ lifecycle ownership, security, deployment, and testing feasibility.
 
 Approved. Settle only the established architecture owner entry to `approved`
 and preserve workflow routing.
-

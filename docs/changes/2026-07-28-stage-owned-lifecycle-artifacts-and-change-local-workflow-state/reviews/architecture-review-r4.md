@@ -47,4 +47,3 @@ Safe resolution path: Correct the serializer responsibility and clarify historic
 
 Changes requested. Apply the two bounded current-state corrections and request
 architecture-review R5. All other review dimensions pass.
-
