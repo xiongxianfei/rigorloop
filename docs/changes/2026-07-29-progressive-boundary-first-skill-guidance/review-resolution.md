@@ -56,6 +56,7 @@ Review closeout: code-review-final-r3
 Review closeout: spec-review-architecture-method-r1
 Review closeout: test-spec-review-architecture-method-r1
 Review closeout: code-review-final-r4
+Review closeout: code-review-final-r5
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -74,8 +75,8 @@ Review closeout: code-review-final-r4
   `code-review-m4-r23`, `code-review-m4-r24`, `code-review-final-r1`
 - Findings resolved: 71
 - Unresolved findings: 0
-- Current result: Code-review R4 is clean with notes; both lifecycle findings,
-  all owner-stage findings, and the terminal-whitespace finding are resolved.
+- Current result: Code-review R5 is clean with notes; both lifecycle findings,
+  all owner-stage findings, and all terminal-whitespace findings are resolved.
 
 ## Resolution Overview
 
@@ -1153,6 +1154,13 @@ Validation target: code-review-final-r4
 Validation evidence: Proposal-review R5 classifies the complete correction as non-substantive under SLA-R021 and restores accepted settlement; code-review R4 confirms closure.
 
 ## Clean review receipts
+
+### code-review-final-r5
+
+Status: approved
+Material findings: none
+Resolution required: no
+Evidence: reviews/code-review-final-r5.md
 
 ### code-review-final-r2
 
