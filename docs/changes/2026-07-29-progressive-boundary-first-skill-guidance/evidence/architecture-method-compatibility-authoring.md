@@ -3,7 +3,7 @@
 - Artifact ID: `spec-architecture-package-method`
 - Artifact path: `specs/architecture-package-method.md`
 - Authoring stage: `spec`
-- Completion status: `complete`
+- Completion status: `in-progress`
 - Resulting review-request path: `docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/spec-review-architecture-method-r1.md`
 
 ## Trigger
@@ -26,3 +26,6 @@ exclusively to the matching `change.yaml` entry. The template and both
 architecture skills use the same wording.
 The substantively revised legacy spec now carries one stable pointer to this
 owning change record instead of embedded mutable status.
+
+Spec-review finding `APM-SR1-001` reopens authoring to align the same contract
+for new governed ADRs while preserving unmigrated historical ADR compatibility.
