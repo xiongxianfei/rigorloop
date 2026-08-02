@@ -2,11 +2,12 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r5
 Review closeout: architecture-review-r3
 Review closeout: architecture-review-r4
+Review closeout: architecture-review-r5
 
 Review closeout: test-spec-review-r3
 Review closeout: test-spec-review-r2
@@ -44,20 +45,19 @@ Review closeout: code-review-final-r3
   `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`,
   `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`,
   `spec-review-r6`
-- Findings resolved: 25
-- Unresolved findings: 3
-- Current result: Architecture-review R4 cleared AR3-001 and AR3-003 but
-  requested two final current-state wording corrections; AR3-002 remains
-  partially resolved.
+- Findings resolved: 30
+- Unresolved findings: 0
+- Current result: Architecture-review R5 approved the complete current package
+  with all R3 and R4 findings resolved.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| AR4-001 | accepted | open | Classify superseded automation ADRs consistently as historical decisions. |
-| AR4-002 | accepted | open | Make schema-v3 writes and schema-v1/v2 compatibility reads unambiguous in the CLI white-box view. |
+| AR4-001 | accepted | resolved | Superseded automation ADRs are consistently classified as historical decisions with retained constraints. |
+| AR4-002 | accepted | resolved | Schema-v3 writes and schema-v1/v2 compatibility reads are unambiguous across the package. |
 | AR3-001 | accepted | resolved | Approved supporting spec and test-spec amendments align stable owner metadata and exact change-local lifecycle state. |
-| AR3-002 | partially-accepted | open | Active ADR wording is corrected, but predecessor summaries still imply supersession is pending. |
+| AR3-002 | accepted | resolved | Active authority and superseded predecessor summaries now consistently describe current state. |
 | AR3-003 | accepted | resolved | The component diagram distinguishes owner-family initial loading from downstream expansion loading. |
 | SLA-PR5-001 | accepted | resolved | Corrected the stale compatibility statement; proposal-review R5 classified the complete correction as non-substantive. |
 | SLA-TSR4 | accepted | resolved | T5, T6, and T19 now align with M3 command availability and evidence ownership. |
@@ -91,27 +91,27 @@ Review closeout: code-review-final-r3
 
 Finding ID: AR4-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture author
 Owning stage: architecture
 Chosen action: Replace four stale pending-supersession summaries with current historical classification.
 Rationale: Canonical architecture must not contradict the active stage-owned ADR settlement.
 Safe resolution path: Change summaries only; preserve ADR bodies.
 Validation target: architecture-review-r5
-Validation evidence: Pending.
+Validation evidence: Architecture-review R5 confirmed all predecessor summaries consistently use superseded historical classification.
 
 #### AR4-002 - CLI white-box view still specifies schema-v2 writes
 
 Finding ID: AR4-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture author
 Owning stage: architecture
 Chosen action: State schema-v3 current writes and schema-v1/v2 compatibility reads consistently.
 Rationale: The white-box view must match the current serializer contract and container view.
 Safe resolution path: Correct the serializer responsibility and two historical summaries without changing ADRs.
 Validation target: architecture-review-r5
-Validation evidence: Pending.
+Validation evidence: Architecture-review R5 confirmed schema-v3 writes and schema-v1/v2 compatibility across goal, white-box, runtime, deployment, data, quality, and container surfaces.
 
 ### architecture-review-r3
 
@@ -131,15 +131,23 @@ Validation evidence: Supporting spec and test-spec reviews approved stable owner
 #### AR3-002 - Active ADR decisions are described as pending
 
 Finding ID: AR3-002
-Disposition: partially-accepted
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: architecture author
 Owning stage: architecture
 Chosen action: Update current Architecture Decisions and Readiness wording to active-state language.
 Rationale: Canonical architecture must describe current decisions, not preserve stale proposal-time wording.
 Safe resolution path: Correct only current architecture summaries; preserve ADR history.
 Validation target: architecture-review-r4
-Validation evidence: Active ADR and direct supersession wording are corrected; AR4-001 tracks the remaining predecessor summaries.
+Validation evidence: Architecture-review R5 confirmed active authority, superseded historical decisions, and retained constraints are consistently classified.
+
+### architecture-review-r5
+
+Review result: approved
+Material findings: none
+Resolution required: no
+Validation evidence: Complete arc42/C4 package review plus explicit lifecycle,
+metadata, readability, whitespace, and 12-section heading checks passed.
 
 #### AR3-003 - Component diagram misstates compact-core loading
 
