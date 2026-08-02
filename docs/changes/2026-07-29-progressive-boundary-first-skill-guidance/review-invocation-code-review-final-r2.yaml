@@ -1,0 +1,46 @@
+schema_version: 1
+review_id: code-review-final-r2
+review_stage: code-review
+review_target: commit:de97e6dd
+base_revision: bebbbd94
+head_revision: de97e6dd
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L2
+author_context_id: root-pr-readiness-bugfix
+reviewer_context_id: m1-r7-second-post-verify-review
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: standard
+risk_tier_triggers: [narrow-selector-registration, post-verify-correction]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - specs/test-layering-and-change-scoped-validation.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:de97e6dd.diff
+    revision: de97e6dd
+    sha256: 6e07a528ba463013db20f455dacbb7dc002ec1bb6caf56bba9ea89e36ce23b05
+initial_packet_sha256: 6e07a528ba463013db20f455dacbb7dc002ec1bb6caf56bba9ea89e36ce23b05
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: false, satisfied: false, reviewer_context_id: none}
+requirement_fidelity: {applicability: applicable, reason: The correction implements spec-owned validation routing for the canonical boundary resource manifest.}
+risk_map:
+  affected_behavior: changed-path classification and selected checks for the canonical boundary resource manifest
+  highest_impact_failure_modes: manifest remains unclassified, over-broad YAML matching, lifecycle misrouting, or missing projection regression
+  changed_boundaries: exact path classification and validation ownership
+  evidence_expected: exact positive routing, near-match negatives, activation preservation, mixed-path composition, and selector regression
+  direct_inspection_areas: boundary surface predicates, shared routing matrix, and PR changed-set selection
+  intentionally_out_of_scope: boundary semantics, activation, package generation, PR opening, and final verification
+  applicable_risk_classes: [correctness, compatibility, fail-closed-routing, requirement-fidelity]
+  non_applicable_risk_classes: [security-credentials, database-migration, network-service, ui-accessibility]
+  falsifiable_questions:
+    - Does the exact manifest select both and only its owned boundary checks?
+    - Do close path variants remain unclassified and fail closed?
+    - Does activation YAML retain its distinct lifecycle route?
+    - Does mixed manifest and skill selection preserve each owner's checks?

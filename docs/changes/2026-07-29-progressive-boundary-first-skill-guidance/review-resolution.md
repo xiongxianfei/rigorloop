@@ -51,6 +51,7 @@ Review closeout: code-review-m4-r22
 Review closeout: code-review-m4-r23
 Review closeout: code-review-m4-r24
 Review closeout: code-review-final-r1
+Review closeout: code-review-final-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -1071,6 +1072,13 @@ the contract or scenario count.
 | Test-spec review R2 | approved | `PBS-TSR1` is resolved; the proof map permits isolated M1 implementation handoff. |
 
 ## Clean review receipts
+
+### code-review-final-r2
+
+Status: approved
+Material findings: none
+Resolution required: no
+Evidence: reviews/code-review-final-r2.md
 
 ### code-review-final-r1
 

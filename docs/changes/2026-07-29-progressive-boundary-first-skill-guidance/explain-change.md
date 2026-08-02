@@ -136,6 +136,8 @@ canonical resource-manifest YAML. The focused
 records the failing reproduction, test-first correction, and scoped routing
 result. This does not change the approved contract; it completes the M3 path
 registration required by `PBS-R026` and `PBS-R027`.
+Independent final code-review R2 approved the correction with no material
+findings before fresh verification.
 
 The reviewed implementation and durable rationale are ready for final
 verification, not yet for PR handoff.
