@@ -11,11 +11,11 @@ skill guidance proposal and any downstream artifacts.
 Review ID: code-review-final-r4
 Stage: code-review
 Round: 4
-Status: changes-requested
+Status: clean-with-notes
 Detailed record: reviews/code-review-final-r4.md
 Resolution: review-resolution.md#code-review-final-r4
 Material findings: CR-FR4-001
-Open findings: CR-FR4-001
+Open findings: None
 Recording status: recorded
 
 ### Review entry
@@ -48,7 +48,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-final-r3.md
 Resolution: review-resolution.md#code-review-final-r3
 Material findings: LC-CR1-001, LC-CR1-002
-Open findings: LC-CR1-001, LC-CR1-002
+Open findings: None
 Recording status: recorded
 
 ### Review entry

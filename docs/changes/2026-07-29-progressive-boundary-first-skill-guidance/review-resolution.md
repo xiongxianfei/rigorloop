@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -72,19 +72,20 @@ Review closeout: code-review-final-r4
   `code-review-m4-r17`, `code-review-m4-r18`, `code-review-m4-r19`,
   `code-review-m4-r20`, `code-review-m4-r21`, `code-review-m4-r22`,
   `code-review-m4-r23`, `code-review-m4-r24`, `code-review-final-r1`
-- Findings resolved: 68
-- Unresolved findings: 3
-- Current result: Code-review R4 confirms both lifecycle findings are substantively resolved and requests one mechanical whitespace correction before settlement.
+- Findings resolved: 71
+- Unresolved findings: 0
+- Current result: Code-review R4 is clean with notes; both lifecycle findings,
+  all owner-stage findings, and the terminal-whitespace finding are resolved.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| CR-FR4-001 | accepted | open | Remove extra terminal blank lines from three architecture review records and rerun code-review R4. |
+| CR-FR4-001 | accepted | resolved | Removed the three terminal blank lines; the complete correction range passes whitespace validation. |
 | APM-TSR1-001 | accepted | resolved | Existing proof summaries and T12 now distinguish stable pointers, exact owner-entry state, no duplication, and unmigrated legacy status. |
 | APM-SR1-001 | accepted | resolved | New governed architecture and ADR artifacts use stable owner pointers and exact change-local mutable state with explicit legacy compatibility. |
-| LC-CR1-001 | accepted | open | Fresh architecture review must settle the current canonical architecture under its established owner. |
-| LC-CR1-002 | accepted | open | Proposal-review must classify the pointer-only header migration before settlement is preserved. |
+| LC-CR1-001 | accepted | resolved | Architecture-review R5 settles the complete canonical architecture under its established owner. |
+| LC-CR1-002 | accepted | resolved | Proposal-review R5 classifies the complete pointer correction as non-substantive under SLA-R021. |
 | PBS-PR1 | accepted | resolved | Selector removal now follows contract review while the existing-contract bug fix remains independent. |
 | PBS-PR2 | accepted | resolved | Proposal-review R3 confirms one test specification is authored after the reviewed plan and settled through `test-spec-review`. |
 | PBS-AR1 | accepted | resolved | ADR-20260729 defines the exact closed projection-manifest schema and the canonical package identifies it as the sole resource matrix. |
@@ -160,14 +161,14 @@ Review closeout: code-review-final-r4
 
 Finding ID: CR-FR4-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implement
 Owning stage: review-resolution
 Chosen action: Remove exactly the three extra terminal blank lines.
 Rationale: The complete correction must pass committed-diff whitespace validation.
 Safe resolution path: Whitespace-only edit followed by the same range check and focused rereview.
 Validation target: code-review-final-r4 rereview
-Validation evidence: Pending.
+Validation evidence: Code-review R4 rereview confirmed commit 2320c2bb changes only the three terminal blanks and `git diff --check 3d01a6fb..HEAD` passes.
 
 ### test-spec-review-architecture-method-r1
 
@@ -1131,25 +1132,25 @@ the contract or scenario count.
 
 Finding ID: LC-CR1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture-review
 Owning stage: review-resolution
 Chosen action: Run a fresh architecture review against the complete canonical architecture and bind its result to the established owner entry.
 Rationale: Exact single ownership is necessary but not sufficient when the surviving review predates substantive content.
 Validation target: code-review-final-r4
-Validation evidence: Pending architecture-review evidence and independent rereview.
+Validation evidence: Architecture-review R5 approves the complete current package and the established owner entry is settled approved; code-review R4 confirms current single ownership.
 
 #### LC-CR1-002 - Proposal settlement preservation lacks review-stage classification
 
 Finding ID: LC-CR1-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: proposal-review
 Owning stage: review-resolution
 Chosen action: Run proposal-review on the exact pointer-only header migration and record its staleness classification.
 Rationale: SLA-R021 assigns non-substantive settlement preservation to the governing review stage.
 Validation target: code-review-final-r4
-Validation evidence: Pending proposal-review evidence and independent rereview.
+Validation evidence: Proposal-review R5 classifies the complete correction as non-substantive under SLA-R021 and restores accepted settlement; code-review R4 confirms closure.
 
 ## Clean review receipts
 

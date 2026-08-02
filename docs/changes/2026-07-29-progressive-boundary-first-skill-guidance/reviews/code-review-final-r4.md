@@ -4,16 +4,16 @@ Review ID: code-review-final-r4
 Stage: code-review
 Round: 4
 Reviewer: independent Codex code-review peer
-Target: 3d01a6fb..2670a60a
+Target: 3d01a6fb..2320c2bb
 Reviewed artifact: complete owner-stage correction range
 Reviewed milestone: final correction; M1-M4 remain closed
 Review date: 2026-08-02
 Recording status: recorded
-Status: changes-requested
-Review status: changes-requested
+Status: clean-with-notes
+Review status: clean-with-notes
 Automated review: yes
-Native review status: changes-requested
-Review gate outcome: stop
+Native review status: clean-with-notes
+Review gate outcome: advance
 Independence level: L2
 Author context ID: root-pr-owner-stage-resolution
 Reviewer context ID: m1-r8-second-final-r4
@@ -37,9 +37,17 @@ Areas intentionally out of scope: new feature behavior; release publication; PR 
 Risk classes considered: lifecycle authority; review staleness; contract drift; generated surfaces; traceability
 Falsifiable review questions: Does each governed artifact have one current owner; do settled reviews cover current content; does the complete correction pass whitespace validation
 Phase receipts: risk-map-recorded > evidence-menu-released > evidence-results-released > verdict-recorded
-Material findings: CR-FR4-001
-Immediate next stage: review-resolution
-Verify readiness: blocked by CR-FR4-001
+Material findings: CR-FR4-001 (resolved)
+Immediate next stage: final closeout
+Verify readiness: not claimed; fresh verification required
+Review target identity: 3d01a6fb..2320c2bb
+Governing artifacts inspected: stage-owned lifecycle specification; progressive boundary-first specification; architecture package method; both owning change records
+Adversarial hypotheses tested: stale surviving-owner settlement; invalid proposal settlement preservation; contract drift; generated-surface drift; incomplete finding closure
+Direct proofs performed: both metadata validators; both review validators; explicit lifecycle validation; selector regressions; boundary validation; skill, generation, adapter, metadata, lifecycle, prose, and whitespace checks
+Validation evidence challenged: yes
+Unreviewed surfaces: fresh final verification; hosted CI; PR opening
+Confidence: high
+No-finding rationale: Owner-stage reviews settle current artifacts under exact owners, all 71 findings are resolved, focused and broad regressions pass, and the sole R4 whitespace defect is mechanically closed.
 
 ## Prior finding reconciliation
 
@@ -70,3 +78,11 @@ progressive review structure, selector proof and regressions, boundary-first
 validation, 282 skill regressions, generation and drift checks, adapter archive
 proof, prose audit, 61 metadata tests, and 162 lifecycle tests passed. Only the
 three terminal blank lines failed.
+
+## Rereview result
+
+Commit `2320c2bb` removes exactly one terminal blank line from each named
+architecture-review record. `git diff --check 3d01a6fb..HEAD`, both review
+artifact validators, both metadata validators, and explicit lifecycle
+validation now pass. `CR-FR4-001`, `LC-CR1-001`, and `LC-CR1-002` are resolved;
+no material finding remains.
