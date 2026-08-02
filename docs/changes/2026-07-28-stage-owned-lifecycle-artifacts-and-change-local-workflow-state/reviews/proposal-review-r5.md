@@ -6,25 +6,25 @@ Round: 5
 Reviewer: independent Codex proposal-review peer
 Target: docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md
 Reviewed artifact: docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md
-Status: changes-requested
+Status: approved
 Review date: 2026-08-02
 Recording status: recorded
-Material findings: SLA-PR5-001
-Immediate next stage: proposal revision
+Material findings: SLA-PR5-001 (resolved)
+Immediate next stage: isolated stop
 Automatic downstream handoff: none
 
 ## Result
 
 - Skill: proposal-review
-- Review status: changes-requested
-- Material findings: SLA-PR5-001
+- Review status: approved
+- Material findings: none open; SLA-PR5-001 resolved
 - Recording status: recorded
 - Recording blocker: none
 - Review record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/proposal-review-r5.md
 - Review log: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/review-log.md
 - Review resolution: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/review-resolution.md#proposal-review-r5
-- Open blockers: SLA-PR5-001
-- Immediate next stage: proposal revision
+- Open blockers: none
+- Immediate next stage: isolated stop
 
 ## Material Findings
 
@@ -55,7 +55,19 @@ pass. Rollout realism and internal consistency are blocked only by
 
 - Recommended edits: correct only the stale lifecycle compatibility paragraph.
 
+## Rereview and SLA-R021 classification
+
+The complete correction is non-substantive under SLA-R021. Compared with the
+R4-accepted proposal, it changes only the lifecycle heading and pointer plus
+the directly related compatibility wording. The problem, goals, non-goals,
+options, recommendation, scope budget, architecture direction, testing
+strategy, rollout, risks, decision log, and readiness direction are unchanged.
+
+`SLA-PR5-001` is resolved: the proposal now accurately distinguishes its
+historical pre-activation embedded status from current pointer-owned lifecycle
+state. Accepted settlement may be restored.
+
 ## Recommendation
 
-- Recommendation: changes-requested. Record and correct `SLA-PR5-001`, then
-  rerun proposal-review R5. No proposal-direction or owner decision is needed.
+- Recommendation: approved. Restore accepted settlement and stop without
+  changing workflow routing.

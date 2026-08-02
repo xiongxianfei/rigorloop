@@ -9,15 +9,28 @@ artifacts and change-local workflow-state proposal.
 
 ### Review entry
 
+Review ID: architecture-review-r3
+Stage: architecture-review
+Round: 3
+Reviewed artifact: docs/architecture/system/architecture.md and progressive-guidance architecture package
+Status: changes-requested
+Detailed record: reviews/architecture-review-r3.md
+Resolution: review-resolution.md#architecture-review-r3
+Material findings: AR3-001, AR3-002, AR3-003
+Open findings: AR3-001, AR3-002, AR3-003
+Recording status: recorded
+
+### Review entry
+
 Review ID: proposal-review-r5
 Stage: proposal-review
 Round: 5
 Reviewed artifact: docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md
-Status: changes-requested
+Status: approved
 Detailed record: reviews/proposal-review-r5.md
 Resolution: review-resolution.md#proposal-review-r5
 Material findings: SLA-PR5-001
-Open findings: SLA-PR5-001
+Open findings: None
 Recording status: recorded
 
 ### Review entry
