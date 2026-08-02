@@ -8,6 +8,17 @@ skill guidance proposal and any downstream artifacts.
 ## Review Entries
 
 ### Review entry
+Review ID: test-spec-review-architecture-method-r1
+Stage: test-spec-review
+Round: 1
+Status: changes-requested
+Detailed record: reviews/test-spec-review-architecture-method-r1.md
+Resolution: review-resolution.md#test-spec-review-architecture-method-r1
+Material findings: APM-TSR1-001
+Open findings: APM-TSR1-001
+Recording status: recorded
+
+### Review entry
 Review ID: spec-review-architecture-method-r1
 Stage: spec-review
 Round: 1

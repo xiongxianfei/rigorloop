@@ -54,6 +54,7 @@ Review closeout: code-review-final-r1
 Review closeout: code-review-final-r2
 Review closeout: code-review-final-r3
 Review closeout: spec-review-architecture-method-r1
+Review closeout: test-spec-review-architecture-method-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -71,13 +72,14 @@ Review closeout: spec-review-architecture-method-r1
   `code-review-m4-r20`, `code-review-m4-r21`, `code-review-m4-r22`,
   `code-review-m4-r23`, `code-review-m4-r24`, `code-review-final-r1`
 - Findings resolved: 67
-- Unresolved findings: 2
-- Current result: Supporting spec review approved the architecture and ADR owner-pointer contract; owner-stage architecture and proposal evidence remain for final rereview.
+- Unresolved findings: 3
+- Current result: Supporting test-spec review requests exact owner-entry traceability wording before architecture rereview.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| APM-TSR1-001 | accepted | open | Make existing proof summaries and the compatibility fixture distinguish stable pointers, exact owner-entry state, and unmigrated legacy status. |
 | APM-SR1-001 | accepted | resolved | New governed architecture and ADR artifacts use stable owner pointers and exact change-local mutable state with explicit legacy compatibility. |
 | LC-CR1-001 | accepted | open | Fresh architecture review must settle the current canonical architecture under its established owner. |
 | LC-CR1-002 | accepted | open | Proposal-review must classify the pointer-only header migration before settlement is preserved. |
@@ -149,6 +151,21 @@ Review closeout: spec-review-architecture-method-r1
 | CR-M4-R23-001 | accepted | resolved | Escape parity is applied to governed candidate dollars. |
 
 ## Finding Details
+
+### test-spec-review-architecture-method-r1
+
+#### APM-TSR1-001 - Proof summaries do not fully encode exact lifecycle ownership
+
+Finding ID: APM-TSR1-001
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Chosen action: Tighten only the affected coverage summaries and T12 fixture assertion.
+Rationale: Existing tests cover the behavior, but the proof map must state the exact three-part ownership distinction it claims.
+Safe resolution path: Preserve all test IDs, scenarios, commands, milestones, and coverage targets.
+Validation target: test-spec-review-architecture-method-r1 rereview
+Validation evidence: Pending.
 
 ### spec-review-architecture-method-r1
 
