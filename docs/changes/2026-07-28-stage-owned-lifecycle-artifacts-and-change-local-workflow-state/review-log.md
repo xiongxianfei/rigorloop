@@ -9,6 +9,19 @@ artifacts and change-local workflow-state proposal.
 
 ### Review entry
 
+Review ID: proposal-review-r5
+Stage: proposal-review
+Round: 5
+Reviewed artifact: docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md
+Status: changes-requested
+Detailed record: reviews/proposal-review-r5.md
+Resolution: review-resolution.md#proposal-review-r5
+Material findings: SLA-PR5-001
+Open findings: SLA-PR5-001
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-final-r3
 Stage: code-review
 Round: Final R3

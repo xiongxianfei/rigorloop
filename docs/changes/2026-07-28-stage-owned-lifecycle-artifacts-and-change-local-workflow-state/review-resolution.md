@@ -2,7 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
+
+Review closeout: proposal-review-r5
 
 Review closeout: test-spec-review-r3
 Review closeout: test-spec-review-r2
@@ -41,14 +43,15 @@ Review closeout: code-review-final-r3
   `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`,
   `spec-review-r6`
 - Findings resolved: 22
-- Unresolved findings: 0
-- Current result: Test-spec-review R3 approved the proof map for M1
-  implementation handoff with no open review finding.
+- Unresolved findings: 1
+- Current result: Proposal-review R5 requested one localized compatibility
+  correction before settlement can be restored.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| SLA-PR5-001 | accepted | open | Correct the stale embedded-status compatibility statement and rerun proposal-review R5. |
 | SLA-TSR4 | accepted | resolved | T5, T6, and T19 now align with M3 command availability and evidence ownership. |
 | SLA-TSR1 | accepted | resolved | Staged proof now activates only when its commands and implementation surface exist. |
 | SLA-TSR2 | accepted | resolved | MP1 and MP2 are complete agent semantic-review procedures with post-PR human authority separated. |
@@ -73,6 +76,21 @@ Review closeout: code-review-final-r3
 | SLA-SR11 | accepted | resolved | Complete the same-rank compatibility inventory for remaining retired writers. |
 
 ## Finding Details
+
+### proposal-review-r5
+
+#### SLA-PR5-001 - Pointer migration leaves a stale compatibility statement
+
+Finding ID: SLA-PR5-001
+Disposition: accepted
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Chosen action: Replace only the stale compatibility paragraph with an accurate historical and current-state statement.
+Rationale: The exact header migration is direction-preserving, but its surrounding compatibility explanation must not contradict the current artifact.
+Safe resolution path: Preserve all approved direction and update only the lifecycle-state compatibility wording before independent rereview.
+Validation target: proposal-review-r5 rereview
+Validation evidence: Pending.
 
 ### test-spec-review-r3
 
