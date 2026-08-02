@@ -70,15 +70,15 @@ Review closeout: spec-review-architecture-method-r1
   `code-review-m4-r17`, `code-review-m4-r18`, `code-review-m4-r19`,
   `code-review-m4-r20`, `code-review-m4-r21`, `code-review-m4-r22`,
   `code-review-m4-r23`, `code-review-m4-r24`, `code-review-final-r1`
-- Findings resolved: 66
-- Unresolved findings: 3
-- Current result: Supporting spec review requests ADR lifecycle ownership alignment before architecture rereview.
+- Findings resolved: 67
+- Unresolved findings: 2
+- Current result: Supporting spec review approved the architecture and ADR owner-pointer contract; owner-stage architecture and proposal evidence remain for final rereview.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| APM-SR1-001 | accepted | open | Align new ADR metadata, templates, proof, review guidance, and observability with stable owner pointers and change-local mutable state. |
+| APM-SR1-001 | accepted | resolved | New governed architecture and ADR artifacts use stable owner pointers and exact change-local mutable state with explicit legacy compatibility. |
 | LC-CR1-001 | accepted | open | Fresh architecture review must settle the current canonical architecture under its established owner. |
 | LC-CR1-002 | accepted | open | Proposal-review must classify the pointer-only header migration before settlement is preserved. |
 | PBS-PR1 | accepted | resolved | Selector removal now follows contract review while the existing-contract bug fix remains independent. |
@@ -156,14 +156,14 @@ Review closeout: spec-review-architecture-method-r1
 
 Finding ID: APM-SR1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec author
 Owning stage: spec
 Chosen action: Amend the ADR requirements and directly implementing proof, template, and review guidance to the active owner-pointer contract.
 Rationale: New governed ADRs cannot simultaneously prohibit and require embedded mutable status.
 Safe resolution path: Preserve unmigrated historical ADRs while new or substantively revised ADRs use stable owner pointers and exact change-local lifecycle entries.
 Validation target: spec-review-architecture-method-r1 rereview
-Validation evidence: Pending.
+Validation evidence: Spec-review R1 rereview approved R46-R48, AC7, observability, templates, skill guidance, T7 proof, and legacy compatibility; focused lifecycle, skill, parity, lifecycle-regression, and whitespace checks passed.
 
 ### code-review-final-r1
 

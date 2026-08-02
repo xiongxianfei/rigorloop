@@ -11,11 +11,11 @@ skill guidance proposal and any downstream artifacts.
 Review ID: spec-review-architecture-method-r1
 Stage: spec-review
 Round: 1
-Status: changes-requested
+Status: approved
 Detailed record: reviews/spec-review-architecture-method-r1.md
 Resolution: review-resolution.md#spec-review-architecture-method-r1
 Material findings: APM-SR1-001
-Open findings: APM-SR1-001
+Open findings: None
 Recording status: recorded
 
 ### Review entry

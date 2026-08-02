@@ -7,11 +7,11 @@ Reviewer: independent Codex spec-review peer
 Target: specs/architecture-package-method.md
 Reviewed artifact: specs/architecture-package-method.md
 Review date: 2026-08-02
-Status: changes-requested
+Status: approved
 Recording status: recorded
-Material findings: APM-SR1-001
-Immediate next stage: spec revision
-Eventual test-spec readiness: not-ready
+Material findings: APM-SR1-001 (resolved)
+Immediate next stage: architecture
+Eventual test-spec readiness: ready
 Automatic downstream handoff: none
 
 ## Result
@@ -39,8 +39,14 @@ compatibility, observability, and acceptance criteria are blocked by
 `APM-SR1-001`. No owner decision is required because the higher-ranked active
 lifecycle contract already determines the outcome.
 
+## Rereview
+
+`APM-SR1-001` is resolved. R46-R48, AC7, observability, templates,
+architecture skills, and T7 now consistently require stable owner pointers
+and exact change-local state for new governed artifacts while preserving
+unmigrated historical compatibility. All review dimensions pass.
+
 ## Recommendation
 
-Changes requested. Keep only `spec-architecture-package-method` unsettled,
-apply the localized ADR alignment, and rerun this review.
-
+Approved. Settle only `spec-architecture-package-method` to `approved` and
+preserve workflow routing.
