@@ -3,7 +3,7 @@
 - Artifact ID: `architecture`
 - Artifact path: `docs/architecture/system/architecture.md`
 - Authoring stage: `architecture`
-- Completion status: `in-progress`
+- Completion status: `complete`
 - Resulting review-request path: `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-r5.md`
 
 ## Revision result
@@ -43,3 +43,8 @@ expansion loading; and corrects the schema-v3 container label.
 Architecture-review R4 reopens authoring for `AR4-001` and `AR4-002`: four
 stale supersession summaries and the remaining schema-v2 current-write
 descriptions. No ADR body changes.
+
+The four historical automation ADR summaries now use current superseded
+classification. The CLI goal, white-box serializer responsibility, and quality
+scenario now identify schema v3 as the current write format and schemas v1/v2
+as compatibility inputs.
