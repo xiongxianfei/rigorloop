@@ -30,8 +30,13 @@ artifact_states:
     kind: spec
     path: specs/architecture-package-method.md
     role: supporting
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/architecture-method-compatibility-authoring.md
+    lifecycle_state: revision-required
+    review:
+      id: spec-review-architecture-method-r1
+      artifact_id: spec-architecture-package-method
+      outcome: changes-requested
+      record: docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/spec-review-architecture-method-r1.md
+      round: r1
   adr-progressive-boundary-resources:
     kind: adr
     path: docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md
@@ -552,5 +557,5 @@ changed_files:
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-final-r3.md
 review:
   status: changes-requested
-  unresolved_items: 2
+  unresolved_items: 3
 workflow: {}
