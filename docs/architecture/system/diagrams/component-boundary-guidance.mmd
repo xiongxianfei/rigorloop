@@ -11,7 +11,7 @@ flowchart LR
   generated["Generated, packed, archived, and installed skills<br/>[Derived proof, not Git rollback state]"]:::container
   evidence["Measurement and package evidence<br/>[YAML/Markdown fixtures and reports]"]:::container
 
-  skills -->|package for every governed stage and load on expansion| compact
+  skills -->|package for every governed stage; owner families load initially and downstream stages load on expansion| compact
   skills -->|package and load only for spec and spec-review| authoring
   skills -->|package and load only for test-spec and test-spec-review| proof
   skills -->|consume cited boundary, interaction, and proof rows first from| artifacts

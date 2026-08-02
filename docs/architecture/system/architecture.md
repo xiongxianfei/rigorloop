@@ -1253,7 +1253,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260629-release-transaction-profile.md`: profile-driven routine release transaction boundary, generated-surface ownership, cheap preflight, authoritative full release gate, rerunnable public closeout, and timing evidence.
 - `docs/adr/ADR-20260630-bounded-review-fix-autoprogression.md`: accepted historical proposal-side profile decision proposed for supersession with its nested writer retired by the approved spec.
 - `docs/adr/ADR-20260721-single-bounded-review-fix-workflow-automation.md`: accepted historical consolidation decision proposed for supersession; its one-target, review-independence, recovery, migration, and stop-before-PR constraints are retained without its capability and plan-owned-state layers.
-- `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md`: proposed stage-owned lifecycle decision placing mutable artifact and workflow state in `change.yaml`, assigning peer transition ownership, keeping one target as sufficient repository-local consent, and removing capability, selector, hash, and write-interception layers.
+- `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md`: active stage-owned lifecycle decision placing mutable artifact and workflow state in `change.yaml`, assigning peer transition ownership, keeping one target as sufficient repository-local consent, and removing capability, selector, hash, and write-interception layers.
 
 No additional ADR is required for the 2026-04-29 package-quality refinement because it sharpens the accepted method without changing the durable architecture decision.
 
@@ -1271,7 +1271,7 @@ ADR `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md` is
 required because this change replaces plan-owned live state and capability-
 driven automation with one change-local lifecycle model and fixed peer-stage
 write boundaries.
-On acceptance it supersedes the current authority and state-placement decision
+It supersedes the prior authority and state-placement decision
 in ADR-20260721 while retaining that ADR's one-mechanism, structured-target,
 review-independence, evidence-first recovery, migration, and stop-before-PR
 constraints.
@@ -1625,15 +1625,14 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Readiness
 
-The progressive boundary-guidance architecture revision is ready for
-architecture-review. Planning must not rely on its resource paths, manifest
-shape, projection identity, compact-scan placement, measurement fixtures, or
-rollback unit until the matching architecture and ADR entries are settled.
+The progressive boundary-guidance design is implemented under its approved
+feature artifacts. Current canonical-package reliance requires the matching
+owner-bound architecture review settlement.
 
 ADR `docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md`
-records the proposed durable resource-composition, manifest, identity,
-measurement, selector, activation, and rollback decision. On acceptance it
-revises only the resource-composition part of ADR-20260728 while retaining its
+records the accepted durable resource-composition, manifest, identity,
+measurement, selector, activation, and rollback decision. It revises only the
+resource-composition part of ADR-20260728 while retaining its
 immutable release rollback and external-action boundaries.
 
 References below to earlier authoring, implementation, and review-fix profile

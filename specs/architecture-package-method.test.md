@@ -1,8 +1,8 @@
 # Architecture Package Method Test Spec
 
-## Status
+## Owning change record
 
-- active
+`docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml`
 
 ## Related spec and plan
 
@@ -148,7 +148,7 @@
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/architecture-package-method.md --path specs/rigorloop-workflow.md`
   - manual contract review during M2 and code review
 
-### T2. Architecture template preserves lifecycle metadata and all 12 arc42 sections
+### T2. Architecture template preserves owner metadata and all 12 arc42 sections
 
 - Covers: `R7`-`R20`, `R49`, `R51`-`R53`, `R75`, `AC2`, `AC3`, `AC8`
 - Level: contract, manual
@@ -156,7 +156,7 @@
   - `templates/architecture.md`
 - Steps:
   - Inspect `templates/architecture.md`.
-  - Confirm it starts with repository lifecycle status metadata before the arc42 section sequence.
+  - Confirm it starts with a stable owning-change-record pointer before the arc42 section sequence and does not duplicate mutable lifecycle status.
   - Confirm it contains these headings exactly once and in order: `Introduction and Goals`, `Architecture Constraints`, `Context and Scope`, `Solution Strategy`, `Building Block View`, `Runtime View`, `Deployment View`, `Crosscutting Concepts`, `Architecture Decisions`, `Quality Requirements`, `Risks and Technical Debt`, and `Glossary`.
   - Confirm template guidance allows concise content and `Not applicable` with rationale without renaming or removing sections.
   - Confirm the file is under `templates/`, not under `docs/architecture/`.
@@ -223,7 +223,7 @@
   - `docs/adr/ADR-20260428-architecture-package-method.md`
 - Steps:
   - Inspect the canonical architecture file after M3.
-  - Confirm lifecycle metadata appears before the arc42 section sequence.
+  - Confirm stable owning-change-record metadata appears before the arc42 section sequence and current mutable state resolves from the matching `change.yaml` entry.
   - Confirm all 12 official arc42 headings appear in order and every `Not applicable` entry has rationale.
   - Confirm sections 1 through 5 contain current-system content.
   - Confirm section 6, 7, and 8 cover runtime, packaging/execution boundaries, and cross-cutting rules relevant to this repository change.
@@ -385,7 +385,7 @@
   - `scripts/test-artifact-lifecycle-validator.py`
   - `tests/fixtures/artifact-lifecycle/`
 - Steps:
-  - Add a canonical system architecture fixture with lifecycle metadata and all 12 official arc42 sections.
+  - Add a canonical system architecture fixture with stable owner metadata and all 12 official arc42 sections.
   - Assert that fixture passes only at `docs/architecture/system/architecture.md`.
   - Assert existing legacy architecture fixtures still require the older architecture contract unless explicitly out of scope.
   - Assert missing status, invalid lifecycle status, placeholders, stale readiness, terminal closeout, and generated-output rejection behavior remain unchanged.
