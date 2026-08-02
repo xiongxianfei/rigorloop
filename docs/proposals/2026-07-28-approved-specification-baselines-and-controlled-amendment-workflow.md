@@ -332,10 +332,9 @@ updates routing, and continues.
 `change.yaml` does not duplicate full findings, rationale, command output, or
 history. Git and the linked stage-owned artifacts preserve that evidence.
 
-This proposal itself retains its embedded `Status` while it is governed by the
-current pre-activation contract.
-Prospective activation removes embedded mutable status from newly governed
-artifacts; historical artifacts are not rewritten.
+This proposal originally retained embedded status under the pre-activation
+contract. After activation, the stable owning-change-record pointer above
+resolves current lifecycle state; Git preserves the earlier form as history.
 
 ### Plan policy
 
