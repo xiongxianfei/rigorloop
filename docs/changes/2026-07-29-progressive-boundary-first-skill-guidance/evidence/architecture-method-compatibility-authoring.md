@@ -1,0 +1,23 @@
+# Architecture Method Compatibility Authoring
+
+- Artifact ID: `spec-architecture-package-method`
+- Artifact path: `specs/architecture-package-method.md`
+- Authoring stage: `spec`
+- Completion status: `in-progress`
+- Resulting review-request path: `docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/spec-review-architecture-method-r1.md`
+
+## Trigger
+
+Architecture-review R3 finding `AR3-001` identified a conflict between
+architecture-method R8 and the active stage-owned lifecycle contract. This
+supporting amendment will define stable owner-pointer metadata before the
+arc42 sequence and keep mutable lifecycle state solely in the owning
+`change.yaml` entry.
+
+## Scope
+
+The correction is limited to the conflicting method requirement and the
+directly implementing architecture template and published architecture skill
+wording. It does not change arc42 section order, C4 guidance, ADR policy, or
+architecture review quality criteria.
+

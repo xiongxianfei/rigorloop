@@ -26,6 +26,12 @@ artifact_states:
       outcome: approved
       record: docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/spec-review-r1.md
       round: r16
+  spec-architecture-package-method:
+    kind: spec
+    path: specs/architecture-package-method.md
+    role: supporting
+    lifecycle_state: authoring
+    authoring_evidence: docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/architecture-method-compatibility-authoring.md
   adr-progressive-boundary-resources:
     kind: adr
     path: docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md
