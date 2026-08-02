@@ -84,8 +84,8 @@ artifact_states:
       round: r1
 workflow_state:
   lifecycle_state: active
-  current_stage: explain-change
-  next_stage: verify
+  current_stage: verify
+  next_stage: pr
   blocker: null
   evidence:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-r2.md
@@ -165,7 +165,6 @@ workflow_state:
     final_closeout:
       readiness: not-ready
       reasons:
-        - verify-pending
         - pr-handoff-pending
       evidence:
         - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-final-r4.md

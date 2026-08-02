@@ -1,9 +1,9 @@
 # Verify Report: Progressive Boundary-First Skill Guidance
 
-Verification ID: verify-r1
+Verification ID: verify-r2
 Stage: verify
 Verifier: Codex verify
-Verification date: 2026-07-29
+Verification date: 2026-08-02
 Status: branch-ready
 PR readiness: not claimed
 
@@ -14,19 +14,18 @@ PR readiness: not claimed
 - Artifacts changed by this stage: this report and change-local routing evidence
 - Open blockers for branch readiness: none
 - Next stage: `pr`
-- Validation: all 17 commands in the approved test-spec ledger passed
+- Validation: PR mode passed 18 selected checks; fresh CMD14 broad smoke passed 12 checks
 - Readiness: branch-ready; final workflow closeout remains pending on PR handoff
 
 ## Scope and verdict
 
 Ready.
 
-This verification covers the 163-file branch change from merge base
-`0a1c85b221b5d5c16dde8052e8add4c3bd12398b` through implementation,
-milestone review, final holistic review, and durable explanation.
-Final holistic code-review R1 approved the behavior-bearing candidate at
-`4988e992`; commits through `413fe02afe9a0b5d76b26ccc1f954c39c03699ff`
-add only review settlement and change rationale.
+This verification covers the 191-file branch change from merge base
+`3b180da8db6ae23eff7038d273384ed82680f8cb` through implementation,
+milestone review, PR-readiness corrections, final code-review R4, and durable
+explanation. Code-review R4 approved the correction range through `2320c2bb`;
+the later `65bb5170` commit refreshes only the reviewed change rationale.
 
 The implementation and governed artifacts agree on the progressive model:
 ten skills perform a concise prompt-independent scan, stage owners load only
@@ -47,8 +46,8 @@ repository-owned validation.
 | Automatic concise stage guidance | `PBS-R005`-`PBS-R024`; M2; PRF-003-PRF-020 | 282 skill-validator tests passed with 16 documented skips; all 24 canonical skills and generated output validated. |
 | Path-owned checker selection | `PBS-R025`-`PBS-R031`; M3; PRF-014-PRF-021 | 141 selector tests, both explicit selection scenarios, and 162 lifecycle tests passed. |
 | Package and activation readiness | `PBS-R003`-`PBS-R006`, `PBS-R032`-`PBS-R038`; M4; PRF-001-PRF-023 | 148 adapter tests and clean installs for ten governed skills across Codex, Claude, and opencode passed; activation remains pending. |
-| Review and rationale closure | Four clean milestone closeouts, final holistic review R1, and `explain-change.md` | 48 review records and 66 resolved findings validated; zero findings remain open. |
-| Cross-repository integration | Approved CMD14 | Broad smoke passed all 12 checks in 508 seconds. |
+| Review and rationale closure | Four clean milestone closeouts, final code-review R4, owner-stage reviews, and `explain-change.md` | 53 review records and 71 resolved findings validated; zero findings remain open. |
+| Cross-repository integration | Approved CMD14 | Fresh broad smoke passed all 12 checks in 510 seconds. |
 
 The approved test specification maps all 38 `PBS-R*` requirements through
 23 `PRF-*` proof-map entries, 16 test cases, 17 commands, four milestone
@@ -57,8 +56,14 @@ unapproved behavior was found.
 
 ## Validation evidence
 
-All commands ran from the repository root against the final behavior-bearing
-tree plus review and explanation evidence.
+Fresh final commands ran from the repository root against commit `65bb5170`.
+Milestone command evidence remains recorded below; PR mode reran every selected
+affected check and broad smoke refreshed the required integration gate.
+
+| Final command | Result |
+| --- | --- |
+| `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` | pass; 18 selected focused/boundary checks |
+| `bash scripts/ci.sh --mode broad-smoke` | pass; 12 checks in 510 seconds |
 
 | Command ID | Result |
 | --- | --- |
@@ -75,9 +80,9 @@ tree plus review and explanation evidence.
 | CMD11 `python scripts/test-artifact-lifecycle-validator.py` | pass, 162 tests |
 | CMD12 `python scripts/test-adapter-distribution.py` | pass, 148 tests in 289.079 seconds |
 | CMD13 exact v0.1.5 adapter build and clean-install smoke | pass for ten governed skills across three adapters |
-| CMD14 `bash scripts/ci.sh --mode broad-smoke` | pass, 12 checks in 508 seconds |
+| CMD14 `bash scripts/ci.sh --mode broad-smoke` | pass, 12 checks in 510 seconds on 2026-08-02 |
 | CMD15 change-metadata validation | pass |
-| CMD16 review-artifact validation | pass, 48 reviews and 66 findings |
+| CMD16 review-artifact validation | pass, 53 reviews and 71 resolved findings |
 | CMD17 explicit lifecycle validation | pass with two known nonblocking lifecycle-language warnings |
 | `git diff --check` | pass |
 
@@ -90,8 +95,8 @@ explanation and verification surfaces.
 ## Review and drift assessment
 
 - M1 through M4 are closed.
-- Final holistic code-review R1 is approved and independently reviewed at L2.
-- `review-resolution.md` is closed: 65 findings were accepted and fixed, one
+- Final code-review R4 is clean with notes and independently reviewed at L2.
+- `review-resolution.md` is closed: 70 findings were accepted and fixed, one
   was rejected with contract-based rationale, and none remains open.
 - Proposal, specification, architecture, ADR, plan, test specification,
   implementation, tests, package evidence, and explanation are coherent.
@@ -108,5 +113,5 @@ explanation and verification surfaces.
   together.
 - Hosted CI remains unobserved.
 
-`pr` is the next valid stage, but it was not invoked. This report establishes
-local branch readiness only and does not claim PR-body or PR-open readiness.
+`pr` is the next valid stage. This report establishes local branch readiness
+only and does not claim PR-body or PR-open readiness.
