@@ -3,7 +3,7 @@
 - Artifact ID: `test-spec-architecture-package-method`
 - Artifact path: `specs/architecture-package-method.test.md`
 - Authoring stage: `test-spec`
-- Completion status: `complete`
+- Completion status: `in-progress`
 - Resulting review-request path: `docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-architecture-method-r1.md`
 
 ## Scope
@@ -23,3 +23,6 @@ governed owner pointers from unmigrated historical embedded status.
 T7 and its coverage row now prove exact owner-entry state for new governed
 ADRs, absence of duplicated mutable status in the template, and explicit
 legacy compatibility without adding a new test case.
+
+Test-spec-review finding `APM-TSR1-001` reopens authoring for three exact
+traceability summaries; proof scope and IDs remain unchanged.

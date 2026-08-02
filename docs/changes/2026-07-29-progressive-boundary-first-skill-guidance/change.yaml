@@ -75,13 +75,8 @@ artifact_states:
     kind: test-spec
     path: specs/architecture-package-method.test.md
     role: supporting
-    lifecycle_state: revision-required
-    review:
-      id: test-spec-review-architecture-method-r1
-      artifact_id: test-spec-architecture-package-method
-      outcome: changes-requested
-      record: docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-architecture-method-r1.md
-      round: r1
+    lifecycle_state: authoring
+    authoring_evidence: docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/architecture-method-test-spec-authoring.md
 workflow_state:
   lifecycle_state: active
   current_stage: review-resolution
