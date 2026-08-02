@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -52,6 +52,7 @@ Review closeout: code-review-m4-r23
 Review closeout: code-review-m4-r24
 Review closeout: code-review-final-r1
 Review closeout: code-review-final-r2
+Review closeout: code-review-final-r3
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`,
   `proposal-review-r3`, `architecture-review-r1`,
@@ -69,13 +70,15 @@ Review closeout: code-review-final-r2
   `code-review-m4-r20`, `code-review-m4-r21`, `code-review-m4-r22`,
   `code-review-m4-r23`, `code-review-m4-r24`, `code-review-final-r1`
 - Findings resolved: 66
-- Unresolved findings: 0
-- Current result: Final holistic review is approved; review-resolution is closed and explain-change is next.
+- Unresolved findings: 2
+- Current result: Code-review final R3 requests owner-stage evidence before fresh verification.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| LC-CR1-001 | accepted | open | Fresh architecture review must settle the current canonical architecture under its established owner. |
+| LC-CR1-002 | accepted | open | Proposal-review must classify the pointer-only header migration before settlement is preserved. |
 | PBS-PR1 | accepted | resolved | Selector removal now follows contract review while the existing-contract bug fix remains independent. |
 | PBS-PR2 | accepted | resolved | Proposal-review R3 confirms one test specification is authored after the reviewed plan and settled through `test-spec-review`. |
 | PBS-AR1 | accepted | resolved | ADR-20260729 defines the exact closed projection-manifest schema and the canonical package identifies it as the sole resource matrix. |
@@ -1070,6 +1073,32 @@ the contract or scenario count.
 | Plan review R2 | approved | One-time plan initialization resolves the lifecycle precondition; the plan is ready for test-spec. |
 | Test-spec review R1 | changes-requested | `PBS-TSR1` records the M2 proof-timing and command-ledger mismatch. |
 | Test-spec review R2 | approved | `PBS-TSR1` is resolved; the proof map permits isolated M1 implementation handoff. |
+
+### code-review-final-r3
+
+#### LC-CR1-001 - Restored architecture owner carries stale settlement
+
+Finding ID: LC-CR1-001
+Disposition: accepted
+Status: open
+Owner: architecture-review
+Owning stage: review-resolution
+Chosen action: Run a fresh architecture review against the complete canonical architecture and bind its result to the established owner entry.
+Rationale: Exact single ownership is necessary but not sufficient when the surviving review predates substantive content.
+Validation target: code-review-final-r4
+Validation evidence: Pending architecture-review evidence and independent rereview.
+
+#### LC-CR1-002 - Proposal settlement preservation lacks review-stage classification
+
+Finding ID: LC-CR1-002
+Disposition: accepted
+Status: open
+Owner: proposal-review
+Owning stage: review-resolution
+Chosen action: Run proposal-review on the exact pointer-only header migration and record its staleness classification.
+Rationale: SLA-R021 assigns non-substantive settlement preservation to the governing review stage.
+Validation target: code-review-final-r4
+Validation evidence: Pending proposal-review evidence and independent rereview.
 
 ## Clean review receipts
 

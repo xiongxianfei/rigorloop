@@ -62,8 +62,8 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: implement
-  next_stage: code-review
+  current_stage: review-resolution
+  next_stage: architecture-review
   blocker: null
   evidence:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/test-spec-review-r2.md
@@ -112,6 +112,7 @@ workflow_state:
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/pr-readiness-selector-bugfix.md
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-final-r2.md
     - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/pr-readiness-lifecycle-ownership-fix.md
+    - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-final-r3.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -130,22 +131,22 @@ workflow_state:
         state: closed
     remaining_implementation_milestones: []
     latest_review:
-      status: approved
+      status: changes-requested
       stage: code-review
-      round: r2
+      round: r3
       artifact_id: plan
       occurrence: final
       milestone_id: none
       evidence:
-        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-final-r2.md
+        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-final-r3.md
     final_closeout:
       readiness: not-ready
       reasons:
-        - milestone-review-pending
+        - review-findings-open
         - verify-pending
         - pr-handoff-pending
       evidence:
-        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/pr-readiness-lifecycle-ownership-fix.md
+        - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-final-r3.md
 artifacts:
   proposal: docs/proposals/2026-07-29-progressive-boundary-first-skill-guidance.md
   spec: specs/progressive-boundary-first-skill-guidance.md
@@ -432,6 +433,8 @@ validation:
     result: blocked_artifact_lifecycle_duplicate_architecture_owner_and_unmigrated_stage_owned_proposal
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/architecture/system/architecture.md --path docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md --path docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml --path docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml --path docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/pr-readiness-lifecycle-ownership-fix.md
     result: pass_9_artifacts_with_two_nonblocking_lifecycle_language_warnings
+  - command: independent code-review ddb1999b..4c2b6c73
+    result: changes_requested_LC_CR1_001_LC_CR1_002
 changed_files:
   - docs/proposals/2026-07-29-progressive-boundary-first-skill-guidance.md
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml
@@ -533,7 +536,9 @@ changed_files:
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-final-r2.md
   - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/evidence/pr-readiness-lifecycle-ownership-fix.md
   - docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md
+  - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/review-invocation-code-review-final-r3.yaml
+  - docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/reviews/code-review-final-r3.md
 review:
-  status: approved
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 2
 workflow: {}
