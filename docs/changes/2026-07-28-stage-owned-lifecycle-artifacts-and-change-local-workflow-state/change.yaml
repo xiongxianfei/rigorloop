@@ -8,13 +8,8 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md
     role: primary
-    lifecycle_state: revision-required
-    review:
-      id: proposal-review-r5
-      artifact_id: proposal
-      outcome: changes-requested
-      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/proposal-review-r5.md
-      round: r5
+    lifecycle_state: authoring
+    authoring_evidence: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/proposal-owner-pointer-correction.md
   spec:
     kind: spec
     path: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
