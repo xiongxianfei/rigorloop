@@ -2417,6 +2417,7 @@ def _path_category(path: str) -> str | None:
 def _is_boundary_first_surface(path: str) -> bool:
     return (
         path == "specs/boundary-first-activation.yaml"
+        or path == "specs/boundary-first-resources.yaml"
         or path == "specs/references/boundary-first-method-v1.md"
         or (path.startswith("specs/") and path.endswith(".md"))
         or (
@@ -2442,7 +2443,10 @@ def _is_boundary_first_surface(path: str) -> bool:
 
 def _is_boundary_first_reference_surface(path: str) -> bool:
     return (
-        path == "specs/references/boundary-first-method-v1.md"
+        path in {
+            "specs/boundary-first-resources.yaml",
+            "specs/references/boundary-first-method-v1.md",
+        }
         or path.endswith("/references/boundary-first-method-v1.md")
         or path
         in {
