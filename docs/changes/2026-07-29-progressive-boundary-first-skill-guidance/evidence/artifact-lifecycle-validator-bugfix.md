@@ -47,4 +47,3 @@ This is a compatibility adapter, not a second workflow-state engine.
 - `python -m py_compile scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py` — passed.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-07-29-progressive-boundary-first-skill-guidance.md --path docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml` — passed with one pre-existing nonblocking merge-dependent-language warning.
 - `git diff --check -- scripts/artifact_lifecycle_validation.py scripts/test-artifact-lifecycle-validator.py` — passed.
-
