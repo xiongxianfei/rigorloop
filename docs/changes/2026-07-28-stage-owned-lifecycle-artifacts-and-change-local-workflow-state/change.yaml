@@ -8,13 +8,8 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md
     role: primary
-    lifecycle_state: accepted
-    review:
-      id: proposal-review-r4
-      artifact_id: proposal
-      outcome: approved
-      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/proposal-review-r4.md
-      round: r4
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/proposal-owner-pointer-correction.md
   spec:
     kind: spec
     path: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
@@ -30,13 +25,8 @@ artifact_states:
     kind: architecture
     path: docs/architecture/system/architecture.md
     role: primary
-    lifecycle_state: approved
-    review:
-      id: architecture-review-r2
-      artifact_id: architecture
-      outcome: approved
-      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-r2.md
-      round: r2
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/architecture-progressive-guidance-revision.md
   adr:
     kind: adr
     path: docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md

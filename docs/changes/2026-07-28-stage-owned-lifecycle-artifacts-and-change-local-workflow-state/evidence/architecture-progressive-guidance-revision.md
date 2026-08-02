@@ -1,0 +1,33 @@
+# Architecture Progressive-Guidance Revision Evidence
+
+- Artifact ID: `architecture`
+- Artifact path: `docs/architecture/system/architecture.md`
+- Authoring stage: `architecture`
+- Completion status: `complete`
+- Resulting review-request path: `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-r3.md`
+
+## Revision result
+
+The canonical architecture now includes the progressive boundary-first
+guidance design approved by the progressive-guidance proposal, specification,
+and ADR. The revision covers resource ownership and projection, compact versus
+expanded guidance, stage-family consumption, selector behavior, generated and
+installed parity, activation, rollback, and verification boundaries.
+
+This record restores the canonical architecture to its established owning
+change record. The progressive-guidance change remains the source of the
+feature requirements and implementation evidence, but it does not create a
+second mutable lifecycle owner for the shared canonical architecture.
+
+## Review target
+
+Architecture review R3 must inspect the complete current architecture package,
+including the progressive-guidance sections and their alignment with:
+
+- `specs/progressive-boundary-first-skill-guidance.md`;
+- `docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md`;
+- `specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md`;
+- the existing C4 diagram sources under
+  `docs/architecture/system/diagrams/`; and
+- the single-owner lifecycle contract represented by this change record.
+
