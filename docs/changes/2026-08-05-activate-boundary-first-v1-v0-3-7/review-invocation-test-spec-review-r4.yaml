@@ -4,8 +4,8 @@ review_stage: test-spec-review
 review_target: specs/boundary-first-v1-v0-3-7-activation-release.test.md
 base_revision: 8f901e0b6582febfa8d4bf9067154f788eeef7bc
 head_revision: 6e448721111373a5a09699d0aec2fd004a0240da
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: approved
+review_gate_outcome: approved
 independence_level: L1
 author_context_id: root-m1-review-resolution-test-spec-amendment
 reviewer_context_id: independent-test-spec-review-r4

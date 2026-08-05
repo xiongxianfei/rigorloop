@@ -18,8 +18,9 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
 Review closeout: code-review-m1-r1
+Review closeout: test-spec-review-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`
 - Findings resolved: 17
 - Unresolved findings: 8
 - Final result: M1 code-review R1 requires resolution and rereview.
@@ -375,6 +376,13 @@ Validation target: code-review-m1-r2
 Validation evidence: pending
 
 ## Clean review receipts
+
+### test-spec-review-r4
+
+Status: approved
+Material findings: none
+Resolution required: no new findings; approves the CMD4 selector-surface amendment made for BFA-M1-CR1-005
+Evidence: reviews/test-spec-review-r4.md
 
 ### test-spec-review-r3
 

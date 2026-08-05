@@ -3,7 +3,7 @@
 - Artifact ID: `test-spec`
 - Test spec: `specs/boundary-first-v1-v0-3-7-activation-release.test.md`
 - Completion status: complete
-- Next review: `test-spec-review-r3`
+- Next review: `test-spec-review-r4`
 
 The proof map covers all 35 requirements, 15 acceptance criteria, eight
 examples, 12 edge cases, eight boundaries, and seven selected interactions.
