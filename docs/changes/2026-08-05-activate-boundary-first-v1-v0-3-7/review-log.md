@@ -3,6 +3,17 @@
 ## Review Entries
 
 ### Review entry
+Review ID: plan-review-r3
+Stage: plan-review
+Round: 3
+Status: approved
+Detailed record: reviews/plan-review-r3.md
+Resolution: review-resolution.md#plan-review-r3
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
 Review ID: plan-review-r2
 Stage: plan-review
 Round: 2
@@ -10,7 +21,7 @@ Status: changes-requested
 Detailed record: reviews/plan-review-r2.md
 Resolution: review-resolution.md#plan-review-r2
 Material findings: BFA-PLAN-R2-001, BFA-PLAN-R2-002
-Open findings: BFA-PLAN-R2-001, BFA-PLAN-R2-002
+Open findings: None
 Recording status: recorded
 
 ### Review entry
@@ -21,7 +32,7 @@ Status: changes-requested
 Detailed record: reviews/plan-review-r1.md
 Resolution: review-resolution.md#plan-review-r1
 Material findings: BFA-PLAN-R1-001, BFA-PLAN-R1-002, BFA-PLAN-R1-003, BFA-PLAN-R1-004
-Open findings: BFA-PLAN-R1-001, BFA-PLAN-R1-004
+Open findings: None
 Recording status: recorded
 
 ### Review entry

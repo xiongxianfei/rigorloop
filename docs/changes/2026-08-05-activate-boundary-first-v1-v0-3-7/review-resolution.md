@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -13,11 +13,12 @@ Review closeout: spec-review-r2
 Review closeout: architecture-review-activation-r1
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
+Review closeout: plan-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`
-- Findings resolved: 8
-- Unresolved findings: 4
-- Final result: Plan revision is required before test-spec authoring.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`
+- Findings resolved: 12
+- Unresolved findings: 0
+- Final result: Plan-review R3 approves the plan for test-spec authoring.
 
 ## Resolution Overview
 
@@ -29,12 +30,12 @@ Review closeout: plan-review-r2
 | BFA-SR1-002 | accepted | resolved | Replaced patch v0.3.7 with contract-compliant minor v0.4.0 through proposal revision. |
 | BFA-SR1-003 | accepted | resolved | Invalid unpublished transition histories require a fresh replacement branch and rereview. |
 | BFA-SR1-004 | accepted | resolved | Completed formal boundary ownership for identity, self-containment, strict composition, drift, and replacement. |
-| BFA-PLAN-R1-001 | accepted | open | Split committed payload baseline B from transition T. |
+| BFA-PLAN-R1-001 | accepted | resolved | Final M3 workflow closeout head is B and T is its immediate child. |
 | BFA-PLAN-R1-002 | accepted | resolved | Separated candidate, strict-H, and detached-T proof phases. |
 | BFA-PLAN-R1-003 | accepted | resolved | Mapped release and public-closeout boundary proof owners. |
-| BFA-PLAN-R1-004 | accepted | open | Replace placeholder validation commands with executable rules. |
-| BFA-PLAN-R2-001 | accepted | open | Designate B only after M3 review and closeout evidence settles. |
-| BFA-PLAN-R2-002 | accepted | open | Correct release validation and provide failure-safe executable shell. |
+| BFA-PLAN-R1-004 | accepted | resolved | Replaced placeholder commands with executable rules and corrected CLI syntax. |
+| BFA-PLAN-R2-001 | accepted | resolved | Designated B only after M3 review and closeout evidence settles. |
+| BFA-PLAN-R2-002 | accepted | resolved | Corrected release validation and added failure-safe executable shell. |
 
 ## Finding Details
 
@@ -122,13 +123,13 @@ Validation evidence: Spec-review R2 confirms self-containment, strict compositio
 
 Finding ID: BFA-PLAN-R1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: plan author
 Owning stage: plan
 Chosen action: Split the release work into a committed pre-transition payload baseline B and a narrow transition commit T.
 Rationale: The approved identity chain requires B and T to be separately realizable and reviewable commits.
 Validation target: plan-review-r2
-Validation evidence: Plan-review R2 confirms B and T are split but finds B is designated before M3 review closeout, so this finding remains open.
+Validation evidence: Plan-review R3 confirms the final M3 workflow closeout head is B and M4 creates immediate-child T with no intervening commit.
 
 #### BFA-PLAN-R1-002 - Candidate proof is conflated with strict tagged-tree proof
 
@@ -160,37 +161,37 @@ Validation evidence: Plan-review R2 confirms implementation, candidate, strict r
 
 Finding ID: BFA-PLAN-R2-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: plan author
 Owning stage: plan
 Chosen action: Treat the payload commit as preparation and designate the final M3 closeout head as B only after review, resolution, and validation settle.
 Rationale: T must be the immediate child of B while M4 may begin only after M3 is fully closed.
 Validation target: plan-review-r3
-Validation evidence: pending
+Validation evidence: Plan-review R3 confirms M3 review and resolution settle before the final workflow closeout/routing commit becomes B.
 
 #### BFA-PLAN-R2-002 - Release-checkpoint commands are not fully executable
 
 Finding ID: BFA-PLAN-R2-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: plan author
 Owning stage: plan
 Chosen action: Correct `validate-release.py` to use `--version` and replace the prose recipe with a literal failure-safe shell block.
 Rationale: Release operators need executable commands that cannot continue to publication after a failed strict or tagged-tree gate.
 Validation target: plan-review-r3
-Validation evidence: pending
+Validation evidence: Plan-review R3 confirms the corrected CLI, Bash syntax, pre-publication cleanup, publication gating, and post-attempt evidence preservation.
 
 #### BFA-PLAN-R1-004 - Broader validation commands are placeholders
 
 Finding ID: BFA-PLAN-R1-004
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: plan author
 Owning stage: plan
 Chosen action: Replace placeholder commands with executable command rules for candidate H, strict H, detached T, bare-remote publication, and closeout.
 Rationale: Implementation and release handoffs must be reproducible without inventing commands downstream.
 Validation target: plan-review-r2
-Validation evidence: pending
+Validation evidence: Plan-review R3 confirms literal selector, candidate-H, strict-H, detached-T, bare-remote, and closeout command coverage.
 
 ## Clean review receipts
 
@@ -222,6 +223,13 @@ Material findings: none
 Resolution required: no new findings; canonical architecture and activation-publication ADR are approved
 Evidence: reviews/architecture-review-activation-r1.md
 
+### plan-review-r3
+
+Status: approved
+Material findings: none
+Resolution required: no new findings; confirms all plan-review R1 and R2 findings are closed
+Evidence: reviews/plan-review-r3.md
+
 ## Closeout Checklist
 
 - [x] Every material finding has a disposition.
@@ -229,5 +237,5 @@ Evidence: reviews/architecture-review-activation-r1.md
 - [x] Every rejected finding has rationale.
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
-- [ ] Validation evidence is recorded.
+- [x] Validation evidence is recorded.
 - [x] Closeout status is correct.

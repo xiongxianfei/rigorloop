@@ -4,8 +4,8 @@ review_stage: plan-review
 review_target: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
 base_revision: 78d46d6d0284dc689e312712e5b7cd1f2d6c765b
 head_revision: 12e8cfec14788217a3cdcea4ad7f693cc3431454
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: approved
+review_gate_outcome: approved
 independence_level: L1
 author_context_id: root-boundary-activation-plan-r3
 reviewer_context_id: independent-plan-review-r3
