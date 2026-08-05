@@ -8,13 +8,8 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
     role: primary
-    lifecycle_state: revision-required
-    review:
-      id: proposal-review-r2
-      artifact_id: proposal
-      outcome: changes-requested
-      record: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r2.md
-      round: r2
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/proposal-authoring.md
 workflow_state:
   lifecycle_state: active
   current_stage: proposal-review

@@ -93,15 +93,20 @@ that the absent tag is already published. Default and release-context
 validation remain strict: `v0.3.7` must exist and resolve to the exact reviewed
 pending-to-active transition commit.
 
-Lifecycle automation may carry the exact candidate commit through verified PR
-readiness. Because normal merge commits would change the activation transition
-identity, release execution must preserve that reviewed commit with a
-fast-forward-only, compare-and-swap update of unchanged `main`, create the tag
-at that same commit, and push the branch and tag atomically. Any base drift
-invalidates candidate evidence and returns the change to regeneration and
-review. Tag creation and public GitHub/npm publication remain explicit external
-actions and must stop for the release boundary even when every local gate
-passes.
+Lifecycle automation may carry one first-parent candidate branch through
+verified PR readiness. The branch has two distinct reviewed identities: the
+pending-to-active transition commit and the later final branch head containing
+required review, rationale, and verification evidence. Candidate validation
+discovers and records both.
+
+Because normal merge commits would change the activation transition identity,
+release execution must fast-forward `main` to the exact final reviewed branch
+head with an unchanged-parent compare-and-swap, create `v0.3.7` at the exact
+earlier transition commit in that head's first-parent history, and push both
+refs atomically. Any base drift invalidates candidate evidence and returns the
+change to regeneration and review. Tag creation and public GitHub/npm
+publication remain explicit external actions and must stop for the release
+boundary even when every local gate passes.
 
 ## Expected behavior changes
 
@@ -118,9 +123,9 @@ No new container, service, or persistence model is expected. The change
 exercises two approved architecture boundaries—the atomic boundary-first
 activation state and the profile-driven routine release transaction—and adds a
 narrow validation phase between them. Architecture assessment must cover
-candidate-versus-release authority, exact reviewed commit preservation,
-fast-forward and base-drift behavior, atomic ref publication, and strict
-tag-context revalidation.
+candidate-versus-release authority, separate reviewed-head and transition-tag
+identities, fast-forward and base-drift behavior, atomic ref publication, tagged
+tree self-containment, and strict tag-context revalidation.
 
 ## Testing and verification strategy
 
@@ -130,6 +135,8 @@ tag-context revalidation.
   default mode must continue to reject the absent tag.
 - Prove candidate mode rejects an existing conflicting tag, base drift, wrong
   predecessor, non-fast-forward transition, mixed bundle, or mismatched commit.
+- Prove candidate evidence distinguishes the final reviewed branch head from
+  the earlier transition commit and that both belong to one first-parent chain.
 - Prove canonical reference, manifest, and projection hashes match the release candidate.
 - Prove all ten governed skills and three adapter targets have exact resource parity.
 - Run boundary-first, skill, adapter, selector, release-transaction, package-publication, and release validation tests selected by the approved test specification.
@@ -138,17 +145,25 @@ tag-context revalidation.
   and required broad smoke before the external checkpoint; after creating the
   local immutable tag, run default strict validation and full `release-verify`
   before the atomic push.
+- Run strict release verification from the tagged transition tree and prove it
+  needs no lifecycle artifact committed only after that transition.
 - After publication, observe GitHub/npm identities and run live public `npx` smoke before closeout.
 
 ## Rollout and rollback
 
-Prepare and review the exact `v0.3.7` activation commit while the public
-capability remains pending. Candidate validation proves the complete proposed
-bundle but never claims a published active release. At the external-action
-checkpoint, confirm `origin/main` still equals the reviewed parent, create the
-local `v0.3.7` tag at the reviewed commit, run strict tag-context release
-verification, then atomically fast-forward `main` and publish the tag. The tag
-workflow performs trusted GitHub/npm publication from that exact commit.
+Prepare and review one first-parent `v0.3.7` candidate branch while the public
+capability remains pending. The transition commit contains every release input
+needed by the tag workflow. Later commits add lifecycle review, rationale, and
+verification evidence without changing the release payload or activation
+record. Candidate validation proves the complete proposed bundle and both
+commit identities but never claims a published active release.
+
+At the external-action checkpoint, confirm `origin/main` still equals the
+candidate branch's reviewed base. Create local `v0.3.7` at the transition
+commit, run strict validation and full release verification from that tagged
+tree, then atomically fast-forward remote `main` to the final reviewed branch
+head and publish the tag at the transition commit. The tag workflow performs
+trusted GitHub/npm publication from that exact transition tree.
 
 Before the atomic push, rollback deletes only the local candidate tag and leaves
 remote `main`, public packages, and the coherent pending bundle unchanged. A
@@ -167,6 +182,7 @@ a later patch release rather than mutating `v0.3.7`.
 | Release scripts omit the new version | Make version support profile-derived where already designed and fail cheap in release preflight. |
 | Candidate validation is mistaken for active-release proof | Give it an explicit mode and result; keep default and release gates strict and tag-bound. |
 | Merge or base drift changes the reviewed transition identity | Require unchanged-parent compare-and-swap and atomic fast-forward/tag publication; regenerate and rereview on drift. |
+| Review evidence after activation changes final branch HEAD | Track branch-head and transition-tag identities separately; require one first-parent chain and a self-contained tagged release tree. |
 | Publication succeeds only partially | Preserve rerunnable public closeout and use a later corrective release; never rewrite published artifacts. |
 | Scope expands into workflow redesign | Treat unrelated findings as separate follow-ups unless they block safe activation. |
 
@@ -188,8 +204,8 @@ a later patch release rather than mutating `v0.3.7`.
 | `v0.3.7` routine release profile and generated preparation | core to this proposal | It is the existing source of truth and delivery path. |
 | Three-adapter and npm package proof | same-slice dependency | Activation is incomplete without published package parity. |
 | Candidate-validation bridge | same-slice dependency | Current strict validation cannot prove an active PR before its tag exists. |
-| Pre-publication PR | separate implementation slice | It reviews the exact activation commit under candidate validation. |
-| Atomic fast-forward and tag publication | separate implementation slice | It preserves the reviewed transition identity and requires an explicit external-action checkpoint. |
+| Pre-publication PR | separate implementation slice | It reviews the transition commit plus later lifecycle evidence on one first-parent branch. |
+| Atomic fast-forward and tag publication | separate implementation slice | It publishes final `main` and the earlier transition tag as two explicit reviewed identities. |
 | Post-publication closeout | separate implementation slice | It depends on public GitHub/npm evidence. |
 | Boundary model redesign | out of scope | The merged contract is already approved. |
 | Broad release tooling redesign | out of scope | Only the candidate-validation bridge is required; existing profile-driven tooling remains authoritative. |
@@ -208,7 +224,7 @@ the existing trusted-publishing path.
 | 2026-08-05 | Use `v0.3.6` as rollback. | It is the latest immutable public release before activation. | Constructed rollback bundle. |
 | 2026-08-05 | Reuse the routine release transaction. | Existing profile, preparation, verification, publication, and closeout boundaries already own this work. | New activation or release mechanism. |
 | 2026-08-05 | Separate candidate and strict tag-context validation. | Strict validation requires a tag that cannot safely exist before review; candidate mode proves the exact proposed transition without weakening release proof. | Publish-before-review; omit activation validation from PR. |
-| 2026-08-05 | Preserve the reviewed commit with an atomic fast-forward and tag push. | The tag must resolve to the exact first-parent pending-to-active transition; compare-and-swap prevents stale-base publication. | Normal merge commit; force push; mutable tag. |
+| 2026-08-05 | Atomically publish two reviewed commit identities. | `main` owns the final reviewed head, while the tag contract binds the earlier first-parent pending-to-active transition; compare-and-swap prevents stale-base publication. | Same-commit conflation; normal merge commit; force push; mutable tag. |
 
 ## Next artifacts
 

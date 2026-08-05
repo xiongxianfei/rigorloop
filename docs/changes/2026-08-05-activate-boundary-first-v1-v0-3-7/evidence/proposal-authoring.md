@@ -24,6 +24,12 @@ atomic fast-forward/tag push so the published tag resolves to the exact
 reviewed pending-to-active transition. Candidate evidence never claims that an
 absent tag is an active release.
 
+The R2 revision accepts `BFA-PR2-001`. It separates the final reviewed branch
+head from the earlier pending-to-active transition commit, requires both to
+remain on one first-parent chain, tags only the transition commit, fast-forwards
+`main` to the final reviewed head, and requires the tagged transition tree to
+contain every input needed by strict release verification.
+
 ## Evidence used
 
 - Current GitHub Releases, npm registry version, and Git tags.
@@ -33,7 +39,7 @@ absent tag is an active release.
 
 ## Validation target
 
-Proposal review R2 should confirm `BFA-PR1-001` is resolved and challenge
-candidate versus strict validation authority, transition identity,
+Proposal review R3 should confirm `BFA-PR2-001` is resolved and challenge the
+two-identity first-parent model, tagged-tree self-containment,
 fast-forward/base-drift handling, atomic publication, rollback coherence, and
 the narrowed release-tooling scope.
