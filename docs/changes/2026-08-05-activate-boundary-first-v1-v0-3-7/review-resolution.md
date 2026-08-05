@@ -19,11 +19,12 @@ Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
 Review closeout: code-review-m1-r1
 Review closeout: test-spec-review-r4
+Review closeout: code-review-m1-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`
-- Findings resolved: 17
-- Unresolved findings: 8
-- Final result: M1 code-review R1 requires resolution and rereview.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`
+- Findings resolved: 21
+- Unresolved findings: 5
+- Final result: M1 code-review R2 requires resolution and rereview.
 
 ## Resolution Overview
 
@@ -46,14 +47,15 @@ Review closeout: test-spec-review-r4
 | BFA-TSR1-003 | accepted | resolved | Linked atomic, tag-workflow, and public paths to direct commands and evidence. |
 | BFA-TSR1-004 | accepted | resolved | Made MP1 and MP2 executable and auditable. |
 | BFA-TSR2-001 | accepted | resolved | Linked MP1 and producing commands directly from PRF-006 and PRF-008. |
-| BFA-M1-CR1-001 | accepted | open | Reject every supplied candidate value except exact v0.4.0. |
-| BFA-M1-CR1-002 | accepted | open | Inspect every post-T first-parent commit so a revert cannot hide drift. |
+| BFA-M1-CR1-001 | accepted | resolved | Reject every supplied candidate value except exact v0.4.0. |
+| BFA-M1-CR1-002 | accepted | resolved | Inspect every direct post-T first-parent commit so a revert cannot hide drift. |
 | BFA-M1-CR1-003 | accepted | open | Compose canonical lifecycle settlement and candidate-evidence authority. |
-| BFA-M1-CR1-004 | accepted | open | Emit bounded available failure context and corrective action. |
+| BFA-M1-CR1-004 | accepted | resolved | Emit available failure context and corrective action. |
 | BFA-M1-CR1-005 | accepted | open | Complete direct M1 proof and align the selector surface. |
-| BFA-M1-CR1-006 | accepted | open | Require all applicable directory descendants to be tracked. |
+| BFA-M1-CR1-006 | accepted | resolved | Require all applicable directory descendants to be tracked. |
 | BFA-M1-CR1-007 | accepted | open | Replace open evidence/review subtrees with closed lifecycle ownership. |
 | BFA-M1-CR1-008 | accepted | open | Bound changed-path diagnostics against private sentinels. |
+| BFA-M1-R2-001 | accepted | open | Inspect merged side-branch commits so change-and-revert ancestry cannot hide drift. |
 
 ## Finding Details
 
@@ -283,25 +285,25 @@ Validation evidence: Test-spec-review R3 confirms PRF-006 and PRF-008 cite MP1 a
 
 Finding ID: BFA-M1-CR1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementer
 Owning stage: review-resolution
 Chosen action: Dispatch on option presence and add empty-value CLI regressions.
 Rationale: Candidate vocabulary is closed and malformed candidate input cannot become strict success.
 Validation target: code-review-m1-r2
-Validation evidence: Empty candidate values now return `BFR-CANDIDATE-RELEASE`; candidate mode without `--check` remains a parser error; CMD1 passes.
+Validation evidence: Code-review M1 R2 confirms empty candidate values remain in candidate mode and reject while missing `--check` remains a parser error.
 
 #### BFA-M1-CR1-002 - Reverted post-transition payload drift is accepted
 
 Finding ID: BFA-M1-CR1-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementer
 Owning stage: review-resolution
 Chosen action: Inspect every T-to-H first-parent commit and report the union of forbidden paths.
 Rationale: Endpoint equality does not prove that unpublished candidate history remained valid.
 Validation target: code-review-m1-r2
-Validation evidence: Parent-relative first-parent scanning rejects change-and-revert, rename, deletion, and multi-path histories; CMD1 passes.
+Validation evidence: Code-review M1 R2 confirms direct first-parent change/revert, rename, deletion, and multi-path histories are resolved; merged ancestry is tracked separately as BFA-M1-R2-001.
 
 #### BFA-M1-CR1-003 - Publication readiness treats file presence as settlement
 
@@ -313,19 +315,19 @@ Owning stage: review-resolution
 Chosen action: Compose canonical lifecycle validators and require candidate verification evidence.
 Rationale: Placeholder files cannot authorize external publication.
 Validation target: code-review-m1-r2
-Validation evidence: Readiness now checks settled upstream artifacts, M1-M4 closeout, M4 review, candidate JSON, and composes the canonical metadata, review, and lifecycle validators; negative fixture proof and CMD1 pass.
+Validation evidence: failed-remediation in code-review M1 R2; canonical lifecycle checks pass forged or stale candidate P/B/T/H because candidate semantics remain format-only.
 
 #### BFA-M1-CR1-004 - Candidate failure output lacks bounded context and corrective action
 
 Finding ID: BFA-M1-CR1-004
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementer
 Owning stage: review-resolution
 Chosen action: Return and serialize bounded available candidate context plus stable corrective actions.
 Rationale: Operators need actionable, privacy-safe failure evidence at the authority boundary.
 Validation target: code-review-m1-r2
-Validation evidence: Candidate failures serialize available P/B/T/H, rollback, tag state, bounded paths, and stable corrective actions; CMD1 passes.
+Validation evidence: Code-review M1 R2 confirms available P/B/T/H, rollback, tag state, invariant details, and corrective actions are present; remaining privacy bounds are tracked under BFA-M1-CR1-008.
 
 #### BFA-M1-CR1-005 - M1 direct proof is materially incomplete
 
@@ -337,19 +339,19 @@ Owning stage: review-resolution
 Chosen action: Add the missing T4, T5, T6, T12, and T16 partitions and correct evidence claims; route normative test-spec text changes to its owner if required.
 Rationale: Passing partial tests cannot substitute for the approved direct proof map.
 Validation target: code-review-m1-r2
-Validation evidence: CMD1 passes 77 tests covering the missing topology, replacement, privacy, readiness, and drift partitions; the amended CMD4 selects all M1 validator and selector surfaces, and CMD6 passes 144 tests.
+Validation evidence: failed-remediation in code-review M1 R2; security-owner selection, per-sibling injected failures, merged drift, forged evidence, and invocation-shape partitions remain unproved.
 
 #### BFA-M1-CR1-006 - Directory preflight hides mixed tracked and untracked contents
 
 Finding ID: BFA-M1-CR1-006
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementer
 Owning stage: review-resolution
 Chosen action: Require every applicable existing directory descendant to be tracked and add boundary fixtures.
 Rationale: One tracked child cannot authorize an otherwise mixed directory surface.
 Validation target: code-review-m1-r2
-Validation evidence: Directory preflight fixtures cover fully tracked, mixed, empty, only-untracked, and symlink directories; CMD6 passes 144 tests.
+Validation evidence: Code-review M1 R2 confirms fully tracked, mixed, empty, only-untracked, and top-level symlink directory behavior is resolved.
 
 #### BFA-M1-CR1-007 - Lifecycle subtree allowlist admits arbitrary payload
 
@@ -361,7 +363,7 @@ Owning stage: review-resolution
 Chosen action: Use a closed lifecycle evidence path/shape policy and reject packages, generated output, and arbitrary descendants.
 Rationale: Directory placement alone does not confer lifecycle ownership.
 Validation target: code-review-m1-r2
-Validation evidence: The lifecycle classifier uses exact root files and constrained evidence, review, and invocation names; a disguised `.tgz` payload is rejected by CMD1.
+Validation evidence: failed-remediation in code-review M1 R2; `review-invocation-*` remains an open namespace that accepts arbitrary payload.
 
 #### BFA-M1-CR1-008 - Drift diagnostics disclose private path sentinels
 
@@ -373,7 +375,21 @@ Owning stage: review-resolution
 Chosen action: Bound path identities and add every required privacy sentinel to failure-output tests.
 Rationale: Changed-path evidence must remain useful without disclosing prohibited private values.
 Validation target: code-review-m1-r2
-Validation evidence: Token, OTP, username, hostname, environment, and temporary-root sentinels are absent from serialized failures while redacted path hashes remain actionable; CMD1 passes.
+Validation evidence: failed-remediation in code-review M1 R2; actual runtime username/hostname values and raw candidate/rollback fields can still disclose private sentinels.
+
+### code-review-m1-r2
+
+#### BFA-M1-R2-001 - Merged side-branch history bypasses drift detection
+
+Finding ID: BFA-M1-R2-001
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Traverse every commit newly reachable in T..H and union forbidden parent-relative paths across merge ancestry.
+Rationale: First-parent-only enumeration can hide a forbidden side-branch change and revert even though both commits remain in reviewed history.
+Validation target: code-review-m1-r3
+Validation evidence: pending
 
 ## Clean review receipts
 

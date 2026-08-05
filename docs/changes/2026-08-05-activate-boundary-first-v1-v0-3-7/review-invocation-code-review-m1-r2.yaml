@@ -4,8 +4,8 @@ review_stage: code-review
 review_target: range:3852a010..d1dc3328
 base_revision: 3852a010cad0037d805b17f8696f3b156d8ae8bb
 head_revision: d1dc332848f451d076649b67b6bc2e9b323d541c
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: changes-requested
+review_gate_outcome: stop
 independence_level: L2
 author_context_id: root-m1-review-resolution
 reviewer_context_id: m1-r2-primary-and-second-reviewers
@@ -48,11 +48,24 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
+  reviewer_context_id: m1-r2-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: M1 implements closed multi-surface MUST requirements for candidate authority, topology, diagnostics, lifecycle readiness, and strict compatibility.
-  outcome: pending
+  outcome: changes-requested
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+risk_map:
+  affected_behavior: candidate CLI, remote and Git topology authority, post-T drift, lifecycle readiness, failure serialization, and selector composition
+  highest_impact_failure_modes: merged drift bypass, forged candidate authority, arbitrary lifecycle payload, private-value disclosure, and sibling-check bypass
+  changed_boundaries: BND-INPUT-001, BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-COMPAT-001, and BND-ENV-001
+  evidence_expected: direct T1-T6, T12, and T16 adversarial Git, lifecycle, privacy, and sibling-failure proof
+  direct_inspection_areas: CLI dispatch, Git traversal, lifecycle classification, readiness authority, failure context, directory preflight, and selected execution
+  intentionally_out_of_scope: M2 publication mutation, M3 payload, M4 real transition, public release, and final verify
 review_focus:
   - Reconcile BFA-M1-CR1-001 through BFA-M1-CR1-008 against the corrected code and direct regressions.
   - Challenge every-commit drift detection and the closed lifecycle path policy.
