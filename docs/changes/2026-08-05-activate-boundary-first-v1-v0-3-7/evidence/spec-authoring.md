@@ -4,20 +4,28 @@
 - Artifact path: `specs/boundary-first-v1-v0-3-7-activation-release.md`
 - Authoring stage: `spec`
 - Completion status: complete
-- Next review: `spec-review-r1`
+- Next review: `spec-review-r2`
 
 ## Authoring result
 
-The specification defines the `v0.3.7` activation contract without reopening
+The specification defines the `v0.4.0` activation contract without reopening
 the boundary model. It adds one named, side-effect-free candidate mode; retains
-strict default and release-context validation; separates reviewed base,
-transition, and final-head identities; requires a self-contained tagged tree;
-and defines atomic two-ref publication, drift handling, and immutable rollback.
+strict default and release-context validation; separates publication base `P`,
+grandfathering baseline `B`, transition `T`, and reviewed head `H`; requires a
+self-contained tagged tree; and defines atomic two-ref publication, drift
+handling, and immutable rollback.
+
+Revision R2 resolves spec-review R1 by classifying the public behavior as minor
+release `v0.4.0`, distinguishing `P` from `B`, requiring invalid unpublished
+transition histories to be superseded by a fresh branch from current `P`, and
+assigning the missing self-containment, strict-composition, changed-path, and
+replacement hazards to the existing compact boundary model.
 
 The formal boundary record covers all eight core dimensions and selects only
-six composed hazards needed to distinguish candidate authority, commit
-identity, atomic publication, strict-gate composition, partial failure, and
-rollback. It does not generate a Cartesian scenario inventory.
+seven composed hazards needed to distinguish candidate authority, commit
+identity, atomic publication, strict-gate composition, invalid-candidate
+replacement, partial failure, and rollback. It does not generate a Cartesian
+scenario inventory.
 
 ## Validation target
 

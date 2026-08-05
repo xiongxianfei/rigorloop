@@ -13,7 +13,7 @@ Review closeout: proposal-review-r4
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`
 - Findings resolved: 3
 - Unresolved findings: 3
-- Final result: Specification revision is required; release identity first routes through proposal revision.
+- Final result: Proposal revision is approved; specification R2 awaits review of the three remaining findings.
 
 ## Resolution Overview
 

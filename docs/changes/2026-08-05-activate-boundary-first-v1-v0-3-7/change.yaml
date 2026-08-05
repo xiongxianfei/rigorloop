@@ -19,17 +19,12 @@ artifact_states:
     kind: spec
     path: specs/boundary-first-v1-v0-3-7-activation-release.md
     role: primary
-    lifecycle_state: revision-required
-    review:
-      id: spec-review-r1
-      artifact_id: spec
-      outcome: changes-requested
-      record: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/spec-review-r1.md
-      round: r1
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/spec-authoring.md
 workflow_state:
   lifecycle_state: active
-  current_stage: proposal-review
-  next_stage: proposal-review
+  current_stage: spec-review
+  next_stage: spec-review
   blocker: null
   evidence:
     - docs/research/2026-08-05-boundary-first-v1-activation-release.md
