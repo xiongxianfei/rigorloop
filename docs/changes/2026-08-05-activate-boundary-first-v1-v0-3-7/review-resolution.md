@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -17,11 +17,12 @@ Review closeout: plan-review-r3
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
+Review closeout: code-review-m1-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`
 - Findings resolved: 17
-- Unresolved findings: 0
-- Final result: Test-spec-review R3 approves implementation handoff.
+- Unresolved findings: 8
+- Final result: M1 code-review R1 requires resolution and rereview.
 
 ## Resolution Overview
 
@@ -44,6 +45,14 @@ Review closeout: test-spec-review-r3
 | BFA-TSR1-003 | accepted | resolved | Linked atomic, tag-workflow, and public paths to direct commands and evidence. |
 | BFA-TSR1-004 | accepted | resolved | Made MP1 and MP2 executable and auditable. |
 | BFA-TSR2-001 | accepted | resolved | Linked MP1 and producing commands directly from PRF-006 and PRF-008. |
+| BFA-M1-CR1-001 | accepted | open | Reject every supplied candidate value except exact v0.4.0. |
+| BFA-M1-CR1-002 | accepted | open | Inspect every post-T first-parent commit so a revert cannot hide drift. |
+| BFA-M1-CR1-003 | accepted | open | Compose canonical lifecycle settlement and candidate-evidence authority. |
+| BFA-M1-CR1-004 | accepted | open | Emit bounded available failure context and corrective action. |
+| BFA-M1-CR1-005 | accepted | open | Complete direct M1 proof and align the selector surface. |
+| BFA-M1-CR1-006 | accepted | open | Require all applicable directory descendants to be tracked. |
+| BFA-M1-CR1-007 | accepted | open | Replace open evidence/review subtrees with closed lifecycle ownership. |
+| BFA-M1-CR1-008 | accepted | open | Bound changed-path diagnostics against private sentinels. |
 
 ## Finding Details
 
@@ -267,6 +276,104 @@ Rationale: Each hybrid proof row must cite the command and procedure that direct
 Validation target: test-spec-review-r3
 Validation evidence: Test-spec-review R3 confirms PRF-006 and PRF-008 cite MP1 and every command producing their claimed external evidence.
 
+### code-review-m1-r1
+
+#### BFA-M1-CR1-001 - Empty candidate value falls through to strict mode
+
+Finding ID: BFA-M1-CR1-001
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Dispatch on option presence and add empty-value CLI regressions.
+Rationale: Candidate vocabulary is closed and malformed candidate input cannot become strict success.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### BFA-M1-CR1-002 - Reverted post-transition payload drift is accepted
+
+Finding ID: BFA-M1-CR1-002
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Inspect every T-to-H first-parent commit and report the union of forbidden paths.
+Rationale: Endpoint equality does not prove that unpublished candidate history remained valid.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### BFA-M1-CR1-003 - Publication readiness treats file presence as settlement
+
+Finding ID: BFA-M1-CR1-003
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Compose canonical lifecycle validators and require candidate verification evidence.
+Rationale: Placeholder files cannot authorize external publication.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### BFA-M1-CR1-004 - Candidate failure output lacks bounded context and corrective action
+
+Finding ID: BFA-M1-CR1-004
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Return and serialize bounded available candidate context plus stable corrective actions.
+Rationale: Operators need actionable, privacy-safe failure evidence at the authority boundary.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### BFA-M1-CR1-005 - M1 direct proof is materially incomplete
+
+Finding ID: BFA-M1-CR1-005
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Add the missing T4, T5, T6, T12, and T16 partitions and correct evidence claims; route normative test-spec text changes to its owner if required.
+Rationale: Passing partial tests cannot substitute for the approved direct proof map.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### BFA-M1-CR1-006 - Directory preflight hides mixed tracked and untracked contents
+
+Finding ID: BFA-M1-CR1-006
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Require every applicable existing directory descendant to be tracked and add boundary fixtures.
+Rationale: One tracked child cannot authorize an otherwise mixed directory surface.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### BFA-M1-CR1-007 - Lifecycle subtree allowlist admits arbitrary payload
+
+Finding ID: BFA-M1-CR1-007
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Use a closed lifecycle evidence path/shape policy and reject packages, generated output, and arbitrary descendants.
+Rationale: Directory placement alone does not confer lifecycle ownership.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
+#### BFA-M1-CR1-008 - Drift diagnostics disclose private path sentinels
+
+Finding ID: BFA-M1-CR1-008
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Bound path identities and add every required privacy sentinel to failure-output tests.
+Rationale: Changed-path evidence must remain useful without disclosing prohibited private values.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+
 ## Clean review receipts
 
 ### test-spec-review-r3
@@ -318,5 +425,5 @@ Evidence: reviews/plan-review-r3.md
 - [x] Every rejected finding has rationale.
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
-- [x] Validation evidence is recorded.
+- [ ] Validation evidence is recorded for the open M1 findings.
 - [x] Closeout status is correct.
