@@ -19,16 +19,16 @@
 
 | Input | Path | Artifact ID | Review evidence |
 | --- | --- | --- | --- |
-| Feature spec | `specs/boundary-first-v1-v0-3-7-activation-release.md` | `spec` | `spec-review-r2`; `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/spec-review-r2.md` |
-| Architecture | `docs/architecture/system/architecture.md` | `architecture` | `architecture-review-activation-r1`; `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-activation-r1.md` |
-| Activation publication ADR | `docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md` | `adr-activation-publication` | `architecture-review-activation-r1`; `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/architecture-review-activation-r1.md` |
-| Execution plan | `docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md` | `plan` | `plan-review-r3`; `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/plan-review-r3.md` |
+| Feature spec | `specs/boundary-first-v1-v0-3-7-activation-release.md` | `spec` | `spec-review-r5`; `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/spec-review-r5.md` |
+| Architecture | `docs/architecture/system/architecture.md` | `architecture` | `architecture-review-activation-r3`; `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/architecture-review-activation-r3.md` |
+| Activation publication ADR | `docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md` | `adr-activation-publication` | `architecture-review-activation-r3`; `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/architecture-review-activation-r3.md` |
+| Execution plan | `docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md` | `plan` | `plan-review-r4`; `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/plan-review-r4.md` |
 
 ## Testing strategy
 
 Fixture-backed unit and integration tests prove the candidate CLI, strict-mode
-preservation, exact P/B/T/H topology, path classification, stable diagnostics,
-and side-effect freedom.
+preservation, exact `P/B/T/R -> C ... H` topology, phase-specific path
+classification, stable diagnostics, and side-effect freedom.
 Local bare remotes prove atomic two-ref publication and every reject-without-
 mutation outcome without touching a real remote.
 Release-mode checks prove the v0.4.0 payload, v0.3.6 rollback, archive/package
@@ -53,17 +53,17 @@ boundary dimensions.
 | BFA-R007 | T1 | integration | Local/remote tag presence and unreachable remote block. |
 | BFA-R008 | T2 | integration | Fresh remote main supplies full P. |
 | BFA-R009 | T2, T4 | integration | Unique T and exact first-parent B. |
-| BFA-R010 | T2, T4 | integration | Full H and first-parent reachability. |
+| BFA-R010 | T2, T4 | integration | Full candidate-validation head R and first-parent reachability. |
 | BFA-R011 | T3, T16 | integration | Every non-tag strict invariant and sibling gate remains. |
 | BFA-R012 | T2 | contract | Stable machine result exposes every required field. |
 | BFA-R013 | T1, T2 | contract | Candidate result is explicitly non-public. |
 | BFA-R014 | T5, T10, T11 | integration, smoke | T is self-contained for release proof. |
-| BFA-R015 | T5 | integration | Only owning lifecycle evidence may follow T. |
-| BFA-R016 | T5 | integration | Rejected paths are reported exactly. |
-| BFA-R017 | T12 | contract | Required lifecycle evidence settles before publication. |
-| BFA-R018 | T11, MP1 | manual, smoke | Local tag, strict H, and detached T run before publication. |
+| BFA-R015 | T5, T12 | integration | Only owning lifecycle evidence may follow T through R, C, and H. |
+| BFA-R016 | T5, T12 | integration | Candidate T..R and readiness T..H rejected paths are reported exactly. |
+| BFA-R017 | T12 | integration, contract | Exact result at R is persisted by immediate child C and required lifecycle evidence settles before publication. |
+| BFA-R018 | T7, T11, T12, MP1 | integration, manual, smoke | Local tag, strict H, publication readiness H, and detached T run before publication. |
 | BFA-R019 | T11, MP1 | manual, smoke | Tag resolves to T and detached proof reads no H content. |
-| BFA-R020 | T7, T9, MP1 | integration, manual | One atomic main/tag update only. |
+| BFA-R020 | T7, T9, T12, MP1 | integration, manual | Readiness-bound exact H feeds one atomic main/tag update only. |
 | BFA-R021 | T7, T8 | integration | Same-push advertised main must equal P. |
 | BFA-R022 | T8 | integration | Every ref/capability failure changes neither ref. |
 | BFA-R023 | T8, T9 | integration | No sequential fallback; regeneration follows failure. |
@@ -74,7 +74,7 @@ boundary dimensions.
 | BFA-R028 | T9, T14 | integration, manual | Post-publish recovery never rewrites published refs. |
 | BFA-R029 | T15 | migration | Runtime rollback is exact v0.3.6 or fails. |
 | BFA-R030 | T14, MP2 | integration, manual | Partial/delayed publication remains open and rerunnable. |
-| BFA-R031 | T1, T2, T5, T8 | integration | Diagnostics expose bounded identities, invariant, and action. |
+| BFA-R031 | T1, T2, T5, T8, T12 | integration | Candidate and readiness diagnostics expose bounded phase identities, invariant, and action. |
 | BFA-R032 | T6 | integration | Candidate checks are deterministic and side-effect free. |
 | BFA-R033 | T16 | integration | Candidate cannot bypass selected sibling gates. |
 | BFA-R034 | T6, T10, T13 | integration, smoke | Evidence and diagnostics suppress private values. |
@@ -86,11 +86,11 @@ boundary dimensions.
 | --- | --- | --- | --- |
 | AC-BFA-001 | T1-T3 | integration | Candidate succeeds without the absent tag and remains non-public. |
 | AC-BFA-002 | T1, T3 | integration | Default validation fails without the tag. |
-| AC-BFA-003 | T2, T4 | integration | Exact P/B/T/H first-parent chain. |
+| AC-BFA-003 | T2, T4, T12 | integration | Exact `P ... B -> T ... R -> C ... H` first-parent chain. |
 | AC-BFA-004 | T3, T15 | integration | Rollback and bundle identities. |
 | AC-BFA-005 | T5 | integration | Post-T drift reports paths. |
 | AC-BFA-006 | T10, T11 | smoke | T includes every strict/full-gate input. |
-| AC-BFA-007 | T11, MP1 | manual, smoke | Strict H and detached T pass after local tag. |
+| AC-BFA-007 | T11, T12, MP1 | integration, manual, smoke | Strict H, publication readiness H, and detached T pass after local tag. |
 | AC-BFA-008 | T8 | integration | Failure matrix changes neither ref. |
 | AC-BFA-009 | T7, MP1 | integration, manual | Authorized atomic mapping is exact. |
 | AC-BFA-010 | T13, MP2 | smoke, manual | Existing public release gates remain composed. |
@@ -104,10 +104,10 @@ boundary dimensions.
 
 | Example | Covered by | Notes |
 | --- | --- | --- |
-| E1 | T1-T3 | Candidate succeeds on exact absent-tag P/B/T/H state. |
+| E1 | T1-T3 | Candidate succeeds on exact absent-tag P/B/T/R state. |
 | E2 | T1, T3 | Ordinary validation stays strict. |
-| E3 | T11, MP1 | Local tag enables strict H and detached T proof. |
-| E4 | T5, T11 | Lifecycle-only H is allowed without weakening T. |
+| E3 | T11, T12, MP1 | Local tag enables strict H, readiness H, and detached T proof. |
+| E4 | T5, T12 | Immediate R-to-C evidence and lifecycle-only H are allowed without weakening T. |
 | E5 | T8 | Base drift changes neither ref. |
 | E6 | T8, T9 | Missing atomic capability has no fallback. |
 | E7 | T5, T8 | Post-T payload drift requires replacement history. |
@@ -123,16 +123,16 @@ Boundary model scope: BFA-R001 through BFA-R035
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | PRF-001 | covered | BFA-R004, BFA-R006, BFA-R007, BFA-R031 | BND-INPUT-001 | T1 | integration | automated | CMD1 | `evidence/implementation-m1.md` | M1 | - | - |
 | PRF-002 | covered | BFA-R005, BFA-R006, BFA-R013, BFA-R017, BFA-R024 | BND-STATE-001 | T1, T12, T14 | integration | hybrid | CMD1, CMD13, CMD14, CMD18, CMD19 | `evidence/implementation-m1.md`; `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
-| PRF-003 | covered | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R018, BFA-R019, BFA-R020, BFA-R021 | BND-AUTH-001 | T2, T4, T7, T11 | integration | hybrid | CMD1, CMD5, CMD15, CMD17 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md`; `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`; `evidence/atomic-publication.json` | release checkpoint | MP1 | - |
+| PRF-003 | covered | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R017, BFA-R018, BFA-R019, BFA-R020, BFA-R021 | BND-AUTH-001 | T2, T4, T7, T11, T12 | integration | hybrid | CMD1, CMD5, CMD14, CMD15, CMD17 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md`; `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`; `evidence/atomic-publication.json` | release checkpoint | MP1 | - |
 | PRF-004 | covered | BFA-R005, BFA-R014, BFA-R018, BFA-R019, BFA-R025, BFA-R026, BFA-R033 | BND-COMPOSE-001 | T3, T10, T11, T13, T16 | end-to-end | hybrid | CMD12, CMD16, CMD19, CMD20, CMD25 | `evidence/release-checkpoint.md`; `evidence/atomic-publication.json`; `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
-| PRF-005 | covered | BFA-R015, BFA-R016, BFA-R021, BFA-R022, BFA-R023, BFA-R035 | BND-TEMPORAL-001 | T5, T8 | integration | automated | CMD1, CMD5 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md` | M2 | - | - |
+| PRF-005 | covered | BFA-R015, BFA-R016, BFA-R021, BFA-R022, BFA-R023, BFA-R035 | BND-TEMPORAL-001 | T5, T8, T12 | integration | automated | CMD1, CMD5 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md` | M2 | - | - |
 | PRF-006 | covered | BFA-R022, BFA-R023, BFA-R027, BFA-R028, BFA-R030, BFA-R035 | BND-RECOVERY-001 | T5, T8, T11, T14 | integration | hybrid | CMD5, CMD14-CMD19 | `evidence/implementation-m2.md`; `evidence/release-checkpoint.md`; `evidence/atomic-publication.json`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
 | PRF-007 | covered | BFA-R002, BFA-R003, BFA-R005, BFA-R029 | BND-COMPAT-001 | T3, T10, T15 | integration | automated | CMD1, CMD12 | `evidence/implementation-m3.md` | M3 | - | - |
 | PRF-008 | covered | BFA-R007, BFA-R020, BFA-R022, BFA-R025, BFA-R030 | BND-ENV-001 | T1, T8, T13, T14 | end-to-end | hybrid | CMD1, CMD5, CMD17-CMD20, CMD25 | `evidence/atomic-publication.json`; `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
 | PRF-009 | covered | BFA-R005, BFA-R007, BFA-R013 | INT-001 | T1, T3 | integration | automated | CMD1 | `evidence/implementation-m1.md` | M1 | - | - |
-| PRF-010 | covered | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R015, BFA-R016, BFA-R019, BFA-R020 | INT-002 | T2, T5, T11 | integration | hybrid | CMD1, CMD15-CMD17 | `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`; `evidence/atomic-publication.json` | release checkpoint | MP1 | - |
+| PRF-010 | covered | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R015, BFA-R016, BFA-R017, BFA-R019, BFA-R020 | INT-002 | T2, T5, T11, T12 | integration | hybrid | CMD1, CMD14-CMD17 | `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`; `evidence/atomic-publication.json` | release checkpoint | MP1 | - |
 | PRF-011 | covered | BFA-R020, BFA-R021, BFA-R022 | INT-003 | T7, T8 | integration | automated | CMD5 | `evidence/implementation-m2.md` | M2 | - | - |
-| PRF-012 | covered | BFA-R018, BFA-R019, BFA-R025, BFA-R033 | INT-004 | T11, T13, T16 | end-to-end | hybrid | CMD15, CMD16, CMD19, CMD20, CMD25 | `evidence/release-checkpoint.md`; `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
+| PRF-012 | covered | BFA-R018, BFA-R019, BFA-R025, BFA-R033 | INT-004 | T11, T12, T13, T16 | end-to-end | hybrid | CMD14-CMD16, CMD19, CMD20, CMD25 | `evidence/release-checkpoint.md`; `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
 | PRF-013 | covered | BFA-R027, BFA-R028, BFA-R030 | INT-005 | T11, T14 | integration | hybrid | CMD17, CMD18, CMD19 | `evidence/atomic-publication.json`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
 | PRF-014 | covered | BFA-R002, BFA-R029 | INT-006 | T15 | integration | automated | CMD12 | `evidence/implementation-m3.md` | M3 | - | - |
 | PRF-015 | covered | BFA-R016, BFA-R023, BFA-R035 | INT-007 | T5, T8 | integration | automated | CMD1, CMD5 | `evidence/implementation-m2.md` | M2 | - | - |
@@ -151,10 +151,12 @@ Evidence paths without a leading directory are relative to
 | EC5 zero or multiple transitions | T4 | Topology fails closed. |
 | EC6 T only on non-first-parent path | T4 | First-parent proof fails. |
 | EC7 lifecycle receipt follows T | T5 | Owning lifecycle evidence is accepted. |
+| EC7A candidate evidence is self-naming, copied, modified, non-immediate, or off first-parent | T12 | Provenance fails before readiness. |
 | EC8 release-gated review fix follows T | T5, T8 | Candidate is replaced and rereviewed. |
 | EC9 remote main changes after proof | T8 | Both refs remain unchanged. |
 | EC10 remote rejects atomic push | T8, T9 | No sequential fallback. |
 | EC11 strict H passes but detached T fails | T11, MP1 | Local tag is removed; publication never starts. |
+| EC11A stored provenance, live H, fresh identities, tag authority, or remote base fails readiness | T7, T8, T12 | Publication stops before remote mutation. |
 | EC12 Git refs publish but npm fails | T14, MP2 | Immutable refs remain; closeout stays open. |
 
 ## Validation commands
@@ -173,11 +175,11 @@ Evidence paths without a leading directory are relative to
 | CMD10 | `python scripts/release-preflight.py v0.4.0` | existing/configured | implement | M3 | code-review M3 | Block profile, version, tag, remote, evidence, or changed-literal inconsistency. | Not applicable; deterministic preflight. | `evidence/implementation-m3.md` | Reads remote tag state but does not mutate it. |
 | CMD11 | `python scripts/select-validation.py --mode release --release-version v0.4.0` | existing/configured | implement | M3, M4 | code-review M3 | Block missing release checks or selector debt. | Not applicable; deterministic selector. | Owning milestone implementation evidence. | Read-only selection; no publication. |
 | CMD12 | `bash scripts/ci.sh --mode release --release-version v0.4.0` | existing/configured | implement | M3, M4 | code-review M3 | Block release-selected or broad-smoke failure. | Zero selected tests is failure. | Owning milestone implementation evidence. | Repository validation only; no publication. |
-| CMD13 | `python scripts/validate-boundary-first.py --check --activation-candidate v0.4.0` | planned-for-implementation | implement | M1 | code-review M4 | Block absent-tag candidate or P/B/T/H proof. | Not applicable; deterministic check. | `evidence/boundary-activation-candidate.json` | Read-only; remote advertisement only. |
-| CMD14 | `python scripts/publish-boundary-activation.py --check --release v0.4.0 --candidate-evidence docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json` | planned-for-implementation | implement | M2 | release checkpoint | Block stale evidence, local gate, ref, or capability mismatch. | Not applicable; deterministic preflight. | `evidence/release-checkpoint.md` | Check mode must not mutate refs. |
+| CMD13 | `python scripts/validate-boundary-first.py --check --activation-candidate v0.4.0` | planned-for-implementation | implement | M1 | code-review M4 | Block absent-tag candidate or P/B/T/R proof. | Not applicable; deterministic check. | `evidence/boundary-activation-candidate.json` | Read-only; remote advertisement only. |
+| CMD14 | `python scripts/publish-boundary-activation.py --check --release v0.4.0 --candidate-evidence docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json` | planned-for-implementation | implement | M2 | release checkpoint | Block stale R/C provenance, live-H ancestry, local/remote tag, P/B/T, rollback, bundle, T..H drift, ref, or capability mismatch. | Not applicable; deterministic preflight. | `evidence/release-checkpoint.md` | Check mode derives exact H but must not mutate refs. |
 | CMD15 | `python scripts/validate-boundary-first.py --check` | release-owned | release operator | release checkpoint | release checkpoint | Stop and remove local tag before publication. | Not applicable; deterministic strict check. | `evidence/release-checkpoint.md` | Runs at H with local v0.4.0 at T; no remote mutation. |
 | CMD16 | `bash scripts/release-verify.sh v0.4.0` | release-owned | release operator | release checkpoint | release checkpoint | Stop, clean detached worktree, and remove local tag before publication. | Zero tests or skipped required gate is failure. | `evidence/release-checkpoint.md` | Runs only in detached worktree at T. |
-| CMD17 | `python scripts/publish-boundary-activation.py --publish --release v0.4.0 --candidate-evidence docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json` | external-owned | release operator | release checkpoint | explicit release action | Stop on any guard or push failure and reconcile exact remote state. | Not applicable; publication command. | `evidence/atomic-publication.json` | Authorized external mutation; one non-forced atomic push only. |
+| CMD17 | `python scripts/publish-boundary-activation.py --publish --release v0.4.0 --candidate-evidence docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json` | external-owned | release operator | release checkpoint | explicit release action | Rerun readiness in-process, retain exact full H through refspec construction, and stop on any guard or push failure for exact reconciliation. | Not applicable; publication command. | `evidence/atomic-publication.json` | Authorized external mutation; one non-forced atomic push only. |
 | CMD18 | `python scripts/close-release-publication.py v0.4.0` | release-owned | release operator | public closeout | explicit release action | Keep closeout open with exact unavailable or failed phase. | Not applicable; evidence generator. | `docs/releases/v0.4.0/npm-publication.md` | Reads public GitHub/npm/npx; writes closeout evidence, not publication. |
 | CMD19 | `python scripts/validate-release.py --version v0.4.0` | release-owned | release operator | public closeout | explicit release action | Keep release open until published evidence is valid. | Not applicable; deterministic validation. | `docs/releases/v0.4.0.md` | Read-only release validation. |
 | CMD20 | `bash scripts/release-verify.sh "$GITHUB_REF_NAME"` | ci-owned | GitHub tag workflow | public publication | tag workflow | Block GitHub release and npm publication. | Zero tests or skipped required gate is failure. | GitHub Actions run and release evidence. | CI tag context; trusted publication starts only after pass. |
@@ -214,14 +216,14 @@ Evidence paths without a leading directory are relative to
 - Automation location: `scripts/test-boundary-first-validation.py`
 - Required by milestone: M1
 
-### T2. P/B/T/H identity and stable candidate result
+### T2. P/B/T/R identity and stable candidate result
 
 - Covers: BFA-R008-R010, BFA-R012-R013, BFA-R031, E1, AC-BFA-003
 - Level: integration
 - Command IDs: CMD1, CMD13
-- Fixture/setup: First-parent histories with exact P/B/T/H identities and lifecycle-only commits after T.
+- Fixture/setup: First-parent histories with exact P/B/T/R identities and lifecycle-only commits after T.
 - Steps: Run candidate validation repeatedly and parse the machine result.
-- Expected result: Full identities and required fields are stable; tag state is absent and no public activation claim appears.
+- Expected result: Full identities and required fields, including exact `candidate_validation_head: R`, are stable; no `reviewed_head` field appears; tag state is absent and no public activation claim appears.
 - Failure proves: Identity authority or result serialization is ambiguous or conflated.
 - Evidence artifact: `evidence/boundary-activation-candidate.json`
 - Automation location: `scripts/test-boundary-first-validation.py`; `scripts/validate-boundary-first.py`
@@ -247,7 +249,7 @@ Evidence paths without a leading directory are relative to
 - Command IDs: CMD1
 - Fixture/setup: Histories with zero, one, or two transitions and merge-only reachability.
 - Steps: Run candidate validation on each topology.
-- Expected result: Only one B-to-T transition on H's first-parent chain passes.
+- Expected result: Only one B-to-T transition on R's first-parent chain passes.
 - Failure proves: Transition identity can be absent, ambiguous, or hidden behind a merge parent.
 - Evidence artifact: `evidence/implementation-m1.md`
 - Automation location: `scripts/test-boundary-first-validation.py`
@@ -257,10 +259,10 @@ Evidence paths without a leading directory are relative to
 
 - Covers: BFA-R014-R016, BFA-R023, BFA-R035, E4, E7, EC7, EC8, INT-002, INT-007
 - Level: integration
-- Command IDs: CMD1
-- Fixture/setup: Lifecycle-only H, one release-gated path per class, multiple rejected paths, and replacement histories from fresh P.
-- Steps: Validate accepted H, drifted H, appended repair, second transition, and clean replacement branch.
-- Expected result: Lifecycle evidence passes; every release-gated path is listed; invalid history never becomes reusable; replacement has exactly one new transition.
+- Command IDs: CMD1, CMD5
+- Fixture/setup: Candidate histories through R and readiness histories through H, one release-gated path per class, multiple rejected paths, and replacement histories from fresh P.
+- Steps: Validate accepted and drifted `T..R` in candidate mode; validate accepted and drifted `T..H` in readiness; exercise appended repair, second transition, and clean replacement branch.
+- Expected result: Lifecycle evidence passes in both phases; every release-gated path is listed; invalid history never becomes reusable; replacement has exactly one new transition.
 - Failure proves: Tagged payload can drift or invalid transition history can be retained.
 - Evidence artifact: `evidence/implementation-m1.md`; `evidence/implementation-m2.md`
 - Automation location: `scripts/test-boundary-first-validation.py`; `scripts/test-boundary-activation-release.py`
@@ -284,9 +286,9 @@ Evidence paths without a leading directory are relative to
 - Covers: BFA-R020-R021, AC-BFA-009, INT-003
 - Level: integration
 - Command IDs: CMD5
-- Fixture/setup: Atomic-capable local bare remote with main at P, absent v0.4.0, fast-forward H, T in H, and valid candidate evidence.
-- Steps: Run the publication helper in publish mode against the fixture.
-- Expected result: One non-forced atomic push advances main P-to-H and creates v0.4.0 at T.
+- Fixture/setup: Atomic-capable local bare remote with main at P, absent remote v0.4.0, local v0.4.0 at T, exact `R -> C ... H`, and valid candidate evidence produced at R.
+- Steps: Run publish mode; instrument readiness return and push argv; move symbolic local HEAD after readiness in one partition without changing the captured full SHA.
+- Expected result: Publish mode reruns readiness, retains its exact full H SHA, and uses that literal SHA in one non-forced atomic push advancing main P-to-H and creating v0.4.0 at T; it never re-resolves symbolic HEAD.
 - Failure proves: The authorized two-ref mapping cannot complete atomically.
 - Evidence artifact: `evidence/implementation-m2.md`
 - Automation location: `scripts/test-boundary-activation-release.py`
@@ -297,7 +299,7 @@ Evidence paths without a leading directory are relative to
 - Covers: BFA-R021-R023, BFA-R027, BFA-R035, E5-E7, EC8-EC10, INT-003, INT-007
 - Level: integration
 - Command IDs: CMD5
-- Fixture/setup: Bare remotes for stale P, existing tag, non-fast-forward H, absent atomic capability, and one-ref rejection.
+- Fixture/setup: Bare remotes and histories for stale P, existing remote tag, non-fast-forward H, local-head movement before readiness, evidence drift, absent atomic capability, and one-ref rejection.
 - Steps: Attempt publication, re-read both refs, inspect command argv, and exercise replacement-candidate recovery.
 - Expected result: Every failure changes neither ref, uses no force/sequential fallback, and requires fresh P plus full validation/rereview.
 - Failure proves: Stale authority or partial Git publication can escape the guard.
@@ -331,14 +333,14 @@ Evidence paths without a leading directory are relative to
 - Automation location: Existing release, adapter, package, and smoke checks selected by release mode
 - Required by milestone: M3
 
-### T11. Local tag, strict H, detached T, and failed-before-publish cleanup
+### T11. Local tag, strict H, readiness H, detached T, and failed-before-publish cleanup
 
 - Covers: BFA-R014, BFA-R018-R019, BFA-R027, E3, EC11, INT-004, INT-005
 - Level: manual
 - Command IDs: CMD14-CMD16
-- Fixture/setup: Reviewed H, candidate evidence, local tag v0.4.0 at T, and detached temporary worktree at T.
-- Steps: Follow MP1; additionally inject strict-H and detached-T failures in automated shell harness tests.
-- Expected result: Both gates pass before publication; either failure removes local tag/worktree and never invokes publish; detached proof reads only T.
+- Fixture/setup: Reviewed H containing valid R-to-C evidence, local tag v0.4.0 at T, absent remote tag, remote main P, and detached temporary worktree at T.
+- Steps: Follow MP1; additionally inject strict-H, readiness-H, and detached-T failures in automated shell harness tests.
+- Expected result: All three gates pass before publication; preview-phase failure removes local tag/worktree and never invokes publish; publish-invocation failure preserves local evidence for reconciliation; detached proof reads only T.
 - Failure proves: Candidate proof substituted for strict/tagged proof or cleanup crossed the external boundary.
 - Evidence artifact: `evidence/release-checkpoint.md`; `evidence/atomic-publication.json`
 - Automation location: MP1 plus `scripts/test-boundary-activation-release.py`
@@ -346,15 +348,15 @@ Evidence paths without a leading directory are relative to
 
 ### T12. Lifecycle evidence and publication readiness gate
 
-- Covers: BFA-R017, BFA-R024, BND-STATE-001
+- Covers: BFA-R015-R018, BFA-R020, BFA-R024, EC7A, EC11A, AC-BFA-003, BND-STATE-001, BND-AUTH-001
 - Level: contract
-- Command IDs: CMD1, CMD13, CMD14
-- Fixture/setup: Change records missing each required artifact/evidence class and a fully settled candidate record.
-- Steps: In M1, run the missing-evidence fixture matrix through CMD1; at M4 run CMD13 against actual H; at the release checkpoint run CMD14 against the settled candidate evidence before mutation.
-- Expected result: Missing proposal-through-candidate evidence blocks; settled evidence remains at H; no external action autoprogresses.
+- Command IDs: CMD1, CMD5, CMD13, CMD14
+- Fixture/setup: Change records missing each required artifact/evidence class; exact `T ... R -> C ... H`; and malformed variants where evidence is missing, duplicated, self-naming, copied from another R, modified after C, introduced by a non-immediate child, reachable only through a merge parent, or excluded from live H.
+- Steps: In M1, run the missing-evidence and provenance fixture matrix; at M4 run CMD13 at actual R and commit its exact JSON in immediate child C; at the release checkpoint run CMD14 at live H after local tag creation; inject fresh P/B/T, rollback, bundle, local/remote tag, remote-main, and T..H mismatches.
+- Expected result: Only exact producer result plus immediate first-parent R-to-C provenance and C-in-H containment passes; every stale or forged variant and fresh-authority mismatch blocks; candidate evidence names R rather than C or H; no external action autoprogresses.
 - Failure proves: Publication can precede required lifecycle evidence or explicit authority.
 - Evidence artifact: `evidence/implementation-m1.md`; `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`
-- Automation location: `scripts/test-boundary-first-validation.py`; candidate validator; publication preflight
+- Automation location: `scripts/test-boundary-first-validation.py`; `scripts/test-boundary-activation-release.py`; candidate validator; publication preflight
 - Required by milestone: M1 fixture proof, M4 actual-state proof, and release checkpoint
 
 ### T13. Tag workflow and public package composition
@@ -412,7 +414,8 @@ Evidence paths without a leading directory are relative to
 ## Fixtures and data
 
 - Extend `scripts/fixtures/boundary-first/activation/` with exact candidate,
-  invalid-input, P/B/T/H topology, post-T path, and privacy-sentinel cases.
+  invalid-input, P/B/T/R topology, immediate R-to-C evidence, C-in-H ancestry,
+  post-T path, and privacy-sentinel cases.
 - M2 creates temporary non-network bare remotes and isolated hook directories;
   fixtures never reference the configured public remote.
 - M3 uses the canonical v0.4.0 profile and repository-owned generated surfaces.
@@ -436,7 +439,7 @@ No generalized future missing-tag mode is accepted.
 
 ## Observability verification
 
-T1, T2, T5, T6, T8, and T14 assert stable mode, release, P/B/T/H, tag/path,
+T1, T2, T5, T6, T8, T12, and T14 assert stable mode, release, P/B/T/R/C/H, tag/path,
 expected invariant, corrective action, failed phase, and bounded public state.
 Evidence must not claim a broader state than the command directly proved.
 
@@ -461,10 +464,10 @@ remains authoritative.
 - Owner role: authorized release operator.
 - Owning stage: explicit release checkpoint after PR approval and merge authorization.
 - Automation rationale: local fixture automation proves mechanics, but only the authorized remote can prove current P, atomic capability, authenticated two-ref publication, and receive-side acceptance.
-- Required environment: clean reviewed H; candidate JSON at its canonical evidence path; Git and Python; configured authorized `origin`; local and remote v0.4.0 absent; release credentials available but never printed or recorded.
+- Required environment: clean reviewed H containing exact immediate-child R-to-C candidate evidence; Git and Python; configured authorized `origin`; local and remote v0.4.0 absent before the procedure; release credentials available but never printed or recorded.
 - Exact procedure: execute verbatim the failure-safe Bash block under `Lifecycle closeout. Review, rationale, verification, PR, and explicit release` in `docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md`. That block creates local v0.4.0 at `transition_commit`, runs CMD15 at H, runs CMD16 from a detached T worktree, runs CMD14, then and only then runs CMD17.
-- Evidence artifacts: `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/release-checkpoint.md` records H/T, strict and detached commands, exit results, and advertised P/tag state; `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/atomic-publication.json` records P, H, T, push mode, and resulting advertised refs.
-- Pass condition: CMD15, CMD16, and CMD14 pass; one non-forced atomic push maps main P-to-H and absent v0.4.0-to-T; fresh advertised refs equal H and T; evidence contains no credentials or machine-local path.
+- Evidence artifacts: `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/release-checkpoint.md` records R/C/H/T, strict, readiness, and detached commands, exit results, and advertised P/tag state; `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/atomic-publication.json` records P, readiness-bound H, T, push mode, and resulting advertised refs.
+- Pass condition: CMD15, CMD16, and CMD14 pass; CMD17 independently reruns readiness and uses its returned exact full H; one non-forced atomic push maps main P-to-H and absent remote v0.4.0-to-T; fresh advertised refs equal H and T; evidence contains no credentials or machine-local path.
 - Failure condition: any pre-publish gate fails, push capability/guard/ref acceptance fails, resulting refs are uncertain or mismatched, or evidence is incomplete/private; public closeout must not start.
 - Cleanup and recovery: before publication starts, the plan trap removes the temporary worktree and local tag and remote refs remain unchanged. After CMD17 starts, preserve the local tag and evidence, re-query both remote refs, record the exact state, and follow standing immutable recovery without retrying from stale evidence.
 - Forbidden actions: force push, force-with-lease, tag overwrite/deletion, sequential branch/tag pushes, manual ref repair, credential capture, or continuing after a failed/uncertain gate.

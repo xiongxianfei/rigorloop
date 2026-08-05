@@ -53,17 +53,12 @@ artifact_states:
     kind: test-spec
     path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
     role: primary
-    lifecycle_state: active
-    review:
-      id: test-spec-review-r4
-      artifact_id: test-spec
-      outcome: approved
-      record: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/test-spec-review-r4.md
-      round: r4
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/test-spec-authoring.md
 workflow_state:
   lifecycle_state: active
-  current_stage: plan-review
-  next_stage: test-spec
+  current_stage: test-spec-review
+  next_stage: test-spec-review
   blocker: null
   evidence:
     - docs/research/2026-08-05-boundary-first-v1-activation-release.md

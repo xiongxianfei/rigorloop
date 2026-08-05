@@ -3,10 +3,10 @@
 - Artifact ID: `test-spec`
 - Test spec: `specs/boundary-first-v1-v0-3-7-activation-release.test.md`
 - Completion status: complete
-- Next review: `test-spec-review-r4`
+- Next review: `test-spec-review-r5`
 
 The proof map covers all 35 requirements, 15 acceptance criteria, eight
-examples, 12 edge cases, eight boundaries, and seven selected interactions.
+examples, 14 edge cases, eight boundaries, and seven selected interactions.
 Sixteen outcome-focused test cases separate repository-local implementation
 proof from the two explicit release-owned manual procedures.
 The command ledger binds focused M1/M2 tests, release-mode M3/M4 validation,
@@ -29,3 +29,10 @@ CMD4's literal path set. Those are the selector implementation and regression
 surfaces necessarily touched to support CMD4's tracked fixture directory. The
 command remains read-only and retains the same owner, milestone, and failure
 boundary.
+
+The R5 revision aligns the proof map with candidate `P/B/T/R`, immediate
+evidence child `C`, and readiness-bound publication head `H`. It adds direct
+forged/stale provenance, C-in-H, phase-specific tag authority, T..R versus
+T..H drift, same-invocation exact-H refspec, local-head movement, and
+preview-versus-publish cleanup partitions without expanding into a Cartesian
+scenario inventory.
