@@ -8,7 +8,9 @@ flowchart LR
   projector["Projection and validation<br/>[Python: manifest interpreter and parity checks]"]:::component
   selector["Validation selector<br/>[Python: path-owned check routing]"]:::component
   activation["Tracked activation transaction<br/>[Repository sources, marker, and evidence references]"]:::component
-  candidate["Activation candidate validator<br/>[Python: read-only P/B/T/H and drift proof]"]:::component
+  candidate["Activation candidate validator<br/>[Python: read-only P/B/T/R and T..R proof]"]:::component
+  candidate_evidence["Candidate evidence<br/>[Change-local JSON: result persisted by immediate child C]"]:::container
+  readiness["Publication readiness<br/>[Python: R/C provenance, live H, and T..H proof]"]:::component
   strict["Strict tagged-tree release gate<br/>[Shell/Python: H validation and T worktree]"]:::component
   publisher["Atomic ref publisher<br/>[Git: guarded non-forced branch/tag transaction]"]:::component
   remote["Git remote<br/>[External: main and immutable release tags]"]:::external
@@ -30,8 +32,13 @@ flowchart LR
   activation -->|provides the exact candidate source and resource identities for| generated
   activation -->|provides active manifest and unique transition history to| candidate
   remote -->|advertises exact publication base and absent tag to| candidate
-  candidate -->|records P/B/T/H and approved post-transition paths for| strict
-  strict -->|authorizes exact H and T identities for| publisher
+  candidate -->|emits exact P/B/T/R result persisted by| candidate_evidence
+  candidate_evidence -->|provides stored R and immediate-child C provenance to| readiness
+  activation -->|provides live manifest and release identities to| readiness
+  remote -->|freshly advertises main P and absent remote tag to| readiness
+  readiness -->|binds exact full H SHA for| publisher
+  readiness -->|authorizes live H and local tag T for| strict
+  strict -->|authorizes strict H and detached tagged-tree T proof for| publisher
   publisher -->|atomically advances main to H and creates v0.4.0 at T in| remote
   generated -->|produces package and clean-install results recorded in| evidence
   evidence -->|must match the candidate before the tracked marker becomes active in| activation
