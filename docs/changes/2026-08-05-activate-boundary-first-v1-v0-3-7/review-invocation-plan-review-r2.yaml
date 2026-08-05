@@ -1,0 +1,44 @@
+schema_version: 1
+review_id: plan-review-r2
+review_stage: plan-review
+review_target: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+base_revision: c96e5b0066a90af3eb7bd1233c512fa5c8630b4c
+head_revision: 78d46d6d0284dc689e312712e5b7cd1f2d6c765b
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L1
+author_context_id: root-boundary-activation-plan-r2
+reviewer_context_id: independent-plan-review-r2
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+    revision: 78d46d6d0284dc689e312712e5b7cd1f2d6c765b
+    sha256: 4c082040bcdc58d215e6c8124228f5da61dbe0a9e047cca42614777153ec0ac6
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: 150cbb48
+    sha256: 48a42eb23156330bc7a60a869c93ec512e3c0b8e79b29587ccfbd94eebab8db9
+  - path: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+    revision: ede4a843
+    sha256: 911b77ee4384c8576269a04233e7581865075bda3a78277f67371b3afca2d2e5
+  - path: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/plan-review-r1.md
+    revision: d38d9180
+    sha256: a9369c7de154890129c7beff908eddd2f290132aebdf3c93d568580712096b91
+  - path: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-resolution.md
+    revision: d38d9180
+    sha256: 0270ccc0d69df4fa4a0a043e5874ba6f7549bfa07969dd519ba17770d2d545a5
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - closure of BFA-PLAN-R1-001 through BFA-PLAN-R1-004
+  - realizable committed B then narrow T sequence
+  - candidate-H versus strict-H and detached-T proof ownership
+  - atomic publication and post-publication closeout ownership
+  - executable validation command rules and replacement recovery
