@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -11,11 +11,12 @@ Review closeout: spec-review-r1
 Review closeout: proposal-review-r4
 Review closeout: spec-review-r2
 Review closeout: architecture-review-activation-r1
+Review closeout: plan-review-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Final result: Proposal, specification, canonical architecture update, and activation-publication ADR are approved; planning is next.
+- Unresolved findings: 4
+- Final result: Plan revision is required before test-spec authoring.
 
 ## Resolution Overview
 
@@ -27,6 +28,10 @@ Review closeout: architecture-review-activation-r1
 | BFA-SR1-002 | accepted | resolved | Replaced patch v0.3.7 with contract-compliant minor v0.4.0 through proposal revision. |
 | BFA-SR1-003 | accepted | resolved | Invalid unpublished transition histories require a fresh replacement branch and rereview. |
 | BFA-SR1-004 | accepted | resolved | Completed formal boundary ownership for identity, self-containment, strict composition, drift, and replacement. |
+| BFA-PLAN-R1-001 | accepted | open | Split committed payload baseline B from transition T. |
+| BFA-PLAN-R1-002 | accepted | open | Separate candidate, strict-H, and detached-T proof phases. |
+| BFA-PLAN-R1-003 | accepted | open | Map release and public-closeout boundary proof owners. |
+| BFA-PLAN-R1-004 | accepted | open | Replace placeholder validation commands with executable rules. |
 
 ## Finding Details
 
@@ -108,6 +113,56 @@ Rationale: Downstream proof must consume requirement-owned semantic rows rather 
 Validation target: spec-review-r2
 Validation evidence: Spec-review R2 confirms self-containment, strict composition, changed-path rejection, and replacement recovery have explicit boundary and interaction ownership.
 
+### plan-review-r1
+
+#### BFA-PLAN-R1-001 - M3 lacks a realizable B to T commit sequence
+
+Finding ID: BFA-PLAN-R1-001
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan
+Chosen action: Split the release work into a committed pre-transition payload baseline B and a narrow transition commit T.
+Rationale: The approved identity chain requires B and T to be separately realizable and reviewable commits.
+Validation target: plan-review-r2
+Validation evidence: pending
+
+#### BFA-PLAN-R1-002 - Candidate proof is conflated with strict tagged-tree proof
+
+Finding ID: BFA-PLAN-R1-002
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan
+Chosen action: Separate candidate validation at H from release-owned local-tag validation at H and detached-T release verification.
+Rationale: Candidate proof cannot establish the strict tag-context contract that exists only after the local release tag is created.
+Validation target: plan-review-r2
+Validation evidence: pending
+
+#### BFA-PLAN-R1-003 - Boundary ownership omits release and public closeout proof
+
+Finding ID: BFA-PLAN-R1-003
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan
+Chosen action: Map implementation, candidate, strict release, atomic publication, and post-publication closeout to distinct proof owners.
+Rationale: State, recovery, environment, and publication outcomes cross multiple phases and need explicit ownership.
+Validation target: plan-review-r2
+Validation evidence: pending
+
+#### BFA-PLAN-R1-004 - Broader validation commands are placeholders
+
+Finding ID: BFA-PLAN-R1-004
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan
+Chosen action: Replace placeholder commands with executable command rules for candidate H, strict H, detached T, bare-remote publication, and closeout.
+Rationale: Implementation and release handoffs must be reproducible without inventing commands downstream.
+Validation target: plan-review-r2
+Validation evidence: pending
+
 ## Clean review receipts
 
 ### proposal-review-r3
@@ -145,5 +200,5 @@ Evidence: reviews/architecture-review-activation-r1.md
 - [x] Every rejected finding has rationale.
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
-- [x] Validation evidence is recorded.
+- [ ] Validation evidence is recorded.
 - [x] Closeout status is correct.

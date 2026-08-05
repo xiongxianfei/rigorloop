@@ -3,6 +3,17 @@
 ## Review Entries
 
 ### Review entry
+Review ID: plan-review-r1
+Stage: plan-review
+Round: 1
+Status: changes-requested
+Detailed record: reviews/plan-review-r1.md
+Resolution: review-resolution.md#plan-review-r1
+Material findings: BFA-PLAN-R1-001, BFA-PLAN-R1-002, BFA-PLAN-R1-003, BFA-PLAN-R1-004
+Open findings: BFA-PLAN-R1-001, BFA-PLAN-R1-002, BFA-PLAN-R1-003, BFA-PLAN-R1-004
+Recording status: recorded
+
+### Review entry
 Review ID: architecture-review-activation-r1
 Stage: architecture-review
 Round: 1
