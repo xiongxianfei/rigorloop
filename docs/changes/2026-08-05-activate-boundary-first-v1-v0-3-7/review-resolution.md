@@ -15,10 +15,11 @@ Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: plan-review-r3
 Review closeout: test-spec-review-r1
+Review closeout: test-spec-review-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`
-- Findings resolved: 12
-- Unresolved findings: 4
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`
+- Findings resolved: 15
+- Unresolved findings: 2
 - Final result: Test-spec revision is required before implementation.
 
 ## Resolution Overview
@@ -37,10 +38,11 @@ Review closeout: test-spec-review-r1
 | BFA-PLAN-R1-004 | accepted | resolved | Replaced placeholder commands with executable rules and corrected CLI syntax. |
 | BFA-PLAN-R2-001 | accepted | resolved | Designated B only after M3 review and closeout evidence settles. |
 | BFA-PLAN-R2-002 | accepted | resolved | Corrected release validation and added failure-safe executable shell. |
-| BFA-TSR1-001 | accepted | open | Replace invalid proof levels with admitted execution levels. |
-| BFA-TSR1-002 | accepted | open | Add phase-correct lifecycle-readiness regression and evidence. |
+| BFA-TSR1-001 | accepted | resolved | Replaced invalid proof levels with admitted execution levels. |
+| BFA-TSR1-002 | accepted | resolved | Added phase-correct lifecycle-readiness regression and evidence. |
 | BFA-TSR1-003 | accepted | open | Link atomic, tag-workflow, and public paths to direct commands and evidence. |
-| BFA-TSR1-004 | accepted | open | Make MP1 and MP2 executable and auditable. |
+| BFA-TSR1-004 | accepted | resolved | Made MP1 and MP2 executable and auditable. |
+| BFA-TSR2-001 | accepted | open | Link MP1 and producing commands directly from PRF-006 and PRF-008. |
 
 ## Finding Details
 
@@ -206,25 +208,25 @@ Validation evidence: Plan-review R3 confirms literal selector, candidate-H, stri
 
 Finding ID: BFA-TSR1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Replace `migration` proof levels with the admitted level matching actual execution while retaining compatibility semantics in prose.
 Rationale: Proof-level vocabulary is closed and structural validity must match semantic execution.
 Validation target: test-spec-review-r2
-Validation evidence: pending
+Validation evidence: Test-spec-review R2 confirms every proof row uses an admitted integration or end-to-end level.
 
 #### BFA-TSR1-002 - Lifecycle readiness proof is circular and mistimed
 
 Finding ID: BFA-TSR1-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Add a planned missing-evidence regression command, schedule current-state readiness at M4 and release checkpoint, and use phase-owned evidence.
 Rationale: A preimplementation review receipt cannot prove publication-time lifecycle settlement.
 Validation target: test-spec-review-r2
-Validation evidence: pending
+Validation evidence: Test-spec-review R2 confirms M1 missing-evidence fixtures, M4 candidate proof, and release-checkpoint preflight provide phase-correct evidence.
 
 #### BFA-TSR1-003 - Public sibling paths lack direct command and evidence links
 
@@ -242,12 +244,26 @@ Validation evidence: pending
 
 Finding ID: BFA-TSR1-004
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Add explicit owner, stage, rationale, environment, commands, evidence, pass/failure, cleanup, and forbidden-action fields to MP1 and MP2.
 Rationale: Irreversible external proof requires exact bounded procedures and durable evidence.
 Validation target: test-spec-review-r2
+Validation evidence: Test-spec-review R2 confirms MP1 and MP2 define owner, stage, rationale, environment, commands, evidence, pass/failure, recovery, and forbidden actions.
+
+### test-spec-review-r2
+
+#### BFA-TSR2-001 - Actual atomic evidence lacks producing procedure links
+
+Finding ID: BFA-TSR2-001
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Chosen action: Add T11, MP1, checkpoint commands, and checkpoint evidence to PRF-006, and add CMD17 plus MP1 to PRF-008.
+Rationale: Each hybrid proof row must cite the command and procedure that directly produce its claimed external evidence.
+Validation target: test-spec-review-r3
 Validation evidence: pending
 
 ## Clean review receipts
