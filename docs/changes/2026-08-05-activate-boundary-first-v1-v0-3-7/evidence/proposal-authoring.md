@@ -17,6 +17,13 @@ The proposal preserves the user's request to proceed while keeping scope to
 activation, versioned release preparation, package parity, publication, and
 public closeout. It rejects another boundary model or release mechanism.
 
+The R1 revision accepts `BFA-PR1-001`. It adds a narrow candidate-validation
+mode for the reviewed pre-tag commit, preserves strict immutable-tag validation
+for release context, and requires an unchanged-parent compare-and-swap plus
+atomic fast-forward/tag push so the published tag resolves to the exact
+reviewed pending-to-active transition. Candidate evidence never claims that an
+absent tag is an active release.
+
 ## Evidence used
 
 - Current GitHub Releases, npm registry version, and Git tags.
@@ -26,6 +33,7 @@ public closeout. It rejects another boundary model or release mechanism.
 
 ## Validation target
 
-Proposal review should challenge release identity, activation/rollback
-coherence, external-action containment, scope, and whether existing
-architecture is sufficient.
+Proposal review R2 should confirm `BFA-PR1-001` is resolved and challenge
+candidate versus strict validation authority, transition identity,
+fast-forward/base-drift handling, atomic publication, rollback coherence, and
+the narrowed release-tooling scope.

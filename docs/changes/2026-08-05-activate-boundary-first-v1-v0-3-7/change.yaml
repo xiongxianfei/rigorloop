@@ -8,13 +8,8 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
     role: primary
-    lifecycle_state: revision-required
-    review:
-      id: proposal-review-r1
-      artifact_id: proposal
-      outcome: changes-requested
-      record: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r1.md
-      round: r1
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/proposal-authoring.md
 workflow_state:
   lifecycle_state: active
   current_stage: proposal-review
@@ -32,10 +27,12 @@ requirements:
   - Preserve v0.3.6 as the immutable rollback release.
   - Deliver exact resources through Codex, Claude, opencode, and the npm CLI package.
   - Preserve profile-driven release preparation, verification, publication, and closeout.
+  - Separate pre-tag candidate validation from strict immutable-tag release validation.
 tests:
   - Prove the pending-to-active transition and exact activation identities.
   - Prove resource and package parity across all supported targets.
   - Prove packed installation, release verification, rollback selection, and public closeout.
+  - Prove exact reviewed-transition preservation, base-drift rejection, and atomic main/tag publication preconditions.
 validation:
   - command: gh release list --limit 5
     result: v0.3.6_latest_confirmed_2026-08-05
@@ -46,6 +43,9 @@ changed_files:
   - docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/change.yaml
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/proposal-authoring.md
+  - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-log.md
+  - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-resolution.md
+  - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r1.md
 review:
   status: changes-requested
   unresolved_items: 1
