@@ -46,6 +46,10 @@ publication.
   by the activation manifest under the standing boundary-first contract.
 - `strict mode`: the existing default validation that requires the immutable
   activating tag and its exact commit relationship.
+- `publication readiness`: the read-only post-local-tag gate that validates
+  persisted candidate provenance, derives the live publication target `H`, and
+  rechecks time-sensitive Git authority immediately before remote mutation; it
+  is distinct from pre-tag candidate mode.
 - `tagged tree`: repository content reachable from the transition commit selected
   by `v0.4.0`.
 - `atomic publication`: one remote transaction that fast-forwards `main` to the
@@ -176,21 +180,29 @@ skill, adapter, package, release-profile, release-metadata, release-note,
 release-validation, generated-output, or other release-gated inputs.
 
 BFA-R016. Candidate validation MUST fail with changed paths when BFA-R015 is
-violated.
+violated between `T` and its invocation head `R`. Publication readiness MUST
+fail with changed paths when BFA-R015 is violated between `T` and live `H`.
 
 BFA-R017. Required proposal, spec, architecture, plan, test-spec, implementation,
 code-review, rationale, and candidate-verification evidence MUST settle before
 external ref publication. A persisted candidate result produced at `R` MUST be
 committed by `C`, where `C` is the immediate first-parent child of `R`. That
 result MUST identify `R`, not attempt to identify its containing commit `C` or
-the later reviewed head `H`. Evidence that follows `T` remains on `main` at `H`
+the later reviewed head `H`. Exactly one canonical candidate result for this
+activation MUST be persisted at the change-local candidate-evidence path.
+Evidence that follows `T` remains on `main` at `H`
 and is not required inside the tagged tree unless another release contract
 already requires it there.
 
 BFA-R018. Before publication, the release operator MUST create local immutable
-tag `v0.4.0` at `T` and MUST rerun ordinary strict boundary-first validation
-from the then-current repository head `H`, independently revalidate candidate
-invariants against `H`, and run full release verification from tagged tree `T`.
+tag `v0.4.0` at `T`, run ordinary strict boundary-first validation from the
+then-current repository head `H`, run publication readiness at `H`, and run full
+release verification from tagged tree `T`. Publication readiness MUST NOT rerun
+pre-tag candidate mode. It MUST validate the stored candidate result and its
+`R -> C` parentage, prove `C` is in `H`'s first-parent history, freshly derive
+`H`, recompute and compare `P`, `B`, `T`, rollback and bundle identities, inspect
+all `T..H` changes, require local `v0.4.0` to resolve to `T`, require remote
+`v0.4.0` to remain absent, and require remote `main` to remain `P`.
 
 BFA-R019. Strict validation at `H` MUST require `v0.4.0` to resolve to `T`.
 Full release verification at `T` MUST pass without reading later commits.
@@ -374,7 +386,7 @@ Boundary model scope: BFA-R001 through BFA-R035
 | --- | --- | --- | --- | --- |
 | input-domain | applicable | BFA-R004, BFA-R006, BFA-R007, BFA-R031 | BND-INPUT-001 | - |
 | state-lifecycle | applicable | BFA-R005, BFA-R006, BFA-R013, BFA-R017, BFA-R024 | BND-STATE-001 | - |
-| identity-authority | applicable | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R018, BFA-R019, BFA-R020, BFA-R021 | BND-AUTH-001 | - |
+| identity-authority | applicable | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R017, BFA-R018, BFA-R019, BFA-R020, BFA-R021 | BND-AUTH-001 | - |
 | composition-path | applicable | BFA-R005, BFA-R014, BFA-R018, BFA-R019, BFA-R025, BFA-R026, BFA-R033 | BND-COMPOSE-001 | - |
 | temporal-retry | applicable | BFA-R015, BFA-R016, BFA-R021, BFA-R022, BFA-R023, BFA-R035 | BND-TEMPORAL-001 | - |
 | failure-recovery | applicable | BFA-R022, BFA-R023, BFA-R027, BFA-R028, BFA-R030, BFA-R035 | BND-RECOVERY-001 | - |
@@ -413,7 +425,7 @@ Boundary model scope: BFA-R001 through BFA-R035
 | E1 | illustration | BFA-R004, BFA-R006, BFA-R008, BFA-R009, BFA-R010, BFA-R012 | BND-INPUT-001, BND-AUTH-001 | - | - |
 | E2 | regression | BFA-R005 | BND-INPUT-001, BND-COMPAT-001 | REG-BFA-001 | - |
 | E3 | illustration | BFA-R018, BFA-R019 | BND-AUTH-001, BND-COMPOSE-001 | - | - |
-| E4 | regression | BFA-R014, BFA-R015, BFA-R016 | BND-AUTH-001, BND-TEMPORAL-001 | REG-BFA-002 | - |
+| E4 | regression | BFA-R014, BFA-R015, BFA-R016, BFA-R017, BFA-R018 | BND-AUTH-001, BND-TEMPORAL-001 | REG-BFA-002 | - |
 | E5 | regression | BFA-R021, BFA-R022, BFA-R023 | BND-AUTH-001, BND-TEMPORAL-001, BND-RECOVERY-001 | REG-BFA-003 | - |
 | E6 | regression | BFA-R020, BFA-R022 | BND-COMPOSE-001, BND-ENV-001 | REG-BFA-004 | - |
 | E7 | regression | BFA-R015, BFA-R016, BFA-R023, BFA-R035 | BND-TEMPORAL-001, BND-COMPOSE-001, BND-RECOVERY-001 | REG-BFA-005 | - |
@@ -459,6 +471,11 @@ EC10. The remote rejects atomic pushes; no sequential fallback occurs.
 EC11. Strict validation passes at `H` but full release verification fails at
 tagged tree `T`; publication stops and the local tag is abandoned.
 
+EC11A. Candidate evidence is valid at `R`, but its immediate-child provenance,
+live `H` ancestry, fresh identities, local tag target, remote tag absence, or
+remote-main base check fails at publication readiness; publication stops before
+remote mutation.
+
 EC12. Git refs publish atomically but npm trusted publication fails; release
 evidence records the partial public state and applies standing recovery.
 
@@ -482,7 +499,7 @@ evidence records the partial public state and applies standing recovery.
 | AC-BFA-004 | Candidate validation proves v0.3.6 is the rollback predecessor and validates exact resource/package identities. |
 | AC-BFA-005 | Post-transition release-gated drift fails with changed-path evidence. |
 | AC-BFA-006 | The tagged transition tree contains every input needed by strict validation and full release verification. |
-| AC-BFA-007 | Local v0.4.0 at T makes strict validation pass at H and the full release gate pass at T before remote mutation. |
+| AC-BFA-007 | Local v0.4.0 at T makes strict validation and phase-correct publication readiness pass at live H, while the full release gate passes at T before remote mutation. |
 | AC-BFA-008 | Base drift, tag conflict, non-fast-forward, or missing atomic capability changes neither remote ref. |
 | AC-BFA-009 | Authorized publication atomically advances main from P to H and maps v0.4.0 to T. |
 | AC-BFA-010 | Tag workflow preserves full GitHub/npm/archive/package/smoke gates and trusted publication. |
