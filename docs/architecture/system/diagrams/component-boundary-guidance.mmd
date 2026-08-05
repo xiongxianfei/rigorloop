@@ -8,6 +8,10 @@ flowchart LR
   projector["Projection and validation<br/>[Python: manifest interpreter and parity checks]"]:::component
   selector["Validation selector<br/>[Python: path-owned check routing]"]:::component
   activation["Tracked activation transaction<br/>[Repository sources, marker, and evidence references]"]:::component
+  candidate["Activation candidate validator<br/>[Python: read-only P/B/T/H and drift proof]"]:::component
+  strict["Strict tagged-tree release gate<br/>[Shell/Python: H validation and T worktree]"]:::component
+  publisher["Atomic ref publisher<br/>[Git: guarded non-forced branch/tag transaction]"]:::component
+  remote["Git remote<br/>[External: main and immutable release tags]"]:::external
   generated["Generated, packed, archived, and installed skills<br/>[Derived proof, not Git rollback state]"]:::container
   evidence["Measurement and package evidence<br/>[YAML/Markdown fixtures and reports]"]:::container
 
@@ -24,6 +28,11 @@ flowchart LR
   selector -->|selects purpose-built checks for| skills
   selector -->|retains lifecycle checks for| artifacts
   activation -->|provides the exact candidate source and resource identities for| generated
+  activation -->|provides active manifest and unique transition history to| candidate
+  remote -->|advertises exact publication base and absent tag to| candidate
+  candidate -->|records P/B/T/H and approved post-transition paths for| strict
+  strict -->|authorizes exact H and T identities for| publisher
+  publisher -->|atomically advances main to H and creates v0.4.0 at T in| remote
   generated -->|produces package and clean-install results recorded in| evidence
   evidence -->|must match the candidate before the tracked marker becomes active in| activation
   projector -->|records static resource and representative loading baselines in| evidence
