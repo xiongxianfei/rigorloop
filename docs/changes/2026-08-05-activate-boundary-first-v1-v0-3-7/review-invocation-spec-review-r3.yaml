@@ -1,0 +1,52 @@
+schema_version: 1
+review_id: spec-review-r3
+review_stage: spec-review
+review_target: specs/boundary-first-v1-v0-3-7-activation-release.md
+base_revision: bd79b1e0c0021f9e697596baba1e5a1414d7efc2
+head_revision: e756a6d67263ef7e7df42ae288f1090fcf77476a
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L1
+author_context_id: root-boundary-activation-spec-r3
+reviewer_context_id: independent-spec-review-r3
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - activation-state-transition
+  - immutable-release-tag
+  - atomic-remote-ref-publication
+  - candidate-evidence-identity
+governing_artifacts:
+  - docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
+  - specs/boundary-first-proof-model.md
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/release-process-contract.md
+  - specs/release-transaction-automation.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: e756a6d67263ef7e7df42ae288f1090fcf77476a
+    sha256: 196b7438dda06883802ee1c8fb444849fc4828d4bbc7150eb06d698392043411
+  - path: docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
+    revision: 04008d82384f6aa9aa8fd65a2b88f68ca69122e9
+    sha256: 92513346e98fabcf333ae0a8e21a2dfc07615c499f9d807c580d6eb3a67a0dd0
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md.diff
+    revision: e756a6d67263ef7e7df42ae288f1090fcf77476a
+    sha256: baf255a767e2f5afc5056162ecf61418b9f47a523bd8484d5876b20699e733e5
+initial_packet_sha256: baf255a767e2f5afc5056162ecf61418b9f47a523bd8484d5876b20699e733e5
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - non-circular candidate-validation head R and evidence commit C
+  - independent derivation of final reviewed publication head H
+  - first-parent provenance across P, B, T, R, C, and H
+  - compatibility with strict tag and atomic publication requirements
+  - testability of stale or malformed candidate evidence
+architecture:
+  assessment: architecture-amendment-required
+  rationale: The corrected identity contract changes candidate evidence ownership and publication authority handoff.
+  package: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
