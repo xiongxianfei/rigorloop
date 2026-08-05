@@ -3,6 +3,17 @@
 ## Review Entries
 
 ### Review entry
+Review ID: plan-review-r4
+Stage: plan-review
+Round: 4
+Status: approved
+Detailed record: reviews/plan-review-r4.md
+Resolution: review-resolution.md#plan-review-r4
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
 Review ID: architecture-review-activation-r3
 Stage: architecture-review
 Round: 3

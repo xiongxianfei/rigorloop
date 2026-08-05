@@ -26,11 +26,12 @@ Review closeout: spec-review-r4
 Review closeout: spec-review-r5
 Review closeout: architecture-review-activation-r2
 Review closeout: architecture-review-activation-r3
+Review closeout: plan-review-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`, `plan-review-r4`
 - Findings resolved: 26
 - Unresolved findings: 5
-- Final result: Architecture R3 approves the non-circular candidate-evidence and exact-H publication design; plan, test-spec, and M1 implementation alignment remain.
+- Final result: Plan R4 is approved; stale test-spec proof mappings and M1 implementation findings remain before implementation can resume.
 
 ## Resolution Overview
 
@@ -480,6 +481,13 @@ Validation target: architecture-review-activation-r3
 Validation evidence: Architecture-review R3 approves the diagram, exact-H authority edge, decision summary, and no-new-state-owner design.
 
 ## Clean review receipts
+
+### plan-review-r4
+
+Status: approved
+Material findings: none
+Resolution required: no new findings; approves P/B/T/R/C/H sequencing and same-invocation exact-H publication intent
+Evidence: reviews/plan-review-r4.md
 
 ### architecture-review-activation-r3
 
