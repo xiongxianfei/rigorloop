@@ -19,11 +19,14 @@ Activate the complete `boundary-first-v1` package in stable release `v0.4.0`
 without requiring an immutable public tag before the exact activation candidate
 can be reviewed.
 
-The release uses two reviewed commit identities on one first-parent chain:
-remote `main` advances to the final reviewed evidence-bearing head, while
-`v0.4.0` identifies the earlier pending-to-active transition commit. Candidate
-validation is pre-tag proof only. Default and release-context validation remain
-strict and require the real tag before publication.
+The release uses distinct release, candidate-evidence, and publication identities
+on one first-parent chain. Remote `main` advances to the final reviewed
+evidence-bearing head, while `v0.4.0` identifies the earlier pending-to-active
+transition commit. Persisted candidate evidence identifies the head at which that
+evidence was produced; it does not attempt to name the later commit that contains
+the evidence. Candidate validation is pre-tag proof only. Default and
+release-context validation remain strict and require the real tag before
+publication.
 
 ## Glossary
 
@@ -31,8 +34,12 @@ strict and require the real tag before publication.
   it does not claim publication or active public availability.
 - `transition commit`: the unique first-parent commit that changes the activation
   record from `pending` to `active`.
+- `candidate-validation head`: the exact invocation head `R` at which one
+  machine-readable candidate result is produced.
+- `candidate-evidence commit`: the immediate first-parent child `C` of `R` that
+  persists that candidate result as lifecycle evidence.
 - `reviewed head`: the final reviewed branch head containing required lifecycle
-  evidence after the transition commit.
+  evidence after the transition commit, including `C`.
 - `publication base`: the exact remote `main` commit `P` recorded when the
   candidate is created and used for publication compare-and-swap.
 - `grandfathering baseline`: transition `T`'s exact first parent `B`, recorded
@@ -50,10 +57,10 @@ Example E1: candidate validation succeeds before the tag exists
 Given remote `main` publication base `P` precedes or equals grandfathering
 baseline `B`
 And one active transition changes `B` to transition commit `T`
-And reviewed head `H` contains `T` in its first-parent history
+And candidate-validation head `R` contains `T` in its first-parent history
 And `v0.4.0` does not exist locally or remotely
-When candidate validation runs for `v0.4.0` at `H`
-Then it validates `P`, `B`, `T`, `H`, rollback `v0.3.6`, the complete resource bundle,
+When candidate validation runs for `v0.4.0` at `R`
+Then it validates `P`, `B`, `T`, `R`, rollback `v0.3.6`, the complete resource bundle,
 and tag absence
 And it reports candidate-ready without reporting an active published release.
 
@@ -72,9 +79,11 @@ published predecessor.
 
 Example E4: lifecycle evidence follows the transition
 Given `T` contains every release and activation input
-And commits after `T` change only the owning change's lifecycle evidence
-When candidate validation runs at reviewed head `H`
-Then it accepts the separate head and tag identities
+And candidate evidence produced at `R` is persisted by its immediate child `C`
+And commits after `T` through reviewed head `H` change only the owning change's
+lifecycle evidence
+When publication readiness revalidates the live reviewed head `H`
+Then it accepts the distinct transition, candidate-evidence, and publication identities
 And strict release proof remains reproducible from `T` without later evidence.
 
 Example E5: base drift stops publication
@@ -93,7 +102,7 @@ And no sequential branch-then-tag or tag-then-branch fallback is allowed.
 Example E7: post-transition payload drift is detected
 Given a commit after `T` changes a skill, resource, package, release profile, or
 other release-gated input
-When candidate validation runs at `H`
+When candidate validation runs at current candidate-validation head `R`
 Then it fails, the invalid branch and PR are superseded without force-push,
 And a replacement branch from the current authorized publication base creates
 one new coherent transition and repeats full validation and review.
@@ -140,8 +149,8 @@ BFA-R009. Candidate mode MUST discover exactly one first-parent pending-to-activ
 transition `T` and MUST require the activation manifest's grandfathering
 baseline to equal `T`'s full first-parent identity `B`.
 
-BFA-R010. Candidate mode MUST identify the current full reviewed-head identity
-`H` and require `T` to occur in `H`'s first-parent history.
+BFA-R010. Candidate mode MUST identify the current full candidate-validation-head
+identity `R` and require `T` to occur in `R`'s first-parent history.
 
 BFA-R011. Candidate mode MUST validate every strict activation invariant that
 does not logically require the absent `v0.4.0` tag, including exact resource,
@@ -149,7 +158,7 @@ manifest, projection, governed-skill, grandfathering, rollback-package, and
 canonical-path identities.
 
 BFA-R012. Candidate success MUST report `candidate_release`, `publication_base`,
-`grandfathering_baseline`, `transition_commit`, `reviewed_head`,
+`grandfathering_baseline`, `transition_commit`, `candidate_validation_head`,
 `rollback_release`, and `tag_state` in a stable machine-readable result.
 
 BFA-R013. Candidate output MUST use `tag_state: absent` and MUST NOT report
@@ -171,13 +180,17 @@ violated.
 
 BFA-R017. Required proposal, spec, architecture, plan, test-spec, implementation,
 code-review, rationale, and candidate-verification evidence MUST settle before
-external ref publication. Evidence that follows `T` remains on `main` at `H`
+external ref publication. A persisted candidate result produced at `R` MUST be
+committed by `C`, where `C` is the immediate first-parent child of `R`. That
+result MUST identify `R`, not attempt to identify its containing commit `C` or
+the later reviewed head `H`. Evidence that follows `T` remains on `main` at `H`
 and is not required inside the tagged tree unless another release contract
 already requires it there.
 
 BFA-R018. Before publication, the release operator MUST create local immutable
 tag `v0.4.0` at `T` and MUST rerun ordinary strict boundary-first validation
-from repository head `H` and full release verification from tagged tree `T`.
+from the then-current repository head `H`, independently revalidate candidate
+invariants against `H`, and run full release verification from tagged tree `T`.
 
 BFA-R019. Strict validation at `H` MUST require `v0.4.0` to resolve to `T`.
 Full release verification at `T` MUST pass without reading later commits.
@@ -224,7 +237,7 @@ closeout; it MUST NOT report successful publication.
 
 BFA-R031. Candidate and strict validation diagnostics MUST identify the mode,
 release, publication base, grandfathering baseline, transition commit,
-reviewed head when available,
+candidate-validation head and current reviewed head when each is available,
 conflicting tag or drifted path, expected invariant, and corrective action.
 
 BFA-R032. Candidate validation MUST be deterministic and side-effect free: it
@@ -276,7 +289,9 @@ Outputs:
   tag-context release validation succeeds.
 - Candidate-ready is not published, active-public, tag-ready, or release-ready.
 - `P` equals or precedes `B`; `B` is the first parent of `T`; `T` is in the
-  first-parent history of `H`.
+  first-parent history of candidate-validation head `R`; persisted candidate
+  evidence is committed only by the immediate first-parent child `C` of `R`;
+  and final reviewed head `H` contains `C` in its first-parent history.
 - Remote publication maps `main: P -> H` and creates `v0.4.0 -> T` atomically.
 - The tagged tree `T` is self-contained for strict release validation.
 - Later lifecycle evidence at `H` cannot change release-gated payload.
@@ -372,7 +387,7 @@ Boundary model scope: BFA-R001 through BFA-R035
 | --- | --- | --- | --- | --- | --- | --- |
 | BND-INPUT-001 | input-domain | BFA-R004, BFA-R006, BFA-R007, BFA-R031 | absent flag; exact v0.4.0 flag; malformed or other release; local tag absent/present; remote reachable/unreachable | Candidate mode is explicit, named, and tag-absent only. | Exact input validates; unknown, conflicting, or unreachable input stops with bounded diagnostics. | BFA-R004 |
 | BND-STATE-001 | state-lifecycle | BFA-R005, BFA-R006, BFA-R013, BFA-R017, BFA-R024 | pending; candidate-active/unpublished; locally tagged/strictly verified; remotely tagged/publishing; published/closeout pending; closed | Candidate state never claims public activation; external transitions require explicit action and strict gates. | Legal transitions advance with evidence; premature or mixed state stops. | BFA-R013 |
-| BND-AUTH-001 | identity-authority | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R018, BFA-R019, BFA-R020, BFA-R021 | publication base P; grandfathering baseline B; transition T; reviewed head H; rollback tag; activating tag; remote main | P equals or precedes B, B is T's first parent, T is in H's first-parent history, main advances P to H, and tag maps to T; T is release-self-contained. | Exact identities and tagged-tree proof pass; drift, ambiguity, mismatch, stale authority, or missing self-containment stops. | BFA-R020 |
+| BND-AUTH-001 | identity-authority | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R017, BFA-R018, BFA-R019, BFA-R020, BFA-R021 | publication base P; grandfathering baseline B; transition T; candidate-validation head R; candidate-evidence commit C; reviewed head H; rollback tag; activating tag; remote main | P equals or precedes B, B is T's first parent, T is in R's first-parent history, C is R's immediate first-parent child, H contains C, main advances P to live H, and tag maps to T; T is release-self-contained. | Exact identities and tagged-tree proof pass; self-reference, drift, ambiguity, mismatch, stale authority, or missing self-containment stops. | BFA-R020 |
 | BND-COMPOSE-001 | composition-path | BFA-R005, BFA-R014, BFA-R018, BFA-R019, BFA-R025, BFA-R026, BFA-R033 | candidate CLI; default validator; strict validation at H; full release verification at T; tag workflow; package/archive checks; public closeout | Candidate mode changes only absent-tag authority; the tagged tree is self-contained; every sibling gate retains ownership. | Complete composed path publishes; bypass, post-T dependency, or omitted gate blocks. | BFA-R033 |
 | BND-TEMPORAL-001 | temporal-retry | BFA-R015, BFA-R016, BFA-R021, BFA-R022, BFA-R023, BFA-R035 | transition before evidence; repeated candidate check; payload drift after T; publication-base drift; local tag retry; atomic push retry; replacement candidate | Release-gated payload is fixed at T; changed paths fail; retry never overwrites refs, retains an invalid transition, or reuses stale evidence. | Idempotent read checks pass; drift or failed atomic update requires a fresh candidate and rereview. | BFA-R023 |
 | BND-RECOVERY-001 | failure-recovery | BFA-R022, BFA-R023, BFA-R027, BFA-R028, BFA-R030, BFA-R035 | invalid unpublished transition; pre-push failure; atomic-ref rejection; failed-during-publish; failed-after-publish; delayed public evidence | Invalid unpublished history is superseded by a replacement branch from current P; pre-push leaves remote unchanged; post-push never rewrites immutable artifacts. | Replace and rereview before publication, abandon local state, or use standing fix-forward/closeout recovery after publication. | BFA-R035 |
@@ -384,7 +399,7 @@ Boundary model scope: BFA-R001 through BFA-R035
 | Interaction ID | Governing requirement IDs | Boundary IDs | Hazard | Required composed outcome |
 | --- | --- | --- | --- | --- |
 | INT-001 | BFA-R005, BFA-R007, BFA-R013 | BND-INPUT-001, BND-STATE-001 | Candidate flag or absent tag is mistaken for public activation. | Candidate output is explicitly non-public; default strict mode still fails without the tag. |
-| INT-002 | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R015, BFA-R016, BFA-R019, BFA-R020 | BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001 | P, B, T, and H are conflated; the tagged tree depends on later content; or later evidence mutates release payload. | Candidate records all four identities, proves T is self-contained, and rejects post-transition release-gated drift with changed paths. |
+| INT-002 | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R015, BFA-R016, BFA-R017, BFA-R019, BFA-R020 | BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001 | P, B, T, R, C, and H are conflated; candidate evidence attempts to name its own containing commit; the tagged tree depends on later content; or later evidence mutates release payload. | Candidate records P, B, T, and its producing head R; C proves immediate parentage; publication derives live H independently; T is self-contained; and post-transition release-gated drift is rejected with changed paths. |
 | INT-003 | BFA-R020, BFA-R021, BFA-R022 | BND-AUTH-001, BND-ENV-001 | Remote main changes or atomic ref capability is absent. | Compare-and-swap and atomic update change both refs or neither. |
 | INT-004 | BFA-R018, BFA-R019, BFA-R025, BFA-R033 | BND-COMPOSE-001, BND-AUTH-001 | Candidate validation substitutes for strict release verification. | Local tag and strict full release gates run before remote publication. |
 | INT-005 | BFA-R027, BFA-R028, BFA-R030 | BND-RECOVERY-001, BND-STATE-001, BND-ENV-001 | Failure crosses from reversible local state into immutable partial publication. | Pre-push abandons locally; post-push records exact state and fixes forward without overwrite. |
@@ -421,11 +436,15 @@ assuming absence.
 EC5. The branch has zero or multiple pending-to-active transitions; validation
 fails.
 
-EC6. `T` is reachable from `H` only through a non-first-parent path; validation
+EC6. `T` is reachable from `R` only through a non-first-parent path; validation
 fails.
 
 EC7. A documentation-only lifecycle receipt follows `T`; candidate validation
 accepts it when no release-gated input changes.
+
+EC7A. Stored candidate evidence identifies its containing commit `C` or a later
+reviewed head `H`, or `C` is not the immediate first-parent child of its recorded
+candidate-validation head `R`; evidence validation fails as stale or malformed.
 
 EC8. A review fix changes code, a skill, release notes, or release metadata after
 `T`; the candidate is invalid. Its branch and PR are superseded, and a new branch
@@ -459,7 +478,7 @@ evidence records the partial public state and applies standing recovery.
 | --- | --- |
 | AC-BFA-001 | Exact candidate command validates a complete active v0.4.0 tree without requiring the absent tag and emits non-public candidate status. |
 | AC-BFA-002 | Default validation still fails an active tree whose activating tag is absent. |
-| AC-BFA-003 | Candidate validation records exact P, B, T, and H identities and requires the first-parent chain `P ... B -> T ... H`. |
+| AC-BFA-003 | Candidate validation records exact P, B, T, and R identities; its evidence commit C proves the non-circular first-parent chain `P ... B -> T ... R -> C ... H`, and publication derives live H independently. |
 | AC-BFA-004 | Candidate validation proves v0.3.6 is the rollback predecessor and validates exact resource/package identities. |
 | AC-BFA-005 | Post-transition release-gated drift fails with changed-path evidence. |
 | AC-BFA-006 | The tagged transition tree contains every input needed by strict validation and full release verification. |
