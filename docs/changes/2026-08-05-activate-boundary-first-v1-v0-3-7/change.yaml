@@ -62,8 +62,8 @@ artifact_states:
       round: r3
 workflow_state:
   lifecycle_state: active
-  current_stage: test-spec-review
-  next_stage: test-spec-review
+  current_stage: implement
+  next_stage: implement
   blocker: null
   evidence:
     - docs/research/2026-08-05-boundary-first-v1-activation-release.md
@@ -96,7 +96,7 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: planned
+        state: implementing
       M2:
         kind: implementation
         state: planned
