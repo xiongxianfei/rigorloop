@@ -1,0 +1,50 @@
+schema_version: 1
+review_id: architecture-review-activation-r3
+review_stage: architecture-review
+review_target: docs/architecture/system/architecture.md
+base_revision: 419797397d7fad0c53c0599958938295a54fda78
+head_revision: f6c40d9b72b748cef3dd69a0fb454a882129a831
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L1
+author_context_id: root-boundary-activation-architecture-r3
+reviewer_context_id: independent-architecture-review-activation-r3
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - atomic-remote-ref-publication
+  - candidate-evidence-identity
+  - component-authority-projection
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+formal_criteria:
+  - architecture-review-v1
+  - boundary-first-v1
+prompt_template_version: architecture-review-v1
+initial_packet_inventory:
+  - path: docs/architecture/system/architecture.md
+    revision: f6c40d9b72b748cef3dd69a0fb454a882129a831
+    sha256: f87c8da4096005c07268607ce666bb1753ae5ca60661880f962b4df010b3f820
+  - path: docs/architecture/system/diagrams/component-boundary-guidance.mmd
+    revision: f6c40d9b72b748cef3dd69a0fb454a882129a831
+    sha256: 7662871980bfc4e6e758c0c55b2ccdea26535ff7aaa2947fe41148a8759dd0d3
+  - path: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/architecture-review-activation-r2.md
+    revision: 5a76f20c69d719d5718249d29002a22debf4afaa
+    sha256: 482370d1177e71ab1c7bc5c619f23a54534a6f4a07f8e3e8dcebd41acc20d9cf
+  - path: architecture-r3.diff
+    revision: f6c40d9b72b748cef3dd69a0fb454a882129a831
+    sha256: 37d7c1c681f97d86b63e49dde14154586cd93d5c804a4a9fb5895e031760ced2
+initial_packet_sha256: 37d7c1c681f97d86b63e49dde14154586cd93d5c804a4a9fb5895e031760ced2
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - BFA-AR2-001 closure
+  - diagram authority and exact H flow
+  - decision-summary consistency
+  - no new state owner or scope expansion
+architecture:
+  assessment: architecture-amendment-review
+  rationale: Confirm the canonical package now projects the approved ADR consistently.
+  package: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
