@@ -159,10 +159,10 @@ supersedes the branch and PR and restarts from current authorized remote main.
 - Risks: hook or remote capability assumptions could permit stale authority or partial mutation.
 - Rollback/recovery: revert M2; no external ref was authorized or changed.
 
-### M3. Commit the complete pre-transition v0.4.0 payload baseline B
+### M3. Prepare and close the complete pre-transition v0.4.0 payload
 
 - Milestone state: planned
-- Goal: Generate, test, and commit every release-gated v0.4.0 input while activation remains pending; the resulting milestone commit is baseline `B`.
+- Goal: Generate, test, commit, review, and close every release-gated v0.4.0 input while activation remains pending; only the final M3 closeout head becomes baseline `B`.
 - Requirements: BFA-R001-R003, BFA-R002, BFA-R014, BFA-R026, BFA-R029-R030, BFA-R034; AC-BFA-004, AC-BFA-006, AC-BFA-010, AC-BFA-012-014.
 - Files/components likely touched:
   - `docs/releases/profiles/v0.4.0.yaml` and generated v0.4.0 release surfaces
@@ -181,15 +181,18 @@ supersedes the branch and PR and restarts from current authorized remote main.
   - complete all release-gated code, metadata, notes, package, fixture, generated-surface, and rollback changes
   - keep `specs/boundary-first-activation.yaml` pending and do not create an active projection
   - run generation checks, preflight, selected CI, and focused package/archive/rollback tests
-  - commit the complete payload once as `B`; do not amend B after M4 starts
+  - commit the complete payload as a preparation commit, not as B
+  - resolve every M3 code-review finding, rerun affected validation, and finish all M3 closeout evidence while activation remains pending
+  - after M3 review and resolution settle, workflow closes M3 and advances routing in one final lifecycle-only commit; once created, that commit's full identity is B
+  - begin M4 immediately at that HEAD; no intervening commit is allowed before T records B in the activation manifest
 - Validation commands:
   - `python scripts/prepare-release.py v0.4.0 --check`
   - `python scripts/release-preflight.py v0.4.0`
   - `python scripts/select-validation.py --mode release --release-version v0.4.0`
   - `bash scripts/ci.sh --mode release --release-version v0.4.0`
-- Expected observable result: commit `B` contains the complete v0.4.0 release payload, activation is still pending, and no release-gated change is needed to activate it.
+- Expected observable result: the final M3 workflow-closeout commit is B, its tree contains the complete v0.4.0 payload and all required pre-T evidence, activation remains pending, and no release-gated correction is needed.
 - Commit message: `M3: prepare boundary-first v0.4.0 payload baseline`
-- Milestone closeout: release preparation/preflight proof, selected validation, implementation evidence, commit B, and independent code review.
+- Milestone closeout: release preparation/preflight proof, selected validation, implementation evidence, independent code review and any resolution, then one final workflow closeout/routing commit whose resulting identity is B.
 - Risks: an omitted release input discovered after T invalidates the entire candidate history.
 - Rollback/recovery: before M4, fix and recommit the baseline through the normal M3 review loop; after T exists, supersede the branch instead of appending a payload fix.
 
@@ -203,7 +206,7 @@ supersedes the branch and PR and restarts from current authorized remote main.
 - Files permitted after T:
   - only lifecycle evidence paths classified by the M1 validator and owned by this change record
 - Dependencies:
-  - M1-M3 closed, with M3 head designated as B
+  - M1-M3 closed, with the exact final M3 closeout head designated as B
   - activation inputs in B are complete and reviewed
 - Tests to add/update:
   - one exact first-parent `B -> T` pending-to-active transition
@@ -211,6 +214,7 @@ supersedes the branch and PR and restarts from current authorized remote main.
   - lifecycle-only `T..H` acceptance and exact release-gated changed-path rejection
   - replacement branch required for any invalid post-T payload correction
 - Implementation steps:
+  - verify current `HEAD` is exactly the workflow-recorded B before editing
   - modify only the enumerated activation paths and commit them once, producing T with B as first parent
   - run candidate validation at H and record its stable JSON evidence as non-public proof
   - allow only validator-classified lifecycle evidence after T
@@ -238,9 +242,44 @@ supersedes the branch and PR and restarts from current authorized remote main.
   3. from a detached temporary worktree at T, run `bash scripts/release-verify.sh v0.4.0`;
   4. run `python scripts/publish-boundary-activation.py --check --release v0.4.0 --candidate-evidence docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json`;
   5. only after all prior steps pass, replace `--check` with `--publish` to perform the single atomic ref update;
-  6. let the existing tag workflow publish GitHub/npm/archive surfaces, then run `python scripts/close-release-publication.py v0.4.0` and `python scripts/validate-release.py v0.4.0` until public evidence closes.
+  6. let the existing tag workflow publish GitHub/npm/archive surfaces, then run `python scripts/close-release-publication.py v0.4.0` and `python scripts/validate-release.py --version v0.4.0` until public evidence closes.
 - A failure before atomic publication removes the temporary worktree and local tag only; remote refs remain unchanged. A failure after atomic publication preserves immutable refs, records the exact partial state, and follows standing release closeout or fix-forward recovery.
-- The exact tagged-tree command rule is: set `activation_candidate` to the candidate-evidence path; set `activation_transition` to `python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["transition_commit"])' "$activation_candidate"`; set `activation_tmp_root` to `mktemp -d`; set `activation_worktree` to `$activation_tmp_root/tree`; run `git worktree add --detach "$activation_worktree" "$activation_transition"`; run `(cd "$activation_worktree" && bash scripts/release-verify.sh v0.4.0)`; then run `git worktree remove "$activation_worktree"` and `rmdir "$activation_tmp_root"`. If any pre-publication gate fails, perform the worktree cleanup when present and run `git tag -d v0.4.0`; do not run the publication command.
+- The release operator executes the following failure-safe Bash block from reviewed H. The trap deletes the local tag only before publication starts; an attempted publication preserves local evidence for exact remote-state reconciliation.
+
+```bash
+set -euo pipefail
+activation_candidate="docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json"
+activation_transition="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["transition_commit"])' "$activation_candidate")"
+activation_tmp_root="$(mktemp -d)"
+activation_worktree="$activation_tmp_root/tree"
+activation_tag_created=0
+activation_publish_started=0
+
+cleanup_activation_checkpoint() {
+  cleanup_status=$?
+  if [ -d "$activation_worktree" ]; then
+    git worktree remove --force "$activation_worktree" || true
+  fi
+  rmdir "$activation_tmp_root" 2>/dev/null || true
+  if [ "$cleanup_status" -ne 0 ] && [ "$activation_tag_created" -eq 1 ] && [ "$activation_publish_started" -eq 0 ]; then
+    git tag -d v0.4.0 || true
+  fi
+  exit "$cleanup_status"
+}
+trap cleanup_activation_checkpoint EXIT
+
+git tag v0.4.0 "$activation_transition"
+activation_tag_created=1
+python scripts/validate-boundary-first.py --check
+git worktree add --detach "$activation_worktree" "$activation_transition"
+(cd "$activation_worktree" && bash scripts/release-verify.sh v0.4.0)
+git worktree remove "$activation_worktree"
+rmdir "$activation_tmp_root"
+python scripts/publish-boundary-activation.py --check --release v0.4.0 --candidate-evidence "$activation_candidate"
+activation_publish_started=1
+python scripts/publish-boundary-activation.py --publish --release v0.4.0 --candidate-evidence "$activation_candidate"
+trap - EXIT
+```
 
 ## Validation plan
 
@@ -251,7 +290,7 @@ supersedes the branch and PR and restarts from current authorized remote main.
 - Strict-H proof is exactly `python scripts/validate-boundary-first.py --check` from H after local `v0.4.0` resolves to T.
 - Detached-T proof is exactly `bash scripts/release-verify.sh v0.4.0` with the current directory set to a detached temporary worktree whose HEAD is T.
 - Bare-remote proof is `python scripts/test-boundary-activation-release.py`; fixtures MUST exercise success, stale P, existing tag, non-fast-forward, unsupported atomic capability, one-ref rejection, and unchanged refs on every rejection.
-- Failed-before-publish proof records local tag/worktree cleanup and unchanged advertised remote refs; public closeout proof uses `python scripts/close-release-publication.py v0.4.0` followed by `python scripts/validate-release.py v0.4.0`.
+- Failed-before-publish proof records local tag/worktree cleanup and unchanged advertised remote refs; public closeout proof uses `python scripts/close-release-publication.py v0.4.0` followed by `python scripts/validate-release.py --version v0.4.0`.
 - Final verify reruns correctness-, lifecycle-, generated-output-, security-, and release-sensitive checks with actual-run evidence.
 
 ## Risks and recovery
