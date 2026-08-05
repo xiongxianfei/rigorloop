@@ -45,8 +45,9 @@ release preparation and proof. Release state remains profile-driven under
 
 The implementation branch may contain preparation commits between remote main
 `P` and grandfathering baseline `B`. The unique transition `T` changes pending
-to active and contains every release-gated input. Later `T..H` commits may add
-only lifecycle evidence owned by this change. Any later payload correction
+to active and contains every release-gated input. Candidate validation runs at
+producer head `R`; its immediate child `C` persists the result; later `C..H`
+commits may add only lifecycle evidence owned by this change. Any later payload correction
 supersedes the branch and PR and restarts from current authorized remote main.
 
 ## Non-goals
@@ -73,12 +74,12 @@ supersedes the branch and PR and restarts from current authorized remote main.
 
 | Proof phase and owner | Boundaries / interactions | Rollback unit | Required proof |
 | --- | --- | --- | --- |
-| M1 candidate-validator implementation | BND-INPUT-001, BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001; INT-001, INT-002 | M1 commit | focused tests prove exact inputs, P/B/T/H derivation, lifecycle-only path classification, strict-default preservation, determinism, and no side effects |
-| M2 atomic-publisher implementation | BND-AUTH-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-ENV-001; INT-003, INT-005, INT-007 | M2 commit | local bare-remote tests prove compare-and-swap, atomic capability, all-or-neither refs, no fallback, failed-pre-publish cleanup, and replacement-history rejection |
+| M1 candidate-validator implementation | BND-INPUT-001, BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001; INT-001, INT-002 | M1 commit | focused tests prove exact inputs, P/B/T/R derivation, lifecycle-only path classification, strict-default preservation, determinism, and no side effects |
+| M2 readiness and atomic-publisher implementation | BND-AUTH-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-ENV-001; INT-003, INT-004, INT-005, INT-007 | M2 commit | local bare-remote tests prove R-to-C provenance, fresh live-H binding in the publish invocation, compare-and-swap, atomic capability, all-or-neither refs, no fallback, failed-pre-publish cleanup, and replacement-history rejection |
 | M3 pre-transition release baseline B | BND-COMPAT-001, BND-COMPOSE-001; INT-006 | M3 commit B | release preparation and preflight prove exact v0.4.0 payload and immutable v0.3.6 rollback before activation |
-| M4 transition candidate T and reviewed head H | BND-AUTH-001, BND-TEMPORAL-001, BND-RECOVERY-001; INT-002, INT-007 | M4 commit T; later lifecycle-only H commits | candidate validation at H proves one `B -> T`, self-contained T, allowed `T..H` paths, and rejects post-T release payload drift |
-| Explicit release checkpoint | BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-ENV-001; INT-002, INT-004, INT-005 | removable local tag and temporary detached worktree before publication | operator creates local `v0.4.0 -> T`, reruns strict validation at H, and runs full release verification from detached T; any failure removes only the local tag/worktree and publishes nothing |
-| Atomic Git publication | BND-AUTH-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-ENV-001; INT-003, INT-005 | one non-forced atomic push | helper revalidates evidence and advertised refs, then one `git push --atomic` maps main `P -> H` and absent tag to T or changes neither ref |
+| M4 transition and candidate evidence `T ... R -> C` | BND-AUTH-001, BND-TEMPORAL-001, BND-RECOVERY-001; INT-002, INT-007 | M4 commit T, candidate-producing R, immediate evidence child C; later lifecycle-only H commits | candidate validation at R proves one `B -> T`, self-contained T, allowed `T..R` paths, and C persists the exact P/B/T/R result without self-reference |
+| Explicit release checkpoint | BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-ENV-001; INT-002, INT-004, INT-005 | removable local tag and temporary detached worktree before publication | operator creates local `v0.4.0 -> T`, reruns strict validation and publication readiness at live H, and runs full release verification from detached T; any failure removes only the local tag/worktree and publishes nothing |
+| Atomic Git publication | BND-AUTH-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-ENV-001; INT-003, INT-005 | one non-forced atomic push | publish mode reruns readiness, retains its exact full H SHA in memory, rechecks advertised refs, and uses that SHA in one `git push --atomic` mapping main `P -> H` and absent remote tag to T or changing neither ref |
 | Public publication and closeout | BND-STATE-001, BND-COMPOSE-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001; INT-004, INT-005, INT-006 | immutable published refs and standing fix-forward process | tag workflow, GitHub/npm/archive/smoke evidence, rollback selection, partial-publication recovery, and final change-local closeout prove public state without rewriting refs |
 
 ## Milestones
@@ -93,7 +94,7 @@ supersedes the branch and PR and restarts from current authorized remote main.
 ### M1. Read-only activation candidate validation
 
 - Milestone state: planned
-- Goal: Add the exact opt-in candidate command and deterministic `P/B/T/H` proof without changing strict default behavior.
+- Goal: Add the exact opt-in candidate command and deterministic `P/B/T/R` proof without changing strict default behavior.
 - Requirements: BFA-R004-R019, BFA-R031-R034.
 - Files/components likely touched:
   - `scripts/validate-boundary-first.py`
@@ -105,13 +106,13 @@ supersedes the branch and PR and restarts from current authorized remote main.
   - reachable configured remote for real candidate success; local bare remotes for tests
 - Tests to add/update:
   - exact flag and release vocabulary, absent/present/unreachable tag, unique transition, and strict-default preservation
-  - exact `P ... B -> T ... H`, stable JSON fields, rollback/bundle identity, and side-effect absence
-  - accepted lifecycle-only `T..H` paths and exact rejected release-gated path output
+  - exact `P ... B -> T ... R`, stable `candidate_validation_head` JSON field, rollback/bundle identity, and side-effect absence
+  - accepted lifecycle-only `T..R` paths and exact rejected release-gated path output
 - Implementation steps:
   - extend CLI parsing with `--activation-candidate` valid only with `--check`
-  - derive fresh `P`, transition parent `B`, transition `T`, and head `H`
+  - derive fresh `P`, transition parent `B`, transition `T`, and candidate-validation head `R`
   - share strict invariant helpers while skipping only logically absent-tag proof
-  - classify `T..H` paths and emit non-public candidate status
+  - classify `T..R` paths and emit non-public candidate status
 - Validation commands:
   - `python scripts/test-boundary-first-validation.py`
   - `python scripts/validate-boundary-first.py --check`
@@ -137,6 +138,10 @@ supersedes the branch and PR and restarts from current authorized remote main.
   - M1 stable candidate result contract
   - Git atomic push and pre-push hook protocol
 - Tests to add/update:
+  - exact stored `candidate_validation_head == R`, candidate-evidence commit first parent `R`, and first-parent `C..H` containment
+  - missing, malformed, modified, copied, non-immediate, or non-first-parent candidate evidence blocks readiness
+  - check mode derives live `H`; publish mode reruns readiness in the same invocation, retains the returned full SHA, and uses that exact SHA rather than re-resolving `HEAD`
+  - local-head movement before publish requires fresh readiness; release-gated drift requires replacement history
   - exact advertised `main == P` and absent-tag guard
   - fast-forward proof, successful atomic branch/tag update, stale P, existing tag, non-fast-forward, unsupported atomic capability, and one-ref rejection
   - no force option, no sequential fallback, no mutation in check/preflight mode
@@ -144,7 +149,9 @@ supersedes the branch and PR and restarts from current authorized remote main.
 - Implementation steps:
   - implement the exact non-mutating preflight command `python scripts/publish-boundary-activation.py --check --release v0.4.0 --candidate-evidence docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json`
   - implement the matching explicit mutation command by replacing `--check` with `--publish`; reject invocation with neither or both modes
-  - parse and revalidate candidate evidence
+  - parse candidate evidence, prove its exact `R -> C ... H` first-parent provenance, and recompute `P/B/T`, rollback, bundle, tag, and `T..H` authority
+  - implement one pure publication-readiness result carrying full `H`; in publish mode compute and retain it in the same process through refspec construction
+  - require local `v0.4.0 -> T`, remote tag absence, remote `main == P`, and current local `HEAD == H` before mutation
   - create an isolated temporary pre-push guard for same-push advertised identities
   - execute one plain `git push --atomic` only after all local gates pass
   - keep actual remote mutation behind an explicit release-only command boundary
@@ -196,10 +203,10 @@ supersedes the branch and PR and restarts from current authorized remote main.
 - Risks: an omitted release input discovered after T invalidates the entire candidate history.
 - Rollback/recovery: before M4, fix and recommit the baseline through the normal M3 review loop; after T exists, supersede the branch instead of appending a payload fix.
 
-### M4. Create and prove the narrow activation transition T
+### M4. Create and prove the narrow activation transition and candidate evidence
 
 - Milestone state: planned
-- Goal: Change pending to active exactly once as the child of B, then record non-public candidate proof at reviewed head H without changing release payload after T.
+- Goal: Change pending to active exactly once as the child of B, produce non-public candidate proof at R, and persist it in immediate child C without changing release payload after T.
 - Requirements: BFA-R004-R019, BFA-R024, BFA-R027-R028, BFA-R031-R035; AC-BFA-001-007, AC-BFA-011, AC-BFA-013-015.
 - Exact tracked path changed by transition T:
   - `specs/boundary-first-activation.yaml`
@@ -210,21 +217,23 @@ supersedes the branch and PR and restarts from current authorized remote main.
   - activation inputs in B are complete and reviewed
 - Tests to add/update:
   - one exact first-parent `B -> T` pending-to-active transition
-  - candidate proof of P/B/T/H and self-contained T with remote and local tag absent
-  - lifecycle-only `T..H` acceptance and exact release-gated changed-path rejection
+  - candidate proof of P/B/T/R and self-contained T with remote and local tag absent
+  - exact candidate JSON is introduced by immediate first-parent child `C` of `R`
+  - lifecycle-only `T..R` candidate acceptance and later `T..H` readiness rejection of release-gated paths
   - replacement branch required for any invalid post-T payload correction
 - Implementation steps:
   - verify current `HEAD` is exactly the workflow-recorded B before editing
   - modify only the enumerated activation paths and commit them once, producing T with B as first parent
-  - run candidate validation at H and record its stable JSON evidence as non-public proof
-  - allow only validator-classified lifecycle evidence after T
+  - after `T`, add only prerequisite lifecycle evidence and choose the committed candidate-producing head `R`
+  - run candidate validation at `R`, then commit its stable JSON evidence at the canonical path as immediate first-parent child `C`; do not amend `R` or add another commit between `R` and `C`
+  - allow only validator-classified lifecycle evidence after `C`; later implementation review, rationale, and verification receipts settle final reviewed head `H`
   - if any release-gated file must change, stop, mark the candidate invalid, and rebuild one transition on a replacement branch from current authorized remote main
 - Validation commands:
   - `python scripts/test-boundary-first-validation.py`
   - `python scripts/validate-boundary-first.py --check --activation-candidate v0.4.0`
   - `python scripts/select-validation.py --mode release --release-version v0.4.0`
   - `bash scripts/ci.sh --mode release --release-version v0.4.0`
-- Expected observable result: candidate evidence proves `P ... B -> T ... H`, `v0.4.0` is absent locally and remotely, release-gated content is fixed at T, and publication remains pending.
+- Expected observable result: candidate evidence proves `P ... B -> T ... R -> C`; later lifecycle-only settlement produces `H` containing `C`; `v0.4.0` is absent locally and remotely at candidate time; release-gated content is fixed at T; and publication remains pending.
 - Commit message: `M4: activate boundary-first v1 for v0.4.0`
 - Milestone closeout: candidate proof, implementation evidence, transition commit T, lifecycle-only evidence as needed, and independent code review.
 - Risks: a code-review finding that requires a release-gated change makes this candidate history unusable.
@@ -238,10 +247,10 @@ supersedes the branch and PR and restarts from current authorized remote main.
 - Local tag creation, atomic remote main/tag publication, GitHub/npm publication, and public closeout require an explicit external-action checkpoint and are not authorized by implementation milestones.
 - At that checkpoint, the release operator uses the candidate evidence at `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json` and performs these phases in order:
   1. read `transition_commit` from the candidate evidence and run `git tag v0.4.0 "$activation_transition"`;
-  2. from H, run `python scripts/validate-boundary-first.py --check`;
+  2. from live H, run `python scripts/validate-boundary-first.py --check`;
   3. from a detached temporary worktree at T, run `bash scripts/release-verify.sh v0.4.0`;
-  4. run `python scripts/publish-boundary-activation.py --check --release v0.4.0 --candidate-evidence docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json`;
-  5. only after all prior steps pass, replace `--check` with `--publish` to perform the single atomic ref update;
+  4. run `python scripts/publish-boundary-activation.py --check --release v0.4.0 --candidate-evidence docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json` for a read-only readiness preview;
+  5. only after all prior steps pass, replace `--check` with `--publish`; publish mode reruns readiness in that same invocation, retains its exact full `H` SHA, and uses that SHA for the single atomic ref update;
   6. let the existing tag workflow publish GitHub/npm/archive surfaces, then run `python scripts/close-release-publication.py v0.4.0` and `python scripts/validate-release.py --version v0.4.0` until public evidence closes.
 - A failure before atomic publication removes the temporary worktree and local tag only; remote refs remain unchanged. A failure after atomic publication preserves immutable refs, records the exact partial state, and follows standing release closeout or fix-forward recovery.
 - The release operator executes the following failure-safe Bash block from reviewed H. The trap deletes the local tag only before publication starts; an attempted publication preserves local evidence for exact remote-state reconciliation.
@@ -286,7 +295,8 @@ trap - EXIT
 - Run each milestone's focused unit/integration tests before broader selection.
 - M1 and M2 use the exact explicit selector commands written in their milestone sections. If implementation touches another path, the test spec MUST add that literal `--path` argument before the milestone begins; no ellipsis or inferred path set is valid proof.
 - M3 and M4 use `python scripts/select-validation.py --mode release --release-version v0.4.0` and `bash scripts/ci.sh --mode release --release-version v0.4.0`; the test spec records the resulting selected check IDs before M1 begins.
-- Candidate-H proof is exactly `python scripts/validate-boundary-first.py --check --activation-candidate v0.4.0` from reviewed H with both local and remote `v0.4.0` absent.
+- Candidate-R proof is exactly `python scripts/validate-boundary-first.py --check --activation-candidate v0.4.0` from producer head R with both local and remote `v0.4.0` absent; immediate child C persists its exact JSON result.
+- Publication-readiness proof is the activation publisher's read-only check at live H after local `v0.4.0 -> T`; publish mode reruns the same readiness logic and retains its returned full H SHA through atomic refspec construction.
 - Strict-H proof is exactly `python scripts/validate-boundary-first.py --check` from H after local `v0.4.0` resolves to T.
 - Detached-T proof is exactly `bash scripts/release-verify.sh v0.4.0` with the current directory set to a detached temporary worktree whose HEAD is T.
 - Bare-remote proof is `python scripts/test-boundary-activation-release.py`; fixtures MUST exercise success, stale P, existing tag, non-fast-forward, unsupported atomic capability, one-ref rejection, and unchanged refs on every rejection.
@@ -318,8 +328,9 @@ trap - EXIT
 | 2026-08-05 | Use four implementation milestones: candidate validator, atomic publisher, pre-transition payload B, and narrow transition T. | B must be a committed and proved parent before the single transition can be created; splitting B from T makes review and replacement recovery realizable. | One broad release milestone; three milestones that conflate B and T; per-file micro-milestones. |
 | 2026-08-05 | Record candidate output as workflow evidence instead of adding a manifest. | Existing profile, activation manifest, and change-local evidence already own state and proof. | New candidate manifest or profile schema. |
 | 2026-08-05 | Keep external release operations in lifecycle closeout. | Tag, push, GitHub release, and npm publication require explicit authority. | Automatic publication during M3. |
+| 2026-08-05 | Separate candidate producer R, immediate evidence child C, and final publication head H. | A tracked result can name existing R but cannot self-name its containing commit; readiness can derive and bind live H without new persistent state. | Store final H in its own commit; silently reinterpret reviewed_head; add another manifest. |
 
 ## Readiness
 
-- Ready for plan-review-r2 after lifecycle registration and validation.
+- Ready for plan-review-r4 after lifecycle registration and validation.
 - Readiness is not Done; test-spec, implementation reviews, final review, rationale, verify, PR, and explicit release remain.
