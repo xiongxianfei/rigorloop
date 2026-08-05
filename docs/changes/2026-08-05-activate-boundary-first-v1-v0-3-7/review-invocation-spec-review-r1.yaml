@@ -1,0 +1,50 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/boundary-first-v1-v0-3-7-activation-release.md
+base_revision: d514edf2
+head_revision: 3a975d9a
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L1
+author_context_id: root-boundary-activation-spec-authoring
+reviewer_context_id: independent-spec-review-r1
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - activation-state-transition
+  - immutable-release-tag
+  - atomic-remote-ref-publication
+  - package-publication
+governing_artifacts:
+  - docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
+  - specs/boundary-first-proof-model.md
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/release-process-contract.md
+  - specs/release-transaction-automation.md
+  - docs/architecture/system/architecture.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: 3a975d9a
+    sha256: 143d641c071ceb800cc72026d9352d56dbdfd649d4fde47a072b835c75f4d563
+  - path: docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
+    revision: d514edf2
+    sha256: 3eb81070ee6f36eacf743e3be2b7c6a16abc81236f025cf70b3d4a736b7d2443
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md.diff
+    revision: 3a975d9a
+    sha256: 5a959d36e22211fee202eaf291af75787af3c3712a2c19ab3ea402858ca95d67
+initial_packet_sha256: 7fbb52c08047045fc772c213750e6b52133bc5794af84601f7a1b732b0ae6489
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - candidate versus strict validation authority
+  - reviewed-base transition and final-head identity
+  - tagged-tree self-containment
+  - post-transition lifecycle-only restriction
+  - atomic two-ref compare-and-swap publication
+  - pre-push and post-publish recovery
+  - formal boundary and interaction completeness
