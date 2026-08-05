@@ -28,8 +28,8 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: spec-review
-  next_stage: spec-review
+  current_stage: architecture
+  next_stage: architecture
   blocker: null
   evidence:
     - docs/research/2026-08-05-boundary-first-v1-activation-release.md
@@ -82,3 +82,6 @@ changed_files:
 review:
   status: approved
   unresolved_items: 0
+architecture:
+  assessment: architecture-required
+  rationale: The activation release changes validator authority, P/B/T/H Git identity flow, tagged-tree execution, atomic two-ref publication, and invalid-candidate recovery.
