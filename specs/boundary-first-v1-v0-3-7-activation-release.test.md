@@ -122,19 +122,19 @@ Boundary model scope: BFA-R001 through BFA-R035
 | Proof obligation ID | Coverage state | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Proof level | Automation mode | Command IDs | Evidence artifact | Required milestone | Manual procedure IDs | Uncovered gap ID |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | PRF-001 | covered | BFA-R004, BFA-R006, BFA-R007, BFA-R031 | BND-INPUT-001 | T1 | integration | automated | CMD1 | `evidence/implementation-m1.md` | M1 | - | - |
-| PRF-002 | covered | BFA-R005, BFA-R006, BFA-R013, BFA-R017, BFA-R024 | BND-STATE-001 | T1, T12, T14 | integration | hybrid | CMD1, CMD22 | `evidence/implementation-m1.md`; `reviews/test-spec-review-r1.md` | release checkpoint | MP1, MP2 | - |
-| PRF-003 | covered | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R018, BFA-R019, BFA-R020, BFA-R021 | BND-AUTH-001 | T2, T4, T7, T11 | integration | hybrid | CMD1, CMD5, CMD15 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md`; `evidence/boundary-activation-candidate.json` | release checkpoint | MP1 | - |
-| PRF-004 | covered | BFA-R005, BFA-R014, BFA-R018, BFA-R019, BFA-R025, BFA-R026, BFA-R033 | BND-COMPOSE-001 | T3, T10, T11, T13, T16 | end-to-end | hybrid | CMD12, CMD16, CMD19 | `docs/releases/v0.4.0.md` | public closeout | MP1, MP2 | - |
+| PRF-002 | covered | BFA-R005, BFA-R006, BFA-R013, BFA-R017, BFA-R024 | BND-STATE-001 | T1, T12, T14 | integration | hybrid | CMD1, CMD13, CMD14, CMD18, CMD19 | `evidence/implementation-m1.md`; `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
+| PRF-003 | covered | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R018, BFA-R019, BFA-R020, BFA-R021 | BND-AUTH-001 | T2, T4, T7, T11 | integration | hybrid | CMD1, CMD5, CMD15, CMD17 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md`; `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`; `evidence/atomic-publication.json` | release checkpoint | MP1 | - |
+| PRF-004 | covered | BFA-R005, BFA-R014, BFA-R018, BFA-R019, BFA-R025, BFA-R026, BFA-R033 | BND-COMPOSE-001 | T3, T10, T11, T13, T16 | end-to-end | hybrid | CMD12, CMD16, CMD19, CMD20, CMD25 | `evidence/release-checkpoint.md`; `evidence/atomic-publication.json`; `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
 | PRF-005 | covered | BFA-R015, BFA-R016, BFA-R021, BFA-R022, BFA-R023, BFA-R035 | BND-TEMPORAL-001 | T5, T8 | integration | automated | CMD1, CMD5 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md` | M2 | - | - |
-| PRF-006 | covered | BFA-R022, BFA-R023, BFA-R027, BFA-R028, BFA-R030, BFA-R035 | BND-RECOVERY-001 | T5, T8, T14 | integration | hybrid | CMD5, CMD18 | `evidence/implementation-m2.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP2 | - |
-| PRF-007 | covered | BFA-R002, BFA-R003, BFA-R005, BFA-R029 | BND-COMPAT-001 | T3, T10, T15 | migration | automated | CMD1, CMD12 | `evidence/implementation-m3.md` | M3 | - | - |
-| PRF-008 | covered | BFA-R007, BFA-R020, BFA-R022, BFA-R025, BFA-R030 | BND-ENV-001 | T1, T8, T13, T14 | end-to-end | hybrid | CMD1, CMD5, CMD19 | `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP2 | - |
+| PRF-006 | covered | BFA-R022, BFA-R023, BFA-R027, BFA-R028, BFA-R030, BFA-R035 | BND-RECOVERY-001 | T5, T8, T14 | integration | hybrid | CMD5, CMD17-CMD19 | `evidence/implementation-m2.md`; `evidence/atomic-publication.json`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP2 | - |
+| PRF-007 | covered | BFA-R002, BFA-R003, BFA-R005, BFA-R029 | BND-COMPAT-001 | T3, T10, T15 | integration | automated | CMD1, CMD12 | `evidence/implementation-m3.md` | M3 | - | - |
+| PRF-008 | covered | BFA-R007, BFA-R020, BFA-R022, BFA-R025, BFA-R030 | BND-ENV-001 | T1, T8, T13, T14 | end-to-end | hybrid | CMD1, CMD5, CMD18-CMD20, CMD25 | `evidence/atomic-publication.json`; `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP2 | - |
 | PRF-009 | covered | BFA-R005, BFA-R007, BFA-R013 | INT-001 | T1, T3 | integration | automated | CMD1 | `evidence/implementation-m1.md` | M1 | - | - |
-| PRF-010 | covered | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R015, BFA-R016, BFA-R019, BFA-R020 | INT-002 | T2, T5, T11 | integration | hybrid | CMD1, CMD15, CMD16 | `evidence/boundary-activation-candidate.json` | release checkpoint | MP1 | - |
+| PRF-010 | covered | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R015, BFA-R016, BFA-R019, BFA-R020 | INT-002 | T2, T5, T11 | integration | hybrid | CMD1, CMD15-CMD17 | `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`; `evidence/atomic-publication.json` | release checkpoint | MP1 | - |
 | PRF-011 | covered | BFA-R020, BFA-R021, BFA-R022 | INT-003 | T7, T8 | integration | automated | CMD5 | `evidence/implementation-m2.md` | M2 | - | - |
-| PRF-012 | covered | BFA-R018, BFA-R019, BFA-R025, BFA-R033 | INT-004 | T11, T13, T16 | end-to-end | hybrid | CMD15, CMD16, CMD19 | `docs/releases/v0.4.0.md` | release checkpoint | MP1 | - |
-| PRF-013 | covered | BFA-R027, BFA-R028, BFA-R030 | INT-005 | T11, T14 | integration | hybrid | CMD17, CMD18 | `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
-| PRF-014 | covered | BFA-R002, BFA-R029 | INT-006 | T15 | migration | automated | CMD12 | `evidence/implementation-m3.md` | M3 | - | - |
+| PRF-012 | covered | BFA-R018, BFA-R019, BFA-R025, BFA-R033 | INT-004 | T11, T13, T16 | end-to-end | hybrid | CMD15, CMD16, CMD19, CMD20, CMD25 | `evidence/release-checkpoint.md`; `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
+| PRF-013 | covered | BFA-R027, BFA-R028, BFA-R030 | INT-005 | T11, T14 | integration | hybrid | CMD17, CMD18, CMD19 | `evidence/atomic-publication.json`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
+| PRF-014 | covered | BFA-R002, BFA-R029 | INT-006 | T15 | integration | automated | CMD12 | `evidence/implementation-m3.md` | M3 | - | - |
 | PRF-015 | covered | BFA-R016, BFA-R023, BFA-R035 | INT-007 | T5, T8 | integration | automated | CMD1, CMD5 | `evidence/implementation-m2.md` | M2 | - | - |
 
 Evidence paths without a leading directory are relative to
@@ -174,10 +174,10 @@ Evidence paths without a leading directory are relative to
 | CMD11 | `python scripts/select-validation.py --mode release --release-version v0.4.0` | existing/configured | implement | M3, M4 | code-review M3 | Block missing release checks or selector debt. | Not applicable; deterministic selector. | Owning milestone implementation evidence. | Read-only selection; no publication. |
 | CMD12 | `bash scripts/ci.sh --mode release --release-version v0.4.0` | existing/configured | implement | M3, M4 | code-review M3 | Block release-selected or broad-smoke failure. | Zero selected tests is failure. | Owning milestone implementation evidence. | Repository validation only; no publication. |
 | CMD13 | `python scripts/validate-boundary-first.py --check --activation-candidate v0.4.0` | planned-for-implementation | implement | M1 | code-review M4 | Block absent-tag candidate or P/B/T/H proof. | Not applicable; deterministic check. | `evidence/boundary-activation-candidate.json` | Read-only; remote advertisement only. |
-| CMD14 | `python scripts/publish-boundary-activation.py --check --release v0.4.0 --candidate-evidence docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json` | planned-for-implementation | implement | M2 | release checkpoint | Block stale evidence, local gate, ref, or capability mismatch. | Not applicable; deterministic preflight. | Release-checkpoint evidence. | Check mode must not mutate refs. |
-| CMD15 | `python scripts/validate-boundary-first.py --check` | release-owned | release operator | release checkpoint | release checkpoint | Stop and remove local tag before publication. | Not applicable; deterministic strict check. | Release-checkpoint evidence. | Runs at H with local v0.4.0 at T; no remote mutation. |
-| CMD16 | `bash scripts/release-verify.sh v0.4.0` | release-owned | release operator | release checkpoint | release checkpoint | Stop, clean detached worktree, and remove local tag before publication. | Zero tests or skipped required gate is failure. | Release-checkpoint evidence. | Runs only in detached worktree at T. |
-| CMD17 | `python scripts/publish-boundary-activation.py --publish --release v0.4.0 --candidate-evidence docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json` | external-owned | release operator | release checkpoint | explicit release action | Stop on any guard or push failure and reconcile exact remote state. | Not applicable; publication command. | Atomic publication evidence. | Authorized external mutation; one non-forced atomic push only. |
+| CMD14 | `python scripts/publish-boundary-activation.py --check --release v0.4.0 --candidate-evidence docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json` | planned-for-implementation | implement | M2 | release checkpoint | Block stale evidence, local gate, ref, or capability mismatch. | Not applicable; deterministic preflight. | `evidence/release-checkpoint.md` | Check mode must not mutate refs. |
+| CMD15 | `python scripts/validate-boundary-first.py --check` | release-owned | release operator | release checkpoint | release checkpoint | Stop and remove local tag before publication. | Not applicable; deterministic strict check. | `evidence/release-checkpoint.md` | Runs at H with local v0.4.0 at T; no remote mutation. |
+| CMD16 | `bash scripts/release-verify.sh v0.4.0` | release-owned | release operator | release checkpoint | release checkpoint | Stop, clean detached worktree, and remove local tag before publication. | Zero tests or skipped required gate is failure. | `evidence/release-checkpoint.md` | Runs only in detached worktree at T. |
+| CMD17 | `python scripts/publish-boundary-activation.py --publish --release v0.4.0 --candidate-evidence docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/boundary-activation-candidate.json` | external-owned | release operator | release checkpoint | explicit release action | Stop on any guard or push failure and reconcile exact remote state. | Not applicable; publication command. | `evidence/atomic-publication.json` | Authorized external mutation; one non-forced atomic push only. |
 | CMD18 | `python scripts/close-release-publication.py v0.4.0` | release-owned | release operator | public closeout | explicit release action | Keep closeout open with exact unavailable or failed phase. | Not applicable; evidence generator. | `docs/releases/v0.4.0/npm-publication.md` | Reads public GitHub/npm/npx; writes closeout evidence, not publication. |
 | CMD19 | `python scripts/validate-release.py --version v0.4.0` | release-owned | release operator | public closeout | explicit release action | Keep release open until published evidence is valid. | Not applicable; deterministic validation. | `docs/releases/v0.4.0.md` | Read-only release validation. |
 | CMD20 | `bash scripts/release-verify.sh "$GITHUB_REF_NAME"` | ci-owned | GitHub tag workflow | public publication | tag workflow | Block GitHub release and npm publication. | Zero tests or skipped required gate is failure. | GitHub Actions run and release evidence. | CI tag context; trusted publication starts only after pass. |
@@ -185,15 +185,16 @@ Evidence paths without a leading directory are relative to
 | CMD22 | `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/boundary-first-v1-v0-3-7-activation-release.test.md --path docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/change.yaml --path docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/test-spec-authoring.md` | existing/configured | test-spec | lifecycle | test-spec authoring | Block incomplete authoring evidence or illegal lifecycle state. | Not applicable; deterministic validator. | Change metadata validation entry. | Read-only explicit-path validation. |
 | CMD23 | `python scripts/validate-review-artifacts.py docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7` | existing/configured | test-spec-review | lifecycle | test-spec-review | Block malformed, unindexed, or unresolved review evidence. | Not applicable; deterministic validator. | Review log and review receipt. | Read-only review validation. |
 | CMD24 | `python scripts/validate-boundary-first.py --path specs/boundary-first-v1-v0-3-7-activation-release.test.md` | existing/configured | test-spec | lifecycle | test-spec authoring | Block malformed, missing, or untraceable boundary proof obligations. | Not applicable; deterministic validator. | Test-spec authoring evidence. | Read-only proof-map validation. |
+| CMD25 | `python scripts/test-release-transaction.py` | existing/configured | implement | M3 | code-review M3 | Block tag-workflow ordering, release-gate delegation, closeout, or partial-publication regression. | Zero tests is failure. | `evidence/implementation-m3.md` | Local fixtures and provider stubs only; no publication. |
 
 ## Milestone proof map
 
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | Preimplementation gate | T1-T16 | none | CMD21-CMD24 | This test spec, authoring evidence, and test-spec-review receipt | implementation handoff | Every requirement, boundary, interaction, example, edge case, and command must remain mapped. |
-| M1 | T1-T6, T16 | none | CMD1-CMD4 | `evidence/implementation-m1.md` | code-review M1 | Candidate implementation is fixture-proved; real candidate command is deferred until T exists. |
+| M1 | T1-T6, T12, T16 | none | CMD1-CMD4 | `evidence/implementation-m1.md` | code-review M1 | Candidate implementation and missing-evidence readiness matrix are fixture-proved; real candidate command is deferred until T exists. |
 | M2 | T7-T9 | none | CMD5-CMD8 | `evidence/implementation-m2.md` | code-review M2 | Bare remotes prove both-ref success and all-or-neither failure. |
-| M3 | T3, T10, T13, T15, T16 | none | CMD9-CMD12 | `evidence/implementation-m3.md` | code-review M3 | Complete pending release payload and rollback proof settle before B. |
+| M3 | T3, T10, T13, T15, T16 | none | CMD9-CMD12, CMD25 | `evidence/implementation-m3.md` | code-review M3 | Complete pending payload, tag-workflow composition, public-closeout fixtures, and rollback proof settle before B. |
 | M4 | T2, T4-T6, T12 | none | CMD1, CMD11-CMD13 | `evidence/implementation-m4.md`; `evidence/boundary-activation-candidate.json` | code-review M4 | T changes only the activation record; H adds lifecycle evidence only. |
 | Release checkpoint | T11-T12 | MP1 | CMD14-CMD17 | Release-checkpoint and atomic publication evidence | atomic Git publication | Tag, strict H, detached T, preflight, then atomic publish. |
 | Public closeout | T13-T15 | MP2 | CMD18-CMD20 | `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md` | final release closeout | Existing tag workflow and rerunnable public closeout own external proof. |
@@ -339,7 +340,7 @@ Evidence paths without a leading directory are relative to
 - Steps: Follow MP1; additionally inject strict-H and detached-T failures in automated shell harness tests.
 - Expected result: Both gates pass before publication; either failure removes local tag/worktree and never invokes publish; detached proof reads only T.
 - Failure proves: Candidate proof substituted for strict/tagged proof or cleanup crossed the external boundary.
-- Evidence artifact: Release-checkpoint evidence
+- Evidence artifact: `evidence/release-checkpoint.md`; `evidence/atomic-publication.json`
 - Automation location: MP1 plus `scripts/test-boundary-activation-release.py`
 - Required by milestone: release checkpoint
 
@@ -347,25 +348,25 @@ Evidence paths without a leading directory are relative to
 
 - Covers: BFA-R017, BFA-R024, BND-STATE-001
 - Level: contract
-- Command IDs: CMD13, CMD21-CMD23
+- Command IDs: CMD1, CMD13, CMD14
 - Fixture/setup: Change records missing each required artifact/evidence class and a fully settled candidate record.
-- Steps: Run lifecycle/candidate checks and inspect workflow routing before external action.
+- Steps: In M1, run the missing-evidence fixture matrix through CMD1; at M4 run CMD13 against actual H; at the release checkpoint run CMD14 against the settled candidate evidence before mutation.
 - Expected result: Missing proposal-through-candidate evidence blocks; settled evidence remains at H; no external action autoprogresses.
 - Failure proves: Publication can precede required lifecycle evidence or explicit authority.
-- Evidence artifact: Test-spec review receipt; `evidence/boundary-activation-candidate.json`
-- Automation location: Artifact lifecycle and boundary-first regression fixtures
-- Required by milestone: M4 and release checkpoint
+- Evidence artifact: `evidence/implementation-m1.md`; `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`
+- Automation location: `scripts/test-boundary-first-validation.py`; candidate validator; publication preflight
+- Required by milestone: M1 fixture proof, M4 actual-state proof, and release checkpoint
 
 ### T13. Tag workflow and public package composition
 
 - Covers: BFA-R001, BFA-R025-R026, BFA-R034, AC-BFA-010
 - Level: smoke
-- Command IDs: CMD20
+- Command IDs: CMD20, CMD25
 - Fixture/setup: v0.4.0 tag workflow plus repository release/profile fixtures.
-- Steps: Prove workflow delegates to full release gate before GitHub/npm publication and preserves trusted publishing, archives, package integrity, packed three-target smoke, registry checks, and public npx smoke.
+- Steps: In M3, run CMD25 to prove static workflow ordering, release-gate delegation, and closeout fixtures; in MP2, observe actual CMD20 and public evidence.
 - Expected result: Any omitted or failing sibling gate blocks publication.
 - Failure proves: Candidate or helper validation bypassed the standing public release path.
-- Evidence artifact: GitHub Actions run and `docs/releases/v0.4.0.md`
+- Evidence artifact: `evidence/implementation-m3.md`; exact GitHub Actions run URL/ID in `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md`
 - Automation location: Release workflow regression tests and MP2 observation
 - Required by milestone: M3 fixture proof; public publication actual proof
 
@@ -457,22 +458,38 @@ remains authoritative.
 
 ### MP1. Explicit activation tag and atomic Git publication
 
-1. Confirm reviewed H and candidate evidence match.
-2. Run the plan's literal failure-safe Bash checkpoint from H.
-3. Confirm strict H and detached T pass before `--publish` starts.
-4. Confirm one atomic update maps main P-to-H and v0.4.0-to-T.
-5. On any pre-publication failure, confirm local tag/worktree cleanup and
-   unchanged remote refs; after a publish attempt, preserve local evidence and
-   reconcile advertised remote refs.
+- Owner role: authorized release operator.
+- Owning stage: explicit release checkpoint after PR approval and merge authorization.
+- Automation rationale: local fixture automation proves mechanics, but only the authorized remote can prove current P, atomic capability, authenticated two-ref publication, and receive-side acceptance.
+- Required environment: clean reviewed H; candidate JSON at its canonical evidence path; Git and Python; configured authorized `origin`; local and remote v0.4.0 absent; release credentials available but never printed or recorded.
+- Exact procedure: execute verbatim the failure-safe Bash block under `Lifecycle closeout. Review, rationale, verification, PR, and explicit release` in `docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md`. That block creates local v0.4.0 at `transition_commit`, runs CMD15 at H, runs CMD16 from a detached T worktree, runs CMD14, then and only then runs CMD17.
+- Evidence artifacts: `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/release-checkpoint.md` records H/T, strict and detached commands, exit results, and advertised P/tag state; `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/atomic-publication.json` records P, H, T, push mode, and resulting advertised refs.
+- Pass condition: CMD15, CMD16, and CMD14 pass; one non-forced atomic push maps main P-to-H and absent v0.4.0-to-T; fresh advertised refs equal H and T; evidence contains no credentials or machine-local path.
+- Failure condition: any pre-publish gate fails, push capability/guard/ref acceptance fails, resulting refs are uncertain or mismatched, or evidence is incomplete/private; public closeout must not start.
+- Cleanup and recovery: before publication starts, the plan trap removes the temporary worktree and local tag and remote refs remain unchanged. After CMD17 starts, preserve the local tag and evidence, re-query both remote refs, record the exact state, and follow standing immutable recovery without retrying from stale evidence.
+- Forbidden actions: force push, force-with-lease, tag overwrite/deletion, sequential branch/tag pushes, manual ref repair, credential capture, or continuing after a failed/uncertain gate.
 
 ### MP2. Public publication and closeout
 
-1. Observe the tag workflow run CMD20 successfully before release publication.
-2. Confirm GitHub assets, npm 0.4.0/latest, integrity, and three-target public
-   npx smoke.
-3. Run CMD18 and CMD19 until public evidence closes.
-4. If evidence is partial or delayed, record the exact phase and use standing
-   fix-forward/closeout recovery without rewriting Git refs or npm versions.
+- Owner role: authorized release operator.
+- Owning stage: public publication and closeout after MP1 proves exact remote refs.
+- Automation rationale: CI and closeout automate validation, but public GitHub/npm availability, trusted-publishing outcome, registry propagation, and live npx installation must be observed against the real public services.
+- Required environment: MP1 atomic evidence; authenticated read access for `gh`; public network; Node/npm/npx; three fresh empty temporary projects; no npm publish token is read by these verification commands.
+- Exact commands, in order:
+  1. `gh run list --workflow release.yml --branch v0.4.0 --limit 5 --json databaseId,status,conclusion,headSha,event,url`
+  2. `gh release view v0.4.0 --json tagName,targetCommitish,isDraft,isPrerelease,url,assets`
+  3. `npm view @xiongxianfei/rigorloop@0.4.0 version dist-tags.latest dist.integrity --json`
+  4. `npx @xiongxianfei/rigorloop@0.4.0 version`
+  5. From a fresh empty Codex project: `npx @xiongxianfei/rigorloop@0.4.0 init codex`
+  6. From a fresh empty Claude project: `npx @xiongxianfei/rigorloop@0.4.0 init claude`
+  7. From a fresh empty opencode project: `npx @xiongxianfei/rigorloop@0.4.0 init opencode`
+  8. CMD18: `python scripts/close-release-publication.py v0.4.0`
+  9. CMD19: `python scripts/validate-release.py --version v0.4.0`
+- Evidence artifacts: the exact workflow run URL/ID and release proof in `docs/releases/v0.4.0.md`; generated provider, integrity, version, and three-target smoke proof in `docs/releases/v0.4.0/npm-publication.md`.
+- Pass condition: tag workflow conclusion is success at T and ran CMD20 before publication; release assets/checksums match profile metadata; npm version is 0.4.0, latest is 0.4.0, integrity is present; version and all three fresh init commands pass; CMD18 and CMD19 close exact public evidence.
+- Failure condition: workflow or any public query/smoke fails, evidence is delayed/ambiguous, assets or identities mismatch, latest differs, integrity is absent, or CMD18/CMD19 remains open.
+- Cleanup and recovery: remove only the three disposable smoke projects. Preserve immutable Git/npm artifacts, record failed-during-publish or failed-after-publish, and rerun closeout after propagation or use standing fix-forward, dist-tag correction, deprecation, or patch-release recovery.
+- Forbidden actions: deleting/rewriting v0.4.0, republishing 0.4.0, treating fixture evidence as public proof, exposing credentials/environment dumps, or marking release closed while any public check is open.
 
 ## What not to test and why
 
