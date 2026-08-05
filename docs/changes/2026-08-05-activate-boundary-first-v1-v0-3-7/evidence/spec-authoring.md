@@ -4,7 +4,7 @@
 - Artifact path: `specs/boundary-first-v1-v0-3-7-activation-release.md`
 - Authoring stage: `spec`
 - Completion status: complete
-- Next review: `spec-review-r4`
+- Next review: `spec-review-r5`
 
 ## Authoring result
 
@@ -34,6 +34,10 @@ distinct post-local-tag gate rather than a rerun of pre-tag candidate mode. It
 binds stored `R -> C` provenance to freshly derived live `H`, recomputes the
 time-sensitive Git, tag, rollback, bundle, and drift authorities, and completes
 BFA-R017 ownership in the boundary and example records.
+
+Revision R5 resolves the remaining composition mismatch by expressing the same
+three gates in E3, BND-COMPOSE-001, and INT-004: strict validation and
+publication readiness at `H`, plus full release verification at `T`.
 
 The formal boundary record covers all eight core dimensions and selects only
 seven composed hazards needed to distinguish candidate authority, commit

@@ -74,12 +74,15 @@ When ordinary boundary-first validation runs
 Then it fails because the activating release tag does not exist.
 
 Example E3: local tag enables strict release proof
-Given candidate validation passed
+Given persisted candidate evidence has valid `R -> C` provenance
+And live reviewed head `H` contains `C`
 And local immutable tag `v0.4.0` points to `T`
-When strict boundary-first validation and the full release gate run from the
-tagged tree
-Then both require `v0.4.0` to resolve to `T` and `v0.3.6` to be its immediate
-published predecessor.
+When strict boundary-first validation and publication readiness run at `H`
+And the full release gate runs from tagged tree `T`
+Then strict validation and readiness require `v0.4.0` to resolve to `T`
+And readiness requires remote `v0.4.0` to remain absent and remote `main` to remain `P`
+And tagged-tree verification proves release self-containment and `v0.3.6` as
+the immediate published predecessor.
 
 Example E4: lifecycle evidence follows the transition
 Given `T` contains every release and activation input
@@ -400,7 +403,7 @@ Boundary model scope: BFA-R001 through BFA-R035
 | BND-INPUT-001 | input-domain | BFA-R004, BFA-R006, BFA-R007, BFA-R031 | absent flag; exact v0.4.0 flag; malformed or other release; local tag absent/present; remote reachable/unreachable | Candidate mode is explicit, named, and tag-absent only. | Exact input validates; unknown, conflicting, or unreachable input stops with bounded diagnostics. | BFA-R004 |
 | BND-STATE-001 | state-lifecycle | BFA-R005, BFA-R006, BFA-R013, BFA-R017, BFA-R024 | pending; candidate-active/unpublished; locally tagged/strictly verified; remotely tagged/publishing; published/closeout pending; closed | Candidate state never claims public activation; external transitions require explicit action and strict gates. | Legal transitions advance with evidence; premature or mixed state stops. | BFA-R013 |
 | BND-AUTH-001 | identity-authority | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R017, BFA-R018, BFA-R019, BFA-R020, BFA-R021 | publication base P; grandfathering baseline B; transition T; candidate-validation head R; candidate-evidence commit C; reviewed head H; rollback tag; activating tag; remote main | P equals or precedes B, B is T's first parent, T is in R's first-parent history, C is R's immediate first-parent child, H contains C, main advances P to live H, and tag maps to T; T is release-self-contained. | Exact identities and tagged-tree proof pass; self-reference, drift, ambiguity, mismatch, stale authority, or missing self-containment stops. | BFA-R020 |
-| BND-COMPOSE-001 | composition-path | BFA-R005, BFA-R014, BFA-R018, BFA-R019, BFA-R025, BFA-R026, BFA-R033 | candidate CLI; default validator; strict validation at H; full release verification at T; tag workflow; package/archive checks; public closeout | Candidate mode changes only absent-tag authority; the tagged tree is self-contained; every sibling gate retains ownership. | Complete composed path publishes; bypass, post-T dependency, or omitted gate blocks. | BFA-R033 |
+| BND-COMPOSE-001 | composition-path | BFA-R005, BFA-R014, BFA-R018, BFA-R019, BFA-R025, BFA-R026, BFA-R033 | candidate CLI; default validator; strict validation at H; publication readiness at H; full release verification at T; tag workflow; package/archive checks; public closeout | Candidate mode changes only absent-tag authority; publication readiness binds persisted evidence to live authority; the tagged tree is self-contained; every sibling gate retains ownership. | Complete composed path publishes; bypass, post-T dependency, or omitted gate blocks. | BFA-R033 |
 | BND-TEMPORAL-001 | temporal-retry | BFA-R015, BFA-R016, BFA-R021, BFA-R022, BFA-R023, BFA-R035 | transition before evidence; repeated candidate check; payload drift after T; publication-base drift; local tag retry; atomic push retry; replacement candidate | Release-gated payload is fixed at T; changed paths fail; retry never overwrites refs, retains an invalid transition, or reuses stale evidence. | Idempotent read checks pass; drift or failed atomic update requires a fresh candidate and rereview. | BFA-R023 |
 | BND-RECOVERY-001 | failure-recovery | BFA-R022, BFA-R023, BFA-R027, BFA-R028, BFA-R030, BFA-R035 | invalid unpublished transition; pre-push failure; atomic-ref rejection; failed-during-publish; failed-after-publish; delayed public evidence | Invalid unpublished history is superseded by a replacement branch from current P; pre-push leaves remote unchanged; post-push never rewrites immutable artifacts. | Replace and rereview before publication, abandon local state, or use standing fix-forward/closeout recovery after publication. | BFA-R035 |
 | BND-COMPAT-001 | compatibility-migration | BFA-R002, BFA-R003, BFA-R005, BFA-R029 | pending/default strict; active v0.4.0; v0.3.6 rollback; historical fixtures | boundary-first-v1 and default strict behavior remain stable; rollback is one immutable release. | Compatible paths remain valid; mixed or older rollback fails. | BFA-R005 |
@@ -413,7 +416,7 @@ Boundary model scope: BFA-R001 through BFA-R035
 | INT-001 | BFA-R005, BFA-R007, BFA-R013 | BND-INPUT-001, BND-STATE-001 | Candidate flag or absent tag is mistaken for public activation. | Candidate output is explicitly non-public; default strict mode still fails without the tag. |
 | INT-002 | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R015, BFA-R016, BFA-R017, BFA-R019, BFA-R020 | BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001 | P, B, T, R, C, and H are conflated; candidate evidence attempts to name its own containing commit; the tagged tree depends on later content; or later evidence mutates release payload. | Candidate records P, B, T, and its producing head R; C proves immediate parentage; publication derives live H independently; T is self-contained; and post-transition release-gated drift is rejected with changed paths. |
 | INT-003 | BFA-R020, BFA-R021, BFA-R022 | BND-AUTH-001, BND-ENV-001 | Remote main changes or atomic ref capability is absent. | Compare-and-swap and atomic update change both refs or neither. |
-| INT-004 | BFA-R018, BFA-R019, BFA-R025, BFA-R033 | BND-COMPOSE-001, BND-AUTH-001 | Candidate validation substitutes for strict release verification. | Local tag and strict full release gates run before remote publication. |
+| INT-004 | BFA-R018, BFA-R019, BFA-R025, BFA-R033 | BND-COMPOSE-001, BND-AUTH-001 | Candidate validation substitutes for publication readiness, strict validation, or tagged-tree full release verification. | After local tag creation, strict validation and publication readiness run at H and full release verification runs at T before remote publication. |
 | INT-005 | BFA-R027, BFA-R028, BFA-R030 | BND-RECOVERY-001, BND-STATE-001, BND-ENV-001 | Failure crosses from reversible local state into immutable partial publication. | Pre-push abandons locally; post-push records exact state and fixes forward without overwrite. |
 | INT-006 | BFA-R002, BFA-R029 | BND-COMPAT-001, BND-RECOVERY-001 | Recovery selects mixed or non-predecessor packages. | Rollback selects exact immutable v0.3.6 artifacts or fails closed. |
 | INT-007 | BFA-R016, BFA-R023, BFA-R035 | BND-TEMPORAL-001, BND-RECOVERY-001 | A payload correction is appended after T or a second transition is added to the same candidate history. | Supersede the invalid branch and PR; rebuild one transition from current authorized P; repeat validation and review without force-push. |
