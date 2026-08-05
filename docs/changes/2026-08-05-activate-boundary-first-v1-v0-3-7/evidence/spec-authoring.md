@@ -4,7 +4,7 @@
 - Artifact path: `specs/boundary-first-v1-v0-3-7-activation-release.md`
 - Authoring stage: `spec`
 - Completion status: complete
-- Next review: `spec-review-r3`
+- Next review: `spec-review-r4`
 
 ## Authoring result
 
@@ -28,6 +28,12 @@ already-existing producer `R`; publication derives and revalidates live `H`.
 This removes the impossible requirement for a commit to contain its own identity
 while retaining first-parent provenance, post-transition drift checks, and
 atomic publication of `H` with the release tag at `T`.
+
+Revision R4 resolves spec-review R3 by defining publication readiness as a
+distinct post-local-tag gate rather than a rerun of pre-tag candidate mode. It
+binds stored `R -> C` provenance to freshly derived live `H`, recomputes the
+time-sensitive Git, tag, rollback, bundle, and drift authorities, and completes
+BFA-R017 ownership in the boundary and example records.
 
 The formal boundary record covers all eight core dimensions and selects only
 seven composed hazards needed to distinguish candidate authority, commit
