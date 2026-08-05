@@ -11,6 +11,7 @@ from boundary_first_validation import (
     ACTIVATION_RECORD,
     rollback_package_selection,
     validate_activation,
+    validate_activation_candidate,
     validate_changed_spec,
 )
 
@@ -18,10 +19,34 @@ from boundary_first_validation import (
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--activation-candidate")
     parser.add_argument("--root", default=".")
     parser.add_argument("--path", action="append", default=[])
     args = parser.parse_args()
+    if args.activation_candidate and not args.check:
+        parser.error("--activation-candidate requires --check")
     root = Path(args.root).resolve()
+    if args.activation_candidate:
+        if args.path:
+            parser.error("--activation-candidate cannot be combined with --path")
+        candidate, candidate_issues = validate_activation_candidate(
+            root,
+            args.activation_candidate,
+        )
+        if candidate_issues or candidate is None:
+            print(
+                json.dumps(
+                    {
+                        "status": "failed",
+                        "mode": "activation-candidate",
+                        "issues": [issue.as_dict() for issue in candidate_issues],
+                    },
+                    sort_keys=True,
+                )
+            )
+            return 1
+        print(json.dumps(candidate.as_dict(), sort_keys=True))
+        return 0
     issues = list(validate_activation(root))
     for path in args.path:
         issues.extend(validate_changed_spec(root, path))
