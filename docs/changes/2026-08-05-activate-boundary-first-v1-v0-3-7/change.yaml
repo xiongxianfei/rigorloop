@@ -57,8 +57,8 @@ artifact_states:
     authoring_evidence: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/test-spec-authoring.md
 workflow_state:
   lifecycle_state: active
-  current_stage: test-spec
-  next_stage: test-spec
+  current_stage: test-spec-review
+  next_stage: test-spec-review
   blocker: null
   evidence:
     - docs/research/2026-08-05-boundary-first-v1-activation-release.md
@@ -79,6 +79,7 @@ workflow_state:
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/plan-review-r2.md
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-plan-review-r3.yaml
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/plan-review-r3.md
+    - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-test-spec-review-r1.yaml
   planned_work:
     plan_artifact_id: plan
     current_milestone: M1
@@ -173,6 +174,7 @@ changed_files:
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/plan-review-r3.md
   - specs/boundary-first-v1-v0-3-7-activation-release.test.md
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/test-spec-authoring.md
+  - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-test-spec-review-r1.yaml
 review:
   status: approved
   unresolved_items: 0
