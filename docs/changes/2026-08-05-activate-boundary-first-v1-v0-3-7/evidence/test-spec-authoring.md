@@ -3,7 +3,7 @@
 - Artifact ID: `test-spec`
 - Test spec: `specs/boundary-first-v1-v0-3-7-activation-release.test.md`
 - Completion status: complete
-- Next review: `test-spec-review-r6`
+- Next review: `test-spec-review-r7`
 
 The proof map covers all 35 requirements, 15 acceptance criteria, eight
 examples, 14 edge cases, eight boundaries, and seven selected interactions.
@@ -41,3 +41,7 @@ The R6 revision closes test-spec-review R5 by completing the direct producer
 chains for candidate, readiness, and sibling-composition proof rows and by
 injecting privacy sentinels through M2 readiness, checkpoint, and atomic
 evidence serialization rather than relying on candidate-only redaction.
+
+The R7 revision completes the remaining hybrid producer chains with CMD17 and
+CMD18, assigns T12 fixture serialization proof to M2 evidence and milestone
+ownership, and distinguishes that automation from MP1's actual privacy scan.
