@@ -3,6 +3,17 @@
 ## Review Entries
 
 ### Review entry
+Review ID: test-spec-review-r6
+Stage: test-spec-review
+Round: 6
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r6.md
+Resolution: review-resolution.md#test-spec-review-r6
+Material findings: BFA-TSR6-001, BFA-TSR6-002
+Open findings: BFA-TSR6-001, BFA-TSR6-002
+Recording status: recorded
+
+### Review entry
 Review ID: test-spec-review-r5
 Stage: test-spec-review
 Round: 5
@@ -10,7 +21,7 @@ Status: changes-requested
 Detailed record: reviews/test-spec-review-r5.md
 Resolution: review-resolution.md#test-spec-review-r5
 Material findings: BFA-TSR5-001, BFA-TSR5-002
-Open findings: BFA-TSR5-001, BFA-TSR5-002
+Open findings: None
 Recording status: recorded
 
 ### Review entry

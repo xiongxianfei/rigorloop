@@ -28,11 +28,12 @@ Review closeout: architecture-review-activation-r2
 Review closeout: architecture-review-activation-r3
 Review closeout: plan-review-r4
 Review closeout: test-spec-review-r5
+Review closeout: test-spec-review-r6
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`, `plan-review-r4`, `test-spec-review-r5`
-- Findings resolved: 26
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`, `plan-review-r4`, `test-spec-review-r5`, `test-spec-review-r6`
+- Findings resolved: 28
 - Unresolved findings: 7
-- Final result: Test-spec R5 requires direct producer-chain command/evidence mapping and readiness/publication privacy proof before M1 implementation resumes.
+- Final result: Test-spec R6 requires two residual producer/ownership traceability corrections before M1 implementation resumes.
 
 ## Resolution Overview
 
@@ -48,8 +49,10 @@ Review closeout: test-spec-review-r5
 | BFA-SR3-002 | accepted | resolved | Added BFA-R017 ownership to the identity applicability and E4 traceability records. |
 | BFA-SR4-001 | accepted | resolved | Aligned E3, BND-COMPOSE-001, and INT-004 with the three pre-publication gates. |
 | BFA-AR2-001 | accepted | resolved | Aligned the focused component view and canonical decision summary with candidate P/B/T/R, evidence C, and readiness-bound H. |
-| BFA-TSR5-001 | accepted | open | Complete direct command and evidence producer chains in amended proof rows. |
-| BFA-TSR5-002 | accepted | open | Add direct privacy-negative proof for readiness and publication evidence serializers. |
+| BFA-TSR5-001 | accepted | resolved | Completed the originally identified candidate, readiness, and T16 producer chains. |
+| BFA-TSR5-002 | accepted | resolved | Added direct readiness/publication privacy sentinel partitions and MP1 scans. |
+| BFA-TSR6-001 | accepted | open | Add CMD17/CMD18 to remaining hybrid rows that claim their evidence. |
+| BFA-TSR6-002 | accepted | open | Assign T12 fixture privacy proof to M2 evidence/milestone and complete the summary. |
 | BFA-PLAN-R1-001 | accepted | resolved | Final M3 workflow closeout head is B and T is its immediate child. |
 | BFA-PLAN-R1-002 | accepted | resolved | Separated candidate, strict-H, and detached-T proof phases. |
 | BFA-PLAN-R1-003 | accepted | resolved | Mapped release and public-closeout boundary proof owners. |
@@ -489,26 +492,53 @@ Validation evidence: Architecture-review R3 approves the diagram, exact-H author
 
 Finding ID: BFA-TSR5-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Add actual candidate, readiness, and selector commands plus
 their stage-owned evidence to every amended proof row.
 Rationale: A proof row must cite the command and evidence that directly produce each claim.
 Validation target: test-spec-review-r6
-Validation evidence: pending test-spec revision
+Validation evidence: Test-spec R6 confirms CMD13 and T16 producer chains were added; residual atomic/public rows are tracked separately as BFA-TSR6-001.
 
 #### BFA-TSR5-002 - Readiness and publication serializers lack privacy-negative proof
 
 Finding ID: BFA-TSR5-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Inject private sentinels through M2 readiness and evidence
 serialization, assert all output/evidence suppresses them, and map R034 to T12/MP1.
 Rationale: Candidate redaction cannot prove a separate serializer boundary.
 Validation target: test-spec-review-r6
+Validation evidence: Test-spec R6 confirms direct M2 sentinel and MP1 scan partitions; residual M2 evidence ownership is tracked as BFA-TSR6-002.
+
+### test-spec-review-r6
+
+#### BFA-TSR6-001 - Hybrid proof rows omit atomic and public evidence producers
+
+Finding ID: BFA-TSR6-001
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Chosen action: Add CMD17 and CMD18 to PRF-004 and PRF-012.
+Rationale: Rows claiming atomic and public evidence must cite their producers.
+Validation target: test-spec-review-r7
+Validation evidence: pending test-spec revision
+
+#### BFA-TSR6-002 - T12 privacy proof lacks M2 evidence and milestone ownership
+
+Finding ID: BFA-TSR6-002
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Chosen action: Add M2 implementation evidence and milestone ownership to T12,
+include T12 in the M2 proof map, and cite T12/MP1 in the privacy summary.
+Rationale: Fixture serializer proof and actual release evidence require distinct owners.
+Validation target: test-spec-review-r7
 Validation evidence: pending test-spec revision
 
 ## Clean review receipts
