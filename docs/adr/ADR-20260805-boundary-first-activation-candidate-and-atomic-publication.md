@@ -13,9 +13,10 @@ omitting strict proof would leave the release unverified. The final reviewed
 branch also needs lifecycle evidence after the transition commit, so the
 branch head and activation tag cannot be treated as one identity.
 
-The approved release spec defines four identities on one first-parent chain:
-publication base `P`, grandfathering baseline `B`, transition commit `T`, and
-reviewed head `H`. It also requires exact compare-and-swap publication of
+The approved release spec defines six roles on one first-parent chain:
+publication base `P`, grandfathering baseline `B`, transition commit `T`,
+candidate-validation head `R`, candidate-evidence commit `C`, and reviewed
+publication head `H`. It also requires exact compare-and-swap publication of
 `main: P -> H` and `v0.4.0 -> T`, with both refs changing or neither.
 
 ## Decision
@@ -30,22 +31,27 @@ python scripts/validate-boundary-first.py --check --activation-candidate v0.4.0
 Candidate mode obtains `P` from a fresh, successful remote query of
 `refs/heads/main`; it does not fetch, mutate refs, or create evidence itself.
 It derives `B` from `T`'s first parent, discovers the unique pending-to-active
-`T`, and resolves `H` from `HEAD`. It accepts only the first-parent chain
-`P ... B -> T ... H`, an absent local and remote `v0.4.0` tag, exact
+`T`, and resolves candidate-validation head `R` from `HEAD`. It accepts only
+the first-parent chain `P ... B -> T ... R`, an absent local and remote
+`v0.4.0` tag, exact
 `v0.3.6` rollback identity, complete activation/package identity, and no
 release-gated path changes after `T`.
 
 The command emits a stable machine-readable result containing `P`, `B`, `T`,
-`H`, release, rollback, tag state, and bundle identity. Workflow-owned
-candidate-verification evidence records that output; no new release profile,
+`R`, release, rollback, tag state, and bundle identity. Workflow-owned
+candidate-verification evidence records that output in immediate first-parent
+child `C`; the result does not attempt to name `C` or later `H`. No new release profile,
 activation-manifest field, transaction manifest, or mutable state store is
 introduced.
 
 Default validation remains strict. After candidate review, the release
 operator creates local immutable tag `v0.4.0` at `T`, runs strict validation
-from `H`, and runs the full release gate from a detached temporary worktree at
-`T`. The tagged tree must contain every release input and must not read later
-commits.
+and a distinct read-only publication-readiness gate from live `H`, and runs the
+full release gate from a detached temporary worktree at `T`. Publication
+readiness validates stored `R -> C` provenance, proves `C` is in `H`, derives
+and binds `H`, recomputes `P/B/T`, rollback, bundle, local/remote tag, remote
+main, and `T..H` drift authority. The tagged tree must contain every release
+input and must not read later commits.
 
 Publication uses one Git smart-protocol push with atomic capability:
 
@@ -54,7 +60,8 @@ git push --atomic origin \
   <H>:refs/heads/main <T>:refs/tags/v0.4.0
 ```
 
-The release command first proves `P` is an ancestor of `H`. It runs the plain
+The release command consumes the exact `H` bound by publication readiness and
+first proves `P` is an ancestor of `H`. It runs the plain
 non-forced push with a temporary repository-owned pre-push guard that compares
 the remote identities advertised for that same push with exact `P` for
 `refs/heads/main` and the all-zero absent identity for `refs/tags/v0.4.0`.
@@ -65,7 +72,8 @@ or any ref rejection therefore fails the whole push. Force options and
 sequential fallback are forbidden.
 
 Only lifecycle evidence owned by this activation change may follow `T`.
-Candidate validation compares `T..H`, reports every rejected path, and fails
+Candidate validation compares `T..R`; publication readiness compares `T..H`.
+Each reports every rejected path and fails
 on code, skill, resource, package, profile, release metadata, release note,
 validator, generated-output, or other release-gated changes. If a payload fix
 is needed after `T`, the branch and PR are superseded. A replacement branch is
@@ -90,7 +98,7 @@ identify the unique pending-to-active commit.
 
 Rejected because the release profile and activation manifest already own
 release state and activation identity. Candidate output plus existing
-change-local verification evidence can record the four commit identities
+change-local verification evidence plus Git parentage can record the six roles
 without a competing state mechanism.
 
 ### Publish `main` and the tag sequentially
@@ -108,8 +116,9 @@ history is the narrow non-destructive recovery.
 
 - Pre-tag review can prove the exact activation bundle without weakening
   strict tag-context validation.
-- Candidate evidence carries four explicit identities instead of overloading
-  one base or head.
+- Candidate evidence carries explicit `P/B/T/R` producer identities; Git
+  parentage supplies `C`, and publication readiness derives `H` without
+  self-reference.
 - Release publication depends on Git atomic-push support and exact lease
   behavior; unsupported remotes block rather than fall back.
 - The tagged release remains reproducible even though later lifecycle evidence
@@ -122,8 +131,9 @@ history is the narrow non-destructive recovery.
 
 ## Follow-up
 
-- Implement candidate validation, changed-path classification, strict split
-  execution, and atomic publication support through the approved plan.
+- Implement candidate validation, candidate-evidence provenance,
+  publication readiness, changed-path classification, strict split execution,
+  and atomic publication support through the approved plan.
 - Prove remote drift, unsupported atomic push, existing tag, tagged-tree
   self-containment, and replacement-candidate recovery in the matching test
   specification.
