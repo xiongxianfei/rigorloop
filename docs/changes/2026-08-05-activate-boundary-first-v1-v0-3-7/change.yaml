@@ -15,18 +15,26 @@ artifact_states:
       outcome: approved
       record: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r3.md
       round: r3
+  spec:
+    kind: spec
+    path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/spec-authoring.md
 workflow_state:
   lifecycle_state: active
-  current_stage: proposal-review
-  next_stage: proposal-review
+  current_stage: spec-review
+  next_stage: spec-review
   blocker: null
   evidence:
     - docs/research/2026-08-05-boundary-first-v1-activation-release.md
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/proposal-authoring.md
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r3.md
+    - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/spec-authoring.md
 workflow: {}
 artifacts:
   proposal: docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
+  spec: specs/boundary-first-v1-v0-3-7-activation-release.md
   review_resolution: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-resolution.md
 requirements:
   - Activate boundary-first-v1 as one coherent v0.3.7 release bundle.
@@ -54,6 +62,8 @@ changed_files:
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r1.md
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r2.md
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r3.md
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/spec-authoring.md
 review:
   status: approved
   unresolved_items: 0
