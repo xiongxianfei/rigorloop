@@ -4,8 +4,8 @@ review_stage: architecture-review
 review_target: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
 base_revision: e964ad633dc00d5ab339be836418af0b9c691947
 head_revision: 419797397d7fad0c53c0599958938295a54fda78
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
 independence_level: L1
 author_context_id: root-boundary-activation-architecture-r2
 reviewer_context_id: independent-architecture-review-activation-r2

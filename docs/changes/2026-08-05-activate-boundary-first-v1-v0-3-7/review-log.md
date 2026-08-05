@@ -3,6 +3,17 @@
 ## Review Entries
 
 ### Review entry
+Review ID: architecture-review-activation-r2
+Stage: architecture-review
+Round: 2
+Status: changes-requested
+Detailed record: reviews/architecture-review-activation-r2.md
+Resolution: review-resolution.md#architecture-review-activation-r2
+Material findings: BFA-AR2-001
+Open findings: BFA-AR2-001
+Recording status: recorded
+
+### Review entry
 Review ID: spec-review-r5
 Stage: spec-review
 Round: 5
