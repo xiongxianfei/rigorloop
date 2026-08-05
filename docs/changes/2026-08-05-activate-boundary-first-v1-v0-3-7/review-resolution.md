@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -14,11 +14,12 @@ Review closeout: architecture-review-activation-r1
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: plan-review-r3
+Review closeout: test-spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`
 - Findings resolved: 12
-- Unresolved findings: 0
-- Final result: Plan-review R3 approves the plan for test-spec authoring.
+- Unresolved findings: 4
+- Final result: Test-spec revision is required before implementation.
 
 ## Resolution Overview
 
@@ -36,6 +37,10 @@ Review closeout: plan-review-r3
 | BFA-PLAN-R1-004 | accepted | resolved | Replaced placeholder commands with executable rules and corrected CLI syntax. |
 | BFA-PLAN-R2-001 | accepted | resolved | Designated B only after M3 review and closeout evidence settles. |
 | BFA-PLAN-R2-002 | accepted | resolved | Corrected release validation and added failure-safe executable shell. |
+| BFA-TSR1-001 | accepted | open | Replace invalid proof levels with admitted execution levels. |
+| BFA-TSR1-002 | accepted | open | Add phase-correct lifecycle-readiness regression and evidence. |
+| BFA-TSR1-003 | accepted | open | Link atomic, tag-workflow, and public paths to direct commands and evidence. |
+| BFA-TSR1-004 | accepted | open | Make MP1 and MP2 executable and auditable. |
 
 ## Finding Details
 
@@ -193,6 +198,58 @@ Rationale: Implementation and release handoffs must be reproducible without inve
 Validation target: plan-review-r2
 Validation evidence: Plan-review R3 confirms literal selector, candidate-H, strict-H, detached-T, bare-remote, and closeout command coverage.
 
+## Test-Spec Review Findings
+
+### test-spec-review-r1
+
+#### BFA-TSR1-001 - Invalid proof-level vocabulary
+
+Finding ID: BFA-TSR1-001
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Chosen action: Replace `migration` proof levels with the admitted level matching actual execution while retaining compatibility semantics in prose.
+Rationale: Proof-level vocabulary is closed and structural validity must match semantic execution.
+Validation target: test-spec-review-r2
+Validation evidence: pending
+
+#### BFA-TSR1-002 - Lifecycle readiness proof is circular and mistimed
+
+Finding ID: BFA-TSR1-002
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Chosen action: Add a planned missing-evidence regression command, schedule current-state readiness at M4 and release checkpoint, and use phase-owned evidence.
+Rationale: A preimplementation review receipt cannot prove publication-time lifecycle settlement.
+Validation target: test-spec-review-r2
+Validation evidence: pending
+
+#### BFA-TSR1-003 - Public sibling paths lack direct command and evidence links
+
+Finding ID: BFA-TSR1-003
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Chosen action: Add automated tag-workflow composition proof and map actual atomic, tag-workflow, and closeout commands to distinct evidence.
+Rationale: Helper or selector proof cannot substitute for the real public path.
+Validation target: test-spec-review-r2
+Validation evidence: pending
+
+#### BFA-TSR1-004 - Manual procedures are not independently auditable
+
+Finding ID: BFA-TSR1-004
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Chosen action: Add explicit owner, stage, rationale, environment, commands, evidence, pass/failure, cleanup, and forbidden-action fields to MP1 and MP2.
+Rationale: Irreversible external proof requires exact bounded procedures and durable evidence.
+Validation target: test-spec-review-r2
+Validation evidence: pending
+
 ## Clean review receipts
 
 ### proposal-review-r3
@@ -237,5 +294,5 @@ Evidence: reviews/plan-review-r3.md
 - [x] Every rejected finding has rationale.
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
-- [x] Validation evidence is recorded.
+- [ ] Validation evidence is recorded.
 - [x] Closeout status is correct.
