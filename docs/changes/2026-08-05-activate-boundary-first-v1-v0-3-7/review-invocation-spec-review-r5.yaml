@@ -1,0 +1,46 @@
+schema_version: 1
+review_id: spec-review-r5
+review_stage: spec-review
+review_target: specs/boundary-first-v1-v0-3-7-activation-release.md
+base_revision: ee28ad638270b4041971d232c221f46e85e99aff
+head_revision: 546243b96da6b36717a44752bfc75341c69d5b75
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L1
+author_context_id: root-boundary-activation-spec-r5
+reviewer_context_id: independent-spec-review-r5
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - activation-state-transition
+  - atomic-remote-ref-publication
+  - candidate-evidence-identity
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/spec-review-r4.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: 546243b96da6b36717a44752bfc75341c69d5b75
+    sha256: fa622a617f8af6f36a9b877338b97d4a4df25a493f385764c66feaad751b7918
+  - path: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/spec-review-r4.md
+    revision: 827fcd26a2908e2b5aed28020b84731e44d997b2
+    sha256: 59318c57effe5cc98c6d396f4180a8b04abe96a657b85f7419976b084326e11f
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md.diff
+    revision: 546243b96da6b36717a44752bfc75341c69d5b75
+    sha256: 4223cd42f69dfcbc7ea17a278677f657f0aa838da72c4ebf13cfc383a4cd97f8
+initial_packet_sha256: 4223cd42f69dfcbc7ea17a278677f657f0aa838da72c4ebf13cfc383a4cd97f8
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - BFA-SR4-001 closure in E3, BND-COMPOSE-001, and INT-004
+  - consistency with R018 and R019
+  - no expansion beyond the approved R/C/H correction
+architecture:
+  assessment: architecture-amendment-required
+  rationale: Approved spec semantics must next be projected into architecture.
+  package: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
