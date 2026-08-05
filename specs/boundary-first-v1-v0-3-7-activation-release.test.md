@@ -124,7 +124,7 @@ Boundary model scope: BFA-R001 through BFA-R035
 | PRF-001 | covered | BFA-R004, BFA-R006, BFA-R007, BFA-R031 | BND-INPUT-001 | T1 | integration | automated | CMD1 | `evidence/implementation-m1.md` | M1 | - | - |
 | PRF-002 | covered | BFA-R005, BFA-R006, BFA-R013, BFA-R017, BFA-R024 | BND-STATE-001 | T1, T12, T14 | integration | hybrid | CMD1, CMD13, CMD14, CMD18, CMD19 | `evidence/implementation-m1.md`; `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
 | PRF-003 | covered | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R017, BFA-R018, BFA-R019, BFA-R020, BFA-R021 | BND-AUTH-001 | T2, T4, T7, T11, T12 | integration | hybrid | CMD1, CMD5, CMD13-CMD15, CMD17 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md`; `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`; `evidence/atomic-publication.json` | release checkpoint | MP1 | - |
-| PRF-004 | covered | BFA-R005, BFA-R014, BFA-R018, BFA-R019, BFA-R025, BFA-R026, BFA-R033 | BND-COMPOSE-001 | T3, T10, T11, T13, T16 | end-to-end | hybrid | CMD4, CMD8, CMD11, CMD12, CMD14, CMD16, CMD19, CMD20, CMD25 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md`; `evidence/implementation-m3.md`; `evidence/release-checkpoint.md`; `evidence/atomic-publication.json`; `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
+| PRF-004 | covered | BFA-R005, BFA-R014, BFA-R018, BFA-R019, BFA-R025, BFA-R026, BFA-R033 | BND-COMPOSE-001 | T3, T10, T11, T13, T16 | end-to-end | hybrid | CMD4, CMD8, CMD11, CMD12, CMD14, CMD16-CMD20, CMD25 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md`; `evidence/implementation-m3.md`; `evidence/release-checkpoint.md`; `evidence/atomic-publication.json`; `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
 | PRF-005 | covered | BFA-R015, BFA-R016, BFA-R021, BFA-R022, BFA-R023, BFA-R035 | BND-TEMPORAL-001 | T5, T8, T12 | integration | automated | CMD1, CMD5 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md` | M2 | - | - |
 | PRF-006 | covered | BFA-R022, BFA-R023, BFA-R027, BFA-R028, BFA-R030, BFA-R035 | BND-RECOVERY-001 | T5, T8, T11, T14 | integration | hybrid | CMD5, CMD14-CMD19 | `evidence/implementation-m2.md`; `evidence/release-checkpoint.md`; `evidence/atomic-publication.json`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
 | PRF-007 | covered | BFA-R002, BFA-R003, BFA-R005, BFA-R029 | BND-COMPAT-001 | T3, T10, T15 | integration | automated | CMD1, CMD12 | `evidence/implementation-m3.md` | M3 | - | - |
@@ -132,7 +132,7 @@ Boundary model scope: BFA-R001 through BFA-R035
 | PRF-009 | covered | BFA-R005, BFA-R007, BFA-R013 | INT-001 | T1, T3 | integration | automated | CMD1 | `evidence/implementation-m1.md` | M1 | - | - |
 | PRF-010 | covered | BFA-R008, BFA-R009, BFA-R010, BFA-R012, BFA-R014, BFA-R015, BFA-R016, BFA-R017, BFA-R019, BFA-R020 | INT-002 | T2, T5, T11, T12 | integration | hybrid | CMD1, CMD13-CMD17 | `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`; `evidence/atomic-publication.json` | release checkpoint | MP1 | - |
 | PRF-011 | covered | BFA-R020, BFA-R021, BFA-R022 | INT-003 | T7, T8 | integration | automated | CMD5 | `evidence/implementation-m2.md` | M2 | - | - |
-| PRF-012 | covered | BFA-R018, BFA-R019, BFA-R025, BFA-R033 | INT-004 | T11, T12, T13, T16 | end-to-end | hybrid | CMD4, CMD8, CMD11, CMD12, CMD14-CMD16, CMD19, CMD20, CMD25 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md`; `evidence/implementation-m3.md`; `evidence/release-checkpoint.md`; `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
+| PRF-012 | covered | BFA-R018, BFA-R019, BFA-R025, BFA-R033 | INT-004 | T11, T12, T13, T16 | end-to-end | hybrid | CMD4, CMD8, CMD11, CMD12, CMD14-CMD20, CMD25 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md`; `evidence/implementation-m3.md`; `evidence/release-checkpoint.md`; `evidence/atomic-publication.json`; `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
 | PRF-013 | covered | BFA-R027, BFA-R028, BFA-R030 | INT-005 | T11, T14 | integration | hybrid | CMD17, CMD18, CMD19 | `evidence/atomic-publication.json`; `docs/releases/v0.4.0/npm-publication.md` | public closeout | MP1, MP2 | - |
 | PRF-014 | covered | BFA-R002, BFA-R029 | INT-006 | T15 | integration | automated | CMD12 | `evidence/implementation-m3.md` | M3 | - | - |
 | PRF-015 | covered | BFA-R016, BFA-R023, BFA-R035 | INT-007 | T5, T8 | integration | automated | CMD1, CMD5 | `evidence/implementation-m2.md` | M2 | - | - |
@@ -195,9 +195,9 @@ Evidence paths without a leading directory are relative to
 | --- | --- | --- | --- | --- | --- | --- |
 | Preimplementation gate | T1-T16 | none | CMD21-CMD24 | This test spec, authoring evidence, and test-spec-review receipt | implementation handoff | Every requirement, boundary, interaction, example, edge case, and command must remain mapped. |
 | M1 | T1-T6, T12, T16 | none | CMD1-CMD4 | `evidence/implementation-m1.md` | code-review M1 | Candidate implementation and missing-evidence readiness matrix are fixture-proved; real candidate command is deferred until T exists. |
-| M2 | T7-T9 | none | CMD5-CMD8 | `evidence/implementation-m2.md` | code-review M2 | Bare remotes prove both-ref success and all-or-neither failure. |
+| M2 | T7-T9, T12 | none | CMD5-CMD8 | `evidence/implementation-m2.md` | code-review M2 | Bare remotes prove both-ref success/all-or-neither failure, R/C/H readiness, and privacy-safe fixture serializers. |
 | M3 | T3, T10, T13, T15, T16 | none | CMD9-CMD12, CMD25 | `evidence/implementation-m3.md` | code-review M3 | Complete pending payload, tag-workflow composition, public-closeout fixtures, and rollback proof settle before B. |
-| M4 | T2, T4-T6, T12 | none | CMD1, CMD11-CMD13 | `evidence/implementation-m4.md`; `evidence/boundary-activation-candidate.json` | code-review M4 | T changes only the activation record; H adds lifecycle evidence only. |
+| M4 | T2, T4-T6, T12 | none | CMD1, CMD11-CMD13 | `evidence/implementation-m4.md`; `evidence/boundary-activation-candidate.json` | code-review M4 | T changes only the activation record; candidate runs at R; immediate child C persists its result; later H adds lifecycle evidence only. |
 | Release checkpoint | T11-T12 | MP1 | CMD14-CMD17 | Release-checkpoint and atomic publication evidence | atomic Git publication | Tag, strict H, detached T, preflight, then atomic publish. |
 | Public closeout | T13-T15 | MP2 | CMD18-CMD20 | `docs/releases/v0.4.0.md`; `docs/releases/v0.4.0/npm-publication.md` | final release closeout | Existing tag workflow and rerunnable public closeout own external proof. |
 
@@ -355,9 +355,9 @@ Evidence paths without a leading directory are relative to
 - Steps: In M1, run the missing-evidence and provenance fixture matrix; at M4 run CMD13 at actual R and commit its exact JSON in immediate child C; through CMD5 inject every privacy sentinel into stored evidence, runtime identity/environment, readiness failures, drift paths, and remote diagnostics; at the release checkpoint run CMD14 at live H after local tag creation; inject fresh P/B/T, rollback, bundle, local/remote tag, remote-main, and T..H mismatches; inspect stdout, stderr, checkpoint serialization, and atomic-publication serialization.
 - Expected result: Only exact producer result plus immediate first-parent R-to-C provenance and C-in-H containment passes; every stale or forged variant and fresh-authority mismatch blocks; candidate evidence names R rather than C or H; diagnostics and both evidence serializers contain no raw sentinel or machine-local path; no external action autoprogresses.
 - Failure proves: Publication can precede required lifecycle evidence or explicit authority.
-- Evidence artifact: `evidence/implementation-m1.md`; `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`
+- Evidence artifact: `evidence/implementation-m1.md`; `evidence/implementation-m2.md`; `evidence/boundary-activation-candidate.json`; `evidence/release-checkpoint.md`
 - Automation location: `scripts/test-boundary-first-validation.py`; `scripts/test-boundary-activation-release.py`; candidate validator; publication preflight
-- Required by milestone: M1 fixture proof, M4 actual-state proof, and release checkpoint
+- Required by milestone: M1 missing-evidence fixtures, M2 readiness/privacy fixtures, M4 actual-state proof, and release checkpoint
 
 ### T13. Tag workflow and public package composition
 
@@ -447,6 +447,8 @@ Evidence must not claim a broader state than the command directly proved.
 
 T6 injects sensitive sentinels and rejects their appearance in normal output or
 committed evidence.
+T12 injects the same classes through readiness and M2 checkpoint/atomic
+serializers; MP1 scans the actual authorized checkpoint and atomic evidence.
 T9 rejects force, overwrite, and sequential publication paths.
 T13 preserves trusted publishing and existing security gates.
 
