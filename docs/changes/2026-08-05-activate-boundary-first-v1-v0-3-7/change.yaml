@@ -53,7 +53,7 @@ artifact_states:
     kind: test-spec
     path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
     role: primary
-    lifecycle_state: authoring
+    lifecycle_state: review-required
     authoring_evidence: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/test-spec-authoring.md
 workflow_state:
   lifecycle_state: active
