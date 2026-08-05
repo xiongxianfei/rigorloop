@@ -25,11 +25,12 @@ Review closeout: spec-review-r3
 Review closeout: spec-review-r4
 Review closeout: spec-review-r5
 Review closeout: architecture-review-activation-r2
+Review closeout: architecture-review-activation-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`
-- Findings resolved: 25
-- Unresolved findings: 6
-- Final result: Architecture R2 approves the ADR decision but requires the stale component diagram and Architecture Decisions summary to adopt it before plan alignment.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`
+- Findings resolved: 26
+- Unresolved findings: 5
+- Final result: Architecture R3 approves the non-circular candidate-evidence and exact-H publication design; plan, test-spec, and M1 implementation alignment remain.
 
 ## Resolution Overview
 
@@ -44,7 +45,7 @@ Review closeout: architecture-review-activation-r2
 | BFA-SR3-001 | accepted | resolved | Defined phase-correct publication readiness after local tag creation with explicit persisted and fresh authorities. |
 | BFA-SR3-002 | accepted | resolved | Added BFA-R017 ownership to the identity applicability and E4 traceability records. |
 | BFA-SR4-001 | accepted | resolved | Aligned E3, BND-COMPOSE-001, and INT-004 with the three pre-publication gates. |
-| BFA-AR2-001 | accepted | open | Align the focused component view and canonical decision summary with candidate P/B/T/R, evidence C, and readiness-bound H. |
+| BFA-AR2-001 | accepted | resolved | Aligned the focused component view and canonical decision summary with candidate P/B/T/R, evidence C, and readiness-bound H. |
 | BFA-PLAN-R1-001 | accepted | resolved | Final M3 workflow closeout head is B and T is its immediate child. |
 | BFA-PLAN-R1-002 | accepted | resolved | Separated candidate, strict-H, and detached-T proof phases. |
 | BFA-PLAN-R1-003 | accepted | resolved | Mapped release and public-closeout boundary proof owners. |
@@ -468,7 +469,7 @@ Validation evidence: Spec-review R5 approves E3, BND-COMPOSE-001, and INT-004 al
 
 Finding ID: BFA-AR2-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: architecture author
 Owning stage: architecture
 Chosen action: Update the focused diagram and canonical decision summary to
@@ -476,9 +477,16 @@ show candidate P/B/T/R, immediate R-to-C provenance, publication-readiness H,
 and exact H handoff to the atomic publisher.
 Rationale: One canonical package cannot expose two incompatible authority models.
 Validation target: architecture-review-activation-r3
-Validation evidence: pending architecture revision
+Validation evidence: Architecture-review R3 approves the diagram, exact-H authority edge, decision summary, and no-new-state-owner design.
 
 ## Clean review receipts
+
+### architecture-review-activation-r3
+
+Status: approved
+Material findings: none
+Resolution required: no new findings; confirms BFA-AR2-001 closure and architecture settlement
+Evidence: reviews/architecture-review-activation-r3.md
 
 ### spec-review-r5
 

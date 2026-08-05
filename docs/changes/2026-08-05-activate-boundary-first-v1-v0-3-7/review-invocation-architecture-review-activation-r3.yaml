@@ -4,8 +4,8 @@ review_stage: architecture-review
 review_target: docs/architecture/system/architecture.md
 base_revision: 419797397d7fad0c53c0599958938295a54fda78
 head_revision: f6c40d9b72b748cef3dd69a0fb454a882129a831
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: approved
+review_gate_outcome: approved
 independence_level: L1
 author_context_id: root-boundary-activation-architecture-r3
 reviewer_context_id: independent-architecture-review-activation-r3
