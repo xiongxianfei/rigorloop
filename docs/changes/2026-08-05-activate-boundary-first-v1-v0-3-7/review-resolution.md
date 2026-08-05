@@ -1,4 +1,4 @@
-# Review Resolution: Activate Boundary-First v1 in RigorLoop v0.3.7
+# Review Resolution: Activate Boundary-First v1 in RigorLoop v0.4.0
 
 ## Summary
 
@@ -8,10 +8,11 @@ Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: spec-review-r1
+Review closeout: proposal-review-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`
-- Findings resolved: 2
-- Unresolved findings: 4
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`
+- Findings resolved: 3
+- Unresolved findings: 3
 - Final result: Specification revision is required; release identity first routes through proposal revision.
 
 ## Resolution Overview
@@ -21,7 +22,7 @@ Review closeout: spec-review-r1
 | BFA-PR1-001 | accepted | resolved | Added pre-tag candidate validation while preserving strict tag-context activation proof. |
 | BFA-PR2-001 | accepted | resolved | Separated final reviewed branch head from the activation transition tag target and required tagged-tree self-containment. |
 | BFA-SR1-001 | accepted | open | Separate remote publication base P from transition parent/grandfathering baseline B. |
-| BFA-SR1-002 | accepted | open | Replace patch v0.3.7 with contract-compliant minor v0.4.0 through proposal revision. |
+| BFA-SR1-002 | accepted | resolved | Replaced patch v0.3.7 with contract-compliant minor v0.4.0 through proposal revision. |
 | BFA-SR1-003 | accepted | open | Replace invalid unpublished transition histories with a fresh branch and rereview. |
 | BFA-SR1-004 | accepted | open | Complete formal boundary ownership for identity, self-containment, strict composition, drift, and replacement. |
 
@@ -73,13 +74,13 @@ Validation evidence: pending
 
 Finding ID: BFA-SR1-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: proposal author
 Owning stage: proposal
 Chosen action: Revise the release target to stable minor v0.4.0 and retain v0.3.6 rollback.
 Rationale: REL-R9 and REL-R10 classify new backward-compatible public skill behavior as a minor release.
 Validation target: proposal-review-r4 then spec-review-r2
-Validation evidence: pending
+Validation evidence: Proposal-review R4 approves stable minor v0.4.0 under REL-R10 and confirms v0.3.6 rollback plus prior sequencing remain intact.
 
 #### BFA-SR1-003 - Invalid transition recovery lacks a legal history
 
@@ -113,6 +114,13 @@ Status: approved
 Material findings: none
 Resolution required: no new findings; confirms BFA-PR1-001 and BFA-PR2-001 closure
 Evidence: reviews/proposal-review-r3.md
+
+### proposal-review-r4
+
+Status: approved
+Material findings: none
+Resolution required: no new findings; confirms BFA-SR1-002 closure
+Evidence: reviews/proposal-review-r4.md
 
 ## Closeout Checklist
 

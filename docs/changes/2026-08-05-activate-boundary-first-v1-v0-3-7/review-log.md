@@ -1,6 +1,17 @@
-# Review Log: Activate Boundary-First v1 in RigorLoop v0.3.7
+# Review Log: Activate Boundary-First v1 in RigorLoop v0.4.0
 
 ## Review Entries
+
+### Review entry
+Review ID: proposal-review-r4
+Stage: proposal-review
+Round: 4
+Status: approved
+Detailed record: reviews/proposal-review-r4.md
+Resolution: review-resolution.md#proposal-review-r4
+Material findings: None
+Open findings: None
+Recording status: recorded
 
 ### Review entry
 Review ID: spec-review-r1
@@ -10,7 +21,7 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r1.md
 Resolution: review-resolution.md#spec-review-r1
 Material findings: BFA-SR1-001, BFA-SR1-002, BFA-SR1-003, BFA-SR1-004
-Open findings: BFA-SR1-001, BFA-SR1-002, BFA-SR1-003, BFA-SR1-004
+Open findings: BFA-SR1-001, BFA-SR1-003, BFA-SR1-004
 Recording status: recorded
 
 ### Review entry
