@@ -1857,6 +1857,26 @@ raise SystemExit({exit_code})
             payload["preflight_results"],
         )
 
+    def test_preflight_passes_directory_when_its_authoritative_contents_are_tracked(self) -> None:
+        repo = self.make_git_repo()
+        fixture = repo / "scripts" / "fixtures" / "boundary-first" / "activation"
+        fixture.mkdir(parents=True)
+        (fixture / "unknown-state.yaml").write_text("state: unknown\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True)
+
+        result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=("scripts/fixtures/boundary-first/activation",),
+                repo_root=repo,
+            )
+        )
+
+        self.assertNotIn(
+            "untracked-authoritative-artifacts",
+            {blocker.get("code") for blocker in result.to_json_dict()["blocking_results"]},
+        )
+
     def test_cli_accepts_changed_file_alias_for_plan_validation_commands(self) -> None:
         result = run_selector("--mode", "explicit", "--changed-file", "README.md", "--changed-file", "VISION.md")
         self.assertEqual(result.returncode, 0, msg=result.stderr)

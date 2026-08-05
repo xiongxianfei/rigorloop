@@ -1134,6 +1134,13 @@ def _preflight_results(
         if _is_authoritative_artifact(path)
         and (repo_root / path).exists()
         and path not in context.tracked_paths
+        and not (
+            (repo_root / path).is_dir()
+            and any(
+                tracked.startswith(path.rstrip("/") + "/")
+                for tracked in context.tracked_paths
+            )
+        )
     ]
     if untracked_authoritative:
         path_list = ", ".join(untracked_authoritative)
