@@ -8,8 +8,13 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/proposal-authoring.md
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r3
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r3.md
+      round: r3
 workflow_state:
   lifecycle_state: active
   current_stage: proposal-review
@@ -18,6 +23,7 @@ workflow_state:
   evidence:
     - docs/research/2026-08-05-boundary-first-v1-activation-release.md
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/proposal-authoring.md
+    - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r3.md
 workflow: {}
 artifacts:
   proposal: docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
@@ -47,6 +53,7 @@ changed_files:
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-resolution.md
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r1.md
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r3.md
 review:
-  status: changes-requested
-  unresolved_items: 1
+  status: approved
+  unresolved_items: 0
