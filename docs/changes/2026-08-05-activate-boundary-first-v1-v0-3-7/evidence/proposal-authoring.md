@@ -8,7 +8,7 @@
 
 ## Authoring result
 
-The proposal selects a routine stable `v0.3.7` activation release, preserves
+The proposal selects a routine stable `v0.4.0` activation release, preserves
 `v0.3.6` as the immutable rollback target, reuses the existing profile-driven
 release transaction, and keeps automatic workflow continuation outside tag and
 publication actions.
@@ -30,6 +30,12 @@ remain on one first-parent chain, tags only the transition commit, fast-forwards
 `main` to the final reviewed head, and requires the tagged transition tree to
 contain every input needed by strict release verification.
 
+The spec-review R1 revision accepts `BFA-SR1-002`. It replaces the initially
+assumed patch release with stable minor `v0.4.0`, as required by REL-R9 and
+REL-R10 for a backward-compatible public skill behavior addition. The owning
+change ID and artifact paths retain the initial `v0-3-7` slug as stable history;
+their titles and normative release identity now use `v0.4.0`.
+
 ## Evidence used
 
 - Current GitHub Releases, npm registry version, and Git tags.
@@ -39,7 +45,6 @@ contain every input needed by strict release verification.
 
 ## Validation target
 
-Proposal review R3 should confirm `BFA-PR2-001` is resolved and challenge the
-two-identity first-parent model, tagged-tree self-containment,
-fast-forward/base-drift handling, atomic publication, rollback coherence, and
-the narrowed release-tooling scope.
+Proposal review R4 should confirm the minor-version correction preserves the
+accepted activation direction and satisfies the standing release-classification
+contract. The earlier sequencing and two-identity decisions remain unchanged.

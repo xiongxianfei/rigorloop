@@ -15,8 +15,9 @@ the merged `boundary-first-v1` capability.
 ## Summary conclusion
 
 GitHub Releases, Git tags, and the npm registry all identify `v0.3.6` as the
-current public release. The smallest routine stable successor is `v0.3.7`, and
-`v0.3.6` is the immutable rollback candidate.
+current public release. The next semantic version depends on the standing
+release-classification contract, while `v0.3.6` is the immutable rollback
+candidate.
 
 The repository already provides profile-driven release preparation, preflight,
 verification, trusted publication, and rerunnable public closeout. The change
@@ -36,7 +37,8 @@ release mechanism.
 
 ## Implications for proposal, specification, architecture, and tests
 
-- The proposal should select a routine stable `v0.3.7` release.
+- The proposal should apply REL-R9 through REL-R10: activation adds public skill
+  behavior and therefore uses the next stable minor release, `v0.4.0`.
 - The approved progressive boundary-first specification remains the normative
   activation contract; any version-specific contract should amend only the
   release transaction and activation identities.
@@ -56,6 +58,6 @@ must be observed when publication is explicitly authorized.
 
 ## Recommendation
 
-Proceed with a routine stable `v0.3.7` activation release, use `v0.3.6` as the
+Proceed with a routine stable `v0.4.0` activation release, use `v0.3.6` as the
 rollback release, reuse the profile-driven release transaction, and keep tag
 publication outside automatic workflow continuation.
