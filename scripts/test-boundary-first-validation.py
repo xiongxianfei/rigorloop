@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import json
+import getpass
 import os
 import re
 import shutil
+import socket
 import subprocess
 import sys
 import tempfile
@@ -20,6 +22,7 @@ from boundary_first_reference import (
     raw_sha256,
 )
 from boundary_first_validation import (
+    _publication_authority_issues,
     rollback_package_selection,
     validate_activation,
     validate_activation_candidate,
@@ -215,10 +218,6 @@ def initialize_candidate_fixture(root: Path) -> tuple[Path, Path, str, str, str]
         path.write_text("settled\n", encoding="utf-8")
     subprocess.run(["git", "add", "."], cwd=root, check=True)
     subprocess.run(["git", "commit", "-qm", "lifecycle evidence"], cwd=root, check=True)
-    head = subprocess.run(
-        ["git", "rev-parse", "HEAD"], cwd=root, check=True,
-        capture_output=True, text=True,
-    ).stdout.strip()
     remote = root.parent / f"{root.name}-remote.git"
     subprocess.run(["git", "init", "-q", "--bare", str(remote)], check=True)
     subprocess.run(["git", "remote", "add", "origin", str(remote)], cwd=root, check=True)
@@ -248,33 +247,15 @@ def initialize_candidate_fixture(root: Path) -> tuple[Path, Path, str, str, str]
     (change_root / "review-log.md").write_text(
         "# Review log\n\nOpen findings: None\n", encoding="utf-8"
     )
-    (change_root / "evidence/boundary-activation-candidate.json").write_text(
-        json.dumps(
-            {
-                "candidate_release": "v0.4.0",
-                "publication_base": baseline,
-                "grandfathering_baseline": baseline,
-                "transition_commit": transition,
-                "reviewed_head": head,
-                "rollback_release": "v0.3.6",
-                "tag_state": "absent",
-                "publication_state": "candidate-ready-unpublished",
-            }
-        ),
-        encoding="utf-8",
-    )
     subprocess.run(["git", "add", "."], cwd=root, check=True)
     subprocess.run(["git", "commit", "-qm", "settle publication evidence"], cwd=root, check=True)
-    head = subprocess.run(
-        ["git", "rev-parse", "HEAD"], cwd=root, check=True,
-        capture_output=True, text=True,
-    ).stdout.strip()
+    candidate_result, candidate_issues = validate_activation_candidate(root, "v0.4.0")
+    if candidate_issues or candidate_result is None:
+        raise AssertionError(candidate_issues)
     candidate_path = change_root / "evidence/boundary-activation-candidate.json"
-    candidate = json.loads(candidate_path.read_text(encoding="utf-8"))
-    candidate["reviewed_head"] = head
-    candidate_path.write_text(json.dumps(candidate), encoding="utf-8")
+    candidate_path.write_text(json.dumps(candidate_result.as_dict()), encoding="utf-8")
     subprocess.run(["git", "add", "."], cwd=root, check=True)
-    subprocess.run(["git", "commit", "-qm", "record final candidate identity"], cwd=root, check=True)
+    subprocess.run(["git", "commit", "-qm", "record candidate evidence"], cwd=root, check=True)
     head = subprocess.run(
         ["git", "rev-parse", "HEAD"], cwd=root, check=True,
         capture_output=True, text=True,
@@ -1098,6 +1079,86 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             self.assertIsNotNone(result)
             self.assertEqual(replacement_issues, ())
 
+    def test_candidate_rejects_merged_side_branch_change_and_revert(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repository"
+            root.mkdir()
+            initialize_candidate_fixture(root)
+            main_branch = subprocess.run(
+                ["git", "branch", "--show-current"], cwd=root, check=True,
+                capture_output=True, text=True,
+            ).stdout.strip()
+            subprocess.run(["git", "checkout", "-qb", "payload-side"], cwd=root, check=True)
+            payload = root / "skills/payload/SKILL.md"
+            payload.parent.mkdir(parents=True)
+            payload.write_text("forbidden\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-qm", "side payload"], cwd=root, check=True)
+            payload.unlink()
+            subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-qm", "revert side payload"], cwd=root, check=True)
+            subprocess.run(["git", "checkout", "-q", main_branch], cwd=root, check=True)
+            subprocess.run(
+                ["git", "merge", "--no-ff", "-qm", "merge side history", "payload-side"],
+                cwd=root,
+                check=True,
+            )
+
+            _, issues = validate_activation_candidate(root, "v0.4.0")
+
+            self.assertIn("skills/payload/SKILL.md", {issue.path for issue in issues})
+
+    def test_candidate_review_invocations_require_closed_owned_valid_manifests(self) -> None:
+        change_relative = "docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repository"
+            root.mkdir()
+            initialize_candidate_fixture(root)
+            unknown = root / change_relative / "review-invocation-release-package.yaml"
+            unknown.write_text("payload\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-qm", "unknown invocation"], cwd=root, check=True)
+            _, issues = validate_activation_candidate(root, "v0.4.0")
+            self.assertIn(unknown.relative_to(root).as_posix(), {issue.path for issue in issues})
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repository"
+            root.mkdir()
+            _, change_root, _, _, _ = initialize_candidate_fixture(root)
+            relative = f"{change_relative}/review-invocation-spec-review-r9.yaml"
+            invocation = root / relative
+            invocation.write_text("arbitrary payload\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-qm", "malformed invocation"], cwd=root, check=True)
+            _, issues = validate_activation_candidate(root, "v0.4.0")
+            self.assertIn("BFR-CANDIDATE-LIFECYCLE-EVIDENCE", {issue.code for issue in issues})
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repository"
+            root.mkdir()
+            _, change_root, _, _, _ = initialize_candidate_fixture(root)
+            relative = f"{change_relative}/review-invocation-spec-review-r9.yaml"
+            invocation = root / relative
+            invocation.write_text(
+                "schema_version: 1\n"
+                "review_id: spec-review-r9\n"
+                "review_stage: spec-review\n"
+                "manifest_owner: workflow-orchestrator\n",
+                encoding="utf-8",
+            )
+            change_yaml = change_root / "change.yaml"
+            change_yaml.write_text(
+                change_yaml.read_text(encoding="utf-8").replace(
+                    "workflow_state:\n",
+                    f"workflow_state:\n  evidence:\n    - {relative}\n",
+                ),
+                encoding="utf-8",
+            )
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-qm", "valid invocation"], cwd=root, check=True)
+            _, issues = validate_activation_candidate(root, "v0.4.0")
+            self.assertNotIn("BFR-CANDIDATE-LIFECYCLE-EVIDENCE", {issue.code for issue in issues})
+
     def test_candidate_reports_union_for_rename_delete_and_multiple_drift(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "repository"
@@ -1128,7 +1189,10 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             )
 
     def test_candidate_private_drift_path_is_bounded(self) -> None:
-        sentinels = ("TOKEN-PRIVATE-92a44", "OTP-123456", "username-secret", "hostname-private")
+        sentinels = (
+            "TOKEN-PRIVATE-92a44", "OTP-123456", "username-secret", "hostname-private",
+            getpass.getuser(), socket.gethostname(),
+        )
         for sentinel in sentinels:
             with self.subTest(sentinel=sentinel), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary) / "repository"
@@ -1154,6 +1218,60 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 self.assertNotIn("environment-private-771", failed.stdout)
                 self.assertNotIn(str(root), failed.stdout)
                 self.assertIn("redacted-path:sha256:", failed.stdout)
+
+    def test_candidate_failure_bounds_private_release_and_rollback_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repository"
+            root.mkdir()
+            initialize_candidate_fixture(root)
+            private_release = "TOKEN-release-private-92a44"
+            failed = subprocess.run(
+                [
+                    sys.executable, str(ROOT / "scripts/validate-boundary-first.py"),
+                    "--check", "--root", str(root),
+                    "--activation-candidate", private_release,
+                ],
+                check=False, capture_output=True, text=True,
+            )
+            self.assertNotIn(private_release, failed.stdout)
+            self.assertIn("redacted:sha256:", failed.stdout)
+
+            activation = root / "specs/boundary-first-activation.yaml"
+            data = json.loads(activation.read_text(encoding="utf-8"))
+            private_rollback = "OTP-654321-private"
+            data["rollback_release"] = private_rollback
+            activation.write_text(json.dumps(data), encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-qm", "private rollback"], cwd=root, check=True)
+            failed = subprocess.run(
+                [
+                    sys.executable, str(ROOT / "scripts/validate-boundary-first.py"),
+                    "--check", "--root", str(root),
+                    "--activation-candidate", "v0.4.0",
+                ],
+                check=False, capture_output=True, text=True,
+            )
+            self.assertNotIn(private_rollback, failed.stdout)
+            self.assertIn("redacted:sha256:", failed.stdout)
+
+    def test_publication_readiness_binds_candidate_evidence_to_producing_head(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repository"
+            root.mkdir()
+            _, change_root, _, _, _ = initialize_candidate_fixture(root)
+            candidate_path = change_root / "evidence/boundary-activation-candidate.json"
+            forged = json.loads(candidate_path.read_text(encoding="utf-8"))
+            forged["publication_base"] = "0" * 40
+            candidate_path.write_text(json.dumps(forged), encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-qm", "forge candidate identity"], cwd=root, check=True)
+
+            issues = validate_activation_publication_readiness(root)
+
+            self.assertIn("BFR-CANDIDATE-EVIDENCE-UNSETTLED", {issue.code for issue in issues})
+
+    def test_repository_canonical_publication_authorities_compose_without_mocking(self) -> None:
+        self.assertEqual(_publication_authority_issues(ROOT), ())
 
     def test_publication_readiness_rejects_unsettled_and_missing_candidate_evidence(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

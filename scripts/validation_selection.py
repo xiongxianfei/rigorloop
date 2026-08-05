@@ -1165,16 +1165,14 @@ def _authoritative_path_is_tracked(
     candidate = repo_root / relative
     if candidate.is_symlink():
         return False
-    if relative in tracked_paths:
-        return True
-    if not candidate.is_dir():
-        return False
-    descendants = [
-        path.relative_to(repo_root).as_posix()
-        for path in candidate.rglob("*")
-        if path.is_file() or path.is_symlink()
-    ]
-    return bool(descendants) and all(path in tracked_paths for path in descendants)
+    if candidate.is_dir():
+        descendants = [
+            path.relative_to(repo_root).as_posix()
+            for path in candidate.rglob("*")
+            if path.is_file() or path.is_symlink()
+        ]
+        return bool(descendants) and all(path in tracked_paths for path in descendants)
+    return candidate.is_file() and relative in tracked_paths
 
 
 def _git_local_changed_paths(repo_root: Path) -> list[str]:

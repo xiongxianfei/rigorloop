@@ -1923,6 +1923,30 @@ raise SystemExit({exit_code})
                     & {blocker.get("code") for blocker in result.to_json_dict()["blocking_results"]}
                 )
 
+    def test_preflight_blocks_tracked_file_replaced_by_untracked_directory(self) -> None:
+        repo = self.make_git_repo()
+        fixture = repo / "specs" / "tracked.md"
+        fixture.parent.mkdir()
+        fixture.write_text("# tracked\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True)
+        subprocess.run(["git", "commit", "-qm", "track artifact"], cwd=repo, check=True)
+        fixture.unlink()
+        fixture.mkdir()
+        (fixture / "payload.md").write_text("untracked\n", encoding="utf-8")
+
+        result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=("specs/tracked.md",),
+                repo_root=repo,
+            )
+        )
+
+        self.assertIn(
+            "untracked-authoritative-artifacts",
+            {blocker.get("code") for blocker in result.to_json_dict()["blocking_results"]},
+        )
+
     def test_boundary_candidate_surface_retains_sibling_validation_owners(self) -> None:
         result = self.select(
             [
@@ -1932,6 +1956,7 @@ raise SystemExit({exit_code})
                 "dist/adapters/manifest.yaml",
                 "packages/rigorloop/package.json",
                 "docs/releases/v0.3.6/release.yaml",
+                ".github/workflows/ci.yml",
             ]
         )
         checks = selected_ids(result.to_json_dict())
@@ -1943,6 +1968,86 @@ raise SystemExit({exit_code})
         self.assertIn("rigorloop_cli.test", checks)
         self.assertIn("npm_package_publication.test", checks)
         self.assertIn("release.validate", checks)
+        self.assertIn("selector.regression", checks)
+
+    def test_boundary_candidate_sibling_failures_each_block_selected_execution(self) -> None:
+        cases = (
+            (
+                "boundary_first.validate",
+                "python scripts/validate-boundary-first.py --check",
+                "scripts/validate-boundary-first.py",
+                ("--mode", "explicit", "--path", "scripts/boundary_first_validation.py"),
+            ),
+            (
+                "artifact_lifecycle.validate",
+                "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/example/change.yaml",
+                "scripts/validate-artifact-lifecycle.py",
+                ("--mode", "explicit", "--path", "docs/changes/example/change.yaml"),
+            ),
+            (
+                "skills.validate",
+                "python scripts/validate-skills.py",
+                "scripts/validate-skills.py",
+                ("--mode", "explicit", "--path", "skills/spec/SKILL.md"),
+            ),
+            (
+                "adapters.regression",
+                ADAPTER_REGRESSION_COMMAND,
+                "scripts/test-adapter-distribution.py",
+                ("--mode", "explicit", "--path", "dist/adapters/manifest.yaml"),
+            ),
+            (
+                "npm_package_publication.test",
+                "python scripts/test-npm-package-publication.py",
+                "scripts/test-npm-package-publication.py",
+                ("--mode", "explicit", "--path", "packages/rigorloop/package.json"),
+            ),
+            (
+                "release.validate",
+                "python scripts/validate-release.py --recorded-source-auto --version v0.4.0",
+                "scripts/validate-release.py",
+                ("--mode", "release", "--release-version", "v0.4.0"),
+            ),
+            (
+                "selector.regression",
+                "python scripts/test-select-validation.py",
+                "scripts/test-select-validation.py",
+                ("--mode", "explicit", "--path", ".github/workflows/ci.yml"),
+            ),
+        )
+        for check_id, command, script_path, args in cases:
+            with self.subTest(check_id=check_id):
+                workspace = self.make_ci_workspace()
+                self.write_fake_script(
+                    workspace,
+                    script_path,
+                    "import sys\nprint('injected sibling failure')\nraise SystemExit(7)\n",
+                )
+                fixture = self.write_selector_fixture(
+                    self.minimal_selector_payload(
+                        mode="release" if args[1] == "release" else "explicit",
+                        selected_checks=[
+                            self.selected_check(
+                                check_id,
+                                command,
+                                **(
+                                    {"paths": ["docs/changes/example/change.yaml"]}
+                                    if check_id == "artifact_lifecycle.validate"
+                                    else {"versions": ["v0.4.0"]}
+                                    if check_id == "release.validate"
+                                    else {}
+                                ),
+                            )
+                        ],
+                    )
+                )
+
+                result = self.run_workspace_ci(workspace, fixture, *args)
+                output = str(result.stdout) + str(result.stderr)
+
+                self.assertNotEqual(result.returncode, 0, msg=output)
+                self.assertIn(f"Run selected check: {check_id}", output)
+                self.assertIn(f"Selected check {check_id} failed", output)
 
     def test_cli_accepts_changed_file_alias_for_plan_validation_commands(self) -> None:
         result = run_selector("--mode", "explicit", "--changed-file", "README.md", "--changed-file", "VISION.md")
