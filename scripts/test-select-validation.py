@@ -1877,6 +1877,73 @@ raise SystemExit({exit_code})
             {blocker.get("code") for blocker in result.to_json_dict()["blocking_results"]},
         )
 
+        (fixture / "untracked.yaml").write_text("state: untracked\n", encoding="utf-8")
+        mixed = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=("scripts/fixtures/boundary-first/activation",),
+                repo_root=repo,
+            )
+        )
+        self.assertIn(
+            "untracked-authoritative-artifacts",
+            {blocker.get("code") for blocker in mixed.to_json_dict()["blocking_results"]},
+        )
+
+    def test_preflight_blocks_empty_only_untracked_and_symlink_directories(self) -> None:
+        for case in ("empty", "only-untracked", "symlink"):
+            with self.subTest(case=case):
+                repo = self.make_git_repo()
+                fixture = repo / "scripts" / "fixtures" / "boundary-first" / "activation"
+                if case == "symlink":
+                    target = repo / "fixture-target"
+                    target.mkdir()
+                    (target / "tracked.yaml").write_text("state: tracked\n", encoding="utf-8")
+                    fixture.parent.mkdir(parents=True)
+                    fixture.symlink_to(target, target_is_directory=True)
+                    subprocess.run(["git", "add", "."], cwd=repo, check=True)
+                else:
+                    fixture.mkdir(parents=True)
+                    if case == "only-untracked":
+                        (fixture / "untracked.yaml").write_text("state: unknown\n", encoding="utf-8")
+                result = select_validation(
+                    SelectionRequest(
+                        mode="explicit",
+                        paths=("scripts/fixtures/boundary-first/activation",),
+                        repo_root=repo,
+                    )
+                )
+                expected = (
+                    {"unclassified-path", "untracked-authoritative-artifacts"}
+                    if case == "symlink"
+                    else {"untracked-authoritative-artifacts"}
+                )
+                self.assertTrue(
+                    expected
+                    & {blocker.get("code") for blocker in result.to_json_dict()["blocking_results"]}
+                )
+
+    def test_boundary_candidate_surface_retains_sibling_validation_owners(self) -> None:
+        result = self.select(
+            [
+                "scripts/boundary_first_validation.py",
+                "docs/changes/2026-08-05-example/review-log.md",
+                "skills/spec/SKILL.md",
+                "dist/adapters/manifest.yaml",
+                "packages/rigorloop/package.json",
+                "docs/releases/v0.3.6/release.yaml",
+            ]
+        )
+        checks = selected_ids(result.to_json_dict())
+
+        self.assertIn("boundary_first.validate", checks)
+        self.assertIn("artifact_lifecycle.validate", checks)
+        self.assertIn("skills.validate", checks)
+        self.assertIn("adapters.regression", checks)
+        self.assertIn("rigorloop_cli.test", checks)
+        self.assertIn("npm_package_publication.test", checks)
+        self.assertIn("release.validate", checks)
+
     def test_cli_accepts_changed_file_alias_for_plan_validation_commands(self) -> None:
         result = run_selector("--mode", "explicit", "--changed-file", "README.md", "--changed-file", "VISION.md")
         self.assertEqual(result.returncode, 0, msg=result.stderr)

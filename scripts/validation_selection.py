@@ -1133,13 +1133,10 @@ def _preflight_results(
         for path in changed_paths
         if _is_authoritative_artifact(path)
         and (repo_root / path).exists()
-        and path not in context.tracked_paths
-        and not (
-            (repo_root / path).is_dir()
-            and any(
-                tracked.startswith(path.rstrip("/") + "/")
-                for tracked in context.tracked_paths
-            )
+        and not _authoritative_path_is_tracked(
+            repo_root,
+            path,
+            context.tracked_paths,
         )
     ]
     if untracked_authoritative:
@@ -1158,6 +1155,26 @@ def _preflight_results(
         results.append({"check": "tracked_authoritative_artifacts", "result": "pass"})
 
     return results
+
+
+def _authoritative_path_is_tracked(
+    repo_root: Path,
+    relative: str,
+    tracked_paths: frozenset[str],
+) -> bool:
+    candidate = repo_root / relative
+    if candidate.is_symlink():
+        return False
+    if relative in tracked_paths:
+        return True
+    if not candidate.is_dir():
+        return False
+    descendants = [
+        path.relative_to(repo_root).as_posix()
+        for path in candidate.rglob("*")
+        if path.is_file() or path.is_symlink()
+    ]
+    return bool(descendants) and all(path in tracked_paths for path in descendants)
 
 
 def _git_local_changed_paths(repo_root: Path) -> list[str]:

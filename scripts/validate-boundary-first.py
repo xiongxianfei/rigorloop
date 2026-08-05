@@ -9,6 +9,7 @@ from pathlib import Path
 
 from boundary_first_validation import (
     ACTIVATION_RECORD,
+    activation_candidate_failure_context,
     rollback_package_selection,
     validate_activation,
     validate_activation_candidate,
@@ -23,10 +24,10 @@ def main() -> int:
     parser.add_argument("--root", default=".")
     parser.add_argument("--path", action="append", default=[])
     args = parser.parse_args()
-    if args.activation_candidate and not args.check:
+    if args.activation_candidate is not None and not args.check:
         parser.error("--activation-candidate requires --check")
     root = Path(args.root).resolve()
-    if args.activation_candidate:
+    if args.activation_candidate is not None:
         if args.path:
             parser.error("--activation-candidate cannot be combined with --path")
         candidate, candidate_issues = validate_activation_candidate(
@@ -34,16 +35,13 @@ def main() -> int:
             args.activation_candidate,
         )
         if candidate_issues or candidate is None:
-            print(
-                json.dumps(
-                    {
-                        "status": "failed",
-                        "mode": "activation-candidate",
-                        "issues": [issue.as_dict() for issue in candidate_issues],
-                    },
-                    sort_keys=True,
-                )
+            output = activation_candidate_failure_context(
+                root,
+                args.activation_candidate,
+                candidate_issues,
             )
+            output["issues"] = [issue.as_dict() for issue in candidate_issues]
+            print(json.dumps(output, sort_keys=True))
             return 1
         print(json.dumps(candidate.as_dict(), sort_keys=True))
         return 0
