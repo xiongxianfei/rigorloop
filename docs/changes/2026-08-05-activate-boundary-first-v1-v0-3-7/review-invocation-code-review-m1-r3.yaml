@@ -4,8 +4,8 @@ review_stage: code-review
 review_target: range:3852a010..e418519c
 base_revision: 3852a010cad0037d805b17f8696f3b156d8ae8bb
 head_revision: e418519cf5037adc87b2fa91e208a9778944e1ce
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: blocked
+review_gate_outcome: blocked
 independence_level: L2
 author_context_id: root-m1-review-resolution-r2
 reviewer_context_id: m1-r3-primary-and-second-reviewers
@@ -48,11 +48,24 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
+  reviewer_context_id: m1-r3-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: R3 reconciles merged history, candidate evidence authority, closed lifecycle evidence, privacy, and T16 sibling composition.
-  outcome: pending
+  outcome: blocked
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+risk_map:
+  affected_behavior: candidate evidence identity, merged ancestry, lifecycle invocation authority, privacy serialization, and sibling composition
+  highest_impact_failure_modes: self-referential final H, shallow manifest acceptance, short private-value disclosure, and omitted selected sibling failure
+  changed_boundaries: BND-AUTH-001, BND-STATE-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001, and BND-ENV-001
+  evidence_expected: producing-head graph, complete merged ancestry, canonical invocation shape, complete privacy probes, and every selected sibling failure
+  direct_inspection_areas: candidate evidence helper, Git traversal, invocation validation, privacy bounds, and selected execution
+  intentionally_out_of_scope: publication mutation, release payload, real transition, public release, and final verify
 review_focus:
   - Reconcile BFA-M1-R2-001 and the still-open BFA-M1-CR1-003, BFA-M1-CR1-005, BFA-M1-CR1-007, and BFA-M1-CR1-008.
   - Challenge the non-circular producing-head candidate evidence binding.

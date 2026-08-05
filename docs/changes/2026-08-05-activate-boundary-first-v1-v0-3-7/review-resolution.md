@@ -20,11 +20,12 @@ Review closeout: test-spec-review-r3
 Review closeout: code-review-m1-r1
 Review closeout: test-spec-review-r4
 Review closeout: code-review-m1-r2
+Review closeout: code-review-m1-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`
-- Findings resolved: 21
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`
+- Findings resolved: 22
 - Unresolved findings: 5
-- Final result: M1 code-review R2 requires resolution and rereview.
+- Final result: M1 code-review R3 is blocked on an upstream identity-model decision and three bounded implementation/proof corrections.
 
 ## Resolution Overview
 
@@ -56,6 +57,7 @@ Review closeout: code-review-m1-r2
 | BFA-M1-CR1-007 | accepted | open | Replace open evidence/review subtrees with closed lifecycle ownership. |
 | BFA-M1-CR1-008 | accepted | open | Bound changed-path diagnostics against private sentinels. |
 | BFA-M1-R2-001 | accepted | open | Inspect merged side-branch commits so change-and-revert ancestry cannot hide drift. |
+| BFA-M1-R3-001 | needs-decision | open | Separate candidate-producing identity from final evidence-bearing publication head. |
 
 ## Finding Details
 
@@ -383,13 +385,29 @@ Validation evidence: R2 correction hashes paths containing actual runtime identi
 
 Finding ID: BFA-M1-R2-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementer
 Owning stage: review-resolution
 Chosen action: Traverse every commit newly reachable in T..H and union forbidden parent-relative paths across merge ancestry.
 Rationale: First-parent-only enumeration can hide a forbidden side-branch change and revert even though both commits remain in reviewed history.
 Validation target: code-review-m1-r3
-Validation evidence: Complete T..H traversal rejects a side-branch payload change and revert that is later merged; CMD1 passes, pending R3 confirmation.
+Validation evidence: Code-review M1 R3 confirms complete T..H traversal rejects merged side-branch change/revert history.
+
+### code-review-m1-r3
+
+#### BFA-M1-R3-001 - Final evidence-bearing H is self-referential
+
+Finding ID: BFA-M1-R3-001
+Disposition: needs-decision
+Status: open
+Owner: spec and architecture authors
+Owning stage: spec then architecture
+Decision owner: spec and architecture authors
+Decision needed: Choose the realizable identity model for candidate-producing head, evidence commit, final publication head, and publisher target.
+Chosen action: Decide and specify a distinct candidate-producing identity and final evidence-bearing publication head, then align plan, test spec, and implementation.
+Rationale: A tracked evidence file cannot contain the Git identity of its own containing commit; the implementation cannot safely guess a new identity model.
+Validation target: spec-review, architecture-review, plan-review, test-spec-review, then code-review-m1-r4
+Validation evidence: pending upstream amendment and review
 
 ## Clean review receipts
 
