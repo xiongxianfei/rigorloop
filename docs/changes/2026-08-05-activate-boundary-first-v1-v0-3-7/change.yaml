@@ -99,6 +99,7 @@ workflow_state:
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/spec-review-r4.md
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-spec-review-r5.yaml
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/spec-review-r5.md
+    - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-architecture-review-activation-r2.yaml
   planned_work:
     plan_artifact_id: plan
     current_milestone: M1

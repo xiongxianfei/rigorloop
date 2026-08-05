@@ -1,0 +1,50 @@
+schema_version: 1
+review_id: architecture-review-activation-r2
+review_stage: architecture-review
+review_target: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+base_revision: e964ad633dc00d5ab339be836418af0b9c691947
+head_revision: 419797397d7fad0c53c0599958938295a54fda78
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L1
+author_context_id: root-boundary-activation-architecture-r2
+reviewer_context_id: independent-architecture-review-activation-r2
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - atomic-remote-ref-publication
+  - candidate-evidence-identity
+  - release-gate-composition
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+formal_criteria:
+  - architecture-review-v1
+  - boundary-first-v1
+prompt_template_version: architecture-review-v1
+initial_packet_inventory:
+  - path: docs/architecture/system/architecture.md
+    revision: 419797397d7fad0c53c0599958938295a54fda78
+    sha256: 40d8bfd2fef84412f309f02ae505c70ef9b6f6d65e459957731cd3d0a5459af5
+  - path: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+    revision: 419797397d7fad0c53c0599958938295a54fda78
+    sha256: 614c19fb59aae74205845024fa23993fed38e0b5dce2c65991a24909858b542a
+  - path: architecture-r2.diff
+    revision: 419797397d7fad0c53c0599958938295a54fda78
+    sha256: 5add909333270c2457972bd18486acc5f7932ef7daedbb44fabae8f85127a9b3
+initial_packet_sha256: 5add909333270c2457972bd18486acc5f7932ef7daedbb44fabae8f85127a9b3
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - non-circular R to C to H ownership
+  - candidate versus publication-readiness component authority
+  - exact live H binding into atomic publication
+  - phase-correct local and remote tag checks
+  - no new mutable state owner
+  - plan and test-spec feasibility
+architecture:
+  assessment: architecture-amendment-review
+  rationale: Review the ADR and canonical architecture projection of the approved R/C/H spec correction.
+  package: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
