@@ -3,6 +3,17 @@
 ## Review Entries
 
 ### Review entry
+Review ID: test-spec-review-r5
+Stage: test-spec-review
+Round: 5
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r5.md
+Resolution: review-resolution.md#test-spec-review-r5
+Material findings: BFA-TSR5-001, BFA-TSR5-002
+Open findings: BFA-TSR5-001, BFA-TSR5-002
+Recording status: recorded
+
+### Review entry
 Review ID: plan-review-r4
 Stage: plan-review
 Round: 4
