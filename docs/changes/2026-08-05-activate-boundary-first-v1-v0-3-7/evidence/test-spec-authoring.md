@@ -3,7 +3,7 @@
 - Artifact ID: `test-spec`
 - Test spec: `specs/boundary-first-v1-v0-3-7-activation-release.test.md`
 - Completion status: complete
-- Next review: `test-spec-review-r2`
+- Next review: `test-spec-review-r3`
 
 The proof map covers all 35 requirements, 15 acceptance criteria, eight
 examples, 12 edge cases, eight boundaries, and seven selected interactions.
@@ -18,3 +18,7 @@ the closed execution-level vocabulary; BFA-R017 has an M1 missing-evidence
 regression plus M4 and release-checkpoint actual-state proof; atomic Git,
 tag-workflow, and public closeout paths map to distinct commands and evidence;
 and MP1/MP2 now define bounded, executable, auditable external procedures.
+
+The R3 correction links MP1 and its producing checkpoint/publication commands
+directly from both recovery and external-environment proof obligations, so no
+row claims atomic evidence without its actual authority-crossing procedure.
