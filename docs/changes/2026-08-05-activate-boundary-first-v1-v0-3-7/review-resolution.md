@@ -22,10 +22,11 @@ Review closeout: test-spec-review-r4
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m1-r3
 Review closeout: spec-review-r3
+Review closeout: spec-review-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`
-- Findings resolved: 22
-- Unresolved findings: 7
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`
+- Findings resolved: 24
+- Unresolved findings: 6
 - Final result: Specification R3 requires a phase-correct publication-readiness contract and traceability correction before architecture amendment; M1 remains blocked on upstream settlement and bounded implementation/proof corrections.
 
 ## Resolution Overview
@@ -38,8 +39,9 @@ Review closeout: spec-review-r3
 | BFA-SR1-002 | accepted | resolved | Replaced patch v0.3.7 with contract-compliant minor v0.4.0 through proposal revision. |
 | BFA-SR1-003 | accepted | resolved | Invalid unpublished transition histories require a fresh replacement branch and rereview. |
 | BFA-SR1-004 | accepted | resolved | Completed formal boundary ownership for identity, self-containment, strict composition, drift, and replacement. |
-| BFA-SR3-001 | accepted | open | Define phase-correct publication readiness after local tag creation with explicit persisted and fresh authorities. |
-| BFA-SR3-002 | accepted | open | Add BFA-R017 ownership to the identity applicability and E4 traceability records. |
+| BFA-SR3-001 | accepted | resolved | Defined phase-correct publication readiness after local tag creation with explicit persisted and fresh authorities. |
+| BFA-SR3-002 | accepted | resolved | Added BFA-R017 ownership to the identity applicability and E4 traceability records. |
+| BFA-SR4-001 | accepted | open | Align E3, BND-COMPOSE-001, and INT-004 with the three pre-publication gates. |
 | BFA-PLAN-R1-001 | accepted | resolved | Final M3 workflow closeout head is B and T is its immediate child. |
 | BFA-PLAN-R1-002 | accepted | resolved | Separated candidate, strict-H, and detached-T proof phases. |
 | BFA-PLAN-R1-003 | accepted | resolved | Mapped release and public-closeout boundary proof owners. |
@@ -418,7 +420,7 @@ Validation evidence: pending upstream amendment and review
 
 Finding ID: BFA-SR3-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec author
 Owning stage: spec
 Chosen action: Define a named publication-readiness phase that validates stored
@@ -427,19 +429,34 @@ phase-correct local and remote tag requirements.
 Rationale: Pre-tag candidate mode cannot be rerun after its forbidden local tag
 has intentionally been created.
 Validation target: spec-review-r4
-Validation evidence: pending spec revision
+Validation evidence: Spec-review R4 confirms the distinct publication-readiness phase is normative, but E3, BND-COMPOSE-001, and INT-004 still require composition alignment.
 
 #### BFA-SR3-002 - R/C/H behavior is incompletely owned by the boundary record
 
 Finding ID: BFA-SR3-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec author
 Owning stage: spec
 Chosen action: Map BFA-R017 to identity applicability and E4, retaining its
 existing BND-AUTH-001 and INT-002 ownership.
 Rationale: The formal record must trace the new provenance behavior consistently.
 Validation target: spec-review-r4
+Validation evidence: Spec-review R4 confirms identity applicability and E4 now consistently own BFA-R017 provenance.
+
+### spec-review-r4
+
+#### BFA-SR4-001 - Publication-readiness composition descriptions remain inconsistent
+
+Finding ID: BFA-SR4-001
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec
+Chosen action: Align E3, BND-COMPOSE-001, and INT-004 with strict validation
+and publication readiness at H plus full release verification at T.
+Rationale: The formal composition record must match the normative phase contract.
+Validation target: spec-review-r5
 Validation evidence: pending spec revision
 
 ## Clean review receipts
