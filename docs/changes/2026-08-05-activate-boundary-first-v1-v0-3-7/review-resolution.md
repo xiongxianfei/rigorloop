@@ -289,7 +289,7 @@ Owning stage: review-resolution
 Chosen action: Dispatch on option presence and add empty-value CLI regressions.
 Rationale: Candidate vocabulary is closed and malformed candidate input cannot become strict success.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Empty candidate values now return `BFR-CANDIDATE-RELEASE`; candidate mode without `--check` remains a parser error; CMD1 passes.
 
 #### BFA-M1-CR1-002 - Reverted post-transition payload drift is accepted
 
@@ -301,7 +301,7 @@ Owning stage: review-resolution
 Chosen action: Inspect every T-to-H first-parent commit and report the union of forbidden paths.
 Rationale: Endpoint equality does not prove that unpublished candidate history remained valid.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Parent-relative first-parent scanning rejects change-and-revert, rename, deletion, and multi-path histories; CMD1 passes.
 
 #### BFA-M1-CR1-003 - Publication readiness treats file presence as settlement
 
@@ -313,7 +313,7 @@ Owning stage: review-resolution
 Chosen action: Compose canonical lifecycle validators and require candidate verification evidence.
 Rationale: Placeholder files cannot authorize external publication.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Readiness now checks settled upstream artifacts, M1-M4 closeout, M4 review, candidate JSON, and composes the canonical metadata, review, and lifecycle validators; negative fixture proof and CMD1 pass.
 
 #### BFA-M1-CR1-004 - Candidate failure output lacks bounded context and corrective action
 
@@ -325,7 +325,7 @@ Owning stage: review-resolution
 Chosen action: Return and serialize bounded available candidate context plus stable corrective actions.
 Rationale: Operators need actionable, privacy-safe failure evidence at the authority boundary.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Candidate failures serialize available P/B/T/H, rollback, tag state, bounded paths, and stable corrective actions; CMD1 passes.
 
 #### BFA-M1-CR1-005 - M1 direct proof is materially incomplete
 
@@ -337,7 +337,7 @@ Owning stage: review-resolution
 Chosen action: Add the missing T4, T5, T6, T12, and T16 partitions and correct evidence claims; route normative test-spec text changes to its owner if required.
 Rationale: Passing partial tests cannot substitute for the approved direct proof map.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: CMD1 passes 77 tests covering the missing topology, replacement, privacy, readiness, and drift partitions; the amended CMD4 selects all M1 validator and selector surfaces, and CMD6 passes 144 tests.
 
 #### BFA-M1-CR1-006 - Directory preflight hides mixed tracked and untracked contents
 
@@ -349,7 +349,7 @@ Owning stage: review-resolution
 Chosen action: Require every applicable existing directory descendant to be tracked and add boundary fixtures.
 Rationale: One tracked child cannot authorize an otherwise mixed directory surface.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Directory preflight fixtures cover fully tracked, mixed, empty, only-untracked, and symlink directories; CMD6 passes 144 tests.
 
 #### BFA-M1-CR1-007 - Lifecycle subtree allowlist admits arbitrary payload
 
@@ -361,7 +361,7 @@ Owning stage: review-resolution
 Chosen action: Use a closed lifecycle evidence path/shape policy and reject packages, generated output, and arbitrary descendants.
 Rationale: Directory placement alone does not confer lifecycle ownership.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: The lifecycle classifier uses exact root files and constrained evidence, review, and invocation names; a disguised `.tgz` payload is rejected by CMD1.
 
 #### BFA-M1-CR1-008 - Drift diagnostics disclose private path sentinels
 
@@ -373,7 +373,7 @@ Owning stage: review-resolution
 Chosen action: Bound path identities and add every required privacy sentinel to failure-output tests.
 Rationale: Changed-path evidence must remain useful without disclosing prohibited private values.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: Token, OTP, username, hostname, environment, and temporary-root sentinels are absent from serialized failures while redacted path hashes remain actionable; CMD1 passes.
 
 ## Clean review receipts
 

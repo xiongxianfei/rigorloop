@@ -7,6 +7,7 @@ import hashlib
 import json
 import re
 import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 
@@ -24,6 +25,7 @@ from adapter_distribution import (
     parse_adapter_artifact_metadata_yaml,
     parse_manifest_yaml,
 )
+from artifact_lifecycle_validation import _parse_change_yaml_text
 
 
 ACTIVATION_RECORD = Path("specs/boundary-first-activation.yaml")
@@ -1724,8 +1726,107 @@ def validate_activation_publication_readiness(
                     / f"code-review-m{milestone}-r*.md"
                 ).as_posix()
             )
+    change_yaml = root / ACTIVATION_CHANGE_ROOT / "change.yaml"
+    metadata: object = None
+    if change_yaml.is_file():
+        try:
+            metadata = _parse_change_yaml_text(change_yaml.read_text(encoding="utf-8"))
+        except Exception:
+            missing.append(change_yaml.as_posix() + "#valid-metadata")
+    else:
+        missing.append(change_yaml.as_posix())
+    if isinstance(metadata, dict):
+        states = metadata.get("artifact_states")
+        expected_states = {
+            "proposal": "accepted",
+            "spec": "approved",
+            "adr-activation-publication": "active",
+            "plan": "active",
+            "test-spec": "active",
+        }
+        if not isinstance(states, dict):
+            missing.append(change_yaml.as_posix() + "#artifact-states")
+        else:
+            for artifact_id, lifecycle_state in expected_states.items():
+                entry = states.get(artifact_id)
+                review = entry.get("review") if isinstance(entry, dict) else None
+                if (
+                    not isinstance(entry, dict)
+                    or entry.get("lifecycle_state") != lifecycle_state
+                    or not isinstance(review, dict)
+                    or review.get("outcome") != "approved"
+                ):
+                    missing.append(change_yaml.as_posix() + f"#settled-{artifact_id}")
+        workflow_state = metadata.get("workflow_state")
+        planned = (
+            workflow_state.get("planned_work")
+            if isinstance(workflow_state, dict)
+            else None
+        )
+        milestones = planned.get("milestones") if isinstance(planned, dict) else None
+        if not isinstance(milestones, dict) or any(
+            not isinstance(milestones.get(f"M{number}"), dict)
+            or milestones[f"M{number}"].get("state") != "closed"
+            for number in range(1, 5)
+        ):
+            missing.append(change_yaml.as_posix() + "#closed-milestones")
+        latest = planned.get("latest_review") if isinstance(planned, dict) else None
+        if (
+            not isinstance(latest, dict)
+            or latest.get("status") != "approved"
+            or latest.get("stage") != "code-review"
+            or latest.get("milestone_id") != "M4"
+        ):
+            missing.append(change_yaml.as_posix() + "#approved-m4-review")
+        review_state = metadata.get("review")
+        if (
+            not isinstance(review_state, dict)
+            or review_state.get("status") != "approved"
+            or review_state.get("unresolved_items") != 0
+        ):
+            missing.append(change_yaml.as_posix() + "#review-closeout")
+
+    resolution = root / ACTIVATION_CHANGE_ROOT / "review-resolution.md"
+    if not resolution.is_file() or "Closeout status: closed" not in resolution.read_text(
+        encoding="utf-8"
+    ):
+        missing.append(resolution.relative_to(root).as_posix() + "#closed")
+    review_log = root / ACTIVATION_CHANGE_ROOT / "review-log.md"
+    if not review_log.is_file() or re.search(
+        r"^Open findings:\s+(?!None\s*$).+",
+        review_log.read_text(encoding="utf-8") if review_log.is_file() else "",
+        re.MULTILINE,
+    ):
+        missing.append(review_log.relative_to(root).as_posix() + "#no-open-findings")
+    candidate_path = root / ACTIVATION_CHANGE_ROOT / "evidence/boundary-activation-candidate.json"
+    try:
+        candidate = json.loads(candidate_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        candidate = None
+    if (
+        not isinstance(candidate, dict)
+        or candidate.get("candidate_release") != ACTIVATION_CANDIDATE_RELEASE
+        or candidate.get("rollback_release") != ACTIVATION_CANDIDATE_ROLLBACK
+        or candidate.get("tag_state") != "absent"
+        or candidate.get("publication_state") != "candidate-ready-unpublished"
+        or any(
+            not isinstance(candidate.get(field), str)
+            or not re.fullmatch(r"[0-9a-f]{40,64}", candidate[field])
+            for field in (
+                "publication_base",
+                "grandfathering_baseline",
+                "transition_commit",
+                "reviewed_head",
+            )
+        )
+    ):
+        missing.append(candidate_path.relative_to(root).as_posix() + "#valid-candidate")
+
     if not missing:
-        return ()
+        authority_issues = _publication_authority_issues(root)
+        if not authority_issues:
+            return ()
+        return authority_issues
     return (
         _issue(
             "BFR-CANDIDATE-EVIDENCE-MISSING",
@@ -1735,6 +1836,64 @@ def validate_activation_publication_readiness(
             "settled proposal-through-rationale implementation and review evidence",
         ),
     )
+
+
+def _publication_authority_issues(root: Path) -> tuple[ValidationIssue, ...]:
+    scripts_root = Path(__file__).resolve().parent
+    relative_change = ACTIVATION_CHANGE_ROOT / "change.yaml"
+    paths = (
+        relative_change,
+        ACTIVATION_CHANGE_ROOT / "review-log.md",
+        ACTIVATION_CHANGE_ROOT / "review-resolution.md",
+        ACTIVATION_CHANGE_ROOT / "explain-change.md",
+        ACTIVATION_CHANGE_ROOT / "evidence/boundary-activation-candidate.json",
+    )
+    commands = (
+        [
+            sys.executable,
+            str(scripts_root / "validate-change-metadata.py"),
+            relative_change.as_posix(),
+        ],
+        [
+            sys.executable,
+            str(scripts_root / "validate-review-artifacts.py"),
+            ACTIVATION_CHANGE_ROOT.as_posix(),
+        ],
+        [
+            sys.executable,
+            str(scripts_root / "validate-artifact-lifecycle.py"),
+            "--mode",
+            "explicit-paths",
+            *(
+                argument
+                for path in paths
+                for argument in ("--path", path.as_posix())
+            ),
+        ],
+    )
+    issues: list[ValidationIssue] = []
+    for index, command in enumerate(commands, start=1):
+        try:
+            completed = subprocess.run(
+                command,
+                cwd=root,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+        except OSError:
+            completed = None
+        if completed is None or completed.returncode != 0:
+            issues.append(
+                _issue(
+                    "BFR-CANDIDATE-EVIDENCE-UNSETTLED",
+                    ACTIVATION_CHANGE_ROOT.as_posix(),
+                    "canonical lifecycle authority rejects publication readiness",
+                    f"authority-check-{index}-failed",
+                    "change metadata, formal review, and artifact lifecycle checks pass",
+                )
+            )
+    return tuple(issues)
 
 
 def _is_activation_lifecycle_path(relative: str) -> bool:
@@ -1749,16 +1908,107 @@ def _is_activation_lifecycle_path(relative: str) -> bool:
         PurePosixPath("review-resolution.md"),
         PurePosixPath("explain-change.md"),
         PurePosixPath("verify-report.md"),
+        PurePosixPath("pr.md"),
     }:
         return True
+    if len(child.parts) == 2 and child.parts[0] == "evidence":
+        return bool(
+            re.fullmatch(
+                r"(?:(?:proposal|spec|architecture|plan|test-spec)-authoring|implementation-m[1-4]|release-checkpoint)\.md|"
+                r"(?:boundary-activation-candidate|atomic-publication)\.json",
+                child.name,
+            )
+        )
+    if len(child.parts) == 2 and child.parts[0] == "reviews":
+        return bool(
+            re.fullmatch(
+                r"(?:proposal|spec|architecture|plan|test-spec|code-review|verify)-review(?:-[a-z0-9-]+)?-r[0-9]+\.md|"
+                r"code-review-(?:m[1-4]|final)-r[0-9]+\.md",
+                child.name,
+            )
+        )
     return (
-        len(child.parts) >= 2
-        and child.parts[0] in {"evidence", "reviews"}
-    ) or (
         len(child.parts) == 1
         and child.name.startswith("review-invocation-")
         and child.suffix == ".yaml"
     )
+
+
+def _bounded_diagnostic_path(relative: str) -> str:
+    if (
+        len(relative.encode("utf-8")) > 240
+        or re.search(
+            r"(?i)(token|otp|secret|credential|private|username|hostname|password)",
+            relative,
+        )
+        or any(ord(character) < 32 for character in relative)
+    ):
+        encoded = relative.encode("utf-8")
+        return (
+            "redacted-path:sha256:"
+            + hashlib.sha256(encoded).hexdigest()
+            + f":bytes={len(encoded)}"
+        )
+    return relative
+
+
+def _candidate_changed_paths(
+    root: Path,
+    transition_commit: str,
+    head: str,
+) -> tuple[tuple[str, ...], tuple[ValidationIssue, ...]]:
+    try:
+        commits = subprocess.run(
+            ["git", "rev-list", "--first-parent", "--reverse", f"{transition_commit}..{head}"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
+    except (OSError, subprocess.CalledProcessError):
+        return (), (
+            _issue(
+                "BFR-CANDIDATE-CHANGED-PATHS",
+                "<candidate-history>",
+                "post-transition commits are unavailable",
+                "unavailable",
+                "readable first-parent Git history",
+            ),
+        )
+    rejected: set[str] = set()
+    for commit in commits:
+        try:
+            ancestry = subprocess.run(
+                ["git", "rev-list", "--parents", "-n", "1", commit],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.split()
+            if len(ancestry) < 2:
+                raise subprocess.CalledProcessError(1, "git rev-list")
+            changed = subprocess.run(
+                [
+                    "git", "diff-tree", "--no-commit-id", "--name-only", "-r",
+                    "-z", "--no-renames", ancestry[1], commit,
+                ],
+                cwd=root,
+                check=True,
+                capture_output=True,
+            ).stdout.split(b"\0")
+            decoded = [raw.decode("utf-8") for raw in changed if raw]
+        except (OSError, subprocess.CalledProcessError, UnicodeDecodeError):
+            return (), (
+                _issue(
+                    "BFR-CANDIDATE-CHANGED-PATHS",
+                    "<candidate-history>",
+                    "post-transition changed paths are unavailable",
+                    commit,
+                    "readable UTF-8 Git path set",
+                ),
+            )
+        rejected.update(path for path in decoded if not _is_activation_lifecycle_path(path))
+    return tuple(sorted(rejected, key=lambda path: path.encode("utf-8"))), ()
 
 
 def _git_identity(root: Path, revision: str) -> str | None:
@@ -1773,6 +2023,18 @@ def _git_identity(root: Path, revision: str) -> str | None:
     except (OSError, subprocess.CalledProcessError):
         return None
     return value if re.fullmatch(r"[0-9a-f]{40,64}", value) else None
+
+
+def _git_ref_exists(root: Path, reference: str) -> bool:
+    try:
+        return subprocess.run(
+            ["git", "show-ref", "--verify", "--quiet", reference],
+            cwd=root,
+            check=False,
+            capture_output=True,
+        ).returncode == 0
+    except OSError:
+        return False
 
 
 def validate_activation_candidate(
@@ -1811,7 +2073,7 @@ def validate_activation_candidate(
             )
         )
 
-    if _git_identity(root, f"refs/tags/{release}^{{commit}}") is not None:
+    if _git_ref_exists(root, f"refs/tags/{release}"):
         issues.append(
             _issue(
                 "BFR-CANDIDATE-LOCAL-TAG",
@@ -1950,33 +2212,17 @@ def validate_activation_candidate(
             )
 
     if transition_commit and head:
-        try:
-            changed_paths = subprocess.run(
-                ["git", "diff", "--name-only", "-z", f"{transition_commit}..{head}"],
-                cwd=root,
-                check=True,
-                capture_output=True,
-            ).stdout.split(b"\0")
-            decoded = sorted(
-                raw.decode("utf-8") for raw in changed_paths if raw
-            )
-        except (OSError, subprocess.CalledProcessError, UnicodeDecodeError):
-            decoded = []
-            issues.append(
-                _issue(
-                    "BFR-CANDIDATE-CHANGED-PATHS",
-                    "<candidate-history>",
-                    "post-transition changed paths are unavailable",
-                    "unavailable",
-                    "readable UTF-8 Git path set",
-                )
-            )
-        rejected = [path for path in decoded if not _is_activation_lifecycle_path(path)]
+        rejected, changed_path_issues = _candidate_changed_paths(
+            root,
+            transition_commit,
+            head,
+        )
+        issues.extend(changed_path_issues)
         for rejected_path in rejected:
             issues.append(
                 _issue(
                     "BFR-CANDIDATE-POST-TRANSITION-DRIFT",
-                    rejected_path,
+                    _bounded_diagnostic_path(rejected_path),
                     "post-transition history changes release-gated paths",
                     "changed-after-transition",
                     "activation-change lifecycle evidence paths only",
@@ -2004,6 +2250,93 @@ def validate_activation_candidate(
         tag_state="absent",
         bundle_identity=bundle,
     ), ()
+
+
+_CANDIDATE_CORRECTIVE_ACTIONS = {
+    "BFR-CANDIDATE-RELEASE": "use exact candidate release v0.4.0",
+    "BFR-CANDIDATE-ACTIVATION": "restore the exact active v0.4.0 and rollback v0.3.6 tuple",
+    "BFR-CANDIDATE-LOCAL-TAG": "remove the unpublished local v0.4.0 tag",
+    "BFR-CANDIDATE-REMOTE-TAG": "stop because v0.4.0 already exists remotely",
+    "BFR-CANDIDATE-REMOTE-UNAVAILABLE": "restore reachable origin advertisement and rerun",
+    "BFR-CANDIDATE-REMOTE-MAIN": "restore remote main authority and rerun",
+    "BFR-CANDIDATE-PUBLICATION-BASE": "regenerate the candidate from current authorized remote main",
+    "BFR-CANDIDATE-POST-TRANSITION-DRIFT": "replace the candidate history from current authorized remote main",
+    "BFR-CANDIDATE-WORKTREE": "commit or remove local changes and rerun at the reviewed head",
+    "BFR-ACTIVATION-TRANSITION": "create exactly one first-parent pending-to-active transition",
+}
+
+
+def activation_candidate_failure_context(
+    root: Path,
+    release: str,
+    issues: tuple[ValidationIssue, ...],
+) -> dict[str, object]:
+    """Return bounded, non-authorizing context for a failed candidate check."""
+
+    data, _ = _activation_data(root / ACTIVATION_RECORD)
+    transition, _ = _activation_transition(root)
+    publication_base = "-"
+    remote_tag_present = False
+    remote_available = False
+    try:
+        advertisement = subprocess.run(
+            [
+                "git", "ls-remote", "--refs", "origin",
+                "refs/heads/main", f"refs/tags/{ACTIVATION_CANDIDATE_RELEASE}",
+            ],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
+        remote_available = True
+        refs = {
+            ref: identity
+            for line in advertisement
+            if "\t" in line
+            for identity, ref in (line.split("\t", 1),)
+        }
+        publication_base = refs.get("refs/heads/main", "-")
+        remote_tag_present = f"refs/tags/{ACTIVATION_CANDIDATE_RELEASE}" in refs
+    except (OSError, subprocess.CalledProcessError):
+        pass
+    local_tag_present = _git_ref_exists(
+        root,
+        f"refs/tags/{ACTIVATION_CANDIDATE_RELEASE}",
+    )
+    tag_state = (
+        "local-present"
+        if local_tag_present
+        else "remote-present"
+        if remote_tag_present
+        else "absent"
+        if remote_available
+        else "unknown"
+    )
+    actions = sorted(
+        {
+            _CANDIDATE_CORRECTIVE_ACTIONS.get(
+                issue.code,
+                "correct the named invariant and rerun candidate validation",
+            )
+            for issue in issues
+        }
+    )
+    return {
+        "status": "failed",
+        "mode": "activation-candidate",
+        "publication_state": "candidate-invalid-unpublished",
+        "candidate_release": release,
+        "publication_base": publication_base,
+        "grandfathering_baseline": transition[1] if transition else "-",
+        "transition_commit": transition[0] if transition else "-",
+        "reviewed_head": _git_identity(root, "HEAD") or "-",
+        "rollback_release": (
+            str(data.get("rollback_release", "-")) if data is not None else "-"
+        ),
+        "tag_state": tag_state,
+        "corrective_actions": actions,
+    }
 
 
 def _changed_spec_path(
