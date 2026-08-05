@@ -2,18 +2,19 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: spec-review-r1
 Review closeout: proposal-review-r4
+Review closeout: spec-review-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`
-- Findings resolved: 3
-- Unresolved findings: 3
-- Final result: Proposal revision is approved; specification R2 awaits review of the three remaining findings.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`
+- Findings resolved: 6
+- Unresolved findings: 0
+- Final result: Proposal and specification are approved; architecture is required next.
 
 ## Resolution Overview
 
@@ -21,10 +22,10 @@ Review closeout: proposal-review-r4
 | --- | --- | --- | --- |
 | BFA-PR1-001 | accepted | resolved | Added pre-tag candidate validation while preserving strict tag-context activation proof. |
 | BFA-PR2-001 | accepted | resolved | Separated final reviewed branch head from the activation transition tag target and required tagged-tree self-containment. |
-| BFA-SR1-001 | accepted | open | Separate remote publication base P from transition parent/grandfathering baseline B. |
+| BFA-SR1-001 | accepted | resolved | Separated remote publication base P from transition parent/grandfathering baseline B. |
 | BFA-SR1-002 | accepted | resolved | Replaced patch v0.3.7 with contract-compliant minor v0.4.0 through proposal revision. |
-| BFA-SR1-003 | accepted | open | Replace invalid unpublished transition histories with a fresh branch and rereview. |
-| BFA-SR1-004 | accepted | open | Complete formal boundary ownership for identity, self-containment, strict composition, drift, and replacement. |
+| BFA-SR1-003 | accepted | resolved | Invalid unpublished transition histories require a fresh replacement branch and rereview. |
+| BFA-SR1-004 | accepted | resolved | Completed formal boundary ownership for identity, self-containment, strict composition, drift, and replacement. |
 
 ## Finding Details
 
@@ -62,13 +63,13 @@ Validation evidence: Proposal-review R3 confirms the two-identity first-parent m
 
 Finding ID: BFA-SR1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec author
 Owning stage: spec
 Chosen action: Introduce publication base P and preserve B as T's first parent.
 Rationale: Candidate preparation can occur between the remote fork point and activation transition.
 Validation target: spec-review-r2
-Validation evidence: pending
+Validation evidence: Spec-review R2 approves the `P ... B -> T ... H` identity chain and confirms compare-and-swap uses P while the activation manifest retains B.
 
 #### BFA-SR1-002 - Patch version violates release classification
 
@@ -86,25 +87,25 @@ Validation evidence: Proposal-review R4 approves stable minor v0.4.0 under REL-R
 
 Finding ID: BFA-SR1-003
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec author
 Owning stage: spec
 Chosen action: Define replacement-branch regeneration from the authorized publication base.
 Rationale: Appending another transition violates uniqueness and force-pushing would rewrite reviewed history.
 Validation target: spec-review-r2
-Validation evidence: pending
+Validation evidence: Spec-review R2 confirms BFA-R035, E7, EC8, AC-BFA-015, and INT-007 define a legal replacement history without force-push.
 
 #### BFA-SR1-004 - Formal boundary ownership is incomplete
 
 Finding ID: BFA-SR1-004
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec author
 Owning stage: spec
 Chosen action: Extend exact boundary and interaction ownership for the missing requirements and hazards.
 Rationale: Downstream proof must consume requirement-owned semantic rows rather than infer them.
 Validation target: spec-review-r2
-Validation evidence: pending
+Validation evidence: Spec-review R2 confirms self-containment, strict composition, changed-path rejection, and replacement recovery have explicit boundary and interaction ownership.
 
 ## Clean review receipts
 
@@ -122,6 +123,13 @@ Material findings: none
 Resolution required: no new findings; confirms BFA-SR1-002 closure
 Evidence: reviews/proposal-review-r4.md
 
+### spec-review-r2
+
+Status: approved
+Material findings: none
+Resolution required: no new findings; confirms BFA-SR1-001, BFA-SR1-003, and BFA-SR1-004 closure
+Evidence: reviews/spec-review-r2.md
+
 ## Closeout Checklist
 
 - [x] Every material finding has a disposition.
@@ -129,5 +137,5 @@ Evidence: reviews/proposal-review-r4.md
 - [x] Every rejected finding has rationale.
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
-- [ ] Validation evidence is recorded.
+- [x] Validation evidence is recorded.
 - [x] Closeout status is correct.
