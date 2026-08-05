@@ -40,8 +40,8 @@ artifact_states:
       adr_settlement: active
 workflow_state:
   lifecycle_state: active
-  current_stage: architecture-review
-  next_stage: architecture-review
+  current_stage: plan
+  next_stage: plan
   blocker: null
   evidence:
     - docs/research/2026-08-05-boundary-first-v1-activation-release.md
