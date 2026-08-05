@@ -8,8 +8,13 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/proposal-authoring.md
+    lifecycle_state: revision-required
+    review:
+      id: proposal-review-r1
+      artifact_id: proposal
+      outcome: changes-requested
+      record: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r1.md
+      round: r1
 workflow_state:
   lifecycle_state: active
   current_stage: proposal-review
@@ -21,6 +26,7 @@ workflow_state:
 workflow: {}
 artifacts:
   proposal: docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
+  review_resolution: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-resolution.md
 requirements:
   - Activate boundary-first-v1 as one coherent v0.3.7 release bundle.
   - Preserve v0.3.6 as the immutable rollback release.
@@ -41,5 +47,5 @@ changed_files:
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/change.yaml
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/proposal-authoring.md
 review:
-  status: pending
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 1
