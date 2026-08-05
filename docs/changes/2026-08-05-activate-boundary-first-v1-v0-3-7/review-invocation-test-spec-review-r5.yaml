@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: test-spec-review-r5
+review_stage: test-spec-review
+review_target: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+base_revision: d28cbc07ee6cc711eacf494026730cf32d1590fd
+head_revision: 69e2cc8346b24af85d978f937c0a1f89c928783e
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L1
+author_context_id: root-boundary-activation-test-spec-r5
+reviewer_context_id: independent-test-spec-review-r5
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - candidate-evidence-identity
+  - atomic-publication
+  - proof-map-realignment
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - docs/architecture/system/architecture.md
+  - docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+    revision: 69e2cc8346b24af85d978f937c0a1f89c928783e
+    sha256: 9aefa67947b978fcfd3a52a0edc9191b94701715235dd142a7548664f4e5399a
+  - path: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/test-spec-review-r4.md
+    revision: 7b408a5510f88be1752cf61f8d6b60922a03a6af
+    sha256: ba8dd71f63e2317a886d75eab2bbfd27f63227a2737aa8584db3b10179242c22
+  - path: test-spec-r5.diff
+    revision: 69e2cc8346b24af85d978f937c0a1f89c928783e
+    sha256: 2f9544f5bc3158c1bb33ebf4b8be1ce2e8ef42d0cb74d957bf90b5e6a819f38e
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - candidate_validation_head result contract
+  - R-to-C immediate provenance and C-in-H containment
+  - candidate T..R versus readiness T..H proof
+  - phase-specific tag and remote authority
+  - same-invocation exact-H refspec and local-head movement
+  - milestone and command traceability
