@@ -10,11 +10,12 @@ Review closeout: proposal-review-r3
 Review closeout: spec-review-r1
 Review closeout: proposal-review-r4
 Review closeout: spec-review-r2
+Review closeout: architecture-review-activation-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Final result: Proposal and specification are approved; architecture is required next.
+- Final result: Proposal, specification, canonical architecture update, and activation-publication ADR are approved; planning is next.
 
 ## Resolution Overview
 
@@ -129,6 +130,13 @@ Status: approved
 Material findings: none
 Resolution required: no new findings; confirms BFA-SR1-001, BFA-SR1-003, and BFA-SR1-004 closure
 Evidence: reviews/spec-review-r2.md
+
+### architecture-review-activation-r1
+
+Status: approved
+Material findings: none
+Resolution required: no new findings; canonical architecture and activation-publication ADR are approved
+Evidence: reviews/architecture-review-activation-r1.md
 
 ## Closeout Checklist
 

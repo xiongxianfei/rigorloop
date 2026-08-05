@@ -9,6 +9,19 @@ artifacts and change-local workflow-state proposal.
 
 ### Review entry
 
+Review ID: architecture-review-activation-r1
+Stage: architecture-review
+Round: 6
+Reviewed artifact: docs/architecture/system/architecture.md and diagrams/component-boundary-guidance.mmd
+Status: approved
+Detailed record: reviews/architecture-review-activation-r1.md
+Resolution: review-resolution.md#architecture-review-activation-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: architecture-review-r5
 Stage: architecture-review
 Round: 5

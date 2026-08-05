@@ -8,6 +8,7 @@ Review closeout: proposal-review-r5
 Review closeout: architecture-review-r3
 Review closeout: architecture-review-r4
 Review closeout: architecture-review-r5
+Review closeout: architecture-review-activation-r1
 
 Review closeout: test-spec-review-r3
 Review closeout: test-spec-review-r2
@@ -47,8 +48,9 @@ Review closeout: code-review-final-r3
   `spec-review-r6`
 - Findings resolved: 30
 - Unresolved findings: 0
-- Current result: Architecture-review R5 approved the complete current package
-  with all R3 and R4 findings resolved.
+- Current result: Architecture-review activation R1 approved the boundary
+  activation release update with no new findings; all earlier findings remain
+  resolved.
 
 ## Resolution Overview
 
@@ -148,6 +150,15 @@ Material findings: none
 Resolution required: no
 Validation evidence: Complete arc42/C4 package review plus explicit lifecycle,
 metadata, readability, whitespace, and 12-section heading checks passed.
+
+### architecture-review-activation-r1
+
+Review result: approved
+Material findings: none
+Resolution required: no
+Validation evidence: Independent review confirmed spec alignment, same-push
+remote identity guarding, atomic non-forced publication, tagged-tree execution,
+replacement recovery, arc42/C4 completeness, and ADR quality.
 
 #### AR3-003 - Component diagram misstates compact-core loading
 

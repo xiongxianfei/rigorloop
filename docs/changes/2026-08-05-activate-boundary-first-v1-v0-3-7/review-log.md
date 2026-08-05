@@ -3,6 +3,17 @@
 ## Review Entries
 
 ### Review entry
+Review ID: architecture-review-activation-r1
+Stage: architecture-review
+Round: 1
+Status: approved
+Detailed record: reviews/architecture-review-activation-r1.md
+Resolution: review-resolution.md#architecture-review-activation-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
 Review ID: spec-review-r2
 Stage: spec-review
 Round: 2
