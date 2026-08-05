@@ -22,3 +22,10 @@ and MP1/MP2 now define bounded, executable, auditable external procedures.
 The R3 correction links MP1 and its producing checkpoint/publication commands
 directly from both recovery and external-environment proof obligations, so no
 row claims atomic evidence without its actual authority-crossing procedure.
+
+The M1 code-review amendment resolves `BFA-M1-CR1-005` by adding
+`scripts/validation_selection.py` and `scripts/test-select-validation.py` to
+CMD4's literal path set. Those are the selector implementation and regression
+surfaces necessarily touched to support CMD4's tracked fixture directory. The
+command remains read-only and retains the same owner, milestone, and failure
+boundary.
