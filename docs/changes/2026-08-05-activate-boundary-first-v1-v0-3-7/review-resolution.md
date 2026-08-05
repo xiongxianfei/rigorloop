@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -16,11 +16,12 @@ Review closeout: plan-review-r2
 Review closeout: plan-review-r3
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
+Review closeout: test-spec-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 15
-- Unresolved findings: 2
-- Final result: Test-spec revision is required before implementation.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`
+- Findings resolved: 17
+- Unresolved findings: 0
+- Final result: Test-spec-review R3 approves implementation handoff.
 
 ## Resolution Overview
 
@@ -40,9 +41,9 @@ Review closeout: test-spec-review-r2
 | BFA-PLAN-R2-002 | accepted | resolved | Corrected release validation and added failure-safe executable shell. |
 | BFA-TSR1-001 | accepted | resolved | Replaced invalid proof levels with admitted execution levels. |
 | BFA-TSR1-002 | accepted | resolved | Added phase-correct lifecycle-readiness regression and evidence. |
-| BFA-TSR1-003 | accepted | open | Link atomic, tag-workflow, and public paths to direct commands and evidence. |
+| BFA-TSR1-003 | accepted | resolved | Linked atomic, tag-workflow, and public paths to direct commands and evidence. |
 | BFA-TSR1-004 | accepted | resolved | Made MP1 and MP2 executable and auditable. |
-| BFA-TSR2-001 | accepted | open | Link MP1 and producing commands directly from PRF-006 and PRF-008. |
+| BFA-TSR2-001 | accepted | resolved | Linked MP1 and producing commands directly from PRF-006 and PRF-008. |
 
 ## Finding Details
 
@@ -232,13 +233,13 @@ Validation evidence: Test-spec-review R2 confirms M1 missing-evidence fixtures, 
 
 Finding ID: BFA-TSR1-003
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Add automated tag-workflow composition proof and map actual atomic, tag-workflow, and closeout commands to distinct evidence.
 Rationale: Helper or selector proof cannot substitute for the real public path.
 Validation target: test-spec-review-r2
-Validation evidence: pending
+Validation evidence: Test-spec-review R3 confirms actual atomic, tag-workflow, and public paths have direct command, procedure, and distinct evidence links.
 
 #### BFA-TSR1-004 - Manual procedures are not independently auditable
 
@@ -258,15 +259,22 @@ Validation evidence: Test-spec-review R2 confirms MP1 and MP2 define owner, stag
 
 Finding ID: BFA-TSR2-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Add T11, MP1, checkpoint commands, and checkpoint evidence to PRF-006, and add CMD17 plus MP1 to PRF-008.
 Rationale: Each hybrid proof row must cite the command and procedure that directly produce its claimed external evidence.
 Validation target: test-spec-review-r3
-Validation evidence: pending
+Validation evidence: Test-spec-review R3 confirms PRF-006 and PRF-008 cite MP1 and every command producing their claimed external evidence.
 
 ## Clean review receipts
+
+### test-spec-review-r3
+
+Status: approved
+Material findings: none
+Resolution required: no new findings; confirms all test-spec-review R1 and R2 findings are closed
+Evidence: reviews/test-spec-review-r3.md
 
 ### proposal-review-r3
 
@@ -310,5 +318,5 @@ Evidence: reviews/plan-review-r3.md
 - [x] Every rejected finding has rationale.
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
-- [ ] Validation evidence is recorded.
+- [x] Validation evidence is recorded.
 - [x] Closeout status is correct.

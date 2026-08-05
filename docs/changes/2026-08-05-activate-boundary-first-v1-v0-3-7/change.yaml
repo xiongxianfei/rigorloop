@@ -53,8 +53,13 @@ artifact_states:
     kind: test-spec
     path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/test-spec-authoring.md
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r3
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/test-spec-review-r3.md
+      round: r3
 workflow_state:
   lifecycle_state: active
   current_stage: test-spec-review
@@ -84,6 +89,7 @@ workflow_state:
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-test-spec-review-r2.yaml
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/test-spec-review-r2.md
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-test-spec-review-r3.yaml
+    - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/test-spec-review-r3.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M1
@@ -183,9 +189,10 @@ changed_files:
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-test-spec-review-r2.yaml
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/test-spec-review-r2.md
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-test-spec-review-r3.yaml
+  - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/test-spec-review-r3.md
 review:
-  status: changes-requested
-  unresolved_items: 2
+  status: approved
+  unresolved_items: 0
 architecture:
   assessment: architecture-required
   rationale: The activation release changes validator authority, P/B/T/H Git identity flow, tagged-tree execution, atomic two-ref publication, and invalid-candidate recovery.
