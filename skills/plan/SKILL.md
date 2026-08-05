@@ -3,7 +3,7 @@ name: plan
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Create or revise a stable execution plan after proposal, spec, and architecture are settled enough to implement. Use for multi-file, multi-component, risky, migration-heavy, or milestone-based work that needs reviewable implementation slices, validation commands, recovery paths, and dependencies. Use spec, test-spec, implement, code-review, verify, or pr for those stages; do not use plan to choose product direction, write code, review diffs, own mutable workflow state, verify branch readiness, or open PRs.
+  Create or revise a stable execution plan after proposal, spec, and architecture are settled enough to implement. Use for multi-file, multi-component, risky, migration-heavy, or milestone-based work that needs reviewable implementation slices, validation commands, recovery paths, and dependencies. Use spec, test-spec, implement, code-review, verify, or pr for those stages; do not use plan to choose product direction, write code, review diffs, update workflow routing or existing planned work, verify branch readiness, or open PRs.
 argument-hint: [feature name, spec path, architecture path, or implementation goal]
 ---
 
@@ -34,7 +34,7 @@ Do not require RigorLoop repository-internal specs, docs, reports, follow-up fil
 
 ## Resource map
 
-- READ `references/boundary-first-method-v1.md` when planning implementation for an approved feature spec that declares `boundary_contract: boundary-first-v1`.
+- READ `references/boundary-first-method-v1.md` when cited approved boundary or interaction rows are missing, stale, unknown, ambiguous, conflicting, or insufficient for planning.
 - COPY `assets/plan-skeleton.md` when creating a new plan or replacing the full plan structure.
   Fill: sections, placeholders, and the stable owning change-record pointer.
   Sections: Purpose / big picture; Current Handoff Summary; Source artifacts; Context and orientation; Non-goals; Requirements covered; Milestones; Validation plan; Risks and recovery; Dependencies; Decision log; Readiness.
@@ -84,8 +84,9 @@ If settlement is missing, contradictory, unknown, or unmapped, record the blocke
 For a governed change, read the complete `change.yaml` before writing.
 Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing marker to `workflow` for creation or migration instead of inventing state.
 Resolve exactly one plan entry by artifact ID, `kind`, and normalized `path`.
-For a new plan, create only that entry with a unique stable ID, `kind: plan`, normalized path, and explicit role. Before creating or substantively revising the plan, set only that entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to the plan-authoring record path. After the plan and authoring record are complete, set the same entry to `review-required`.
-Preserve every other entry and `workflow_state`; plan milestones remain stable intent and do not authorize writing `workflow_state.planned_work`. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
+For a new plan, create only that entry with a unique stable ID, `kind: plan`, normalized path, and explicit role. Before creating or substantively revising the plan, set only that entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to the plan-authoring record path.
+When registering a new primary plan and `planned_work` is absent, initialize `workflow_state.planned_work` exactly once from the plan's ordered milestones: set every implementation milestone to `planned`, set `current_milestone` to the first implementation milestone, list all implementation milestones in `remaining_implementation_milestones`, use `latest_review.status: not-started` with its required empty identity fields and evidence, and use `final_closeout.readiness: not-ready` with the applicable open-gate reasons. The plan must not replace or update existing `planned_work`; workflow owns every later `planned_work` transition.
+After the plan and authoring record are complete, set the same entry to `review-required`. Preserve every other entry and every other `workflow_state` field. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
 
 ## Artifact placement
 
@@ -123,7 +124,7 @@ Output a compact result plus a plan artifact. Copy `assets/plan-skeleton.md` for
 
 Produce or update the stable plan body and, when needed, its navigation entry in `docs/plan.md`.
 Name milestones, validation, recovery, and dependencies.
-The plan stage may record its own authoring transition in the matching `change.yaml` artifact entry; it must not write review settlement or routing.
+The plan stage may record its own authoring transition and one-time deterministic initialization of missing primary-plan `planned_work`; it must not write review settlement, routing, or later planned-work transitions.
 
 ## Result
 
@@ -134,6 +135,21 @@ The plan stage may record its own authoring transition in the matching `change.y
 - Next stage: <plan-review | test-spec after plan-review | blocked>
 
 ## Boundary-first method
+
+Run this compact scan before any stage-owned decision that can change observable behavior, and whenever the input cites an active boundary contract or stable boundary, interaction, or proof ID. Do not wait for the user to name the method.
+
+1. Which inputs or actors can change the outcome?
+2. Which state or timing conditions can change the outcome?
+3. Which public, sibling, helper, or alternate path can change the outcome?
+4. Which failure, retry, recovery, compatibility, or external condition can change the outcome?
+
+If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
+
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`; a proof-only gap routes to `test-spec`. Downstream stages do not redefine or rename upstream IDs.
+
+Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
+
+Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
 
 Map applicable boundaries to independently closeable milestones, dependencies, affected surfaces, rollback units, and proof timing.
 

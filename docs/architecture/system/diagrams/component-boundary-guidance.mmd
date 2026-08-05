@@ -1,0 +1,35 @@
+flowchart LR
+  skills["Governed stage skills<br/>[Markdown: stage policy and compact scan]"]:::component
+  artifacts["Approved feature and proof artifacts<br/>[Markdown: stable IDs and rows]"]:::container
+  compact["Compact core<br/>[Markdown: boundary-first-method-v1.md]"]:::component
+  authoring["Feature-authoring guidance<br/>[Markdown: spec families only]"]:::component
+  proof["Proof guidance<br/>[Markdown: test-spec families only]"]:::component
+  manifest["Resource projection manifest<br/>[YAML: closed resources and consumers]"]:::component
+  projector["Projection and validation<br/>[Python: manifest interpreter and parity checks]"]:::component
+  selector["Validation selector<br/>[Python: path-owned check routing]"]:::component
+  activation["Tracked activation transaction<br/>[Repository sources, marker, and evidence references]"]:::component
+  generated["Generated, packed, archived, and installed skills<br/>[Derived proof, not Git rollback state]"]:::container
+  evidence["Measurement and package evidence<br/>[YAML/Markdown fixtures and reports]"]:::container
+
+  skills -->|package for every governed stage; owner families load initially and downstream stages load on expansion| compact
+  skills -->|package and load only for spec and spec-review| authoring
+  skills -->|package and load only for test-spec and test-spec-review| proof
+  skills -->|consume cited boundary, interaction, and proof rows first from| artifacts
+  manifest -->|declares the sole resource-to-consumer matrix for| projector
+  compact -->|provides canonical raw bytes to| projector
+  authoring -->|provides canonical raw bytes to| projector
+  proof -->|provides canonical raw bytes to| projector
+  projector -->|writes or checks complete skill-local projections in| skills
+  projector -->|proves mapped path and raw-byte identity through| generated
+  selector -->|selects purpose-built checks for| skills
+  selector -->|retains lifecycle checks for| artifacts
+  activation -->|provides the exact candidate source and resource identities for| generated
+  generated -->|produces package and clean-install results recorded in| evidence
+  evidence -->|must match the candidate before the tracked marker becomes active in| activation
+  projector -->|records static resource and representative loading baselines in| evidence
+
+  classDef person fill:#08427b,stroke:#073b6f,color:#fff
+  classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
+  classDef external fill:#999,stroke:#666,color:#fff
+  classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
+  classDef component fill:#85bbf0,stroke:#3c7fc0,color:#111

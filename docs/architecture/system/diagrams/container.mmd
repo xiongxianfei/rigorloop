@@ -16,6 +16,7 @@ flowchart TB
     changes["Change-local lifecycle and evidence<br/>[Markdown and YAML: artifact_states, workflow_state, target, evidence links]"]:::container
     workflow_skill["Workflow skill<br/>[Markdown: public orchestration semantics]"]:::container
     stage_skills["Stage-owning skills and adapter templates<br/>[Markdown and templates]"]:::container
+    boundary_guidance["Progressive boundary guidance<br/>[Markdown and YAML: compact core, family resources, projection and activation manifests]"]:::container
     automation["Workflow lifecycle support<br/>[Published skills plus repository validators]"]:::container
     validation_cache["Local validation execution cache<br/>[Untracked local state]"]:::container
     templates["Templates and diagram styles<br/>[Markdown and Mermaid]"]:::container
@@ -33,6 +34,7 @@ flowchart TB
   contributor -->|uses scaffolds from| templates
   contributor -->|edits public automation semantics in| workflow_skill
   contributor -->|edits canonical stage sources in| stage_skills
+  contributor -->|authors compact and stage-family semantics plus projection metadata in| boundary_guidance
   reviewer -->|reviews selected architecture surface and ADR need in| architecture
   reviewer -->|reviews change-local reasoning and closeout when present in| changes
   governance -->|defines one standard workflow, manual-skill isolation, and source-of-truth rules for| lifecycle
@@ -50,14 +52,18 @@ flowchart TB
   automation -->|reads artifact settlement and writes only workflow routing and target state in| changes
   stage_skills -->|write only their owned governed artifacts in| lifecycle
   stage_skills -->|write only matching artifact transitions or stage-owned evidence in| changes
+  stage_skills -->|apply the inline compact scan and load owner-scoped resources from| boundary_guidance
+  stage_skills -->|consume cited approved boundary and proof rows from| lifecycle
   scripts -->|validate closed lifecycle state, transition, evidence, and adapter consistency for| automation
   templates -->|scaffold architecture and ADR records in| lifecycle
   workflow_skill -->|is transformed by| scripts
   stage_skills -->|are transformed by| scripts
+  scripts -->|interpret the closed resource manifest and project or validate| boundary_guidance
+  scripts -->|copy expected resource projections into| stage_skills
   scripts -->|generate temp output, tracked adapter output, and release artifacts for| generated
   scripts -->|runs benchmarks, analyzes JSONL, and validates metadata for| token_bench
   cli -->|uses bundled official adapter metadata, adapter descriptors, and small scaffolds from| release
-  cli -->|writes safe project/change scaffolds, records schema v2 lockfile state, and installs verified adapter output from| generated
+  cli -->|writes safe project/change scaffolds, records schema v3 lockfile state with schema v2 compatibility reads, and installs verified adapter output from| generated
   cli -->|is executed by| package_runner
   cli -->|is published after package-content, smoke, and publication-mode checks to| npm_registry
   npm_registry -->|delivers the published package to| package_runner
@@ -68,6 +74,7 @@ flowchart TB
   validation_cache -->|may produce reviewable cache-hit claims recorded in| changes
   scripts -->|run in| execution
   release -->|records metadata and checksums for publication of| generated
+  boundary_guidance -->|binds resource and rollback identities used by| release
   release -->|links token-friendliness report evidence from| token_bench
   generated -->|is consumed by| adapter_user
   legacy -->|preserves historical evidence after accepted current content reaches| architecture

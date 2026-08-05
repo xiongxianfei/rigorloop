@@ -72,12 +72,27 @@ Produce a routing decision, current stage assessment, blockers or assumptions, a
 
 ## Resource map
 
-- READ `references/boundary-first-method-v1.md` when routing a change that declares `boundary_contract: boundary-first-v1` or depends on an approved boundary or proof record.
+- READ `references/boundary-first-method-v1.md` when an approved boundary, interaction, or proof ID is missing, stale, unknown, ambiguous, conflicting, or insufficient for routing.
 - COPY `assets/workflows-skeleton.md` when creating a new project-local `docs/workflows.md` or fully rewriting a stale workflow guide.
   Fill metadata, source rank, lifecycle graph, stage obligations, artifact registry, artifact-location table, review placement, plan surfaces, customization rules, migration notes, and validation notes.
   Do not emit unfilled placeholders.
 
 ## Boundary-first method
+
+Run this compact scan before any stage-owned decision that can change observable behavior, and whenever the input cites an active boundary contract or stable boundary, interaction, or proof ID. Do not wait for the user to name the method.
+
+1. Which inputs or actors can change the outcome?
+2. Which state or timing conditions can change the outcome?
+3. Which public, sibling, helper, or alternate path can change the outcome?
+4. Which failure, retry, recovery, compatibility, or external condition can change the outcome?
+
+If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
+
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`; a proof-only gap routes to `test-spec`. Downstream stages do not redefine or rename upstream IDs.
+
+Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
+
+Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
 
 Route the method, locate governing artifacts, and stop on missing applicable ownership.
 
@@ -141,12 +156,13 @@ For planned work, `change.yaml` is the sole owner of the current milestone, mile
 The plan body contains stable execution intent and `docs/plan.md` contains stable navigation.
 
 Authoring stages write their own artifacts and authoring transitions.
+Plan owns only the one-time deterministic initialization of missing primary-plan `planned_work`; workflow owns every later `planned_work` transition.
 Review peers write review evidence and the matching artifact settlement only.
 Implementation and evidence stages write their scoped outputs only.
 Workflow consumes settled evidence and owns routing and planned-work transitions.
 No stage may update an upstream artifact as workflow bookkeeping.
 
-Before mutating a governed record, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Create that marker for a new governed change or migrate resumed nonterminal historical work before its first mutation; never mutate a historical read. Derive routing only from current artifact settlement and stage-owned evidence. Update only `workflow_state`, the selected `workflow.automation` target state, and workflow-owned transition evidence; preserve `artifact_states` and all stage-owned evidence. Keep `workflow_state` to lifecycle state, current and next stage, blocker, evidence pointers, and `planned_work` only when a primary plan exists. Stop on stale or contradictory evidence, an illegal transition, or failed available change-metadata validation instead of repairing another stage's state.
+Before mutating a governed record, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Create that marker for a new governed change or migrate resumed nonterminal historical work before its first mutation; never mutate a historical read. Derive routing only from current artifact settlement and stage-owned evidence. Update only `workflow_state`, the selected `workflow.automation` target state, and workflow-owned transition evidence; preserve `artifact_states` and all stage-owned evidence. Keep `workflow_state` to lifecycle state, current and next stage, blocker, evidence pointers, and `planned_work` only when a primary plan exists. Accept plan's deterministic one-time initialization, then make every later `planned_work` transition from current stage-owned evidence. Stop on stale or contradictory evidence, an illegal transition, or failed available change-metadata validation instead of repairing another stage's state.
 
 ## Project workflow guide
 
@@ -297,6 +313,10 @@ Classify the request into one of these contexts before deciding whether to conti
 Rules:
 
 - Workflow-managed automation uses one target-driven `bounded-review-fix` mechanism under `workflow.automation`.
+- Adapter invocation equivalents preserve the same arguments: Codex uses
+  `$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and
+  OpenCode invokes the installed `workflow` skill with `auto: <argument>`.
+  Here `<argument>` is `<target-stage>`, `status`, or `off`.
 - For every new governed change, create `lifecycle_contract: stage-owned-change-local-v1` in the change-local record without requiring another parameter.
   Before the first mutation of resumed nonterminal historical work, migrate that record once; read-only historical inspection never creates the marker.
 - `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.

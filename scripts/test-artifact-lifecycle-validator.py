@@ -88,6 +88,78 @@ def write_minimal_test_spec(root: Path, readiness: str) -> Path:
     return target
 
 
+def write_stage_owned_proposal(
+    root: Path,
+    *,
+    change_id: str = "2026-07-29-stage-owned-proposal",
+    artifact_kind: str = "proposal",
+    lifecycle_state: str = "review-required",
+    embedded_status: str | None = None,
+) -> tuple[Path, Path]:
+    proposal = root / "docs" / "proposals" / f"{change_id}.md"
+    change_record = root / "docs" / "changes" / change_id / "change.yaml"
+    proposal.parent.mkdir(parents=True, exist_ok=True)
+    change_record.parent.mkdir(parents=True, exist_ok=True)
+    status_section = f"\n## Status\n\n- {embedded_status}\n" if embedded_status else ""
+    proposal.write_text(
+        f"""# Stage-Owned Proposal
+
+## Owning change record
+
+[Change record](../changes/{change_id}/change.yaml)
+{status_section}
+## Problem
+
+Lifecycle state has one authoritative owner.
+
+## Goals
+
+- Resolve current state from the owning change record.
+
+## Non-goals
+
+- Rewrite historical artifacts.
+
+## Recommended direction
+
+Use the exact normalized artifact entry.
+
+## Next artifacts
+
+- proposal-review
+
+## Follow-on artifacts
+
+None yet
+
+## Readiness
+
+Ready for proposal-review.
+""",
+        encoding="utf-8",
+    )
+    change_record.write_text(
+        f"""lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  proposal:
+    kind: {artifact_kind}
+    path: docs/proposals/{change_id}.md
+    role: primary
+    lifecycle_state: {lifecycle_state}
+    authoring_evidence: docs/changes/{change_id}/evidence/proposal-authoring.md
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence: []
+workflow: {{}}
+""",
+        encoding="utf-8",
+    )
+    return proposal, change_record
+
+
 def write_release_evidence(root: Path, text: str, filename: str = "v1.2.3.md") -> Path:
     target = root / "docs" / "releases" / filename
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -3216,6 +3288,195 @@ No blocked plans.
             "valid-proposal",
             "docs/proposals/2026-04-20-valid-proposal.md",
         )
+
+    def test_stage_owned_proposal_without_embedded_status_uses_change_record_state(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="stage-owned-proposal-"))
+        self.addCleanupTree(fixture_root)
+        proposal, _ = write_stage_owned_proposal(fixture_root)
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[proposal.relative_to(fixture_root).as_posix()],
+        )
+
+        self.assertFalse(result.blocking_findings, result.blocking_findings)
+
+    def test_stage_owned_proposal_with_embedded_status_fails(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="stage-owned-proposal-status-"))
+        self.addCleanupTree(fixture_root)
+        proposal, _ = write_stage_owned_proposal(
+            fixture_root,
+            embedded_status="draft",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[proposal.relative_to(fixture_root).as_posix()],
+        )
+
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn(
+            "stage-owned governed artifact must not contain embedded Status section",
+            messages,
+        )
+
+    def test_stage_owned_artifact_kind_mismatch_fails(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="stage-owned-kind-mismatch-"))
+        self.addCleanupTree(fixture_root)
+        proposal, _ = write_stage_owned_proposal(
+            fixture_root,
+            artifact_kind="spec",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[proposal.relative_to(fixture_root).as_posix()],
+        )
+
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn(
+            "artifact kind 'spec' does not match classified kind 'proposal'",
+            messages,
+        )
+
+    def test_stage_owned_unknown_lifecycle_state_fails_closed(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="stage-owned-unknown-state-"))
+        self.addCleanupTree(fixture_root)
+        proposal, _ = write_stage_owned_proposal(
+            fixture_root,
+            lifecycle_state="future-state",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[proposal.relative_to(fixture_root).as_posix()],
+        )
+
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("unknown_value", messages)
+
+    def test_stage_owned_missing_artifact_entry_fails_closed(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="stage-owned-missing-entry-"))
+        self.addCleanupTree(fixture_root)
+        proposal, change_record = write_stage_owned_proposal(fixture_root)
+        change_record.write_text(
+            change_record.read_text(encoding="utf-8").replace(
+                proposal.relative_to(fixture_root).as_posix(),
+                "docs/proposals/2026-07-29-unregistered-proposal.md",
+            ),
+            encoding="utf-8",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[proposal.relative_to(fixture_root).as_posix()],
+        )
+
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("must have exactly one normalized artifact entry", messages)
+
+    def test_duplicate_stage_owned_artifact_ownership_fails(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="stage-owned-duplicate-owner-"))
+        self.addCleanupTree(fixture_root)
+        proposal, first_record = write_stage_owned_proposal(fixture_root)
+        second_record = (
+            fixture_root
+            / "docs"
+            / "changes"
+            / "2026-07-29-second-owner"
+            / "change.yaml"
+        )
+        second_record.parent.mkdir(parents=True, exist_ok=True)
+        second_record.write_text(
+            first_record.read_text(encoding="utf-8").replace(
+                "docs/changes/2026-07-29-stage-owned-proposal/",
+                "docs/changes/2026-07-29-second-owner/",
+            ),
+            encoding="utf-8",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                proposal.relative_to(fixture_root).as_posix(),
+                second_record.relative_to(fixture_root).as_posix(),
+            ],
+        )
+
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("must have exactly one normalized artifact entry", messages)
+
+    def test_stage_owned_pointer_owner_mismatch_fails(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="stage-owned-owner-mismatch-"))
+        self.addCleanupTree(fixture_root)
+        proposal, pointed_record = write_stage_owned_proposal(fixture_root)
+        proposal_path = proposal.relative_to(fixture_root).as_posix()
+        pointed_record.write_text(
+            pointed_record.read_text(encoding="utf-8").replace(
+                proposal_path,
+                "docs/proposals/2026-07-29-other-proposal.md",
+            ),
+            encoding="utf-8",
+        )
+        actual_record = (
+            fixture_root
+            / "docs"
+            / "changes"
+            / "2026-07-29-actual-owner"
+            / "change.yaml"
+        )
+        actual_record.parent.mkdir(parents=True, exist_ok=True)
+        actual_record.write_text(
+            pointed_record.read_text(encoding="utf-8")
+            .replace(
+                "docs/proposals/2026-07-29-other-proposal.md",
+                proposal_path,
+            )
+            .replace(
+                "docs/changes/2026-07-29-stage-owned-proposal/",
+                "docs/changes/2026-07-29-actual-owner/",
+            ),
+            encoding="utf-8",
+        )
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[
+                proposal_path,
+                actual_record.relative_to(fixture_root).as_posix(),
+            ],
+        )
+
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("pointer does not match the exact artifact entry owner", messages)
+
+    def test_legacy_proposal_without_status_still_fails(self) -> None:
+        fixture_root = Path(tempfile.mkdtemp(prefix="legacy-proposal-no-status-"))
+        self.addCleanupTree(fixture_root)
+        proposal, _ = write_stage_owned_proposal(fixture_root)
+        text = proposal.read_text(encoding="utf-8")
+        text = text.replace(
+            "## Owning change record\n\n"
+            "[Change record](../changes/2026-07-29-stage-owned-proposal/change.yaml)\n",
+            "",
+        )
+        proposal.write_text(text, encoding="utf-8")
+
+        result = validate_repository(
+            fixture_root,
+            mode="explicit-paths",
+            paths=[proposal.relative_to(fixture_root).as_posix()],
+        )
+
+        messages = "\n".join(f.message for f in result.blocking_findings)
+        self.assertIn("missing required Status section", messages)
 
     def test_valid_draft_proposal_passes(self) -> None:
         self.assertFixturePasses(

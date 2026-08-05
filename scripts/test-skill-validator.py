@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import unittest
+from unittest import mock
 import math
 import tempfile
 import textwrap
@@ -7673,6 +7674,33 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, body)
 
+    def test_plan_initializes_planned_work_once_and_workflow_owns_later_updates(self) -> None:
+        plan_body = (ROOT / "skills" / "plan" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        workflow_body = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+
+        for phrase in (
+            "initialize `workflow_state.planned_work` exactly once",
+            "every implementation milestone to `planned`",
+            "first implementation milestone",
+            "`latest_review.status: not-started`",
+            "`final_closeout.readiness: not-ready`",
+            "must not replace or update existing `planned_work`",
+            "workflow owns every later `planned_work` transition",
+        ):
+            with self.subTest(surface="plan", phrase=phrase):
+                self.assertIn(phrase, plan_body)
+
+        for phrase in (
+            "Plan owns only the one-time deterministic initialization",
+            "workflow owns every later `planned_work` transition",
+        ):
+            with self.subTest(surface="workflow", phrase=phrase):
+                self.assertIn(phrase, workflow_body)
+
     def test_downstream_skills_keep_upstream_surfaces_read_only(self) -> None:
         for skill_name, phrase in self.DOWNSTREAM_READ_ONLY_PHRASES.items():
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
@@ -7752,6 +7780,632 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
 
 
 class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
+    COMPACT_SCAN_PATH = ROOT / "templates" / "shared" / "boundary-first-compact-scan.md"
+    PROGRESSIVE_VOCABULARIES = {
+        "capability_state": {"pending", "active"},
+        "identity_state": {
+            "none",
+            "known",
+            "missing",
+            "stale",
+            "unknown",
+            "ambiguous",
+            "conflicting",
+            "escaped",
+            "insufficient",
+            "grandfathered",
+        },
+        "outcome_state": {
+            "unchanged",
+            "owned",
+            "new-normative",
+            "proof-gap",
+            "already-proved",
+            "semantic-gap",
+        },
+        "path_state": {
+            "direct",
+            "escaped",
+            "sibling-material",
+            "recovery",
+            "duplicate",
+            "ownerless",
+        },
+        "revision_state": {
+            "new",
+            "not-applicable",
+            "non-substantive",
+            "substantive",
+            "undecidable",
+        },
+        "structural_state": {"valid"},
+        "expected_action": {
+            "formalize",
+            "continue-ordinary",
+            "no-active-claim",
+            "remain-valid",
+            "judge-formal",
+            "proceed-slice",
+            "expand",
+            "stop",
+            "add-proof",
+            "stop-scenarios",
+            "changes-requested",
+        },
+        "expected_route": {"none", "spec", "test-spec"},
+        "expected_scenario": {"none", "add", "stop"},
+    }
+    REQUIRED_PROGRESSIVE_CASE_IDS = {
+        "progressive.unnamed-active-behavior",
+        "progressive.named-active-behavior",
+        "progressive.named-non-behavior",
+        "progressive.pending-behavior",
+        "progressive.grandfathered-formatting",
+        "progressive.grandfathered-substantive",
+        "progressive.grandfathered-undecidable",
+        "progressive.sufficient-slice",
+        "progressive.missing-id",
+        "progressive.stale-id",
+        "progressive.unknown-id",
+        "progressive.ambiguous-id",
+        "progressive.conflicting-id",
+        "progressive.escaped-id",
+        "progressive.insufficient-id",
+        "progressive.new-outcome",
+        "progressive.proof-only-gap",
+        "progressive.material-sibling",
+        "progressive.recovery-outcome",
+        "progressive.duplicate-combination",
+        "progressive.ownerless-discovery",
+        "progressive.structural-pass-semantic-gap",
+    }
+
+    def test_governed_skills_embed_the_exact_compact_scan_once(self) -> None:
+        compact_scan = self.COMPACT_SCAN_PATH.read_text(encoding="utf-8").strip()
+        questions = (
+            "Which inputs or actors can change the outcome?",
+            "Which state or timing conditions can change the outcome?",
+            "Which public, sibling, helper, or alternate path can change the outcome?",
+            "Which failure, retry, recovery, compatibility, or external condition can change the outcome?",
+        )
+        for skill_name in self.GOVERNED_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertEqual(body.count(compact_scan), 1)
+                for question in questions:
+                    self.assertEqual(body.count(question), 1)
+                self.assertIn("Do not wait for the user to name the method.", body)
+                self.assertIn(
+                    "The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.",
+                    body,
+                )
+                self.assertIn(
+                    "Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption.",
+                    body,
+                )
+                self.assertIn("do not build a Cartesian inventory.", body)
+
+    def test_loading_profiles_measure_exact_proportional_resource_sets(self) -> None:
+        fixture_path = (
+            ROOT
+            / "scripts"
+            / "fixtures"
+            / "boundary-first"
+            / "loading-profiles.yaml"
+        )
+        measurements = skill_validation.measure_boundary_loading_profiles(
+            ROOT,
+            fixture_path,
+        )
+
+        self.assertEqual(set(measurements), self.GOVERNED_SKILLS)
+        for skill_name, measurement in measurements.items():
+            with self.subTest(skill=skill_name):
+                self.assertEqual(
+                    measurement.expanded_resource_count,
+                    measurement.mapped_resource_count,
+                )
+                self.assertGreater(measurement.mapped_resource_bytes, 0)
+                self.assertLessEqual(
+                    measurement.initial_resource_count,
+                    measurement.mapped_resource_count,
+                )
+                self.assertLessEqual(
+                    measurement.initial_resource_bytes,
+                    measurement.mapped_resource_bytes,
+                )
+        for skill_name in {
+            "workflow",
+            "plan",
+            "plan-review",
+            "implement",
+            "code-review",
+            "verify",
+        }:
+            self.assertEqual(measurements[skill_name].initial_resource_count, 0)
+        for skill_name in {"spec", "spec-review", "test-spec", "test-spec-review"}:
+            self.assertEqual(
+                measurements[skill_name].initial_resource_count,
+                measurements[skill_name].mapped_resource_count,
+            )
+
+        fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+        self.assertNotIn("budget", json.dumps(fixture).lower())
+        self.assertNotIn("threshold", json.dumps(fixture).lower())
+
+    def test_loading_profiles_unknown_value_fails_closed(self) -> None:
+        fixture_path = (
+            ROOT
+            / "scripts"
+            / "fixtures"
+            / "boundary-first"
+            / "loading-profiles.yaml"
+        )
+        fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+        mutations = (
+            ("schema", lambda value: value.update(schema_version=2)),
+            ("schema_bool", lambda value: value.update(schema_version=True)),
+            ("schema_float", lambda value: value.update(schema_version=1.0)),
+            ("schema_string", lambda value: value.update(schema_version="1")),
+            ("schema_null", lambda value: value.update(schema_version=None)),
+            ("missing_schema", lambda value: value.pop("schema_version")),
+            ("extra_top_field", lambda value: value.update(extra="unknown")),
+            (
+                "unknown_skill",
+                lambda value: value["profiles"][0].update(skill="future-skill"),
+            ),
+            (
+                "unknown_resource",
+                lambda value: value["profiles"][0].update(
+                    permitted_expansion_ids=["future-resource"]
+                ),
+            ),
+            (
+                "wrong_mapping",
+                lambda value: value["profiles"][1].update(
+                    mapped_resource_ids=["compact-core"]
+                ),
+            ),
+        )
+        for name, mutate in mutations:
+            changed = json.loads(json.dumps(fixture))
+            mutate(changed)
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
+                path = Path(temporary) / "loading-profiles.yaml"
+                path.write_text(json.dumps(changed), encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, "loading profile"):
+                    skill_validation.measure_boundary_loading_profiles(ROOT, path)
+
+    def test_progressive_guidance_keeps_stage_ownership_and_slice_routing(self) -> None:
+        expected_owner_text = {
+            "spec": "Author the normative applicability, boundary, interaction, and example-ownership record.",
+            "spec-review": "Judge applicability, boundary completeness, interactions, invariants, outcomes, and example ownership.",
+            "test-spec": "Map every applicable boundary and selected interaction to proof without inventing contract IDs.",
+            "test-spec-review": "Judge proof adequacy, negative coverage, fixtures, command ownership, and manual-proof boundaries.",
+        }
+        for skill_name, phrase in expected_owner_text.items():
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertIn(phrase, body)
+
+        downstream = {
+            "plan",
+            "plan-review",
+            "implement",
+            "code-review",
+            "verify",
+        }
+        for skill_name in downstream:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertIn(
+                    "Start with the exact approved rows cited for the current decision.",
+                    body,
+                )
+                self.assertIn(
+                    "A new or changed normative outcome routes to `spec`; a proof-only gap routes to `test-spec`.",
+                    body,
+                )
+                self.assertNotIn(
+                    "references/boundary-first-feature-authoring-v1.md",
+                    body,
+                )
+                self.assertNotIn("references/boundary-first-proof-v1.md", body)
+
+    def test_progressive_guidance_distinguishes_activation_and_revision_states(self) -> None:
+        for skill_name in self.GOVERNED_SKILLS:
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(skill=skill_name):
+                self.assertIn("`pending` never claims active adoption", body)
+                self.assertIn(
+                    "after activation, new behavior-changing specs adopt automatically",
+                    body,
+                )
+                self.assertIn(
+                    "grandfathered non-substantive revisions remain valid",
+                    body,
+                )
+                self.assertIn(
+                    "`spec-review` must block an undecidable substantive-revision classification",
+                    body,
+                )
+
+    @staticmethod
+    def progressive_decision(case: dict[str, object]) -> tuple[str, str, bool, bool, str]:
+        invalid_identities = {
+            "missing",
+            "stale",
+            "unknown",
+            "ambiguous",
+            "conflicting",
+            "escaped",
+            "insufficient",
+        }
+        if case["identity_state"] in invalid_identities:
+            return ("expand", "none", False, False, "none")
+        if case["outcome_state"] == "semantic-gap":
+            return ("changes-requested", "spec", True, False, "none")
+        if case["revision_state"] == "undecidable":
+            return ("changes-requested", "spec", True, False, "none")
+        if case["outcome_state"] == "new-normative" or case["path_state"] == "ownerless":
+            return ("stop", "spec", True, False, "none")
+        if case["outcome_state"] == "proof-gap":
+            return ("stop", "test-spec", True, False, "none")
+        if case["path_state"] in {"sibling-material", "recovery"}:
+            return ("add-proof", "none", False, False, "add")
+        if case["outcome_state"] == "already-proved" or case["path_state"] == "duplicate":
+            return ("stop-scenarios", "none", False, False, "stop")
+        if case["capability_state"] == "pending" and case["behavior_change"]:
+            return ("no-active-claim", "none", False, False, "none")
+        if (
+            case["identity_state"] == "grandfathered"
+            and case["revision_state"] == "non-substantive"
+        ):
+            return ("remain-valid", "none", False, False, "none")
+        if (
+            case["identity_state"] == "grandfathered"
+            and case["revision_state"] == "substantive"
+        ):
+            return ("judge-formal", "none", False, False, "none")
+        if not case["behavior_change"] and case["identity_state"] == "none":
+            return ("continue-ordinary", "none", False, False, "none")
+        if (
+            case["skill"] == "spec"
+            and case["capability_state"] == "active"
+            and case["behavior_change"]
+        ):
+            return ("formalize", "none", True, False, "none")
+        return ("proceed-slice", "none", False, False, "none")
+
+    def progressive_semantic_errors(self, fixture: dict[str, object]) -> list[str]:
+        errors: list[str] = []
+        if set(fixture) != {"cases"} or not isinstance(fixture["cases"], list):
+            return ["fixture must contain a cases list"]
+        required_fields = {
+            "case_id",
+            "skill",
+            "behavior_change",
+            "user_named_method",
+            "capability_state",
+            "identity_state",
+            "outcome_state",
+            "path_state",
+            "revision_state",
+            "structural_state",
+            "expected_action",
+            "expected_route",
+            "expected_explain",
+            "expected_consent",
+            "expected_scenario",
+            "required_guidance",
+            "forbidden_guidance",
+        }
+        seen: set[str] = set()
+        valid_rows: list[dict[str, object]] = []
+        for case in fixture["cases"]:
+            if not isinstance(case, dict) or set(case) != required_fields:
+                errors.append("case must use the closed progressive contract")
+                continue
+            case_id = case["case_id"]
+            if (
+                not isinstance(case_id, str)
+                or case_id not in self.REQUIRED_PROGRESSIVE_CASE_IDS
+            ):
+                errors.append("case_id value is not in the closed vocabulary")
+                continue
+            if case_id in seen:
+                errors.append(f"duplicate case {case_id}")
+                continue
+            skill = case["skill"]
+            if not isinstance(skill, str) or skill not in self.GOVERNED_SKILLS:
+                errors.append(f"{case['case_id']}: unknown skill")
+                continue
+            vocabulary_error = False
+            for field, allowed in self.PROGRESSIVE_VOCABULARIES.items():
+                if not isinstance(case[field], str) or case[field] not in allowed:
+                    errors.append(
+                        f"{case['case_id']}: {field} value is not in the closed vocabulary"
+                    )
+                    vocabulary_error = True
+            for field in (
+                "behavior_change",
+                "user_named_method",
+                "expected_explain",
+                "expected_consent",
+            ):
+                if type(case[field]) is not bool:
+                    errors.append(f"{case['case_id']}: {field} must be a boolean")
+                    vocabulary_error = True
+            for field in ("required_guidance", "forbidden_guidance"):
+                value = case[field]
+                if (
+                    not isinstance(value, list)
+                    or not value
+                    or any(not isinstance(item, str) or not item for item in value)
+                ):
+                    errors.append(
+                        f"{case['case_id']}: {field} must be a nonempty string list"
+                    )
+                    vocabulary_error = True
+            if vocabulary_error:
+                continue
+            seen.add(case_id)
+            valid_rows.append(case)
+            if (
+                case["outcome_state"] in {"new-normative", "semantic-gap"}
+                or case["path_state"] == "ownerless"
+            ) and not case["behavior_change"]:
+                errors.append(f"{case['case_id']}: semantic change must be behavioral")
+            actual = self.progressive_decision(case)
+            expected = (
+                case["expected_action"],
+                case["expected_route"],
+                case["expected_explain"],
+                case["expected_consent"],
+                case["expected_scenario"],
+            )
+            if actual != expected:
+                errors.append(
+                    f"{case['case_id']}: expected decision {expected!r} does not match {actual!r}"
+                )
+            body = (ROOT / "skills" / str(case["skill"]) / "SKILL.md").read_text(
+                encoding="utf-8"
+            )
+            for phrase in case["required_guidance"]:
+                if phrase not in body:
+                    errors.append(f"{case['case_id']}: missing guidance {phrase!r}")
+            for phrase in case["forbidden_guidance"]:
+                if phrase in body:
+                    errors.append(f"{case['case_id']}: forbidden guidance {phrase!r}")
+
+        covered_skills = {case["skill"] for case in valid_rows}
+        if covered_skills != self.GOVERNED_SKILLS:
+            errors.append("progressive cases must cover every governed skill")
+        if seen != self.REQUIRED_PROGRESSIVE_CASE_IDS:
+            errors.append("progressive cases must cover every required semantic property")
+        covered_identities = {case["identity_state"] for case in valid_rows}
+        required_identities = {
+            "missing",
+            "stale",
+            "unknown",
+            "ambiguous",
+            "conflicting",
+            "escaped",
+            "insufficient",
+        }
+        if not required_identities <= covered_identities:
+            errors.append("progressive cases must cover every expansion identity")
+        return errors
+
+    def progressive_fixture(self) -> dict[str, object]:
+        return json.loads(
+            (
+                ROOT
+                / "scripts"
+                / "fixtures"
+                / "boundary-first"
+                / "semantic"
+                / "progressive-cases.json"
+            ).read_text(encoding="utf-8")
+        )
+
+    def test_progressive_semantic_scenarios_are_closed_and_supported(self) -> None:
+        fixture = self.progressive_fixture()
+        self.assertEqual(self.progressive_semantic_errors(fixture), [])
+        by_id = {case["case_id"]: case for case in fixture["cases"]}
+        named = by_id["progressive.named-active-behavior"]
+        unnamed = by_id["progressive.unnamed-active-behavior"]
+        self.assertNotEqual(named["user_named_method"], unnamed["user_named_method"])
+        self.assertEqual(self.progressive_decision(named), self.progressive_decision(unnamed))
+
+    def test_progressive_semantic_oracle_rejects_contradictions_and_gaps(self) -> None:
+        fixture = self.progressive_fixture()
+        mutations = []
+        cases_by_id = {
+            case["case_id"]: index for index, case in enumerate(fixture["cases"])
+        }
+
+        known_unknown = json.loads(json.dumps(fixture))
+        known_unknown["cases"][cases_by_id["progressive.unknown-id"]][
+            "identity_state"
+        ] = "known"
+        mutations.append(known_unknown)
+
+        wrong_action = json.loads(json.dumps(fixture))
+        wrong_action["cases"][cases_by_id["progressive.unknown-id"]][
+            "expected_action"
+        ] = "formalize"
+        mutations.append(wrong_action)
+
+        wrong_route = json.loads(json.dumps(fixture))
+        wrong_route["cases"][cases_by_id["progressive.new-outcome"]][
+            "expected_route"
+        ] = "test-spec"
+        mutations.append(wrong_route)
+
+        non_behavioral_new_outcome = json.loads(json.dumps(fixture))
+        non_behavioral_new_outcome["cases"][cases_by_id["progressive.new-outcome"]][
+            "behavior_change"
+        ] = False
+        mutations.append(non_behavioral_new_outcome)
+
+        missing_trigger = json.loads(json.dumps(fixture))
+        missing_trigger["cases"] = [
+            case for case in missing_trigger["cases"] if case["identity_state"] != "stale"
+        ]
+        mutations.append(missing_trigger)
+
+        missing_skill = json.loads(json.dumps(fixture))
+        missing_skill["cases"] = [
+            case for case in missing_skill["cases"] if case["skill"] != "verify"
+        ]
+        mutations.append(missing_skill)
+
+        for index, mutation in enumerate(mutations):
+            with self.subTest(mutation=index):
+                self.assertNotEqual(self.progressive_semantic_errors(mutation), [])
+
+    def test_progressive_semantic_oracle_rejects_unknown_values_and_removed_properties(
+        self,
+    ) -> None:
+        fixture = self.progressive_fixture()
+        cases_by_id = {
+            case["case_id"]: index for index, case in enumerate(fixture["cases"])
+        }
+        target_index = cases_by_id["progressive.sufficient-slice"]
+        for field in self.PROGRESSIVE_VOCABULARIES:
+            mutated = json.loads(json.dumps(fixture))
+            mutated["cases"][target_index][field] = f"unknown-{field}"
+            with self.subTest(unknown_value=field):
+                self.assertIn(
+                    "closed vocabulary",
+                    " ".join(self.progressive_semantic_errors(mutated)),
+                )
+
+        for field in (
+            "behavior_change",
+            "user_named_method",
+            "expected_explain",
+            "expected_consent",
+        ):
+            mutated = json.loads(json.dumps(fixture))
+            mutated["cases"][target_index][field] = "false"
+            with self.subTest(invalid_type=field):
+                self.assertIn(
+                    "must be a boolean",
+                    " ".join(self.progressive_semantic_errors(mutated)),
+                )
+
+        for case_id in self.REQUIRED_PROGRESSIVE_CASE_IDS:
+            mutated = json.loads(json.dumps(fixture))
+            mutated["cases"] = [
+                case for case in mutated["cases"] if case["case_id"] != case_id
+            ]
+            with self.subTest(removed_property=case_id):
+                self.assertIn(
+                    "every required semantic property",
+                    " ".join(self.progressive_semantic_errors(mutated)),
+                )
+
+    def test_progressive_semantic_oracle_rejects_identity_and_shape_before_decision(
+        self,
+    ) -> None:
+        fixture = self.progressive_fixture()
+        target_index = next(
+            index
+            for index, case in enumerate(fixture["cases"])
+            if case["case_id"] == "progressive.sufficient-slice"
+        )
+        mutations: list[dict[str, object]] = []
+
+        unknown_case = json.loads(json.dumps(fixture))
+        unknown_case["cases"][target_index]["case_id"] = "progressive.future-property"
+        mutations.append(unknown_case)
+
+        invalid_case_type = json.loads(json.dumps(fixture))
+        invalid_case_type["cases"][target_index]["case_id"] = ["not", "hashable"]
+        mutations.append(invalid_case_type)
+
+        unknown_skill = json.loads(json.dumps(fixture))
+        unknown_skill["cases"][target_index]["skill"] = "future-skill"
+        mutations.append(unknown_skill)
+
+        invalid_skill_type = json.loads(json.dumps(fixture))
+        invalid_skill_type["cases"][target_index]["skill"] = ["plan"]
+        mutations.append(invalid_skill_type)
+
+        missing_field = json.loads(json.dumps(fixture))
+        del missing_field["cases"][target_index]["identity_state"]
+        mutations.append(missing_field)
+
+        extra_field = json.loads(json.dumps(fixture))
+        extra_field["cases"][target_index]["future_field"] = "value"
+        mutations.append(extra_field)
+
+        non_dictionary_row = json.loads(json.dumps(fixture))
+        non_dictionary_row["cases"][target_index] = "invalid-row"
+        mutations.append(non_dictionary_row)
+
+        for mutation in mutations:
+            mutation["cases"] = [mutation["cases"][target_index]]
+
+        for index, mutation in enumerate(mutations):
+            with self.subTest(mutation=index), mock.patch.object(
+                self,
+                "progressive_decision",
+                wraps=self.progressive_decision,
+            ) as decision:
+                errors = self.progressive_semantic_errors(mutation)
+                self.assertNotEqual(errors, [])
+                decision.assert_not_called()
+
+        reordered = self.progressive_fixture()
+        reordered["cases"].reverse()
+        self.assertEqual(self.progressive_semantic_errors(reordered), [])
+
+    def test_skill_validation_bounds_manifest_contract_failures(self) -> None:
+        for case in ("missing", "unknown-schema"):
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                shutil.copytree(ROOT / "scripts", root / "scripts")
+                shutil.copytree(ROOT / "schemas", root / "schemas")
+                shutil.copytree(ROOT / "skills" / "spec", root / "skills" / "spec")
+                (root / "specs").mkdir()
+                if case == "unknown-schema":
+                    manifest = (
+                        ROOT / "specs" / "boundary-first-resources.yaml"
+                    ).read_text(encoding="utf-8")
+                    (root / "specs" / "boundary-first-resources.yaml").write_text(
+                        manifest.replace("schema_version: 1", "schema_version: 2"),
+                        encoding="utf-8",
+                    )
+
+                completed = subprocess.run(
+                    [
+                        sys.executable,
+                        str(root / "scripts" / "validate-skills.py"),
+                        str(root / "skills" / "spec"),
+                    ],
+                    capture_output=True,
+                    text=True,
+                    cwd=root,
+                )
+                combined = completed.stdout + completed.stderr
+
+                self.assertEqual(completed.returncode, 1)
+                self.assertIn("boundary resource contract invalid", combined)
+                self.assertIn("specs/boundary-first-resources.yaml", combined)
+                self.assertNotIn("Traceback", combined)
+                self.assertNotIn(str(root), combined)
+
     GOVERNED_SKILLS = {
         "workflow",
         "spec",
@@ -7913,55 +8567,55 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
             errors.append("semantic cases must cover the exact governed skill set")
         return errors
 
-    def test_governed_skills_map_one_reference_with_owned_behavior(self) -> None:
+    def test_governed_skills_map_exact_owned_resources_with_behavior(self) -> None:
         expected = {
             "workflow": (
-                "routing a change that declares `boundary_contract: boundary-first-v1` or depends on an approved boundary or proof record.",
+                "an approved boundary, interaction, or proof ID is missing, stale, unknown, ambiguous, conflicting, or insufficient for routing.",
                 "Route the method, locate governing artifacts, and stop on missing applicable ownership.",
                 "Stop routing and name the owning upstream stage",
             ),
             "spec": (
-                "authoring a new or substantively revised behavior contract that must adopt or has opted into `boundary-first-v1`.",
+                "a behavior contract is governed by `boundary-first-v1`.",
                 "Author the normative applicability, boundary, interaction, and example-ownership record.",
                 "Stop spec authoring and route the gap upstream",
             ),
             "spec-review": (
-                "reviewing an adopting boundary record or deciding whether a grandfathered spec revision is substantive.",
+                "reviewing a `boundary-first-v1` behavior contract.",
                 "Judge applicability, boundary completeness, interactions, invariants, outcomes, and example ownership.",
                 "Stop review with a material finding",
             ),
             "plan": (
-                "planning implementation for an approved feature spec that declares `boundary_contract: boundary-first-v1`.",
+                "cited approved boundary or interaction rows are missing, stale, unknown, ambiguous, conflicting, or insufficient for planning.",
                 "Map applicable boundaries to independently closeable milestones, dependencies, affected surfaces, rollback units, and proof timing.",
                 "Stop planning when an applicable boundary lacks",
             ),
             "plan-review": (
-                "reviewing a plan governed by an approved `boundary-first-v1` feature spec.",
+                "cited approved boundary or interaction rows are missing, stale, unknown, ambiguous, conflicting, or insufficient for plan review.",
                 "Reject coupled primary boundaries, omitted dependencies, unsafe rollback, and proof sequencing that cannot close independently.",
                 "Stop review and request plan revision",
             ),
             "test-spec": (
-                "authoring the proof map for a feature spec that declares `boundary_contract: boundary-first-v1`.",
+                "a proof map consumes a `boundary-first-v1` feature record.",
                 "Map every applicable boundary and selected interaction to proof without inventing contract IDs.",
                 "Stop test-spec authoring and return to the feature spec",
             ),
             "test-spec-review": (
-                "reviewing a proof map governed by a `boundary-first-v1` feature spec.",
+                "reviewing a proof map governed by a `boundary-first-v1` feature record.",
                 "Judge proof adequacy, negative coverage, fixtures, command ownership, and manual-proof boundaries.",
                 "Stop review with a material finding",
             ),
             "implement": (
-                "implementing a change governed by an approved `boundary-first-v1` boundary record and proof map.",
+                "approved boundary, interaction, or proof IDs are missing, stale, unknown, ambiguous, conflicting, or insufficient for implementation.",
                 "Stop on missing boundary or proof ownership and implement against the approved model and proof map.",
                 "Stop implementation before mutation",
             ),
             "code-review": (
-                "reviewing implementation governed by an approved `boundary-first-v1` boundary record and proof map.",
+                "approved diff-related boundary, interaction, or proof IDs are missing, stale, unknown, ambiguous, conflicting, or insufficient for review.",
                 "Inspect composed public, helper, sibling, failure, stale, recovery, and escaped-boundary paths.",
                 "Stop clean handoff and record a finding",
             ),
             "verify": (
-                "verifying a change governed by an approved `boundary-first-v1` contract and proof map.",
+                "the final approved boundary, interaction, or proof trace is missing, stale, unknown, ambiguous, conflicting, or insufficient for verification.",
                 "Confirm contract-to-proof-to-implementation coherence and unresolved-gap closure.",
                 "Stop verification before readiness claims",
             ),
@@ -7990,6 +8644,37 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
                     ).read_bytes(),
                     reference_bytes,
                 )
+
+        owned_family_resources = {
+            "spec": "boundary-first-feature-authoring-v1.md",
+            "spec-review": "boundary-first-feature-authoring-v1.md",
+            "test-spec": "boundary-first-proof-v1.md",
+            "test-spec-review": "boundary-first-proof-v1.md",
+        }
+        for skill_name in self.GOVERNED_SKILLS:
+            skill_root = ROOT / "skills" / skill_name
+            references = {
+                path.name
+                for path in (skill_root / "references").glob(
+                    "boundary-first-*-v1.md"
+                )
+            }
+            expected_references = {"boundary-first-method-v1.md"}
+            family_resource = owned_family_resources.get(skill_name)
+            if family_resource:
+                expected_references.add(family_resource)
+                self.assertIn(
+                    f"- READ `references/{family_resource}` when ",
+                    (skill_root / "SKILL.md").read_text(encoding="utf-8"),
+                )
+                self.assertEqual(
+                    (skill_root / "references" / family_resource).read_bytes(),
+                    (
+                        ROOT / "specs" / "references" / family_resource
+                    ).read_bytes(),
+                )
+            with self.subTest(skill=skill_name, resource_set=True):
+                self.assertEqual(references, expected_references)
 
         for excluded in ("proposal", "proposal-review"):
             body = (
