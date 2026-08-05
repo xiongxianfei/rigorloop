@@ -12,9 +12,10 @@ Review closeout: proposal-review-r4
 Review closeout: spec-review-r2
 Review closeout: architecture-review-activation-r1
 Review closeout: plan-review-r1
+Review closeout: plan-review-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`
-- Findings resolved: 6
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`
+- Findings resolved: 8
 - Unresolved findings: 4
 - Final result: Plan revision is required before test-spec authoring.
 
@@ -29,9 +30,11 @@ Review closeout: plan-review-r1
 | BFA-SR1-003 | accepted | resolved | Invalid unpublished transition histories require a fresh replacement branch and rereview. |
 | BFA-SR1-004 | accepted | resolved | Completed formal boundary ownership for identity, self-containment, strict composition, drift, and replacement. |
 | BFA-PLAN-R1-001 | accepted | open | Split committed payload baseline B from transition T. |
-| BFA-PLAN-R1-002 | accepted | open | Separate candidate, strict-H, and detached-T proof phases. |
-| BFA-PLAN-R1-003 | accepted | open | Map release and public-closeout boundary proof owners. |
+| BFA-PLAN-R1-002 | accepted | resolved | Separated candidate, strict-H, and detached-T proof phases. |
+| BFA-PLAN-R1-003 | accepted | resolved | Mapped release and public-closeout boundary proof owners. |
 | BFA-PLAN-R1-004 | accepted | open | Replace placeholder validation commands with executable rules. |
+| BFA-PLAN-R2-001 | accepted | open | Designate B only after M3 review and closeout evidence settles. |
+| BFA-PLAN-R2-002 | accepted | open | Correct release validation and provide failure-safe executable shell. |
 
 ## Finding Details
 
@@ -125,30 +128,56 @@ Owning stage: plan
 Chosen action: Split the release work into a committed pre-transition payload baseline B and a narrow transition commit T.
 Rationale: The approved identity chain requires B and T to be separately realizable and reviewable commits.
 Validation target: plan-review-r2
-Validation evidence: pending
+Validation evidence: Plan-review R2 confirms B and T are split but finds B is designated before M3 review closeout, so this finding remains open.
 
 #### BFA-PLAN-R1-002 - Candidate proof is conflated with strict tagged-tree proof
 
 Finding ID: BFA-PLAN-R1-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: plan author
 Owning stage: plan
 Chosen action: Separate candidate validation at H from release-owned local-tag validation at H and detached-T release verification.
 Rationale: Candidate proof cannot establish the strict tag-context contract that exists only after the local release tag is created.
 Validation target: plan-review-r2
-Validation evidence: pending
+Validation evidence: Plan-review R2 confirms candidate-H, strict-H, and detached-T proof now have separate owners and ordered phases.
 
 #### BFA-PLAN-R1-003 - Boundary ownership omits release and public closeout proof
 
 Finding ID: BFA-PLAN-R1-003
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: plan author
 Owning stage: plan
 Chosen action: Map implementation, candidate, strict release, atomic publication, and post-publication closeout to distinct proof owners.
 Rationale: State, recovery, environment, and publication outcomes cross multiple phases and need explicit ownership.
 Validation target: plan-review-r2
+Validation evidence: Plan-review R2 confirms implementation, candidate, strict release, atomic publication, and public closeout are mapped independently.
+
+### plan-review-r2
+
+#### BFA-PLAN-R2-001 - B is designated before M3 can close
+
+Finding ID: BFA-PLAN-R2-001
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan
+Chosen action: Treat the payload commit as preparation and designate the final M3 closeout head as B only after review, resolution, and validation settle.
+Rationale: T must be the immediate child of B while M4 may begin only after M3 is fully closed.
+Validation target: plan-review-r3
+Validation evidence: pending
+
+#### BFA-PLAN-R2-002 - Release-checkpoint commands are not fully executable
+
+Finding ID: BFA-PLAN-R2-002
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan
+Chosen action: Correct `validate-release.py` to use `--version` and replace the prose recipe with a literal failure-safe shell block.
+Rationale: Release operators need executable commands that cannot continue to publication after a failed strict or tagged-tree gate.
+Validation target: plan-review-r3
 Validation evidence: pending
 
 #### BFA-PLAN-R1-004 - Broader validation commands are placeholders
