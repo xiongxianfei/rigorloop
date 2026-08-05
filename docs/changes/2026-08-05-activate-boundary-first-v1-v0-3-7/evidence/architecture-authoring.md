@@ -5,7 +5,7 @@
 - Diagram: `docs/architecture/system/diagrams/component-boundary-guidance.mmd`
 - ADR: `docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md`
 - Completion status: complete
-- Next review: `architecture-review-activation-r2`
+- Next review: `architecture-review-activation-r3`
 
 ## Design result
 
@@ -27,6 +27,12 @@ and an absent tag; Git's receive-side old-identity check rejects a later race.
 Sequential fallback is forbidden. Release-gated drift after `T` requires a
 replacement branch and review rather than another transition or history
 rewrite.
+
+Revision R3 aligns the focused component view and canonical Architecture
+Decisions summary with the approved model. The diagram now shows candidate
+`P/B/T/R`, immediate-child evidence `C`, publication readiness deriving and
+passing exact full `H`, separate strict-`H` and detached-`T` proof, and atomic
+publication without adding a state owner.
 
 ## Requirement mapping
 

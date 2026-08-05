@@ -437,7 +437,6 @@ component without another manifest or service:
 - strict release execution resolves local tag `v0.4.0` to `T`, validates and
   runs publication readiness from live `H`, and runs the full release gate in
   a detached temporary worktree at `T`; and
-  and
 - atomic publication performs one guarded, non-forced `git push --atomic` for
   `main: P -> H` and `v0.4.0 -> T`, or changes neither ref.
 
@@ -1379,9 +1378,10 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ADR `docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md`
 is required because activation introduces a durable authority split between
-pre-tag candidate proof and strict tag-context proof, uses four distinct Git
-identities, executes the full release gate from an earlier tagged tree, and
-publishes two refs through one compare-and-swap atomic transaction. The ADR
+pre-tag candidate proof and strict tag-context proof, uses the six roles
+`P/B/T/R/C/H`, binds exact live `H` through publication readiness, executes the
+full release gate from an earlier tagged tree, and publishes two refs through
+one compare-and-swap atomic transaction. The ADR
 retains the existing release profile and activation manifest rather than
 creating another state mechanism.
 
