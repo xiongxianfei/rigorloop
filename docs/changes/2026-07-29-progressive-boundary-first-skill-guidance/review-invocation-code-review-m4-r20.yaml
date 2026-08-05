@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: code-review-m4-r20
+review_stage: code-review
+review_target: commit:ee739c06
+base_revision: 3717578b
+head_revision: ee739c06
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r19-resolution
+reviewer_context_id: m4-r20-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [paired-dollar-structure, arithmetic-false-positive]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/skill-contract.md
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:ee739c06.diff
+    revision: ee739c06
+    sha256: 4cf73926c22139a677f91cee61b0e2cbe59397215d65dcf6208594590af51ca8
+initial_packet_sha256: 4cf73926c22139a677f91cee61b0e2cbe59397215d65dcf6208594590af51ca8
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r20-second-review}
+requirement_fidelity: {applicability: applicable, reason: R3l requires narrow phrase- or path-based published-skill checks.}
+risk_map:
+  affected_behavior: published workflow portability classification
+  highest_impact_failure_modes: ordinary paired arithmetic is mistaken for an invocation
+  changed_boundaries: multi-operator, grouped, Unicode, and comparison expressions
+  evidence_expected: structural math negatives plus retained real-invocation positives
+  direct_inspection_areas: paired-dollar suffix predicate and public evaluator
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, maintainability]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Does candidate-local math require an unnecessary arithmetic grammar?
+    - Can unrelated later dollars still hide a real invocation?

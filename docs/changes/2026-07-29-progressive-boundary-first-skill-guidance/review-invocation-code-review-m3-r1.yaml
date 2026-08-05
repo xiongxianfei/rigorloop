@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: code-review-m3-r1
+review_stage: code-review
+review_target: commit:3d6fc5d3
+base_revision: 1fd55a4a
+head_revision: 3d6fc5d3
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L2
+author_context_id: root-m3-implementation
+reviewer_context_id: m3-r1-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [validation-selection, lifecycle-safety, mixed-path-composition]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:3d6fc5d3.diff
+    revision: 3d6fc5d3
+    sha256: 15b9ab9d3d6c83a71c78bf7e60e2e470a5aaa59066c112dd88e9707fd8884abe
+initial_packet_sha256: 15b9ab9d3d6c83a71c78bf7e60e2e470a5aaa59066c112dd88e9707fd8884abe
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m3-r1-second-review}
+requirement_fidelity:
+  applicability: applicable
+  reason: M3 changes validation routing for public skill and lifecycle surfaces.
+risk_map:
+  affected_behavior: selected checks and affected paths
+  highest_impact_failure_modes: lifecycle under-selection or mixed-path broadening
+  changed_boundaries: canonical skills, generated skills, lifecycle artifacts, mixed sets, selector ownership
+  evidence_expected: five changed-set classes and exact path assertions
+  direct_inspection_areas: selector skills branch and focused tests
+  intentionally_out_of_scope: M4, final verification, PR
+  applicable_risk_classes: [validation-selection, authority-separation, composition]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Does any lifecycle artifact lose its check?
+    - Does a mixed set attach skill paths to lifecycle validation?

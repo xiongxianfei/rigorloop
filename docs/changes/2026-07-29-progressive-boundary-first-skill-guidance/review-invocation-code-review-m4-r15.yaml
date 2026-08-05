@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: code-review-m4-r15
+review_stage: code-review
+review_target: commit:1a141f2a
+base_revision: 267362b5
+head_revision: 1a141f2a
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r14-resolution
+reviewer_context_id: m4-r15-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [reference-block-context, narrow-static-scope, checker-complexity]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/skill-contract.md
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:1a141f2a.diff
+    revision: 1a141f2a
+    sha256: ebf10120ca2f54210df9b78ca5fc8b4e81b347ed845590a6426516b085fb7011
+initial_packet_sha256: ebf10120ca2f54210df9b78ca5fc8b4e81b347ed845590a6426516b085fb7011
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r15-second-review}
+requirement_fidelity: {applicability: applicable, reason: R3l requires narrow phrase- or path-based published-skill checks.}
+risk_map:
+  affected_behavior: published workflow portability classification
+  highest_impact_failure_modes: partial CommonMark emulation creates false positives and negatives
+  changed_boundaries: multiline references, block containers, fences, images, hidden definitions
+  evidence_expected: contract-aligned narrow static checks rather than rendered-prose interpretation
+  direct_inspection_areas: portability parser, skill-contract R3l, mutation matrix
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, maintainability]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Does the checker emulate Markdown beyond narrow phrase/path validation?
+    - Can block context change its classification?

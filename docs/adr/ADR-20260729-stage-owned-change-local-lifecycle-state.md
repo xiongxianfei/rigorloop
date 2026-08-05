@@ -1,10 +1,6 @@
 # ADR-20260729: Stage-Owned Change-Local Lifecycle State
 
-## Status
-
-proposed
-
-## Owning change
+## Owning change record
 
 `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml`
 
@@ -54,7 +50,8 @@ Assign write authority by transition:
   its matching transitions into `authoring` and `review-required`;
 - a review peer writes durable review evidence and only the matching
   settlement transition;
-- `workflow` writes routing and planned-work state only;
+- `plan` initializes missing planned-work state once from a new primary plan;
+- `workflow` writes routing and every later planned-work transition only;
 - implementation and later stages write only their code or stage-owned
   evidence; and
 - every stage treats another stage's artifact and state entry as read-only.

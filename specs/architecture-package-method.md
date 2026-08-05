@@ -1,8 +1,8 @@
 # Architecture Package Method
 
-## Status
+## Owning change record
 
-- approved
+`docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml`
 
 ## Related proposal
 
@@ -150,7 +150,11 @@ R7. The canonical `architecture.md` MUST use these 12 arc42 section headings in 
 11. Risks and Technical Debt
 12. Glossary
 
-R8. The canonical `architecture.md` MUST include repository lifecycle status metadata using the architecture artifact status vocabulary before the arc42 section sequence.
+R8. The canonical `architecture.md` MUST include stable owning-change-record
+metadata before the arc42 section sequence. For artifacts governed by
+`stage-owned-change-local-v1`, the matching `change.yaml` artifact entry is
+the only mutable lifecycle-state source; `architecture.md` MUST NOT duplicate
+mutable lifecycle status.
 
 R9. Repository lifecycle metadata sections MUST NOT replace, remove, or rename any of the 12 required arc42 section headings.
 
@@ -233,11 +237,20 @@ R45. Durable architecture decision triggers MUST include at least:
 - release architecture;
 - major workflow architecture decisions.
 
-R46. Each ADR created under this method MUST include title, status, context, decision, alternatives considered, consequences, and follow-up.
+R46. Each ADR created under this method MUST include title, a stable
+owning-change-record pointer, context, decision, alternatives considered,
+consequences, and follow-up.
 
-R47. ADR status vocabulary MUST align with repository lifecycle guidance: `draft`, `proposed`, `accepted`, `active`, `deprecated`, `superseded`, `archived`, and `abandoned`.
+R47. For an ADR governed by `stage-owned-change-local-v1`, current lifecycle
+state MUST resolve from its exact matching `change.yaml` artifact entry and
+MUST use the ADR states allowed by the active lifecycle contract. An unmigrated
+historical ADR MAY retain embedded status under its legacy contract until it is
+substantively revised or explicitly migrated.
 
-R48. Accepted or active ADRs MUST be append-only for decision history. Later changes MUST supersede or deprecate an old ADR with a new ADR or explicit lifecycle update rather than rewriting the old decision as if it had always been different.
+R48. Accepted or active ADRs MUST be append-only for decision history. Later
+changes MUST supersede or deprecate an old ADR with a new ADR or an explicit
+owner-entry lifecycle update rather than rewriting the old decision as if it
+had always been different.
 
 R49. `templates/architecture.md` MUST exist as the default architecture package scaffold.
 
@@ -450,7 +463,11 @@ Outputs:
 
 This method is a documentation, workflow, and architecture-guidance change. It does not change runtime behavior, public APIs, data formats, release artifacts, or command behavior by itself.
 
-Adoption is prospective. New architecture work after implementation must follow this method. Existing `docs/architecture/` documents may remain in their current lifecycle state until the follow-on legacy normalization artifact inventories and classifies them.
+Adoption is prospective. New architecture work after implementation must
+follow this method. Existing unmigrated `docs/architecture/` documents and
+ADRs may retain their legacy lifecycle representation until they are
+substantively revised, explicitly migrated, or classified by the follow-on
+legacy normalization artifact.
 
 The 2026-04-29 refinement is compatible with the original method because it keeps Mermaid `.mmd` as the first implementation diagram format, allows native Mermaid C4 syntax or equivalent flowchart/graph styling, and does not add required validators.
 
@@ -462,7 +479,7 @@ The observable proof for this method is repository artifact state and review evi
 
 - `spec-review` validates this contract before architecture or planning relies on it;
 - `architecture-review` validates canonical package updates, ADRs, no-architecture-impact rationale, and proposal/spec readiness gaps against this method;
-- artifact lifecycle validation checks statuses for touched proposals, specs, architecture documents, test specs, and ADRs;
+- artifact lifecycle validation resolves current state from exact owner entries for stage-owned governed artifacts and preserves explicit legacy handling for unmigrated artifacts;
 - skill validation checks canonical skill shape after architecture skill updates;
 - adapter and generated skill drift checks prove `.codex/skills/` and `dist/adapters/` output was refreshed when canonical skill guidance changes;
 - architecture-review evidence records whether diagrams use separate authored source files, relative links, C4 semantics, shared styling when applicable, and intent-labeled relationships;
@@ -540,7 +557,9 @@ AC5. This spec requires diagrams to be stored as source text and prevents extern
 
 AC6. This spec defines the normal architecture authoring surfaces and requires durable current architecture truth to be represented directly in the canonical package.
 
-AC7. This spec defines ADR triggers, required ADR fields, status vocabulary, and append-only decision-history expectations.
+AC7. This spec defines ADR triggers, required ADR fields, exact owner-entry
+lifecycle-state resolution with legacy compatibility, and append-only
+decision-history expectations.
 
 AC8. This spec requires `templates/architecture.md` and `templates/adr.md` under `templates/`, and treats `templates/` as a canonical-source boundary update requiring `CONSTITUTION.md` and `AGENTS.md` updates.
 

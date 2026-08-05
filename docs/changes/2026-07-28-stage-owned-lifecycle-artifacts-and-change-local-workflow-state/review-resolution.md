@@ -4,6 +4,11 @@
 
 Closeout status: closed
 
+Review closeout: proposal-review-r5
+Review closeout: architecture-review-r3
+Review closeout: architecture-review-r4
+Review closeout: architecture-review-r5
+
 Review closeout: test-spec-review-r3
 Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r1
@@ -40,15 +45,21 @@ Review closeout: code-review-final-r3
   `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`,
   `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`,
   `spec-review-r6`
-- Findings resolved: 22
+- Findings resolved: 30
 - Unresolved findings: 0
-- Current result: Test-spec-review R3 approved the proof map for M1
-  implementation handoff with no open review finding.
+- Current result: Architecture-review R5 approved the complete current package
+  with all R3 and R4 findings resolved.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| AR4-001 | accepted | resolved | Superseded automation ADRs are consistently classified as historical decisions with retained constraints. |
+| AR4-002 | accepted | resolved | Schema-v3 writes and schema-v1/v2 compatibility reads are unambiguous across the package. |
+| AR3-001 | accepted | resolved | Approved supporting spec and test-spec amendments align stable owner metadata and exact change-local lifecycle state. |
+| AR3-002 | accepted | resolved | Active authority and superseded predecessor summaries now consistently describe current state. |
+| AR3-003 | accepted | resolved | The component diagram distinguishes owner-family initial loading from downstream expansion loading. |
+| SLA-PR5-001 | accepted | resolved | Corrected the stale compatibility statement; proposal-review R5 classified the complete correction as non-substantive. |
 | SLA-TSR4 | accepted | resolved | T5, T6, and T19 now align with M3 command availability and evidence ownership. |
 | SLA-TSR1 | accepted | resolved | Staged proof now activates only when its commands and implementation surface exist. |
 | SLA-TSR2 | accepted | resolved | MP1 and MP2 are complete agent semantic-review procedures with post-PR human authority separated. |
@@ -73,6 +84,98 @@ Review closeout: code-review-final-r3
 | SLA-SR11 | accepted | resolved | Complete the same-rank compatibility inventory for remaining retired writers. |
 
 ## Finding Details
+
+### architecture-review-r4
+
+#### AR4-001 - Historical automation ADRs still appear to await supersession
+
+Finding ID: AR4-001
+Disposition: accepted
+Status: resolved
+Owner: architecture author
+Owning stage: architecture
+Chosen action: Replace four stale pending-supersession summaries with current historical classification.
+Rationale: Canonical architecture must not contradict the active stage-owned ADR settlement.
+Safe resolution path: Change summaries only; preserve ADR bodies.
+Validation target: architecture-review-r5
+Validation evidence: Architecture-review R5 confirmed all predecessor summaries consistently use superseded historical classification.
+
+#### AR4-002 - CLI white-box view still specifies schema-v2 writes
+
+Finding ID: AR4-002
+Disposition: accepted
+Status: resolved
+Owner: architecture author
+Owning stage: architecture
+Chosen action: State schema-v3 current writes and schema-v1/v2 compatibility reads consistently.
+Rationale: The white-box view must match the current serializer contract and container view.
+Safe resolution path: Correct the serializer responsibility and two historical summaries without changing ADRs.
+Validation target: architecture-review-r5
+Validation evidence: Architecture-review R5 confirmed schema-v3 writes and schema-v1/v2 compatibility across goal, white-box, runtime, deployment, data, quality, and container surfaces.
+
+### architecture-review-r3
+
+#### AR3-001 - Architecture lifecycle metadata contracts conflict
+
+Finding ID: AR3-001
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec
+Chosen action: Align architecture-package method R8 and its test with the active stable-pointer and change-local mutable-state contract.
+Rationale: Two authoritative contracts cannot prescribe opposite lifecycle metadata placement.
+Safe resolution path: Amend only the conflicting method requirement and proof, then include it in architecture R4 evidence.
+Validation target: architecture-review-r4
+Validation evidence: Supporting spec and test-spec reviews approved stable owner pointers, exact change-local state, template and skill alignment, and legacy compatibility.
+
+#### AR3-002 - Active ADR decisions are described as pending
+
+Finding ID: AR3-002
+Disposition: accepted
+Status: resolved
+Owner: architecture author
+Owning stage: architecture
+Chosen action: Update current Architecture Decisions and Readiness wording to active-state language.
+Rationale: Canonical architecture must describe current decisions, not preserve stale proposal-time wording.
+Safe resolution path: Correct only current architecture summaries; preserve ADR history.
+Validation target: architecture-review-r4
+Validation evidence: Architecture-review R5 confirmed active authority, superseded historical decisions, and retained constraints are consistently classified.
+
+### architecture-review-r5
+
+Review result: approved
+Material findings: none
+Resolution required: no
+Validation evidence: Complete arc42/C4 package review plus explicit lifecycle,
+metadata, readability, whitespace, and 12-section heading checks passed.
+
+#### AR3-003 - Component diagram misstates compact-core loading
+
+Finding ID: AR3-003
+Disposition: accepted
+Status: resolved
+Owner: architecture author
+Owning stage: architecture
+Chosen action: Separate owner-family initial loading from downstream expansion loading in the component relationship.
+Rationale: The diagram must match the approved runtime contract.
+Safe resolution path: Relabel the focused component diagram without changing resource ownership.
+Validation target: architecture-review-r4
+Validation evidence: Architecture-review R4 confirmed the component relationship now distinguishes owner-family initial loading from downstream expansion loading.
+
+### proposal-review-r5
+
+#### SLA-PR5-001 - Pointer migration leaves a stale compatibility statement
+
+Finding ID: SLA-PR5-001
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: proposal
+Chosen action: Replace only the stale compatibility paragraph with an accurate historical and current-state statement.
+Rationale: The exact header migration is direction-preserving, but its surrounding compatibility explanation must not contradict the current artifact.
+Safe resolution path: Preserve all approved direction and update only the lifecycle-state compatibility wording before independent rereview.
+Validation target: proposal-review-r5 rereview
+Validation evidence: Proposal-review R5 classified the complete correction as non-substantive under SLA-R021 and approved restored settlement.
 
 ### test-spec-review-r3
 

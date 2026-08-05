@@ -1339,11 +1339,6 @@ def _apply_path_selection(
         )
         _add_check(selected, "skills.drift", "Changed canonical skill source requires generated skill mirror validation.")
         _add_check(selected, "adapters.drift", "Public adapter output can be affected by canonical skill changes.")
-        _add_lifecycle_warning_check(
-            selected,
-            path,
-            "Changed canonical skill source can carry lifecycle guidance and requires lifecycle-language warning validation.",
-        )
         return
 
     if category == "generated-skills":
@@ -2422,6 +2417,7 @@ def _path_category(path: str) -> str | None:
 def _is_boundary_first_surface(path: str) -> bool:
     return (
         path == "specs/boundary-first-activation.yaml"
+        or path == "specs/boundary-first-resources.yaml"
         or path == "specs/references/boundary-first-method-v1.md"
         or (path.startswith("specs/") and path.endswith(".md"))
         or (
@@ -2447,7 +2443,10 @@ def _is_boundary_first_surface(path: str) -> bool:
 
 def _is_boundary_first_reference_surface(path: str) -> bool:
     return (
-        path == "specs/references/boundary-first-method-v1.md"
+        path in {
+            "specs/boundary-first-resources.yaml",
+            "specs/references/boundary-first-method-v1.md",
+        }
         or path.endswith("/references/boundary-first-method-v1.md")
         or path
         in {

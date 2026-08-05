@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: code-review-final-r3
+review_stage: code-review
+review_target: commit:4c2b6c73
+base_revision: ddb1999b
+head_revision: 4c2b6c73
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-pr-lifecycle-ownership-fix
+reviewer_context_id: m1-r8-second-lifecycle-correction-review
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+risk_tier_triggers: [shared-canonical-architecture, stage-owned-settlement, post-verify-correction]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+  - AGENTS.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:4c2b6c73.diff
+    revision: 4c2b6c73
+    sha256: 677f7f74e85ec2925116ed5088ed5da34a51cd25da75c310c630b10063be1c21
+initial_packet_sha256: 677f7f74e85ec2925116ed5088ed5da34a51cd25da75c310c630b10063be1c21
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: false, satisfied: false, reviewer_context_id: none}
+requirement_fidelity: {applicability: applicable, reason: The correction changes stage-owned artifact pointers and settlement ownership.}
+risk_map:
+  affected_behavior: exact ownership and settlement currency for shared canonical architecture and an accepted proposal
+  highest_impact_failure_modes: duplicate ownership, stale settlement, silent proposal invalidation, or false ready state
+  changed_boundaries: architecture owner pointer, proposal state pointer, and current change artifact registration
+  evidence_expected: exact owner resolution, current matching review evidence, non-substantive proposal classification, and lifecycle validation
+  direct_inspection_areas: both governed artifacts, both change records, review evidence, and correction rationale
+  intentionally_out_of_scope: architecture content changes, proposal intent changes, PR opening, and final verification
+  applicable_risk_classes: [lifecycle-currency, authority, review-staleness, traceability]
+  non_applicable_risk_classes: [credentials, database-migration, network-service, ui-accessibility]
+  falsifiable_questions:
+    - Does the surviving architecture owner bind review evidence for the current content?
+    - Does the proposal migration have matching review-stage staleness classification?
+    - Does structural validity mask stale semantic settlement?

@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: code-review-m4-r19
+review_stage: code-review
+review_target: commit:f40a3b93
+base_revision: e31cd971
+head_revision: f40a3b93
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r18-resolution
+reviewer_context_id: m4-r19-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [join-controls, paired-dollar-locality, invocation-false-negative]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/skill-contract.md
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:f40a3b93.diff
+    revision: f40a3b93
+    sha256: 7d843cd4b4fc930dba3bfff8f242fa5ad69124866fc9e01fcf30d8c87e88d51e
+initial_packet_sha256: 7d843cd4b4fc930dba3bfff8f242fa5ad69124866fc9e01fcf30d8c87e88d51e
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r19-second-review}
+requirement_fidelity: {applicability: applicable, reason: R3l requires narrow phrase- or path-based published-skill checks.}
+risk_map:
+  affected_behavior: published workflow portability classification
+  highest_impact_failure_modes: join-control false positives and unrelated-dollar false negatives
+  changed_boundaries: ZWNJ, ZWJ, candidate-local paired math, later variables and currency
+  evidence_expected: generic-skill positive controls plus math-only negatives
+  direct_inspection_areas: continuation predicate, paired-dollar exemption, public evaluator
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, maintainability]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Do ZWNJ and ZWJ identifier continuations remain portable?
+    - Can an unrelated later dollar hide a real governed invocation?

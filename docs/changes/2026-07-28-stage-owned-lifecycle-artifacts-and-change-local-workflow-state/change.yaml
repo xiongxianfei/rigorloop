@@ -10,11 +10,11 @@ artifact_states:
     role: primary
     lifecycle_state: accepted
     review:
-      id: proposal-review-r4
+      id: proposal-review-r5
       artifact_id: proposal
       outcome: approved
-      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/proposal-review-r4.md
-      round: r4
+      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/proposal-review-r5.md
+      round: r5
   spec:
     kind: spec
     path: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
@@ -32,11 +32,11 @@ artifact_states:
     role: primary
     lifecycle_state: approved
     review:
-      id: architecture-review-r2
+      id: architecture-review-r5
       artifact_id: architecture
       outcome: approved
-      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-r2.md
-      round: r2
+      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-r5.md
+      round: r5
   adr:
     kind: adr
     path: docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md

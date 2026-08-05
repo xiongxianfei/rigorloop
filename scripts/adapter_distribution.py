@@ -3,15 +3,16 @@
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
-import hashlib
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
 import zipfile
+from collections import Counter
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path, PurePosixPath
@@ -64,7 +65,48 @@ PACKAGED_RESOURCE_DIRS = ("assets", "references", "scripts")
 COMMON_FRONTMATTER = frozenset({"name", "description"})
 TRANSFORMABLE_FRONTMATTER = frozenset({"argument-hint", "schema-version", "version"})
 PORTABLE_NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-CODEX_SKILL_INVOCATION_PATTERN = re.compile(r"(?<![A-Za-z0-9_])\$[a-z][a-z0-9-]*\b")
+PUBLISHED_SKILL_INVOCATION_NAMES = (
+    "architecture",
+    "architecture-review",
+    "bugfix",
+    "ci-maintenance",
+    "code-review",
+    "constitution",
+    "explain-change",
+    "explore",
+    "implement",
+    "learn",
+    "plan",
+    "plan-review",
+    "pr",
+    "project-map",
+    "proposal",
+    "proposal-review",
+    "research",
+    "spec",
+    "spec-review",
+    "test-spec",
+    "test-spec-review",
+    "verify",
+    "vision",
+    "workflow",
+)
+CODEX_SKILL_INVOCATION_PATTERN = re.compile(
+    r"\$(?:"
+    + "|".join(
+        re.escape(name)
+        for name in sorted(PUBLISHED_SKILL_INVOCATION_NAMES, key=len, reverse=True)
+    )
+    + r")",
+    re.IGNORECASE | re.ASCII,
+)
+CLAUDE_WORKFLOW_INVOCATION_PATTERN = re.compile(
+    r"(?<![\w./-])/(?ai:workflow)"
+    r"(?=$|[ \t\r\n`\"',;:!?)}\]]|\.(?:$|[ \t\r\n]))",
+)
+PAIRED_DOLLAR_MATH_SUFFIX_PATTERN = re.compile(
+    r"(?:|[ \t]*[+\-*/^=<>](?:\\\$|[^$\r\n`;,:])*)"
+)
 TARGET_INCOMPATIBILITY_PATTERNS = {
     "claude": re.compile(r"\bnot compatible with Claude Code\b", re.IGNORECASE),
     "opencode": re.compile(r"\bnot compatible with opencode\b", re.IGNORECASE),
@@ -363,11 +405,136 @@ def _non_codex_reasons(metadata: dict[str, str], text: str) -> list[str]:
         reasons.append("Depends on agents/openai.yaml.")
     if _references_codex_skills_as_only_install_location(text):
         reasons.append("References .codex/skills as the only install location.")
-    if CODEX_SKILL_INVOCATION_PATTERN.search(text):
+    if (
+        _has_codex_skill_invocation(text)
+        and not _documents_cross_adapter_skill_invocation(text)
+    ):
         reasons.append("Requires Codex-specific $skill invocation.")
     if _has_codex_runtime_assumption(text):
         reasons.append("Assumes Codex-only tool, UI, approval, or runtime assumption.")
     return reasons
+
+
+def _documents_cross_adapter_skill_invocation(text: str) -> bool:
+    """Recognize the exact workflow invocation-equivalence contract."""
+
+    expected_codex_code_spans = Counter(
+        (
+            "$workflow auto: <argument>",
+            "$workflow auto: <target-stage>",
+            "$workflow auto: status",
+            "$workflow auto: off",
+        )
+    )
+    actual_codex_code_spans = Counter(
+        span
+        for span in re.findall(r"`([^`\n]+)`", text)
+        if _has_codex_skill_invocation(span)
+    )
+    if actual_codex_code_spans != expected_codex_code_spans:
+        return False
+
+    equivalence_blocks = re.findall(
+        r"(?ms)^- Adapter invocation equivalents\b.*?(?=^- |\Z)",
+        text,
+    )
+    if len(equivalence_blocks) != 1:
+        return False
+
+    expected_block = (
+        "- Adapter invocation equivalents preserve the same arguments: Codex uses\n"
+        "  `$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and\n"
+        "  OpenCode invokes the installed `workflow` skill with `auto: <argument>`.\n"
+        "  Here `<argument>` is `<target-stage>`, `status`, or `off`.\n"
+    )
+    if equivalence_blocks[0] != expected_block:
+        return False
+    command_blocks = re.findall(
+        r"(?ms)^- `\$workflow auto: (?:<target-stage>|status)`.*?(?=^- |\Z)",
+        text,
+    )
+    expected_command_blocks = (
+        "- `$workflow auto: <target-stage>` selects a structured target. Supported "
+        "targets are `proposal-review`, `spec`, `spec-review`, `architecture`, "
+        "`architecture-review`, `plan`, `plan-review`, `test-spec`, "
+        "`test-spec-review`, `implement`, `code-review`, and `verify`.\n",
+        "- `$workflow auto: status` is read-only.\n"
+        "  `$workflow auto: off` durably cancels the unified run and preserves "
+        "transition evidence.\n",
+    )
+    if tuple(command_blocks) != expected_command_blocks:
+        return False
+    remaining_source = text
+    for approved_block in (*equivalence_blocks, *command_blocks):
+        remaining_source = remaining_source.replace(approved_block, "", 1)
+    if _has_codex_skill_invocation(remaining_source):
+        return False
+    if CLAUDE_WORKFLOW_INVOCATION_PATTERN.search(remaining_source):
+        return False
+    return True
+
+
+def _is_identifier_continuation(character: str) -> bool:
+    return bool(character) and (
+        character.isalnum()
+        or character == "_"
+        or character in {"\u200c", "\u200d"}
+        or f"a{character}".isidentifier()
+    )
+
+
+def _has_codex_skill_invocation(text: str) -> bool:
+    """Recognize complete governed dollar tokens outside paired-dollar math."""
+
+    for match in CODEX_SKILL_INVOCATION_PATTERN.finditer(text):
+        if _is_escaped_dollar(text, match.start()):
+            continue
+        preceding = text[match.start() - 1] if match.start() else ""
+        following = text[match.end()] if match.end() < len(text) else ""
+        if _is_identifier_continuation(preceding) or preceding == "$":
+            continue
+        if _is_identifier_continuation(following) or following in {"$", "-"}:
+            continue
+        line_end = text.find("\n", match.end())
+        if line_end == -1:
+            line_end = len(text)
+        closing_dollar = text.find("$", match.end(), line_end)
+        paired_math = False
+        while closing_dollar != -1:
+            if _is_escaped_dollar(text, closing_dollar):
+                closing_dollar = text.find("$", closing_dollar + 1, line_end)
+                continue
+            if _is_plausible_closing_dollar(text, closing_dollar):
+                paired_math = bool(
+                    PAIRED_DOLLAR_MATH_SUFFIX_PATTERN.fullmatch(
+                        text[match.end():closing_dollar]
+                    )
+                )
+            break
+        if paired_math:
+            continue
+        return True
+    return False
+
+
+def _is_plausible_closing_dollar(text: str, index: int) -> bool:
+    if _is_escaped_dollar(text, index):
+        return False
+
+    following = text[index + 1] if index + 1 < len(text) else ""
+    return not (
+        _is_identifier_continuation(following)
+        or following in {"$", "-", "{", "("}
+    )
+
+
+def _is_escaped_dollar(text: str, index: int) -> bool:
+    backslashes = 0
+    cursor = index - 1
+    while cursor >= 0 and text[cursor] == "\\":
+        backslashes += 1
+        cursor -= 1
+    return bool(backslashes % 2)
 
 
 def _target_adapter_reasons(text: str) -> dict[str, tuple[str, ...]]:
@@ -2500,19 +2667,57 @@ def _mapped_resources_for_clean_install(
         identities = mapped_resource_identities_for_skill(skill_dir)
         if not identities:
             continue
-        if selected and skill_dir.name not in selected and identities[0].skill_name not in selected:
+        if selected and identities[0].skill_name not in selected:
             continue
         for identity in identities:
             report = reports.get(identity.skill_name)
+            required_adapters = (
+                SUPPORTED_ADAPTERS
+                if selected
+                else report.included_adapters if report is not None else ()
+            )
             resources.append(
                 CleanInstallMappedResource(
                     skill_name=identity.skill_name,
                     relative_path=identity.relative_path,
                     sha256=identity.sha256,
-                    adapters=report.included_adapters if report is not None else (),
+                    adapters=required_adapters,
                 )
             )
     return tuple(resources)
+
+
+def validate_clean_install_skill_selection(
+    skills_root: Path,
+    skill_names: tuple[str, ...],
+) -> list[str]:
+    """Fail closed on every explicitly requested mapped-skill identity."""
+
+    if not skill_names:
+        return []
+    errors: list[str] = []
+    repeated = sorted(
+        {
+            skill_name
+            for skill_name in skill_names
+            if skill_names.count(skill_name) > 1
+        }
+    )
+    for skill_name in repeated:
+        errors.append(f"clean-install selected skill repeated: {skill_name}")
+    mapped_names = {
+        resource.skill_name
+        for resource in _mapped_resources_for_clean_install(
+            skills_root,
+            skill_names=(),
+        )
+    }
+    for skill_name in sorted(set(skill_names) - mapped_names):
+        errors.append(
+            "clean-install selected skill is unknown or has no mapped "
+            f"resources: {skill_name}"
+        )
+    return _dedupe_errors(errors)
 
 
 def validate_clean_install_smoke(
@@ -2527,7 +2732,9 @@ def validate_clean_install_smoke(
 ) -> list[str]:
     """Install locally packed archives into empty target projects and verify mapped resources."""
 
-    errors: list[str] = []
+    errors = validate_clean_install_skill_selection(skills_root, skill_names)
+    if errors:
+        return errors
     resources = _mapped_resources_for_clean_install(skills_root, skill_names=skill_names)
     if not resources:
         target = ", ".join(skill_names) if skill_names else "all skills"
@@ -2569,6 +2776,18 @@ def validate_clean_install_smoke(
                     f"{(result.stderr or result.stdout).strip()}"
                 )
                 continue
+            expected_boundary_resources_by_skill: dict[str, set[str]] = {}
+            for resource in resources:
+                if adapter_name not in resource.adapters:
+                    continue
+                expected_boundary_resources_by_skill.setdefault(
+                    resource.skill_name,
+                    set(),
+                )
+                if Path(resource.relative_path).name.startswith("boundary-first-"):
+                    expected_boundary_resources_by_skill[resource.skill_name].add(
+                        resource.relative_path
+                    )
             for resource in resources:
                 if adapter_name not in resource.adapters:
                     continue
@@ -2606,6 +2825,20 @@ def validate_clean_install_smoke(
                         f"clean-install mapped resource parity mismatch: {adapter_name}/{resource.skill_name}: "
                         f"{resource.relative_path}: canonical sha256={resource.sha256}; "
                         f"installed sha256={installed_sha256}"
+                    )
+            for skill_name, expected_paths in expected_boundary_resources_by_skill.items():
+                skill_root = project_root / _path_from_posix(config.skill_root) / skill_name
+                if not skill_root.is_dir():
+                    continue
+                installed_paths = {
+                    path.relative_to(skill_root).as_posix()
+                    for path in skill_root.rglob("boundary-first-*.md")
+                    if path.is_file()
+                }
+                for unexpected_path in sorted(installed_paths - expected_paths):
+                    errors.append(
+                        f"clean-install unowned boundary resource: "
+                        f"{adapter_name}/{skill_name}: {unexpected_path}"
                     )
     finally:
         shutil.rmtree(cli_path.parents[2], ignore_errors=True)

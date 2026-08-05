@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: code-review-m4-r13
+review_stage: code-review
+review_target: commit:e50f8830
+base_revision: 3171fee9
+head_revision: e50f8830
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r12-resolution
+reviewer_context_id: m4-r13-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [nested-markdown, default-ignorable-ranges, normalization-precision]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:e50f8830.diff
+    revision: e50f8830
+    sha256: 5eefc25948d5159a07e64c7a4f979a3f2b9e736f987efcf6d50a7da67eb0a3f4
+initial_packet_sha256: 5eefc25948d5159a07e64c7a4f979a3f2b9e736f987efcf6d50a7da67eb0a3f4
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r13-second-review}
+requirement_fidelity: {applicability: applicable, reason: Rendered-label closure and narrow portability are spec-derived.}
+risk_map:
+  affected_behavior: cross-adapter workflow invocation portability
+  highest_impact_failure_modes: nested formatting hides labels or omitted default-ignorables split tokens
+  changed_boundaries: nested Markdown and Unicode variation controls
+  evidence_expected: bounded recursive delimiter parsing and completed governed ranges
+  direct_inspection_areas: portability parser and mutation matrix
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, false-positive-input]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Can nested supported Markdown hide an adapter label?
+    - Can an omitted variation control split a label or invocation?

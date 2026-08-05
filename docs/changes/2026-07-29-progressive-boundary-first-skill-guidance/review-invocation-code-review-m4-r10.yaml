@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: code-review-m4-r10
+review_stage: code-review
+review_target: commit:f970d7e0
+base_revision: 4c08b788
+head_revision: f970d7e0
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r9-resolution
+reviewer_context_id: m4-r10-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [strict-equivalence-source, default-ignorable-unicode, fail-closed-parsing]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:f970d7e0.diff
+    revision: f970d7e0
+    sha256: d05299152d40d5014cd3cbd07fff2fd597dd6e4a8faddbd9333f6e0a5e55af73
+initial_packet_sha256: d05299152d40d5014cd3cbd07fff2fd597dd6e4a8faddbd9333f6e0a5e55af73
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r10-second-review}
+requirement_fidelity:
+  applicability: applicable
+  reason: Exact invocation equivalence and rendered residual closure are spec-derived.
+risk_map:
+  affected_behavior: cross-adapter workflow invocation portability
+  highest_impact_failure_modes: rendering canonicalizes invalid command source or invisible marks split labels
+  changed_boundaries: code-span source, placeholder syntax, Unicode combining and variation marks
+  evidence_expected: strict literal equivalence records plus separate rendered residual normalization
+  direct_inspection_areas: portability parser and mutation matrix
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, fail-closed-input]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Can rendered normalization approve a nonliteral invocation record?
+    - Can an invisible combining or variation mark hide an adapter label?

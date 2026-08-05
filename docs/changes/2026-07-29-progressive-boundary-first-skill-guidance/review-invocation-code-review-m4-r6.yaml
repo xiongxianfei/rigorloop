@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: code-review-m4-r6
+review_stage: code-review
+review_target: commit:57d2a5ec
+base_revision: 4052f86a
+head_revision: 57d2a5ec
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r5-resolution
+reviewer_context_id: m4-r6-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [adapter-label-closure, html-normalization, fail-closed-parsing]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:57d2a5ec.diff
+    revision: 57d2a5ec
+    sha256: 90925fdfa37ad6056d7d443c751ee27a2ba432bf2fda9799bac823b25474e01d
+initial_packet_sha256: 90925fdfa37ad6056d7d443c751ee27a2ba432bf2fda9799bac823b25474e01d
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r6-second-review}
+requirement_fidelity:
+  applicability: applicable
+  reason: Adapter-label invocation closure is spec-derived.
+risk_map:
+  affected_behavior: residual adapter-labeled invocation detection
+  highest_impact_failure_modes: verb, identity, operation, formatting, or entity changes hide an occurrence
+  changed_boundaries: adapter labels, HTML entities, arbitrary prose verbs
+  evidence_expected: exact-block subtraction followed by residual-label rejection
+  direct_inspection_areas: portability parser and mutation matrix
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, fail-closed-input]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Can any residual adapter label survive?
+    - Can HTML encoding hide a Codex invocation?

@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: code-review-m1-r7
+review_stage: code-review
+review_target: commit:328e31d3
+base_revision: 9d16bbe2
+head_revision: 328e31d3
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m1-r6-resolution
+reviewer_context_id: m1-r7-primary-and-second-fresh-agents
+context_separation_mechanism: fresh-separate-agents-blind-first
+risk_tier: elevated
+risk_tier_triggers: [validator-behavior, projection-transaction, compatibility-identity, multi-component-change]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts: [specs/progressive-boundary-first-skill-guidance.md, specs/progressive-boundary-first-skill-guidance.test.md, docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md, docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md]
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - {path: specs/progressive-boundary-first-skill-guidance.md, revision: 328e31d3, sha256: 983a6cab29dd12ff18866f06a2a818ab9c198dd3a3ccddccc06c8e95516d2dd2}
+  - {path: specs/progressive-boundary-first-skill-guidance.test.md, revision: 328e31d3, sha256: 30595f49cb782e772588334dc9b6c31c728f5b6567892784d6fa27488e3f5257}
+  - {path: docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md, revision: 328e31d3, sha256: 7aa4b69d2636eb0ff6bf6fb77bcf6835ad2dd5c889feaa8b786e1badce65d5c1}
+  - {path: docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md, revision: 328e31d3, sha256: ad78a2f644679a6b0dbaaa6000c1c9b0a8751f9abeb238fcb74cee04e16181c9}
+  - {path: commit:328e31d3.diff, revision: 328e31d3, sha256: 1d9c833f61fbaa7b224e5e5dcde7d2efb22de84345eed8760aad9f3599f2c48b}
+initial_packet_sha256: 1d9c833f61fbaa7b224e5e5dcde7d2efb22de84345eed8760aad9f3599f2c48b
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, prior-findings-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m1-r7-second-review}
+requirement_fidelity: {applicability: applicable, reason: M1 implements closed multi-surface requirements.}
+risk_map:
+  affected_behavior: manifest authority, 14-target transaction, activation identity, resource maps, semantic split, and diagnostics
+  highest_impact_failure_modes: incomplete restoration, containment race, authority drift, incomplete identity, semantic leakage, or opaque diagnostics
+  changed_boundaries: authority, composition, temporal recovery, compatibility, pending state, and filesystem environment
+  evidence_expected: T1/T2/T5/T10 matrices, whole-target restoration, drift tests, semantic accounting, and exact maps
+  direct_inspection_areas: parser, paths, inventory, write and restore, activation, skill validation, resources, and tests
+  intentionally_out_of_scope: M2, M3, M4, PR, and final verification
+  applicable_risk_classes: [identity-authority, composition-path, temporal-retry, failure-recovery, compatibility-migration, filesystem-containment, diagnostics]
+  non_applicable_risk_classes: [network-service, credentials, database-migration, ui-accessibility]
+  falsifiable_questions:
+    - Can any input drift return success?
+    - Are target bytes restored on every supported interruption?
+    - Can a symlink race escape containment or restoration reporting?
+    - Is the semantic split complete and non-overlapping?
+    - Are identities, maps, and diagnostics exact?

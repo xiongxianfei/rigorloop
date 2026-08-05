@@ -1,0 +1,42 @@
+schema_version: 1
+review_id: code-review-m4-r23
+review_stage: code-review
+review_target: commit:f573e592
+base_revision: 3a57a6b7
+head_revision: f573e592
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r22-resolution
+reviewer_context_id: m4-r23-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [candidate-dollar-escape-parity]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/skill-contract.md
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:f573e592.diff
+    revision: f573e592
+    sha256: 7411fe4ae0f2bbba9cde1c2cda237f8ac215253827695d8d94cd8fc5ea46047d
+initial_packet_sha256: 7411fe4ae0f2bbba9cde1c2cda237f8ac215253827695d8d94cd8fc5ea46047d
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r23-second-review}
+requirement_fidelity: {applicability: applicable, reason: R3l requires narrow phrase- or path-based published-skill checks.}
+risk_map:
+  affected_behavior: published workflow portability classification
+  highest_impact_failure_modes: escaped governed-name literals are treated as commands
+  changed_boundaries: odd and even backslash parity at the candidate dollar
+  evidence_expected: public evaluator parity controls
+  direct_inspection_areas: candidate match boundary and shared escape helper
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, maintainability]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Do odd-escaped candidates remain portable while even and unescaped candidates fail?

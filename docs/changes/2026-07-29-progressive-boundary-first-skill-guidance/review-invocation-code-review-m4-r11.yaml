@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: code-review-m4-r11
+review_stage: code-review
+review_target: commit:8c9ffef6
+base_revision: af44db0a
+head_revision: 8c9ffef6
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r10-resolution
+reviewer_context_id: m4-r11-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [literal-whitespace, unicode-label-projection, fail-closed-parsing]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:8c9ffef6.diff
+    revision: 8c9ffef6
+    sha256: 0c90dea9ed509590edb6bcd411b320e38f66a05f1c2602b8c65fdf8e5d682b37
+initial_packet_sha256: 0c90dea9ed509590edb6bcd411b320e38f66a05f1c2602b8c65fdf8e5d682b37
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r11-second-review}
+requirement_fidelity: {applicability: applicable, reason: Exact invocation source and residual-label closure are spec-derived.}
+risk_map:
+  affected_behavior: cross-adapter workflow invocation portability
+  highest_impact_failure_modes: whitespace folding approves nonliteral commands or invisible characters split labels
+  changed_boundaries: raw list records and Unicode residual labels
+  evidence_expected: byte-exact records and conservative ASCII label projection
+  direct_inspection_areas: portability parser and mutation matrix
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, fail-closed-input]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Can non-ASCII whitespace satisfy an approved raw record?
+    - Can any non-ASCII character split a residual adapter label?

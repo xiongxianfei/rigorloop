@@ -5,10 +5,6 @@
 
 # Stage-Owned Lifecycle Artifacts and Change-Local Workflow State Test Spec
 
-## Status
-
-draft
-
 ## Owning change record
 
 `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml`
@@ -76,7 +72,7 @@ Boundary model scope: every requirement defined in
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | PRF-001 | covered | SLA-R001, SLA-R005, SLA-R048, SLA-R064a | BND-INPUT-001 | T1, T2, T11, T12 | contract | automated | CMD1, CMD4, CMD6 | `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m3-input-boundary.md` | M3 | - | - |
 | PRF-002 | covered | SLA-R012a, SLA-R012b, SLA-R035, SLA-R037h, SLA-R037k, SLA-R037oa, SLA-R050, SLA-R057 | BND-STATE-001 | T3, T8, T9, T12 | integration | automated | CMD4, CMD6 | `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m3-state-boundary.md` | M3 | - | - |
-| PRF-003 | covered | SLA-R020, SLA-R023, SLA-R027, SLA-R034, SLA-R039, SLA-R042, SLA-R053, SLA-R054 | BND-AUTH-001 | T15, T23 | contract | hybrid | CMD2, CMD3 | `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m1-authority-boundary.md` | M1 | MP1 | - |
+| PRF-003 | covered | SLA-R019d, SLA-R020, SLA-R023, SLA-R027, SLA-R034, SLA-R039, SLA-R042, SLA-R053, SLA-R054 | BND-AUTH-001 | T5, T15, T23 | contract | hybrid | CMD2, CMD3, CMD4 | `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m1-authority-boundary.md` | M1 | MP1 | - |
 | PRF-004 | covered | SLA-R028, SLA-R029, SLA-R033, SLA-R044, SLA-R046, SLA-R063, SLA-R064, SLA-R072, SLA-R074b | BND-COMPOSE-001 | T15, T16, T24 | integration | hybrid | CMD2, CMD3, CMD8 | `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m5-composition-boundary.md` | M5 | MP1 | - |
 | PRF-005 | covered | SLA-R019a, SLA-R030, SLA-R031, SLA-R032, SLA-R037la, SLA-R050a, SLA-R057, SLA-R058 | BND-TEMPORAL-001 | T5, T7, T9, T12, T19 | integration | automated | CMD4, CMD6 | `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m3-temporal-boundary.md` | M3 | - | - |
 | PRF-006 | covered | SLA-R025, SLA-R026, SLA-R043, SLA-R044, SLA-R047, SLA-R060, SLA-R062, SLA-R064 | BND-RECOVERY-001 | T6, T10, T12, T13, T20 | end-to-end | automated | CMD4, CMD6, CMD11 | `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/evidence/m5-recovery-boundary.md` | M5 | - | - |
@@ -97,7 +93,7 @@ Boundary model scope: every requirement defined in
 | SLA-R001-SLA-R004 | T1, T21, T26 | migration, e2e | Exact marker, sole current contract, historical reads, and migrate-before-write. |
 | SLA-R005-SLA-R012c | T2, T3 | unit, contract | Registry shape, IDs, paths, reviews, closed states, legal transitions, and terminal behavior. |
 | SLA-R013-SLA-R017 | T4 | contract | Stable change pointer and stable artifact/plan content without mutable workflow fields. |
-| SLA-R018-SLA-R021c | T5 | integration | Authoring entry, completion evidence, bounded correction, closeout, supersession, and ADR deprecation ownership. |
+| SLA-R018-SLA-R021c | T5 | integration | Authoring entry, deterministic primary-plan initialization, completion evidence, bounded correction, closeout, supersession, and ADR deprecation ownership. |
 | SLA-R022-SLA-R029 | T6, T19 | integration, e2e | Evidence-first peer settlement, outcome mapping, isolation, and workflow-managed equivalence. |
 | SLA-R030-SLA-R033 | T7 | integration | Idempotent reconciliation, conflicting reuse, and incomplete-settlement pause. |
 | SLA-R034-SLA-R037c | T8 | unit, integration | Sole routing owner, exact workflow shape, stages, blockers, and evidence paths. |
@@ -272,10 +268,10 @@ skill contract depend on an unavailable implementation surface.
 - Covers: SLA-R018-SLA-R021c, E3, E12, EC3, EC20, INT-001
 - Level: integration
 - Command IDs: CMD2, CMD4, CMD6
-- Fixture/setup: accepted/approved/active artifacts, interrupted authoring, complete authoring record, non-substantive correction, replacement, abandonment, archive, and ADR deprecation cases.
-- Steps: Begin revision, interrupt it, complete it, and exercise each permitted closeout.
-- Expected result: Only the matching entry enters authoring before content mutation; review is cleared; review-required needs complete evidence; closeout follows its exact owner.
-- Failure proves: an author can self-approve, mutate another state entry, or expose partial content to review.
+- Fixture/setup: accepted/approved/active artifacts, a new primary plan with no `planned_work`, deterministic initial M1-M2 state, existing `planned_work`, interrupted authoring, complete authoring record, non-substantive correction, replacement, abandonment, archive, and ADR deprecation cases.
+- Steps: Register the plan and initialize once, reject replacement, begin revision, interrupt it, complete it, and exercise each permitted closeout.
+- Expected result: Only the matching entry enters authoring before content mutation; a new primary plan initializes every milestone as planned with M1 current, no review started, and closeout not ready; existing planned work is preserved; review is cleared; review-required needs complete evidence; closeout follows its exact owner.
+- Failure proves: an author can self-approve, overwrite live execution state, mutate another state entry, or expose partial content to review.
 - Evidence artifact: M3 authoring-transition integration evidence.
 - Automation location: canonical skill tests and change-metadata fixtures.
 - Required by milestone: M3
@@ -324,9 +320,9 @@ skill contract depend on an unavailable implementation surface.
 - Covers: SLA-R037d-SLA-R037p, E13, EC21, INT-003
 - Level: integration
 - Command IDs: CMD4, CMD6
-- Fixture/setup: ordered M1-M7 plan projection with legal/illegal transitions, stale prior review, wrong artifact or milestone occurrence, incomplete gates, and fully positive closeout evidence.
+- Fixture/setup: ordered M1-M7 plan projection initialized by `plan`, followed by workflow-owned legal/illegal transitions, stale prior review, wrong artifact or milestone occurrence, incomplete gates, and fully positive closeout evidence.
 - Steps: Advance milestones, request/reconcile reviews, calculate remaining work, and derive final readiness.
-- Expected result: Current milestone is the first nonterminal milestone, reviews rebind explicitly, every open gate yields ordered reasons, and ready requires all positive evidence.
+- Expected result: Plan creates the deterministic initial state once; workflow owns later transitions; current milestone is the first nonterminal milestone, reviews rebind explicitly, every open gate yields ordered reasons, and ready requires all positive evidence.
 - Failure proves: stale review or plan prose can create false resume or closeout readiness.
 - Evidence artifact: M3 planned-work evidence and M7 closeout evidence.
 - Automation location: change-metadata and bounded state-adapter tests.
@@ -503,12 +499,12 @@ skill contract depend on an unavailable implementation surface.
 
 ### T23. Published author and review peers preserve reciprocal ownership
 
-- Covers: SLA-R018, SLA-R019a, SLA-R020, SLA-R023, SLA-R027, SLA-R042, INT-001, BND-AUTH-001
+- Covers: SLA-R018, SLA-R019a, SLA-R019d, SLA-R020, SLA-R023, SLA-R027, SLA-R042, INT-001, BND-AUTH-001
 - Level: integration
 - Command IDs: CMD2, CMD3
-- Fixture/setup: changed canonical authoring and matching review skills plus mutations that authorize self-approval, reviewed-content edits, sibling-state writes, or workflow routing.
+- Fixture/setup: changed canonical authoring and matching review skills plus plan initialization and mutations that authorize self-approval, planned-work replacement, reviewed-content edits, sibling-state writes, or workflow routing.
 - Steps: Run structural skill checks, then apply MP1 to the paired author/reviewer guidance and their independent-invocation paths.
-- Expected result: Each author owns content and authoring transition only; each reviewer owns review evidence and matching settlement only; neither peer writes the other's output or workflow routing.
+- Expected result: Each author owns content and its authoring transition; plan alone may initialize missing planned work once; workflow owns later planned-work transitions; each reviewer owns review evidence and matching settlement only; no peer writes another owned output or routing.
 - Failure proves: M1 can publish peer-stage guidance that permits self-approval or cross-owner mutation before state integration exists.
 - Evidence artifact: M1 peer-ownership semantic matrix.
 - Automation location: canonical skill checks plus MP1.

@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: code-review-m4-r8
+review_stage: code-review
+review_target: commit:b5b9ca72
+base_revision: 7bcf48bd
+head_revision: b5b9ca72
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r7-resolution
+reviewer_context_id: m4-r8-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [rendered-text-normalization, command-record-boundaries, fail-closed-parsing]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:b5b9ca72.diff
+    revision: b5b9ca72
+    sha256: cc1f99666d11eb7fde21d3857c3e581fc37d1f8ab71e69e8a0c10bf415d15309
+initial_packet_sha256: cc1f99666d11eb7fde21d3857c3e581fc37d1f8ab71e69e8a0c10bf415d15309
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r8-second-review}
+requirement_fidelity:
+  applicability: applicable
+  reason: Rendered invocation closure and portability are spec-derived.
+risk_map:
+  affected_behavior: cross-adapter workflow invocation portability
+  highest_impact_failure_modes: rendered formatting hides adapter labels or adjacent text extends an approved command
+  changed_boundaries: HTML comments and attributes, Markdown inline formatting, adjacent code-span text
+  evidence_expected: parser-derived visible text and complete command-owning records
+  direct_inspection_areas: portability parser and mutation matrix
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, fail-closed-input]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Can supported rendered formatting hide an adapter label?
+    - Can adjacent text extend an approved command code span?

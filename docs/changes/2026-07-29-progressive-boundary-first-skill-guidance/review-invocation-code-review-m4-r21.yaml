@@ -1,0 +1,42 @@
+schema_version: 1
+review_id: code-review-m4-r21
+review_stage: code-review
+review_target: commit:3d9c79dd
+base_revision: fa5a15e3
+head_revision: 3d9c79dd
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r20-resolution
+reviewer_context_id: m4-r21-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [closing-dollar-boundary, invocation-false-negative]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/skill-contract.md
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:3d9c79dd.diff
+    revision: 3d9c79dd
+    sha256: bb0b13419da27984bf1e72d179033d4be38e7df670100b6e6e5abbc1bd9e0af4
+initial_packet_sha256: bb0b13419da27984bf1e72d179033d4be38e7df670100b6e6e5abbc1bd9e0af4
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r21-second-review}
+requirement_fidelity: {applicability: applicable, reason: R3l requires narrow phrase- or path-based published-skill checks.}
+risk_map:
+  affected_behavior: published workflow portability classification
+  highest_impact_failure_modes: an opening variable dollar masquerades as a math closer
+  changed_boundaries: closer escaping and following identifier, digit, dollar, or hyphen
+  evidence_expected: generic operator-led command positives plus paired-math negatives
+  direct_inspection_areas: closing-dollar plausibility and public evaluator
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, maintainability]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Can an opening variable, currency, or escaped dollar close paired math?

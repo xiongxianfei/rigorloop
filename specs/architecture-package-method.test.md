@@ -1,8 +1,8 @@
 # Architecture Package Method Test Spec
 
-## Status
+## Owning change record
 
-- active
+`docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml`
 
 ## Related spec and plan
 
@@ -46,10 +46,10 @@
 | --- | --- | --- |
 | `R1`-`R3` | `T1`, `T8`, `T15` | Focused spec ownership, workflow pointer only, and final proof surfaces. |
 | `R4`-`R6` | `T5`, `T9`, `T15` | Canonical package source of truth, default path, and migration/supersession expectations. |
-| `R7`-`R20` | `T2`, `T5`, `T6`, `T14`, `T15` | All 12 arc42 headings, lifecycle metadata, concise `Not applicable` rationale, section update conditions, ADR summary section, quality/risk/glossary coverage. |
+| `R7`-`R20` | `T2`, `T5`, `T6`, `T14`, `T15` | All 12 arc42 headings, stable owner pointers, exact matching `change.yaml` state without duplicated mutable status, concise `Not applicable` rationale, section update conditions, ADR summary section, quality/risk/glossary coverage. |
 | `R21`-`R29` | `T3`, `T5`, `T11`, `T15` | Default context/container diagrams, conditional diagrams, source-text requirement, Mermaid first implementation, and no binary-only source of truth. |
 | `R30`-`R43` | `T4`, `T5`, `T6`, `T9`, `T15`, `T23` | Feature update scope, lowest-level C4 propagation, non-normal change-local delta status, canonical current truth, same-PR review, runtime timing, and leaf-change exclusion. |
-| `R44`-`R48` | `T7`, `T14`, `T15` | ADR trigger, required fields, status vocabulary, and append-only decision history. |
+| `R44`-`R48` | `T7`, `T14`, `T15` | ADR trigger, required fields, exact owner-entry state with legacy compatibility, and append-only decision history. |
 | `R49`-`R55` | `T2`, `T7`, `T8`, `T11`, `T15` | Template paths, live-artifact separation, `templates/` canonical-source boundary, governance updates, and workflow summary pointer. |
 | `R56`-`R58` | `T10`, `T11`, `T15`, `T21`, `T25` | Architecture skill updates, architecture-review surface classification, and generated output refresh through existing generators only. |
 | `R59`-`R66` | `T6`, `T9`, `T15`, `T23` | Architecture-method change as first real example, prospective adoption, legacy artifact handling, populated legacy normalization follow-on, and no reliance on normal change-local delta authoring. |
@@ -109,7 +109,7 @@
 | `AC4` | `T3`, `T5` | Context/container diagrams are present and component/deployment diagrams remain conditional. |
 | `AC5` | `T3`, `T13` | Required diagrams are source text and binary-only evidence is insufficient. |
 | `AC6` | `T4`, `T6` | Merge-back behavior is explicit and reviewed. |
-| `AC7` | `T7` | ADR triggers, fields, statuses, and append-only expectations are covered. |
+| `AC7` | `T7` | ADR triggers, fields, exact owner-entry state, unmigrated legacy status compatibility, and append-only expectations are covered. |
 | `AC8` | `T2`, `T8` | Templates live under `templates/` and governance declares the boundary. |
 | `AC9` | `T6` | The first positive example is the architecture-method change itself. |
 | `AC10` | `T9` | Legacy normalization follow-on inventories and classifies every current architecture document. |
@@ -148,7 +148,7 @@
   - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/architecture-package-method.md --path specs/rigorloop-workflow.md`
   - manual contract review during M2 and code review
 
-### T2. Architecture template preserves lifecycle metadata and all 12 arc42 sections
+### T2. Architecture template preserves owner metadata and all 12 arc42 sections
 
 - Covers: `R7`-`R20`, `R49`, `R51`-`R53`, `R75`, `AC2`, `AC3`, `AC8`
 - Level: contract, manual
@@ -156,7 +156,7 @@
   - `templates/architecture.md`
 - Steps:
   - Inspect `templates/architecture.md`.
-  - Confirm it starts with repository lifecycle status metadata before the arc42 section sequence.
+  - Confirm it starts with a stable owning-change-record pointer before the arc42 section sequence and does not duplicate mutable lifecycle status.
   - Confirm it contains these headings exactly once and in order: `Introduction and Goals`, `Architecture Constraints`, `Context and Scope`, `Solution Strategy`, `Building Block View`, `Runtime View`, `Deployment View`, `Crosscutting Concepts`, `Architecture Decisions`, `Quality Requirements`, `Risks and Technical Debt`, and `Glossary`.
   - Confirm template guidance allows concise content and `Not applicable` with rationale without renaming or removing sections.
   - Confirm the file is under `templates/`, not under `docs/architecture/`.
@@ -223,7 +223,7 @@
   - `docs/adr/ADR-20260428-architecture-package-method.md`
 - Steps:
   - Inspect the canonical architecture file after M3.
-  - Confirm lifecycle metadata appears before the arc42 section sequence.
+  - Confirm stable owning-change-record metadata appears before the arc42 section sequence and current mutable state resolves from the matching `change.yaml` entry.
   - Confirm all 12 official arc42 headings appear in order and every `Not applicable` entry has rationale.
   - Confirm sections 1 through 5 contain current-system content.
   - Confirm section 6, 7, and 8 cover runtime, packaging/execution boundaries, and cross-cutting rules relevant to this repository change.
@@ -266,8 +266,9 @@
   - `templates/adr.md`
   - `docs/adr/ADR-20260428-architecture-package-method.md`
 - Steps:
-  - Inspect `templates/adr.md` for title, status, context, decision, alternatives considered, consequences, and follow-up fields.
-  - Confirm the template lists or references the approved ADR status vocabulary.
+  - Inspect `templates/adr.md` for title, stable owning-change-record pointer, context, decision, alternatives considered, consequences, and follow-up fields.
+  - Confirm new governed ADR state resolves from the exact matching `change.yaml` entry and the template does not duplicate mutable lifecycle status.
+  - Confirm unmigrated historical ADRs may retain embedded status until substantive revision or explicit migration.
   - Confirm the accepted architecture-method ADR contains required fields and records the durable method decision.
   - Confirm accepted or active ADR guidance is append-only for decision history and supersedes/deprecates later rather than silently rewriting old decisions.
   - Run lifecycle validation for the ADR.
@@ -385,10 +386,10 @@
   - `scripts/test-artifact-lifecycle-validator.py`
   - `tests/fixtures/artifact-lifecycle/`
 - Steps:
-  - Add a canonical system architecture fixture with lifecycle metadata and all 12 official arc42 sections.
+  - Add a canonical system architecture fixture with a stable owner pointer, an exact matching `change.yaml` architecture entry, no duplicated mutable status, and all 12 official arc42 sections.
   - Assert that fixture passes only at `docs/architecture/system/architecture.md`.
-  - Assert existing legacy architecture fixtures still require the older architecture contract unless explicitly out of scope.
-  - Assert missing status, invalid lifecycle status, placeholders, stale readiness, terminal closeout, and generated-output rejection behavior remain unchanged.
+  - Assert existing unmigrated legacy architecture fixtures still use their older embedded-status contract unless explicitly out of scope.
+  - Assert missing or mismatched owner entries for stage-owned fixtures and missing or invalid status for unmigrated legacy fixtures fail closed; placeholder, stale-readiness, terminal-closeout, and generated-output rejection remain unchanged.
   - Assert compatibility does not require C4 diagram files, ADR presence, or package-shape validation.
   - Run the M1 pass-gate commands.
 - Expected result:

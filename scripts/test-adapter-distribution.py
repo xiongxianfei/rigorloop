@@ -51,7 +51,12 @@ from adapter_distribution import (  # noqa: E402
     validate_clean_install_smoke,
     validate_release_output,
 )
-from boundary_first_reference import GOVERNED_SKILLS, PROJECTED_REFERENCE  # noqa: E402
+from boundary_first_reference import (  # noqa: E402
+    GOVERNED_SKILLS,
+    inventory_digest,
+    load_resource_manifest,
+    raw_sha256,
+)
 
 
 def load_validate_release_module():
@@ -1066,10 +1071,17 @@ release_gate:
                 errors,
             )
 
-    def test_boundary_first_archives_and_clean_installs_preserve_reference(self) -> None:
+    def test_boundary_first_archives_and_clean_installs_preserve_all_resources(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            output_dir = Path(tmp) / "release-output"
+            temporary_root = Path(tmp)
+            output_dir = temporary_root / "release-output"
+            generated_root = temporary_root / "generated"
             version = "v0.3.6"
+            sync_adapter_output(
+                version,
+                skills_root=ROOT / "skills",
+                output_root=generated_root,
+            )
             build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
 
             self.assertEqual(
@@ -1080,36 +1092,99 @@ release_gate:
                     skills_root=ROOT / "skills",
                 ),
             )
-            canonical = (
-                ROOT / "specs" / "references" / "boundary-first-method-v1.md"
-            ).read_bytes()
+            manifest = load_resource_manifest(ROOT)
             reports = {
                 report.name: report
                 for report in collect_skill_reports(ROOT / "skills")
             }
-            seen: set[tuple[str, str]] = set()
+            for skill_name in GOVERNED_SKILLS:
+                self.assertEqual(
+                    reports[skill_name].included_adapters,
+                    SUPPORTED_ADAPTERS,
+                    skill_name,
+                )
+            expected_digest = "68c6f88c313f706e7011a0e6b7b6625b82464bd3287c15d4fc5b3b7a3a004329"
+            seen: set[tuple[str, str, str]] = set()
             for adapter_name in SUPPORTED_ADAPTERS:
                 config = ADAPTERS[adapter_name]
                 archive_path = output_dir / adapter_archive_name(adapter_name, version)
+                generated_records: dict[str, str] = {}
+                archive_records: dict[str, str] = {}
                 with zipfile.ZipFile(archive_path) as archive:
                     for skill_name in GOVERNED_SKILLS:
-                        if adapter_name not in reports[skill_name].included_adapters:
-                            continue
                         skill_entry = config.skill_path(skill_name).as_posix()
-                        reference_entry = (
-                            config.skill_root
-                            / skill_name
-                            / PROJECTED_REFERENCE
-                        ).as_posix()
                         self.assertTrue(archive.read(skill_entry))
-                        self.assertEqual(archive.read(reference_entry), canonical)
-                        seen.add((adapter_name, skill_name))
+                        for resource in manifest.resources:
+                            if skill_name not in resource.consumers:
+                                continue
+                            reference_entry = (
+                                config.skill_root
+                                / skill_name
+                                / resource.target
+                            ).as_posix()
+                            self.assertEqual(
+                                archive.read(reference_entry),
+                                (ROOT / resource.source).read_bytes(),
+                            )
+                            logical_path = (
+                                Path("skills") / skill_name / resource.target
+                            ).as_posix()
+                            generated_path = (
+                                generated_root
+                                / adapter_name
+                                / config.skill_root
+                                / skill_name
+                                / resource.target
+                            )
+                            generated_records[logical_path] = raw_sha256(
+                                generated_path.read_bytes()
+                            )
+                            archive_records[logical_path] = raw_sha256(
+                                archive.read(reference_entry)
+                            )
+                            seen.add(
+                                (adapter_name, skill_name, resource.resource_id)
+                            )
+                self.assertEqual(len(generated_records), 14)
+                self.assertEqual(inventory_digest(generated_records), expected_digest)
+                self.assertEqual(len(archive_records), 14)
+                self.assertEqual(inventory_digest(archive_records), expected_digest)
             expected = {
-                (adapter_name, skill_name)
+                (adapter_name, skill_name, resource.resource_id)
                 for skill_name in GOVERNED_SKILLS
-                for adapter_name in reports[skill_name].included_adapters
+                for adapter_name in SUPPORTED_ADAPTERS
+                for resource in manifest.resources
+                if skill_name in resource.consumers
             }
             self.assertEqual(seen, expected)
+
+            installed_identities: dict[str, tuple[int, str]] = {}
+
+            def capture_runner(command, **kwargs):
+                result = subprocess.run(command, **kwargs)
+                if result.returncode != 0:
+                    return result
+                adapter_name = command[command.index("init") + 1]
+                config = ADAPTERS[adapter_name]
+                project_root = Path(kwargs["cwd"])
+                records: dict[str, str] = {}
+                for resource in manifest.resources:
+                    for skill_name in resource.consumers:
+                        installed_path = (
+                            project_root
+                            / config.skill_root
+                            / skill_name
+                            / resource.target
+                        )
+                        logical_path = (
+                            Path("skills") / skill_name / resource.target
+                        ).as_posix()
+                        records[logical_path] = raw_sha256(installed_path.read_bytes())
+                installed_identities[adapter_name] = (
+                    len(records),
+                    inventory_digest(records),
+                )
+                return result
 
             self.assertEqual(
                 [],
@@ -1118,47 +1193,197 @@ release_gate:
                     output_dir,
                     skills_root=ROOT / "skills",
                     skill_names=GOVERNED_SKILLS,
+                    command_runner=capture_runner,
                 ),
             )
+            self.assertEqual(
+                installed_identities,
+                {
+                    adapter_name: (14, expected_digest)
+                    for adapter_name in SUPPORTED_ADAPTERS
+                },
+            )
 
-    def test_boundary_first_archive_drift_reports_exact_layer_and_hashes(self) -> None:
+    def test_clean_install_requested_skill_cannot_be_filtered_by_portability(
+        self,
+    ) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output_dir = Path(tmp) / "release-output"
             version = "v0.3.6"
             build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
-            archive_path = output_dir / adapter_archive_name("codex", version)
-            entry_name = (
-                ADAPTERS["codex"].skill_root
-                / "workflow"
-                / PROJECTED_REFERENCE
-            ).as_posix()
+            archive_path = output_dir / adapter_archive_name("claude", version)
+            workflow_root = (
+                ADAPTERS["claude"].skill_root / "workflow"
+            ).as_posix() + "/"
             with zipfile.ZipFile(archive_path) as archive:
-                entries = {
+                retained = {
                     name: archive.read(name)
                     for name in archive.namelist()
-                    if not name.endswith("/")
+                    if not name.startswith(workflow_root)
                 }
-            entries[entry_name] = b"stale boundary reference\n"
             with zipfile.ZipFile(archive_path, "w") as archive:
-                for name, content in sorted(entries.items()):
+                for name, content in sorted(retained.items()):
                     archive.writestr(name, content)
 
-            errors = validate_adapter_archives(
+            errors = validate_clean_install_smoke(
                 version,
                 output_dir,
                 skills_root=ROOT / "skills",
+                skill_names=("workflow",),
             )
 
-            self.assertTrue(
-                any(
-                    "mapped resource parity mismatch: codex/workflow: "
-                    "references/boundary-first-method-v1.md" in error
-                    and "canonical sha256=" in error
-                    and "archive sha256=" in error
-                    for error in errors
+        self.assertTrue(
+            any(
+                "clean-install skill root missing: claude/workflow" in error
+                for error in errors
+            ),
+            errors,
+        )
+
+    def test_clean_install_rejects_unknown_noncanonical_and_duplicate_selections(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "release-output"
+            version = "v0.3.6"
+            build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
+            cases = {
+                "mixed_unknown": (
+                    ("workflow", "does-not-exist"),
+                    "clean-install selected skill is unknown or has no mapped "
+                    "resources: does-not-exist",
                 ),
-                errors,
+                "noncanonical_case": (
+                    ("Workflow",),
+                    "clean-install selected skill is unknown or has no mapped "
+                    "resources: Workflow",
+                ),
+                "duplicate": (
+                    ("workflow", "workflow"),
+                    "clean-install selected skill repeated: workflow",
+                ),
+            }
+            for name, (skill_names, expected) in cases.items():
+                with self.subTest(name=name):
+                    errors = validate_clean_install_smoke(
+                        version,
+                        output_dir,
+                        skills_root=ROOT / "skills",
+                        skill_names=skill_names,
+                    )
+                    self.assertTrue(
+                        any(expected in error for error in errors),
+                        errors,
+                    )
+
+    def test_validate_adapters_cli_rejects_mixed_unknown_skill_selection(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "release-output"
+            version = "v0.3.6"
+            build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "validate-adapters.py"),
+                    "--root",
+                    str(output_dir),
+                    "--version",
+                    version,
+                    "--clean-install-smoke",
+                    "--skill",
+                    "workflow",
+                    "--skill",
+                    "does-not-exist",
+                ],
+                capture_output=True,
+                text=True,
+                cwd=ROOT,
             )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "clean-install selected skill is unknown or has no mapped resources: "
+            "does-not-exist",
+            result.stdout,
+        )
+        self.assertNotIn("validated generated adapter archives", result.stdout)
+
+    def test_validate_adapters_cli_preflights_selection_before_archives(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "validate-adapters.py"),
+                    "--root",
+                    tmp,
+                    "--version",
+                    "v0.3.6",
+                    "--clean-install-smoke",
+                    "--skill",
+                    "does-not-exist",
+                ],
+                capture_output=True,
+                text=True,
+                cwd=ROOT,
+            )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "clean-install selected skill is unknown or has no mapped resources: "
+            "does-not-exist",
+            result.stdout,
+        )
+        self.assertNotIn("clean-install archive missing", result.stdout)
+
+    def test_boundary_first_archive_drift_reports_exact_layer_and_hashes(self) -> None:
+        cases = (
+            ("workflow", "references/boundary-first-method-v1.md"),
+            ("spec", "references/boundary-first-feature-authoring-v1.md"),
+            ("test-spec", "references/boundary-first-proof-v1.md"),
+        )
+        for skill_name, relative_resource in cases:
+            with self.subTest(layer=relative_resource), tempfile.TemporaryDirectory() as tmp:
+                output_dir = Path(tmp) / "release-output"
+                version = "v0.3.6"
+                build_adapter_archives(version, output_dir, skills_root=ROOT / "skills")
+                archive_path = output_dir / adapter_archive_name("codex", version)
+                entry_name = (
+                    ADAPTERS["codex"].skill_root
+                    / skill_name
+                    / relative_resource
+                ).as_posix()
+                with zipfile.ZipFile(archive_path) as archive:
+                    entries = {
+                        name: archive.read(name)
+                        for name in archive.namelist()
+                        if not name.endswith("/")
+                    }
+                entries[entry_name] = b"stale boundary reference\n"
+                with zipfile.ZipFile(archive_path, "w") as archive:
+                    for name, content in sorted(entries.items()):
+                        archive.writestr(name, content)
+
+                errors = validate_adapter_archives(
+                    version,
+                    output_dir,
+                    skills_root=ROOT / "skills",
+                )
+
+                self.assertTrue(
+                    any(
+                        f"mapped resource parity mismatch: codex/{skill_name}: "
+                        f"{relative_resource}" in error
+                        and "canonical sha256=" in error
+                        and "archive sha256=" in error
+                        for error in errors
+                    ),
+                    errors,
+                )
 
     def test_validate_adapter_output_rejects_missing_mapped_resource(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1334,6 +1559,64 @@ release_gate:
             errors,
         )
 
+    def test_clean_install_smoke_rejects_unowned_boundary_resources_for_each_adapter(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.3.4", output_dir, skills_root=skills_root)
+
+            def runner(command, **kwargs):
+                result = subprocess.run(command, **kwargs)
+                if result.returncode != 0:
+                    return result
+                adapter_name = command[command.index("init") + 1]
+                project_root = Path(kwargs["cwd"])
+                skill_root = (
+                    project_root
+                    / Path(ADAPTERS[adapter_name].skill_root.as_posix())
+                    / "portable-with-assets"
+                )
+                extra_name = {
+                    "codex": "boundary-first-compact-core.md",
+                    "claude": "boundary-first-feature-authoring.md",
+                    "opencode": "boundary-first-proof.md",
+                }[adapter_name]
+                (skill_root / "references" / extra_name).parent.mkdir(
+                    parents=True,
+                    exist_ok=True,
+                )
+                (skill_root / "references" / extra_name).write_text(
+                    "unowned\n",
+                    encoding="utf-8",
+                )
+                return result
+
+            errors = validate_clean_install_smoke(
+                "v0.3.4",
+                output_dir,
+                skills_root=skills_root,
+                skill_names=("portable-with-assets",),
+                command_runner=runner,
+            )
+
+        for adapter_name, resource_name in {
+            "codex": "boundary-first-compact-core.md",
+            "claude": "boundary-first-feature-authoring.md",
+            "opencode": "boundary-first-proof.md",
+        }.items():
+            self.assertTrue(
+                any(
+                    f"clean-install unowned boundary resource: "
+                    f"{adapter_name}/portable-with-assets: "
+                    f"references/{resource_name}" in error
+                    for error in errors
+                ),
+                errors,
+            )
+
     def test_validate_adapters_cli_rejects_clean_install_smoke_without_archive_root(self) -> None:
         result = subprocess.run(
             [
@@ -1480,7 +1763,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 validation_overrides={
                     "adapter_archives": "pass",
                     "adapter_artifact_metadata": "pass",
@@ -1663,6 +1946,81 @@ release_gate:
                 self.assertFalse(report.adapter_decision("opencode").included)
                 self.assertIn(expected_reason, report.reason)
 
+    def test_case_variant_governed_dollar_invocations_are_codex_only(self) -> None:
+        source = self.fixture("codex-dollar-skill")
+        source_text = (source / "SKILL.md").read_text(encoding="utf-8")
+
+        for token in (
+            "$Proposal",
+            "$PROPOSAL",
+            "$Workflow",
+            "$WORKFLOW",
+            "$plan",
+            "$PLAN",
+            "$proposal-review",
+        ):
+            with self.subTest(token=token), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "codex-dollar-skill"
+                shutil.copytree(source, target)
+                (target / "SKILL.md").write_text(
+                    source_text.replace("$proposal", token),
+                    encoding="utf-8",
+                )
+
+                report = evaluate_skill(target)
+
+                self.assertEqual(report.included_adapters, ("codex",))
+                self.assertIn("Codex-specific $skill invocation", report.reason)
+
+    def test_dollar_invocation_vocabulary_matches_published_skills(self) -> None:
+        published_names = {
+            path.parent.name for path in (ROOT / "skills").glob("*/SKILL.md")
+        }
+
+        self.assertEqual(
+            set(adapter_distribution_module.PUBLISHED_SKILL_INVOCATION_NAMES),
+            published_names,
+        )
+
+    def test_real_dollar_invocation_is_not_hidden_by_later_dollar(self) -> None:
+        source = self.fixture("codex-dollar-skill")
+        source_text = (source / "SKILL.md").read_text(encoding="utf-8")
+        lines = (
+            "Invoke `$plan`; let `$x$` denote the input.",
+            "Invoke `$plan`; then read `$HOME`.",
+            "Invoke `$plan`; the fallback costs $5.",
+            r"Invoke `$plan`; document \$value.",
+            "Invoke `$workflow auto: status`; let `$plan + 1$` denote input.",
+            "Invoke `$plan` -> then read `$HOME`.",
+            "Invoke `$plan` - then read `$HOME`.",
+            "Invoke `$plan` -> budget $5.",
+            r"Invoke `$plan` -> document \$value.",
+            "Invoke `$plan` --verbose then inspect `$HOME`.",
+            "Invoke `$plan` + compare with `$PATH`.",
+            "Invoke `$plan` < input then inspect `$HOME`.",
+            "Invoke $plan -> inspect ${HOME}.",
+            "Invoke $plan -> run $(pwd).",
+            r"Invoke $plan + 5\$.",
+            r"Invoke \\$plan.",
+        )
+
+        for line in lines:
+            with self.subTest(line=line), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "codex-dollar-skill"
+                shutil.copytree(source, target)
+                (target / "SKILL.md").write_text(
+                    source_text.replace(
+                        "Invoke this workflow as `$proposal` before continuing.",
+                        line,
+                    ),
+                    encoding="utf-8",
+                )
+
+                report = evaluate_skill(target)
+
+                self.assertEqual(report.included_adapters, ("codex",))
+                self.assertIn("Codex-specific $skill invocation", report.reason)
+
     def test_generic_artifact_paths_remain_portable(self) -> None:
         report = evaluate_skill(self.fixture("generic-artifact-paths"))
 
@@ -1675,6 +2033,501 @@ release_gate:
         self.assertTrue(report.portable)
         self.assertEqual(report.included_adapters, ("codex", "claude", "opencode"))
         self.assertEqual(report.reason, "")
+
+    def test_workflow_explicit_adapter_invocation_equivalents_remain_portable(
+        self,
+    ) -> None:
+        report = evaluate_skill(ROOT / "skills" / "workflow")
+
+        self.assertTrue(report.portable, report.reason)
+        self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
+
+    def test_workflow_invocation_checks_preserve_variables_and_paths(self) -> None:
+        additions = (
+            "Read the shell variable `$project`.",
+            "Let `$x$` denote the input.",
+            "Read the shell variable `$workflow_status`.",
+            "Read the path from `$plan_path`.",
+            "Let `$spec₂` denote the input.",
+            "Let `$plan$` denote the input.",
+            "Let `$plan + 1$` denote the input.",
+            "Let `$plan^2$` denote the input.",
+            "Let `$plan + 1 - 2$` denote the input.",
+            "Let `$plan + (1)$` denote the input.",
+            "Let `$plan + π$` denote the input.",
+            "Let `$plan ** 2$` denote the input.",
+            "Let `$plan >= 1$` denote the input.",
+            "Let `$plan + -1$` denote the input.",
+            r"Let `$plan + \$5$` denote the input.",
+            r"Document \$plan as a literal.",
+            r"Document \\\$plan as a literal.",
+            "Read the variable `$plan\u0301_value`.",
+            "Read the variable `$workflow\ufe0f`.",
+            "Read the variable `$plan\u200c_value`.",
+            "Read the variable `$plan\u200d_value`.",
+            "Do not treat `$ſpec` as a published name.",
+            "Do not treat `$ımplement` as a published name.",
+            "Do not treat `$worKflow` as a published name.",
+            "Document `/workflow-guide`.",
+            "Document `/workflow.md`.",
+            "Document `/workflow/status`.",
+            "Document `docs-/workflow`.",
+            "Do not treat `/worKflow` as a published command.",
+        )
+        source = ROOT / "skills" / "workflow" / "SKILL.md"
+        source_text = source.read_text(encoding="utf-8")
+
+        for addition in additions:
+            with self.subTest(addition=addition), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "workflow"
+                shutil.copytree(source.parent, target)
+                (target / "SKILL.md").write_text(
+                    source_text + f"\n{addition}\n",
+                    encoding="utf-8",
+                )
+
+                report = evaluate_skill(target)
+
+                self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
+
+    def test_workflow_slash_commands_end_at_phrase_terminators(self) -> None:
+        additions = (
+            "Run /workflow\nThen continue.",
+            "Run /workflow\r\nThen continue.",
+            "Run `/workflow` before continuing.",
+            "Run /workflow, then continue.",
+            "Run /workflow. Then continue.",
+        )
+        source = ROOT / "skills" / "workflow" / "SKILL.md"
+        source_text = source.read_text(encoding="utf-8")
+
+        for addition in additions:
+            with self.subTest(addition=addition), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "workflow"
+                shutil.copytree(source.parent, target)
+                (target / "SKILL.md").write_text(
+                    source_text + f"\n{addition}\n",
+                    encoding="utf-8",
+                )
+
+                report = evaluate_skill(target)
+
+                self.assertEqual(report.included_adapters, ("codex",))
+                self.assertIn("Codex-specific $skill invocation", report.reason)
+
+    def test_workflow_invocation_equivalence_uses_narrow_static_scope(
+        self,
+    ) -> None:
+        mutations = {
+            "codex_skill": lambda text: text.replace(
+                "$workflow auto: <argument>",
+                "$broken auto: <argument>",
+                1,
+            ),
+            "claude_skill": lambda text: text.replace(
+                "/workflow auto: <argument>",
+                "/broken auto: <argument>",
+                1,
+            ),
+            "opencode_skill": lambda text: text.replace(
+                "installed `workflow` skill with `auto: <argument>`",
+                "installed `broken` skill with `auto: <argument>`",
+                1,
+            ),
+            "shared_argument": lambda text: text.replace(
+                "Here `<argument>` is `<target-stage>`, `status`, or `off`.",
+                "Here `<argument>` is `<stage>`, `status`, or `off`.",
+                1,
+            ),
+            "bare_codex": lambda text: text + "\nUse `$workflow`.\n",
+            "non_auto_codex": lambda text: text + "\nUse `$workflow manual`.\n",
+            "case_codex": lambda text: text + "\nUse `$Workflow auto: <argument>`.\n",
+            "wrong_claude_argument": lambda text: text
+            + "\nUse `/workflow auto: <wrong>`.\n",
+            "case_claude": lambda text: text
+            + "\nUse `/Workflow auto: <argument>`.\n",
+            "wrong_opencode_argument": lambda text: text
+            + "\nOpenCode invokes installed `workflow` with `auto: <wrong>`.\n",
+            "case_opencode": lambda text: text
+            + "\nOpenCode invokes installed `Workflow` with `auto: <argument>`.\n",
+            "plain_codex": lambda text: text
+            + "\nUse $workflow manual to continue.\n",
+            "html_codex": lambda text: text
+            + "\nUse <code>$workflow manual</code> to continue.\n",
+            "plain_claude": lambda text: text
+            + "\nClaude users run /workflow manual to continue.\n",
+            "whitespace_claude": lambda text: text
+            + "\nClaude users run ` /workflow auto: <wrong>`.\n",
+            "plain_opencode": lambda text: text
+            + "\nOpenCode invokes workflow with auto: wrong.\n",
+            "composed_opencode": lambda text: text
+            + "\nOpenCode invokes installed `broken` skill with "
+            + "`manual: <argument>`.\n",
+            "codex_labeled_composed": lambda text: text
+            + "\nCodex users run broken manual to continue.\n",
+            "codex_labeled_html": lambda text: text
+            + "\nCodex uses <code>broken manual</code>.\n",
+            "codex_entity": lambda text: text
+            + "\nCodex uses &#36;workflow manual.\n",
+            "claude_call": lambda text: text
+            + "\nFor Claude, call /broken auto: wrong.\n",
+            "opencode_execute": lambda text: text
+            + "\nOpenCode executes workflow with auto: wrong.\n",
+            "opencode_command": lambda text: text
+            + "\nOpenCode command: workflow auto: wrong.\n",
+            "html_split_codex": lambda text: text
+            + "\nCo<em>dex</em> executes broken manual.\n",
+            "html_split_claude": lambda text: text
+            + "\nCla<strong>ude</strong> starts broken manual.\n",
+            "html_split_opencode": lambda text: text
+            + "\nOpen<span>Code</span> command: broken manual.\n",
+            "html_comment_codex": lambda text: text
+            + "\nCo<!-- hidden -->dex executes broken manual.\n",
+            "html_attribute_opencode": lambda text: text
+            + '\nOpen<span title=">">Code</span> command: broken manual.\n',
+            "html_unknown_tag_claude": lambda text: text
+            + "\nCla<custom>ude</custom> starts broken manual.\n",
+            "markdown_emphasis_codex": lambda text: text
+            + "\nCo**dex** executes broken manual.\n",
+            "markdown_emphasis_claude": lambda text: text
+            + "\nCla**_ude_** starts broken manual.\n",
+            "markdown_link_opencode": lambda text: text
+            + "\nOpen[Code](https://example.invalid) command: broken manual.\n",
+            "markdown_triple_emphasis_codex": lambda text: text
+            + "\nCo***dex*** executes broken manual.\n",
+            "markdown_mixed_emphasis_opencode": lambda text: text
+            + "\nOpen**_Code_** command: broken manual.\n",
+            "markdown_nested_strike_opencode": lambda text: text
+            + "\nOpen~~**Code**~~ command: broken manual.\n",
+            "markdown_nested_link_opencode": lambda text: text
+            + "\nOpen[***Code***](https://example.invalid) command: broken manual.\n",
+            "markdown_code_opencode": lambda text: text
+            + "\nOpen`Code` command: broken manual.\n",
+            "markdown_full_reference_codex": lambda text: text
+            + "\nCo[dex][vendor] executes broken manual.\n"
+            + "[vendor]: https://example.invalid\n",
+            "markdown_collapsed_reference_claude": lambda text: text
+            + "\nCla[ude][] starts broken manual.\n"
+            + "[ude]: https://example.invalid\n",
+            "markdown_shortcut_reference_opencode": lambda text: text
+            + "\nOpen[Code] command: broken manual.\n"
+            + "[Code]: https://example.invalid\n",
+            "placeholder_tag_opencode": lambda text: text
+            + "\nOpen<argument>Code</argument> command: broken manual.\n",
+            "target_placeholder_tag_opencode": lambda text: text
+            + "\nOpen<target-stage>Code</target-stage> command: broken manual.\n",
+            "private_use_split_opencode": lambda text: text
+            + "\nOpen\uf000\uf001Code command: broken manual.\n",
+            "encoded_zero_width_split_opencode": lambda text: text
+            + "\nOpen&#x200B;Code command: broken manual.\n",
+            "combining_joiner_split_opencode": lambda text: text
+            + "\nOpen\u034fCode command: broken manual.\n",
+            "variation_selector_split_opencode": lambda text: text
+            + "\nOpen\ufe0fCode command: broken manual.\n",
+            "encoded_combining_joiner_split_opencode": lambda text: text
+            + "\nOpen&#x034F;Code command: broken manual.\n",
+            "encoded_variation_selector_split_opencode": lambda text: text
+            + "\nOpen&#xFE0F;Code command: broken manual.\n",
+            "null_control_split_opencode": lambda text: text
+            + "\nOpen\u0000Code command: broken manual.\n",
+            "backspace_control_split_opencode": lambda text: text
+            + "\nOpen\u0008Code command: broken manual.\n",
+            "unit_separator_split_opencode": lambda text: text
+            + "\nOpen\u001fCode command: broken manual.\n",
+            "hangul_filler_split_opencode": lambda text: text
+            + "\nOpen\u115fCode command: broken manual.\n",
+            "halfwidth_hangul_filler_split_opencode": lambda text: text
+            + "\nOpen\uffa0Code command: broken manual.\n",
+            "encoded_hangul_filler_split_opencode": lambda text: text
+            + "\nOpen&#x115F;Code command: broken manual.\n",
+            "mongolian_variation_split_opencode": lambda text: text
+            + "\nOpen\u180bCode command: broken manual.\n",
+            "encoded_mongolian_variation_split_opencode": lambda text: text
+            + "\nOpen&#x180B;Code command: broken manual.\n",
+            "khmer_inherent_vowel_split_opencode": lambda text: text
+            + "\nOpen\u17b4Code command: broken manual.\n",
+            "literal_argument_sentinel": lambda text: text.replace(
+                "Claude uses `/workflow auto: <argument>`",
+                "Claude uses `/workflow auto: \uf000argument\uf001`",
+                1,
+            ),
+            "encoded_argument_sentinel": lambda text: text.replace(
+                "Claude uses `/workflow auto: <argument>`",
+                "Claude uses `/workflow auto: &#xF000;argument&#xF001;`",
+                1,
+            ),
+            "encoded_opencode_sentinel": lambda text: text.replace(
+                "`auto: <argument>`",
+                "`auto: &#xF000;argument&#xF001;`",
+                1,
+            ),
+            "literal_target_sentinel": lambda text: text.replace(
+                "Here `<argument>` is `<target-stage>`",
+                "Here `<argument>` is `\uf000target-stage\uf001`",
+                1,
+            ),
+            "claude_zero_width_identity": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/work\u200bflow auto: <argument>`",
+                1,
+            ),
+            "claude_private_use_identity": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/work\uf000flow auto: <argument>`",
+                1,
+            ),
+            "opencode_zero_width_identity": lambda text: text.replace(
+                "installed `workflow` skill",
+                "installed `work\u200bflow` skill",
+                1,
+            ),
+            "opencode_zero_width_operation": lambda text: text.replace(
+                "`auto: <argument>`",
+                "`au\u200bto: <argument>`",
+                1,
+            ),
+            "claude_uppercase_placeholder": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow auto: <ARGUMENT>`",
+                1,
+            ),
+            "claude_spaced_placeholder": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow auto: <argument >`",
+                1,
+            ),
+            "claude_self_closing_placeholder": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow auto: <argument/>`",
+                1,
+            ),
+            "claude_encoded_placeholder": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow auto: &lt;argument&gt;`",
+                1,
+            ),
+            "opencode_uppercase_placeholder": lambda text: text.replace(
+                "`auto: <argument>`",
+                "`auto: <ARGUMENT>`",
+                1,
+            ),
+            "uppercase_target_placeholder": lambda text: text.replace(
+                "`<target-stage>`",
+                "`<TARGET-STAGE>`",
+                1,
+            ),
+            "nested_claude_placeholder": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow auto: <custom><argument></custom>`",
+                1,
+            ),
+            "claude_nbsp_separator": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow\u00a0auto: <argument>`",
+                1,
+            ),
+            "claude_em_space_separator": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow\u2003auto: <argument>`",
+                1,
+            ),
+            "claude_tab_separator": lambda text: text.replace(
+                "`/workflow auto: <argument>`",
+                "`/workflow\tauto: <argument>`",
+                1,
+            ),
+            "opencode_nbsp_separator": lambda text: text.replace(
+                "`auto: <argument>`",
+                "`auto:\u00a0<argument>`",
+                1,
+            ),
+            "slash_unit_separator": lambda text: text
+            + "\nUse /work\u001fflow manual.\n",
+            "slash_file_separator": lambda text: text
+            + "\nUse /work\u001cflow manual.\n",
+            "slash_next_line_control": lambda text: text
+            + "\nUse /work\u0085flow manual.\n",
+            "slash_mongolian_variation": lambda text: text
+            + "\nUse /work\u180bflow manual.\n",
+            "codex_status_suffix": lambda text: text.replace(
+                "`$workflow auto: status`",
+                "`$workflow auto: status-now`",
+                1,
+            ),
+            "codex_status_trailing_argument": lambda text: text.replace(
+                "`$workflow auto: status`",
+                "`$workflow auto: status extra`",
+                1,
+            ),
+            "codex_off_prefix": lambda text: text.replace(
+                "`$workflow auto: off`",
+                "`$workflow auto: office`",
+                1,
+            ),
+            "codex_target_suffix": lambda text: text.replace(
+                "`$workflow auto: <target-stage>`",
+                "`$workflow auto: <target-stage>-extra`",
+                1,
+            ),
+            "codex_command_prefix": lambda text: text.replace(
+                "`$workflow auto: status`",
+                "`x$workflow auto: status`",
+                1,
+            ),
+            "codex_status_html_suffix": lambda text: text.replace(
+                "`$workflow auto: status`",
+                "`$workflow auto: status<em>-now</em>`",
+                1,
+            ),
+            "codex_status_adjacent_suffix": lambda text: text.replace(
+                "`$workflow auto: status`",
+                "`$workflow auto: status`-now",
+                1,
+            ),
+            "codex_off_adjacent_suffix": lambda text: text.replace(
+                "`$workflow auto: off`",
+                "`$workflow auto: off`-now",
+                1,
+            ),
+            "codex_target_adjacent_suffix": lambda text: text.replace(
+                "`$workflow auto: <target-stage>`",
+                "`$workflow auto: <target-stage>`-extra",
+                1,
+            ),
+            "codex_status_adjacent_argument": lambda text: text.replace(
+                "`$workflow auto: status` is read-only",
+                "`$workflow auto: status` extra is read-only",
+                1,
+            ),
+            "equivalence_block_suffix": lambda text: text.replace(
+                "Here `<argument>` is `<target-stage>`, `status`, or `off`.",
+                "Here `<argument>` is `<target-stage>`, `status`, or `off`.extra",
+                1,
+            ),
+        }
+        nonportable = {
+            "codex_skill",
+            "claude_skill",
+            "opencode_skill",
+            "shared_argument",
+            "bare_codex",
+            "non_auto_codex",
+            "case_codex",
+            "wrong_claude_argument",
+            "case_claude",
+            "plain_codex",
+            "html_codex",
+            "plain_claude",
+            "whitespace_claude",
+            "literal_argument_sentinel",
+            "encoded_argument_sentinel",
+            "encoded_opencode_sentinel",
+            "literal_target_sentinel",
+            "claude_zero_width_identity",
+            "claude_private_use_identity",
+            "opencode_zero_width_identity",
+            "opencode_zero_width_operation",
+            "claude_uppercase_placeholder",
+            "claude_spaced_placeholder",
+            "claude_self_closing_placeholder",
+            "claude_encoded_placeholder",
+            "opencode_uppercase_placeholder",
+            "uppercase_target_placeholder",
+            "nested_claude_placeholder",
+            "claude_nbsp_separator",
+            "claude_em_space_separator",
+            "claude_tab_separator",
+            "opencode_nbsp_separator",
+            "codex_status_suffix",
+            "codex_status_trailing_argument",
+            "codex_off_prefix",
+            "codex_target_suffix",
+            "codex_command_prefix",
+            "codex_status_html_suffix",
+            "codex_status_adjacent_suffix",
+            "codex_off_adjacent_suffix",
+            "codex_target_adjacent_suffix",
+            "codex_status_adjacent_argument",
+            "equivalence_block_suffix",
+        }
+        source = ROOT / "skills" / "workflow" / "SKILL.md"
+        source_text = source.read_text(encoding="utf-8")
+        for name, mutate in mutations.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "workflow"
+                shutil.copytree(source.parent, target)
+                skill_file = target / "SKILL.md"
+                skill_file.write_text(
+                    mutate(source_text),
+                    encoding="utf-8",
+                )
+
+                report = evaluate_skill(target)
+
+                if name in nonportable:
+                    self.assertEqual(report.included_adapters, ("codex",))
+                    self.assertIn(
+                        "Codex-specific $skill invocation",
+                        report.reason,
+                    )
+                else:
+                    self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
+
+    def test_workflow_benign_visible_boundaries_remain_portable(self) -> None:
+        additions = (
+            "Encode XML before parsing.",
+            "Encode X509 certificates consistently.",
+            "Keep open code samples in the fixture.",
+            "Review open-code licensing separately.",
+            "The cod_ex identifier is illustrative.",
+            "The Co_dex_ key is illustrative.",
+            "The Open_Code_ key is illustrative.",
+            "The Co`dex token is illustrative.",
+            "The Open[Code token is illustrative.",
+            "The Cla]ude token is illustrative.",
+            "The Open[Code] token is illustrative.",
+            "The Open[Code][missing] token is illustrative.",
+            "The Open[Code][] token is illustrative.",
+            "The Open&#42;Code&#42; token is illustrative.",
+            "The Open&#42;&#42;Code&#42;&#42; token is illustrative.",
+            "The Open&#91;Code&#93; token is illustrative.",
+            "The Open&#96;Code&#96; token is illustrative.",
+            "An unrelated /workéflow token is illustrative.",
+            "An unrelated /work☃flow token is illustrative.",
+        )
+        source = ROOT / "skills" / "workflow" / "SKILL.md"
+        source_text = source.read_text(encoding="utf-8")
+        for addition in additions:
+            with self.subTest(addition=addition), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "workflow"
+                shutil.copytree(source.parent, target)
+                (target / "SKILL.md").write_text(
+                    source_text + f"\n{addition}\n",
+                    encoding="utf-8",
+                )
+
+                report = evaluate_skill(target)
+
+                self.assertEqual(report.included_adapters, SUPPORTED_ADAPTERS)
+
+    def test_unrelated_equivalence_prose_does_not_portabilize_dollar_skill(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "codex-dollar-skill"
+            shutil.copytree(self.fixture("codex-dollar-skill"), target)
+            skill_file = target / "SKILL.md"
+            skill_file.write_text(
+                skill_file.read_text(encoding="utf-8")
+                + "\nAdapter invocation equivalents: Codex uses, Claude uses, "
+                + "and opencode invokes.\n",
+                encoding="utf-8",
+            )
+
+            report = evaluate_skill(target)
+
+        self.assertEqual(report.included_adapters, ("codex",))
+        self.assertIn("Codex-specific $skill invocation", report.reason)
 
     def test_partial_portability_records_exact_adapter_decision(self) -> None:
         report = evaluate_skill(self.fixture("partial-portability"))
@@ -2836,7 +3689,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=smoke,
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -2863,7 +3716,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=smoke,
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -2888,7 +3741,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -2925,7 +3778,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3091,7 +3944,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3125,7 +3978,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3217,7 +4070,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3263,7 +4116,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 
@@ -3406,7 +4259,7 @@ release_gate:
                 release_type="final",
                 manifest_version="0.1.1",
                 smoke_overrides=self.v0_1_1_smoke_overrides(),
-                non_portable_skill_exclusions=("workflow",),
+                non_portable_skill_exclusions=(),
                 notes_extra=self.v0_1_1_notes_extra(),
             )
 

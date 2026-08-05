@@ -1,9 +1,21 @@
-# Boundary-first proof model
+# Boundary-first compact core
 
 Boundary model version: boundary-first-v1
 
-Use this method when authoring or evaluating a behavior contract, its proof map, or a handoff that depends on those artifacts.
+Use this compact core when a stage needs the shared boundary vocabulary or must interpret approved boundary, interaction, or proof IDs.
 Examples illustrate governed behavior; they never define the complete boundary.
+
+## Compact scan
+
+Before a qualifying stage-owned decision, ask:
+
+1. Which inputs or actors can change the outcome?
+2. Which state or timing conditions can change the outcome?
+3. Which public, sibling, helper, or alternate path can change the outcome?
+4. Which failure, retry, recovery, compatibility, or external condition can change the outcome?
+
+The scan identifies potentially outcome-changing conditions.
+It does not by itself create records, IDs, proof maps, artifacts, or a user-visible scenario inventory.
 
 ## Core dimensions
 
@@ -36,40 +48,7 @@ Feature-specific dimensions and cross-feature boundary imports are not part of `
 - Ordering follows first governing use and stays stable downstream.
 - Every boundary is defined exactly once in its owning feature contract.
 
-## Feature-spec boundary record
-
-Keep these four headings contiguous and in this order:
-
-```md
-## Boundary model
-## Boundary definitions
-## Selected interactions
-## Example ownership
-```
-
-Start the model with:
-
-```text
-Boundary model version: boundary-first-v1
-Boundary model scope: <governed requirement IDs>
-```
-
-Use this applicability table:
-
-| Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
-| --- | --- | --- | --- | --- |
-
-Use this boundary-definition table:
-
-| Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |
-| --- | --- | --- | --- | --- | --- | --- |
-
-Partitions and transitions describe only states admitted by governing requirements.
-Invariants state what must remain true.
-Outcomes state success, failure, stale, interrupted, recovery, and stop behavior where applicable.
-An example cannot create a boundary, invariant, or outcome.
-
-## Examples
+## Example rule
 
 Classify each behavioral example as exactly one of:
 
@@ -77,24 +56,14 @@ Classify each behavioral example as exactly one of:
 - `regression`: carries the same links plus one stable defect or regression ID;
 - `discovery`: carries one stable gap ID and routes upstream without creating normative behavior.
 
-Use this table:
-
-| Example ID | Classification | Governing requirement IDs | Boundary IDs | Regression ID | Discovery gap ID |
-| --- | --- | --- | --- | --- | --- |
-
 Every cited boundary belongs to the same feature record.
 Every cited requirement is governed by every cited boundary.
 
-## Interactions
+## Interaction rule
 
 Select interactions from actual composed hazards rather than a Cartesian product.
 Consider stale authority, partial retry, public or helper bypass, sibling drift, compatibility migration, and incident-derived hazards when admitted by the requirements.
 Select an interaction whenever one boundary changes another boundary's success, failure, stale, interrupted, recovery, or stop outcome.
-
-Use this table for selected interactions:
-
-| Interaction ID | Governing requirement IDs | Boundary IDs | Hazard | Required composed outcome |
-| --- | --- | --- | --- | --- |
 
 Every interaction cites at least two defined boundaries.
 When none is selected, replace the table with:
@@ -103,41 +72,13 @@ When none is selected, replace the table with:
 No interaction selected: <requirement-grounded rationale>
 ```
 
-## Test-spec proof record
+## Consumption and upstream-gap routing
 
-The proof map consumes the exact boundary and interaction IDs from its governing feature contract.
-It never defines, renames, infers, or repairs them.
-Start with the same model version and scope, then use:
-
-| Proof obligation ID | Coverage state | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Proof level | Automation mode | Command IDs | Evidence artifact | Required milestone | Manual procedure IDs | Uncovered gap ID |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-
-Coverage state is exactly `covered` or `gap`.
-A covered row supplies every field required by its proof and automation mode and uses `-` for the uncovered-gap ID.
-A gap row supplies its requirements, boundary or interaction IDs, required milestone, and one stable gap ID.
-It uses `-` for test case, proof level, automation mode, command, evidence, and manual-procedure fields.
-A gap never counts as coverage and blocks downstream reliance.
-
-Proof level is exactly `unit`, `integration`, `contract`, `end-to-end`, `smoke`, or `manual`.
-Automation mode is exactly `automated`, `manual`, or `hybrid`.
-Automated proof uses `-` for manual procedures.
-Manual and hybrid proof cite a stable manual procedure and evidence artifact.
-
-Where admitted by a boundary, proof covers valid, invalid, missing, additional, stale, substituted, unknown, and conflicting states.
-Stateful proof covers legal and illegal transitions.
-Mutation proof covers commit, partial, retry, reconciliation, conflict, and replay.
-Composed proof exercises the public path and every material sibling path, not only a helper.
-
-## Interaction and example ownership audit
-
-Before accepting a record:
-
-1. confirm every example is governed or is an explicit discovery;
-2. confirm every selected interaction follows from requirement-owned hazards;
-3. confirm no example or structural check created normative behavior;
-4. confirm every applicable boundary and selected interaction has direct proof;
-5. confirm proof uses exact IDs from the governing feature contract; and
-6. route any missing boundary, outcome, or proof upstream as a visible gap.
+Downstream stages consume exact approved rows and stable IDs.
+They do not recreate applicability, rename IDs, or infer new outcomes.
+Expand the approved slice when an ID is missing, stale, unknown, ambiguous, conflicting, or cannot explain an observed outcome.
+Route a new or changed normative outcome to the feature-spec owner.
+Route a missing proof obligation that does not change behavior to the proof-map owner.
 
 ## Structural validation and semantic review
 
@@ -146,6 +87,12 @@ It does not prove applicability, completeness, interaction adequacy, milestone i
 
 Semantic review judges whether the applicable boundaries, interactions, examples, milestones, proof, implementation, and evidence are adequate at the reviewer's owned layer.
 Neither examples nor deterministic validators may invent normative behavior.
+
+## Scenario stop rule
+
+Select scenarios for distinct observable outcomes, authority crossings, partial or irreversible state, retry or ordering behavior, material composed paths, compatibility or external behavior, and named regressions.
+Stop when every applicable boundary and selected interaction has direct proof and another scenario would repeat an already-proved outcome without adding one of those hazards.
+Never require a Cartesian product of dimensions, partitions, boundaries, interactions, or scenario inputs.
 
 ## Portable stop conditions
 

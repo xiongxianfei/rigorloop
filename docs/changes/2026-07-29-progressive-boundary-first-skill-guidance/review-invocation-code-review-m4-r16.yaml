@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: code-review-m4-r16
+review_stage: code-review
+review_target: commit:39af0da6
+base_revision: 24f2bcac
+head_revision: 39af0da6
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r15-resolution
+reviewer_context_id: m4-r16-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [narrow-static-scope, invocation-vocabulary, path-boundaries]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/skill-contract.md
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:39af0da6.diff
+    revision: 39af0da6
+    sha256: c12d2e8c6b123e78932830413972164d787aaa1b80ed1cee9ba5f3bc0a32e950
+initial_packet_sha256: c12d2e8c6b123e78932830413972164d787aaa1b80ed1cee9ba5f3bc0a32e950
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r16-second-review}
+requirement_fidelity: {applicability: applicable, reason: R3l requires narrow phrase- or path-based published-skill checks.}
+risk_map:
+  affected_behavior: published workflow portability classification
+  highest_impact_failure_modes: missed case variants and false positives on variables or longer paths
+  changed_boundaries: dollar-token vocabulary, governed skill names, slash-command termination
+  evidence_expected: positive invocation controls and portable negative controls
+  direct_inspection_areas: portability trigger, residual checks, narrow-scope mutation matrix
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [portability, normalization, maintainability]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Do outer and inner dollar checks use the same governed vocabulary?
+    - Are shell variables, math notation, and longer workflow paths portable?

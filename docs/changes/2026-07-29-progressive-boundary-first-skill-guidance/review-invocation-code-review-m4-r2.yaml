@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: code-review-m4-r2
+review_stage: code-review
+review_target: commit:f0dd6fff
+base_revision: 7e8f5d5b
+head_revision: f0dd6fff
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m4-r1-resolution
+reviewer_context_id: m4-r2-primary-and-second-independent-agents
+context_separation_mechanism: separate-agents
+risk_tier: elevated
+risk_tier_triggers: [package-parity, evidence-integrity, cross-adapter-composition]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/progressive-boundary-first-skill-guidance.test.md
+  - docs/plans/2026-07-29-progressive-boundary-first-skill-guidance.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:f0dd6fff.diff
+    revision: f0dd6fff
+    sha256: 333168068c8262f792a769e2b19f784df1c3800996568a08fbfcf12097a83e38
+initial_packet_sha256: 333168068c8262f792a769e2b19f784df1c3800996568a08fbfcf12097a83e38
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: true, satisfied: true, reviewer_context_id: m4-r2-second-review}
+requirement_fidelity:
+  applicability: applicable
+  reason: M4 package and measurement proof remains spec-derived.
+risk_map:
+  affected_behavior: historical loading comparison and supported-adapter package completeness
+  highest_impact_failure_modes: inaccurate baseline or silently omitted governed skill resources
+  changed_boundaries: historical measurement, portability classification, generated output, archives, clean installs
+  evidence_expected: source-derived loading counts and exact governed-skill adapter matrix
+  direct_inspection_areas: M4 evidence, workflow portability, clean-install completeness oracle
+  intentionally_out_of_scope: final holistic review, final verification, PR
+  applicable_risk_classes: [evidence-integrity, package-parity, cross-adapter-composition]
+  non_applicable_risk_classes: [database-migration, network-service]
+  falsifiable_questions:
+    - Does the old governed downstream operation load the full reference?
+    - Does every supported adapter contain every requested governed skill resource?

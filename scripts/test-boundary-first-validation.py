@@ -51,8 +51,11 @@ def copy_activation_surfaces(root: Path) -> None:
     (root / "specs" / "references").mkdir(parents=True)
     for relative in (
         Path("specs/boundary-first-activation.yaml"),
+        Path("specs/boundary-first-resources.yaml"),
         Path("specs/boundary-first-proof-model.md"),
         Path("specs/references/boundary-first-method-v1.md"),
+        Path("specs/references/boundary-first-feature-authoring-v1.md"),
+        Path("specs/references/boundary-first-proof-v1.md"),
     ):
         destination = root / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -738,6 +741,169 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 validate_activation(root)[0].code,
                 "BFR-ACTIVATION-FIELDS",
             )
+
+    def test_manifest_path_and_hash_must_match_projection_authority(self) -> None:
+        source = ROOT / "specs" / "boundary-first-activation.yaml"
+        for field, value, expected in (
+            (
+                "resource_manifest",
+                "specs/future-resources.yaml",
+                "BFR-RESOURCE-MANIFEST-PATH",
+            ),
+            (
+                "resource_manifest_sha256",
+                "0" * 64,
+                "BFR-RESOURCE-MANIFEST-HASH",
+            ),
+        ):
+            with (
+                self.subTest(field=field),
+                tempfile.TemporaryDirectory() as temporary,
+            ):
+                root = Path(temporary)
+                copy_activation_surfaces(root)
+                data = json.loads(source.read_text(encoding="utf-8"))
+                data[field] = value
+                (
+                    root / "specs" / "boundary-first-activation.yaml"
+                ).write_text(json.dumps(data), encoding="utf-8")
+                self.assertIn(
+                    expected,
+                    {issue.code for issue in validate_activation(root)},
+                )
+
+    def test_activation_preserves_manifest_error_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            manifest = root / "specs/boundary-first-resources.yaml"
+            manifest.write_text(
+                manifest.read_text(encoding="utf-8").replace(
+                    "contract_version: boundary-first-v1",
+                    "contract_version: boundary-first-v2",
+                ),
+                encoding="utf-8",
+            )
+
+            issue = validate_activation(root)[0]
+
+            self.assertEqual(
+                issue.code,
+                "BFR-MANIFEST-CONTRACT-VERSION-UNKNOWN",
+            )
+            self.assertEqual(
+                issue.path,
+                "specs/boundary-first-resources.yaml",
+            )
+            self.assertIn("boundary-first-v1", issue.expected)
+
+    def test_activation_preserves_missing_manifest_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            (root / "specs/boundary-first-resources.yaml").unlink()
+
+            issue = validate_activation(root)[0]
+
+            self.assertEqual(issue.code, "BFR-MANIFEST-MISSING")
+            self.assertEqual(
+                issue.path,
+                "specs/boundary-first-resources.yaml",
+            )
+            self.assertEqual(issue.expected, "existing resource manifest")
+
+    def test_activation_does_not_disclose_untrusted_manifest_scalar(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            secret = "token-super-secret-marker"
+            manifest = root / "specs/boundary-first-resources.yaml"
+            manifest.write_text(
+                manifest.read_text(encoding="utf-8").replace(
+                    "      - verify\n",
+                    f"      - {secret}\n",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            issue = validate_activation(root)[0]
+            serialized = json.dumps(issue.as_dict())
+
+            self.assertEqual(
+                issue.code,
+                "BFR-MANIFEST-CONSUMER-UNKNOWN",
+            )
+            self.assertTrue(issue.offending_value.startswith("sha256:"))
+            self.assertNotIn(secret, serialized)
+
+    def test_activation_does_not_disclose_resource_version_scalar(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            secret = "token-super-secret-resource-version"
+            resource = (
+                root
+                / "specs/references/"
+                "boundary-first-feature-authoring-v1.md"
+            )
+            resource.write_text(
+                f"# Feature\n\nBoundary model version: {secret}\n",
+                encoding="utf-8",
+            )
+
+            issue = validate_activation(root)[0]
+            serialized = json.dumps(issue.as_dict())
+
+            self.assertEqual(issue.code, "BFR-RESOURCE-VERSION-UNKNOWN")
+            self.assertTrue(issue.offending_value.startswith("sha256:"))
+            self.assertNotIn(secret, serialized)
+
+    def test_activation_preserves_missing_family_source_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            missing = (
+                root / "specs/references/boundary-first-proof-v1.md"
+            )
+            missing.unlink()
+
+            issue = validate_activation(root)[0]
+
+            self.assertEqual(issue.code, "BFR-SOURCE-MISSING")
+            self.assertEqual(
+                issue.path,
+                "specs/references/boundary-first-proof-v1.md",
+            )
+            self.assertIn("existing canonical resource", issue.expected)
+
+    def test_activation_preserves_family_source_symlink_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            copy_activation_surfaces(root)
+            source = (
+                root
+                / "specs/references/"
+                "boundary-first-feature-authoring-v1.md"
+            )
+            source.unlink()
+            source.symlink_to(
+                root / "specs/references/boundary-first-method-v1.md"
+            )
+
+            issue = validate_activation(root)[0]
+
+            self.assertEqual(issue.code, "BFR-PATH-SYMLINK")
+            self.assertEqual(
+                issue.path,
+                "specs/references/"
+                "boundary-first-feature-authoring-v1.md",
+            )
+            self.assertIn("non-symlink", issue.expected)
 
     def test_active_manifest_uses_parent_inventory_and_immediate_release(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
