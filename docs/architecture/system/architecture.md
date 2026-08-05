@@ -173,9 +173,10 @@ The goals are:
   stage-family resources, artifact-sliced downstream reads, deterministic
   projections, atomic activation, and independent semantic review;
 - activate that method through a pre-tag candidate proof with distinct
-  publication-base, grandfathering-baseline, transition, and reviewed-head
-  identities, followed by strict tagged-tree proof and atomic branch/tag
-  publication;
+  publication-base, grandfathering-baseline, transition, candidate-validation
+  head, candidate-evidence commit, and reviewed publication-head roles,
+  followed by publication readiness, strict tagged-tree proof, and atomic
+  branch/tag publication;
 - keep `project-map` as a current-state orientation reference with freshness metadata, cited material claims, visible inference, root/area registration, and downstream reliance boundaries;
 - improve enterprise-network recovery through bounded proxy diagnostics while deferring programmatic proxy dispatcher support;
 - let the CLI scaffold a draft change-local artifact pack for `docs/changes/<change-id>/change.yaml` without claiming lifecycle stage completion or creating durable-looking placeholder artifacts;
@@ -421,17 +422,21 @@ Plan, implementation, review, and verification stages read their cited rows
 first and expand only on a missing, stale, unknown, ambiguous, conflicting, or
 escaped identity. No per-stage context packet or runtime service is introduced.
 
-Activation release handling adds four bounded responsibilities to this
+Activation release handling adds five bounded responsibilities to this
 component without another manifest or service:
 
 - candidate validation reads the existing activation manifest, release
   profile, Git history, and fresh remote ref advertisement; derives
   publication base `P`, grandfathering baseline `B`, transition `T`, and
-  reviewed head `H`; and emits read-only machine evidence;
-- post-transition classification compares `T..H` and permits only lifecycle
-  evidence owned by the activation change, reporting every release-gated path;
-- strict release execution resolves local tag `v0.4.0` to `T`, validates from
-  `H`, and runs the full release gate in a detached temporary worktree at `T`;
+  candidate-validation head `R`; and emits read-only machine evidence;
+- candidate-evidence provenance requires immediate child `C` to persist the
+  result produced at `R`, without storing `C` or later `H` in that result;
+- post-transition classification compares `T..R` during candidate validation
+  and `T..H` during publication readiness, permitting only lifecycle evidence
+  owned by the activation change and reporting every release-gated path;
+- strict release execution resolves local tag `v0.4.0` to `T`, validates and
+  runs publication readiness from live `H`, and runs the full release gate in
+  a detached temporary worktree at `T`; and
   and
 - atomic publication performs one guarded, non-forced `git push --atomic` for
   `main: P -> H` and `v0.4.0 -> T`, or changes neither ref.
@@ -728,26 +733,34 @@ arbitrary file write.
     ambiguous remote state blocks. The advertised main identity is `P`; the
     absent tag state is part of the result.
 18. Candidate validation discovers the unique first-parent pending-to-active
-    transition `T`, takes its first parent as `B`, resolves `HEAD` as `H`, and
-    accepts only `P ... B -> T ... H`. It validates every strict invariant that
-    does not require the absent tag and emits `P`, `B`, `T`, `H`, rollback,
+    transition `T`, takes its first parent as `B`, resolves `HEAD` as `R`, and
+    accepts only `P ... B -> T ... R`. It validates every strict invariant that
+    does not require the absent tag and emits `P`, `B`, `T`, `R`, rollback,
     tag state, and bundle identity without writing repository or remote state.
-19. The validator compares all paths in `T..H`. Only lifecycle evidence under
-    the owning activation change is eligible after `T`; code, skills,
+19. Immediate first-parent child `C` persists the candidate result produced at
+    `R`. The result records `R`, while Git parentage proves `R -> C`; it does
+    not attempt to name its containing commit or later reviewed head `H`.
+20. Candidate validation compares all paths in `T..R`, and publication
+    readiness compares all paths in `T..H`. Only lifecycle evidence under the
+    owning activation change is eligible after `T`; code, skills,
     resources, validators, profiles, release metadata, release notes,
     packages, adapters, generated output, or other release-gated paths fail
     with the exact changed-path list.
-20. After candidate review, the release operator creates local immutable tag
-    `v0.4.0` at `T`, runs strict boundary validation from `H`, and runs
-    `release-verify.sh v0.4.0` in a detached temporary worktree at `T`. No
-    command in the tagged-tree gate may read later commits.
-21. The publication helper rechecks the candidate evidence, proves `P` is an
-    ancestor of `H`, and starts one plain `git push --atomic` for
+21. After candidate review, the release operator creates local immutable tag
+    `v0.4.0` at `T`, runs strict boundary validation and publication readiness
+    from live `H`, and runs `release-verify.sh v0.4.0` in a detached temporary
+    worktree at `T`. Publication readiness validates `R -> C`, proves `C` is
+    in `H`, derives and binds `H`, recomputes `P/B/T`, rollback and bundle
+    identity, requires local `v0.4.0 -> T`, remote tag absence, and remote
+    `main == P`, and does not rerun candidate mode. No command in the
+    tagged-tree gate may read later commits.
+22. The publication helper consumes the exact `H` bound by readiness, proves
+    `P` is an ancestor of `H`, and starts one plain `git push --atomic` for
     `H:refs/heads/main` and `T:refs/tags/v0.4.0`. A temporary pre-push guard
     compares the identities advertised for that same push with exact `P` for
     main and the absent all-zero identity for the tag. Force options are not
     used; Git's receive-side old-identity check rejects a later race.
-22. Any guard mismatch, non-fast-forward, tag conflict, unsupported atomic
+23. Any guard mismatch, non-fast-forward, tag conflict, unsupported atomic
     capability, or ref rejection leaves both refs unchanged. A release-gated
     correction after `T` supersedes the invalid branch and PR; a replacement
     branch from current authorized remote main generates one new transition
@@ -920,10 +933,12 @@ The main execution and publication boundaries are:
   marker, and tracked evidence references accepted as one source-tree change;
 - boundary activation candidate evidence: change-local, machine-readable proof
   of release `v0.4.0`, publication base `P`, grandfathering baseline `B`,
-  transition `T`, reviewed head `H`, rollback `v0.3.6`, absent tag state, and
-  exact bundle identity; it records validation and is not another state owner;
+  transition `T`, candidate-validation head `R`, rollback `v0.3.6`, absent tag
+  state, and exact bundle identity; immediate child `C` persists it, and it
+  records validation without becoming another state owner;
 - boundary activation strict execution: strict validation runs from reviewed
-  head `H` with local `v0.4.0 -> T`, while the full release gate runs in a
+  head `H` with local `v0.4.0 -> T`; publication readiness at `H` binds stored
+  `R/C` provenance to fresh authority; and the full release gate runs in a
   detached temporary worktree rooted at `T` and remains self-contained there;
 - boundary activation ref transaction: a guarded, plain, non-forced atomic Git
   push advances `main` from exact `P` to `H` and creates `v0.4.0` at `T`; any
@@ -1085,10 +1100,11 @@ does not install, publish, write rollback state, create a transaction receipt,
 retain a historical attestation store, or treat external install trees as Git
 state.
 
-The `v0.4.0` activation adds a pre-tag proof phase without changing those state
-owners. Candidate validation reads a fresh remote advertisement and derives
-the four Git identities `P`, `B`, `T`, and `H`; workflow-owned evidence records
-its JSON result. Default validation remains tag-strict. Release execution then
+The `v0.4.0` activation adds pre-tag proof and publication-readiness phases
+without changing those state owners. Candidate validation reads a fresh remote
+advertisement and derives `P`, `B`, `T`, and producing head `R`; immediate
+child `C` records its JSON result. Default validation remains tag-strict.
+Release execution derives and binds live `H` through publication readiness,
 proves `v0.4.0 -> T` from `H`, proves the full tagged tree from a detached
 worktree at `T`, and publishes `main: P -> H` plus the tag through one guarded
 non-forced atomic push. No release profile field, activation-manifest field,
@@ -1324,7 +1340,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md`: superseded historical activation and rollback-transaction design.
 - `docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md`: one reviewed release manifest, immutable source-control grandfathering baseline, existing adapter metadata, and read-only package rollback validation.
 - `docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md`: compatibility-stable compact core, two owner-scoped family resources, declarative projection manifest, inline checked compact scan, representative loading evidence, path-owned selector routing, and one atomic rollback bundle. It revises only the resource-composition part of ADR-20260728.
-- `docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md`: pre-tag candidate authority, explicit `P/B/T/H` identities, post-transition path restriction, strict tagged-tree execution, and guarded non-forced atomic branch/tag publication for `v0.4.0`.
+- `docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md`: pre-tag `P/B/T/R` candidate authority, immediate `R -> C` evidence provenance, live `H` publication readiness, post-transition path restriction, strict tagged-tree execution, and guarded non-forced atomic branch/tag publication for `v0.4.0`.
 - `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md`: superseded historical profile decision whose gate and review-independence rationale is retained through the unified mechanism.
 - `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md`: superseded historical profile decision whose risk separation, reviewer-owned correction, fresh verify, and stop-before-PR rules remain retained.
 - `docs/adr/ADR-20260625-independent-adversarial-review-gates.md`: orchestrator-owned neutral review manifests, fresh-context enforcement, blind-first evidence staging, risk-tiered escalation, clean-review sufficiency receipts, second-review disagreement handling, and calibration for workflow-managed automated reviews.
@@ -1389,8 +1405,8 @@ creating another state mechanism.
 | Boundary-resource proportionality | A governed stage makes a decision after the compact scan. | Non-behavior work loads no formal family resource; feature-contract stages map only compact and feature-authoring resources; proof-map stages map only compact and proof resources; other stages begin with cited approved rows and expand only when the slice is insufficient. |
 | Boundary-resource parity | A maintainer changes a boundary resource or governed skill. | One declarative manifest projects exactly the owner-approved resources; canonical, skill-local, generated, packed, and installed Codex, Claude Code, and opencode trees retain the expected mapped path and raw-byte SHA-256 with no missing or additional layer. |
 | Boundary activation safety | The repository activates `boundary-first-v1`. | The tracked transaction and derived proof set bind the same source, resource-manifest, projection-set, package, and install identities before the reviewed activation marker becomes active; mixed, missing, unknown, or divergent surfaces fail without making derived output tracked state. |
-| Activation candidate authority | A reviewer evaluates active `v0.4.0` source before the tag exists. | Candidate mode reports non-public status and exact `P/B/T/H`, rollback, absent-tag, and bundle identities; default validation still fails without the immutable tag. |
-| Tagged-tree release reproducibility | Lifecycle evidence follows transition `T` on the reviewed branch. | Candidate validation rejects every release-gated path in `T..H`; strict validation runs at `H`, while full release verification passes from a detached worktree at `T` without later commits. |
+| Activation candidate authority | A reviewer evaluates active `v0.4.0` source before the tag exists. | Candidate mode reports non-public status and exact `P/B/T/R`, rollback, absent-tag, and bundle identities; immediate child `C` persists the result; default validation still fails without the immutable tag. |
+| Tagged-tree release reproducibility | Lifecycle evidence follows transition `T` on the reviewed branch. | Candidate validation rejects release-gated paths in `T..R`; publication readiness validates `R -> C`, binds live `H`, and rejects release-gated paths in `T..H`; strict validation runs at `H`, while full release verification passes from a detached worktree at `T` without later commits. |
 | Atomic activation publication | An authorized operator publishes the reviewed activation. | One guarded, non-forced atomic push verifies advertised main equals `P`, the tag is absent, `P` is an ancestor of `H`, and both `main -> H` and `v0.4.0 -> T` succeed or neither changes. |
 | Boundary rollback safety | A maintainer withdraws the candidate before activation or the active release afterward. | Before activation, the tracked transaction is reverted or abandoned and derived output is discarded or regenerated from the restored pending tree; afterward, read-only validation selects the immutable rollback release and proves every supported adapter archive before an authorized operator acts. |
 | Boundary measurement usefulness | A contributor evaluates progressive loading before activation. | Evidence reports before-and-after canonical bytes, mapped-resource counts per governed skill, and representative initial and expanded loaded-resource counts by stage family; no hard budget is inferred from the baseline. |
@@ -1521,7 +1537,7 @@ creating another state mechanism.
 | Interrupted projection could leave a mixed worktree | Projection preflights the complete matrix and validation rejects mixed output; activation never changes state until the tracked transaction and derived proof set agree, and pre-activation rollback reverts tracked sources while discarding or regenerating derived output. |
 | Candidate proof could be mistaken for public activation | Candidate output uses an explicit non-public result and absent tag state; default and release-context validation remain strict and tag-bound. |
 | Publication base could drift after review | Candidate evidence records `P`; the same-push pre-push guard checks the advertised main identity and Git rejects a later race, so the atomic update changes both refs or neither. |
-| Lifecycle evidence after `T` could alter the tagged payload | Candidate validation classifies every `T..H` path, permits only activation-change lifecycle evidence, and reports release-gated drift before local tagging or publication. |
+| Lifecycle evidence after `T` could alter the tagged payload | Candidate validation classifies `T..R`; publication readiness classifies `T..H`; each permits only activation-change lifecycle evidence and reports release-gated drift before its authority is used. |
 | A payload fix after `T` could preserve invalid transition history | The invalid branch and PR are superseded; replacement begins from current authorized remote main, creates one transition, and repeats validation and review without force-push. |
 | Atomic push support could be absent | Publication blocks before either ref changes and does not fall back to sequential branch/tag updates. |
 | Tracked projections could be hand-edited as if authored | The projection check binds every governed copy to one source and fails before dependent validation or packaging; contributor guidance identifies the copies as derived. |
@@ -1562,7 +1578,7 @@ creating another state mechanism.
   paths.
 - boundary-first activation candidate: read-only pre-tag proof for `v0.4.0`
   that records publication base `P`, grandfathering baseline `B`, transition
-  `T`, reviewed head `H`, absent tag state, rollback, and bundle identity
+  `T`, candidate-validation head `R`, absent tag state, rollback, and bundle identity
   without claiming public activation.
 - activation publication base (`P`): exact remote `main` identity advertised
   and recorded for candidate proof, then required unchanged by the atomic
@@ -1571,9 +1587,13 @@ creating another state mechanism.
   `T`, retained in the activation manifest for historical spec eligibility.
 - activation transition (`T`): unique first-parent pending-to-active commit and
   immutable target of release tag `v0.4.0`.
+- activation candidate-validation head (`R`): exact invocation head recorded by
+  one side-effect-free pre-tag candidate result.
+- activation candidate-evidence commit (`C`): immediate first-parent child of
+  `R` that persists that result without requiring self-reference.
 - activation reviewed head (`H`): final reviewed first-parent descendant of
-  `T`, containing only permitted later lifecycle evidence and published as
-  remote `main`.
+  `C`, containing only permitted later lifecycle evidence, freshly bound by
+  publication readiness, and published as remote `main`.
 - atomic activation publication: guarded, non-forced `git push --atomic` that
   advances `main` from exact `P` to `H` and creates `v0.4.0` at `T`, or changes
   neither ref.
@@ -1678,9 +1698,10 @@ creating another state mechanism.
 ## Follow-on artifacts
 
 - Boundary-First v1 v0.4.0 activation release: approved spec and this canonical
-  update add pre-tag candidate proof, `P/B/T/H` identities, tagged-tree strict
-  execution, guarded atomic branch/tag publication, and replacement-candidate
-  recovery; architecture review is recorded by its owning change.
+  update add pre-tag `P/B/T/R` candidate proof, immediate `R -> C` evidence,
+  live `H` publication readiness, tagged-tree strict execution, guarded atomic
+  branch/tag publication, and replacement-candidate recovery; architecture
+  review is recorded by its owning change.
 - Legacy architecture lifecycle normalization: completed; top-level legacy architecture records are archived historical evidence.
 - Architecture-review for the 2026-04-29 package-quality refinement: approved on 2026-04-29 with no findings.
 - Architecture-review for the 2026-05-08 workflow-governance direct canonical package update: approved in `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/architecture-review-r1.md` with no material findings.
