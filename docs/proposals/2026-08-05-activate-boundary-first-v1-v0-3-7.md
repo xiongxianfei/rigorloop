@@ -1,4 +1,4 @@
-# Activate Boundary-First v1 in RigorLoop v0.3.7
+# Activate Boundary-First v1 in RigorLoop v0.4.0
 
 ## Owning change record
 
@@ -63,7 +63,7 @@ unavailable under the active contract.
 This creates a state/package mismatch and does not deliver the capability to
 published users.
 
-### O2: Activate and publish a routine stable patch release
+### O2: Activate and publish a routine stable minor release
 
 This uses the existing transaction, delivers the complete bundle, and retains
 an immutable rollback target. This is the recommended option.
@@ -80,17 +80,17 @@ model.
 
 ## Recommended direction
 
-Choose O2. Prepare `v0.3.7` as the activating release and bind rollback to
+Choose O2. Prepare `v0.4.0` as the activating release and bind rollback to
 `v0.3.6`. Use the existing routine release profile and generators. Treat the
 activation state, canonical hashes, generated packages, release metadata, and
 publication evidence as one coherent transaction.
 
 Add one narrowly scoped candidate-validation mode. In candidate mode, the
-validator checks the proposed active tree, expected `v0.3.7` identity,
+validator checks the proposed active tree, expected `v0.4.0` identity,
 immediate `v0.3.6` predecessor, transition parent, grandfathering baseline,
 resource hashes, projections, packages, and rollback metadata without claiming
 that the absent tag is already published. Default and release-context
-validation remain strict: `v0.3.7` must exist and resolve to the exact reviewed
+validation remain strict: `v0.4.0` must exist and resolve to the exact reviewed
 pending-to-active transition commit.
 
 Lifecycle automation may carry one first-parent candidate branch through
@@ -101,7 +101,7 @@ discovers and records both.
 
 Because normal merge commits would change the activation transition identity,
 release execution must fast-forward `main` to the exact final reviewed branch
-head with an unchanged-parent compare-and-swap, create `v0.3.7` at the exact
+head with an unchanged-parent compare-and-swap, create `v0.4.0` at the exact
 earlier transition commit in that head's first-parent history, and push both
 refs atomically. Any base drift invalidates candidate evidence and returns the
 change to regeneration and review. Tag creation and public GitHub/npm
@@ -151,7 +151,7 @@ tree self-containment, and strict tag-context revalidation.
 
 ## Rollout and rollback
 
-Prepare and review one first-parent `v0.3.7` candidate branch while the public
+Prepare and review one first-parent `v0.4.0` candidate branch while the public
 capability remains pending. The transition commit contains every release input
 needed by the tag workflow. Later commits add lifecycle review, rationale, and
 verification evidence without changing the release payload or activation
@@ -159,7 +159,7 @@ record. Candidate validation proves the complete proposed bundle and both
 commit identities but never claims a published active release.
 
 At the external-action checkpoint, confirm `origin/main` still equals the
-candidate branch's reviewed base. Create local `v0.3.7` at the transition
+candidate branch's reviewed base. Create local `v0.4.0` at the transition
 commit, run strict validation and full release verification from that tagged
 tree, then atomically fast-forward remote `main` to the final reviewed branch
 head and publish the tag at the transition commit. The tag workflow performs
@@ -170,7 +170,7 @@ remote `main`, public packages, and the coherent pending bundle unchanged. A
 failed compare-and-swap or any base drift stops publication and requires a
 rebased, regenerated, and rereviewed candidate. After publication, rollback
 uses immutable `v0.3.6`; any defect that requires changed code is corrected in
-a later patch release rather than mutating `v0.3.7`.
+a later patch release rather than mutating `v0.4.0`.
 
 ## Risks and mitigations
 
@@ -201,7 +201,7 @@ a later patch release rather than mutating `v0.3.7`.
 | Work item | Treatment | Reason |
 | --- | --- | --- |
 | Boundary-first activation state | core to this proposal | It is the remaining user-visible transition. |
-| `v0.3.7` routine release profile and generated preparation | core to this proposal | It is the existing source of truth and delivery path. |
+| `v0.4.0` routine release profile and generated preparation | core to this proposal | It is the existing source of truth and delivery path. |
 | Three-adapter and npm package proof | same-slice dependency | Activation is incomplete without published package parity. |
 | Candidate-validation bridge | same-slice dependency | Current strict validation cannot prove an active PR before its tag exists. |
 | Pre-publication PR | separate implementation slice | It reviews the transition commit plus later lifecycle evidence on one first-parent branch. |
@@ -212,15 +212,15 @@ a later patch release rather than mutating `v0.3.7`.
 
 ## Open questions
 
-None blocks proposal review. The release remains stable `v0.3.7` unless review
-finds evidence that a release candidate is required. Publication mode remains
-the existing trusted-publishing path.
+None blocks proposal review. The release is stable `v0.4.0` because REL-R10
+requires a minor version for backward-compatible public skill behavior.
+Publication mode remains the existing trusted-publishing path.
 
 ## Decision log
 
 | Date | Decision | Reason | Alternatives rejected |
 | --- | --- | --- | --- |
-| 2026-08-05 | Use stable `v0.3.7`. | GitHub, Git, and npm agree that `v0.3.6` is current; a patch release is the smallest compatible successor. | Deferral, repository-only activation, release candidate. |
+| 2026-08-05 | Use stable `v0.4.0`. | GitHub, Git, and npm agree that `v0.3.6` is current, and REL-R10 requires a minor release for new backward-compatible public skill behavior. | Contract-invalid patch release, deferral, repository-only activation, release candidate. |
 | 2026-08-05 | Use `v0.3.6` as rollback. | It is the latest immutable public release before activation. | Constructed rollback bundle. |
 | 2026-08-05 | Reuse the routine release transaction. | Existing profile, preparation, verification, publication, and closeout boundaries already own this work. | New activation or release mechanism. |
 | 2026-08-05 | Separate candidate and strict tag-context validation. | Strict validation requires a tag that cannot safely exist before review; candidate mode proves the exact proposed transition without weakening release proof. | Publish-before-review; omit activation validation from PR. |
