@@ -2,7 +2,7 @@
 
 Milestone: M1 — Read-only activation candidate validation
 
-Outcome: implemented, R1 findings corrected, and ready for R2 code review.
+Outcome: implemented, R1/R2 findings corrected, and ready for R3 code review.
 
 ## Implemented behavior
 
@@ -25,6 +25,10 @@ Outcome: implemented, R1 findings corrected, and ready for R2 code review.
 - Made authoritative directory preflight require every existing file or symlink
   descendant to be tracked. Empty, mixed, only-untracked, and symlink directory
   surfaces fail closed.
+- The R2 correction traverses complete merged T..H ancestry, binds stored
+  candidate evidence to its producing head and a fresh current result, closes
+  and validates review-invocation identities, and privacy-bounds runtime
+  identity plus non-path scalar fields.
 
 ## Boundary and proof coverage
 
@@ -35,12 +39,13 @@ and merge-parent-only transitions; lifecycle-only history; every-commit drift;
 rename/delete and multiple-path unions; appended repair; fresh replacement;
 missing or unsettled evidence; determinism; exact file/ref snapshots; bounded
 token, OTP, username, hostname, environment, and temporary-path diagnostics;
-and non-public output.
+merged side-branch change/revert history; forged candidate identities; unknown,
+malformed, unowned, and valid review invocations; and non-public output.
 
-T16 is proved by the exact CMD4 selection, a multi-surface selection regression
-covering validator, lifecycle, skill, adapter, package, and release owners, and
-the selector suite's fail-closed selected-command regression. Candidate mode
-changes tag authority only; it does not remove path-owned sibling checks.
+T16 is proved by the exact CMD4 selection, multi-surface selection covering
+validator, lifecycle, skill, adapter, package, release, and CI/security owners,
+and one injected blocking selected-command failure per sibling owner. Candidate
+mode changes tag authority only; it does not remove path-owned sibling checks.
 
 ## Aligned-surface audit
 
@@ -54,11 +59,11 @@ changes tag authority only; it does not remove path-owned sibling checks.
 
 ## Validation
 
-- `python scripts/test-boundary-first-validation.py` — pass, 77 tests.
+- `python scripts/test-boundary-first-validation.py` — pass, 82 tests.
 - `python scripts/validate-boundary-first.py --check` — pass.
 - `python -m py_compile scripts/validate-boundary-first.py scripts/boundary_first_validation.py scripts/validation_selection.py` — pass.
 - `python scripts/select-validation.py --mode explicit --path scripts/validate-boundary-first.py --path scripts/boundary_first_validation.py --path scripts/test-boundary-first-validation.py --path scripts/fixtures/boundary-first/activation --path scripts/validation_selection.py --path scripts/test-select-validation.py` — pass; selected `boundary_first.validate`, `boundary_first.regression`, and `selector.regression`, with no blockers or registration debt.
-- `python scripts/test-select-validation.py` — pass, 144 tests.
+- `python scripts/test-select-validation.py` — pass, 146 tests.
 - `git diff --check` — pass.
 
 No external refs, tags, releases, packages, or public state were mutated.

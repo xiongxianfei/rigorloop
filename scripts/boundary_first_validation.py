@@ -3,9 +3,12 @@
 
 from __future__ import annotations
 
+import getpass
 import hashlib
 import json
+import os
 import re
+import socket
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -1732,9 +1735,9 @@ def validate_activation_publication_readiness(
         try:
             metadata = _parse_change_yaml_text(change_yaml.read_text(encoding="utf-8"))
         except Exception:
-            missing.append(change_yaml.as_posix() + "#valid-metadata")
+            missing.append(change_yaml.relative_to(root).as_posix() + "#valid-metadata")
     else:
-        missing.append(change_yaml.as_posix())
+        missing.append(change_yaml.relative_to(root).as_posix())
     if isinstance(metadata, dict):
         states = metadata.get("artifact_states")
         expected_states = {
@@ -1745,7 +1748,7 @@ def validate_activation_publication_readiness(
             "test-spec": "active",
         }
         if not isinstance(states, dict):
-            missing.append(change_yaml.as_posix() + "#artifact-states")
+            missing.append(change_yaml.relative_to(root).as_posix() + "#artifact-states")
         else:
             for artifact_id, lifecycle_state in expected_states.items():
                 entry = states.get(artifact_id)
@@ -1756,7 +1759,10 @@ def validate_activation_publication_readiness(
                     or not isinstance(review, dict)
                     or review.get("outcome") != "approved"
                 ):
-                    missing.append(change_yaml.as_posix() + f"#settled-{artifact_id}")
+                    missing.append(
+                        change_yaml.relative_to(root).as_posix()
+                        + f"#settled-{artifact_id}"
+                    )
         workflow_state = metadata.get("workflow_state")
         planned = (
             workflow_state.get("planned_work")
@@ -1769,7 +1775,7 @@ def validate_activation_publication_readiness(
             or milestones[f"M{number}"].get("state") != "closed"
             for number in range(1, 5)
         ):
-            missing.append(change_yaml.as_posix() + "#closed-milestones")
+            missing.append(change_yaml.relative_to(root).as_posix() + "#closed-milestones")
         latest = planned.get("latest_review") if isinstance(planned, dict) else None
         if (
             not isinstance(latest, dict)
@@ -1777,14 +1783,14 @@ def validate_activation_publication_readiness(
             or latest.get("stage") != "code-review"
             or latest.get("milestone_id") != "M4"
         ):
-            missing.append(change_yaml.as_posix() + "#approved-m4-review")
+            missing.append(change_yaml.relative_to(root).as_posix() + "#approved-m4-review")
         review_state = metadata.get("review")
         if (
             not isinstance(review_state, dict)
             or review_state.get("status") != "approved"
             or review_state.get("unresolved_items") != 0
         ):
-            missing.append(change_yaml.as_posix() + "#review-closeout")
+            missing.append(change_yaml.relative_to(root).as_posix() + "#review-closeout")
 
     resolution = root / ACTIVATION_CHANGE_ROOT / "review-resolution.md"
     if not resolution.is_file() or "Closeout status: closed" not in resolution.read_text(
@@ -1803,26 +1809,13 @@ def validate_activation_publication_readiness(
         candidate = json.loads(candidate_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         candidate = None
-    if (
-        not isinstance(candidate, dict)
-        or candidate.get("candidate_release") != ACTIVATION_CANDIDATE_RELEASE
-        or candidate.get("rollback_release") != ACTIVATION_CANDIDATE_ROLLBACK
-        or candidate.get("tag_state") != "absent"
-        or candidate.get("publication_state") != "candidate-ready-unpublished"
-        or any(
-            not isinstance(candidate.get(field), str)
-            or not re.fullmatch(r"[0-9a-f]{40,64}", candidate[field])
-            for field in (
-                "publication_base",
-                "grandfathering_baseline",
-                "transition_commit",
-                "reviewed_head",
-            )
-        )
-    ):
+    if not isinstance(candidate, dict):
         missing.append(candidate_path.relative_to(root).as_posix() + "#valid-candidate")
 
     if not missing:
+        candidate_issues = _candidate_evidence_issues(root, candidate)
+        if candidate_issues:
+            return candidate_issues
         authority_issues = _publication_authority_issues(root)
         if not authority_issues:
             return ()
@@ -1845,8 +1838,6 @@ def _publication_authority_issues(root: Path) -> tuple[ValidationIssue, ...]:
         relative_change,
         ACTIVATION_CHANGE_ROOT / "review-log.md",
         ACTIVATION_CHANGE_ROOT / "review-resolution.md",
-        ACTIVATION_CHANGE_ROOT / "explain-change.md",
-        ACTIVATION_CHANGE_ROOT / "evidence/boundary-activation-candidate.json",
     )
     commands = (
         [
@@ -1927,11 +1918,19 @@ def _is_activation_lifecycle_path(relative: str) -> bool:
                 child.name,
             )
         )
-    return (
+    return bool(
         len(child.parts) == 1
-        and child.name.startswith("review-invocation-")
-        and child.suffix == ".yaml"
+        and re.fullmatch(
+            r"review-invocation-(?:(?:proposal|spec|architecture|plan|test-spec)-review(?:-[a-z0-9-]+)?-r[0-9]+|code-review-(?:m[1-4]|final)-r[0-9]+)\.yaml",
+            child.name,
+        )
     )
+
+
+def _private_runtime_values() -> tuple[str, ...]:
+    values = {getpass.getuser(), socket.gethostname()}
+    values.update(value for value in os.environ.values() if len(value) >= 6)
+    return tuple(value for value in values if value)
 
 
 def _bounded_diagnostic_path(relative: str) -> str:
@@ -1942,6 +1941,7 @@ def _bounded_diagnostic_path(relative: str) -> str:
             relative,
         )
         or any(ord(character) < 32 for character in relative)
+        or any(value in relative for value in _private_runtime_values())
     ):
         encoded = relative.encode("utf-8")
         return (
@@ -1959,7 +1959,7 @@ def _candidate_changed_paths(
 ) -> tuple[tuple[str, ...], tuple[ValidationIssue, ...]]:
     try:
         commits = subprocess.run(
-            ["git", "rev-list", "--first-parent", "--reverse", f"{transition_commit}..{head}"],
+            ["git", "rev-list", "--topo-order", "--reverse", f"{transition_commit}..{head}"],
             cwd=root,
             check=True,
             capture_output=True,
@@ -1976,6 +1976,7 @@ def _candidate_changed_paths(
             ),
         )
     rejected: set[str] = set()
+    invocations: set[str] = set()
     for commit in commits:
         try:
             ancestry = subprocess.run(
@@ -2008,7 +2009,65 @@ def _candidate_changed_paths(
                 ),
             )
         rejected.update(path for path in decoded if not _is_activation_lifecycle_path(path))
-    return tuple(sorted(rejected, key=lambda path: path.encode("utf-8"))), ()
+        invocations.update(
+            path
+            for path in decoded
+            if PurePosixPath(path).name.startswith("review-invocation-")
+            and _is_activation_lifecycle_path(path)
+        )
+    lifecycle_issues = tuple(
+        issue
+        for relative in sorted(invocations, key=lambda path: path.encode("utf-8"))
+        if (issue := _review_invocation_issue(root, relative)) is not None
+    )
+    return tuple(sorted(rejected, key=lambda path: path.encode("utf-8"))), lifecycle_issues
+
+
+def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | None:
+    path = root / relative
+    try:
+        manifest = _parse_change_yaml_text(path.read_text(encoding="utf-8"))
+        change = _parse_change_yaml_text(
+            (root / ACTIVATION_CHANGE_ROOT / "change.yaml").read_text(encoding="utf-8")
+        )
+    except Exception:
+        manifest = None
+        change = None
+    name = PurePosixPath(relative).name
+    review_id = name.removeprefix("review-invocation-").removesuffix(".yaml")
+    stage = next(
+        (
+            candidate
+            for candidate in (
+                "proposal-review", "spec-review", "architecture-review",
+                "plan-review", "test-spec-review", "code-review",
+            )
+            if review_id.startswith(candidate + "-")
+        ),
+        "unknown",
+    )
+    evidence = (
+        change.get("workflow_state", {}).get("evidence", [])
+        if isinstance(change, dict)
+        and isinstance(change.get("workflow_state"), dict)
+        else []
+    )
+    if (
+        not isinstance(manifest, dict)
+        or manifest.get("schema_version") != 1
+        or manifest.get("review_id") != review_id
+        or manifest.get("review_stage") != stage
+        or manifest.get("manifest_owner") != "workflow-orchestrator"
+        or relative not in evidence
+    ):
+        return _issue(
+            "BFR-CANDIDATE-LIFECYCLE-EVIDENCE",
+            relative,
+            "review invocation must have a recognized identity, valid shape, and change-record ownership",
+            "invalid-or-unowned",
+            "valid referenced review invocation manifest",
+        )
+    return None
 
 
 def _git_identity(root: Path, revision: str) -> str | None:
@@ -2252,6 +2311,78 @@ def validate_activation_candidate(
     ), ()
 
 
+def _candidate_evidence_issues(
+    root: Path,
+    candidate: dict[str, object],
+) -> tuple[ValidationIssue, ...]:
+    fresh, fresh_issues = validate_activation_candidate(
+        root,
+        ACTIVATION_CANDIDATE_RELEASE,
+    )
+    if fresh_issues or fresh is None:
+        return (
+            _issue(
+                "BFR-CANDIDATE-EVIDENCE-UNSETTLED",
+                (
+                    ACTIVATION_CHANGE_ROOT
+                    / "evidence/boundary-activation-candidate.json"
+                ).as_posix(),
+                "persisted candidate evidence cannot be reproduced from current authority",
+                "candidate-revalidation-failed",
+                "fresh candidate validation succeeds",
+            ),
+        )
+    fresh_data = fresh.as_dict()
+    reviewed_head = candidate.get("reviewed_head")
+    candidate_path = ACTIVATION_CHANGE_ROOT / "evidence/boundary-activation-candidate.json"
+    try:
+        evidence_commit = subprocess.run(
+            ["git", "log", "-1", "--format=%H", "--", candidate_path.as_posix()],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        ancestry = subprocess.run(
+            ["git", "rev-list", "--parents", "-n", "1", evidence_commit],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.split()
+        first_parent = ancestry[1] if len(ancestry) >= 2 else None
+        first_parent_history = subprocess.run(
+            ["git", "rev-list", "--first-parent", fresh.reviewed_head],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
+    except (OSError, subprocess.CalledProcessError):
+        evidence_commit = ""
+        first_parent = None
+        first_parent_history = []
+    comparable = dict(candidate)
+    comparable["reviewed_head"] = fresh.reviewed_head
+    if (
+        comparable != fresh_data
+        or not isinstance(reviewed_head, str)
+        or not re.fullmatch(r"[0-9a-f]{40,64}", reviewed_head)
+        or first_parent != reviewed_head
+        or evidence_commit not in first_parent_history
+    ):
+        return (
+            _issue(
+                "BFR-CANDIDATE-EVIDENCE-UNSETTLED",
+                candidate_path.as_posix(),
+                "persisted candidate evidence does not match its producing validation head and current authority",
+                "stale-or-forged-candidate-evidence",
+                "exact candidate result committed by the immediate child of its reviewed head",
+            ),
+        )
+    return ()
+
+
 _CANDIDATE_CORRECTIVE_ACTIONS = {
     "BFR-CANDIDATE-RELEASE": "use exact candidate release v0.4.0",
     "BFR-CANDIDATE-ACTIVATION": "restore the exact active v0.4.0 and rollback v0.3.6 tuple",
@@ -2322,18 +2453,27 @@ def activation_candidate_failure_context(
             for issue in issues
         }
     )
+    safe_release = (
+        release
+        if re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", release)
+        else _redacted_value(release)
+    )
+    rollback = str(data.get("rollback_release", "-")) if data is not None else "-"
+    safe_rollback = (
+        rollback
+        if rollback == "-" or re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", rollback)
+        else _redacted_value(rollback)
+    )
     return {
         "status": "failed",
         "mode": "activation-candidate",
         "publication_state": "candidate-invalid-unpublished",
-        "candidate_release": release,
+        "candidate_release": safe_release,
         "publication_base": publication_base,
         "grandfathering_baseline": transition[1] if transition else "-",
         "transition_commit": transition[0] if transition else "-",
         "reviewed_head": _git_identity(root, "HEAD") or "-",
-        "rollback_release": (
-            str(data.get("rollback_release", "-")) if data is not None else "-"
-        ),
+        "rollback_release": safe_rollback,
         "tag_state": tag_state,
         "corrective_actions": actions,
     }

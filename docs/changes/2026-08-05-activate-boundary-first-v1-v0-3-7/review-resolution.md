@@ -315,7 +315,7 @@ Owning stage: review-resolution
 Chosen action: Compose canonical lifecycle validators and require candidate verification evidence.
 Rationale: Placeholder files cannot authorize external publication.
 Validation target: code-review-m1-r2
-Validation evidence: failed-remediation in code-review M1 R2; canonical lifecycle checks pass forged or stale candidate P/B/T/H because candidate semantics remain format-only.
+Validation evidence: R2 correction now compares the complete persisted result to fresh authority and requires its evidence commit to be the immediate child of the recorded producing head; forged-identity and canonical-authority regressions pass, pending R3 confirmation.
 
 #### BFA-M1-CR1-004 - Candidate failure output lacks bounded context and corrective action
 
@@ -339,7 +339,7 @@ Owning stage: review-resolution
 Chosen action: Add the missing T4, T5, T6, T12, and T16 partitions and correct evidence claims; route normative test-spec text changes to its owner if required.
 Rationale: Passing partial tests cannot substitute for the approved direct proof map.
 Validation target: code-review-m1-r2
-Validation evidence: failed-remediation in code-review M1 R2; security-owner selection, per-sibling injected failures, merged drift, forged evidence, and invocation-shape partitions remain unproved.
+Validation evidence: R2 correction adds security/CI selection, one injected selected-command failure per sibling owner, merged drift, forged evidence, and invocation-shape partitions; CMD1 and CMD6 pass, pending R3 confirmation.
 
 #### BFA-M1-CR1-006 - Directory preflight hides mixed tracked and untracked contents
 
@@ -363,7 +363,7 @@ Owning stage: review-resolution
 Chosen action: Use a closed lifecycle evidence path/shape policy and reject packages, generated output, and arbitrary descendants.
 Rationale: Directory placement alone does not confer lifecycle ownership.
 Validation target: code-review-m1-r2
-Validation evidence: failed-remediation in code-review M1 R2; `review-invocation-*` remains an open namespace that accepts arbitrary payload.
+Validation evidence: R2 correction closes the invocation grammar and requires matching identity, stage, manifest owner, and workflow evidence reference; unknown, malformed, unowned, and valid cases pass, pending R3 confirmation.
 
 #### BFA-M1-CR1-008 - Drift diagnostics disclose private path sentinels
 
@@ -375,7 +375,7 @@ Owning stage: review-resolution
 Chosen action: Bound path identities and add every required privacy sentinel to failure-output tests.
 Rationale: Changed-path evidence must remain useful without disclosing prohibited private values.
 Validation target: code-review-m1-r2
-Validation evidence: failed-remediation in code-review M1 R2; actual runtime username/hostname values and raw candidate/rollback fields can still disclose private sentinels.
+Validation evidence: R2 correction hashes paths containing actual runtime identity or private environment values and bounds invalid candidate/rollback scalars; direct CLI regressions pass, pending R3 confirmation.
 
 ### code-review-m1-r2
 
@@ -389,7 +389,7 @@ Owning stage: review-resolution
 Chosen action: Traverse every commit newly reachable in T..H and union forbidden parent-relative paths across merge ancestry.
 Rationale: First-parent-only enumeration can hide a forbidden side-branch change and revert even though both commits remain in reviewed history.
 Validation target: code-review-m1-r3
-Validation evidence: pending
+Validation evidence: Complete T..H traversal rejects a side-branch payload change and revert that is later merged; CMD1 passes, pending R3 confirmation.
 
 ## Clean review receipts
 
