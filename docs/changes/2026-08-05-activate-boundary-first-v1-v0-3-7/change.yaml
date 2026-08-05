@@ -19,8 +19,13 @@ artifact_states:
     kind: spec
     path: specs/boundary-first-v1-v0-3-7-activation-release.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/spec-authoring.md
+    lifecycle_state: revision-required
+    review:
+      id: spec-review-r1
+      artifact_id: spec
+      outcome: changes-requested
+      record: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/spec-review-r1.md
+      round: r1
 workflow_state:
   lifecycle_state: active
   current_stage: spec-review
@@ -32,6 +37,7 @@ workflow_state:
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/proposal-review-r3.md
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/spec-authoring.md
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-spec-review-r1.yaml
+    - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/spec-review-r1.md
 workflow: {}
 artifacts:
   proposal: docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
@@ -66,6 +72,7 @@ changed_files:
   - specs/boundary-first-v1-v0-3-7-activation-release.md
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/spec-authoring.md
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/spec-review-r1.md
 review:
-  status: approved
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 4

@@ -2,16 +2,17 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
+Review closeout: spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`
 - Findings resolved: 2
-- Unresolved findings: 0
-- Final result: Proposal-review R3 approves the revised direction for specification.
+- Unresolved findings: 4
+- Final result: Specification revision is required; release identity first routes through proposal revision.
 
 ## Resolution Overview
 
@@ -19,6 +20,10 @@ Review closeout: proposal-review-r3
 | --- | --- | --- | --- |
 | BFA-PR1-001 | accepted | resolved | Added pre-tag candidate validation while preserving strict tag-context activation proof. |
 | BFA-PR2-001 | accepted | resolved | Separated final reviewed branch head from the activation transition tag target and required tagged-tree self-containment. |
+| BFA-SR1-001 | accepted | open | Separate remote publication base P from transition parent/grandfathering baseline B. |
+| BFA-SR1-002 | accepted | open | Replace patch v0.3.7 with contract-compliant minor v0.4.0 through proposal revision. |
+| BFA-SR1-003 | accepted | open | Replace invalid unpublished transition histories with a fresh branch and rereview. |
+| BFA-SR1-004 | accepted | open | Complete formal boundary ownership for identity, self-containment, strict composition, drift, and replacement. |
 
 ## Finding Details
 
@@ -50,6 +55,56 @@ Rationale: The activation tag contract binds the pending-to-active transition, w
 Validation target: proposal-review-r3
 Validation evidence: Proposal-review R3 confirms the two-identity first-parent model, tagged-tree self-containment, candidate/strict authority split, compare-and-swap, and atomic publication are coherent.
 
+### spec-review-r1
+
+#### BFA-SR1-001 - Publication base and grandfathering baseline are conflated
+
+Finding ID: BFA-SR1-001
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec
+Chosen action: Introduce publication base P and preserve B as T's first parent.
+Rationale: Candidate preparation can occur between the remote fork point and activation transition.
+Validation target: spec-review-r2
+Validation evidence: pending
+
+#### BFA-SR1-002 - Patch version violates release classification
+
+Finding ID: BFA-SR1-002
+Disposition: accepted
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Chosen action: Revise the release target to stable minor v0.4.0 and retain v0.3.6 rollback.
+Rationale: REL-R9 and REL-R10 classify new backward-compatible public skill behavior as a minor release.
+Validation target: proposal-review-r4 then spec-review-r2
+Validation evidence: pending
+
+#### BFA-SR1-003 - Invalid transition recovery lacks a legal history
+
+Finding ID: BFA-SR1-003
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec
+Chosen action: Define replacement-branch regeneration from the authorized publication base.
+Rationale: Appending another transition violates uniqueness and force-pushing would rewrite reviewed history.
+Validation target: spec-review-r2
+Validation evidence: pending
+
+#### BFA-SR1-004 - Formal boundary ownership is incomplete
+
+Finding ID: BFA-SR1-004
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec
+Chosen action: Extend exact boundary and interaction ownership for the missing requirements and hazards.
+Rationale: Downstream proof must consume requirement-owned semantic rows rather than infer them.
+Validation target: spec-review-r2
+Validation evidence: pending
+
 ## Clean review receipts
 
 ### proposal-review-r3
@@ -66,5 +121,5 @@ Evidence: reviews/proposal-review-r3.md
 - [x] Every rejected finding has rationale.
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
-- [x] Validation evidence is recorded.
+- [ ] Validation evidence is recorded.
 - [x] Closeout status is correct.

@@ -3,6 +3,17 @@
 ## Review Entries
 
 ### Review entry
+Review ID: spec-review-r1
+Stage: spec-review
+Round: 1
+Status: changes-requested
+Detailed record: reviews/spec-review-r1.md
+Resolution: review-resolution.md#spec-review-r1
+Material findings: BFA-SR1-001, BFA-SR1-002, BFA-SR1-003, BFA-SR1-004
+Open findings: BFA-SR1-001, BFA-SR1-002, BFA-SR1-003, BFA-SR1-004
+Recording status: recorded
+
+### Review entry
 Review ID: proposal-review-r3
 Stage: proposal-review
 Round: 3
