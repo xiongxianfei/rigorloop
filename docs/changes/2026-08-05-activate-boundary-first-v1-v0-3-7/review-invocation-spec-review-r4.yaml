@@ -1,0 +1,52 @@
+schema_version: 1
+review_id: spec-review-r4
+review_stage: spec-review
+review_target: specs/boundary-first-v1-v0-3-7-activation-release.md
+base_revision: e756a6d67263ef7e7df42ae288f1090fcf77476a
+head_revision: ee28ad638270b4041971d232c221f46e85e99aff
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L1
+author_context_id: root-boundary-activation-spec-r4
+reviewer_context_id: independent-spec-review-r4
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - activation-state-transition
+  - immutable-release-tag
+  - atomic-remote-ref-publication
+  - candidate-evidence-identity
+governing_artifacts:
+  - docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
+  - specs/boundary-first-proof-model.md
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/release-process-contract.md
+  - specs/release-transaction-automation.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: ee28ad638270b4041971d232c221f46e85e99aff
+    sha256: 37230766d1c92cda15bca39c80a38445aa447cfe8dc7d3b4a8100b4ad1ee5960
+  - path: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/spec-review-r3.md
+    revision: 483dec52d4a2a6062b174774fc9952b94d6ae0e5
+    sha256: 0cf097f06a435ae647c97bcbc0470ba33c7d6c5fb5f22e60f0239f7f7e07c22a
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md.diff
+    revision: ee28ad638270b4041971d232c221f46e85e99aff
+    sha256: 4a2d9eea3e71273e229ba5c0f1ef0464f2c3e45e5b05eebafb82fa5953451fc7
+initial_packet_sha256: 4a2d9eea3e71273e229ba5c0f1ef0464f2c3e45e5b05eebafb82fa5953451fc7
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - BFA-SR3-001 phase-correct publication readiness
+  - BFA-SR3-002 identity and example ownership
+  - persisted R/C versus freshly derived H authority
+  - local-tag and remote-tag phase separation
+  - compatibility with atomic publication
+architecture:
+  assessment: architecture-amendment-required
+  rationale: The approved correction must be projected into validation and publication components.
+  package: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
