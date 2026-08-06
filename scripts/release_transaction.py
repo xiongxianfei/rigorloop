@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol
 
-from adapter_distribution import parse_release_yaml
+from adapter_distribution import parse_manifest_yaml, parse_release_yaml
 from artifact_lifecycle_validation import validate_release_evidence_checklist
 
 
@@ -2052,6 +2052,13 @@ def _validate_release_yaml_contract(
             errors.append(
                 f"{relative}: smoke.{target}.result: expected {'pass' if require_finalized else 'pending or pass'}, found {row.result}"
             )
+        if require_finalized and row.result == "pass":
+            if not row.tool_version or row.tool_version == "unknown":
+                errors.append(
+                    f"{relative}: smoke.{target}.tool_version: pass requires known tool version"
+                )
+            if not row.evidence:
+                errors.append(f"{relative}: smoke.{target}.evidence: pass requires evidence")
     if set(metadata.validation) != set(RELEASE_VALIDATION_KEYS):
         errors.append(f"{relative}: validation: expected complete validation category mapping")
     for key in RELEASE_VALIDATION_KEYS:
@@ -2061,8 +2068,20 @@ def _validate_release_yaml_contract(
             errors.append(
                 f"{relative}: validation.{key}: expected {'pass' if require_finalized else 'pending or pass'}, found {value}"
             )
-    if require_finalized and metadata.manifest_version == "pending":
-        errors.append(f"{relative}: manifest_version must be finalized")
+    if require_finalized:
+        manifest_path = repo_root / "dist" / "adapters" / "manifest.yaml"
+        try:
+            expected_manifest = parse_manifest_yaml(
+                manifest_path.read_text(encoding="utf-8"),
+                Path(_repo_relative(manifest_path, repo_root)),
+            ).version
+        except (OSError, ValueError) as exc:
+            errors.append(f"{relative}: could not load expected adapter manifest: {exc}")
+        else:
+            if metadata.manifest_version != expected_manifest:
+                errors.append(
+                    f"{relative}: manifest_version: expected {expected_manifest}, found {metadata.manifest_version}"
+                )
 
     expected_npm_package = {
         "name": profile.npm_package,

@@ -658,13 +658,21 @@ def validate_release_evidence_checklist(
     status = (result_values.get("Status") or "").casefold()
     release_type = (result_values.get("Release type") or "").casefold()
     is_emergency = release_type == "emergency" or status == "emergency-with-deferred-gate"
-    if require_preflight_pass and not is_emergency:
+    if not is_emergency:
+        allowed_results = {"pass"} if require_preflight_pass else {"pending", "pass"}
         for gate_item in ROUTINE_RELEASE_GATE_ITEMS:
             gate_result = _table_row_result(preflight_section, gate_item)
             if gate_result is None:
                 errors.append(f"routine release gate item '{gate_item}' is missing")
-            elif gate_result.casefold() != "pass":
-                errors.append(f"routine release gate item '{gate_item}' must pass before publish")
+            elif gate_result.casefold() not in allowed_results:
+                if require_preflight_pass:
+                    errors.append(
+                        f"routine release gate item '{gate_item}' must pass before publish"
+                    )
+                else:
+                    errors.append(
+                        f"routine release gate item '{gate_item}' must be pending or pass before publish"
+                    )
 
     registry_section = _get_section(sections, "Registry Verification") or ""
     registry_result = _table_row_result(registry_section, "registry version query")
