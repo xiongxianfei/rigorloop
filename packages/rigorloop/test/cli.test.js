@@ -32,6 +32,9 @@ const publicPackageVersion = "0.4.0";
 const publicReleaseTag = `v${publicPackageVersion}`;
 const publicMetadataFile = `adapter-artifacts-${publicReleaseTag}.json`;
 const publicArchiveFile = `rigorloop-adapter-codex-${publicReleaseTag}.zip`;
+const historicalSkillsOnlyPackageVersion = "0.3.3";
+const historicalSkillsOnlyReleaseTag = `v${historicalSkillsOnlyPackageVersion}`;
+const historicalSkillsOnlyMetadataFile = `adapter-artifacts-${historicalSkillsOnlyReleaseTag}.json`;
 
 function runCli(args, options = {}) {
   return spawnSync(process.execPath, [options.cliPath ?? cliPath, ...args], {
@@ -191,7 +194,9 @@ function createZip(entries) {
 
 function fixtureArchive(projectRoot, options = {}) {
   const adapter = options.adapter ?? "codex";
-  const archiveName = options.archiveName ?? `rigorloop-adapter-${adapter}-${publicReleaseTag}.zip`;
+  const releaseTag = options.releaseTag ?? publicReleaseTag;
+  const metadataFile = options.metadataFile ?? `adapter-artifacts-${releaseTag}.json`;
+  const archiveName = options.archiveName ?? `rigorloop-adapter-${adapter}-${releaseTag}.zip`;
   const installRoot = options.installRoot ?? ".agents/skills";
   const entries =
     options.entries ?? [
@@ -211,7 +216,7 @@ function fixtureArchive(projectRoot, options = {}) {
   const artifact = {
     adapter,
     archive: archiveName,
-    url: `https://github.com/xiongxianfei/rigorloop/releases/download/${publicReleaseTag}/${archiveName}`,
+    url: `https://github.com/xiongxianfei/rigorloop/releases/download/${releaseTag}/${archiveName}`,
     sha256: sha256(archiveBytes),
     size_bytes: archiveBytes.length,
     install_root: installRoot,
@@ -244,30 +249,33 @@ function fixtureArchive(projectRoot, options = {}) {
   const metadata = {
     schema_version: 1,
     release: {
-      version: publicReleaseTag,
+      version: releaseTag,
       source_repository: "xiongxianfei/rigorloop",
       source_commit: "0123456789abcdef0123456789abcdef01234567",
-      release_tag: publicReleaseTag,
+      release_tag: releaseTag,
       published_at: "2026-05-15",
     },
     metadata: {
-      url: `https://github.com/xiongxianfei/rigorloop/releases/download/${publicReleaseTag}/${publicMetadataFile}`,
+      url: `https://github.com/xiongxianfei/rigorloop/releases/download/${releaseTag}/${metadataFile}`,
       sha256: sha256(Buffer.from("fixture metadata\n", "utf8")),
     },
     artifacts: [artifact],
     validation: {
-      command: `python scripts/validate-adapters.py --root <release-output-dir> --version ${publicReleaseTag}`,
+      command: `python scripts/validate-adapters.py --root <release-output-dir> --version ${releaseTag}`,
       result: "pass",
     },
   };
   const finalMetadata = options.metadata ? options.metadata(metadata) : metadata;
-  const metadataPath = join(projectRoot, publicMetadataFile);
+  const metadataPath = join(projectRoot, metadataFile);
   writeFileSync(metadataPath, JSON.stringify(finalMetadata, null, 2));
   return { archivePath, archiveName, metadataPath, metadata: finalMetadata, entries };
 }
 
 function fixturePackage(options = {}) {
   const root = mkdtempSync(join(tmpdir(), "rigorloop-package-test-"));
+  const version = options.version ?? packageJson.version;
+  const releaseTag = options.releaseTag ?? `v${version}`;
+  const metadataFile = options.metadataFile ?? `adapter-artifacts-${releaseTag}.json`;
   mkdirSync(join(root, "dist", "bin"), { recursive: true });
   mkdirSync(join(root, "dist", "lib"), { recursive: true });
   mkdirSync(join(root, "dist", "metadata"), { recursive: true });
@@ -276,7 +284,7 @@ function fixturePackage(options = {}) {
     JSON.stringify(
       {
         name: packageJson.name,
-        version: options.version ?? packageJson.version,
+        version,
         type: "module",
         bin: packageJson.bin,
       },
@@ -293,14 +301,14 @@ function fixturePackage(options = {}) {
   copyFileSync(join(packageRoot, "dist", "lib", "official-archive-url.js"), join(root, "dist", "lib", "official-archive-url.js"));
 
   if (options.metadata !== false) {
-    const metadata = options.metadata ?? JSON.parse(readFileSync(join(packageRoot, "dist", "metadata", publicMetadataFile), "utf8"));
+    const metadata = options.metadata ?? JSON.parse(readFileSync(join(packageRoot, "dist", "metadata", metadataFile), "utf8"));
     const metadataContent = typeof metadata === "string" ? metadata : JSON.stringify(metadata, null, 2);
-    writeFileSync(join(root, "dist", "metadata", publicMetadataFile), metadataContent);
+    writeFileSync(join(root, "dist", "metadata", metadataFile), metadataContent);
     const metadataBytes = Buffer.from(metadataContent, "utf8");
     const release = options.release ?? {
       source_repository: "xiongxianfei/rigorloop",
-      release_tag: publicReleaseTag,
-      bundled_metadata: publicMetadataFile,
+      release_tag: releaseTag,
+      bundled_metadata: metadataFile,
       bundled_metadata_sha256: sha256(metadataBytes),
     };
     writeFileSync(
@@ -309,7 +317,7 @@ function fixturePackage(options = {}) {
         {
           schema_version: 1,
           releases: {
-            [publicReleaseTag]: release,
+            [releaseTag]: release,
           },
         },
         null,
@@ -321,10 +329,10 @@ function fixturePackage(options = {}) {
       options.releaseIndex ?? {
         schema_version: 1,
         releases: {
-          [publicReleaseTag]: {
+          [releaseTag]: {
             source_repository: "xiongxianfei/rigorloop",
-            release_tag: publicReleaseTag,
-            bundled_metadata: publicMetadataFile,
+            release_tag: releaseTag,
+            bundled_metadata: metadataFile,
             bundled_metadata_sha256: "0".repeat(64),
           },
         },
@@ -422,7 +430,13 @@ function lockfileWithUnknownMapping(section) {
 }
 
 function runCliWithBundledMetadata(args, cwd, metadata, options = {}) {
-  const packageFixture = fixturePackage({ metadata, release: options.release });
+  const packageFixture = fixturePackage({
+    metadata,
+    release: options.release,
+    version: options.version,
+    releaseTag: options.releaseTag,
+    metadataFile: options.metadataFile,
+  });
   return runCli(args, {
     cwd,
     cliPath: packageFixture.cliPath,
@@ -2800,7 +2814,7 @@ test("TMAI-020 dry-run opencode commands root without alias metadata blocks with
   const output = JSON.parse(result.stdout);
   assert.equal(output.status, "blocked");
   assert.equal(output.blockers[0].code, "opencode-command-aliases-missing");
-  assert.deepEqual(listProject(cwd), ["adapter-artifacts-v0.4.0.json", fixture.archiveName]);
+  assert.deepEqual(listProject(cwd), [publicMetadataFile, fixture.archiveName]);
 });
 
 test("TMAI-017 skills-only opencode archive omits commands root from plan and manifest", () => {
@@ -2808,8 +2822,9 @@ test("TMAI-017 skills-only opencode archive omits commands root from plan and ma
   const fixture = fixtureArchive(cwd, {
     adapter: "opencode",
     installRoot: ".opencode/skills",
+    releaseTag: historicalSkillsOnlyReleaseTag,
     skillsOnlyCompatibility: {
-      releases: ["v0.4.0"],
+      releases: [historicalSkillsOnlyReleaseTag],
     },
   });
 
@@ -2817,7 +2832,14 @@ test("TMAI-017 skills-only opencode archive omits commands root from plan and ma
     ["init", "opencode", "--write-state", "--from-archive", `./${fixture.archiveName}`, "--json"],
     cwd,
     fixture.metadata,
+    {
+      version: historicalSkillsOnlyPackageVersion,
+      releaseTag: historicalSkillsOnlyReleaseTag,
+      metadataFile: historicalSkillsOnlyMetadataFile,
+    },
   );
+
+  assert.equal(fixture.metadata.release.version, historicalSkillsOnlyReleaseTag);
 
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
@@ -2846,12 +2868,24 @@ test("TMAI-016 human older opencode warning does not imply command aliases are a
   const fixture = fixtureArchive(cwd, {
     adapter: "opencode",
     installRoot: ".opencode/skills",
+    releaseTag: historicalSkillsOnlyReleaseTag,
     skillsOnlyCompatibility: {
-      releases: ["v0.4.0"],
+      releases: [historicalSkillsOnlyReleaseTag],
     },
   });
 
-  const result = runCliWithBundledMetadata(["init", "opencode", "--write-state", "--from-archive", `./${fixture.archiveName}`], cwd, fixture.metadata);
+  const result = runCliWithBundledMetadata(
+    ["init", "opencode", "--write-state", "--from-archive", `./${fixture.archiveName}`],
+    cwd,
+    fixture.metadata,
+    {
+      version: historicalSkillsOnlyPackageVersion,
+      releaseTag: historicalSkillsOnlyReleaseTag,
+      metadataFile: historicalSkillsOnlyMetadataFile,
+    },
+  );
+
+  assert.equal(fixture.metadata.release.version, historicalSkillsOnlyReleaseTag);
 
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /opencode-command-aliases-not-declared/);
@@ -2865,8 +2899,9 @@ test("TMAI-011 skills-only opencode metadata rejects unexpected commands root en
   const fixture = fixtureArchive(cwd, {
     adapter: "opencode",
     installRoot: ".opencode/skills",
+    releaseTag: historicalSkillsOnlyReleaseTag,
     skillsOnlyCompatibility: {
-      releases: ["v0.4.0"],
+      releases: [historicalSkillsOnlyReleaseTag],
     },
     entries: [
       {
@@ -2884,7 +2919,14 @@ test("TMAI-011 skills-only opencode metadata rejects unexpected commands root en
     ["init", "opencode", "--write-state", "--from-archive", `./${fixture.archiveName}`, "--json"],
     cwd,
     fixture.metadata,
+    {
+      version: historicalSkillsOnlyPackageVersion,
+      releaseTag: historicalSkillsOnlyReleaseTag,
+      metadataFile: historicalSkillsOnlyMetadataFile,
+    },
   );
+
+  assert.equal(fixture.metadata.release.version, historicalSkillsOnlyReleaseTag);
 
   assert.equal(result.status, 3, result.stderr);
   const output = JSON.parse(result.stdout);
@@ -2922,8 +2964,9 @@ test("TMAI-020 dry-run skills-only opencode archive omits commands root without 
   const fixture = fixtureArchive(cwd, {
     adapter: "opencode",
     installRoot: ".opencode/skills",
+    releaseTag: historicalSkillsOnlyReleaseTag,
     skillsOnlyCompatibility: {
-      releases: ["v0.4.0"],
+      releases: [historicalSkillsOnlyReleaseTag],
     },
   });
 
@@ -2931,7 +2974,14 @@ test("TMAI-020 dry-run skills-only opencode archive omits commands root without 
     ["init", "opencode", "--write-state", "--from-archive", `./${fixture.archiveName}`, "--dry-run", "--json"],
     cwd,
     fixture.metadata,
+    {
+      version: historicalSkillsOnlyPackageVersion,
+      releaseTag: historicalSkillsOnlyReleaseTag,
+      metadataFile: historicalSkillsOnlyMetadataFile,
+    },
   );
+
+  assert.equal(fixture.metadata.release.version, historicalSkillsOnlyReleaseTag);
 
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
@@ -2948,7 +2998,7 @@ test("TMAI-020 dry-run skills-only opencode archive omits commands root without 
   assert.equal(entry.source, "local-archive");
   assert.deepEqual(entry.installed_roots, { skills: ".opencode/skills" });
   assert.deepEqual(Object.keys(entry.root_hashes), ["skills"]);
-  assert.deepEqual(listProject(cwd), ["adapter-artifacts-v0.4.0.json", fixture.archiveName]);
+  assert.deepEqual(listProject(cwd), [historicalSkillsOnlyMetadataFile, fixture.archiveName]);
   assert.equal(existsSync(join(cwd, ".opencode")), false);
   assert.equal(existsSync(join(cwd, "rigorloop.yaml")), false);
   assert.equal(existsSync(join(cwd, "rigorloop.lock")), false);

@@ -302,7 +302,69 @@ def _line_value(text: str, label: str) -> str | None:
     return match.group(1) if match else None
 
 
-def _marker_issues(text: str, path: str) -> list[ValidationIssue]:
+def _stage_owned_marker_authority_issue(
+    root: Path | None,
+    change_record: str,
+    path: str,
+) -> ValidationIssue | None:
+    if root is None:
+        return _issue(
+            "BFR-MARKER-AUTHORITY",
+            path,
+            "owner-pointer marker placement requires a matching stage-owned lifecycle contract",
+            "unresolved-change-record",
+            "lifecycle_contract: stage-owned-change-local-v1",
+        )
+    relative = PurePosixPath(change_record)
+    candidate = root.joinpath(*relative.parts)
+    current = root
+    for part in relative.parts:
+        current = current / part
+        if current.is_symlink():
+            return _issue(
+                "BFR-MARKER-AUTHORITY",
+                path,
+                "owner-pointer marker authority must not traverse a symlink",
+                change_record,
+                "repository-contained stage-owned change record",
+            )
+    resolved_root = root.resolve()
+    resolved_candidate = candidate.resolve(strict=False)
+    if not resolved_candidate.is_relative_to(resolved_root) or not candidate.is_file():
+        return _issue(
+            "BFR-MARKER-AUTHORITY",
+            path,
+            "owner-pointer marker placement requires an existing owning change record",
+            change_record,
+            "existing stage-owned change record",
+        )
+    try:
+        change_text = candidate.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return _issue(
+            "BFR-MARKER-AUTHORITY",
+            path,
+            "owning change record is unreadable",
+            change_record,
+            "readable stage-owned change record",
+        )
+    contracts = re.findall(r"(?m)^lifecycle_contract:\s*(\S(?:.*\S)?)\s*$", change_text)
+    if contracts != ["stage-owned-change-local-v1"]:
+        return _issue(
+            "BFR-MARKER-AUTHORITY",
+            path,
+            "owner-pointer marker placement requires the stage-owned lifecycle contract",
+            "missing-or-non-stage-owned-contract",
+            "lifecycle_contract: stage-owned-change-local-v1",
+        )
+    return None
+
+
+def _marker_issues(
+    text: str,
+    path: str,
+    root: Path | None = None,
+) -> list[ValidationIssue]:
     marker_pattern = re.compile(r"(?m)^boundary_contract:\s*(\S+)\s*$")
     markers = tuple(marker_pattern.finditer(text))
     if len(markers) != 1:
@@ -339,7 +401,13 @@ def _marker_issues(text: str, path: str) -> list[ValidationIssue]:
             r"`docs/changes/[^/]+/change\.yaml`",
             preceding_owner_lines[-1],
         ):
-            return []
+            change_record = preceding_owner_lines[-1][1:-1]
+            authority_issue = _stage_owned_marker_authority_issue(
+                root,
+                change_record,
+                path,
+            )
+            return [authority_issue] if authority_issue else []
         return [
             _issue(
                 "BFR-MARKER-PLACEMENT",
@@ -409,10 +477,12 @@ def _sentinel_issues(
 def validate_feature_record(
     text: str,
     path: str = "<feature-record>",
+    *,
+    root: Path | None = None,
 ) -> tuple[ValidationIssue, ...]:
     text = _live_markdown(text)
     vocabulary: list[ValidationIssue] = []
-    marker_structure = _marker_issues(text, path)
+    marker_structure = _marker_issues(text, path, root)
     if marker_structure:
         return tuple(marker_structure)
     marker = _line_value(text, "boundary_contract")
@@ -735,8 +805,15 @@ def validate_proof_map(
     text: str,
     feature_text: str,
     path: str = "<proof-map>",
+    *,
+    feature_path: str = "<feature-record>",
+    root: Path | None = None,
 ) -> tuple[ValidationIssue, ...]:
-    feature_issues = validate_feature_record(feature_text)
+    feature_issues = validate_feature_record(
+        feature_text,
+        feature_path,
+        root=root,
+    )
     if feature_issues:
         return feature_issues
     text = _live_markdown(text)
@@ -1603,7 +1680,13 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
             return ()
         return (_issue("BFR-GRANDFATHERED-REVIEW", feature_relative, "changed grandfathered spec requires spec-review classification", "-", "semantic spec-review"),)
     if marker == METHOD_VERSION:
-        issues = list(validate_feature_record(feature_text, feature_relative))
+        issues = list(
+            validate_feature_record(
+                feature_text,
+                feature_relative,
+                root=root,
+            )
+        )
         if not proof_path.is_file():
             issues.append(
                 _issue(
@@ -1620,6 +1703,8 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
                     proof_path.read_text(encoding="utf-8"),
                     feature_text,
                     proof_relative,
+                    feature_path=feature_relative,
+                    root=root,
                 )
             )
         return tuple(issues)

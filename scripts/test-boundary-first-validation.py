@@ -267,15 +267,55 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
             "BFR-MARKER-COUNT",
         )
 
-    def test_stage_owned_marker_may_follow_owning_change_pointer(self) -> None:
+    def test_stage_owned_marker_requires_matching_lifecycle_contract(self) -> None:
         stage_owned = valid_feature().replace(
             "## Status\n\napproved\nboundary_contract: boundary-first-v1",
             "## Owning change record\n\n"
             "`docs/changes/2026-08-06-example/change.yaml`\n\n"
             "boundary_contract: boundary-first-v1",
         )
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            change_path = root / "docs/changes/2026-08-06-example/change.yaml"
+            change_path.parent.mkdir(parents=True)
+            change_path.write_text(
+                "change_id: 2026-08-06-example\n"
+                "lifecycle_contract: stage-owned-change-local-v1\n",
+                encoding="utf-8",
+            )
 
-        self.assertEqual(validate_feature_record(stage_owned), ())
+            self.assertEqual(
+                validate_feature_record(
+                    stage_owned,
+                    "specs/example.md",
+                    root=root,
+                ),
+                (),
+            )
+
+            change_path.unlink()
+            self.assertEqual(
+                validate_feature_record(
+                    stage_owned,
+                    "specs/example.md",
+                    root=root,
+                )[0].code,
+                "BFR-MARKER-AUTHORITY",
+            )
+
+            change_path.write_text(
+                "change_id: 2026-08-06-example\n"
+                "lifecycle_contract: legacy\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                validate_feature_record(
+                    stage_owned,
+                    "specs/example.md",
+                    root=root,
+                )[0].code,
+                "BFR-MARKER-AUTHORITY",
+            )
 
     def test_fenced_record_and_malformed_separator_fail_closed(self) -> None:
         fenced = "```md\n" + valid_feature() + "\n```\n"

@@ -2194,6 +2194,24 @@ raise SystemExit({exit_code})
             "python scripts/validate-release.py --recorded-source-auto --version v0.4.0",
         )
 
+    def test_malformed_release_profile_paths_require_release_version(self) -> None:
+        for path in (
+            "docs/releases/profiles/not-a-version.yaml",
+            "docs/releases/profiles/v0.4.0.yml",
+            "docs/releases/profiles/v.yaml",
+        ):
+            with self.subTest(path=path):
+                result = run_selector("--mode", "explicit", "--path", path)
+                payload = parse_stdout(result)
+
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(payload["status"], "blocked")
+                self.assertIn(
+                    "release-version-required",
+                    {item["code"] for item in payload["blocking_results"]},
+                )
+                self.assertNotIn("release.validate", selected_ids(payload))
+
     def test_release_evidence_markdown_path_selects_lifecycle_checklist_validation(self) -> None:
         result = run_selector("--mode", "explicit", "--path", "docs/releases/v1.2.3.md")
         payload = parse_stdout(result)
