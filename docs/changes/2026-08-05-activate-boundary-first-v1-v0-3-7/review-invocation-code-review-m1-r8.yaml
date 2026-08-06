@@ -1,0 +1,53 @@
+schema_version: 1
+review_id: code-review-m1-r8
+review_stage: code-review
+review_target: range:edcdcf6c..989980c0
+base_revision: edcdcf6cf40ce6f30cd361edc17b1f9839b17e0f
+head_revision: 989980c07c45610e287fd4b02a801a8502e0bc04
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m1-review-resolution-r7
+reviewer_context_id: m1-r8-primary-and-second-reviewers
+context_separation_mechanism: existing-separate-agents-blind-first
+risk_tier: elevated
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - specs/boundary-first-v1-v0-3-7-activation-release.test.md
+  - docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: 989980c0
+    sha256: fa622a617f8af6f36a9b877338b97d4a4df25a493f385764c66feaad751b7918
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+    revision: 989980c0
+    sha256: 9d0d7c839c9c44d4c138fe22961b861a06c6520dc4d3dd9a1a648f0de8114186
+  - path: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+    revision: 989980c0
+    sha256: eaea12dafb3ee49d6ab284603566c8a9f190a92fbdcd4fe665ef70388ef07bde
+  - path: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+    revision: 989980c0
+    sha256: 614c19fb59aae74205845024fa23993fed38e0b5dce2c65991a24909858b542a
+  - path: range:edcdcf6c..989980c0.diff
+    revision: 989980c0
+    sha256: d387034c0b84976e23808dda514344917ba116b677a4bbe83ce6749d637022ae
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+second_review:
+  required: true
+  satisfied: false
+  reviewer_context_id: m1-r8-second-reviewer
+requirement_fidelity:
+  applicability: applicable
+  reason: R8 must close parser-equivalent key and packet-path uniqueness.
+  outcome: pending
+phase_receipts:
+  - risk-map-recorded
+review_focus:
+  - Reconcile BFA-M1-R6-001, BFA-M1-R7-001, and BFA-M1-R7-002.
+  - Challenge parser-equivalent duplicate keys, duplicate packet paths, and the full accepted/malformed receipt matrix.
