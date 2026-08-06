@@ -54,7 +54,7 @@ Outcome: implemented and ready for code review.
   final local pre-publication payload.
 - `python scripts/test-release-transaction.py` — pass, 102 tests.
 - `python scripts/test-adapter-distribution.py` — pass, 149 tests.
-- `python scripts/test-artifact-lifecycle-validator.py` — pass, 162 tests.
+- `python scripts/test-artifact-lifecycle-validator.py` — pass, 166 tests.
 - `python scripts/test-npm-package-publication.py` — pass, 6 tests.
 - `python scripts/select-validation.py --mode release --release-version v0.4.0`
   — pass; selected `release.validate` and required `broad_smoke.repo`.
@@ -65,6 +65,25 @@ Outcome: implemented and ready for code review.
   archives, ran the adapter and packed-package suites, and validated the final
   `v0.4.0` metadata against reviewed source commit `c7b0babe`.
 - `git diff --check` — pass.
+
+## R5 review resolution
+
+- `UBR-M3-CR5-001`: all ten preflight rows now use the same exact-cardinality
+  contract in pending, finalized, and emergency states. npm package-build and
+  local packed-install proof accept only applicable results, never
+  `not-applicable`.
+- Registry results are state-aware: unpublished evidence may record the
+  registry as not yet applicable, while published evidence requires every
+  registry row to pass. Only emergency `fresh registry install smoke` may be
+  `deferred`.
+- Each deferred result must match exactly one complete emergency-deferral row,
+  and each deferral row must match a deferred result. Unsupported items,
+  duplicate deferrals, and unbound results fail closed.
+- Exhaustive missing, duplicate, unsupported, applicability, and deferral
+  mutations across all fifteen governed rows pass for pending, finalized, and
+  emergency evidence. The focused correction proof includes 166 lifecycle
+  tests, 102 release-transaction tests, exact preparation and preflight, all
+  nine tracked release records, and whitespace validation.
 
 ## R4 review resolution
 
