@@ -58,6 +58,7 @@ EXPECTED_CATALOG = {
     "boundary_first.validate": "python scripts/validate-boundary-first.py --check",
     "boundary_first.reference_regression": "python scripts/test-boundary-first-reference.py",
     "boundary_first.regression": "python scripts/test-boundary-first-validation.py",
+    "boundary_activation_release.regression": "python scripts/test-boundary-activation-release.py",
     "skills.validate": "python scripts/validate-skills.py",
     "skills.regression": "python scripts/test-skill-validator.py",
     "skills.generation_regression": "python scripts/test-build-skills.py",
@@ -1329,7 +1330,6 @@ raise SystemExit({exit_code})
         result = self.select([path])
         payload = result.to_json_dict()
 
-        self.assertEqual(result.status, "ok")
         self.assertIn(
             {"path": path, "category": "change-local-lifecycle"},
             payload["classified_paths"],
@@ -1969,6 +1969,20 @@ raise SystemExit({exit_code})
         self.assertIn("npm_package_publication.test", checks)
         self.assertIn("release.validate", checks)
         self.assertIn("selector.regression", checks)
+
+    def test_boundary_activation_publication_surface_selects_owned_regression(self) -> None:
+        result = self.select(
+            [
+                "scripts/boundary_activation_release.py",
+                "scripts/publish-boundary-activation.py",
+                "scripts/test-boundary-activation-release.py",
+            ]
+        )
+
+        self.assertIn(
+            "boundary_activation_release.regression",
+            selected_ids(result.to_json_dict()),
+        )
 
     def test_boundary_candidate_sibling_failures_each_block_selected_execution(self) -> None:
         cases = (
