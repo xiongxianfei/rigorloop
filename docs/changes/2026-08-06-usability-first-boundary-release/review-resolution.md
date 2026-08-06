@@ -23,15 +23,15 @@ Review closeout: code-review-m4-r4
 Review closeout: code-review-pr-readiness-r1
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`, `code-review-pr-full-gate-r1`
-- Findings resolved: 27
-- Unresolved findings: 4
-- Current result: Spec-review R4 confirms the new marker-placement authority but requests normalization of its compatibility boundary record before rereview; the three PR full-gate findings remain open.
+- Findings resolved: 28
+- Unresolved findings: 3
+- Current result: The R4 boundary-record normalization is complete and awaits spec-review R5; the three PR full-gate findings remain open.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| UBR-SR4-001 | accepted | in-progress | Normalize the compatibility applicability row and cited boundary definitions before spec rereview. |
+| UBR-SR4-001 | accepted | resolved | Folded marker placement into BND-COMPAT-001 so the applicability and boundary-definition requirement sets agree exactly. |
 | UBR-PRFG-CR1-001 | accepted | in-progress | Align stage-owned owner-pointer marker placement with an approved governing contract while retaining the legacy status form and fail-closed placement checks. |
 | UBR-PRFG-CR1-002 | accepted | in-progress | Make the profile namespace exclusive and block malformed or incomplete filenames instead of fabricating a version. |
 | UBR-PRFG-CR1-003 | accepted | in-progress | Retain current v0.4.0 fixtures while restoring an actual historical skills-only release fixture and compatibility assertions. |
@@ -78,13 +78,13 @@ Review closeout: code-review-pr-readiness-r1
 
 Finding ID: UBR-SR4-001
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: spec author
 Owning stage: spec
 Chosen action: Normalize the compatibility-migration applicability and boundary-definition requirement sets without weakening UBR-R021 or repairing downstream test-spec content in the spec stage.
 Rationale: UBR-R021 closes the normative authority gap, but each boundary cited by an applicable dimension must carry the exact governing requirement set declared by that dimension.
 Validation target: feature-only boundary validation followed by spec-review-r5
-Validation evidence: Pending. The R4 direct feature check reports `BFR-BOUNDARY-DEFINITION-MISMATCH` for `BND-COMPAT-001` and `BND-COMPAT-002`.
+Validation evidence: The direct feature check reports no boundary-definition mismatch; its sole expected failure is downstream test-spec scope staleness (`BFR-PROOF-MODEL-MISMATCH`).
 Safe resolution path: Fold the new marker-placement partitions and outcomes into the existing compatibility boundary with the full requirement set, or use another normalized representation with exact-set agreement and no ownership overclaim.
 Auto-fix class: requires-upstream-spec
 

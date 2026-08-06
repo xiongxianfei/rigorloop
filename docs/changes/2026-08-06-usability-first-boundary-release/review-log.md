@@ -21,7 +21,7 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r4.md
 Resolution: review-resolution.md#spec-review-r4
 Material findings: UBR-SR4-001
-Open findings: UBR-SR4-001
+Open findings: None
 Recording status: recorded
 
 ### Review entry
