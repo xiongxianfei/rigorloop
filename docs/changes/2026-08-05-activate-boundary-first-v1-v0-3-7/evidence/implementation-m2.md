@@ -2,7 +2,7 @@
 
 Milestone: M2 — Guarded atomic activation publication helper
 
-Outcome: R1-R6 findings recorded; corrections implemented for code review R7.
+Outcome: R1-R7 findings recorded; corrections implemented for code review R8.
 
 ## Implemented behavior
 
@@ -41,9 +41,10 @@ contract fixtures prove same-push stdin mismatch rejection, exact
 full-SHA refspecs, absence of force/fallback flags, explicit and successful CLI
 modes, canonical path authority, authenticated-context preservation, private
 P/B/T/R/H environment collisions, nonce-bound local guard-result provenance,
-exact and prefixed forged-provider suppression, and
-invalid-encoding/oversized/wrong-nonce/multi-record/symlink/FIFO/truncated result
-fallback, concurrent-growth rejection, and descriptor-bound path replacement.
+exact and prefixed forged-provider suppression, and a parent-owned append-only
+pipe that bounds invalid encoding, size, nonce, multiple, truncated, empty,
+read-error, and close-error outcomes. Mutable pathname, symlink, FIFO, and
+same-size rewrite authority no longer exists in the result transport.
 Real same- and different-target post-readiness tag races retain exact bounded
 tag-conflict context and leave both refs unchanged. Post-push confirmation
 uncertainty requires stop-and-reconcile behavior. The

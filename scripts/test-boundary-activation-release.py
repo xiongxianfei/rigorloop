@@ -279,9 +279,7 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             temporary_root = Path(temporary)
             hook = temporary_root / "pre-push"
-            result_path = temporary_root / "guard-result"
             nonce = "b" * 64
-            hook.write_text(_guard_script(result_path, nonce), encoding="utf-8")
             fake_bin = temporary_root / "bin"
             fake_bin.mkdir()
             fake_git = fake_bin / "git"
@@ -319,6 +317,11 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
             )
             for hook_input, expected_code in cases:
                 with self.subTest(expected_code=expected_code, hook_input=hook_input):
+                    read_descriptor, write_descriptor = os.pipe()
+                    os.set_blocking(read_descriptor, False)
+                    hook.write_text(
+                        _guard_script(write_descriptor, nonce), encoding="utf-8"
+                    )
                     completed = subprocess.run(
                         [sys.executable, str(hook), "origin", "fixture"],
                         input=hook_input,
@@ -326,13 +329,15 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
                         capture_output=True,
                         text=True,
                         check=False,
+                        pass_fds=(write_descriptor,),
                     )
                     self.assertNotEqual(completed.returncode, 0)
-                    self.assertEqual(
-                        result_path.read_text(encoding="utf-8").split("\t")[1].strip(),
-                        expected_code,
+                    marker = _guard_result(
+                        read_descriptor, write_descriptor, nonce
                     )
-                    result_path.unlink()
+                    self.assertIsNotNone(marker)
+                    assert marker is not None
+                    self.assertEqual(marker.group(1), expected_code)
 
     def test_untrusted_exact_stderr_cannot_forge_guard_result(self) -> None:
         sentinel = "a" * 40
@@ -369,44 +374,25 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
                 "oversized",
                 "wrong-nonce",
                 "multi-record",
-                "symlink",
-                "fifo",
                 "truncated",
+                "empty",
             )
 
             for case in cases:
-                def malformed_hook(result_path: Path, nonce: str, *, selected: str = case) -> str:
+                def malformed_hook(result_fd: int, nonce: str, *, selected: str = case) -> str:
                     valid = f"{nonce}\tremote-main-drift\t{'a' * 40}\n".encode()
                     payload = {
                         "invalid-utf8": b"\xff\xfe",
                         "oversized": b"x" * 257,
                         "wrong-nonce": f"{'0' * 64}\tremote-main-drift\t{'a' * 40}\n".encode(),
                         "multi-record": valid + valid,
-                        "symlink": valid,
-                        "fifo": valid,
                         "truncated": valid.rstrip(b"\n"),
+                        "empty": b"",
                     }[selected]
-                    if selected == "symlink":
-                        target = result_path.with_name("guard-target")
-                        body = (
-                            "from pathlib import Path\n"
-                            f"target = Path({str(target)!r})\n"
-                            f"target.write_bytes({payload!r})\n"
-                            f"Path({str(result_path)!r}).symlink_to(target)\n"
-                            "raise SystemExit(1)\n"
-                        )
-                    elif selected == "fifo":
-                        body = (
-                            "import os\n"
-                            f"os.mkfifo({str(result_path)!r}, 0o600)\n"
-                            "raise SystemExit(1)\n"
-                        )
-                    else:
-                        body = (
-                            "from pathlib import Path\n"
-                            f"Path({str(result_path)!r}).write_bytes({payload!r})\n"
-                            "raise SystemExit(1)\n"
-                        )
+                    body = "import os\n"
+                    if payload:
+                        body += f"os.write({result_fd}, {payload!r})\n"
+                    body += "raise SystemExit(1)\n"
                     return "#!/usr/bin/env python3\n" + body
 
                 with self.subTest(case=case), mock.patch(
@@ -419,44 +405,45 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
                 self.assertEqual(error_payload(raised.exception)["code"], "atomic-publication-failed")
                 self.assertEqual(advertised(root), before)
 
-    def test_guard_result_is_descriptor_bound_and_rejects_growth(self) -> None:
+    def test_parent_owned_guard_channel_rejects_substitution_and_close_errors(self) -> None:
         nonce = "b" * 64
         valid = f"{nonce}\tremote-main-drift\t{'a' * 40}\n".encode()
-        with tempfile.TemporaryDirectory() as temporary:
-            result = Path(temporary) / "result"
-            result.write_bytes(valid)
-            real_read = os.read
-            changed = False
+        alternate = f"{nonce}\tremote-tag-exists\t{'c' * 40}\n".encode()
+        read_descriptor, write_descriptor = os.pipe()
+        os.set_blocking(read_descriptor, False)
+        os.write(write_descriptor, valid + alternate)
+        self.assertIsNone(
+            _guard_result(read_descriptor, write_descriptor, nonce)
+        )
 
-            def grow_after_read(descriptor: int, size: int) -> bytes:
-                nonlocal changed
-                chunk = real_read(descriptor, size)
-                if not changed:
-                    changed = True
-                    with result.open("ab") as stream:
-                        stream.write(b"x")
-                return chunk
+        read_descriptor, write_descriptor = os.pipe()
+        os.set_blocking(read_descriptor, False)
+        os.write(write_descriptor, valid)
+        real_close = os.close
 
-            with mock.patch("boundary_activation_release.os.read", side_effect=grow_after_read):
-                self.assertIsNone(_guard_result(result, nonce))
+        def fail_read_close(descriptor: int) -> None:
+            if descriptor == read_descriptor:
+                raise OSError("injected close failure")
+            real_close(descriptor)
 
-        with tempfile.TemporaryDirectory() as temporary:
-            result = Path(temporary) / "result"
-            opened = Path(temporary) / "opened"
-            result.write_bytes(valid)
-            real_open = os.open
+        with mock.patch(
+            "boundary_activation_release.os.close", side_effect=fail_read_close
+        ):
+            self.assertIsNone(
+                _guard_result(read_descriptor, write_descriptor, nonce)
+            )
+        real_close(read_descriptor)
 
-            def replace_after_open(path: os.PathLike[str] | str, flags: int) -> int:
-                descriptor = real_open(path, flags)
-                result.rename(opened)
-                result.write_bytes(b"untrusted replacement\n")
-                return descriptor
-
-            with mock.patch("boundary_activation_release.os.open", side_effect=replace_after_open):
-                marker = _guard_result(result, nonce)
-            self.assertIsNotNone(marker)
-            assert marker is not None
-            self.assertEqual(marker.group(1), "remote-main-drift")
+        read_descriptor, write_descriptor = os.pipe()
+        os.set_blocking(read_descriptor, False)
+        os.write(write_descriptor, valid)
+        with mock.patch(
+            "boundary_activation_release.os.read",
+            side_effect=OSError("injected read failure"),
+        ):
+            self.assertIsNone(
+                _guard_result(read_descriptor, write_descriptor, nonce)
+            )
 
     def test_post_readiness_tag_races_are_precise_and_read_only(self) -> None:
         for same_target in (True, False):
