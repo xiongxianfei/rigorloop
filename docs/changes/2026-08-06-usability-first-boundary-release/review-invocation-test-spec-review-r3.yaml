@@ -1,0 +1,76 @@
+schema_version: 1
+review_id: test-spec-review-r3
+review_stage: test-spec-review
+review_target: specs/usability-first-boundary-release.test.md
+base_revision: 73493620ac68dedd473a0c407c13755e18ef54cd
+head_revision: 90d490dedff1fc0a1275d4c5be48b6a7f607de7e
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L1
+author_context_id: root-ubr-marker-proof-map-r3
+reviewer_context_id: independent-test-spec-review-r3
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-contract-authority
+  - compatibility-proof
+  - fail-closed-marker-placement
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/usability-first-boundary-release.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/reviews/spec-review-r5.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+  - docs/plans/2026-08-06-usability-first-boundary-release.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/reviews/plan-review-r2.md
+  - specs/usability-first-boundary-release.test.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+prompt_template_version: test-spec-review-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    revision: 90d490dedff1fc0a1275d4c5be48b6a7f607de7e
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: specs/usability-first-boundary-release.md
+    revision: 90d490dedff1fc0a1275d4c5be48b6a7f607de7e
+    sha256: 5045edf83c5e71531445f524b88c4098f28fc115bf6ba8277335c178058bf6cd
+  - path: specs/usability-first-boundary-release.test.md
+    revision: 90d490dedff1fc0a1275d4c5be48b6a7f607de7e
+    sha256: 81e2e8bf8dce451743cca12cb3b830702b701be006e783e897ef0ff88a62ec49
+  - path: docs/architecture/system/architecture.md
+    revision: 90d490dedff1fc0a1275d4c5be48b6a7f607de7e
+    sha256: e093f7e58b50a8851765c1a5c8edba701f43f0cc9b1e466a8e2d334a6c7e7dfc
+  - path: docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+    revision: 90d490dedff1fc0a1275d4c5be48b6a7f607de7e
+    sha256: dcdecc94c62a4d55e108711b466976c2309cb6bf4cfc866110461e9c44d82cdf
+  - path: docs/plans/2026-08-06-usability-first-boundary-release.md
+    revision: 90d490dedff1fc0a1275d4c5be48b6a7f607de7e
+    sha256: 20dfdffbe57586be33ed111dad8b10e44d431e29a6af49caf4c1be097ddc90cd
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/spec-review-r5.md
+    revision: 90d490dedff1fc0a1275d4c5be48b6a7f607de7e
+    sha256: 904d296ab93fea31184ff27623bad2b1d6ad134096059c96d9f342a5cff51bb5
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/architecture-review-r2.md
+    revision: 90d490dedff1fc0a1275d4c5be48b6a7f607de7e
+    sha256: 4ff7366f991b8d3e8cbf4d3a97ea8e49cc7c1341b4060be701015f64dff1290e
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/plan-review-r2.md
+    revision: 90d490dedff1fc0a1275d4c5be48b6a7f607de7e
+    sha256: 599dc4ac6867cc6bcbd843065267edaff63def0bdffc6e76ac973b424f2f9d26
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/evidence/test-spec-authoring-pr-full-gate-r1.md
+    revision: 90d490dedff1fc0a1275d4c5be48b6a7f607de7e
+    sha256: 6648c6bb6c3ab5f3eded299d0735168a73fd89a98c982d06899244fafeb33726
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: 90d490dedff1fc0a1275d4c5be48b6a7f607de7e
+    sha256: ab3060e36b14f7b4a11fbf2e7fcc9b8eacfc42d837f884a8f5ba7b45554577b1
+  - path: specs/usability-first-boundary-release.test.md.diff
+    revision: 90d490dedff1fc0a1275d4c5be48b6a7f607de7e
+    sha256: 46fbb6ae56f03b2355e3f9b69b1b85b3aeb6c00345ee54806d7799a193cdaa5a
+initial_packet_sha256: 46fbb6ae56f03b2355e3f9b69b1b85b3aeb6c00345ee54806d7799a193cdaa5a
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - UBR-R021 lifecycle-contract authority proof
+  - BND-COMPAT-001 direct compatibility proof
+  - AC-UBR-013 and EC11 positive and negative placement coverage
+  - T24 command, fixture, milestone, and evidence traceability

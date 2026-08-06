@@ -1,0 +1,86 @@
+schema_version: 1
+review_id: code-review-m1-r1
+review_stage: code-review
+review_target: commit:048cf61f
+base_revision: 3852a010cad0037d805b17f8696f3b156d8ae8bb
+head_revision: 048cf61f
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m1-implementation
+reviewer_context_id: m1-r1-primary-and-second-reviewers
+context_separation_mechanism: existing-separate-agents-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - validator-behavior
+  - remote-authority-read
+  - release-boundary
+  - lifecycle-gate
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - specs/boundary-first-v1-v0-3-7-activation-release.test.md
+  - docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: 048cf61f
+    sha256: 48a42eb23156330bc7a60a869c93ec512e3c0b8e79b29587ccfbd94eebab8db9
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+    revision: 048cf61f
+    sha256: bb434cc5390d7490aa64fe7bfbbc377b16e5bc4fe1fa2cb6d8c183b4c6aa3baa
+  - path: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+    revision: 048cf61f
+    sha256: e940e7d27ad26287f33bb65a2616e096d6b5ed805b6aa95346ea4a4c5370af91
+  - path: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+    revision: 048cf61f
+    sha256: 911b77ee4384c8576269a04233e7581865075bda3a78277f67371b3afca2d2e5
+  - path: commit:048cf61f.diff
+    revision: 048cf61f
+    sha256: 06bd3b09e6eff7c33b076840a98e1808970b78bba67872724b5e94f844bfecb1
+initial_packet_sha256: 9f9b6168f8e12713f854db3651d17731a483fd031964735b031f60852ad97f26
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: true
+  satisfied: true
+  reviewer_context_id: m1-r1-second-reviewer
+requirement_fidelity:
+  applicability: applicable
+  reason: M1 implements closed multi-surface MUST requirements for candidate authority, topology, diagnostics, lifecycle readiness, and strict compatibility.
+  outcome: changes-requested
+risk_map:
+  affected_behavior: exact candidate CLI, fresh remote authority, first-parent P/B/T/H, strict validation reuse, post-transition path classification, publication readiness, non-public diagnostics, and selector composition
+  highest_impact_failure_modes: malformed input becomes strict success; remote or graph ambiguity is trusted; reverted or disguised payload drift passes; placeholder evidence authorizes publication; diagnostics leak private values; sibling proof is bypassed
+  changed_boundaries: BND-INPUT-001, BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, INT-001, INT-002, INT-004, and INT-007
+  evidence_expected: direct T1-T6, T12, and T16 negative matrices using Git histories, bare remotes, ref and tree snapshots, privacy sentinels, exact paths, repeated output, strict regression, and sibling check selection and failure
+  direct_inspection_areas: parser dispatch, Git subprocesses, transition topology, strict helper reuse, lifecycle classifier, readiness authority, serialization, regression tests, and selector preflight
+  intentionally_out_of_scope: M2 atomic mutation, M3 payload generation, M4 real transition, public release actions, and final verification
+  applicable_risk_classes:
+    - contract-fidelity
+    - remote-authority
+    - first-parent-topology
+    - temporal-drift
+    - lifecycle-settlement
+    - composition-bypass
+    - security-privacy
+    - compatibility
+  non_applicable_risk_classes:
+    - live-atomic-publication
+    - public-registry-availability
+  falsifiable_questions:
+    - Does every supplied candidate option obey the closed input contract?
+    - Can any forbidden path appear in a post-T first-parent commit and later disappear without rejection?
+    - Can arbitrary files or placeholder lifecycle evidence authorize candidate publication readiness?
+    - Do failure results expose bounded actionable context without private values?
+    - Does selector proof cover the complete touched and sibling-owned validation surface?

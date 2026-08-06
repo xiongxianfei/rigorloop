@@ -7,7 +7,13 @@ flowchart LR
   manifest["Resource projection manifest<br/>[YAML: closed resources and consumers]"]:::component
   projector["Projection and validation<br/>[Python: manifest interpreter and parity checks]"]:::component
   selector["Validation selector<br/>[Python: path-owned check routing]"]:::component
-  activation["Tracked activation transaction<br/>[Repository sources, marker, and evidence references]"]:::component
+  baseline["Reviewed pending revision<br/>[Git identity: authoring input only]"]:::container
+  inventory_helper["Inventory derivation helper<br/>[Python function: read-only Git object input to sorted paths or issues]"]:::component
+  activation_authoring["Activation authoring<br/>[Reviewed edit: call helper once and freeze input and output]"]:::component
+  activation["Activation record<br/>[YAML: pending or active checked-revision snapshot]"]:::component
+  checked_validator["Checked-revision validator<br/>[Python: current files only]"]:::component
+  routine_release["Routine release workflow<br/>[Profile, preflight, full gate, trusted publication, closeout]"]:::component
+  public["GitHub and npm<br/>[External: immutable tag, assets, registry, and public smoke]"]:::external
   generated["Generated, packed, archived, and installed skills<br/>[Derived proof, not Git rollback state]"]:::container
   evidence["Measurement and package evidence<br/>[YAML/Markdown fixtures and reports]"]:::container
 
@@ -23,9 +29,20 @@ flowchart LR
   projector -->|proves mapped path and raw-byte identity through| generated
   selector -->|selects purpose-built checks for| skills
   selector -->|retains lifecycle checks for| artifacts
-  activation -->|provides the exact candidate source and resource identities for| generated
+  baseline -->|is supplied explicitly with repository root to| inventory_helper
+  inventory_helper -->|returns sorted eligible paths or bounded issues without writes to| activation_authoring
+  activation_authoring -->|records baseline provenance and frozen inventory in| activation
+  manifest -->|provides current resource identity to| checked_validator
+  projector -->|provides current projection identity to| checked_validator
+  activation -->|provides one coherent snapshot to| checked_validator
+  generated -->|provides adapter support and rollback metadata to| checked_validator
+  checked_validator -->|reports checked state and release intent without public claims to| evidence
+  activation -->|provides release intent and rollback identity to| routine_release
+  generated -->|provides coherent package and archive candidates to| routine_release
+  routine_release -->|publishes and then records public evidence from| public
+  routine_release -->|records preparation, verification, timing, and closeout in| evidence
   generated -->|produces package and clean-install results recorded in| evidence
-  evidence -->|must match the candidate before the tracked marker becomes active in| activation
+  evidence -->|supports review of the authored active snapshot in| activation
   projector -->|records static resource and representative loading baselines in| evidence
 
   classDef person fill:#08427b,stroke:#073b6f,color:#fff

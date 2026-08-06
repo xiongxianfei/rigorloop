@@ -15,6 +15,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol
 
+from adapter_distribution import parse_manifest_yaml, parse_release_yaml
+from artifact_lifecycle_validation import validate_release_evidence_checklist
+
 
 SCHEMA_VERSION = "release-profile-v1"
 EXPECTED_NPM_PACKAGE = "@xiongxianfei/rigorloop"
@@ -23,7 +26,20 @@ ROUTINE_RELEASE_KIND = "routine"
 SPECIAL_RELEASE_KIND = "special"
 ROUTINE_TARGETS = ("codex", "claude", "opencode")
 SUPPORTED_TARGETS = frozenset(ROUTINE_TARGETS)
+NPM_DIST_TAGS = frozenset(("latest",))
+LEGACY_IMPLICIT_LATEST_PROFILES = frozenset(("v0.3.5", "v0.3.6"))
 REQUIRED_VALUE = "required"
+RELEASE_VALIDATION_KEYS = frozenset(
+    (
+        "generated_sync",
+        "release_notes_consistency",
+        "placeholder_release_check",
+        "security",
+        "adapter_archives",
+        "adapter_artifact_metadata",
+        "npm_publication_evidence",
+    )
+)
 
 REQUIRED_TOP_LEVEL_FIELDS = (
     "schema_version",
@@ -113,6 +129,7 @@ class ReleaseProfile:
     release_kind: str
     release_tag: str
     package_version: str
+    npm_dist_tag: str
     npm_package: str
     targets: tuple[str, ...]
     adapter_artifacts: dict[str, Any]
@@ -312,6 +329,7 @@ def prepare_release(
     _plan_release_index_update(planned, repo_root, profile)
     _plan_release_yaml(planned, repo_root, profile)
     _plan_release_notes(planned, repo_root, profile)
+    _plan_standing_release_record(planned, repo_root, profile)
     _plan_npm_publication(planned, repo_root, profile)
     _plan_timing_evidence(planned, repo_root, profile)
     _plan_adapter_artifact_report(planned, repo_root, profile)
@@ -340,6 +358,60 @@ def prepare_release(
     )
 
 
+def validate_trusted_release_tag_identity(
+    release_tag: str,
+    ref_name: str,
+    trusted_commit: str,
+    *,
+    root: Path | str = Path("."),
+) -> list[str]:
+    """Prove that the requested hosted tag, checkout, and trusted commit are one identity."""
+
+    if not ref_name:
+        return ["trusted tag verification requires GITHUB_REF_NAME"]
+    if release_tag != ref_name:
+        return [
+            f"requested release tag {release_tag} must match hosted tag ref {ref_name}"
+        ]
+
+    repo_root = Path(root)
+    git_env = {
+        "PATH": os.environ.get("PATH", ""),
+        "LANG": "C",
+        "LC_ALL": "C",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": os.devnull,
+        "GIT_NO_REPLACE_OBJECTS": "1",
+        "GIT_OPTIONAL_LOCKS": "0",
+        "GIT_TERMINAL_PROMPT": "0",
+    }
+
+    def resolve(revision: str) -> str | None:
+        result = subprocess.run(
+            ["git", "--no-replace-objects", "-C", str(repo_root), "rev-parse", "--verify", revision],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            env=git_env,
+        )
+        return result.stdout.strip() if result.returncode == 0 else None
+
+    checked_commit = resolve("HEAD^{commit}")
+    if checked_commit is None:
+        return ["trusted tag verification could not resolve checked HEAD"]
+    if checked_commit != trusted_commit:
+        return ["trusted release commit does not match checked HEAD"]
+    tag_commit = resolve(f"refs/tags/{ref_name}^{{commit}}")
+    if tag_commit is None:
+        return [f"trusted tag verification could not resolve refs/tags/{ref_name}"]
+
+    errors: list[str] = []
+    if tag_commit != trusted_commit:
+        errors.append("hosted tag does not match trusted release commit")
+    return errors
+
+
 def validate_pending_release_artifacts(
     tag: str,
     *,
@@ -352,22 +424,28 @@ def validate_pending_release_artifacts(
     release_yaml = release_dir / "release.yaml"
     npm_publication = release_dir / "npm-publication.md"
     release_notes = release_dir / "release-notes.md"
+    standing_release = repo_root / "docs" / "releases" / f"{tag}.md"
 
-    for path in (release_yaml, npm_publication, release_notes):
+    for path in (release_yaml, npm_publication, release_notes, standing_release):
         if not path.exists():
             errors.append(f"{_repo_relative(path, repo_root)}: missing pending release artifact")
 
     if release_yaml.exists():
         text = release_yaml.read_text(encoding="utf-8")
-        _require_text(errors, release_yaml, repo_root, text, f"version: {profile.release_tag}")
-        _require_text(errors, release_yaml, repo_root, text, "publication_status: pending-publication")
-        _require_text(errors, release_yaml, repo_root, text, f'  version: "{profile.package_version}"')
-        _require_text(errors, release_yaml, repo_root, text, f"  release_tag: {profile.release_tag}")
-        _require_text(errors, release_yaml, repo_root, text, f"  bundled_metadata: {profile.adapter_artifacts['metadata_file']}")
+        errors.extend(
+            _validate_release_yaml_contract(
+                text,
+                release_yaml,
+                repo_root,
+                profile,
+                require_finalized=False,
+            )
+        )
     if npm_publication.exists():
         text = npm_publication.read_text(encoding="utf-8")
         _require_text(errors, npm_publication, repo_root, text, "Status: pending-publication")
         _require_text(errors, npm_publication, repo_root, text, "published: false")
+        _require_text(errors, npm_publication, repo_root, text, f'  dist_tag: "{profile.npm_dist_tag}"')
         _validate_pending_npm_publication(
             errors,
             npm_publication,
@@ -380,6 +458,17 @@ def validate_pending_release_artifacts(
         marker = _generated_region_start("release-metadata", profile)
         _require_text(errors, release_notes, repo_root, text, marker)
         _require_text(errors, release_notes, repo_root, text, _generated_region_end("release-metadata"))
+    if standing_release.exists():
+        text = standing_release.read_text(encoding="utf-8")
+        errors.extend(
+            _validate_pending_standing_release_record(
+                text,
+                standing_release,
+                repo_root,
+                profile,
+                require_preflight_pass=False,
+            )
+        )
     return errors
 
 
@@ -528,6 +617,14 @@ def validate_release_workflow_parity(root: Path | str = Path(".")) -> list[str]:
     if 'bash scripts/release-verify.sh "$tag"' not in text:
         errors.append(
             ".github/workflows/release.yml: npm publication validation must delegate to bash scripts/release-verify.sh \"$tag\""
+        )
+    if "RELEASE_TAG_COMMIT: ${{ github.sha }}" not in text:
+        errors.append(
+            ".github/workflows/release.yml: trusted release jobs must bind RELEASE_TAG_COMMIT to github.sha"
+        )
+    if 'npm publish --provenance --access public --tag "${{ steps.context.outputs.npm_dist_tag }}"' not in text:
+        errors.append(
+            ".github/workflows/release.yml: trusted npm publication must use the profile-owned npm dist-tag"
         )
     forbidden_direct_checks = (
         "python scripts/validate-release.py",
@@ -1435,11 +1532,15 @@ def _plan_release_index_update(
     if not isinstance(releases, dict):
         releases = {}
         data["releases"] = releases
+    metadata_path = index_path.parent / profile.adapter_artifacts["metadata_file"]
+    metadata_sha256 = "pending"
+    if metadata_path.is_file():
+        metadata_sha256 = hashlib.sha256(metadata_path.read_bytes()).hexdigest()
     releases[profile.release_tag] = {
         "source_repository": "xiongxianfei/rigorloop",
         "release_tag": profile.release_tag,
         "bundled_metadata": profile.adapter_artifacts["metadata_file"],
-        "bundled_metadata_sha256": "pending",
+        "bundled_metadata_sha256": metadata_sha256,
     }
     planned[index_path] = json.dumps(data, indent=2, sort_keys=True) + "\n"
 
@@ -1450,7 +1551,19 @@ def _plan_release_yaml(
     profile: ReleaseProfile,
 ) -> None:
     release_path = repo_root / "docs" / "releases" / profile.release_tag / "release.yaml"
+    if release_path.is_file():
+        existing = release_path.read_text(encoding="utf-8")
+        if _is_finalized_release_yaml(existing, profile):
+            planned[release_path] = _with_release_yaml_dist_tag(existing, profile)
+            return
     target_lines = "\n".join(f"  - {target}" for target in profile.targets)
+    adapter_path_lines = "\n".join(
+        f"  {target}: {_expected_adapter_paths(profile)[target]}" for target in profile.targets
+    )
+    entrypoint_lines = "\n".join(
+        f"  {target}: {_expected_instruction_entrypoints(profile)[target]}"
+        for target in profile.targets
+    )
     smoke_lines = "\n".join(
         (
             f"  {target}:\n"
@@ -1471,6 +1584,12 @@ def _plan_release_yaml(
         "supported_tools:\n"
         f"{target_lines}\n"
         "\n"
+        "adapter_paths:\n"
+        f"{adapter_path_lines}\n"
+        "\n"
+        "instruction_entrypoints:\n"
+        f"{entrypoint_lines}\n"
+        "\n"
         "smoke:\n"
         f"{smoke_lines}\n"
         "\n"
@@ -1487,6 +1606,7 @@ def _plan_release_yaml(
         f"  name: \"{profile.npm_package}\"\n"
         f"  version: \"{profile.package_version}\"\n"
         f"  release_tag: {profile.release_tag}\n"
+        f"  dist_tag: {profile.npm_dist_tag}\n"
         "\n"
         "adapter_release:\n"
         f"  tag: {profile.release_tag}\n"
@@ -1541,6 +1661,107 @@ def _plan_npm_publication(
     )
 
 
+def _plan_standing_release_record(
+    planned: dict[Path, str],
+    repo_root: Path,
+    profile: ReleaseProfile,
+) -> None:
+    path = repo_root / "docs" / "releases" / f"{profile.release_tag}.md"
+    if path.is_file():
+        existing = path.read_text(encoding="utf-8")
+        if _is_finalized_standing_release_record(existing, profile):
+            planned[path] = existing
+            return
+    planned[path] = (
+        f"# Release {profile.release_tag}\n\n"
+        "## Result\n\n"
+        f"- Package: {profile.npm_package}\n"
+        f"- Version: {profile.package_version}\n"
+        "- Release type: routine\n"
+        "- Routine publish: yes\n"
+        "- No new decision introduced: yes\n"
+        "- Source commit: pending exact reviewed release commit\n"
+        "- Source branch: pending\n"
+        f"- npm dist-tag: {profile.npm_dist_tag}\n"
+        "- Publish path: trusted-publishing\n"
+        "- Provenance: pending trusted GitHub Actions publication\n"
+        "- Status: pending-publication\n\n"
+        "## Related Lifecycle Evidence\n\n"
+        f"- Release profile: docs/releases/profiles/{profile.release_tag}.yaml\n"
+        f"- Release metadata: docs/releases/{profile.release_tag}/release.yaml\n"
+        f"- Release notes: docs/releases/{profile.release_tag}/release-notes.md\n"
+        f"- npm publication evidence: docs/releases/{profile.release_tag}/npm-publication.md\n"
+        f"- Adapter artifact metadata: docs/reports/adapter-artifacts/releases/{profile.release_tag}.yaml\n\n"
+        "## Version Decision\n\n"
+        "- Change summary: usability-first boundary behavior and routine package parity.\n"
+        "- Version decision: minor\n"
+        f"- Dist-tag decision: {profile.npm_dist_tag} after successful trusted publication\n"
+        "- No-op check: pending final reviewed release commit\n\n"
+        "## Routine Publish Boundary\n\n"
+        "| Check | Result | Evidence |\n"
+        "| --- | --- | --- |\n"
+        "| release type recorded | pass | routine profile |\n"
+        "| no new product or implementation decision | pass | approved upstream lifecycle artifacts |\n"
+        "| no release-process change | pass | existing routine workflow retained |\n"
+        "| no package name/scope change | pass | package scope unchanged |\n"
+        "| no adapter target/install-root change | pass | codex, claude, and opencode retained |\n"
+        "| upstream breaking change approval | not-applicable | minor release |\n\n"
+        "## Preflight Gate\n\n"
+        "| Check | Result | Evidence |\n"
+        "| --- | --- | --- |\n"
+        "| clean worktree except intentional release artifacts | pending | final release commit pending |\n"
+        "| release notes or not-required rationale | pass | tracked release notes |\n"
+        "| generated output current | pending | final release verification pending |\n"
+        "| tests / selected CI / broad smoke | pending | final release verification pending |\n"
+        "| package build or pack proof | pending | final packed proof pending |\n"
+        "| package preview | pending | final package preview pending |\n"
+        "| local packed-install smoke | pending | final packed smoke pending |\n"
+        "| no unresolved release blockers | pending | milestone review pending |\n"
+        "| publish path selected | pass | trusted-publishing |\n"
+        f"| evidence path prepared | pass | docs/releases/{profile.release_tag}.md |\n\n"
+        "## Package Contents\n\n"
+        "- Package filename: pending final npm pack\n"
+        "- Package size: pending final npm pack\n"
+        "- Integrity or checksum: pending final npm pack\n"
+        "- Included-file review: pending final package preview\n"
+        "- Unexpected inclusions: pending final package preview\n"
+        "- Unexpected exclusions: pending final package preview\n"
+        "- Secret-bearing file check: pending final release verification\n\n"
+        "## Publish Event\n\n"
+        "- Command family: trusted GitHub Actions publication, not started\n"
+        "- Registry: npm, not written\n"
+        f"- Package reference: {profile.npm_package}@{profile.package_version}\n"
+        "- Published at: not-applicable before publication\n"
+        f"- Dist-tag: {profile.npm_dist_tag}\n"
+        "- Provenance status: pending trusted publication\n"
+        "- Manual fallback reason: not-applicable\n\n"
+        "## Registry Verification\n\n"
+        "| Check | Result | Evidence |\n"
+        "| --- | --- | --- |\n"
+        "| registry version query | not-applicable | publication not started |\n"
+        "| dist-tag points correctly | not-applicable | publication not started |\n"
+        "| integrity metadata available | not-applicable | publication not started |\n"
+        "| fresh registry install smoke | not-applicable | publication not started |\n"
+        "| CLI or npx smoke | not-applicable | publication not started |\n\n"
+        "## Emergency Deferrals\n\n"
+        "| Deferred gate item | Approving owner or owning stage | Rationale | Reason pre-publish completion was impossible | Validation impact | Risk accepted | Follow-up location | Deadline or next lifecycle stage | Status |\n"
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n"
+        "| none | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | completed |\n\n"
+        "## Recovery / Rollback Notes\n\n"
+        "- Failure phase: none\n"
+        "- Registry state checked before retry: not-applicable before publication\n"
+        "- Recovery action: fix before tagging; after partial publication use rerunnable closeout, dist-tag correction or deprecation, or a later patch\n"
+        "- Published version overwrite attempted: no\n"
+        f"- Notes: `{profile.release_tag}` and `v0.3.6` are never rewritten\n\n"
+        "## Follow-up\n\n"
+        "After authorized publication, record the immutable tag identity, GitHub assets, npm registry identity, "
+        "fresh Codex/Claude/opencode smoke, and closeout result.\n\n"
+        "## Evidence Safety Checklist\n\n"
+        "Do not record tokens, OTPs, credentials, raw private environment values, usernames, hostnames, "
+        "or machine-local absolute paths. Summarize command results instead of pasting raw environment output.\n"
+    )
+
+
 def _plan_timing_evidence(
     planned: dict[Path, str],
     repo_root: Path,
@@ -1589,6 +1810,11 @@ def _plan_adapter_artifact_report(
     profile: ReleaseProfile,
 ) -> None:
     path = repo_root / "docs" / "reports" / "adapter-artifacts" / "releases" / f"{profile.release_tag}.yaml"
+    if path.is_file():
+        existing = path.read_text(encoding="utf-8")
+        if _is_finalized_adapter_artifact_report(existing, profile):
+            planned[path] = existing
+            return
     artifacts = "\n".join(
         (
             f"  - adapter: {target}\n"
@@ -1631,6 +1857,7 @@ def _plan_current_version_fixture(
         "schema_version": "release-current-version-fixture-v1",
         "release_tag": profile.release_tag,
         "package_version": profile.package_version,
+        "npm_dist_tag": profile.npm_dist_tag,
         "npm_package": profile.npm_package,
         "targets": list(profile.targets),
         "release_profile": _repo_relative(profile.path, repo_root),
@@ -1648,6 +1875,7 @@ def _pending_npm_publication_yaml(profile: ReleaseProfile) -> str:
         f"  package: \"{profile.npm_package}\"\n"
         f"  version: \"{profile.package_version}\"\n"
         f"  release_tag: \"{profile.release_tag}\"\n"
+        f"  dist_tag: \"{profile.npm_dist_tag}\"\n"
         "  source_commit: \"pending\"\n"
         "  mode: \"trusted-publishing\"\n"
         "\n"
@@ -1730,6 +1958,7 @@ def _release_notes_generated_block(profile: ReleaseProfile) -> str:
         f"{_generated_region_start('release-metadata', profile)}\n"
         f"- Release profile: `{_repo_relative(profile.path, profile.path.parents[3])}`\n"
         f"- npm package: `{profile.npm_package}@{profile.package_version}`\n"
+        f"- npm dist-tag: `{profile.npm_dist_tag}`\n"
         f"- Supported targets: {targets}\n"
         f"- Adapter metadata: `{profile.adapter_artifacts['metadata_file']}`\n"
         f"- Pending publication evidence: `docs/releases/{profile.release_tag}/npm-publication.md`\n"
@@ -1767,6 +1996,206 @@ def _generated_region_start(surface: str, profile: ReleaseProfile) -> str:
 
 def _generated_region_end(surface: str) -> str:
     return f"<!-- rigorloop:generated:end release-transaction surface={surface} -->"
+
+
+def _expected_adapter_paths(profile: ReleaseProfile) -> dict[str, str]:
+    return {target: f"dist/adapters/{target}/" for target in profile.targets}
+
+
+def _expected_instruction_entrypoints(profile: ReleaseProfile) -> dict[str, str]:
+    filenames = {"codex": "AGENTS.md", "claude": "CLAUDE.md", "opencode": "AGENTS.md"}
+    return {
+        target: f"dist/adapters/{target}/{filenames[target]}"
+        for target in profile.targets
+    }
+
+
+def _validate_release_yaml_contract(
+    text: str,
+    path: Path,
+    repo_root: Path,
+    profile: ReleaseProfile,
+    *,
+    require_finalized: bool,
+) -> list[str]:
+    relative = _repo_relative(path, repo_root)
+    try:
+        metadata = parse_release_yaml(text, Path(relative))
+    except ValueError as exc:
+        return [str(exc)]
+
+    errors: list[str] = []
+    expected_scalars = (
+        (metadata.version, profile.release_tag, "version"),
+        (metadata.release_type, "final", "release_type"),
+        (metadata.publication_status, "pending-publication", "publication_status"),
+    )
+    for actual, expected, field in expected_scalars:
+        if actual != expected:
+            errors.append(f"{relative}: {field}: expected {expected}, found {actual}")
+    if metadata.supported_tools != profile.targets:
+        errors.append(
+            f"{relative}: supported_tools: expected {profile.targets}, found {metadata.supported_tools}"
+        )
+    if metadata.adapter_paths != _expected_adapter_paths(profile):
+        errors.append(f"{relative}: adapter_paths: expected complete target mapping")
+    if metadata.instruction_entrypoints != _expected_instruction_entrypoints(profile):
+        errors.append(f"{relative}: instruction_entrypoints: expected complete target mapping")
+    if set(metadata.smoke) != set(profile.targets):
+        errors.append(f"{relative}: smoke: expected exactly {', '.join(profile.targets)}")
+    for target in profile.targets:
+        row = metadata.smoke.get(target)
+        if row is None:
+            continue
+        allowed = {"pass"} if require_finalized else {"pending", "pass"}
+        if row.result not in allowed:
+            errors.append(
+                f"{relative}: smoke.{target}.result: expected {'pass' if require_finalized else 'pending or pass'}, found {row.result}"
+            )
+        if require_finalized and row.result == "pass":
+            if not row.tool_version.strip() or row.tool_version.strip() == "unknown":
+                errors.append(
+                    f"{relative}: smoke.{target}.tool_version: pass requires known tool version"
+                )
+            if not row.evidence.strip():
+                errors.append(f"{relative}: smoke.{target}.evidence: pass requires evidence")
+    if set(metadata.validation) != set(RELEASE_VALIDATION_KEYS):
+        errors.append(f"{relative}: validation: expected complete validation category mapping")
+    for key in RELEASE_VALIDATION_KEYS:
+        value = metadata.validation.get(key)
+        allowed = {"pass"} if require_finalized else {"pending", "pass"}
+        if value is not None and value not in allowed:
+            errors.append(
+                f"{relative}: validation.{key}: expected {'pass' if require_finalized else 'pending or pass'}, found {value}"
+            )
+    if require_finalized:
+        manifest_path = repo_root / "dist" / "adapters" / "manifest.yaml"
+        try:
+            expected_manifest = parse_manifest_yaml(
+                manifest_path.read_text(encoding="utf-8"),
+                Path(_repo_relative(manifest_path, repo_root)),
+            ).version
+        except (OSError, ValueError) as exc:
+            errors.append(f"{relative}: could not load expected adapter manifest: {exc}")
+        else:
+            if metadata.manifest_version != expected_manifest:
+                errors.append(
+                    f"{relative}: manifest_version: expected {expected_manifest}, found {metadata.manifest_version}"
+                )
+
+    expected_npm_package = {
+        "name": profile.npm_package,
+        "version": profile.package_version,
+        "release_tag": profile.release_tag,
+        "dist_tag": profile.npm_dist_tag,
+    }
+    if metadata.npm_package != expected_npm_package:
+        errors.append(f"{relative}: npm_package: expected complete profile-owned mapping")
+    expected_adapter_release = {
+        "tag": profile.release_tag,
+        "bundled_metadata": profile.adapter_artifacts["metadata_file"],
+    }
+    if metadata.adapter_release != expected_adapter_release:
+        errors.append(f"{relative}: adapter_release: expected complete profile-owned mapping")
+
+    return errors
+
+
+def _validate_pending_standing_release_record(
+    text: str,
+    path: Path,
+    repo_root: Path,
+    profile: ReleaseProfile,
+    *,
+    require_preflight_pass: bool,
+) -> list[str]:
+    relative_path = Path(_repo_relative(path, repo_root))
+    errors = validate_release_evidence_checklist(
+        relative_path,
+        text,
+        require_preflight_pass=require_preflight_pass,
+    )
+    required = (
+        f"# Release {profile.release_tag}",
+        f"- Package: {profile.npm_package}",
+        f"- Version: {profile.package_version}",
+        f"- npm dist-tag: {profile.npm_dist_tag}",
+        "- Status: pending-publication",
+        "- Command family: trusted GitHub Actions publication, not started",
+        "- Registry: npm, not written",
+        "- Published at: not-applicable before publication",
+        "- Provenance status: pending trusted publication",
+    )
+    for expected in required:
+        _require_text(errors, path, repo_root, text, expected)
+    for item in (
+        "registry version query",
+        "dist-tag points correctly",
+        "integrity metadata available",
+        "fresh registry install smoke",
+        "CLI or npx smoke",
+    ):
+        _require_text(errors, path, repo_root, text, f"| {item} | not-applicable |")
+    return errors
+
+
+def _is_finalized_release_yaml(text: str, profile: ReleaseProfile) -> bool:
+    return not _validate_release_yaml_contract(
+        text,
+        profile.path.parents[1] / profile.release_tag / "release.yaml",
+        profile.path.parents[3],
+        profile,
+        require_finalized=True,
+    )
+
+
+def _with_release_yaml_dist_tag(text: str, profile: ReleaseProfile) -> str:
+    lines = text.splitlines()
+    expected = f"  dist_tag: {profile.npm_dist_tag}"
+    for index, line in enumerate(lines):
+        if line.startswith("  dist_tag:"):
+            lines[index] = expected
+            return "\n".join(lines) + ("\n" if text.endswith("\n") else "")
+    for index, line in enumerate(lines):
+        if line == f"  release_tag: {profile.release_tag}":
+            lines.insert(index + 1, expected)
+            return "\n".join(lines) + ("\n" if text.endswith("\n") else "")
+    return text
+
+
+def _is_finalized_adapter_artifact_report(text: str, profile: ReleaseProfile) -> bool:
+    return (
+        f"  version: {profile.release_tag}" in text
+        and "  source_commit: pending" not in text
+        and "  date: pending" not in text
+        and text.count("    result: pass") >= len(profile.targets)
+        and "  result: pass" in text
+    )
+
+
+def _is_finalized_standing_release_record(text: str, profile: ReleaseProfile) -> bool:
+    errors = _validate_pending_standing_release_record(
+        text,
+        profile.path.parents[1] / f"{profile.release_tag}.md",
+        profile.path.parents[3],
+        profile,
+        require_preflight_pass=True,
+    )
+    for item in (
+        "clean worktree except intentional release artifacts",
+        "release notes or not-required rationale",
+        "generated output current",
+        "tests / selected CI / broad smoke",
+        "package build or pack proof",
+        "package preview",
+        "local packed-install smoke",
+        "no unresolved release blockers",
+        "publish path selected",
+        "evidence path prepared",
+    ):
+        if f"| {item} | pass |" not in text:
+            errors.append(f"finalized routine npm release gate item '{item}' must pass")
+    return not errors
 
 
 def _target_install_root(target: str) -> str:
@@ -2209,6 +2638,14 @@ def _validate_profile_data(path: Path, data: dict[str, Any]) -> ReleaseProfile:
 
     release_tag = _require_string(errors, data, "release_tag")
     package_version = _require_string(errors, data, "package_version")
+    npm_dist_tag_value = data.get("npm_dist_tag")
+    if npm_dist_tag_value is None and release_tag in LEGACY_IMPLICIT_LATEST_PROFILES:
+        npm_dist_tag = "latest"
+    elif npm_dist_tag_value is None:
+        errors.append("release profile missing required field: npm_dist_tag")
+        npm_dist_tag = ""
+    else:
+        npm_dist_tag = _require_string(errors, data, "npm_dist_tag")
     schema_version = _require_string(errors, data, "schema_version")
     release_kind = _require_string(errors, data, "release_kind")
     npm_package = _require_string(errors, data, "npm_package")
@@ -2266,6 +2703,7 @@ def _validate_profile_data(path: Path, data: dict[str, Any]) -> ReleaseProfile:
         release_kind=release_kind,
         release_tag=release_tag,
         package_version=package_version,
+        npm_dist_tag=npm_dist_tag,
         npm_package=npm_package,
         targets=tuple(targets),
         adapter_artifacts=dict(adapter_artifacts),
@@ -2400,6 +2838,10 @@ def _closed_vocabulary_errors(data: dict[str, Any]) -> list[str]:
     release_kind = data.get("release_kind")
     if isinstance(release_kind, str) and release_kind not in RELEASE_KINDS:
         errors.append(f"unknown release_kind: {release_kind}")
+
+    npm_dist_tag = data.get("npm_dist_tag")
+    if isinstance(npm_dist_tag, str) and npm_dist_tag not in NPM_DIST_TAGS:
+        errors.append(f"unknown npm_dist_tag: {npm_dist_tag}")
 
     targets = data.get("targets")
     if isinstance(targets, list):

@@ -1,0 +1,84 @@
+schema_version: 1
+review_id: code-review-m2-r3
+review_stage: code-review
+review_target: range:0c985a64..028dd6e9
+base_revision: 0c985a64e3c43b548a45956dcfbc126670c3905b
+head_revision: 028dd6e9ea20c2c9204de8caa9d89df17fd10936
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: root-m2-r2-resolution
+reviewer_context_id: m2-r3-fresh-independent-reviewer
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: medium
+risk_tier_triggers:
+  - git-environment-authority
+  - checked-revision-activation
+  - prior-finding-reconciliation
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - specs/usability-first-boundary-release.md
+  - specs/usability-first-boundary-release.test.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+  - docs/plans/2026-08-06-usability-first-boundary-release.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/usability-first-boundary-release.md
+    revision: 028dd6e9
+    sha256: 1507c4f1a38fb01da5bace5a7c4e5f83fdd9468ed3355775444bb624c7ee6160
+  - path: specs/usability-first-boundary-release.test.md
+    revision: 028dd6e9
+    sha256: 2bbaf2f118928af45e46442e84753f23f92d00ceca99c40b1bd851ee9a6c19db
+  - path: docs/architecture/system/architecture.md
+    revision: 028dd6e9
+    sha256: 0495a510b37cdc2535390cebb25e0f5dbbfb093ae031853f48425e22ea53c1c2
+  - path: docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+    revision: 028dd6e9
+    sha256: dcdecc94c62a4d55e108711b466976c2309cb6bf4cfc866110461e9c44d82cdf
+  - path: docs/plans/2026-08-06-usability-first-boundary-release.md
+    revision: 028dd6e9
+    sha256: 20dfdffbe57586be33ed111dad8b10e44d431e29a6af49caf4c1be097ddc90cd
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: 028dd6e9
+    sha256: 00e496d823a1092a25cff9f665abe16cd33f308aa634f6e767be9abf9314be0d
+  - path: range:0c985a64..028dd6e9.diff
+    revision: 028dd6e9
+    sha256: d5702250a2442ababea9b1fb45a2ba16a5f2c04be5ce1e7724b1b0afaf744cb7
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: false
+  satisfied: false
+requirement_fidelity:
+  applicability: applicable
+  reason: R3 reconciles the final derivation-authority finding and cumulative M2 contract.
+  outcome: clean-with-notes
+risk_map:
+  affected_behavior: restricted Git derivation authority and cumulative checked-revision activation
+  highest_impact_failure_modes: root redirection, object substitution, trace writes, privacy regression, rollback substitution, malformed state, or selector loss
+  changed_boundaries: BND-STATE-001, BND-COMPAT-001, BND-RECOVERY-001, BND-ENV-001, INT-002, and INT-003
+  evidence_expected: ambient-authority adversarial proof, all prior-finding reproductions, 62 boundary tests, selector gates, and cumulative diff inspection
+  direct_inspection_areas: restricted Git environment, activation diagnostics, rollback pin, state vocabulary, deleted custom paths, selectors
+  intentionally_out_of_scope: M3, M4, final holistic review, and public release actions
+  applicable_risk_classes:
+    - requirement-fidelity
+    - checked-revision-activation
+    - git-object-identity
+    - compatibility
+    - privacy
+  non_applicable_risk_classes:
+    - public-release-mutation
+  falsifiable_questions:
+    - Can any ambient Git variable redirect or write?
+    - Do all R1 and R2 reproductions remain resolved?
+    - Did cleanup remove an ordinary selector or release path?

@@ -1,0 +1,51 @@
+schema_version: 1
+review_id: test-spec-review-r1
+review_stage: test-spec-review
+review_target: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+base_revision: f9c217aa
+head_revision: eb488f99233c191f8b77b33cf75f90bd91eaa79a
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L1
+author_context_id: root-boundary-activation-test-spec
+reviewer_context_id: independent-test-spec-review-r1
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+  - docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+    revision: eb488f99233c191f8b77b33cf75f90bd91eaa79a
+    sha256: 0ded29ed9eee52f2cccb12f35e7ee40e13367959bd7f23fa9221223b83b9455b
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: 150cbb48
+    sha256: 48a42eb23156330bc7a60a869c93ec512e3c0b8e79b29587ccfbd94eebab8db9
+  - path: docs/architecture/system/architecture.md
+    revision: ede4a843
+    sha256: 3fe8ff6f9bbbc76b7cd876f0073c1fab46e132811961029a904d3aefb9f20f0a
+  - path: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+    revision: ede4a843
+    sha256: 911b77ee4384c8576269a04233e7581865075bda3a78277f67371b3afca2d2e5
+  - path: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+    revision: 12e8cfec
+    sha256: e940e7d27ad26287f33bb65a2616e096d6b5ed805b6aa95346ea4a4c5370af91
+  - path: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/spec-review-r2.md
+    revision: 72b772d8
+    sha256: 253bbfb8a70083d1db12511b8c22633dd0c2fe2d73781f20c9a69ad93cc49d5b
+  - path: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/plan-review-r3.md
+    revision: f9c217aa
+    sha256: 9ca6678d4e4d723ee2e3410e79f7ebf9fe1ce92c88fd065b5d24841fc85173bd
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - all BFA-R001 through BFA-R035 requirements and AC-BFA-001 through AC-BFA-015
+  - direct proof for eight boundaries and seven interactions
+  - M1 through M4 proof timing and command ownership
+  - automation versus MP1 and MP2 manual release boundaries
+  - fixture isolation, failure cleanup, compatibility, privacy, and implementation readiness

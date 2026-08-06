@@ -34,6 +34,8 @@ def main() -> int:
         "paths": sorted(args.path),
     }
     activation_data = json.loads((root / ACTIVATION_RECORD).read_text(encoding="utf-8"))
+    output["snapshot"] = activation_data["state"]
+    output["release_intent"] = activation_data["activating_release"]
     if activation_data.get("state") == "active":
         selection, selection_issues = rollback_package_selection(root)
         if selection_issues or selection is None:

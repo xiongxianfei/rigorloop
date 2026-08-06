@@ -1,0 +1,51 @@
+schema_version: 1
+review_id: spec-review-r2
+review_stage: spec-review
+review_target: specs/boundary-first-v1-v0-3-7-activation-release.md
+base_revision: 5cbe2f58c5245a3b503c53b9bdfd91c82228aa5e
+head_revision: 150cbb48f1ddb2f71c0d157f8d3e4064f8d8de17
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L1
+author_context_id: root-boundary-activation-spec-r2
+reviewer_context_id: independent-spec-review-r2
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - activation-state-transition
+  - immutable-release-tag
+  - atomic-remote-ref-publication
+  - package-publication
+governing_artifacts:
+  - docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
+  - specs/boundary-first-proof-model.md
+  - specs/progressive-boundary-first-skill-guidance.md
+  - specs/release-process-contract.md
+  - specs/release-transaction-automation.md
+  - docs/architecture/system/architecture.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: 150cbb48f1ddb2f71c0d157f8d3e4064f8d8de17
+    sha256: 48a42eb23156330bc7a60a869c93ec512e3c0b8e79b29587ccfbd94eebab8db9
+  - path: docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md
+    revision: 04008d82384f6aa9aa8fd65a2b88f68ca69122e9
+    sha256: 92513346e98fabcf333ae0a8e21a2dfc07615c499f9d807c580d6eb3a67a0dd0
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md.diff
+    revision: 150cbb48f1ddb2f71c0d157f8d3e4064f8d8de17
+    sha256: 3f294d0525a21a1b66bf1203a8f9006dab484441b70380521dbf73d405a17371
+initial_packet_sha256: 51aec0785e83b2c744ad142f5595a0f22de454ec8adc1e71e88fee400775b889
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - publication-base P versus grandfathering-baseline B authority
+  - transition T and reviewed-head H identity
+  - stable minor v0.4.0 classification
+  - tagged-tree self-containment and split strict validation
+  - changed-path rejection after T
+  - invalid unpublished candidate replacement without force-push
+  - atomic two-ref compare-and-swap publication
+  - formal boundary and interaction completeness

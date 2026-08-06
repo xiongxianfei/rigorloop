@@ -1,0 +1,56 @@
+schema_version: 1
+review_id: code-review-m2-r5
+review_stage: code-review
+review_target: range:f445d5ea..11f5edd9
+base_revision: f445d5ea0af1b77f3eceb5d4b155e10130294ccd
+head_revision: 11f5edd91a23b7c9ea7e8f5be3828ecb5015d3e9
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m2-review-resolution-r4
+reviewer_context_id: m2-r5-primary-and-second-reviewers
+context_separation_mechanism: existing-separate-agents-blind-first
+risk_tier: elevated
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - specs/boundary-first-v1-v0-3-7-activation-release.test.md
+  - docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: 11f5edd9
+    sha256: fa622a617f8af6f36a9b877338b97d4a4df25a493f385764c66feaad751b7918
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+    revision: 11f5edd9
+    sha256: 9d0d7c839c9c44d4c138fe22961b861a06c6520dc4d3dd9a1a648f0de8114186
+  - path: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+    revision: 11f5edd9
+    sha256: eaea12dafb3ee49d6ab284603566c8a9f190a92fbdcd4fe665ef70388ef07bde
+  - path: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+    revision: 11f5edd9
+    sha256: 614c19fb59aae74205845024fa23993fed38e0b5dce2c65991a24909858b542a
+  - path: range:f445d5ea..11f5edd9.diff
+    revision: 11f5edd9
+    sha256: 238a92cc84504c8999630482bdbfb6c223313c902c5f30a8095368966c59067b
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+second_review:
+  required: true
+  satisfied: true
+  reviewer_context_id: m2-r5-second-reviewer
+requirement_fidelity:
+  applicability: applicable
+  reason: R5 must close the invocation-authenticated local guard-result finding.
+  outcome: changes-requested
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+review_focus:
+  - Reconcile BFA-M2-R1-002, BFA-M2-R2-001, BFA-M2-R3-001, and BFA-M2-R4-001.
+  - Challenge nonce-bound private result-file provenance, exact/prefixed provider spoof rejection, real local classification, result parsing bounds, privacy, and evidence accuracy.

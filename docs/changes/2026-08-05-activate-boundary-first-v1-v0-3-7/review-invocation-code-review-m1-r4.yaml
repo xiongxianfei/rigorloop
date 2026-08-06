@@ -1,0 +1,73 @@
+schema_version: 1
+review_id: code-review-m1-r4
+review_stage: code-review
+review_target: range:e418519c..3a19bb73
+base_revision: e418519cf5037adc87b2fa91e208a9778944e1ce
+head_revision: 3a19bb7390f52ed815706ac356515d7f409006a5
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m1-review-resolution-r3
+reviewer_context_id: m1-r4-primary-and-second-reviewers
+context_separation_mechanism: existing-separate-agents-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - validator-behavior
+  - remote-authority-read
+  - release-boundary
+  - lifecycle-gate
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - specs/boundary-first-v1-v0-3-7-activation-release.test.md
+  - docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: 3a19bb7390f52ed815706ac356515d7f409006a5
+    sha256: fa622a617f8af6f36a9b877338b97d4a4df25a493f385764c66feaad751b7918
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+    revision: 3a19bb7390f52ed815706ac356515d7f409006a5
+    sha256: 9d0d7c839c9c44d4c138fe22961b861a06c6520dc4d3dd9a1a648f0de8114186
+  - path: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+    revision: 3a19bb7390f52ed815706ac356515d7f409006a5
+    sha256: eaea12dafb3ee49d6ab284603566c8a9f190a92fbdcd4fe665ef70388ef07bde
+  - path: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+    revision: 3a19bb7390f52ed815706ac356515d7f409006a5
+    sha256: 614c19fb59aae74205845024fa23993fed38e0b5dce2c65991a24909858b542a
+  - path: range:e418519c..3a19bb73.diff
+    revision: 3a19bb7390f52ed815706ac356515d7f409006a5
+    sha256: cc3bb03e0b2a649bcce96808ad2bc182ae76ee396d8e0ba2d88f31f4536f6c29
+initial_packet_sha256: bed633f209f14b320caf5bbba7cf72b2e515472b35fe4ad025fcdc3582ea616c
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+second_review:
+  required: true
+  satisfied: true
+  reviewer_context_id: m1-r4-second-reviewer
+requirement_fidelity:
+  applicability: applicable
+  reason: R4 must prove the amended R/C/H identity model and close all remaining M1 review findings.
+  outcome: changes-requested
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+risk_map:
+  affected_behavior: candidate evidence identity, invocation authority, privacy serialization, and sibling composition
+  highest_impact_failure_modes: stale or self-naming evidence, shallow manifest acceptance, short private-value disclosure, and omitted selected sibling failure
+  changed_boundaries: BND-AUTH-001, BND-STATE-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001, and BND-ENV-001
+  evidence_expected: exact R-to-C graph, closed invocation shape, short privacy probes, and every selected sibling failure
+  direct_inspection_areas: candidate evidence helper, invocation validation, privacy bounds, and selected execution
+  intentionally_out_of_scope: publication mutation, release payload, real transition, public release, and final verify
+review_focus:
+  - Reconcile BFA-M1-R3-001 and BFA-M1-CR1-003, BFA-M1-CR1-005, BFA-M1-CR1-007, and BFA-M1-CR1-008.
+  - Challenge exact non-circular R-to-C provenance and live-H containment.
+  - Challenge closed invocation validation against actual valid repository manifests.
+  - Challenge short private values, unavailable identity providers, and every selected sibling failure.

@@ -311,6 +311,9 @@ class RepositoryPreflightContext:
 
 
 EVIDENCE_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
+RELEASE_PROFILE_FILENAME_PATTERN = re.compile(
+    r"^(v(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*))\.yaml$"
+)
 BROAD_EVIDENCE_PATTERNS = frozenset({"*.md", "*.txt", "*.yaml", "*.yml"})
 
 CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
@@ -1133,7 +1136,11 @@ def _preflight_results(
         for path in changed_paths
         if _is_authoritative_artifact(path)
         and (repo_root / path).exists()
-        and path not in context.tracked_paths
+        and not _authoritative_path_is_tracked(
+            repo_root,
+            path,
+            context.tracked_paths,
+        )
     ]
     if untracked_authoritative:
         path_list = ", ".join(untracked_authoritative)
@@ -1151,6 +1158,24 @@ def _preflight_results(
         results.append({"check": "tracked_authoritative_artifacts", "result": "pass"})
 
     return results
+
+
+def _authoritative_path_is_tracked(
+    repo_root: Path,
+    relative: str,
+    tracked_paths: frozenset[str],
+) -> bool:
+    candidate = repo_root / relative
+    if candidate.is_symlink():
+        return False
+    if candidate.is_dir():
+        descendants = [
+            path.relative_to(repo_root).as_posix()
+            for path in candidate.rglob("*")
+            if path.is_file() or path.is_symlink()
+        ]
+        return bool(descendants) and all(path in tracked_paths for path in descendants)
+    return candidate.is_file() and relative in tracked_paths
 
 
 def _git_local_changed_paths(repo_root: Path) -> list[str]:
@@ -1317,7 +1342,6 @@ def _apply_path_selection(
             "Changed boundary-first validator or fixture requires boundary validation regression fixtures.",
             path=path,
         )
-
     if _is_tier_b_documentation_prose_path(path):
         _add_check(
             selected,
@@ -1607,6 +1631,22 @@ def _apply_path_selection(
             selected,
             "guide_system.validate",
             "Changed learn session requires non-authority guide validation.",
+        )
+        return
+
+    if category == "research-artifact":
+        _add_check(
+            selected,
+            "documentation_prose.audit",
+            "Changed research artifact requires documentation prose audit validation.",
+            path=path,
+        )
+        _add_check(
+            selected,
+            "markdown_readability.validate",
+            "Changed research artifact requires Markdown readability validation.",
+            path=path,
+            changed_sections=changed_sections_by_path.get(path, ()),
         )
         return
 
@@ -2322,6 +2362,8 @@ def _path_category(path: str) -> str | None:
         return "token-cost"
     if path.startswith("docs/examples/"):
         return "retired-examples"
+    if path.startswith("docs/research/") and path.endswith(".md"):
+        return "research-artifact"
     if path == "docs/project-map.md" or (
         path.startswith("docs/project-map/") and path.endswith(".md")
     ):
@@ -2464,7 +2506,6 @@ def _is_boundary_first_validation_surface(path: str) -> bool:
         "scripts/test-boundary-first-validation.py",
     }
 
-
 def _matching_evidence_classes(
     filename: str,
     *,
@@ -2602,6 +2643,11 @@ def _release_version_from_path(path: str) -> str | None:
     parts = path.split("/")
     if _is_flat_release_evidence_path(path):
         return parts[2][:-3]
+    if len(parts) >= 3 and parts[:3] == ["docs", "releases", "profiles"]:
+        if len(parts) != 4:
+            return None
+        match = RELEASE_PROFILE_FILENAME_PATTERN.fullmatch(parts[3])
+        return match.group(1) if match else None
     if len(parts) >= 4 and parts[0] == "docs" and parts[1] == "releases" and parts[2] and parts[3]:
         return parts[2]
     return None

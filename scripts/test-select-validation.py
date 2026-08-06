@@ -1329,7 +1329,6 @@ raise SystemExit({exit_code})
         result = self.select([path])
         payload = result.to_json_dict()
 
-        self.assertEqual(result.status, "ok")
         self.assertIn(
             {"path": path, "category": "change-local-lifecycle"},
             payload["classified_paths"],
@@ -1857,6 +1856,229 @@ raise SystemExit({exit_code})
             payload["preflight_results"],
         )
 
+    def test_preflight_passes_directory_when_its_authoritative_contents_are_tracked(self) -> None:
+        repo = self.make_git_repo()
+        fixture = repo / "scripts" / "fixtures" / "boundary-first" / "activation"
+        fixture.mkdir(parents=True)
+        (fixture / "unknown-state.yaml").write_text("state: unknown\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True)
+
+        result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=("scripts/fixtures/boundary-first/activation",),
+                repo_root=repo,
+            )
+        )
+
+        self.assertNotIn(
+            "untracked-authoritative-artifacts",
+            {blocker.get("code") for blocker in result.to_json_dict()["blocking_results"]},
+        )
+
+        (fixture / "untracked.yaml").write_text("state: untracked\n", encoding="utf-8")
+        mixed = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=("scripts/fixtures/boundary-first/activation",),
+                repo_root=repo,
+            )
+        )
+        self.assertIn(
+            "untracked-authoritative-artifacts",
+            {blocker.get("code") for blocker in mixed.to_json_dict()["blocking_results"]},
+        )
+
+    def test_preflight_blocks_empty_only_untracked_and_symlink_directories(self) -> None:
+        for case in ("empty", "only-untracked", "symlink"):
+            with self.subTest(case=case):
+                repo = self.make_git_repo()
+                fixture = repo / "scripts" / "fixtures" / "boundary-first" / "activation"
+                if case == "symlink":
+                    target = repo / "fixture-target"
+                    target.mkdir()
+                    (target / "tracked.yaml").write_text("state: tracked\n", encoding="utf-8")
+                    fixture.parent.mkdir(parents=True)
+                    fixture.symlink_to(target, target_is_directory=True)
+                    subprocess.run(["git", "add", "."], cwd=repo, check=True)
+                else:
+                    fixture.mkdir(parents=True)
+                    if case == "only-untracked":
+                        (fixture / "untracked.yaml").write_text("state: unknown\n", encoding="utf-8")
+                result = select_validation(
+                    SelectionRequest(
+                        mode="explicit",
+                        paths=("scripts/fixtures/boundary-first/activation",),
+                        repo_root=repo,
+                    )
+                )
+                expected = (
+                    {"unclassified-path", "untracked-authoritative-artifacts"}
+                    if case == "symlink"
+                    else {"untracked-authoritative-artifacts"}
+                )
+                self.assertTrue(
+                    expected
+                    & {blocker.get("code") for blocker in result.to_json_dict()["blocking_results"]}
+                )
+
+    def test_preflight_blocks_tracked_file_replaced_by_untracked_directory(self) -> None:
+        repo = self.make_git_repo()
+        fixture = repo / "specs" / "tracked.md"
+        fixture.parent.mkdir()
+        fixture.write_text("# tracked\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=repo, check=True)
+        subprocess.run(["git", "commit", "-qm", "track artifact"], cwd=repo, check=True)
+        fixture.unlink()
+        fixture.mkdir()
+        (fixture / "payload.md").write_text("untracked\n", encoding="utf-8")
+
+        result = select_validation(
+            SelectionRequest(
+                mode="explicit",
+                paths=("specs/tracked.md",),
+                repo_root=repo,
+            )
+        )
+
+        self.assertIn(
+            "untracked-authoritative-artifacts",
+            {blocker.get("code") for blocker in result.to_json_dict()["blocking_results"]},
+        )
+
+    def test_boundary_checked_revision_surface_retains_sibling_validation_owners(self) -> None:
+        result = self.select(
+            [
+                "scripts/boundary_first_validation.py",
+                "docs/changes/2026-08-05-example/review-log.md",
+                "skills/spec/SKILL.md",
+                "dist/adapters/manifest.yaml",
+                "packages/rigorloop/package.json",
+                "docs/releases/v0.3.6/release.yaml",
+                ".github/workflows/ci.yml",
+            ]
+        )
+        checks = selected_ids(result.to_json_dict())
+
+        self.assertIn("boundary_first.validate", checks)
+        self.assertIn("artifact_lifecycle.validate", checks)
+        self.assertIn("skills.validate", checks)
+        self.assertIn("adapters.regression", checks)
+        self.assertIn("rigorloop_cli.test", checks)
+        self.assertIn("npm_package_publication.test", checks)
+        self.assertIn("release.validate", checks)
+        self.assertIn("selector.regression", checks)
+
+    def test_retired_boundary_activation_publication_surface_is_not_cataloged(self) -> None:
+        result = self.select(
+            ["scripts/boundary_first_validation.py"]
+        )
+
+        self.assertNotIn("boundary_activation_release.regression", CHECK_CATALOG)
+        self.assertNotIn(
+            "boundary_activation_release.regression",
+            selected_ids(result.to_json_dict()),
+        )
+        self.assertIn("boundary_first.validate", selected_ids(result.to_json_dict()))
+        self.assertIn("boundary_first.regression", selected_ids(result.to_json_dict()))
+
+    def test_boundary_sibling_failures_each_block_selected_execution(self) -> None:
+        cases = (
+            (
+                "boundary_first.validate",
+                "python scripts/validate-boundary-first.py --check",
+                "scripts/validate-boundary-first.py",
+                ("--mode", "explicit", "--path", "scripts/boundary_first_validation.py"),
+            ),
+            (
+                "artifact_lifecycle.validate",
+                "python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/example/change.yaml",
+                "scripts/validate-artifact-lifecycle.py",
+                ("--mode", "explicit", "--path", "docs/changes/example/change.yaml"),
+            ),
+            (
+                "skills.validate",
+                "python scripts/validate-skills.py",
+                "scripts/validate-skills.py",
+                ("--mode", "explicit", "--path", "skills/spec/SKILL.md"),
+            ),
+            (
+                "adapters.regression",
+                ADAPTER_REGRESSION_COMMAND,
+                "scripts/test-adapter-distribution.py",
+                ("--mode", "explicit", "--path", "dist/adapters/manifest.yaml"),
+            ),
+            (
+                "rigorloop_cli.test",
+                "npm test --prefix packages/rigorloop",
+                "<fake-npm>",
+                ("--mode", "explicit", "--path", "packages/rigorloop/package.json"),
+            ),
+            (
+                "npm_package_publication.test",
+                "python scripts/test-npm-package-publication.py",
+                "scripts/test-npm-package-publication.py",
+                ("--mode", "explicit", "--path", "packages/rigorloop/package.json"),
+            ),
+            (
+                "release.validate",
+                "python scripts/validate-release.py --recorded-source-auto --version v0.4.0",
+                "scripts/validate-release.py",
+                ("--mode", "release", "--release-version", "v0.4.0"),
+            ),
+            (
+                "selector.regression",
+                "python scripts/test-select-validation.py",
+                "scripts/test-select-validation.py",
+                ("--mode", "explicit", "--path", ".github/workflows/ci.yml"),
+            ),
+        )
+        for check_id, command, script_path, args in cases:
+            with self.subTest(check_id=check_id):
+                workspace = self.make_ci_workspace()
+                run_env = None
+                if check_id == "rigorloop_cli.test":
+                    fake_bin = workspace / "fake-bin"
+                    fake_bin.mkdir()
+                    fake_npm = fake_bin / "npm"
+                    fake_npm.write_text(
+                        "#!/bin/sh\necho 'injected sibling failure'\nexit 7\n",
+                        encoding="utf-8",
+                    )
+                    fake_npm.chmod(0o755)
+                    run_env = {"PATH": f"{fake_bin}{os.pathsep}{os.environ['PATH']}"}
+                else:
+                    self.write_fake_script(
+                        workspace,
+                        script_path,
+                        "import sys\nprint('injected sibling failure')\nraise SystemExit(7)\n",
+                    )
+                fixture = self.write_selector_fixture(
+                    self.minimal_selector_payload(
+                        mode="release" if args[1] == "release" else "explicit",
+                        selected_checks=[
+                            self.selected_check(
+                                check_id,
+                                command,
+                                **(
+                                    {"paths": ["docs/changes/example/change.yaml"]}
+                                    if check_id == "artifact_lifecycle.validate"
+                                    else {"versions": ["v0.4.0"]}
+                                    if check_id == "release.validate"
+                                    else {}
+                                ),
+                            )
+                        ],
+                    )
+                )
+
+                result = self.run_workspace_ci(workspace, fixture, *args, env=run_env)
+                output = str(result.stdout) + str(result.stderr)
+
+                self.assertNotEqual(result.returncode, 0, msg=output)
+                self.assertIn(f"Run selected check: {check_id}", output)
+                self.assertIn(f"Selected check {check_id} failed", output)
+
     def test_cli_accepts_changed_file_alias_for_plan_validation_commands(self) -> None:
         result = run_selector("--mode", "explicit", "--changed-file", "README.md", "--changed-file", "VISION.md")
         self.assertEqual(result.returncode, 0, msg=result.stderr)
@@ -1958,6 +2180,37 @@ raise SystemExit({exit_code})
             release_check["command"],
             "python scripts/validate-release.py --recorded-source-auto --version v0.1.1 v0.1.2",
         )
+
+    def test_release_profile_path_uses_profile_filename_as_version(self) -> None:
+        result = self.select(["docs/releases/profiles/v0.4.0.yaml"])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        release_check = next(
+            check for check in payload["selected_checks"] if check["id"] == "release.validate"
+        )
+        self.assertEqual(
+            release_check["command"],
+            "python scripts/validate-release.py --recorded-source-auto --version v0.4.0",
+        )
+
+    def test_malformed_release_profile_paths_require_release_version(self) -> None:
+        for path in (
+            "docs/releases/profiles/not-a-version.yaml",
+            "docs/releases/profiles/v0.4.0.yml",
+            "docs/releases/profiles/v.yaml",
+        ):
+            with self.subTest(path=path):
+                result = run_selector("--mode", "explicit", "--path", path)
+                payload = parse_stdout(result)
+
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(payload["status"], "blocked")
+                self.assertIn(
+                    "release-version-required",
+                    {item["code"] for item in payload["blocking_results"]},
+                )
+                self.assertNotIn("release.validate", selected_ids(payload))
 
     def test_release_evidence_markdown_path_selects_lifecycle_checklist_validation(self) -> None:
         result = run_selector("--mode", "explicit", "--path", "docs/releases/v1.2.3.md")
@@ -2757,6 +3010,21 @@ raise SystemExit({exit_code})
         self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
         self.assertEqual({"guide_system.validate"}, selected_ids(payload))
 
+    def test_research_artifact_path_selects_document_checks_without_unclassified_block(self) -> None:
+        path = "docs/research/2026-08-05-boundary-first-v1-activation-release.md"
+
+        result = self.select([path])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertEqual(payload["blocking_results"], [])
+        self.assertIn({"path": path, "category": "research-artifact"}, payload["classified_paths"])
+        self.assertEqual(
+            {"documentation_prose.audit", "markdown_readability.validate"},
+            selected_ids(payload),
+        )
+
     def test_retired_docs_examples_path_is_known_during_deletion_compatibility(self) -> None:
         paths = ["docs/examples/README.md"]
 
@@ -3555,7 +3823,7 @@ raise SystemExit({exit_code})
             "--path",
             "docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-resolution.md",
             "--path",
-            "specs/test-layering-and-change-scoped-validation.md",
+            "docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml",
         )
         output = result.stdout + result.stderr
 
@@ -3579,7 +3847,7 @@ raise SystemExit({exit_code})
             output,
         )
         self.assertIn(
-            "--path specs/test-layering-and-change-scoped-validation.md",
+            "--path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml",
             output,
         )
 

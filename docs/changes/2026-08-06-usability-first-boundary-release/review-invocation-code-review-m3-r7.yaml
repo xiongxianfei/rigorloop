@@ -1,0 +1,90 @@
+schema_version: 1
+review_id: code-review-m3-r7
+review_stage: code-review
+review_target: range:fe57f837a27751cf7493f514d5fd5c5f1e0e70e4..ca2630e4a0a4bc82c330b51f0480eb97e047ec3f
+base_revision: fe57f837a27751cf7493f514d5fd5c5f1e0e70e4
+head_revision: ca2630e4a0a4bc82c330b51f0480eb97e047ec3f
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: root-m3-r6-resolution
+reviewer_context_id: m3-r7-fresh-independent-reviewer
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: medium
+risk_tier_triggers:
+  - deferral-field-completeness
+  - exact-binding-and-sentinel-exclusivity
+  - three-state-row-matrix
+  - historical-release-compatibility
+  - prior-finding-reconciliation
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - specs/usability-first-boundary-release.md
+  - specs/usability-first-boundary-release.test.md
+  - specs/release-process-contract.md
+  - specs/release-process-contract.test.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+  - docs/plans/2026-08-06-usability-first-boundary-release.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/usability-first-boundary-release.md
+    revision: ca2630e4
+    sha256: 1507c4f1a38fb01da5bace5a7c4e5f83fdd9468ed3355775444bb624c7ee6160
+  - path: specs/usability-first-boundary-release.test.md
+    revision: ca2630e4
+    sha256: 2bbaf2f118928af45e46442e84753f23f92d00ceca99c40b1bd851ee9a6c19db
+  - path: docs/architecture/system/architecture.md
+    revision: ca2630e4
+    sha256: 0495a510b37cdc2535390cebb25e0f5dbbfb093ae031853f48425e22ea53c1c2
+  - path: docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+    revision: ca2630e4
+    sha256: dcdecc94c62a4d55e108711b466976c2309cb6bf4cfc866110461e9c44d82cdf
+  - path: docs/plans/2026-08-06-usability-first-boundary-release.md
+    revision: ca2630e4
+    sha256: 20dfdffbe57586be33ed111dad8b10e44d431e29a6af49caf4c1be097ddc90cd
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: ca2630e4
+    sha256: 7088c8501c72ba55cdaebf37b25db28a09218a63d251cfa868b80a7e218081db
+  - path: range:fe57f837a27751cf7493f514d5fd5c5f1e0e70e4..ca2630e4.diff
+    revision: ca2630e4
+    sha256: beb56f0fed3ca79f26d45ba6d796a2b7207a5b930fb846cf353321aafe271f6c
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: false
+  satisfied: false
+requirement_fidelity:
+  applicability: applicable
+  reason: M3 R7 reviews complete emergency-deferral semantics and the cumulative release-evidence contract.
+  outcome: clean-with-notes
+risk_map:
+  affected_behavior: substantive owner-approved emergency deferrals and cumulative routine release evidence
+  highest_impact_failure_modes: placeholder authority, unknown deferral status, ambiguous none sentinel, binding mismatch, state-result drift, or prior safeguard regression
+  changed_boundaries: BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001, INT-002, and INT-003
+  evidence_expected: every-field placeholder matrix, status vocabulary proof, binding/sentinel matrix, complete three-state row matrix, historical validation, focused suites, and preparation/preflight
+  direct_inspection_areas: deferral predicates, field/status validation, binding and sentinel rules, state row contract, historical records, trusted identity, manifest and smoke preservation
+  intentionally_out_of_scope: M4 active snapshot, live publication, final holistic review, verify, and PR readiness
+  applicable_risk_classes:
+    - requirement-fidelity
+    - pending-public-separation
+    - emergency-recovery
+    - compatibility
+    - generated-artifact-currency
+  non_applicable_risk_classes:
+    - live-publication
+    - active-snapshot-authoring
+  falsifiable_questions:
+    - Can any required deferral field use blank or placeholder authority?
+    - Can unknown status, missing/duplicate/unmatched binding, or contradictory none pass?
+    - Does the complete fifteen-row state matrix remain exact?
+    - Do historical non-public evidence and all prior M3 safeguards remain effective?

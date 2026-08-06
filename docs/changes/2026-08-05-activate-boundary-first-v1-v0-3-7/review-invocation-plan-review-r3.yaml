@@ -1,0 +1,44 @@
+schema_version: 1
+review_id: plan-review-r3
+review_stage: plan-review
+review_target: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+base_revision: 78d46d6d0284dc689e312712e5b7cd1f2d6c765b
+head_revision: 12e8cfec14788217a3cdcea4ad7f693cc3431454
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L1
+author_context_id: root-boundary-activation-plan-r3
+reviewer_context_id: independent-plan-review-r3
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+    revision: 12e8cfec14788217a3cdcea4ad7f693cc3431454
+    sha256: e940e7d27ad26287f33bb65a2616e096d6b5ed805b6aa95346ea4a4c5370af91
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: 150cbb48
+    sha256: 48a42eb23156330bc7a60a869c93ec512e3c0b8e79b29587ccfbd94eebab8db9
+  - path: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+    revision: ede4a843
+    sha256: 911b77ee4384c8576269a04233e7581865075bda3a78277f67371b3afca2d2e5
+  - path: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/plan-review-r2.md
+    revision: 04c7bf7c
+    sha256: 9461022ec473b2ed8ace54103f3cdaf20505ce0f26675250775db183e2163117
+  - path: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-resolution.md
+    revision: 04c7bf7c
+    sha256: ed3a8ccdd1de8526ea9718dd8987f411e704d06bc51f03763b3b45fca5db0850
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - closure of BFA-PLAN-R1-001, BFA-PLAN-R1-004, BFA-PLAN-R2-001, and BFA-PLAN-R2-002
+  - final M3 workflow closeout head as B and immediate B to T transition
+  - executable failure-safe checkpoint shell
+  - correct release validation CLI and no post-failure publication
+  - readiness for test-spec authoring

@@ -1,0 +1,88 @@
+schema_version: 1
+review_id: code-review-m3-r1
+review_stage: code-review
+review_target: range:c7b0babe..d672c40f
+base_revision: c7b0babe6e8c91655c2b98f4092197eef5fabc69
+head_revision: d672c40f571a515c4fd2b31fe48322f10b1f1c5c
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L1
+author_context_id: root-m3-implementation
+reviewer_context_id: m3-r1-fresh-independent-reviewer
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: medium
+risk_tier_triggers:
+  - routine-release-identity
+  - generated-artifact-reproducibility
+  - trusted-publication-authority
+  - rollback-and-recovery
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - specs/usability-first-boundary-release.md
+  - specs/usability-first-boundary-release.test.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+  - docs/plans/2026-08-06-usability-first-boundary-release.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/usability-first-boundary-release.md
+    revision: d672c40f
+    sha256: 1507c4f1a38fb01da5bace5a7c4e5f83fdd9468ed3355775444bb624c7ee6160
+  - path: specs/usability-first-boundary-release.test.md
+    revision: d672c40f
+    sha256: 2bbaf2f118928af45e46442e84753f23f92d00ceca99c40b1bd851ee9a6c19db
+  - path: docs/architecture/system/architecture.md
+    revision: d672c40f
+    sha256: 0495a510b37cdc2535390cebb25e0f5dbbfb093ae031853f48425e22ea53c1c2
+  - path: docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+    revision: d672c40f
+    sha256: dcdecc94c62a4d55e108711b466976c2309cb6bf4cfc866110461e9c44d82cdf
+  - path: docs/plans/2026-08-06-usability-first-boundary-release.md
+    revision: d672c40f
+    sha256: 20dfdffbe57586be33ed111dad8b10e44d431e29a6af49caf4c1be097ddc90cd
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: d672c40f
+    sha256: 160a6688fbcbfcff2a9e0783700a221f5bceda86b8af7c7b658354278a19ca3c
+  - path: range:c7b0babe..d672c40f.diff
+    revision: d672c40f
+    sha256: ee70ac432f499b64860c9c1386663b2546f90fdd601754e6e415e00cd2052525
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: false
+  satisfied: false
+requirement_fidelity:
+  applicability: applicable
+  reason: M3 implements a multi-surface spec-derived routine release and validator contract.
+  outcome: changes-requested
+risk_map:
+  affected_behavior: routine v0.4.0 identity, generated release evidence, package/archive selection, release validation, and pending/public separation
+  highest_impact_failure_modes: prepared-output drift, ambient npm tag redirection, unbound tag commit, incomplete standing evidence, mixed release identities, or false public claims
+  changed_boundaries: BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001, BND-STATE-001, INT-002, and INT-003
+  evidence_expected: deterministic final preparation, exact identity binding, reproducible archives, three-target packed smoke, pending-state proof, rollback proof, and both executable release gates
+  direct_inspection_areas: release profile and generated surfaces, adapter and package metadata, closed release sets, standing gate, trusted workflow, activation record, rollback record, and closeout tooling
+  intentionally_out_of_scope: M4 active snapshot, live tag or publication, final holistic review, explain-change, verify, and PR readiness
+  applicable_risk_classes:
+    - requirement-fidelity
+    - release-identity-and-authority
+    - generated-artifact-reproducibility
+    - package-supply-chain
+    - recovery-and-rollback
+    - privacy
+  non_applicable_risk_classes:
+    - live-publication
+    - active-snapshot-authoring
+  falsifiable_questions:
+    - Does the final reviewed tree pass preparation drift checks?
+    - Can ambient npm configuration change the required latest tag?
+    - Does the trusted gate independently bind the immutable tag commit?
+    - Is every architecture-required standing release surface present?

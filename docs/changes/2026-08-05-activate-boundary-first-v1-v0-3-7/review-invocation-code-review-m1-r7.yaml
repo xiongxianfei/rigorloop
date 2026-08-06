@@ -1,0 +1,56 @@
+schema_version: 1
+review_id: code-review-m1-r7
+review_stage: code-review
+review_target: range:5d465a20..bab0395f
+base_revision: 5d465a20d734ea674d5e7bf0470f254402b648f5
+head_revision: bab0395f8f7f9ed82852e05385c2be20f9eb4de6
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m1-review-resolution-r6
+reviewer_context_id: m1-r7-primary-and-second-reviewers
+context_separation_mechanism: existing-separate-agents-blind-first
+risk_tier: elevated
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - specs/boundary-first-v1-v0-3-7-activation-release.test.md
+  - docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: bab0395f
+    sha256: fa622a617f8af6f36a9b877338b97d4a4df25a493f385764c66feaad751b7918
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+    revision: bab0395f
+    sha256: 9d0d7c839c9c44d4c138fe22961b861a06c6520dc4d3dd9a1a648f0de8114186
+  - path: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+    revision: bab0395f
+    sha256: eaea12dafb3ee49d6ab284603566c8a9f190a92fbdcd4fe665ef70388ef07bde
+  - path: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+    revision: bab0395f
+    sha256: 614c19fb59aae74205845024fa23993fed38e0b5dce2c65991a24909858b542a
+  - path: range:5d465a20..bab0395f.diff
+    revision: bab0395f
+    sha256: 2466ad73f00f758d81e72310b7080a9d15c201c0d093be713a1ae08a0635cd60
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+second_review:
+  required: true
+  satisfied: true
+  reviewer_context_id: m1-r7-second-reviewer
+requirement_fidelity:
+  applicability: applicable
+  reason: R7 must close duplicate-key lifecycle receipt ambiguity.
+  outcome: changes-requested
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+review_focus:
+  - Reconcile BFA-M1-R6-001 and remaining closed-receipt findings.
+  - Challenge duplicate top-level keys, inventory sections, packet keys, extra inventory content, numeric abbreviations, and current accepted receipts.

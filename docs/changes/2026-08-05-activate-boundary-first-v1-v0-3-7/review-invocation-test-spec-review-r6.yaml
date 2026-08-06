@@ -1,0 +1,39 @@
+schema_version: 1
+review_id: test-spec-review-r6
+review_stage: test-spec-review
+review_target: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+base_revision: 69e2cc8346b24af85d978f937c0a1f89c928783e
+head_revision: 0ac4ffec7c3e2e46fec400c8e61e19424868e172
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L1
+author_context_id: root-boundary-activation-test-spec-r6
+reviewer_context_id: independent-test-spec-review-r6
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - proof-chain-ownership
+  - privacy-serializer-boundary
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+    revision: 0ac4ffec7c3e2e46fec400c8e61e19424868e172
+    sha256: a5b81bb8f20e3f854011c39d79d023e0ad9043a60a277c58ee6715cb050b5803
+  - path: docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/test-spec-review-r5.md
+    revision: 940d1e31444811640110095d065e4aeaa5b54ba5
+    sha256: 531db7feb5dc1ba5a41d321a63d3a99c97fc6e033354a71936c43d1a84498937
+  - path: test-spec-r6.diff
+    revision: 0ac4ffec7c3e2e46fec400c8e61e19424868e172
+    sha256: ab168ac36846cc36c2aac8079c7a5ca1840918313a0446024d0713daf88ca343
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - BFA-TSR5-001 producer-chain closure
+  - BFA-TSR5-002 readiness and publication privacy proof
+  - no proof overclaim or milestone mismatch
+  - implementation handoff readiness

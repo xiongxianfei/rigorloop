@@ -1,0 +1,91 @@
+schema_version: 1
+review_id: code-review-m1-r1
+review_stage: code-review
+review_target: range:d215c045..f6557066
+base_revision: d215c045c8c2876b1c8095d58d967f3cc41741ef
+head_revision: f65570663a6b77352c3e2418653757046476825c
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m1-implementation
+reviewer_context_id: m1-r1-primary-and-second-independent
+context_separation_mechanism: two-separate-agents-blind-first
+risk_tier: medium
+risk_tier_triggers:
+  - published-skill-semantics
+  - ten-consumer-composition
+  - stage-ownership
+  - semantic-proof-fidelity
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - specs/usability-first-boundary-release.md
+  - specs/usability-first-boundary-release.test.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+  - docs/plans/2026-08-06-usability-first-boundary-release.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/usability-first-boundary-release.md
+    revision: f6557066
+    sha256: 1507c4f1a38fb01da5bace5a7c4e5f83fdd9468ed3355775444bb624c7ee6160
+  - path: specs/usability-first-boundary-release.test.md
+    revision: f6557066
+    sha256: 2bbaf2f118928af45e46442e84753f23f92d00ceca99c40b1bd851ee9a6c19db
+  - path: docs/architecture/system/architecture.md
+    revision: f6557066
+    sha256: 0495a510b37cdc2535390cebb25e0f5dbbfb093ae031853f48425e22ea53c1c2
+  - path: docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+    revision: f6557066
+    sha256: dcdecc94c62a4d55e108711b466976c2309cb6bf4cfc866110461e9c44d82cdf
+  - path: docs/plans/2026-08-06-usability-first-boundary-release.md
+    revision: f6557066
+    sha256: 20dfdffbe57586be33ed111dad8b10e44d431e29a6af49caf4c1be097ddc90cd
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: f6557066
+    sha256: 6cee88cd96627ee65d2f9b4e9b7dee158ca4fa743cff3530d0501cec79b7968d
+  - path: range:d215c045..f6557066.diff
+    revision: f6557066
+    sha256: 7e67ea3e42e358adf140bfb9ea761fcf56a8947dccbe312844b2b1c4ede03872
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: true
+  satisfied: true
+requirement_fidelity:
+  applicability: applicable
+  reason: M1 implements mandatory automatic and concise boundary behavior, stage ownership, and semantic proof across ten published skills.
+  outcome: changes-requested
+risk_map:
+  affected_behavior: automatic concise boundary selection semantics, stage-owned artifact behavior, semantic journey proof, and ten-skill generated-resource coherence
+  highest_impact_failure_modes: self-fulfilling fixture proves only its own algorithm; tests bypass shipped skill text; a governed skill omits automatic behavior; deeper triggers expand unrelated scope; ordinary work becomes exhaustive; informal work creates formal artifacts; generated consumers diverge
+  changed_boundaries: BND-INPUT-001, BND-COMPOSE-001, and INT-001
+  evidence_expected: direct semantic proof for ordinary, no-boundary, contract, risk, and explicit-depth cases; all ten canonical consumers; stage-ownership checks; mapped-resource and generated-output parity; negative closed-vocabulary fixtures
+  direct_inspection_areas: fixture authority, semantic selection helper, assertions against shipped skill content, ten-skill inventory, compact shared scan, owner-scoped resources, and generated projection checks
+  intentionally_out_of_scope: M2 activation and custom-path retirement, M3 release payload, M4 active snapshot, public release actions, and final verification
+  applicable_risk_classes:
+    - requirement-fidelity
+    - semantic-proof-fidelity
+    - composition-bypass
+    - stage-ownership
+    - compatibility
+    - generated-parity
+  non_applicable_risk_classes:
+    - checked-revision-activation
+    - public-release-mutation
+    - registry-availability
+  falsifiable_questions:
+    - Do tests exercise the actual ten governed skill instructions rather than only a fixture-owned selector?
+    - Can expected fixture output be changed together with candidate flags while tests still pass?
+    - Do ordinary and no-boundary cases avoid invented output while all three deeper triggers expand only one owned material topic?
+    - Do formal and informal journeys preserve stage-owned artifact behavior?
+    - Do canonical, mapped, and generated consumers remain coherent across every governed skill?

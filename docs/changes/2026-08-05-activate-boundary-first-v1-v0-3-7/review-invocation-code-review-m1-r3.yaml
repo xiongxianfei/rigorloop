@@ -1,0 +1,73 @@
+schema_version: 1
+review_id: code-review-m1-r3
+review_stage: code-review
+review_target: range:3852a010..e418519c
+base_revision: 3852a010cad0037d805b17f8696f3b156d8ae8bb
+head_revision: e418519cf5037adc87b2fa91e208a9778944e1ce
+native_review_status: blocked
+review_gate_outcome: blocked
+independence_level: L2
+author_context_id: root-m1-review-resolution-r2
+reviewer_context_id: m1-r3-primary-and-second-reviewers
+context_separation_mechanism: existing-separate-agents-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - validator-behavior
+  - remote-authority-read
+  - release-boundary
+  - lifecycle-gate
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - specs/boundary-first-v1-v0-3-7-activation-release.test.md
+  - docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: e418519c
+    sha256: 48a42eb23156330bc7a60a869c93ec512e3c0b8e79b29587ccfbd94eebab8db9
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+    revision: e418519c
+    sha256: 41db52a5c323377576cfd44bfe55a929126ad7654197e0c079349f5591f2f898
+  - path: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+    revision: e418519c
+    sha256: e940e7d27ad26287f33bb65a2616e096d6b5ed805b6aa95346ea4a4c5370af91
+  - path: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+    revision: e418519c
+    sha256: 911b77ee4384c8576269a04233e7581865075bda3a78277f67371b3afca2d2e5
+  - path: range:3852a010..e418519c.diff
+    revision: e418519c
+    sha256: aca05bdfab93e82a34b031ad5002d986fadb0c7a1f9c118976bc576a564a5e4b
+initial_packet_sha256: db8be39cd73715a7f5c6376868bf8e6551c0d4b57def545bede4ec89549aa811
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+second_review:
+  required: true
+  satisfied: true
+  reviewer_context_id: m1-r3-second-reviewer
+requirement_fidelity:
+  applicability: applicable
+  reason: R3 reconciles merged history, candidate evidence authority, closed lifecycle evidence, privacy, and T16 sibling composition.
+  outcome: blocked
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+risk_map:
+  affected_behavior: candidate evidence identity, merged ancestry, lifecycle invocation authority, privacy serialization, and sibling composition
+  highest_impact_failure_modes: self-referential final H, shallow manifest acceptance, short private-value disclosure, and omitted selected sibling failure
+  changed_boundaries: BND-AUTH-001, BND-STATE-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001, and BND-ENV-001
+  evidence_expected: producing-head graph, complete merged ancestry, canonical invocation shape, complete privacy probes, and every selected sibling failure
+  direct_inspection_areas: candidate evidence helper, Git traversal, invocation validation, privacy bounds, and selected execution
+  intentionally_out_of_scope: publication mutation, release payload, real transition, public release, and final verify
+review_focus:
+  - Reconcile BFA-M1-R2-001 and the still-open BFA-M1-CR1-003, BFA-M1-CR1-005, BFA-M1-CR1-007, and BFA-M1-CR1-008.
+  - Challenge the non-circular producing-head candidate evidence binding.
+  - Challenge complete merged ancestry traversal and review-invocation ownership.
+  - Challenge runtime privacy bounds and per-sibling selected-command failure proof.

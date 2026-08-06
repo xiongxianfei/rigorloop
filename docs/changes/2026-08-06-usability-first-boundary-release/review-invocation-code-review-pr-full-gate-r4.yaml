@@ -1,0 +1,149 @@
+schema_version: 1
+review_id: code-review-pr-full-gate-r4
+review_stage: code-review
+review_target: range:f0b1b6fc..ed41f631
+base_revision: f0b1b6fc232742de5ae4677679b34d8f6ac80ec5
+head_revision: ed41f6319b8ab074193cb01eef07cf0c86f8dc88
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L1
+author_context_id: root-pr-full-gate-correction-r4
+reviewer_context_id: pr-full-gate-r4-fresh-contract-first-reviewer
+context_separation_mechanism: separate-agent-contract-first-rereview
+risk_tier: high
+risk_tier_triggers:
+  - spec-derived-validator-authority
+  - closed-vocabulary-fail-closed
+  - yaml-semantic-authority
+  - release-selector-regression-safety
+  - historical-package-compatibility
+  - post-verify-pr-correction
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - CONSTITUTION.md
+  - schemas/change.schema.json
+  - specs/boundary-first-proof-model.md
+  - specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+  - specs/usability-first-boundary-release.md
+  - specs/usability-first-boundary-release.test.md
+  - specs/target-native-init.md
+  - specs/target-native-init.test.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+  - docs/plans/2026-08-06-usability-first-boundary-release.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    revision: ed41f631
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: schemas/change.schema.json
+    revision: ed41f631
+    sha256: fa3d07dd253a4816f9e143f6b9243767da248613f91c57ddb8508b35c0f67db6
+  - path: specs/boundary-first-proof-model.md
+    revision: ed41f631
+    sha256: f4a4ce4860981af14484c4d4f15edc362cf269806d2fe7f052db5bfff11ed159
+  - path: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+    revision: ed41f631
+    sha256: 46865935c04fa404a38b34c96f7c19f5934a6b9eee672081f22b3cfc2ff64ba4
+  - path: specs/usability-first-boundary-release.md
+    revision: ed41f631
+    sha256: 5045edf83c5e71531445f524b88c4098f28fc115bf6ba8277335c178058bf6cd
+  - path: specs/usability-first-boundary-release.test.md
+    revision: ed41f631
+    sha256: 4669a662b16d87e236ecb0387135431e7ae706f05b6532a4d51529b60745b833
+  - path: specs/target-native-init.md
+    revision: ed41f631
+    sha256: 0b27d8c6df0eac7edd8ede0c480bc2822e989bc0f6c6e4e0c82f59446e3f86e0
+  - path: specs/target-native-init.test.md
+    revision: ed41f631
+    sha256: 32a6b10f3c1a19fcfb128fa948cbb2fcf2fcac5fc50a4c08021aa36d9e0c4c0a
+  - path: docs/architecture/system/architecture.md
+    revision: ed41f631
+    sha256: e093f7e58b50a8851765c1a5c8edba701f43f0cc9b1e466a8e2d334a6c7e7dfc
+  - path: docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+    revision: ed41f631
+    sha256: dcdecc94c62a4d55e108711b466976c2309cb6bf4cfc866110461e9c44d82cdf
+  - path: docs/plans/2026-08-06-usability-first-boundary-release.md
+    revision: ed41f631
+    sha256: 20dfdffbe57586be33ed111dad8b10e44d431e29a6af49caf4c1be097ddc90cd
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: ed41f631
+    sha256: 5d68a048fc7eee7640cf77beedb67e5d5e9f2ea6fe9e143123f8c803af61001e
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/spec-review-r5.md
+    revision: ed41f631
+    sha256: 904d296ab93fea31184ff27623bad2b1d6ad134096059c96d9f342a5cff51bb5
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r4.md
+    revision: ed41f631
+    sha256: c1cca214201fab7be241ab40f11d8992b81b9be6e797215485e6f97e30493aa4
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-pr-full-gate-r3.md
+    revision: ed41f631
+    sha256: 6aa730d8b1e98f01beb628eae4c914850a087dfc5739b801c64dff2411469623
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-pr-full-gate-r3.yaml
+    revision: ed41f631
+    sha256: f50c3533792c3cc61f1d2a502093f5caab4687984110a8261e6963729f138e4c
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/review-resolution.md
+    revision: ed41f631
+    sha256: cf46d153ffbf3558de78d724cc8c73a2b6316c4b5b51ab6ed46fb6e0168a384f
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/evidence/pr-full-gate-review-resolution.md
+    revision: ed41f631
+    sha256: 9ef6d650d81ce7b039292f26feb4fbcb30ec26b488c08c2e22cecdd61d7dff72
+  - path: scripts/boundary_first_validation.py
+    revision: ed41f631
+    sha256: 852a5a8fc643074f41d28afd64ddf6b537464639b3ce63cc8ea40ae772e57b48
+  - path: scripts/test-boundary-first-validation.py
+    revision: ed41f631
+    sha256: 89e08de25fc6117d1a7143f0c4d870cd8f4d294fe0fc203fbfe11a6ac4a05237
+  - path: scripts/validation_selection.py
+    revision: ed41f631
+    sha256: 6ac7831ec8f4baa51f717bb78d1860591cd7720ccd58d60ce529b5ab0520396a
+  - path: scripts/test-select-validation.py
+    revision: ed41f631
+    sha256: 89e45952a75b8269553b82b11a427034d887a6d9d194d91f1f306fd6161274ad
+  - path: packages/rigorloop/test/cli.test.js
+    revision: ed41f631
+    sha256: 4717358d9f590d6b807bc6f71d3b5e8a611004c0d42017f6b253d27528bc1bd5
+  - path: range:f0b1b6fc..ed41f631.diff
+    revision: ed41f631
+    sha256: 9edb6f6ed7ee2823169e125098f4baddea6b645cb17458aea5669f09b34709b5
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: false
+  satisfied: false
+requirement_fidelity:
+  applicability: applicable
+  reason: The correction derives marker placement from YAML lifecycle authority and must preserve fail-closed vocabulary and duplicate handling across repository-accepted serialization.
+  outcome: changes-requested
+risk_map:
+  affected_behavior: lifecycle-selected boundary marker placement, lifecycle authority parsing, release profile routing, current package identity, and historical opencode compatibility proof
+  highest_impact_failure_modes: YAML-equivalent authority ignored as absent, duplicate lifecycle key evading detection, status-form bypass, malformed profile version fabrication, or current metadata replacing historical proof
+  changed_boundaries: cross-file lifecycle authority, exact marker placement, YAML scalar and key identity, profile path-to-version extraction, and current-versus-historical fixture identity
+  evidence_expected: governing clauses and schema, cumulative diff, reciprocal and vocabulary probes, semantic-key duplicate probes, focused T24 proof, malformed-profile regression, historical package tests, and prior-finding reconciliation
+  direct_inspection_areas: authority parser and both marker branches, repository YAML tokenizer/parser, T24 fixtures, lifecycle schema, profile namespace branch, fixture identity helpers, and review evidence
+  intentionally_out_of_scope: broad smoke, hosted CI, PR opening, push, tag, publication, merge, and public closeout
+  applicable_risk_classes:
+    - requirement-fidelity
+    - spec-derived-validation
+    - closed-vocabulary-validation
+    - fail-closed-release-routing
+    - package-supply-chain
+    - compatibility-and-migration
+    - lifecycle-closeout
+  non_applicable_risk_classes:
+    - live-publication
+    - external-mutation
+  falsifiable_questions:
+    - Do exact quoted and unquoted stage-owned values select only owner placement?
+    - Does only absent lifecycle authority retain historical status placement?
+    - Do unknown, malformed, and duplicate authorities fail before marker consistency?
+    - Does repository-accepted YAML key spacing preserve authority and duplicate classification?
+    - Do malformed profiles and historical v0.3.3 fixture identities remain corrected?

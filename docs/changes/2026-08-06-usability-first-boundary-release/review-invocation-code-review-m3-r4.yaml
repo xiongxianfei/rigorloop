@@ -1,0 +1,86 @@
+schema_version: 1
+review_id: code-review-m3-r4
+review_stage: code-review
+review_target: range:868e1c2c..79fc68bc
+base_revision: 868e1c2c2bccef7f932e74e135118e0092761701
+head_revision: 79fc68bc11270aa5b353f7f8a0ddb0616c8cd620
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L1
+author_context_id: root-m3-r3-resolution
+reviewer_context_id: m3-r4-fresh-independent-reviewer
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: medium
+risk_tier_triggers:
+  - complete-gate-inventory
+  - exact-row-cardinality
+  - smoke-evidence-semantics
+  - prior-finding-reconciliation
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - specs/usability-first-boundary-release.md
+  - specs/usability-first-boundary-release.test.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+  - docs/plans/2026-08-06-usability-first-boundary-release.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/usability-first-boundary-release.md
+    revision: 79fc68bc
+    sha256: 1507c4f1a38fb01da5bace5a7c4e5f83fdd9468ed3355775444bb624c7ee6160
+  - path: specs/usability-first-boundary-release.test.md
+    revision: 79fc68bc
+    sha256: 2bbaf2f118928af45e46442e84753f23f92d00ceca99c40b1bd851ee9a6c19db
+  - path: docs/architecture/system/architecture.md
+    revision: 79fc68bc
+    sha256: 0495a510b37cdc2535390cebb25e0f5dbbfb093ae031853f48425e22ea53c1c2
+  - path: docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+    revision: 79fc68bc
+    sha256: dcdecc94c62a4d55e108711b466976c2309cb6bf4cfc866110461e9c44d82cdf
+  - path: docs/plans/2026-08-06-usability-first-boundary-release.md
+    revision: 79fc68bc
+    sha256: 20dfdffbe57586be33ed111dad8b10e44d431e29a6af49caf4c1be097ddc90cd
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: 79fc68bc
+    sha256: b0ca5135f43ba102725baef6d0c6d5660798d14895e2303cf27fccd051f5484f
+  - path: range:868e1c2c..79fc68bc.diff
+    revision: 79fc68bc
+    sha256: 64fff62540e5dab0084c0151782acefb90aa41e6b8896137152fa0d3d6666abd
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: false
+  satisfied: false
+requirement_fidelity:
+  applicability: applicable
+  reason: M3 R4 reviews complete governed release-evidence cardinality and semantics.
+  outcome: changes-requested
+risk_map:
+  affected_behavior: complete and unambiguous pending/finalized release evidence
+  highest_impact_failure_modes: omitted gate categories, contradictory duplicate rows, or whitespace-only passing proof
+  changed_boundaries: BND-AUTH-001, BND-TEMPORAL-001, BND-RECOVERY-001, INT-002, and INT-003
+  evidence_expected: complete row mutation matrix, duplicate rejection, trimmed smoke semantics, and release gates
+  direct_inspection_areas: governed row inventories, table parsing, preparation predicates, and mutation tests
+  intentionally_out_of_scope: M4 active snapshot, live publication, final holistic review, verify, and PR readiness
+  applicable_risk_classes:
+    - requirement-fidelity
+    - generated-artifact-currency
+    - pending-public-separation
+    - compatibility
+  non_applicable_risk_classes:
+    - live-publication
+    - active-snapshot-authoring
+  falsifiable_questions:
+    - Can any required preflight or registry row be omitted or duplicated?
+    - Can unsupported row states pass?
+    - Can whitespace-only passing smoke proof be preserved?
+    - Do earlier identity and public-state fixes remain intact?

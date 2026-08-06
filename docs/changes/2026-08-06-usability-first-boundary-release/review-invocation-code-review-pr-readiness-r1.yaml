@@ -1,0 +1,90 @@
+schema_version: 1
+review_id: code-review-pr-readiness-r1
+review_stage: code-review
+review_target: range:f309c296a796b5bb6bc02db2ff991297c8ff084c..baadc82f90f14eda2038e4da5cbee99a63748dae
+base_revision: f309c296a796b5bb6bc02db2ff991297c8ff084c
+head_revision: baadc82f90f14eda2038e4da5cbee99a63748dae
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: root-pr-readiness-research-selector-fix
+reviewer_context_id: pr-readiness-r1-fresh-independent-selector-reviewer
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: medium
+risk_tier_triggers:
+  - validation-selector-routing
+  - pr-fail-closed-compatibility
+  - post-verify-correction
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/test-layering-and-change-scoped-validation.md
+  - specs/test-layering-and-change-scoped-validation.test.md
+  - skills/research/SKILL.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+  - docs/changes/2026-08-06-usability-first-boundary-release/evidence/pr-readiness-research-selector-bugfix.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/explain-change.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/test-layering-and-change-scoped-validation.md
+    revision: baadc82f
+    sha256: 6dcb5b405c815774e689fc61b5476ba9eb2ee7425d60d118f062526b33734bcc
+  - path: specs/test-layering-and-change-scoped-validation.test.md
+    revision: baadc82f
+    sha256: eb8512055d61c27d1dff8540dae64b0458297ffdd8aa76a273c2bbfc46acf390
+  - path: skills/research/SKILL.md
+    revision: baadc82f
+    sha256: c90956ae2d2d5d35ecd38f8fd4e1bcda9dd0b8a9f851e7ca5a17a7f609109cb4
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: baadc82f
+    sha256: 04e96056a407c9cbdb73341b843cd8f8b8fd4bcac89c84378a83378dd2752803
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/evidence/pr-readiness-research-selector-bugfix.md
+    revision: baadc82f
+    sha256: b1c05fa37af608b850a75b10ae1c3a5aa50ae5827fb6a301992544d9d053a9d0
+  - path: scripts/validation_selection.py
+    revision: baadc82f
+    sha256: 1db7f2626d87114e0e939d1ce74ea4f5d5626cabedf3b650cf8b8fc275b81b28
+  - path: scripts/test-select-validation.py
+    revision: baadc82f
+    sha256: fe2f1bc681c587c2f75634035bf64638711406381269e67c89bfe3b80afce3e5
+  - path: range:f309c296a796b5bb6bc02db2ff991297c8ff084c..baadc82f90f14eda2038e4da5cbee99a63748dae.diff
+    revision: baadc82f
+    sha256: 2f01c56da506694f235eb90e87469ecaed5d5eba47bcf0bd14e9b4721db396bd
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: false
+  satisfied: false
+requirement_fidelity:
+  applicability: applicable
+  reason: The correction changes selector classification and selected proof for a canonical research artifact in PR mode.
+  outcome: clean-with-notes
+risk_map:
+  affected_behavior: research-artifact path classification and PR selected-check routing
+  highest_impact_failure_modes: over-broad classification, wrong owned checks, partial execution with unknown paths, weak regression, or stale lifecycle readiness
+  changed_boundaries: selector path classifier, path-to-check routing, regression matrix, and post-verify workflow evidence
+  evidence_expected: exact diff, governing selector clauses, canonical and near-match probes, PR-mode path discovery, exact check commands, focused and full selector regression, and lifecycle validation
+  direct_inspection_areas: research path predicate, research category routing, check catalog command synthesis, regression assertions, PR selector output, and change-local handoff
+  intentionally_out_of_scope: release implementation, broad release rerun, hosted CI, PR opening, tag, publication, push, and merge
+  applicable_risk_classes:
+    - requirement-fidelity
+    - validation-routing
+    - compatibility
+    - lifecycle-closeout
+  non_applicable_risk_classes:
+    - release-behavior
+    - live-publication
+    - external-mutation
+  falsifiable_questions:
+    - Does the canonical research Markdown path select exactly its two owned documentation checks?
+    - Do non-Markdown and unrelated unknown paths remain fail-closed?
+    - Does PR range discovery use the same classification without weakening mixed-path blockers?

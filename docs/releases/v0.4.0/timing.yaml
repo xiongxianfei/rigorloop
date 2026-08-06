@@ -1,0 +1,32 @@
+schema_version: release-timing-v1
+release_tag: v0.4.0
+release_profile: docs/releases/profiles/v0.4.0.yaml
+created_at: pending
+
+phases:
+  - id: prepare_release
+    command: python scripts/prepare-release.py v0.4.0
+    duration_seconds: 0
+    result: pending
+  - id: preflight
+    command: python scripts/release-preflight.py v0.4.0
+    duration_seconds: 0
+    result: pending
+  - id: local_release_verify
+    command: bash scripts/release-verify.sh v0.4.0
+    duration_seconds: 0
+    result: pending
+  - id: ci_release_verify
+    command: bash scripts/release-verify.sh v0.4.0
+    duration_seconds: 0
+    result: pending
+  - id: publication_wait
+    command: external GitHub and npm publication wait
+    duration_seconds: 0
+    result: pending
+  - id: public_closeout
+    command: python scripts/close-release-publication.py v0.4.0
+    duration_seconds: 0
+    result: pending
+
+checks: []

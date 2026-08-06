@@ -1,0 +1,98 @@
+schema_version: 1
+review_id: code-review-m4-r2
+review_stage: code-review
+review_target: range:8e632ff395488698efb6f521fbb803b7187e87b2..009eb022f5769b30bfac93c537c11306dae58e49
+base_revision: 8e632ff395488698efb6f521fbb803b7187e87b2
+head_revision: 009eb022f5769b30bfac93c537c11306dae58e49
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: root-m4-r1-resolution
+reviewer_context_id: m4-r2-fresh-independent-final-reviewer
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: medium
+risk_tier_triggers:
+  - cumulative-selector-integration
+  - exact-reviewed-baseline-provenance
+  - frozen-inventory-authority
+  - final-holistic-closeout
+  - routine-release-evidence
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - docs/proposals/2026-08-06-usability-first-boundary-release.md
+  - specs/usability-first-boundary-release.md
+  - specs/usability-first-boundary-release.test.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+  - docs/plans/2026-08-06-usability-first-boundary-release.md
+  - specs/release-process-contract.md
+  - specs/release-process-contract.test.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/usability-first-boundary-release.md
+    revision: 009eb022
+    sha256: 1507c4f1a38fb01da5bace5a7c4e5f83fdd9468ed3355775444bb624c7ee6160
+  - path: specs/usability-first-boundary-release.test.md
+    revision: 009eb022
+    sha256: 2bbaf2f118928af45e46442e84753f23f92d00ceca99c40b1bd851ee9a6c19db
+  - path: docs/architecture/system/architecture.md
+    revision: 009eb022
+    sha256: 0495a510b37cdc2535390cebb25e0f5dbbfb093ae031853f48425e22ea53c1c2
+  - path: docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+    revision: 009eb022
+    sha256: dcdecc94c62a4d55e108711b466976c2309cb6bf4cfc866110461e9c44d82cdf
+  - path: docs/plans/2026-08-06-usability-first-boundary-release.md
+    revision: 009eb022
+    sha256: 20dfdffbe57586be33ed111dad8b10e44d431e29a6af49caf4c1be097ddc90cd
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: 009eb022
+    sha256: 8ee66ad3d3d0f70d3c2221aac047767c87df7009951eece6613b06482e270f4c
+  - path: range:8e632ff395488698efb6f521fbb803b7187e87b2..009eb022.diff
+    revision: 009eb022
+    sha256: e30fc530625245992666d5af1b148846ca678969389716d515b3b75138220a24
+  - path: range:d215c045..009eb022.diff
+    revision: 009eb022
+    sha256: 544fdf9d8f92488e24e3c6a68b653f8fa3722a8be3e438d45cc1bcd38898bbbb
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: false
+  satisfied: false
+requirement_fidelity:
+  applicability: applicable
+  reason: The correction and final holistic gate cover spec-derived validation, compatibility authority, release integration, and cumulative workflow routing.
+  outcome: clean-with-notes
+risk_map:
+  affected_behavior: selector wrapper execution, active grandfathered-spec enforcement, exact activation authority, and complete initiative closeout
+  highest_impact_failure_modes: green test through bypass, lost change-root execution, weakened historical review enforcement, baseline or inventory drift, stale release identity, or premature lifecycle closeout
+  changed_boundaries: BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001, INT-002, and INT-003
+  evidence_expected: meaningful archived-root wrapper execution, full selector suite, direct grandfathered negative proof, independent baseline and inventory proof, current-file validation, release preparation and validation, prior-finding reconciliation, and final lifecycle state
+  direct_inspection_areas: selector correction, archived change root, active activation tuple, Git tree inventory, proof-model readiness, rollback metadata, release records, review resolution, and cumulative diff
+  intentionally_out_of_scope: explain-change, final verify, PR readiness, live tag creation, push, publication, merge, and public closeout
+  applicable_risk_classes:
+    - requirement-fidelity
+    - validation-routing
+    - checked-revision-activation
+    - compatibility-and-selector-integration
+    - release-identity-and-authority
+    - package-supply-chain
+    - recovery-and-rollback
+    - lifecycle-closeout
+    - privacy
+  non_applicable_risk_classes:
+    - live-publication
+    - external-mutation
+  falsifiable_questions:
+    - Does the corrected fixture execute both review-root and explicit lifecycle paths?
+    - Does a changed grandfathered spec still require BFR-GRANDFATHERED-REVIEW?
+    - Does the independently reconstructed inventory still equal the active record?
+    - Are all prior findings resolved and all implementation milestones eligible to close?

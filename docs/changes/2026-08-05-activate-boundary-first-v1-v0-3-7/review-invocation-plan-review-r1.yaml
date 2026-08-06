@@ -1,0 +1,38 @@
+schema_version: 1
+review_id: plan-review-r1
+review_stage: plan-review
+review_target: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+base_revision: e840c2d9
+head_revision: c96e5b0066a90af3eb7bd1233c512fa5c8630b4c
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L1
+author_context_id: root-boundary-activation-plan
+reviewer_context_id: independent-plan-review-r1
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+    revision: c96e5b0066a90af3eb7bd1233c512fa5c8630b4c
+    sha256: 25c45b1ae6128b6b9872763be4c4705a104b06a7492f9dbd620bff95e5789747
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: 150cbb48
+    sha256: 48a42eb23156330bc7a60a869c93ec512e3c0b8e79b29587ccfbd94eebab8db9
+  - path: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+    revision: ede4a843
+    sha256: 911b77ee4384c8576269a04233e7581865075bda3a78277f67371b3afca2d2e5
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - milestone independence and ordering before transition T
+  - candidate proof and strict-mode separation
+  - atomic publication helper testability without external mutation
+  - transition-tree self-containment and post-T drift recovery
+  - boundary ownership, validation commands, and explicit release checkpoint

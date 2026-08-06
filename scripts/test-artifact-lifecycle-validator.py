@@ -11,7 +11,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from artifact_lifecycle_validation import validate_repository
+from artifact_lifecycle_validation import validate_release_evidence_checklist, validate_repository
 from lifecycle_state_sync import CLEAN_ADVANCE_GATES
 from lifecycle_state_sync import evaluate_authoring_autoprogression_route
 from lifecycle_state_sync import evaluate_automated_review_gate_route
@@ -326,6 +326,23 @@ def emergency_release_evidence(
         "| none | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | completed |",
         f"| {deferred_item} | {owner} | urgent fix | dependency unavailable before publish | {validation_impact} | owner accepts temporary risk | docs/changes/2026-05-23-release-process-contract/follow-up.md | next lifecycle stage | open |",
     )
+
+
+def pending_release_evidence() -> str:
+    text = routine_release_evidence().replace(
+        "- Status: published",
+        "- Status: pending-publication",
+    )
+    for row_name in (
+        "registry version query",
+        "dist-tag points correctly",
+        "integrity metadata available",
+        "fresh registry install smoke",
+        "CLI or npx smoke",
+    ):
+        original = next(line for line in text.splitlines() if line.startswith(f"| {row_name} |"))
+        text = text.replace(original, f"| {row_name} | not-applicable | publication not started |")
+    return text
 
 
 def init_git_fixture(path: Path) -> str:
@@ -3234,6 +3251,166 @@ No blocked plans.
             result.blocking_findings,
             msg=f"expected complete emergency deferral to pass, got blockers: {result.blocking_findings}",
         )
+
+    def test_release_evidence_all_states_reject_missing_duplicate_and_unknown_value_rows(self) -> None:
+        preflight_rows = (
+            "clean worktree except intentional release artifacts",
+            "release notes or not-required rationale",
+            "generated output current",
+            "tests / selected CI / broad smoke",
+            "package build or pack proof",
+            "package preview",
+            "local packed-install smoke",
+            "no unresolved release blockers",
+            "publish path selected",
+            "evidence path prepared",
+        )
+        registry_rows = (
+            "registry version query",
+            "dist-tag points correctly",
+            "integrity metadata available",
+            "fresh registry install smoke",
+            "CLI or npx smoke",
+        )
+        states = (
+            ("pending", pending_release_evidence(), False),
+            ("finalized", routine_release_evidence(), True),
+            ("emergency", emergency_release_evidence(), True),
+        )
+        for state, source, require_preflight_pass in states:
+            for row_name in (*preflight_rows, *registry_rows):
+                original = next(line for line in source.splitlines() if line.startswith(f"| {row_name} |"))
+                for mutation, replacement in (
+                    ("missing", ""),
+                    ("duplicate", f"{original}\n{original}"),
+                    ("unsupported", original.replace(f"| {original.split('|')[2].strip()} |", "| banana |", 1)),
+                ):
+                    with self.subTest(state=state, row_name=row_name, mutation=mutation):
+                        errors = validate_release_evidence_checklist(
+                            Path("docs/releases/v1.2.3.md"),
+                            source.replace(original, replacement),
+                            require_preflight_pass=require_preflight_pass,
+                        )
+                        self.assertTrue(any(row_name in error for error in errors), errors)
+
+    def test_release_evidence_rejects_unknown_value_status(self) -> None:
+        errors = validate_release_evidence_checklist(
+            Path("docs/releases/v1.2.3.md"),
+            routine_release_evidence().replace("- Status: published", "- Status: banana"),
+        )
+        self.assertTrue(any("status 'banana'" in error for error in errors), errors)
+
+    def test_release_evidence_result_vocabulary_is_state_and_applicability_aware(self) -> None:
+        for state, source, require_preflight_pass in (
+            ("pending", pending_release_evidence(), False),
+            ("finalized", routine_release_evidence(), True),
+        ):
+            for row_name in ("package build or pack proof", "local packed-install smoke"):
+                with self.subTest(state=state, row_name=row_name):
+                    original = next(line for line in source.splitlines() if line.startswith(f"| {row_name} |"))
+                    mutated = source.replace(original, original.replace("| pass |", "| not-applicable |"))
+                    errors = validate_release_evidence_checklist(
+                        Path("docs/releases/v1.2.3.md"),
+                        mutated,
+                        require_preflight_pass=require_preflight_pass,
+                    )
+                    self.assertTrue(any(row_name in error for error in errors), errors)
+
+        finalized = routine_release_evidence()
+        for row_name in (
+            "registry version query",
+            "dist-tag points correctly",
+            "integrity metadata available",
+            "fresh registry install smoke",
+            "CLI or npx smoke",
+        ):
+            with self.subTest(state="finalized", row_name=row_name, result="not-applicable"):
+                original = next(line for line in finalized.splitlines() if line.startswith(f"| {row_name} |"))
+                errors = validate_release_evidence_checklist(
+                    Path("docs/releases/v1.2.3.md"),
+                    finalized.replace(original, original.replace("| pass |", "| not-applicable |")),
+                )
+                self.assertTrue(any(row_name in error for error in errors), errors)
+
+        emergency = emergency_release_evidence()
+        for row_name in (
+            "registry version query",
+            "dist-tag points correctly",
+            "integrity metadata available",
+            "CLI or npx smoke",
+        ):
+            with self.subTest(state="emergency", row_name=row_name, result="deferred"):
+                original = next(line for line in emergency.splitlines() if line.startswith(f"| {row_name} |"))
+                errors = validate_release_evidence_checklist(
+                    Path("docs/releases/v1.2.3.md"),
+                    emergency.replace(original, original.replace("| pass |", "| deferred |")),
+                )
+                self.assertTrue(any(row_name in error for error in errors), errors)
+
+    def test_release_evidence_emergency_deferral_must_match_exactly_one_result(self) -> None:
+        emergency = emergency_release_evidence()
+        deferral = next(
+            line
+            for line in emergency.splitlines()
+            if line.startswith("| fresh registry install smoke | release owner |")
+        )
+        registry = "| fresh registry install smoke | deferred | deferred with owner approval |"
+        none = "| none | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | not-applicable | completed |"
+        mutations = (
+            ("missing-deferral", emergency.replace(deferral, none)),
+            ("duplicate-deferral", emergency.replace(deferral, f"{deferral}\n{deferral}")),
+            ("unmatched-deferral", emergency.replace(registry, "| fresh registry install smoke | pass | completed |")),
+            ("contradictory-none", emergency.replace(deferral, f"{deferral}\n{none}")),
+        )
+        for mutation, text in mutations:
+            with self.subTest(mutation=mutation):
+                errors = validate_release_evidence_checklist(Path("docs/releases/v1.2.3.md"), text)
+                self.assertTrue(any("fresh registry install smoke" in error for error in errors), errors)
+
+    def test_release_evidence_emergency_deferral_rejects_not_applicable_required_values(self) -> None:
+        emergency = emergency_release_evidence()
+        deferral = next(
+            line
+            for line in emergency.splitlines()
+            if line.startswith("| fresh registry install smoke | release owner |")
+        )
+        cells = [cell.strip() for cell in deferral.strip().strip("|").split("|")]
+        for index, field_name in enumerate(
+            (
+                "approving owner",
+                "emergency rationale",
+                "reason for deferral",
+                "validation impact",
+                "risk accepted",
+                "follow-up location",
+                "deadline or next lifecycle stage",
+                "status",
+            ),
+            start=1,
+        ):
+            with self.subTest(field_name=field_name):
+                mutated_cells = list(cells)
+                mutated_cells[index] = "not-applicable"
+                mutated = "| " + " | ".join(mutated_cells) + " |"
+                errors = validate_release_evidence_checklist(
+                    Path("docs/releases/v1.2.3.md"),
+                    emergency.replace(deferral, mutated),
+                )
+                self.assertTrue(any(field_name in error for error in errors), errors)
+
+    def test_release_evidence_emergency_deferral_rejects_unknown_value_status(self) -> None:
+        emergency = emergency_release_evidence()
+        deferral = next(
+            line
+            for line in emergency.splitlines()
+            if line.startswith("| fresh registry install smoke | release owner |")
+        )
+        mutated = deferral.removesuffix(" open |") + " banana |"
+        errors = validate_release_evidence_checklist(
+            Path("docs/releases/v1.2.3.md"),
+            emergency.replace(deferral, mutated),
+        )
+        self.assertTrue(any("status must be open" in error for error in errors), errors)
 
     def test_release_evidence_blocks_emergency_deferral_without_owner(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="release-evidence-checklist-"))

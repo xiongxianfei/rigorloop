@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import subprocess
 from dataclasses import dataclass
@@ -28,6 +29,11 @@ from adapter_distribution import (
 
 ACTIVATION_RECORD = Path("specs/boundary-first-activation.yaml")
 PROOF_MODEL_SPEC = Path("specs/boundary-first-proof-model.md")
+ACTIVE_RELEASE_INTENT = "v0.4.0"
+ACTIVE_ROLLBACK_RELEASE = "v0.3.6"
+ACTIVE_ROLLBACK_METADATA_SHA256 = (
+    "cd3de1a215b50e79f207ab9384394e22c3929e83739e305b623d6ef2bb3b20a6"
+)
 ACTIVATION_STATES = frozenset({"pending", "active"})
 CORE_DIMENSIONS = (
     "input-domain",
@@ -296,7 +302,132 @@ def _line_value(text: str, label: str) -> str | None:
     return match.group(1) if match else None
 
 
-def _marker_issues(text: str, path: str) -> list[ValidationIssue]:
+def _top_level_mapping_values(text: str, key: str) -> tuple[str, ...]:
+    """Return every top-level value for a repository-style YAML mapping key."""
+    values: list[str] = []
+    for raw_line in text.splitlines():
+        if not raw_line or raw_line[0].isspace() or raw_line.startswith("#"):
+            continue
+        if ":" not in raw_line:
+            continue
+        raw_key, raw_value = raw_line.split(":", 1)
+        if raw_key.strip() == key:
+            values.append(raw_value.strip())
+    return tuple(values)
+
+
+def _stage_owned_marker_authority(
+    root: Path | None,
+    change_record: str,
+    path: str,
+) -> tuple[bool | None, ValidationIssue | None]:
+    if root is None:
+        return (
+            None,
+            _issue(
+                "BFR-MARKER-AUTHORITY",
+                path,
+                "owner-pointer marker placement requires a resolvable lifecycle contract",
+                "unresolved-change-record",
+                "repository-contained owning change record",
+            ),
+        )
+    relative = PurePosixPath(change_record)
+    candidate = root.joinpath(*relative.parts)
+    current = root
+    for part in relative.parts:
+        current = current / part
+        if current.is_symlink():
+            return (
+                None,
+                _issue(
+                    "BFR-MARKER-AUTHORITY",
+                    path,
+                    "owner-pointer marker authority must not traverse a symlink",
+                    change_record,
+                    "repository-contained owning change record",
+                ),
+            )
+    resolved_root = root.resolve()
+    resolved_candidate = candidate.resolve(strict=False)
+    if not resolved_candidate.is_relative_to(resolved_root) or not candidate.is_file():
+        return (
+            None,
+            _issue(
+                "BFR-MARKER-AUTHORITY",
+                path,
+                "owner-pointer marker placement requires an existing owning change record",
+                change_record,
+                "existing owning change record",
+            ),
+        )
+    try:
+        change_text = candidate.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return (
+            None,
+            _issue(
+                "BFR-MARKER-AUTHORITY",
+                path,
+                "owning change record is unreadable",
+                change_record,
+                "readable owning change record",
+            ),
+        )
+    contracts = _top_level_mapping_values(change_text, "lifecycle_contract")
+    if len(contracts) > 1:
+        return (
+            None,
+            _issue(
+                "BFR-MARKER-AUTHORITY",
+                path,
+                "owning change record must declare at most one lifecycle contract",
+                "duplicate-lifecycle-contract",
+                "one lifecycle_contract value",
+            ),
+        )
+    if not contracts:
+        return (False, None)
+    raw_contract = contracts[0].strip()
+    try:
+        if raw_contract.startswith('"'):
+            contract = json.loads(raw_contract)
+        elif raw_contract.startswith("'"):
+            if len(raw_contract) < 2 or not raw_contract.endswith("'"):
+                raise ValueError("unterminated single-quoted scalar")
+            contract = raw_contract[1:-1].replace("''", "'")
+        else:
+            contract = raw_contract
+    except (json.JSONDecodeError, ValueError):
+        return (
+            None,
+            _issue(
+                "BFR-UNKNOWN-LIFECYCLE-CONTRACT",
+                path,
+                "owning change record lifecycle contract is malformed",
+                "malformed-lifecycle-contract",
+                "stage-owned-change-local-v1 or absent legacy contract",
+            ),
+        )
+    if contract == "stage-owned-change-local-v1":
+        return (True, None)
+    return (
+        None,
+        _issue(
+            "BFR-UNKNOWN-LIFECYCLE-CONTRACT",
+            path,
+            "owning change record declares an unknown lifecycle contract",
+            "unknown-lifecycle-contract",
+            "stage-owned-change-local-v1 or absent legacy contract",
+        ),
+    )
+
+
+def _marker_issues(
+    text: str,
+    path: str,
+    root: Path | None = None,
+) -> list[ValidationIssue]:
     marker_pattern = re.compile(r"(?m)^boundary_contract:\s*(\S+)\s*$")
     markers = tuple(marker_pattern.finditer(text))
     if len(markers) != 1:
@@ -311,14 +442,80 @@ def _marker_issues(text: str, path: str) -> list[ValidationIssue]:
         ]
     status = _section(text, "Status")
     status_markers = tuple(marker_pattern.finditer(status))
-    if len(status_markers) != 1:
+    owner = _section(text, "Owning change record")
+    owner_markers = tuple(marker_pattern.finditer(owner))
+    owner_pointer_pattern = re.compile(
+        r"(?m)^`(docs/changes/[^/]+/change\.yaml)`\s*$"
+    )
+    owner_pointers = tuple(owner_pointer_pattern.finditer(owner))
+    stage_owned = False
+    if len(owner_pointers) == 1:
+        stage_owned_result, authority_issue = _stage_owned_marker_authority(
+            root,
+            owner_pointers[0].group(1),
+            path,
+        )
+        if authority_issue:
+            return [authority_issue]
+        stage_owned = bool(stage_owned_result)
+    elif len(owner_pointers) > 1:
+        return [
+            _issue(
+                "BFR-MARKER-AUTHORITY",
+                path,
+                "feature spec must identify exactly one owning change record",
+                len(owner_pointers),
+                1,
+            )
+        ]
+    if len(status_markers) != 1 and len(owner_markers) != 1:
         return [
             _issue(
                 "BFR-MARKER-PLACEMENT",
                 path,
-                "boundary contract marker must be inside the Status section",
-                "outside-status",
-                "after lifecycle status value",
+                "boundary contract marker must follow lifecycle status or the owning change pointer",
+                "outside-governed-metadata",
+                "after lifecycle status value or normalized owning change pointer",
+            )
+        ]
+    if len(owner_markers) == 1:
+        preceding_owner_lines = [
+            line.strip()
+            for line in owner[: owner_markers[0].start()].splitlines()
+            if line.strip() and not line.lstrip().startswith("<!--")
+        ]
+        if preceding_owner_lines and re.fullmatch(
+            r"`docs/changes/[^/]+/change\.yaml`",
+            preceding_owner_lines[-1],
+        ):
+            if stage_owned:
+                return []
+            return [
+                _issue(
+                    "BFR-MARKER-AUTHORITY",
+                    path,
+                    "owner-pointer marker placement requires the stage-owned lifecycle contract",
+                    "non-stage-owned-contract",
+                    "lifecycle_contract: stage-owned-change-local-v1",
+                )
+            ]
+        return [
+            _issue(
+                "BFR-MARKER-PLACEMENT",
+                path,
+                "boundary contract marker must follow the normalized owning change pointer",
+                "before-owner-pointer",
+                "after normalized owning change pointer",
+            )
+        ]
+    if stage_owned:
+        return [
+            _issue(
+                "BFR-MARKER-PLACEMENT",
+                path,
+                "stage-owned feature specs must place the marker after the owning change pointer",
+                "status-marker-for-stage-owned-contract",
+                "owner-pointer marker form",
             )
         ]
     marker_line = status[: status_markers[0].start()].splitlines()
@@ -381,10 +578,12 @@ def _sentinel_issues(
 def validate_feature_record(
     text: str,
     path: str = "<feature-record>",
+    *,
+    root: Path | None = None,
 ) -> tuple[ValidationIssue, ...]:
     text = _live_markdown(text)
     vocabulary: list[ValidationIssue] = []
-    marker_structure = _marker_issues(text, path)
+    marker_structure = _marker_issues(text, path, root)
     if marker_structure:
         return tuple(marker_structure)
     marker = _line_value(text, "boundary_contract")
@@ -707,8 +906,15 @@ def validate_proof_map(
     text: str,
     feature_text: str,
     path: str = "<proof-map>",
+    *,
+    feature_path: str = "<feature-record>",
+    root: Path | None = None,
 ) -> tuple[ValidationIssue, ...]:
-    feature_issues = validate_feature_record(feature_text)
+    feature_issues = validate_feature_record(
+        feature_text,
+        feature_path,
+        root=root,
+    )
     if feature_issues:
         return feature_issues
     text = _live_markdown(text)
@@ -838,13 +1044,13 @@ def validate_proof_map(
 
 def _activation_data(path: Path) -> tuple[dict[str, object] | None, ValidationIssue | None]:
     if not path.is_file():
-        return None, _issue("BFR-ACTIVATION-MISSING", path.as_posix(), "activation record is missing", "-", ACTIVATION_RECORD.as_posix())
+        return None, _issue("BFR-ACTIVATION-MISSING", ACTIVATION_RECORD.as_posix(), "activation record is missing", "-", ACTIVATION_RECORD.as_posix())
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        return None, _issue("BFR-ACTIVATION-PARSE", path.as_posix(), "activation record is not deterministic JSON-compatible YAML", type(exc).__name__, "valid object")
+        return None, _issue("BFR-ACTIVATION-PARSE", ACTIVATION_RECORD.as_posix(), "activation record is not deterministic JSON-compatible YAML", type(exc).__name__, "valid object")
     if not isinstance(data, dict):
-        return None, _issue("BFR-ACTIVATION-SHAPE", path.as_posix(), "activation record must be an object", type(data).__name__, "object")
+        return None, _issue("BFR-ACTIVATION-SHAPE", ACTIVATION_RECORD.as_posix(), "activation record must be an object", type(data).__name__, "object")
     return data, None
 
 
@@ -953,7 +1159,7 @@ def _rollback_package_matrix(
             _issue(
                 "BFR-ROLLBACK-SELECTION",
                 ACTIVATION_RECORD.as_posix(),
-                "rollback package selection requires an active manifest and release tag",
+                "rollback package selection requires an active snapshot and rollback release",
                 [activation_data.get("state"), rollback_release],
                 ["active", "v<major>.<minor>.<patch>"],
             ),
@@ -975,15 +1181,16 @@ def _rollback_package_matrix(
     assert metadata_path is not None
 
     try:
+        metadata_bytes = metadata_path.read_bytes()
         manifest = parse_manifest_yaml(
             manifest_path.read_text(encoding="utf-8"),
             manifest_path,
         )
         metadata = parse_adapter_artifact_metadata_yaml(
-            metadata_path.read_text(encoding="utf-8"),
+            metadata_bytes.decode("utf-8"),
             metadata_path,
         )
-    except (OSError, ValueError) as exc:
+    except (OSError, UnicodeDecodeError, ValueError) as exc:
         return (), (
             _issue(
                 "BFR-ROLLBACK-METADATA",
@@ -1009,6 +1216,20 @@ def _rollback_package_matrix(
         by_adapter.setdefault(artifact.adapter, []).append(artifact)
 
     issues: list[ValidationIssue] = []
+    metadata_sha256 = hashlib.sha256(metadata_bytes).hexdigest()
+    if (
+        rollback_release == ACTIVE_ROLLBACK_RELEASE
+        and metadata_sha256 != ACTIVE_ROLLBACK_METADATA_SHA256
+    ):
+        issues.append(
+            _issue(
+                "BFR-ROLLBACK-METADATA-IDENTITY",
+                metadata_relative.as_posix(),
+                "rollback metadata differs from the immutable tracked release record",
+                metadata_sha256,
+                ACTIVE_ROLLBACK_METADATA_SHA256,
+            )
+        )
     if metadata.version != rollback_release:
         issues.append(
             _issue(
@@ -1117,19 +1338,58 @@ def rollback_package_selection(
     return RollbackSelection(release=rollback_release, artifacts=matrix), ()
 
 
-def _eligible_grandfathered_specs(
+def derive_grandfathered_specs(
     root: Path,
     baseline_revision: str,
 ) -> tuple[tuple[str, ...], tuple[ValidationIssue, ...]]:
+    """Derive the frozen historical-spec inventory without writing repository state."""
     eligible: list[str] = []
-    if not re.fullmatch(r"[0-9a-f]{40,64}", baseline_revision):
+    git_environment = {
+        "PATH": os.environ.get("PATH", os.defpath),
+        "LC_ALL": "C",
+        "GIT_NO_REPLACE_OBJECTS": "1",
+        "GIT_NO_LAZY_FETCH": "1",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": os.devnull,
+        "GIT_CONFIG_SYSTEM": os.devnull,
+    }
+    if not re.fullmatch(r"[0-9a-f]{40}", baseline_revision):
         return (), (
             _issue(
                 "BFR-BASELINE-REVISION",
                 ACTIVATION_RECORD.as_posix(),
                 "grandfathering baseline must be a full commit identity",
                 baseline_revision,
-                "full source-control commit identity",
+                "40-character lowercase hexadecimal commit identity",
+            ),
+        )
+    try:
+        object_type = subprocess.run(
+            ["git", "cat-file", "-t", baseline_revision],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+            env=git_environment,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return (), (
+            _issue(
+                "BFR-BASELINE-UNAVAILABLE",
+                ACTIVATION_RECORD.as_posix(),
+                "grandfathering baseline is unavailable",
+                baseline_revision,
+                "readable source-control commit",
+            ),
+        )
+    if object_type != "commit":
+        return (), (
+            _issue(
+                "BFR-BASELINE-TYPE",
+                ACTIVATION_RECORD.as_posix(),
+                "grandfathering baseline must identify a commit",
+                object_type,
+                "commit",
             ),
         )
     try:
@@ -1138,6 +1398,7 @@ def _eligible_grandfathered_specs(
             cwd=root,
             check=True,
             capture_output=True,
+            env=git_environment,
         ).stdout.split(b"\0")
     except (OSError, subprocess.CalledProcessError):
         return (), (
@@ -1189,6 +1450,7 @@ def _eligible_grandfathered_specs(
                 cwd=root,
                 check=True,
                 capture_output=True,
+                env=git_environment,
             ).stdout
             text = raw_text.decode("utf-8")
         except (OSError, subprocess.CalledProcessError, UnicodeDecodeError):
@@ -1209,141 +1471,9 @@ def _eligible_grandfathered_specs(
     return tuple(sorted(eligible, key=lambda value: value.encode("utf-8"))), ()
 
 
-def _activation_transition(
+def _validate_activation(
     root: Path,
-) -> tuple[tuple[str, str, dict[str, object]] | None, tuple[ValidationIssue, ...]]:
-    try:
-        commits = subprocess.run(
-            ["git", "rev-list", "--first-parent", "HEAD"],
-            cwd=root,
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout.splitlines()
-    except (OSError, subprocess.CalledProcessError):
-        commits = []
-    transitions: list[tuple[str, str, dict[str, object]]] = []
-    for commit in commits:
-        try:
-            ancestry = subprocess.run(
-                ["git", "rev-list", "--parents", "-n", "1", commit],
-                cwd=root,
-                check=True,
-                capture_output=True,
-                text=True,
-            ).stdout.split()
-            if len(ancestry) < 2:
-                continue
-            parent = ancestry[1]
-            current = json.loads(
-                subprocess.run(
-                    ["git", "show", f"{commit}:{ACTIVATION_RECORD.as_posix()}"],
-                    cwd=root,
-                    check=True,
-                    capture_output=True,
-                    text=True,
-                ).stdout
-            )
-            previous = json.loads(
-                subprocess.run(
-                    ["git", "show", f"{parent}:{ACTIVATION_RECORD.as_posix()}"],
-                    cwd=root,
-                    check=True,
-                    capture_output=True,
-                    text=True,
-                ).stdout
-            )
-        except (OSError, subprocess.CalledProcessError, json.JSONDecodeError):
-            continue
-        if (
-            isinstance(current, dict)
-            and isinstance(previous, dict)
-            and current.get("state") == "active"
-            and previous.get("state") == "pending"
-        ):
-            transitions.append((commit, parent, current))
-    if len(transitions) != 1:
-        return None, (
-            _issue(
-                "BFR-ACTIVATION-TRANSITION",
-                ACTIVATION_RECORD.as_posix(),
-                "source control must contain exactly one pending-to-active transition",
-                len(transitions),
-                1,
-            ),
-        )
-    return transitions[0], ()
-
-
-def _release_predecessor(
-    root: Path,
-    activating_release: object,
-) -> tuple[str | None, str | None, tuple[ValidationIssue, ...]]:
-    if not isinstance(activating_release, str) or not re.fullmatch(
-        r"v[0-9]+\.[0-9]+\.[0-9]+", activating_release
-    ):
-        return None, None, (
-            _issue(
-                "BFR-ACTIVATING-RELEASE",
-                ACTIVATION_RECORD.as_posix(),
-                "active manifest requires an immutable semantic-version tag",
-                activating_release,
-                "existing v<major>.<minor>.<patch> tag",
-            ),
-        )
-    try:
-        tag_names = subprocess.run(
-            ["git", "tag", "--list", "v[0-9]*"],
-            cwd=root,
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout.splitlines()
-    except (OSError, subprocess.CalledProcessError):
-        tag_names = []
-    versions: list[tuple[tuple[int, int, int], str, str]] = []
-    for tag in tag_names:
-        match = re.fullmatch(r"v([0-9]+)\.([0-9]+)\.([0-9]+)", tag)
-        if not match:
-            continue
-        try:
-            commit = subprocess.run(
-                ["git", "rev-parse", "--verify", f"refs/tags/{tag}^{{commit}}"],
-                cwd=root,
-                check=True,
-                capture_output=True,
-                text=True,
-            ).stdout.strip()
-        except (OSError, subprocess.CalledProcessError):
-            continue
-        versions.append((tuple(int(part) for part in match.groups()), tag, commit))
-    ordered = [(tag, commit) for _, tag, commit in sorted(versions)]
-    ordered_tags = [tag for tag, _ in ordered]
-    if activating_release not in ordered_tags:
-        return None, None, (
-            _issue(
-                "BFR-ACTIVATING-RELEASE",
-                ACTIVATION_RECORD.as_posix(),
-                "activating release tag does not exist",
-                activating_release,
-                "existing immutable release tag",
-            ),
-        )
-    index = ordered_tags.index(activating_release)
-    if index == 0:
-        return None, ordered[index][1], (
-            _issue(
-                "BFR-ROLLBACK-RELEASE",
-                ACTIVATION_RECORD.as_posix(),
-                "activating release has no published predecessor",
-                activating_release,
-                "release tag with an immediate predecessor",
-            ),
-        )
-    return ordered[index - 1][0], ordered[index][1], ()
-
-
-def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
+) -> tuple[ValidationIssue, ...]:
     record_path, record_path_issue = _fixed_authoritative_path(
         root,
         ACTIVATION_RECORD,
@@ -1364,7 +1494,7 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
     assert data is not None
     vocabulary: list[ValidationIssue] = []
     state = data.get("state")
-    if state not in ACTIVATION_STATES:
+    if not isinstance(state, str) or state not in ACTIVATION_STATES:
         vocabulary.append(
             _issue("BFR-UNKNOWN-ACTIVATION-STATE", ACTIVATION_RECORD.as_posix(), "unknown activation state", state, ", ".join(sorted(ACTIVATION_STATES)))
         )
@@ -1463,68 +1593,28 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                     )
                 )
     else:
-        transition, transition_issues = _activation_transition(root)
-        issues.extend(transition_issues)
-        expected_rollback, activating_tag_commit, release_issues = _release_predecessor(
-            root,
-            activating_release,
-        )
-        issues.extend(release_issues)
-        if rollback_release != expected_rollback:
+        if activating_release != ACTIVE_RELEASE_INTENT:
+            issues.append(
+                _issue(
+                    "BFR-ACTIVATING-RELEASE",
+                    ACTIVATION_RECORD.as_posix(),
+                    "active snapshot release intent differs",
+                    activating_release,
+                    ACTIVE_RELEASE_INTENT,
+                )
+            )
+        if rollback_release != ACTIVE_ROLLBACK_RELEASE:
             issues.append(
                 _issue(
                     "BFR-ROLLBACK-RELEASE",
                     ACTIVATION_RECORD.as_posix(),
-                    "rollback release must be the immediately preceding published release",
+                    "active snapshot rollback release differs",
                     rollback_release,
-                    expected_rollback or "immediate predecessor tag",
-                )
-            )
-        transition_commit = transition[0] if transition else None
-        expected_baseline = transition[1] if transition else None
-        transition_data = transition[2] if transition else {}
-        if activating_tag_commit != transition_commit:
-            issues.append(
-                _issue(
-                    "BFR-ACTIVATING-TAG-COMMIT",
-                    ACTIVATION_RECORD.as_posix(),
-                    "activating release tag must resolve to the activation transition commit",
-                    activating_tag_commit,
-                    transition_commit or "pending-to-active transition commit",
-                )
-            )
-        if (
-            transition
-            and (
-                activating_release != transition_data.get("activating_release")
-                or rollback_release != transition_data.get("rollback_release")
-            )
-        ):
-            issues.append(
-                _issue(
-                    "BFR-ACTIVATION-IMMUTABLE",
-                    ACTIVATION_RECORD.as_posix(),
-                    "active release fields must match the activation transition snapshot",
-                    [activating_release, rollback_release],
-                    [
-                        transition_data.get("activating_release"),
-                        transition_data.get("rollback_release"),
-                    ],
-                )
-            )
-        transition_baseline = transition_data.get("grandfathering_baseline_revision")
-        if transition and transition_baseline != expected_baseline:
-            issues.append(
-                _issue(
-                    "BFR-BASELINE-PARENT",
-                    ACTIVATION_RECORD.as_posix(),
-                    "activation transition snapshot must record its exact first parent",
-                    transition_baseline,
-                    expected_baseline or "transition parent commit",
+                    ACTIVE_ROLLBACK_RELEASE,
                 )
             )
         if not isinstance(baseline_revision, str) or not re.fullmatch(
-            r"[0-9a-f]{40,64}",
+            r"[0-9a-f]{40}",
             baseline_revision,
         ):
             issues.append(
@@ -1533,17 +1623,7 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                     ACTIVATION_RECORD.as_posix(),
                     "active baseline must be a full commit identity",
                     baseline_revision,
-                    "full source-control commit identity",
-                )
-            )
-        elif baseline_revision != expected_baseline:
-            issues.append(
-                _issue(
-                    "BFR-BASELINE-PARENT",
-                    ACTIVATION_RECORD.as_posix(),
-                    "baseline must be the exact parent of the pending-to-active transition",
-                    baseline_revision,
-                    expected_baseline or "transition parent commit",
+                    "40-character lowercase hexadecimal commit identity",
                 )
             )
 
@@ -1552,7 +1632,6 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
         issues.append(_issue("BFR-GRANDFATHERED-SHAPE", ACTIVATION_RECORD.as_posix(), "grandfathered_specs must be a list", type(grandfathered).__name__, "list"))
     else:
         previous: bytes | None = None
-        valid_paths: list[str] = []
         for item_path in grandfathered:
             encoded = item_path.encode("utf-8") if isinstance(item_path, str) else b""
             if (
@@ -1574,7 +1653,6 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                 )
                 continue
             previous = encoded
-            valid_paths.append(item_path)
         if state == "pending" and grandfathered:
             issues.append(
                 _issue(
@@ -1585,59 +1663,17 @@ def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
                     [],
                 )
             )
-        if (
-            state == "active"
-            and isinstance(expected_baseline, str)
-            and re.fullmatch(r"[0-9a-f]{40,64}", expected_baseline)
-        ):
-            eligible_membership, eligibility_issues = _eligible_grandfathered_specs(
-                root,
-                expected_baseline,
-            )
-            issues.extend(eligibility_issues)
-            transition_inventory = transition_data.get("grandfathered_specs")
-            if (
-                not isinstance(transition_inventory, list)
-                or tuple(transition_inventory) != eligible_membership
-            ):
-                issues.append(
-                    _issue(
-                        "BFR-GRANDFATHERED-MEMBERSHIP",
-                        ACTIVATION_RECORD.as_posix(),
-                        "activation transition snapshot inventory does not match its first parent",
-                        transition_inventory,
-                        eligible_membership,
-                    )
-                )
-            if transition and (
-                baseline_revision != transition_baseline
-                or grandfathered != transition_inventory
-            ):
-                issues.append(
-                    _issue(
-                        "BFR-ACTIVATION-IMMUTABLE",
-                        ACTIVATION_RECORD.as_posix(),
-                        "active baseline and inventory must match the activation transition snapshot",
-                        [baseline_revision, grandfathered],
-                        [transition_baseline, transition_inventory],
-                    )
-                )
-            if tuple(valid_paths) != eligible_membership:
-                issues.append(
-                    _issue(
-                        "BFR-GRANDFATHERED-MEMBERSHIP",
-                        ACTIVATION_RECORD.as_posix(),
-                        "grandfathered inventory does not match eligible parent-revision feature specs",
-                        valid_paths,
-                        eligible_membership,
-                    )
-                )
-
     if state == "active":
         _, rollback_issues = _rollback_package_matrix(root, data)
         issues.extend(rollback_issues)
 
     return tuple(issues)
+
+
+def validate_activation(root: Path) -> tuple[ValidationIssue, ...]:
+    """Validate the standing strict activation contract."""
+
+    return _validate_activation(root)
 
 
 def _changed_spec_path(
@@ -1682,6 +1718,8 @@ def _changed_spec_path(
 
 
 def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIssue, ...]:
+    if relative_path == PROOF_MODEL_SPEC.as_posix():
+        return ()
     path, path_issue = _changed_spec_path(root, relative_path)
     if path_issue:
         return (path_issue,)
@@ -1743,7 +1781,13 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
             return ()
         return (_issue("BFR-GRANDFATHERED-REVIEW", feature_relative, "changed grandfathered spec requires spec-review classification", "-", "semantic spec-review"),)
     if marker == METHOD_VERSION:
-        issues = list(validate_feature_record(feature_text, feature_relative))
+        issues = list(
+            validate_feature_record(
+                feature_text,
+                feature_relative,
+                root=root,
+            )
+        )
         if not proof_path.is_file():
             issues.append(
                 _issue(
@@ -1760,6 +1804,8 @@ def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIss
                     proof_path.read_text(encoding="utf-8"),
                     feature_text,
                     proof_relative,
+                    feature_path=feature_relative,
+                    root=root,
                 )
             )
         return tuple(issues)
