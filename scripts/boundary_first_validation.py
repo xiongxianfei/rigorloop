@@ -360,7 +360,7 @@ def _stage_owned_marker_authority(
                 "readable owning change record",
             ),
         )
-    contracts = re.findall(r"(?m)^lifecycle_contract:\s*(\S(?:.*\S)?)\s*$", change_text)
+    contracts = re.findall(r"(?m)^lifecycle_contract:\s*(.*?)\s*$", change_text)
     if len(contracts) > 1:
         return (
             None,
@@ -372,7 +372,41 @@ def _stage_owned_marker_authority(
                 "one lifecycle_contract value",
             ),
         )
-    return (contracts == ["stage-owned-change-local-v1"], None)
+    if not contracts:
+        return (False, None)
+    raw_contract = contracts[0].strip()
+    try:
+        if raw_contract.startswith('"'):
+            contract = json.loads(raw_contract)
+        elif raw_contract.startswith("'"):
+            if len(raw_contract) < 2 or not raw_contract.endswith("'"):
+                raise ValueError("unterminated single-quoted scalar")
+            contract = raw_contract[1:-1].replace("''", "'")
+        else:
+            contract = raw_contract
+    except (json.JSONDecodeError, ValueError):
+        return (
+            None,
+            _issue(
+                "BFR-UNKNOWN-LIFECYCLE-CONTRACT",
+                path,
+                "owning change record lifecycle contract is malformed",
+                "malformed-lifecycle-contract",
+                "stage-owned-change-local-v1 or absent legacy contract",
+            ),
+        )
+    if contract == "stage-owned-change-local-v1":
+        return (True, None)
+    return (
+        None,
+        _issue(
+            "BFR-UNKNOWN-LIFECYCLE-CONTRACT",
+            path,
+            "owning change record declares an unknown lifecycle contract",
+            "unknown-lifecycle-contract",
+            "stage-owned-change-local-v1 or absent legacy contract",
+        ),
+    )
 
 
 def _marker_issues(
