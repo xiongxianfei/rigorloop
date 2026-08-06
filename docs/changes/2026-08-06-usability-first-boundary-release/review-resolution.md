@@ -25,10 +25,10 @@ Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r4
 Review closeout: code-review-pr-readiness-r1
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`, `code-review-pr-full-gate-r1`, `code-review-pr-full-gate-r2`, `code-review-pr-full-gate-r3`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`, `code-review-pr-full-gate-r1`, `code-review-pr-full-gate-r2`, `code-review-pr-full-gate-r3`, `code-review-pr-full-gate-r4`
 - Findings resolved: 33
-- Unresolved findings: 1
-- Current result: Code-review PR full-gate R3 resolves the canonical reciprocal marker bypass and keeps profile/package corrections green, but records `UBR-PRFG-CR3-001` for unknown-value fail-open and YAML-equivalent lifecycle-authority misclassification.
+- Unresolved findings: 2
+- Current result: Code-review PR full-gate R4 confirms the canonical CR3 correction and the resolved profile/package corrections, but records `UBR-PRFG-CR4-001` because repository-accepted lifecycle-key spacing still bypasses semantic authority and duplicate detection; `UBR-PRFG-CR3-001` therefore remains open.
 
 ## Resolution Overview
 
@@ -36,6 +36,7 @@ Review closeout: code-review-pr-readiness-r1
 | --- | --- | --- | --- |
 | UBR-TSR3-001 | accepted | resolved | T24 now pairs specs with change records, rejects missing or different lifecycle authority, and uses consistent integration proof labels. |
 | UBR-SR4-001 | accepted | resolved | Folded marker placement into BND-COMPAT-001 so the applicability and boundary-definition requirement sets agree exactly. |
+| UBR-PRFG-CR4-001 | accepted | open | Recognize repository-accepted lifecycle mapping keys semantically and reject mixed-spelling duplicates before marker consistency. |
 | UBR-PRFG-CR3-001 | accepted | open | Parse lifecycle authority semantically, reject present unknown values, and retain historical absence only. |
 | UBR-PRFG-CR2-001 | accepted | resolved | Lifecycle authority now selects the canonical owner/status branch before acceptance and directly covers before-pointer placement. |
 | UBR-PRFG-CR1-001 | accepted | resolved | The approved contract and reciprocal R3 probe now align canonical stage-owned and historical marker placement. |
@@ -198,6 +199,22 @@ Rationale: Closed lifecycle authority cannot safely map arbitrary present values
 Validation target: independent PR full-gate correction rereview
 Validation evidence: Code-review R3 probes show unknown authority plus status returns no issue, while a quoted exact stage-owned scalar rejects owner placement and permits status placement; the current 64-test suite uses invented `legacy` as a passing non-stage fixture and has no unknown-value regression.
 Safe resolution path: Use a bounded repository-owned semantic scalar parser or equivalent exact three-state seam, replace the `legacy` positive with absent historical authority, add quoted exact and `unknown_value` negatives, and rerun focused/complete boundary validation without changing selector, package, release, architecture, or plan surfaces.
+Auto-fix class: declared-safe
+
+### code-review-pr-full-gate-r4
+
+#### UBR-PRFG-CR4-001 - YAML-equivalent lifecycle keys bypass authority and duplicate detection
+
+Finding ID: UBR-PRFG-CR4-001
+Disposition: accepted
+Status: open
+Owner: PR full-gate correction implementer
+Owning stage: review-resolution
+Chosen action: Classify top-level lifecycle entries with repository mapping-key semantics, preserve occurrence count before mapping overwrite, and reject semantic duplicates, unknowns, and malformed values before marker placement.
+Rationale: The repository parser reads `lifecycle_contract :` as the lifecycle key, but the boundary authority regex treats it as absent; key presentation can therefore invert exact stage-owned placement, downgrade an unknown value to historical status behavior, or hide a mixed-spelling duplicate.
+Validation target: independent PR full-gate correction rereview
+Validation evidence: Code-review R4 direct probes show a spaced exact key rejects owner and accepts status, a spaced unknown key accepts status, and a canonical-plus-spaced duplicate accepts owner; the repository parser resolves each spaced key to `lifecycle_contract`.
+Safe resolution path: Use a bounded repository-owned tokenizer/scalar seam or equivalent parser that observes top-level semantic mapping keys and preserves duplicates, add exact/unknown/malformed/mixed-duplicate spaced-key regressions, and rerun focused boundary validation while preserving profile and package corrections.
 Auto-fix class: declared-safe
 
 ### code-review-pr-readiness-r1
