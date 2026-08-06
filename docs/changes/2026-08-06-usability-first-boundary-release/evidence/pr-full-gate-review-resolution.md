@@ -18,6 +18,7 @@ Approved proof: T24, PRF-007, test-spec-review-r4
 - The release selector treats `docs/releases/profiles/` as an exclusive namespace and accepts only exact `vMAJOR.MINOR.PATCH.yaml` filenames.
 - CLI fixtures now parameterize package, release-tag, metadata-file, archive, and release-index identity. Current package tests remain `v0.4.0`; the four official older skills-only cases use `v0.3.3` and its compatibility marker.
 - After code-review R2 reproduced `UBR-PRFG-CR2-001`, lifecycle authority resolution moved ahead of branch acceptance: a stage-owned record now rejects the legacy status form, a genuinely non-stage-owned record retains it, and the direct before-pointer case is explicit.
+- After code-review R3 reproduced `UBR-PRFG-CR3-001`, lifecycle authority parsing became YAML-scalar aware and fail-closed: absent authority remains the historical form, quoted or unquoted exact stage-owned authority selects owner placement, and every unknown value fails before placement consistency.
 
 ## Validation
 
@@ -38,6 +39,9 @@ Approved proof: T24, PRF-007, test-spec-review-r4
 - R2 reciprocal-authority regression — expected pre-fix failure because the stage-owned status form returned no issue; post-fix targeted T24 passes.
 - Post-R2 `python scripts/test-boundary-first-validation.py` — pass, 64 tests including owner-form, stage-owned status rejection, non-stage-owned status retention, before-pointer, missing/different authority, outside-section, and duplicate coverage.
 - Post-R2 path-aware feature/test-spec validation — pass for the approved usability-first spec pair.
+- R3 scalar-authority regressions — expected pre-fix quoted-value rejection and unknown-value acceptance; post-fix both targeted cases pass.
+- Post-R3 `python scripts/test-boundary-first-validation.py` — pass, 65 tests.
+- Post-R3 path-aware feature/test-spec validation — pass for the approved usability-first spec pair.
 
 ## Aligned-surface audit
 

@@ -334,8 +334,7 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
                 "BFR-MARKER-AUTHORITY",
             )
             change_path.write_text(
-                "change_id: 2026-08-06-example\n"
-                "lifecycle_contract: legacy\n",
+                "change_id: 2026-08-06-example\n",
                 encoding="utf-8",
             )
             self.assertEqual(
@@ -354,6 +353,54 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
                 ),
                 (),
             )
+
+            change_path.write_text(
+                "change_id: 2026-08-06-example\n"
+                'lifecycle_contract: "stage-owned-change-local-v1"\n',
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                validate_feature_record(
+                    stage_owned,
+                    "specs/example.md",
+                    root=root,
+                ),
+                (),
+            )
+            self.assertEqual(
+                validate_feature_record(
+                    stage_owned_status,
+                    "specs/example.md",
+                    root=root,
+                )[0].code,
+                "BFR-MARKER-PLACEMENT",
+            )
+
+    def test_unknown_value_lifecycle_contract_fails_before_marker_consistency(self) -> None:
+        stage_owned_status = valid_feature().replace(
+            "## Status",
+            "## Owning change record\n\n"
+            "`docs/changes/2026-08-06-example/change.yaml`\n\n"
+            "## Status",
+            1,
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            change_path = root / "docs/changes/2026-08-06-example/change.yaml"
+            change_path.parent.mkdir(parents=True)
+            change_path.write_text(
+                "change_id: 2026-08-06-example\n"
+                "lifecycle_contract: future-contract-v2\n",
+                encoding="utf-8",
+            )
+
+            issues = validate_feature_record(
+                stage_owned_status,
+                "specs/example.md",
+                root=root,
+            )
+
+            self.assertEqual(issues[0].code, "BFR-UNKNOWN-LIFECYCLE-CONTRACT")
 
     def test_fenced_record_and_malformed_separator_fail_closed(self) -> None:
         fenced = "```md\n" + valid_feature() + "\n```\n"
