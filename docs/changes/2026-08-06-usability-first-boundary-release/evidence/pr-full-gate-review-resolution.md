@@ -19,6 +19,7 @@ Approved proof: T24, PRF-007, test-spec-review-r4
 - CLI fixtures now parameterize package, release-tag, metadata-file, archive, and release-index identity. Current package tests remain `v0.4.0`; the four official older skills-only cases use `v0.3.3` and its compatibility marker.
 - After code-review R2 reproduced `UBR-PRFG-CR2-001`, lifecycle authority resolution moved ahead of branch acceptance: a stage-owned record now rejects the legacy status form, a genuinely non-stage-owned record retains it, and the direct before-pointer case is explicit.
 - After code-review R3 reproduced `UBR-PRFG-CR3-001`, lifecycle authority parsing became YAML-scalar aware and fail-closed: absent authority remains the historical form, quoted or unquoted exact stage-owned authority selects owner placement, and every unknown value fails before placement consistency.
+- After code-review R4 reproduced `UBR-PRFG-CR4-001`, lifecycle authority discovery now tokenizes top-level repository-style mapping entries, normalizes whitespace around the mapping key, and preserves every occurrence before scalar classification. Spaced exact keys therefore select stage-owned placement, while spaced unknown or malformed values and mixed-spelling duplicates fail closed.
 
 ## Validation
 
@@ -42,6 +43,8 @@ Approved proof: T24, PRF-007, test-spec-review-r4
 - R3 scalar-authority regressions — expected pre-fix quoted-value rejection and unknown-value acceptance; post-fix both targeted cases pass.
 - Post-R3 `python scripts/test-boundary-first-validation.py` — pass, 65 tests.
 - Post-R3 path-aware feature/test-spec validation — pass for the approved usability-first spec pair.
+- R4 semantic-key regressions — expected pre-fix spaced exact rejection, spaced unknown and malformed acceptance, and mixed-spelling duplicate acceptance; post-fix all four cases pass.
+- Post-R4 `python scripts/test-boundary-first-validation.py` — pass, 65 tests.
 
 ## Aligned-surface audit
 

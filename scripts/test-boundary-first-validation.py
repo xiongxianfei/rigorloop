@@ -309,6 +309,28 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
                 "BFR-MARKER-PLACEMENT",
             )
 
+            change_path.write_text(
+                "change_id: 2026-08-06-example\n"
+                "lifecycle_contract : stage-owned-change-local-v1\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                validate_feature_record(
+                    stage_owned,
+                    "specs/example.md",
+                    root=root,
+                ),
+                (),
+            )
+            self.assertEqual(
+                validate_feature_record(
+                    stage_owned_status,
+                    "specs/example.md",
+                    root=root,
+                )[0].code,
+                "BFR-MARKER-PLACEMENT",
+            )
+
             before_pointer = stage_owned.replace(
                 "`docs/changes/2026-08-06-example/change.yaml`\n\n"
                 "boundary_contract: boundary-first-v1",
@@ -388,19 +410,34 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
             root = Path(temporary)
             change_path = root / "docs/changes/2026-08-06-example/change.yaml"
             change_path.parent.mkdir(parents=True)
-            change_path.write_text(
-                "change_id: 2026-08-06-example\n"
-                "lifecycle_contract: future-contract-v2\n",
-                encoding="utf-8",
-            )
+            for case, contract in (
+                ("canonical unknown", "lifecycle_contract: future-contract-v2\n"),
+                ("spaced unknown", "lifecycle_contract : future-contract-v2\n"),
+                ("spaced malformed", 'lifecycle_contract : "unterminated\n'),
+                (
+                    "mixed duplicate",
+                    "lifecycle_contract: stage-owned-change-local-v1\n"
+                    "lifecycle_contract : stage-owned-change-local-v1\n",
+                ),
+            ):
+                with self.subTest(case=case):
+                    change_path.write_text(
+                        "change_id: 2026-08-06-example\n" + contract,
+                        encoding="utf-8",
+                    )
 
-            issues = validate_feature_record(
-                stage_owned_status,
-                "specs/example.md",
-                root=root,
-            )
+                    issues = validate_feature_record(
+                        stage_owned_status,
+                        "specs/example.md",
+                        root=root,
+                    )
 
-            self.assertEqual(issues[0].code, "BFR-UNKNOWN-LIFECYCLE-CONTRACT")
+                    self.assertEqual(
+                        issues[0].code,
+                        "BFR-UNKNOWN-LIFECYCLE-CONTRACT"
+                        if case != "mixed duplicate"
+                        else "BFR-MARKER-AUTHORITY",
+                    )
 
     def test_fenced_record_and_malformed_separator_fail_closed(self) -> None:
         fenced = "```md\n" + valid_feature() + "\n```\n"
