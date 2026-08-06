@@ -1997,6 +1997,12 @@ raise SystemExit({exit_code})
                 ("--mode", "explicit", "--path", "dist/adapters/manifest.yaml"),
             ),
             (
+                "rigorloop_cli.test",
+                "npm test --prefix packages/rigorloop",
+                "<fake-npm>",
+                ("--mode", "explicit", "--path", "packages/rigorloop/package.json"),
+            ),
+            (
                 "npm_package_publication.test",
                 "python scripts/test-npm-package-publication.py",
                 "scripts/test-npm-package-publication.py",
@@ -2018,11 +2024,23 @@ raise SystemExit({exit_code})
         for check_id, command, script_path, args in cases:
             with self.subTest(check_id=check_id):
                 workspace = self.make_ci_workspace()
-                self.write_fake_script(
-                    workspace,
-                    script_path,
-                    "import sys\nprint('injected sibling failure')\nraise SystemExit(7)\n",
-                )
+                run_env = None
+                if check_id == "rigorloop_cli.test":
+                    fake_bin = workspace / "fake-bin"
+                    fake_bin.mkdir()
+                    fake_npm = fake_bin / "npm"
+                    fake_npm.write_text(
+                        "#!/bin/sh\necho 'injected sibling failure'\nexit 7\n",
+                        encoding="utf-8",
+                    )
+                    fake_npm.chmod(0o755)
+                    run_env = {"PATH": f"{fake_bin}{os.pathsep}{os.environ['PATH']}"}
+                else:
+                    self.write_fake_script(
+                        workspace,
+                        script_path,
+                        "import sys\nprint('injected sibling failure')\nraise SystemExit(7)\n",
+                    )
                 fixture = self.write_selector_fixture(
                     self.minimal_selector_payload(
                         mode="release" if args[1] == "release" else "explicit",
@@ -2042,7 +2060,7 @@ raise SystemExit({exit_code})
                     )
                 )
 
-                result = self.run_workspace_ci(workspace, fixture, *args)
+                result = self.run_workspace_ci(workspace, fixture, *args, env=run_env)
                 output = str(result.stdout) + str(result.stderr)
 
                 self.assertNotEqual(result.returncode, 0, msg=output)
