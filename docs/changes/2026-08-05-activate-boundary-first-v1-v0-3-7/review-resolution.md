@@ -34,7 +34,7 @@ Review closeout: test-spec-review-r7
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`, `plan-review-r4`, `test-spec-review-r5`, `test-spec-review-r6`, `test-spec-review-r7`
 - Findings resolved: 30
 - Unresolved findings: 5
-- Final result: M2 code-review R6 approves tag-race diagnostics but requires nonblocking exact-record parsing and a current evidence outcome.
+- Final result: M2 code-review R7 requires replacing mutable result-file authority with a parent-owned bounded channel.
 
 ## Resolution Overview
 
@@ -94,9 +94,27 @@ Review closeout: test-spec-review-r7
 | BFA-M2-R5-001 | accepted | open | Bound non-following guard-result reads and malformed encoding. |
 | BFA-M2-R5-002 | accepted | resolved | Prefer fresh tag/main conflicts over incomplete hook mappings. |
 | BFA-M2-R6-001 | accepted | open | Reject non-regular, partial, or changing results promptly and generically. |
-| BFA-M2-R6-002 | accepted | open | Align M2 evidence outcome with the current round. |
+| BFA-M2-R6-002 | accepted | resolved | Align M2 evidence outcome with the current round. |
+| BFA-M2-R7-001 | accepted | open | Replace mutable result-file authority with a bounded parent-owned channel. |
 
 ## Finding Details
+
+### code-review-m2-r7
+
+#### BFA-M2-R7-001 - Mutable result transport
+
+Finding ID: BFA-M2-R7-001
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Replace the result pathname with a parent-owned bounded pipe,
+pass only its write descriptor to the generated hook, and treat malformed,
+multiple, missing, read, or close outcomes as generic failure.
+Rationale: An append-only parent-owned channel removes pathname, object-type,
+and same-size rewrite substitution from the authority boundary.
+Validation target: code-review-m2-r8
+Validation evidence: pending correction and R8
 
 ### code-review-m2-r6
 
@@ -117,13 +135,13 @@ Validation evidence: pending correction and R7
 
 Finding ID: BFA-M2-R6-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementer
 Owning stage: review-resolution
 Chosen action: Update the outcome and proof matrix after focused validation.
 Rationale: Durable evidence must identify the actual correction round.
 Validation target: code-review-m2-r7
-Validation evidence: pending correction and R7
+Validation evidence: Code-review R7 confirms the R7 outcome and 18-test count are current.
 
 ### code-review-m2-r5
 

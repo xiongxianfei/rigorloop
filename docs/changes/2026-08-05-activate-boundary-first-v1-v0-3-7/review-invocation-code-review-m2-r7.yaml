@@ -40,14 +40,17 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: m2-r7-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: R7 must close prompt stable exact-record parsing and evidence alignment.
-  outcome: pending
+  outcome: changes-requested
 phase_receipts:
   - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
 review_focus:
   - Reconcile BFA-M2-R1-002, BFA-M2-R2-001, BFA-M2-R5-001, BFA-M2-R6-001, and BFA-M2-R6-002.
   - Challenge O_NONBLOCK/O_NOFOLLOW requirements, FIFO/truncation/growth/path replacement, exact newline grammar, stable descriptor metadata, bounded completion, and evidence accuracy.
