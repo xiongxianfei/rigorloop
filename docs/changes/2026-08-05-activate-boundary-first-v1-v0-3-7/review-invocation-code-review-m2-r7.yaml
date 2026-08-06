@@ -1,0 +1,53 @@
+schema_version: 1
+review_id: code-review-m2-r7
+review_stage: code-review
+review_target: range:e206aa32..cadfb349
+base_revision: e206aa3272cc3e9f86aa6d7decda2e076b6f29dd
+head_revision: cadfb3490367206d75b4ee47b7ca0f3472155396
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m2-review-resolution-r6
+reviewer_context_id: m2-r7-primary-and-second-reviewers
+context_separation_mechanism: existing-separate-agents-blind-first
+risk_tier: elevated
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - specs/boundary-first-v1-v0-3-7-activation-release.test.md
+  - docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: cadfb349
+    sha256: fa622a617f8af6f36a9b877338b97d4a4df25a493f385764c66feaad751b7918
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+    revision: cadfb349
+    sha256: 9d0d7c839c9c44d4c138fe22961b861a06c6520dc4d3dd9a1a648f0de8114186
+  - path: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+    revision: cadfb349
+    sha256: eaea12dafb3ee49d6ab284603566c8a9f190a92fbdcd4fe665ef70388ef07bde
+  - path: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+    revision: cadfb349
+    sha256: 614c19fb59aae74205845024fa23993fed38e0b5dce2c65991a24909858b542a
+  - path: range:e206aa32..cadfb349.diff
+    revision: cadfb349
+    sha256: e9362d49d379888f196bc48954daf0b203cd4925d61dd214e1720bf894280d08
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+second_review:
+  required: true
+  satisfied: false
+  reviewer_context_id: m2-r7-second-reviewer
+requirement_fidelity:
+  applicability: applicable
+  reason: R7 must close prompt stable exact-record parsing and evidence alignment.
+  outcome: pending
+phase_receipts:
+  - risk-map-recorded
+review_focus:
+  - Reconcile BFA-M2-R1-002, BFA-M2-R2-001, BFA-M2-R5-001, BFA-M2-R6-001, and BFA-M2-R6-002.
+  - Challenge O_NONBLOCK/O_NOFOLLOW requirements, FIFO/truncation/growth/path replacement, exact newline grammar, stable descriptor metadata, bounded completion, and evidence accuracy.
