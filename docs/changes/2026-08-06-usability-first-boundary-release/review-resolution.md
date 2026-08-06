@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -16,15 +16,19 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: code-review-m1-r2
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`
 - Findings resolved: 10
-- Unresolved findings: 0
-- Current result: Code-review M1 R2 is clean; M1 is closed and routing advances to M2.
+- Unresolved findings: 4
+- Current result: Code-review M2 R1 requires privacy, exact derivation, tracked rollback, and malformed-state corrections before M2 can close.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| UBR-M2-CR1-001 | accepted | open | Keep activation-record diagnostics repository-relative. |
+| UBR-M2-CR1-002 | accepted | open | Disable replacement refs and lazy fetch for exact read-only derivation. |
+| UBR-M2-CR1-003 | accepted | open | Prove rollback against the tracked immutable v0.3.6 record. |
+| UBR-M2-CR1-004 | accepted | open | Type-check activation state before closed-vocabulary membership. |
 | UBR-M1-CR1-001 | accepted | resolved | Each stable usability case is bound to independent required and forbidden semantics outside fixture-owned output. |
 | UBR-M1-CR1-002 | accepted | resolved | Closed-vocabulary types are validated before membership and malformed values produce bounded errors. |
 | UBR-SR1-001 | accepted | resolved | Exact activation fields and compatibility dispositions are present; R2 records the narrower snapshot/transition residual as UBR-SR2-001. |
@@ -44,6 +48,64 @@ Review closeout: code-review-m1-r2
 - Validation evidence: spec revision R3 authoring checks and approved spec-review R3
 
 ## Finding Details
+
+### code-review-m2-r1
+
+#### UBR-M2-CR1-001 - Activation parse diagnostics expose the absolute root
+
+Finding ID: UBR-M2-CR1-001
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Use the repository-relative activation path in every parse/shape issue and add sentinel-root structured and CLI regressions.
+Rationale: UBR-R017 forbids machine-local paths in validation evidence.
+Validation target: code-review-m2-r2
+Validation evidence: pending M2 correction and rereview
+Safe resolution path: Mechanical path substitution plus negative output assertions.
+Auto-fix class: mechanical
+
+#### UBR-M2-CR1-002 - Replacement refs can substitute the derivation baseline
+
+Finding ID: UBR-M2-CR1-002
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Disable Git replacement objects and lazy fetch for every derivation object read and prove stable output under a replacement ref.
+Rationale: The explicit full commit identity must bind the real local object graph and the helper must not acquire or write objects.
+Validation target: code-review-m2-r2
+Validation evidence: pending M2 correction and rereview
+Safe resolution path: Shared derivation-only Git environment plus replacement-ref and environment regressions.
+Auto-fix class: declared-safe
+
+#### UBR-M2-CR1-003 - Rollback fixture does not use tracked v0.3.6 evidence
+
+Finding ID: UBR-M2-CR1-003
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Copy tracked version-specific metadata for the positive case and reject v0.3.5 identities relabeled as v0.3.6.
+Rationale: T12 requires the exact immutable rollback authority, not a structurally valid surrogate.
+Validation target: code-review-m2-r2
+Validation evidence: pending M2 correction and rereview
+Safe resolution path: Fixture-only correction and substitution regression.
+Auto-fix class: mechanical
+
+#### UBR-M2-CR1-004 - Malformed activation state raises TypeError
+
+Finding ID: UBR-M2-CR1-004
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Type-check state before membership and regress list, object, and CLI malformed values.
+Rationale: Closed vocabularies must fail closed before consistency checks.
+Validation target: code-review-m2-r2
+Validation evidence: pending M2 correction and rereview
+Safe resolution path: String guard plus direct malformed-value tests.
+Auto-fix class: mechanical
 
 ### code-review-m1-r1
 
