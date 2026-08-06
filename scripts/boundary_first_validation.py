@@ -302,18 +302,21 @@ def _line_value(text: str, label: str) -> str | None:
     return match.group(1) if match else None
 
 
-def _stage_owned_marker_authority_issue(
+def _stage_owned_marker_authority(
     root: Path | None,
     change_record: str,
     path: str,
-) -> ValidationIssue | None:
+) -> tuple[bool | None, ValidationIssue | None]:
     if root is None:
-        return _issue(
-            "BFR-MARKER-AUTHORITY",
-            path,
-            "owner-pointer marker placement requires a matching stage-owned lifecycle contract",
-            "unresolved-change-record",
-            "lifecycle_contract: stage-owned-change-local-v1",
+        return (
+            None,
+            _issue(
+                "BFR-MARKER-AUTHORITY",
+                path,
+                "owner-pointer marker placement requires a resolvable lifecycle contract",
+                "unresolved-change-record",
+                "repository-contained owning change record",
+            ),
         )
     relative = PurePosixPath(change_record)
     candidate = root.joinpath(*relative.parts)
@@ -321,43 +324,55 @@ def _stage_owned_marker_authority_issue(
     for part in relative.parts:
         current = current / part
         if current.is_symlink():
-            return _issue(
-                "BFR-MARKER-AUTHORITY",
-                path,
-                "owner-pointer marker authority must not traverse a symlink",
-                change_record,
-                "repository-contained stage-owned change record",
+            return (
+                None,
+                _issue(
+                    "BFR-MARKER-AUTHORITY",
+                    path,
+                    "owner-pointer marker authority must not traverse a symlink",
+                    change_record,
+                    "repository-contained owning change record",
+                ),
             )
     resolved_root = root.resolve()
     resolved_candidate = candidate.resolve(strict=False)
     if not resolved_candidate.is_relative_to(resolved_root) or not candidate.is_file():
-        return _issue(
-            "BFR-MARKER-AUTHORITY",
-            path,
-            "owner-pointer marker placement requires an existing owning change record",
-            change_record,
-            "existing stage-owned change record",
+        return (
+            None,
+            _issue(
+                "BFR-MARKER-AUTHORITY",
+                path,
+                "owner-pointer marker placement requires an existing owning change record",
+                change_record,
+                "existing owning change record",
+            ),
         )
     try:
         change_text = candidate.read_text(encoding="utf-8")
     except (OSError, UnicodeDecodeError):
-        return _issue(
-            "BFR-MARKER-AUTHORITY",
-            path,
-            "owning change record is unreadable",
-            change_record,
-            "readable stage-owned change record",
+        return (
+            None,
+            _issue(
+                "BFR-MARKER-AUTHORITY",
+                path,
+                "owning change record is unreadable",
+                change_record,
+                "readable owning change record",
+            ),
         )
     contracts = re.findall(r"(?m)^lifecycle_contract:\s*(\S(?:.*\S)?)\s*$", change_text)
-    if contracts != ["stage-owned-change-local-v1"]:
-        return _issue(
-            "BFR-MARKER-AUTHORITY",
-            path,
-            "owner-pointer marker placement requires the stage-owned lifecycle contract",
-            "missing-or-non-stage-owned-contract",
-            "lifecycle_contract: stage-owned-change-local-v1",
+    if len(contracts) > 1:
+        return (
+            None,
+            _issue(
+                "BFR-MARKER-AUTHORITY",
+                path,
+                "owning change record must declare at most one lifecycle contract",
+                "duplicate-lifecycle-contract",
+                "one lifecycle_contract value",
+            ),
         )
-    return None
+    return (contracts == ["stage-owned-change-local-v1"], None)
 
 
 def _marker_issues(
@@ -381,6 +396,30 @@ def _marker_issues(
     status_markers = tuple(marker_pattern.finditer(status))
     owner = _section(text, "Owning change record")
     owner_markers = tuple(marker_pattern.finditer(owner))
+    owner_pointer_pattern = re.compile(
+        r"(?m)^`(docs/changes/[^/]+/change\.yaml)`\s*$"
+    )
+    owner_pointers = tuple(owner_pointer_pattern.finditer(owner))
+    stage_owned = False
+    if len(owner_pointers) == 1:
+        stage_owned_result, authority_issue = _stage_owned_marker_authority(
+            root,
+            owner_pointers[0].group(1),
+            path,
+        )
+        if authority_issue:
+            return [authority_issue]
+        stage_owned = bool(stage_owned_result)
+    elif len(owner_pointers) > 1:
+        return [
+            _issue(
+                "BFR-MARKER-AUTHORITY",
+                path,
+                "feature spec must identify exactly one owning change record",
+                len(owner_pointers),
+                1,
+            )
+        ]
     if len(status_markers) != 1 and len(owner_markers) != 1:
         return [
             _issue(
@@ -401,13 +440,17 @@ def _marker_issues(
             r"`docs/changes/[^/]+/change\.yaml`",
             preceding_owner_lines[-1],
         ):
-            change_record = preceding_owner_lines[-1][1:-1]
-            authority_issue = _stage_owned_marker_authority_issue(
-                root,
-                change_record,
-                path,
-            )
-            return [authority_issue] if authority_issue else []
+            if stage_owned:
+                return []
+            return [
+                _issue(
+                    "BFR-MARKER-AUTHORITY",
+                    path,
+                    "owner-pointer marker placement requires the stage-owned lifecycle contract",
+                    "non-stage-owned-contract",
+                    "lifecycle_contract: stage-owned-change-local-v1",
+                )
+            ]
         return [
             _issue(
                 "BFR-MARKER-PLACEMENT",
@@ -415,6 +458,16 @@ def _marker_issues(
                 "boundary contract marker must follow the normalized owning change pointer",
                 "before-owner-pointer",
                 "after normalized owning change pointer",
+            )
+        ]
+    if stage_owned:
+        return [
+            _issue(
+                "BFR-MARKER-PLACEMENT",
+                path,
+                "stage-owned feature specs must place the marker after the owning change pointer",
+                "status-marker-for-stage-owned-contract",
+                "owner-pointer marker form",
             )
         ]
     marker_line = status[: status_markers[0].start()].splitlines()

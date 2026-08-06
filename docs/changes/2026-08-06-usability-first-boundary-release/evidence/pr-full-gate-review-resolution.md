@@ -17,6 +17,7 @@ Approved proof: T24, PRF-007, test-spec-review-r4
 - The boundary validator now resolves the normalized owning-change pointer inside the repository, rejects missing, symlinked, unreadable, duplicate, or non-stage-owned lifecycle authority, and threads that authority through feature and proof validation.
 - The release selector treats `docs/releases/profiles/` as an exclusive namespace and accepts only exact `vMAJOR.MINOR.PATCH.yaml` filenames.
 - CLI fixtures now parameterize package, release-tag, metadata-file, archive, and release-index identity. Current package tests remain `v0.4.0`; the four official older skills-only cases use `v0.3.3` and its compatibility marker.
+- After code-review R2 reproduced `UBR-PRFG-CR2-001`, lifecycle authority resolution moved ahead of branch acceptance: a stage-owned record now rejects the legacy status form, a genuinely non-stage-owned record retains it, and the direct before-pointer case is explicit.
 
 ## Validation
 
@@ -34,6 +35,9 @@ Approved proof: T24, PRF-007, test-spec-review-r4
 - Explicit selector inspection — pass; selected `boundary_first.validate`, `boundary_first.regression`, `artifact_lifecycle.validate`, `selector.regression`, `rigorloop_cli.test`, and `npm_package_publication.test`; no broad smoke required for the implementation slice.
 - Selected artifact-lifecycle validation — pass for 9 artifacts with three pre-existing merge-language warnings.
 - `git diff --check` — pass.
+- R2 reciprocal-authority regression — expected pre-fix failure because the stage-owned status form returned no issue; post-fix targeted T24 passes.
+- Post-R2 `python scripts/test-boundary-first-validation.py` — pass, 64 tests including owner-form, stage-owned status rejection, non-stage-owned status retention, before-pointer, missing/different authority, outside-section, and duplicate coverage.
+- Post-R2 path-aware feature/test-spec validation — pass for the approved usability-first spec pair.
 
 ## Aligned-surface audit
 

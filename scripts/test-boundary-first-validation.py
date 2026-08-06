@@ -293,6 +293,37 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
                 (),
             )
 
+            stage_owned_status = valid_feature().replace(
+                "## Status",
+                "## Owning change record\n\n"
+                "`docs/changes/2026-08-06-example/change.yaml`\n\n"
+                "## Status",
+                1,
+            )
+            self.assertEqual(
+                validate_feature_record(
+                    stage_owned_status,
+                    "specs/example.md",
+                    root=root,
+                )[0].code,
+                "BFR-MARKER-PLACEMENT",
+            )
+
+            before_pointer = stage_owned.replace(
+                "`docs/changes/2026-08-06-example/change.yaml`\n\n"
+                "boundary_contract: boundary-first-v1",
+                "boundary_contract: boundary-first-v1\n\n"
+                "`docs/changes/2026-08-06-example/change.yaml`",
+            )
+            self.assertEqual(
+                validate_feature_record(
+                    before_pointer,
+                    "specs/example.md",
+                    root=root,
+                )[0].code,
+                "BFR-MARKER-PLACEMENT",
+            )
+
             change_path.unlink()
             self.assertEqual(
                 validate_feature_record(
@@ -302,7 +333,6 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
                 )[0].code,
                 "BFR-MARKER-AUTHORITY",
             )
-
             change_path.write_text(
                 "change_id: 2026-08-06-example\n"
                 "lifecycle_contract: legacy\n",
@@ -315,6 +345,14 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
                     root=root,
                 )[0].code,
                 "BFR-MARKER-AUTHORITY",
+            )
+            self.assertEqual(
+                validate_feature_record(
+                    stage_owned_status,
+                    "specs/example.md",
+                    root=root,
+                ),
+                (),
             )
 
     def test_fenced_record_and_malformed_separator_fail_closed(self) -> None:
