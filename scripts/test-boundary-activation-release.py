@@ -20,6 +20,7 @@ from boundary_activation_release import (
     PublicationError,
     PublicationReadiness,
     _atomic_push,
+    _guard_result,
     _guard_script,
     check_publication,
     error_payload,
@@ -363,7 +364,15 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
             root, candidate, publication_base, transition, head = initialized_repository(temporary)
             readiness = fixture_readiness(candidate, publication_base, transition, head)
             before = advertised(root)
-            cases = ("invalid-utf8", "oversized", "wrong-nonce", "multi-record", "symlink")
+            cases = (
+                "invalid-utf8",
+                "oversized",
+                "wrong-nonce",
+                "multi-record",
+                "symlink",
+                "fifo",
+                "truncated",
+            )
 
             for case in cases:
                 def malformed_hook(result_path: Path, nonce: str, *, selected: str = case) -> str:
@@ -374,6 +383,8 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
                         "wrong-nonce": f"{'0' * 64}\tremote-main-drift\t{'a' * 40}\n".encode(),
                         "multi-record": valid + valid,
                         "symlink": valid,
+                        "fifo": valid,
+                        "truncated": valid.rstrip(b"\n"),
                     }[selected]
                     if selected == "symlink":
                         target = result_path.with_name("guard-target")
@@ -382,6 +393,12 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
                             f"target = Path({str(target)!r})\n"
                             f"target.write_bytes({payload!r})\n"
                             f"Path({str(result_path)!r}).symlink_to(target)\n"
+                            "raise SystemExit(1)\n"
+                        )
+                    elif selected == "fifo":
+                        body = (
+                            "import os\n"
+                            f"os.mkfifo({str(result_path)!r}, 0o600)\n"
                             "raise SystemExit(1)\n"
                         )
                     else:
@@ -401,6 +418,45 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
                     _atomic_push(root, readiness, dry_run=False)
                 self.assertEqual(error_payload(raised.exception)["code"], "atomic-publication-failed")
                 self.assertEqual(advertised(root), before)
+
+    def test_guard_result_is_descriptor_bound_and_rejects_growth(self) -> None:
+        nonce = "b" * 64
+        valid = f"{nonce}\tremote-main-drift\t{'a' * 40}\n".encode()
+        with tempfile.TemporaryDirectory() as temporary:
+            result = Path(temporary) / "result"
+            result.write_bytes(valid)
+            real_read = os.read
+            changed = False
+
+            def grow_after_read(descriptor: int, size: int) -> bytes:
+                nonlocal changed
+                chunk = real_read(descriptor, size)
+                if not changed:
+                    changed = True
+                    with result.open("ab") as stream:
+                        stream.write(b"x")
+                return chunk
+
+            with mock.patch("boundary_activation_release.os.read", side_effect=grow_after_read):
+                self.assertIsNone(_guard_result(result, nonce))
+
+        with tempfile.TemporaryDirectory() as temporary:
+            result = Path(temporary) / "result"
+            opened = Path(temporary) / "opened"
+            result.write_bytes(valid)
+            real_open = os.open
+
+            def replace_after_open(path: os.PathLike[str] | str, flags: int) -> int:
+                descriptor = real_open(path, flags)
+                result.rename(opened)
+                result.write_bytes(b"untrusted replacement\n")
+                return descriptor
+
+            with mock.patch("boundary_activation_release.os.open", side_effect=replace_after_open):
+                marker = _guard_result(result, nonce)
+            self.assertIsNotNone(marker)
+            assert marker is not None
+            self.assertEqual(marker.group(1), "remote-main-drift")
 
     def test_post_readiness_tag_races_are_precise_and_read_only(self) -> None:
         for same_target in (True, False):

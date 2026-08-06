@@ -2,7 +2,7 @@
 
 Milestone: M2 — Guarded atomic activation publication helper
 
-Outcome: R1-R4 findings recorded; corrections implemented for code review R5.
+Outcome: R1-R6 findings recorded; corrections implemented for code review R7.
 
 ## Implemented behavior
 
@@ -42,7 +42,8 @@ full-SHA refspecs, absence of force/fallback flags, explicit and successful CLI
 modes, canonical path authority, authenticated-context preservation, private
 P/B/T/R/H environment collisions, nonce-bound local guard-result provenance,
 exact and prefixed forged-provider suppression, and
-invalid-encoding/oversized/wrong-nonce/multi-record/symlink result fallback.
+invalid-encoding/oversized/wrong-nonce/multi-record/symlink/FIFO/truncated result
+fallback, concurrent-growth rejection, and descriptor-bound path replacement.
 Real same- and different-target post-readiness tag races retain exact bounded
 tag-conflict context and leave both refs unchanged. Post-push confirmation
 uncertainty requires stop-and-reconcile behavior. The
@@ -50,7 +51,7 @@ selector fixture proves all three new paths route to the owned regression.
 
 ## Validation
 
-- `python scripts/test-boundary-activation-release.py` — pass, 17 tests.
+- `python scripts/test-boundary-activation-release.py` — pass, 18 tests.
 - `python scripts/test-select-validation.py` — pass, 147 tests.
 - `python -m py_compile scripts/boundary_activation_release.py scripts/publish-boundary-activation.py` — pass.
 - `python scripts/select-validation.py --mode explicit --path scripts/boundary_activation_release.py --path scripts/publish-boundary-activation.py --path scripts/test-boundary-activation-release.py --path scripts/validation_selection.py --path scripts/test-select-validation.py` — pass; selected boundary validation, activation publication regression, and selector regression without blockers or debt.
