@@ -10,7 +10,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: UBR-M1-CR1-001, UBR-M1-CR1-002
-Open findings: UBR-M1-CR1-001, UBR-M1-CR1-002
+Open findings: None
 Recording status: recorded
 
 ### Review entry

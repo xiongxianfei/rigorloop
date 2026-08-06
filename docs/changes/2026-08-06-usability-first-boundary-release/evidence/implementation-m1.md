@@ -34,5 +34,18 @@ prose, word count, bullet count, or method-name requirements.
 - `python scripts/build-skills.py --check` — pass.
 - `python scripts/validate-boundary-first.py --check` — pass; pending snapshot.
 
+## R1 review resolution
+
+- `UBR-M1-CR1-001`: resolved by an independent contract-owned oracle for every
+  stable journey. E1 and E2 now assert each named snapshot and malformed-input
+  partition independently; coordinated required-topic removal, forbidden-topic
+  admission, and stage/artifact reassignment all fail. Both `spec` boundary-record
+  and `test-spec` proof-map ownership are exercised alongside informal no-artifact
+  outcomes.
+- `UBR-M1-CR1-002`: resolved by validating string types before closed-vocabulary
+  membership or semantic evaluation. Array, object, and null mutations now return
+  bounded validation errors rather than raising interpreter exceptions.
+- The complete M1 validation command set passed again after both corrections.
+
 No tag, publication, push, merge, registry write, or external state mutation was
 performed.

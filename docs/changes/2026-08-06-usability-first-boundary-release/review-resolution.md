@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -16,16 +16,16 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`
-- Findings resolved: 8
-- Unresolved findings: 2
-- Current result: Code-review M1 R1 requires an independent semantic oracle and fail-closed field typing before M1 can close.
+- Findings resolved: 10
+- Unresolved findings: 0
+- Current result: Both M1 R1 findings are resolved and ready for code-review M1 R2.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| UBR-M1-CR1-001 | accepted | open | Bind each stable usability case to independent required and forbidden semantics rather than fixture-owned expected output. |
-| UBR-M1-CR1-002 | accepted | open | Validate closed-vocabulary types before membership and reject malformed values with bounded errors. |
+| UBR-M1-CR1-001 | accepted | resolved | Each stable usability case is bound to independent required and forbidden semantics outside fixture-owned output. |
+| UBR-M1-CR1-002 | accepted | resolved | Closed-vocabulary types are validated before membership and malformed values produce bounded errors. |
 | UBR-SR1-001 | accepted | resolved | Exact activation fields and compatibility dispositions are present; R2 records the narrower snapshot/transition residual as UBR-SR2-001. |
 | UBR-SR1-002 | accepted | resolved | The journeys now have concrete semantic oracles; R2 records the newly observed fixture-identity ambiguity as UBR-SR2-002. |
 | UBR-SR1-003 | accepted | resolved | UBR-R013 owns the exact cleanup inventory and preserves ordinary validation and release steps. |
@@ -50,13 +50,13 @@ Review closeout: test-spec-review-r2
 
 Finding ID: UBR-M1-CR1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementer
 Owning stage: review-resolution
 Chosen action: Add independent per-case stage, artifact, required-topic, forbidden-topic, and depth-relation expectations plus coordinated-drift regression mutations.
 Rationale: Stable journey IDs must preserve the approved E1-E3 semantic oracle; fixture metadata cannot author both the behavior and its expected proof result.
 Validation target: code-review-m1-r2
-Validation evidence: pending M1 correction and rereview
+Validation evidence: Contract-owned E1/E2 partition and stage/artifact expectations plus coordinated-drift mutations pass in the full 285-test skill-validator suite; the complete M1 command set passes.
 Safe resolution path: Keep the semantic fixture concise, but validate it against contract-owned expectations outside the mutable case rows and prove required deletion, forbidden admission, stage reassignment, and coordinated expected-output edits fail.
 Auto-fix class: declared-safe
 
@@ -64,13 +64,13 @@ Auto-fix class: declared-safe
 
 Finding ID: UBR-M1-CR1-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M1 implementer
 Owning stage: review-resolution
 Chosen action: Add string guards before closed-vocabulary membership or semantic evaluation and regress non-string JSON values for stage, trigger, and artifact fields.
 Rationale: A validation fixture must fail closed with an explicit bounded error; malformed values must not escape as interpreter exceptions.
 Validation target: code-review-m1-r2
-Validation evidence: pending M1 correction and rereview
+Validation evidence: Array, object, and null vocabulary mutations return validation errors without exceptions; the focused tests and full 285-test skill-validator suite pass.
 Safe resolution path: Guard the three fields mechanically, skip dependent evaluation for malformed rows, and add list, object, boolean, numeric, and null mutations.
 Auto-fix class: mechanical
 

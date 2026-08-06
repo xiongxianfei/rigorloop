@@ -8,14 +8,20 @@
       "behavior_change": true,
       "depth_trigger": "ordinary",
       "candidates": [
-        {"topic": "snapshot-shape", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "pending-snapshot", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "active-snapshot", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "missing-field", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "additional-field", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "malformed-field", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "mixed-state", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "unknown-state", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
         {"topic": "compatibility", "owned": true, "governing_consequence": true, "observed_interface": false, "trigger_match": false},
         {"topic": "release-tag", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false},
         {"topic": "network", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false},
         {"topic": "publication", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false},
         {"topic": "transition-history", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false}
       ],
-      "expected_selected": ["compatibility", "snapshot-shape"]
+      "expected_selected": ["active-snapshot", "additional-field", "compatibility", "malformed-field", "missing-field", "mixed-state", "pending-snapshot", "unknown-state"]
     },
     {
       "case_id": "usability.e2.inspection",
@@ -25,14 +31,18 @@
       "behavior_change": true,
       "depth_trigger": "ordinary",
       "candidates": [
-        {"topic": "activation-record-shape", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
-        {"topic": "snapshot-coherence", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "pending-snapshot", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "active-snapshot", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "missing-field", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "additional-field", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "malformed-field", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "unknown-field", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
         {"topic": "frozen-inventory", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
         {"topic": "public-cli-caller", "owned": true, "governing_consequence": false, "observed_interface": true, "trigger_match": false},
         {"topic": "provider-outage", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false},
         {"topic": "registry-publication", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false}
       ],
-      "expected_selected": ["activation-record-shape", "frozen-inventory", "public-cli-caller", "snapshot-coherence"]
+      "expected_selected": ["active-snapshot", "additional-field", "frozen-inventory", "malformed-field", "missing-field", "pending-snapshot", "public-cli-caller", "unknown-field"]
     },
     {
       "case_id": "usability.e3.code-review",
@@ -77,8 +87,8 @@
     },
     {
       "case_id": "usability.contract-base",
-      "stage": "plan",
-      "formal_artifact": "none",
+      "stage": "test-spec",
+      "formal_artifact": "proof-map",
       "user_named_method": false,
       "behavior_change": true,
       "depth_trigger": "ordinary",
@@ -91,8 +101,8 @@
     },
     {
       "case_id": "usability.contract-deeper",
-      "stage": "plan",
-      "formal_artifact": "none",
+      "stage": "test-spec",
+      "formal_artifact": "proof-map",
       "user_named_method": false,
       "behavior_change": true,
       "depth_trigger": "contract",
