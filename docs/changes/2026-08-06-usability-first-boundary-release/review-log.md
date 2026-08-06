@@ -185,3 +185,14 @@ Resolution: review-resolution.md#code-review-m3-r2
 Material findings: UBR-M3-CR2-001, UBR-M3-CR2-002
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-m3-r3
+Stage: code-review
+Round: 3
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r3.md
+Resolution: review-resolution.md#code-review-m3-r3
+Material findings: UBR-M3-CR3-001
+Open findings: UBR-M3-CR3-001
+Recording status: recorded
