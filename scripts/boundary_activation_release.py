@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import re
 import secrets
+import stat
 import subprocess
 import tempfile
 
@@ -327,14 +328,6 @@ for raw in sys.stdin:
     if remote_ref in updates:
         stop("push-mapping-invalid")
     updates[remote_ref] = (local_identity, remote_identity)
-if set(updates) != {main_ref, tag_ref}:
-    stop("push-mapping-invalid")
-if updates[main_ref][0] != expected_head or updates[tag_ref][0] != expected_transition:
-    stop("push-mapping-invalid")
-if updates[main_ref][1] != expected_main:
-    stop("remote-main-drift", updates[main_ref][1])
-if updates[tag_ref][1] != "0" * 40:
-    stop("remote-tag-exists", updates[tag_ref][1])
 
 result = subprocess.run(
     ["git", "ls-remote", "--refs", remote, main_ref, tag_ref],
@@ -352,9 +345,52 @@ if refs.get(main_ref) != expected_main:
     stop("remote-main-drift", refs.get(main_ref, ""))
 if tag_ref in refs:
     stop("remote-tag-exists", refs[tag_ref])
+
+if set(updates) != {main_ref, tag_ref}:
+    stop("push-mapping-invalid")
+if updates[main_ref][0] != expected_head or updates[tag_ref][0] != expected_transition:
+    stop("push-mapping-invalid")
+if updates[main_ref][1] != expected_main:
+    stop("remote-main-drift", updates[main_ref][1])
+if updates[tag_ref][1] != "0" * 40:
+    stop("remote-tag-exists", updates[tag_ref][1])
 """
     return script.replace("__RESULT_PATH__", repr(str(result_path))).replace(
         "__NONCE__", repr(nonce)
+    )
+
+
+def _guard_result(result_path: Path, nonce: str) -> re.Match[str] | None:
+    descriptor = None
+    try:
+        no_follow = getattr(os, "O_NOFOLLOW", None)
+        if no_follow is None:
+            return None
+        descriptor = os.open(
+            result_path,
+            os.O_RDONLY | no_follow,
+        )
+        metadata = os.fstat(descriptor)
+        if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > 256:
+            return None
+        raw = b""
+        while len(raw) <= 256:
+            chunk = os.read(descriptor, 257 - len(raw))
+            if not chunk:
+                break
+            raw += chunk
+        if len(raw) > 256:
+            return None
+        value = raw.decode("utf-8")
+    except (OSError, UnicodeError):
+        return None
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
+    return re.fullmatch(
+        re.escape(nonce)
+        + r"\t(remote-main-drift|remote-tag-exists|remote-advertisement-unavailable|push-mapping-invalid)(?:\t([0-9a-f]{40}))?\n?",
+        value,
     )
 
 
@@ -403,20 +439,7 @@ def _atomic_push(
                 text=True,
             )
         except (OSError, subprocess.CalledProcessError) as error:
-            marker = None
-            try:
-                if (
-                    result_path.is_file()
-                    and not result_path.is_symlink()
-                    and result_path.stat().st_size <= 256
-                ):
-                    marker = re.fullmatch(
-                        re.escape(nonce)
-                        + r"\t(remote-main-drift|remote-tag-exists|remote-advertisement-unavailable|push-mapping-invalid)(?:\t([0-9a-f]{40}))?\n?",
-                        result_path.read_text(encoding="utf-8"),
-                    )
-            except OSError:
-                marker = None
+            marker = _guard_result(result_path, nonce)
             if marker:
                 code = marker.group(1)
                 conflict_key = {
