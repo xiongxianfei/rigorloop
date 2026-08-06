@@ -58,3 +58,15 @@ Outcome: implemented and ready for code review.
   bytes; the release gates found no derived-output drift.
 - Performed no tag creation, push, registry write, publication, merge, network
   release check, or public-success claim.
+
+## R1 review resolution
+
+- `UBR-M4-CR1-001`: the CI-wrapper execution fixture now uses the archived
+  change record's `change.yaml` as its explicit lifecycle path instead of a
+  feature spec that the active snapshot correctly classifies as grandfathered.
+- The fixture still proves selector execution of review-root and explicit-path
+  validation. Separate boundary-first regressions continue to require
+  `BFR-GRANDFATHERED-REVIEW` for changed frozen specs, so compatibility
+  enforcement is unchanged.
+- The focused wrapper reproduction passed, and the complete selector suite
+  passed all 147 tests in 66.91 seconds.

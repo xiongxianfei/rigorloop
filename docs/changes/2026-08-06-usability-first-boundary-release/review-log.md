@@ -249,5 +249,5 @@ Status: changes-requested
 Detailed record: reviews/code-review-m4-r1.md
 Resolution: review-resolution.md#code-review-m4-r1
 Material findings: UBR-M4-CR1-001
-Open findings: UBR-M4-CR1-001
+Open findings: None
 Recording status: recorded
