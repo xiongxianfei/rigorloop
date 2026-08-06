@@ -61,7 +61,7 @@ The proof set combines partitions only when an approved boundary or selected int
 | UBR-R018 | T1, T2, T3 | integration | Representative journeys use semantic assertions rather than prose metrics. |
 | UBR-R019 | T12 | migration | Historical inventory and prospective adoption remain distinct and authoritative. |
 | UBR-R020 | T13, T18, T20 | contract, integration | Exact reviewed tag identity is required; mismatch and rewrite fail. |
-| UBR-R021 | T24 | contract | Stage-owned owner-pointer placement and legacy status placement both retain exact-one, fail-closed marker proof. |
+| UBR-R021 | T24 | integration | Stage-owned owner-pointer placement requires a matching lifecycle contract; legacy status placement remains valid and all unauthorized or malformed forms fail closed. |
 
 ## Acceptance criterion coverage map
 
@@ -78,8 +78,8 @@ The proof set combines partitions only when an approved boundary or selected int
 | AC-UBR-009 | T12, T19 | migration | Rollback remains complete and post-public recovery fixes forward. |
 | AC-UBR-010 | T21 | integration | No pre-release lifecycle command mutates external publication state. |
 | AC-UBR-011 | T1, T2, T3 | integration | Tests reject exact wording, count, or method-name assertions as the semantic oracle. |
-| AC-UBR-012 | T23, T24 | contract | Requirement, boundary, interaction, command, and milestone references fail closed when incomplete. |
-| AC-UBR-013 | T24 | contract | Both authorized marker forms pass; before-pointer, outside-section, and duplicate placements fail. |
+| AC-UBR-012 | T23, T24 | integration | Requirement, boundary, interaction, command, milestone, and lifecycle-authority references fail closed when incomplete. |
+| AC-UBR-013 | T24 | integration | Both authorized marker forms pass; absent or different lifecycle authority, before-pointer, outside-section, and duplicate placements fail. |
 
 ## Example coverage map
 
@@ -106,7 +106,7 @@ Boundary model scope: UBR-R001, UBR-R002, UBR-R003, UBR-R004, UBR-R005, UBR-R006
 | PRF-004 | covered | UBR-R004, UBR-R005, UBR-R010, UBR-R011, UBR-R012, UBR-R013 | BND-COMPOSE-001 | T4, T5, T11, T14, T15, T16, T17, T20 | end-to-end | automated | CMD01, CMD02, CMD07, CMD14, CMD15, CMD17, CMD18 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md`; `evidence/implementation-m3.md`; `evidence/implementation-m4.md` | M1, M2, M3, M4 | - | - |
 | PRF-005 | covered | UBR-R012, UBR-R016, UBR-R020 | BND-TEMPORAL-001 | T18, T19, T20 | integration | automated | CMD13, CMD14, CMD18 | `evidence/implementation-m3.md`; `evidence/implementation-m4.md` | M3, M4 | - | - |
 | PRF-006 | covered | UBR-R015, UBR-R016 | BND-RECOVERY-001 | T12, T19 | integration | automated | CMD06, CMD13, CMD18 | `evidence/implementation-m2.md`; `evidence/implementation-m3.md`; `evidence/implementation-m4.md` | M2, M3, M4 | - | - |
-| PRF-007 | covered | UBR-R006, UBR-R007, UBR-R013, UBR-R015, UBR-R019, UBR-R021 | BND-COMPAT-001 | T11, T12, T24 | contract | automated | CMD06, CMD07 | `evidence/implementation-m2.md`; `evidence/pr-readiness-full-gate-fixes.md` | M2 | - | - |
+| PRF-007 | covered | UBR-R006, UBR-R007, UBR-R013, UBR-R015, UBR-R019, UBR-R021 | BND-COMPAT-001 | T11, T12, T24 | integration | automated | CMD06, CMD07 | `evidence/implementation-m2.md`; `evidence/pr-full-gate-review-resolution.md` | M2 | - | - |
 | PRF-008 | covered | UBR-R007, UBR-R012, UBR-R014, UBR-R017 | BND-ENV-001 | T9, T10, T21, T22 | integration | automated | CMD05, CMD06, CMD12, CMD17, CMD18 | `evidence/implementation-m2.md`; `evidence/implementation-m3.md`; `evidence/implementation-m4.md` | M2, M3, M4 | - | - |
 | PRF-009 | covered | UBR-R002, UBR-R003, UBR-R004, UBR-R005 | INT-001 | T1, T2, T3, T4 | integration | automated | CMD01, CMD02 | `evidence/implementation-m1.md` | M1 | - | - |
 | PRF-010 | covered | UBR-R006, UBR-R008, UBR-R009, UBR-R012, UBR-R014, UBR-R020 | INT-002 | T9, T13, T18, T20, T21 | integration | automated | CMD05, CMD13, CMD17, CMD18 | `evidence/implementation-m3.md`; `evidence/implementation-m4.md` | M3, M4 | - | - |
@@ -128,7 +128,7 @@ All evidence paths in the proof map are relative to `docs/changes/2026-08-06-usa
 | EC8 partial public evidence | T19, T20 | Closeout remains open and rerunnable. |
 | EC9 retired helper or selectable custom check | T11 | Exact retirement validation fails. |
 | EC10 activation bypasses routine release | T15, T20 | Static and executable gate proof fails. |
-| EC11 misplaced or duplicate marker | T24 | Authorized stage-owned and legacy forms pass; before-pointer, outside-section, and duplicate placements fail. |
+| EC11 unauthorized, misplaced, or duplicate marker | T24 | Matching stage-owned authority and the legacy form pass; missing or different lifecycle authority, before-pointer, outside-section, and duplicate forms fail. |
 
 ## Validation commands
 
@@ -158,7 +158,7 @@ All evidence paths in the proof map are relative to `docs/changes/2026-08-06-usa
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | M1 | T1, T2, T3, T4, T5 | none | CMD01, CMD02, CMD03, CMD04, CMD05 | `docs/changes/2026-08-06-usability-first-boundary-release/evidence/implementation-m1.md` | code-review M1 | Proves automatic concise behavior, stage ownership, normalized records, and all ten governed skill/resource surfaces. |
-| M2 | T6, T7, T8, T9, T10, T11, T12, T22, T23, T24 | none | CMD05, CMD06, CMD07, CMD08, CMD09 | `docs/changes/2026-08-06-usability-first-boundary-release/evidence/implementation-m2.md`; `docs/changes/2026-08-06-usability-first-boundary-release/evidence/pr-readiness-full-gate-fixes.md` | code-review M2 | Proves checked-revision snapshots, one-time derivation, proof-map mutation handling, privacy, exact custom retirement, marker compatibility, and rollback. |
+| M2 | T6, T7, T8, T9, T10, T11, T12, T22, T23, T24 | none | CMD05, CMD06, CMD07, CMD08, CMD09 | `docs/changes/2026-08-06-usability-first-boundary-release/evidence/implementation-m2.md`; `docs/changes/2026-08-06-usability-first-boundary-release/evidence/pr-full-gate-review-resolution.md` | code-review M2 | Proves checked-revision snapshots, one-time derivation, proof-map mutation handling, privacy, exact custom retirement, lifecycle-authorized marker compatibility, and rollback. |
 | M3 | T13, T14, T15, T16, T18, T19, T20, T21, T22 | none | CMD10, CMD11, CMD12, CMD13, CMD14, CMD15, CMD16, CMD17, CMD18 | `docs/changes/2026-08-06-usability-first-boundary-release/evidence/implementation-m3.md` | code-review M3 and pending-baseline selection | Executes both release gates while activation remains pending; selector output alone is not closeout evidence. |
 | M4 | T7, T9, T12, T14, T17, T18, T19, T20, T21, T22 | none | CMD05, CMD06, CMD12, CMD17, CMD18 | `docs/changes/2026-08-06-usability-first-boundary-release/evidence/implementation-m4.md` | code-review M4 | Repeats release proof only after the active snapshot changes the checked state and stops before external publication. |
 
@@ -468,11 +468,11 @@ All evidence paths in the proof map are relative to `docs/changes/2026-08-06-usa
 - Covers: UBR-R021, BND-COMPAT-001, AC-UBR-012, AC-UBR-013, EC11
 - Level: integration
 - Command IDs: CMD06
-- Fixture/setup: A stage-owned feature spec with a normalized owning-change pointer, a non-stage-owned feature spec with the standing PBF-R002 status form, and mutations that move the marker before the pointer, outside the governed section, or duplicate it.
-- Steps: Validate both authorized fixtures, then apply one placement or cardinality mutation at a time and rerun focused boundary validation.
-- Expected result: The stage-owned owner-pointer form and non-stage-owned status form pass; every before-pointer, outside-section, or duplicate form fails with a bounded marker-placement issue.
-- Failure proves: The validator accepts a marker without lifecycle authority, rejects a retained legacy form, or permits ambiguous marker ownership.
-- Evidence artifact: `evidence/pr-readiness-full-gate-fixes.md`
+- Fixture/setup: Paired temporary feature-spec and change-record fixtures: one normalized owner pointer whose referenced record declares `lifecycle_contract: stage-owned-change-local-v1`, one non-stage-owned feature spec with the standing PBF-R002 status form, owner-pointer fixtures whose referenced record is missing or declares a different lifecycle contract, and mutations that move the marker before the pointer, outside the governed section, or duplicate it.
+- Steps: Run the path-aware boundary validator on both authorized fixtures; remove or change the referenced lifecycle contract while retaining valid pointer syntax; then apply one placement or cardinality mutation at a time and rerun focused validation.
+- Expected result: The owner-pointer form passes only with the matching stage-owned lifecycle contract, and the non-stage-owned status form passes; missing or different lifecycle authority and every before-pointer, outside-section, or duplicate form fail with a bounded authority or marker-placement issue.
+- Failure proves: The validator treats pointer syntax as lifecycle authority, rejects a retained legacy form, or permits ambiguous marker ownership.
+- Evidence artifact: `evidence/pr-full-gate-review-resolution.md`
 - Automation location: `scripts/test-boundary-first-validation.py`
 - Required by milestone: M2
 
@@ -485,7 +485,7 @@ All evidence paths in the proof map are relative to `docs/changes/2026-08-06-usa
 - Temporary Codex, Claude, and opencode generated, archived, packed, and installed trees created under test-owned temporary directories and always cleaned up.
 - Exact `v0.3.6` tracked metadata remains immutable input; tests copy it before mutation and never rewrite the source fixture.
 - Closed-vocabulary mutations use `unknown_value` or `not_in_vocabulary` in test names.
-- Marker fixtures cover the authorized stage-owned owner-pointer form and retained non-stage-owned PBF-R002 status form without creating a second lifecycle state source.
+- Marker fixtures pair each owner-pointer form with its referenced change record so lifecycle authority comes from `lifecycle_contract`, while the retained non-stage-owned PBF-R002 status form remains independent of stage-owned state.
 
 Every expected path is repository-relative.
 No fixture reads user installation state, credentials, live registries, or public network services.

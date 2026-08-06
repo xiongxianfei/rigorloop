@@ -10,13 +10,15 @@ Trigger: `UBR-PRFG-CR1-001`
 ## Authoring result
 
 - Updated the proof scope and input identity from UBR-R001-R020/spec-review R3 to UBR-R001-R021/spec-review R5.
-- Added one focused T24 contract case for the authorized stage-owned owner-pointer form, retained non-stage-owned status form, and before-pointer, outside-section, and duplicate failures.
+- Added one focused T24 integration case for the lifecycle-authorized stage-owned owner-pointer form, retained non-stage-owned status form, missing or different lifecycle authority, and before-pointer, outside-section, and duplicate failures.
 - Extended PRF-007, AC-UBR-012, AC-UBR-013, EC11, and the existing M2 proof row without adding a validation command or implementation milestone.
 - Reused CMD06 and the existing boundary validator fixtures because marker placement is already owned by that suite.
 
 ## Scenario stop rule
 
 T24 covers the two distinct authorized outcomes and all three named invalid placement classes. Additional combinations would repeat the same ownership or cardinality outcome and are intentionally omitted.
+
+Test-spec-review R3 found that the first T24 draft treated normalized pointer syntax as sufficient stage-owned authority. The R4 candidate pairs feature specs with referenced change records, requires the exact lifecycle contract for the owner-pointer form, adds the missing/different-authority negative, and aligns requirement, acceptance, proof, and test levels to integration.
 
 ## Authoring checks
 

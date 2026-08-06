@@ -337,5 +337,5 @@ Status: changes-requested
 Detailed record: reviews/test-spec-review-r3.md
 Resolution: review-resolution.md#test-spec-review-r3
 Material findings: UBR-TSR3-001
-Open findings: UBR-TSR3-001
+Open findings: None
 Recording status: recorded

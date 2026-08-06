@@ -25,15 +25,15 @@ Review closeout: code-review-m4-r4
 Review closeout: code-review-pr-readiness-r1
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`, `code-review-pr-full-gate-r1`
-- Findings resolved: 28
-- Unresolved findings: 4
-- Current result: Test-spec-review R3 requests direct lifecycle-contract authority proof for T24; the three PR full-gate findings remain open.
+- Findings resolved: 29
+- Unresolved findings: 3
+- Current result: T24 now proves lifecycle-contract authority and awaits test-spec-review R4; the three PR full-gate findings remain open.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| UBR-TSR3-001 | accepted | in-progress | Make T24 prove stage-owned lifecycle-contract authority rather than owner-pointer syntax alone. |
+| UBR-TSR3-001 | accepted | resolved | T24 now pairs specs with change records, rejects missing or different lifecycle authority, and uses consistent integration proof labels. |
 | UBR-SR4-001 | accepted | resolved | Folded marker placement into BND-COMPAT-001 so the applicability and boundary-definition requirement sets agree exactly. |
 | UBR-PRFG-CR1-001 | accepted | in-progress | Align stage-owned owner-pointer marker placement with an approved governing contract while retaining the legacy status form and fail-closed placement checks. |
 | UBR-PRFG-CR1-002 | accepted | in-progress | Make the profile namespace exclusive and block malformed or incomplete filenames instead of fabricating a version. |
@@ -104,13 +104,13 @@ Validation evidence: The feature-only boundary record passes with no issues. Pat
 
 Finding ID: UBR-TSR3-001
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Add paired feature-spec and change-record fixtures that prove the stage-owned lifecycle contract and reject owner-pointer placement without that authority.
 Rationale: UBR-R021 conditions owner-pointer placement on `stage-owned-change-local-v1`; a syntactically normalized pointer alone cannot establish that governing contract.
 Validation target: revised T24 and linked proof rows followed by test-spec-review-r4
-Validation evidence: Pending. Structural boundary validation passes, but the current T24 steps do not exercise a matching or non-matching lifecycle contract.
+Validation evidence: The R4 candidate T24 names paired spec/change-record fixtures, matching and non-matching lifecycle contracts, path-aware steps, bounded failures, and one consistent integration proof level.
 Safe resolution path: Extend T24 with the authority positive and negative, retain the named placement/cardinality cases, align proof-level labels, and use the existing M2-owned boundary suite through a path-aware seam.
 Auto-fix class: requires-test-spec
 
