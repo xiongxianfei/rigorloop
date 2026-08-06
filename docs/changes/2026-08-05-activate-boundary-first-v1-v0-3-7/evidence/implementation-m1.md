@@ -2,7 +2,7 @@
 
 Milestone: M1 — Read-only activation candidate validation
 
-Outcome: implemented, R1-R3 findings corrected, and ready for R4 code review.
+Outcome: implemented, R1-R4 findings corrected, and ready for R5 code review.
 
 ## Implemented behavior
 
@@ -34,6 +34,11 @@ Outcome: implemented, R1-R3 findings corrected, and ready for R4 code review.
   rejects incomplete or unknown-field invocation manifests, retains short
   private environment values by sensitive variable name, tolerates unavailable
   username/hostname providers, and injects the omitted CLI sibling failure.
+- The R4 correction separates pre-tag candidate checks from phase-neutral
+  authority derivation so tagged publication readiness validates strict live-H
+  state without re-entering candidate mode. It also accepts canonical
+  abbreviated receipt revisions, validates every current activation invocation,
+  and redacts short PIN, API-key, and auth-code environment values.
 
 ## Boundary and proof coverage
 
@@ -65,7 +70,7 @@ mode changes tag authority only; it does not remove path-owned sibling checks.
 
 ## Validation
 
-- `python scripts/test-boundary-first-validation.py` — pass, 85 tests.
+- `python scripts/test-boundary-first-validation.py` — pass, 86 tests.
 - `python scripts/validate-boundary-first.py --check` — pass.
 - `python -m py_compile scripts/validate-boundary-first.py scripts/boundary_first_validation.py` — pass.
 - `python scripts/select-validation.py --mode explicit --path scripts/validate-boundary-first.py --path scripts/boundary_first_validation.py --path scripts/test-boundary-first-validation.py --path scripts/fixtures/boundary-first/activation --path scripts/validation_selection.py --path scripts/test-select-validation.py` — pass; selected `boundary_first.validate`, `boundary_first.regression`, and `selector.regression`, with no blockers or registration debt.

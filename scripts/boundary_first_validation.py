@@ -1939,7 +1939,7 @@ def _private_runtime_values() -> tuple[str, ...]:
         pass
     for name, value in os.environ.items():
         if len(value) >= 6 or re.search(
-            r"(?i)(token|otp|secret|credential|private|username|hostname|password)",
+            r"(?i)(token|otp|pin|passcode|mfa|2fa|api[_-]?key|auth(?:entication|orization)?[_-]?(?:code|token)?|verification[_-]?code|secret|credential|private|username|hostname|password)",
             name,
         ):
             values.add(value)
@@ -2039,7 +2039,8 @@ def _candidate_changed_paths(
 def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | None:
     path = root / relative
     try:
-        manifest = _parse_change_yaml_text(path.read_text(encoding="utf-8"))
+        manifest_text = path.read_text(encoding="utf-8")
+        manifest = _parse_change_yaml_text(manifest_text)
         change = _parse_change_yaml_text(
             (root / ACTIVATION_CHANGE_ROOT / "change.yaml").read_text(encoding="utf-8")
         )
@@ -2087,17 +2088,19 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
         if isinstance(manifest, dict)
         else None
     )
+    packet_revisions = re.findall(
+        r"(?m)^\s{4}revision:\s*([0-9a-f]{8,64})\s*$",
+        manifest_text if isinstance(manifest, dict) else "",
+    )
     packet_shape_valid = bool(packets) and isinstance(packets, list) and all(
         isinstance(packet, dict)
         and set(packet) == {"path", "revision", "sha256"}
         and isinstance(packet.get("path"), str)
         and bool(packet.get("path"))
-        and isinstance(packet.get("revision"), str)
-        and bool(re.fullmatch(r"[0-9a-f]{8,64}", packet["revision"]))
         and isinstance(packet.get("sha256"), str)
         and bool(re.fullmatch(r"[0-9a-f]{64}", packet["sha256"]))
         for packet in packets
-    )
+    ) and len(packet_revisions) == len(packets)
     list_fields_valid = isinstance(manifest, dict) and all(
         isinstance(manifest.get(field), list) and bool(manifest[field])
         for field in ("governing_artifacts", "formal_criteria")
@@ -2128,9 +2131,9 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
             target.startswith(("docs/", "specs/", "commit:", "range:"))
         )
         or not isinstance(manifest.get("base_revision"), str)
-        or not re.fullmatch(r"[0-9a-f]{40,64}", manifest["base_revision"])
+        or not re.fullmatch(r"[0-9a-f]{8,64}", manifest["base_revision"])
         or not isinstance(manifest.get("head_revision"), str)
-        or not re.fullmatch(r"[0-9a-f]{40,64}", manifest["head_revision"])
+        or not re.fullmatch(r"[0-9a-f]{8,64}", manifest["head_revision"])
         or (
             manifest.get("native_review_status"),
             manifest.get("review_gate_outcome"),
@@ -2191,11 +2194,13 @@ def _git_ref_exists(root: Path, reference: str) -> bool:
         return False
 
 
-def validate_activation_candidate(
+def _activation_candidate_authority(
     root: Path,
     release: str,
+    *,
+    publication_readiness: bool,
 ) -> tuple[ActivationCandidateResult | None, tuple[ValidationIssue, ...]]:
-    """Validate the one approved pre-tag activation candidate without mutation."""
+    """Derive candidate authority under its pre-tag or tagged-readiness phase."""
 
     if release != ACTIVATION_CANDIDATE_RELEASE:
         return None, (
@@ -2208,7 +2213,11 @@ def validate_activation_candidate(
             ),
         )
 
-    issues = list(_validate_activation(root, candidate_release=release))
+    issues = list(
+        _validate_activation(root)
+        if publication_readiness
+        else _validate_activation(root, candidate_release=release)
+    )
     data, parse_issue = _activation_data(root / ACTIVATION_RECORD)
     if parse_issue or data is None:
         return None, tuple(issues or ([parse_issue] if parse_issue else []))
@@ -2227,7 +2236,7 @@ def validate_activation_candidate(
             )
         )
 
-    if _git_ref_exists(root, f"refs/tags/{release}"):
+    if not publication_readiness and _git_ref_exists(root, f"refs/tags/{release}"):
         issues.append(
             _issue(
                 "BFR-CANDIDATE-LOCAL-TAG",
@@ -2251,6 +2260,7 @@ def validate_activation_candidate(
         (
             (tuple(int(part) for part in match.groups()), tag)
             for tag in local_tags
+            if not publication_readiness or tag != release
             if (match := re.fullmatch(r"v([0-9]+)\.([0-9]+)\.([0-9]+)", tag))
         ),
         key=lambda row: row[0],
@@ -2406,13 +2416,27 @@ def validate_activation_candidate(
     ), ()
 
 
+def validate_activation_candidate(
+    root: Path,
+    release: str,
+) -> tuple[ActivationCandidateResult | None, tuple[ValidationIssue, ...]]:
+    """Validate the one approved pre-tag activation candidate without mutation."""
+
+    return _activation_candidate_authority(
+        root,
+        release,
+        publication_readiness=False,
+    )
+
+
 def _candidate_evidence_issues(
     root: Path,
     candidate: dict[str, object],
 ) -> tuple[ValidationIssue, ...]:
-    fresh, fresh_issues = validate_activation_candidate(
+    fresh, fresh_issues = _activation_candidate_authority(
         root,
         ACTIVATION_CANDIDATE_RELEASE,
+        publication_readiness=True,
     )
     if fresh_issues or fresh is None:
         return (
