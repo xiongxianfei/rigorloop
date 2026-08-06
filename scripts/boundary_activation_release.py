@@ -357,31 +357,23 @@ if updates[tag_ref][1] != "0" * 40:
     )
 
 
-def _guard_result(
+_CAPABILITY_ERRORS = (OSError, AttributeError, ValueError, TypeError, NotImplementedError)
+
+
+def _read_guard_result(
     read_descriptor: int,
-    write_descriptor: int,
     nonce: str,
 ) -> re.Match[str] | None:
-    valid = True
     raw = b""
     try:
-        os.close(write_descriptor)
+        while len(raw) <= 256:
+            chunk = os.read(read_descriptor, 257 - len(raw))
+            if not chunk:
+                break
+            raw += chunk
     except OSError:
-        valid = False
-    if valid:
-        try:
-            while len(raw) <= 256:
-                chunk = os.read(read_descriptor, 257 - len(raw))
-                if not chunk:
-                    break
-                raw += chunk
-        except OSError:
-            valid = False
-    try:
-        os.close(read_descriptor)
-    except OSError:
-        valid = False
-    if not valid or len(raw) > 256:
+        return None
+    if len(raw) > 256:
         return None
     try:
         value = raw.decode("utf-8")
@@ -394,14 +386,28 @@ def _guard_result(
     )
 
 
+def _force_close_descriptor(descriptor: int) -> bool:
+    try:
+        os.close(descriptor)
+        return True
+    except OSError:
+        pass
+    try:
+        os.closerange(descriptor, descriptor + 1)
+    except (OSError, AttributeError):
+        pass
+    try:
+        os.fstat(descriptor)
+    except OSError:
+        return True
+    return False
+
+
 def _close_descriptors(*descriptors: int | None) -> None:
     for descriptor in descriptors:
         if descriptor is None:
             continue
-        try:
-            os.close(descriptor)
-        except OSError:
-            pass
+        _force_close_descriptor(descriptor)
 
 
 def _atomic_push(
@@ -415,7 +421,7 @@ def _atomic_push(
     try:
         read_descriptor, write_descriptor = os.pipe()
         os.set_blocking(read_descriptor, False)
-    except OSError as error:
+    except _CAPABILITY_ERRORS as error:
         _close_descriptors(read_descriptor, write_descriptor)
         raise PublicationError(
             "atomic-capability-unavailable" if dry_run else "atomic-publication-failed",
@@ -462,10 +468,27 @@ def _atomic_push(
                     text=True,
                     pass_fds=(write_descriptor,),
                 )
-            except (OSError, subprocess.CalledProcessError) as error:
-                marker = _guard_result(read_descriptor, write_descriptor, nonce)
-                read_descriptor = None
-                write_descriptor = None
+            except (
+                subprocess.CalledProcessError,
+                OSError,
+                AttributeError,
+                ValueError,
+                TypeError,
+                NotImplementedError,
+            ) as error:
+                write_closed = _force_close_descriptor(write_descriptor)
+                if write_closed:
+                    write_descriptor = None
+                marker = (
+                    _read_guard_result(read_descriptor, nonce)
+                    if write_closed
+                    else None
+                )
+                read_closed = _force_close_descriptor(read_descriptor)
+                if read_closed:
+                    read_descriptor = None
+                if not read_closed:
+                    marker = None
                 if marker:
                     code = marker.group(1)
                     conflict_key = {

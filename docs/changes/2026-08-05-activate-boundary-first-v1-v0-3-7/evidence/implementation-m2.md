@@ -2,7 +2,7 @@
 
 Milestone: M2 — Guarded atomic activation publication helper
 
-Outcome: R1-R7 findings recorded; corrections implemented for code review R8.
+Outcome: R1-R8 findings recorded; corrections implemented for code review R9.
 
 ## Implemented behavior
 
@@ -45,6 +45,9 @@ exact and prefixed forged-provider suppression, and a parent-owned append-only
 pipe that bounds invalid encoding, size, nonce, multiple, truncated, empty,
 read-error, and close-error outcomes. Mutable pathname, symlink, FIFO, and
 same-size rewrite authority no longer exists in the result transport.
+Endpoint ownership remains with the parent until verified closure; close-error
+fallback and unsupported pipe, blocking-mode, and descriptor-inheritance paths
+produce bounded mode-specific failures with no live captured endpoints.
 Real same- and different-target post-readiness tag races retain exact bounded
 tag-conflict context and leave both refs unchanged. Post-push confirmation
 uncertainty requires stop-and-reconcile behavior. The
@@ -52,7 +55,7 @@ selector fixture proves all three new paths route to the owned regression.
 
 ## Validation
 
-- `python scripts/test-boundary-activation-release.py` — pass, 18 tests.
+- `python scripts/test-boundary-activation-release.py` — pass, 19 tests.
 - `python scripts/test-select-validation.py` — pass, 147 tests.
 - `python -m py_compile scripts/boundary_activation_release.py scripts/publish-boundary-activation.py` — pass.
 - `python scripts/select-validation.py --mode explicit --path scripts/boundary_activation_release.py --path scripts/publish-boundary-activation.py --path scripts/test-boundary-activation-release.py --path scripts/validation_selection.py --path scripts/test-select-validation.py` — pass; selected boundary validation, activation publication regression, and selector regression without blockers or debt.
