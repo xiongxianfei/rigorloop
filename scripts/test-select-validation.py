@@ -3777,7 +3777,7 @@ raise SystemExit({exit_code})
             "--path",
             "docs/changes/2026-04-25-test-layering-and-change-scoped-validation/review-resolution.md",
             "--path",
-            "specs/test-layering-and-change-scoped-validation.md",
+            "docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml",
         )
         output = result.stdout + result.stderr
 
@@ -3801,7 +3801,7 @@ raise SystemExit({exit_code})
             output,
         )
         self.assertIn(
-            "--path specs/test-layering-and-change-scoped-validation.md",
+            "--path docs/changes/2026-04-25-test-layering-and-change-scoped-validation/change.yaml",
             output,
         )
 
