@@ -31,15 +31,24 @@ if [[ -n "$release_tag_commit" ]]; then
     echo "release gate failure: RELEASE_TAG_COMMIT must be a full 40-character Git SHA" >&2
     exit 1
   fi
-  checked_commit="$(git rev-parse HEAD)"
-  if [[ "$release_tag_commit" != "$checked_commit" ]]; then
-    echo "release gate failure: RELEASE_TAG_COMMIT does not match checked HEAD" >&2
-    exit 1
-  fi
-  if [[ "${GITHUB_REF_TYPE:-}" == "tag" ]]; then
-    tag_commit="$(git rev-parse "${release_version}^{commit}")"
-    if [[ "$tag_commit" != "$release_tag_commit" ]]; then
-      echo "release gate failure: immutable tag does not match checked release commit" >&2
+  if [[ "${GITHUB_ACTIONS:-}" == "true" && "${GITHUB_REF_TYPE:-}" == "tag" ]]; then
+    python - "$release_version" "${GITHUB_REF_NAME:-}" "$release_tag_commit" <<'PY'
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path("scripts").resolve()))
+from release_transaction import validate_trusted_release_tag_identity
+
+errors = validate_trusted_release_tag_identity(sys.argv[1], sys.argv[2], sys.argv[3])
+if errors:
+    for error in errors:
+        print(f"release gate failure: {error}", file=sys.stderr)
+    raise SystemExit(1)
+PY
+  else
+    checked_commit="$(git rev-parse HEAD)"
+    if [[ "$release_tag_commit" != "$checked_commit" ]]; then
+      echo "release gate failure: RELEASE_TAG_COMMIT does not match checked HEAD" >&2
       exit 1
     fi
   fi
