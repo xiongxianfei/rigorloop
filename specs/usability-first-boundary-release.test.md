@@ -19,7 +19,7 @@
 
 | Input | Path | Artifact ID | Review evidence |
 | --- | --- | --- | --- |
-| Feature spec | `specs/usability-first-boundary-release.md` | `spec` | `spec-review-r3`; `docs/changes/2026-08-06-usability-first-boundary-release/reviews/spec-review-r3.md` |
+| Feature spec | `specs/usability-first-boundary-release.md` | `spec` | `spec-review-r5`; `docs/changes/2026-08-06-usability-first-boundary-release/reviews/spec-review-r5.md` |
 | Architecture | `docs/architecture/system/architecture.md` | `architecture` | `architecture-review-r2`; `docs/changes/2026-08-06-usability-first-boundary-release/reviews/architecture-review-r2.md` |
 | Activation ADR | `docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md` | `adr-checked-revision-activation` | `architecture-review-r2`; `docs/changes/2026-08-06-usability-first-boundary-release/reviews/architecture-review-r2.md` |
 | Execution plan | `docs/plans/2026-08-06-usability-first-boundary-release.md` | `plan` | `plan-review-r2`; `docs/changes/2026-08-06-usability-first-boundary-release/reviews/plan-review-r2.md` |
@@ -61,6 +61,7 @@ The proof set combines partitions only when an approved boundary or selected int
 | UBR-R018 | T1, T2, T3 | integration | Representative journeys use semantic assertions rather than prose metrics. |
 | UBR-R019 | T12 | migration | Historical inventory and prospective adoption remain distinct and authoritative. |
 | UBR-R020 | T13, T18, T20 | contract, integration | Exact reviewed tag identity is required; mismatch and rewrite fail. |
+| UBR-R021 | T24 | contract | Stage-owned owner-pointer placement and legacy status placement both retain exact-one, fail-closed marker proof. |
 
 ## Acceptance criterion coverage map
 
@@ -77,7 +78,8 @@ The proof set combines partitions only when an approved boundary or selected int
 | AC-UBR-009 | T12, T19 | migration | Rollback remains complete and post-public recovery fixes forward. |
 | AC-UBR-010 | T21 | integration | No pre-release lifecycle command mutates external publication state. |
 | AC-UBR-011 | T1, T2, T3 | integration | Tests reject exact wording, count, or method-name assertions as the semantic oracle. |
-| AC-UBR-012 | T23 | contract | Requirement, boundary, interaction, command, and milestone references fail closed when incomplete. |
+| AC-UBR-012 | T23, T24 | contract | Requirement, boundary, interaction, command, and milestone references fail closed when incomplete. |
+| AC-UBR-013 | T24 | contract | Both authorized marker forms pass; before-pointer, outside-section, and duplicate placements fail. |
 
 ## Example coverage map
 
@@ -94,7 +96,7 @@ The proof set combines partitions only when an approved boundary or selected int
 
 Boundary model version: boundary-first-v1
 
-Boundary model scope: UBR-R001, UBR-R002, UBR-R003, UBR-R004, UBR-R005, UBR-R006, UBR-R007, UBR-R008, UBR-R009, UBR-R010, UBR-R011, UBR-R012, UBR-R013, UBR-R014, UBR-R015, UBR-R016, UBR-R017, UBR-R018, UBR-R019, UBR-R020
+Boundary model scope: UBR-R001, UBR-R002, UBR-R003, UBR-R004, UBR-R005, UBR-R006, UBR-R007, UBR-R008, UBR-R009, UBR-R010, UBR-R011, UBR-R012, UBR-R013, UBR-R014, UBR-R015, UBR-R016, UBR-R017, UBR-R018, UBR-R019, UBR-R020, UBR-R021
 
 | Proof obligation ID | Coverage state | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Proof level | Automation mode | Command IDs | Evidence artifact | Required milestone | Manual procedure IDs | Uncovered gap ID |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -104,7 +106,7 @@ Boundary model scope: UBR-R001, UBR-R002, UBR-R003, UBR-R004, UBR-R005, UBR-R006
 | PRF-004 | covered | UBR-R004, UBR-R005, UBR-R010, UBR-R011, UBR-R012, UBR-R013 | BND-COMPOSE-001 | T4, T5, T11, T14, T15, T16, T17, T20 | end-to-end | automated | CMD01, CMD02, CMD07, CMD14, CMD15, CMD17, CMD18 | `evidence/implementation-m1.md`; `evidence/implementation-m2.md`; `evidence/implementation-m3.md`; `evidence/implementation-m4.md` | M1, M2, M3, M4 | - | - |
 | PRF-005 | covered | UBR-R012, UBR-R016, UBR-R020 | BND-TEMPORAL-001 | T18, T19, T20 | integration | automated | CMD13, CMD14, CMD18 | `evidence/implementation-m3.md`; `evidence/implementation-m4.md` | M3, M4 | - | - |
 | PRF-006 | covered | UBR-R015, UBR-R016 | BND-RECOVERY-001 | T12, T19 | integration | automated | CMD06, CMD13, CMD18 | `evidence/implementation-m2.md`; `evidence/implementation-m3.md`; `evidence/implementation-m4.md` | M2, M3, M4 | - | - |
-| PRF-007 | covered | UBR-R006, UBR-R007, UBR-R013, UBR-R015, UBR-R019 | BND-COMPAT-001 | T11, T12 | contract | automated | CMD06, CMD07 | `evidence/implementation-m2.md` | M2 | - | - |
+| PRF-007 | covered | UBR-R006, UBR-R007, UBR-R013, UBR-R015, UBR-R019, UBR-R021 | BND-COMPAT-001 | T11, T12, T24 | contract | automated | CMD06, CMD07 | `evidence/implementation-m2.md`; `evidence/pr-readiness-full-gate-fixes.md` | M2 | - | - |
 | PRF-008 | covered | UBR-R007, UBR-R012, UBR-R014, UBR-R017 | BND-ENV-001 | T9, T10, T21, T22 | integration | automated | CMD05, CMD06, CMD12, CMD17, CMD18 | `evidence/implementation-m2.md`; `evidence/implementation-m3.md`; `evidence/implementation-m4.md` | M2, M3, M4 | - | - |
 | PRF-009 | covered | UBR-R002, UBR-R003, UBR-R004, UBR-R005 | INT-001 | T1, T2, T3, T4 | integration | automated | CMD01, CMD02 | `evidence/implementation-m1.md` | M1 | - | - |
 | PRF-010 | covered | UBR-R006, UBR-R008, UBR-R009, UBR-R012, UBR-R014, UBR-R020 | INT-002 | T9, T13, T18, T20, T21 | integration | automated | CMD05, CMD13, CMD17, CMD18 | `evidence/implementation-m3.md`; `evidence/implementation-m4.md` | M3, M4 | - | - |
@@ -126,6 +128,7 @@ All evidence paths in the proof map are relative to `docs/changes/2026-08-06-usa
 | EC8 partial public evidence | T19, T20 | Closeout remains open and rerunnable. |
 | EC9 retired helper or selectable custom check | T11 | Exact retirement validation fails. |
 | EC10 activation bypasses routine release | T15, T20 | Static and executable gate proof fails. |
+| EC11 misplaced or duplicate marker | T24 | Authorized stage-owned and legacy forms pass; before-pointer, outside-section, and duplicate placements fail. |
 
 ## Validation commands
 
@@ -155,7 +158,7 @@ All evidence paths in the proof map are relative to `docs/changes/2026-08-06-usa
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | M1 | T1, T2, T3, T4, T5 | none | CMD01, CMD02, CMD03, CMD04, CMD05 | `docs/changes/2026-08-06-usability-first-boundary-release/evidence/implementation-m1.md` | code-review M1 | Proves automatic concise behavior, stage ownership, normalized records, and all ten governed skill/resource surfaces. |
-| M2 | T6, T7, T8, T9, T10, T11, T12, T22, T23 | none | CMD05, CMD06, CMD07, CMD08, CMD09 | `docs/changes/2026-08-06-usability-first-boundary-release/evidence/implementation-m2.md` | code-review M2 | Proves checked-revision snapshots, one-time derivation, proof-map mutation handling, privacy, exact custom retirement, compatibility, and rollback. |
+| M2 | T6, T7, T8, T9, T10, T11, T12, T22, T23, T24 | none | CMD05, CMD06, CMD07, CMD08, CMD09 | `docs/changes/2026-08-06-usability-first-boundary-release/evidence/implementation-m2.md`; `docs/changes/2026-08-06-usability-first-boundary-release/evidence/pr-readiness-full-gate-fixes.md` | code-review M2 | Proves checked-revision snapshots, one-time derivation, proof-map mutation handling, privacy, exact custom retirement, marker compatibility, and rollback. |
 | M3 | T13, T14, T15, T16, T18, T19, T20, T21, T22 | none | CMD10, CMD11, CMD12, CMD13, CMD14, CMD15, CMD16, CMD17, CMD18 | `docs/changes/2026-08-06-usability-first-boundary-release/evidence/implementation-m3.md` | code-review M3 and pending-baseline selection | Executes both release gates while activation remains pending; selector output alone is not closeout evidence. |
 | M4 | T7, T9, T12, T14, T17, T18, T19, T20, T21, T22 | none | CMD05, CMD06, CMD12, CMD17, CMD18 | `docs/changes/2026-08-06-usability-first-boundary-release/evidence/implementation-m4.md` | code-review M4 | Repeats release proof only after the active snapshot changes the checked state and stops before external publication. |
 
@@ -460,6 +463,19 @@ All evidence paths in the proof map are relative to `docs/changes/2026-08-06-usa
 - Automation location: `scripts/test-boundary-first-validation.py`
 - Required by milestone: M2
 
+### T24. Boundary marker placement follows lifecycle ownership and fails closed
+
+- Covers: UBR-R021, BND-COMPAT-001, AC-UBR-012, AC-UBR-013, EC11
+- Level: integration
+- Command IDs: CMD06
+- Fixture/setup: A stage-owned feature spec with a normalized owning-change pointer, a non-stage-owned feature spec with the standing PBF-R002 status form, and mutations that move the marker before the pointer, outside the governed section, or duplicate it.
+- Steps: Validate both authorized fixtures, then apply one placement or cardinality mutation at a time and rerun focused boundary validation.
+- Expected result: The stage-owned owner-pointer form and non-stage-owned status form pass; every before-pointer, outside-section, or duplicate form fails with a bounded marker-placement issue.
+- Failure proves: The validator accepts a marker without lifecycle authority, rejects a retained legacy form, or permits ambiguous marker ownership.
+- Evidence artifact: `evidence/pr-readiness-full-gate-fixes.md`
+- Automation location: `scripts/test-boundary-first-validation.py`
+- Required by milestone: M2
+
 ## Fixtures and data
 
 - `scripts/fixtures/boundary-first/semantic/`: representative E1-E3 concise and deeper-analysis journey fixtures, authored or revised in M1.
@@ -469,6 +485,7 @@ All evidence paths in the proof map are relative to `docs/changes/2026-08-06-usa
 - Temporary Codex, Claude, and opencode generated, archived, packed, and installed trees created under test-owned temporary directories and always cleaned up.
 - Exact `v0.3.6` tracked metadata remains immutable input; tests copy it before mutation and never rewrite the source fixture.
 - Closed-vocabulary mutations use `unknown_value` or `not_in_vocabulary` in test names.
+- Marker fixtures cover the authorized stage-owned owner-pointer form and retained non-stage-owned PBF-R002 status form without creating a second lifecycle state source.
 
 Every expected path is repository-relative.
 No fixture reads user installation state, credentials, live registries, or public network services.
@@ -482,7 +499,7 @@ No test may access a live registry, GitHub API, user secret store, or user insta
 
 ## Migration or compatibility tests
 
-T11 and T12 prove exact custom-experiment retirement, historical accepted-spec exemptions, prospective normalized adoption, and immutable `v0.3.6` rollback.
+T11, T12, and T24 prove exact custom-experiment retirement, historical accepted-spec exemptions, prospective normalized adoption, lifecycle-specific marker placement, and immutable `v0.3.6` rollback.
 T18 and T19 prove immutable `v0.4.0` identity and phase-specific fix-forward recovery.
 Historical source artifacts are copied into temporary fixtures before mutation and never rewritten.
 
@@ -522,6 +539,7 @@ Actual tagging, publication, registry checks, and public `npx` smoke remain expl
 - Do not publish, tag, push, merge, call live registries, or claim public availability during lifecycle execution.
 - Do not migrate historical accepted specs or mutate immutable `v0.3.6`/`v0.4.0` release evidence.
 - Do not treat selector output, preflight, structural validation, or M3 proof as a substitute for its distinct owning gate.
+- Do not require stage-owned feature specs to add an embedded `## Status`; T24 proves ownership from the normalized change-record pointer.
 
 ## Uncovered gaps
 
