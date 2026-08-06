@@ -4,11 +4,8 @@
 from __future__ import annotations
 
 import json
-import getpass
-import os
 import re
 import shutil
-import socket
 import subprocess
 import sys
 import tempfile
@@ -22,13 +19,9 @@ from boundary_first_reference import (
     raw_sha256,
 )
 from boundary_first_validation import (
-    _private_runtime_values,
-    _publication_authority_issues,
-    _review_invocation_issue,
+    derive_grandfathered_specs,
     rollback_package_selection,
     validate_activation,
-    validate_activation_candidate,
-    validate_activation_publication_readiness,
     validate_changed_spec,
     validate_feature_record,
     validate_proof_map,
@@ -99,61 +92,23 @@ def copy_rollback_surfaces(root: Path, version: str) -> None:
     metadata.write_text(source.replace("v0.3.5", version), encoding="utf-8")
 
 
-def initialize_active_fixture(
-    root: Path,
-    *,
-    symlink_parent: bool = False,
-    invalid_transition_snapshot: bool = False,
-    bootstrap_release: str = "v0.9.0",
-    rollback_release: str = "v1.0.0",
-    activating_release: str = "v1.1.0",
-) -> tuple[Path, str]:
+def initialize_checked_revision_active_fixture(root: Path) -> Path:
+    """Build a coherent active current tree without history, tags, or remotes."""
+
     copy_activation_surfaces(root)
-    copy_rollback_surfaces(root, rollback_release)
-    subprocess.run(["git", "init", "-q"], cwd=root, check=True)
-    subprocess.run(["git", "config", "user.email", "fixture@example.test"], cwd=root, check=True)
-    subprocess.run(["git", "config", "user.name", "Fixture"], cwd=root, check=True)
-    subprocess.run(["git", "add", "."], cwd=root, check=True)
-    subprocess.run(["git", "commit", "-qm", "bootstrap"], cwd=root, check=True)
-    bootstrap = subprocess.run(
-        ["git", "rev-parse", "HEAD"],
-        cwd=root,
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    subprocess.run(["git", "tag", bootstrap_release, bootstrap], cwd=root, check=True)
-    lifecycle_specs = {
-        "accepted.md": "accepted",
-        "approved.md": "approved",
-        "active.md": "active",
-        "draft.md": "draft",
-        "é.md": "approved",
-    }
-    for name, status in lifecycle_specs.items():
-        (root / "specs" / name).write_text(
-            f"# {name}\n\n## Status\n\n{status}\n",
-            encoding="utf-8",
-        )
-    (root / "specs" / "marked.md").write_text(valid_feature(), encoding="utf-8")
-    (root / "specs" / "README.md").write_text("# index\n", encoding="utf-8")
-    (root / "specs" / "ignored.test.md").write_text("# proof\n", encoding="utf-8")
-    if symlink_parent:
-        (root / "specs" / "symlinked.md").symlink_to("approved.md")
-    subprocess.run(["git", "add", "."], cwd=root, check=True)
-    subprocess.run(["git", "commit", "-qm", "parent"], cwd=root, check=True)
-    baseline = subprocess.run(
-        ["git", "rev-parse", "HEAD"],
-        cwd=root,
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    subprocess.run(["git", "tag", rollback_release, baseline], cwd=root, check=True)
-    (root / "specs" / "child.md").write_text(
-        "# child\n\n## Status\n\napproved\n",
-        encoding="utf-8",
+    copy_rollback_surfaces(root, "v0.3.6")
+    activation_path = root / "specs" / "boundary-first-activation.yaml"
+    data = json.loads(activation_path.read_text(encoding="utf-8"))
+    data.update(
+        {
+            "state": "active",
+            "activating_release": "v0.4.0",
+            "rollback_release": "v0.3.6",
+            "grandfathering_baseline_revision": "a" * 40,
+            "grandfathered_specs": [],
+        }
     )
+    activation_path.write_text(json.dumps(data), encoding="utf-8")
     proof_model = root / "specs" / "boundary-first-proof-model.md"
     proof_model.write_text(
         proof_model.read_text(encoding="utf-8").replace(
@@ -161,175 +116,6 @@ def initialize_active_fixture(
             "Boundary-first contract activation: active",
         ),
         encoding="utf-8",
-    )
-    activation_path = root / "specs" / "boundary-first-activation.yaml"
-    data = json.loads(activation_path.read_text(encoding="utf-8"))
-    data.update(
-        {
-            "state": "active",
-            "activating_release": activating_release,
-            "rollback_release": rollback_release,
-            "grandfathering_baseline_revision": (
-                bootstrap if invalid_transition_snapshot else baseline
-            ),
-            "grandfathered_specs": (
-                []
-                if invalid_transition_snapshot
-                else [
-                    "specs/accepted.md",
-                    "specs/active.md",
-                    "specs/approved.md",
-                    "specs/é.md",
-                ]
-            ),
-        }
-    )
-    activation_path.write_text(json.dumps(data), encoding="utf-8")
-    subprocess.run(["git", "add", "."], cwd=root, check=True)
-    subprocess.run(["git", "commit", "-qm", "activate"], cwd=root, check=True)
-    subprocess.run(["git", "tag", activating_release], cwd=root, check=True)
-    return activation_path, baseline
-
-
-def initialize_candidate_fixture(root: Path) -> tuple[Path, Path, str, str, str]:
-    activation_path, baseline = initialize_active_fixture(
-        root,
-        bootstrap_release="v0.3.5",
-        rollback_release="v0.3.6",
-        activating_release="v0.4.0",
-    )
-    transition = subprocess.run(
-        ["git", "rev-parse", "HEAD"], cwd=root, check=True,
-        capture_output=True, text=True,
-    ).stdout.strip()
-    subprocess.run(["git", "tag", "-d", "v0.4.0"], cwd=root, check=True,
-                   capture_output=True)
-    change_root = root / "docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7"
-    required = (
-        "evidence/proposal-authoring.md", "evidence/spec-authoring.md",
-        "evidence/architecture-authoring.md", "evidence/plan-authoring.md",
-        "evidence/test-spec-authoring.md", "evidence/implementation-m1.md",
-        "evidence/implementation-m2.md", "evidence/implementation-m3.md",
-        "evidence/implementation-m4.md", "reviews/code-review-m1-r1.md",
-        "reviews/code-review-m2-r1.md", "reviews/code-review-m3-r1.md",
-        "reviews/code-review-m4-r1.md", "explain-change.md",
-    )
-    for relative in required:
-        path = change_root / relative
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text("settled\n", encoding="utf-8")
-    subprocess.run(["git", "add", "."], cwd=root, check=True)
-    subprocess.run(["git", "commit", "-qm", "lifecycle evidence"], cwd=root, check=True)
-    remote = root.parent / f"{root.name}-remote.git"
-    subprocess.run(["git", "init", "-q", "--bare", str(remote)], check=True)
-    subprocess.run(["git", "remote", "add", "origin", str(remote)], cwd=root, check=True)
-    subprocess.run(
-        ["git", "push", "-q", "origin", f"{baseline}:refs/heads/main"],
-        cwd=root, check=True,
-    )
-    (change_root / "change.yaml").write_text(
-        "lifecycle_contract: stage-owned-change-local-v1\n"
-        "artifact_states:\n"
-        "  proposal:\n    lifecycle_state: accepted\n    review:\n      outcome: approved\n"
-        "  spec:\n    lifecycle_state: approved\n    review:\n      outcome: approved\n"
-        "  adr-activation-publication:\n    lifecycle_state: active\n    review:\n      outcome: approved\n"
-        "  plan:\n    lifecycle_state: active\n    review:\n      outcome: approved\n"
-        "  test-spec:\n    lifecycle_state: active\n    review:\n      outcome: approved\n"
-        "workflow_state:\n  planned_work:\n    milestones:\n"
-        "      M1:\n        state: closed\n      M2:\n        state: closed\n"
-        "      M3:\n        state: closed\n      M4:\n        state: closed\n"
-        "    latest_review:\n      status: approved\n      stage: code-review\n"
-        "      milestone_id: M4\n"
-        "review:\n  status: approved\n  unresolved_items: 0\n",
-        encoding="utf-8",
-    )
-    (change_root / "review-resolution.md").write_text(
-        "# Resolution\n\nCloseout status: closed\n", encoding="utf-8"
-    )
-    (change_root / "review-log.md").write_text(
-        "# Review log\n\nOpen findings: None\n", encoding="utf-8"
-    )
-    subprocess.run(["git", "add", "."], cwd=root, check=True)
-    subprocess.run(["git", "commit", "-qm", "settle publication evidence"], cwd=root, check=True)
-    candidate_result, candidate_issues = validate_activation_candidate(root, "v0.4.0")
-    if candidate_issues or candidate_result is None:
-        raise AssertionError(candidate_issues)
-    candidate_path = change_root / "evidence/boundary-activation-candidate.json"
-    candidate_path.write_text(json.dumps(candidate_result.as_dict()), encoding="utf-8")
-    subprocess.run(["git", "add", "."], cwd=root, check=True)
-    subprocess.run(["git", "commit", "-qm", "record candidate evidence"], cwd=root, check=True)
-    head = subprocess.run(
-        ["git", "rev-parse", "HEAD"], cwd=root, check=True,
-        capture_output=True, text=True,
-    ).stdout.strip()
-    return activation_path, change_root, baseline, transition, head
-
-
-def initialize_merge_activation_fixture(root: Path) -> Path:
-    copy_activation_surfaces(root)
-    copy_rollback_surfaces(root, "v1.0.0")
-    subprocess.run(["git", "init", "-q"], cwd=root, check=True)
-    subprocess.run(["git", "config", "user.email", "fixture@example.test"], cwd=root, check=True)
-    subprocess.run(["git", "config", "user.name", "Fixture"], cwd=root, check=True)
-    subprocess.run(["git", "add", "."], cwd=root, check=True)
-    subprocess.run(["git", "commit", "-qm", "pending"], cwd=root, check=True)
-    main_branch = subprocess.run(
-        ["git", "branch", "--show-current"],
-        cwd=root,
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    subprocess.run(["git", "tag", "v0.9.0"], cwd=root, check=True)
-    subprocess.run(["git", "checkout", "-qb", "activation"], cwd=root, check=True)
-    (root / "specs" / "branch.md").write_text(
-        "# branch\n\n## Status\n\napproved\n",
-        encoding="utf-8",
-    )
-    subprocess.run(["git", "add", "."], cwd=root, check=True)
-    subprocess.run(["git", "commit", "-qm", "activation parent"], cwd=root, check=True)
-    branch_parent = subprocess.run(
-        ["git", "rev-parse", "HEAD"],
-        cwd=root,
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    subprocess.run(["git", "tag", "v1.0.0"], cwd=root, check=True)
-    proof_model = root / "specs" / "boundary-first-proof-model.md"
-    proof_model.write_text(
-        proof_model.read_text(encoding="utf-8").replace(
-            "Boundary-first contract activation: pending",
-            "Boundary-first contract activation: active",
-        ),
-        encoding="utf-8",
-    )
-    activation_path = root / "specs" / "boundary-first-activation.yaml"
-    data = json.loads(activation_path.read_text(encoding="utf-8"))
-    data.update(
-        {
-            "state": "active",
-            "activating_release": "v1.1.0",
-            "rollback_release": "v1.0.0",
-            "grandfathering_baseline_revision": branch_parent,
-            "grandfathered_specs": ["specs/branch.md"],
-        }
-    )
-    activation_path.write_text(json.dumps(data), encoding="utf-8")
-    subprocess.run(["git", "add", "."], cwd=root, check=True)
-    subprocess.run(["git", "commit", "-qm", "activate branch"], cwd=root, check=True)
-    subprocess.run(["git", "tag", "v1.1.0"], cwd=root, check=True)
-    subprocess.run(["git", "checkout", "-q", main_branch], cwd=root, check=True)
-    (root / "specs" / "main.md").write_text(
-        "# main\n\n## Status\n\napproved\n",
-        encoding="utf-8",
-    )
-    subprocess.run(["git", "add", "."], cwd=root, check=True)
-    subprocess.run(["git", "commit", "-qm", "target parent"], cwd=root, check=True)
-    subprocess.run(
-        ["git", "merge", "--no-ff", "-qm", "integrate activation", "activation"],
-        cwd=root,
-        check=True,
     )
     return activation_path
 
@@ -769,800 +555,143 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
 
 
 class BoundaryFirstActivationTests(unittest.TestCase):
-    def test_candidate_accepts_exact_absent_tag_state_and_preserves_strict_mode(self) -> None:
+    def test_checked_revision_pending_and_active_snapshots_are_independent(self) -> None:
+        self.assertEqual(validate_activation(ROOT), ())
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            _, _, baseline, transition, head = initialize_candidate_fixture(root)
-
-            result, issues = validate_activation_candidate(root, "v0.4.0")
-
-            self.assertEqual(issues, ())
-            self.assertIsNotNone(result)
-            assert result is not None
-            self.assertEqual(result.publication_base, baseline)
-            self.assertEqual(result.grandfathering_baseline, baseline)
-            self.assertEqual(result.transition_commit, transition)
-            self.assertEqual(result.candidate_validation_head, head)
-            self.assertEqual(result.tag_state, "absent")
-            self.assertIn(
-                "BFR-ACTIVATING-RELEASE",
-                {issue.code for issue in validate_activation(root)},
-            )
+            root = Path(temporary)
+            initialize_checked_revision_active_fixture(root)
             with mock.patch(
-                "boundary_first_validation._publication_authority_issues",
-                return_value=(),
-            ) as authority:
-                subprocess.run(["git", "tag", "v0.4.0", transition], cwd=root, check=True)
-                self.assertEqual(validate_activation_publication_readiness(root), ())
-                authority.assert_called_once_with(root)
-            _, candidate_issues = validate_activation_candidate(root, "v0.4.0")
-            self.assertIn("BFR-CANDIDATE-LOCAL-TAG", {issue.code for issue in candidate_issues})
+                "boundary_first_validation.subprocess.run",
+                side_effect=AssertionError("current-file validation must not invoke Git"),
+            ), mock.patch(
+                "boundary_first_validation.derive_grandfathered_specs",
+                side_effect=AssertionError("normal validation must not derive inventory"),
+            ):
+                self.assertEqual(validate_activation(root), ())
 
-    def test_candidate_rejects_closed_input_state_tag_and_remote_matrix(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            activation_path, _, _, transition, _ = initialize_candidate_fixture(root)
-            for release in ("v0.4.1", "0.4.0", "v0.4.0-rc.1"):
-                with self.subTest(release=release):
-                    _, issues = validate_activation_candidate(root, release)
-                    self.assertEqual(issues[0].code, "BFR-CANDIDATE-RELEASE")
-
-            subprocess.run(["git", "tag", "v0.4.0", transition], cwd=root, check=True)
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-            self.assertEqual(issues[0].code, "BFR-CANDIDATE-LOCAL-TAG")
-            subprocess.run(["git", "tag", "-d", "v0.4.0"], cwd=root, check=True,
-                           capture_output=True)
-
-            data = json.loads(activation_path.read_text(encoding="utf-8"))
-            data["state"] = "pending"
-            activation_path.write_text(json.dumps(data), encoding="utf-8")
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-            self.assertIn("BFR-CANDIDATE-ACTIVATION", {issue.code for issue in issues})
-
-            data["state"] = "active"
-            activation_path.write_text(json.dumps(data), encoding="utf-8")
-            subprocess.run(["git", "remote", "set-url", "origin", str(root / "missing")],
-                           cwd=root, check=True)
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-            self.assertIn("BFR-CANDIDATE-REMOTE-UNAVAILABLE", {issue.code for issue in issues})
-
-    def test_candidate_reports_first_parent_topology_and_rejects_payload_drift(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            _, _, _, _, _ = initialize_candidate_fixture(root)
-            (root / "skills" / "spec" / "SKILL.md").parent.mkdir(
-                parents=True, exist_ok=True
+    def test_checked_revision_snapshot_tuples_fail_closed(self) -> None:
+        pending_source = json.loads(
+            (ROOT / "specs" / "boundary-first-activation.yaml").read_text(
+                encoding="utf-8"
             )
-            (root / "skills" / "spec" / "SKILL.md").write_text("drift\n", encoding="utf-8")
+        )
+        pending_cases = {
+            "release": ("activating_release", "v0.4.0"),
+            "rollback": ("rollback_release", "v0.3.6"),
+            "baseline": ("grandfathering_baseline_revision", "a" * 40),
+            "inventory": ("grandfathered_specs", ["specs/historical.md"]),
+        }
+        for name, (field, value) in pending_cases.items():
+            with self.subTest(state="pending", case=name), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                copy_activation_surfaces(root)
+                data = dict(pending_source)
+                data[field] = value
+                (root / "specs/boundary-first-activation.yaml").write_text(
+                    json.dumps(data), encoding="utf-8"
+                )
+                self.assertTrue(validate_activation(root))
+
+        active_cases = {
+            "release": ("activating_release", "v0.4.1"),
+            "rollback": ("rollback_release", "v0.3.5"),
+            "baseline": ("grandfathering_baseline_revision", "short"),
+        }
+        for name, (field, value) in active_cases.items():
+            with self.subTest(state="active", case=name), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                activation_path = initialize_checked_revision_active_fixture(root)
+                data = json.loads(activation_path.read_text(encoding="utf-8"))
+                data[field] = value
+                activation_path.write_text(json.dumps(data), encoding="utf-8")
+                self.assertTrue(validate_activation(root))
+
+    def test_grandfathered_derivation_is_explicit_sorted_and_read_only(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "specs").mkdir()
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(["git", "config", "user.email", "fixture@example.test"], cwd=root, check=True)
+            subprocess.run(["git", "config", "user.name", "Fixture"], cwd=root, check=True)
+            for name in ("zeta", "é", "alpha"):
+                (root / "specs" / f"{name}.md").write_text(
+                    f"# {name}\n\n## Status\n\naccepted\n", encoding="utf-8"
+                )
+            (root / "specs" / "draft.md").write_text(
+                "# Draft\n\n## Status\n\ndraft\n", encoding="utf-8"
+            )
             subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "payload drift"], cwd=root, check=True)
-
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-
-            drift = next(issue for issue in issues if issue.code == "BFR-CANDIDATE-POST-TRANSITION-DRIFT")
-            self.assertEqual(drift.path, "skills/spec/SKILL.md")
-
-    def test_candidate_rejects_multiple_first_parent_transitions(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            activation_path, _, _, _, _ = initialize_candidate_fixture(root)
-            proof_model = root / "specs/boundary-first-proof-model.md"
-            active_model = proof_model.read_text(encoding="utf-8")
-            proof_model.write_text(
-                active_model.replace(
-                    "Boundary-first contract activation: active",
-                    "Boundary-first contract activation: pending",
-                ),
-                encoding="utf-8",
-            )
-            data = json.loads(activation_path.read_text(encoding="utf-8"))
-            data.update(
-                {
-                    "state": "pending",
-                    "activating_release": "-",
-                    "rollback_release": "-",
-                    "grandfathering_baseline_revision": "-",
-                    "grandfathered_specs": [],
-                }
-            )
-            activation_path.write_text(json.dumps(data), encoding="utf-8")
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "return pending"], cwd=root, check=True)
-            second_baseline = subprocess.run(
+            subprocess.run(["git", "commit", "-qm", "baseline"], cwd=root, check=True)
+            baseline = subprocess.run(
                 ["git", "rev-parse", "HEAD"], cwd=root, check=True,
                 capture_output=True, text=True,
             ).stdout.strip()
-            data.update(
-                {
-                    "state": "active",
-                    "activating_release": "v0.4.0",
-                    "rollback_release": "v0.3.6",
-                    "grandfathering_baseline_revision": second_baseline,
-                    "grandfathered_specs": [
-                        "specs/accepted.md", "specs/active.md",
-                        "specs/approved.md", "specs/child.md", "specs/é.md",
-                    ],
-                }
-            )
-            activation_path.write_text(json.dumps(data), encoding="utf-8")
-            proof_model.write_text(active_model, encoding="utf-8")
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "activate twice"], cwd=root, check=True)
+            before = relevant_tree_snapshot(root)
 
-            _, issues = validate_activation_candidate(root, "v0.4.0")
+            inventory, issues = derive_grandfathered_specs(root, baseline)
 
-            self.assertIn("BFR-ACTIVATION-TRANSITION", {issue.code for issue in issues})
-
-    def test_candidate_rejects_transition_reachable_only_through_merge_parent(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            initialize_candidate_fixture(root)
-            subprocess.run(
-                ["git", "branch", "activation-history"], cwd=root, check=True,
-            )
-            subprocess.run(
-                ["git", "checkout", "-q", "--orphan", "active-main"],
-                cwd=root,
-                check=True,
-            )
-            subprocess.run(
-                ["git", "commit", "-qm", "active root without transition"],
-                cwd=root,
-                check=True,
-            )
-            subprocess.run(
-                [
-                    "git", "merge", "--allow-unrelated-histories", "-s", "ours",
-                    "--no-ff", "-qm", "merge activation history", "activation-history",
-                ],
-                cwd=root,
-                check=True,
-            )
-
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-
-            self.assertIn("BFR-ACTIVATION-TRANSITION", {issue.code for issue in issues})
-
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            initialize_candidate_fixture(root)
-            subprocess.run(["git", "checkout", "-q", "--orphan", "active-snapshot"], cwd=root, check=True)
-            subprocess.run(["git", "add", "-A"], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "active without transition"], cwd=root, check=True)
-
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-
-            self.assertIn("BFR-ACTIVATION-TRANSITION", {issue.code for issue in issues})
-
-    def test_publication_readiness_missing_lifecycle_evidence_fails_closed(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            _, change_root, _, _, _ = initialize_candidate_fixture(root)
-            (change_root / "evidence/implementation-m3.md").unlink()
-
-            issues = validate_activation_publication_readiness(root)
-
-            self.assertIn("BFR-CANDIDATE-EVIDENCE-MISSING", {issue.code for issue in issues})
-
-    def test_candidate_is_deterministic_read_only_and_private_value_safe(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            initialize_candidate_fixture(root)
-            before_tree = relevant_tree_snapshot(root)
-            before_refs = subprocess.run(
-                ["git", "show-ref"], cwd=root, check=True,
-                capture_output=True, text=True,
-            ).stdout
-
-            first, first_issues = validate_activation_candidate(root, "v0.4.0")
-            second, second_issues = validate_activation_candidate(root, "v0.4.0")
-
-            self.assertEqual(first, second)
-            self.assertEqual(first_issues, second_issues)
-            self.assertEqual(before_tree, relevant_tree_snapshot(root))
+            self.assertEqual(issues, ())
             self.assertEqual(
-                before_refs,
-                subprocess.run(["git", "show-ref"], cwd=root, check=True,
-                               capture_output=True, text=True).stdout,
+                inventory,
+                tuple(sorted(("specs/alpha.md", "specs/zeta.md", "specs/é.md"), key=lambda value: value.encode("utf-8"))),
             )
-            self.assertNotIn(str(root), json.dumps(first.as_dict() if first else {}))
+            self.assertEqual(before, relevant_tree_snapshot(root))
+            self.assertTrue(derive_grandfathered_specs(root, "short")[1])
+            self.assertTrue(derive_grandfathered_specs(root, "f" * 40)[1])
+            tree_revision = subprocess.run(
+                ["git", "rev-parse", "HEAD^{tree}"], cwd=root, check=True,
+                capture_output=True, text=True,
+            ).stdout.strip()
+            tree_inventory, tree_issues = derive_grandfathered_specs(root, tree_revision)
+            self.assertEqual(tree_inventory, ())
+            self.assertEqual(tree_issues[0].code, "BFR-BASELINE-TYPE")
+            self.assertEqual(before, relevant_tree_snapshot(root))
 
-    def test_candidate_cli_requires_check_and_emits_non_public_result(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            initialize_candidate_fixture(root)
-            command = [
+    def test_custom_activation_experiment_is_absent_and_cli_rejects_candidate_mode(self) -> None:
+        for relative in (
+            "scripts/boundary_activation_release.py",
+            "scripts/publish-boundary-activation.py",
+            "scripts/test-boundary-activation-release.py",
+        ):
+            self.assertFalse((ROOT / relative).exists(), relative)
+
+        validator_source = (ROOT / "scripts/boundary_first_validation.py").read_text(encoding="utf-8")
+        cli_source = (ROOT / "scripts/validate-boundary-first.py").read_text(encoding="utf-8")
+        for retired_name in (
+            "ActivationCandidateResult",
+            "validate_activation_candidate",
+            "publication_readiness",
+        ):
+            self.assertNotIn(retired_name, validator_source)
+        self.assertNotIn("--activation-candidate", cli_source)
+        completed = subprocess.run(
+            [
                 sys.executable,
                 str(ROOT / "scripts/validate-boundary-first.py"),
-                "--root", str(root),
-                "--activation-candidate", "v0.4.0",
-            ]
+                "--activation-candidate",
+                "v0.4.0",
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn("unrecognized arguments", completed.stderr)
 
-            rejected = subprocess.run(command, check=False, capture_output=True, text=True)
-            accepted = subprocess.run(
-                command[:2] + ["--check"] + command[2:],
+    def test_active_cli_reports_snapshot_and_release_intent_without_public_claim(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            initialize_checked_revision_active_fixture(root)
+            completed = subprocess.run(
+                [sys.executable, str(ROOT / "scripts/validate-boundary-first.py"), "--check", "--root", str(root)],
                 check=False, capture_output=True, text=True,
             )
-
-            self.assertEqual(rejected.returncode, 2)
-            self.assertIn("requires --check", rejected.stderr)
-            self.assertEqual(accepted.returncode, 0, accepted.stdout + accepted.stderr)
-            output = json.loads(accepted.stdout)
-            self.assertEqual(output["mode"], "activation-candidate")
-            self.assertEqual(output["publication_state"], "candidate-ready-unpublished")
-            self.assertEqual(output["tag_state"], "absent")
-            self.assertNotIn("activation", output)
-            self.assertNotIn("published", output.values())
-
-            empty = command[:-1] + [""]
-            empty_with_check = subprocess.run(
-                empty[:2] + ["--check"] + empty[2:],
-                check=False, capture_output=True, text=True,
-            )
-            empty_without_check = subprocess.run(
-                empty, check=False, capture_output=True, text=True,
-            )
-            self.assertNotEqual(empty_with_check.returncode, 0)
-            self.assertIn("BFR-CANDIDATE-RELEASE", empty_with_check.stdout)
-            self.assertEqual(empty_without_check.returncode, 2)
-
-    def test_candidate_failure_emits_available_context_and_corrective_action(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            _, _, baseline, transition, head = initialize_candidate_fixture(root)
-            subprocess.run(["git", "tag", "v0.4.0", transition], cwd=root, check=True)
-
-            failed = subprocess.run(
-                [
-                    sys.executable,
-                    str(ROOT / "scripts/validate-boundary-first.py"),
-                    "--check", "--root", str(root),
-                    "--activation-candidate", "v0.4.0",
-                ],
-                check=False, capture_output=True, text=True,
-            )
-            output = json.loads(failed.stdout)
-
-            self.assertNotEqual(failed.returncode, 0)
-            self.assertEqual(output["publication_base"], baseline)
-            self.assertEqual(output["grandfathering_baseline"], baseline)
-            self.assertEqual(output["transition_commit"], transition)
-            self.assertEqual(output["candidate_validation_head"], head)
-            self.assertNotIn("reviewed_head", output)
-            self.assertEqual(output["tag_state"], "local-present")
-            self.assertIn("remove the unpublished local v0.4.0 tag", output["corrective_actions"])
-
-    def test_candidate_rejects_reverted_and_disguised_post_transition_payload(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            initialize_candidate_fixture(root)
-            skill = root / "specs/boundary-first-proof-model.md"
-            original = skill.read_bytes()
-            skill.write_bytes(original + b"drift\n")
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "change payload"], cwd=root, check=True)
-            skill.write_bytes(original)
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "revert payload"], cwd=root, check=True)
-
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-            self.assertIn("specs/boundary-first-proof-model.md", {issue.path for issue in issues})
-
-            archive = (
-                root
-                / "docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7"
-                / "evidence/release-package.tgz"
-            )
-            archive.write_bytes(b"payload")
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "disguised payload"], cwd=root, check=True)
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-            self.assertIn(
-                "docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/release-package.tgz",
-                {issue.path for issue in issues},
-            )
-
-        with tempfile.TemporaryDirectory() as replacement_temporary:
-            replacement = Path(replacement_temporary) / "repository"
-            replacement.mkdir()
-            initialize_candidate_fixture(replacement)
-
-            result, replacement_issues = validate_activation_candidate(
-                replacement, "v0.4.0"
-            )
-
-            self.assertIsNotNone(result)
-            self.assertEqual(replacement_issues, ())
-
-    def test_candidate_rejects_merged_side_branch_change_and_revert(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            initialize_candidate_fixture(root)
-            main_branch = subprocess.run(
-                ["git", "branch", "--show-current"], cwd=root, check=True,
-                capture_output=True, text=True,
-            ).stdout.strip()
-            subprocess.run(["git", "checkout", "-qb", "payload-side"], cwd=root, check=True)
-            payload = root / "skills/payload/SKILL.md"
-            payload.parent.mkdir(parents=True)
-            payload.write_text("forbidden\n", encoding="utf-8")
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "side payload"], cwd=root, check=True)
-            payload.unlink()
-            subprocess.run(["git", "add", "-A"], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "revert side payload"], cwd=root, check=True)
-            subprocess.run(["git", "checkout", "-q", main_branch], cwd=root, check=True)
-            subprocess.run(
-                ["git", "merge", "--no-ff", "-qm", "merge side history", "payload-side"],
-                cwd=root,
-                check=True,
-            )
-
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-
-            self.assertIn("skills/payload/SKILL.md", {issue.path for issue in issues})
-
-    def test_candidate_review_invocations_require_closed_owned_valid_manifests(self) -> None:
-        change_relative = "docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7"
-        relative = f"{change_relative}/review-invocation-spec-review-r9.yaml"
-        valid_manifest = (
-            "schema_version: 1\n"
-            "review_id: spec-review-r9\n"
-            "review_stage: spec-review\n"
-            "review_target: specs/boundary-first-v1-v0-3-7-activation-release.md\n"
-            f"base_revision: {'a' * 40}\n"
-            f"head_revision: {'b' * 40}\n"
-            "native_review_status: approved\n"
-            "review_gate_outcome: approved\n"
-            "independence_level: L1\n"
-            "author_context_id: fixture-author\n"
-            "reviewer_context_id: fixture-reviewer\n"
-            "context_separation_mechanism: separate-agent-blind-first\n"
-            "risk_tier: elevated\n"
-            "governing_artifacts:\n"
-            "  - specs/boundary-first-v1-v0-3-7-activation-release.md\n"
-            "formal_criteria:\n"
-            "  - spec-review-v1\n"
-            "initial_packet_inventory:\n"
-            "  - path: specs/boundary-first-v1-v0-3-7-activation-release.md\n"
-            f"    revision: {'a' * 40}\n"
-            f"    sha256: {'c' * 64}\n"
-            "manifest_owner: workflow-orchestrator\n"
-            "forbidden_initial_context_excluded: true\n"
-        )
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            initialize_candidate_fixture(root)
-            unknown = root / change_relative / "review-invocation-release-package.yaml"
-            unknown.write_text("payload\n", encoding="utf-8")
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "unknown invocation"], cwd=root, check=True)
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-            self.assertIn(unknown.relative_to(root).as_posix(), {issue.path for issue in issues})
-
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            _, change_root, _, _, _ = initialize_candidate_fixture(root)
-            invocation = root / relative
-            invocation.write_text("arbitrary payload\n", encoding="utf-8")
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "malformed invocation"], cwd=root, check=True)
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-            self.assertIn("BFR-CANDIDATE-LIFECYCLE-EVIDENCE", {issue.code for issue in issues})
-
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            _, change_root, _, _, _ = initialize_candidate_fixture(root)
-            invocation = root / relative
-            invocation.write_text(
-                "schema_version: 1\n"
-                "review_id: spec-review-r9\n"
-                "review_stage: spec-review\n"
-                "manifest_owner: workflow-orchestrator\n",
-                encoding="utf-8",
-            )
-            change_yaml = change_root / "change.yaml"
-            change_yaml.write_text(
-                change_yaml.read_text(encoding="utf-8").replace(
-                    "workflow_state:\n",
-                    f"workflow_state:\n  evidence:\n    - {relative}\n",
-                ),
-                encoding="utf-8",
-            )
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "incomplete invocation"], cwd=root, check=True)
-
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-
-            self.assertIn("BFR-CANDIDATE-LIFECYCLE-EVIDENCE", {issue.code for issue in issues})
-
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            _, change_root, _, _, _ = initialize_candidate_fixture(root)
-            invocation = root / relative
-            invocation.write_text(valid_manifest, encoding="utf-8")
-            change_yaml = change_root / "change.yaml"
-            change_yaml.write_text(
-                change_yaml.read_text(encoding="utf-8").replace(
-                    "workflow_state:\n",
-                    f"workflow_state:\n  evidence:\n    - {relative}\n",
-                ),
-                encoding="utf-8",
-            )
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "valid invocation"], cwd=root, check=True)
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-            self.assertNotIn("BFR-CANDIDATE-LIFECYCLE-EVIDENCE", {issue.code for issue in issues})
-
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            _, change_root, _, _, _ = initialize_candidate_fixture(root)
-            invocation = root / relative
-            invocation.write_text(
-                valid_manifest + "payload: arbitrary-release-material\n",
-                encoding="utf-8",
-            )
-            change_yaml = change_root / "change.yaml"
-            change_yaml.write_text(
-                change_yaml.read_text(encoding="utf-8").replace(
-                    "workflow_state:\n",
-                    f"workflow_state:\n  evidence:\n    - {relative}\n",
-                ),
-                encoding="utf-8",
-            )
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "unknown invocation field"], cwd=root, check=True)
-
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-
-            self.assertIn("BFR-CANDIDATE-LIFECYCLE-EVIDENCE", {issue.code for issue in issues})
-
-    def test_accepted_activation_review_manifests_match_closed_schema(self) -> None:
-        change_relative = Path(
-            "docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7"
-        )
-        sources = sorted((ROOT / change_relative).glob("review-invocation-*.yaml"))
-        self.assertTrue(sources)
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            evidence: list[str] = []
-            for source in sources:
-                relative = (change_relative / source.name).as_posix()
-                destination = root / relative
-                destination.parent.mkdir(parents=True, exist_ok=True)
-                destination.write_bytes(source.read_bytes())
-                evidence.append(relative)
-            change_yaml = root / change_relative / "change.yaml"
-            change_yaml.write_text(
-                "workflow_state:\n  evidence:\n"
-                + "".join(f"    - {relative}\n" for relative in evidence),
-                encoding="utf-8",
-            )
-
-            rejected = [
-                relative
-                for relative in evidence
-                if _review_invocation_issue(root, relative) is not None
-            ]
-
-            self.assertEqual(rejected, [])
-
-    def test_review_manifest_revisions_are_bound_to_their_fields(self) -> None:
-        change_relative = Path(
-            "docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7"
-        )
-        name = "review-invocation-spec-review-r5.yaml"
-        relative = (change_relative / name).as_posix()
-        source = (ROOT / relative).read_text(encoding="utf-8")
-        numeric = re.sub(
-            r"(?m)^base_revision: [0-9a-f]+$",
-            "base_revision: 12345678",
-            source,
-        )
-        numeric = re.sub(
-            r"(?m)^head_revision: [0-9a-f]+$",
-            "head_revision: 87654321",
-            numeric,
-        )
-        malformed = re.sub(
-            r"(?m)^(    revision:) [0-9a-f]+$",
-            r"\1 NOT-A-REVISION",
-            numeric,
-            count=1,
-        ) + "risk_map:\n  nested:\n    revision: deadbeef\n"
-        duplicate_top_level = numeric + "base_revision: NOT-A-REVISION\n"
-        spaced_duplicate_base = numeric + "base_revision : NOT-A-REVISION\n"
-        spaced_duplicate_head = numeric + "head_revision : NOT-A-REVISION\n"
-        duplicate_inventory = numeric + (
-            "initial_packet_inventory:\n"
-            "  - path: substituted\n"
-            "    revision: NOT-A-REVISION\n"
-            f"    sha256: {'d' * 64}\n"
-        )
-        spaced_duplicate_inventory = numeric + (
-            "initial_packet_inventory :\n"
-            "  - path: substituted\n"
-            "    revision: NOT-A-REVISION\n"
-            f"    sha256: {'d' * 64}\n"
-        )
-        duplicate_packet_key = re.sub(
-            r"(?m)^(    sha256: ([0-9a-f]{64}))$",
-            r"\1\n    sha256: \2",
-            numeric,
-            count=1,
-        )
-        first_packet = re.search(
-            r"(?m)^  - path: .*\n"
-            r"    revision: [0-9a-f]+\n"
-            r"    sha256: [0-9a-f]+$",
-            numeric,
-        )
-        assert first_packet is not None
-        conflicting_packet = re.sub(
-            r"(?m)^    revision: [0-9a-f]+$",
-            "    revision: deadbeef",
-            first_packet.group(0),
-        )
-        conflicting_packet = re.sub(
-            r"(?m)^    sha256: [0-9a-f]+$",
-            f"    sha256: {'e' * 64}",
-            conflicting_packet,
-        )
-        duplicate_packet_path = numeric.replace(
-            first_packet.group(0),
-            first_packet.group(0) + "\n" + conflicting_packet,
-            1,
-        )
-
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            destination = root / relative
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            change_yaml = root / change_relative / "change.yaml"
-            change_yaml.write_text(
-                f"workflow_state:\n  evidence:\n    - {relative}\n",
-                encoding="utf-8",
-            )
-            destination.write_text(numeric, encoding="utf-8")
-            self.assertIsNone(_review_invocation_issue(root, relative))
-
-            destination.write_text(malformed, encoding="utf-8")
-            self.assertIsNotNone(_review_invocation_issue(root, relative))
-
-            for manifest in (
-                duplicate_top_level,
-                spaced_duplicate_base,
-                spaced_duplicate_head,
-                duplicate_inventory,
-                spaced_duplicate_inventory,
-                duplicate_packet_key,
-                duplicate_packet_path,
-            ):
-                with self.subTest(manifest=manifest[-100:]):
-                    destination.write_text(manifest, encoding="utf-8")
-                    self.assertIsNotNone(_review_invocation_issue(root, relative))
-
-    def test_candidate_reports_union_for_rename_delete_and_multiple_drift(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            initialize_candidate_fixture(root)
-            deleted = root / "specs/references/boundary-first-proof-v1.md"
-            renamed_from = root / "specs/references/boundary-first-feature-authoring-v1.md"
-            renamed_to = root / "specs/references/renamed-authoring-v1.md"
-            deleted.unlink()
-            renamed_from.rename(renamed_to)
-            subprocess.run(["git", "add", "-A"], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "rename and delete payload"], cwd=root, check=True)
-
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-            paths = [
-                issue.path
-                for issue in issues
-                if issue.code == "BFR-CANDIDATE-POST-TRANSITION-DRIFT"
-            ]
-
-            self.assertEqual(paths, sorted(paths, key=lambda path: path.encode("utf-8")))
-            self.assertTrue(
-                {
-                    "specs/references/boundary-first-proof-v1.md",
-                    "specs/references/boundary-first-feature-authoring-v1.md",
-                    "specs/references/renamed-authoring-v1.md",
-                }.issubset(paths)
-            )
-
-    def test_candidate_private_drift_path_is_bounded(self) -> None:
-        sentinels = (
-            "TOKEN-PRIVATE-92a44", "OTP-123456", "username-secret", "hostname-private",
-            "1234", "5678", "9012", getpass.getuser(), socket.gethostname(),
-        )
-        short_secret_names = {"1234": "PIN", "5678": "API_KEY", "9012": "AUTH_CODE"}
-        for sentinel in sentinels:
-            with self.subTest(sentinel=sentinel), tempfile.TemporaryDirectory() as temporary:
-                root = Path(temporary) / "repository"
-                root.mkdir()
-                initialize_candidate_fixture(root)
-                private_path = root / "skills" / sentinel / "SKILL.md"
-                private_path.parent.mkdir(parents=True)
-                private_path.write_text("drift\n", encoding="utf-8")
-                subprocess.run(["git", "add", "."], cwd=root, check=True)
-                subprocess.run(["git", "commit", "-qm", "private drift"], cwd=root, check=True)
-                failed = subprocess.run(
-                    [
-                        sys.executable,
-                        str(ROOT / "scripts/validate-boundary-first.py"),
-                        "--check", "--root", str(root),
-                        "--activation-candidate", "v0.4.0",
-                    ],
-                    check=False, capture_output=True, text=True,
-                    env={
-                        **os.environ,
-                        short_secret_names.get(sentinel, "PRIVATE_ENV_SENTINEL"): sentinel,
-                    },
-                )
-                self.assertNotEqual(failed.returncode, 0)
-                self.assertNotIn(sentinel, failed.stdout)
-                self.assertNotIn(str(root), failed.stdout)
-                self.assertIn("redacted-path:sha256:", failed.stdout)
-
-    def test_private_runtime_values_tolerate_identity_provider_failures(self) -> None:
-        with (
-            mock.patch.dict(
-                os.environ,
-                {"PIN": "1234", "API_KEY": "5678", "AUTH_CODE": "9012"},
-                clear=True,
-            ),
-            mock.patch("boundary_first_validation.getpass.getuser", side_effect=OSError),
-            mock.patch("boundary_first_validation.socket.gethostname", side_effect=OSError),
-        ):
-            self.assertTrue({"1234", "5678", "9012"}.issubset(_private_runtime_values()))
-
-    def test_candidate_failure_bounds_private_release_and_rollback_fields(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            initialize_candidate_fixture(root)
-            private_release = "TOKEN-release-private-92a44"
-            failed = subprocess.run(
-                [
-                    sys.executable, str(ROOT / "scripts/validate-boundary-first.py"),
-                    "--check", "--root", str(root),
-                    "--activation-candidate", private_release,
-                ],
-                check=False, capture_output=True, text=True,
-            )
-            self.assertNotIn(private_release, failed.stdout)
-            self.assertIn("redacted:sha256:", failed.stdout)
-
-            activation = root / "specs/boundary-first-activation.yaml"
-            data = json.loads(activation.read_text(encoding="utf-8"))
-            private_rollback = "OTP-654321-private"
-            data["rollback_release"] = private_rollback
-            activation.write_text(json.dumps(data), encoding="utf-8")
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "private rollback"], cwd=root, check=True)
-            failed = subprocess.run(
-                [
-                    sys.executable, str(ROOT / "scripts/validate-boundary-first.py"),
-                    "--check", "--root", str(root),
-                    "--activation-candidate", "v0.4.0",
-                ],
-                check=False, capture_output=True, text=True,
-            )
-            self.assertNotIn(private_rollback, failed.stdout)
-            self.assertIn("redacted:sha256:", failed.stdout)
-
-    def test_publication_readiness_binds_candidate_evidence_to_producing_head(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            _, change_root, _, _, _ = initialize_candidate_fixture(root)
-            candidate_path = change_root / "evidence/boundary-activation-candidate.json"
-            forged = json.loads(candidate_path.read_text(encoding="utf-8"))
-            forged["publication_base"] = "0" * 40
-            candidate_path.write_text(json.dumps(forged), encoding="utf-8")
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "forge candidate identity"], cwd=root, check=True)
-
-            issues = validate_activation_publication_readiness(root)
-
-            self.assertIn("BFR-CANDIDATE-EVIDENCE-UNSETTLED", {issue.code for issue in issues})
-
-    def test_candidate_evidence_records_exact_validation_parent(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            _, change_root, _, _, head = initialize_candidate_fixture(root)
-            candidate_path = change_root / "evidence/boundary-activation-candidate.json"
-            candidate = json.loads(candidate_path.read_text(encoding="utf-8"))
-            evidence_commit = subprocess.run(
-                ["git", "log", "-1", "--format=%H", "--", candidate_path.relative_to(root)],
-                cwd=root, check=True, capture_output=True, text=True,
-            ).stdout.strip()
-            parents = subprocess.run(
-                ["git", "rev-list", "--parents", "-n", "1", evidence_commit],
-                cwd=root, check=True, capture_output=True, text=True,
-            ).stdout.split()
-
-            self.assertEqual(evidence_commit, head)
-            self.assertEqual(parents[1], candidate["candidate_validation_head"])
-            self.assertNotIn("reviewed_head", candidate)
-
-    def test_publication_readiness_rejects_self_naming_candidate_evidence(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            _, change_root, _, _, head = initialize_candidate_fixture(root)
-            candidate_path = change_root / "evidence/boundary-activation-candidate.json"
-            candidate = json.loads(candidate_path.read_text(encoding="utf-8"))
-            candidate["candidate_validation_head"] = head
-            candidate_path.write_text(json.dumps(candidate), encoding="utf-8")
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "forge self-naming candidate"], cwd=root, check=True)
-
-            issues = validate_activation_publication_readiness(root)
-
-            self.assertIn("BFR-CANDIDATE-EVIDENCE-UNSETTLED", {issue.code for issue in issues})
-
-    def test_repository_canonical_publication_authorities_compose_without_mocking(self) -> None:
-        self.assertEqual(_publication_authority_issues(ROOT), ())
-
-    def test_publication_readiness_rejects_unsettled_and_missing_candidate_evidence(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            _, change_root, _, _, _ = initialize_candidate_fixture(root)
-            change_yaml = change_root / "change.yaml"
-            settled = change_yaml.read_text(encoding="utf-8")
-            self.assertIn(
-                "BFR-CANDIDATE-EVIDENCE-UNSETTLED",
-                {issue.code for issue in validate_activation_publication_readiness(root)},
-            )
-            change_yaml.write_text(
-                settled.replace("review:\n  status: approved", "review:\n  status: changes-requested"),
-                encoding="utf-8",
-            )
-            self.assertIn(
-                "BFR-CANDIDATE-EVIDENCE-MISSING",
-                {issue.code for issue in validate_activation_publication_readiness(root)},
-            )
-            change_yaml.write_text(settled, encoding="utf-8")
-            (change_root / "evidence/boundary-activation-candidate.json").unlink()
-            self.assertIn(
-                "BFR-CANDIDATE-EVIDENCE-MISSING",
-                {issue.code for issue in validate_activation_publication_readiness(root)},
-            )
-
-    def test_candidate_rejects_remote_tag_presence(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / "repository"
-            root.mkdir()
-            _, _, _, transition, _ = initialize_candidate_fixture(root)
-            subprocess.run(
-                ["git", "push", "-q", "origin", f"{transition}:refs/tags/v0.4.0"],
-                cwd=root, check=True,
-            )
-
-            _, issues = validate_activation_candidate(root, "v0.4.0")
-
-            self.assertIn("BFR-CANDIDATE-REMOTE-TAG", {issue.code for issue in issues})
+            self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+            output = json.loads(completed.stdout)
+            self.assertEqual(output["snapshot"], "active")
+            self.assertEqual(output["release_intent"], "v0.4.0")
+            self.assertNotIn("published", completed.stdout.lower())
+            self.assertNotIn("tagged", completed.stdout.lower())
 
     def test_repository_pending_activation_record_passes(self) -> None:
         self.assertEqual(validate_activation(ROOT), ())
@@ -1783,186 +912,10 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             )
             self.assertIn("non-symlink", issue.expected)
 
-    def test_active_manifest_uses_parent_inventory_and_immediate_release(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            initialize_active_fixture(root)
-            self.assertEqual(validate_activation(root), ())
-
-    def test_child_cannot_self_grandfather_and_all_parent_statuses_are_required(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            activation_path, _ = initialize_active_fixture(root)
-            data = json.loads(activation_path.read_text(encoding="utf-8"))
-            for inventory in (
-                [
-                    "specs/accepted.md",
-                    "specs/active.md",
-                    "specs/approved.md",
-                ],
-                [
-                    "specs/accepted.md",
-                    "specs/active.md",
-                    "specs/approved.md",
-                    "specs/child.md",
-                    "specs/é.md",
-                ],
-                [
-                    "specs/accepted.md",
-                    "specs/active.md",
-                    "specs/approved.md",
-                    "specs/draft.md",
-                    "specs/é.md",
-                ],
-            ):
-                with self.subTest(inventory=inventory):
-                    data["grandfathered_specs"] = inventory
-                    activation_path.write_text(json.dumps(data), encoding="utf-8")
-                    self.assertIn(
-                        "BFR-GRANDFATHERED-MEMBERSHIP",
-                        {issue.code for issue in validate_activation(root)},
-                    )
-
-    def test_older_rollback_release_fails_closed(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            activation_path, _ = initialize_active_fixture(root)
-            data = json.loads(activation_path.read_text(encoding="utf-8"))
-            data["rollback_release"] = "v0.9.0"
-            activation_path.write_text(json.dumps(data), encoding="utf-8")
-            self.assertIn(
-                "BFR-ROLLBACK-RELEASE",
-                {issue.code for issue in validate_activation(root)},
-            )
-
-    def test_release_tags_must_exist_and_be_adjacent(self) -> None:
-        for activating, rollback in (
-            ("v2.0.0", "v1.1.0"),
-            ("v1.1.0", "v1.1.0"),
-        ):
-            with (
-                self.subTest(activating=activating, rollback=rollback),
-                tempfile.TemporaryDirectory() as temporary,
-            ):
-                root = Path(temporary)
-                activation_path, _ = initialize_active_fixture(root)
-                data = json.loads(activation_path.read_text(encoding="utf-8"))
-                data["activating_release"] = activating
-                data["rollback_release"] = rollback
-                activation_path.write_text(json.dumps(data), encoding="utf-8")
-                self.assertTrue(
-                    {"BFR-ACTIVATING-RELEASE", "BFR-ROLLBACK-RELEASE"}
-                    & {issue.code for issue in validate_activation(root)}
-                )
-
-    def test_baseline_must_be_exact_transition_parent(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            activation_path, baseline = initialize_active_fixture(root)
-            child = subprocess.run(
-                ["git", "rev-parse", "HEAD"],
-                cwd=root,
-                check=True,
-                capture_output=True,
-                text=True,
-            ).stdout.strip()
-            grandparent = subprocess.run(
-                ["git", "rev-parse", f"{baseline}^"],
-                cwd=root,
-                check=True,
-                capture_output=True,
-                text=True,
-            ).stdout.strip()
-            original = json.loads(activation_path.read_text(encoding="utf-8"))
-            for invalid in (7, child, grandparent):
-                with self.subTest(invalid=invalid):
-                    data = dict(original)
-                    data["grandfathering_baseline_revision"] = invalid
-                    activation_path.write_text(json.dumps(data), encoding="utf-8")
-                    self.assertTrue(
-                        {"BFR-BASELINE-REVISION", "BFR-BASELINE-PARENT"}
-                        & {issue.code for issue in validate_activation(root)}
-                    )
-
-    def test_merge_activation_uses_integration_first_parent(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            initialize_merge_activation_fixture(root)
-            codes = {issue.code for issue in validate_activation(root)}
-            self.assertIn("BFR-BASELINE-PARENT", codes)
-            self.assertIn("BFR-ACTIVATING-TAG-COMMIT", codes)
-            self.assertIn("BFR-GRANDFATHERED-MEMBERSHIP", codes)
-
-    def test_activating_tag_and_release_fields_are_transition_immutable(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            initialize_active_fixture(root)
-            pending = subprocess.run(
-                ["git", "rev-parse", "v0.9.0"],
-                cwd=root,
-                check=True,
-                capture_output=True,
-                text=True,
-            ).stdout.strip()
-            subprocess.run(
-                ["git", "tag", "-f", "v1.1.0", pending],
-                cwd=root,
-                check=True,
-                capture_output=True,
-            )
-            self.assertIn(
-                "BFR-ACTIVATING-TAG-COMMIT",
-                {issue.code for issue in validate_activation(root)},
-            )
-
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            activation_path, _ = initialize_active_fixture(root)
-            data = json.loads(activation_path.read_text(encoding="utf-8"))
-            data["activating_release"] = "v1.2.0"
-            data["rollback_release"] = "v1.1.0"
-            activation_path.write_text(json.dumps(data), encoding="utf-8")
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "rewrite releases"], cwd=root, check=True)
-            subprocess.run(["git", "tag", "v1.2.0"], cwd=root, check=True)
-            self.assertIn(
-                "BFR-ACTIVATION-IMMUTABLE",
-                {issue.code for issue in validate_activation(root)},
-            )
-
-    def test_invalid_transition_snapshot_cannot_be_repaired_later(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            activation_path, baseline = initialize_active_fixture(
-                root,
-                invalid_transition_snapshot=True,
-            )
-            data = json.loads(activation_path.read_text(encoding="utf-8"))
-            data["grandfathering_baseline_revision"] = baseline
-            data["grandfathered_specs"] = [
-                "specs/accepted.md",
-                "specs/active.md",
-                "specs/approved.md",
-                "specs/é.md",
-            ]
-            activation_path.write_text(json.dumps(data), encoding="utf-8")
-            subprocess.run(["git", "add", "."], cwd=root, check=True)
-            subprocess.run(["git", "commit", "-qm", "repair active snapshot"], cwd=root, check=True)
-
-            codes = {issue.code for issue in validate_activation(root)}
-            self.assertIn("BFR-BASELINE-PARENT", codes)
-            self.assertIn("BFR-GRANDFATHERED-MEMBERSHIP", codes)
-            self.assertIn("BFR-ACTIVATION-IMMUTABLE", codes)
-
     def test_active_rollback_release_matches_current_adapter_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            initialize_active_fixture(
-                root,
-                bootstrap_release="v0.3.4",
-                rollback_release="v0.3.5",
-                activating_release="v0.3.6",
-            )
+            initialize_checked_revision_active_fixture(root)
             before = relevant_tree_snapshot(root)
 
             selection, issues = rollback_package_selection(root)
@@ -1970,7 +923,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             self.assertEqual(issues, ())
             self.assertIsNotNone(selection)
             assert selection is not None
-            self.assertEqual(selection.release, "v0.3.5")
+            self.assertEqual(selection.release, "v0.3.6")
             self.assertEqual(
                 tuple(row.adapter for row in selection.artifacts),
                 ("claude", "codex", "opencode"),
@@ -1978,7 +931,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             self.assertEqual(
                 tuple(row.archive for row in selection.artifacts),
                 tuple(
-                    f"rigorloop-adapter-{adapter}-v0.3.5.zip"
+                    f"rigorloop-adapter-{adapter}-v0.3.6.zip"
                     for adapter in ("claude", "codex", "opencode")
                 ),
             )
@@ -1999,7 +952,9 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             / "releases"
             / "v0.3.5.yaml"
         )
-        original = source_metadata.read_text(encoding="utf-8")
+        original = source_metadata.read_text(encoding="utf-8").replace(
+            "v0.3.5", "v0.3.6"
+        )
         codex_block = re.search(
             r"  - adapter: codex\n(?:    .+\n){4}",
             original,
@@ -2017,7 +972,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 "\ncombined_artifact:",
                 "\n"
                 "  - adapter: extra\n"
-                "    archive: rigorloop-adapter-extra-v0.3.5.zip\n"
+                "    archive: rigorloop-adapter-extra-v0.3.6.zip\n"
                 f"    sha256: {'a' * 64}\n"
                 "    install_root: .extra/skills/\n"
                 "    result: pass\n"
@@ -2031,7 +986,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             ),
             "failing": original.replace("    result: pass", "    result: fail", 1),
             "mixed-version": original.replace(
-                "  version: v0.3.5",
+                "  version: v0.3.6",
                 "  version: v0.3.4",
                 1,
             ),
@@ -2039,19 +994,14 @@ class BoundaryFirstActivationTests(unittest.TestCase):
         for name, metadata_text in cases.items():
             with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
-                initialize_active_fixture(
-                    root,
-                    bootstrap_release="v0.3.4",
-                    rollback_release="v0.3.5",
-                    activating_release="v0.3.6",
-                )
+                initialize_checked_revision_active_fixture(root)
                 metadata = (
                     root
                     / "docs"
                     / "reports"
                     / "adapter-artifacts"
                     / "releases"
-                    / "v0.3.5.yaml"
+                    / "v0.3.6.yaml"
                 )
                 metadata.write_text(metadata_text, encoding="utf-8")
                 before = relevant_tree_snapshot(root)
@@ -2065,7 +1015,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
     def test_rollback_authoritative_paths_fail_closed_without_mutation(self) -> None:
         relative_paths = (
             Path("dist/adapters/manifest.yaml"),
-            Path("docs/reports/adapter-artifacts/releases/v0.3.5.yaml"),
+            Path("docs/reports/adapter-artifacts/releases/v0.3.6.yaml"),
         )
         for relative_path in relative_paths:
             for mutation in ("missing", "directory", "symlink"):
@@ -2076,12 +1026,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                     outer = Path(temporary)
                     root = outer / "repository"
                     root.mkdir()
-                    initialize_active_fixture(
-                        root,
-                        bootstrap_release="v0.3.4",
-                        rollback_release="v0.3.5",
-                        activating_release="v0.3.6",
-                    )
+                    initialize_checked_revision_active_fixture(root)
                     target = root / relative_path
                     target.unlink()
                     outside = outer / "outside-sentinel"
@@ -2106,12 +1051,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
     def test_active_validation_cli_emits_authoritative_rollback_selection(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            initialize_active_fixture(
-                root,
-                bootstrap_release="v0.3.4",
-                rollback_release="v0.3.5",
-                activating_release="v0.3.6",
-            )
+            initialize_checked_revision_active_fixture(root)
             result = subprocess.run(
                 [
                     sys.executable,
@@ -2127,7 +1067,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             output = json.loads(result.stdout)
-            self.assertEqual(output["rollback_release"], "v0.3.5")
+            self.assertEqual(output["rollback_release"], "v0.3.6")
             self.assertEqual(
                 tuple(row["adapter"] for row in output["rollback_artifacts"]),
                 ("claude", "codex", "opencode"),
@@ -2139,7 +1079,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 / "reports"
                 / "adapter-artifacts"
                 / "releases"
-                / "v0.3.5.yaml"
+                / "v0.3.6.yaml"
             ).unlink()
             failed = subprocess.run(
                 [
@@ -2156,23 +1096,10 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             self.assertNotEqual(failed.returncode, 0)
             self.assertIn("BFR-ROLLBACK-PATH-UNSAFE", failed.stdout)
 
-    def test_unicode_parent_path_is_inventoried_and_symlink_mode_fails(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            initialize_active_fixture(root)
-            self.assertEqual(validate_activation(root), ())
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            initialize_active_fixture(root, symlink_parent=True)
-            self.assertIn(
-                "BFR-BASELINE-MODE",
-                {issue.code for issue in validate_activation(root)},
-            )
-
     def test_grandfathered_inventory_requires_raw_utf8_order_and_uniqueness(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            activation_path, _ = initialize_active_fixture(root)
+            activation_path = initialize_checked_revision_active_fixture(root)
             data = json.loads(activation_path.read_text(encoding="utf-8"))
             for inventory in (
                 ["specs/active.md", "specs/accepted.md", "specs/approved.md"],
