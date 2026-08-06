@@ -46,14 +46,17 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: m1-r5-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: R5 must close tagged-readiness, accepted-receipt, and short-secret findings.
-  outcome: pending
+  outcome: changes-requested
 phase_receipts:
   - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
 risk_map:
   affected_behavior: tagged readiness, receipt authority, and private diagnostics
   highest_impact_failure_modes: candidate/readiness phase coupling, false receipt rejection, and short secret disclosure

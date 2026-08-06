@@ -67,17 +67,19 @@ Review closeout: test-spec-review-r7
 | BFA-TSR2-001 | accepted | resolved | Linked MP1 and producing commands directly from PRF-006 and PRF-008. |
 | BFA-M1-CR1-001 | accepted | resolved | Reject every supplied candidate value except exact v0.4.0. |
 | BFA-M1-CR1-002 | accepted | resolved | Inspect every direct post-T first-parent commit so a revert cannot hide drift. |
-| BFA-M1-CR1-003 | accepted | open | Compose canonical lifecycle settlement and candidate-evidence authority. |
+| BFA-M1-CR1-003 | accepted | resolved | Composed canonical settlement with phase-correct tagged readiness. |
 | BFA-M1-CR1-004 | accepted | resolved | Emit available failure context and corrective action. |
 | BFA-M1-CR1-005 | accepted | resolved | Completed direct M1 proof and all eight sibling failure paths. |
 | BFA-M1-CR1-006 | accepted | resolved | Require all applicable directory descendants to be tracked. |
 | BFA-M1-CR1-007 | accepted | open | Replace open evidence/review subtrees with closed lifecycle ownership. |
-| BFA-M1-CR1-008 | accepted | open | Bound changed-path diagnostics against private sentinels. |
+| BFA-M1-CR1-008 | accepted | resolved | Bound diagnostics against short and runtime private sentinels. |
 | BFA-M1-R2-001 | accepted | resolved | Inspect merged side-branch commits so change-and-revert ancestry cannot hide drift. |
 | BFA-M1-R3-001 | accepted | resolved | Separated candidate-producing R, evidence commit C, and publication head H. |
-| BFA-M1-R4-001 | accepted | open | Replace candidate-mode rerun with phase-correct tagged readiness. |
+| BFA-M1-R4-001 | accepted | resolved | Replaced candidate-mode rerun with phase-correct tagged readiness. |
 | BFA-M1-R4-002 | accepted | open | Align closed receipt validation with accepted abbreviated identities. |
-| BFA-M1-R4-003 | accepted | open | Redact short PIN, API-key, and auth-code environment values. |
+| BFA-M1-R4-003 | accepted | resolved | Redact short PIN, API-key, and auth-code environment values. |
+| BFA-M1-R5-001 | accepted | open | Bind revision validation to each packet inventory entry. |
+| BFA-M1-R5-002 | accepted | open | Accept lexical numeric abbreviated base/head revisions. |
 
 ## Finding Details
 
@@ -445,6 +447,32 @@ Rationale: BFA-R018 explicitly separates pre-tag candidate validation from
 post-tag publication readiness.
 Validation target: code-review-m1-r5
 Validation evidence: pending correction and R5
+
+### code-review-m1-r5
+
+#### BFA-M1-R5-001 - Cross-section revision substitution
+
+Finding ID: BFA-M1-R5-001
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Lexically bind every inventory revision to its own packet block.
+Rationale: File-wide counts cannot prove per-entry validity.
+Validation target: code-review-m1-r6
+Validation evidence: pending correction and R6
+
+#### BFA-M1-R5-002 - Numeric abbreviated revisions rejected
+
+Finding ID: BFA-M1-R5-002
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Validate top-level base/head revisions from their exact lexical fields.
+Rationale: YAML numeric coercion must not invalidate a canonical Git abbreviation.
+Validation target: code-review-m1-r6
+Validation evidence: pending correction and R6
 
 #### BFA-M1-R4-002 - Closed receipt validation rejects accepted manifests
 
