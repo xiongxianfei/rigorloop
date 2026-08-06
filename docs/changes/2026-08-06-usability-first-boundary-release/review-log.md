@@ -315,7 +315,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-pr-full-gate-r1.md
 Resolution: review-resolution.md#code-review-pr-full-gate-r1
 Material findings: UBR-PRFG-CR1-001, UBR-PRFG-CR1-002, UBR-PRFG-CR1-003
-Open findings: UBR-PRFG-CR1-001
+Open findings: None
 Recording status: recorded
 
 ### Review entry
@@ -326,7 +326,18 @@ Status: changes-requested
 Detailed record: reviews/code-review-pr-full-gate-r2.md
 Resolution: review-resolution.md#code-review-pr-full-gate-r2
 Material findings: UBR-PRFG-CR2-001
-Open findings: UBR-PRFG-CR2-001
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: code-review-pr-full-gate-r3
+Stage: code-review
+Round: 3
+Status: changes-requested
+Detailed record: reviews/code-review-pr-full-gate-r3.md
+Resolution: review-resolution.md#code-review-pr-full-gate-r3
+Material findings: UBR-PRFG-CR3-001
+Open findings: UBR-PRFG-CR3-001
 Recording status: recorded
 
 ### Review entry

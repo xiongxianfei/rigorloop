@@ -25,10 +25,10 @@ Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r4
 Review closeout: code-review-pr-readiness-r1
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`, `code-review-pr-full-gate-r1`, `code-review-pr-full-gate-r2`
-- Findings resolved: 31
-- Unresolved findings: 2
-- Current result: Code-review PR full-gate R2 resolves the malformed-profile and historical-fixture findings but reproduces reciprocal lifecycle-authority failure; `UBR-PRFG-CR1-001` remains open through `UBR-PRFG-CR2-001`.
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`, `code-review-pr-full-gate-r1`, `code-review-pr-full-gate-r2`, `code-review-pr-full-gate-r3`
+- Findings resolved: 33
+- Unresolved findings: 1
+- Current result: Code-review PR full-gate R3 resolves the canonical reciprocal marker bypass and keeps profile/package corrections green, but records `UBR-PRFG-CR3-001` for unknown-value fail-open and YAML-equivalent lifecycle-authority misclassification.
 
 ## Resolution Overview
 
@@ -36,8 +36,9 @@ Review closeout: code-review-pr-readiness-r1
 | --- | --- | --- | --- |
 | UBR-TSR3-001 | accepted | resolved | T24 now pairs specs with change records, rejects missing or different lifecycle authority, and uses consistent integration proof labels. |
 | UBR-SR4-001 | accepted | resolved | Folded marker placement into BND-COMPAT-001 so the applicability and boundary-definition requirement sets agree exactly. |
-| UBR-PRFG-CR2-001 | accepted | open | Make lifecycle authority select the only permitted marker branch and complete the approved T24 placement matrix. |
-| UBR-PRFG-CR1-001 | accepted | open | Owner-form authority is authenticated, but failed remediation remains open through UBR-PRFG-CR2-001 because stage-owned status placement still passes. |
+| UBR-PRFG-CR3-001 | accepted | open | Parse lifecycle authority semantically, reject present unknown values, and retain historical absence only. |
+| UBR-PRFG-CR2-001 | accepted | resolved | Lifecycle authority now selects the canonical owner/status branch before acceptance and directly covers before-pointer placement. |
+| UBR-PRFG-CR1-001 | accepted | resolved | The approved contract and reciprocal R3 probe now align canonical stage-owned and historical marker placement. |
 | UBR-PRFG-CR1-002 | accepted | resolved | The profile namespace is exclusive and malformed names fail with `release-version-required`. |
 | UBR-PRFG-CR1-003 | accepted | resolved | Current v0.4.0 fixtures remain current while historical skills-only cases use actual v0.3.3 identity. |
 | UBR-M4-CR3-001 | accepted | resolved | The M4 R2 receipt now states the exact 26-finding historical inventory. |
@@ -129,13 +130,13 @@ Validation evidence: T24 pairs feature specs with referenced change records, pro
 
 Finding ID: UBR-PRFG-CR1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: boundary-first proof-model spec author
 Owning stage: spec
 Chosen action: Amend the governing marker-placement rule and matching test specification to authorize the normalized owning-change-pointer form for stage-owned artifacts while retaining the legacy status form and exact fail-closed placement behavior.
 Rationale: The implementation solves the lifecycle composition problem, but PBF-R002 still normatively requires `## Status` and the current replacement table does not replace that subject.
 Validation target: spec review followed by independent PR full-gate correction rereview
-Validation evidence: Code-review PR full-gate R2 confirms the approved contract now exists and owner-form authority is authenticated, but a paired direct probe shows the same stage-owned record also passes through the legacy status branch. The finding remains open through UBR-PRFG-CR2-001.
+Validation evidence: Code-review PR full-gate R3 confirms the approved contract, exact canonical stage-owned owner-form success, canonical stage-owned status-form rejection, historical absent-authority status success, and before/outside/duplicate failures. The narrower vocabulary/YAML issue is recorded separately as UBR-PRFG-CR3-001.
 Safe resolution path: Update the owning contract and proof map through the spec workflow, preserve exact marker count and owner/status placement negatives, then rerun boundary regressions and changed-path validation.
 Auto-fix class: requires-upstream-spec
 
@@ -173,14 +174,30 @@ Auto-fix class: declared-safe
 
 Finding ID: UBR-PRFG-CR2-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: PR full-gate correction implementer
 Owning stage: review-resolution
 Chosen action: Resolve the normalized owning change record before accepting either marker branch, reject stage-owned status placement, retain genuinely non-stage-owned status placement, and complete the approved T24 placement matrix.
 Rationale: UBR-R021 conditions placement on lifecycle authority, so owner-form authentication alone is insufficient when the same stage-owned feature can still pass through the legacy branch.
 Validation target: independent PR full-gate correction rereview
-Validation evidence: Code-review R2 paired-fixture probe reports no issues for both owner and status forms against the same `stage-owned-change-local-v1` record; the 64-test suite passes because it lacks the reciprocal negative and direct before-pointer case.
+Validation evidence: Code-review R3 directly confirms the exact unquoted stage-owned owner form passes, the matching status form returns `BFR-MARKER-PLACEMENT`, absent historical authority retains status, before-pointer fails, and the focused plus complete boundary suites pass.
 Safe resolution path: Apply authority before branch acceptance, add paired positive and table-driven negative T24 fixtures, rerun the boundary suite and path-aware feature/test-spec validation, and preserve the resolved selector and package-fixture corrections.
+Auto-fix class: declared-safe
+
+### code-review-pr-full-gate-r3
+
+#### UBR-PRFG-CR3-001 - Lifecycle authority parsing fails open and is presentation-sensitive
+
+Finding ID: UBR-PRFG-CR3-001
+Disposition: accepted
+Status: open
+Owner: PR full-gate correction implementer
+Owning stage: review-resolution
+Chosen action: Parse the top-level lifecycle scalar semantically, treat absence as historical, recognize the exact stage-owned value across valid YAML serialization, and reject every present unknown or malformed value.
+Rationale: Closed lifecycle authority cannot safely map arbitrary present values to legacy behavior, and YAML presentation must not invert the marker branch selected by the same semantic scalar.
+Validation target: independent PR full-gate correction rereview
+Validation evidence: Code-review R3 probes show unknown authority plus status returns no issue, while a quoted exact stage-owned scalar rejects owner placement and permits status placement; the current 64-test suite uses invented `legacy` as a passing non-stage fixture and has no unknown-value regression.
+Safe resolution path: Use a bounded repository-owned semantic scalar parser or equivalent exact three-state seam, replace the `legacy` positive with absent historical authority, add quoted exact and `unknown_value` negatives, and rerun focused/complete boundary validation without changing selector, package, release, architecture, or plan surfaces.
 Auto-fix class: declared-safe
 
 ### code-review-pr-readiness-r1
