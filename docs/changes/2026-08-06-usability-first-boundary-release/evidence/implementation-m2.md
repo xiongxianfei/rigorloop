@@ -43,5 +43,21 @@ candidate CLI is rejected.
   — pass.
 - `git diff --check` — pass.
 
+## R1 review resolution
+
+- `UBR-M2-CR1-001`: all activation-record parse diagnostics now use the
+  repository-relative authoritative path. Missing, malformed, and wrong-shape
+  CLI fixtures under a private sentinel root prove the root is not serialized.
+- `UBR-M2-CR1-002`: every derivation Git read sets
+  `GIT_NO_REPLACE_OBJECTS=1` and `GIT_NO_LAZY_FETCH=1`. A real replacement ref
+  no longer changes the inventory bound to the explicit baseline commit.
+- `UBR-M2-CR1-003`: positive rollback proof copies and parses the tracked
+  immutable `v0.3.6` metadata. The validator pins that record's raw identity,
+  and relabeled `v0.3.5` artifact hashes fail.
+- `UBR-M2-CR1-004`: activation state is type-checked before vocabulary
+  membership. Unknown strings, arrays, and objects return the same structured
+  fail-closed issue through both the callable and CLI.
+- The complete M2 validation command set passes with 61 boundary tests.
+
 No tag, publication, push, merge, registry write, network request, or external
 state mutation was performed.

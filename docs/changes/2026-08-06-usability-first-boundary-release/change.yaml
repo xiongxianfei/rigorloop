@@ -73,12 +73,9 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: review-resolution
-  next_stage: implement
-  blocker:
-    code: review-findings-open
-    evidence:
-      - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m2-r1.md
+  current_stage: code-review
+  next_stage: review-resolution
+  blocker: null
   evidence:
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r2.md
     - docs/changes/2026-08-06-usability-first-boundary-release/evidence/workflow-routing-to-implementation.md
@@ -99,7 +96,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: resolution-needed
+        state: review-requested
       M3:
         kind: implementation
         state: planned
@@ -126,7 +123,6 @@ workflow_state:
         - lifecycle-gates-open
         - implementation-milestones-open
         - milestone-review-pending
-        - review-findings-open
         - explain-change-pending
         - verify-pending
         - pr-handoff-pending
@@ -157,4 +153,4 @@ changed_files:
   - docs/changes/2026-08-06-usability-first-boundary-release/evidence/spec-authoring.md
 review:
   status: changes-requested
-  unresolved_items: 4
+  unresolved_items: 0
