@@ -1,0 +1,79 @@
+schema_version: 1
+review_id: code-review-m4-r3
+review_stage: code-review
+review_target: range:692ec7366b664c79d41adeb505a3d572b39b5190..c570b557b447f0f9420a8ea53da7fd88f092a813
+base_revision: 692ec7366b664c79d41adeb505a3d572b39b5190
+head_revision: c570b557b447f0f9420a8ea53da7fd88f092a813
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L1
+author_context_id: root-m4-r2-count-correction
+reviewer_context_id: m4-r3-fresh-independent-final-reviewer
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: medium
+risk_tier_triggers:
+  - review-resolution-cardinality
+  - final-holistic-evidence-consistency
+  - lifecycle-closeout
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+  - docs/changes/2026-08-06-usability-first-boundary-release/review-log.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/review-resolution.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r2.md
+  - specs/formal-review-recording.md
+  - specs/review-finding-resolution-contract.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: c570b557
+    sha256: 92b720e9d1db8efd1bec1b423263ea2e0f2798b7c8a780fb74b67ae4afd7fb1d
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/review-resolution.md
+    revision: c570b557
+    sha256: e69f6de719c406cb156b04c056246483ac34ac2b3303bfd29fc1eadb416e9cf1
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r2.md
+    revision: c570b557
+    sha256: d5453b729b572af0af7434bb33e8b3d1a70bdbfcb63397d4964d3bbd2f3e3270
+  - path: range:692ec7366b664c79d41adeb505a3d572b39b5190..c570b557.diff
+    revision: c570b557
+    sha256: 91930091229c3ce716992673570ab099bcd7896e5ed51eff132652afe06430a4
+  - path: range:d215c045..c570b557.diff
+    revision: c570b557
+    sha256: bdc9380310e58024600adcde8dd3b9157a844f427fe1d76e62a12e935aa2e38e
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: false
+  satisfied: false
+requirement_fidelity:
+  applicability: applicable
+  reason: The correction changes governed review-resolution cardinality and final holistic evidence consistency.
+  outcome: changes-requested
+risk_map:
+  affected_behavior: durable review finding cardinality and final holistic closeout evidence
+  highest_impact_failure_modes: wrong row count, duplicate or omitted findings, stale sibling count, changed implementation conclusion, or premature explain-change handoff
+  changed_boundaries: review-resolution summary, parseable resolution rows, final review receipt, and change-local routing
+  evidence_expected: exact one-line diff, independent overview/detail parse, stale-count search, review-artifact validation, and change-metadata validation
+  direct_inspection_areas: resolution overview, Finding ID detail blocks, M4 R2 receipt, review log, and change state
+  intentionally_out_of_scope: implementation behavior, activation derivation, release execution, explain-change, verify, PR, tag, publication, push, and merge
+  applicable_risk_classes:
+    - requirement-fidelity
+    - review-recording
+    - lifecycle-closeout
+  non_applicable_risk_classes:
+    - implementation-behavior
+    - live-publication
+    - external-mutation
+  falsifiable_questions:
+    - Do exactly 26 unique parseable overview rows match 26 unique detail IDs?
+    - Does any live final-review surface still claim 22 findings?
+    - Does the numeric correction preserve the clean implementation conclusion?
