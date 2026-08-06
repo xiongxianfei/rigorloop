@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -33,8 +33,8 @@ Review closeout: test-spec-review-r7
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`, `plan-review-r4`, `test-spec-review-r5`, `test-spec-review-r6`, `test-spec-review-r7`
 - Findings resolved: 30
-- Unresolved findings: 5
-- Final result: Test-spec R7 approves the R/C/H proof map; existing M1 identity, proof, invocation-shape, and privacy findings remain for implementation and code-review R4.
+- Unresolved findings: 3
+- Final result: M2 code-review R1 requests correction of evidence-path authority, bounded diagnostics, and same-push CAS/proof coverage before M2 can close.
 
 ## Resolution Overview
 
@@ -83,8 +83,54 @@ Review closeout: test-spec-review-r7
 | BFA-M1-R6-001 | accepted | resolved | Rejected duplicate inventory sections and mapping keys. |
 | BFA-M1-R7-001 | accepted | resolved | Normalized parser-equivalent duplicate top-level keys. |
 | BFA-M1-R7-002 | accepted | resolved | Required unique packet inventory paths. |
+| BFA-M2-R1-001 | accepted | open | Reject symlink evidence paths before lexical canonical-path comparison. |
+| BFA-M2-R1-002 | accepted | open | Preserve bounded failure classification and safe operator context. |
+| BFA-M2-R1-003 | accepted | open | Validate same-push advertised identities and complete the real-Git proof matrix. |
 
 ## Finding Details
+
+### code-review-m2-r1
+
+#### BFA-M2-R1-001 - Symlink evidence-path bypass
+
+Finding ID: BFA-M2-R1-001
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Inspect lexical supplied and canonical paths for symlinks before
+normalization, then require the exact canonical repository-relative path.
+Rationale: Evidence authority must not be broadened by filesystem indirection.
+Validation target: code-review-m2-r2
+Validation evidence: pending correction and R2
+
+#### BFA-M2-R1-002 - Compressed publication diagnostics
+
+Finding ID: BFA-M2-R1-002
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Carry safe publication context in bounded errors, classify guard
+failures, and serialize invariant and corrective-action fields without raw output.
+Rationale: Operators need actionable failure identity without secret disclosure.
+Validation target: code-review-m2-r2
+Validation evidence: pending correction and R2
+
+#### BFA-M2-R1-003 - Incomplete same-push CAS and proof matrix
+
+Finding ID: BFA-M2-R1-003
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Parse exact pre-push stdin mappings for main and tag, retain a
+supplemental remote query, add required real-Git/CLI/privacy regressions, and
+correct the M2 evidence claims.
+Rationale: The approved architecture requires same-push advertised identities,
+and milestone evidence may claim only directly exercised behavior.
+Validation target: code-review-m2-r2
+Validation evidence: pending correction and R2
 
 ### proposal-review-r1
 

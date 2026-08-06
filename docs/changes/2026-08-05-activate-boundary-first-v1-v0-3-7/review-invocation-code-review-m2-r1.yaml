@@ -40,14 +40,17 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: m2-r1-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: M2 implements atomic remote mutation and recovery boundaries.
-  outcome: pending
+  outcome: changes-requested
 phase_receipts:
   - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
 review_focus:
   - Challenge exact-H retention, same-push compare-and-swap, atomic capability, all-or-neither refs, and no force/fallback.
   - Challenge check-mode side effects, explicit CLI modes, bounded diagnostics, and selector ownership.
