@@ -125,8 +125,6 @@ ROUTINE_RELEASE_GATE_ITEMS = (
 ROUTINE_RELEASE_GATE_FINAL_RESULTS = {
     **{item: frozenset(("pass",)) for item in ROUTINE_RELEASE_GATE_ITEMS},
     "release notes or not-required rationale": frozenset(("pass", "not-required")),
-    "package build or pack proof": frozenset(("pass", "not-applicable")),
-    "local packed-install smoke": frozenset(("pass", "not-applicable")),
 }
 RELEASE_REGISTRY_ITEMS = (
     "registry version query",
@@ -134,6 +132,20 @@ RELEASE_REGISTRY_ITEMS = (
     "integrity metadata available",
     "fresh registry install smoke",
     "CLI or npx smoke",
+)
+EMERGENCY_DEFERRABLE_RELEASE_ITEMS = frozenset(("fresh registry install smoke",))
+RELEASE_EVIDENCE_STATUSES = frozenset(
+    (
+        "published",
+        "pending-publication",
+        "failed-before-publish",
+        "failed-during-publish",
+        "failed-after-publish",
+        "emergency-with-deferred-gate",
+        "rolled-back",
+        "deprecated",
+        "not-published",
+    )
 )
 NON_DEFERRABLE_RELEASE_ITEMS = (
     "release evidence",
@@ -601,6 +613,7 @@ def _is_blank_table_value(value: str) -> bool:
 
 def _validate_emergency_deferrals(section: str) -> list[str]:
     errors: list[str] = []
+    deferred_items: list[str] = []
     for row in _markdown_table_rows(section):
         if not row:
             continue
@@ -608,7 +621,11 @@ def _validate_emergency_deferrals(section: str) -> list[str]:
         if not deferred_item or deferred_item.casefold() == "none":
             continue
         normalized = deferred_item.casefold()
-        if any(term in normalized for term in NON_DEFERRABLE_RELEASE_ITEMS):
+        deferred_items.append(normalized)
+        if (
+            normalized not in EMERGENCY_DEFERRABLE_RELEASE_ITEMS
+            or any(term in normalized for term in NON_DEFERRABLE_RELEASE_ITEMS)
+        ):
             errors.append(f"emergency deferral '{deferred_item}' is non-deferrable")
         if len(row) < 9:
             errors.append(f"emergency deferral '{deferred_item}' must include all required fields")
@@ -626,7 +643,20 @@ def _validate_emergency_deferrals(section: str) -> list[str]:
         for field_name, value in required_fields:
             if _is_blank_table_value(value):
                 errors.append(f"emergency deferral '{deferred_item}' is missing {field_name}")
+    for deferred_item in set(deferred_items):
+        if deferred_items.count(deferred_item) != 1:
+            errors.append(
+                f"emergency deferral '{deferred_item}' is duplicated; must appear exactly once"
+            )
     return errors
+
+
+def _emergency_deferral_items(section: str) -> list[str]:
+    return [
+        row[0].strip().casefold()
+        for row in _markdown_table_rows(section)
+        if row and row[0].strip() and row[0].strip().casefold() != "none"
+    ]
 
 
 def validate_release_evidence_checklist(
@@ -672,31 +702,31 @@ def validate_release_evidence_checklist(
     preflight_section = _get_section(sections, "Preflight Gate") or ""
     status = (result_values.get("Status") or "").casefold()
     release_type = (result_values.get("Release type") or "").casefold()
+    if status and status not in RELEASE_EVIDENCE_STATUSES:
+        errors.append(f"release evidence status '{status}' is not in the supported vocabulary")
     is_emergency = release_type == "emergency" or status == "emergency-with-deferred-gate"
-    if not is_emergency:
-        for gate_item in ROUTINE_RELEASE_GATE_ITEMS:
-            gate_results = _table_row_results(preflight_section, gate_item)
-            if len(gate_results) != 1:
+    for gate_item in ROUTINE_RELEASE_GATE_ITEMS:
+        gate_results = _table_row_results(preflight_section, gate_item)
+        if len(gate_results) != 1:
+            errors.append(
+                f"routine release gate item '{gate_item}' is missing or duplicated; must appear exactly once"
+            )
+            continue
+        allowed_results = set(ROUTINE_RELEASE_GATE_FINAL_RESULTS[gate_item])
+        if not require_preflight_pass and not is_emergency:
+            allowed_results.add("pending")
+        gate_result = gate_results[0].casefold()
+        if gate_result not in allowed_results:
+            if allowed_results == {"pass"}:
+                errors.append(f"routine release gate item '{gate_item}' must pass before publish")
+            else:
+                expected = " or ".join(sorted(allowed_results))
                 errors.append(
-                    f"routine release gate item '{gate_item}' is missing or duplicated; must appear exactly once"
+                    f"routine release gate item '{gate_item}' must be {expected} before publish"
                 )
-                continue
-            allowed_results = set(ROUTINE_RELEASE_GATE_FINAL_RESULTS[gate_item])
-            if not require_preflight_pass:
-                allowed_results.add("pending")
-            gate_result = gate_results[0].casefold()
-            if gate_result not in allowed_results:
-                if allowed_results == {"pass"}:
-                    errors.append(
-                        f"routine release gate item '{gate_item}' must pass before publish"
-                    )
-                else:
-                    expected = " or ".join(sorted(allowed_results))
-                    errors.append(
-                        f"routine release gate item '{gate_item}' must be {expected} before publish"
-                    )
 
     registry_section = _get_section(sections, "Registry Verification") or ""
+    registry_results_by_item: dict[str, str] = {}
     for registry_item in RELEASE_REGISTRY_ITEMS:
         registry_results = _table_row_results(registry_section, registry_item)
         if len(registry_results) != 1:
@@ -704,16 +734,45 @@ def validate_release_evidence_checklist(
                 f"release registry item '{registry_item}' is missing or duplicated; must appear exactly once"
             )
             continue
-        allowed_registry_results = {"pass", "not-applicable"}
-        if is_emergency and registry_item != "registry version query":
+        registry_result = registry_results[0].casefold()
+        registry_results_by_item[registry_item] = registry_result
+        if status in {"published", "emergency-with-deferred-gate"}:
+            allowed_registry_results = {"pass"}
+        else:
+            allowed_registry_results = {"pass", "pending", "not-applicable", "not-run"}
+        if (
+            status == "emergency-with-deferred-gate"
+            and registry_item in EMERGENCY_DEFERRABLE_RELEASE_ITEMS
+        ):
             allowed_registry_results.add("deferred")
-        if registry_results[0].casefold() not in allowed_registry_results:
+        if registry_result not in allowed_registry_results:
+            expected = " or ".join(sorted(allowed_registry_results))
             errors.append(
-                f"post-publish registry verification '{registry_item}' must be pass or not-applicable"
+                f"post-publish registry verification '{registry_item}' must be {expected}"
             )
 
     emergency_section = _get_section(sections, "Emergency Deferrals") or ""
     errors.extend(_validate_emergency_deferrals(emergency_section))
+    deferral_items = _emergency_deferral_items(emergency_section)
+    deferred_results = {
+        item.casefold()
+        for item, result in registry_results_by_item.items()
+        if result == "deferred"
+    }
+    for deferred_item in deferred_results:
+        if deferral_items.count(deferred_item) != 1:
+            errors.append(
+                f"deferred result '{deferred_item}' requires exactly one matching emergency deferral"
+            )
+    for deferred_item in set(deferral_items):
+        if deferred_item not in deferred_results:
+            errors.append(
+                f"emergency deferral '{deferred_item}' has no matching deferred result"
+            )
+    if status == "emergency-with-deferred-gate" and not deferred_results:
+        errors.append("emergency-with-deferred-gate status requires a matching deferred result")
+    if not is_emergency and deferral_items:
+        errors.append("non-emergency release evidence must not contain emergency deferrals")
 
     path_version = relative_path.stem
     result_version = (result_values.get("Version") or "").strip()
