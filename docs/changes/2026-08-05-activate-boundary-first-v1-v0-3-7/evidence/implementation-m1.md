@@ -2,7 +2,7 @@
 
 Milestone: M1 — Read-only activation candidate validation
 
-Outcome: implemented, R1-R4 findings corrected, and ready for R5 code review.
+Outcome: implemented, R1-R5 findings corrected, and ready for R6 code review.
 
 ## Implemented behavior
 
@@ -39,6 +39,10 @@ Outcome: implemented, R1-R4 findings corrected, and ready for R5 code review.
   state without re-entering candidate mode. It also accepts canonical
   abbreviated receipt revisions, validates every current activation invocation,
   and redacts short PIN, API-key, and auth-code environment values.
+- The R5 correction binds every packet revision to its exact inventory block,
+  prevents unrelated nested revision fields from authorizing malformed packets,
+  and accepts canonical all-numeric abbreviated base/head Git identities through
+  lexical field validation without weakening closed manifest fields.
 
 ## Boundary and proof coverage
 
@@ -70,7 +74,7 @@ mode changes tag authority only; it does not remove path-owned sibling checks.
 
 ## Validation
 
-- `python scripts/test-boundary-first-validation.py` — pass, 86 tests.
+- `python scripts/test-boundary-first-validation.py` — pass, 87 tests.
 - `python scripts/validate-boundary-first.py --check` — pass.
 - `python -m py_compile scripts/validate-boundary-first.py scripts/boundary_first_validation.py` — pass.
 - `python scripts/select-validation.py --mode explicit --path scripts/validate-boundary-first.py --path scripts/boundary_first_validation.py --path scripts/test-boundary-first-validation.py --path scripts/fixtures/boundary-first/activation --path scripts/validation_selection.py --path scripts/test-select-validation.py` — pass; selected `boundary_first.validate`, `boundary_first.regression`, and `selector.regression`, with no blockers or registration debt.

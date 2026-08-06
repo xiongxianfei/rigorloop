@@ -2088,9 +2088,25 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
         if isinstance(manifest, dict)
         else None
     )
-    packet_revisions = re.findall(
-        r"(?m)^\s{4}revision:\s*([0-9a-f]{8,64})\s*$",
-        manifest_text if isinstance(manifest, dict) else "",
+    lexical_text = manifest_text if isinstance(manifest, dict) else ""
+    base_revisions = re.findall(
+        r"(?m)^base_revision:\s*([0-9a-f]{8,64})\s*$",
+        lexical_text,
+    )
+    head_revisions = re.findall(
+        r"(?m)^head_revision:\s*([0-9a-f]{8,64})\s*$",
+        lexical_text,
+    )
+    packet_section = re.search(
+        r"(?m)^initial_packet_inventory:\s*\n"
+        r"(?P<body>(?:^[ ]{2,}.*(?:\n|$))*)",
+        lexical_text,
+    )
+    lexical_packets = re.findall(
+        r"(?m)^  - path:\s*(\S.*?)\s*$\n"
+        r"    revision:\s*([0-9a-f]{8,64})\s*$\n"
+        r"    sha256:\s*([0-9a-f]{64})\s*$",
+        packet_section.group("body") if packet_section else "",
     )
     packet_shape_valid = bool(packets) and isinstance(packets, list) and all(
         isinstance(packet, dict)
@@ -2100,7 +2116,14 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
         and isinstance(packet.get("sha256"), str)
         and bool(re.fullmatch(r"[0-9a-f]{64}", packet["sha256"]))
         for packet in packets
-    ) and len(packet_revisions) == len(packets)
+    ) and len(lexical_packets) == len(packets) and all(
+        lexical_path == packet["path"] and lexical_sha256 == packet["sha256"]
+        for packet, (lexical_path, _revision, lexical_sha256) in zip(
+            packets,
+            lexical_packets,
+            strict=True,
+        )
+    )
     list_fields_valid = isinstance(manifest, dict) and all(
         isinstance(manifest.get(field), list) and bool(manifest[field])
         for field in ("governing_artifacts", "formal_criteria")
@@ -2130,10 +2153,8 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
         or not (
             target.startswith(("docs/", "specs/", "commit:", "range:"))
         )
-        or not isinstance(manifest.get("base_revision"), str)
-        or not re.fullmatch(r"[0-9a-f]{8,64}", manifest["base_revision"])
-        or not isinstance(manifest.get("head_revision"), str)
-        or not re.fullmatch(r"[0-9a-f]{8,64}", manifest["head_revision"])
+        or len(base_revisions) != 1
+        or len(head_revisions) != 1
         or (
             manifest.get("native_review_status"),
             manifest.get("review_gate_outcome"),

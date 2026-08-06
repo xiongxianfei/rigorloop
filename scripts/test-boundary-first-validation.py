@@ -1264,6 +1264,45 @@ class BoundaryFirstActivationTests(unittest.TestCase):
 
             self.assertEqual(rejected, [])
 
+    def test_review_manifest_revisions_are_bound_to_their_fields(self) -> None:
+        change_relative = Path(
+            "docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7"
+        )
+        name = "review-invocation-spec-review-r5.yaml"
+        relative = (change_relative / name).as_posix()
+        source = (ROOT / relative).read_text(encoding="utf-8")
+        numeric = re.sub(
+            r"(?m)^base_revision: [0-9a-f]+$",
+            "base_revision: 12345678",
+            source,
+        )
+        numeric = re.sub(
+            r"(?m)^head_revision: [0-9a-f]+$",
+            "head_revision: 87654321",
+            numeric,
+        )
+        malformed = re.sub(
+            r"(?m)^(    revision:) [0-9a-f]+$",
+            r"\1 NOT-A-REVISION",
+            numeric,
+            count=1,
+        ) + "risk_map:\n  nested:\n    revision: deadbeef\n"
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repository"
+            destination = root / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            change_yaml = root / change_relative / "change.yaml"
+            change_yaml.write_text(
+                f"workflow_state:\n  evidence:\n    - {relative}\n",
+                encoding="utf-8",
+            )
+            destination.write_text(numeric, encoding="utf-8")
+            self.assertIsNone(_review_invocation_issue(root, relative))
+
+            destination.write_text(malformed, encoding="utf-8")
+            self.assertIsNotNone(_review_invocation_issue(root, relative))
+
     def test_candidate_reports_union_for_rename_delete_and_multiple_drift(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "repository"
