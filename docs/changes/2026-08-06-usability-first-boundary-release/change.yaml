@@ -73,19 +73,20 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: implement
-  next_stage: code-review
+  current_stage: code-review
+  next_stage: review-resolution
   blocker: null
   evidence:
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r2.md
     - docs/changes/2026-08-06-usability-first-boundary-release/evidence/workflow-routing-to-implementation.md
+    - docs/changes/2026-08-06-usability-first-boundary-release/evidence/implementation-m1.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M1
     milestones:
       M1:
         kind: implementation
-        state: implementing
+        state: review-requested
       M2:
         kind: implementation
         state: planned

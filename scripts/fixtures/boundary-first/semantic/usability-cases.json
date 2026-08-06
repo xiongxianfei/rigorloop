@@ -1,0 +1,163 @@
+{
+  "cases": [
+    {
+      "case_id": "usability.e1.specification",
+      "stage": "spec",
+      "formal_artifact": "boundary-record",
+      "user_named_method": false,
+      "behavior_change": true,
+      "depth_trigger": "ordinary",
+      "candidates": [
+        {"topic": "snapshot-shape", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "compatibility", "owned": true, "governing_consequence": true, "observed_interface": false, "trigger_match": false},
+        {"topic": "release-tag", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false},
+        {"topic": "network", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false},
+        {"topic": "publication", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false},
+        {"topic": "transition-history", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false}
+      ],
+      "expected_selected": ["compatibility", "snapshot-shape"]
+    },
+    {
+      "case_id": "usability.e2.inspection",
+      "stage": "implement",
+      "formal_artifact": "none",
+      "user_named_method": false,
+      "behavior_change": true,
+      "depth_trigger": "ordinary",
+      "candidates": [
+        {"topic": "activation-record-shape", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "snapshot-coherence", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "frozen-inventory", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "public-cli-caller", "owned": true, "governing_consequence": false, "observed_interface": true, "trigger_match": false},
+        {"topic": "provider-outage", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false},
+        {"topic": "registry-publication", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false}
+      ],
+      "expected_selected": ["activation-record-shape", "frozen-inventory", "public-cli-caller", "snapshot-coherence"]
+    },
+    {
+      "case_id": "usability.e3.code-review",
+      "stage": "code-review",
+      "formal_artifact": "none",
+      "user_named_method": false,
+      "behavior_change": true,
+      "depth_trigger": "ordinary",
+      "candidates": [
+        {"topic": "retired-custom-paths", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "validator", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "routine-release", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "rollback", "owned": true, "governing_consequence": true, "observed_interface": true, "trigger_match": false},
+        {"topic": "atomic-ref-race", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false},
+        {"topic": "custom-publisher-recovery", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false}
+      ],
+      "expected_selected": ["retired-custom-paths", "rollback", "routine-release", "validator"]
+    },
+    {
+      "case_id": "usability.wording-only",
+      "stage": "workflow",
+      "formal_artifact": "none",
+      "user_named_method": false,
+      "behavior_change": false,
+      "depth_trigger": "ordinary",
+      "candidates": [
+        {"topic": "wording", "owned": true, "governing_consequence": false, "observed_interface": false, "trigger_match": false}
+      ],
+      "expected_selected": []
+    },
+    {
+      "case_id": "usability.no-boundary",
+      "stage": "verify",
+      "formal_artifact": "none",
+      "user_named_method": false,
+      "behavior_change": false,
+      "depth_trigger": "ordinary",
+      "candidates": [
+        {"topic": "presentation", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false}
+      ],
+      "expected_selected": []
+    },
+    {
+      "case_id": "usability.contract-base",
+      "stage": "plan",
+      "formal_artifact": "none",
+      "user_named_method": false,
+      "behavior_change": true,
+      "depth_trigger": "ordinary",
+      "candidates": [
+        {"topic": "primary-boundary", "owned": true, "governing_consequence": true, "observed_interface": false, "trigger_match": false},
+        {"topic": "failure-interaction", "owned": true, "governing_consequence": false, "observed_interface": false, "trigger_match": true},
+        {"topic": "external-provider", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false}
+      ],
+      "expected_selected": ["primary-boundary"]
+    },
+    {
+      "case_id": "usability.contract-deeper",
+      "stage": "plan",
+      "formal_artifact": "none",
+      "user_named_method": false,
+      "behavior_change": true,
+      "depth_trigger": "contract",
+      "candidates": [
+        {"topic": "primary-boundary", "owned": true, "governing_consequence": true, "observed_interface": false, "trigger_match": false},
+        {"topic": "failure-interaction", "owned": true, "governing_consequence": false, "observed_interface": false, "trigger_match": true},
+        {"topic": "external-provider", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false}
+      ],
+      "expected_selected": ["failure-interaction", "primary-boundary"]
+    },
+    {
+      "case_id": "usability.risk-base",
+      "stage": "code-review",
+      "formal_artifact": "none",
+      "user_named_method": false,
+      "behavior_change": true,
+      "depth_trigger": "ordinary",
+      "candidates": [
+        {"topic": "public-path", "owned": true, "governing_consequence": false, "observed_interface": true, "trigger_match": false},
+        {"topic": "retry-path", "owned": true, "governing_consequence": false, "observed_interface": false, "trigger_match": true},
+        {"topic": "deployment", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false}
+      ],
+      "expected_selected": ["public-path"]
+    },
+    {
+      "case_id": "usability.risk-deeper",
+      "stage": "code-review",
+      "formal_artifact": "none",
+      "user_named_method": false,
+      "behavior_change": true,
+      "depth_trigger": "risk",
+      "candidates": [
+        {"topic": "public-path", "owned": true, "governing_consequence": false, "observed_interface": true, "trigger_match": false},
+        {"topic": "retry-path", "owned": true, "governing_consequence": false, "observed_interface": false, "trigger_match": true},
+        {"topic": "deployment", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false}
+      ],
+      "expected_selected": ["public-path", "retry-path"]
+    },
+    {
+      "case_id": "usability.explicit-base",
+      "stage": "implement",
+      "formal_artifact": "none",
+      "user_named_method": false,
+      "behavior_change": true,
+      "depth_trigger": "ordinary",
+      "candidates": [
+        {"topic": "loader", "owned": true, "governing_consequence": false, "observed_interface": true, "trigger_match": false},
+        {"topic": "caller", "owned": true, "governing_consequence": false, "observed_interface": false, "trigger_match": true},
+        {"topic": "provider", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false}
+      ],
+      "expected_selected": ["loader"]
+    },
+    {
+      "case_id": "usability.explicit-deeper",
+      "stage": "implement",
+      "formal_artifact": "none",
+      "user_named_method": false,
+      "behavior_change": true,
+      "depth_trigger": "explicit",
+      "candidates": [
+        {"topic": "loader", "owned": true, "governing_consequence": false, "observed_interface": true, "trigger_match": false},
+        {"topic": "caller", "owned": true, "governing_consequence": false, "observed_interface": false, "trigger_match": true},
+        {"topic": "provider", "owned": false, "governing_consequence": false, "observed_interface": false, "trigger_match": false}
+      ],
+      "expected_selected": ["caller", "loader"]
+    }
+  ]
+}
