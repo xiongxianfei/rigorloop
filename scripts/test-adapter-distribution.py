@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import importlib.util
 import hashlib
+import os
 import sys
 import shutil
 import subprocess
@@ -5010,13 +5011,47 @@ release_gate:
         self.assertIn("needs: release", workflow_text)
         self.assertIn("id-token: write", workflow_text)
         self.assertIn("registry-url: https://registry.npmjs.org", workflow_text)
-        self.assertIn("npm publish --provenance --access public", workflow_text)
+        self.assertIn('npm publish --provenance --access public --tag "${{ steps.context.outputs.npm_dist_tag }}"', workflow_text)
+        self.assertIn("RELEASE_TAG_COMMIT: ${{ github.sha }}", workflow_text)
+        self.assertIn("load_release_profile(sys.argv[1]).npm_dist_tag", workflow_text)
         self.assertIn("github.ref_name != 'v0.1.4'", workflow_text)
         self.assertIn("^[v][0-9]+[.][0-9]+[.][0-9]+$", workflow_text)
         self.assertIn("expected_version=\"${tag#v}\"", workflow_text)
         self.assertIn("packages/rigorloop/package.json", workflow_text)
         self.assertNotIn("workflow_dispatch", workflow_text)
         self.assertNotIn("release-output/*.tgz", workflow_text)
+
+    def test_release_verify_rejects_missing_or_mismatched_trusted_commit(self) -> None:
+        base_env = {
+            "PATH": os.environ.get("PATH", ""),
+            "GITHUB_ACTIONS": "true",
+            "GITHUB_REF_NAME": "v0.4.0",
+            "GITHUB_REF_TYPE": "tag",
+            "RELEASE_VERIFY_DRY_RUN": "1",
+        }
+        missing = subprocess.run(
+            ["bash", "scripts/release-verify.sh", "v0.4.0"],
+            cwd=ROOT,
+            env=base_env,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        mismatched = subprocess.run(
+            ["bash", "scripts/release-verify.sh", "v0.4.0"],
+            cwd=ROOT,
+            env={**base_env, "RELEASE_TAG_COMMIT": "0" * 40},
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+
+        self.assertNotEqual(missing.returncode, 0)
+        self.assertIn("RELEASE_TAG_COMMIT", missing.stderr)
+        self.assertNotEqual(mismatched.returncode, 0)
+        self.assertIn("does not match checked HEAD", mismatched.stderr)
 
     def test_claude_entrypoint_documents_native_skill_invocation(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

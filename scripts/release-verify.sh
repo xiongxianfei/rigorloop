@@ -21,6 +21,30 @@ if [[ -z "$release_version" ]]; then
   exit 1
 fi
 
+release_tag_commit="${RELEASE_TAG_COMMIT:-}"
+if [[ "${GITHUB_ACTIONS:-}" == "true" && "${GITHUB_REF_TYPE:-}" == "tag" && -z "$release_tag_commit" ]]; then
+  echo "release gate failure: trusted workflow requires RELEASE_TAG_COMMIT" >&2
+  exit 1
+fi
+if [[ -n "$release_tag_commit" ]]; then
+  if [[ ! "$release_tag_commit" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "release gate failure: RELEASE_TAG_COMMIT must be a full 40-character Git SHA" >&2
+    exit 1
+  fi
+  checked_commit="$(git rev-parse HEAD)"
+  if [[ "$release_tag_commit" != "$checked_commit" ]]; then
+    echo "release gate failure: RELEASE_TAG_COMMIT does not match checked HEAD" >&2
+    exit 1
+  fi
+  if [[ "${GITHUB_REF_TYPE:-}" == "tag" ]]; then
+    tag_commit="$(git rev-parse "${release_version}^{commit}")"
+    if [[ "$tag_commit" != "$release_tag_commit" ]]; then
+      echo "release gate failure: immutable tag does not match checked release commit" >&2
+      exit 1
+    fi
+  fi
+fi
+
 case "$release_version" in
   v0.1.0-rc.1|v0.1.0|v0.1.1|v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3|v0.3.4|v0.3.5|v0.3.6|v0.4.0)
     ;;

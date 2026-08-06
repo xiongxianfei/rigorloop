@@ -9,6 +9,7 @@ publication:
   package: "@xiongxianfei/rigorloop"
   version: "0.4.0"
   release_tag: "v0.4.0"
+  dist_tag: "latest"
   source_commit: "pending"
   mode: "trusted-publishing"
 

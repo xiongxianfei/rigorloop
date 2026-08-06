@@ -1,10 +1,9 @@
 schema_version: release-profile-v1
-release_kind: special
+release_kind: routine
 release_tag: v0.3.5
 package_version: 0.3.5
-npm_dist_tag: latest
+npm_dist_tag: next
 npm_package: "@xiongxianfei/rigorloop"
-owner_decision: "Fixture owner decision for a special release path."
 
 targets:
   - codex
