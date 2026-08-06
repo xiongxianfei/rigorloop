@@ -617,9 +617,12 @@ class PrepareReleaseTests(unittest.TestCase):
     def test_pending_standing_record_requires_every_preflight_row(self) -> None:
         required_rows = (
             "clean worktree except intentional release artifacts",
+            "release notes or not-required rationale",
             "generated output current",
             "tests / selected CI / broad smoke",
+            "package build or pack proof",
             "package preview",
+            "local packed-install smoke",
             "no unresolved release blockers",
             "publish path selected",
             "evidence path prepared",
@@ -639,23 +642,60 @@ class PrepareReleaseTests(unittest.TestCase):
 
             self.assertTrue(any(row_name in error and "missing" in error for error in errors), errors)
 
-    def test_pending_standing_record_rejects_unknown_preflight_result(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            self.make_prepared_repo(root)
-            path = root / "docs" / "releases" / "v0.3.5.md"
-            text = path.read_text(encoding="utf-8")
-            path.write_text(
-                text.replace(
-                    "| generated output current | pending |",
-                    "| generated output current | unknown |",
-                ),
-                encoding="utf-8",
-            )
+    def test_pending_standing_record_rejects_unknown_or_duplicate_preflight_rows(self) -> None:
+        required_rows = (
+            "clean worktree except intentional release artifacts",
+            "release notes or not-required rationale",
+            "generated output current",
+            "tests / selected CI / broad smoke",
+            "package build or pack proof",
+            "package preview",
+            "local packed-install smoke",
+            "no unresolved release blockers",
+            "publish path selected",
+            "evidence path prepared",
+        )
+        for row_name in required_rows:
+            for mutation in ("unknown", "duplicate"):
+                with self.subTest(row_name=row_name, mutation=mutation), tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    self.make_prepared_repo(root)
+                    path = root / "docs" / "releases" / "v0.3.5.md"
+                    text = path.read_text(encoding="utf-8")
+                    original = next(line for line in text.splitlines() if line.startswith(f"| {row_name} |"))
+                    if mutation == "unknown":
+                        replacement = original.replace("| pending |", "| unknown |").replace("| pass |", "| unknown |")
+                    else:
+                        replacement = original + "\n" + original.replace("| pending |", "| pass |")
+                    path.write_text(text.replace(original, replacement), encoding="utf-8")
 
-            errors = validate_pending_release_artifacts("v0.3.5", root=root)
+                    errors = validate_pending_release_artifacts("v0.3.5", root=root)
 
-        self.assertTrue(any("generated output current" in error and "pending or pass" in error for error in errors), errors)
+                expected = "exactly once" if mutation == "duplicate" else "must be"
+                self.assertTrue(any(row_name in error and expected in error for error in errors), errors)
+
+    def test_pending_standing_record_rejects_missing_or_duplicate_registry_rows(self) -> None:
+        registry_rows = (
+            "registry version query",
+            "dist-tag points correctly",
+            "integrity metadata available",
+            "fresh registry install smoke",
+            "CLI or npx smoke",
+        )
+        for row_name in registry_rows:
+            for mutation in ("missing", "duplicate"):
+                with self.subTest(row_name=row_name, mutation=mutation), tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    self.make_prepared_repo(root)
+                    path = root / "docs" / "releases" / "v0.3.5.md"
+                    text = path.read_text(encoding="utf-8")
+                    original = next(line for line in text.splitlines() if line.startswith(f"| {row_name} |"))
+                    replacement = "" if mutation == "missing" else original + "\n" + original.replace("not-applicable", "pass", 1)
+                    path.write_text(text.replace(original, replacement), encoding="utf-8")
+
+                    errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+                self.assertTrue(any(row_name in error and "exactly once" in error for error in errors), errors)
 
     def test_pending_release_artifacts_reject_premature_public_status(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -728,6 +768,28 @@ class PrepareReleaseTests(unittest.TestCase):
                 prepare_release("v0.3.5", root=root, check=True)
 
         self.assertIn("docs/releases/v0.3.5/release.yaml", "\n".join(raised.exception.errors))
+
+    def test_prepare_release_does_not_preserve_whitespace_passing_smoke_fields(self) -> None:
+        for field in ("tool_version", "evidence"):
+            with self.subTest(field=field), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.make_repo(root)
+                prepare_release("v0.3.5", root=root)
+                path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
+                text = path.read_text(encoding="utf-8")
+                text = text.replace("manifest_version: pending", "manifest_version: v0.1.5")
+                text = text.replace("result: pending", "result: pass")
+                text = text.replace(": pending\n", ": pass\n")
+                line = next(
+                    item for item in text.splitlines()
+                    if item.strip().startswith(f"{field}:")
+                )
+                path.write_text(text.replace(line, f'    {field}: "   "', 1), encoding="utf-8")
+
+                with self.assertRaises(ReleaseProfileError) as raised:
+                    prepare_release("v0.3.5", root=root, check=True)
+
+            self.assertIn("docs/releases/v0.3.5/release.yaml", "\n".join(raised.exception.errors))
 
     def test_pending_release_artifacts_require_standing_release_record(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
