@@ -40,14 +40,17 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: m1-r6-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: R6 must close field-bound receipt revision parsing.
-  outcome: pending
+  outcome: changes-requested
 phase_receipts:
   - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
 review_focus:
   - Reconcile BFA-M1-R5-001 and BFA-M1-R5-002.
   - Challenge cross-section substitution, numeric abbreviated identities, duplicate fields, and current accepted receipts.

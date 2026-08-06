@@ -79,7 +79,8 @@ Review closeout: test-spec-review-r7
 | BFA-M1-R4-002 | accepted | open | Align closed receipt validation with accepted abbreviated identities. |
 | BFA-M1-R4-003 | accepted | resolved | Redact short PIN, API-key, and auth-code environment values. |
 | BFA-M1-R5-001 | accepted | open | Bind revision validation to each packet inventory entry. |
-| BFA-M1-R5-002 | accepted | open | Accept lexical numeric abbreviated base/head revisions. |
+| BFA-M1-R5-002 | accepted | resolved | Accept lexical numeric abbreviated base/head revisions. |
+| BFA-M1-R6-001 | accepted | open | Reject duplicate inventory sections and mapping keys. |
 
 ## Finding Details
 
@@ -461,6 +462,21 @@ Chosen action: Lexically bind every inventory revision to its own packet block.
 Rationale: File-wide counts cannot prove per-entry validity.
 Validation target: code-review-m1-r6
 Validation evidence: pending correction and R6
+
+### code-review-m1-r6
+
+#### BFA-M1-R6-001 - Duplicate inventory ambiguity
+
+Finding ID: BFA-M1-R6-001
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Require unique top-level fields, one inventory section, and exact
+full consumption of packet triples without duplicate keys.
+Rationale: Closed lifecycle evidence cannot rely on last-value-wins YAML parsing.
+Validation target: code-review-m1-r7
+Validation evidence: pending correction and R7
 
 #### BFA-M1-R5-002 - Numeric abbreviated revisions rejected
 
