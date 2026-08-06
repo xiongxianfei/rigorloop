@@ -1,6 +1,6 @@
 # Verify Report: Usability-First Boundary-First v0.4.0 Release
 
-Verification ID: verify-r1
+Verification ID: verify-r2
 Stage: verify
 Verifier: Codex verify
 Verification date: 2026-08-06
@@ -13,101 +13,97 @@ PR readiness: not claimed
 - Status: completed
 - Artifacts changed: this report and change-local verification/routing state
 - Open blockers: none for branch readiness
-- Next stage: `pr`, requiring human authorization
-- Validation: focused final-tree proof, release-selected CI with required broad smoke, standing release verification, and lifecycle checks passed
-- Readiness: branch-ready; PR-body, PR-open, hosted CI, and public-release readiness are not claimed
+- Next stage: `pr`
+- Validation: the repository-owned 21-check PR gate passed against `origin/main`, including required broad smoke
+- Readiness: branch-ready; PR-body, PR-open, hosted CI, publication, and public-release readiness remain separate claims
 
 ## Scope and verdict
 
-Ready.
+Ready for PR handoff.
 
-Verification covered the usability-first replacement initiative from parent commit `5ff1b4c2b1d475edb88f656c43ed57c910e61702` through explanation tip `951d572eaa7968f5d1f7da35f0cf2a7ec4ddca71`.
-It also checked the complete tracked branch against merge base `05fc8c34cc1e2c078f1bc406f98276b443208911`, including the preserved historical evidence for the superseded unpublished activation experiment.
+Verification covered the complete tracked branch through reviewed explanation tip `b29b4da2e4ded1e3f525e3c74a8caccef72ccc0f` against merge base and current `origin/main` commit `05fc8c34cc1e2c078f1bc406f98276b443208911`.
+The comparison includes the replacement initiative, its PR-gate corrections, and the preserved evidence for the superseded unpublished activation experiment.
 
-All four implementation milestones are closed, final code-review M4 R4 is clean, all 27 material findings are resolved, and the durable rationale is current.
-The active checked-revision snapshot, canonical resources, generated skills, three adapter targets, npm package, routine release metadata, rollback evidence, and local release gates agree.
+All four implementation milestones are closed.
+Formal code-review R5 is clean-with-notes, all 35 material findings are accepted and resolved, and the review ledger contains no open or `needs-decision` entry.
+The durable rationale is current through the final reviewed correction.
 
 No hosted CI run or public release state was observed.
-No tag, push, publication, registry write, merge, PR action, or other external mutation occurred.
+No tag, publication, registry write, merge, or public-availability claim occurred during verification.
 
 ## Boundary and traceability assessment
 
-The boundary-first scan began with the approved rows `BND-INPUT-001`, `BND-STATE-001`, `BND-COMPAT-001`, `BND-COMPOSE-001`, `BND-AUTH-001`, `BND-TEMPORAL-001`, `BND-RECOVERY-001`, `BND-ENV-001`, and interactions `INT-001` through `INT-003`.
-No unknown, stale, escaped, or conflicting boundary identity was found, so verification did not invent or expand the approved model.
+Verification traced the approved boundaries `BND-INPUT-001`, `BND-STATE-001`, `BND-COMPAT-001`, `BND-COMPOSE-001`, `BND-AUTH-001`, `BND-TEMPORAL-001`, `BND-RECOVERY-001`, and `BND-ENV-001`, plus interactions `INT-001` through `INT-003`.
+No applicable boundary or selected interaction lacks direct proof, and no unknown or escaped boundary identity was found.
 
-| Requirement area | Test IDs and implementation | Fresh evidence | Status |
+| Requirement area | Test and implementation ownership | Fresh evidence | Status |
 | --- | --- | --- | --- |
-| Automatic concise behavior (`UBR-R001`-`UBR-R005`, `UBR-R018`) | `T1`-`T5`, `T23`; semantic journey fixture and skill validator | 285 skill tests passed with 16 documented skips; 28 reference tests and generated-skill checks passed | pass |
-| Checked-revision activation and compatibility (`UBR-R006`-`UBR-R008`, `UBR-R015`, `UBR-R019`) | `T6`-`T12`; activation validator, frozen 78-path inventory, rollback metadata | 62 boundary tests passed; live check reports active, `v0.4.0` intent, and exact `v0.3.6` rollback archives | pass |
-| Custom-path retirement (`UBR-R013`) | `T11`; selector catalog and deletion set | 147 selector tests passed; release selection contains only `release.validate` and required `broad_smoke.repo` | pass |
-| Routine identity and package parity (`UBR-R009`-`UBR-R012`) | `T13`-`T17`; release profile, generated archives, bundled metadata, npm package | preparation/preflight passed; standing gate passed 149 adapter and 6 npm tests and rebuilt all three archives | pass |
-| Trusted authority, recovery, and evidence safety (`UBR-R014`, `UBR-R016`, `UBR-R017`, `UBR-R020`) | `T18`-`T22`; trusted tag binding, exact evidence matrices, phase recovery | release-selected CI and standing verifier passed; no external mutation or public claim occurred | pass |
-| Review and rationale closure | milestone review receipts, `review-resolution.md`, `explain-change.md` | 26 formal reviews and 27 resolved findings validate with no open or `needs-decision` entry | pass |
+| Automatic concise behavior (`UBR-R001`-`UBR-R005`, `UBR-R018`) | `T1`-`T5`, `T23`; semantic journey fixtures and governed skill generation | `skills.regression`, `skills.generation_regression`, adapter regression, drift, and validation checks passed | pass |
+| Checked-revision activation and compatibility (`UBR-R006`-`UBR-R008`, `UBR-R015`, `UBR-R019`, `UBR-R021`) | `T6`-`T12`, `T24`; activation validation, marker authority, grandfathered inventory, rollback metadata | boundary validation and all 65 boundary regressions passed | pass |
+| Custom-path retirement (`UBR-R013`) | `T11`; selector catalog and deletion set | selector regression passed in 60.98 seconds; ordinary boundary and release paths remain selected | pass |
+| Routine identity and package parity (`UBR-R009`-`UBR-R012`) | `T13`-`T17`; release profile, generated archives, adapter metadata, npm package | release validation, adapter checks, CLI tests, npm publication tests, and broad smoke passed | pass |
+| Trusted authority, recovery, and evidence safety (`UBR-R014`, `UBR-R016`, `UBR-R017`, `UBR-R020`) | `T18`-`T22`; trusted tag binding, evidence matrices, recovery, and public-authority separation | release transaction regression, lifecycle checks, review checks, and broad smoke passed without external mutation | pass |
+| Review and rationale closure | milestone receipts, PR-gate R1-R5, `review-resolution.md`, `explain-change.md` | 36 formal reviews and 35 resolved findings validate with no open finding | pass |
 
-Every normative requirement and named edge case maps to the approved test specification.
-No implemented behavior outside the accepted proposal, specification, architecture, ADR, or plan was found.
+Every normative requirement and named edge case maps through the approved test specification.
+No implementation outside the accepted proposal, specification, architecture, ADR, or plan was found.
 
 ## Verification dimensions
 
 | Dimension | Result | Basis |
 | --- | --- | --- |
-| Spec coverage | pass | All `UBR-R001`-`UBR-R020` groups map through `T1`-`T23` and the four milestone slices. |
+| Spec coverage | pass | `UBR-R001`-`UBR-R021` map through `T1`-`T24`, the four milestone slices, and the reviewed PR-gate corrections. |
 | Requirement satisfaction | pass | Every `MUST` has automated or release-gate evidence; no manual proof is required. |
-| Test coverage | pass | Named examples, boundaries, interactions, compatibility, recovery, privacy, and failure paths have direct proof. |
-| Test validity | pass | Reviews exercised adversarial unknown values, mixed identities, missing rows, ambient authority, stale projections, and negative fixtures. |
+| Test coverage | pass | Named examples, boundaries, interactions, lifecycle authority, compatibility, recovery, privacy, and failure paths have direct proof. |
+| Test validity | pass | Reviews reproduced unknown values, malformed and duplicate authority, mixed identities, missing evidence, ambient authority, stale projections, and historical-version drift before accepting fixes. |
 | Architecture coherence | pass | Checked-revision activation, one internal derivation function, routine publication, and authority separation match ADR-20260806. |
-| Artifact lifecycle state | pass | Accepted/approved upstream artifacts, closed reviews, explanation, active snapshot, release metadata, and change state are coherent. |
-| Plan completion | pass | M1-M4 are closed; no implementation milestone remains; the plan stays active only for PR handoff and external release completion. |
-| Validation evidence | pass | Fresh focused, broad-smoke, standing release, review, metadata, lifecycle, readability, and diff checks are recorded. |
-| Drift detection | pass | Canonical/generated skills, prepared release surfaces, archive/package metadata, and checked activation report no drift. |
-| Risk closure | pass | Immutable rollback, pre/post-publication recovery, trusted tag identity, secret-safe evidence, and no-mutation boundaries are retained. |
-| Release readiness | pass for branch | Local pre-public release inputs and gates pass; public availability remains explicitly unclaimed and outside this stage. |
+| Artifact lifecycle state | pass | Approved upstream artifacts, closed review resolution, current rationale, active snapshot, release metadata, and change state agree. |
+| Plan completion | pass | M1-M4 are closed; the plan remains active only for PR handoff and the named external publication/closeout event, not merge alone. |
+| Validation evidence | pass | The fresh repository-owned PR gate passed all 21 selected checks. |
+| Drift detection | pass | Generated skills, adapters, package metadata, release inputs, and lifecycle records passed their owned drift and validation checks. |
+| Risk closure | pass | Immutable rollback, pre/post-publication recovery, trusted identity, fail-closed lifecycle authority, secret-safe evidence, and no-mutation boundaries remain intact. |
+| Release readiness | pass for branch | Local pre-public release inputs and gates pass; public availability remains explicitly outside this stage. |
 
 ## Fresh validation evidence
 
-Commands ran from `/home/xiongxianfei/data/20260419-rigorloop` against tracked tip `951d572eaa7968f5d1f7da35f0cf2a7ec4ddca71` before this report was authored.
+The authoritative command ran from `/home/xiongxianfei/data/20260419-rigorloop` against tracked tip `b29b4da2e4ded1e3f525e3c74a8caccef72ccc0f`:
 
-| Command | Result |
-| --- | --- |
-| `python scripts/test-skill-validator.py` | pass; 285 tests, 16 documented skips |
-| `python scripts/test-boundary-first-reference.py` | pass; 28 tests |
-| `python scripts/validate-skills.py` | pass; 24 canonical skills |
-| `python scripts/build-skills.py --check` | pass; temporary generated output is current |
-| `python scripts/test-boundary-first-validation.py` | pass; 62 tests |
-| `python scripts/validate-boundary-first.py --check` | pass; active snapshot, `v0.4.0` intent, exact three-archive `v0.3.6` rollback |
-| `python scripts/test-select-validation.py` | pass; 147 tests in 64.31 seconds |
-| `python scripts/prepare-release.py v0.4.0 --check` | pass; no changes |
-| `python scripts/release-preflight.py v0.4.0 --skip-remote` | pass; one pre-existing report-only `v0.3.4` literal warning |
-| `python scripts/select-validation.py --mode release --release-version v0.4.0` | pass; selected `release.validate` and required `broad_smoke.repo` |
-| `bash scripts/ci.sh --mode release --release-version v0.4.0` | pass; `release.validate` 2.65 seconds and `broad_smoke.repo` 597.75 seconds |
-| `bash scripts/release-verify.sh v0.4.0` | pass; 285 skill tests, 149 adapter tests, 6 npm tests, three archives rebuilt, release metadata validated |
-| `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-06-usability-first-boundary-release` | pass before report; 26 reviews, 27 findings, no open finding |
-| `python scripts/validate-change-metadata.py docs/changes/2026-08-06-usability-first-boundary-release/change.yaml` | pass before report |
-| explicit artifact-lifecycle validation over the governing change pack | pass before report with only known merge-language warnings |
-| explanation prose/readability validation and `git diff --check` | pass before report; readability warnings are nonblocking |
+```sh
+bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+```
 
-The adapter suite intentionally prints expected negative-fixture release and token-cost diagnostics during passing tests.
-Its parent suite completed 149 tests successfully and the standing verifier exited zero.
+Result: pass; all 21 selected checks completed successfully.
+
+| Check group | Checks | Result |
+| --- | --- | --- |
+| Boundary and skills | `boundary_first.validate`, `boundary_first.regression`, `skills.regression`, `skills.generation_regression` | pass; boundary regression includes 65 tests |
+| Adapters | `adapters.regression`, `adapters.drift`, `adapters.validate` | pass |
+| Lifecycle and review | `review_artifacts.validate`, `artifact_lifecycle.regression`, `artifact_lifecycle.validate`, `change_metadata.regression`, `change_metadata.validate` | pass; 36 reviews and 35 findings validate |
+| Release and packages | `release.validate`, `release_transaction.regression`, `rigorloop_cli.test`, `npm_package_publication.test` | pass |
+| Documentation and routing | `markdown_readability.validate`, `guide_system.validate`, `documentation_prose.audit`, `selector.regression` | pass |
+| Required broad smoke | `broad_smoke.repo` | pass in 493.92 seconds |
+
+The phase totals were 503.62 seconds for boundary checks and 141.34 seconds for focused checks.
+This is fresh local validation; it is not a claim that hosted CI passed.
 
 ## Artifact drift and lifecycle assessment
 
-- `docs/plan.md` is a navigation index only and points to this plan and owning change record without mutable state duplication.
-- The plan body keeps stable execution intent and does not claim mutable milestone or routing state.
-- `change.yaml` records M1-M4 closed, final code-review R4 approved, explanation present, verify current, and `pr` next.
-- `review-resolution.md` is closed with 27 accepted/resolved findings and no open review-log entry.
-- The active activation record freezes the exact independently reviewed M3 baseline and 78-path grandfathered inventory; normal validation does not consult history.
-- The prepared release and bundled metadata remain tied to recorded source commit `c7b0babe6e8c91655c2b98f4092197eef5fabc69`; this identity is not substituted for activation-baseline or future trusted-tag authority.
-- Generated adapter bodies and release archives remain temporary and untracked as required.
+- `docs/plan.md` remains a navigation index and points to this plan and owning change record without duplicating mutable state.
+- The plan body retains stable intent and names separately authorized routine public release and closeout as the true downstream completion event.
+- `change.yaml` records M1-M4 closed, final code-review R5 approved, no unresolved review item, current explanation, and `pr` as the next stage.
+- `review-resolution.md` is closed with 35 accepted/resolved findings, and `review-log.md` has no open finding.
+- The active activation record, canonical resources, generated skills, three adapter targets, npm package, release profile, and immutable `v0.3.6` rollback metadata passed their owned checks.
+- The prepared release remains tied to its recorded source; verification does not substitute that identity for a future trusted tag.
 
 No blocking artifact drift was found.
-The merge-language warnings in the proposal, spec, and test spec describe the explicit external maintainer handoff already reviewed by their owning stages and do not contradict current lifecycle state.
+Historical merge-language warnings describe the reviewed external maintainer handoff and do not make merge itself a lifecycle completion event.
 
 ## Residual risks and handoff
 
-- Hosted CI has not been observed, so this report claims local branch readiness only.
-- Public `v0.4.0` still requires an authorized maintainer to merge, tag the exact reviewed release commit, run trusted publication, validate GitHub/npm assets, run fresh public `npx` smoke, and close release evidence.
-- Partial public publication must remain open and use rerunnable closeout, dist-tag correction or deprecation where applicable, or a later patch; immutable releases are not rewritten.
-- The one report-only `v0.3.4` literal warning is pre-existing baseline debt and did not affect `v0.4.0` validation.
+- Hosted CI has not been observed, so this report establishes local branch readiness only.
+- Public `v0.4.0` still requires separately authorized merge, exact immutable tagging, trusted GitHub/npm publication, fresh public smoke, and public closeout evidence.
+- Partial public publication must remain open and use the approved rerunnable or fix-forward recovery; immutable releases must not be rewritten.
+- The existing report-only historical-version literal warning remains nonblocking baseline debt.
 
-`pr` is the next valid stage, but it requires explicit human authorization and was not invoked.
-This report establishes `branch-ready` only; it does not establish `pr-body-ready`, `pr-open-ready`, hosted CI success, or public release availability.
+`pr` is the next valid stage and is explicitly authorized by the user's `$pr` request.
+This report establishes `branch-ready` only; the PR skill must separately establish PR-body and PR-open readiness.

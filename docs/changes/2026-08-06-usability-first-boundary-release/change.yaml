@@ -62,8 +62,8 @@ artifact_states:
       round: r4
 workflow_state:
   lifecycle_state: active
-  current_stage: verify
-  next_stage: pr
+  current_stage: pr
+  next_stage: none
   blocker: null
   evidence:
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r2.md
@@ -152,7 +152,6 @@ workflow_state:
       readiness: not-ready
       reasons:
         - lifecycle-gates-open
-        - verify-pending
         - pr-handoff-pending
         - external-completion-event-pending
       evidence:
@@ -234,6 +233,8 @@ validation:
     result: pass_15_artifacts_5_preexisting_warnings_pr_full_gate_fix
   - command: npm test --prefix packages/rigorloop
     result: pass_117_tests_pr_full_gate_fix
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_21_checks_broad_smoke_493_92s_verify_r2
 changed_files:
   - docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
   - docs/changes/2026-08-06-usability-first-boundary-release/evidence/proposal-authoring.md
