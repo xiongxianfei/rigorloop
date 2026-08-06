@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import re
+import secrets
 import subprocess
 import tempfile
 
@@ -289,8 +290,8 @@ def publication_readiness(
     )
 
 
-def _guard_script() -> str:
-    return """#!/usr/bin/env python3
+def _guard_script(result_path: Path, nonce: str) -> str:
+    script = """#!/usr/bin/env python3
 import os
 import re
 import subprocess
@@ -303,10 +304,18 @@ expected_head = os.environ["RIGORLOOP_EXPECTED_PUBLICATION_HEAD"]
 expected_transition = os.environ["RIGORLOOP_EXPECTED_TRANSITION"]
 main_ref = "refs/heads/main"
 tag_ref = f"refs/tags/{release}"
+result_path = __RESULT_PATH__
+nonce = __NONCE__
 
 def stop(code, identity=""):
-    suffix = f":{identity}" if re.fullmatch(r"[0-9a-f]{40}", identity) else ""
-    print(f"RIGORLOOP_GUARD:{code}{suffix}", file=sys.stderr)
+    suffix = f"\\t{identity}" if re.fullmatch(r"[0-9a-f]{40}", identity) else ""
+    try:
+        descriptor = os.open(result_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(descriptor, "w", encoding="utf-8") as result:
+            result.write(f"{nonce}\\t{code}{suffix}\\n")
+    except OSError:
+        pass
+    print("RIGORLOOP_GUARD_BLOCKED", file=sys.stderr)
     raise SystemExit(1)
 
 updates = {}
@@ -344,6 +353,9 @@ if refs.get(main_ref) != expected_main:
 if tag_ref in refs:
     stop("remote-tag-exists", refs[tag_ref])
 """
+    return script.replace("__RESULT_PATH__", repr(str(result_path))).replace(
+        "__NONCE__", repr(nonce)
+    )
 
 
 def _atomic_push(
@@ -353,8 +365,10 @@ def _atomic_push(
     dry_run: bool,
 ) -> None:
     with tempfile.TemporaryDirectory(prefix="rigorloop-activation-hooks-") as temporary:
+        nonce = secrets.token_hex(32)
+        result_path = Path(temporary) / "guard-result"
         hook = Path(temporary) / "pre-push"
-        hook.write_text(_guard_script(), encoding="utf-8")
+        hook.write_text(_guard_script(result_path, nonce), encoding="utf-8")
         hook.chmod(0o700)
         environment = {
             **os.environ,
@@ -389,20 +403,20 @@ def _atomic_push(
                 text=True,
             )
         except (OSError, subprocess.CalledProcessError) as error:
-            diagnostic = getattr(error, "stderr", "") or ""
-            marker = next(
-                (
-                    matched
-                    for line in diagnostic.splitlines()
-                    if (
-                        matched := re.fullmatch(
-                            r"RIGORLOOP_GUARD:(remote-main-drift|remote-tag-exists|remote-advertisement-unavailable|push-mapping-invalid)(?::([0-9a-f]{40}))?",
-                            line,
-                        )
+            marker = None
+            try:
+                if (
+                    result_path.is_file()
+                    and not result_path.is_symlink()
+                    and result_path.stat().st_size <= 256
+                ):
+                    marker = re.fullmatch(
+                        re.escape(nonce)
+                        + r"\t(remote-main-drift|remote-tag-exists|remote-advertisement-unavailable|push-mapping-invalid)(?:\t([0-9a-f]{40}))?\n?",
+                        result_path.read_text(encoding="utf-8"),
                     )
-                ),
-                None,
-            )
+            except OSError:
+                marker = None
             if marker:
                 code = marker.group(1)
                 conflict_key = {
