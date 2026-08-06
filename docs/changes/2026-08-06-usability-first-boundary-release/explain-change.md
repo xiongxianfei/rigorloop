@@ -79,8 +79,16 @@ It does not redefine `boundary-first-v1`, migrate accepted historical specs, rew
 
 ## Risks and follow-ups
 
+- PR-mode preflight exposed one selector omission for the canonical research
+  artifact produced during release framing. The focused
+  [PR-readiness bug-fix evidence](evidence/pr-readiness-research-selector-bugfix.md)
+  records the failing reproduction, test-first correction, and scoped routing
+  result. This does not change the release contract; it makes the existing
+  research output path participate in its owned documentation checks.
 - Activation is locally coherent but not public availability; immutable tag, hosted publication, registry/assets validation, and fresh public smoke remain explicit maintainer operations after review and merge.
 - Release recovery remains phase-specific and fix-forward after immutable publication begins; neither `v0.4.0` nor `v0.3.6` may be rewritten.
 - Final verification must confirm this rationale, lifecycle state, generated output, targeted proof, broad smoke evidence, and release metadata still agree with the final branch before claiming `branch-ready`.
 
-The reviewed change is ready for final verification, not for public release or PR handoff.
+The release implementation remains reviewed. The PR-readiness selector
+correction is ready for independent code review before final verification is
+refreshed; it does not authorize public release.

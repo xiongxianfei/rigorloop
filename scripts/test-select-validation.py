@@ -2979,6 +2979,21 @@ raise SystemExit({exit_code})
         self.assertNotIn("artifact_lifecycle.validate", selected_ids(payload))
         self.assertEqual({"guide_system.validate"}, selected_ids(payload))
 
+    def test_research_artifact_path_selects_document_checks_without_unclassified_block(self) -> None:
+        path = "docs/research/2026-08-05-boundary-first-v1-activation-release.md"
+
+        result = self.select([path])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertEqual(payload["unclassified_paths"], [])
+        self.assertEqual(payload["blocking_results"], [])
+        self.assertIn({"path": path, "category": "research-artifact"}, payload["classified_paths"])
+        self.assertEqual(
+            {"documentation_prose.audit", "markdown_readability.validate"},
+            selected_ids(payload),
+        )
+
     def test_retired_docs_examples_path_is_known_during_deletion_compatibility(self) -> None:
         paths = ["docs/examples/README.md"]
 
