@@ -2090,7 +2090,7 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
     )
     lexical_text = manifest_text if isinstance(manifest, dict) else ""
     top_level_keys = re.findall(
-        r"(?m)^([a-z][a-z0-9_]*):",
+        r"(?m)^([a-z][a-z0-9_]*)\s*:",
         lexical_text,
     )
     unique_top_level_keys = len(top_level_keys) == len(set(top_level_keys))
@@ -2115,6 +2115,10 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
     packet_body = packet_section.group("body") if packet_section else ""
     packet_matches = tuple(packet_pattern.finditer(packet_body))
     lexical_packets = tuple(match.groups() for match in packet_matches)
+    lexical_packet_paths = tuple(packet[0] for packet in lexical_packets)
+    unique_packet_paths = len(lexical_packet_paths) == len(
+        set(lexical_packet_paths)
+    )
     packets_consume_section = packet_body.rstrip() == "\n".join(
         match.group(0).rstrip() for match in packet_matches
     )
@@ -2126,7 +2130,11 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
         and isinstance(packet.get("sha256"), str)
         and bool(re.fullmatch(r"[0-9a-f]{64}", packet["sha256"]))
         for packet in packets
-    ) and packets_consume_section and len(lexical_packets) == len(packets) and all(
+    ) and (
+        unique_packet_paths
+        and packets_consume_section
+        and len(lexical_packets) == len(packets)
+    ) and all(
         lexical_path == packet["path"] and lexical_sha256 == packet["sha256"]
         for packet, (lexical_path, _revision, lexical_sha256) in zip(
             packets,

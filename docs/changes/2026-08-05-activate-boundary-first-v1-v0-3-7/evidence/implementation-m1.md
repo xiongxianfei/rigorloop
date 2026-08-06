@@ -2,7 +2,7 @@
 
 Milestone: M1 — Read-only activation candidate validation
 
-Outcome: implemented, R1-R6 findings corrected, and ready for R7 code review.
+Outcome: implemented, R1-R7 findings corrected, and ready for R8 code review.
 
 ## Implemented behavior
 
@@ -46,6 +46,9 @@ Outcome: implemented, R1-R6 findings corrected, and ready for R7 code review.
 - The R6 correction rejects duplicate top-level manifest keys, duplicate
   inventory sections, duplicate packet keys, and any unconsumed inventory
   content while preserving every accepted repository receipt.
+- The R7 correction applies parser-equivalent whitespace normalization to
+  duplicate top-level key detection and rejects repeated inventory paths even
+  when each conflicting packet triple is otherwise well formed.
 
 ## Boundary and proof coverage
 
