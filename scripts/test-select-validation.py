@@ -58,7 +58,6 @@ EXPECTED_CATALOG = {
     "boundary_first.validate": "python scripts/validate-boundary-first.py --check",
     "boundary_first.reference_regression": "python scripts/test-boundary-first-reference.py",
     "boundary_first.regression": "python scripts/test-boundary-first-validation.py",
-    "boundary_activation_release.regression": "python scripts/test-boundary-activation-release.py",
     "skills.validate": "python scripts/validate-skills.py",
     "skills.regression": "python scripts/test-skill-validator.py",
     "skills.generation_regression": "python scripts/test-build-skills.py",
@@ -1947,7 +1946,7 @@ raise SystemExit({exit_code})
             {blocker.get("code") for blocker in result.to_json_dict()["blocking_results"]},
         )
 
-    def test_boundary_candidate_surface_retains_sibling_validation_owners(self) -> None:
+    def test_boundary_checked_revision_surface_retains_sibling_validation_owners(self) -> None:
         result = self.select(
             [
                 "scripts/boundary_first_validation.py",
@@ -1970,21 +1969,20 @@ raise SystemExit({exit_code})
         self.assertIn("release.validate", checks)
         self.assertIn("selector.regression", checks)
 
-    def test_boundary_activation_publication_surface_selects_owned_regression(self) -> None:
+    def test_retired_boundary_activation_publication_surface_is_not_cataloged(self) -> None:
         result = self.select(
-            [
-                "scripts/boundary_activation_release.py",
-                "scripts/publish-boundary-activation.py",
-                "scripts/test-boundary-activation-release.py",
-            ]
+            ["scripts/boundary_first_validation.py"]
         )
 
-        self.assertIn(
+        self.assertNotIn("boundary_activation_release.regression", CHECK_CATALOG)
+        self.assertNotIn(
             "boundary_activation_release.regression",
             selected_ids(result.to_json_dict()),
         )
+        self.assertIn("boundary_first.validate", selected_ids(result.to_json_dict()))
+        self.assertIn("boundary_first.regression", selected_ids(result.to_json_dict()))
 
-    def test_boundary_candidate_sibling_failures_each_block_selected_execution(self) -> None:
+    def test_boundary_sibling_failures_each_block_selected_execution(self) -> None:
         cases = (
             (
                 "boundary_first.validate",
