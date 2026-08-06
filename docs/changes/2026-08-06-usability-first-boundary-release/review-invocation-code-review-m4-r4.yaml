@@ -1,0 +1,83 @@
+schema_version: 1
+review_id: code-review-m4-r4
+review_stage: code-review
+review_target: range:68e51f75e17f800aac8718927bd539c157c81a33..3a9f846ec1b0132a7976468552cc209579cff22d
+base_revision: 68e51f75e17f800aac8718927bd539c157c81a33
+head_revision: 3a9f846ec1b0132a7976468552cc209579cff22d
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: root-m4-r3-resolution
+reviewer_context_id: m4-r4-fresh-independent-evidence-rereviewer
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: medium
+risk_tier_triggers:
+  - review-receipt-cardinality
+  - finding-closeout-consistency
+  - lifecycle-closeout
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - specs/formal-review-recording.md
+  - specs/review-finding-resolution-contract.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+  - docs/changes/2026-08-06-usability-first-boundary-release/review-log.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/review-resolution.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r2.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r3.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: 3a9f846e
+    sha256: 01345221b875da7ef26b19aa882415c00a745a4a07f8e493438dfa6efd2ee57a
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/review-log.md
+    revision: 3a9f846e
+    sha256: 5c5c1352509057a4ffac729c2204c77eda0fd1e9cbb9f72c6a8b1b5a1aacdb3e
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/review-resolution.md
+    revision: 3a9f846e
+    sha256: 4732f58f139f3d02793b84f807e990d2679a8b91b4a703124f57de2cac3e2324
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r2.md
+    revision: 3a9f846e
+    sha256: 63c1c6186dffe985f7f6dac19c3f0fb2348e17cc193bee3bc995fdf9e5cb80c8
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r3.md
+    revision: 3a9f846e
+    sha256: c82b89340ed45dc57f5bc0164fb72118e66c422a2202f0d60527acf9669bc2db
+  - path: range:68e51f75e17f800aac8718927bd539c157c81a33..3a9f846ec1b0132a7976468552cc209579cff22d.diff
+    revision: 3a9f846e
+    sha256: 4831b6669b8f6dcdf1de4c408f61c8a30b8b9881af7920499c25abf05f05285f
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: false
+  satisfied: false
+requirement_fidelity:
+  applicability: applicable
+  reason: The correction closes a governed review finding and must preserve exact historical and current finding cardinality.
+  outcome: clean-with-notes
+risk_map:
+  affected_behavior: durable final-review finding counts and closeout routing
+  highest_impact_failure_modes: wrong receipt occurrence, historical/current count conflation, unresolved CR3, mismatched overview/detail IDs, or changed implementation conclusion
+  changed_boundaries: M4 R2 receipt, CR3 finding closeout, review ledger, and change-local routing
+  evidence_expected: exact one-line diff, live receipt search, independent historical/current count parse, overview/detail set equality, focused validators, and diff check
+  direct_inspection_areas: M4 R2 count sentence, resolution summary and rows, CR3 detail, review log, and change state
+  intentionally_out_of_scope: implementation behavior, release validation, explain-change, verify, PR, tag, publication, push, and merge
+  applicable_risk_classes:
+    - requirement-fidelity
+    - review-recording
+    - lifecycle-closeout
+  non_applicable_risk_classes:
+    - implementation-behavior
+    - live-publication
+    - external-mutation
+  falsifiable_questions:
+    - Does the live M4 R2 receipt say exactly 26 historical findings?
+    - Are there exactly 26 historical findings plus CR3 as the twenty-seventh current finding?
+    - Can CR3 close without changing the implementation conclusion?

@@ -73,8 +73,8 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: review-resolution
-  next_stage: implement
+  current_stage: code-review
+  next_stage: explain-change
   blocker: null
   evidence:
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r2.md
@@ -113,9 +113,11 @@ workflow_state:
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r2.md
     - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m4-r3.yaml
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r3.md
+    - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m4-r4.yaml
+    - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r4.md
   planned_work:
     plan_artifact_id: plan
-    current_milestone: M4
+    current_milestone: none
     milestones:
       M1:
         kind: implementation
@@ -128,26 +130,22 @@ workflow_state:
         state: closed
       M4:
         kind: implementation
-        state: resolution-needed
-    remaining_implementation_milestones:
-      - M4
+        state: closed
+    remaining_implementation_milestones: []
     latest_review:
-      status: changes-requested
+      status: approved
       stage: code-review
-      round: r3
+      round: r4
       artifact_id: plan
-      occurrence: milestone
-      milestone_id: M4
+      occurrence: final
+      milestone_id: none
       evidence:
-        - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m4-r3.yaml
-        - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r3.md
+        - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m4-r4.yaml
+        - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r4.md
     final_closeout:
       readiness: not-ready
       reasons:
         - lifecycle-gates-open
-        - implementation-milestones-open
-        - milestone-review-pending
-        - review-findings-open
         - explain-change-pending
         - verify-pending
         - pr-handoff-pending
@@ -156,6 +154,7 @@ workflow_state:
         - docs/changes/2026-08-06-usability-first-boundary-release/evidence/workflow-routing-to-implementation.md
         - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r2.md
         - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r3.md
+        - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r4.md
 workflow: {}
 artifacts:
   proposal: docs/proposals/2026-08-06-usability-first-boundary-release.md
@@ -179,5 +178,5 @@ changed_files:
   - specs/usability-first-boundary-release.md
   - docs/changes/2026-08-06-usability-first-boundary-release/evidence/spec-authoring.md
 review:
-  status: changes-requested
-  unresolved_items: 1
+  status: approved
+  unresolved_items: 0

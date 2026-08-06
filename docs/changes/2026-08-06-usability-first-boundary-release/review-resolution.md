@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -18,17 +18,18 @@ Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r3
 Review closeout: code-review-m3-r7
 Review closeout: code-review-m4-r2
+Review closeout: code-review-m4-r4
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`
-- Findings resolved: 26
-- Unresolved findings: 1
-- Current result: Code-review M4 R3 confirms the corrected inventory is exactly 26 but requests one matching numeric correction in the M4 R2 receipt; implementation conclusions are unchanged.
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`
+- Findings resolved: 27
+- Unresolved findings: 0
+- Current result: Code-review M4 R4 resolves the CR3 review-evidence correction; all 27 current findings are resolved, including the 26 historical findings named by the M4 R2 receipt, and implementation conclusions are unchanged.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| UBR-M4-CR3-001 | accepted | in-progress | Align the M4 R2 receipt with the exact 26-row finding inventory. |
+| UBR-M4-CR3-001 | accepted | resolved | The M4 R2 receipt now states the exact 26-finding historical inventory. |
 | UBR-M4-CR1-001 | accepted | resolved | The wrapper fixture uses stable lifecycle metadata while grandfathered-spec review enforcement remains direct. |
 | UBR-M3-CR6-001 | accepted | resolved | Required deferral authority is substantive and open; `none` is exclusive with real deferrals. |
 | UBR-M3-CR5-001 | accepted | resolved | Every state enforces exact rows and applicable results; the sole emergency deferral is exactly bound. |
@@ -65,19 +66,26 @@ Review closeout: code-review-m4-r2
 
 ## Finding Details
 
+### code-review-m4-r4
+
+Review result: clean-with-notes
+Material findings: none
+Resolution required: no
+Validation evidence: Independent R4 confirms the live M4 R2 claim is exactly 26, the 26 pre-CR3 rows are the historical resolved inventory, the current overview and detail inventories contain 27 unique matching IDs, and CR3 is resolved without changing implementation conclusions.
+
 ### code-review-m4-r3
 
 #### UBR-M4-CR3-001 - M4 R2 retains a stale 22-finding claim
 
 Finding ID: UBR-M4-CR3-001
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M4 review-evidence resolver
 Owning stage: review-resolution
 Chosen action: Change the M4 R2 receipt from `All 22 material findings` to `All 26 material findings` without changing its implementation conclusion.
 Rationale: Independent parsing proves 26 unique overview rows and 26 matching unique detail IDs, so the corrected summary is accurate but the final holistic receipt remains numerically stale.
 Validation target: code-review-m4-r4
-Validation evidence: Pending the one-line receipt correction, independent count reconciliation, focused artifact validators, and M4 R4.
+Validation evidence: Commit `3a9f846ec1b0132a7976468552cc209579cff22d` changes only the stale R2 receipt count to 26. Independent R4 reconciliation proves 26 pre-CR3 historical findings and 27 current unique matching overview/detail IDs; focused review-artifact and change-metadata validation pass.
 Safe resolution path: Correct only the stale M4 R2 count, rerun the overview/detail parse, stale-count search, review-artifact validation, change-metadata validation, and diff check, then request M4 R4.
 Auto-fix class: mechanical
 
