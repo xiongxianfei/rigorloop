@@ -1631,6 +1631,22 @@ def _apply_path_selection(
         )
         return
 
+    if category == "research-artifact":
+        _add_check(
+            selected,
+            "documentation_prose.audit",
+            "Changed research artifact requires documentation prose audit validation.",
+            path=path,
+        )
+        _add_check(
+            selected,
+            "markdown_readability.validate",
+            "Changed research artifact requires Markdown readability validation.",
+            path=path,
+            changed_sections=changed_sections_by_path.get(path, ()),
+        )
+        return
+
     if category == "requirement-fidelity-spec-read":
         _add_check(
             selected,
@@ -2343,6 +2359,8 @@ def _path_category(path: str) -> str | None:
         return "token-cost"
     if path.startswith("docs/examples/"):
         return "retired-examples"
+    if path.startswith("docs/research/") and path.endswith(".md"):
+        return "research-artifact"
     if path == "docs/project-map.md" or (
         path.startswith("docs/project-map/") and path.endswith(".md")
     ):
