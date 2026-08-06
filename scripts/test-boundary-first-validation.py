@@ -557,7 +557,7 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
 
 
 class BoundaryFirstActivationTests(unittest.TestCase):
-    def test_checked_revision_pending_and_active_snapshots_are_independent(self) -> None:
+    def test_repository_and_no_history_active_snapshots_are_independent(self) -> None:
         self.assertEqual(validate_activation(ROOT), ())
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -576,6 +576,15 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             (ROOT / "specs" / "boundary-first-activation.yaml").read_text(
                 encoding="utf-8"
             )
+        )
+        pending_source.update(
+            {
+                "state": "pending",
+                "activating_release": "-",
+                "rollback_release": "-",
+                "grandfathering_baseline_revision": "-",
+                "grandfathered_specs": [],
+            }
         )
         pending_cases = {
             "release": ("activating_release", "v0.4.0"),
@@ -774,7 +783,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             self.assertNotIn("published", completed.stdout.lower())
             self.assertNotIn("tagged", completed.stdout.lower())
 
-    def test_repository_pending_activation_record_passes(self) -> None:
+    def test_repository_active_activation_record_passes(self) -> None:
         self.assertEqual(validate_activation(ROOT), ())
 
     def test_unknown_activation_state_fails_before_consistency(self) -> None:
@@ -1360,8 +1369,22 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             (root / "specs" / "feature.test.md").write_text(
                 valid_proof(), encoding="utf-8"
             )
-            (root / "specs" / "boundary-first-activation.yaml").write_bytes(
-                (ROOT / "specs" / "boundary-first-activation.yaml").read_bytes()
+            data = json.loads(
+                (ROOT / "specs" / "boundary-first-activation.yaml").read_text(
+                    encoding="utf-8"
+                )
+            )
+            data.update(
+                {
+                    "state": "pending",
+                    "activating_release": "-",
+                    "rollback_release": "-",
+                    "grandfathering_baseline_revision": "-",
+                    "grandfathered_specs": [],
+                }
+            )
+            (root / "specs" / "boundary-first-activation.yaml").write_text(
+                json.dumps(data), encoding="utf-8"
             )
             self.assertEqual(
                 validate_changed_spec(root, "specs/feature.test.md")[0].code,
