@@ -48,14 +48,17 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: m1-r4-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: R4 must prove the amended R/C/H identity model and close all remaining M1 review findings.
-  outcome: pending
+  outcome: changes-requested
 phase_receipts:
   - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
 risk_map:
   affected_behavior: candidate evidence identity, invocation authority, privacy serialization, and sibling composition
   highest_impact_failure_modes: stale or self-naming evidence, shallow manifest acceptance, short private-value disclosure, and omitted selected sibling failure

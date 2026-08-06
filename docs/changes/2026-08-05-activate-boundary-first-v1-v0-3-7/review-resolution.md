@@ -69,12 +69,15 @@ Review closeout: test-spec-review-r7
 | BFA-M1-CR1-002 | accepted | resolved | Inspect every direct post-T first-parent commit so a revert cannot hide drift. |
 | BFA-M1-CR1-003 | accepted | open | Compose canonical lifecycle settlement and candidate-evidence authority. |
 | BFA-M1-CR1-004 | accepted | resolved | Emit available failure context and corrective action. |
-| BFA-M1-CR1-005 | accepted | open | Complete direct M1 proof and align the selector surface. |
+| BFA-M1-CR1-005 | accepted | resolved | Completed direct M1 proof and all eight sibling failure paths. |
 | BFA-M1-CR1-006 | accepted | resolved | Require all applicable directory descendants to be tracked. |
 | BFA-M1-CR1-007 | accepted | open | Replace open evidence/review subtrees with closed lifecycle ownership. |
 | BFA-M1-CR1-008 | accepted | open | Bound changed-path diagnostics against private sentinels. |
-| BFA-M1-R2-001 | accepted | open | Inspect merged side-branch commits so change-and-revert ancestry cannot hide drift. |
-| BFA-M1-R3-001 | needs-decision | open | Separate candidate-producing identity from final evidence-bearing publication head. |
+| BFA-M1-R2-001 | accepted | resolved | Inspect merged side-branch commits so change-and-revert ancestry cannot hide drift. |
+| BFA-M1-R3-001 | accepted | resolved | Separated candidate-producing R, evidence commit C, and publication head H. |
+| BFA-M1-R4-001 | accepted | open | Replace candidate-mode rerun with phase-correct tagged readiness. |
+| BFA-M1-R4-002 | accepted | open | Align closed receipt validation with accepted abbreviated identities. |
+| BFA-M1-R4-003 | accepted | open | Redact short PIN, API-key, and auth-code environment values. |
 
 ## Finding Details
 
@@ -415,8 +418,8 @@ Validation evidence: Code-review M1 R3 confirms complete T..H traversal rejects 
 #### BFA-M1-R3-001 - Final evidence-bearing H is self-referential
 
 Finding ID: BFA-M1-R3-001
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: spec and architecture authors
 Owning stage: spec then architecture
 Decision owner: spec and architecture authors
@@ -424,7 +427,50 @@ Decision needed: Choose the realizable identity model for candidate-producing he
 Chosen action: Decide and specify a distinct candidate-producing identity and final evidence-bearing publication head, then align plan, test spec, and implementation.
 Rationale: A tracked evidence file cannot contain the Git identity of its own containing commit; the implementation cannot safely guess a new identity model.
 Validation target: spec-review, architecture-review, plan-review, test-spec-review, then code-review-m1-r4
-Validation evidence: pending upstream amendment and review
+Validation evidence: Spec-review R5, architecture-review R3, plan-review R4,
+test-spec-review R7, and code-review M1 R4 confirm the realizable R/C/H model.
+
+### code-review-m1-r4
+
+#### BFA-M1-R4-001 - Readiness reruns pre-tag candidate mode
+
+Finding ID: BFA-M1-R4-001
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Implement phase-correct stored R/C and live-H readiness without
+calling candidate mode, then prove success after local tag creation.
+Rationale: BFA-R018 explicitly separates pre-tag candidate validation from
+post-tag publication readiness.
+Validation target: code-review-m1-r5
+Validation evidence: pending correction and R5
+
+#### BFA-M1-R4-002 - Closed receipt validation rejects accepted manifests
+
+Finding ID: BFA-M1-R4-002
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Admit canonical abbreviated revisions and test representative
+accepted receipts for every allowed review family while retaining closed fields.
+Rationale: A release gate must accept its own settled lifecycle evidence.
+Validation target: code-review-m1-r5
+Validation evidence: pending correction and R5
+
+#### BFA-M1-R4-003 - Short PIN/auth values escape redaction
+
+Finding ID: BFA-M1-R4-003
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Expand sensitive environment-name coverage and add short PIN,
+API-key, and auth-code diagnostics regressions.
+Rationale: Value length cannot determine whether authentication material is private.
+Validation target: code-review-m1-r5
+Validation evidence: pending correction and R5
 
 ### spec-review-r3
 
