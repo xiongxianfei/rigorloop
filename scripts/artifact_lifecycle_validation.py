@@ -614,7 +614,14 @@ def _validate_emergency_deferrals(section: str) -> list[str]:
     return errors
 
 
-def _validate_release_evidence_checklist(relative_path: Path, text: str) -> list[str]:
+def validate_release_evidence_checklist(
+    relative_path: Path,
+    text: str,
+    *,
+    require_preflight_pass: bool = True,
+) -> list[str]:
+    """Validate the shared release-evidence shape and, when requested, its publish gate."""
+
     errors: list[str] = []
     sections = _parse_sections(text)
 
@@ -651,7 +658,7 @@ def _validate_release_evidence_checklist(relative_path: Path, text: str) -> list
     status = (result_values.get("Status") or "").casefold()
     release_type = (result_values.get("Release type") or "").casefold()
     is_emergency = release_type == "emergency" or status == "emergency-with-deferred-gate"
-    if not is_emergency:
+    if require_preflight_pass and not is_emergency:
         for gate_item in ROUTINE_RELEASE_GATE_ITEMS:
             gate_result = _table_row_result(preflight_section, gate_item)
             if gate_result is None:
@@ -678,6 +685,10 @@ def _validate_release_evidence_checklist(relative_path: Path, text: str) -> list
         errors.append("release evidence path version must match Result version")
 
     return errors
+
+
+def _validate_release_evidence_checklist(relative_path: Path, text: str) -> list[str]:
+    return validate_release_evidence_checklist(relative_path, text)
 
 
 def _load_change_metadata_parser() -> Any:

@@ -30,10 +30,10 @@ Outcome: implemented and ready for code review.
   index pointed to missing `v0.4.0` bundled adapter metadata. Building temporary
   archives supplied the exact archive and tree identities; after the bundled
   metadata and release evidence were completed, packed npm validation passed.
-- `prepare-release --check` is recorded at its approved point immediately after
-  generation. Completing archive-derived evidence later changes three generated
-  pending placeholders by design; preflight and the standing full release gate
-  validate that final pre-publication state.
+- Finalized pre-publication evidence is preserved only after its complete
+  release-metadata and standing-record contracts pass. The exact review tree
+  passes `prepare-release --check`; partial, stale, and prematurely public
+  evidence is regenerated or rejected.
 
 ## Exact adapter evidence
 
@@ -52,8 +52,9 @@ Outcome: implemented and ready for code review.
   preparation; no output drift.
 - `python scripts/release-preflight.py v0.4.0 --skip-remote` — pass against the
   final local pre-publication payload.
-- `python scripts/test-release-transaction.py` — pass, 84 tests.
-- `python scripts/test-adapter-distribution.py` — pass, 148 tests.
+- `python scripts/test-release-transaction.py` — pass, 96 tests.
+- `python scripts/test-adapter-distribution.py` — pass, 149 tests.
+- `python scripts/test-artifact-lifecycle-validator.py` — pass, 162 tests.
 - `python scripts/test-npm-package-publication.py` — pass, 6 tests.
 - `python scripts/select-validation.py --mode release --release-version v0.4.0`
   — pass; selected `release.validate` and required `broad_smoke.repo`.
@@ -64,6 +65,25 @@ Outcome: implemented and ready for code review.
   archives, ran the adapter and packed-package suites, and validated the final
   `v0.4.0` metadata against reviewed source commit `c7b0babe`.
 - `git diff --check` — pass.
+
+## R2 review resolution
+
+- `UBR-M3-CR2-001`: trusted hosted-tag verification now requires the requested
+  release and `GITHUB_REF_NAME` to match, resolves the explicit
+  `refs/tags/<name>^{commit}` ref with replacement objects and ambient Git
+  authority disabled, and binds that commit to checked `HEAD` and the full
+  trusted workflow commit. Real lightweight, annotated, mixed-name,
+  missing-ref, and rewritten-tag fixtures pass.
+- `UBR-M3-CR2-002`: release YAML preservation now uses the repository-owned
+  parser and exact target, smoke, validation, npm, and adapter-release mappings.
+  Standing evidence reuses the lifecycle checklist and additionally enforces
+  the exact pending-publication and pre-public registry state. Partial release
+  YAML, missing standing sections, and premature public status all fail closed.
+- The corrected command set passes with 96 release-transaction tests, 149
+  adapter-distribution tests, 162 artifact-lifecycle tests, 6 packed npm tests,
+  final-state preparation, preflight, recorded-source validation, the standing
+  full release gate, and release-selected CI (`release.validate` 2.39 seconds;
+  `broad_smoke.repo` 548.85 seconds).
 
 ## R1 review resolution
 
@@ -96,8 +116,8 @@ Outcome: implemented and ready for code review.
 - Updated: routine release profile/evidence, package version and README,
   bundled release metadata, current-version fixture, adapter release
   classification, and the standing release-gate target lists.
-- Unaffected: trusted tag workflow and publication closeout tooling. M3 stops
-  before external mutation, and the existing routine path already owns those
-  later actions.
+- Updated: the existing trusted tag gate now verifies one exact hosted release
+  identity; publication closeout tooling remains unchanged. M3 still stops
+  before external mutation.
 - Unaffected: tracked generated adapter bodies. Release archives are temporary
   outputs; canonical skills remain the only authored source.

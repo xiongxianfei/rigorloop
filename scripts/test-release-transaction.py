@@ -41,6 +41,7 @@ from release_transaction import (  # noqa: E402
     validate_release_timing_evidence,
     validate_release_workflow_parity,
     validate_pending_release_artifacts,
+    validate_trusted_release_tag_identity,
 )
 
 REQUIRED_PROFILE_FIELD_CASES = (
@@ -54,6 +55,104 @@ REQUIRED_PROFILE_FIELD_CASES = (
     ("invalid-missing-evidence.yaml", "evidence"),
     ("invalid-missing-validation.yaml", "validation"),
 )
+
+
+class TrustedReleaseTagIdentityTests(unittest.TestCase):
+    def make_git_repo(self, root: Path) -> str:
+        subprocess.run(["git", "init", "-q", str(root)], check=True)
+        subprocess.run(["git", "-C", str(root), "config", "user.name", "RigorLoop Test"], check=True)
+        subprocess.run(["git", "-C", str(root), "config", "user.email", "test@example.invalid"], check=True)
+        (root / "README.md").write_text("release\n", encoding="utf-8")
+        subprocess.run(["git", "-C", str(root), "add", "README.md"], check=True)
+        subprocess.run(["git", "-C", str(root), "commit", "-q", "-m", "release"], check=True)
+        return subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+
+    def test_accepts_matching_lightweight_and_annotated_tags(self) -> None:
+        for annotated in (False, True):
+            with self.subTest(annotated=annotated), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                commit = self.make_git_repo(root)
+                command = ["git", "-C", str(root), "tag"]
+                if annotated:
+                    command.extend(["-a", "v0.4.0", "-m", "v0.4.0"])
+                else:
+                    command.append("v0.4.0")
+                subprocess.run(command, check=True)
+
+                errors = validate_trusted_release_tag_identity(
+                    "v0.4.0", "v0.4.0", commit, root=root
+                )
+
+            self.assertEqual(errors, [])
+
+    def test_rejects_mixed_release_and_ref_names(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            commit = self.make_git_repo(root)
+            subprocess.run(["git", "-C", str(root), "tag", "v0.4.0"], check=True)
+
+            errors = validate_trusted_release_tag_identity(
+                "v0.3.6", "v0.4.0", commit, root=root
+            )
+
+        self.assertTrue(any("must match" in error for error in errors), errors)
+
+    def test_rejects_tag_that_does_not_point_at_trusted_commit(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            trusted_commit = self.make_git_repo(root)
+            (root / "README.md").write_text("rewritten\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(root), "commit", "-qam", "later"], check=True)
+            subprocess.run(["git", "-C", str(root), "tag", "v0.4.0"], check=True)
+            subprocess.run(["git", "-C", str(root), "checkout", "-q", trusted_commit], check=True)
+
+            errors = validate_trusted_release_tag_identity(
+                "v0.4.0", "v0.4.0", trusted_commit, root=root
+            )
+
+        self.assertTrue(any("hosted tag" in error for error in errors), errors)
+
+    def test_rejects_missing_hosted_ref_name(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            commit = self.make_git_repo(root)
+
+            errors = validate_trusted_release_tag_identity("v0.4.0", "", commit, root=root)
+
+        self.assertTrue(any("GITHUB_REF_NAME" in error for error in errors), errors)
+
+    def test_release_verify_wires_hosted_ref_name_into_identity_check(self) -> None:
+        head = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        result = subprocess.run(
+            ["bash", "scripts/release-verify.sh", "v0.3.6"],
+            cwd=ROOT,
+            env={
+                "PATH": os.environ.get("PATH", ""),
+                "GITHUB_ACTIONS": "true",
+                "GITHUB_REF_TYPE": "tag",
+                "GITHUB_REF_NAME": "v0.4.0",
+                "RELEASE_TAG_COMMIT": head,
+                "RELEASE_VERIFY_DRY_RUN": "1",
+            },
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("must match hosted tag ref", result.stderr)
 
 
 class ReleaseProfileTests(unittest.TestCase):
@@ -483,6 +582,68 @@ class PrepareReleaseTests(unittest.TestCase):
             errors = validate_pending_release_artifacts("v0.3.5", root=root)
 
         self.assertEqual(errors, [])
+
+    def test_pending_release_artifacts_reject_incomplete_release_yaml(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
+            text = path.read_text(encoding="utf-8")
+            start = text.index("adapter_paths:\n")
+            end = text.index("instruction_entrypoints:\n")
+            path.write_text(text[:start] + text[end:], encoding="utf-8")
+
+            errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+        self.assertTrue(any("adapter_paths" in error for error in errors), errors)
+
+    def test_pending_release_artifacts_reject_incomplete_standing_record(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            path = root / "docs" / "releases" / "v0.3.5.md"
+            text = path.read_text(encoding="utf-8")
+            start = text.index("## Recovery / Rollback Notes\n")
+            end = text.index("## Follow-up\n")
+            path.write_text(text[:start] + text[end:], encoding="utf-8")
+
+            errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+        self.assertTrue(any("Recovery / Rollback Notes" in error for error in errors), errors)
+
+    def test_pending_release_artifacts_reject_premature_public_status(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            path = root / "docs" / "releases" / "v0.3.5.md"
+            text = path.read_text(encoding="utf-8")
+            path.write_text(
+                text.replace("- Status: pending-publication", "- Status: published"),
+                encoding="utf-8",
+            )
+
+            errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+        self.assertTrue(any("Status" in error and "pending-publication" in error for error in errors), errors)
+
+    def test_prepare_release_does_not_preserve_partial_finalized_release_yaml(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_repo(root)
+            prepare_release("v0.3.5", root=root)
+            path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
+            text = path.read_text(encoding="utf-8")
+            text = text.replace("manifest_version: pending", "manifest_version: v0.1.5")
+            text = text.replace("result: pending", "result: pass")
+            text = text.replace(": pending\n", ": pass\n")
+            start = text.index("adapter_paths:\n")
+            end = text.index("instruction_entrypoints:\n")
+            path.write_text(text[:start] + text[end:], encoding="utf-8")
+
+            with self.assertRaises(ReleaseProfileError) as raised:
+                prepare_release("v0.3.5", root=root, check=True)
+
+        self.assertIn("docs/releases/v0.3.5/release.yaml", "\n".join(raised.exception.errors))
 
     def test_pending_release_artifacts_require_standing_release_record(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -259,12 +259,15 @@ class SmokeRow:
 class ReleaseMetadata:
     version: str
     release_type: str
+    publication_status: str | None
     manifest_version: str
     supported_tools: tuple[str, ...]
     adapter_paths: dict[str, str]
     instruction_entrypoints: dict[str, str]
     smoke: dict[str, SmokeRow]
     validation: dict[str, str]
+    npm_package: dict[str, str]
+    adapter_release: dict[str, str]
 
 
 @dataclass(frozen=True)
@@ -1015,15 +1018,30 @@ def parse_release_yaml(text: str, path: Path = Path("release.yaml")) -> ReleaseM
             owner=_required_present_string(row, "owner", context, path),
         )
 
+    publication_status = data.get("publication_status")
+    if publication_status is not None and not isinstance(publication_status, str):
+        raise ValueError(f"{path}: publication_status: expected string")
+
     return ReleaseMetadata(
         version=_required_string(data, "version", path),
         release_type=_required_string(data, "release_type", path),
+        publication_status=publication_status,
         manifest_version=_required_string(data, "manifest_version", path),
         supported_tools=_required_string_list(data, "supported_tools", path),
         adapter_paths=_required_string_mapping(data, "adapter_paths", path),
         instruction_entrypoints=_required_string_mapping(data, "instruction_entrypoints", path),
         smoke=smoke,
         validation=_required_string_mapping(data, "validation", path),
+        npm_package=(
+            _required_string_mapping(data, "npm_package", path)
+            if "npm_package" in data
+            else {}
+        ),
+        adapter_release=(
+            _required_string_mapping(data, "adapter_release", path)
+            if "adapter_release" in data
+            else {}
+        ),
     )
 
 
