@@ -25,10 +25,10 @@ Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r4
 Review closeout: code-review-pr-readiness-r1
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`, `code-review-pr-full-gate-r1`
-- Findings resolved: 29
-- Unresolved findings: 3
-- Current result: Test-spec-review R4 approves direct lifecycle-contract authority proof for T24; the three PR full-gate findings remain open.
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`, `code-review-pr-full-gate-r1`, `code-review-pr-full-gate-r2`
+- Findings resolved: 31
+- Unresolved findings: 2
+- Current result: Code-review PR full-gate R2 resolves the malformed-profile and historical-fixture findings but reproduces reciprocal lifecycle-authority failure; `UBR-PRFG-CR1-001` remains open through `UBR-PRFG-CR2-001`.
 
 ## Resolution Overview
 
@@ -36,9 +36,10 @@ Review closeout: code-review-pr-readiness-r1
 | --- | --- | --- | --- |
 | UBR-TSR3-001 | accepted | resolved | T24 now pairs specs with change records, rejects missing or different lifecycle authority, and uses consistent integration proof labels. |
 | UBR-SR4-001 | accepted | resolved | Folded marker placement into BND-COMPAT-001 so the applicability and boundary-definition requirement sets agree exactly. |
-| UBR-PRFG-CR1-001 | accepted | in-progress | Align stage-owned owner-pointer marker placement with an approved governing contract while retaining the legacy status form and fail-closed placement checks. |
-| UBR-PRFG-CR1-002 | accepted | in-progress | Make the profile namespace exclusive and block malformed or incomplete filenames instead of fabricating a version. |
-| UBR-PRFG-CR1-003 | accepted | in-progress | Retain current v0.4.0 fixtures while restoring an actual historical skills-only release fixture and compatibility assertions. |
+| UBR-PRFG-CR2-001 | accepted | open | Make lifecycle authority select the only permitted marker branch and complete the approved T24 placement matrix. |
+| UBR-PRFG-CR1-001 | accepted | open | Owner-form authority is authenticated, but failed remediation remains open through UBR-PRFG-CR2-001 because stage-owned status placement still passes. |
+| UBR-PRFG-CR1-002 | accepted | resolved | The profile namespace is exclusive and malformed names fail with `release-version-required`. |
+| UBR-PRFG-CR1-003 | accepted | resolved | Current v0.4.0 fixtures remain current while historical skills-only cases use actual v0.3.3 identity. |
 | UBR-M4-CR3-001 | accepted | resolved | The M4 R2 receipt now states the exact 26-finding historical inventory. |
 | UBR-M4-CR1-001 | accepted | resolved | The wrapper fixture uses stable lifecycle metadata while grandfathered-spec review enforcement remains direct. |
 | UBR-M3-CR6-001 | accepted | resolved | Required deferral authority is substantive and open; `none` is exclusive with real deferrals. |
@@ -128,13 +129,13 @@ Validation evidence: T24 pairs feature specs with referenced change records, pro
 
 Finding ID: UBR-PRFG-CR1-001
 Disposition: accepted
-Status: in-progress
+Status: open
 Owner: boundary-first proof-model spec author
 Owning stage: spec
 Chosen action: Amend the governing marker-placement rule and matching test specification to authorize the normalized owning-change-pointer form for stage-owned artifacts while retaining the legacy status form and exact fail-closed placement behavior.
 Rationale: The implementation solves the lifecycle composition problem, but PBF-R002 still normatively requires `## Status` and the current replacement table does not replace that subject.
 Validation target: spec review followed by independent PR full-gate correction rereview
-Validation evidence: Pending. The current 64-test boundary suite and changed-spec validation prove behavior only; they do not supply the missing normative authority.
+Validation evidence: Code-review PR full-gate R2 confirms the approved contract now exists and owner-form authority is authenticated, but a paired direct probe shows the same stage-owned record also passes through the legacy status branch. The finding remains open through UBR-PRFG-CR2-001.
 Safe resolution path: Update the owning contract and proof map through the spec workflow, preserve exact marker count and owner/status placement negatives, then rerun boundary regressions and changed-path validation.
 Auto-fix class: requires-upstream-spec
 
@@ -142,13 +143,13 @@ Auto-fix class: requires-upstream-spec
 
 Finding ID: UBR-PRFG-CR1-002
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: PR full-gate correction implementer
 Owning stage: review-resolution
 Chosen action: Treat `docs/releases/profiles/` as an exclusive parser branch and reject malformed or unsupported profile filenames with `release-version-required`.
 Rationale: Canonical v0.4.0 extraction is correct, but near matches currently produce `profiles` or `v` with selector status `ok`, contradicting the existing fail-closed release-path contract.
 Validation target: independent PR full-gate correction rereview
-Validation evidence: Pending. Direct probes reproduce the three malformed cases; the current 149-test suite lacks their negative regression.
+Validation evidence: Code-review PR full-gate R2 confirms the exclusive profile branch, canonical v0.4.0 selection, three malformed-path blockers, and all 150 selector tests.
 Safe resolution path: Add exact filename validation and canonical plus near-match tests, then rerun the complete selector suite and direct v0.4.0 release validation.
 Auto-fix class: declared-safe
 
@@ -156,14 +157,30 @@ Auto-fix class: declared-safe
 
 Finding ID: UBR-PRFG-CR1-003
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: PR full-gate correction implementer
 Owning stage: review-resolution
 Chosen action: Parameterize fixture release identity, keep current v0.4.0 package assertions, and run the skills-only compatibility cases against an actual bundled historical version in v0.3.0 through v0.3.3.
 Rationale: v0.4.0 declares opencode commands and no skills-only marker, while TTNI-INST-003 explicitly requires older official compatibility proof.
 Validation target: independent PR full-gate correction rereview
-Validation evidence: Pending. All 117 tests pass with fabricated v0.4.0 skills-only metadata, and direct bundled-metadata inspection identifies v0.3.0-v0.3.3 as the real historical range.
+Validation evidence: Code-review PR full-gate R2 confirms current fixture defaults remain v0.4.0 and the four skills-only compatibility cases consistently use actual historical v0.3.3 package, release-tag, archive, metadata-file, release-index, and marker identity; all 117 CLI and six npm publication tests pass.
 Safe resolution path: Separate current and historical fixture identities without weakening archive, warning, root-shape, or mutation checks; rerun CLI and npm publication tests.
+Auto-fix class: declared-safe
+
+### code-review-pr-full-gate-r2
+
+#### UBR-PRFG-CR2-001 - Lifecycle authority does not select the status branch
+
+Finding ID: UBR-PRFG-CR2-001
+Disposition: accepted
+Status: open
+Owner: PR full-gate correction implementer
+Owning stage: review-resolution
+Chosen action: Resolve the normalized owning change record before accepting either marker branch, reject stage-owned status placement, retain genuinely non-stage-owned status placement, and complete the approved T24 placement matrix.
+Rationale: UBR-R021 conditions placement on lifecycle authority, so owner-form authentication alone is insufficient when the same stage-owned feature can still pass through the legacy branch.
+Validation target: independent PR full-gate correction rereview
+Validation evidence: Code-review R2 paired-fixture probe reports no issues for both owner and status forms against the same `stage-owned-change-local-v1` record; the 64-test suite passes because it lacks the reciprocal negative and direct before-pointer case.
+Safe resolution path: Apply authority before branch acceptance, add paired positive and table-driven negative T24 fixtures, rerun the boundary suite and path-aware feature/test-spec validation, and preserve the resolved selector and package-fixture corrections.
 Auto-fix class: declared-safe
 
 ### code-review-pr-readiness-r1
