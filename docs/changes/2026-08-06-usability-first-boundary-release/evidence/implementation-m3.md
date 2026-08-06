@@ -65,6 +65,32 @@ Outcome: implemented and ready for code review.
   `v0.4.0` metadata against reviewed source commit `c7b0babe`.
 - `git diff --check` — pass.
 
+## R1 review resolution
+
+- `UBR-M3-CR1-001`: finalized pre-publication release YAML and adapter evidence
+  remain generator-owned but are no longer replaced by pending placeholders.
+  The bundled index derives its metadata SHA from the actual bundled file, and
+  a post-finalization regression plus the final repository tree pass
+  `prepare-release --check`.
+- `UBR-M3-CR1-002`: the `v0.4.0` profile owns the closed `latest` npm dist-tag.
+  Preparation projects it into pending evidence, trusted publication passes it
+  explicitly with `--tag`, unknown values fail closed, and ambient npm tag
+  configuration cannot redirect the command.
+- `UBR-M3-CR1-003`: hosted tag verification now requires a full
+  `RELEASE_TAG_COMMIT` supplied from `github.sha`, compares it with checked
+  `HEAD`, and compares a tag ref with the same commit. Missing, abbreviated, or
+  mismatched authority stops before release checks. Adapter archive source
+  identity remains a separate full SHA and no longer supplies both sides of the
+  trusted tag check.
+- `UBR-M3-CR1-004`: preparation now creates and validates the pending standing
+  `docs/releases/v0.4.0.md` record with identity, gate, package, publication,
+  registry, recovery, follow-up, and evidence-safety sections.
+- The corrected command set passes with 87 release-transaction tests, 149
+  adapter-distribution tests, 6 packed npm tests, final-state preparation,
+  preflight, recorded-source validation, the standing full release gate, and
+  release-selected CI (`release.validate` 2.41 seconds;
+  `broad_smoke.repo` 545.44 seconds).
+
 ## Aligned-surface audit
 
 - Updated: routine release profile/evidence, package version and README,

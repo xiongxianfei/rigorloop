@@ -46,6 +46,7 @@ from release_transaction import (  # noqa: E402
 REQUIRED_PROFILE_FIELD_CASES = (
     ("invalid-missing-release-tag.yaml", "release_tag"),
     ("invalid-missing-package-version.yaml", "package_version"),
+    ("invalid-missing-npm-dist-tag.yaml", "npm_dist_tag"),
     ("invalid-missing-npm-package.yaml", "npm_package"),
     ("invalid-missing-targets.yaml", "targets"),
     ("invalid-missing-adapter-artifacts.yaml", "adapter_artifacts"),
@@ -74,6 +75,7 @@ class ReleaseProfileTests(unittest.TestCase):
         self.assertEqual(profile.release_kind, "routine")
         self.assertEqual(profile.release_tag, "v0.3.5")
         self.assertEqual(profile.package_version, "0.3.5")
+        self.assertEqual(profile.npm_dist_tag, "latest")
         self.assertEqual(profile.npm_package, "@xiongxianfei/rigorloop")
         self.assertEqual(profile.targets, ("codex", "claude", "opencode"))
         self.assertTrue(profile.adapter_artifacts["required"])
@@ -148,6 +150,13 @@ class ReleaseProfileTests(unittest.TestCase):
             "unknown target: cursor",
         )
         self.assertTrue(error.errors[0].endswith("unknown target: cursor"))
+
+    def test_unknown_npm_dist_tag_fails_closed_before_consistency(self) -> None:
+        error = self.assert_profile_error(
+            "invalid-unknown-npm-dist-tag.yaml",
+            "unknown npm_dist_tag: next",
+        )
+        self.assertTrue(error.errors[0].endswith("unknown npm_dist_tag: next"))
 
     def test_special_release_without_owner_decision_fails(self) -> None:
         self.assert_profile_error(
@@ -399,6 +408,7 @@ class PrepareReleaseTests(unittest.TestCase):
             {
                 "docs/releases/v0.3.5/npm-publication.md",
                 "docs/releases/v0.3.5/release-notes.md",
+                "docs/releases/v0.3.5.md",
                 "docs/releases/v0.3.5/release.yaml",
                 "docs/releases/v0.3.5/timing.yaml",
                 "docs/reports/adapter-artifacts/releases/v0.3.5.yaml",
@@ -415,6 +425,39 @@ class PrepareReleaseTests(unittest.TestCase):
         self.assertNotIn("stale generated content", after_first["docs/releases/v0.3.5/release-notes.md"])
         self.assertIn("npx @xiongxianfei/rigorloop@0.3.5 init codex --json", after_first["packages/rigorloop/README.md"])
         self.assertNotIn("@0.3.4 init codex", after_first["packages/rigorloop/README.md"])
+        self.assertIn("npm dist-tag: latest", after_first["docs/releases/v0.3.5.md"])
+
+    def test_prepare_release_check_accepts_finalized_prepublication_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_repo(root)
+            prepare_release("v0.3.5", root=root)
+
+            metadata_path = root / "packages" / "rigorloop" / "dist" / "metadata" / "adapter-artifacts-v0.3.5.json"
+            metadata_path.write_text("{}\n", encoding="utf-8")
+
+            release_path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
+            release_text = release_path.read_text(encoding="utf-8")
+            release_text = release_text.replace("manifest_version: pending", "manifest_version: v0.1.5")
+            release_text = release_text.replace("result: pending", "result: pass")
+            release_text = release_text.replace(": pending\n", ": pass\n")
+            release_path.write_text(release_text, encoding="utf-8")
+
+            report_path = root / "docs" / "reports" / "adapter-artifacts" / "releases" / "v0.3.5.yaml"
+            report_text = report_path.read_text(encoding="utf-8")
+            report_text = report_text.replace("source_commit: pending", "source_commit: 0123456789abcdef0123456789abcdef01234567")
+            report_text = report_text.replace("date: pending", 'date: "2026-08-06"')
+            report_text = report_text.replace("sha256: pending", "sha256: " + "a" * 64)
+            report_text = report_text.replace("result: pending", "result: pass")
+            report_path.write_text(report_text, encoding="utf-8")
+
+            prepare_release("v0.3.5", root=root)
+            finalized = self.relative_file_texts(root)
+            checked = prepare_release("v0.3.5", root=root, check=True)
+
+        self.assertFalse(checked.changed_paths)
+        self.assertEqual(finalized["docs/releases/v0.3.5/release.yaml"], release_text)
+        self.assertEqual(finalized["docs/reports/adapter-artifacts/releases/v0.3.5.yaml"], report_text)
 
     def test_prepare_release_check_mode_reports_pending_changes_without_writing(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -440,6 +483,16 @@ class PrepareReleaseTests(unittest.TestCase):
             errors = validate_pending_release_artifacts("v0.3.5", root=root)
 
         self.assertEqual(errors, [])
+
+    def test_pending_release_artifacts_require_standing_release_record(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            (root / "docs" / "releases" / "v0.3.5.md").unlink()
+
+            errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+        self.assertTrue(any("docs/releases/v0.3.5.md" in error and "missing" in error for error in errors), errors)
 
     def test_pending_release_artifacts_reject_target_result_published(self) -> None:
         def mutate(text: str) -> str:

@@ -71,6 +71,7 @@ for each target before public availability is claimed.
 <!-- rigorloop:generated:start release-transaction surface=release-metadata profile=docs/releases/profiles/v0.4.0.yaml -->
 - Release profile: `docs/releases/profiles/v0.4.0.yaml`
 - npm package: `@xiongxianfei/rigorloop@0.4.0`
+- npm dist-tag: `latest`
 - Supported targets: codex, claude, opencode
 - Adapter metadata: `adapter-artifacts-v0.4.0.json`
 - Pending publication evidence: `docs/releases/v0.4.0/npm-publication.md`

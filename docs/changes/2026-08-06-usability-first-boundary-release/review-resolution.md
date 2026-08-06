@@ -19,17 +19,17 @@ Review closeout: code-review-m2-r3
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`
 - Findings resolved: 15
-- Unresolved findings: 4
-- Current result: Code-review M3 R1 requests changes; M3 remains open for review resolution.
+- Unresolved findings: 0
+- Current result: All M3 R1 findings have accepted fixes and validation evidence; M3 remains open pending code-review M3 R2.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| UBR-M3-CR1-001 | accepted | in-progress | Make the finalized pre-publication tree pass deterministic preparation checks. |
-| UBR-M3-CR1-002 | accepted | in-progress | Bind the validated profile-owned `latest` tag to trusted npm publication. |
-| UBR-M3-CR1-003 | accepted | in-progress | Independently compare trusted tag/HEAD identity with the full recorded release commit. |
-| UBR-M3-CR1-004 | accepted | in-progress | Add the architecture-required pending standing v0.4.0 release record. |
+| UBR-M3-CR1-001 | accepted | resolved | Finalized pre-publication evidence remains deterministic and passes preparation checks. |
+| UBR-M3-CR1-002 | accepted | resolved | Profile-owned `latest` is validated and passed explicitly to trusted npm publication. |
+| UBR-M3-CR1-003 | accepted | resolved | Hosted tag verification independently binds `github.sha`, checked HEAD, and the resolved tag. |
+| UBR-M3-CR1-004 | accepted | resolved | Preparation generates and validates the pending standing v0.4.0 release record. |
 | UBR-M2-CR2-001 | accepted | resolved | Restricted derivation environment preserves supplied-root authority and prevents ambient output. |
 | UBR-M2-CR1-001 | accepted | resolved | Activation-record diagnostics are repository-relative and private-root CLI regressions pass. |
 | UBR-M2-CR1-002 | accepted | resolved | Replacement refs and lazy fetch are disabled for every derivation Git read. |
@@ -61,13 +61,13 @@ Review closeout: code-review-m2-r3
 
 Finding ID: UBR-M3-CR1-001
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implementer
 Owning stage: review-resolution
 Chosen action: Extend deterministic preparation ownership to the finalized local evidence shape and add final-state idempotency proof.
 Rationale: CMD11 must pass on the exact tree handed to review, not only on an intermediate generated state.
 Validation target: code-review-m3-r2
-Validation evidence: pending implementation
+Validation evidence: Final-tree `prepare-release --check` and the post-finalization regression pass; preflight and both complete release gates pass.
 Safe resolution path: Preserve or derive valid final values without letting generated placeholders overwrite them.
 Auto-fix class: declared-safe
 
@@ -75,13 +75,13 @@ Auto-fix class: declared-safe
 
 Finding ID: UBR-M3-CR1-002
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implementer
 Owning stage: review-resolution
 Chosen action: Add a closed profile dist-tag and pass it explicitly to trusted npm publication.
 Rationale: The release profile must own the complete stable release identity.
 Validation target: code-review-m3-r2
-Validation evidence: pending implementation
+Validation evidence: Profile loading accepts only `latest`, unknown `next` fails closed, workflow parity requires the profile lookup and explicit `--tag`, and ambient trusted-tag regression passes.
 Safe resolution path: Validate `latest`, propagate it through evidence, and regress ambient override and unknown values.
 Auto-fix class: declared-safe
 
@@ -89,13 +89,13 @@ Auto-fix class: declared-safe
 
 Finding ID: UBR-M3-CR1-003
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implementer
 Owning stage: review-resolution
 Chosen action: Make trusted verification compare an independent checked tag/HEAD SHA with the full recorded release commit.
 Rationale: One metadata record cannot supply both the asserted and expected immutable identity.
 Validation target: code-review-m3-r2
-Validation evidence: pending implementation
+Validation evidence: Missing and mismatched hosted tag authority regressions pass; local standing verification and release-selected CI pass with the independent check in place.
 Safe resolution path: Use checked-out HEAD or trusted workflow SHA and add missing, abbreviated, mismatch, and rewritten-tag regressions.
 Auto-fix class: declared-safe
 
@@ -103,13 +103,13 @@ Auto-fix class: declared-safe
 
 Finding ID: UBR-M3-CR1-004
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implementer
 Owning stage: review-resolution
 Chosen action: Add the pending standing release-process record using the established release shape.
 Rationale: The plan and architecture require a version-scoped identity, gate, recovery, follow-up, and privacy record.
 Validation target: code-review-m3-r2
-Validation evidence: pending implementation
+Validation evidence: `prepare-release` creates `docs/releases/v0.4.0.md`; missing-record and required-section validation regressions pass in the 87-test transaction suite.
 Safe resolution path: Keep public facts pending and derive stable identity from the routine profile.
 Auto-fix class: mechanical
 
