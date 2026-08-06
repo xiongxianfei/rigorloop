@@ -339,3 +339,14 @@ Resolution: review-resolution.md#test-spec-review-r3
 Material findings: UBR-TSR3-001
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: test-spec-review-r4
+Stage: test-spec-review
+Round: 4
+Status: approved
+Detailed record: reviews/test-spec-review-r4.md
+Resolution: review-resolution.md#test-spec-review-r4
+Material findings: None
+Open findings: None
+Recording status: recorded

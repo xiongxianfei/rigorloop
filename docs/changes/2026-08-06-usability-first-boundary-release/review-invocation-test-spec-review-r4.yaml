@@ -1,0 +1,68 @@
+schema_version: 1
+review_id: test-spec-review-r4
+review_stage: test-spec-review
+review_target: specs/usability-first-boundary-release.test.md
+base_revision: 4350624e9d9f9290790679aff56668611fff4fce
+head_revision: c8ab52f2c1acfd6f29d5ae146044299bba2fa036
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L1
+author_context_id: root-ubr-lifecycle-authority-proof-r4
+reviewer_context_id: independent-test-spec-review-r4
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-contract-authority
+  - compatibility-proof
+  - fail-closed-marker-placement
+governing_artifacts:
+  - specs/usability-first-boundary-release.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/reviews/spec-review-r5.md
+  - docs/plans/2026-08-06-usability-first-boundary-release.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/reviews/plan-review-r2.md
+  - specs/usability-first-boundary-release.test.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r3.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+prompt_template_version: test-spec-review-v1
+initial_packet_inventory:
+  - path: specs/usability-first-boundary-release.md
+    revision: c8ab52f2c1acfd6f29d5ae146044299bba2fa036
+    sha256: 5045edf83c5e71531445f524b88c4098f28fc115bf6ba8277335c178058bf6cd
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/spec-review-r5.md
+    revision: c8ab52f2c1acfd6f29d5ae146044299bba2fa036
+    sha256: 904d296ab93fea31184ff27623bad2b1d6ad134096059c96d9f342a5cff51bb5
+  - path: docs/plans/2026-08-06-usability-first-boundary-release.md
+    revision: c8ab52f2c1acfd6f29d5ae146044299bba2fa036
+    sha256: 20dfdffbe57586be33ed111dad8b10e44d431e29a6af49caf4c1be097ddc90cd
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/plan-review-r2.md
+    revision: c8ab52f2c1acfd6f29d5ae146044299bba2fa036
+    sha256: 599dc4ac6867cc6bcbd843065267edaff63def0bdffc6e76ac973b424f2f9d26
+  - path: specs/usability-first-boundary-release.test.md
+    revision: c8ab52f2c1acfd6f29d5ae146044299bba2fa036
+    sha256: 4669a662b16d87e236ecb0387135431e7ae706f05b6532a4d51529b60745b833
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r3.md
+    revision: c8ab52f2c1acfd6f29d5ae146044299bba2fa036
+    sha256: bd803758018a9775d1d618b1941c95629259e91247a3c91fca51be954bde7cf0
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/evidence/test-spec-authoring-pr-full-gate-r1.md
+    revision: c8ab52f2c1acfd6f29d5ae146044299bba2fa036
+    sha256: b1b95137b4315fb063244b815587849cc5f6fdc0e5a991472ed87accb2b1a312
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: c8ab52f2c1acfd6f29d5ae146044299bba2fa036
+    sha256: ab3060e36b14f7b4a11fbf2e7fcc9b8eacfc42d837f884a8f5ba7b45554577b1
+  - path: specs/usability-first-boundary-release.test.md.diff
+    revision: c8ab52f2c1acfd6f29d5ae146044299bba2fa036
+    sha256: 4188bb4215cf7484fbf8a11a9da2c559a0a13cddff0ba36558319d6179956dcf
+initial_packet_sha256: 4188bb4215cf7484fbf8a11a9da2c559a0a13cddff0ba36558319d6179956dcf
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - UBR-TSR3-001 closure
+  - paired change-record lifecycle authority
+  - absent and different contract negatives
+  - placement and cardinality negatives
+  - consistent integration proof labels
+  - CMD06 and M2 path-aware ownership
+  - direct implementation evidence path

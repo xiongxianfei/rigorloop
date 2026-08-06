@@ -17,6 +17,7 @@ Review closeout: plan-review-r2
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
+Review closeout: test-spec-review-r4
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r3
 Review closeout: code-review-m3-r7
@@ -24,10 +25,10 @@ Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r4
 Review closeout: code-review-pr-readiness-r1
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`, `code-review-pr-full-gate-r1`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `test-spec-review-r4`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`, `code-review-pr-full-gate-r1`
 - Findings resolved: 29
 - Unresolved findings: 3
-- Current result: T24 now proves lifecycle-contract authority and awaits test-spec-review R4; the three PR full-gate findings remain open.
+- Current result: Test-spec-review R4 approves direct lifecycle-contract authority proof for T24; the three PR full-gate findings remain open.
 
 ## Resolution Overview
 
@@ -113,6 +114,13 @@ Validation target: revised T24 and linked proof rows followed by test-spec-revie
 Validation evidence: The R4 candidate T24 names paired spec/change-record fixtures, matching and non-matching lifecycle contracts, path-aware steps, bounded failures, and one consistent integration proof level.
 Safe resolution path: Extend T24 with the authority positive and negative, retain the named placement/cardinality cases, align proof-level labels, and use the existing M2-owned boundary suite through a path-aware seam.
 Auto-fix class: requires-test-spec
+
+### test-spec-review-r4
+
+Review result: approved
+Material findings: none
+Resolution required: no
+Validation evidence: T24 pairs feature specs with referenced change records, proves exact stage-owned authority and retained legacy status placement, rejects missing/different authority plus all named placement/cardinality failures, uses consistent integration labels, retains CMD06/M2 path-aware ownership, and names direct correction evidence.
 
 ### code-review-pr-full-gate-r1
 

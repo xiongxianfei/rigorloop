@@ -53,8 +53,13 @@ artifact_states:
     kind: test-spec
     path: specs/usability-first-boundary-release.test.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-06-usability-first-boundary-release/evidence/test-spec-authoring-pr-full-gate-r1.md
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r4
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r4.md
+      round: r4
 workflow_state:
   lifecycle_state: active
   current_stage: review-resolution
