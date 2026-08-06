@@ -352,6 +352,17 @@ Open findings: UBR-PRFG-CR4-001
 Recording status: recorded
 
 ### Review entry
+Review ID: code-review-pr-full-gate-r5
+Stage: code-review
+Round: 5
+Status: clean-with-notes
+Detailed record: reviews/code-review-pr-full-gate-r5.md
+Resolution: review-resolution.md#code-review-pr-full-gate-r5
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
 Review ID: spec-review-r5
 Stage: spec-review
 Round: 5

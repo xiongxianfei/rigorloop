@@ -1,0 +1,113 @@
+schema_version: 1
+review_id: code-review-pr-full-gate-r5
+review_stage: code-review
+review_target: range:189cdbf2..6ccb064b
+base_revision: 189cdbf29dd32db74784024203a706ee163f5c7e
+head_revision: 6ccb064bfc0405c6f3b1c7232a40df02eb9b7f7d
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: root-pr-full-gate-correction-r5
+reviewer_context_id: pr-full-gate-r5-fresh-contract-first-reviewer
+context_separation_mechanism: separate-agent-blind-first-rereview
+risk_tier: high
+risk_tier_triggers:
+  - spec-derived-validator-authority
+  - closed-vocabulary-fail-closed
+  - yaml-semantic-authority
+  - post-verify-pr-correction
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - CONSTITUTION.md
+  - schemas/change.schema.json
+  - specs/usability-first-boundary-release.md
+  - specs/usability-first-boundary-release.test.md
+  - docs/plans/2026-08-06-usability-first-boundary-release.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+  - docs/changes/2026-08-06-usability-first-boundary-release/review-resolution.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    revision: 6ccb064b
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: schemas/change.schema.json
+    revision: 6ccb064b
+    sha256: fa3d07dd253a4816f9e143f6b9243767da248613f91c57ddb8508b35c0f67db6
+  - path: specs/usability-first-boundary-release.md
+    revision: 6ccb064b
+    sha256: 5045edf83c5e71531445f524b88c4098f28fc115bf6ba8277335c178058bf6cd
+  - path: specs/usability-first-boundary-release.test.md
+    revision: 6ccb064b
+    sha256: 4669a662b16d87e236ecb0387135431e7ae706f05b6532a4d51529b60745b833
+  - path: docs/plans/2026-08-06-usability-first-boundary-release.md
+    revision: 6ccb064b
+    sha256: 20dfdffbe57586be33ed111dad8b10e44d431e29a6af49caf4c1be097ddc90cd
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: 6ccb064b
+    sha256: bc50921054d69eb2547f92ea7dc676efdb94a6d1d8696f47ff9f1f88781acdd4
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-pr-full-gate-r3.md
+    revision: 6ccb064b
+    sha256: 6aa730d8b1e98f01beb628eae4c914850a087dfc5739b801c64dff2411469623
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-pr-full-gate-r4.md
+    revision: 6ccb064b
+    sha256: e0d8200de3aed5ce8f649366e2fe281fa92fd6985719ed22232b36958c456460
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/review-resolution.md
+    revision: 6ccb064b
+    sha256: c08b5276576dc5ecdc577b685cfff971e8efdf157299f01d0a7db07eee0d45ca
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/evidence/pr-full-gate-review-resolution.md
+    revision: 6ccb064b
+    sha256: 991257521f531a714b3827d8ed8f98944ea58f2f36a6b68c0bc1fd506b3d012c
+  - path: scripts/boundary_first_validation.py
+    revision: 6ccb064b
+    sha256: 31244a4b631e78c356267e4809880f2ecc4d18f308e7ddb1ab51bd0f919982ec
+  - path: scripts/test-boundary-first-validation.py
+    revision: 6ccb064b
+    sha256: 3d8838e02601e32effb4ded69bbb37a1e2bdebc7047d9c23e3a9a5401fa8624a
+  - path: scripts/validate-change-metadata.py
+    revision: 6ccb064b
+    sha256: d1c9395a09c743ee5c3e9ce32efb35f69c638c9cc8297affd78bde4021d7e51c
+  - path: range:189cdbf2..6ccb064b.diff
+    revision: 6ccb064b
+    sha256: 2697dcbcd4ec44903ffa47d3df51c401b8a202a7e668be822b02049046040092
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: false
+  satisfied: false
+requirement_fidelity:
+  applicability: applicable
+  reason: The correction must project lifecycle authority from repository-style top-level mapping entries without losing closed-vocabulary or duplicate ordering.
+  outcome: clean-with-notes
+risk_map:
+  affected_behavior: top-level lifecycle mapping-key discovery and lifecycle-selected marker placement
+  highest_impact_failure_modes: spaced exact authority treated as absent, spaced unknown downgraded to legacy, mixed-spelling duplicate overwritten, malformed value checked after marker placement, or helper semantics escaping repository mapping rules
+  changed_boundaries: repository-style top-level key tokenization, occurrence preservation, scalar classification, and marker branch selection
+  evidence_expected: exact correction diff, repository parser comparison, direct authority matrix, focused regressions, full boundary suite, and prior-finding reconciliation
+  direct_inspection_areas: bounded helper, authority classifier, both marker branches, repository tokenizer/mapping split, and T24 regressions
+  intentionally_out_of_scope: selector, CLI package fixtures, broad smoke, release validation, hosted CI, PR opening, push, tag, publication, merge, and public closeout
+  applicable_risk_classes:
+    - requirement-fidelity
+    - spec-derived-validation
+    - closed-vocabulary-validation
+    - compatibility-and-migration
+    - lifecycle-closeout
+  non_applicable_risk_classes:
+    - release-routing
+    - package-supply-chain
+    - live-publication
+    - external-mutation
+  falsifiable_questions:
+    - Do canonical, spaced, and quoted exact values select only owner placement?
+    - Does absence alone retain historical status placement?
+    - Do canonical and spaced unknown or malformed values fail before marker consistency?
+    - Do canonical and mixed-spelling duplicates fail before scalar or placement consistency?
+    - Does the bounded helper match repository mapping-key normalization for the admitted top-level contract?
