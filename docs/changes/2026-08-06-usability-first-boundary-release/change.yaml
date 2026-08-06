@@ -19,8 +19,13 @@ artifact_states:
     kind: spec
     path: specs/usability-first-boundary-release.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-06-usability-first-boundary-release/evidence/spec-authoring-pr-full-gate-r1.md
+    lifecycle_state: revision-required
+    review:
+      id: spec-review-r4
+      artifact_id: spec
+      outcome: changes-requested
+      record: docs/changes/2026-08-06-usability-first-boundary-release/reviews/spec-review-r4.md
+      round: r4
   adr-checked-revision-activation:
     kind: adr
     path: docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
@@ -240,4 +245,4 @@ changed_files:
   - specs/usability-first-boundary-release.test.md
 review:
   status: changes-requested
-  unresolved_items: 3
+  unresolved_items: 4

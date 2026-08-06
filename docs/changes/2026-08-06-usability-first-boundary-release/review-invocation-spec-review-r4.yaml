@@ -1,0 +1,66 @@
+schema_version: 1
+review_id: spec-review-r4
+review_stage: spec-review
+review_target: specs/usability-first-boundary-release.md
+base_revision: f0b1b6fc232742de5ae4677679b34d8f6ac80ec5
+head_revision: 6a18a5aabe03ff86f60df73a0054e1aaac5df3ef
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L1
+author_context_id: root-ubr-pr-full-gate-spec-amendment
+reviewer_context_id: independent-spec-review-r4
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-contract-composition
+  - normalized-boundary-record
+  - downstream-proof-map-invalidation
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/boundary-first-proof-model.md
+  - specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+  - specs/usability-first-boundary-release.md
+  - specs/usability-first-boundary-release.test.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-pr-full-gate-r1.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    revision: 6a18a5aabe03ff86f60df73a0054e1aaac5df3ef
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: specs/boundary-first-proof-model.md
+    revision: 6a18a5aabe03ff86f60df73a0054e1aaac5df3ef
+    sha256: f4a4ce4860981af14484c4d4f15edc362cf269806d2fe7f052db5bfff11ed159
+  - path: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+    revision: 6a18a5aabe03ff86f60df73a0054e1aaac5df3ef
+    sha256: 46865935c04fa404a38b34c96f7c19f5934a6b9eee672081f22b3cfc2ff64ba4
+  - path: specs/usability-first-boundary-release.md
+    revision: 6a18a5aabe03ff86f60df73a0054e1aaac5df3ef
+    sha256: 55fe631698762ac1e8ea65b3db66cd0c6cc347c6c2551fa85cf0701e6c2f46c1
+  - path: specs/usability-first-boundary-release.test.md
+    revision: 6a18a5aabe03ff86f60df73a0054e1aaac5df3ef
+    sha256: 993839ee82239baa63d41d929dec61ea26db4bed3239e3baf52e3e45755f432f
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: 6a18a5aabe03ff86f60df73a0054e1aaac5df3ef
+    sha256: 38c01c617870e26cc01c39d7a773379f48fda9bbaf3b75ab23392539d6ffa9be
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/evidence/spec-authoring-pr-full-gate-r1.md
+    revision: 6a18a5aabe03ff86f60df73a0054e1aaac5df3ef
+    sha256: d157e6d4da270f7db0d4d86b47d88e1ad94065d6a6074d788909d65a35bc8390
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-pr-full-gate-r1.md
+    revision: 6a18a5aabe03ff86f60df73a0054e1aaac5df3ef
+    sha256: f75cca97cb0211e031b1563764bac710f121f68c7e3996adcc00383d8e95a1ca
+  - path: specs/usability-first-boundary-release.md.diff
+    revision: 6a18a5aabe03ff86f60df73a0054e1aaac5df3ef
+    sha256: a12a11bf2bcfcd94a953b25fba0127c8a1b39ad5cb81cf0631d5d0f3a2d4c37d
+initial_packet_sha256: a12a11bf2bcfcd94a953b25fba0127c8a1b39ad5cb81cf0631d5d0f3a2d4c37d
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - UBR-PRFG-CR1-001 closure through explicit stage-owned marker-placement authority
+  - compatibility with PBF-R002 legacy status placement
+  - compatibility with the stage-owned change-local lifecycle contract
+  - normalized boundary-record integrity
+  - downstream test-spec invalidation without cross-stage repair
