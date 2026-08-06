@@ -40,14 +40,17 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: m2-r2-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: R2 must close exact path, diagnostic, same-push CAS, and proof-matrix findings.
-  outcome: pending
+  outcome: changes-requested
 phase_receipts:
   - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
 review_focus:
   - Reconcile BFA-M2-R1-001 through BFA-M2-R1-003.
   - Challenge lexical path authority, exact pre-push stdin mapping, stale-ref classification, real atomic failure, privacy, and proof claims.

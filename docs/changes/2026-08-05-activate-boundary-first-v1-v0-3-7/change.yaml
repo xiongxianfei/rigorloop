@@ -131,6 +131,7 @@ workflow_state:
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r1.yaml
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m2-r1.md
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r2.yaml
+    - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m2-r2.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M2
@@ -152,7 +153,7 @@ workflow_state:
       - M3
       - M4
     latest_review:
-      status: review-requested
+      status: changes-requested
       stage: code-review
       round: r2
       artifact_id: plan
@@ -160,6 +161,7 @@ workflow_state:
       milestone_id: M2
       evidence:
         - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r2.yaml
+        - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m2-r2.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -262,9 +264,10 @@ changed_files:
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r1.yaml
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m2-r1.md
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r2.yaml
+  - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m2-r2.md
 review:
   status: changes-requested
-  unresolved_items: 3
+  unresolved_items: 4
 architecture:
   assessment: architecture-required
   rationale: The activation release changes validator authority, P/B/T/H Git identity flow, tagged-tree execution, atomic two-ref publication, and invalid-candidate recovery.

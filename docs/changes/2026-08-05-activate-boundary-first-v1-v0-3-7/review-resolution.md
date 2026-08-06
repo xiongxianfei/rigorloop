@@ -33,8 +33,8 @@ Review closeout: test-spec-review-r7
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`, `plan-review-r4`, `test-spec-review-r5`, `test-spec-review-r6`, `test-spec-review-r7`
 - Findings resolved: 30
-- Unresolved findings: 3
-- Final result: M2 code-review R1 requests correction of evidence-path authority, bounded diagnostics, and same-push CAS/proof coverage before M2 can close.
+- Unresolved findings: 4
+- Final result: M2 code-review R2 closes exact path authority but requires authenticated private-safe diagnostics, post-push reconciliation, selective-ref rejection proof, and fresh replacement recovery.
 
 ## Resolution Overview
 
@@ -83,11 +83,43 @@ Review closeout: test-spec-review-r7
 | BFA-M1-R6-001 | accepted | resolved | Rejected duplicate inventory sections and mapping keys. |
 | BFA-M1-R7-001 | accepted | resolved | Normalized parser-equivalent duplicate top-level keys. |
 | BFA-M1-R7-002 | accepted | resolved | Required unique packet inventory paths. |
-| BFA-M2-R1-001 | accepted | open | Reject symlink evidence paths before lexical canonical-path comparison. |
+| BFA-M2-R1-001 | accepted | resolved | Reject symlink evidence paths before lexical canonical-path comparison. |
 | BFA-M2-R1-002 | accepted | open | Preserve bounded failure classification and safe operator context. |
 | BFA-M2-R1-003 | accepted | open | Validate same-push advertised identities and complete the real-Git proof matrix. |
+| BFA-M2-R2-001 | accepted | open | Authenticate or bound diagnostic context and classify post-push uncertainty. |
+| BFA-M2-R2-002 | accepted | open | Prove selective-ref rejection and fresh replacement-candidate recovery. |
 
 ## Finding Details
+
+### code-review-m2-r2
+
+#### BFA-M2-R2-001 - Private input and post-push diagnostic uncertainty
+
+Finding ID: BFA-M2-R2-001
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Suppress unapproved release and unauthenticated candidate values,
+preserve authenticated context through tag and confirmation failures, and use a
+distinct stop-and-reconcile confirmation outcome after a successful push.
+Rationale: Normal diagnostics must be useful without echoing attacker-controlled
+or private values or suggesting an unsafe retry after external mutation.
+Validation target: code-review-m2-r3
+Validation evidence: pending correction and R3
+
+#### BFA-M2-R2-002 - Missing selective-ref and replacement recovery proof
+
+Finding ID: BFA-M2-R2-002
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Add a tag-selective bare-remote update hook and construct a fresh
+valid replacement repository after invalid candidate evidence is rejected.
+Rationale: All-or-neither and regeneration claims require their named fixtures.
+Validation target: code-review-m2-r3
+Validation evidence: pending correction and R3
 
 ### code-review-m2-r1
 
@@ -95,14 +127,14 @@ Review closeout: test-spec-review-r7
 
 Finding ID: BFA-M2-R1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementer
 Owning stage: review-resolution
 Chosen action: Inspect lexical supplied and canonical paths for symlinks before
 normalization, then require the exact canonical repository-relative path.
 Rationale: Evidence authority must not be broadened by filesystem indirection.
 Validation target: code-review-m2-r2
-Validation evidence: pending correction and R2
+Validation evidence: Code-review R2 confirms lexical aliases, alias symlinks, canonical-file symlinks, and symlinked canonical components fail closed.
 
 #### BFA-M2-R1-002 - Compressed publication diagnostics
 
