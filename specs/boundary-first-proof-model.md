@@ -10,8 +10,8 @@
 
 approved
 
-Boundary-first contract activation: pending
-Activation record identity: -
+Boundary-first contract activation: active
+Activation record identity: specs/boundary-first-activation.yaml
 
 ## Related proposal
 
@@ -37,8 +37,8 @@ self-containment, generation, and adapter parity.
 
 This is the bootstrap spec for `boundary-first-v1`.
 It does not carry the activation marker that it defines because repository
-activation remains pending until every governed skill and package surface is
-current together.
+activation excludes this bootstrap authority from the grandfathered and
+prospective-adoption inventories.
 
 ## Glossary
 
@@ -765,5 +765,6 @@ contract.
 ## Readiness
 
 Approved for architecture alignment.
-Published activation remains `pending` until the complete governed skill and
-package bundle passes the release-scoped activation contract.
+Checked-revision activation is `active` with release intent `v0.4.0` after the
+complete governed skill and package bundle passed the pre-publication contract.
+This state does not claim a tag, publication, or public availability.
