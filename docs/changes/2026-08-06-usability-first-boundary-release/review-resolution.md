@@ -14,11 +14,12 @@ Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
+Review closeout: code-review-m1-r2
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`
 - Findings resolved: 10
 - Unresolved findings: 0
-- Current result: Both M1 R1 findings are resolved and ready for code-review M1 R2.
+- Current result: Code-review M1 R2 is clean; M1 is closed and routing advances to M2.
 
 ## Resolution Overview
 
@@ -73,6 +74,13 @@ Validation target: code-review-m1-r2
 Validation evidence: Array, object, and null vocabulary mutations return validation errors without exceptions; the focused tests and full 285-test skill-validator suite pass.
 Safe resolution path: Guard the three fields mechanically, skip dependent evaluation for malformed rows, and add list, object, boolean, numeric, and null mutations.
 Auto-fix class: mechanical
+
+### code-review-m1-r2
+
+Review result: clean-with-notes
+Material findings: none
+Resolution required: no
+Validation evidence: The independent rereview reconciled both R1 findings as resolved, accepted the contract-owned semantic oracle and fail-closed type guards, and found no new material findings.
 
 ### proposal-review-r1
 
