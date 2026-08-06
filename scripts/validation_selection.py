@@ -46,6 +46,11 @@ CHECK_CATALOG: dict[str, CheckCatalogEntry] = {
         "python scripts/test-boundary-first-validation.py",
         "boundary-first",
     ),
+    "boundary_activation_release.regression": CheckCatalogEntry(
+        "boundary_activation_release.regression",
+        "python scripts/test-boundary-activation-release.py",
+        "boundary-first",
+    ),
     "skills.validate": CheckCatalogEntry(
         "skills.validate",
         "python scripts/validate-skills.py",
@@ -1339,6 +1344,13 @@ def _apply_path_selection(
             "Changed boundary-first validator or fixture requires boundary validation regression fixtures.",
             path=path,
         )
+    if _is_boundary_activation_release_surface(path):
+        _add_check(
+            selected,
+            "boundary_activation_release.regression",
+            "Changed activation publication helper requires atomic publication regression fixtures.",
+            path=path,
+        )
 
     if _is_tier_b_documentation_prose_path(path):
         _add_check(
@@ -2431,6 +2443,8 @@ def _path_category(path: str) -> str | None:
         return "release-transaction"
     if path in {"scripts/validate-release.py", "scripts/validate-release-ci.py", "scripts/release-verify.sh"}:
         return "release-script"
+    if _is_boundary_activation_release_surface(path):
+        return "boundary-first"
     if path.startswith("scripts/"):
         return "script-unsupported"
     return None
@@ -2459,6 +2473,9 @@ def _is_boundary_first_surface(path: str) -> bool:
             "scripts/boundary_first_reference.py",
             "scripts/project-boundary-first-reference.py",
             "scripts/test-boundary-first-reference.py",
+            "scripts/boundary_activation_release.py",
+            "scripts/publish-boundary-activation.py",
+            "scripts/test-boundary-activation-release.py",
         }
     )
 
@@ -2484,6 +2501,14 @@ def _is_boundary_first_validation_surface(path: str) -> bool:
         "scripts/boundary_first_validation.py",
         "scripts/validate-boundary-first.py",
         "scripts/test-boundary-first-validation.py",
+    }
+
+
+def _is_boundary_activation_release_surface(path: str) -> bool:
+    return path in {
+        "scripts/boundary_activation_release.py",
+        "scripts/publish-boundary-activation.py",
+        "scripts/test-boundary-activation-release.py",
     }
 
 
