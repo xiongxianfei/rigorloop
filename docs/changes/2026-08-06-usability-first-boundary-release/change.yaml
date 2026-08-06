@@ -8,15 +8,21 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-06-usability-first-boundary-release.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-06-usability-first-boundary-release/evidence/proposal-authoring.md
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r1
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-08-06-usability-first-boundary-release/reviews/proposal-review-r1.md
+      round: r1
 workflow_state:
   lifecycle_state: active
-  current_stage: proposal
-  next_stage: proposal-review
+  current_stage: proposal-review
+  next_stage: spec
   blocker: null
   evidence:
     - docs/changes/2026-08-06-usability-first-boundary-release/evidence/proposal-authoring.md
+    - docs/changes/2026-08-06-usability-first-boundary-release/reviews/proposal-review-r1.md
 workflow: {}
 artifacts:
   proposal: docs/proposals/2026-08-06-usability-first-boundary-release.md
@@ -34,6 +40,8 @@ changed_files:
   - docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
   - docs/changes/2026-08-06-usability-first-boundary-release/evidence/proposal-authoring.md
   - docs/proposals/2026-08-06-usability-first-boundary-release.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/review-log.md
 review:
-  status: pending
+  status: approved
   unresolved_items: 0
