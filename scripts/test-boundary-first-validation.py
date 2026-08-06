@@ -1287,6 +1287,19 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             numeric,
             count=1,
         ) + "risk_map:\n  nested:\n    revision: deadbeef\n"
+        duplicate_top_level = numeric + "base_revision: NOT-A-REVISION\n"
+        duplicate_inventory = numeric + (
+            "initial_packet_inventory:\n"
+            "  - path: substituted\n"
+            "    revision: NOT-A-REVISION\n"
+            f"    sha256: {'d' * 64}\n"
+        )
+        duplicate_packet_key = re.sub(
+            r"(?m)^(    sha256: ([0-9a-f]{64}))$",
+            r"\1\n    sha256: \2",
+            numeric,
+            count=1,
+        )
 
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "repository"
@@ -1302,6 +1315,15 @@ class BoundaryFirstActivationTests(unittest.TestCase):
 
             destination.write_text(malformed, encoding="utf-8")
             self.assertIsNotNone(_review_invocation_issue(root, relative))
+
+            for manifest in (
+                duplicate_top_level,
+                duplicate_inventory,
+                duplicate_packet_key,
+            ):
+                with self.subTest(manifest=manifest[-100:]):
+                    destination.write_text(manifest, encoding="utf-8")
+                    self.assertIsNotNone(_review_invocation_issue(root, relative))
 
     def test_candidate_reports_union_for_rename_delete_and_multiple_drift(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
