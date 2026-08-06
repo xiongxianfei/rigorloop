@@ -32,14 +32,19 @@ Local bare-remote fixtures prove read-only check mode, exact two-ref success,
 one-ref receive rejection with all-or-neither refs, stale remote main, existing
 remote tag, real advertised-atomic capability failure, post-readiness remote
 drift, local-head movement, non-fast-forward H, and modified candidate evidence.
-Focused contract fixtures prove same-push stdin mismatch rejection, exact
+The receive-rejection fixture uses a tag-selective update hook, proving the
+otherwise acceptable main update is rolled back with the rejected tag. A fresh
+replacement fixture proves invalid candidate evidence is rejected and a new
+validated transition/history can be generated without retaining it. Focused
+contract fixtures prove same-push stdin mismatch rejection, exact
 full-SHA refspecs, absence of force/fallback flags, explicit and successful CLI
-modes, canonical path authority, and private diagnostic suppression. The
+modes, canonical path authority, authenticated-context preservation, private
+input/provider suppression, and post-push stop-and-reconcile behavior. The
 selector fixture proves all three new paths route to the owned regression.
 
 ## Validation
 
-- `python scripts/test-boundary-activation-release.py` — pass, 12 tests.
+- `python scripts/test-boundary-activation-release.py` — pass, 14 tests.
 - `python scripts/test-select-validation.py` — pass, 147 tests.
 - `python -m py_compile scripts/boundary_activation_release.py scripts/publish-boundary-activation.py` — pass.
 - `python scripts/select-validation.py --mode explicit --path scripts/boundary_activation_release.py --path scripts/publish-boundary-activation.py --path scripts/test-boundary-activation-release.py --path scripts/validation_selection.py --path scripts/test-select-validation.py` — pass; selected boundary validation, activation publication regression, and selector regression without blockers or debt.

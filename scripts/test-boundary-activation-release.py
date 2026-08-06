@@ -126,10 +126,15 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root, candidate, _, _, _ = initialized_repository(temporary)
             remote = Path(git(root, "remote", "get-url", "origin"))
-            hook = remote / "hooks/pre-receive"
+            hook = remote / "hooks/update"
             sentinel = "PRIVATE_REMOTE_TOKEN_9471"
             hook.write_text(
-                f"#!/bin/sh\nprintf '%s\\n' '{sentinel}' >&2\nexit 1\n",
+                "#!/bin/sh\n"
+                "if [ \"$1\" = refs/tags/v0.4.0 ]; then\n"
+                f"  printf '%s\\n' '{sentinel}' >&2\n"
+                "  exit 1\n"
+                "fi\n"
+                "exit 0\n",
                 encoding="utf-8",
             )
             hook.chmod(0o755)
@@ -364,9 +369,11 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
             ), self.assertRaisesRegex(PublicationError, "publication-not-fast-forward"):
                 publication_readiness(root, "v0.4.0", candidate)
 
+        rejected_transition = ""
         with tempfile.TemporaryDirectory() as temporary:
             root, candidate, _, _, _ = initialized_repository(temporary)
             data = json.loads(candidate.read_text(encoding="utf-8"))
+            rejected_transition = data["transition_commit"]
             data["candidate_validation_head"] = "f" * 40
             candidate.write_text(json.dumps(data), encoding="utf-8")
             with mock.patch(
@@ -375,6 +382,124 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
             ), self.assertRaisesRegex(PublicationError, "publication-readiness-failed") as raised:
                 publication_readiness(root, "v0.4.0", candidate)
             self.assertIn("restore settled lifecycle", error_payload(raised.exception)["corrective_action"])
+
+        with tempfile.TemporaryDirectory() as replacement_temporary, mock.patch.dict(
+            os.environ,
+            {
+                "GIT_AUTHOR_DATE": "2030-01-02T03:04:05+0000",
+                "GIT_COMMITTER_DATE": "2030-01-02T03:04:05+0000",
+            },
+        ):
+            replacement_root, replacement_candidate, publication_base, transition, head = (
+                initialized_repository(replacement_temporary)
+            )
+            with mock.patch(
+                "boundary_first_validation._publication_authority_issues",
+                return_value=(),
+            ):
+                replacement = publication_readiness(
+                    replacement_root, "v0.4.0", replacement_candidate
+                )
+            self.assertEqual(replacement.publication_base, publication_base)
+            self.assertEqual(replacement.transition_commit, transition)
+            self.assertEqual(replacement.publication_head, head)
+            self.assertNotEqual(replacement.transition_commit, rejected_transition)
+
+    def test_untrusted_diagnostics_are_suppressed_and_safe_context_is_preserved(self) -> None:
+        release_sentinel = "PRIVATE_TOKEN_9471"
+        with self.assertRaises(PublicationError) as invalid_release:
+            publication_readiness(
+                ROOT, release_sentinel, CANONICAL_CANDIDATE, mode="check"
+            )
+        self.assertNotIn(release_sentinel, json.dumps(error_payload(invalid_release.exception)))
+        specification = importlib.util.spec_from_file_location("privacy_cli", CLI)
+        assert specification is not None and specification.loader is not None
+        privacy_cli = importlib.util.module_from_spec(specification)
+        specification.loader.exec_module(privacy_cli)
+        cli_output = io.StringIO()
+        with mock.patch.object(
+            sys,
+            "argv",
+            [
+                str(CLI),
+                "--check",
+                "--release",
+                release_sentinel,
+                "--candidate-evidence",
+                "/tmp/private-machine-path/candidate.json",
+            ],
+        ), redirect_stdout(cli_output):
+            self.assertEqual(privacy_cli.main(), 2)
+        self.assertNotIn(release_sentinel, cli_output.getvalue())
+        self.assertNotIn("/tmp/private-machine-path", cli_output.getvalue())
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root, candidate, publication_base, transition, head = initialized_repository(temporary)
+            forged_identity = "a" * 40
+            data = json.loads(candidate.read_text(encoding="utf-8"))
+            data["publication_base"] = forged_identity
+            candidate.write_text(json.dumps(data), encoding="utf-8")
+            with mock.patch(
+                "boundary_first_validation._publication_authority_issues",
+                return_value=(),
+            ), self.assertRaises(PublicationError) as forged:
+                publication_readiness(root, "v0.4.0", candidate, mode="publish")
+            forged_payload = error_payload(forged.exception)
+            self.assertNotIn(forged_identity, json.dumps(forged_payload))
+            self.assertEqual(forged_payload["release"], "v0.4.0")
+
+            candidate_data = json.loads(git(root, "show", f"HEAD:{CANONICAL_CANDIDATE.as_posix()}"))
+            candidate.write_text(json.dumps(candidate_data), encoding="utf-8")
+            real_identity = __import__("boundary_activation_release")._identity
+
+            def fail_tag(fixture_root: Path, revision: str) -> str:
+                if revision.startswith("refs/tags/"):
+                    raise PublicationError("identity-unavailable")
+                return real_identity(fixture_root, revision)
+
+            with mock.patch(
+                "boundary_first_validation._publication_authority_issues",
+                return_value=(),
+            ), mock.patch("boundary_activation_release._identity", side_effect=fail_tag), self.assertRaises(
+                PublicationError
+            ) as tag_failure:
+                publication_readiness(root, "v0.4.0", candidate, mode="publish")
+            tag_payload = error_payload(tag_failure.exception)
+            for expected in (publication_base, transition, head):
+                self.assertIn(expected, tag_payload.values())
+
+    def test_post_push_confirmation_failure_requires_reconciliation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root, candidate, _, transition, head = initialized_repository(temporary)
+            real_advertised = __import__("boundary_activation_release")._advertised_refs
+            calls = 0
+
+            def fail_confirmation(fixture_root: Path, release: str) -> dict[str, str]:
+                nonlocal calls
+                calls += 1
+                if calls == 1:
+                    return real_advertised(fixture_root, release)
+                raise PublicationError("remote-advertisement-unavailable")
+
+            with mock.patch(
+                "boundary_first_validation._publication_authority_issues",
+                return_value=(),
+            ), mock.patch(
+                "boundary_activation_release._advertised_refs",
+                side_effect=fail_confirmation,
+            ), self.assertRaisesRegex(
+                PublicationError, "publication-confirmation-unavailable"
+            ) as raised:
+                publish_activation(root, "v0.4.0", candidate)
+            payload = error_payload(raised.exception)
+            self.assertEqual(payload["failed_phase"], "publication-confirmation")
+            self.assertIn("do not rerun", payload["corrective_action"])
+            self.assertEqual(payload["current_reviewed_head"], head)
+            self.assertEqual(payload["transition_commit"], transition)
+            self.assertEqual(
+                advertised(root),
+                {"refs/heads/main": head, "refs/tags/v0.4.0": transition},
+            )
 
     def test_valid_cli_modes_and_private_diagnostics(self) -> None:
         specification = importlib.util.spec_from_file_location("publication_cli", CLI)

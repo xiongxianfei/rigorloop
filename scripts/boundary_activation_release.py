@@ -38,8 +38,36 @@ _ERROR_DETAILS = {
     "push-mapping-invalid": ("atomic-publication", "one push maps exact H to main and T to v0.4.0", "restore the approved two-ref mapping and rerun"),
     "atomic-capability-unavailable": ("atomic-publication", "origin supports one atomic two-ref update", "restore atomic push capability; do not fall back to sequential pushes"),
     "atomic-publication-failed": ("atomic-publication", "both authorized refs update atomically", "reconcile remote state and regenerate or rerun without force"),
+    "publication-confirmation-unavailable": ("publication-confirmation", "published remote main equals H and v0.4.0 equals T", "stop public closeout and reconcile both exact remote refs; do not rerun publication"),
     "published-refs-unconfirmed": ("publication-confirmation", "remote main equals H and v0.4.0 equals T", "stop public closeout and reconcile the remote refs"),
 }
+
+_IDENTITY_CONTEXT_FIELDS = {
+    "publication_base",
+    "grandfathering_baseline",
+    "transition_commit",
+    "candidate_validation_head",
+    "current_reviewed_head",
+    "conflicting_remote_main",
+    "conflicting_remote_tag",
+}
+
+
+def _safe_context(context: dict[str, str]) -> dict[str, str]:
+    safe: dict[str, str] = {}
+    for key, value in context.items():
+        if not isinstance(value, str) or not value:
+            continue
+        if key == "mode" and value in {"readiness", "check", "publish"}:
+            safe[key] = value
+        elif key == "release" and value == ACTIVATION_RELEASE:
+            safe[key] = value
+        elif key in _IDENTITY_CONTEXT_FIELDS and (
+            re.fullmatch(r"[0-9a-f]{40}", value)
+            or (key.startswith("conflicting_remote_") and value == "absent")
+        ):
+            safe[key] = value
+    return safe
 
 
 class PublicationError(RuntimeError):
@@ -48,15 +76,11 @@ class PublicationError(RuntimeError):
     def __init__(self, code: str, **context: str) -> None:
         super().__init__(code)
         self.code = code
-        self.context = {
-            key: value
-            for key, value in context.items()
-            if isinstance(value, str) and value
-        }
+        self.context = _safe_context(context)
 
     def add_context(self, **context: str) -> "PublicationError":
-        for key, value in context.items():
-            if isinstance(value, str) and value and key not in self.context:
+        for key, value in _safe_context(context).items():
+            if key not in self.context:
                 self.context[key] = value
         return self
 
@@ -142,7 +166,7 @@ def publication_readiness(
     """Return the exact live publication identities without mutating refs."""
 
     if release != ACTIVATION_RELEASE:
-        raise PublicationError("release-not-approved", mode=mode, release=release)
+        raise PublicationError("release-not-approved", mode=mode)
     root_absolute = Path(os.path.abspath(root))
     canonical = Path(os.path.abspath(root_absolute / CANONICAL_CANDIDATE))
     supplied_lexical = (
@@ -200,6 +224,11 @@ def publication_readiness(
         raise PublicationError(
             "candidate-identity-invalid", mode=mode, release=release
         )
+    issues = validate_activation_publication_readiness(root)
+    if issues:
+        raise PublicationError(
+            "publication-readiness-failed", mode=mode, release=release
+        )
     candidate_context = {
         "mode": mode,
         "release": release,
@@ -208,15 +237,16 @@ def publication_readiness(
         "transition_commit": transition_commit,
         "candidate_validation_head": candidate_validation_head,
     }
-    issues = validate_activation_publication_readiness(root)
-    if issues:
-        raise PublicationError("publication-readiness-failed", **candidate_context)
     try:
         publication_head = _identity(root, "HEAD")
     except PublicationError as error:
         raise error.add_context(**candidate_context)
     live_context = {**candidate_context, "current_reviewed_head": publication_head}
-    if _identity(root, f"refs/tags/{release}^{{commit}}") != transition_commit:
+    try:
+        local_tag_commit = _identity(root, f"refs/tags/{release}^{{commit}}")
+    except PublicationError as error:
+        raise error.add_context(**live_context)
+    if local_tag_commit != transition_commit:
         raise PublicationError("local-tag-mismatch", **live_context)
     try:
         advertised = _advertised_refs(root, release)
@@ -394,10 +424,20 @@ def publish_activation(
     """Recompute readiness and perform one non-forced atomic two-ref push."""
 
     readiness = publication_readiness(root, release, candidate_evidence, mode="publish")
-    if _identity(root, "HEAD") != readiness.publication_head:
+    try:
+        live_head = _identity(root, "HEAD")
+    except PublicationError as error:
+        raise error.add_context(**readiness.error_context("publish"))
+    if live_head != readiness.publication_head:
         raise PublicationError("local-head-drift", **readiness.error_context("publish"))
     _atomic_push(root, readiness, dry_run=False)
-    advertised = _advertised_refs(root, release)
+    try:
+        advertised = _advertised_refs(root, release)
+    except PublicationError as error:
+        raise PublicationError(
+            "publication-confirmation-unavailable",
+            **readiness.error_context("publish"),
+        ) from error
     if (
         advertised.get("refs/heads/main") != readiness.publication_head
         or advertised.get(f"refs/tags/{release}") != readiness.transition_commit
