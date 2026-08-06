@@ -1288,8 +1288,16 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             count=1,
         ) + "risk_map:\n  nested:\n    revision: deadbeef\n"
         duplicate_top_level = numeric + "base_revision: NOT-A-REVISION\n"
+        spaced_duplicate_base = numeric + "base_revision : NOT-A-REVISION\n"
+        spaced_duplicate_head = numeric + "head_revision : NOT-A-REVISION\n"
         duplicate_inventory = numeric + (
             "initial_packet_inventory:\n"
+            "  - path: substituted\n"
+            "    revision: NOT-A-REVISION\n"
+            f"    sha256: {'d' * 64}\n"
+        )
+        spaced_duplicate_inventory = numeric + (
+            "initial_packet_inventory :\n"
             "  - path: substituted\n"
             "    revision: NOT-A-REVISION\n"
             f"    sha256: {'d' * 64}\n"
@@ -1299,6 +1307,28 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             r"\1\n    sha256: \2",
             numeric,
             count=1,
+        )
+        first_packet = re.search(
+            r"(?m)^  - path: .*\n"
+            r"    revision: [0-9a-f]+\n"
+            r"    sha256: [0-9a-f]+$",
+            numeric,
+        )
+        assert first_packet is not None
+        conflicting_packet = re.sub(
+            r"(?m)^    revision: [0-9a-f]+$",
+            "    revision: deadbeef",
+            first_packet.group(0),
+        )
+        conflicting_packet = re.sub(
+            r"(?m)^    sha256: [0-9a-f]+$",
+            f"    sha256: {'e' * 64}",
+            conflicting_packet,
+        )
+        duplicate_packet_path = numeric.replace(
+            first_packet.group(0),
+            first_packet.group(0) + "\n" + conflicting_packet,
+            1,
         )
 
         with tempfile.TemporaryDirectory() as temporary:
@@ -1318,8 +1348,12 @@ class BoundaryFirstActivationTests(unittest.TestCase):
 
             for manifest in (
                 duplicate_top_level,
+                spaced_duplicate_base,
+                spaced_duplicate_head,
                 duplicate_inventory,
+                spaced_duplicate_inventory,
                 duplicate_packet_key,
+                duplicate_packet_path,
             ):
                 with self.subTest(manifest=manifest[-100:]):
                     destination.write_text(manifest, encoding="utf-8")
