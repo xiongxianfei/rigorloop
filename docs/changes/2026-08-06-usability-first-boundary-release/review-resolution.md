@@ -17,15 +17,17 @@ Review closeout: test-spec-review-r2
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r3
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`
 - Findings resolved: 15
-- Unresolved findings: 0
-- Current result: All M3 R1 findings have accepted fixes and validation evidence; M3 remains open pending code-review M3 R2.
+- Unresolved findings: 2
+- Current result: M3 R2 requests changes for trusted tag identity and fail-open finalized-evidence preservation; both findings are accepted and in progress.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| UBR-M3-CR2-001 | accepted | in-progress | Bind the requested release, hosted ref name, dereferenced tag, trusted commit, and checked HEAD as one identity. |
+| UBR-M3-CR2-002 | accepted | in-progress | Replace preservation heuristics with complete pending release-evidence validation. |
 | UBR-M3-CR1-001 | accepted | resolved | Finalized pre-publication evidence remains deterministic and passes preparation checks. |
 | UBR-M3-CR1-002 | accepted | resolved | Profile-owned `latest` is validated and passed explicitly to trusted npm publication. |
 | UBR-M3-CR1-003 | accepted | resolved | Hosted tag verification independently binds `github.sha`, checked HEAD, and the resolved tag. |
@@ -54,6 +56,36 @@ Review closeout: code-review-m2-r3
 - Validation evidence: spec revision R3 authoring checks and approved spec-review R3
 
 ## Finding Details
+
+### code-review-m3-r2
+
+#### UBR-M3-CR2-001 - Hosted tag identity accepts mixed release names
+
+Finding ID: UBR-M3-CR2-001
+Disposition: accepted
+Status: in-progress
+Owner: M3 implementer
+Owning stage: review-resolution
+Chosen action: Require the hosted tag ref name and requested release to match, then resolve the explicit hosted tag ref and compare it with the trusted commit and checked HEAD.
+Rationale: A release gate must prove one immutable release identity instead of accepting two names that happen to resolve to the same commit.
+Validation target: code-review-m3-r3
+Validation evidence: Pending implementation and real temporary-Git regressions.
+Safe resolution path: Add one identity validator plus lightweight, annotated, mixed-name, and wrong-commit fixtures.
+Auto-fix class: declared-safe
+
+#### UBR-M3-CR2-002 - Finalized evidence preservation fails open
+
+Finding ID: UBR-M3-CR2-002
+Disposition: accepted
+Status: in-progress
+Owner: M3 implementer
+Owning stage: review-resolution
+Chosen action: Validate the complete release metadata and standing-record contracts before preserving them, including strict pending-publication state and pre-public public fields.
+Rationale: Preparation must not preserve incomplete or prematurely public evidence merely because a few marker strings remain.
+Validation target: code-review-m3-r3
+Validation evidence: Pending implementation and partial, stale, and premature-publication regressions.
+Safe resolution path: Reuse repository-owned parsers and lifecycle validation, then enforce the M3 pre-public state exactly.
+Auto-fix class: declared-safe
 
 ### code-review-m3-r1
 
