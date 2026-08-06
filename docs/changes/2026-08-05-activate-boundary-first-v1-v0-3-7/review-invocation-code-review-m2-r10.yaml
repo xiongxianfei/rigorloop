@@ -4,8 +4,8 @@ review_stage: code-review
 review_target: range:9b000631..62a41087
 base_revision: 9b0006315c1308e44a13d3c189ca6ae831f6cfba
 head_revision: 62a41087f0148738fdd2e3b698d46abc4e2b0d71
-native_review_status: review-requested
-review_gate_outcome: pending
+native_review_status: changes-requested
+review_gate_outcome: stop
 independence_level: L2
 author_context_id: root-m2-review-resolution-r9
 reviewer_context_id: m2-r10-primary-and-second-reviewers
@@ -40,14 +40,17 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
+  reviewer_context_id: m2-r10-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: R10 must close errno-aware endpoint invalidation and retained cleanup ownership without regressing bounded publication behavior.
-  outcome: pending
+  outcome: changes-requested
 phase_receipts:
   - risk-map-recorded
   - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
 review_focus:
   - Reconcile BFA-M2-R7-001, BFA-M2-R8-001, BFA-M2-R8-002, and BFA-M2-R9-001.
   - Challenge EBADF-only invalidation proof, retained ownership and retries, fallback capability containment, setup/failed-push/success cleanup, primary-result preservation, actual endpoint invalidation, privacy, and evidence accuracy.

@@ -33,8 +33,8 @@ Review closeout: test-spec-review-r7
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`, `plan-review-r4`, `test-spec-review-r5`, `test-spec-review-r6`, `test-spec-review-r7`
 - Findings resolved: 30
-- Unresolved findings: 6
-- Final result: M2 code-review R9 requires errno-aware verified endpoint cleanup and bounded fallback-capability handling.
+- Unresolved findings: 8
+- Final result: M2 code-review R10 requires removal of terminal live-endpoint authority and phase-correct post-success reconciliation.
 
 ## Resolution Overview
 
@@ -99,8 +99,40 @@ Review closeout: test-spec-review-r7
 | BFA-M2-R8-001 | accepted | open | Retain endpoint ownership until verified closure. |
 | BFA-M2-R8-002 | accepted | open | Bound unsupported setup and descriptor-inheritance capabilities. |
 | BFA-M2-R9-001 | accepted | open | Accept only EBADF as closure proof and retain ownership across fallback failures. |
+| BFA-M2-R10-001 | accepted | open | Eliminate terminal live endpoint ownership after cleanup exhaustion. |
+| BFA-M2-R10-002 | accepted | open | Preserve stop-and-reconcile semantics after successful push uncertainty. |
 
 ## Finding Details
+
+### code-review-m2-r10
+
+#### BFA-M2-R10-001 - Terminal live endpoint ownership
+
+Finding ID: BFA-M2-R10-001
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Remove the local result transport and classify guarded-push
+failure from fresh authoritative remote refs.
+Rationale: A boolean hook gate needs no local diagnostic channel; removing it
+eliminates descriptor authority and all cleanup-exhaustion states.
+Validation target: code-review-m2-r11
+Validation evidence: pending correction and R11
+
+#### BFA-M2-R10-002 - Unsafe post-success cleanup classification
+
+Finding ID: BFA-M2-R10-002
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Remove transport cleanup from the success path so normal fresh
+remote confirmation always owns success or post-push uncertainty.
+Rationale: Successful external mutation must never receive retry guidance before
+fresh confirmation.
+Validation target: code-review-m2-r11
+Validation evidence: pending correction and R11
 
 ### code-review-m2-r9
 
