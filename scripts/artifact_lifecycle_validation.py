@@ -611,6 +611,10 @@ def _is_blank_table_value(value: str) -> bool:
     return not value.strip() or value.strip().casefold() in {"-", "missing", "not-recorded"}
 
 
+def _is_missing_emergency_deferral_value(value: str) -> bool:
+    return _is_blank_table_value(value) or value.strip().casefold() == "not-applicable"
+
+
 def _validate_emergency_deferrals(section: str) -> list[str]:
     errors: list[str] = []
     deferred_items: list[str] = []
@@ -641,8 +645,12 @@ def _validate_emergency_deferrals(section: str) -> list[str]:
             ("status", row[8]),
         )
         for field_name, value in required_fields:
-            if _is_blank_table_value(value):
+            if _is_missing_emergency_deferral_value(value):
                 errors.append(f"emergency deferral '{deferred_item}' is missing {field_name}")
+        if row[8].strip().casefold() != "open":
+            errors.append(
+                f"emergency deferral '{deferred_item}' status must be open while its result is deferred"
+            )
     for deferred_item in set(deferred_items):
         if deferred_items.count(deferred_item) != 1:
             errors.append(
@@ -754,6 +762,17 @@ def validate_release_evidence_checklist(
     emergency_section = _get_section(sections, "Emergency Deferrals") or ""
     errors.extend(_validate_emergency_deferrals(emergency_section))
     deferral_items = _emergency_deferral_items(emergency_section)
+    none_deferral_count = sum(
+        1
+        for row in _markdown_table_rows(emergency_section)
+        if row and row[0].strip().casefold() == "none"
+    )
+    if deferral_items and none_deferral_count:
+        errors.append(
+            f"emergency deferral '{deferral_items[0]}' must not coexist with a none sentinel"
+        )
+    elif not deferral_items and none_deferral_count != 1:
+        errors.append("release evidence without deferrals requires exactly one none sentinel")
     deferred_results = {
         item.casefold()
         for item, result in registry_results_by_item.items()
