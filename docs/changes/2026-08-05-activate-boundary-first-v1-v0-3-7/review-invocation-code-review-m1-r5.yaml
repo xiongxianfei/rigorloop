@@ -1,0 +1,68 @@
+schema_version: 1
+review_id: code-review-m1-r5
+review_stage: code-review
+review_target: range:841b2ef4..c90c7ad3
+base_revision: 841b2ef4942d6893ff781eb817a3c294398987f1
+head_revision: c90c7ad305796aaef7fad1e623df2f6a0b90640b
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L2
+author_context_id: root-m1-review-resolution-r4
+reviewer_context_id: m1-r5-primary-and-second-reviewers
+context_separation_mechanism: existing-separate-agents-blind-first
+risk_tier: elevated
+risk_tier_triggers:
+  - validator-behavior
+  - release-boundary
+  - lifecycle-gate
+  - privacy
+governing_artifacts:
+  - specs/boundary-first-v1-v0-3-7-activation-release.md
+  - specs/boundary-first-v1-v0-3-7-activation-release.test.md
+  - docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+  - docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.md
+    revision: c90c7ad305796aaef7fad1e623df2f6a0b90640b
+    sha256: fa622a617f8af6f36a9b877338b97d4a4df25a493f385764c66feaad751b7918
+  - path: specs/boundary-first-v1-v0-3-7-activation-release.test.md
+    revision: c90c7ad305796aaef7fad1e623df2f6a0b90640b
+    sha256: 9d0d7c839c9c44d4c138fe22961b861a06c6520dc4d3dd9a1a648f0de8114186
+  - path: docs/plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md
+    revision: c90c7ad305796aaef7fad1e623df2f6a0b90640b
+    sha256: eaea12dafb3ee49d6ab284603566c8a9f190a92fbdcd4fe665ef70388ef07bde
+  - path: docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md
+    revision: c90c7ad305796aaef7fad1e623df2f6a0b90640b
+    sha256: 614c19fb59aae74205845024fa23993fed38e0b5dce2c65991a24909858b542a
+  - path: range:841b2ef4..c90c7ad3.diff
+    revision: c90c7ad305796aaef7fad1e623df2f6a0b90640b
+    sha256: 3ca9ff312bc19d74e1fb682a207a9f37fd5b80fa616dc0b7295537788525ce92
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+second_review:
+  required: true
+  satisfied: false
+  reviewer_context_id: m1-r5-second-reviewer
+requirement_fidelity:
+  applicability: applicable
+  reason: R5 must close tagged-readiness, accepted-receipt, and short-secret findings.
+  outcome: pending
+phase_receipts:
+  - risk-map-recorded
+risk_map:
+  affected_behavior: tagged readiness, receipt authority, and private diagnostics
+  highest_impact_failure_modes: candidate/readiness phase coupling, false receipt rejection, and short secret disclosure
+  changed_boundaries: BND-AUTH-001, BND-STATE-001, BND-TEMPORAL-001, BND-RECOVERY-001, and BND-ENV-001
+  evidence_expected: tagged readiness success, candidate tag rejection, repository receipt matrix, and short secret CLI probes
+  direct_inspection_areas: shared authority derivation, invocation parser, and runtime privacy values
+  intentionally_out_of_scope: publication mutation, release payload, real transition, public release, and final verify
+review_focus:
+  - Reconcile BFA-M1-R4-001, BFA-M1-R4-002, and BFA-M1-R4-003.
+  - Prove readiness never calls candidate mode and requires strict local tag authority.
+  - Prove all current accepted invocation manifests pass while unknown shapes fail.
+  - Prove short PIN, API-key, and auth-code values are redacted.
