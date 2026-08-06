@@ -73,8 +73,8 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: explain-change
+  current_stage: verify
+  next_stage: pr
   blocker: null
   evidence:
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r2.md
@@ -150,8 +150,6 @@ workflow_state:
     final_closeout:
       readiness: not-ready
       reasons:
-        - lifecycle-gates-open
-        - explain-change-pending
         - verify-pending
         - pr-handoff-pending
         - external-completion-event-pending
