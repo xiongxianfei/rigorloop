@@ -73,8 +73,8 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: implement
-  next_stage: code-review
+  current_stage: code-review
+  next_stage: explain-change
   blocker: null
   evidence:
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r2.md
@@ -118,6 +118,8 @@ workflow_state:
     - docs/changes/2026-08-06-usability-first-boundary-release/explain-change.md
     - docs/changes/2026-08-06-usability-first-boundary-release/verify-report.md
     - docs/changes/2026-08-06-usability-first-boundary-release/evidence/pr-readiness-research-selector-bugfix.md
+    - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-pr-readiness-r1.yaml
+    - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-pr-readiness-r1.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -138,17 +140,18 @@ workflow_state:
     latest_review:
       status: approved
       stage: code-review
-      round: r4
+      round: r1
       artifact_id: plan
       occurrence: final
       milestone_id: none
       evidence:
-        - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m4-r4.yaml
-        - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r4.md
+        - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-pr-readiness-r1.yaml
+        - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-pr-readiness-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
-        - milestone-review-pending
+        - lifecycle-gates-open
+        - explain-change-pending
         - verify-pending
         - pr-handoff-pending
         - external-completion-event-pending
@@ -160,6 +163,7 @@ workflow_state:
         - docs/changes/2026-08-06-usability-first-boundary-release/explain-change.md
         - docs/changes/2026-08-06-usability-first-boundary-release/verify-report.md
         - docs/changes/2026-08-06-usability-first-boundary-release/evidence/pr-readiness-research-selector-bugfix.md
+        - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-pr-readiness-r1.md
 workflow: {}
 artifacts:
   proposal: docs/proposals/2026-08-06-usability-first-boundary-release.md

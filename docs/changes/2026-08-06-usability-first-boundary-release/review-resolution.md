@@ -19,11 +19,12 @@ Review closeout: code-review-m2-r3
 Review closeout: code-review-m3-r7
 Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r4
+Review closeout: code-review-pr-readiness-r1
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`
 - Findings resolved: 27
 - Unresolved findings: 0
-- Current result: Code-review M4 R4 resolves the CR3 review-evidence correction; all 27 current findings are resolved, including the 26 historical findings named by the M4 R2 receipt, and implementation conclusions are unchanged.
+- Current result: Code-review PR-readiness R1 is clean; canonical research Markdown now selects its two owned documentation checks, unknown paths remain fail-closed, all prior findings remain resolved, and routing advances to refreshed explain-change and verify.
 
 ## Resolution Overview
 
@@ -65,6 +66,13 @@ Review closeout: code-review-m4-r4
 - Validation evidence: spec revision R3 authoring checks and approved spec-review R3
 
 ## Finding Details
+
+### code-review-pr-readiness-r1
+
+Review result: clean-with-notes
+Material findings: none
+Resolution required: no
+Validation evidence: Independent review proves the canonical research Markdown category and exact path-scoped documentation checks through explicit and PR-discovered paths, preserves non-Markdown and mixed-path fail-closed behavior, passes the complete selector regression, and leaves release implementation and prior finding conclusions unchanged.
 
 ### code-review-m4-r4
 
