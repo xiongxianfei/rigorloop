@@ -317,14 +317,36 @@ def _marker_issues(text: str, path: str) -> list[ValidationIssue]:
         ]
     status = _section(text, "Status")
     status_markers = tuple(marker_pattern.finditer(status))
-    if len(status_markers) != 1:
+    owner = _section(text, "Owning change record")
+    owner_markers = tuple(marker_pattern.finditer(owner))
+    if len(status_markers) != 1 and len(owner_markers) != 1:
         return [
             _issue(
                 "BFR-MARKER-PLACEMENT",
                 path,
-                "boundary contract marker must be inside the Status section",
-                "outside-status",
-                "after lifecycle status value",
+                "boundary contract marker must follow lifecycle status or the owning change pointer",
+                "outside-governed-metadata",
+                "after lifecycle status value or normalized owning change pointer",
+            )
+        ]
+    if len(owner_markers) == 1:
+        preceding_owner_lines = [
+            line.strip()
+            for line in owner[: owner_markers[0].start()].splitlines()
+            if line.strip() and not line.lstrip().startswith("<!--")
+        ]
+        if preceding_owner_lines and re.fullmatch(
+            r"`docs/changes/[^/]+/change\.yaml`",
+            preceding_owner_lines[-1],
+        ):
+            return []
+        return [
+            _issue(
+                "BFR-MARKER-PLACEMENT",
+                path,
+                "boundary contract marker must follow the normalized owning change pointer",
+                "before-owner-pointer",
+                "after normalized owning change pointer",
             )
         ]
     marker_line = status[: status_markers[0].start()].splitlines()
@@ -1518,6 +1540,8 @@ def _changed_spec_path(
 
 
 def validate_changed_spec(root: Path, relative_path: str) -> tuple[ValidationIssue, ...]:
+    if relative_path == PROOF_MODEL_SPEC.as_posix():
+        return ()
     path, path_issue = _changed_spec_path(root, relative_path)
     if path_issue:
         return (path_issue,)

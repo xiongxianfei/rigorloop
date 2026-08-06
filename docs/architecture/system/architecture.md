@@ -2,7 +2,7 @@
 
 ## Owning change record
 
-`docs/changes/2026-08-06-usability-first-boundary-release/change.yaml`
+`docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml`
 
 ## Related artifacts
 

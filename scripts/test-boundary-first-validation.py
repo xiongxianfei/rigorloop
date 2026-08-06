@@ -267,6 +267,16 @@ class BoundaryFirstStructuralTests(unittest.TestCase):
             "BFR-MARKER-COUNT",
         )
 
+    def test_stage_owned_marker_may_follow_owning_change_pointer(self) -> None:
+        stage_owned = valid_feature().replace(
+            "## Status\n\napproved\nboundary_contract: boundary-first-v1",
+            "## Owning change record\n\n"
+            "`docs/changes/2026-08-06-example/change.yaml`\n\n"
+            "boundary_contract: boundary-first-v1",
+        )
+
+        self.assertEqual(validate_feature_record(stage_owned), ())
+
     def test_fenced_record_and_malformed_separator_fail_closed(self) -> None:
         fenced = "```md\n" + valid_feature() + "\n```\n"
         self.assertIn(
@@ -1330,6 +1340,12 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             )
             issues = validate_changed_spec(root, "specs/historical.md")
             self.assertEqual(issues[0].code, "BFR-GRANDFATHERED-REVIEW")
+
+    def test_changed_bootstrap_proof_model_is_exempt_from_adoption_marker(self) -> None:
+        self.assertEqual(
+            validate_changed_spec(ROOT, "specs/boundary-first-proof-model.md"),
+            (),
+        )
 
     def test_changed_adopting_test_spec_validates_against_feature(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
