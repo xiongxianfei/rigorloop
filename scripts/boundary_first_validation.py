@@ -302,6 +302,20 @@ def _line_value(text: str, label: str) -> str | None:
     return match.group(1) if match else None
 
 
+def _top_level_mapping_values(text: str, key: str) -> tuple[str, ...]:
+    """Return every top-level value for a repository-style YAML mapping key."""
+    values: list[str] = []
+    for raw_line in text.splitlines():
+        if not raw_line or raw_line[0].isspace() or raw_line.startswith("#"):
+            continue
+        if ":" not in raw_line:
+            continue
+        raw_key, raw_value = raw_line.split(":", 1)
+        if raw_key.strip() == key:
+            values.append(raw_value.strip())
+    return tuple(values)
+
+
 def _stage_owned_marker_authority(
     root: Path | None,
     change_record: str,
@@ -360,7 +374,7 @@ def _stage_owned_marker_authority(
                 "readable owning change record",
             ),
         )
-    contracts = re.findall(r"(?m)^lifecycle_contract:\s*(.*?)\s*$", change_text)
+    contracts = _top_level_mapping_values(change_text, "lifecycle_contract")
     if len(contracts) > 1:
         return (
             None,
