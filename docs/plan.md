@@ -29,7 +29,7 @@ Current blockers are not recorded in this index.
 
 | Plan | Owning change record |
 | --- | --- |
-| [Activate Boundary-First v1 in v0.4.0](plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md) | [change.yaml](changes/2026-08-05-activate-boundary-first-v1-v0-3-7/change.yaml) |
+| [Usability-First Boundary-First v0.4.0 Release](plans/2026-08-06-usability-first-boundary-release.md) | [change.yaml](changes/2026-08-06-usability-first-boundary-release/change.yaml) |
 | [Progressive Boundary-First Skill Guidance](plans/2026-07-29-progressive-boundary-first-skill-guidance.md) | [change.yaml](changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml) |
 | [Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](plans/2026-07-29-stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md) | [change.yaml](changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml) |
 | [Preflight-First and Measured Script Execution Optimization](plans/2026-06-24-preflight-first-measured-script-execution-optimization.md) | [change.yaml](changes/2026-06-24-preflight-first-measured-script-execution-optimization/change.yaml) |
@@ -51,4 +51,4 @@ Full completed history: see [Plan archive](plan-archive.md).
 
 ## Historical replacements
 
-- None currently indexed.
+- [Activate Boundary-First v1 in v0.4.0](plans/2026-08-05-activate-boundary-first-v1-v0-4-0.md) is the cancelled custom candidate/atomic-publication plan superseded by [Usability-First Boundary-First v0.4.0 Release](plans/2026-08-06-usability-first-boundary-release.md).

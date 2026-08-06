@@ -15,17 +15,115 @@ artifact_states:
       outcome: approved
       record: docs/changes/2026-08-06-usability-first-boundary-release/reviews/proposal-review-r1.md
       round: r1
+  spec:
+    kind: spec
+    path: specs/usability-first-boundary-release.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r3
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-06-usability-first-boundary-release/reviews/spec-review-r3.md
+      round: r3
+  architecture:
+    kind: architecture
+    path: docs/architecture/system/architecture.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: architecture-review-r2
+      artifact_id: architecture
+      outcome: approved
+      record: docs/changes/2026-08-06-usability-first-boundary-release/reviews/architecture-review-r2.md
+      round: r2
+  adr-checked-revision-activation:
+    kind: adr
+    path: docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+    role: supporting
+    lifecycle_state: accepted
+    review:
+      id: architecture-review-r2
+      artifact_id: adr-checked-revision-activation
+      outcome: approved
+      record: docs/changes/2026-08-06-usability-first-boundary-release/reviews/architecture-review-r2.md
+      round: r2
+      adr_settlement: accepted
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-06-usability-first-boundary-release.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r2
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-06-usability-first-boundary-release/reviews/plan-review-r2.md
+      round: r2
+  test-spec:
+    kind: test-spec
+    path: specs/usability-first-boundary-release.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r2
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r2.md
+      round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: proposal-review
-  next_stage: spec
+  current_stage: implement
+  next_stage: code-review
   blocker: null
   evidence:
-    - docs/changes/2026-08-06-usability-first-boundary-release/evidence/proposal-authoring.md
-    - docs/changes/2026-08-06-usability-first-boundary-release/reviews/proposal-review-r1.md
+    - docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-06-usability-first-boundary-release/evidence/workflow-routing-to-implementation.md
+  planned_work:
+    plan_artifact_id: plan
+    current_milestone: M1
+    milestones:
+      M1:
+        kind: implementation
+        state: implementing
+      M2:
+        kind: implementation
+        state: planned
+      M3:
+        kind: implementation
+        state: planned
+      M4:
+        kind: implementation
+        state: planned
+    remaining_implementation_milestones:
+      - M1
+      - M2
+      - M3
+      - M4
+    latest_review:
+      status: not-started
+      stage: none
+      round: none
+      artifact_id: none
+      occurrence: none
+      milestone_id: none
+      evidence: []
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - lifecycle-gates-open
+        - implementation-milestones-open
+        - milestone-review-pending
+        - explain-change-pending
+        - verify-pending
+        - pr-handoff-pending
+        - external-completion-event-pending
+      evidence:
+        - docs/changes/2026-08-06-usability-first-boundary-release/evidence/workflow-routing-to-implementation.md
 workflow: {}
 artifacts:
   proposal: docs/proposals/2026-08-06-usability-first-boundary-release.md
+  spec: specs/usability-first-boundary-release.md
 requirements:
   - Make boundary-first behavior available automatically in published skills.
   - Keep ordinary skill output concise and focused on material correctness boundaries.
@@ -42,6 +140,8 @@ changed_files:
   - docs/proposals/2026-08-06-usability-first-boundary-release.md
   - docs/changes/2026-08-06-usability-first-boundary-release/reviews/proposal-review-r1.md
   - docs/changes/2026-08-06-usability-first-boundary-release/review-log.md
+  - specs/usability-first-boundary-release.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/evidence/spec-authoring.md
 review:
   status: approved
   unresolved_items: 0
