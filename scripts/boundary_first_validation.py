@@ -2089,6 +2089,11 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
         else None
     )
     lexical_text = manifest_text if isinstance(manifest, dict) else ""
+    top_level_keys = re.findall(
+        r"(?m)^([a-z][a-z0-9_]*):",
+        lexical_text,
+    )
+    unique_top_level_keys = len(top_level_keys) == len(set(top_level_keys))
     base_revisions = re.findall(
         r"(?m)^base_revision:\s*([0-9a-f]{8,64})\s*$",
         lexical_text,
@@ -2102,11 +2107,16 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
         r"(?P<body>(?:^[ ]{2,}.*(?:\n|$))*)",
         lexical_text,
     )
-    lexical_packets = re.findall(
+    packet_pattern = re.compile(
         r"(?m)^  - path:\s*(\S.*?)\s*$\n"
         r"    revision:\s*([0-9a-f]{8,64})\s*$\n"
         r"    sha256:\s*([0-9a-f]{64})\s*$",
-        packet_section.group("body") if packet_section else "",
+    )
+    packet_body = packet_section.group("body") if packet_section else ""
+    packet_matches = tuple(packet_pattern.finditer(packet_body))
+    lexical_packets = tuple(match.groups() for match in packet_matches)
+    packets_consume_section = packet_body.rstrip() == "\n".join(
+        match.group(0).rstrip() for match in packet_matches
     )
     packet_shape_valid = bool(packets) and isinstance(packets, list) and all(
         isinstance(packet, dict)
@@ -2116,7 +2126,7 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
         and isinstance(packet.get("sha256"), str)
         and bool(re.fullmatch(r"[0-9a-f]{64}", packet["sha256"]))
         for packet in packets
-    ) and len(lexical_packets) == len(packets) and all(
+    ) and packets_consume_section and len(lexical_packets) == len(packets) and all(
         lexical_path == packet["path"] and lexical_sha256 == packet["sha256"]
         for packet, (lexical_path, _revision, lexical_sha256) in zip(
             packets,
@@ -2143,6 +2153,7 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
     )
     if (
         not isinstance(manifest, dict)
+        or not unique_top_level_keys
         or set(manifest) - allowed_fields
         or required_fields - set(manifest)
         or manifest.get("schema_version") != 1

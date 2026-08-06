@@ -2,7 +2,7 @@
 
 Milestone: M1 — Read-only activation candidate validation
 
-Outcome: implemented, R1-R5 findings corrected, and ready for R6 code review.
+Outcome: implemented, R1-R6 findings corrected, and ready for R7 code review.
 
 ## Implemented behavior
 
@@ -43,6 +43,9 @@ Outcome: implemented, R1-R5 findings corrected, and ready for R6 code review.
   prevents unrelated nested revision fields from authorizing malformed packets,
   and accepts canonical all-numeric abbreviated base/head Git identities through
   lexical field validation without weakening closed manifest fields.
+- The R6 correction rejects duplicate top-level manifest keys, duplicate
+  inventory sections, duplicate packet keys, and any unconsumed inventory
+  content while preserving every accepted repository receipt.
 
 ## Boundary and proof coverage
 
