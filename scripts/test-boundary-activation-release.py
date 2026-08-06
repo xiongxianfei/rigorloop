@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import errno
 import importlib.util
 import io
 import json
@@ -13,7 +12,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from contextlib import nullcontext, redirect_stdout
+from contextlib import redirect_stdout
 from unittest import mock
 
 from boundary_activation_release import (
@@ -21,9 +20,7 @@ from boundary_activation_release import (
     PublicationError,
     PublicationReadiness,
     _atomic_push,
-    _force_close_descriptor,
     _guard_script,
-    _read_guard_result,
     check_publication,
     error_payload,
     publication_readiness,
@@ -281,7 +278,6 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             temporary_root = Path(temporary)
             hook = temporary_root / "pre-push"
-            nonce = "b" * 64
             fake_bin = temporary_root / "bin"
             fake_bin.mkdir()
             fake_git = fake_bin / "git"
@@ -317,13 +313,9 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
                     "push-mapping-invalid",
                 ),
             )
-            for hook_input, expected_code in cases:
-                with self.subTest(expected_code=expected_code, hook_input=hook_input):
-                    read_descriptor, write_descriptor = os.pipe()
-                    os.set_blocking(read_descriptor, False)
-                    hook.write_text(
-                        _guard_script(write_descriptor, nonce), encoding="utf-8"
-                    )
+            for hook_input, expected_case in cases:
+                with self.subTest(expected_case=expected_case, hook_input=hook_input):
+                    hook.write_text(_guard_script(), encoding="utf-8")
                     completed = subprocess.run(
                         [sys.executable, str(hook), "origin", "fixture"],
                         input=hook_input,
@@ -331,19 +323,12 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
                         capture_output=True,
                         text=True,
                         check=False,
-                        pass_fds=(write_descriptor,),
                     )
                     self.assertNotEqual(completed.returncode, 0)
-                    self.assertTrue(_force_close_descriptor(write_descriptor))
-                    marker = _read_guard_result(read_descriptor, nonce)
-                    self.assertTrue(_force_close_descriptor(read_descriptor))
-                    self.assertIsNotNone(marker)
-                    assert marker is not None
-                    self.assertEqual(marker.group(1), expected_code)
+                    self.assertEqual(completed.stderr.strip(), "RIGORLOOP_GUARD_BLOCKED")
 
-    def test_untrusted_exact_stderr_cannot_forge_guard_result(self) -> None:
+    def test_untrusted_exact_stderr_cannot_forge_failure_classification(self) -> None:
         sentinel = "a" * 40
-        nonce = "b" * 64
         readiness = PublicationReadiness(
             release="v0.4.0",
             publication_base="1" * 40,
@@ -352,13 +337,16 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
             candidate_validation_head="4" * 40,
             publication_head="5" * 40,
         )
-        untrusted = f"{nonce}\tremote-main-drift\t{sentinel}\n"
+        untrusted = f"remote-main-drift\t{sentinel}\n"
         failure = subprocess.CalledProcessError(
             1, ["git", "push"], stderr=untrusted
         )
         with tempfile.TemporaryDirectory() as temporary, mock.patch(
-            "boundary_activation_release.secrets.token_hex", return_value=nonce
-        ), mock.patch("subprocess.run", side_effect=failure), self.assertRaisesRegex(
+            "subprocess.run", side_effect=failure
+        ), mock.patch(
+            "boundary_activation_release._advertised_refs",
+            return_value={"refs/heads/main": readiness.publication_base},
+        ), self.assertRaisesRegex(
             PublicationError, "atomic-publication-failed"
         ) as raised:
             _atomic_push(Path(temporary), readiness, dry_run=False)
@@ -366,90 +354,7 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
         self.assertEqual(payload["code"], "atomic-publication-failed")
         self.assertNotIn(sentinel, json.dumps(payload))
 
-    def test_malformed_guard_results_are_bounded_and_read_only(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root, candidate, publication_base, transition, head = initialized_repository(temporary)
-            readiness = fixture_readiness(candidate, publication_base, transition, head)
-            before = advertised(root)
-            cases = (
-                "invalid-utf8",
-                "oversized",
-                "wrong-nonce",
-                "multi-record",
-                "truncated",
-                "empty",
-            )
-
-            for case in cases:
-                def malformed_hook(result_fd: int, nonce: str, *, selected: str = case) -> str:
-                    valid = f"{nonce}\tremote-main-drift\t{'a' * 40}\n".encode()
-                    payload = {
-                        "invalid-utf8": b"\xff\xfe",
-                        "oversized": b"x" * 257,
-                        "wrong-nonce": f"{'0' * 64}\tremote-main-drift\t{'a' * 40}\n".encode(),
-                        "multi-record": valid + valid,
-                        "truncated": valid.rstrip(b"\n"),
-                        "empty": b"",
-                    }[selected]
-                    body = "import os\n"
-                    if payload:
-                        body += f"os.write({result_fd}, {payload!r})\n"
-                    body += "raise SystemExit(1)\n"
-                    return "#!/usr/bin/env python3\n" + body
-
-                with self.subTest(case=case), mock.patch(
-                    "boundary_activation_release._guard_script",
-                    side_effect=malformed_hook,
-                ), self.assertRaisesRegex(
-                    PublicationError, "atomic-publication-failed"
-                ) as raised:
-                    _atomic_push(root, readiness, dry_run=False)
-                self.assertEqual(error_payload(raised.exception)["code"], "atomic-publication-failed")
-                self.assertEqual(advertised(root), before)
-
-    def test_parent_owned_guard_channel_rejects_substitution_and_close_errors(self) -> None:
-        nonce = "b" * 64
-        valid = f"{nonce}\tremote-main-drift\t{'a' * 40}\n".encode()
-        alternate = f"{nonce}\tremote-tag-exists\t{'c' * 40}\n".encode()
-        read_descriptor, write_descriptor = os.pipe()
-        os.set_blocking(read_descriptor, False)
-        os.write(write_descriptor, valid + alternate)
-        self.assertTrue(_force_close_descriptor(write_descriptor))
-        self.assertIsNone(_read_guard_result(read_descriptor, nonce))
-        self.assertTrue(_force_close_descriptor(read_descriptor))
-
-        read_descriptor, write_descriptor = os.pipe()
-        os.set_blocking(read_descriptor, False)
-        os.write(write_descriptor, valid)
-        real_close = os.close
-
-        def fail_read_close(descriptor: int) -> None:
-            if descriptor == read_descriptor:
-                raise OSError("injected close failure")
-            real_close(descriptor)
-
-        with mock.patch(
-            "boundary_activation_release.os.close", side_effect=fail_read_close
-        ):
-            self.assertTrue(_force_close_descriptor(write_descriptor))
-            marker = _read_guard_result(read_descriptor, nonce)
-            self.assertIsNotNone(marker)
-            self.assertTrue(_force_close_descriptor(read_descriptor))
-        with self.assertRaises(OSError):
-            os.fstat(read_descriptor)
-
-        read_descriptor, write_descriptor = os.pipe()
-        os.set_blocking(read_descriptor, False)
-        os.write(write_descriptor, valid)
-        with mock.patch(
-            "boundary_activation_release.os.read",
-            side_effect=OSError("injected read failure"),
-        ):
-            self.assertTrue(_force_close_descriptor(write_descriptor))
-            self.assertIsNone(_read_guard_result(read_descriptor, nonce))
-            self.assertTrue(_force_close_descriptor(read_descriptor))
-
-    def test_atomic_push_bounds_capability_and_endpoint_close_failures(self) -> None:
+    def test_atomic_push_classifies_failure_from_fresh_refs_without_transport(self) -> None:
         readiness = PublicationReadiness(
             release="v0.4.0",
             publication_base="1" * 40,
@@ -458,203 +363,56 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
             candidate_validation_head="4" * 40,
             publication_head="5" * 40,
         )
-        real_pipe = os.pipe
-        real_close = os.close
-        real_closerange = os.closerange
-        real_fstat = os.fstat
-
-        for endpoint_index in (0, 1):
-            captured: list[tuple[int, int]] = []
-            failed = False
-
-            def capture_pipe() -> tuple[int, int]:
-                endpoints = real_pipe()
-                captured.append(endpoints)
-                return endpoints
-
-            def fail_first_close(descriptor: int) -> None:
-                nonlocal failed
-                if (
-                    captured
-                    and descriptor == captured[-1][endpoint_index]
-                    and not failed
-                ):
-                    failed = True
-                    raise OSError("injected close failure")
-                real_close(descriptor)
-
-            failure = subprocess.CalledProcessError(1, ["git", "push"])
-            with self.subTest(close_endpoint=endpoint_index), tempfile.TemporaryDirectory() as temporary, mock.patch(
-                "boundary_activation_release.os.pipe", side_effect=capture_pipe
-            ), mock.patch(
-                "boundary_activation_release.os.close", side_effect=fail_first_close
-            ), mock.patch(
-                "subprocess.run", side_effect=failure
-            ), self.assertRaisesRegex(
-                PublicationError, "atomic-publication-failed"
-            ):
-                _atomic_push(Path(temporary), readiness, dry_run=False)
-            self.assertTrue(failed)
-            for descriptor in captured[-1]:
-                with self.assertRaises(OSError):
-                    os.fstat(descriptor)
-
-        read_descriptor, write_descriptor = os.pipe()
-        with mock.patch(
-            "boundary_activation_release.os.close",
-            side_effect=OSError(errno.EIO, "injected close failure"),
-        ), mock.patch(
-            "boundary_activation_release.os.closerange",
-            side_effect=NotImplementedError("closerange unavailable"),
-        ), mock.patch(
-            "boundary_activation_release.os.fstat",
-            side_effect=OSError(errno.EIO, "injected verification failure"),
-        ):
-            self.assertFalse(_force_close_descriptor(read_descriptor))
-        self.assertIsInstance(real_fstat(read_descriptor), os.stat_result)
-        real_close(read_descriptor)
-        real_close(write_descriptor)
-
-        for subprocess_succeeds in (False, True):
-            captured = []
-            failed_close: set[int] = set()
-            failed_range: set[int] = set()
-            failed_verify: set[int] = set()
-
-            def capture_retry_pipe() -> tuple[int, int]:
-                endpoints = real_pipe()
-                captured.append(endpoints)
-                return endpoints
-
-            def fail_close_once(descriptor: int) -> None:
-                if not captured or descriptor not in captured[-1]:
-                    real_close(descriptor)
-                    return
-                if descriptor not in failed_close:
-                    failed_close.add(descriptor)
-                    raise OSError(errno.EIO, "injected close failure")
-                real_close(descriptor)
-
-            def fail_range_once(low: int, high: int) -> None:
-                if not captured or low not in captured[-1]:
-                    real_closerange(low, high)
-                    return
-                if low not in failed_range:
-                    failed_range.add(low)
-                    raise NotImplementedError("injected closerange failure")
-                real_closerange(low, high)
-
-            def fail_verify_once(descriptor: int) -> os.stat_result:
-                if not captured or descriptor not in captured[-1]:
-                    return real_fstat(descriptor)
-                if descriptor not in failed_verify:
-                    failed_verify.add(descriptor)
-                    raise OSError(errno.EIO, "injected verification failure")
-                return real_fstat(descriptor)
-
-            run_patch = mock.patch(
-                "subprocess.run",
-                return_value=subprocess.CompletedProcess(["git", "push"], 0),
-            )
-            context = nullcontext()
-            if not subprocess_succeeds:
-                run_patch = mock.patch(
-                    "subprocess.run",
-                    side_effect=subprocess.CalledProcessError(1, ["git", "push"]),
-                )
-                context = self.assertRaisesRegex(
-                    PublicationError, "atomic-publication-failed"
-                )
-            with self.subTest(subprocess_succeeds=subprocess_succeeds), tempfile.TemporaryDirectory() as temporary, mock.patch(
-                "boundary_activation_release.os.pipe", side_effect=capture_retry_pipe
-            ), mock.patch(
-                "boundary_activation_release.os.close", side_effect=fail_close_once
-            ), mock.patch(
-                "boundary_activation_release.os.closerange", side_effect=fail_range_once
-            ), mock.patch(
-                "boundary_activation_release.os.fstat", side_effect=fail_verify_once
-            ), run_patch, context:
-                _atomic_push(Path(temporary), readiness, dry_run=False)
-            for descriptor in captured[-1]:
-                with self.assertRaises(OSError):
-                    real_fstat(descriptor)
-
-        captured = []
-        failed_close = set()
-        failed_range = set()
-        failed_verify = set()
-        with tempfile.TemporaryDirectory() as temporary, mock.patch(
-            "boundary_activation_release.os.pipe", side_effect=capture_retry_pipe
-        ), mock.patch(
-            "boundary_activation_release.os.set_blocking",
-            side_effect=AttributeError("unsupported set_blocking"),
-        ), mock.patch(
-            "boundary_activation_release.os.close", side_effect=fail_close_once
-        ), mock.patch(
-            "boundary_activation_release.os.closerange", side_effect=fail_range_once
-        ), mock.patch(
-            "boundary_activation_release.os.fstat", side_effect=fail_verify_once
-        ), self.assertRaisesRegex(
-            PublicationError, "atomic-capability-unavailable"
-        ):
-            _atomic_push(Path(temporary), readiness, dry_run=True)
-        for descriptor in captured[-1]:
-            with self.assertRaises(OSError):
-                real_fstat(descriptor)
-
-        capability_errors = (
-            AttributeError("unsupported set_blocking"),
-            ValueError("unsupported pass_fds"),
-            TypeError("unsupported pass_fds type"),
-            NotImplementedError("unsupported inheritance"),
+        cases = (
+            (
+                {"refs/heads/main": "6" * 40},
+                False,
+                "remote-main-drift",
+            ),
+            (
+                {
+                    "refs/heads/main": readiness.publication_base,
+                    "refs/tags/v0.4.0": "7" * 40,
+                },
+                False,
+                "remote-tag-exists",
+            ),
+            (
+                {"refs/heads/main": readiness.publication_base},
+                False,
+                "atomic-publication-failed",
+            ),
+            (
+                {"refs/heads/main": readiness.publication_base},
+                True,
+                "atomic-capability-unavailable",
+            ),
         )
-        for index, capability_error in enumerate(capability_errors):
-            captured = []
-
-            def capture_capability_pipe() -> tuple[int, int]:
-                endpoints = real_pipe()
-                captured.append(endpoints)
-                return endpoints
-
-            dry_run = index % 2 == 0
-            expected = (
-                "atomic-capability-unavailable"
-                if dry_run
-                else "atomic-publication-failed"
-            )
-            setup_failure = isinstance(capability_error, AttributeError)
-            patches = [
-                mock.patch(
-                    "boundary_activation_release.os.pipe",
-                    side_effect=capture_capability_pipe,
-                )
-            ]
-            if setup_failure:
-                patches.append(
-                    mock.patch(
-                        "boundary_activation_release.os.set_blocking",
-                        side_effect=capability_error,
-                    )
-                )
-            else:
-                patches.append(
-                    mock.patch("subprocess.run", side_effect=capability_error)
-                )
-            with self.subTest(error=type(capability_error).__name__, dry_run=dry_run), tempfile.TemporaryDirectory() as temporary, patches[0], patches[1], self.assertRaisesRegex(
-                PublicationError, expected
-            ):
+        failure = subprocess.CalledProcessError(
+            1, ["git", "push"], stderr="remote-main-drift\t" + "a" * 40
+        )
+        for refs, dry_run, expected in cases:
+            with self.subTest(expected=expected), tempfile.TemporaryDirectory() as temporary, mock.patch(
+                "subprocess.run", side_effect=failure
+            ), mock.patch(
+                "boundary_activation_release._advertised_refs", return_value=refs
+            ), mock.patch(
+                "boundary_activation_release.os.pipe",
+                side_effect=AssertionError("atomic push must not create a result pipe"),
+            ), self.assertRaisesRegex(PublicationError, expected) as raised:
                 _atomic_push(Path(temporary), readiness, dry_run=dry_run)
-            for descriptor in captured[-1]:
-                with self.assertRaises(OSError):
-                    os.fstat(descriptor)
+            payload = error_payload(raised.exception)
+            self.assertEqual(payload["code"], expected)
+            self.assertNotIn("a" * 40, json.dumps(payload))
 
         with tempfile.TemporaryDirectory() as temporary, mock.patch(
+            "subprocess.run",
+            return_value=subprocess.CompletedProcess(["git", "push"], 0),
+        ), mock.patch(
             "boundary_activation_release.os.pipe",
-            side_effect=NotImplementedError("pipe unavailable"),
-        ), self.assertRaisesRegex(
-            PublicationError, "atomic-capability-unavailable"
+            side_effect=AssertionError("atomic push must not create a result pipe"),
         ):
-            _atomic_push(Path(temporary), readiness, dry_run=True)
+            _atomic_push(Path(temporary), readiness, dry_run=False)
 
     def test_post_readiness_tag_races_are_precise_and_read_only(self) -> None:
         for same_target in (True, False):
