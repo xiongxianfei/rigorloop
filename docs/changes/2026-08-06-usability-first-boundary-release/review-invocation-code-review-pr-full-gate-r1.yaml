@@ -1,0 +1,121 @@
+schema_version: 1
+review_id: code-review-pr-full-gate-r1
+review_stage: code-review
+review_target: range:a78f1908c7656aeb5e1b6d8931fff38ba745b0a0..841ebc9ca8ecc526f1b67fb847629bba0ee5c1a3
+base_revision: a78f1908c7656aeb5e1b6d8931fff38ba745b0a0
+head_revision: 841ebc9ca8ecc526f1b67fb847629bba0ee5c1a3
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L1
+author_context_id: root-pr-full-gate-correction
+reviewer_context_id: pr-full-gate-r1-fresh-independent-reviewer
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: high
+risk_tier_triggers:
+  - spec-derived-validator-authority
+  - release-selector-fail-closed-routing
+  - historical-package-compatibility
+  - canonical-architecture-ownership
+  - post-verify-pr-correction
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/boundary-first-proof-model.md
+  - specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+  - specs/usability-first-boundary-release.md
+  - specs/usability-first-boundary-release.test.md
+  - specs/target-native-init.md
+  - specs/target-native-init.test.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+  - docs/plans/2026-08-06-usability-first-boundary-release.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    revision: 841ebc9c
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: specs/boundary-first-proof-model.md
+    revision: 841ebc9c
+    sha256: f4a4ce4860981af14484c4d4f15edc362cf269806d2fe7f052db5bfff11ed159
+  - path: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+    revision: 841ebc9c
+    sha256: 46865935c04fa404a38b34c96f7c19f5934a6b9eee672081f22b3cfc2ff64ba4
+  - path: specs/usability-first-boundary-release.md
+    revision: 841ebc9c
+    sha256: 1518d7d18f409def99ef4dd4c688754fde8a030c609c5a9fb549a0183ef587d7
+  - path: specs/usability-first-boundary-release.test.md
+    revision: 841ebc9c
+    sha256: 993839ee82239baa63d41d929dec61ea26db4bed3239e3baf52e3e45755f432f
+  - path: specs/target-native-init.md
+    revision: 841ebc9c
+    sha256: 0b27d8c6df0eac7edd8ede0c480bc2822e989bc0f6c6e4e0c82f59446e3f86e0
+  - path: specs/target-native-init.test.md
+    revision: 841ebc9c
+    sha256: 32a6b10f3c1a19fcfb128fa948cbb2fcf2fcac5fc50a4c08021aa36d9e0c4c0a
+  - path: docs/architecture/system/architecture.md
+    revision: 841ebc9c
+    sha256: e093f7e58b50a8851765c1a5c8edba701f43f0cc9b1e466a8e2d334a6c7e7dfc
+  - path: docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+    revision: 841ebc9c
+    sha256: dcdecc94c62a4d55e108711b466976c2309cb6bf4cfc866110461e9c44d82cdf
+  - path: docs/plans/2026-08-06-usability-first-boundary-release.md
+    revision: 841ebc9c
+    sha256: 20dfdffbe57586be33ed111dad8b10e44d431e29a6af49caf4c1be097ddc90cd
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: 841ebc9c
+    sha256: c040695afa79e39d51ea279ab19a14fed51193ea1616c3be82d1473f4c0e0622
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/evidence/pr-readiness-full-gate-fixes.md
+    revision: 841ebc9c
+    sha256: c8586e2fec9b736007b127c833fc4ea470d9d00f55c89fb45a6d334404a86e8f
+  - path: scripts/boundary_first_validation.py
+    revision: 841ebc9c
+    sha256: 5f4a364e572f0c90ba5d9bb2c90830697a3a0d4c78df143fa76f6505e97eb6e4
+  - path: scripts/validation_selection.py
+    revision: 841ebc9c
+    sha256: 0b50b42ffa7484e7a1a6f5b9ecbe2787cfbeb429fde1d191669f768a5af264b4
+  - path: packages/rigorloop/test/cli.test.js
+    revision: 841ebc9c
+    sha256: 425dcb76f052883cd902f03a23c8bc8863c3a54f918456f4bac1050b9b0db9a1
+  - path: range:a78f1908c7656aeb5e1b6d8931fff38ba745b0a0..841ebc9ca8ecc526f1b67fb847629bba0ee5c1a3.diff
+    revision: 841ebc9c
+    sha256: 956d01b8c4638967996e43f1f45e588a5561a5841f24a9fe5d2ab6091cbccfe5
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: false
+  satisfied: false
+requirement_fidelity:
+  applicability: applicable
+  reason: The correction changes a spec-derived validator, release-version routing, governed records, lifecycle ownership, and release-package compatibility fixtures.
+  outcome: changes-requested
+risk_map:
+  affected_behavior: stage-owned boundary marker placement, bootstrap adoption exemption, normalized proof records, release profile routing, architecture ownership, package fixture identity, and historical compatibility proof
+  highest_impact_failure_modes: green gates produced by weakening the standing contract, malformed profile misrouting, current-release compatibility fiction, hidden second ownership, or stale lifecycle evidence
+  changed_boundaries: boundary marker authority, changed-spec adoption, proof-record normalization, release path-to-version extraction, architecture artifact ownership, package test fixture release identity, and final review routing
+  evidence_expected: exact diff, governing clauses, canonical and malformed path probes, current and historical metadata, direct lifecycle ownership query, focused regressions, package tests, release validation, and lifecycle validation
+  direct_inspection_areas: marker placement contract and legacy path, bootstrap public caller, feature and proof records, profile filename extraction, canonical architecture registry, current and historical opencode metadata, CLI compatibility fixtures, and change-local state
+  intentionally_out_of_scope: broad smoke rerun, hosted CI, PR opening, push, tag, publication, merge, and public closeout
+  applicable_risk_classes:
+    - requirement-fidelity
+    - spec-derived-validation
+    - fail-closed-release-routing
+    - architecture-ownership
+    - package-supply-chain
+    - compatibility-and-migration
+    - lifecycle-closeout
+  non_applicable_risk_classes:
+    - live-publication
+    - external-mutation
+  falsifiable_questions:
+    - Does the new marker placement have governing contract authority while preserving the legacy status form?
+    - Do malformed profile paths block instead of selecting a directory or incomplete version?
+    - Do v0.4.0 fixture updates preserve proof of the actual older skills-only opencode range?

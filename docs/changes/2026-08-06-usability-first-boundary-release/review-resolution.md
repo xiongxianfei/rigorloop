@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -21,15 +21,18 @@ Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r4
 Review closeout: code-review-pr-readiness-r1
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`, `code-review-pr-full-gate-r1`
 - Findings resolved: 27
-- Unresolved findings: 0
-- Current result: Code-review PR-readiness R1 is clean; canonical research Markdown now selects its two owned documentation checks, unknown paths remain fail-closed, all prior findings remain resolved, and routing advances to refreshed explain-change and verify.
+- Unresolved findings: 3
+- Current result: Code-review PR full-gate R1 requests governing marker-placement authority, fail-closed malformed-profile routing, and genuine historical skills-only CLI compatibility proof before rereview.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| UBR-PRFG-CR1-001 | accepted | in-progress | Align stage-owned owner-pointer marker placement with an approved governing contract while retaining the legacy status form and fail-closed placement checks. |
+| UBR-PRFG-CR1-002 | accepted | in-progress | Make the profile namespace exclusive and block malformed or incomplete filenames instead of fabricating a version. |
+| UBR-PRFG-CR1-003 | accepted | in-progress | Retain current v0.4.0 fixtures while restoring an actual historical skills-only release fixture and compatibility assertions. |
 | UBR-M4-CR3-001 | accepted | resolved | The M4 R2 receipt now states the exact 26-finding historical inventory. |
 | UBR-M4-CR1-001 | accepted | resolved | The wrapper fixture uses stable lifecycle metadata while grandfathered-spec review enforcement remains direct. |
 | UBR-M3-CR6-001 | accepted | resolved | Required deferral authority is substantive and open; `none` is exclusive with real deferrals. |
@@ -66,6 +69,50 @@ Review closeout: code-review-pr-readiness-r1
 - Validation evidence: spec revision R3 authoring checks and approved spec-review R3
 
 ## Finding Details
+
+### code-review-pr-full-gate-r1
+
+#### UBR-PRFG-CR1-001 - Stage-owned marker placement lacks governing contract authority
+
+Finding ID: UBR-PRFG-CR1-001
+Disposition: accepted
+Status: in-progress
+Owner: boundary-first proof-model spec author
+Owning stage: spec
+Chosen action: Amend the governing marker-placement rule and matching test specification to authorize the normalized owning-change-pointer form for stage-owned artifacts while retaining the legacy status form and exact fail-closed placement behavior.
+Rationale: The implementation solves the lifecycle composition problem, but PBF-R002 still normatively requires `## Status` and the current replacement table does not replace that subject.
+Validation target: spec review followed by independent PR full-gate correction rereview
+Validation evidence: Pending. The current 64-test boundary suite and changed-spec validation prove behavior only; they do not supply the missing normative authority.
+Safe resolution path: Update the owning contract and proof map through the spec workflow, preserve exact marker count and owner/status placement negatives, then rerun boundary regressions and changed-path validation.
+Auto-fix class: requires-upstream-spec
+
+#### UBR-PRFG-CR1-002 - Malformed release profiles fabricate release versions
+
+Finding ID: UBR-PRFG-CR1-002
+Disposition: accepted
+Status: in-progress
+Owner: PR full-gate correction implementer
+Owning stage: review-resolution
+Chosen action: Treat `docs/releases/profiles/` as an exclusive parser branch and reject malformed or unsupported profile filenames with `release-version-required`.
+Rationale: Canonical v0.4.0 extraction is correct, but near matches currently produce `profiles` or `v` with selector status `ok`, contradicting the existing fail-closed release-path contract.
+Validation target: independent PR full-gate correction rereview
+Validation evidence: Pending. Direct probes reproduce the three malformed cases; the current 149-test suite lacks their negative regression.
+Safe resolution path: Add exact filename validation and canonical plus near-match tests, then rerun the complete selector suite and direct v0.4.0 release validation.
+Auto-fix class: declared-safe
+
+#### UBR-PRFG-CR1-003 - Current CLI fixture replaces historical skills-only compatibility proof
+
+Finding ID: UBR-PRFG-CR1-003
+Disposition: accepted
+Status: in-progress
+Owner: PR full-gate correction implementer
+Owning stage: review-resolution
+Chosen action: Parameterize fixture release identity, keep current v0.4.0 package assertions, and run the skills-only compatibility cases against an actual bundled historical version in v0.3.0 through v0.3.3.
+Rationale: v0.4.0 declares opencode commands and no skills-only marker, while TTNI-INST-003 explicitly requires older official compatibility proof.
+Validation target: independent PR full-gate correction rereview
+Validation evidence: Pending. All 117 tests pass with fabricated v0.4.0 skills-only metadata, and direct bundled-metadata inspection identifies v0.3.0-v0.3.3 as the real historical range.
+Safe resolution path: Separate current and historical fixture identities without weakening archive, warning, root-shape, or mutation checks; rerun CLI and npm publication tests.
+Auto-fix class: declared-safe
 
 ### code-review-pr-readiness-r1
 

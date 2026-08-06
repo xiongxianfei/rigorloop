@@ -295,3 +295,14 @@ Resolution: review-resolution.md#code-review-pr-readiness-r1
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-pr-full-gate-r1
+Stage: code-review
+Round: 1
+Status: changes-requested
+Detailed record: reviews/code-review-pr-full-gate-r1.md
+Resolution: review-resolution.md#code-review-pr-full-gate-r1
+Material findings: UBR-PRFG-CR1-001, UBR-PRFG-CR1-002, UBR-PRFG-CR1-003
+Open findings: UBR-PRFG-CR1-001, UBR-PRFG-CR1-002, UBR-PRFG-CR1-003
+Recording status: recorded
