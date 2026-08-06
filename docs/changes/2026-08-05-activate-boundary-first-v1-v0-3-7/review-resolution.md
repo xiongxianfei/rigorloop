@@ -34,7 +34,7 @@ Review closeout: test-spec-review-r7
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`, `plan-review-r4`, `test-spec-review-r5`, `test-spec-review-r6`, `test-spec-review-r7`
 - Findings resolved: 30
 - Unresolved findings: 5
-- Final result: M2 code-review R7 requires replacing mutable result-file authority with a parent-owned bounded channel.
+- Final result: M2 code-review R8 approves append-only result authority but requires verified endpoint cleanup and bounded unsupported-capability handling.
 
 ## Resolution Overview
 
@@ -91,13 +91,43 @@ Review closeout: test-spec-review-r7
 | BFA-M2-R3-001 | accepted | resolved | Authenticate local guard results and suppress private-runtime identity collisions. |
 | BFA-M2-R3-002 | accepted | resolved | Build replacement history from exact P and prove transition exclusion/count. |
 | BFA-M2-R4-001 | accepted | resolved | Move guard classification off provider stderr to an authenticated local channel. |
-| BFA-M2-R5-001 | accepted | open | Bound non-following guard-result reads and malformed encoding. |
+| BFA-M2-R5-001 | accepted | resolved | Bound non-following guard-result reads and malformed encoding. |
 | BFA-M2-R5-002 | accepted | resolved | Prefer fresh tag/main conflicts over incomplete hook mappings. |
-| BFA-M2-R6-001 | accepted | open | Reject non-regular, partial, or changing results promptly and generically. |
+| BFA-M2-R6-001 | accepted | resolved | Reject non-regular, partial, or changing results promptly and generically. |
 | BFA-M2-R6-002 | accepted | resolved | Align M2 evidence outcome with the current round. |
 | BFA-M2-R7-001 | accepted | open | Replace mutable result-file authority with a bounded parent-owned channel. |
+| BFA-M2-R8-001 | accepted | open | Retain endpoint ownership until verified closure. |
+| BFA-M2-R8-002 | accepted | open | Bound unsupported setup and descriptor-inheritance capabilities. |
 
 ## Finding Details
+
+### code-review-m2-r8
+
+#### BFA-M2-R8-001 - Lost endpoint ownership after close failure
+
+Finding ID: BFA-M2-R8-001
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Separate reading from ownership, clear each descriptor only after
+verified closure, and retain a final low-level cleanup fallback.
+Rationale: Bounded output cannot mask live local authority endpoints.
+Validation target: code-review-m2-r9
+Validation evidence: pending correction and R9
+
+#### BFA-M2-R8-002 - Unsupported descriptor capabilities escape
+
+Finding ID: BFA-M2-R8-002
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Convert narrow setup/pass-fds capability exceptions to generic
+check/publish errors and prove both endpoints invalid afterward.
+Rationale: Platform limitations must fail closed without traceback or leaks.
+Validation target: code-review-m2-r9
+Validation evidence: pending correction and R9
 
 ### code-review-m2-r7
 
@@ -122,14 +152,14 @@ Validation evidence: pending correction and R8
 
 Finding ID: BFA-M2-R6-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementer
 Owning stage: review-resolution
 Chosen action: Require O_NOFOLLOW and O_NONBLOCK, regular stable descriptor
 metadata, exact byte count, strict UTF-8, and one newline-terminated record.
 Rationale: Every malformed local object must fail promptly without traceback.
 Validation target: code-review-m2-r7
-Validation evidence: pending correction and R7
+Validation evidence: Code-review R8 confirms append-only bounded pipe parsing resolves nonregular and concurrent file mutation authority.
 
 #### BFA-M2-R6-002 - Stale M2 evidence outcome
 
@@ -149,14 +179,14 @@ Validation evidence: Code-review R7 confirms the R7 outcome and 18-test count ar
 
 Finding ID: BFA-M2-R5-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementer
 Owning stage: review-resolution
 Chosen action: Read once through a non-following descriptor, verify regular-file
 type, bound to 257 bytes, and catch decoding plus filesystem errors.
 Rationale: Local evidence corruption must remain private-safe and fail closed.
 Validation target: code-review-m2-r6
-Validation evidence: pending correction and R6
+Validation evidence: Code-review R8 confirms missing and malformed pipe records collapse generically.
 
 #### BFA-M2-R5-002 - Same-target tag-race misclassification
 

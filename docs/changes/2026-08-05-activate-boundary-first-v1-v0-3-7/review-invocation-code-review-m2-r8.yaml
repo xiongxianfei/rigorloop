@@ -40,14 +40,17 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: m2-r8-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: R8 must close the parent-owned channel and bounded close/read findings.
-  outcome: pending
+  outcome: changes-requested
 phase_receipts:
   - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
 review_focus:
   - Reconcile BFA-M2-R1-002, BFA-M2-R2-001, BFA-M2-R5-001, BFA-M2-R6-001, and BFA-M2-R7-001.
   - Challenge parent-owned pipe inheritance, nonce authority, append-only single-record grammar, missing/malformed/multiple/read/close outcomes, provider isolation, cleanup, and evidence accuracy.
