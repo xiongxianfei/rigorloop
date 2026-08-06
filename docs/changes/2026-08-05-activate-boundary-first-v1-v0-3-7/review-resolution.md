@@ -34,7 +34,7 @@ Review closeout: test-spec-review-r7
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`, `plan-review-r4`, `test-spec-review-r5`, `test-spec-review-r6`, `test-spec-review-r7`
 - Findings resolved: 30
 - Unresolved findings: 4
-- Final result: M2 code-review R4 approves exact-P replacement and private-runtime suppression but requires an invocation-authenticated local guard-result channel.
+- Final result: M2 code-review R5 approves authenticated local provenance but requires bounded malformed-result handling and precise same/different-target tag-race diagnostics.
 
 ## Resolution Overview
 
@@ -88,11 +88,42 @@ Review closeout: test-spec-review-r7
 | BFA-M2-R1-003 | accepted | resolved | Validate same-push advertised identities and complete the real-Git proof matrix. |
 | BFA-M2-R2-001 | accepted | open | Authenticate or bound diagnostic context and classify post-push uncertainty. |
 | BFA-M2-R2-002 | accepted | resolved | Prove selective-ref rejection and fresh replacement-candidate recovery. |
-| BFA-M2-R3-001 | accepted | open | Authenticate local guard results and suppress private-runtime identity collisions. |
+| BFA-M2-R3-001 | accepted | resolved | Authenticate local guard results and suppress private-runtime identity collisions. |
 | BFA-M2-R3-002 | accepted | resolved | Build replacement history from exact P and prove transition exclusion/count. |
-| BFA-M2-R4-001 | accepted | open | Move guard classification off provider stderr to an authenticated local channel. |
+| BFA-M2-R4-001 | accepted | resolved | Move guard classification off provider stderr to an authenticated local channel. |
+| BFA-M2-R5-001 | accepted | open | Bound non-following guard-result reads and malformed encoding. |
+| BFA-M2-R5-002 | accepted | open | Prefer fresh tag/main conflicts over incomplete hook mappings. |
 
 ## Finding Details
+
+### code-review-m2-r5
+
+#### BFA-M2-R5-001 - Malformed guard-result encoding
+
+Finding ID: BFA-M2-R5-001
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Read once through a non-following descriptor, verify regular-file
+type, bound to 257 bytes, and catch decoding plus filesystem errors.
+Rationale: Local evidence corruption must remain private-safe and fail closed.
+Validation target: code-review-m2-r6
+Validation evidence: pending correction and R6
+
+#### BFA-M2-R5-002 - Same-target tag-race misclassification
+
+Finding ID: BFA-M2-R5-002
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Run the supplemental advertisement before final mapping-shape
+classification and add same/different-target real Git race partitions.
+Rationale: An immutable tag conflict requires stop-and-reconcile guidance even
+when Git omits its up-to-date mapping from hook stdin.
+Validation target: code-review-m2-r6
+Validation evidence: pending correction and R6
 
 ### code-review-m2-r4
 
@@ -100,14 +131,14 @@ Review closeout: test-spec-review-r7
 
 Finding ID: BFA-M2-R4-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementer
 Owning stage: review-resolution
 Chosen action: Have the generated hook write a nonce-bound bounded result to a
 private per-invocation file and never parse provider stderr for classification.
 Rationale: Only the generated local hook may authorize precise stale-ref context.
 Validation target: code-review-m2-r5
-Validation evidence: pending correction and R5
+Validation evidence: Code-review R5 confirms exact/prefixed provider stderr cannot authorize classification and legitimate local results remain precise.
 
 ### code-review-m2-r3
 
@@ -115,14 +146,14 @@ Validation evidence: pending correction and R5
 
 Finding ID: BFA-M2-R3-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementer
 Owning stage: review-resolution
 Chosen action: Parse only exact unprefixed local-hook result lines and suppress
 otherwise valid identity context matching bounded private runtime values.
 Rationale: Shape is not provenance; remote provider output is untrusted.
 Validation target: code-review-m2-r4
-Validation evidence: pending correction and R4
+Validation evidence: Code-review R5 confirms nonce-bound provenance and private-runtime collision suppression.
 
 #### BFA-M2-R3-002 - Replacement history uses unrelated P
 

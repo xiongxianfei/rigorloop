@@ -3,6 +3,17 @@
 ## Review Entries
 
 ### Review entry
+Review ID: code-review-m2-r5
+Stage: code-review
+Round: 5
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r5.md
+Resolution: review-resolution.md#code-review-m2-r5
+Material findings: BFA-M2-R5-001, BFA-M2-R5-002
+Open findings: BFA-M2-R5-001, BFA-M2-R5-002
+Recording status: recorded
+
+### Review entry
 Review ID: code-review-m2-r4
 Stage: code-review
 Round: 4
@@ -10,7 +21,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r4.md
 Resolution: review-resolution.md#code-review-m2-r4
 Material findings: BFA-M2-R4-001
-Open findings: BFA-M2-R4-001
+Open findings: None
 Recording status: recorded
 
 ### Review entry
@@ -21,7 +32,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r3.md
 Resolution: review-resolution.md#code-review-m2-r3
 Material findings: BFA-M2-R3-001, BFA-M2-R3-002
-Open findings: BFA-M2-R3-001
+Open findings: None
 Recording status: recorded
 
 ### Review entry
