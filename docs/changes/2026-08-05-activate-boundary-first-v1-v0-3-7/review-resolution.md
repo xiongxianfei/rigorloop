@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -71,7 +71,7 @@ Review closeout: test-spec-review-r7
 | BFA-M1-CR1-004 | accepted | resolved | Emit available failure context and corrective action. |
 | BFA-M1-CR1-005 | accepted | resolved | Completed direct M1 proof and all eight sibling failure paths. |
 | BFA-M1-CR1-006 | accepted | resolved | Require all applicable directory descendants to be tracked. |
-| BFA-M1-CR1-007 | accepted | open | Replace open evidence/review subtrees with closed lifecycle ownership. |
+| BFA-M1-CR1-007 | accepted | resolved | Replaced open evidence/review subtrees with closed lifecycle ownership. |
 | BFA-M1-CR1-008 | accepted | resolved | Bound diagnostics against short and runtime private sentinels. |
 | BFA-M1-R2-001 | accepted | resolved | Inspect merged side-branch commits so change-and-revert ancestry cannot hide drift. |
 | BFA-M1-R3-001 | accepted | resolved | Separated candidate-producing R, evidence commit C, and publication head H. |
@@ -80,9 +80,9 @@ Review closeout: test-spec-review-r7
 | BFA-M1-R4-003 | accepted | resolved | Redact short PIN, API-key, and auth-code environment values. |
 | BFA-M1-R5-001 | accepted | resolved | Bound revision validation to each packet inventory entry. |
 | BFA-M1-R5-002 | accepted | resolved | Accept lexical numeric abbreviated base/head revisions. |
-| BFA-M1-R6-001 | accepted | open | Reject duplicate inventory sections and mapping keys. |
-| BFA-M1-R7-001 | accepted | open | Normalize parser-equivalent duplicate top-level keys. |
-| BFA-M1-R7-002 | accepted | open | Require unique packet inventory paths. |
+| BFA-M1-R6-001 | accepted | resolved | Rejected duplicate inventory sections and mapping keys. |
+| BFA-M1-R7-001 | accepted | resolved | Normalized parser-equivalent duplicate top-level keys. |
+| BFA-M1-R7-002 | accepted | resolved | Required unique packet inventory paths. |
 
 ## Finding Details
 
@@ -662,6 +662,13 @@ Validation evidence: Test-spec-review R7 confirms M2 fixture and MP1 actual priv
 
 ## Clean review receipts
 
+### code-review-m1-r8
+
+Status: approved
+Material findings: none
+Resolution required: closes all remaining M1 receipt-authority findings
+Evidence: reviews/code-review-m1-r8.md
+
 ### test-spec-review-r7
 
 Status: approved
@@ -746,5 +753,5 @@ Evidence: reviews/plan-review-r3.md
 - [x] Every rejected finding has rationale.
 - [x] Every deferred finding has follow-up or explicit no-follow-up rationale.
 - [x] Every `needs-decision` finding is resolved or blocks closeout.
-- [ ] Validation evidence is recorded for the open M1 findings.
+- [x] Validation evidence is recorded for the open M1 findings.
 - [x] Closeout status is correct.
