@@ -33,8 +33,8 @@ Review closeout: test-spec-review-r7
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`, `plan-review-r4`, `test-spec-review-r5`, `test-spec-review-r6`, `test-spec-review-r7`
 - Findings resolved: 30
-- Unresolved findings: 6
-- Final result: M2 code-review R3 requires local-only guard-result provenance, private-runtime collision suppression, and replacement recovery from the exact authorized P.
+- Unresolved findings: 4
+- Final result: M2 code-review R4 approves exact-P replacement and private-runtime suppression but requires an invocation-authenticated local guard-result channel.
 
 ## Resolution Overview
 
@@ -85,13 +85,29 @@ Review closeout: test-spec-review-r7
 | BFA-M1-R7-002 | accepted | resolved | Required unique packet inventory paths. |
 | BFA-M2-R1-001 | accepted | resolved | Reject symlink evidence paths before lexical canonical-path comparison. |
 | BFA-M2-R1-002 | accepted | open | Preserve bounded failure classification and safe operator context. |
-| BFA-M2-R1-003 | accepted | open | Validate same-push advertised identities and complete the real-Git proof matrix. |
+| BFA-M2-R1-003 | accepted | resolved | Validate same-push advertised identities and complete the real-Git proof matrix. |
 | BFA-M2-R2-001 | accepted | open | Authenticate or bound diagnostic context and classify post-push uncertainty. |
-| BFA-M2-R2-002 | accepted | open | Prove selective-ref rejection and fresh replacement-candidate recovery. |
+| BFA-M2-R2-002 | accepted | resolved | Prove selective-ref rejection and fresh replacement-candidate recovery. |
 | BFA-M2-R3-001 | accepted | open | Authenticate local guard results and suppress private-runtime identity collisions. |
-| BFA-M2-R3-002 | accepted | open | Build replacement history from exact P and prove transition exclusion/count. |
+| BFA-M2-R3-002 | accepted | resolved | Build replacement history from exact P and prove transition exclusion/count. |
+| BFA-M2-R4-001 | accepted | open | Move guard classification off provider stderr to an authenticated local channel. |
 
 ## Finding Details
+
+### code-review-m2-r4
+
+#### BFA-M2-R4-001 - Stderr shape substitutes for local provenance
+
+Finding ID: BFA-M2-R4-001
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Have the generated hook write a nonce-bound bounded result to a
+private per-invocation file and never parse provider stderr for classification.
+Rationale: Only the generated local hook may authorize precise stale-ref context.
+Validation target: code-review-m2-r5
+Validation evidence: pending correction and R5
 
 ### code-review-m2-r3
 
@@ -112,7 +128,7 @@ Validation evidence: pending correction and R4
 
 Finding ID: BFA-M2-R3-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementer
 Owning stage: review-resolution
 Chosen action: Rebuild in the same repository from the advertised P, create one
@@ -120,7 +136,7 @@ new transition, reproduce allowed lifecycle evidence, and validate readiness.
 Rationale: Replacement recovery must preserve current publication authority and
 exclude the rejected transition from first-parent history.
 Validation target: code-review-m2-r4
-Validation evidence: pending correction and R4
+Validation evidence: Code-review R4 confirms exact-P ancestry, one new transition, rejected-T exclusion, readiness, and unchanged remote refs.
 
 ### code-review-m2-r2
 
@@ -143,14 +159,14 @@ Validation evidence: pending correction and R3
 
 Finding ID: BFA-M2-R2-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementer
 Owning stage: review-resolution
 Chosen action: Add a tag-selective bare-remote update hook and construct a fresh
 valid replacement repository after invalid candidate evidence is rejected.
 Rationale: All-or-neither and regeneration claims require their named fixtures.
 Validation target: code-review-m2-r3
-Validation evidence: pending correction and R3
+Validation evidence: Code-review R4 confirms selective-ref atomicity and same-repository exact-P replacement recovery.
 
 ### code-review-m2-r1
 
@@ -184,7 +200,7 @@ Validation evidence: pending correction and R2
 
 Finding ID: BFA-M2-R1-003
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementer
 Owning stage: review-resolution
 Chosen action: Parse exact pre-push stdin mappings for main and tag, retain a
@@ -193,7 +209,7 @@ correct the M2 evidence claims.
 Rationale: The approved architecture requires same-push advertised identities,
 and milestone evidence may claim only directly exercised behavior.
 Validation target: code-review-m2-r2
-Validation evidence: pending correction and R2
+Validation evidence: Code-review R4 confirms same-push CAS, real atomic failure, selective rejection, and exact-P replacement coverage.
 
 ### proposal-review-r1
 

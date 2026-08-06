@@ -40,14 +40,17 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: m2-r4-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: R4 must close diagnostic provenance and exact-P replacement recovery.
-  outcome: pending
+  outcome: changes-requested
 phase_receipts:
   - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
 review_focus:
   - Reconcile all six open M2 diagnostic and recovery findings.
   - Challenge exact local guard-line provenance, provider spoofing, P/B/T/R/H private-runtime collision suppression, and same-P one-transition replacement ancestry/readiness.
