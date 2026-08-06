@@ -73,9 +73,12 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: review-resolution
-  blocker: null
+  current_stage: review-resolution
+  next_stage: implement
+  blocker:
+    code: review-findings-open
+    evidence:
+      - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m2-r2.md
   evidence:
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r2.md
     - docs/changes/2026-08-06-usability-first-boundary-release/evidence/workflow-routing-to-implementation.md
@@ -87,6 +90,8 @@ workflow_state:
     - docs/changes/2026-08-06-usability-first-boundary-release/evidence/implementation-m2.md
     - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m2-r1.yaml
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m2-r2.yaml
+    - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m2-r2.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M2
@@ -96,7 +101,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: review-requested
+        state: resolution-needed
       M3:
         kind: implementation
         state: planned
@@ -110,19 +115,20 @@ workflow_state:
     latest_review:
       status: changes-requested
       stage: code-review
-      round: r1
+      round: r2
       artifact_id: plan
       occurrence: milestone
       milestone_id: M2
       evidence:
-        - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m2-r1.yaml
-        - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m2-r1.md
+        - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m2-r2.yaml
+        - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m2-r2.md
     final_closeout:
       readiness: not-ready
       reasons:
         - lifecycle-gates-open
         - implementation-milestones-open
         - milestone-review-pending
+        - review-findings-open
         - explain-change-pending
         - verify-pending
         - pr-handoff-pending
@@ -153,4 +159,4 @@ changed_files:
   - docs/changes/2026-08-06-usability-first-boundary-release/evidence/spec-authoring.md
 review:
   status: changes-requested
-  unresolved_items: 0
+  unresolved_items: 1

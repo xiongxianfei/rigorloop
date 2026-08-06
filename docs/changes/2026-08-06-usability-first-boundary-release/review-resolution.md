@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -16,15 +16,16 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: code-review-m1-r2
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`
 - Findings resolved: 14
-- Unresolved findings: 0
-- Current result: All M2 R1 findings are resolved and ready for code-review M2 R2.
+- Unresolved findings: 1
+- Current result: Code-review M2 R2 requires restricted Git environment authority before M2 can close.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| UBR-M2-CR2-001 | accepted | open | Restrict derivation Git environment to the supplied root and prevent ambient output. |
 | UBR-M2-CR1-001 | accepted | resolved | Activation-record diagnostics are repository-relative and private-root CLI regressions pass. |
 | UBR-M2-CR1-002 | accepted | resolved | Replacement refs and lazy fetch are disabled for every derivation Git read. |
 | UBR-M2-CR1-003 | accepted | resolved | Rollback proof and validation bind to tracked immutable v0.3.6 metadata. |
@@ -48,6 +49,22 @@ Review closeout: code-review-m1-r2
 - Validation evidence: spec revision R3 authoring checks and approved spec-review R3
 
 ## Finding Details
+
+### code-review-m2-r2
+
+#### UBR-M2-CR2-001 - Ambient Git variables bypass supplied derivation root
+
+Finding ID: UBR-M2-CR2-001
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Replace inherited process environment with a restricted Git-read environment and regress root redirection and trace output.
+Rationale: The supplied root must exclusively own object authority and derivation must not create ambient output.
+Validation target: code-review-m2-r3
+Validation evidence: pending M2 correction and rereview
+Safe resolution path: Allowlist PATH and fixed locale/config guards; exclude repository, object, namespace, config-injection, and trace variables.
+Auto-fix class: declared-safe
 
 ### code-review-m2-r1
 
