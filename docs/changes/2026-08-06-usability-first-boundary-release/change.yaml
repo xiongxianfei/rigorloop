@@ -73,8 +73,8 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: explain-change
-  next_stage: verify
+  current_stage: verify
+  next_stage: pr
   blocker: null
   evidence:
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r2.md
@@ -116,6 +116,7 @@ workflow_state:
     - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m4-r4.yaml
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r4.md
     - docs/changes/2026-08-06-usability-first-boundary-release/explain-change.md
+    - docs/changes/2026-08-06-usability-first-boundary-release/verify-report.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -146,8 +147,6 @@ workflow_state:
     final_closeout:
       readiness: not-ready
       reasons:
-        - lifecycle-gates-open
-        - verify-pending
         - pr-handoff-pending
         - external-completion-event-pending
       evidence:
@@ -156,10 +155,12 @@ workflow_state:
         - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r3.md
         - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m4-r4.md
         - docs/changes/2026-08-06-usability-first-boundary-release/explain-change.md
+        - docs/changes/2026-08-06-usability-first-boundary-release/verify-report.md
 workflow: {}
 artifacts:
   proposal: docs/proposals/2026-08-06-usability-first-boundary-release.md
   spec: specs/usability-first-boundary-release.md
+  verify_report: docs/changes/2026-08-06-usability-first-boundary-release/verify-report.md
 requirements:
   - Make boundary-first behavior available automatically in published skills.
   - Keep ordinary skill output concise and focused on material correctness boundaries.
@@ -169,7 +170,31 @@ tests:
   - Prove automatic boundary-first behavior across Codex, Claude, and opencode packages.
   - Prove concise default output and explicit deeper-analysis behavior.
   - Prove generated package parity, installation, version consistency, and rollback metadata.
-validation: []
+validation:
+  - command: python scripts/test-skill-validator.py
+    result: pass_285_tests_16_skips_final_verify
+  - command: python scripts/test-boundary-first-reference.py
+    result: pass_28_tests_final_verify
+  - command: python scripts/validate-skills.py
+    result: pass_24_skills_final_verify
+  - command: python scripts/build-skills.py --check
+    result: pass_final_verify
+  - command: python scripts/test-boundary-first-validation.py
+    result: pass_62_tests_final_verify
+  - command: python scripts/validate-boundary-first.py --check
+    result: pass_active_v0_4_0_rollback_v0_3_6_final_verify
+  - command: python scripts/test-select-validation.py
+    result: pass_147_tests_final_verify
+  - command: python scripts/prepare-release.py v0.4.0 --check
+    result: pass_no_changes_final_verify
+  - command: python scripts/release-preflight.py v0.4.0 --skip-remote
+    result: pass_one_preexisting_report_only_warning_final_verify
+  - command: python scripts/select-validation.py --mode release --release-version v0.4.0
+    result: pass_release_validate_and_required_broad_smoke_selected
+  - command: bash scripts/ci.sh --mode release --release-version v0.4.0
+    result: pass_release_validate_2_65s_broad_smoke_597_75s_final_verify
+  - command: bash scripts/release-verify.sh v0.4.0
+    result: pass_285_skill_149_adapter_6_npm_three_archives_final_verify
 changed_files:
   - docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
   - docs/changes/2026-08-06-usability-first-boundary-release/evidence/proposal-authoring.md
@@ -178,6 +203,8 @@ changed_files:
   - docs/changes/2026-08-06-usability-first-boundary-release/review-log.md
   - specs/usability-first-boundary-release.md
   - docs/changes/2026-08-06-usability-first-boundary-release/evidence/spec-authoring.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/explain-change.md
+  - docs/changes/2026-08-06-usability-first-boundary-release/verify-report.md
 review:
   status: approved
   unresolved_items: 0
