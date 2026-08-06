@@ -17,15 +17,16 @@ Review closeout: test-spec-review-r2
 Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r3
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`
 - Findings resolved: 20
-- Unresolved findings: 0
-- Current result: M3 R5 correction is complete and awaits code-review R6.
+- Unresolved findings: 1
+- Current result: M3 R6 requests one correction for substantive emergency-deferral fields and sentinel exclusivity.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| UBR-M3-CR6-001 | accepted | in-progress | Reject placeholder-filled deferral authority and mixed `none` plus real-deferral evidence. |
 | UBR-M3-CR5-001 | accepted | resolved | Every state enforces exact rows and applicable results; the sole emergency deferral is exactly bound. |
 | UBR-M3-CR4-001 | accepted | resolved | All governed rows appear exactly once and passing proof rejects whitespace-only values. |
 | UBR-M3-CR3-001 | accepted | resolved | Every pending gate row and exact finalized manifest/smoke semantics are required. |
@@ -59,6 +60,22 @@ Review closeout: code-review-m2-r3
 - Validation evidence: spec revision R3 authoring checks and approved spec-review R3
 
 ## Finding Details
+
+### code-review-m3-r6
+
+#### UBR-M3-CR6-001 - Emergency deferral completeness accepts placeholder authority
+
+Finding ID: UBR-M3-CR6-001
+Disposition: accepted
+Status: in-progress
+Owner: M3 implementer
+Owning stage: review-resolution
+Chosen action: Require substantive deferral fields, a closed open-state status, and exclusive use of the `none` sentinel.
+Rationale: Exact label binding is insufficient when owner approval, rationale, impact, risk, follow-up, deadline, and status can all be placeholders.
+Validation target: code-review-m3-r7
+Validation evidence: Pending complete required-field placeholder, status-vocabulary, and mixed-sentinel mutations plus the existing three-state row matrix.
+Safe resolution path: Add deferral-specific placeholder/status validation and sentinel exclusivity without changing release publication behavior.
+Auto-fix class: declared-safe
 
 ### code-review-m3-r5
 
