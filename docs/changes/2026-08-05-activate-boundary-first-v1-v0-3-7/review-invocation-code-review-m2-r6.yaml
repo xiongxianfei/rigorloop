@@ -40,14 +40,17 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: m2-r6-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: R6 must close bounded result parsing and precise tag-race diagnostics.
-  outcome: pending
+  outcome: changes-requested
 phase_receipts:
   - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
 review_focus:
   - Reconcile BFA-M2-R1-002, BFA-M2-R2-001, BFA-M2-R5-001, and BFA-M2-R5-002.
   - Challenge descriptor-bound non-following result parsing, invalid/malformed matrix, same/different-target tag races, exact conflicts, unchanged refs, and evidence accuracy.

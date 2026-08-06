@@ -33,8 +33,8 @@ Review closeout: test-spec-review-r7
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`, `plan-review-r4`, `test-spec-review-r5`, `test-spec-review-r6`, `test-spec-review-r7`
 - Findings resolved: 30
-- Unresolved findings: 4
-- Final result: M2 code-review R5 approves authenticated local provenance but requires bounded malformed-result handling and precise same/different-target tag-race diagnostics.
+- Unresolved findings: 5
+- Final result: M2 code-review R6 approves tag-race diagnostics but requires nonblocking exact-record parsing and a current evidence outcome.
 
 ## Resolution Overview
 
@@ -92,9 +92,38 @@ Review closeout: test-spec-review-r7
 | BFA-M2-R3-002 | accepted | resolved | Build replacement history from exact P and prove transition exclusion/count. |
 | BFA-M2-R4-001 | accepted | resolved | Move guard classification off provider stderr to an authenticated local channel. |
 | BFA-M2-R5-001 | accepted | open | Bound non-following guard-result reads and malformed encoding. |
-| BFA-M2-R5-002 | accepted | open | Prefer fresh tag/main conflicts over incomplete hook mappings. |
+| BFA-M2-R5-002 | accepted | resolved | Prefer fresh tag/main conflicts over incomplete hook mappings. |
+| BFA-M2-R6-001 | accepted | open | Reject non-regular, partial, or changing results promptly and generically. |
+| BFA-M2-R6-002 | accepted | open | Align M2 evidence outcome with the current round. |
 
 ## Finding Details
+
+### code-review-m2-r6
+
+#### BFA-M2-R6-001 - FIFO and partial local results
+
+Finding ID: BFA-M2-R6-001
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Require O_NOFOLLOW and O_NONBLOCK, regular stable descriptor
+metadata, exact byte count, strict UTF-8, and one newline-terminated record.
+Rationale: Every malformed local object must fail promptly without traceback.
+Validation target: code-review-m2-r7
+Validation evidence: pending correction and R7
+
+#### BFA-M2-R6-002 - Stale M2 evidence outcome
+
+Finding ID: BFA-M2-R6-002
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Update the outcome and proof matrix after focused validation.
+Rationale: Durable evidence must identify the actual correction round.
+Validation target: code-review-m2-r7
+Validation evidence: pending correction and R7
 
 ### code-review-m2-r5
 
@@ -115,7 +144,7 @@ Validation evidence: pending correction and R6
 
 Finding ID: BFA-M2-R5-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: M2 implementer
 Owning stage: review-resolution
 Chosen action: Run the supplemental advertisement before final mapping-shape
@@ -123,7 +152,7 @@ classification and add same/different-target real Git race partitions.
 Rationale: An immutable tag conflict requires stop-and-reconcile guidance even
 when Git omits its up-to-date mapping from hook stdin.
 Validation target: code-review-m2-r6
-Validation evidence: pending correction and R6
+Validation evidence: Code-review R6 confirms same/different-target tag races retain exact conflict identity and unchanged refs.
 
 ### code-review-m2-r4
 
