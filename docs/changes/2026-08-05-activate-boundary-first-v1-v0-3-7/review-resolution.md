@@ -33,8 +33,8 @@ Review closeout: test-spec-review-r7
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`, `plan-review-r4`, `test-spec-review-r5`, `test-spec-review-r6`, `test-spec-review-r7`
 - Findings resolved: 30
-- Unresolved findings: 8
-- Final result: M2 code-review R10 requires removal of terminal live-endpoint authority and phase-correct post-success reconciliation.
+- Unresolved findings: 10
+- Final result: M2 code-review R11 confirms transport removal but requires joint remote-state classification and phase-safe temporary-hook handling.
 
 ## Resolution Overview
 
@@ -101,8 +101,40 @@ Review closeout: test-spec-review-r7
 | BFA-M2-R9-001 | accepted | open | Accept only EBADF as closure proof and retain ownership across fallback failures. |
 | BFA-M2-R10-001 | accepted | open | Eliminate terminal live endpoint ownership after cleanup exhaustion. |
 | BFA-M2-R10-002 | accepted | open | Preserve stop-and-reconcile semantics after successful push uncertainty. |
+| BFA-M2-R11-001 | accepted | open | Classify the fresh main/tag pair without retry guidance after possible publication. |
+| BFA-M2-R11-002 | accepted | open | Bound hook setup and cleanup without suppressing post-push confirmation. |
 
 ## Finding Details
+
+### code-review-m2-r11
+
+#### BFA-M2-R11-001 - Ambiguous success and combined races
+
+Finding ID: BFA-M2-R11-001
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Replace the custom publication initiative rather than add
+another release-specific classification layer.
+Rationale: The finding demonstrates that the custom publisher is consuming more
+complexity than its user value justifies for this thin project.
+Validation target: replacement usability-first release proposal
+Validation evidence: pending replacement proposal and governed supersession
+
+#### BFA-M2-R11-002 - Unbounded hook lifecycle
+
+Finding ID: BFA-M2-R11-002
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Replace the custom publication initiative and rely on the
+existing release workflow's ordinary setup and confirmation boundaries.
+Rationale: Removing the one-off helper eliminates the hook lifecycle rather
+than creating another state machine around it.
+Validation target: replacement usability-first release proposal
+Validation evidence: pending replacement proposal and governed supersession
 
 ### code-review-m2-r10
 

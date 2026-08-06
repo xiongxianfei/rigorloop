@@ -4,8 +4,8 @@ review_stage: code-review
 review_target: range:22451c8c..0bd4a06c
 base_revision: 22451c8cee99e826d30ce5193f575b1caa899ae4
 head_revision: 0bd4a06ca1a3c83e06e5e26f20d2902e0d8d892d
-native_review_status: review-requested
-review_gate_outcome: pending
+native_review_status: changes-requested
+review_gate_outcome: stop
 independence_level: L2
 author_context_id: root-m2-review-resolution-r10
 reviewer_context_id: m2-r11-primary-and-second-reviewers
@@ -40,14 +40,17 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
+  reviewer_context_id: m2-r11-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: R11 must close terminal transport ownership and post-success reconciliation by removing the diagnostic transport without weakening the atomic guard.
-  outcome: pending
+  outcome: changes-requested
 phase_receipts:
   - risk-map-recorded
   - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
 review_focus:
   - Reconcile all open M2 findings, especially BFA-M2-R7-001 through BFA-M2-R10-002.
   - Challenge transport removal, boolean guard completeness, fresh authoritative failure classification, concurrent main/tag races, generic failure behavior, provider privacy, post-push confirmation, atomic all-or-neither behavior, tests, and evidence accuracy.

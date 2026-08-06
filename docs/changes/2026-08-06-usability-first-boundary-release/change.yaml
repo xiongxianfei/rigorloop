@@ -1,0 +1,39 @@
+change_id: 2026-08-06-usability-first-boundary-release
+title: Usability-First Boundary-First v0.4.0 Release
+classification: release
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-06-usability-first-boundary-release.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-06-usability-first-boundary-release/evidence/proposal-authoring.md
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-06-usability-first-boundary-release/evidence/proposal-authoring.md
+workflow: {}
+artifacts:
+  proposal: docs/proposals/2026-08-06-usability-first-boundary-release.md
+requirements:
+  - Make boundary-first behavior available automatically in published skills.
+  - Keep ordinary skill output concise and focused on material correctness boundaries.
+  - Use the existing routine release workflow instead of a custom activation publisher.
+  - Preserve v0.3.6 as the immutable rollback release.
+tests:
+  - Prove automatic boundary-first behavior across Codex, Claude, and opencode packages.
+  - Prove concise default output and explicit deeper-analysis behavior.
+  - Prove generated package parity, installation, version consistency, and rollback metadata.
+validation: []
+changed_files:
+  - docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+  - docs/changes/2026-08-06-usability-first-boundary-release/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-06-usability-first-boundary-release.md
+review:
+  status: pending
+  unresolved_items: 0
