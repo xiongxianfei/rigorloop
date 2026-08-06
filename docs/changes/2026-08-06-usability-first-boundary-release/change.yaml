@@ -73,8 +73,8 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: implement
-  next_stage: code-review
+  current_stage: review-resolution
+  next_stage: implement
   blocker: null
   evidence:
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/test-spec-review-r2.md
@@ -92,6 +92,8 @@ workflow_state:
     - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m2-r3.yaml
     - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m2-r3.md
     - docs/changes/2026-08-06-usability-first-boundary-release/evidence/implementation-m3.md
+    - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m3-r1.yaml
+    - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m3-r1.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M3
@@ -104,7 +106,7 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: review-requested
+        state: resolution-needed
       M4:
         kind: implementation
         state: planned
@@ -112,15 +114,15 @@ workflow_state:
       - M3
       - M4
     latest_review:
-      status: approved
+      status: changes-requested
       stage: code-review
-      round: r3
+      round: r1
       artifact_id: plan
       occurrence: milestone
-      milestone_id: M2
+      milestone_id: M3
       evidence:
-        - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m2-r3.yaml
-        - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m2-r3.md
+        - docs/changes/2026-08-06-usability-first-boundary-release/review-invocation-code-review-m3-r1.yaml
+        - docs/changes/2026-08-06-usability-first-boundary-release/reviews/code-review-m3-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -156,5 +158,5 @@ changed_files:
   - specs/usability-first-boundary-release.md
   - docs/changes/2026-08-06-usability-first-boundary-release/evidence/spec-authoring.md
 review:
-  status: clean-with-notes
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 4
