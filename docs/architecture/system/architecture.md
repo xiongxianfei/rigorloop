@@ -87,6 +87,13 @@
 - Progressive Boundary-First Skill Guidance spec: `specs/progressive-boundary-first-skill-guidance.md`
 - Progressive Boundary Guidance Resources ADR: `docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md`
 - Progressive Boundary-First Skill Guidance change metadata: `docs/changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml`
+- Superseded Boundary-First v1 Activation Release spec: `specs/boundary-first-v1-v0-3-7-activation-release.md`
+- Superseded Boundary-First Activation Candidate and Atomic Publication ADR: `docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md`
+- Historical Boundary-First v1 Activation Release change metadata: `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/change.yaml`
+- Usability-First Boundary-First v0.4.0 Release proposal: `docs/proposals/2026-08-06-usability-first-boundary-release.md`
+- Usability-First Boundary-First v0.4.0 Release spec: `specs/usability-first-boundary-release.md`
+- Checked-Revision Boundary Activation and Routine Release ADR: `docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md`
+- Usability-First Boundary-First v0.4.0 Release change metadata: `docs/changes/2026-08-06-usability-first-boundary-release/change.yaml`
 - Evidence-Bound and Incremental `project-map` proposal: `docs/proposals/2026-06-23-evidence-bound-incremental-project-map.md`
 - Evidence-Bound and Incremental `project-map` spec: `specs/project-map.md`
 - Evidence-Bound and Incremental `project-map` proposal-review: `docs/changes/2026-06-23-evidence-bound-incremental-project-map/reviews/proposal-review-r1.md`
@@ -168,7 +175,11 @@ The goals are:
 - publish one portable boundary-first method through ten governed skills with
   an automatic four-question scan, one compact common core, two owner-scoped
   stage-family resources, artifact-sliced downstream reads, deterministic
-  projections, atomic activation, and independent semantic review;
+  projections, checked-revision activation, and independent semantic review;
+- make that method automatic and concise in all ten governed skills, prove
+  activation from one coherent checked repository revision without Git
+  history, tags, remote state, or network access, and publish `v0.4.0` through
+  the existing routine release workflow;
 - keep `project-map` as a current-state orientation reference with freshness metadata, cited material claims, visible inference, root/area registration, and downstream reliance boundaries;
 - improve enterprise-network recovery through bounded proxy diagnostics while deferring programmatic proxy dispatcher support;
 - let the CLI scaffold a draft change-local artifact pack for `docs/changes/<change-id>/change.yaml` without claiming lifecycle stage completion or creating durable-looking placeholder artifacts;
@@ -360,6 +371,9 @@ same inline four-question scan. Only feature-contract stages carry formal
 authoring guidance, only proof-map stages carry proof guidance, and downstream
 stages begin with exact approved artifact rows. One declarative resource
 manifest drives projection, parity, measurement, and activation identity.
+The inline scan applies automatically when the task admits behavior boundaries;
+users do not name the method, and stages expand beyond concise coverage only
+for a governing requirement, material risk, or explicit request.
 
 ## Building Block View
 
@@ -414,6 +428,22 @@ Plan, implementation, review, and verification stages read their cited rows
 first and expand only on a missing, stale, unknown, ambiguous, conflicting, or
 escaped identity. No per-stage context packet or runtime service is introduced.
 
+Activation and release handling add three bounded responsibilities without a
+new manifest, service, or publication path:
+
+- activation authoring receives one exact reviewed pending-revision identity,
+  calls the repository-internal pure
+  `derive_grandfathered_specs(root, baseline_revision)` function once, and
+  records the returned grandfathered path inventory with that identity in the
+  existing activation record without introducing a CLI or activation writer;
+- checked-revision validation reads only current repository files and verifies
+  one coherent pending or active snapshot, canonical resources, projections,
+  adapter support, and rollback metadata without Git history, tags, remote
+  state, network access, or public-release claims; and
+- routine release tooling retains profile-driven preparation, preflight, full
+  verification, trusted tag publication, and rerunnable public closeout for
+  the exact reviewed `v0.4.0` commit.
+
 ### Level 2 White-Box: RigorLoop CLI Package
 
 The CLI package remains an additive delivery container. For multi-adapter init, it has these internal architecture responsibilities:
@@ -450,6 +480,7 @@ The validation and generation container has these important internal responsibil
 - skill and adapter generation: `scripts/build-skills.py`, `scripts/build-adapters.py`, and adapter distribution helpers generate local runtime state, public adapter output, and release artifact outputs from canonical sources;
 - release preparation, closeout, and validation: release tooling reads `docs/releases/profiles/<tag>.yaml` as the routine release transaction source of truth, generates profile-owned release-prep surfaces, checks human-authored surfaces for profile consistency, records timing evidence, and generates published evidence from public GitHub/npm/`npx` data after publication. `scripts/validate-adapters.py`, `scripts/validate-release.py`, and `scripts/release-verify.sh` check generated packages, manifests, release metadata, adapter artifact metadata, tracked release notes, package preview, registry verification, emergency deferral records, checksums, and smoke evidence. Release preflight owns cheap deterministic profile/schema/state checks before broad verification. For public releases, `release-verify.sh` is the maintainer-facing full gate and `validate-release.py` owns structured release validation delegated from that gate. For `v0.1.3` and later, these checks validate generated temporary or release-output adapter packages and release archives instead of tracked adapter package trees.
 - published skill resource integrity: skill validation checks `Resource map` verb-to-class rules, path containment, canonical resource existence, and bounded unmapped legacy references; generated-output and adapter validation compare mapped resource relative paths and raw-byte SHA-256; clean-install smoke inspects installed target skill roots for Codex, Claude, and opencode.
+- checked-revision boundary activation: `scripts/boundary_first_validation.py` owns the repository-internal pure `derive_grandfathered_specs(root, baseline_revision)` authoring function. It accepts a repository root and an exact 40-character lowercase commit identity, performs read-only Git object inspection, and returns `(sorted_paths, issues)`, where `sorted_paths` is the complete raw-UTF-8-byte-sorted tuple of eligible top-level accepted, approved, or active feature-spec paths and `issues` is empty on success or contains bounded validation issues on failure. The function writes nothing, has no CLI surface, and is called only during the one-time activation implementation step and its regression fixtures. Separately, `scripts/validate-boundary-first.py --check` validates the current activation snapshot, canonical and projected resources, governed skill inventory, adapter support, and rollback metadata without inspecting Git history, tags, remote state, or network services; it never calls the derivation function and reads the frozen record directly.
 - project-map contract validation: the first slice validates the normalized skill contract, resource-map entry, skeleton asset, generated adapter inclusion, and a small representative output set for required sections, material citations, inference labels, unknowns, configured/executed command separation, correction notes, and absence of unfilled placeholders. A dedicated project-map artifact validator remains deferred until concrete drift appears in at least two produced maps.
 - measurement, benchmark, and reporting scripts: repository-local commands measure skill size, run token-cost benchmark prompts in disposable fixtures, analyze Codex JSONL session exports, summarize tool-output amplification, validate token-cost release metadata, and produce reviewable evidence for reports without requiring hosted telemetry.
 - required-benchmark context: release validation determines the release-specific required dynamic benchmark set from core suite policy, transition carryover policy, changed public skills, and claimed optional coverage, then passes that context to token-cost validation in process or through a transient YAML file for CLI and debugging use.
@@ -673,34 +704,45 @@ arbitrary file write.
     reports before-and-after canonical bytes, mapped-resource counts, and
     representative initial and expanded loaded-resource counts without making
     them release gates.
-12. While the accepted or released state remains `pending`, the reviewed
-    candidate tree may contain the proposed `active` marker so repository
-    tooling can generate temporary adapter trees, packed release candidates,
-    archives, and clean installed targets from the exact tree under review.
-    File presence alone does not establish active capability. Release metadata
-    binds derived proof to the candidate source revision, while the activation
-    manifest binds the resource-manifest and projection-set identities.
-13. The tracked activation transaction contains the manifests, canonical
-    resources, compact shared block, canonical skill bodies and resource maps,
-    tracked projections, projection and validation code, selector behavior,
-    fixtures, and tracked evidence references. Generated packages, archives,
-    and installed target trees remain derived proof and are not tracked
-    rollback state.
-14. A candidate containing `active` may be accepted only after every tracked
-    surface and derived proof layer passes against that same candidate
-    identity. Acceptance of the reviewed tracked tree, not an unreviewed file
-    edit, is the atomic activation boundary. New top-level feature specs absent
-    from the grandfathered parent revision require the marker; edits to
-    grandfathered specs route to `spec-review` for substantive-revision
-    classification.
-15. Before activation, rollback reverts or abandons the tracked
-    progressive-resource and selector transaction, then discards temporary
-    output or regenerates derived output from the restored pending
-    single-reference tree. After activation, rollback validation selects the
-    immutable rollback release and verifies one passing archive identity for
-    every supported adapter.
-16. An authorized release operator performs any external installation or
-    publication outside this capability.
+12. Activation authoring supplies one exact 40-character lowercase reviewed
+    pending-revision identity and the repository root to the internal pure
+    `derive_grandfathered_specs(root, baseline_revision)` function. The
+    function performs read-only Git object inspection and returns the complete
+    eligible accepted, approved, or active top-level feature-spec paths sorted
+    by raw UTF-8 bytes plus an empty issue tuple, or no inventory plus bounded
+    validation issues when the identity or baseline content is invalid or
+    unavailable. The activation implementation step calls it once and records
+    the supplied identity and returned paths directly in the existing
+    activation record. Regression fixtures prove the recorded inventory and
+    failure behavior. No CLI, public preparation command, or activation writer
+    is introduced.
+13. Every checked revision contains one independently valid `pending` or
+    `active` snapshot. Pending uses sentinel release, rollback, and baseline
+    values plus an empty inventory. Active uses release intent `v0.4.0`,
+    rollback `v0.3.6`, the frozen baseline provenance, and the frozen inventory.
+14. `python scripts/validate-boundary-first.py --check` reads current files
+    only. It verifies the closed activation record, canonical resources,
+    resource manifest, governed skills, projections, adapter support, and
+    rollback metadata, and rejects missing, additional, stale, malformed,
+    unknown, mixed, or divergent values.
+15. Checked-revision validation does not inspect prior revisions, require the
+    baseline to remain reachable, query a remote, require a release tag, or
+    claim public availability. It reports the checked snapshot and release
+    intent only.
+16. Generated packages, archives, and installed target trees remain derived
+    proof bound to canonical sources and release metadata; they are not tracked
+    activation or rollback state.
+17. New top-level feature specs absent from the frozen inventory require the
+    standing boundary record. Edits to grandfathered specs continue to route
+    to `spec-review` for substantive-revision classification.
+18. Routine `v0.4.0` release preparation, preflight, full verification,
+    trusted tag publication, and public closeout remain unchanged. The tag
+    identifies the exact reviewed release commit, and public claims require
+    GitHub, npm, and public `npx` evidence.
+19. Before publication, validation failure leaves public state unchanged.
+    After publication begins, partial state remains open and recovers through
+    rerunnable closeout, dist-tag correction or deprecation when applicable,
+    or a later patch. Immutable release identities are never rewritten.
 
 ### Project-map authoring and refresh flow
 
@@ -863,13 +905,20 @@ The main execution and publication boundaries are:
   `specs/boundary-first-resources.yaml` owns the closed projection matrix, and
   `specs/boundary-first-activation.yaml` binds its raw-byte identity, the
   complete projection-set identity, activating release, rollback release, and
-  immutable grandfathering baseline;
-- tracked boundary activation transaction: reviewed repository sources,
-  mappings, projections, scripts, fixtures, selector policy, activation
-  marker, and tracked evidence references accepted as one source-tree change;
+  frozen grandfathering baseline provenance and inventory;
+- checked-revision activation snapshot: reviewed repository sources,
+  mappings, projections, scripts, fixtures, selector policy, and one coherent
+  pending or active activation record validated entirely from current files;
+- activation authoring input: one exact full reviewed pending-revision commit
+  identity, used during authoring only to derive and freeze the historical
+  feature-spec inventory without becoming a recurring validation dependency;
+- routine `v0.4.0` release transaction: the existing release profile,
+  preparation, preflight, full release gate, trusted immutable-tag workflow,
+  GitHub/npm publication, public target smoke, and rerunnable closeout;
 - derived boundary proof set: temporary generated adapter trees, packed
   candidates, release archives, clean installed targets, and their identities;
-  these prove the tracked candidate but remain generated or release output;
+  these prove the checked and reviewed package revision but remain generated
+  or release output;
 - adapter support metadata: `dist/adapters/manifest.yaml` and `dist/adapters/README.md`, tracked guidance and support surfaces rather than authored skill bodies;
 - adapter artifact metadata: `docs/reports/adapter-artifacts/releases/<version>.yaml`, tracked release evidence with source commit, generator command, required per-adapter archive list, optional combined archive details, checksums, install roots, and validation result;
 - adapter release artifacts: generated per-adapter archives, plus optional combined archive, uploaded as release assets rather than committed by default;
@@ -1005,24 +1054,41 @@ load only in their owning stages. Other stages consume exact stable-ID rows
 from approved project artifacts and expand to the compact core only when the
 cited slice is insufficient.
 
-The approved proof-model spec owns the closed `pending` and `active` states.
-The tracked activation transaction contains repository-owned sources,
-manifests, skill text and maps, projections, scripts, selector behavior,
-fixtures, marker state, and tracked evidence references. Generated, packed,
-archived, and clean installed trees are a derived proof set bound to the exact
-candidate source and resource identities; they do not become tracked state.
-The marker changes to `active` only when both surfaces agree completely, and
-acceptance of that reviewed tracked tree is the atomic state switch.
-Grandfathering still derives from the immutable parent revision, and semantic
-classification of grandfathered edits stays with `spec-review`.
+The approved usability-first release spec owns the closed `pending` and
+`active` activation snapshots. The activation record is declarative: each
+checked revision is judged independently, and validation makes no claim about
+the state in earlier or later revisions. Active state binds release intent,
+rollback, resource, projection, adapter, baseline-provenance, and frozen
+grandfathered-inventory values without claiming public availability.
 
-Before activation, rollback reverts or abandons the tracked transaction and
-discards or regenerates derived output from the restored pending
-single-reference tree. After activation, package rollback continues to reuse
-immutable release and adapter artifact metadata. Validation is read-only and
-does not install, publish, write rollback state, create a transaction receipt,
-retain a historical attestation store, or treat external install trees as Git
-state.
+Activation authoring supplies the repository root and exact 40-character
+lowercase reviewed pending revision to the repository-internal pure
+`derive_grandfathered_specs(root, baseline_revision)` function in
+`scripts/boundary_first_validation.py`. The function performs read-only Git
+object inspection and returns `(sorted_paths, issues)` without writing files,
+refs, or evidence. The activation implementation step records the successful
+path tuple and supplied revision directly in the reviewed source change;
+focused fixtures cover invalid, unavailable, malformed, unreadable, and
+successful baselines. The function is not a public CLI and is never called by
+normal `--check` validation. No activation writer, transition ledger,
+candidate evidence, publication-readiness protocol, or remote-state cache is
+introduced. Later checked-revision validation reads the frozen record and
+current package identities only; it does not inspect history or require the
+baseline to remain reachable.
+
+Generated, packed, archived, and clean installed trees remain a derived proof
+set bound to canonical resources and release metadata; they do not become
+tracked activation or rollback state. Package rollback continues to use the
+immutable `v0.3.6` adapter artifact metadata. Validation is read-only and does
+not install, publish, write rollback state, retain a historical attestation
+store, or treat external install trees as Git state.
+
+Public `v0.4.0` availability remains a separate routine release claim. The
+existing release profile, preparation, preflight, full gate, trusted tag
+workflow, GitHub/npm publication, public target smoke, and rerunnable closeout
+remain authoritative. The immutable tag identifies the exact reviewed release
+commit; partial publication remains open and recovers through existing
+closeout or fix-forward behavior rather than a custom atomic publisher.
 
 Static resource and representative loading measurements are change evidence,
 not runtime telemetry. A tracked fixture names the resources mapped, initially
@@ -1246,6 +1312,8 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 - `docs/adr/ADR-20260727-portable-boundary-first-reference-projection-and-activation.md`: superseded historical activation and rollback-transaction design.
 - `docs/adr/ADR-20260728-portable-boundary-first-release-manifest-and-package-rollback.md`: one reviewed release manifest, immutable source-control grandfathering baseline, existing adapter metadata, and read-only package rollback validation.
 - `docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md`: compatibility-stable compact core, two owner-scoped family resources, declarative projection manifest, inline checked compact scan, representative loading evidence, path-owned selector routing, and one atomic rollback bundle. It revises only the resource-composition part of ADR-20260728.
+- `docs/adr/ADR-20260805-boundary-first-activation-candidate-and-atomic-publication.md`: superseded historical candidate and custom atomic-publication decision.
+- `docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md`: active checked-revision snapshot validation, one-time explicit baseline derivation, automatic concise skill behavior, exact custom-path retirement, and reuse of the routine `v0.4.0` release workflow.
 - `docs/adr/ADR-20260624-proposal-gated-authoring-autoprogression.md`: superseded historical profile decision whose gate and review-independence rationale is retained through the unified mechanism.
 - `docs/adr/ADR-20260624-implementation-through-verify-autoprogression.md`: superseded historical profile decision whose risk separation, reviewer-owned correction, fresh verify, and stop-before-PR rules remain retained.
 - `docs/adr/ADR-20260625-independent-adversarial-review-gates.md`: orchestrator-owned neutral review manifests, fresh-context enforcement, blind-first evidence staging, risk-tiered escalation, clean-review sufficiency receipts, second-review disagreement handling, and calibration for workflow-managed automated reviews.
@@ -1282,6 +1350,16 @@ ADR `docs/adr/ADR-20260626-requirement-fidelity-gate.md` is required because thi
 
 ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because this change introduces a durable release architecture decision: routine release state moves from many hand-edited surfaces into a version-scoped profile under `docs/releases/profiles/`, profile-owned surfaces become generated, preflight becomes a cheap deterministic drift gate, public closeout becomes schema-first evidence generation, and the existing full release gate remains authoritative.
 
+ADR `docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md`
+is required because this change revises durable validation and release
+architecture. It replaces transition- and remote-dependent local activation
+with independent checked-revision snapshots, makes one explicit reviewed
+baseline an authoring-only input, removes the custom candidate and publisher
+path, and restores the existing routine release workflow as the sole public
+release authority. It supersedes ADR-20260805 while retaining the single
+activation record, resource projection, package parity, and immutable rollback
+decisions from ADR-20260728 and ADR-20260729.
+
 ## Quality Requirements
 
 | Quality | Scenario | Measure |
@@ -1301,8 +1379,11 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | Skill resource self-containment | A published skill maps a skill-local resource. | The resource exists in canonical source, generated output, locally packed release candidates, and clean installed target skill roots with matching relative path and raw-byte SHA-256 unless a transformation contract applies. |
 | Boundary-resource proportionality | A governed stage makes a decision after the compact scan. | Non-behavior work loads no formal family resource; feature-contract stages map only compact and feature-authoring resources; proof-map stages map only compact and proof resources; other stages begin with cited approved rows and expand only when the slice is insufficient. |
 | Boundary-resource parity | A maintainer changes a boundary resource or governed skill. | One declarative manifest projects exactly the owner-approved resources; canonical, skill-local, generated, packed, and installed Codex, Claude Code, and opencode trees retain the expected mapped path and raw-byte SHA-256 with no missing or additional layer. |
-| Boundary activation safety | The repository activates `boundary-first-v1`. | The tracked transaction and derived proof set bind the same source, resource-manifest, projection-set, package, and install identities before the reviewed activation marker becomes active; mixed, missing, unknown, or divergent surfaces fail without making derived output tracked state. |
-| Boundary rollback safety | A maintainer withdraws the candidate before activation or the active release afterward. | Before activation, the tracked transaction is reverted or abandoned and derived output is discarded or regenerated from the restored pending tree; afterward, read-only validation selects the immutable rollback release and proves every supported adapter archive before an authorized operator acts. |
+| Boundary activation safety | The repository records `boundary-first-v1` as pending or active. | Checked-revision validation accepts exactly one coherent snapshot and matching source, resource-manifest, projection-set, governed-skill, adapter, and rollback identities; missing, additional, malformed, unknown, mixed, or divergent values fail without history, tag, remote, or network requirements. |
+| Activation baseline reproducibility | A maintainer authors the active snapshot. | The internal pure `derive_grandfathered_specs(root, baseline_revision)` function accepts the exact 40-character reviewed pending-revision identity, returns the complete raw-byte-sorted eligible inventory or bounded issues without writing, and the implementation freezes the successful input and output in the reviewed activation record. Normal `--check` validation never calls the function. |
+| Checked-revision claim boundary | A reviewer evaluates active `v0.4.0` source before the tag exists. | Focused local validation reports active state and release intent while making no tagged, published, public, or publicly verified claim. |
+| Routine release reproducibility | An authorized operator publishes the reviewed `v0.4.0` commit. | The existing profile, preparation, preflight, full gate, trusted tag workflow, package and adapter checks, public smoke, and rerunnable closeout remain authoritative; the immutable tag names the exact reviewed release commit. |
+| Boundary rollback safety | A maintainer withdraws unpublished work or responds after public release. | Before publication, public state remains unchanged; afterward, read-only validation selects immutable `v0.3.6`, while partial publication uses existing closeout, dist-tag correction or deprecation when applicable, or a later patch without rewriting releases. |
 | Boundary measurement usefulness | A contributor evaluates progressive loading before activation. | Evidence reports before-and-after canonical bytes, mapped-resource counts per governed skill, and representative initial and expanded loaded-resource counts by stage family; no hard budget is inferred from the baseline. |
 | Project-map reliance safety | A downstream skill uses a project map to orient work. | The map exposes status, baseline, coverage, exclusions, known gaps, material path citations, inference labels, unknowns, correction notes when applicable, and configured-versus-executed command evidence; stale, partial, inferred, unknown, conflicting, or missing-path claims require direct source inspection before reliance. |
 | Legacy resource migration safety | A skill contains legacy `templates/...` instructions outside the `Resource map`. | Bounded migration lint reports the unmapped skill-local resource reference without classifying ordinary artifact paths or examples as package dependencies. |
@@ -1428,10 +1509,15 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 | A declarative manifest could drift from executable projection behavior | Projection, validation, measurement, and activation all interpret the same closed manifest; unknown fields, resources, consumers, duplicates, unsafe paths, and missing or additional mappings fail closed. |
 | Skill-only selector optimization could suppress lifecycle proof for mixed changes | Selector checks compose per changed path; mixed fixtures require purpose-built skill checks and lifecycle validation with independently scoped affected paths. |
 | Resource measurements could be mistaken for actual model context use | Reports identify static bytes, mapped counts, and fixture-declared representative reads only; they make no runtime token claim and cannot become a hard gate without a later approved contract. |
-| Interrupted projection could leave a mixed worktree | Projection preflights the complete matrix and validation rejects mixed output; activation never changes state until the tracked transaction and derived proof set agree, and pre-activation rollback reverts tracked sources while discarding or regenerating derived output. |
+| Interrupted projection could leave a mixed worktree | Projection preflights the complete matrix and checked-revision validation rejects mixed output; an active snapshot is not review-ready until the current source and derived proof set agree, and unpublished recovery restores tracked sources while discarding or regenerating derived output. |
+| Checked-revision activation could be mistaken for public release | Local output names the snapshot and release intent but never claims tagged, published, public, or publicly verified status; public claims require routine release evidence. |
+| A frozen baseline could be mistyped during one-time authoring | The internal derivation function accepts only one exact 40-character lowercase commit identity, returns bounded issues for invalid or unavailable input, derives the complete raw-byte-sorted inventory without writes, and regression fixtures compare the recorded inventory with its successful result. |
+| Later validation could accidentally restore history dependence | The focused validator reads current files and the frozen inventory only; regression proof covers unreachable baseline provenance and absence of tag, remote, and network requirements. |
+| Removing the custom publisher could remove normal release protection | The cleanup inventory is closed, while routine profile preparation, preflight, full verification, trusted publication, public smoke, closeout, and rollback checks remain separately owned and required. |
+| Routine publication can expose partial cross-service state | Existing closeout remains rerunnable and records phase-specific failure; recovery uses closeout, dist-tag correction or deprecation when applicable, or a later patch without rewriting immutable releases. |
 | Tracked projections could be hand-edited as if authored | The projection check binds every governed copy to one source and fails before dependent validation or packaging; contributor guidance identifies the copies as derived. |
-| Grandfathering could become a blanket bypass | The manifest records the full parent commit identity and a sorted eligible path inventory derived only from that revision; later paths require the marker, while spec-review classifies substantive edits to grandfathered paths. |
-| Draft specs could become accidental historical exemptions | Only `accepted`, `approved`, or `active` feature specs present at the immutable parent revision enter the inventory; in-flight opt-in is available only after activation is active. |
+| Grandfathering could become a blanket bypass | The manifest records the explicit reviewed pending-revision identity and a frozen sorted eligible path inventory derived only from that revision; later paths require the marker, while spec-review classifies substantive edits to grandfathered paths. |
+| Draft specs could become accidental historical exemptions | Only `accepted`, `approved`, or `active` feature specs present at the explicit reviewed pending revision enter the inventory; in-flight opt-in is available only after activation is active. |
 | Activation facts could be incomplete or mixed | The reviewed manifest uses only `pending` or `active`, validators check its closed fields and package identities, and no projection or state writer may repair incomplete evidence. |
 | Digest implementations could disagree across platforms | One shared helper uses sorted POSIX paths, raw-byte SHA-256, fixed NUL/newline UTF-8 records, and lowercase hexadecimal output. |
 | Shared method content could absorb stage policy | The method source has a closed content boundary; skill and workflow review reject stage-specific routing, authority, approval, or readiness semantics in the reference. |
@@ -1461,10 +1547,19 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
   `<repository-target-path>\0<lowercase-raw-byte-sha256>\n` records for every
   expected projected resource.
 - boundary-first activation record: repository-local YAML binding contract
-  state, activating and rollback release tags, compact-core compatibility
+  snapshot, activating release intent, rollback release, compact-core compatibility
   identity, resource-manifest identity, projection-set identity, governed
-  skills, immutable parent-revision baseline, and grandfathered feature-spec
+  skills, reviewed pending-revision baseline provenance, and frozen grandfathered feature-spec
   paths.
+- checked-revision activation: validation of boundary-first behavior from files
+  in the current repository revision without requiring Git history, remote
+  state, release tags, or network access; it is not public-release proof.
+- activation baseline provenance: exact full reviewed pending-revision commit
+  identity supplied during activation authoring and frozen with its derived
+  grandfathered-spec inventory.
+- routine boundary-first release: the existing profile-driven preparation,
+  preflight, full verification, trusted tag publication, and public closeout
+  flow used to publish the checked and reviewed `v0.4.0` package.
 - boundary-first package rollback validation: read-only comparison of the
   selected immutable release's adapter archive identities with the current
   supported-adapter inventory.
@@ -1560,11 +1655,16 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Next artifacts
 
-- Architecture-review for the progressive boundary-guidance canonical update,
-  focused component diagram, and resource-composition ADR.
+- Architecture-review for the usability-first boundary release canonical
+  update, focused component diagram, and checked-revision activation ADR.
 
 ## Follow-on artifacts
 
+- Usability-First Boundary-First v0.4.0 Release: approved spec and this
+  canonical update make stage-owned boundary behavior automatic and concise,
+  replace transition-based activation with checked-revision snapshots, retire
+  the custom candidate/publisher experiment, and preserve the routine release
+  workflow; architecture review is owned by its change record.
 - Legacy architecture lifecycle normalization: completed; top-level legacy architecture records are archived historical evidence.
 - Architecture-review for the 2026-04-29 package-quality refinement: approved on 2026-04-29 with no findings.
 - Architecture-review for the 2026-05-08 workflow-governance direct canonical package update: approved in `docs/changes/2026-05-08-single-workflow-lane-explain-before-verify/reviews/architecture-review-r1.md` with no material findings.
@@ -1598,7 +1698,7 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 - Progressive Boundary-First Skill Guidance: accepted proposal and approved
   spec define prompt-independent compact scanning, owner-scoped progressive
   resources, artifact-sliced downstream reads, hazard-driven scenario
-  selection, path-owned validation, atomic activation, and measured rather
+  selection, path-owned validation, checked-revision activation, and measured rather
   than budget-gated loading.
 - Evidence-Bound and Incremental `project-map`: accepted proposal and approved spec define evidence-bound map metadata, freshness, root/area registration, source-ranked claims, skeleton asset packaging, generated adapter inclusion, correction notes, and downstream reliance boundaries.
 - Proposal-Gated Authoring Autoprogression: historical profile design whose
@@ -1625,9 +1725,15 @@ ADR `docs/adr/ADR-20260629-release-transaction-profile.md` is required because t
 
 ## Readiness
 
-The progressive boundary-guidance design is implemented under its approved
-feature artifacts. Current canonical-package reliance requires the matching
-owner-bound architecture review settlement.
+The usability-first boundary release architecture is authored under its
+approved feature specification. Reliance on this revision requires the
+matching owner-bound architecture and ADR review settlement.
+
+ADR `docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md`
+records the proposed durable checked-revision snapshot, one-time baseline,
+custom-path retirement, automatic concise guidance, and routine release
+decision. It supersedes ADR-20260805 and amends only the local activation
+semantics of ADR-20260728; architecture review is still required.
 
 ADR `docs/adr/ADR-20260729-progressive-boundary-guidance-resources.md`
 records the accepted durable resource-composition, manifest, identity,

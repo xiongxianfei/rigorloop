@@ -21,8 +21,41 @@ if [[ -z "$release_version" ]]; then
   exit 1
 fi
 
+release_tag_commit="${RELEASE_TAG_COMMIT:-}"
+if [[ "${GITHUB_ACTIONS:-}" == "true" && "${GITHUB_REF_TYPE:-}" == "tag" && -z "$release_tag_commit" ]]; then
+  echo "release gate failure: trusted workflow requires RELEASE_TAG_COMMIT" >&2
+  exit 1
+fi
+if [[ -n "$release_tag_commit" ]]; then
+  if [[ ! "$release_tag_commit" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "release gate failure: RELEASE_TAG_COMMIT must be a full 40-character Git SHA" >&2
+    exit 1
+  fi
+  if [[ "${GITHUB_ACTIONS:-}" == "true" && "${GITHUB_REF_TYPE:-}" == "tag" ]]; then
+    python - "$release_version" "${GITHUB_REF_NAME:-}" "$release_tag_commit" <<'PY'
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path("scripts").resolve()))
+from release_transaction import validate_trusted_release_tag_identity
+
+errors = validate_trusted_release_tag_identity(sys.argv[1], sys.argv[2], sys.argv[3])
+if errors:
+    for error in errors:
+        print(f"release gate failure: {error}", file=sys.stderr)
+    raise SystemExit(1)
+PY
+  else
+    checked_commit="$(git rev-parse HEAD)"
+    if [[ "$release_tag_commit" != "$checked_commit" ]]; then
+      echo "release gate failure: RELEASE_TAG_COMMIT does not match checked HEAD" >&2
+      exit 1
+    fi
+  fi
+fi
+
 case "$release_version" in
-  v0.1.0-rc.1|v0.1.0|v0.1.1|v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3|v0.3.4|v0.3.5|v0.3.6)
+  v0.1.0-rc.1|v0.1.0|v0.1.1|v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3|v0.3.4|v0.3.5|v0.3.6|v0.4.0)
     ;;
   *)
     echo "Unsupported release target: ${release_version}" >&2
@@ -36,19 +69,19 @@ if [[ "$release_version" == "v0.1.2" ]]; then
 fi
 uses_release_output="false"
 case "$release_version" in
-  v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3|v0.3.4|v0.3.5|v0.3.6)
+  v0.1.2|v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3|v0.3.4|v0.3.5|v0.3.6|v0.4.0)
     uses_release_output="true"
     ;;
 esac
 untracked_public_adapters="false"
 case "$release_version" in
-  v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3|v0.3.4|v0.3.5|v0.3.6)
+  v0.1.3|v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3|v0.3.4|v0.3.5|v0.3.6|v0.4.0)
     untracked_public_adapters="true"
     ;;
 esac
 npm_package_release="false"
 case "$release_version" in
-  v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3|v0.3.4|v0.3.5|v0.3.6)
+  v0.1.4|v0.1.5|v0.2.0|v0.3.0|v0.3.1|v0.3.2|v0.3.3|v0.3.4|v0.3.5|v0.3.6|v0.4.0)
     npm_package_release="true"
     ;;
 esac

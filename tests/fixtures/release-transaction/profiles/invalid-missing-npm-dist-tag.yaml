@@ -1,10 +1,8 @@
 schema_version: release-profile-v1
-release_kind: special
-release_tag: v0.3.5
-package_version: 0.3.5
-npm_dist_tag: latest
+release_kind: routine
+release_tag: v0.4.0
+package_version: 0.4.0
 npm_package: "@xiongxianfei/rigorloop"
-owner_decision: "Fixture owner decision for a special release path."
 
 targets:
   - codex
@@ -13,8 +11,8 @@ targets:
 
 adapter_artifacts:
   required: true
-  metadata_file: adapter-artifacts-v0.3.5.json
-  archive_version: v0.3.5
+  metadata_file: adapter-artifacts-v0.4.0.json
+  archive_version: v0.4.0
 
 publication:
   github_release_required: true

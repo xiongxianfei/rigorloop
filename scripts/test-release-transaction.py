@@ -41,11 +41,13 @@ from release_transaction import (  # noqa: E402
     validate_release_timing_evidence,
     validate_release_workflow_parity,
     validate_pending_release_artifacts,
+    validate_trusted_release_tag_identity,
 )
 
 REQUIRED_PROFILE_FIELD_CASES = (
     ("invalid-missing-release-tag.yaml", "release_tag"),
     ("invalid-missing-package-version.yaml", "package_version"),
+    ("invalid-missing-npm-dist-tag.yaml", "npm_dist_tag"),
     ("invalid-missing-npm-package.yaml", "npm_package"),
     ("invalid-missing-targets.yaml", "targets"),
     ("invalid-missing-adapter-artifacts.yaml", "adapter_artifacts"),
@@ -53,6 +55,104 @@ REQUIRED_PROFILE_FIELD_CASES = (
     ("invalid-missing-evidence.yaml", "evidence"),
     ("invalid-missing-validation.yaml", "validation"),
 )
+
+
+class TrustedReleaseTagIdentityTests(unittest.TestCase):
+    def make_git_repo(self, root: Path) -> str:
+        subprocess.run(["git", "init", "-q", str(root)], check=True)
+        subprocess.run(["git", "-C", str(root), "config", "user.name", "RigorLoop Test"], check=True)
+        subprocess.run(["git", "-C", str(root), "config", "user.email", "test@example.invalid"], check=True)
+        (root / "README.md").write_text("release\n", encoding="utf-8")
+        subprocess.run(["git", "-C", str(root), "add", "README.md"], check=True)
+        subprocess.run(["git", "-C", str(root), "commit", "-q", "-m", "release"], check=True)
+        return subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+
+    def test_accepts_matching_lightweight_and_annotated_tags(self) -> None:
+        for annotated in (False, True):
+            with self.subTest(annotated=annotated), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                commit = self.make_git_repo(root)
+                command = ["git", "-C", str(root), "tag"]
+                if annotated:
+                    command.extend(["-a", "v0.4.0", "-m", "v0.4.0"])
+                else:
+                    command.append("v0.4.0")
+                subprocess.run(command, check=True)
+
+                errors = validate_trusted_release_tag_identity(
+                    "v0.4.0", "v0.4.0", commit, root=root
+                )
+
+            self.assertEqual(errors, [])
+
+    def test_rejects_mixed_release_and_ref_names(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            commit = self.make_git_repo(root)
+            subprocess.run(["git", "-C", str(root), "tag", "v0.4.0"], check=True)
+
+            errors = validate_trusted_release_tag_identity(
+                "v0.3.6", "v0.4.0", commit, root=root
+            )
+
+        self.assertTrue(any("must match" in error for error in errors), errors)
+
+    def test_rejects_tag_that_does_not_point_at_trusted_commit(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            trusted_commit = self.make_git_repo(root)
+            (root / "README.md").write_text("rewritten\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(root), "commit", "-qam", "later"], check=True)
+            subprocess.run(["git", "-C", str(root), "tag", "v0.4.0"], check=True)
+            subprocess.run(["git", "-C", str(root), "checkout", "-q", trusted_commit], check=True)
+
+            errors = validate_trusted_release_tag_identity(
+                "v0.4.0", "v0.4.0", trusted_commit, root=root
+            )
+
+        self.assertTrue(any("hosted tag" in error for error in errors), errors)
+
+    def test_rejects_missing_hosted_ref_name(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            commit = self.make_git_repo(root)
+
+            errors = validate_trusted_release_tag_identity("v0.4.0", "", commit, root=root)
+
+        self.assertTrue(any("GITHUB_REF_NAME" in error for error in errors), errors)
+
+    def test_release_verify_wires_hosted_ref_name_into_identity_check(self) -> None:
+        head = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        result = subprocess.run(
+            ["bash", "scripts/release-verify.sh", "v0.3.6"],
+            cwd=ROOT,
+            env={
+                "PATH": os.environ.get("PATH", ""),
+                "GITHUB_ACTIONS": "true",
+                "GITHUB_REF_TYPE": "tag",
+                "GITHUB_REF_NAME": "v0.4.0",
+                "RELEASE_TAG_COMMIT": head,
+                "RELEASE_VERIFY_DRY_RUN": "1",
+            },
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("must match hosted tag ref", result.stderr)
 
 
 class ReleaseProfileTests(unittest.TestCase):
@@ -74,6 +174,7 @@ class ReleaseProfileTests(unittest.TestCase):
         self.assertEqual(profile.release_kind, "routine")
         self.assertEqual(profile.release_tag, "v0.3.5")
         self.assertEqual(profile.package_version, "0.3.5")
+        self.assertEqual(profile.npm_dist_tag, "latest")
         self.assertEqual(profile.npm_package, "@xiongxianfei/rigorloop")
         self.assertEqual(profile.targets, ("codex", "claude", "opencode"))
         self.assertTrue(profile.adapter_artifacts["required"])
@@ -148,6 +249,13 @@ class ReleaseProfileTests(unittest.TestCase):
             "unknown target: cursor",
         )
         self.assertTrue(error.errors[0].endswith("unknown target: cursor"))
+
+    def test_unknown_npm_dist_tag_fails_closed_before_consistency(self) -> None:
+        error = self.assert_profile_error(
+            "invalid-unknown-npm-dist-tag.yaml",
+            "unknown npm_dist_tag: next",
+        )
+        self.assertTrue(error.errors[0].endswith("unknown npm_dist_tag: next"))
 
     def test_special_release_without_owner_decision_fails(self) -> None:
         self.assert_profile_error(
@@ -350,6 +458,9 @@ class PrepareReleaseTests(unittest.TestCase):
         historical_dir = root / "docs" / "releases" / "v0.3.4"
         historical_dir.mkdir(parents=True)
         (historical_dir / "release.yaml").write_text("version: v0.3.4\n", encoding="utf-8")
+        manifest_path = root / "dist" / "adapters" / "manifest.yaml"
+        manifest_path.parent.mkdir(parents=True)
+        shutil.copy2(ROOT / "dist" / "adapters" / "manifest.yaml", manifest_path)
 
     def relative_file_texts(self, root: Path) -> dict[str, str]:
         return {
@@ -399,6 +510,7 @@ class PrepareReleaseTests(unittest.TestCase):
             {
                 "docs/releases/v0.3.5/npm-publication.md",
                 "docs/releases/v0.3.5/release-notes.md",
+                "docs/releases/v0.3.5.md",
                 "docs/releases/v0.3.5/release.yaml",
                 "docs/releases/v0.3.5/timing.yaml",
                 "docs/reports/adapter-artifacts/releases/v0.3.5.yaml",
@@ -415,6 +527,39 @@ class PrepareReleaseTests(unittest.TestCase):
         self.assertNotIn("stale generated content", after_first["docs/releases/v0.3.5/release-notes.md"])
         self.assertIn("npx @xiongxianfei/rigorloop@0.3.5 init codex --json", after_first["packages/rigorloop/README.md"])
         self.assertNotIn("@0.3.4 init codex", after_first["packages/rigorloop/README.md"])
+        self.assertIn("npm dist-tag: latest", after_first["docs/releases/v0.3.5.md"])
+
+    def test_prepare_release_check_accepts_finalized_prepublication_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_repo(root)
+            prepare_release("v0.3.5", root=root)
+
+            metadata_path = root / "packages" / "rigorloop" / "dist" / "metadata" / "adapter-artifacts-v0.3.5.json"
+            metadata_path.write_text("{}\n", encoding="utf-8")
+
+            release_path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
+            release_text = release_path.read_text(encoding="utf-8")
+            release_text = release_text.replace("manifest_version: pending", "manifest_version: v0.1.5")
+            release_text = release_text.replace("result: pending", "result: pass")
+            release_text = release_text.replace(": pending\n", ": pass\n")
+            release_path.write_text(release_text, encoding="utf-8")
+
+            report_path = root / "docs" / "reports" / "adapter-artifacts" / "releases" / "v0.3.5.yaml"
+            report_text = report_path.read_text(encoding="utf-8")
+            report_text = report_text.replace("source_commit: pending", "source_commit: 0123456789abcdef0123456789abcdef01234567")
+            report_text = report_text.replace("date: pending", 'date: "2026-08-06"')
+            report_text = report_text.replace("sha256: pending", "sha256: " + "a" * 64)
+            report_text = report_text.replace("result: pending", "result: pass")
+            report_path.write_text(report_text, encoding="utf-8")
+
+            prepare_release("v0.3.5", root=root)
+            finalized = self.relative_file_texts(root)
+            checked = prepare_release("v0.3.5", root=root, check=True)
+
+        self.assertFalse(checked.changed_paths)
+        self.assertEqual(finalized["docs/releases/v0.3.5/release.yaml"], release_text)
+        self.assertEqual(finalized["docs/reports/adapter-artifacts/releases/v0.3.5.yaml"], report_text)
 
     def test_prepare_release_check_mode_reports_pending_changes_without_writing(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -440,6 +585,221 @@ class PrepareReleaseTests(unittest.TestCase):
             errors = validate_pending_release_artifacts("v0.3.5", root=root)
 
         self.assertEqual(errors, [])
+
+    def test_pending_release_artifacts_reject_incomplete_release_yaml(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
+            text = path.read_text(encoding="utf-8")
+            start = text.index("adapter_paths:\n")
+            end = text.index("instruction_entrypoints:\n")
+            path.write_text(text[:start] + text[end:], encoding="utf-8")
+
+            errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+        self.assertTrue(any("adapter_paths" in error for error in errors), errors)
+
+    def test_pending_release_artifacts_reject_incomplete_standing_record(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            path = root / "docs" / "releases" / "v0.3.5.md"
+            text = path.read_text(encoding="utf-8")
+            start = text.index("## Recovery / Rollback Notes\n")
+            end = text.index("## Follow-up\n")
+            path.write_text(text[:start] + text[end:], encoding="utf-8")
+
+            errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+        self.assertTrue(any("Recovery / Rollback Notes" in error for error in errors), errors)
+
+    def test_pending_standing_record_requires_every_preflight_row(self) -> None:
+        required_rows = (
+            "clean worktree except intentional release artifacts",
+            "release notes or not-required rationale",
+            "generated output current",
+            "tests / selected CI / broad smoke",
+            "package build or pack proof",
+            "package preview",
+            "local packed-install smoke",
+            "no unresolved release blockers",
+            "publish path selected",
+            "evidence path prepared",
+        )
+        for row_name in required_rows:
+            with self.subTest(row_name=row_name), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.make_prepared_repo(root)
+                path = root / "docs" / "releases" / "v0.3.5.md"
+                lines = path.read_text(encoding="utf-8").splitlines()
+                path.write_text(
+                    "\n".join(line for line in lines if not line.startswith(f"| {row_name} |")) + "\n",
+                    encoding="utf-8",
+                )
+
+                errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+            self.assertTrue(any(row_name in error and "missing" in error for error in errors), errors)
+
+    def test_pending_standing_record_rejects_unknown_or_duplicate_preflight_rows(self) -> None:
+        required_rows = (
+            "clean worktree except intentional release artifacts",
+            "release notes or not-required rationale",
+            "generated output current",
+            "tests / selected CI / broad smoke",
+            "package build or pack proof",
+            "package preview",
+            "local packed-install smoke",
+            "no unresolved release blockers",
+            "publish path selected",
+            "evidence path prepared",
+        )
+        for row_name in required_rows:
+            for mutation in ("unknown", "duplicate"):
+                with self.subTest(row_name=row_name, mutation=mutation), tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    self.make_prepared_repo(root)
+                    path = root / "docs" / "releases" / "v0.3.5.md"
+                    text = path.read_text(encoding="utf-8")
+                    original = next(line for line in text.splitlines() if line.startswith(f"| {row_name} |"))
+                    if mutation == "unknown":
+                        replacement = original.replace("| pending |", "| unknown |").replace("| pass |", "| unknown |")
+                    else:
+                        replacement = original + "\n" + original.replace("| pending |", "| pass |")
+                    path.write_text(text.replace(original, replacement), encoding="utf-8")
+
+                    errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+                expected = "exactly once" if mutation == "duplicate" else "must be"
+                self.assertTrue(any(row_name in error and expected in error for error in errors), errors)
+
+    def test_pending_standing_record_rejects_missing_or_duplicate_registry_rows(self) -> None:
+        registry_rows = (
+            "registry version query",
+            "dist-tag points correctly",
+            "integrity metadata available",
+            "fresh registry install smoke",
+            "CLI or npx smoke",
+        )
+        for row_name in registry_rows:
+            for mutation in ("missing", "duplicate"):
+                with self.subTest(row_name=row_name, mutation=mutation), tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    self.make_prepared_repo(root)
+                    path = root / "docs" / "releases" / "v0.3.5.md"
+                    text = path.read_text(encoding="utf-8")
+                    original = next(line for line in text.splitlines() if line.startswith(f"| {row_name} |"))
+                    replacement = "" if mutation == "missing" else original + "\n" + original.replace("not-applicable", "pass", 1)
+                    path.write_text(text.replace(original, replacement), encoding="utf-8")
+
+                    errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+                self.assertTrue(any(row_name in error and "exactly once" in error for error in errors), errors)
+
+    def test_pending_release_artifacts_reject_premature_public_status(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            path = root / "docs" / "releases" / "v0.3.5.md"
+            text = path.read_text(encoding="utf-8")
+            path.write_text(
+                text.replace("- Status: pending-publication", "- Status: published"),
+                encoding="utf-8",
+            )
+
+            errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+        self.assertTrue(any("Status" in error and "pending-publication" in error for error in errors), errors)
+
+    def test_prepare_release_does_not_preserve_partial_finalized_release_yaml(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_repo(root)
+            prepare_release("v0.3.5", root=root)
+            path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
+            text = path.read_text(encoding="utf-8")
+            text = text.replace("manifest_version: pending", "manifest_version: v0.1.5")
+            text = text.replace("result: pending", "result: pass")
+            text = text.replace(": pending\n", ": pass\n")
+            start = text.index("adapter_paths:\n")
+            end = text.index("instruction_entrypoints:\n")
+            path.write_text(text[:start] + text[end:], encoding="utf-8")
+
+            with self.assertRaises(ReleaseProfileError) as raised:
+                prepare_release("v0.3.5", root=root, check=True)
+
+        self.assertIn("docs/releases/v0.3.5/release.yaml", "\n".join(raised.exception.errors))
+
+    def test_prepare_release_does_not_preserve_bogus_finalized_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_repo(root)
+            prepare_release("v0.3.5", root=root)
+            path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
+            text = path.read_text(encoding="utf-8")
+            text = text.replace("manifest_version: pending", "manifest_version: bogus")
+            text = text.replace("result: pending", "result: pass")
+            text = text.replace(": pending\n", ": pass\n")
+            path.write_text(text, encoding="utf-8")
+
+            with self.assertRaises(ReleaseProfileError) as raised:
+                prepare_release("v0.3.5", root=root, check=True)
+
+        self.assertIn("docs/releases/v0.3.5/release.yaml", "\n".join(raised.exception.errors))
+
+    def test_prepare_release_does_not_preserve_empty_passing_smoke_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_repo(root)
+            prepare_release("v0.3.5", root=root)
+            path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
+            text = path.read_text(encoding="utf-8")
+            text = text.replace("manifest_version: pending", "manifest_version: v0.1.5")
+            text = text.replace("result: pending", "result: pass")
+            text = text.replace(": pending\n", ": pass\n")
+            text = text.replace(
+                '    evidence: "Pending packed-package smoke for v0.3.5 codex."',
+                '    evidence: ""',
+            )
+            path.write_text(text, encoding="utf-8")
+
+            with self.assertRaises(ReleaseProfileError) as raised:
+                prepare_release("v0.3.5", root=root, check=True)
+
+        self.assertIn("docs/releases/v0.3.5/release.yaml", "\n".join(raised.exception.errors))
+
+    def test_prepare_release_does_not_preserve_whitespace_passing_smoke_fields(self) -> None:
+        for field in ("tool_version", "evidence"):
+            with self.subTest(field=field), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.make_repo(root)
+                prepare_release("v0.3.5", root=root)
+                path = root / "docs" / "releases" / "v0.3.5" / "release.yaml"
+                text = path.read_text(encoding="utf-8")
+                text = text.replace("manifest_version: pending", "manifest_version: v0.1.5")
+                text = text.replace("result: pending", "result: pass")
+                text = text.replace(": pending\n", ": pass\n")
+                line = next(
+                    item for item in text.splitlines()
+                    if item.strip().startswith(f"{field}:")
+                )
+                path.write_text(text.replace(line, f'    {field}: "   "', 1), encoding="utf-8")
+
+                with self.assertRaises(ReleaseProfileError) as raised:
+                    prepare_release("v0.3.5", root=root, check=True)
+
+            self.assertIn("docs/releases/v0.3.5/release.yaml", "\n".join(raised.exception.errors))
+
+    def test_pending_release_artifacts_require_standing_release_record(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.make_prepared_repo(root)
+            (root / "docs" / "releases" / "v0.3.5.md").unlink()
+
+            errors = validate_pending_release_artifacts("v0.3.5", root=root)
+
+        self.assertTrue(any("docs/releases/v0.3.5.md" in error and "missing" in error for error in errors), errors)
 
     def test_pending_release_artifacts_reject_target_result_published(self) -> None:
         def mutate(text: str) -> str:

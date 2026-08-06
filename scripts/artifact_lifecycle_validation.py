@@ -112,12 +112,40 @@ RELEASE_EVIDENCE_PUBLISH_FIELDS = (
 )
 ROUTINE_RELEASE_GATE_ITEMS = (
     "clean worktree except intentional release artifacts",
+    "release notes or not-required rationale",
     "generated output current",
     "tests / selected CI / broad smoke",
+    "package build or pack proof",
     "package preview",
+    "local packed-install smoke",
     "no unresolved release blockers",
     "publish path selected",
     "evidence path prepared",
+)
+ROUTINE_RELEASE_GATE_FINAL_RESULTS = {
+    **{item: frozenset(("pass",)) for item in ROUTINE_RELEASE_GATE_ITEMS},
+    "release notes or not-required rationale": frozenset(("pass", "not-required")),
+}
+RELEASE_REGISTRY_ITEMS = (
+    "registry version query",
+    "dist-tag points correctly",
+    "integrity metadata available",
+    "fresh registry install smoke",
+    "CLI or npx smoke",
+)
+EMERGENCY_DEFERRABLE_RELEASE_ITEMS = frozenset(("fresh registry install smoke",))
+RELEASE_EVIDENCE_STATUSES = frozenset(
+    (
+        "published",
+        "pending-publication",
+        "failed-before-publish",
+        "failed-during-publish",
+        "failed-after-publish",
+        "emergency-with-deferred-gate",
+        "rolled-back",
+        "deprecated",
+        "not-published",
+    )
 )
 NON_DEFERRABLE_RELEASE_ITEMS = (
     "release evidence",
@@ -571,21 +599,25 @@ def _markdown_table_rows(section: str) -> list[list[str]]:
     return rows
 
 
-def _table_row_result(section: str, row_label: str) -> str | None:
-    for row in _markdown_table_rows(section):
-        if row and row[0].casefold() == row_label.casefold():
-            if len(row) < 2:
-                return None
-            return row[1].strip()
-    return None
+def _table_row_results(section: str, row_label: str) -> list[str]:
+    return [
+        row[1].strip()
+        for row in _markdown_table_rows(section)
+        if len(row) >= 2 and row[0].casefold() == row_label.casefold()
+    ]
 
 
 def _is_blank_table_value(value: str) -> bool:
     return not value.strip() or value.strip().casefold() in {"-", "missing", "not-recorded"}
 
 
+def _is_missing_emergency_deferral_value(value: str) -> bool:
+    return _is_blank_table_value(value) or value.strip().casefold() == "not-applicable"
+
+
 def _validate_emergency_deferrals(section: str) -> list[str]:
     errors: list[str] = []
+    deferred_items: list[str] = []
     for row in _markdown_table_rows(section):
         if not row:
             continue
@@ -593,7 +625,11 @@ def _validate_emergency_deferrals(section: str) -> list[str]:
         if not deferred_item or deferred_item.casefold() == "none":
             continue
         normalized = deferred_item.casefold()
-        if any(term in normalized for term in NON_DEFERRABLE_RELEASE_ITEMS):
+        deferred_items.append(normalized)
+        if (
+            normalized not in EMERGENCY_DEFERRABLE_RELEASE_ITEMS
+            or any(term in normalized for term in NON_DEFERRABLE_RELEASE_ITEMS)
+        ):
             errors.append(f"emergency deferral '{deferred_item}' is non-deferrable")
         if len(row) < 9:
             errors.append(f"emergency deferral '{deferred_item}' must include all required fields")
@@ -609,12 +645,36 @@ def _validate_emergency_deferrals(section: str) -> list[str]:
             ("status", row[8]),
         )
         for field_name, value in required_fields:
-            if _is_blank_table_value(value):
+            if _is_missing_emergency_deferral_value(value):
                 errors.append(f"emergency deferral '{deferred_item}' is missing {field_name}")
+        if row[8].strip().casefold() != "open":
+            errors.append(
+                f"emergency deferral '{deferred_item}' status must be open while its result is deferred"
+            )
+    for deferred_item in set(deferred_items):
+        if deferred_items.count(deferred_item) != 1:
+            errors.append(
+                f"emergency deferral '{deferred_item}' is duplicated; must appear exactly once"
+            )
     return errors
 
 
-def _validate_release_evidence_checklist(relative_path: Path, text: str) -> list[str]:
+def _emergency_deferral_items(section: str) -> list[str]:
+    return [
+        row[0].strip().casefold()
+        for row in _markdown_table_rows(section)
+        if row and row[0].strip() and row[0].strip().casefold() != "none"
+    ]
+
+
+def validate_release_evidence_checklist(
+    relative_path: Path,
+    text: str,
+    *,
+    require_preflight_pass: bool = True,
+) -> list[str]:
+    """Validate the shared release-evidence shape and, when requested, its publish gate."""
+
     errors: list[str] = []
     sections = _parse_sections(text)
 
@@ -650,24 +710,88 @@ def _validate_release_evidence_checklist(relative_path: Path, text: str) -> list
     preflight_section = _get_section(sections, "Preflight Gate") or ""
     status = (result_values.get("Status") or "").casefold()
     release_type = (result_values.get("Release type") or "").casefold()
+    if status and status not in RELEASE_EVIDENCE_STATUSES:
+        errors.append(f"release evidence status '{status}' is not in the supported vocabulary")
     is_emergency = release_type == "emergency" or status == "emergency-with-deferred-gate"
-    if not is_emergency:
-        for gate_item in ROUTINE_RELEASE_GATE_ITEMS:
-            gate_result = _table_row_result(preflight_section, gate_item)
-            if gate_result is None:
-                errors.append(f"routine release gate item '{gate_item}' is missing")
-            elif gate_result.casefold() != "pass":
+    for gate_item in ROUTINE_RELEASE_GATE_ITEMS:
+        gate_results = _table_row_results(preflight_section, gate_item)
+        if len(gate_results) != 1:
+            errors.append(
+                f"routine release gate item '{gate_item}' is missing or duplicated; must appear exactly once"
+            )
+            continue
+        allowed_results = set(ROUTINE_RELEASE_GATE_FINAL_RESULTS[gate_item])
+        if not require_preflight_pass and not is_emergency:
+            allowed_results.add("pending")
+        gate_result = gate_results[0].casefold()
+        if gate_result not in allowed_results:
+            if allowed_results == {"pass"}:
                 errors.append(f"routine release gate item '{gate_item}' must pass before publish")
+            else:
+                expected = " or ".join(sorted(allowed_results))
+                errors.append(
+                    f"routine release gate item '{gate_item}' must be {expected} before publish"
+                )
 
     registry_section = _get_section(sections, "Registry Verification") or ""
-    registry_result = _table_row_result(registry_section, "registry version query")
-    if registry_result is None:
-        errors.append("release evidence missing registry version query result")
-    elif registry_result.casefold() not in {"pass", "not-applicable"}:
-        errors.append("post-publish registry verification must not be deferred")
+    registry_results_by_item: dict[str, str] = {}
+    for registry_item in RELEASE_REGISTRY_ITEMS:
+        registry_results = _table_row_results(registry_section, registry_item)
+        if len(registry_results) != 1:
+            errors.append(
+                f"release registry item '{registry_item}' is missing or duplicated; must appear exactly once"
+            )
+            continue
+        registry_result = registry_results[0].casefold()
+        registry_results_by_item[registry_item] = registry_result
+        if status in {"published", "emergency-with-deferred-gate"}:
+            allowed_registry_results = {"pass"}
+        else:
+            allowed_registry_results = {"pass", "pending", "not-applicable", "not-run"}
+        if (
+            status == "emergency-with-deferred-gate"
+            and registry_item in EMERGENCY_DEFERRABLE_RELEASE_ITEMS
+        ):
+            allowed_registry_results.add("deferred")
+        if registry_result not in allowed_registry_results:
+            expected = " or ".join(sorted(allowed_registry_results))
+            errors.append(
+                f"post-publish registry verification '{registry_item}' must be {expected}"
+            )
 
     emergency_section = _get_section(sections, "Emergency Deferrals") or ""
     errors.extend(_validate_emergency_deferrals(emergency_section))
+    deferral_items = _emergency_deferral_items(emergency_section)
+    none_deferral_count = sum(
+        1
+        for row in _markdown_table_rows(emergency_section)
+        if row and row[0].strip().casefold() == "none"
+    )
+    if deferral_items and none_deferral_count:
+        errors.append(
+            f"emergency deferral '{deferral_items[0]}' must not coexist with a none sentinel"
+        )
+    elif not deferral_items and none_deferral_count != 1:
+        errors.append("release evidence without deferrals requires exactly one none sentinel")
+    deferred_results = {
+        item.casefold()
+        for item, result in registry_results_by_item.items()
+        if result == "deferred"
+    }
+    for deferred_item in deferred_results:
+        if deferral_items.count(deferred_item) != 1:
+            errors.append(
+                f"deferred result '{deferred_item}' requires exactly one matching emergency deferral"
+            )
+    for deferred_item in set(deferral_items):
+        if deferred_item not in deferred_results:
+            errors.append(
+                f"emergency deferral '{deferred_item}' has no matching deferred result"
+            )
+    if status == "emergency-with-deferred-gate" and not deferred_results:
+        errors.append("emergency-with-deferred-gate status requires a matching deferred result")
+    if not is_emergency and deferral_items:
+        errors.append("non-emergency release evidence must not contain emergency deferrals")
 
     path_version = relative_path.stem
     result_version = (result_values.get("Version") or "").strip()
@@ -678,6 +802,10 @@ def _validate_release_evidence_checklist(relative_path: Path, text: str) -> list
         errors.append("release evidence path version must match Result version")
 
     return errors
+
+
+def _validate_release_evidence_checklist(relative_path: Path, text: str) -> list[str]:
+    return validate_release_evidence_checklist(relative_path, text)
 
 
 def _load_change_metadata_parser() -> Any:
