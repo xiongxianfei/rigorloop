@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import errno
 import importlib.util
 import io
 import json
@@ -12,7 +13,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from contextlib import redirect_stdout
+from contextlib import nullcontext, redirect_stdout
 from unittest import mock
 
 from boundary_activation_release import (
@@ -459,6 +460,8 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
         )
         real_pipe = os.pipe
         real_close = os.close
+        real_closerange = os.closerange
+        real_fstat = os.fstat
 
         for endpoint_index in (0, 1):
             captured: list[tuple[int, int]] = []
@@ -495,6 +498,109 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
             for descriptor in captured[-1]:
                 with self.assertRaises(OSError):
                     os.fstat(descriptor)
+
+        read_descriptor, write_descriptor = os.pipe()
+        with mock.patch(
+            "boundary_activation_release.os.close",
+            side_effect=OSError(errno.EIO, "injected close failure"),
+        ), mock.patch(
+            "boundary_activation_release.os.closerange",
+            side_effect=NotImplementedError("closerange unavailable"),
+        ), mock.patch(
+            "boundary_activation_release.os.fstat",
+            side_effect=OSError(errno.EIO, "injected verification failure"),
+        ):
+            self.assertFalse(_force_close_descriptor(read_descriptor))
+        self.assertIsInstance(real_fstat(read_descriptor), os.stat_result)
+        real_close(read_descriptor)
+        real_close(write_descriptor)
+
+        for subprocess_succeeds in (False, True):
+            captured = []
+            failed_close: set[int] = set()
+            failed_range: set[int] = set()
+            failed_verify: set[int] = set()
+
+            def capture_retry_pipe() -> tuple[int, int]:
+                endpoints = real_pipe()
+                captured.append(endpoints)
+                return endpoints
+
+            def fail_close_once(descriptor: int) -> None:
+                if not captured or descriptor not in captured[-1]:
+                    real_close(descriptor)
+                    return
+                if descriptor not in failed_close:
+                    failed_close.add(descriptor)
+                    raise OSError(errno.EIO, "injected close failure")
+                real_close(descriptor)
+
+            def fail_range_once(low: int, high: int) -> None:
+                if not captured or low not in captured[-1]:
+                    real_closerange(low, high)
+                    return
+                if low not in failed_range:
+                    failed_range.add(low)
+                    raise NotImplementedError("injected closerange failure")
+                real_closerange(low, high)
+
+            def fail_verify_once(descriptor: int) -> os.stat_result:
+                if not captured or descriptor not in captured[-1]:
+                    return real_fstat(descriptor)
+                if descriptor not in failed_verify:
+                    failed_verify.add(descriptor)
+                    raise OSError(errno.EIO, "injected verification failure")
+                return real_fstat(descriptor)
+
+            run_patch = mock.patch(
+                "subprocess.run",
+                return_value=subprocess.CompletedProcess(["git", "push"], 0),
+            )
+            context = nullcontext()
+            if not subprocess_succeeds:
+                run_patch = mock.patch(
+                    "subprocess.run",
+                    side_effect=subprocess.CalledProcessError(1, ["git", "push"]),
+                )
+                context = self.assertRaisesRegex(
+                    PublicationError, "atomic-publication-failed"
+                )
+            with self.subTest(subprocess_succeeds=subprocess_succeeds), tempfile.TemporaryDirectory() as temporary, mock.patch(
+                "boundary_activation_release.os.pipe", side_effect=capture_retry_pipe
+            ), mock.patch(
+                "boundary_activation_release.os.close", side_effect=fail_close_once
+            ), mock.patch(
+                "boundary_activation_release.os.closerange", side_effect=fail_range_once
+            ), mock.patch(
+                "boundary_activation_release.os.fstat", side_effect=fail_verify_once
+            ), run_patch, context:
+                _atomic_push(Path(temporary), readiness, dry_run=False)
+            for descriptor in captured[-1]:
+                with self.assertRaises(OSError):
+                    real_fstat(descriptor)
+
+        captured = []
+        failed_close = set()
+        failed_range = set()
+        failed_verify = set()
+        with tempfile.TemporaryDirectory() as temporary, mock.patch(
+            "boundary_activation_release.os.pipe", side_effect=capture_retry_pipe
+        ), mock.patch(
+            "boundary_activation_release.os.set_blocking",
+            side_effect=AttributeError("unsupported set_blocking"),
+        ), mock.patch(
+            "boundary_activation_release.os.close", side_effect=fail_close_once
+        ), mock.patch(
+            "boundary_activation_release.os.closerange", side_effect=fail_range_once
+        ), mock.patch(
+            "boundary_activation_release.os.fstat", side_effect=fail_verify_once
+        ), self.assertRaisesRegex(
+            PublicationError, "atomic-capability-unavailable"
+        ):
+            _atomic_push(Path(temporary), readiness, dry_run=True)
+        for descriptor in captured[-1]:
+            with self.assertRaises(OSError):
+                real_fstat(descriptor)
 
         capability_errors = (
             AttributeError("unsupported set_blocking"),

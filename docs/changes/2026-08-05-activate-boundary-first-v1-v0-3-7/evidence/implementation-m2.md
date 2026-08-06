@@ -2,7 +2,7 @@
 
 Milestone: M2 — Guarded atomic activation publication helper
 
-Outcome: R1-R8 findings recorded; corrections implemented for code review R9.
+Outcome: R1-R9 findings recorded; corrections implemented for code review R10.
 
 ## Implemented behavior
 
@@ -48,6 +48,8 @@ same-size rewrite authority no longer exists in the result transport.
 Endpoint ownership remains with the parent until verified closure; close-error
 fallback and unsupported pipe, blocking-mode, and descriptor-inheritance paths
 produce bounded mode-specific failures with no live captured endpoints.
+Only `EBADF` proves endpoint invalidation after fallback, and retained endpoints
+receive bounded retries across setup, failed-push, and successful-push cleanup.
 Real same- and different-target post-readiness tag races retain exact bounded
 tag-conflict context and leave both refs unchanged. Post-push confirmation
 uncertainty requires stop-and-reconcile behavior. The

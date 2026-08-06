@@ -4,12 +4,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import errno
 import json
 import os
 from pathlib import Path
 import re
 import secrets
 import subprocess
+import sys
 import tempfile
 
 from boundary_first_validation import (
@@ -390,24 +392,33 @@ def _force_close_descriptor(descriptor: int) -> bool:
     try:
         os.close(descriptor)
         return True
-    except OSError:
-        pass
+    except OSError as error:
+        if error.errno == errno.EBADF:
+            return True
     try:
         os.closerange(descriptor, descriptor + 1)
-    except (OSError, AttributeError):
+    except _CAPABILITY_ERRORS:
         pass
     try:
         os.fstat(descriptor)
-    except OSError:
-        return True
+    except OSError as error:
+        return error.errno == errno.EBADF
+    except (AttributeError, ValueError, TypeError, NotImplementedError):
+        return False
     return False
 
 
-def _close_descriptors(*descriptors: int | None) -> None:
-    for descriptor in descriptors:
-        if descriptor is None:
-            continue
-        _force_close_descriptor(descriptor)
+def _close_descriptors(*descriptors: int | None) -> bool:
+    remaining = [descriptor for descriptor in descriptors if descriptor is not None]
+    for _ in range(3):
+        remaining = [
+            descriptor
+            for descriptor in remaining
+            if not _force_close_descriptor(descriptor)
+        ]
+        if not remaining:
+            return True
+    return False
 
 
 def _atomic_push(
@@ -514,7 +525,14 @@ def _atomic_push(
                     **readiness.error_context("check" if dry_run else "publish"),
                 ) from error
     finally:
-        _close_descriptors(read_descriptor, write_descriptor)
+        cleanup_complete = _close_descriptors(read_descriptor, write_descriptor)
+        if not cleanup_complete and sys.exc_info()[0] is None:
+            raise PublicationError(
+                "atomic-capability-unavailable"
+                if dry_run
+                else "atomic-publication-failed",
+                **readiness.error_context("check" if dry_run else "publish"),
+            )
 
 
 def check_publication(
