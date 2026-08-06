@@ -4,8 +4,8 @@ review_stage: code-review
 review_target: range:18987ad4..c7144973
 base_revision: 18987ad41c9c41717bb954d5e498c0990453dade
 head_revision: c71449736fd720543acf51a3e15ab59e14cd438c
-native_review_status: review-requested
-review_gate_outcome: pending
+native_review_status: changes-requested
+review_gate_outcome: stop
 independence_level: L2
 author_context_id: root-m2-review-resolution-r8
 reviewer_context_id: m2-r9-primary-and-second-reviewers
@@ -40,14 +40,17 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
+  reviewer_context_id: m2-r9-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: R9 must close endpoint ownership and unsupported descriptor-capability findings without regressing bounded publication diagnostics.
-  outcome: pending
+  outcome: changes-requested
 phase_receipts:
   - risk-map-recorded
   - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
 review_focus:
   - Reconcile BFA-M2-R1-002, BFA-M2-R2-001, BFA-M2-R7-001, BFA-M2-R8-001, and BFA-M2-R8-002.
   - Challenge confirmed pipe-endpoint ownership, close-error fallback, read and close ordering, descriptor-inheritance capability failures, endpoint cleanup, privacy, bounded local classification, and evidence accuracy.

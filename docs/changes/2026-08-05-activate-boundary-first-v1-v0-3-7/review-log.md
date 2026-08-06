@@ -3,6 +3,17 @@
 ## Review Entries
 
 ### Review entry
+Review ID: code-review-m2-r9
+Stage: code-review
+Round: 9
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r9.md
+Resolution: review-resolution.md#code-review-m2-r9
+Material findings: BFA-M2-R9-001
+Open findings: BFA-M2-R9-001
+Recording status: recorded
+
+### Review entry
 Review ID: code-review-m2-r8
 Stage: code-review
 Round: 8
