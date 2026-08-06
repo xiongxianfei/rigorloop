@@ -179,7 +179,7 @@ class ActivationCandidateResult:
     publication_base: str
     grandfathering_baseline: str
     transition_commit: str
-    reviewed_head: str
+    candidate_validation_head: str
     rollback_release: str
     tag_state: str
     bundle_identity: tuple[tuple[str, str], ...]
@@ -193,7 +193,7 @@ class ActivationCandidateResult:
             "publication_base": self.publication_base,
             "grandfathering_baseline": self.grandfathering_baseline,
             "transition_commit": self.transition_commit,
-            "reviewed_head": self.reviewed_head,
+            "candidate_validation_head": self.candidate_validation_head,
             "rollback_release": self.rollback_release,
             "tag_state": self.tag_state,
             "bundle_identity": dict(self.bundle_identity),
@@ -1921,15 +1921,28 @@ def _is_activation_lifecycle_path(relative: str) -> bool:
     return bool(
         len(child.parts) == 1
         and re.fullmatch(
-            r"review-invocation-(?:(?:proposal|spec|architecture|plan|test-spec)-review(?:-[a-z0-9-]+)?-r[0-9]+|code-review-(?:m[1-4]|final)-r[0-9]+)\.yaml",
+            r"review-invocation-(?:proposal-review-r[0-9]+|spec-review-r[0-9]+|architecture-review-activation-r[0-9]+|plan-review-r[0-9]+|test-spec-review-r[0-9]+|code-review-(?:m[1-4]|final)-r[0-9]+)\.yaml",
             child.name,
         )
     )
 
 
 def _private_runtime_values() -> tuple[str, ...]:
-    values = {getpass.getuser(), socket.gethostname()}
-    values.update(value for value in os.environ.values() if len(value) >= 6)
+    values: set[str] = set()
+    try:
+        values.add(getpass.getuser())
+    except (KeyError, OSError):
+        pass
+    try:
+        values.add(socket.gethostname())
+    except OSError:
+        pass
+    for name, value in os.environ.items():
+        if len(value) >= 6 or re.search(
+            r"(?i)(token|otp|secret|credential|private|username|hostname|password)",
+            name,
+        ):
+            values.add(value)
     return tuple(value for value in values if value)
 
 
@@ -2035,15 +2048,17 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
         change = None
     name = PurePosixPath(relative).name
     review_id = name.removeprefix("review-invocation-").removesuffix(".yaml")
+    identity_patterns = (
+        (r"proposal-review-r[0-9]+", "proposal-review"),
+        (r"spec-review-r[0-9]+", "spec-review"),
+        (r"architecture-review-activation-r[0-9]+", "architecture-review"),
+        (r"plan-review-r[0-9]+", "plan-review"),
+        (r"test-spec-review-r[0-9]+", "test-spec-review"),
+        (r"code-review-(?:m[1-4]|final)-r[0-9]+", "code-review"),
+    )
     stage = next(
-        (
-            candidate
-            for candidate in (
-                "proposal-review", "spec-review", "architecture-review",
-                "plan-review", "test-spec-review", "code-review",
-            )
-            if review_id.startswith(candidate + "-")
-        ),
+        (candidate_stage for pattern, candidate_stage in identity_patterns
+         if re.fullmatch(pattern, review_id)),
         "unknown",
     )
     evidence = (
@@ -2052,12 +2067,92 @@ def _review_invocation_issue(root: Path, relative: str) -> ValidationIssue | Non
         and isinstance(change.get("workflow_state"), dict)
         else []
     )
+    required_fields = {
+        "schema_version", "review_id", "review_stage", "review_target",
+        "base_revision", "head_revision", "native_review_status",
+        "review_gate_outcome", "independence_level", "author_context_id",
+        "reviewer_context_id", "context_separation_mechanism", "risk_tier",
+        "governing_artifacts", "formal_criteria", "initial_packet_inventory",
+        "manifest_owner", "forbidden_initial_context_excluded",
+    }
+    allowed_fields = required_fields | {
+        "architecture", "phase_receipts", "prompt_template_version",
+        "initial_packet_sha256",
+        "requirement_fidelity", "review_focus", "risk_map",
+        "risk_tier_classifier", "risk_tier_triggers", "second_review",
+    }
+    target = manifest.get("review_target") if isinstance(manifest, dict) else None
+    packets = (
+        manifest.get("initial_packet_inventory")
+        if isinstance(manifest, dict)
+        else None
+    )
+    packet_shape_valid = bool(packets) and isinstance(packets, list) and all(
+        isinstance(packet, dict)
+        and set(packet) == {"path", "revision", "sha256"}
+        and isinstance(packet.get("path"), str)
+        and bool(packet.get("path"))
+        and isinstance(packet.get("revision"), str)
+        and bool(re.fullmatch(r"[0-9a-f]{8,64}", packet["revision"]))
+        and isinstance(packet.get("sha256"), str)
+        and bool(re.fullmatch(r"[0-9a-f]{64}", packet["sha256"]))
+        for packet in packets
+    )
+    list_fields_valid = isinstance(manifest, dict) and all(
+        isinstance(manifest.get(field), list) and bool(manifest[field])
+        for field in ("governing_artifacts", "formal_criteria")
+    )
+    status_pairs = {
+        ("approved", "approved"),
+        ("blocked", "blocked"),
+        ("changes-requested", "changes-requested"),
+        ("changes-requested", "stop"),
+    }
+    scalar_fields_valid = isinstance(manifest, dict) and all(
+        isinstance(manifest.get(field), str) and bool(manifest[field])
+        for field in (
+            "review_target", "author_context_id", "reviewer_context_id",
+            "context_separation_mechanism",
+        )
+    )
     if (
         not isinstance(manifest, dict)
+        or set(manifest) - allowed_fields
+        or required_fields - set(manifest)
         or manifest.get("schema_version") != 1
         or manifest.get("review_id") != review_id
         or manifest.get("review_stage") != stage
+        or not scalar_fields_valid
+        or not isinstance(target, str)
+        or not (
+            target.startswith(("docs/", "specs/", "commit:", "range:"))
+        )
+        or not isinstance(manifest.get("base_revision"), str)
+        or not re.fullmatch(r"[0-9a-f]{40,64}", manifest["base_revision"])
+        or not isinstance(manifest.get("head_revision"), str)
+        or not re.fullmatch(r"[0-9a-f]{40,64}", manifest["head_revision"])
+        or (
+            manifest.get("native_review_status"),
+            manifest.get("review_gate_outcome"),
+        ) not in status_pairs
+        or manifest.get("independence_level") not in {"L1", "L2"}
+        or manifest.get("risk_tier") not in {"standard", "elevated"}
+        or manifest.get("context_separation_mechanism") not in {
+            "existing-separate-agents-blind-first",
+            "separate-agent-blind-first",
+            "separate-agent-bounded-amendment-review",
+        }
+        or not list_fields_valid
+        or not packet_shape_valid
+        or (
+            "initial_packet_sha256" in manifest
+            and (
+                not isinstance(manifest["initial_packet_sha256"], str)
+                or not re.fullmatch(r"[0-9a-f]{64}", manifest["initial_packet_sha256"])
+            )
+        )
         or manifest.get("manifest_owner") != "workflow-orchestrator"
+        or manifest.get("forbidden_initial_context_excluded") is not True
         or relative not in evidence
     ):
         return _issue(
@@ -2304,7 +2399,7 @@ def validate_activation_candidate(
         publication_base=publication_base,
         grandfathering_baseline=baseline,
         transition_commit=transition_commit,
-        reviewed_head=head,
+        candidate_validation_head=head,
         rollback_release=ACTIVATION_CANDIDATE_ROLLBACK,
         tag_state="absent",
         bundle_identity=bundle,
@@ -2333,7 +2428,7 @@ def _candidate_evidence_issues(
             ),
         )
     fresh_data = fresh.as_dict()
-    reviewed_head = candidate.get("reviewed_head")
+    candidate_validation_head = candidate.get("candidate_validation_head")
     candidate_path = ACTIVATION_CHANGE_ROOT / "evidence/boundary-activation-candidate.json"
     try:
         evidence_commit = subprocess.run(
@@ -2352,7 +2447,7 @@ def _candidate_evidence_issues(
         ).stdout.split()
         first_parent = ancestry[1] if len(ancestry) >= 2 else None
         first_parent_history = subprocess.run(
-            ["git", "rev-list", "--first-parent", fresh.reviewed_head],
+            ["git", "rev-list", "--first-parent", fresh.candidate_validation_head],
             cwd=root,
             check=True,
             capture_output=True,
@@ -2363,12 +2458,12 @@ def _candidate_evidence_issues(
         first_parent = None
         first_parent_history = []
     comparable = dict(candidate)
-    comparable["reviewed_head"] = fresh.reviewed_head
+    comparable["candidate_validation_head"] = fresh.candidate_validation_head
     if (
         comparable != fresh_data
-        or not isinstance(reviewed_head, str)
-        or not re.fullmatch(r"[0-9a-f]{40,64}", reviewed_head)
-        or first_parent != reviewed_head
+        or not isinstance(candidate_validation_head, str)
+        or not re.fullmatch(r"[0-9a-f]{40,64}", candidate_validation_head)
+        or first_parent != candidate_validation_head
         or evidence_commit not in first_parent_history
     ):
         return (
@@ -2377,7 +2472,7 @@ def _candidate_evidence_issues(
                 candidate_path.as_posix(),
                 "persisted candidate evidence does not match its producing validation head and current authority",
                 "stale-or-forged-candidate-evidence",
-                "exact candidate result committed by the immediate child of its reviewed head",
+                "exact candidate result committed by the immediate child of its candidate-validation head",
             ),
         )
     return ()
@@ -2472,7 +2567,7 @@ def activation_candidate_failure_context(
         "publication_base": publication_base,
         "grandfathering_baseline": transition[1] if transition else "-",
         "transition_commit": transition[0] if transition else "-",
-        "reviewed_head": _git_identity(root, "HEAD") or "-",
+        "candidate_validation_head": _git_identity(root, "HEAD") or "-",
         "rollback_release": safe_rollback,
         "tag_state": tag_state,
         "corrective_actions": actions,
