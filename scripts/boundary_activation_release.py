@@ -4,14 +4,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-import errno
 import json
 import os
 from pathlib import Path
 import re
-import secrets
 import subprocess
-import sys
 import tempfile
 
 from boundary_first_validation import (
@@ -292,10 +289,9 @@ def publication_readiness(
     )
 
 
-def _guard_script(result_fd: int, nonce: str) -> str:
-    script = """#!/usr/bin/env python3
+def _guard_script() -> str:
+    return """#!/usr/bin/env python3
 import os
-import re
 import subprocess
 import sys
 
@@ -306,15 +302,8 @@ expected_head = os.environ["RIGORLOOP_EXPECTED_PUBLICATION_HEAD"]
 expected_transition = os.environ["RIGORLOOP_EXPECTED_TRANSITION"]
 main_ref = "refs/heads/main"
 tag_ref = f"refs/tags/{release}"
-result_fd = __RESULT_FD__
-nonce = __NONCE__
 
-def stop(code, identity=""):
-    suffix = f"\\t{identity}" if re.fullmatch(r"[0-9a-f]{40}", identity) else ""
-    try:
-        os.write(result_fd, f"{nonce}\\t{code}{suffix}\\n".encode("utf-8"))
-    except OSError:
-        pass
+def stop():
     print("RIGORLOOP_GUARD_BLOCKED", file=sys.stderr)
     raise SystemExit(1)
 
@@ -322,10 +311,10 @@ updates = {}
 for raw in sys.stdin:
     fields = raw.split()
     if len(fields) != 4:
-        stop("push-mapping-invalid")
+        stop()
     _local_ref, local_identity, remote_ref, remote_identity = fields
     if remote_ref in updates:
-        stop("push-mapping-invalid")
+        stop()
     updates[remote_ref] = (local_identity, remote_identity)
 
 result = subprocess.run(
@@ -339,86 +328,21 @@ refs = {
     for identity, ref in (line.split("\\t", 1),)
 }
 if result.returncode != 0:
-    stop("remote-advertisement-unavailable")
+    stop()
 if refs.get(main_ref) != expected_main:
-    stop("remote-main-drift", refs.get(main_ref, ""))
+    stop()
 if tag_ref in refs:
-    stop("remote-tag-exists", refs[tag_ref])
+    stop()
 
 if set(updates) != {main_ref, tag_ref}:
-    stop("push-mapping-invalid")
+    stop()
 if updates[main_ref][0] != expected_head or updates[tag_ref][0] != expected_transition:
-    stop("push-mapping-invalid")
+    stop()
 if updates[main_ref][1] != expected_main:
-    stop("remote-main-drift", updates[main_ref][1])
+    stop()
 if updates[tag_ref][1] != "0" * 40:
-    stop("remote-tag-exists", updates[tag_ref][1])
+    stop()
 """
-    return script.replace("__RESULT_FD__", str(result_fd)).replace(
-        "__NONCE__", repr(nonce)
-    )
-
-
-_CAPABILITY_ERRORS = (OSError, AttributeError, ValueError, TypeError, NotImplementedError)
-
-
-def _read_guard_result(
-    read_descriptor: int,
-    nonce: str,
-) -> re.Match[str] | None:
-    raw = b""
-    try:
-        while len(raw) <= 256:
-            chunk = os.read(read_descriptor, 257 - len(raw))
-            if not chunk:
-                break
-            raw += chunk
-    except OSError:
-        return None
-    if len(raw) > 256:
-        return None
-    try:
-        value = raw.decode("utf-8")
-    except UnicodeError:
-        return None
-    return re.fullmatch(
-        re.escape(nonce)
-        + r"\t(remote-main-drift|remote-tag-exists|remote-advertisement-unavailable|push-mapping-invalid)(?:\t([0-9a-f]{40}))?\n",
-        value,
-    )
-
-
-def _force_close_descriptor(descriptor: int) -> bool:
-    try:
-        os.close(descriptor)
-        return True
-    except OSError as error:
-        if error.errno == errno.EBADF:
-            return True
-    try:
-        os.closerange(descriptor, descriptor + 1)
-    except _CAPABILITY_ERRORS:
-        pass
-    try:
-        os.fstat(descriptor)
-    except OSError as error:
-        return error.errno == errno.EBADF
-    except (AttributeError, ValueError, TypeError, NotImplementedError):
-        return False
-    return False
-
-
-def _close_descriptors(*descriptors: int | None) -> bool:
-    remaining = [descriptor for descriptor in descriptors if descriptor is not None]
-    for _ in range(3):
-        remaining = [
-            descriptor
-            for descriptor in remaining
-            if not _force_close_descriptor(descriptor)
-        ]
-        if not remaining:
-            return True
-    return False
 
 
 def _atomic_push(
@@ -427,112 +351,74 @@ def _atomic_push(
     *,
     dry_run: bool,
 ) -> None:
-    read_descriptor: int | None = None
-    write_descriptor: int | None = None
-    try:
-        read_descriptor, write_descriptor = os.pipe()
-        os.set_blocking(read_descriptor, False)
-    except _CAPABILITY_ERRORS as error:
-        _close_descriptors(read_descriptor, write_descriptor)
-        raise PublicationError(
-            "atomic-capability-unavailable" if dry_run else "atomic-publication-failed",
-            **readiness.error_context("check" if dry_run else "publish"),
-        ) from error
-    try:
-        with tempfile.TemporaryDirectory(
-            prefix="rigorloop-activation-hooks-"
-        ) as temporary:
-            nonce = secrets.token_hex(32)
-            hook = Path(temporary) / "pre-push"
-            hook.write_text(_guard_script(write_descriptor, nonce), encoding="utf-8")
-            hook.chmod(0o700)
-            environment = {
-                **os.environ,
-                "RIGORLOOP_ACTIVATION_RELEASE": readiness.release,
-                "RIGORLOOP_EXPECTED_REMOTE_MAIN": readiness.publication_base,
-                "RIGORLOOP_EXPECTED_PUBLICATION_HEAD": readiness.publication_head,
-                "RIGORLOOP_EXPECTED_TRANSITION": readiness.transition_commit,
-            }
-            command = [
-                "git",
-                "-c",
-                f"core.hooksPath={temporary}",
-                "push",
-                "--atomic",
+    with tempfile.TemporaryDirectory(prefix="rigorloop-activation-hooks-") as temporary:
+        hook = Path(temporary) / "pre-push"
+        hook.write_text(_guard_script(), encoding="utf-8")
+        hook.chmod(0o700)
+        environment = {
+            **os.environ,
+            "RIGORLOOP_ACTIVATION_RELEASE": readiness.release,
+            "RIGORLOOP_EXPECTED_REMOTE_MAIN": readiness.publication_base,
+            "RIGORLOOP_EXPECTED_PUBLICATION_HEAD": readiness.publication_head,
+            "RIGORLOOP_EXPECTED_TRANSITION": readiness.transition_commit,
+        }
+        command = [
+            "git",
+            "-c",
+            f"core.hooksPath={temporary}",
+            "push",
+            "--atomic",
+        ]
+        if dry_run:
+            command.append("--dry-run")
+        command.extend(
+            [
+                "origin",
+                f"{readiness.publication_head}:refs/heads/main",
+                f"{readiness.transition_commit}:refs/tags/{readiness.release}",
             ]
-            if dry_run:
-                command.append("--dry-run")
-            command.extend(
-                [
-                    "origin",
-                    f"{readiness.publication_head}:refs/heads/main",
-                    f"{readiness.transition_commit}:refs/tags/{readiness.release}",
-                ]
+        )
+        try:
+            subprocess.run(
+                command,
+                cwd=root,
+                env=environment,
+                check=True,
+                capture_output=True,
+                text=True,
             )
+        except (
+            subprocess.CalledProcessError,
+            OSError,
+            AttributeError,
+            ValueError,
+            TypeError,
+            NotImplementedError,
+        ) as error:
             try:
-                subprocess.run(
-                    command,
-                    cwd=root,
-                    env=environment,
-                    check=True,
-                    capture_output=True,
-                    text=True,
-                    pass_fds=(write_descriptor,),
-                )
-            except (
-                subprocess.CalledProcessError,
-                OSError,
-                AttributeError,
-                ValueError,
-                TypeError,
-                NotImplementedError,
-            ) as error:
-                write_closed = _force_close_descriptor(write_descriptor)
-                if write_closed:
-                    write_descriptor = None
-                marker = (
-                    _read_guard_result(read_descriptor, nonce)
-                    if write_closed
-                    else None
-                )
-                read_closed = _force_close_descriptor(read_descriptor)
-                if read_closed:
-                    read_descriptor = None
-                if not read_closed:
-                    marker = None
-                if marker:
-                    code = marker.group(1)
-                    conflict_key = {
-                        "remote-main-drift": "conflicting_remote_main",
-                        "remote-tag-exists": "conflicting_remote_tag",
-                    }.get(code)
-                    conflict = (
-                        {conflict_key: marker.group(2)}
-                        if conflict_key and marker.group(2)
-                        else {}
-                    )
-                    raise PublicationError(
-                        code,
-                        **readiness.error_context(
-                            "check" if dry_run else "publish"
-                        ),
-                        **conflict,
-                    ) from error
+                refs = _advertised_refs(root, readiness.release)
+            except PublicationError:
+                refs = {}
+            remote_main = refs.get("refs/heads/main")
+            remote_tag = refs.get(f"refs/tags/{readiness.release}")
+            if remote_main and remote_main != readiness.publication_base:
                 raise PublicationError(
-                    "atomic-capability-unavailable"
-                    if dry_run
-                    else "atomic-publication-failed",
+                    "remote-main-drift",
                     **readiness.error_context("check" if dry_run else "publish"),
+                    conflicting_remote_main=remote_main,
                 ) from error
-    finally:
-        cleanup_complete = _close_descriptors(read_descriptor, write_descriptor)
-        if not cleanup_complete and sys.exc_info()[0] is None:
+            if remote_tag:
+                raise PublicationError(
+                    "remote-tag-exists",
+                    **readiness.error_context("check" if dry_run else "publish"),
+                    conflicting_remote_tag=remote_tag,
+                ) from error
             raise PublicationError(
                 "atomic-capability-unavailable"
                 if dry_run
                 else "atomic-publication-failed",
                 **readiness.error_context("check" if dry_run else "publish"),
-            )
+            ) from error
 
 
 def check_publication(
