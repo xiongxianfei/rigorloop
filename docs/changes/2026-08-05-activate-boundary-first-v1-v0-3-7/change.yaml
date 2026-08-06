@@ -148,6 +148,7 @@ workflow_state:
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m2-r9.md
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r10.yaml
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m2-r10.md
+    - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r11.yaml
   planned_work:
     plan_artifact_id: plan
     current_milestone: M2
@@ -169,15 +170,14 @@ workflow_state:
       - M3
       - M4
     latest_review:
-      status: changes-requested
+      status: review-requested
       stage: code-review
-      round: r10
+      round: r11
       artifact_id: plan
       occurrence: milestone
       milestone_id: M2
       evidence:
-        - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r10.yaml
-        - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m2-r10.md
+        - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r11.yaml
     final_closeout:
       readiness: not-ready
       reasons:
@@ -297,8 +297,9 @@ changed_files:
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m2-r9.md
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r10.yaml
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m2-r10.md
+  - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r11.yaml
 review:
-  status: changes-requested
+  status: review-requested
   unresolved_items: 8
 architecture:
   assessment: architecture-required
