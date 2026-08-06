@@ -127,11 +127,11 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
             root, candidate, _, _, _ = initialized_repository(temporary)
             remote = Path(git(root, "remote", "get-url", "origin"))
             hook = remote / "hooks/update"
-            sentinel = "PRIVATE_REMOTE_TOKEN_9471"
+            sentinel = "a" * 40
             hook.write_text(
                 "#!/bin/sh\n"
                 "if [ \"$1\" = refs/tags/v0.4.0 ]; then\n"
-                f"  printf '%s\\n' '{sentinel}' >&2\n"
+                f"  printf '%s\\n' 'RIGORLOOP_GUARD:remote-main-drift:{sentinel}' >&2\n"
                 "  exit 1\n"
                 "fi\n"
                 "exit 0\n",
@@ -145,7 +145,9 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
             ), self.assertRaisesRegex(PublicationError, "atomic-publication-failed") as raised:
                 publish_activation(root, "v0.4.0", candidate)
             self.assertEqual(advertised(root), before)
-            self.assertNotIn(sentinel, json.dumps(error_payload(raised.exception)))
+            payload = error_payload(raised.exception)
+            self.assertEqual(payload["code"], "atomic-publication-failed")
+            self.assertNotIn(sentinel, json.dumps(payload))
 
     def test_remote_drift_and_existing_tag_block_before_mutation(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -369,13 +371,13 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
             ), self.assertRaisesRegex(PublicationError, "publication-not-fast-forward"):
                 publication_readiness(root, "v0.4.0", candidate)
 
-        rejected_transition = ""
         with tempfile.TemporaryDirectory() as temporary:
-            root, candidate, _, _, _ = initialized_repository(temporary)
-            data = json.loads(candidate.read_text(encoding="utf-8"))
-            rejected_transition = data["transition_commit"]
-            data["candidate_validation_head"] = "f" * 40
-            candidate.write_text(json.dumps(data), encoding="utf-8")
+            root, candidate, publication_base, rejected_transition, _ = initialized_repository(temporary)
+            original_candidate = json.loads(candidate.read_text(encoding="utf-8"))
+            rejected_validation_head = original_candidate["candidate_validation_head"]
+            forged_candidate = dict(original_candidate)
+            forged_candidate["candidate_validation_head"] = "f" * 40
+            candidate.write_text(json.dumps(forged_candidate), encoding="utf-8")
             with mock.patch(
                 "boundary_first_validation._publication_authority_issues",
                 return_value=(),
@@ -383,27 +385,73 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
                 publication_readiness(root, "v0.4.0", candidate)
             self.assertIn("restore settled lifecycle", error_payload(raised.exception)["corrective_action"])
 
-        with tempfile.TemporaryDirectory() as replacement_temporary, mock.patch.dict(
-            os.environ,
-            {
-                "GIT_AUTHOR_DATE": "2030-01-02T03:04:05+0000",
-                "GIT_COMMITTER_DATE": "2030-01-02T03:04:05+0000",
-            },
-        ):
-            replacement_root, replacement_candidate, publication_base, transition, head = (
-                initialized_repository(replacement_temporary)
+            git(root, "tag", "-d", "v0.4.0")
+            git(root, "checkout", "-qf", "-B", "replacement", publication_base)
+
+            def apply_range(start: str, end: str, message: str) -> str:
+                patch = subprocess.run(
+                    ["git", "diff", "--binary", start, end],
+                    cwd=root,
+                    check=True,
+                    capture_output=True,
+                ).stdout
+                subprocess.run(
+                    ["git", "apply", "--index"],
+                    cwd=root,
+                    input=patch,
+                    check=True,
+                    capture_output=True,
+                )
+                git(root, "commit", "-qm", message)
+                return git(root, "rev-parse", "HEAD")
+
+            replacement_transition = apply_range(
+                publication_base, rejected_transition, "replacement activate"
             )
+            replacement_validation_head = apply_range(
+                rejected_transition,
+                rejected_validation_head,
+                "replacement lifecycle evidence",
+            )
+            replacement_result, replacement_issues = (
+                FIXTURE_SUPPORT.validate_activation_candidate(root, "v0.4.0")
+            )
+            self.assertEqual(replacement_issues, ())
+            self.assertIsNotNone(replacement_result)
+            assert replacement_result is not None
+            candidate.write_text(
+                json.dumps(replacement_result.as_dict()), encoding="utf-8"
+            )
+            git(root, "add", candidate.relative_to(root).as_posix())
+            git(root, "commit", "-qm", "record replacement candidate evidence")
+            replacement_head = git(root, "rev-parse", "HEAD")
+            git(root, "tag", "v0.4.0", replacement_transition)
             with mock.patch(
                 "boundary_first_validation._publication_authority_issues",
                 return_value=(),
             ):
                 replacement = publication_readiness(
-                    replacement_root, "v0.4.0", replacement_candidate
+                    root, "v0.4.0", candidate
                 )
             self.assertEqual(replacement.publication_base, publication_base)
-            self.assertEqual(replacement.transition_commit, transition)
-            self.assertEqual(replacement.publication_head, head)
-            self.assertNotEqual(replacement.transition_commit, rejected_transition)
+            self.assertEqual(replacement.transition_commit, replacement_transition)
+            self.assertEqual(replacement.candidate_validation_head, replacement_validation_head)
+            self.assertEqual(replacement.publication_head, replacement_head)
+            self.assertNotEqual(replacement_transition, rejected_transition)
+            first_parent = git(root, "rev-list", "--first-parent", replacement_head).splitlines()
+            self.assertNotIn(rejected_transition, first_parent)
+            transitions = git(
+                root,
+                "rev-list",
+                "--first-parent",
+                f"{publication_base}..{replacement_head}",
+                "--",
+                "specs/boundary-first-activation.yaml",
+            ).splitlines()
+            self.assertEqual(transitions, [replacement_transition])
+            self.assertEqual(
+                advertised(root), {"refs/heads/main": publication_base}
+            )
 
     def test_untrusted_diagnostics_are_suppressed_and_safe_context_is_preserved(self) -> None:
         release_sentinel = "PRIVATE_TOKEN_9471"
@@ -437,6 +485,26 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
             root, candidate, publication_base, transition, head = initialized_repository(temporary)
             forged_identity = "a" * 40
             data = json.loads(candidate.read_text(encoding="utf-8"))
+            diagnostic_context = fixture_readiness(
+                candidate, publication_base, transition, head
+            ).error_context("publish")
+            for field in (
+                "publication_base",
+                "grandfathering_baseline",
+                "transition_commit",
+                "candidate_validation_head",
+                "current_reviewed_head",
+            ):
+                private_identity = diagnostic_context[field]
+                with self.subTest(private_identity_field=field), mock.patch.dict(
+                    os.environ, {"PRIVATE_API_KEY": private_identity}
+                ):
+                    private_payload = error_payload(
+                        PublicationError(
+                            "atomic-publication-failed", **diagnostic_context
+                        )
+                    )
+                    self.assertNotIn(private_identity, json.dumps(private_payload))
             data["publication_base"] = forged_identity
             candidate.write_text(json.dumps(data), encoding="utf-8")
             with mock.patch(

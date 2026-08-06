@@ -11,7 +11,10 @@ import re
 import subprocess
 import tempfile
 
-from boundary_first_validation import validate_activation_publication_readiness
+from boundary_first_validation import (
+    _private_runtime_values,
+    validate_activation_publication_readiness,
+)
 
 
 ACTIVATION_RELEASE = "v0.4.0"
@@ -55,8 +58,11 @@ _IDENTITY_CONTEXT_FIELDS = {
 
 def _safe_context(context: dict[str, str]) -> dict[str, str]:
     safe: dict[str, str] = {}
+    private_values = _private_runtime_values()
     for key, value in context.items():
         if not isinstance(value, str) or not value:
+            continue
+        if any(private in value for private in private_values):
             continue
         if key == "mode" and value in {"readiness", "check", "publish"}:
             safe[key] = value
@@ -384,9 +390,18 @@ def _atomic_push(
             )
         except (OSError, subprocess.CalledProcessError) as error:
             diagnostic = getattr(error, "stderr", "") or ""
-            marker = re.search(
-                r"RIGORLOOP_GUARD:(remote-main-drift|remote-tag-exists|remote-advertisement-unavailable|push-mapping-invalid)(?::([0-9a-f]{40}))?",
-                diagnostic,
+            marker = next(
+                (
+                    matched
+                    for line in diagnostic.splitlines()
+                    if (
+                        matched := re.fullmatch(
+                            r"RIGORLOOP_GUARD:(remote-main-drift|remote-tag-exists|remote-advertisement-unavailable|push-mapping-invalid)(?::([0-9a-f]{40}))?",
+                            line,
+                        )
+                    )
+                ),
+                None,
             )
             if marker:
                 code = marker.group(1)

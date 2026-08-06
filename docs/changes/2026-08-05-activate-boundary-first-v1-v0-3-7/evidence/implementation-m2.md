@@ -33,13 +33,15 @@ one-ref receive rejection with all-or-neither refs, stale remote main, existing
 remote tag, real advertised-atomic capability failure, post-readiness remote
 drift, local-head movement, non-fast-forward H, and modified candidate evidence.
 The receive-rejection fixture uses a tag-selective update hook, proving the
-otherwise acceptable main update is rolled back with the rejected tag. A fresh
-replacement fixture proves invalid candidate evidence is rejected and a new
-validated transition/history can be generated without retaining it. Focused
+otherwise acceptable main update is rolled back with the rejected tag. The
+same-repository replacement fixture starts from the rejected candidate's exact
+advertised P, proves exactly one new T, excludes rejected T from first-parent
+history, and passes full readiness without moving remote refs. Focused
 contract fixtures prove same-push stdin mismatch rejection, exact
 full-SHA refspecs, absence of force/fallback flags, explicit and successful CLI
 modes, canonical path authority, authenticated-context preservation, private
-input/provider suppression, and post-push stop-and-reconcile behavior. The
+P/B/T/R/H environment collisions, forged provider-marker suppression, and
+post-push stop-and-reconcile behavior. The
 selector fixture proves all three new paths route to the owned regression.
 
 ## Validation
