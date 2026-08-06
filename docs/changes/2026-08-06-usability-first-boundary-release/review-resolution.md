@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -18,15 +18,16 @@ Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r3
 Review closeout: code-review-m3-r7
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`
 - Findings resolved: 21
-- Unresolved findings: 0
-- Current result: Code-review M3 R7 is clean; M3 is closed and routing advances to M4.
+- Unresolved findings: 1
+- Current result: Code-review M4 R1 requests one selector-fixture correction; M4 remains open for review resolution.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
+| UBR-M4-CR1-001 | accepted | in-progress | Retarget the CI-wrapper integration fixture without weakening active grandfathered-spec review enforcement. |
 | UBR-M3-CR6-001 | accepted | resolved | Required deferral authority is substantive and open; `none` is exclusive with real deferrals. |
 | UBR-M3-CR5-001 | accepted | resolved | Every state enforces exact rows and applicable results; the sole emergency deferral is exactly bound. |
 | UBR-M3-CR4-001 | accepted | resolved | All governed rows appear exactly once and passing proof rejects whitespace-only values. |
@@ -61,6 +62,22 @@ Review closeout: code-review-m3-r7
 - Validation evidence: spec revision R3 authoring checks and approved spec-review R3
 
 ## Finding Details
+
+### code-review-m4-r1
+
+#### UBR-M4-CR1-001 - Active grandfathering leaves the selector wrapper fixture stale
+
+Finding ID: UBR-M4-CR1-001
+Disposition: accepted
+Status: in-progress
+Owner: M4 implementer
+Owning stage: review-resolution
+Chosen action: Retarget the CI-wrapper execution fixture to a current adopting spec, or supply the required review classification through a supported fixture path, while preserving `BFR-GRANDFATHERED-REVIEW` for substantively changed frozen specs.
+Rationale: The active inventory correctly changes historical-spec validation, but the cumulative selector suite still expects an inventory member to pass without semantic review classification.
+Validation target: code-review-m4-r2
+Validation evidence: pending correction and independent rereview.
+Safe resolution path: Update only the affected selector fixture and its path assertions, then rerun the focused CI-wrapper reproduction and all 147 selector tests.
+Auto-fix class: declared-safe
 
 ### code-review-m3-r7
 

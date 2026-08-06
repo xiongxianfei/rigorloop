@@ -1,0 +1,95 @@
+schema_version: 1
+review_id: code-review-m4-r1
+review_stage: code-review
+review_target: range:5e6a4ce88ab4e99442e9e75177193646c9164229..cfd7ef0e
+base_revision: 5e6a4ce88ab4e99442e9e75177193646c9164229
+head_revision: cfd7ef0e
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L1
+author_context_id: root-m4-implementation
+reviewer_context_id: m4-r1-fresh-independent-reviewer
+context_separation_mechanism: separate-agent-blind-first
+risk_tier: medium
+risk_tier_triggers:
+  - exact-reviewed-baseline-provenance
+  - frozen-inventory-authority
+  - checked-revision-activation
+  - cumulative-selector-integration
+  - routine-release-evidence
+risk_tier_classifier: affected-path-and-contract-surface-v1
+governing_artifacts:
+  - specs/usability-first-boundary-release.md
+  - specs/usability-first-boundary-release.test.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+  - docs/plans/2026-08-06-usability-first-boundary-release.md
+  - specs/release-process-contract.md
+  - specs/release-process-contract.test.md
+formal_criteria:
+  - code-review-first-pass-v1
+  - independent-review-gate-v1
+  - requirement-fidelity-gate-v1
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: specs/usability-first-boundary-release.md
+    revision: cfd7ef0e
+    sha256: 1507c4f1a38fb01da5bace5a7c4e5f83fdd9468ed3355775444bb624c7ee6160
+  - path: specs/usability-first-boundary-release.test.md
+    revision: cfd7ef0e
+    sha256: 2bbaf2f118928af45e46442e84753f23f92d00ceca99c40b1bd851ee9a6c19db
+  - path: docs/architecture/system/architecture.md
+    revision: cfd7ef0e
+    sha256: 0495a510b37cdc2535390cebb25e0f5dbbfb093ae031853f48425e22ea53c1c2
+  - path: docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md
+    revision: cfd7ef0e
+    sha256: dcdecc94c62a4d55e108711b466976c2309cb6bf4cfc866110461e9c44d82cdf
+  - path: docs/plans/2026-08-06-usability-first-boundary-release.md
+    revision: cfd7ef0e
+    sha256: 20dfdffbe57586be33ed111dad8b10e44d431e29a6af49caf4c1be097ddc90cd
+  - path: docs/changes/2026-08-06-usability-first-boundary-release/change.yaml
+    revision: cfd7ef0e
+    sha256: 0d40990afa7fca98282552bfc08086840c169a18943139f3994d5e52e3a8b8f1
+  - path: range:5e6a4ce88ab4e99442e9e75177193646c9164229..cfd7ef0e.diff
+    revision: cfd7ef0e
+    sha256: 8d04895faa71056843cfd4080b18d7f1548242576fd55d9c9c8f3f1fb578dd4c
+  - path: range:d215c045..cfd7ef0e.diff
+    revision: cfd7ef0e
+    sha256: faa3dc4eb65ca4bd8aca314bf015d11808b67d49852ce984db367bd8b593025d
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review:
+  required: false
+  satisfied: false
+requirement_fidelity:
+  applicability: applicable
+  reason: M4 changes the active compatibility authority and must compose with ordinary selector, release, rollback, and package paths.
+  outcome: changes-requested
+risk_map:
+  affected_behavior: exact active snapshot, frozen historical compatibility, current-file validation, rollback selection, and cumulative release integration
+  highest_impact_failure_modes: wrong reviewed baseline, incomplete or incorrectly sorted inventory, recurring history dependency, false public claim, selector regression, rollback substitution, or archive-source identity conflation
+  changed_boundaries: BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001, INT-002, and INT-003
+  evidence_expected: independent baseline and inventory proof, no-history active validation, independently valid pending fixtures, exact rollback identities, selector integration, release preparation and preflight, selected CI, full standing gate, and no external mutation
+  direct_inspection_areas: activation tuple, M3 review provenance, Git tree inventory, proof-model readiness, pending fixtures, selector fixtures, rollback metadata, release evidence, and archive-source separation
+  intentionally_out_of_scope: live tag creation, push, publication, merge, public closeout, explain-change, verify, and PR readiness
+  applicable_risk_classes:
+    - requirement-fidelity
+    - checked-revision-activation
+    - compatibility-and-selector-integration
+    - release-identity-and-authority
+    - package-supply-chain
+    - recovery-and-rollback
+    - privacy
+  non_applicable_risk_classes:
+    - live-publication
+    - external-mutation
+  falsifiable_questions:
+    - Is the baseline exactly the pending source reviewed by M3 R7?
+    - Does an independent Git-tree reconstruction equal the frozen 78-item tuple?
+    - Can normal active validation run with no history, tag, remote, network, or derivation call?
+    - Does active state preserve every ordinary selector and routine release path?
