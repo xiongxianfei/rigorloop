@@ -7796,6 +7796,41 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
         "usability.explicit-base",
         "usability.explicit-deeper",
     }
+    USABILITY_EXPECTATIONS = {
+        "usability.e1.specification": (
+            "spec",
+            "boundary-record",
+            frozenset({
+                "active-snapshot", "additional-field", "compatibility",
+                "malformed-field", "missing-field", "mixed-state",
+                "pending-snapshot", "unknown-state",
+            }),
+            frozenset({"network", "publication", "release-tag", "transition-history"}),
+        ),
+        "usability.e2.inspection": (
+            "implement",
+            "none",
+            frozenset({
+                "active-snapshot", "additional-field", "frozen-inventory",
+                "malformed-field", "missing-field", "pending-snapshot",
+                "public-cli-caller", "unknown-field",
+            }),
+            frozenset({"provider-outage", "registry-publication"}),
+        ),
+        "usability.e3.code-review": (
+            "code-review", "none",
+            frozenset({"retired-custom-paths", "rollback", "routine-release", "validator"}),
+            frozenset({"atomic-ref-race", "custom-publisher-recovery"}),
+        ),
+        "usability.wording-only": ("workflow", "none", frozenset(), frozenset({"wording"})),
+        "usability.no-boundary": ("verify", "none", frozenset(), frozenset({"presentation"})),
+        "usability.contract-base": ("test-spec", "proof-map", frozenset({"primary-boundary"}), frozenset({"external-provider"})),
+        "usability.contract-deeper": ("test-spec", "proof-map", frozenset({"failure-interaction", "primary-boundary"}), frozenset({"external-provider"})),
+        "usability.risk-base": ("code-review", "none", frozenset({"public-path"}), frozenset({"deployment"})),
+        "usability.risk-deeper": ("code-review", "none", frozenset({"public-path", "retry-path"}), frozenset({"deployment"})),
+        "usability.explicit-base": ("implement", "none", frozenset({"loader"}), frozenset({"provider"})),
+        "usability.explicit-deeper": ("implement", "none", frozenset({"caller", "loader"}), frozenset({"provider"})),
+    }
     PROGRESSIVE_VOCABULARIES = {
         "capability_state": {"pending", "active"},
         "identity_state": {
@@ -8282,15 +8317,22 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
                 errors.append(f"duplicate case {case_id}")
                 continue
             seen.add(case_id)
-            if case["stage"] not in self.GOVERNED_SKILLS:
-                errors.append(f"{case_id}: stage value is not in the closed vocabulary")
-            if case["depth_trigger"] not in self.USABILITY_TRIGGER_KINDS:
-                errors.append(f"{case_id}: depth_trigger value is not in the closed vocabulary")
-            if case["formal_artifact"] not in self.USABILITY_ARTIFACT_KINDS:
-                errors.append(f"{case_id}: formal_artifact value is not in the closed vocabulary")
+            malformed_case = False
+            for field, allowed in (
+                ("stage", self.GOVERNED_SKILLS),
+                ("depth_trigger", self.USABILITY_TRIGGER_KINDS),
+                ("formal_artifact", self.USABILITY_ARTIFACT_KINDS),
+            ):
+                value = case[field]
+                if not isinstance(value, str) or value not in allowed:
+                    errors.append(f"{case_id}: {field} value is not in the closed vocabulary")
+                    malformed_case = True
             for field in ("user_named_method", "behavior_change"):
                 if type(case[field]) is not bool:
                     errors.append(f"{case_id}: {field} must be a boolean")
+                    malformed_case = True
+            if malformed_case:
+                continue
             candidates = case["candidates"]
             if not isinstance(candidates, list) or not candidates:
                 errors.append(f"{case_id}: candidates must be a nonempty list")
@@ -8323,6 +8365,20 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
             if not malformed_candidate and self.usability_selected_topics(case) != expected:
                 errors.append(f"{case_id}: expected selection contradicts the semantic rule")
 
+            contract_stage, contract_artifact, required_topics, forbidden_topics = (
+                self.USABILITY_EXPECTATIONS[case_id]
+            )
+            if case["stage"] != contract_stage:
+                errors.append(f"{case_id}: stage differs from the contract-owned oracle")
+            if case["formal_artifact"] != contract_artifact:
+                errors.append(f"{case_id}: artifact differs from the contract-owned oracle")
+            if set(expected) != required_topics:
+                errors.append(f"{case_id}: selected topics differ from the contract-owned oracle")
+            selected_forbidden = set(expected) & forbidden_topics
+            missing_forbidden_candidates = forbidden_topics - topics
+            if selected_forbidden or missing_forbidden_candidates:
+                errors.append(f"{case_id}: forbidden-topic proof differs from the contract-owned oracle")
+
             expected_artifact = (
                 "boundary-record"
                 if case["stage"] == "spec" and case["behavior_change"]
@@ -8334,6 +8390,8 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
                 errors.append(f"{case_id}: formal artifact violates stage ownership")
         if seen != self.REQUIRED_USABILITY_CASE_IDS:
             errors.append("fixture must cover every required usability journey")
+        if set(self.USABILITY_EXPECTATIONS) != self.REQUIRED_USABILITY_CASE_IDS:
+            errors.append("contract-owned usability oracle must cover every journey")
         return errors
 
     def usability_fixture(self) -> dict[str, object]:
@@ -8404,6 +8462,40 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
         extra_field = json.loads(json.dumps(fixture))
         extra_field["cases"][0]["word_count"] = 12
         mutations.append(extra_field)
+        for field, value in (
+            ("depth_trigger", []),
+            ("formal_artifact", {}),
+            ("stage", None),
+        ):
+            changed = json.loads(json.dumps(fixture))
+            changed["cases"][0][field] = value
+            mutations.append(changed)
+
+        by_id = {
+            case["case_id"]: index for index, case in enumerate(fixture["cases"])
+        }
+        for topic in ("pending-snapshot", "active-snapshot", "missing-field", "additional-field", "malformed-field", "mixed-state", "unknown-state"):
+            changed = json.loads(json.dumps(fixture))
+            index = by_id["usability.e1.specification"]
+            changed["cases"][index]["candidates"] = [
+                candidate for candidate in changed["cases"][index]["candidates"]
+                if candidate["topic"] != topic
+            ]
+            changed["cases"][index]["expected_selected"].remove(topic)
+            mutations.append(changed)
+        coordinated_forbidden = json.loads(json.dumps(fixture))
+        e1 = coordinated_forbidden["cases"][by_id["usability.e1.specification"]]
+        release_tag = next(candidate for candidate in e1["candidates"] if candidate["topic"] == "release-tag")
+        release_tag["owned"] = True
+        release_tag["governing_consequence"] = True
+        e1["expected_selected"] = sorted([*e1["expected_selected"], "release-tag"])
+        mutations.append(coordinated_forbidden)
+
+        reassigned_stage = json.loads(json.dumps(fixture))
+        e1 = reassigned_stage["cases"][by_id["usability.e1.specification"]]
+        e1["stage"] = "test-spec"
+        e1["formal_artifact"] = "proof-map"
+        mutations.append(reassigned_stage)
         for index, mutation in enumerate(mutations):
             with self.subTest(mutation=index):
                 self.assertNotEqual(self.usability_fixture_errors(mutation), [])
