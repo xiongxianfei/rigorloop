@@ -76,11 +76,13 @@ Review closeout: test-spec-review-r7
 | BFA-M1-R2-001 | accepted | resolved | Inspect merged side-branch commits so change-and-revert ancestry cannot hide drift. |
 | BFA-M1-R3-001 | accepted | resolved | Separated candidate-producing R, evidence commit C, and publication head H. |
 | BFA-M1-R4-001 | accepted | resolved | Replaced candidate-mode rerun with phase-correct tagged readiness. |
-| BFA-M1-R4-002 | accepted | open | Align closed receipt validation with accepted abbreviated identities. |
+| BFA-M1-R4-002 | accepted | resolved | Aligned closed receipt validation with accepted abbreviated identities. |
 | BFA-M1-R4-003 | accepted | resolved | Redact short PIN, API-key, and auth-code environment values. |
-| BFA-M1-R5-001 | accepted | open | Bind revision validation to each packet inventory entry. |
+| BFA-M1-R5-001 | accepted | resolved | Bound revision validation to each packet inventory entry. |
 | BFA-M1-R5-002 | accepted | resolved | Accept lexical numeric abbreviated base/head revisions. |
 | BFA-M1-R6-001 | accepted | open | Reject duplicate inventory sections and mapping keys. |
+| BFA-M1-R7-001 | accepted | open | Normalize parser-equivalent duplicate top-level keys. |
+| BFA-M1-R7-002 | accepted | open | Require unique packet inventory paths. |
 
 ## Finding Details
 
@@ -477,6 +479,32 @@ full consumption of packet triples without duplicate keys.
 Rationale: Closed lifecycle evidence cannot rely on last-value-wins YAML parsing.
 Validation target: code-review-m1-r7
 Validation evidence: pending correction and R7
+
+### code-review-m1-r7
+
+#### BFA-M1-R7-001 - Spaced duplicate keys
+
+Finding ID: BFA-M1-R7-001
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Normalize top-level key syntax before duplicate detection.
+Rationale: Lexical validation must match parser key equivalence.
+Validation target: code-review-m1-r8
+Validation evidence: pending correction and R8
+
+#### BFA-M1-R7-002 - Duplicate packet paths
+
+Finding ID: BFA-M1-R7-002
+Disposition: accepted
+Status: open
+Owner: M1 implementer
+Owning stage: review-resolution
+Chosen action: Require unique lexical and parsed packet paths.
+Rationale: One reviewed artifact path cannot carry contradictory identities.
+Validation target: code-review-m1-r8
+Validation evidence: pending correction and R8
 
 #### BFA-M1-R5-002 - Numeric abbreviated revisions rejected
 
