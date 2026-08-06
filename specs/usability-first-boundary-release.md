@@ -124,6 +124,8 @@ UBR-R019. Historical accepted feature specs MUST remain valid without migration.
 
 UBR-R020. An immutable `v0.4.0` tag MUST identify the exact reviewed release commit, and local or public checks MUST fail rather than treat a mismatched, rewritten, incomplete, or mixed-version release identity as success.
 
+UBR-R021. A `boundary-first-v1` feature spec governed by `stage-owned-change-local-v1` MUST place the literal `boundary_contract: boundary-first-v1` marker exactly once in `## Owning change record`, after the normalized backticked pointer to its owning `docs/changes/<change-id>/change.yaml`, and MUST NOT require an embedded `## Status` section. A marker before that pointer, outside `## Owning change record`, or repeated anywhere in the artifact MUST fail validation. Feature specs not governed by `stage-owned-change-local-v1` retain the standing PBF-R002 `## Status` placement form.
+
 ## Inputs and outputs
 
 Inputs:
@@ -179,6 +181,7 @@ The standing `specs/boundary-first-proof-model.md` contract remains authoritativ
 | Standing requirement subjects | Disposition in this specification |
 | --- | --- |
 | `PBF-R005`, `PBF-R005a` | Replaced for capability state by UBR-R006 through UBR-R008. Existing manifest identity fields remain, but `activating_release` is release intent and tag existence is not local activation proof. |
+| `PBF-R002` marker placement | Replaced only for `stage-owned-change-local-v1` feature specs by UBR-R021. The literal marker, exact-one cardinality, and fail-closed placement remain mandatory; non-stage-owned feature specs retain the standing `## Status` form. |
 | `PBF-R005b` | Retained: architecture continues to own the activation-manifest path. |
 | `PBF-R005c` | Replaced only for ongoing derivation: activation preparation receives the exact reviewed pending revision explicitly, derives and freezes the complete inventory once, and records both; later checked-revision checks use the frozen inventory without requiring Git reachability or transition-parent identity. |
 | `PBF-R006` | Its complete coherent skill/resource/package precondition is retained by UBR-R007; its tag and transition-history activation preconditions are replaced. |
@@ -219,7 +222,7 @@ Routine preflight and full release verification retain their standing performanc
 ## Boundary model
 
 Boundary model version: boundary-first-v1
-Boundary model scope: UBR-R001, UBR-R002, UBR-R003, UBR-R004, UBR-R005, UBR-R006, UBR-R007, UBR-R008, UBR-R009, UBR-R010, UBR-R011, UBR-R012, UBR-R013, UBR-R014, UBR-R015, UBR-R016, UBR-R017, UBR-R018, UBR-R019, UBR-R020
+Boundary model scope: UBR-R001, UBR-R002, UBR-R003, UBR-R004, UBR-R005, UBR-R006, UBR-R007, UBR-R008, UBR-R009, UBR-R010, UBR-R011, UBR-R012, UBR-R013, UBR-R014, UBR-R015, UBR-R016, UBR-R017, UBR-R018, UBR-R019, UBR-R020, UBR-R021
 
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |
@@ -229,7 +232,7 @@ Boundary model scope: UBR-R001, UBR-R002, UBR-R003, UBR-R004, UBR-R005, UBR-R006
 | composition-path | applicable | UBR-R004, UBR-R005, UBR-R010, UBR-R011, UBR-R012, UBR-R013 | BND-COMPOSE-001 | - |
 | temporal-retry | applicable | UBR-R012, UBR-R016, UBR-R020 | BND-TEMPORAL-001 | - |
 | failure-recovery | applicable | UBR-R015, UBR-R016 | BND-RECOVERY-001 | - |
-| compatibility-migration | applicable | UBR-R006, UBR-R007, UBR-R013, UBR-R015, UBR-R019 | BND-COMPAT-001 | - |
+| compatibility-migration | applicable | UBR-R006, UBR-R007, UBR-R013, UBR-R015, UBR-R019, UBR-R021 | BND-COMPAT-001, BND-COMPAT-002 | - |
 | external-environment | applicable | UBR-R007, UBR-R012, UBR-R014, UBR-R017 | BND-ENV-001 | - |
 
 ## Boundary definitions
@@ -243,6 +246,7 @@ Boundary model scope: UBR-R001, UBR-R002, UBR-R003, UBR-R004, UBR-R005, UBR-R006
 | BND-TEMPORAL-001 | temporal-retry | UBR-R012, UBR-R016, UBR-R020 | pre-tag retry; immutable tag; delayed public evidence; rerun closeout; later patch | Pre-tag work is reversible; published identities are immutable; closeout is rerunnable. | Retry before publication, keep partial state open, or fix forward after publication; never rewrite the release. | UBR-R016 |
 | BND-RECOVERY-001 | failure-recovery | UBR-R015, UBR-R016 | validation failure; publication unavailable; partial publication; runtime rollback | Failed validation cannot publish; recovery preserves immutable versions and uses one coherent package version. | Correct and retry, rerun closeout, issue a patch, or select exact v0.3.6 rollback. | UBR-R016 |
 | BND-COMPAT-001 | compatibility-migration | UBR-R006, UBR-R007, UBR-R013, UBR-R015, UBR-R019 | pending snapshot; active frozen inventory; historical accepted specs; new or substantively revised specs; retired custom activation-release experiment; retained routine release mechanism; v0.3.6 rollback | Historical contracts remain valid; active checked-revision adoption uses the frozen inventory; the custom experiment is absent; the routine release mechanism remains authoritative. | Existing specs remain usable; new work adopts automatically; stale custom dependencies fail; routine release proceeds unchanged; rollback selects v0.3.6. | UBR-R019 |
+| BND-COMPAT-002 | compatibility-migration | UBR-R021 | stage-owned owner-pointer marker form; non-stage-owned status marker form; marker before authority; marker outside governed metadata; duplicate marker | Each feature spec uses exactly one marker location authorized by its lifecycle contract. | The authorized exact-one form validates; a before-pointer, outside-section, or duplicate marker fails. | UBR-R021 |
 | BND-ENV-001 | external-environment | UBR-R007, UBR-R012, UBR-R014, UBR-R017 | local checked revision; trusted GitHub workflow; GitHub assets; npm registry; public npx; unavailable external evidence | Checked-revision activation needs no network; public claims require public evidence; private values never enter evidence. | Local proof can pass independently; external unavailability blocks only its owned public claim or keeps closeout open. | UBR-R012 |
 
 ## Selected interactions
@@ -286,6 +290,8 @@ EC9. A retired custom helper remains, a candidate-only option is still accepted,
 
 EC10. Checked-revision activation is implemented by replacing or bypassing routine release preparation, preflight, verification, trusted publication, or closeout; validation fails because UBR-R012 preserves those original release steps.
 
+EC11. A stage-owned feature spec places the boundary marker before its owning change pointer, outside `## Owning change record`, or more than once; structural validation fails instead of accepting ambiguous ownership. A non-stage-owned feature spec using the standing `## Status` form remains valid.
+
 ## Non-goals
 
 - No redesign of the eight-dimension `boundary-first-v1` proof model.
@@ -312,7 +318,8 @@ EC10. Checked-revision activation is implemented by replacing or bypassing routi
 | AC-UBR-009 | `v0.3.6` remains an exact complete rollback package, and partial or failed `v0.4.0` publication follows immutable fix-forward recovery. |
 | AC-UBR-010 | No lifecycle stage before explicit post-merge release action mutates external publication state or claims public availability. |
 | AC-UBR-011 | Concision tests use semantic representative journeys and do not enforce exact prose, word count, bullet count, or method-name output. |
-| AC-UBR-012 | Every UBR-R001 through UBR-R020 requirement and every selected boundary interaction has direct proof in the matching test specification. |
+| AC-UBR-012 | Every UBR-R001 through UBR-R021 requirement and every selected boundary interaction has direct proof in the matching test specification. |
+| AC-UBR-013 | Stage-owned feature specs accept exactly one boundary marker after their normalized owning-change pointer and reject before-pointer, outside-section, and duplicate placements; a non-stage-owned feature spec using the standing PBF-R002 status form remains valid. |
 
 ## Open questions
 
