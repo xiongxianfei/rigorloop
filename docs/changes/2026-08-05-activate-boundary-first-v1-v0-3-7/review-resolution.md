@@ -33,8 +33,8 @@ Review closeout: test-spec-review-r7
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `proposal-review-r4`, `spec-review-r2`, `architecture-review-activation-r1`, `plan-review-r1`, `plan-review-r2`, `plan-review-r3`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `test-spec-review-r4`, `code-review-m1-r2`, `code-review-m1-r3`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-activation-r2`, `architecture-review-activation-r3`, `plan-review-r4`, `test-spec-review-r5`, `test-spec-review-r6`, `test-spec-review-r7`
 - Findings resolved: 30
-- Unresolved findings: 4
-- Final result: M2 code-review R2 closes exact path authority but requires authenticated private-safe diagnostics, post-push reconciliation, selective-ref rejection proof, and fresh replacement recovery.
+- Unresolved findings: 6
+- Final result: M2 code-review R3 requires local-only guard-result provenance, private-runtime collision suppression, and replacement recovery from the exact authorized P.
 
 ## Resolution Overview
 
@@ -88,8 +88,39 @@ Review closeout: test-spec-review-r7
 | BFA-M2-R1-003 | accepted | open | Validate same-push advertised identities and complete the real-Git proof matrix. |
 | BFA-M2-R2-001 | accepted | open | Authenticate or bound diagnostic context and classify post-push uncertainty. |
 | BFA-M2-R2-002 | accepted | open | Prove selective-ref rejection and fresh replacement-candidate recovery. |
+| BFA-M2-R3-001 | accepted | open | Authenticate local guard results and suppress private-runtime identity collisions. |
+| BFA-M2-R3-002 | accepted | open | Build replacement history from exact P and prove transition exclusion/count. |
 
 ## Finding Details
+
+### code-review-m2-r3
+
+#### BFA-M2-R3-001 - Forged guard context and private-runtime collision
+
+Finding ID: BFA-M2-R3-001
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Parse only exact unprefixed local-hook result lines and suppress
+otherwise valid identity context matching bounded private runtime values.
+Rationale: Shape is not provenance; remote provider output is untrusted.
+Validation target: code-review-m2-r4
+Validation evidence: pending correction and R4
+
+#### BFA-M2-R3-002 - Replacement history uses unrelated P
+
+Finding ID: BFA-M2-R3-002
+Disposition: accepted
+Status: open
+Owner: M2 implementer
+Owning stage: review-resolution
+Chosen action: Rebuild in the same repository from the advertised P, create one
+new transition, reproduce allowed lifecycle evidence, and validate readiness.
+Rationale: Replacement recovery must preserve current publication authority and
+exclude the rejected transition from first-parent history.
+Validation target: code-review-m2-r4
+Validation evidence: pending correction and R4
 
 ### code-review-m2-r2
 

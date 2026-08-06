@@ -40,14 +40,17 @@ manifest_owner: workflow-orchestrator
 forbidden_initial_context_excluded: true
 second_review:
   required: true
-  satisfied: false
+  satisfied: true
   reviewer_context_id: m2-r3-second-reviewer
 requirement_fidelity:
   applicability: applicable
   reason: R3 must close authenticated diagnostics and exact recovery proof.
-  outcome: pending
+  outcome: changes-requested
 phase_receipts:
   - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
 review_focus:
   - Reconcile open BFA-M2-R1-002, BFA-M2-R1-003, BFA-M2-R2-001, and BFA-M2-R2-002.
   - Challenge untrusted release/candidate/path/provider privacy, safe context preservation, post-push reconciliation, selective-ref rejection, and fresh replacement proof.
