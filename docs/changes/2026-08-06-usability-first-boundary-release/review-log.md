@@ -317,3 +317,14 @@ Resolution: review-resolution.md#code-review-pr-full-gate-r1
 Material findings: UBR-PRFG-CR1-001, UBR-PRFG-CR1-002, UBR-PRFG-CR1-003
 Open findings: UBR-PRFG-CR1-001, UBR-PRFG-CR1-002, UBR-PRFG-CR1-003
 Recording status: recorded
+
+### Review entry
+Review ID: spec-review-r5
+Stage: spec-review
+Round: 5
+Status: approved
+Detailed record: reviews/spec-review-r5.md
+Resolution: review-resolution.md#spec-review-r5
+Material findings: None
+Open findings: None
+Recording status: recorded

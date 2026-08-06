@@ -9,6 +9,7 @@ Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: spec-review-r3
 Review closeout: spec-review-r4
+Review closeout: spec-review-r5
 Review closeout: architecture-review-r1
 Review closeout: architecture-review-r2
 Review closeout: plan-review-r1
@@ -22,10 +23,10 @@ Review closeout: code-review-m4-r2
 Review closeout: code-review-m4-r4
 Review closeout: code-review-pr-readiness-r1
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`, `code-review-pr-full-gate-r1`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `spec-review-r4`, `spec-review-r5`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`, `code-review-m3-r7`, `code-review-m4-r1`, `code-review-m4-r2`, `code-review-m4-r3`, `code-review-m4-r4`, `code-review-pr-readiness-r1`, `code-review-pr-full-gate-r1`
 - Findings resolved: 28
 - Unresolved findings: 3
-- Current result: The R4 boundary-record normalization is complete and awaits spec-review R5; the three PR full-gate findings remain open.
+- Current result: Spec-review R5 approves the normalized marker-placement contract; its matching test-spec refresh and the three PR full-gate findings remain open.
 
 ## Resolution Overview
 
@@ -87,6 +88,13 @@ Validation target: feature-only boundary validation followed by spec-review-r5
 Validation evidence: The direct feature check reports no boundary-definition mismatch; its sole expected failure is downstream test-spec scope staleness (`BFR-PROOF-MODEL-MISMATCH`).
 Safe resolution path: Fold the new marker-placement partitions and outcomes into the existing compatibility boundary with the full requirement set, or use another normalized representation with exact-set agreement and no ownership overclaim.
 Auto-fix class: requires-upstream-spec
+
+### spec-review-r5
+
+Review result: approved
+Material findings: none
+Resolution required: no
+Validation evidence: The feature-only boundary record passes with no issues. Path-scoped validation reports only the expected downstream `BFR-PROOF-MODEL-MISMATCH` because the unchanged test spec still declares R001-R020.
 
 ### code-review-pr-full-gate-r1
 
