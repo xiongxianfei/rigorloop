@@ -63,7 +63,7 @@ artifact_states:
 workflow_state:
   lifecycle_state: active
   current_stage: code-review
-  next_stage: implement
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/research/2026-08-05-boundary-first-v1-activation-release.md
@@ -127,6 +127,8 @@ workflow_state:
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m1-r7.md
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m1-r8.yaml
     - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m1-r8.md
+    - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/implementation-m2.md
+    - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r1.yaml
   planned_work:
     plan_artifact_id: plan
     current_milestone: M2
@@ -136,7 +138,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: planned
+        state: review-requested
       M3:
         kind: implementation
         state: planned
@@ -148,14 +150,14 @@ workflow_state:
       - M3
       - M4
     latest_review:
-      status: approved
+      status: review-requested
       stage: code-review
-      round: r8
+      round: r1
       artifact_id: plan
       occurrence: milestone
-      milestone_id: M1
+      milestone_id: M2
       evidence:
-        - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m1-r8.md
+        - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r1.yaml
     final_closeout:
       readiness: not-ready
       reasons:
@@ -251,6 +253,11 @@ changed_files:
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m1-r7.md
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m1-r8.yaml
   - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/reviews/code-review-m1-r8.md
+  - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/evidence/implementation-m2.md
+  - scripts/boundary_activation_release.py
+  - scripts/publish-boundary-activation.py
+  - scripts/test-boundary-activation-release.py
+  - docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/review-invocation-code-review-m2-r1.yaml
 review:
   status: approved
   unresolved_items: 0
