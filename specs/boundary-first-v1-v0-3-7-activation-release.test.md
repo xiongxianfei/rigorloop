@@ -113,11 +113,11 @@ boundary dimensions.
 | E7 | T5, T8 | Post-T payload drift requires replacement history. |
 | E8 | T14, MP2 | Partial public publication stays open and fixes forward. |
 
-## Boundary and interaction proof map
+## Proof map
 
 Boundary model version: boundary-first-v1
 
-Boundary model scope: BFA-R001 through BFA-R035
+Boundary model scope: BFA-R001, BFA-R002, BFA-R003, BFA-R004, BFA-R005, BFA-R006, BFA-R007, BFA-R008, BFA-R009, BFA-R010, BFA-R011, BFA-R012, BFA-R013, BFA-R014, BFA-R015, BFA-R016, BFA-R017, BFA-R018, BFA-R019, BFA-R020, BFA-R021, BFA-R022, BFA-R023, BFA-R024, BFA-R025, BFA-R026, BFA-R027, BFA-R028, BFA-R029, BFA-R030, BFA-R031, BFA-R032, BFA-R033, BFA-R034, BFA-R035
 
 | Proof obligation ID | Coverage state | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Proof level | Automation mode | Command IDs | Evidence artifact | Required milestone | Manual procedure IDs | Uncovered gap ID |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

@@ -90,11 +90,11 @@ The proof set combines partitions only when an approved boundary or selected int
 | E5 | T15, T16 | The routine release mechanism prepares and verifies one coherent package. |
 | E6 | T19 | Failure and rollback use phase-specific immutable recovery. |
 
-## Boundary and interaction proof map
+## Proof map
 
 Boundary model version: boundary-first-v1
 
-Boundary model scope: UBR-R001 through UBR-R020
+Boundary model scope: UBR-R001, UBR-R002, UBR-R003, UBR-R004, UBR-R005, UBR-R006, UBR-R007, UBR-R008, UBR-R009, UBR-R010, UBR-R011, UBR-R012, UBR-R013, UBR-R014, UBR-R015, UBR-R016, UBR-R017, UBR-R018, UBR-R019, UBR-R020
 
 | Proof obligation ID | Coverage state | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Proof level | Automation mode | Command IDs | Evidence artifact | Required milestone | Manual procedure IDs | Uncovered gap ID |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

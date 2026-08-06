@@ -2640,6 +2640,13 @@ def _release_version_from_path(path: str) -> str | None:
     parts = path.split("/")
     if _is_flat_release_evidence_path(path):
         return parts[2][:-3]
+    if (
+        len(parts) == 4
+        and parts[:3] == ["docs", "releases", "profiles"]
+        and parts[3].startswith("v")
+        and parts[3].endswith(".yaml")
+    ):
+        return parts[3][:-5]
     if len(parts) >= 4 and parts[0] == "docs" and parts[1] == "releases" and parts[2] and parts[3]:
         return parts[2]
     return None

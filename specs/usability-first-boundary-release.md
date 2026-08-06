@@ -4,6 +4,8 @@
 
 `docs/changes/2026-08-06-usability-first-boundary-release/change.yaml`
 
+boundary_contract: boundary-first-v1
+
 ## Related proposal
 
 `docs/proposals/2026-08-06-usability-first-boundary-release.md`
@@ -217,7 +219,7 @@ Routine preflight and full release verification retain their standing performanc
 ## Boundary model
 
 Boundary model version: boundary-first-v1
-Boundary model scope: UBR-R001 through UBR-R020
+Boundary model scope: UBR-R001, UBR-R002, UBR-R003, UBR-R004, UBR-R005, UBR-R006, UBR-R007, UBR-R008, UBR-R009, UBR-R010, UBR-R011, UBR-R012, UBR-R013, UBR-R014, UBR-R015, UBR-R016, UBR-R017, UBR-R018, UBR-R019, UBR-R020
 
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |

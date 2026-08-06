@@ -2181,6 +2181,19 @@ raise SystemExit({exit_code})
             "python scripts/validate-release.py --recorded-source-auto --version v0.1.1 v0.1.2",
         )
 
+    def test_release_profile_path_uses_profile_filename_as_version(self) -> None:
+        result = self.select(["docs/releases/profiles/v0.4.0.yaml"])
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        release_check = next(
+            check for check in payload["selected_checks"] if check["id"] == "release.validate"
+        )
+        self.assertEqual(
+            release_check["command"],
+            "python scripts/validate-release.py --recorded-source-auto --version v0.4.0",
+        )
+
     def test_release_evidence_markdown_path_selects_lifecycle_checklist_validation(self) -> None:
         result = run_selector("--mode", "explicit", "--path", "docs/releases/v1.2.3.md")
         payload = parse_stdout(result)

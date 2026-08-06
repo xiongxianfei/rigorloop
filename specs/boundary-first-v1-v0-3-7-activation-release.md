@@ -4,6 +4,8 @@
 
 `docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7/change.yaml`
 
+boundary_contract: boundary-first-v1
+
 ## Related proposal
 
 `docs/proposals/2026-08-05-activate-boundary-first-v1-v0-3-7.md`
@@ -383,7 +385,7 @@ their existing performance and timing-evidence contracts.
 ## Boundary model
 
 Boundary model version: boundary-first-v1
-Boundary model scope: BFA-R001 through BFA-R035
+Boundary model scope: BFA-R001, BFA-R002, BFA-R003, BFA-R004, BFA-R005, BFA-R006, BFA-R007, BFA-R008, BFA-R009, BFA-R010, BFA-R011, BFA-R012, BFA-R013, BFA-R014, BFA-R015, BFA-R016, BFA-R017, BFA-R018, BFA-R019, BFA-R020, BFA-R021, BFA-R022, BFA-R023, BFA-R024, BFA-R025, BFA-R026, BFA-R027, BFA-R028, BFA-R029, BFA-R030, BFA-R031, BFA-R032, BFA-R033, BFA-R034, BFA-R035
 
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |
@@ -425,14 +427,14 @@ Boundary model scope: BFA-R001 through BFA-R035
 
 | Example ID | Classification | Governing requirement IDs | Boundary IDs | Regression ID | Discovery gap ID |
 | --- | --- | --- | --- | --- | --- |
-| E1 | illustration | BFA-R004, BFA-R006, BFA-R008, BFA-R009, BFA-R010, BFA-R012 | BND-INPUT-001, BND-AUTH-001 | - | - |
-| E2 | regression | BFA-R005 | BND-INPUT-001, BND-COMPAT-001 | REG-BFA-001 | - |
+| E1 | illustration | BFA-R008, BFA-R009, BFA-R010, BFA-R012 | BND-AUTH-001 | - | - |
+| E2 | regression | BFA-R005 | BND-COMPAT-001 | REG-BFA-001 | - |
 | E3 | illustration | BFA-R018, BFA-R019 | BND-AUTH-001, BND-COMPOSE-001 | - | - |
-| E4 | regression | BFA-R014, BFA-R015, BFA-R016, BFA-R017, BFA-R018 | BND-AUTH-001, BND-TEMPORAL-001 | REG-BFA-002 | - |
-| E5 | regression | BFA-R021, BFA-R022, BFA-R023 | BND-AUTH-001, BND-TEMPORAL-001, BND-RECOVERY-001 | REG-BFA-003 | - |
-| E6 | regression | BFA-R020, BFA-R022 | BND-COMPOSE-001, BND-ENV-001 | REG-BFA-004 | - |
-| E7 | regression | BFA-R015, BFA-R016, BFA-R023, BFA-R035 | BND-TEMPORAL-001, BND-COMPOSE-001, BND-RECOVERY-001 | REG-BFA-005 | - |
-| E8 | illustration | BFA-R028, BFA-R030 | BND-STATE-001, BND-RECOVERY-001, BND-ENV-001 | - | - |
+| E4 | regression | BFA-R014, BFA-R017, BFA-R018 | BND-AUTH-001 | REG-BFA-002 | - |
+| E5 | regression | BFA-R021, BFA-R022, BFA-R023 | BND-TEMPORAL-001 | REG-BFA-003 | - |
+| E6 | regression | BFA-R020, BFA-R022 | BND-ENV-001 | REG-BFA-004 | - |
+| E7 | regression | BFA-R023, BFA-R035 | BND-TEMPORAL-001, BND-RECOVERY-001 | REG-BFA-005 | - |
+| E8 | illustration | BFA-R028, BFA-R030 | BND-RECOVERY-001 | - | - |
 
 ## Edge cases
 

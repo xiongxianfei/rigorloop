@@ -88,10 +88,17 @@ It does not redefine `boundary-first-v1`, migrate accepted historical specs, rew
   Independent PR-readiness code review R1 approved the correction with no
   material findings and confirmed that unsupported and mixed unknown paths
   remain fail-closed.
+- The first complete PR-mode execution then exposed four stale integration
+  assumptions after the release version and activation model changed. The
+  [full-gate fix evidence](evidence/pr-readiness-full-gate-fixes.md) records the
+  boundary-record normalization, single architecture owner, exact release
+  profile parsing, and `v0.4.0` CLI fixture update. Broad smoke passed in that
+  run; only the four named diff-scoped checks required correction.
 - Activation is locally coherent but not public availability; immutable tag, hosted publication, registry/assets validation, and fresh public smoke remain explicit maintainer operations after review and merge.
 - Release recovery remains phase-specific and fix-forward after immutable publication begins; neither `v0.4.0` nor `v0.3.6` may be rewritten.
 - Final verification must confirm this rationale, lifecycle state, generated output, targeted proof, broad smoke evidence, and release metadata still agree with the final branch before claiming `branch-ready`.
 
-The release implementation and PR-readiness selector correction are reviewed.
-Final verification must now refresh branch readiness; none of this authorizes
-public release.
+The release implementation and first selector correction are reviewed. The
+full-gate corrections require independent code review before final
+verification can refresh branch readiness; none of this authorizes public
+release.
