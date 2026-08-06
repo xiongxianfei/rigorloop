@@ -87,7 +87,7 @@ Final holistic review: approved
 - The correction replaces one grandfathered feature-spec path in the CI-wrapper test with the archived change record's `change.yaml`, preserving the existing review-resolution path and change-root identity.
 - Direct wrapper execution selected and passed `review_artifacts.validate`, `artifact_lifecycle.validate`, `change_metadata.regression`, and `change_metadata.validate`; the test therefore remains a meaningful public-wrapper integration test rather than a stub or bypass.
 - UBR-M4-CR1-001 is resolved. The focused wrapper test passes, all 147 selector tests pass, and the independent `test_changed_grandfathered_spec_routes_to_semantic_review` regression still returns `BFR-GRANDFATHERED-REVIEW`.
-- All 22 material findings recorded across proposal/spec/architecture/plan/test-spec and M1-M4 review have final `accepted` and `resolved` dispositions. No open or `needs-decision` item remains.
+- All 26 material findings recorded across proposal/spec/architecture/plan/test-spec and M1-M4 review have final `accepted` and `resolved` dispositions. No open or `needs-decision` item remains.
 
 ## Final holistic requirement coverage
 
