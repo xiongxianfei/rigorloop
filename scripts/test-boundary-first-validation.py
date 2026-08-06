@@ -13,6 +13,7 @@ import unittest
 from unittest import mock
 from pathlib import Path
 
+from adapter_distribution import parse_adapter_artifact_metadata_yaml
 from boundary_first_reference import (
     inventory_digest,
     projected_paths,
@@ -81,15 +82,15 @@ def copy_rollback_surfaces(root: Path, version: str) -> None:
         / f"{version}.yaml"
     )
     metadata.parent.mkdir(parents=True, exist_ok=True)
-    source = (
+    source_path = (
         ROOT
         / "docs"
         / "reports"
         / "adapter-artifacts"
         / "releases"
-        / "v0.3.5.yaml"
-    ).read_text(encoding="utf-8")
-    metadata.write_text(source.replace("v0.3.5", version), encoding="utf-8")
+        / f"{version}.yaml"
+    )
+    metadata.write_bytes(source_path.read_bytes())
 
 
 def initialize_checked_revision_active_fixture(root: Path) -> Path:
@@ -647,6 +648,54 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             self.assertEqual(tree_issues[0].code, "BFR-BASELINE-TYPE")
             self.assertEqual(before, relevant_tree_snapshot(root))
 
+    def test_grandfathered_derivation_ignores_replacement_refs_and_disables_lazy_fetch(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "specs").mkdir()
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(["git", "config", "user.email", "fixture@example.test"], cwd=root, check=True)
+            subprocess.run(["git", "config", "user.name", "Fixture"], cwd=root, check=True)
+            (root / "specs/alpha.md").write_text(
+                "# Alpha\n\n## Status\n\naccepted\n", encoding="utf-8"
+            )
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-qm", "alpha"], cwd=root, check=True)
+            baseline = subprocess.run(
+                ["git", "rev-parse", "HEAD"], cwd=root, check=True,
+                capture_output=True, text=True,
+            ).stdout.strip()
+            (root / "specs/alpha.md").unlink()
+            (root / "specs/beta.md").write_text(
+                "# Beta\n\n## Status\n\naccepted\n", encoding="utf-8"
+            )
+            subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-qm", "beta"], cwd=root, check=True)
+            replacement = subprocess.run(
+                ["git", "rev-parse", "HEAD"], cwd=root, check=True,
+                capture_output=True, text=True,
+            ).stdout.strip()
+            subprocess.run(["git", "replace", baseline, replacement], cwd=root, check=True)
+
+            real_run = subprocess.run
+            calls: list[dict[str, object]] = []
+
+            def recording_run(*args: object, **kwargs: object) -> subprocess.CompletedProcess[object]:
+                calls.append(kwargs)
+                return real_run(*args, **kwargs)
+
+            with mock.patch("boundary_first_validation.subprocess.run", side_effect=recording_run):
+                inventory, issues = derive_grandfathered_specs(root, baseline)
+
+            self.assertEqual(issues, ())
+            self.assertEqual(inventory, ("specs/alpha.md",))
+            self.assertTrue(calls)
+            for kwargs in calls:
+                environment = kwargs.get("env")
+                self.assertIsInstance(environment, dict)
+                assert isinstance(environment, dict)
+                self.assertEqual(environment.get("GIT_NO_REPLACE_OBJECTS"), "1")
+                self.assertEqual(environment.get("GIT_NO_LAZY_FETCH"), "1")
+
     def test_custom_activation_experiment_is_absent_and_cli_rejects_candidate_mode(self) -> None:
         for relative in (
             "scripts/boundary_activation_release.py",
@@ -697,22 +746,77 @@ class BoundaryFirstActivationTests(unittest.TestCase):
         self.assertEqual(validate_activation(ROOT), ())
 
     def test_unknown_activation_state_fails_before_consistency(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
+        fixture = json.loads(
+            (FIXTURES / "activation" / "unknown-state.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        for state in (fixture["state"], [], {}):
+            with self.subTest(state=state), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                (root / "specs").mkdir()
+                source = ROOT / "specs" / "boundary-first-activation.yaml"
+                data = json.loads(source.read_text(encoding="utf-8"))
+                data["state"] = state
+                (root / "specs" / "boundary-first-activation.yaml").write_text(
+                    json.dumps(data), encoding="utf-8"
+                )
+                issues = validate_activation(root)
+                self.assertEqual(issues[0].code, "BFR-UNKNOWN-ACTIVATION-STATE")
+                completed = subprocess.run(
+                    [
+                        sys.executable,
+                        str(ROOT / "scripts/validate-boundary-first.py"),
+                        "--check",
+                        "--root",
+                        str(root),
+                    ],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertEqual(completed.returncode, 1)
+                self.assertEqual(
+                    json.loads(completed.stdout)["issues"][0]["check_id"],
+                    "BFR-UNKNOWN-ACTIVATION-STATE",
+                )
+
+    def test_activation_cli_suppresses_private_root_for_missing_and_malformed_records(self) -> None:
+        sentinel = "credential-token-otp-user-host-private"
+        with tempfile.TemporaryDirectory(prefix=f"{sentinel}-") as temporary:
             root = Path(temporary)
             (root / "specs").mkdir()
-            source = ROOT / "specs" / "boundary-first-activation.yaml"
-            data = json.loads(source.read_text(encoding="utf-8"))
-            fixture = json.loads(
-                (FIXTURES / "activation" / "unknown-state.yaml").read_text(
-                    encoding="utf-8"
-                )
-            )
-            data["state"] = fixture["state"]
-            (root / "specs" / "boundary-first-activation.yaml").write_text(
-                json.dumps(data), encoding="utf-8"
-            )
-            issues = validate_activation(root)
-            self.assertEqual(issues[0].code, "BFR-UNKNOWN-ACTIVATION-STATE")
+            activation_path = root / "specs/boundary-first-activation.yaml"
+            for case, contents in (
+                ("missing", None),
+                ("malformed", "{"),
+                ("wrong-shape", "[]"),
+            ):
+                with self.subTest(case=case):
+                    if contents is None:
+                        activation_path.unlink(missing_ok=True)
+                    else:
+                        activation_path.write_text(contents, encoding="utf-8")
+                    completed = subprocess.run(
+                        [
+                            sys.executable,
+                            str(ROOT / "scripts/validate-boundary-first.py"),
+                            "--check",
+                            "--root",
+                            str(root),
+                        ],
+                        check=False,
+                        capture_output=True,
+                        text=True,
+                    )
+                    self.assertEqual(completed.returncode, 1)
+                    payload = json.loads(completed.stdout)
+                    self.assertEqual(
+                        payload["issues"][0]["path"],
+                        "specs/boundary-first-activation.yaml",
+                    )
+                    self.assertNotIn(sentinel, completed.stdout)
+                    self.assertNotIn(str(root), completed.stdout)
 
     def test_unknown_activation_contract_and_consumer_fail_closed(self) -> None:
         source = ROOT / "specs" / "boundary-first-activation.yaml"
@@ -935,11 +1039,19 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                     for adapter in ("claude", "codex", "opencode")
                 ),
             )
-            self.assertTrue(
-                all(
-                    re.fullmatch(r"[0-9a-f]{64}", row.sha256)
-                    for row in selection.artifacts
-                )
+            tracked_path = (
+                ROOT
+                / "docs/reports/adapter-artifacts/releases/v0.3.6.yaml"
+            )
+            tracked = parse_adapter_artifact_metadata_yaml(
+                tracked_path.read_text(encoding="utf-8"), tracked_path
+            )
+            expected_hashes = {
+                artifact.adapter: artifact.sha256 for artifact in tracked.artifacts
+            }
+            self.assertEqual(
+                {row.adapter: row.sha256 for row in selection.artifacts},
+                expected_hashes,
             )
             self.assertEqual(before, relevant_tree_snapshot(root))
 
@@ -950,11 +1062,17 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             / "reports"
             / "adapter-artifacts"
             / "releases"
+            / "v0.3.6.yaml"
+        )
+        original = source_metadata.read_text(encoding="utf-8")
+        substituted = (
+            ROOT
+            / "docs"
+            / "reports"
+            / "adapter-artifacts"
+            / "releases"
             / "v0.3.5.yaml"
-        )
-        original = source_metadata.read_text(encoding="utf-8").replace(
-            "v0.3.5", "v0.3.6"
-        )
+        ).read_text(encoding="utf-8").replace("v0.3.5", "v0.3.6")
         codex_block = re.search(
             r"  - adapter: codex\n(?:    .+\n){4}",
             original,
@@ -990,6 +1108,7 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 "  version: v0.3.4",
                 1,
             ),
+            "substituted-artifacts": substituted,
         }
         for name, metadata_text in cases.items():
             with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:

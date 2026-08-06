@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import subprocess
 from dataclasses import dataclass
@@ -30,6 +31,9 @@ ACTIVATION_RECORD = Path("specs/boundary-first-activation.yaml")
 PROOF_MODEL_SPEC = Path("specs/boundary-first-proof-model.md")
 ACTIVE_RELEASE_INTENT = "v0.4.0"
 ACTIVE_ROLLBACK_RELEASE = "v0.3.6"
+ACTIVE_ROLLBACK_METADATA_SHA256 = (
+    "cd3de1a215b50e79f207ab9384394e22c3929e83739e305b623d6ef2bb3b20a6"
+)
 ACTIVATION_STATES = frozenset({"pending", "active"})
 CORE_DIMENSIONS = (
     "input-domain",
@@ -840,13 +844,13 @@ def validate_proof_map(
 
 def _activation_data(path: Path) -> tuple[dict[str, object] | None, ValidationIssue | None]:
     if not path.is_file():
-        return None, _issue("BFR-ACTIVATION-MISSING", path.as_posix(), "activation record is missing", "-", ACTIVATION_RECORD.as_posix())
+        return None, _issue("BFR-ACTIVATION-MISSING", ACTIVATION_RECORD.as_posix(), "activation record is missing", "-", ACTIVATION_RECORD.as_posix())
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        return None, _issue("BFR-ACTIVATION-PARSE", path.as_posix(), "activation record is not deterministic JSON-compatible YAML", type(exc).__name__, "valid object")
+        return None, _issue("BFR-ACTIVATION-PARSE", ACTIVATION_RECORD.as_posix(), "activation record is not deterministic JSON-compatible YAML", type(exc).__name__, "valid object")
     if not isinstance(data, dict):
-        return None, _issue("BFR-ACTIVATION-SHAPE", path.as_posix(), "activation record must be an object", type(data).__name__, "object")
+        return None, _issue("BFR-ACTIVATION-SHAPE", ACTIVATION_RECORD.as_posix(), "activation record must be an object", type(data).__name__, "object")
     return data, None
 
 
@@ -977,15 +981,16 @@ def _rollback_package_matrix(
     assert metadata_path is not None
 
     try:
+        metadata_bytes = metadata_path.read_bytes()
         manifest = parse_manifest_yaml(
             manifest_path.read_text(encoding="utf-8"),
             manifest_path,
         )
         metadata = parse_adapter_artifact_metadata_yaml(
-            metadata_path.read_text(encoding="utf-8"),
+            metadata_bytes.decode("utf-8"),
             metadata_path,
         )
-    except (OSError, ValueError) as exc:
+    except (OSError, UnicodeDecodeError, ValueError) as exc:
         return (), (
             _issue(
                 "BFR-ROLLBACK-METADATA",
@@ -1011,6 +1016,20 @@ def _rollback_package_matrix(
         by_adapter.setdefault(artifact.adapter, []).append(artifact)
 
     issues: list[ValidationIssue] = []
+    metadata_sha256 = hashlib.sha256(metadata_bytes).hexdigest()
+    if (
+        rollback_release == ACTIVE_ROLLBACK_RELEASE
+        and metadata_sha256 != ACTIVE_ROLLBACK_METADATA_SHA256
+    ):
+        issues.append(
+            _issue(
+                "BFR-ROLLBACK-METADATA-IDENTITY",
+                metadata_relative.as_posix(),
+                "rollback metadata differs from the immutable tracked release record",
+                metadata_sha256,
+                ACTIVE_ROLLBACK_METADATA_SHA256,
+            )
+        )
     if metadata.version != rollback_release:
         issues.append(
             _issue(
@@ -1125,6 +1144,9 @@ def derive_grandfathered_specs(
 ) -> tuple[tuple[str, ...], tuple[ValidationIssue, ...]]:
     """Derive the frozen historical-spec inventory without writing repository state."""
     eligible: list[str] = []
+    git_environment = dict(os.environ)
+    git_environment["GIT_NO_REPLACE_OBJECTS"] = "1"
+    git_environment["GIT_NO_LAZY_FETCH"] = "1"
     if not re.fullmatch(r"[0-9a-f]{40}", baseline_revision):
         return (), (
             _issue(
@@ -1142,6 +1164,7 @@ def derive_grandfathered_specs(
             check=True,
             capture_output=True,
             text=True,
+            env=git_environment,
         ).stdout.strip()
     except (OSError, subprocess.CalledProcessError):
         return (), (
@@ -1169,6 +1192,7 @@ def derive_grandfathered_specs(
             cwd=root,
             check=True,
             capture_output=True,
+            env=git_environment,
         ).stdout.split(b"\0")
     except (OSError, subprocess.CalledProcessError):
         return (), (
@@ -1220,6 +1244,7 @@ def derive_grandfathered_specs(
                 cwd=root,
                 check=True,
                 capture_output=True,
+                env=git_environment,
             ).stdout
             text = raw_text.decode("utf-8")
         except (OSError, subprocess.CalledProcessError, UnicodeDecodeError):
@@ -1263,7 +1288,7 @@ def _validate_activation(
     assert data is not None
     vocabulary: list[ValidationIssue] = []
     state = data.get("state")
-    if state not in ACTIVATION_STATES:
+    if not isinstance(state, str) or state not in ACTIVATION_STATES:
         vocabulary.append(
             _issue("BFR-UNKNOWN-ACTIVATION-STATE", ACTIVATION_RECORD.as_posix(), "unknown activation state", state, ", ".join(sorted(ACTIVATION_STATES)))
         )
