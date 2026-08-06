@@ -24,6 +24,7 @@ from boundary_first_reference import (
 from boundary_first_validation import (
     _private_runtime_values,
     _publication_authority_issues,
+    _review_invocation_issue,
     rollback_package_selection,
     validate_activation,
     validate_activation_candidate,
@@ -784,16 +785,19 @@ class BoundaryFirstActivationTests(unittest.TestCase):
             self.assertEqual(result.transition_commit, transition)
             self.assertEqual(result.candidate_validation_head, head)
             self.assertEqual(result.tag_state, "absent")
-            with mock.patch(
-                "boundary_first_validation._publication_authority_issues",
-                return_value=(),
-            ) as authority:
-                self.assertEqual(validate_activation_publication_readiness(root), ())
-                authority.assert_called_once_with(root)
             self.assertIn(
                 "BFR-ACTIVATING-RELEASE",
                 {issue.code for issue in validate_activation(root)},
             )
+            with mock.patch(
+                "boundary_first_validation._publication_authority_issues",
+                return_value=(),
+            ) as authority:
+                subprocess.run(["git", "tag", "v0.4.0", transition], cwd=root, check=True)
+                self.assertEqual(validate_activation_publication_readiness(root), ())
+                authority.assert_called_once_with(root)
+            _, candidate_issues = validate_activation_candidate(root, "v0.4.0")
+            self.assertIn("BFR-CANDIDATE-LOCAL-TAG", {issue.code for issue in candidate_issues})
 
     def test_candidate_rejects_closed_input_state_tag_and_remote_matrix(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -1230,6 +1234,36 @@ class BoundaryFirstActivationTests(unittest.TestCase):
 
             self.assertIn("BFR-CANDIDATE-LIFECYCLE-EVIDENCE", {issue.code for issue in issues})
 
+    def test_accepted_activation_review_manifests_match_closed_schema(self) -> None:
+        change_relative = Path(
+            "docs/changes/2026-08-05-activate-boundary-first-v1-v0-3-7"
+        )
+        sources = sorted((ROOT / change_relative).glob("review-invocation-*.yaml"))
+        self.assertTrue(sources)
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repository"
+            evidence: list[str] = []
+            for source in sources:
+                relative = (change_relative / source.name).as_posix()
+                destination = root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_bytes(source.read_bytes())
+                evidence.append(relative)
+            change_yaml = root / change_relative / "change.yaml"
+            change_yaml.write_text(
+                "workflow_state:\n  evidence:\n"
+                + "".join(f"    - {relative}\n" for relative in evidence),
+                encoding="utf-8",
+            )
+
+            rejected = [
+                relative
+                for relative in evidence
+                if _review_invocation_issue(root, relative) is not None
+            ]
+
+            self.assertEqual(rejected, [])
+
     def test_candidate_reports_union_for_rename_delete_and_multiple_drift(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "repository"
@@ -1262,8 +1296,9 @@ class BoundaryFirstActivationTests(unittest.TestCase):
     def test_candidate_private_drift_path_is_bounded(self) -> None:
         sentinels = (
             "TOKEN-PRIVATE-92a44", "OTP-123456", "username-secret", "hostname-private",
-            "1234", getpass.getuser(), socket.gethostname(),
+            "1234", "5678", "9012", getpass.getuser(), socket.gethostname(),
         )
+        short_secret_names = {"1234": "PIN", "5678": "API_KEY", "9012": "AUTH_CODE"}
         for sentinel in sentinels:
             with self.subTest(sentinel=sentinel), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary) / "repository"
@@ -1282,7 +1317,10 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                         "--activation-candidate", "v0.4.0",
                     ],
                     check=False, capture_output=True, text=True,
-                    env={**os.environ, "PRIVATE_ENV_SENTINEL": sentinel},
+                    env={
+                        **os.environ,
+                        short_secret_names.get(sentinel, "PRIVATE_ENV_SENTINEL"): sentinel,
+                    },
                 )
                 self.assertNotEqual(failed.returncode, 0)
                 self.assertNotIn(sentinel, failed.stdout)
@@ -1291,11 +1329,15 @@ class BoundaryFirstActivationTests(unittest.TestCase):
 
     def test_private_runtime_values_tolerate_identity_provider_failures(self) -> None:
         with (
-            mock.patch.dict(os.environ, {"PRIVATE_ENV_SENTINEL": "1234"}, clear=True),
+            mock.patch.dict(
+                os.environ,
+                {"PIN": "1234", "API_KEY": "5678", "AUTH_CODE": "9012"},
+                clear=True,
+            ),
             mock.patch("boundary_first_validation.getpass.getuser", side_effect=OSError),
             mock.patch("boundary_first_validation.socket.gethostname", side_effect=OSError),
         ):
-            self.assertIn("1234", _private_runtime_values())
+            self.assertTrue({"1234", "5678", "9012"}.issubset(_private_runtime_values()))
 
     def test_candidate_failure_bounds_private_release_and_rollback_fields(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
