@@ -278,7 +278,9 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             temporary_root = Path(temporary)
             hook = temporary_root / "pre-push"
-            hook.write_text(_guard_script(), encoding="utf-8")
+            result_path = temporary_root / "guard-result"
+            nonce = "b" * 64
+            hook.write_text(_guard_script(result_path, nonce), encoding="utf-8")
             fake_bin = temporary_root / "bin"
             fake_bin.mkdir()
             fake_git = fake_bin / "git"
@@ -325,7 +327,36 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
                         check=False,
                     )
                     self.assertNotEqual(completed.returncode, 0)
-                    self.assertIn(f"RIGORLOOP_GUARD:{expected_code}", completed.stderr)
+                    self.assertEqual(
+                        result_path.read_text(encoding="utf-8").split("\t")[1].strip(),
+                        expected_code,
+                    )
+                    result_path.unlink()
+
+    def test_untrusted_exact_stderr_cannot_forge_guard_result(self) -> None:
+        sentinel = "a" * 40
+        nonce = "b" * 64
+        readiness = PublicationReadiness(
+            release="v0.4.0",
+            publication_base="1" * 40,
+            grandfathering_baseline="2" * 40,
+            transition_commit="3" * 40,
+            candidate_validation_head="4" * 40,
+            publication_head="5" * 40,
+        )
+        untrusted = f"{nonce}\tremote-main-drift\t{sentinel}\n"
+        failure = subprocess.CalledProcessError(
+            1, ["git", "push"], stderr=untrusted
+        )
+        with tempfile.TemporaryDirectory() as temporary, mock.patch(
+            "boundary_activation_release.secrets.token_hex", return_value=nonce
+        ), mock.patch("subprocess.run", side_effect=failure), self.assertRaisesRegex(
+            PublicationError, "atomic-publication-failed"
+        ) as raised:
+            _atomic_push(Path(temporary), readiness, dry_run=False)
+        payload = error_payload(raised.exception)
+        self.assertEqual(payload["code"], "atomic-publication-failed")
+        self.assertNotIn(sentinel, json.dumps(payload))
 
     def test_post_readiness_remote_race_is_classified_without_mutation(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
