@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -192,7 +192,7 @@ Auto-fix class: declared-safe
 
 Finding ID: UBR-PRFG-CR3-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: PR full-gate correction implementer
 Owning stage: review-resolution
 Chosen action: Parse the top-level lifecycle scalar semantically, treat absence as historical, recognize the exact stage-owned value across valid YAML serialization, and reject every present unknown or malformed value.
@@ -208,7 +208,7 @@ Auto-fix class: declared-safe
 
 Finding ID: UBR-PRFG-CR4-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: PR full-gate correction implementer
 Owning stage: review-resolution
 Chosen action: Classify top-level lifecycle entries with repository mapping-key semantics, preserve occurrence count before mapping overwrite, and reject semantic duplicates, unknowns, and malformed values before marker placement.
