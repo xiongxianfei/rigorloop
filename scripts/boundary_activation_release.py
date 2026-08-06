@@ -364,14 +364,15 @@ def _guard_result(result_path: Path, nonce: str) -> re.Match[str] | None:
     descriptor = None
     try:
         no_follow = getattr(os, "O_NOFOLLOW", None)
-        if no_follow is None:
+        nonblock = getattr(os, "O_NONBLOCK", None)
+        if no_follow is None or nonblock is None:
             return None
         descriptor = os.open(
             result_path,
-            os.O_RDONLY | no_follow,
+            os.O_RDONLY | no_follow | nonblock,
         )
-        metadata = os.fstat(descriptor)
-        if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > 256:
+        before = os.fstat(descriptor)
+        if not stat.S_ISREG(before.st_mode) or not 0 < before.st_size <= 256:
             return None
         raw = b""
         while len(raw) <= 256:
@@ -381,6 +382,12 @@ def _guard_result(result_path: Path, nonce: str) -> re.Match[str] | None:
             raw += chunk
         if len(raw) > 256:
             return None
+        after = os.fstat(descriptor)
+        identity_fields = ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns")
+        if any(getattr(before, field) != getattr(after, field) for field in identity_fields):
+            return None
+        if len(raw) != before.st_size:
+            return None
         value = raw.decode("utf-8")
     except (OSError, UnicodeError):
         return None
@@ -389,7 +396,7 @@ def _guard_result(result_path: Path, nonce: str) -> re.Match[str] | None:
             os.close(descriptor)
     return re.fullmatch(
         re.escape(nonce)
-        + r"\t(remote-main-drift|remote-tag-exists|remote-advertisement-unavailable|push-mapping-invalid)(?:\t([0-9a-f]{40}))?\n?",
+        + r"\t(remote-main-drift|remote-tag-exists|remote-advertisement-unavailable|push-mapping-invalid)(?:\t([0-9a-f]{40}))?\n",
         value,
     )
 
