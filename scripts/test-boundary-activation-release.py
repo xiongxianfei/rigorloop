@@ -358,6 +358,73 @@ class BoundaryActivationReleaseTests(unittest.TestCase):
         self.assertEqual(payload["code"], "atomic-publication-failed")
         self.assertNotIn(sentinel, json.dumps(payload))
 
+    def test_malformed_guard_results_are_bounded_and_read_only(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root, candidate, publication_base, transition, head = initialized_repository(temporary)
+            readiness = fixture_readiness(candidate, publication_base, transition, head)
+            before = advertised(root)
+            cases = ("invalid-utf8", "oversized", "wrong-nonce", "multi-record", "symlink")
+
+            for case in cases:
+                def malformed_hook(result_path: Path, nonce: str, *, selected: str = case) -> str:
+                    valid = f"{nonce}\tremote-main-drift\t{'a' * 40}\n".encode()
+                    payload = {
+                        "invalid-utf8": b"\xff\xfe",
+                        "oversized": b"x" * 257,
+                        "wrong-nonce": f"{'0' * 64}\tremote-main-drift\t{'a' * 40}\n".encode(),
+                        "multi-record": valid + valid,
+                        "symlink": valid,
+                    }[selected]
+                    if selected == "symlink":
+                        target = result_path.with_name("guard-target")
+                        body = (
+                            "from pathlib import Path\n"
+                            f"target = Path({str(target)!r})\n"
+                            f"target.write_bytes({payload!r})\n"
+                            f"Path({str(result_path)!r}).symlink_to(target)\n"
+                            "raise SystemExit(1)\n"
+                        )
+                    else:
+                        body = (
+                            "from pathlib import Path\n"
+                            f"Path({str(result_path)!r}).write_bytes({payload!r})\n"
+                            "raise SystemExit(1)\n"
+                        )
+                    return "#!/usr/bin/env python3\n" + body
+
+                with self.subTest(case=case), mock.patch(
+                    "boundary_activation_release._guard_script",
+                    side_effect=malformed_hook,
+                ), self.assertRaisesRegex(
+                    PublicationError, "atomic-publication-failed"
+                ) as raised:
+                    _atomic_push(root, readiness, dry_run=False)
+                self.assertEqual(error_payload(raised.exception)["code"], "atomic-publication-failed")
+                self.assertEqual(advertised(root), before)
+
+    def test_post_readiness_tag_races_are_precise_and_read_only(self) -> None:
+        for same_target in (True, False):
+            with self.subTest(same_target=same_target), tempfile.TemporaryDirectory() as temporary:
+                root, candidate, publication_base, transition, head = initialized_repository(temporary)
+                with mock.patch(
+                    "boundary_first_validation._publication_authority_issues",
+                    return_value=(),
+                ):
+                    readiness = publication_readiness(root, "v0.4.0", candidate)
+                raced_tag = transition if same_target else publication_base
+                git(root, "push", "-q", "origin", f"{raced_tag}:refs/tags/v0.4.0")
+                before = advertised(root)
+                with mock.patch(
+                    "boundary_activation_release.publication_readiness",
+                    return_value=readiness,
+                ), self.assertRaisesRegex(PublicationError, "remote-tag-exists") as raised:
+                    publish_activation(root, "v0.4.0", candidate)
+                payload = error_payload(raised.exception)
+                self.assertEqual(payload["conflicting_remote_tag"], raced_tag)
+                self.assertEqual(advertised(root), before)
+                self.assertEqual(before["refs/heads/main"], publication_base)
+                self.assertNotEqual(before["refs/heads/main"], head)
+
     def test_post_readiness_remote_race_is_classified_without_mutation(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root, candidate, publication_base, transition, head = initialized_repository(temporary)
