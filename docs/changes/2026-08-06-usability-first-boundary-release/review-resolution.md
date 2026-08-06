@@ -15,11 +15,12 @@ Review closeout: plan-review-r2
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: code-review-m1-r2
+Review closeout: code-review-m2-r3
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`
 - Findings resolved: 15
 - Unresolved findings: 0
-- Current result: UBR-M2-CR2-001 is resolved and ready for code-review M2 R3.
+- Current result: Code-review M2 R3 is clean; M2 is closed and routing advances to M3.
 
 ## Resolution Overview
 
@@ -49,6 +50,13 @@ Review closeout: code-review-m1-r2
 - Validation evidence: spec revision R3 authoring checks and approved spec-review R3
 
 ## Finding Details
+
+### code-review-m2-r3
+
+Review result: clean-with-notes
+Material findings: none
+Resolution required: no
+Validation evidence: Independent R3 reconciled all M2 findings, directly challenged ambient Git authority and output, and passed the complete M2 command set.
 
 ### code-review-m2-r2
 
