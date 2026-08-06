@@ -52,7 +52,7 @@ Outcome: implemented and ready for code review.
   preparation; no output drift.
 - `python scripts/release-preflight.py v0.4.0 --skip-remote` — pass against the
   final local pre-publication payload.
-- `python scripts/test-release-transaction.py` — pass, 96 tests.
+- `python scripts/test-release-transaction.py` — pass, 100 tests.
 - `python scripts/test-adapter-distribution.py` — pass, 149 tests.
 - `python scripts/test-artifact-lifecycle-validator.py` — pass, 162 tests.
 - `python scripts/test-npm-package-publication.py` — pass, 6 tests.
@@ -84,6 +84,22 @@ Outcome: implemented and ready for code review.
   final-state preparation, preflight, recorded-source validation, the standing
   full release gate, and release-selected CI (`release.validate` 2.39 seconds;
   `broad_smoke.repo` 548.85 seconds).
+
+## R3 review resolution
+
+- `UBR-M3-CR3-001`: pending standing evidence now always contains every required
+  routine preflight row; pending validation accepts only `pending` or `pass`,
+  while finalized lifecycle validation still requires `pass` and retains its
+  established diagnostic contract.
+- Finalized release YAML now binds `manifest_version` to the parsed
+  `dist/adapters/manifest.yaml` authority and applies the same semantic rules as
+  the full release validator to passing smoke rows: a known tool version and
+  nonempty evidence are mandatory.
+- Per-row removal, unknown pending result, bogus manifest identity, and empty
+  passing-evidence regressions pass. The correction is covered by 100
+  release-transaction tests, 162 lifecycle tests, exact preparation and
+  preflight, the complete standing release gate, and final-tree release-selected
+  CI (`release.validate` 2.81 seconds; `broad_smoke.repo` 546.86 seconds).
 
 ## R1 review resolution
 

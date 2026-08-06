@@ -18,15 +18,15 @@ Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r3
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`
-- Findings resolved: 17
-- Unresolved findings: 1
-- Current result: M3 R3 requests one further correction for complete pending preflight rows and finalized YAML semantics.
+- Findings resolved: 18
+- Unresolved findings: 0
+- Current result: The M3 R3 finding has an accepted fix and complete validation evidence; M3 remains open pending code-review M3 R4.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| UBR-M3-CR3-001 | accepted | in-progress | Require every pending gate row and exact finalized manifest/smoke semantics. |
+| UBR-M3-CR3-001 | accepted | resolved | Every pending gate row and exact finalized manifest/smoke semantics are required. |
 | UBR-M3-CR2-001 | accepted | resolved | The requested release, hosted ref name, dereferenced tag, trusted commit, and checked HEAD are one identity. |
 | UBR-M3-CR2-002 | accepted | resolved | Complete pending release-evidence validation replaces permissive preservation heuristics. |
 | UBR-M3-CR1-001 | accepted | resolved | Finalized pre-publication evidence remains deterministic and passes preparation checks. |
@@ -64,13 +64,13 @@ Review closeout: code-review-m2-r3
 
 Finding ID: UBR-M3-CR3-001
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implementer
 Owning stage: review-resolution
 Chosen action: Always validate the complete gate-row inventory and bind finalized YAML to exact manifest and passing-smoke semantics.
 Rationale: Preparation and preflight must reject malformed evidence before the later full release gate.
 Validation target: code-review-m3-r4
-Validation evidence: Pending implementation and row/manifest/smoke mutation regressions.
+Validation evidence: Every required row-removal mutation, unknown pending result, bogus manifest, and empty passing-smoke evidence fails; 100 transaction tests, 162 lifecycle tests, exact preparation/preflight, the full standing gate, and final-tree release-selected CI pass.
 Safe resolution path: Parameterize supported pending results, reuse exact manifest authority and smoke semantics, and add focused regressions.
 Auto-fix class: declared-safe
 
