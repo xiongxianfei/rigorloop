@@ -112,12 +112,28 @@ RELEASE_EVIDENCE_PUBLISH_FIELDS = (
 )
 ROUTINE_RELEASE_GATE_ITEMS = (
     "clean worktree except intentional release artifacts",
+    "release notes or not-required rationale",
     "generated output current",
     "tests / selected CI / broad smoke",
+    "package build or pack proof",
     "package preview",
+    "local packed-install smoke",
     "no unresolved release blockers",
     "publish path selected",
     "evidence path prepared",
+)
+ROUTINE_RELEASE_GATE_FINAL_RESULTS = {
+    **{item: frozenset(("pass",)) for item in ROUTINE_RELEASE_GATE_ITEMS},
+    "release notes or not-required rationale": frozenset(("pass", "not-required")),
+    "package build or pack proof": frozenset(("pass", "not-applicable")),
+    "local packed-install smoke": frozenset(("pass", "not-applicable")),
+}
+RELEASE_REGISTRY_ITEMS = (
+    "registry version query",
+    "dist-tag points correctly",
+    "integrity metadata available",
+    "fresh registry install smoke",
+    "CLI or npx smoke",
 )
 NON_DEFERRABLE_RELEASE_ITEMS = (
     "release evidence",
@@ -571,13 +587,12 @@ def _markdown_table_rows(section: str) -> list[list[str]]:
     return rows
 
 
-def _table_row_result(section: str, row_label: str) -> str | None:
-    for row in _markdown_table_rows(section):
-        if row and row[0].casefold() == row_label.casefold():
-            if len(row) < 2:
-                return None
-            return row[1].strip()
-    return None
+def _table_row_results(section: str, row_label: str) -> list[str]:
+    return [
+        row[1].strip()
+        for row in _markdown_table_rows(section)
+        if len(row) >= 2 and row[0].casefold() == row_label.casefold()
+    ]
 
 
 def _is_blank_table_value(value: str) -> bool:
@@ -659,27 +674,43 @@ def validate_release_evidence_checklist(
     release_type = (result_values.get("Release type") or "").casefold()
     is_emergency = release_type == "emergency" or status == "emergency-with-deferred-gate"
     if not is_emergency:
-        allowed_results = {"pass"} if require_preflight_pass else {"pending", "pass"}
         for gate_item in ROUTINE_RELEASE_GATE_ITEMS:
-            gate_result = _table_row_result(preflight_section, gate_item)
-            if gate_result is None:
-                errors.append(f"routine release gate item '{gate_item}' is missing")
-            elif gate_result.casefold() not in allowed_results:
-                if require_preflight_pass:
+            gate_results = _table_row_results(preflight_section, gate_item)
+            if len(gate_results) != 1:
+                errors.append(
+                    f"routine release gate item '{gate_item}' is missing or duplicated; must appear exactly once"
+                )
+                continue
+            allowed_results = set(ROUTINE_RELEASE_GATE_FINAL_RESULTS[gate_item])
+            if not require_preflight_pass:
+                allowed_results.add("pending")
+            gate_result = gate_results[0].casefold()
+            if gate_result not in allowed_results:
+                if allowed_results == {"pass"}:
                     errors.append(
                         f"routine release gate item '{gate_item}' must pass before publish"
                     )
                 else:
+                    expected = " or ".join(sorted(allowed_results))
                     errors.append(
-                        f"routine release gate item '{gate_item}' must be pending or pass before publish"
+                        f"routine release gate item '{gate_item}' must be {expected} before publish"
                     )
 
     registry_section = _get_section(sections, "Registry Verification") or ""
-    registry_result = _table_row_result(registry_section, "registry version query")
-    if registry_result is None:
-        errors.append("release evidence missing registry version query result")
-    elif registry_result.casefold() not in {"pass", "not-applicable"}:
-        errors.append("post-publish registry verification must not be deferred")
+    for registry_item in RELEASE_REGISTRY_ITEMS:
+        registry_results = _table_row_results(registry_section, registry_item)
+        if len(registry_results) != 1:
+            errors.append(
+                f"release registry item '{registry_item}' is missing or duplicated; must appear exactly once"
+            )
+            continue
+        allowed_registry_results = {"pass", "not-applicable"}
+        if is_emergency and registry_item != "registry version query":
+            allowed_registry_results.add("deferred")
+        if registry_results[0].casefold() not in allowed_registry_results:
+            errors.append(
+                f"post-publish registry verification '{registry_item}' must be pass or not-applicable"
+            )
 
     emergency_section = _get_section(sections, "Emergency Deferrals") or ""
     errors.extend(_validate_emergency_deferrals(emergency_section))

@@ -18,15 +18,15 @@ Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r3
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`
-- Findings resolved: 18
-- Unresolved findings: 1
-- Current result: M3 R4 requests one correction for complete row inventory/cardinality and trimmed smoke semantics.
+- Findings resolved: 19
+- Unresolved findings: 0
+- Current result: M3 R4 correction is complete and awaits code-review R5.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| UBR-M3-CR4-001 | accepted | in-progress | Require all governed rows exactly once and reject whitespace-only passing proof. |
+| UBR-M3-CR4-001 | accepted | resolved | All governed rows appear exactly once and passing proof rejects whitespace-only values. |
 | UBR-M3-CR3-001 | accepted | resolved | Every pending gate row and exact finalized manifest/smoke semantics are required. |
 | UBR-M3-CR2-001 | accepted | resolved | The requested release, hosted ref name, dereferenced tag, trusted commit, and checked HEAD are one identity. |
 | UBR-M3-CR2-002 | accepted | resolved | Complete pending release-evidence validation replaces permissive preservation heuristics. |
@@ -65,13 +65,13 @@ Review closeout: code-review-m2-r3
 
 Finding ID: UBR-M3-CR4-001
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implementer
 Owning stage: review-resolution
 Chosen action: Complete the ten-row preflight inventory, enforce exact one-row cardinality for preflight and registry evidence, and strip passing smoke fields.
 Rationale: Contradictory or whitespace-only evidence must not be classified as current.
 Validation target: code-review-m3-r5
-Validation evidence: Pending complete removal/result/duplicate and whitespace mutation regressions.
+Validation evidence: Complete preflight and registry removal/result/duplicate mutations and whitespace-only smoke mutations fail; 102 transaction tests, 162 lifecycle tests, exact preparation/preflight, the full standing gate, and release-selected CI pass.
 Safe resolution path: One authoritative row contract and exact-cardinality helper, plus bounded semantic checks.
 Auto-fix class: declared-safe
 

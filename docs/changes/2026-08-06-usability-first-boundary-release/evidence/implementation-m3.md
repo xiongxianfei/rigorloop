@@ -52,7 +52,7 @@ Outcome: implemented and ready for code review.
   preparation; no output drift.
 - `python scripts/release-preflight.py v0.4.0 --skip-remote` — pass against the
   final local pre-publication payload.
-- `python scripts/test-release-transaction.py` — pass, 100 tests.
+- `python scripts/test-release-transaction.py` — pass, 102 tests.
 - `python scripts/test-adapter-distribution.py` — pass, 149 tests.
 - `python scripts/test-artifact-lifecycle-validator.py` — pass, 162 tests.
 - `python scripts/test-npm-package-publication.py` — pass, 6 tests.
@@ -65,6 +65,24 @@ Outcome: implemented and ready for code review.
   archives, ran the adapter and packed-package suites, and validated the final
   `v0.4.0` metadata against reviewed source commit `c7b0babe`.
 - `git diff --check` — pass.
+
+## R4 review resolution
+
+- `UBR-M3-CR4-001`: the routine preflight contract now owns all ten governed
+  rows, and the registry contract owns all five governed rows. Each row must
+  appear exactly once, so missing and contradictory duplicate evidence fails
+  closed before preservation or publication.
+- Finalized routine evidence requires every preflight row to pass. Pending
+  evidence retains only the row-specific allowed terminal states plus
+  `pending`, and emergency registry deferral remains limited to the existing
+  emergency contract.
+- Passing smoke proof now trims both `tool_version` and `evidence`, rejecting
+  whitespace-only values. Complete removal, unsupported-result, duplicate-row,
+  and whitespace mutation regressions pass.
+- The correction is covered by 102 release-transaction tests, 162 lifecycle
+  tests, exact preparation and preflight, the complete standing release gate,
+  and final-tree release-selected CI (`release.validate` 2.60 seconds;
+  `broad_smoke.repo` 544.17 seconds).
 
 ## R2 review resolution
 

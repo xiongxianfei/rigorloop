@@ -2053,11 +2053,11 @@ def _validate_release_yaml_contract(
                 f"{relative}: smoke.{target}.result: expected {'pass' if require_finalized else 'pending or pass'}, found {row.result}"
             )
         if require_finalized and row.result == "pass":
-            if not row.tool_version or row.tool_version == "unknown":
+            if not row.tool_version.strip() or row.tool_version.strip() == "unknown":
                 errors.append(
                     f"{relative}: smoke.{target}.tool_version: pass requires known tool version"
                 )
-            if not row.evidence:
+            if not row.evidence.strip():
                 errors.append(f"{relative}: smoke.{target}.evidence: pass requires evidence")
     if set(metadata.validation) != set(RELEASE_VALIDATION_KEYS):
         errors.append(f"{relative}: validation: expected complete validation category mapping")
@@ -2174,13 +2174,28 @@ def _is_finalized_adapter_artifact_report(text: str, profile: ReleaseProfile) ->
 
 
 def _is_finalized_standing_release_record(text: str, profile: ReleaseProfile) -> bool:
-    return not _validate_pending_standing_release_record(
+    errors = _validate_pending_standing_release_record(
         text,
         profile.path.parents[1] / f"{profile.release_tag}.md",
         profile.path.parents[3],
         profile,
         require_preflight_pass=True,
     )
+    for item in (
+        "clean worktree except intentional release artifacts",
+        "release notes or not-required rationale",
+        "generated output current",
+        "tests / selected CI / broad smoke",
+        "package build or pack proof",
+        "package preview",
+        "local packed-install smoke",
+        "no unresolved release blockers",
+        "publish path selected",
+        "evidence path prepared",
+    ):
+        if f"| {item} | pass |" not in text:
+            errors.append(f"finalized routine npm release gate item '{item}' must pass")
+    return not errors
 
 
 def _target_install_root(target: str) -> str:
