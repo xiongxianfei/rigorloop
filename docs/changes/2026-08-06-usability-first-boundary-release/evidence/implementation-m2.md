@@ -59,5 +59,18 @@ candidate CLI is rejected.
   fail-closed issue through both the callable and CLI.
 - The complete M2 validation command set passes with 61 boundary tests.
 
+## R2 review resolution
+
+- `UBR-M2-CR2-001`: derivation now constructs a restricted Git subprocess
+  environment instead of inheriting process authority. Only executable lookup,
+  a fixed locale, disabled system/global configuration, disabled replacement
+  objects, and disabled lazy fetch remain. Ambient repository, object-store,
+  namespace, config-injection, and trace variables cannot redirect the supplied
+  root or create trace output.
+- An empty supplied root remains unavailable even when the parent process seeds
+  `GIT_DIR`, `GIT_WORK_TREE`, object-directory, namespace, config, and trace
+  variables pointing at a valid repository.
+- The complete M2 validation command set passes with 62 boundary tests.
+
 No tag, publication, push, merge, registry write, network request, or external
 state mutation was performed.
