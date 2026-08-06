@@ -311,6 +311,9 @@ class RepositoryPreflightContext:
 
 
 EVIDENCE_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
+RELEASE_PROFILE_FILENAME_PATTERN = re.compile(
+    r"^(v(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*))\.yaml$"
+)
 BROAD_EVIDENCE_PATTERNS = frozenset({"*.md", "*.txt", "*.yaml", "*.yml"})
 
 CHANGE_EVIDENCE_CLASSES: tuple[EvidenceClassRegistration, ...] = (
@@ -2640,13 +2643,11 @@ def _release_version_from_path(path: str) -> str | None:
     parts = path.split("/")
     if _is_flat_release_evidence_path(path):
         return parts[2][:-3]
-    if (
-        len(parts) == 4
-        and parts[:3] == ["docs", "releases", "profiles"]
-        and parts[3].startswith("v")
-        and parts[3].endswith(".yaml")
-    ):
-        return parts[3][:-5]
+    if len(parts) >= 3 and parts[:3] == ["docs", "releases", "profiles"]:
+        if len(parts) != 4:
+            return None
+        match = RELEASE_PROFILE_FILENAME_PATTERN.fullmatch(parts[3])
+        return match.group(1) if match else None
     if len(parts) >= 4 and parts[0] == "docs" and parts[1] == "releases" and parts[2] and parts[3]:
         return parts[2]
     return None
