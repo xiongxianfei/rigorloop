@@ -54,7 +54,7 @@ Outcome: implemented and ready for code review.
   final local pre-publication payload.
 - `python scripts/test-release-transaction.py` — pass, 102 tests.
 - `python scripts/test-adapter-distribution.py` — pass, 149 tests.
-- `python scripts/test-artifact-lifecycle-validator.py` — pass, 166 tests.
+- `python scripts/test-artifact-lifecycle-validator.py` — pass, 168 tests.
 - `python scripts/test-npm-package-publication.py` — pass, 6 tests.
 - `python scripts/select-validation.py --mode release --release-version v0.4.0`
   — pass; selected `release.validate` and required `broad_smoke.repo`.
@@ -65,6 +65,19 @@ Outcome: implemented and ready for code review.
   archives, ran the adapter and packed-package suites, and validated the final
   `v0.4.0` metadata against reviewed source commit `c7b0babe`.
 - `git diff --check` — pass.
+
+## R6 review resolution
+
+- `UBR-M3-CR6-001`: every required emergency-deferral field now rejects empty
+  and placeholder values, and an actively deferred result requires the
+  deferral-row status to be exactly `open`.
+- The emergency table now has one exclusive shape: either exactly one `none`
+  sentinel when nothing is deferred, or the real matched deferral row. Mixed
+  sentinel and real-deferral evidence fails closed.
+- Independent mutations cover all eight required metadata fields, unknown
+  status, duplicate and missing deferrals, unmatched results, and the
+  contradictory sentinel case. The correction passes 168 lifecycle tests and
+  102 release-transaction tests.
 
 ## R5 review resolution
 

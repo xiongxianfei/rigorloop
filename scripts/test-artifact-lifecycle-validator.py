@@ -3360,11 +3360,57 @@ No blocked plans.
             ("missing-deferral", emergency.replace(deferral, none)),
             ("duplicate-deferral", emergency.replace(deferral, f"{deferral}\n{deferral}")),
             ("unmatched-deferral", emergency.replace(registry, "| fresh registry install smoke | pass | completed |")),
+            ("contradictory-none", emergency.replace(deferral, f"{deferral}\n{none}")),
         )
         for mutation, text in mutations:
             with self.subTest(mutation=mutation):
                 errors = validate_release_evidence_checklist(Path("docs/releases/v1.2.3.md"), text)
                 self.assertTrue(any("fresh registry install smoke" in error for error in errors), errors)
+
+    def test_release_evidence_emergency_deferral_rejects_not_applicable_required_values(self) -> None:
+        emergency = emergency_release_evidence()
+        deferral = next(
+            line
+            for line in emergency.splitlines()
+            if line.startswith("| fresh registry install smoke | release owner |")
+        )
+        cells = [cell.strip() for cell in deferral.strip().strip("|").split("|")]
+        for index, field_name in enumerate(
+            (
+                "approving owner",
+                "emergency rationale",
+                "reason for deferral",
+                "validation impact",
+                "risk accepted",
+                "follow-up location",
+                "deadline or next lifecycle stage",
+                "status",
+            ),
+            start=1,
+        ):
+            with self.subTest(field_name=field_name):
+                mutated_cells = list(cells)
+                mutated_cells[index] = "not-applicable"
+                mutated = "| " + " | ".join(mutated_cells) + " |"
+                errors = validate_release_evidence_checklist(
+                    Path("docs/releases/v1.2.3.md"),
+                    emergency.replace(deferral, mutated),
+                )
+                self.assertTrue(any(field_name in error for error in errors), errors)
+
+    def test_release_evidence_emergency_deferral_rejects_unknown_value_status(self) -> None:
+        emergency = emergency_release_evidence()
+        deferral = next(
+            line
+            for line in emergency.splitlines()
+            if line.startswith("| fresh registry install smoke | release owner |")
+        )
+        mutated = deferral.removesuffix(" open |") + " banana |"
+        errors = validate_release_evidence_checklist(
+            Path("docs/releases/v1.2.3.md"),
+            emergency.replace(deferral, mutated),
+        )
+        self.assertTrue(any("status must be open" in error for error in errors), errors)
 
     def test_release_evidence_blocks_emergency_deferral_without_owner(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="release-evidence-checklist-"))

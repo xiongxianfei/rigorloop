@@ -18,15 +18,15 @@ Review closeout: code-review-m1-r2
 Review closeout: code-review-m2-r3
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `spec-review-r2`, `spec-review-r3`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m1-r2`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-m3-r1`, `code-review-m3-r2`, `code-review-m3-r3`, `code-review-m3-r4`, `code-review-m3-r5`, `code-review-m3-r6`
-- Findings resolved: 20
-- Unresolved findings: 1
-- Current result: M3 R6 requests one correction for substantive emergency-deferral fields and sentinel exclusivity.
+- Findings resolved: 21
+- Unresolved findings: 0
+- Current result: M3 R6 correction is complete and awaits code-review R7.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| UBR-M3-CR6-001 | accepted | in-progress | Reject placeholder-filled deferral authority and mixed `none` plus real-deferral evidence. |
+| UBR-M3-CR6-001 | accepted | resolved | Required deferral authority is substantive and open; `none` is exclusive with real deferrals. |
 | UBR-M3-CR5-001 | accepted | resolved | Every state enforces exact rows and applicable results; the sole emergency deferral is exactly bound. |
 | UBR-M3-CR4-001 | accepted | resolved | All governed rows appear exactly once and passing proof rejects whitespace-only values. |
 | UBR-M3-CR3-001 | accepted | resolved | Every pending gate row and exact finalized manifest/smoke semantics are required. |
@@ -67,13 +67,13 @@ Review closeout: code-review-m2-r3
 
 Finding ID: UBR-M3-CR6-001
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: M3 implementer
 Owning stage: review-resolution
 Chosen action: Require substantive deferral fields, a closed open-state status, and exclusive use of the `none` sentinel.
 Rationale: Exact label binding is insufficient when owner approval, rationale, impact, risk, follow-up, deadline, and status can all be placeholders.
 Validation target: code-review-m3-r7
-Validation evidence: Pending complete required-field placeholder, status-vocabulary, and mixed-sentinel mutations plus the existing three-state row matrix.
+Validation evidence: All eight required-field placeholder mutations, unknown status, mixed sentinel, missing/duplicate/unmatched deferral, and the existing three-state row matrix pass; 168 lifecycle and 102 transaction tests pass.
 Safe resolution path: Add deferral-specific placeholder/status validation and sentinel exclusivity without changing release publication behavior.
 Auto-fix class: declared-safe
 
