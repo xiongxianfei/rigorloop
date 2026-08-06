@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -695,6 +696,37 @@ class BoundaryFirstActivationTests(unittest.TestCase):
                 assert isinstance(environment, dict)
                 self.assertEqual(environment.get("GIT_NO_REPLACE_OBJECTS"), "1")
                 self.assertEqual(environment.get("GIT_NO_LAZY_FETCH"), "1")
+
+    def test_grandfathered_derivation_rejects_ambient_git_authority_and_trace_output(self) -> None:
+        baseline = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, check=True,
+            capture_output=True, text=True,
+        ).stdout.strip()
+        with tempfile.TemporaryDirectory() as temporary:
+            outer = Path(temporary)
+            empty_root = outer / "empty-root"
+            empty_root.mkdir()
+            trace_path = outer / "private-git-trace.log"
+            trace2_path = outer / "private-git-trace2.log"
+            poisoned = {
+                "GIT_DIR": str(ROOT / ".git"),
+                "GIT_WORK_TREE": str(ROOT),
+                "GIT_OBJECT_DIRECTORY": str(ROOT / ".git/objects"),
+                "GIT_ALTERNATE_OBJECT_DIRECTORIES": str(ROOT / ".git/objects"),
+                "GIT_NAMESPACE": "private-namespace",
+                "GIT_CONFIG_COUNT": "1",
+                "GIT_CONFIG_KEY_0": "core.repositoryformatversion",
+                "GIT_CONFIG_VALUE_0": "0",
+                "GIT_TRACE": str(trace_path),
+                "GIT_TRACE2": str(trace2_path),
+            }
+            with mock.patch.dict(os.environ, poisoned, clear=False):
+                inventory, issues = derive_grandfathered_specs(empty_root, baseline)
+
+            self.assertEqual(inventory, ())
+            self.assertEqual(issues[0].code, "BFR-BASELINE-UNAVAILABLE")
+            self.assertFalse(trace_path.exists())
+            self.assertFalse(trace2_path.exists())
 
     def test_custom_activation_experiment_is_absent_and_cli_rejects_candidate_mode(self) -> None:
         for relative in (

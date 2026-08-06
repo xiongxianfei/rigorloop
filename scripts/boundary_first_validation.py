@@ -1144,9 +1144,15 @@ def derive_grandfathered_specs(
 ) -> tuple[tuple[str, ...], tuple[ValidationIssue, ...]]:
     """Derive the frozen historical-spec inventory without writing repository state."""
     eligible: list[str] = []
-    git_environment = dict(os.environ)
-    git_environment["GIT_NO_REPLACE_OBJECTS"] = "1"
-    git_environment["GIT_NO_LAZY_FETCH"] = "1"
+    git_environment = {
+        "PATH": os.environ.get("PATH", os.defpath),
+        "LC_ALL": "C",
+        "GIT_NO_REPLACE_OBJECTS": "1",
+        "GIT_NO_LAZY_FETCH": "1",
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": os.devnull,
+        "GIT_CONFIG_SYSTEM": os.devnull,
+    }
     if not re.fullmatch(r"[0-9a-f]{40}", baseline_revision):
         return (), (
             _issue(
