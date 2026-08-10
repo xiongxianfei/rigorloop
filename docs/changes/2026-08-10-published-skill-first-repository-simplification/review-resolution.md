@@ -2,7 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
+
+Review closeout: code-review-m1-r1
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -15,10 +17,10 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `spec-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `spec-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`
 - Findings resolved: 5
-- Unresolved findings: 0
-- Current result: Test-spec-review R3 approves the current proof map and allows M1 implementation handoff.
+- Unresolved findings: 2
+- Current result: M1 code-review R1 requested two fail-closed corrections before milestone closeout.
 
 ## Resolution Overview
 
@@ -29,8 +31,42 @@ Review closeout: test-spec-review-r3
 | PSR-TSR1-001 | accepted | resolved | Feature-spec identity now cites current approving review R2. |
 | PSR-TSR1-002 | accepted | resolved | MP1 now provides the complete auditable manual-proof contract. |
 | PSR-TSR2-001 | accepted | resolved | CMD18 now validates active R2 test-spec revision evidence. |
+| PSR-CR-M1-R1-001 | accepted | open | Structured completed proof must replace nonempty prose as removal authority. |
+| PSR-CR-M1-R1-002 | accepted | open | R26 disposition values must fail closed, not only their key set. |
 
 ## Finding Details
+
+### code-review-m1-r1
+
+Review ID: code-review-m1-r1
+
+#### PSR-CR-M1-R1-001 - Placeholder evidence can authorize removal
+
+Finding ID: PSR-CR-M1-R1-001
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Chosen action: Add structured old/replacement commands and results, comparison outcome, removal decision, rollback point, and evidence paths; require completed values before removable or retired.
+Rationale: R17-R20 make completed dual proof and recovery evidence authoritative; nonempty pending prose cannot satisfy those properties.
+Safe resolution path: Apply the declared-safe recipe recorded in code-review-m1-r1 without touching CI, selector, package, release, or skill bodies.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+needs-decision rationale: none
+
+#### PSR-CR-M1-R1-002 - R26 values do not fail closed
+
+Finding ID: PSR-CR-M1-R1-002
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Chosen action: Validate the exact `superseded-prospectively` value for every R26 key and add an unknown-value regression test.
+Rationale: The exact prospective disposition and repository closed-vocabulary rule already determine the correction.
+Safe resolution path: Apply the mechanical constant-and-test correction without changing the approved clause set or retained deterministic parity.
+Validation target: code-review-m1-r2
+Validation evidence: pending
+needs-decision rationale: none
 
 ### proposal-review-r1
 
