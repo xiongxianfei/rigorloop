@@ -19,6 +19,18 @@ Open findings: None
 Recording status: recorded
 
 ### Review entry
+Review ID: code-review-m3-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: commit a8a411fa
+Status: clean-with-notes
+Detailed record: reviews/code-review-m3-r1.md
+Resolution: review-resolution.md#code-review-m3-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
 Review ID: test-spec-review-r3
 Stage: test-spec-review
 Round: r3

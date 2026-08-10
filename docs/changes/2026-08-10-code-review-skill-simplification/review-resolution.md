@@ -251,3 +251,10 @@ Review ID: test-spec-review-r3
 
 No findings. R3 approves the CMD6 correction from an untrusted synthetic
 version to the repository's immutable trusted clean-install fixture `v0.3.6`.
+
+### code-review-m3-r1
+
+Review ID: code-review-m3-r1
+
+No findings. M3 closes with all-target archive and installed-tree parity,
+repeatable measurements, resolved ledger destinations, and approved MP1 proof.
