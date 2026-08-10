@@ -73,7 +73,7 @@ artifact_states:
       round: r3
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
+  current_stage: final-holistic-code-review
   next_stage: review-resolution
   blocker: null
   evidence:
@@ -93,9 +93,12 @@ workflow_state:
     - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m2-r2.md
     - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m3-r1.md
     - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m4-r1.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m5-r1.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m5-r2.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m6-r1.md
   planned_work:
     plan_artifact_id: plan
-    current_milestone: M6
+    current_milestone: none
     milestones:
       M1:
         kind: implementation
@@ -114,16 +117,15 @@ workflow_state:
         state: closed
       M6:
         kind: implementation
-        state: review-requested
-    remaining_implementation_milestones:
-      - M6
+        state: closed
+    remaining_implementation_milestones: []
     latest_review:
-      status: approved
-      stage: code-review
+      status: review-requested
+      stage: final-holistic-code-review
       round: r1
       artifact_id: plan
-      occurrence: milestone
-      milestone_id: M6
+      occurrence: final
+      milestone_id: none
       evidence:
         - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m1-r1.md
         - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m1-r2.md
@@ -137,7 +139,6 @@ workflow_state:
     final_closeout:
       readiness: not-ready
       reasons:
-        - implementation-milestones-open
         - lifecycle-gates-open
         - explain-change-pending
         - verify-pending
