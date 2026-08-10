@@ -119,9 +119,9 @@ workflow_state:
       - M5
       - M6
     latest_review:
-      status: changes-requested
+      status: review-requested
       stage: code-review
-      round: r1
+      round: r2
       artifact_id: plan
       occurrence: milestone
       milestone_id: M5
