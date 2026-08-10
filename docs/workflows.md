@@ -594,6 +594,24 @@ Selected-check execution supports bounded local parallelism. Use `--jobs <N>` to
 
 Ordinary contributors do not need all supported tools installed locally for non-smoke validation. Repository-owned checks validate generated package structure, drift, manifests, release metadata, and security without invoking Codex, Claude Code, or opencode.
 
+### Validation script admission
+
+Published skills and their installable packages are the primary product
+boundary. Before adding validation logic, record:
+
+- the concrete user, package, governance, or release failure it prevents;
+- why deterministic automation is appropriate;
+- why an existing gate cannot own it;
+- when it runs and the actionable repair it reports; and
+- what evidence would allow it to retire later.
+
+The default budget for a change is zero new standalone validator CLIs,
+selector systems, validation caches, and validation schedulers. Add a
+deterministic invariant to an existing clear owner when possible. Semantic
+questions such as prose quality, ownership clarity, stop-condition judgment,
+and handoff quality belong to formal review rather than an LLM-backed
+repository acceptance check.
+
 Reserve `python scripts/validate-artifact-lifecycle.py --mode local` for clean worktrees only. When unrelated drafts, untracked files, or other local-only changes are present, use `--mode explicit-paths`, the diff-derived CI modes, or `bash scripts/ci.sh` instead of treating `local` mode as milestone proof.
 
 When a change updates canonical `skills/`, use `python scripts/build-skills.py --check` to validate generated local mirror temp output. Do not treat generated `.codex/skills/*` files as authored lifecycle-managed inputs for explicit-path artifact validation.
