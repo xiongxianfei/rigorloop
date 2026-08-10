@@ -230,3 +230,10 @@ needs-decision rationale: none
 Review ID: test-spec-review-r2
 
 No findings. R2 confirms that CMD1 proves fail-closed ordering through one path, CMD10 and CMD11 own exact measurements, every test case uses an allowed level, MP1 is complete and correctly timed, and CMD6 fails fast with bounded cleanup.
+
+### code-review-m1-r1
+
+Review ID: code-review-m1-r1
+
+No findings. M1 closes with complete rule ownership, fail-closed fixture proof,
+and separate common-path and total-package baseline measurements.

@@ -5369,7 +5369,13 @@ Use the inputs somehow and produce a useful result.
     def test_review_independence_m3_code_review_pilot_guidance(self) -> None:
         """Automated code-review guidance includes the blind-first independent gate pilot."""
 
-        body = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(encoding="utf-8")
+        body = (
+            ROOT
+            / "skills"
+            / "code-review"
+            / "references"
+            / "workflow-managed-automated-review.md"
+        ).read_text(encoding="utf-8")
         required_terms = [
             "## Automated Independent Review Gate",
             "orchestrator-owned review invocation manifest",
@@ -5460,7 +5466,7 @@ Use the inputs somehow and produce a useful result.
         """M1 public guidance teaches requirement-fidelity as an additive code-review pilot."""
 
         required_by_skill = {
-            "code-review": [
+            "code-review-reference": [
                 "## Requirement-Fidelity Gate",
                 "Requirement fidelity is a sibling gate to independent review: independence reduces anchoring, while fidelity checks the complete normative spec projection.",
                 "For workflow-managed automated `code-review`, use the requirement-fidelity gate when the applicability manifest says `applicable`.",
@@ -5485,10 +5491,77 @@ Use the inputs somehow and produce a useful result.
             ],
         }
         for skill_name, terms in required_by_skill.items():
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            if skill_name == "code-review-reference":
+                path = (
+                    ROOT
+                    / "skills"
+                    / "code-review"
+                    / "references"
+                    / "workflow-managed-automated-review.md"
+                )
+            else:
+                path = ROOT / "skills" / skill_name / "SKILL.md"
+            body = path.read_text(encoding="utf-8")
             for term in terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
+
+    def test_code_review_simplification_m2_package_contract(self) -> None:
+        """M2 keeps universal policy inline and maps automation-only procedure once."""
+
+        root = ROOT / "skills" / "code-review"
+        body = (root / "SKILL.md").read_text(encoding="utf-8")
+        reference = (
+            root / "references" / "workflow-managed-automated-review.md"
+        ).read_text(encoding="utf-8")
+
+        mapping = (
+            "- READ `references/workflow-managed-automated-review.md` only when "
+            "the invocation is a formally armed workflow-managed automated review "
+            "or correction loop."
+        )
+        self.assertEqual(body.count(mapping), 1)
+        for heading in (
+            "## Workflow role",
+            "## Review authority and evidence",
+            "## First-pass checklist coverage",
+            "## Status, severity, and material findings",
+            "## Isolation and Recording",
+            "## Direct proof and rereview",
+            "## Stop conditions",
+            "## Claims this skill must not make",
+            "## Status and milestone handoff",
+            "## Boundary-first bridge",
+            "## Resource map",
+            "## Expected output",
+        ):
+            with self.subTest(inline_heading=heading):
+                self.assertIn(heading, body)
+
+        for automation_heading in (
+            "## Automated Independent Review Gate",
+            "## Requirement-Fidelity Gate",
+            "## Reviewer-owned correction classification",
+            "## Bounded correction and rereview",
+            "## Promotion, pause, and failure",
+        ):
+            with self.subTest(reference_heading=automation_heading):
+                self.assertIn(automation_heading, reference)
+
+        for forbidden_policy in (
+            "## First-pass statuses",
+            "## Severity",
+            "## Isolation and Recording",
+            "## Stop conditions",
+            "## Claims this skill must not make",
+        ):
+            with self.subTest(forbidden_reference_policy=forbidden_policy):
+                self.assertNotIn(forbidden_policy, reference)
+
+        self.assertNotIn("## Result\n\n- Skill: code-review", body)
+        self.assertNotIn("## Finding <finding ID>", body)
+        self.assertIn("COPY `assets/review-result-skeleton.md`", body)
+        self.assertIn("COPY `assets/material-finding.md`", body)
 
         adjacent_review_terms = [
             "Manual reviews may voluntarily apply the requirement-fidelity gate and record a fidelity receipt.",
@@ -6355,9 +6428,18 @@ and result format.
             )
             expected_output = body[expected_output_start:]
             with self.subTest(skill=skill_name, surface="result_block"):
-                self.assertIn("## Result", expected_output)
+                result_surface = expected_output
+                if skill_name == "code-review":
+                    result_surface = (
+                        ROOT
+                        / "skills"
+                        / "code-review"
+                        / "assets"
+                        / "review-result-skeleton.md"
+                    ).read_text(encoding="utf-8")
+                self.assertIn("## Result", result_surface)
                 for field in SKILL_CONTRACT_RESULT_FIELDS:
-                    self.assertIn(f"- {field}:", expected_output)
+                    self.assertIn(f"- {field}:", result_surface)
 
             handoff = extract_markdown_block(body, "Handoff")
             with self.subTest(skill=skill_name, surface="handoff"):

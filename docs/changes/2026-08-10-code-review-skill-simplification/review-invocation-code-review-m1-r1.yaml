@@ -1,0 +1,60 @@
+schema_version: 1
+review_id: code-review-m1-r1
+review_stage: code-review
+review_target: commit 698541d70ce0f33764cdd10c1a5505798c014aca
+base_revision: 72ec76dc9b9e1efd6b49da76778d796ed6a330a6
+head_revision: 698541d70ce0f33764cdd10c1a5505798c014aca
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-implement-m1
+reviewer_context_id: root-code-review-m1-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - change-local-rule-ledger
+  - static-scenario-fixtures
+  - closed-vocabulary-negative-proof
+governing_artifacts:
+  - specs/code-review-skill-simplification.md
+  - docs/architecture/system/architecture.md
+  - docs/plans/2026-08-10-code-review-skill-simplification.md
+  - specs/code-review-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/code-review-skill-simplification.md
+    sha256: fdf3592a0c8059dbd17936dd690134cd2a6054f4430b36bf984db14cbc06fc0e
+  - path: docs/architecture/system/architecture.md
+    sha256: 9cf16c0b380b089a1c4057d981d07379a6d9145e30e2a852dc5163241ae0a68a
+  - path: docs/plans/2026-08-10-code-review-skill-simplification.md
+    sha256: 1d24471dadda0cc4c00c97dc142e998c1da0ba292a5be75de34da656a9feaebb
+  - path: specs/code-review-skill-simplification.test.md
+    sha256: 2ee9e9785e371975f7093851bdec03351827613f6b5e79b2ca1ff02a64989ab9
+  - path: docs/changes/2026-08-10-code-review-skill-simplification/code-review-rule-disposition.yaml
+    sha256: b5849863e1292595ccbcbc6f714320a689f440fc1c7c98d90b14eb64a444ed61
+  - path: docs/changes/2026-08-10-code-review-skill-simplification/fixtures/scenario-contracts.yaml
+    sha256: c1b33155dd0fad8ff0504db09ad40aab04f562f398e2ef29821e98d36fa2be78
+  - path: docs/changes/2026-08-10-code-review-skill-simplification/evidence/m1-rule-ownership.md
+    sha256: 10d094a2ab6cfad24af128e3b3ec8bce526119455268ab2bd658cf43fe8beb50
+prompt_template_version: code-review-v1
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+review_focus:
+  - complete source-rule accounting
+  - fail-closed disposition vocabulary
+  - named duplicate-cluster ownership
+  - fixture-based scenario coverage
+  - separate common-path and package measurement
+  - no target-agent runtime acceptance
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
