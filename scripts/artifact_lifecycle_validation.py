@@ -12,16 +12,15 @@ from pathlib import Path
 from typing import Any
 
 from artifact_lifecycle_contracts import ArtifactContract, classify_artifact
-from change_metadata_semantics import (
-    STAGE_OWNED_CONTRACT,
-    validate_stage_owned_lifecycle_metadata,
-)
+from change_metadata_semantics import STAGE_OWNED_CONTRACT, validate_stage_owned_lifecycle_metadata
 from lifecycle_state_sync import (
     has_structured_workflow_state_marker,
     has_workflow_state_handoff_section,
     resolve_owners_from_index,
     validate_workflow_state_sync,
 )
+from review_artifact_validation import format_finding as format_review_finding
+from review_artifact_validation import validate_change_root
 
 
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD|lorem ipsum)\b", re.IGNORECASE)
@@ -206,6 +205,22 @@ class ValidationScope:
 
 class ValidationInputError(Exception):
     """Raised when validator input is incomplete or ambiguous."""
+
+
+def _review_change_record_for(root: Path, path: Path) -> Path | None:
+    """Resolve a change record for a changed review-evidence path."""
+    try:
+        relative = path.relative_to(root)
+    except ValueError:
+        return None
+    parts = relative.parts
+    if len(parts) < 4 or parts[:2] != ("docs", "changes"):
+        return None
+    change_root = root / "docs" / "changes" / parts[2]
+    review_surface = parts[3] in {"review-log.md", "review-resolution.md", "reviews"}
+    if not review_surface:
+        return None
+    return change_root / "change.yaml"
 
 
 @dataclass(frozen=True)
@@ -1743,6 +1758,11 @@ def _resolve_scope(
             continue
 
         relative = current.relative_to(root)
+        review_change_record = _review_change_record_for(root, current)
+        if review_change_record is not None and _path_exists(
+            root, review_change_record, current_revision
+        ):
+            queue.append(review_change_record)
         if _is_generated_output_path(relative):
             if mode == "explicit-paths":
                 generated_paths.add(current)
@@ -1801,6 +1821,7 @@ def validate_repository(
     root: Path,
     *,
     mode: str,
+    compose_change_metadata: bool = False,
     paths: list[str] | None = None,
     base: str | None = None,
     head: str | None = None,
@@ -1827,6 +1848,25 @@ def validate_repository(
     stage_owned_states: dict[Path, list[StageOwnedArtifactState]] = {}
 
     for path in scope.change_yaml_paths:
+        metadata_error_messages: set[str] = set()
+        if compose_change_metadata:
+            metadata_parser = _load_change_metadata_parser()
+            try:
+                metadata_errors = metadata_parser.validate_file(path)
+            except (FileNotFoundError, metadata_parser.MetadataValidationError) as exc:
+                metadata_errors = [f"invalid change metadata: {exc}"]
+            for message in metadata_errors:
+                metadata_error_messages.add(message)
+                blocking_findings.append(
+                    ValidationFinding(
+                        severity="block",
+                        path=path,
+                        artifact_class="change_metadata",
+                        status=None,
+                        message=message,
+                    )
+                )
+
         metadata_text = _read_repo_text(
             root_resolved,
             path,
@@ -1853,6 +1893,8 @@ def validate_repository(
         ):
             stage_owned_records.add(path)
             for message in validate_stage_owned_lifecycle_metadata(metadata):
+                if message in metadata_error_messages:
+                    continue
                 blocking_findings.append(
                     ValidationFinding(
                         severity="block",
@@ -1898,6 +1940,19 @@ def validate_repository(
                     artifact_class="change_metadata",
                     status=None,
                     message=message,
+                )
+            )
+
+        change_root = path.parent
+        review_result = validate_change_root(change_root, mode="structure")
+        for finding in review_result.blocking_findings:
+            blocking_findings.append(
+                ValidationFinding(
+                    severity="block",
+                    path=finding.path,
+                    artifact_class="review_artifacts",
+                    status=None,
+                    message=format_review_finding(finding, root=root_resolved),
                 )
             )
 

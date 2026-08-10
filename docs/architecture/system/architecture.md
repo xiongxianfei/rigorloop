@@ -2,7 +2,7 @@
 
 ## Owning change record
 
-`docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml`
+`docs/changes/2026-08-10-published-skill-first-repository-simplification/change.yaml`
 
 ## Related artifacts
 
@@ -147,6 +147,10 @@
 - Record Every Formal Review change metadata: `docs/changes/2026-05-12-record-every-formal-review-review-recording/change.yaml`
 - C4 system context diagram: `diagrams/context.mmd`
 - C4 container diagram: `diagrams/container.mmd`
+- Published-Skill-First Repository Simplification proposal: `docs/proposals/2026-08-10-published-skill-first-repository-simplification.md`
+- Published-Skill-First Repository Simplification spec: `specs/published-skill-first-repository-simplification.md`
+- Published-Skill-First Validation Architecture ADR: `docs/adr/ADR-20260810-published-skill-first-validation-architecture.md`
+- Published-skill validation component diagram: `diagrams/component-published-skill-validation.mmd`
 
 ## Introduction and Goals
 
@@ -199,6 +203,7 @@ The goals are:
   a fixed write boundary and external actions remain prohibited;
 - make workflow-managed automated reviews structurally independent and adversarial through fresh review contexts, neutral initial packets, blind-first risk formation, staged evidence release, risk-tiered escalation, clean-review sufficiency receipts, and calibration evidence.
 - make applicable automated reviews spec-canonical by requiring deterministic requirement-fidelity applicability, requirement-property decomposition, property-by-surface matrices, validator assertion comparison against the spec, and compression-defect calibration.
+- make canonical skills and packaged resources the primary product boundary, compose deterministic adapter and release proof through three stable gates, keep semantic skill quality in review, and retire validation orchestration only through failure-preserving slices.
 
 ## Architecture Constraints
 
@@ -336,6 +341,10 @@ The goals are:
 - Top-level legacy documents under `docs/architecture/*.md` are archived historical artifacts after accepted current content has been merged into this canonical package.
 - Package diagrams live as separate authored source files under `diagrams/`; default Mermaid diagrams use `.mmd` files and are linked from `architecture.md` by relative path.
 - Mermaid flowchart C4 diagrams use explicit person, system, external, and container styling; container labels include technology when relevant to review.
+- Published-skill repository acceptance is deterministic: it does not start Codex, Claude Code, or opencode, send prompts, grade LLM output, or treat transcripts and model selection as product proof.
+- Codex, Claude Code, and opencode receive equivalent generated-package inventory, mapped-resource, declared-transformation, archive, and byte-parity proof.
+- Installer materialization is a conditional filesystem-only proof surface, not a fourth product gate and not a target-runtime behavior test.
+- Existing selector, cache, scheduler, broad-smoke, benchmark, and validator-meta-test contracts remain transitional architecture until their retirement slice records exact contract disposition and replacement coverage.
 
 ## Context and Scope
 
@@ -353,6 +362,9 @@ The canonical scope includes:
 
 The canonical scope excludes runtime application infrastructure, databases, service APIs, and production telemetry because this repository is a workflow and adapter starter kit rather than a deployed service.
 
+Target-agent interpretation is also outside repository acceptance.
+Agent runtimes consume published packages, but repository correctness ends at deterministic package, archive, release, and applicable installer-filesystem boundaries.
+
 See [`diagrams/context.mmd`](diagrams/context.mmd) for the C4 system context view.
 
 ## Solution Strategy
@@ -364,6 +376,10 @@ Historical or exceptional change-local architecture evidence never competes with
 The repository keeps structural documentation in C4 Mermaid source diagrams, written architecture in the official arc42 section model, and durable decision rationale in ADRs. Existing validation remains path-scoped and review-based for architecture sufficiency, with narrow lifecycle compatibility for canonical architecture packages, diagrams, historical or exceptional change-local architecture evidence, review artifacts, change metadata, and generated-output drift.
 
 This strategy keeps the method practical for normal contributors while making architecture review compare structure, runtime flow, deployment boundaries, cross-cutting concerns, quality requirements, risks, and decision history consistently.
+
+For published skills, use a one-way proof chain: Gate A validates canonical skill and resource integrity; Gate B generates and proves Codex, Claude Code, and opencode package parity; Gate C composes current A and B proof with release-only metadata and archive checks.
+Lifecycle records flow to one bounded governance validation owner, while semantic skill questions flow to formal review.
+No selector, cache, scheduler, benchmark, or target-runtime evidence layer is allowed between canonical skills and publication without an approved, measured exception.
 
 For boundary-first guidance, use progressive disclosure without creating a
 second semantic model. All governed skills carry a small compact core and the
@@ -462,7 +478,7 @@ The CLI package remains an additive delivery container. For multi-adapter init, 
 
 The validation and generation container has these important internal responsibilities:
 
-- selector and CI wrapper: `scripts/validation_selection.py`, `scripts/select-validation.py`, and `scripts/ci.sh` classify paths, select stable check IDs, run repository-owned proof commands, summarize successful selected checks, and surface failed check output with stable check identity;
+- direct hosted gates and compatibility selection: `scripts/ci.sh` invokes Gate A, Gate B, Gate C regression proof, public-package proof, and lifecycle governance directly for PR and main. `scripts/validation_selection.py` and `scripts/select-validation.py` remain compatibility owners for local, explicit, and release modes until their active contracts receive a separate retirement;
 - evidence registration: the selector owns deterministic evidence-class matching for recurring change-local evidence files, rejects broad or ambiguous patterns through regression coverage, routes registered classes to declared checks, and surfaces stable `manual-routing-required` diagnostics for unregistered deterministic evidence;
 - validation idempotency: cache helpers compute normalized argv, repository-relative explicit paths, input-surface hashes, implementation manifest hashes, and policy/config hashes for the eligible explicit-path lifecycle command family. Direct `--mode explicit-paths` remains actual-run for closeout and final gates, while helper `--mode explicit-paths-inner-loop` supplies inner-loop cache context, normalizes to canonical direct argv for cache identity, and records displayed-versus-canonical argv in formal helper evidence. Unsupported or uncertain manifests disable caching and run the validator;
 - lifecycle and change validators: `scripts/validate-artifact-lifecycle.py`,
@@ -479,14 +495,32 @@ The validation and generation container has these important internal responsibil
 - change-record query helper: `scripts/query-change-record.py` exposes bounded `summary`, `artifacts`, `validation --latest`, and `validation --stage <stage>` reads over valid legacy and compact metadata shapes without executing validation commands;
 - skill and adapter generation: `scripts/build-skills.py`, `scripts/build-adapters.py`, and adapter distribution helpers generate local runtime state, public adapter output, and release artifact outputs from canonical sources;
 - release preparation, closeout, and validation: release tooling reads `docs/releases/profiles/<tag>.yaml` as the routine release transaction source of truth, generates profile-owned release-prep surfaces, checks human-authored surfaces for profile consistency, records timing evidence, and generates published evidence from public GitHub/npm/`npx` data after publication. `scripts/validate-adapters.py`, `scripts/validate-release.py`, and `scripts/release-verify.sh` check generated packages, manifests, release metadata, adapter artifact metadata, tracked release notes, package preview, registry verification, emergency deferral records, checksums, and smoke evidence. Release preflight owns cheap deterministic profile/schema/state checks before broad verification. For public releases, `release-verify.sh` is the maintainer-facing full gate and `validate-release.py` owns structured release validation delegated from that gate. For `v0.1.3` and later, these checks validate generated temporary or release-output adapter packages and release archives instead of tracked adapter package trees.
-- published skill resource integrity: skill validation checks `Resource map` verb-to-class rules, path containment, canonical resource existence, and bounded unmapped legacy references; generated-output and adapter validation compare mapped resource relative paths and raw-byte SHA-256; clean-install smoke inspects installed target skill roots for Codex, Claude, and opencode.
+- published skill resource integrity: skill validation checks deterministic `Resource map` verb-to-class rules, path containment, canonical resource existence, and bounded unmapped legacy references; generated-output and adapter validation compare mapped resource relative paths and raw-byte SHA-256. Installer smoke remains only when RigorLoop-owned materialization logic exceeds package copying and ends at filesystem inspection.
 - checked-revision boundary activation: `scripts/boundary_first_validation.py` owns the repository-internal pure `derive_grandfathered_specs(root, baseline_revision)` authoring function. It accepts a repository root and an exact 40-character lowercase commit identity, performs read-only Git object inspection, and returns `(sorted_paths, issues)`, where `sorted_paths` is the complete raw-UTF-8-byte-sorted tuple of eligible top-level accepted, approved, or active feature-spec paths and `issues` is empty on success or contains bounded validation issues on failure. The function writes nothing, has no CLI surface, and is called only during the one-time activation implementation step and its regression fixtures. Separately, `scripts/validate-boundary-first.py --check` validates the current activation snapshot, canonical and projected resources, governed skill inventory, adapter support, and rollback metadata without inspecting Git history, tags, remote state, or network services; it never calls the derivation function and reads the frozen record directly.
 - project-map contract validation: the first slice validates the normalized skill contract, resource-map entry, skeleton asset, generated adapter inclusion, and a small representative output set for required sections, material citations, inference labels, unknowns, configured/executed command separation, correction notes, and absence of unfilled placeholders. A dedicated project-map artifact validator remains deferred until concrete drift appears in at least two produced maps.
 - measurement, benchmark, and reporting scripts: repository-local commands measure skill size, run token-cost benchmark prompts in disposable fixtures, analyze Codex JSONL session exports, summarize tool-output amplification, validate token-cost release metadata, and produce reviewable evidence for reports without requiring hosted telemetry.
 - required-benchmark context: release validation determines the release-specific required dynamic benchmark set from core suite policy, transition carryover policy, changed public skills, and claimed optional coverage, then passes that context to token-cost validation in process or through a transient YAML file for CLI and debugging use.
 - first-slice script-output shaping: `scripts/test-select-validation.py` is the first standalone runner surface for compact `[PASS]` success summaries, actionable `[FAIL]` details, explicit `--verbose`, silent successful `--quiet`, reliable-only rerun guidance, and behavior-preservation evidence.
 
-This decomposition is prose-only for now. A component diagram should be added when future validation work changes these internal responsibilities enough that prose no longer explains the selector, validator, generator, and CI-wrapper relationships.
+See [`diagrams/component-published-skill-validation.mmd`](diagrams/component-published-skill-validation.mmd) for the target product-gate decomposition.
+
+### Level 2 White-Box: Published-Skill Validation
+
+The target validation architecture has six intentionally narrow responsibilities:
+
+- canonical skills and resources are the only authored product input;
+- Gate A owns deterministic canonical skill and resource integrity;
+- Gate B owns generation and equivalent package parity for Codex, Claude Code, and opencode;
+- Gate C composes current Gate A and Gate B proof with release-only metadata, archive, checksum, note, and rollback checks;
+- one governance owner validates deterministic change-record and lifecycle consistency, including fail-closed closed vocabularies; and
+- semantic review judges clarity, ownership, procedure, resources, stop conditions, claims, outputs, and handoffs.
+
+The gates may reuse existing parser and generation modules, but they expose one stable owner per invariant and do not preserve selectors, caches, schedulers, or meta-tests merely as an internal routing layer.
+Gate C reports the underlying Gate A or Gate B failure instead of copying their rules.
+Target-agent runtimes and LLM transcript analysis are outside this component.
+
+Migration retains current paths until each retirement ledger maps their positive and negative fixtures, active contract clauses, direct invocation sites, replacement proof, and rollback point.
+The published workflow automation product remains a sibling repository capability and is not retired by this architecture decision.
 
 ### Level 2 White-Box: Unified Workflow Automation
 
@@ -623,8 +657,8 @@ arbitrary file write.
 
 ### Validation flow
 
-1. Changed paths are inspected with `python scripts/select-validation.py --mode explicit --path ...`.
-2. Supported changed paths are executed through `bash scripts/ci.sh --mode explicit --path ...`.
+1. Hosted PR and main acceptance invokes the stable product and governance owners directly through `scripts/ci.sh`; it does not invoke selector, cache, scheduler, or target-runtime evidence.
+2. Local targeted compatibility remains available through `python scripts/select-validation.py --mode explicit --path ...` and `bash scripts/ci.sh --mode explicit --path ...`.
 3. The selector emits stable check IDs such as `artifact_lifecycle.validate`, `change_metadata.validate`, `change_metadata.regression`, `review_artifacts.validate`, and generated-output checks.
 4. Lifecycle-managed artifacts are checked with `scripts/validate-artifact-lifecycle.py`.
 5. When governed lifecycle state is in scope,
@@ -637,7 +671,7 @@ arbitrary file write.
 7. Review artifact closeout is checked with `scripts/validate-review-artifacts.py` when review files are in scope.
 8. Architecture diagram source files and historical or exceptional change-local architecture evidence route only to existing non-enforcement lifecycle checks; C4 sufficiency, arc42 completeness, ADR need, and package shape remain architecture-review or code-review evidence.
 9. Unclassified paths do not fail open; they require explicit manual routing or a later selector contract update.
-10. Final broad smoke runs only when an authoritative trigger requires it.
+10. Broad smoke remains an explicit legacy compatibility boundary and is not the hosted PR or main publication path.
 11. Normal script and wrapper output is summary-first and failure-focused: passing checks collapse into counts and durations, failed checks expand with actionable details, and full passing detail remains available through `--verbose`.
 12. `--quiet` is a script-local success-silencing mode, not a failure-hiding mode. Successful quiet runs produce no stdout or stderr, while usage errors, validation failures, test failures, and zero-test safety failures may emit bounded actionable diagnostics.
 13. For branches adding deterministic change-local evidence, actual changed-path routing proof is required before verify. Supplemental fixtures and explicit-path validation do not replace routing the branch's own changed paths.
@@ -651,9 +685,20 @@ arbitrary file write.
 5. Adapter generation carries mapped resources into generated output without transformation by default.
 6. Generated-output parity compares the canonical skill-root relative path and raw-byte SHA-256 for every untransformed mapped resource.
 7. If a resource is intentionally transformed, the transformation contract supplies input path, transformation owner, output path, expected output identity, and validation command. Missing transformation contracts fail parity validation.
-8. Pre-publish clean-install smoke installs the locally packed release candidate into empty Codex, Claude, and opencode target projects, then inspects the real installed skill roots for mapped resources at the expected relative paths and raw-byte identities.
-9. Live registry installation remains release-owned post-publish evidence unless the release contract explicitly requires it before implementation closeout.
-10. Runtime fallback is not package proof: missing mapped resources still fail package validation, and missing normative, schema, security, legal, or non-obvious structural resources stop execution with a package-integrity blocker.
+8. Gate B proves Codex, Claude Code, and opencode package inventory, mapped-resource paths, declared transformations, archive contents, and untransformed raw-byte identities from local generated output or release candidates.
+9. Installer inventory decides whether package parity is sufficient. A pure copy adds no smoke; meaningful RigorLoop-owned materialization receives only empty-temporary-directory invocation and filesystem inspection.
+10. Target-agent runtime execution, prompts, transcripts, model selection, and LLM-output grading are not package proof and do not participate in repository acceptance.
+
+### Published-skill product-gate and retirement flow
+
+1. Gate A reads canonical skill roots and reports deterministic structural, resource, path, placeholder, closed-vocabulary, and narrowly forbidden-claim failures.
+2. Gate B runs only after current Gate A proof, generates all three supported adapter targets, and reports target-specific inventory, transformation, archive, or identity failures.
+3. Gate C runs only after current Gate A and Gate B proof and adds version, package metadata, archive inventory, checksums, tracked release notes, generated-package freshness, and rollback consistency.
+4. Semantic review runs beside the product chain and records judgment findings without becoming a validator heuristic.
+5. Lifecycle governance runs beside the product chain through one bounded deterministic owner and fails closed on unknown contractual values before consistency checks.
+6. A retirement slice inventories old checks and fixtures, maps protected failures and active clauses, dual-runs old and replacement proof, records differences and rollback, then removes only fully covered or explicitly de-contracted behavior.
+7. Unknown or contradictory protected behavior pauses the slice; failure does not fall through to deletion.
+8. The transition keeps current selector, cache, scheduler, benchmark, and meta-validation paths active until their individual contract and proof disposition is approved.
 
 ### Progressive boundary-guidance projection and activation flow
 
@@ -879,6 +924,21 @@ RigorLoop has no deployed service, database, or runtime infrastructure for this 
 
 Authored content is reviewed in Git and distributed as repository files. Generated guidance is produced from canonical sources by existing repository generators. Tracked generated surfaces are validated for drift while they remain tracked; untracked generated surfaces are validated through temporary output or release artifact output. GitHub Actions do not own validation behavior; they set up execution and delegate to repository-owned scripts.
 
+### Published-skill target deployment boundary
+
+Gate A runs against repository-owned canonical skill roots and packaged resources.
+Gate B generates local temporary or release-output packages and archives for Codex, Claude Code, and opencode, then proves inventory, mapped paths, declared transformations, archive contents, and untransformed byte identity for each target.
+Gate B does not install or start a target runtime.
+
+Gate C consumes current Gate A and Gate B proof plus a local release candidate's version, package metadata, checksums, tracked release notes, archive inventory, generated-package freshness, and rollback consistency.
+It may be a thin release composition command, but it does not copy canonical-skill or adapter-parity rules.
+
+Installer materialization is outside the normal gate chain unless inspected installer branches perform RigorLoop-owned filesystem logic beyond copying Gate B-proved content.
+When required, smoke runs against a local package in an empty temporary directory, inspects only filesystem results, and ends before Codex, Claude Code, or opencode starts or receives a prompt.
+
+Existing all-target clean-install, live-registry smoke, Codex benchmark, selector, cache, scheduler, and broad-smoke paths remain transitional execution surfaces only while their active contracts and protected failures await slice-owned disposition.
+No retirement slice may remove them until old-versus-replacement proof and rollback are recorded.
+
 The main execution and publication boundaries are:
 
 - local contributor shell: runs selector, CI wrapper, validation, change-record query helper, generation, and drift checks;
@@ -896,7 +956,7 @@ The main execution and publication boundaries are:
 - local validation execution cache: untracked branch-local, worktree-local, and change-local state that can speed eligible repeated local validation but is not portable and is not lifecycle evidence;
 - local Codex runtime state: `.codex/skills/`, ignored by Git and installed locally from public Codex adapter output when contributors need local Codex use;
 - public adapter packages: tracked `dist/adapters/` output during the compatibility window through `v0.1.2`, then generated temporary or release-output packages and release archives for `v0.1.3` and later;
-- mapped skill-local resource parity: canonical `skills/<skill>/` resources, generated adapter output, locally packed release candidates, and clean installed target skill roots preserve skill-root relative paths and raw-byte SHA-256 unless an explicit transformation contract applies;
+- mapped skill-local resource parity: canonical `skills/<skill>/` resources, generated adapter output, locally packed release candidates, and adapter archives preserve skill-root relative paths and raw-byte SHA-256 unless an explicit transformation contract applies; installed-tree inspection remains only for additional materialization behavior not proved by package parity;
 - progressive boundary resource package: every governed target skill contains
   `references/boundary-first-method-v1.md`; only feature-contract targets also
   contain `references/boundary-first-feature-authoring-v1.md`; only proof-map
@@ -1124,6 +1184,26 @@ whole-record review.
 
 Package diagrams have one authored source file and are linked from `architecture.md` by relative path. Default Mermaid diagrams use `.mmd` files under the package `diagrams/` directory. Mermaid flowchart or graph C4 diagrams use shared role classes for people, the system under review, external systems, and containers; generated images, if added later for publication, are derived output and are not edited by hand.
 
+### Published-skill-first validation boundary
+
+Deterministic ownership is the admission rule for repository acceptance.
+Gate A owns canonical skill and resource facts, Gate B owns generated package facts for all supported targets, and Gate C owns release-candidate facts while composing rather than copying A and B semantics.
+Each invariant has one named parser or module owner even when a thin command composes several owners.
+
+Semantic review owns instruction quality: description and trigger clarity, artifact and stage ownership, prerequisites, followable procedure, resource use, stop conditions, claim boundaries, output, and handoff.
+Structural presence may inform review but cannot settle those judgments.
+
+Lifecycle governance is separate from publication proof.
+Its one entry point may reuse focused parsing modules, but externally it reports one deterministic result for change-record shape, legal transitions, review references, contradictory state, dangling evidence, and closed vocabularies.
+Unknown closed values fail before consistency evaluation.
+
+Installer proof is conditional.
+Pure copying is already covered by Gate B; only additional RigorLoop-owned materialization logic earns a filesystem smoke, and that smoke ends before any target runtime starts.
+
+Migration is proof-preserving and contract-first.
+An existing subsystem remains until a retirement ledger names its protected failures, active clauses, replacement proof, dual-run result, and rollback point.
+Measured speed or line reduction is secondary evidence and never substitutes for failure coverage.
+
 ### Generated output
 
 Canonical skills and adapter templates are authored sources. `.codex/skills/`, public adapter skill copies, adapter archives, and OpenCode command aliases are generated or installed runtime outputs produced from canonical sources and approved templates or metadata. Public adapter output may be copied into `.codex/skills/` only as local ignored runtime installation; generated output must not become an authored source of truth.
@@ -1294,6 +1374,7 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 
 ## Architecture Decisions
 
+- `docs/adr/ADR-20260810-published-skill-first-validation-architecture.md`: three composed deterministic product gates, one lifecycle-governance entry point, review-owned semantic quality, no target-runtime acceptance, and ledger-backed retirement slices.
 - `docs/adr/ADR-20260428-architecture-package-method.md`: default C4 plus official arc42 plus ADR architecture package method.
 - `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`: removes change-local deltas from the normal architecture authoring path and requires architecture-review surface classification.
 - `docs/adr/ADR-20260419-repository-source-layout.md`: repository source layout and canonical-source/generated-output separation.
@@ -1364,6 +1445,10 @@ decisions from ADR-20260728 and ADR-20260729.
 
 | Quality | Scenario | Measure |
 | --- | --- | --- |
+| Product-boundary determinism | A canonical skill or generated adapter package changes. | Gate A and Gate B decide acceptance from repository files, declared transformations, archives, and identities without a target runtime, prompt, transcript, model ID, or nondeterministic retry. |
+| Cross-target package parity | A maintainer generates public adapters. | Codex, Claude Code, and opencode each have expected inventory, mapped resources, declared transformations, archive contents, and untransformed raw-byte identity proof. |
+| Release composition | A local release candidate is verified. | Gate C requires current Gate A and Gate B proof, adds release-only checks, and reports the underlying failed owner without duplicating its semantic rules. |
+| Retirement safety | A validation subsystem is proposed for removal. | Every protected fixture and failure has a recorded replacement or approved de-contracting, old and replacement proof are compared, unknown behavior pauses, and one recoverable rollback boundary is named. |
 | Reviewability | A reviewer opens a PR that changes the canonical architecture package. | The affected arc42 sections, diagram source files, and ADR links are visible as repository text in the PR diff; no external binary diagram is required to review the change. |
 | Traceability | A contributor changes architecture guidance for diagrams, skills, templates, or generated output. | The change links the accepted proposal, approved spec, canonical package update or explicit no-impact rationale, ADR decision if required, plan, test spec, and validation evidence. |
 | Proportionality | A change needs architecture handling. | No-impact work records a rationale, clear current-architecture changes update this package directly, durable decisions create or update ADRs, and unsettled direction or behavior routes back to proposal or spec. |
@@ -1429,6 +1514,11 @@ decisions from ADR-20260728 and ADR-20260729.
 
 | Risk or debt | Current handling |
 | --- | --- |
+| Existing contracts still require routing fixtures, runtime benchmarks, clean installs, selectors, caches, or schedulers | The approved simplification spec gives a narrow immediate disposition only for named skill-contract clauses; every other subsystem remains transitional until its slice records exact contract disposition. |
+| Consolidation could move all complexity into one oversized validator | Gate ownership is separated by canonical skill, package, release, and lifecycle-governance invariants; semantic judgment is excluded and internal modules retain one parser owner per invariant. |
+| A retired check may protect an undocumented failure | Retirement pauses on unknown fixtures or contradictory behavior and requires old-versus-replacement proof plus rollback before removal. |
+| Review-owned semantic quality may vary by reviewer | Published-skill review uses one concise checklist for trigger clarity, ownership, prerequisites, procedure, resources, stops, claims, output, and handoff; material concerns use formal findings. |
+| Target runtimes may interpret structurally valid skill text unexpectedly | Treat reported runtime behavior as a product defect to investigate without making routine LLM execution a repository acceptance oracle. |
 | Archived legacy architecture documents can be mistaken for current architecture truth | Each archived record points to this canonical package, and final closeout validation covers every changed legacy document. |
 | First implementation relies on review rather than structural package enforcement | Approved spec intentionally defers enforcement automation until a real package proves the shape. |
 | C4 context and container views may be too coarse for future module-level changes | Add component diagrams only when container-level structure no longer explains affected responsibilities. |
@@ -1527,6 +1617,11 @@ decisions from ADR-20260728 and ADR-20260729.
 
 ## Glossary
 
+- Gate A: deterministic canonical skill and packaged-resource integrity.
+- Gate B: deterministic Codex, Claude Code, and opencode generation and package parity.
+- Gate C: release-candidate integrity composed from Gate A, Gate B, and release-only proof.
+- retirement ledger: the per-check record of protected failures, contract disposition, replacement evidence, dual-run result, and rollback.
+- materialization smoke: filesystem-only invocation of RigorLoop-owned installer logic in an empty temporary directory; never target-runtime execution.
 - ADR: architecture decision record that preserves a durable decision, alternatives, consequences, and follow-up.
 - arc42: the 12-section architecture documentation model used by `architecture.md`.
 - C4: context, container, component, and code-level structural diagram model.
@@ -1655,8 +1750,7 @@ decisions from ADR-20260728 and ADR-20260729.
 
 ## Next artifacts
 
-- Architecture-review for the usability-first boundary release canonical
-  update, focused component diagram, and checked-revision activation ADR.
+- Architecture-review for the published-skill-first canonical update, focused component diagram, and validation-architecture ADR.
 
 ## Follow-on artifacts
 
@@ -1725,9 +1819,11 @@ decisions from ADR-20260728 and ADR-20260729.
 
 ## Readiness
 
-The usability-first boundary release architecture is authored under its
-approved feature specification. Reliance on this revision requires the
-matching owner-bound architecture and ADR review settlement.
+The published-skill-first validation architecture is authored under its approved feature specification.
+Reliance on the new gate composition, semantic-review boundary, conditional materialization smoke, or retirement flow requires matching architecture and ADR review settlement.
+
+ADR `docs/adr/ADR-20260810-published-skill-first-validation-architecture.md` records the proposed durable validation and release-composition decision.
+The current selector, cache, scheduler, runtime benchmark, and meta-validation architecture remains transitional until the execution plan sequences exact contract amendments, dual proof, and recoverable retirement slices.
 
 ADR `docs/adr/ADR-20260806-checked-revision-boundary-activation-and-routine-release.md`
 records the proposed durable checked-revision snapshot, one-time baseline,

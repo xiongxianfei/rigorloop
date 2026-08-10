@@ -88,7 +88,7 @@ RigorLoop has no long-running server, request router, database worker, or deploy
 
 Important command entry points:
 
-- `bash scripts/ci.sh`: selected-check wrapper for local, explicit, PR, main, release, and broad-smoke modes.
+- `bash scripts/ci.sh`: direct Gate A/B/C plus governance wrapper for PR and main; selected-check compatibility wrapper for local, explicit, and release; legacy broad-smoke entry point.
 - `python scripts/select-validation.py`: CLI around `scripts/validation_selection.py` for changed-path classification and stable check selection.
 - `python scripts/validate-skills.py` and `python scripts/test-skill-validator.py`: canonical skill validation and regression checks.
 - `python scripts/build-skills.py --check`: validates generated local Codex mirror output from `skills/` using temporary output by default.
@@ -123,8 +123,9 @@ flowchart TD
   Skills --> BuildAdapters[scripts/build-adapters.py]
   BuildAdapters --> AdapterManifest[dist/adapters/manifest.yaml]
   BuildAdapters --> ReleaseArchives[release-output adapter archives]
-  Changes --> SelectValidation[scripts/select-validation.py]
-  SelectValidation --> CI[scripts/ci.sh]
+  Changes --> CI[scripts/ci.sh direct PR/main gates]
+  Changes --> SelectValidation[scripts/select-validation.py local/explicit/release compatibility]
+  SelectValidation --> CI
   Benchmarks[benchmarks/token-cost] --> TokenReports[docs/reports/token-cost]
   ReleaseMetadata[docs/releases/*] --> ReleaseVerify[scripts/release-verify.sh]
 ```
@@ -162,7 +163,7 @@ No application unit/integration/e2e test tree exists because there is no deploye
 CI is thin by design:
 
 - `.github/workflows/ci.yml` runs on pull requests and pushes to `main`, installs Python 3.11, and delegates to `bash scripts/ci.sh --mode pr` or `--mode main`.
-- `scripts/ci.sh` defaults to broad smoke for legacy compatibility but supports `local`, `explicit`, `pr`, `main`, `release`, and `broad-smoke` modes.
+- `scripts/ci.sh` defaults to broad smoke for legacy compatibility. PR and main use a direct deterministic gate graph; local, explicit, and release retain selector compatibility.
 - `scripts/validation_selection.py` owns stable check IDs such as `skills.validate`, `artifact_lifecycle.validate`, `review_artifacts.validate`, `change_metadata.validate`, `release.validate`, `token_cost.report_validate`, and `broad_smoke.repo`.
 - `.github/workflows/release.yml` runs on `v*` tags, delegates release readiness to `scripts/release-verify.sh`, then creates a GitHub release from tracked release notes and files under `release-output/`.
 
@@ -174,6 +175,7 @@ python scripts/test-skill-validator.py
 python scripts/build-skills.py --check
 python scripts/select-validation.py --mode explicit --path <path>
 bash scripts/ci.sh --mode explicit --path <path>
+bash scripts/ci.sh --mode pr --base <sha> --head <sha>
 python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <path>
 python scripts/validate-change-metadata.py docs/changes/<change-id>/change.yaml
 python scripts/validate-review-artifacts.py --mode closeout docs/changes/<change-id>

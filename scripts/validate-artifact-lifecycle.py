@@ -16,6 +16,7 @@ import validation_cache
 
 
 ROOT = Path(__file__).resolve().parents[1]
+GOVERNANCE_NAME = "Governance (lifecycle consistency)"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -98,7 +99,7 @@ def build_parser() -> argparse.ArgumentParser:
 def format_finding(finding: ValidationFinding) -> str:
     path = finding.path.relative_to(ROOT).as_posix()
     prefix = "BLOCK" if finding.severity == "block" else "WARN"
-    detail = f"{prefix} {path}"
+    detail = f"{GOVERNANCE_NAME}: {prefix} {path}"
     if finding.artifact_class:
         detail += f" [{finding.artifact_class}"
         if finding.status:
@@ -272,6 +273,7 @@ def main(argv: list[str] | None = None) -> int:
         result = validate_repository(
             ROOT,
             mode=validation_mode(args),
+            compose_change_metadata=True,
             paths=args.path,
             base=args.base,
             head=args.head,
@@ -280,10 +282,10 @@ def main(argv: list[str] | None = None) -> int:
             pr_body_file=args.pr_body_file,
         )
     except ValidationInputError as exc:
-        print(str(exc), file=sys.stderr)
+        print(f"{GOVERNANCE_NAME}: {exc}", file=sys.stderr)
         return 2
     except subprocess.CalledProcessError as exc:
-        print(exc.stderr or str(exc), file=sys.stderr)
+        print(f"{GOVERNANCE_NAME}: {exc.stderr or str(exc)}", file=sys.stderr)
         return 2
 
     for finding in result.warning_findings:
@@ -294,7 +296,10 @@ def main(argv: list[str] | None = None) -> int:
     if result.blocking_findings:
         return 1
 
-    print(f"validated {len(result.checked_artifacts)} artifact files in {args.mode} mode")
+    print(
+        f"{GOVERNANCE_NAME}: validated {len(result.checked_artifacts)} "
+        f"artifact files in {args.mode} mode"
+    )
     record_passing_cache_entry(args, cache_state)
     return 0
 

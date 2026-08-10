@@ -236,6 +236,24 @@ Evaluate each check with `pass`, `concern`, or `block`, and cite concrete eviden
 9. **Unrelated changes**: the reviewed diff does not quietly include unrelated edits.
 10. **Validation evidence**: named commands and results are relevant and credible.
 
+## Published-skill semantic review
+
+When a changed published skill is in the review surface, use judgment rather
+than structural presence as the oracle. Assess whether:
+
+- its description and trigger boundary make clear when to use it;
+- its ownership is limited to the artifacts and stage it owns;
+- prerequisites and required inputs are clear;
+- a reasonable agent can follow the procedure without hidden project knowledge;
+- packaged resources are referenced for the right purpose;
+- stop conditions prevent guessing when required information is absent;
+- claims stay within the skill's approval and readiness boundary; and
+- the output and handoff identify the result and responsible next stage.
+
+Record material ambiguity as a review finding. Do not convert this checklist
+into prompt execution, transcript grading, model selection, or a broad semantic
+score in repository validation.
+
 For sensitive change classes, explicitly cite the relevant governing requirements, risks, or checklist items instead of relying on a generic clean summary.
 
 ## First-pass statuses

@@ -1440,14 +1440,31 @@ release_gate:
             output_dir = root / "release-output"
             build_adapter_archives("v0.3.4", output_dir, skills_root=skills_root)
 
+            commands = []
+
+            def filesystem_only_runner(command, **kwargs):
+                commands.append(tuple(command))
+                return subprocess.run(command, **kwargs)
+
             errors = validate_clean_install_smoke(
                 "v0.3.4",
                 output_dir,
                 skills_root=skills_root,
                 skill_names=("portable-with-assets",),
+                command_runner=filesystem_only_runner,
             )
 
         self.assertEqual([], errors)
+        self.assertEqual(
+            [command[command.index("init") + 1] for command in commands],
+            ["codex", "claude", "opencode"],
+        )
+        for command in commands:
+            self.assertEqual(command[0], "node")
+            self.assertIn("init", command)
+            self.assertIn("--from-archive", command)
+            self.assertNotIn("prompt", " ".join(command).lower())
+            self.assertNotIn("exec", command)
 
     def clean_install_runner_with_resource_mutation(
         self,
@@ -1633,7 +1650,7 @@ release_gate:
         )
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("--clean-install-smoke requires --root", result.stdout)
+        self.assertIn("--clean-install-smoke requires --adapter-root", result.stdout)
 
     def test_validate_adapters_cli_accepts_release_archive_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1659,7 +1676,7 @@ release_gate:
                 [
                     sys.executable,
                     str(ROOT / "scripts" / "validate-adapters.py"),
-                    "--root",
+                    "--adapter-root",
                     str(output_dir),
                     "--version",
                     "v0.1.2",
@@ -1671,7 +1688,27 @@ release_gate:
             )
 
             self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+            self.assertIn("Gate B (published adapter/package parity)", result.stdout)
             self.assertIn("validated generated adapter archives for version v0.1.2", result.stdout)
+
+    def test_gate_b_does_not_accept_one_targets_archive_as_another(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skills_root = self.copy_fixture_skills(root, ("portable-with-assets",))
+            output_dir = root / "release-output"
+            build_adapter_archives("v0.3.4", output_dir, skills_root=skills_root)
+            codex = output_dir / adapter_archive_name("codex", "v0.3.4")
+            claude = output_dir / adapter_archive_name("claude", "v0.3.4")
+            claude.write_bytes(codex.read_bytes())
+
+            errors = validate_adapter_archives(
+                "v0.3.4", output_dir, skills_root=skills_root
+            )
+
+        self.assertTrue(
+            any("claude" in error and ("root" in error or "missing" in error) for error in errors),
+            errors,
+        )
 
     def test_adapter_artifact_metadata_validation_accepts_schema_and_optional_combined(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -4569,7 +4606,7 @@ release_gate:
         )
         self.assertIn("Standing release-process gate rehearsal", result.stdout)
         self.assertIn("generated-output currency", result.stdout)
-        self.assertIn("package preview and packed install smoke", result.stdout)
+        self.assertIn("package preview and filesystem materialization", result.stdout)
         self.assertIn("trusted publishing preferred; manual fallback requires release evidence", result.stdout)
         self.assertIn("post-publish registry verification", result.stdout)
         self.assertIn("dry-run mode: no publish command is executed", result.stdout)

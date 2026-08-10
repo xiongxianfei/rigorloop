@@ -10,6 +10,9 @@ from pathlib import Path
 from skill_validation import CANONICAL_SKILLS_DIR, ValidationResult, validate_skill_tree
 
 
+GATE_NAME = "Gate A (canonical skill integrity)"
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Validate skill structure for canonical or fixture skill trees."
@@ -26,9 +29,9 @@ def build_parser() -> argparse.ArgumentParser:
 def print_result(result: ValidationResult, target: Path) -> int:
     if result.errors:
         for error in result.errors:
-            print(error, file=sys.stderr)
+            print(f"{GATE_NAME}: {error}", file=sys.stderr)
         return 1
-    print(f"validated {len(result.checked_files)} skill files under {target}")
+    print(f"{GATE_NAME}: validated {len(result.checked_files)} skill files under {target}")
     return 0
 
 

@@ -46,6 +46,23 @@ preserves skill-local package self-containment, and requires deterministic
 one-source projection and raw-byte parity without moving stage-specific
 workflow policy into the shared reference.
 
+## Prospective proof disposition for published-skill-first changes
+
+For changes governed by
+`specs/published-skill-first-repository-simplification.md`, that spec's R26
+supersedes the prospective proof obligations in R35, R35a, R35b, R35e, R35f,
+R35g, R36i, R36j, R43d, R44a, R44e, R45, R45a through R45d, R52, R52a, R52b,
+the installed-target-tree portion of R55a, and R59b. Those clauses remain as
+historical descriptions of completed pilots; they do not require new prompt,
+transcript, semantic behavior-parity, or all-target clean-install evidence.
+
+R35c and R35d remain active. Deterministic canonical structure, resource-path,
+inventory, archive, transformation, and raw-byte parity obligations—including
+R48, R50, R50a, R50b, R50c, R50d, R51, and R51a—also remain active. A narrow
+filesystem-only materialization test may be required when RigorLoop-owned
+installer logic is not already proved by package parity, but it MUST NOT start
+Codex, Claude Code, or opencode.
+
 ## Spec growth strategy
 
 This spec amends through accretion: each accepted amendment adds a clause band to a single file rather than splitting the file. Accretion is sustainable while ownership remains clear and the file remains navigable.
