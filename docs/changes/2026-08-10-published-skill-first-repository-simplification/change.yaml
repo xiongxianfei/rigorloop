@@ -73,8 +73,8 @@ artifact_states:
       round: r3
 workflow_state:
   lifecycle_state: active
-  current_stage: verify
-  next_stage: pr
+  current_stage: pr
+  next_stage: none
   blocker: null
   evidence:
     - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/proposal-authoring.md
@@ -98,6 +98,7 @@ workflow_state:
     - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m6-r1.md
     - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-final-r1.md
     - docs/changes/2026-08-10-published-skill-first-repository-simplification/explain-change.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/verify-report.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -143,7 +144,6 @@ workflow_state:
       readiness: not-ready
       reasons:
         - lifecycle-gates-open
-        - verify-pending
         - pr-handoff-pending
       evidence: []
 workflow:
