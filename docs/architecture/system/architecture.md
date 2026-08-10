@@ -151,6 +151,9 @@
 - Published-Skill-First Repository Simplification spec: `specs/published-skill-first-repository-simplification.md`
 - Published-Skill-First Validation Architecture ADR: `docs/adr/ADR-20260810-published-skill-first-validation-architecture.md`
 - Published-skill validation component diagram: `diagrams/component-published-skill-validation.mmd`
+- Code-Review Skill Simplification proposal: `docs/proposals/2026-08-10-code-review-skill-simplification.md`
+- Code-Review Skill Simplification spec: `specs/code-review-skill-simplification.md`
+- Code-Review Skill Simplification change metadata: `docs/changes/2026-08-10-code-review-skill-simplification/change.yaml`
 
 ## Introduction and Goals
 
@@ -522,6 +525,21 @@ Target-agent runtimes and LLM transcript analysis are outside this component.
 Migration retains current paths until each retirement ledger maps their positive and negative fixtures, active contract clauses, direct invocation sites, replacement proof, and rollback point.
 The published workflow automation product remains a sibling repository capability and is not retired by this architecture decision.
 
+### Level 2 White-Box: Code-Review Skill Package
+
+The published `code-review` capability is one governed package with four bounded parts:
+
+- canonical `SKILL.md` owns the universal direct, isolated, formal, and workflow-managed review contract, including authority, evidence, statuses, recording, stops, claims, milestone behavior, and handoff;
+- `references/boundary-first-method-v1.md` owns shared boundary vocabulary and method detail already governed by the progressive boundary-guidance architecture;
+- `references/workflow-managed-automated-review.md` owns only procedure that applies after a formally armed workflow-managed automated review or correction-loop trigger; and
+- mapped result and finding assets own repeated copy-and-fill structure without owning policy.
+
+The reference load is conditional disclosure, not delegation. `code-review` remains the only lifecycle, verdict, policy, recording, and readiness owner. Direct and isolated review must remain complete from `SKILL.md`; a missing or ambiguous automation trigger does not load the conditional procedure.
+
+A change-local rule-disposition ledger maps every behaviorally significant current rule or duplication cluster to exactly one inline, conditional-reference, asset, duplicate-removal, or approved-obsolete destination. The ledger is implementation and semantic-review evidence, not another published runtime contract or permanent validation subsystem.
+
+Existing Gate A proves package structure, closed resource mappings, containment, presence, placeholders, and narrow forbidden claims. Gate B proves the same complete package across supported generated and packed adapter targets, including relative paths and raw-byte identity for untransformed resources. For `code-review`, deterministic install proof also materializes every supported target into a temporary tree and compares mapped-resource inventory, relative paths, and raw-byte identity; additional installer logic may add bounded filesystem checks. Semantic review separately proves that relocated rules keep their owner and meaning; no target-agent execution or transcript grading participates in acceptance.
+
 ### Level 2 White-Box: Unified Workflow Automation
 
 See [`diagrams/component-workflow-automation.mmd`](diagrams/component-workflow-automation.mmd) for the component view.
@@ -688,6 +706,17 @@ arbitrary file write.
 8. Gate B proves Codex, Claude Code, and opencode package inventory, mapped-resource paths, declared transformations, archive contents, and untransformed raw-byte identities from local generated output or release candidates.
 9. Installer inventory decides whether package parity is sufficient. A pure copy adds no smoke; meaningful RigorLoop-owned materialization receives only empty-temporary-directory invocation and filesystem inspection.
 10. Target-agent runtime execution, prompts, transcripts, model selection, and LLM-output grading are not package proof and do not participate in repository acceptance.
+
+### Code-review package loading and simplification flow
+
+1. Every invocation enters canonical `skills/code-review/SKILL.md` and receives the complete universal review contract before any conditional resource decision.
+2. Direct, isolated, and ordinary formal reviews continue from the common path without loading workflow-managed automation procedure.
+3. Only a formally armed workflow-managed automated review or correction loop activates the exact `READ references/workflow-managed-automated-review.md` mapping.
+4. The conditional reference supplies automated phases, packet handling, fidelity and risk procedure, correction classification, bounded correction and rereview, receipts, promotion, pause, and automation-specific failure handling without redefining native verdicts or handoff authority.
+5. Repeated result and finding structures come from the mapped assets; policy remains inline or in the allowed conditional procedure according to its universal applicability.
+6. Implementation records every current rule in the change-local disposition ledger before deleting or relocating prose. Unknown dispositions and missing destinations fail closed.
+7. Deterministic fixtures prove required and forbidden outcomes for representative modes without running an agent. Independent semantic review checks the complete package and ledger.
+8. Gate A and Gate B must both accept the complete resource move before publication. Each supported package is then materialized into a temporary installed tree whose mapped-resource inventory, relative paths, and raw-byte identities match the proved package. Partial canonical, generated, packed, or installed targets stop; rollback restores the prior canonical package and regenerates derived targets as one version.
 
 ### Published-skill product-gate and retirement flow
 
@@ -939,6 +968,8 @@ When required, smoke runs against a local package in an empty temporary director
 Existing all-target clean-install, live-registry smoke, Codex benchmark, selector, cache, scheduler, and broad-smoke paths remain transitional execution surfaces only while their active contracts and protected failures await slice-owned disposition.
 No retirement slice may remove them until old-versus-replacement proof and rollback are recorded.
 
+For `code-review`, `SKILL.md`, the boundary reference, the conditional automation reference, and both structural assets deploy as one package revision. Generated targets may not mix old inline procedure with a new reference or vice versa. Every supported target, including a pure-copy install, is materialized into a temporary tree and checked for mapped-resource inventory, relative paths, and raw-byte identity. The proof ends at filesystem identity and never invokes Codex, Claude Code, opencode, or another model runtime.
+
 The main execution and publication boundaries are:
 
 - local contributor shell: runs selector, CI wrapper, validation, change-record query helper, generation, and drift checks;
@@ -1084,6 +1115,16 @@ The default resource identity is skill-root relative path plus raw-byte SHA-256.
 The migration lint is intentionally bounded. It catches legacy resource-loading instructions such as `templates/...` without treating ordinary artifact paths, customer-project paths, or code examples as package dependencies. Existing drift starts as audit-mode migration debt, but new or changed skills must satisfy the resource-integrity rules immediately once implemented.
 
 Runtime fallback is an emergency work-continuation rule, not package validation. A missing mapped resource keeps package validation failing; runtime may continue only for redundant convenience resources whose complete contract is already in `SKILL.md` and whose contents do not require invention.
+
+### Code-review package composition
+
+The `code-review` common path follows a universal-before-conditional rule. Anything needed to classify the invocation, resolve authority, produce native findings or statuses, record a formal review, stop safely, constrain claims, distinguish milestone and final review, or choose a downstream handoff remains in `SKILL.md`. Only procedure unique to an already-proved workflow-managed automation mode may live in the conditional reference.
+
+Assets are structural leaves: the skill may copy and fill them, but they cannot determine policy, status, severity, recording, or routing. References are packaged procedure, not independent lifecycle owners. This keeps the governing published skill equal to the complete mapped package while retaining `code-review` as the sole semantic owner.
+
+Simplification evidence has two distinct scopes. Common-path lines, words, and tokens estimate ordinary loading cost; total package words and tokens expose the true maintenance footprint. The 35–45 percent range is planning evidence only. Architectural acceptance depends on one owner per repeated rule, complete ledger disposition, material common-path reduction, canonical, generated, packed, and temporary installed-tree parity, and independent semantic preservation.
+
+No new service, persistent state, selector, scheduler, cache, validator family, runtime journey, transcript grader, or model matrix is introduced. Existing deterministic owners may gain focused fixtures only for invariants they already own.
 
 ### Progressive boundary-first guidance
 
