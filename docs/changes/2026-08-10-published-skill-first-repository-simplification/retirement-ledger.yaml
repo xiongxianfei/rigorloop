@@ -117,18 +117,26 @@ entries:
     protected_failure: Cached proof is incorrectly reused after a relevant input or contract changes.
     owner: governance
     deterministic_automation: Existing cache correctness is deterministic, but its value must be measured before retention.
-    existing_owner_decision: Do not create a replacement cache; keep current owner until M6 disposition.
-    invocation: Artifact lifecycle and validation orchestration options.
+    existing_owner_decision: Keep the existing inner-loop cache contract, but exclude it from direct PR/main acceptance and create no replacement cache.
+    invocation: Explicit-path inner-loop lifecycle validation only; not PR/main acceptance.
     actionable_repair: Invalidate the cache or run the owning proof directly.
     fixture_inventory: [cache-hit, cache-miss, invalidation, corruption]
     governing_clauses: [validation-cache-active-contract, simplification-R21]
     contract_disposition: blocked-active-contract
-    state: inventoried
-    transition_evidence: {status: pending}
-    replacement_proof: M6 value and dependency audit pending.
-    retirement_evidence: None; active contract blocks removal.
+    state: dual-proof
+    transition_evidence:
+      status: complete
+      prior_states: [inventoried]
+      old_proof: {command: python scripts/test-validation-cache.py, result: retained-contract-pass}
+      replacement_proof: {command: RIGORLOOP_CI_DIRECT_DRY_RUN=1 bash scripts/ci.sh --mode pr --base e77a351c --head HEAD, result: no-cache-in-default-graph}
+      comparison_result: Default acceptance loses no proof because the cache changes execution reuse only; focused cache behavior remains independently tested.
+      removal_decision: rejected
+      evidence_paths: [docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/m6-ci-retirement.md]
+      rollback_point: 3512a547
+    replacement_proof: Direct PR/main acceptance invokes actual gates and never requests cache reuse; the focused cache owner remains unchanged for inner-loop use.
+    retirement_evidence: Cache removed from the default acceptance dependency graph, not deleted; active focused contract remains available.
     rollback: Restore direct cache invocation from the M6 parent commit if later retired.
-    retirement_decision: Paused until measured evidence and exact clause disposition exist.
+    retirement_decision: Retain focused inner-loop implementation; exclude from default PR/main acceptance.
 
   - id: release-integrity
     check_ids: [release.validate, release_transaction.regression]
@@ -182,18 +190,26 @@ entries:
     protected_failure: A required check is omitted for a changed path or broad-smoke trigger, or orchestration changes exit and failure behavior.
     owner: governance
     deterministic_automation: Current selection is deterministic, but its indirection needs measured justification.
-    existing_owner_decision: M6 moves stable owners to a direct graph; no replacement selector or scheduler may be added.
-    invocation: Pull-request, main, release, legacy broad-smoke, and local CI modes.
+    existing_owner_decision: M6 moves PR/main to a direct graph and retains the existing selector and scheduler only for local, explicit, release, and legacy broad-smoke compatibility.
+    invocation: Selector for local, explicit, and release compatibility; scheduler for explicit legacy broad smoke; neither is in PR/main acceptance.
     actionable_repair: Run the named direct owner and correct the command graph or authoritative trigger.
     fixture_inventory: [path-selection, mixed-change, release, main, broad-smoke, exit-behavior]
     governing_clauses: [validation-selection-active-contract, broad-smoke-active-contract, simplification-R21]
     contract_disposition: blocked-active-contract
-    state: inventoried
-    transition_evidence: {status: pending}
-    replacement_proof: M6 dual-run and measurement pending.
-    retirement_evidence: None; selector and scheduler contracts remain active.
+    state: dual-proof
+    transition_evidence:
+      status: complete
+      prior_states: [inventoried]
+      old_proof: {command: python scripts/select-validation.py --mode pr --base e77a351c --head 3512a547, result: blocked-after-17-selected-checks-on-three-new-unregistered-surfaces}
+      replacement_proof: {command: RIGORLOOP_CI_DIRECT_DRY_RUN=1 bash scripts/ci.sh --mode pr --base e77a351c --head 3512a547, result: pass-with-26-direct-commands}
+      comparison_result: Direct graph covers named product, package, release-regression, public-package, governance, fidelity, and deterministic contributor surfaces without selector registration debt.
+      removal_decision: rejected
+      evidence_paths: [docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/m6-ci-retirement.md]
+      rollback_point: 3512a547
+    replacement_proof: PR/main dispatch bypasses selector and broad-smoke functions; static and dry-run tests reject selector, scheduler, cache, runtime, prompt, and transcript commands.
+    retirement_evidence: Default hosted acceptance no longer depends on selection or scheduling; compatibility modes and their full regression suite remain active.
     rollback: Restore the M6 parent command graph and direct invocation.
-    retirement_decision: Paused until exact disposition and dual proof.
+    retirement_decision: Retain compatibility implementation; remove it only from default PR/main acceptance in this initiative.
 
   - id: requirement-fidelity
     check_ids: [requirement_fidelity.spec_reads]

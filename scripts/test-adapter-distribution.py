@@ -4606,7 +4606,7 @@ release_gate:
         )
         self.assertIn("Standing release-process gate rehearsal", result.stdout)
         self.assertIn("generated-output currency", result.stdout)
-        self.assertIn("package preview and packed install smoke", result.stdout)
+        self.assertIn("package preview and filesystem materialization", result.stdout)
         self.assertIn("trusted publishing preferred; manual fallback requires release evidence", result.stdout)
         self.assertIn("post-publish registry verification", result.stdout)
         self.assertIn("dry-run mode: no publish command is executed", result.stdout)

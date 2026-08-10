@@ -550,13 +550,26 @@ Notes:
 
 ## Validation
 
-Use selector-selected targeted proof as the first validation layer for non-trivial work when the changed paths are known:
+Use direct product and governance gates for hosted PR and main acceptance:
+
+- PR: `bash scripts/ci.sh --mode pr --base <sha> --head <sha>`
+- Main: `bash scripts/ci.sh --mode main --base <sha> --head <sha>`
+
+These modes call Gate A, Gate B, Gate C regression proof, public-package proof,
+and lifecycle governance directly. They do not call the validation selector,
+validation cache, broad-smoke scheduler, target agent runtimes, prompt suites, or
+transcript grading.
+
+Selector-selected targeted proof remains a compatibility and local inner-loop
+surface while its active contract is retired separately:
 
 - Inspect selection without running checks: `python scripts/select-validation.py --mode explicit --path <path>...`
 - Execute targeted proof through the wrapper: `bash scripts/ci.sh --mode explicit --path <path>...`
 - Examples of stable selected-check IDs are `skills.validate`, `review_artifacts.validate`, and `artifact_lifecycle.validate`.
 
-`scripts/ci.sh` is the execution wrapper for selected checks. It does not imply broad smoke for every PR.
+`scripts/ci.sh` is the execution wrapper for direct hosted gates and legacy
+selected local, explicit, and release checks. It does not imply broad smoke for
+every PR.
 
 Use broad smoke only when an authoritative trigger requires it, such as selector mode `main`, selector mode `release`, an explicit `--broad-smoke` request, active plan field `broad_smoke_required: true`, test-spec requirement, review-resolution requirement, or release metadata. The selected check ID for repository broad smoke is `broad_smoke.repo`, and the direct command is:
 
@@ -567,7 +580,7 @@ bash scripts/ci.sh --mode broad-smoke
 Validation owner surfaces:
 
 - `docs/workflows.md` owns contributor-facing validation guidance.
-- Validation-selection scripts, selector tests, and the CI wrapper own executable check selection, selected-check behavior, command exit behavior, and failure detection.
+- Gate A, Gate B, Gate C, and lifecycle governance own hosted acceptance; validation-selection scripts retain local, explicit, release, and legacy compatibility behavior until a separate approved retirement.
 - Stage skills own concise local validation reminders when a stage directly needs one; they do not replace selected checks.
 - Active plans and test specs own change-specific validation requirements.
 - `review-resolution.md` owns finding-specific validation requirements.
@@ -575,22 +588,19 @@ Validation owner surfaces:
 
 Guidance-only wording must not change selected check coverage, command exit behavior, failure detection, or required validation evidence.
 
-Run these structural checks before PR:
-
-- `python scripts/validate-skills.py`
-- `python scripts/test-skill-validator.py`
-- `python scripts/build-skills.py --check`
-- `python scripts/test-adapter-distribution.py`
-- `python scripts/build-adapters.py --version v0.1.3 --output-dir <release-output-dir>`
-- `python scripts/validate-adapters.py --root <release-output-dir> --version v0.1.3`
-- `python scripts/validate-token-cost-report.py docs/reports/token-cost/releases/v0.1.1.yaml`
-- `python scripts/validate-release.py --version v0.1.1`
-- `python scripts/test-artifact-lifecycle-validator.py`
-- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path <repo-path> [...]`
+Run the direct PR graph before PR when exact base and head revisions are known.
+Use the individual Gate A, Gate B, Gate C, or governance commands named by the
+active plan and test spec for focused repair loops.
 
 Use `bash scripts/ci.sh` with an explicit mode to run checks through the repository-owned CI wrapper and report the commands you actually ran. Hosted PR CI uses `--mode pr --base <sha> --head <sha>`, main CI uses `--mode main --base <sha> --head <sha>`, and release automation uses release-specific validation. No-argument `bash scripts/ci.sh` remains legacy broad smoke, not the normal first proof step.
 
-Selected-check execution supports bounded local parallelism. Use `--jobs <N>` to cap concurrent reviewed parallel-safe checks; when omitted, the wrapper uses available CPU count minus one with a floor of one. Use `--jobs 1` for explicit sequential execution when debugging races or reducing local resource pressure. Use `--timeout <seconds>` to override the 60-second per-check timeout, `--fail-fast` to stop launching queued checks after an observed failure while preserving already-started check results, and `--verbose` to include successful check output in stable order.
+Legacy selected-check execution supports bounded local parallelism for local,
+explicit, and release modes. Direct PR and main gates are intentionally
+sequential and failure-owning; the first failing named owner stops the graph.
+For compatibility modes, use `--jobs <N>` to cap reviewed parallel-safe checks,
+`--jobs 1` for sequential debugging, `--timeout <seconds>` for per-check limits,
+`--fail-fast` to stop launching queued work after failure, and `--verbose` to
+show successful check output.
 
 Ordinary contributors do not need all supported tools installed locally for non-smoke validation. Repository-owned checks validate generated package structure, drift, manifests, release metadata, and security without invoking Codex, Claude Code, or opencode.
 
@@ -620,8 +630,14 @@ When a change updates canonical `skills/`, use `python scripts/build-skills.py -
 
 - `.github/workflows/ci.yml` should remain a thin wrapper around repo-owned validation commands. It may set up required tooling and pass explicit diff inputs, but validation logic belongs in `scripts/ci.sh`.
 - The hosted CI workflow stays matrix-free in this first bounded-parallelism slice. Future hosted fan-out, if approved later, should consume stable check IDs from repository-owned scripts instead of duplicating selector path classification or hardcoded selected-check lists in workflow YAML.
-- `scripts/release-verify.sh` is the repository-owned release gate for `v0.1.0-rc.1`, `v0.1.0`, and `v0.1.1`. It accepts a tag argument or `GITHUB_REF_NAME`, checks generated adapters and release metadata, consumes tracked release notes from `docs/releases/<tag>/release-notes.md`, and validates the `v0.1.1` Token-Friendliness report metadata.
-- RC releases may be published before full manual smoke only when non-smoke gates pass and no smoke row records `fail`. Stable releases require passing Codex, Claude Code, and opencode smoke rows.
+- `scripts/release-verify.sh` is the repository-owned Gate C composition for
+  supported release profiles. It accepts a tag argument or `GITHUB_REF_NAME`,
+  checks Gate A and Gate B currency, generated archives, package metadata,
+  tracked release notes, checksums, and release/rollback consistency.
+- Release acceptance does not execute Codex, Claude Code, or opencode, send
+  prompts, grade transcripts, or require model-derived smoke status. Historical
+  smoke and token-cost records remain readable context for the releases that
+  produced them.
 
 ## Documentation Ownership
 

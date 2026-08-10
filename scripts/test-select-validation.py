@@ -833,7 +833,11 @@ raise SystemExit({exit_code})
     def assert_ci_mode_dispatch_has_documented_policies(self, ci_text: str) -> None:
         self.assertRegex(
             ci_text,
-            r"(?ms)^case \"\$mode\" in.*local\|explicit\|pr\|main\|release\)\n\s*run_selected_mode",
+            r"(?ms)^case \"\$mode\" in.*local\|explicit\|release\)\n\s*run_selected_mode",
+        )
+        self.assertRegex(
+            ci_text,
+            r"(?ms)^case \"\$mode\" in.*pr\|main\)\n\s*run_direct_product_gates",
         )
         self.assertRegex(
             ci_text,
@@ -842,12 +846,12 @@ raise SystemExit({exit_code})
         self.assert_selected_ci_policy_exception_is_documented()
 
     def producer_line_uses_capture_helper(self, lines: list[str], index: int) -> bool:
-        if re.search(r"\b(run_check|broad_smoke_schedule_child)\b", lines[index]):
+        if re.search(r"\b(run_check|run_direct_check|broad_smoke_schedule_child)\b", lines[index]):
             return True
 
         current = index - 1
         while current >= 0 and lines[current].rstrip().endswith("\\"):
-            if re.search(r"\b(run_check|broad_smoke_schedule_child)\b", lines[current]):
+            if re.search(r"\b(run_check|run_direct_check|broad_smoke_schedule_child)\b", lines[current]):
                 return True
             current -= 1
         return False
@@ -4854,8 +4858,11 @@ run_new_validation_mode() {
 }
 
 case "$mode" in
-  local|explicit|pr|main|release)
+  local|explicit|release)
     run_selected_mode
+    ;;
+  pr|main)
+    run_direct_product_gates
     ;;
   broad-smoke)
     run_broad_smoke
@@ -4890,8 +4897,11 @@ run_direct_streaming_mode() {
 }
 
 case "$mode" in
-  local|explicit|pr|main|release)
+  local|explicit|release)
     run_selected_mode
+    ;;
+  pr|main)
+    run_direct_product_gates
     ;;
   broad-smoke)
     run_broad_smoke
@@ -5180,14 +5190,6 @@ raise SystemExit(3)
 
         cases = [
             (
-                ["--mode", "pr", "--base", "base-sha", "--head", "head-sha"],
-                ["--mode", "pr", "--base", "base-sha", "--head", "head-sha"],
-            ),
-            (
-                ["--mode", "main", "--base", "before-sha", "--head", "after-sha"],
-                ["--mode", "main", "--base", "before-sha", "--head", "after-sha"],
-            ),
-            (
                 ["--mode", "release", "--release-version", "v0.1.1"],
                 ["--mode", "release", "--release-version", "v0.1.1"],
             ),
@@ -5213,6 +5215,69 @@ raise SystemExit(3)
                 traced = trace.read_text(encoding="utf-8").splitlines()
                 self.assertEqual(traced[-len(expected) :], expected)
 
+    def test_pr_mode_uses_direct_product_gate_graph_without_selector_or_runtime(self) -> None:
+        trace = Path(tempfile.mkdtemp(prefix="validation-direct-pr-")) / "selector-argv.txt"
+        self.addCleanupTree(trace.parent)
+        result = run_ci(
+            "--mode",
+            "pr",
+            "--base",
+            "base-sha",
+            "--head",
+            "head-sha",
+            env={
+                "RIGORLOOP_CI_DIRECT_DRY_RUN": "1",
+                "RIGORLOOP_CI_SELECTOR_ARGV_FILE": str(trace),
+            },
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, output)
+        self.assertFalse(trace.exists(), "direct PR graph must not invoke the selector")
+        for command in (
+            "python scripts/validate-skills.py",
+            "python scripts/test-skill-validator.py",
+            "python scripts/build-skills.py --check",
+            "python scripts/test-adapter-distribution.py",
+            "python scripts/build-adapters.py --version v0.1.5",
+            "python scripts/validate-adapters.py --version v0.1.5 --adapter-root",
+            "python scripts/test-release-transaction.py",
+            "python scripts/test-change-metadata-validator.py",
+            "python scripts/test-artifact-lifecycle-validator.py",
+            "python scripts/test-review-artifact-validator.py",
+            "python scripts/validate-artifact-lifecycle.py --mode pr-ci --base base-sha --head head-sha",
+        ):
+            self.assertIn(command, output)
+        for forbidden in (
+            "scripts/select-validation.py",
+            "--mode broad-smoke",
+            "codex exec",
+            "claude --",
+            "opencode run",
+            "transcript",
+        ):
+            self.assertNotIn(forbidden, output)
+
+    def test_main_mode_uses_direct_lifecycle_scope(self) -> None:
+        result = run_ci(
+            "--mode",
+            "main",
+            "--base",
+            "before-sha",
+            "--head",
+            "after-sha",
+            env={"RIGORLOOP_CI_DIRECT_DRY_RUN": "1"},
+        )
+        output = result.stdout + result.stderr
+
+        self.assertEqual(result.returncode, 0, output)
+        self.assertIn(
+            "python scripts/validate-artifact-lifecycle.py --mode push-main-ci "
+            "--before before-sha --after after-sha",
+            output,
+        )
+        self.assertNotIn("scripts/select-validation.py", output)
+
     def test_ci_wrapper_accepts_execution_flags_without_forwarding_to_selector(self) -> None:
         fixture = self.write_selector_fixture(self.minimal_selector_payload())
         trace = Path(tempfile.mkdtemp(prefix="validation-selection-flags-")) / "argv.txt"
@@ -5233,33 +5298,6 @@ raise SystemExit(3)
                     "--verbose",
                 ],
                 ["--mode", "explicit", "--path", "skills/code-review/SKILL.md"],
-            ),
-            (
-                [
-                    "--mode",
-                    "pr",
-                    "--base",
-                    "base-sha",
-                    "--head",
-                    "head-sha",
-                    "--jobs",
-                    "1",
-                    "--timeout",
-                    "120",
-                ],
-                ["--mode", "pr", "--base", "base-sha", "--head", "head-sha"],
-            ),
-            (
-                [
-                    "--mode",
-                    "main",
-                    "--base",
-                    "before-sha",
-                    "--head",
-                    "after-sha",
-                    "--verbose",
-                ],
-                ["--mode", "main", "--base", "before-sha", "--head", "after-sha"],
             ),
             (
                 [
@@ -5417,7 +5455,7 @@ raise SystemExit(3)
                 "broad smoke",
                 "Validation owner surfaces",
                 "contributor-facing validation guidance",
-                "executable check selection",
+                "hosted acceptance",
                 "concise local validation reminders",
                 "change-specific validation requirements",
                 "finding-specific validation requirements",
@@ -5433,7 +5471,7 @@ raise SystemExit(3)
                 "skills.validate",
                 "review_artifacts.validate",
                 "broad_smoke.repo",
-                "does not imply broad smoke for every PR",
+                "does not imply broad smoke",
             ],
             "skills/implement/SKILL.md": [
                 "targeted proof",
