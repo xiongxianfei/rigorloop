@@ -40,7 +40,7 @@ semantic skill quality to formal review.
 ## Validation
 
 - `python scripts/test-retirement-ledger.py` — pass, 14 tests after resolving code-review R1 findings.
-- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.yaml --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/workflows.md` — pass; two lifecycle-managed artifacts validated and non-governed paths safely ignored.
+- `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/workflows.md` — pass; two lifecycle-managed artifacts validated and non-governed paths safely ignored.
 - `python scripts/test-skill-validator.py` — pass, 285 tests, 16 skipped.
 - `python scripts/test-select-validation.py` — pass, 150 tests in 65.90 seconds after the R1 correction.
 - `python scripts/validate-change-metadata.py docs/changes/2026-08-10-published-skill-first-repository-simplification/change.yaml` — pass.

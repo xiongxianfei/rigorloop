@@ -95,7 +95,7 @@ Use it only for current path orientation; the approved spec, ADR, canonical arch
 - Goal: Produce the complete retirement ledger and exact contract-disposition map before changing acceptance or deleting code.
 - Requirements: R14-R20, R22, R24-R27, R29; BND-INPUT-001; BND-STATE-001; BND-AUTH-001; BND-TEMPORAL-001; BND-RECOVERY-001; BND-COMPAT-001; INT-004.
 - Files/components likely touched:
-  - `docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.yaml`
+  - `docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json`
   - `specs/skill-contract.md` and matching test spec for the already-approved R26 disposition
   - selector, cache, scheduler, broad-smoke, token-cost, prose, lifecycle, adapter, and release specs only for exact cross-spec disposition already determined by the approved primary spec
   - `docs/workflows.md` and contributor guidance for the script-admission rule
@@ -115,7 +115,7 @@ Use it only for current path orientation; the approved spec, ADR, canonical arch
   - add the admission rule to the existing contributor/governance surface without creating a validator for prose quality
 - Validation commands:
   - `python scripts/validate-change-metadata.py docs/changes/2026-08-10-published-skill-first-repository-simplification/change.yaml`
-  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.yaml --path specs/skill-contract.md --path docs/workflows.md`
+  - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.json --path specs/skill-contract.md --path docs/workflows.md`
   - `python scripts/test-skill-validator.py`
   - `python scripts/test-select-validation.py`
 - Expected observable result: every existing proof path has one protected-failure and contract disposition, and no deletion is eligible while any entry is unknown or contradictory.
@@ -329,7 +329,7 @@ Use it only for current path orientation; the approved spec, ADR, canonical arch
 | Gate B | existing adapter build and validation commands against temporary output | Prove all-target package parity and declared transformations. |
 | Gate C | `bash scripts/release-verify.sh <local-fixture-version>` or the fixture-safe equivalent named by the test spec | Prove composed deterministic release integrity without publication. |
 | Governance | `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path ...` | Prove lifecycle shape, transition, evidence, review, and closed-vocabulary consistency. |
-| Retirement | `retirement-ledger.yaml` plus old-versus-replacement command results | Prove no protected failure is silently lost. |
+| Retirement | `retirement-ledger.json` plus old-versus-replacement command results | Prove no protected failure is silently lost. |
 | Final direct graph | PR-mode CI plus explicit representative skill, adapter, release, and lifecycle paths | Prove thin CI calls only stable owners and retains affected-path coverage. |
 | Formatting | `git diff --check` | Reject whitespace defects. |
 

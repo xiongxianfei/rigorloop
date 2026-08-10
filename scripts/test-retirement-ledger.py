@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import copy
+import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -21,7 +23,7 @@ LEDGER = (
     / "docs"
     / "changes"
     / "2026-08-10-published-skill-first-repository-simplification"
-    / "retirement-ledger.yaml"
+    / "retirement-ledger.json"
 )
 
 
@@ -56,6 +58,33 @@ class RetirementLedgerTests(unittest.TestCase):
         self.assertEqual(
             validate_ledger(self.ledger, expected_check_ids=set(CHECK_CATALOG)), []
         )
+
+    def test_ledger_loads_without_third_party_site_packages(self) -> None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-S",
+                "-c",
+                (
+                    "import pathlib, sys; "
+                    f"sys.path.insert(0, {str(ROOT / 'scripts')!r}); "
+                    "from retirement_ledger import load_ledger; "
+                    f"load_ledger(pathlib.Path({str(LEDGER)!r}))"
+                ),
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+
+    def test_duplicate_json_key_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            path = Path(temporary_directory) / "duplicate.json"
+            path.write_text('{"schema_version": 1, "schema_version": 2}\n', encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "duplicate object key 'schema_version'"):
+                load_ledger(path)
 
     def test_every_selector_check_id_has_exactly_one_owner(self) -> None:
         owned = [

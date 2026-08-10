@@ -7,11 +7,9 @@ new contributor-facing validator command.
 from __future__ import annotations
 
 from collections import Counter
+import json
 from pathlib import Path
 from typing import Any
-
-import yaml
-
 
 STATES = frozenset({"inventoried", "dual-proof", "removable", "retired", "paused"})
 DISPOSITIONS = frozenset(
@@ -45,8 +43,16 @@ COMPLETE_TRANSITION_FIELDS = frozenset(
 
 
 def load_ledger(path: Path) -> dict[str, Any]:
+    def reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        value: dict[str, Any] = {}
+        for key, item in pairs:
+            if key in value:
+                raise ValueError(f"{path}: duplicate object key {key!r}")
+            value[key] = item
+        return value
+
     with path.open(encoding="utf-8") as handle:
-        value = yaml.safe_load(handle)
+        value = json.load(handle, object_pairs_hook=reject_duplicate_keys)
     if not isinstance(value, dict):
         raise ValueError(f"{path}: ledger root must be a mapping")
     return value
