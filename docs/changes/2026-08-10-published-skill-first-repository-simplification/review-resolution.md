@@ -54,6 +54,7 @@ Rationale: The shared Gate A owner can provide the required deterministic repair
 Safe resolution path: Apply the mechanical recipe in code-review-m2-r1 and rerun all M2 commands.
 Validation target: code-review-m2-r2
 Validation evidence: pending
+Implementation evidence: early missing-target `ValidationResult` in `skill_validation.py` and `test_gate_a_missing_target_fails_without_traceback`; targeted test passes.
 needs-decision rationale: none
 
 ### code-review-m1-r2

@@ -56,7 +56,7 @@ tests were green without adding a model or heuristic oracle.
 ## Validation
 
 - `python scripts/validate-skills.py` — pass; 24 canonical skills.
-- `python scripts/test-skill-validator.py` — pass; 288 tests, 16 skipped.
+- `python scripts/test-skill-validator.py` — pass; 289 tests, 16 skipped after the M2 R1 correction.
 - `python scripts/build-skills.py --check` — pass using temporary generated output.
 - `python scripts/validate-boundary-first.py --check` — pass; active v0.4.0 projection and v0.3.6 rollback artifacts reported.
 - Targeted Gate A tests — pass; ambiguous prose accepted and no target-runtime dependency found.
@@ -66,3 +66,12 @@ tests were green without adding a model or heuristic oracle.
 Revert the M2 commit to restore the prior success/error prefix and remove the
 review checklist. No deterministic invariant, adapter package, or acceptance
 invocation is deleted by this milestone.
+
+## Code-review R1 correction evidence
+
+`PSR-CR-M2-R1-001` is addressed in the shared Gate A owner. A nonexistent
+target now returns `ValidationResult(errors=["<target>: target does not
+exist"])`; the CLI adds the stable Gate A prefix and exits nonzero without a
+traceback. `test_gate_a_missing_target_fails_without_traceback` directly proves
+the result name, target identity, repair context, exit behavior, and absence of
+a traceback.
