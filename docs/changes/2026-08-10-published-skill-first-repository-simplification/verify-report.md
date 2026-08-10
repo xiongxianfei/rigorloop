@@ -69,8 +69,7 @@ normative outcome was discovered during verification.
 
 ## Commands and results
 
-Working directory for every command:
-`/home/xiongxianfei/data/20260419-rigorloop`.
+Every command ran from the repository root.
 
 | Command | Result | Important output |
 | --- | --- | --- |
