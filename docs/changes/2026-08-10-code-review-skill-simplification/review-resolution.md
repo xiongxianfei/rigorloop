@@ -237,3 +237,17 @@ Review ID: code-review-m1-r1
 
 No findings. M1 closes with complete rule ownership, fail-closed fixture proof,
 and separate common-path and total-package baseline measurements.
+
+### code-review-m2-r1
+
+Review ID: code-review-m2-r1
+
+No findings. M2 closes with universal policy inline, one exact automation-only
+reference trigger, asset-owned output structures, and focused regression proof.
+
+### test-spec-review-r3
+
+Review ID: test-spec-review-r3
+
+No findings. R3 approves the CMD6 correction from an untrusted synthetic
+version to the repository's immutable trusted clean-install fixture `v0.3.6`.
