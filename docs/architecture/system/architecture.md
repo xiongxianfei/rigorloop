@@ -478,7 +478,7 @@ The CLI package remains an additive delivery container. For multi-adapter init, 
 
 The validation and generation container has these important internal responsibilities:
 
-- selector and CI wrapper: `scripts/validation_selection.py`, `scripts/select-validation.py`, and `scripts/ci.sh` classify paths, select stable check IDs, run repository-owned proof commands, summarize successful selected checks, and surface failed check output with stable check identity;
+- direct hosted gates and compatibility selection: `scripts/ci.sh` invokes Gate A, Gate B, Gate C regression proof, public-package proof, and lifecycle governance directly for PR and main. `scripts/validation_selection.py` and `scripts/select-validation.py` remain compatibility owners for local, explicit, and release modes until their active contracts receive a separate retirement;
 - evidence registration: the selector owns deterministic evidence-class matching for recurring change-local evidence files, rejects broad or ambiguous patterns through regression coverage, routes registered classes to declared checks, and surfaces stable `manual-routing-required` diagnostics for unregistered deterministic evidence;
 - validation idempotency: cache helpers compute normalized argv, repository-relative explicit paths, input-surface hashes, implementation manifest hashes, and policy/config hashes for the eligible explicit-path lifecycle command family. Direct `--mode explicit-paths` remains actual-run for closeout and final gates, while helper `--mode explicit-paths-inner-loop` supplies inner-loop cache context, normalizes to canonical direct argv for cache identity, and records displayed-versus-canonical argv in formal helper evidence. Unsupported or uncertain manifests disable caching and run the validator;
 - lifecycle and change validators: `scripts/validate-artifact-lifecycle.py`,
@@ -657,8 +657,8 @@ arbitrary file write.
 
 ### Validation flow
 
-1. Changed paths are inspected with `python scripts/select-validation.py --mode explicit --path ...`.
-2. Supported changed paths are executed through `bash scripts/ci.sh --mode explicit --path ...`.
+1. Hosted PR and main acceptance invokes the stable product and governance owners directly through `scripts/ci.sh`; it does not invoke selector, cache, scheduler, or target-runtime evidence.
+2. Local targeted compatibility remains available through `python scripts/select-validation.py --mode explicit --path ...` and `bash scripts/ci.sh --mode explicit --path ...`.
 3. The selector emits stable check IDs such as `artifact_lifecycle.validate`, `change_metadata.validate`, `change_metadata.regression`, `review_artifacts.validate`, and generated-output checks.
 4. Lifecycle-managed artifacts are checked with `scripts/validate-artifact-lifecycle.py`.
 5. When governed lifecycle state is in scope,
@@ -671,7 +671,7 @@ arbitrary file write.
 7. Review artifact closeout is checked with `scripts/validate-review-artifacts.py` when review files are in scope.
 8. Architecture diagram source files and historical or exceptional change-local architecture evidence route only to existing non-enforcement lifecycle checks; C4 sufficiency, arc42 completeness, ADR need, and package shape remain architecture-review or code-review evidence.
 9. Unclassified paths do not fail open; they require explicit manual routing or a later selector contract update.
-10. Final broad smoke runs only when an authoritative trigger requires it.
+10. Broad smoke remains an explicit legacy compatibility boundary and is not the hosted PR or main publication path.
 11. Normal script and wrapper output is summary-first and failure-focused: passing checks collapse into counts and durations, failed checks expand with actionable details, and full passing detail remains available through `--verbose`.
 12. `--quiet` is a script-local success-silencing mode, not a failure-hiding mode. Successful quiet runs produce no stdout or stderr, while usage errors, validation failures, test failures, and zero-test safety failures may emit bounded actionable diagnostics.
 13. For branches adding deterministic change-local evidence, actual changed-path routing proof is required before verify. Supplemental fixtures and explicit-path validation do not replace routing the branch's own changed paths.
