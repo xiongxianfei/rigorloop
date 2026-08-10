@@ -73,8 +73,8 @@ artifact_states:
       round: r3
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: review-resolution
+  current_stage: review-resolution
+  next_stage: implement
   blocker: null
   evidence:
     - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/proposal-authoring.md
@@ -89,6 +89,7 @@ workflow_state:
     - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/test-spec-review-r3.md
     - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m1-r1.md
     - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m1-r2.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m2-r1.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M2
@@ -98,7 +99,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: review-requested
+        state: resolution-needed
       M3:
         kind: implementation
         state: planned
@@ -118,7 +119,7 @@ workflow_state:
       - M5
       - M6
     latest_review:
-      status: review-requested
+      status: changes-requested
       stage: code-review
       round: r1
       artifact_id: plan
@@ -127,6 +128,7 @@ workflow_state:
       evidence:
         - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m1-r1.md
         - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m1-r2.md
+        - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m2-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -215,7 +217,7 @@ changed_files:
   - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/test-spec-review-r2.md
   - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/test-spec-review-r3.md
 review:
-  status: approved
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 1
   review_log: docs/changes/2026-08-10-published-skill-first-repository-simplification/review-log.md
   review_resolution: docs/changes/2026-08-10-published-skill-first-repository-simplification/review-resolution.md
