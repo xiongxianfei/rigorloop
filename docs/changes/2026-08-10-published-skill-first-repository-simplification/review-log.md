@@ -7,6 +7,18 @@ This ledger records formal lifecycle reviews for the repository-simplification c
 ## Review Entries
 
 ### Review entry
+Review ID: code-review-m1-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: commit 1b7ed015
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r2.md
+Resolution: review-resolution.md#code-review-m1-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
 Review ID: code-review-m1-r1
 Stage: code-review
 Round: 1
@@ -15,7 +27,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: PSR-CR-M1-R1-001, PSR-CR-M1-R1-002
-Open findings: PSR-CR-M1-R1-001, PSR-CR-M1-R1-002
+Open findings: None
 Recording status: recorded
 
 ### Review entry

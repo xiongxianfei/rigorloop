@@ -2,9 +2,10 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -17,10 +18,10 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `spec-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`
-- Findings resolved: 5
-- Unresolved findings: 2
-- Current result: M1 code-review R1 requested two fail-closed corrections before milestone closeout.
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `spec-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`
+- Findings resolved: 7
+- Unresolved findings: 0
+- Current result: M1 code-review R2 resolves both R1 findings and closes M1 for M2 handoff.
 
 ## Resolution Overview
 
@@ -31,10 +32,17 @@ Review closeout: test-spec-review-r3
 | PSR-TSR1-001 | accepted | resolved | Feature-spec identity now cites current approving review R2. |
 | PSR-TSR1-002 | accepted | resolved | MP1 now provides the complete auditable manual-proof contract. |
 | PSR-TSR2-001 | accepted | resolved | CMD18 now validates active R2 test-spec revision evidence. |
-| PSR-CR-M1-R1-001 | accepted | open | Structured completed proof must replace nonempty prose as removal authority. |
-| PSR-CR-M1-R1-002 | accepted | open | R26 disposition values must fail closed, not only their key set. |
+| PSR-CR-M1-R1-001 | accepted | resolved | Structured completed proof replaces nonempty prose as removal authority. |
+| PSR-CR-M1-R1-002 | accepted | resolved | R26 disposition values fail closed, not only their key set. |
 
 ## Finding Details
+
+### code-review-m1-r2
+
+Review ID: code-review-m1-r2
+
+No new findings. R2 independently reproduced both R1 failure cases, confirmed
+the corrected validator rejects them, and closes M1 for M2 handoff.
 
 ### code-review-m1-r1
 
@@ -44,14 +52,14 @@ Review ID: code-review-m1-r1
 
 Finding ID: PSR-CR-M1-R1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Chosen action: Add structured old/replacement commands and results, comparison outcome, removal decision, rollback point, and evidence paths; require completed values before removable or retired.
 Rationale: R17-R20 make completed dual proof and recovery evidence authoritative; nonempty pending prose cannot satisfy those properties.
 Safe resolution path: Apply the declared-safe recipe recorded in code-review-m1-r1 without touching CI, selector, package, release, or skill bodies.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: code-review-m1-r2 direct pending-removal probe and 14 passing ledger tests
 Implementation evidence: `scripts/retirement_ledger.py` structured transition checks and `test_pending_evidence_cannot_authorize_removal`, `test_removal_requires_prior_dual_proof_state`, and `test_removal_requires_dual_proof_and_rollback`; targeted suite passes 14 tests.
 needs-decision rationale: none
 
@@ -59,14 +67,14 @@ needs-decision rationale: none
 
 Finding ID: PSR-CR-M1-R1-002
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: review-resolution
 Chosen action: Validate the exact `superseded-prospectively` value for every R26 key and add an unknown-value regression test.
 Rationale: The exact prospective disposition and repository closed-vocabulary rule already determine the correction.
 Safe resolution path: Apply the mechanical constant-and-test correction without changing the approved clause set or retained deterministic parity.
 Validation target: code-review-m1-r2
-Validation evidence: pending
+Validation evidence: code-review-m1-r2 direct wrong-value probe and `test_r26_unknown_value_fails_closed`
 Implementation evidence: `R26_APPROVED_VALUE`, exact per-clause value validation, and `test_r26_unknown_value_fails_closed`; targeted suite passes 14 tests.
 needs-decision rationale: none
 

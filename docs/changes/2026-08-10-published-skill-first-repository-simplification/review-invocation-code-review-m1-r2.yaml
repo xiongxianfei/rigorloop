@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: code-review-m1-r2
+review_stage: code-review
+review_target: commit:1b7ed015
+base_revision: 25ac99e5
+head_revision: 1b7ed015
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: root-m1-review-resolution
+reviewer_context_id: root-m1-r2-context-reset-review
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: elevated
+risk_tier_triggers: [fail-closed-removal-authority, closed-r26-vocabulary, prior-major-findings]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts:
+  - specs/published-skill-first-repository-simplification.md
+  - specs/published-skill-first-repository-simplification.test.md
+  - docs/plans/2026-08-10-published-skill-first-repository-simplification.md
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - path: commit:1b7ed015.diff
+    revision: 1b7ed015
+    sha256: 2e0f926a83db257f1c7f0e6c4fab30ac7d5d359b5d26fcc3c8789b3c1d53d343
+initial_packet_sha256: 2e0f926a83db257f1c7f0e6c4fab30ac7d5d359b5d26fcc3c8789b3c1d53d343
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: false, satisfied: false, reviewer_context_id: none}
+requirement_fidelity: {applicability: applicable, reason: The correction must restore every omitted R17-R20 and R26 property.}
+risk_map:
+  affected_behavior: authorization of removable and retired states plus exact prospective R26 clause disposition
+  highest_impact_failure_modes: pending evidence still authorizes deletion, incomplete prior state passes, a wrong R26 value passes, or unrelated acceptance behavior changes
+  changed_boundaries: BND-STATE-001, BND-TEMPORAL-001, BND-RECOVERY-001, and BND-COMPAT-001
+  evidence_expected: direct pending-state and wrong-value rejection, structured complete proof positives and negatives, targeted suite, and unchanged selector suite
+  direct_inspection_areas: transition evidence validation, closed R26 mapping, mutation tests, ledger defaults, and R1 resolution scope
+  intentionally_out_of_scope: CI graph changes, check deletion, Gate A/B/C consolidation, runtime invocation, and final verification
+  applicable_risk_classes: [correctness, fail-closed-validation, lifecycle-state, compatibility, requirement-fidelity]
+  non_applicable_risk_classes: [security-credentials, database-migration, network-publication, ui-accessibility]
+  falsifiable_questions:
+    - Does pending evidence now fail every removal-authority property?
+    - Does the wrong value for an otherwise correct R26 key fail explicitly?
+    - Can a complete structured proof pass without weakening blocked-contract handling?
+    - Are both R1 findings corrected without acceptance-graph changes?
