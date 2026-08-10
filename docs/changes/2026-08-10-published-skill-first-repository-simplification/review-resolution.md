@@ -2,7 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
+
+Review closeout: code-review-m2-r1
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
@@ -20,8 +22,8 @@ Review closeout: test-spec-review-r3
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `spec-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`
 - Findings resolved: 7
-- Unresolved findings: 0
-- Current result: M1 code-review R2 resolves both R1 findings and closes M1 for M2 handoff.
+- Unresolved findings: 1
+- Current result: M2 code-review R1 requests one missing-input error-path correction.
 
 ## Resolution Overview
 
@@ -34,8 +36,25 @@ Review closeout: test-spec-review-r3
 | PSR-TSR2-001 | accepted | resolved | CMD18 now validates active R2 test-spec revision evidence. |
 | PSR-CR-M1-R1-001 | accepted | resolved | Structured completed proof replaces nonempty prose as removal authority. |
 | PSR-CR-M1-R1-002 | accepted | resolved | R26 disposition values fail closed, not only their key set. |
+| PSR-CR-M2-R1-001 | accepted | open | Missing Gate A targets must fail through the stable result contract without traceback. |
 
 ## Finding Details
+
+### code-review-m2-r1
+
+Review ID: code-review-m2-r1
+
+Finding ID: PSR-CR-M2-R1-001
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Chosen action: Add an early missing-target `ValidationResult` error and a direct CLI regression test.
+Rationale: The shared Gate A owner can provide the required deterministic repair without changing the approved product boundary.
+Safe resolution path: Apply the mechanical recipe in code-review-m2-r1 and rerun all M2 commands.
+Validation target: code-review-m2-r2
+Validation evidence: pending
+needs-decision rationale: none
 
 ### code-review-m1-r2
 
