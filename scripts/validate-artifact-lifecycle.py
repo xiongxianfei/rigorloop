@@ -273,6 +273,7 @@ def main(argv: list[str] | None = None) -> int:
         result = validate_repository(
             ROOT,
             mode=validation_mode(args),
+            compose_change_metadata=True,
             paths=args.path,
             base=args.base,
             head=args.head,

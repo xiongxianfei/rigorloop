@@ -25,6 +25,7 @@ ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "scripts" / "validate-artifact-lifecycle.py"
 FIXTURES = ROOT / "tests" / "fixtures" / "artifact-lifecycle"
 REVIEW_FIXTURES = ROOT / "tests" / "fixtures" / "review-artifacts"
+CHANGE_METADATA_FIXTURES = ROOT / "tests" / "fixtures" / "change-metadata"
 
 
 def copy_fixture(relative_path: str) -> Path:
@@ -447,6 +448,27 @@ class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
         self.assertIn("allowed values are", messages)
         self.assertTrue(
             any(finding.artifact_class == "review_artifacts" for finding in result.blocking_findings)
+        )
+
+    def test_public_governance_entry_point_composes_full_change_metadata_validation(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="governance-metadata-fixture-"))
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+        change_root = root / "docs" / "changes" / "bad-artifact-key"
+        shutil.copytree(CHANGE_METADATA_FIXTURES / "bad-artifact-key", change_root)
+
+        result = validate_repository(
+            root,
+            mode="explicit-paths",
+            compose_change_metadata=True,
+            paths=["docs/changes/bad-artifact-key/change.yaml"],
+        )
+
+        messages = "\n".join(finding.message for finding in result.blocking_findings)
+        self.assertIn("artifacts.explain-change", messages)
+        self.assertIn("invalid artifact key", messages)
+        self.assertIn("use one of:", messages)
+        self.assertTrue(
+            any(finding.artifact_class == "change_metadata" for finding in result.blocking_findings)
         )
 
     def addCleanupTree(self, path: Path) -> None:
