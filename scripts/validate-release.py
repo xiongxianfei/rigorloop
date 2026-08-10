@@ -26,6 +26,9 @@ from release_transaction import (
 )
 
 
+GATE_NAME = "Gate C (release integrity)"
+
+
 def read_changed_paths_file(path: Path) -> list[str]:
     changed_paths: list[str] = []
     seen: set[str] = set()
@@ -97,7 +100,7 @@ def materialize_git_source(commit: str, destination: Path) -> int:
         for member in archive.getmembers():
             target = (destination / member.name).resolve()
             if target != destination_root and destination_root not in target.parents:
-                print(f"unsafe git archive member: {member.name}", file=sys.stderr)
+                print(f"{GATE_NAME}: unsafe git archive member: {member.name}", file=sys.stderr)
                 return 1
         archive.extractall(destination)
     return 0
@@ -142,10 +145,10 @@ def validate_from_recorded_source(version: str, source_commit: str) -> int:
         )
         if errors:
             for error in errors:
-                print(error)
+                print(f"{GATE_NAME}: {error}")
             return 1
 
-    print(f"validated release metadata for {version} from recorded source {source_commit}")
+    print(f"{GATE_NAME}: validated release metadata for {version} from recorded source {source_commit}")
     return 0
 
 
@@ -253,14 +256,14 @@ def main(argv: list[str] | None = None) -> int:
         timing_errors, timing_warnings = validate_release_transaction_timing(version)
         errors.extend(timing_errors)
         for warning in timing_warnings:
-            print(f"[WARN] {warning}", file=sys.stderr)
+            print(f"{GATE_NAME}: [WARN] {warning}", file=sys.stderr)
         errors.extend(validate_release_transaction_published_evidence(version))
         if errors:
             for error in errors:
-                print(error)
+                print(f"{GATE_NAME}: {error}")
             return 1
 
-        print(f"validated release metadata for {version} under {RELEASE_ROOT}")
+        print(f"{GATE_NAME}: validated release metadata for {version} under {RELEASE_ROOT}")
     return 0
 
 

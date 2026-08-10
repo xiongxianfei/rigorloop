@@ -136,13 +136,21 @@ entries:
     actionable_repair: Repair the named underlying product gate or release-only metadata and rebuild locally.
     fixture_inventory: [version, metadata, notes, archives, checksums, rollback, composed-gate-failure]
     governing_clauses: [release-contracts, simplification-R7, simplification-R8]
-    contract_disposition: replacement-planned
-    state: inventoried
-    transition_evidence: {status: pending}
-    replacement_proof: M4 dual proof pending.
-    retirement_evidence: M4 evidence pending; no release owner is removed in M1.
+    contract_disposition: retained
+    state: dual-proof
+    transition_evidence:
+      status: complete
+      prior_states: [inventoried]
+      old_proof: {command: bash scripts/release-verify.sh v0.4.0, result: pass}
+      replacement_proof: {command: Gate A then Gate B then Gate C release-only validation, result: pass}
+      comparison_result: match
+      removal_decision: rejected
+      evidence_paths: [docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/m4-gate-c.md]
+      rollback_point: b9c5a0d5
+    replacement_proof: Gate C composition order, 104 release regressions, recorded-source validation, and fixture-safe release rehearsal pass.
+    retirement_evidence: M4 retains release integrity while excluding target-runtime commands from prospective acceptance.
     rollback: Revert the bounded M4 composition commit.
-    retirement_decision: Retain as Gate C.
+    retirement_decision: Retain as Gate C; historical smoke records stay readable but target-runtime proof is not invoked.
 
   - id: contributor-document-structure
     check_ids: [readme.validate, readme.vision_markers, markdown_readability.validate, markdown_readability.regression, guide_system.regression, guide_system.validate, documentation_prose.enforce, documentation_prose.audit, documentation_prose.regression]

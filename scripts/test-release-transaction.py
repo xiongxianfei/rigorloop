@@ -155,6 +155,46 @@ class TrustedReleaseTagIdentityTests(unittest.TestCase):
         self.assertIn("must match hosted tag ref", result.stderr)
 
 
+class DeterministicReleaseGateTests(unittest.TestCase):
+    def test_gate_c_composes_current_gate_a_and_gate_b_without_runtime_commands(self) -> None:
+        result = subprocess.run(
+            ["bash", "scripts/release-verify.sh", "v0.4.0"],
+            cwd=ROOT,
+            env={
+                "PATH": os.environ.get("PATH", ""),
+                "RELEASE_VERIFY_DRY_RUN": "1",
+            },
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        output = result.stdout
+        gate_a = output.index("python scripts/validate-skills.py")
+        gate_b_build = output.index("python scripts/build-adapters.py --version v0.4.0")
+        gate_c = output.index("python scripts/validate-release.py --version v0.4.0")
+        self.assertLess(gate_a, gate_b_build)
+        self.assertLess(gate_b_build, gate_c)
+        source = (ROOT / "scripts" / "release-verify.sh").read_text(encoding="utf-8").lower()
+        for forbidden in (
+            "codex exec", "claude --", "opencode run", "analyze-codex-jsonl",
+            "run-token-cost-benchmarks", "transcript", "model matrix",
+        ):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, source)
+
+    def test_validate_release_cli_names_gate_c_on_failure(self) -> None:
+        result = subprocess.run(
+            [sys.executable, "scripts/validate-release.py", "--version", "v9.9.9"],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Gate C (release integrity)", result.stdout + result.stderr)
+
+
 class ReleaseProfileTests(unittest.TestCase):
     maxDiff = None
 
