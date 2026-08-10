@@ -126,7 +126,8 @@ class RetirementLedgerTests(unittest.TestCase):
 
     def test_pending_evidence_cannot_authorize_removal(self) -> None:
         candidate = copy.deepcopy(self.ledger)
-        candidate["entries"][0]["state"] = "removable"
+        entry = next(item for item in candidate["entries"] if item["state"] == "inventoried")
+        entry["state"] = "removable"
         self.assert_invalid(candidate, "transition_evidence.status")
 
     def test_removal_requires_prior_dual_proof_state(self) -> None:

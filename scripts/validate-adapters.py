@@ -16,6 +16,9 @@ from adapter_distribution import (
 )
 
 
+GATE_NAME = "Gate B (published adapter/package parity)"
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Validate dist/adapters package structure, manifest consistency, and security."
@@ -25,9 +28,14 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="Expected generated adapter manifest version, such as 0.1.0-rc.1.",
     )
-    parser.add_argument(
+    roots = parser.add_mutually_exclusive_group()
+    roots.add_argument(
+        "--adapter-root",
+        help="Validate release archives in this output directory.",
+    )
+    roots.add_argument(
         "--root",
-        help="Validate release archives in this output directory instead of tracked dist/adapters.",
+        help="Legacy alias for --adapter-root.",
     )
     parser.add_argument(
         "--clean-install-smoke",
@@ -45,11 +53,15 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    if args.clean_install_smoke and not args.root:
-        print("--clean-install-smoke requires --root with locally packed release archives")
+    archive_root = args.adapter_root or args.root
+    if args.clean_install_smoke and not archive_root:
+        print(
+            f"{GATE_NAME}: --clean-install-smoke requires --adapter-root "
+            "(legacy --root also accepted) with locally packed release archives"
+        )
         return 1
-    root = Path(args.root) if args.root else ADAPTER_OUTPUT_ROOT
-    if args.root:
+    root = Path(archive_root) if archive_root else ADAPTER_OUTPUT_ROOT
+    if archive_root:
         errors = (
             validate_clean_install_skill_selection(
                 CANONICAL_SKILLS_DIR,
@@ -72,19 +84,19 @@ def main(argv: list[str] | None = None) -> int:
         errors = validate_adapter_output(args.version)
     if errors:
         for error in errors:
-            print(error)
+            print(f"{GATE_NAME}: {error}")
         return 1
 
     if args.clean_install_smoke:
         skills = ", ".join(args.skill) if args.skill else "all mapped-resource skills"
         print(
-            f"validated generated adapter archives and clean installs for version {args.version} "
+            f"{GATE_NAME}: validated generated adapter archives and clean installs for version {args.version} "
             f"under {root} ({skills})"
         )
-    elif args.root:
-        print(f"validated generated adapter archives for version {args.version} under {root}")
+    elif archive_root:
+        print(f"{GATE_NAME}: validated generated adapter archives for version {args.version} under {root}")
     else:
-        print(f"validated generated adapters for version {args.version} under {ADAPTER_OUTPUT_ROOT}")
+        print(f"{GATE_NAME}: validated generated adapters for version {args.version} under {ADAPTER_OUTPUT_ROOT}")
     return 0
 
 
