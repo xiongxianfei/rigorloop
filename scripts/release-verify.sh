@@ -166,9 +166,9 @@ verify_release_script_contract() {
 describe_standing_release_process_gate() {
   echo "Standing release-process gate rehearsal"
   echo "- generated-output currency: repository-owned drift/build/release-output checks must prove current output"
-  echo "- package preview and packed install smoke: npm package checks must prove package contents before publish"
+  echo "- package preview and filesystem materialization: npm package checks must prove package contents before publish"
   echo "- publish path: trusted publishing preferred; manual fallback requires release evidence"
-  echo "- post-publish registry verification: npm view version, dist-tags, integrity, and fresh install/npx smoke"
+  echo "- post-publish registry verification: npm view version, dist-tags, integrity, and fresh CLI materialization"
   if [[ "${RELEASE_VERIFY_DRY_RUN:-}" == "1" ]]; then
     echo "- dry-run mode: no publish command is executed"
   fi
@@ -268,13 +268,13 @@ if [[ "$release_version" == "v0.1.1" ]]; then
 fi
 
 if [[ "$uses_release_output" == "true" ]]; then
-  run_check "Validate release metadata, adapter artifacts, smoke rules, notes, and security" \
+  run_check "Gate C: validate release metadata, adapter artifacts, materialization evidence, notes, and security" \
     python scripts/validate-release.py --version "$release_version" --release-output-dir "$release_output_dir" --release-commit "$release_commit"
 else
-  run_check "Validate release metadata, smoke rules, notes, and security" \
+  run_check "Gate C: validate release metadata, materialization evidence, notes, and security" \
     python scripts/validate-release.py --version "$release_version"
 fi
 
 verify_required_invocations
 
-echo "Release verification passed for ${release_version}."
+echo "Gate C (release integrity) passed for ${release_version}."
