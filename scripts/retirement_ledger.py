@@ -34,6 +34,14 @@ R26_EXACT = frozenset(
         "R52", "R52a", "R52b", "R55a:installed-target-tree", "R59b",
     }
 )
+R26_APPROVED_VALUE = "superseded-prospectively"
+TRANSITION_STATUSES = frozenset({"pending", "complete", "mismatch"})
+COMPLETE_TRANSITION_FIELDS = frozenset(
+    {
+        "prior_states", "old_proof", "replacement_proof", "comparison_result",
+        "removal_decision", "evidence_paths", "rollback_point",
+    }
+)
 
 
 def load_ledger(path: Path) -> dict[str, Any]:
@@ -100,6 +108,39 @@ def validate_ledger(
                     errors.append(f"{label}.{field}: complete proof is required for {state}")
             if disposition == "blocked-active-contract":
                 errors.append(f"{label}: contradictory clause disposition blocks removal")
+        transition = entry.get("transition_evidence")
+        if not isinstance(transition, dict):
+            errors.append(f"{label}.transition_evidence: required mapping")
+        else:
+            transition_status = transition.get("status")
+            if transition_status not in TRANSITION_STATUSES:
+                errors.append(
+                    f"{label}.transition_evidence.status: unknown value {transition_status!r}; "
+                    f"allowed={sorted(TRANSITION_STATUSES)}"
+                )
+            if state in {"removable", "retired"}:
+                if transition_status != "complete":
+                    errors.append(
+                        f"{label}.transition_evidence.status: complete is required for {state}"
+                    )
+                for field in sorted(COMPLETE_TRANSITION_FIELDS):
+                    if not _present(transition.get(field)):
+                        errors.append(f"{label}.transition_evidence.{field}: required for {state}")
+                if transition.get("prior_states") != ["inventoried", "dual-proof"]:
+                    errors.append(
+                        f"{label}.transition_evidence.prior_states: removal requires "
+                        "[inventoried, dual-proof]"
+                    )
+                for proof_name in ("old_proof", "replacement_proof"):
+                    proof = transition.get(proof_name)
+                    if not isinstance(proof, dict) or not _present(proof.get("command")) or proof.get("result") != "pass":
+                        errors.append(
+                            f"{label}.transition_evidence.{proof_name}: command and result=pass are required"
+                        )
+                if transition.get("comparison_result") != "match":
+                    errors.append(f"{label}.transition_evidence.comparison_result: match is required")
+                if transition.get("removal_decision") != "approved":
+                    errors.append(f"{label}.transition_evidence.removal_decision: approved is required")
 
     duplicates = sorted(check_id for check_id, count in Counter(all_check_ids).items() if count > 1)
     if duplicates:
@@ -112,8 +153,16 @@ def validate_ledger(
         if unknown:
             errors.append(f"check_ids: unknown catalog entries: {unknown}")
 
-    if set(ledger.get("r26_disposition", {})) != R26_EXACT:
+    r26_disposition = ledger.get("r26_disposition", {})
+    if set(r26_disposition) != R26_EXACT:
         errors.append("r26_disposition: clause set does not exactly match primary spec R26")
+    if isinstance(r26_disposition, dict):
+        for clause, value in r26_disposition.items():
+            if clause in R26_EXACT and value != R26_APPROVED_VALUE:
+                errors.append(
+                    f"r26_disposition.{clause}: unknown R26 disposition {value!r}; "
+                    f"allowed={[R26_APPROVED_VALUE]}"
+                )
     if ledger.get("retained_clauses") != ["R35c", "R35d"]:
         errors.append("retained_clauses: R35c and R35d must remain active")
     parity = set(ledger.get("retained_deterministic_parity", []))
