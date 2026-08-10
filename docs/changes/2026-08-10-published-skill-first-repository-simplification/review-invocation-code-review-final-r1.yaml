@@ -1,0 +1,36 @@
+schema_version: 1
+review_id: code-review-final-r1
+review_stage: code-review
+review_target: range:feec34752630a0ca3d6bd5a90abf6d6c49e2f5ac..b7d48adc
+base_revision: feec34752630a0ca3d6bd5a90abf6d6c49e2f5ac
+head_revision: b7d48adc
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: root-m1-through-m6-implementation
+reviewer_context_id: root-final-holistic-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: high
+risk_tier_triggers: [complete-validation-architecture-cutover, release-proof-composition, lifecycle-governance-composition, hosted-ci-routing, compatibility-retention]
+risk_tier_classifier: complete-diff-and-contract-surface-v1
+governing_artifacts: [docs/proposals/2026-08-10-published-skill-first-repository-simplification.md, specs/published-skill-first-repository-simplification.md, specs/published-skill-first-repository-simplification.test.md, docs/architecture/system/architecture.md, docs/adr/ADR-20260810-published-skill-first-validation-architecture.md, docs/plans/2026-08-10-published-skill-first-repository-simplification.md]
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - {path: range:feec34752630a0ca3d6bd5a90abf6d6c49e2f5ac..b7d48adc.diff, revision: b7d48adc, sha256: 282032c58e0eb81dc1f500dbdd5ae3950a702f63d8673a0a0352b359a23c1c8e}
+initial_packet_sha256: 282032c58e0eb81dc1f500dbdd5ae3950a702f63d8673a0a0352b359a23c1c8e
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: false, satisfied: false, reviewer_context_id: none}
+requirement_fidelity: {applicability: applicable, reason: The final range changes validation ownership, package and release proof, lifecycle composition, and hosted acceptance routing.}
+risk_map:
+  affected_behavior: canonical-skill acceptance, all-target archive proof, release integrity, lifecycle governance, retirement admission, and PR/main command routing
+  highest_impact_failure_modes: lost deterministic failure, semantic oracle reintroduced, target runtime executed, one adapter target under-proved, stale release proof accepted, invalid lifecycle evidence missed, compatibility path deleted, or CI passes through an omitted owner
+  changed_boundaries: BND-INPUT-001, BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001, and INT-001 through INT-005
+  evidence_expected: milestone negative tests, old-versus-replacement ledger evidence, all-target archive generation, fixture-safe release rehearsal, composed governance suites, direct CI execution, runtime exclusion, and closed review findings
+  direct_inspection_areas: complete diff, governing artifacts, all milestone evidence, review resolution, gate entry points, generated and release boundaries, retirement ledger, CI dispatch, compatibility modes, and rollback records
+  intentionally_out_of_scope: final verify, PR readiness, live hosted result, tag, push, publication, deployment, target runtime behavior, and semantic LLM grading
+  applicable_risk_classes: [correctness, requirement-fidelity, validation-routing, package-supply-chain, release-safety, lifecycle-governance, compatibility, recovery, external-boundary]
+  non_applicable_risk_classes: [database-migration, ui-accessibility, live-publication]
+  falsifiable_questions: [Does every requirement retain direct proof, can an unknown value pass, can one adapter target borrow another target proof, can Gate C pass stale A or B proof, can runtime or prompt evidence enter acceptance, can an active compatibility contract be deleted, can PR/main omit a named owner, are all findings and milestones closed]
