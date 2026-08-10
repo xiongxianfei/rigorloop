@@ -1,0 +1,49 @@
+schema_version: 1
+review_id: plan-review-r1
+review_stage: plan-review
+review_target: docs/plans/2026-08-10-published-skill-first-repository-simplification.md
+base_revision: feec34752630a0ca3d6bd5a90abf6d6c49e2f5ac
+head_revision: working-tree
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-plan-authoring
+reviewer_context_id: root-plan-review-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - cross-component-validation-consolidation
+  - contract-first-retirement
+  - ci-and-release-cutover
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-10-published-skill-first-repository-simplification.md
+  - specs/published-skill-first-repository-simplification.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260810-published-skill-first-validation-architecture.md
+  - docs/plans/2026-08-10-published-skill-first-repository-simplification.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/change.yaml
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: docs/proposals/2026-08-10-published-skill-first-repository-simplification.md
+    sha256: 5fcf377dbb05840bd6d8f7b065b15821e4bae40be1c70b004fe760ae091836a7
+  - path: specs/published-skill-first-repository-simplification.md
+    sha256: d79f52d31e35ea0c5021cd6aaca5f2f630d938aa2c66faaea6dc13b4653e36f9
+  - path: docs/architecture/system/architecture.md
+    sha256: 533b088a4f19935009d9e5575d6f7246be776064a474e4b1a6c57eb064f9c16c
+  - path: docs/adr/ADR-20260810-published-skill-first-validation-architecture.md
+    sha256: 29ade42cf7eef7a4191061b6fd1c276d9d1e5ddbd16fd73e75b37742c6daf26f
+  - path: docs/plans/2026-08-10-published-skill-first-repository-simplification.md
+    sha256: 37f454678547112d41f9417b36550f7fd8fa76f10eac4154fd78b6886ff9a7f7
+prompt_template_version: plan-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: false
+review_focus:
+  - milestone isolation and dependency order
+  - per-slice retirement proof and rollback
+  - exact contract-disposition stop conditions
+  - boundary and interaction traceability
