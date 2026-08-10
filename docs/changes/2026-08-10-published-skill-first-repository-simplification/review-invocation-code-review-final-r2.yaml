@@ -1,0 +1,36 @@
+schema_version: 1
+review_id: code-review-final-r2
+review_stage: code-review
+review_target: commit:3dffeca0
+base_revision: ff41ce10
+head_revision: 3dffeca0
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: root-ci-clean-runner-fix
+reviewer_context_id: root-ci-fix-context-reset-review
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: high
+risk_tier_triggers: [hosted-ci-failure, proof-format-migration, dependency-boundary, post-pr-final-correction]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts: [specs/published-skill-first-repository-simplification.md, specs/published-skill-first-repository-simplification.test.md, docs/architecture/system/architecture.md, docs/adr/ADR-20260810-published-skill-first-validation-architecture.md, docs/plans/2026-08-10-published-skill-first-repository-simplification.md]
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - {path: commit:3dffeca0.diff, revision: 3dffeca0, sha256: 050a8ab47be1298e1dd12b6fa8caa5c357d6a95e797e3a522576d1b4935caaad}
+initial_packet_sha256: 050a8ab47be1298e1dd12b6fa8caa5c357d6a95e797e3a522576d1b4935caaad
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: false, satisfied: false, reviewer_context_id: none}
+requirement_fidelity: {applicability: applicable, reason: The correction changes the deterministic proof representation and clean-runner acceptance boundary.}
+risk_map:
+  affected_behavior: retirement-ledger loading on clean Python runners and the governed proof path referenced by M1
+  highest_impact_failure_modes: semantic data loss during conversion, duplicate keys pass silently, hidden third-party dependency remains, test passes only with local site packages, stale ledger references remain, or CI gains a network dependency
+  changed_boundaries: BND-INPUT-001, BND-AUTH-001, BND-COMPOSE-001, BND-ENV-001, and INT-004
+  evidence_expected: old/new semantic equality, clean Python import with site packages disabled, duplicate-key negative proof, focused ledger suite, selector compatibility suite, direct graph inventory, and stale-reference scan
+  direct_inspection_areas: retirement_ledger.py, retirement-ledger JSON, focused tests, test-spec command, stable plan references, M1 evidence, explanation, and unchanged workflow
+  intentionally_out_of_scope: target runtime behavior, release publication, unrelated product gates, merge, and deployment
+  applicable_risk_classes: [correctness, requirement-fidelity, ci-portability, compatibility, supply-chain, recovery]
+  non_applicable_risk_classes: [database-migration, ui-accessibility, live-publication]
+  falsifiable_questions: [Does JSON equal the former YAML object, does python -S load it, do duplicate keys fail, are all old paths removed, does the direct graph remain unchanged, is the workflow dependency-free]

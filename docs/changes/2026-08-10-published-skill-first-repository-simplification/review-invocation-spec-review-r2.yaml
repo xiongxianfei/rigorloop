@@ -1,0 +1,39 @@
+schema_version: 1
+review_id: spec-review-r2
+review_stage: spec-review
+review_target: specs/published-skill-first-repository-simplification.md
+base_revision: feec34752630a0ca3d6bd5a90abf6d6c49e2f5ac
+head_revision: working-tree
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-correction-r2
+reviewer_context_id: root-spec-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - boundary-record-serialization-correction
+  - active-proof-map-input-refresh
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-10-published-skill-first-repository-simplification.md
+  - specs/published-skill-first-repository-simplification.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/change.yaml
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: docs/proposals/2026-08-10-published-skill-first-repository-simplification.md
+    sha256: 5fcf377dbb05840bd6d8f7b065b15821e4bae40be1c70b004fe760ae091836a7
+  - path: specs/published-skill-first-repository-simplification.md
+    sha256: 75e39b7ad372869d2969b419a8208df6a5832a179dbbb8dd1f7b6cb77ed155f2
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: false
+review_focus:
+  - closed boundary ID serialization
+  - example-to-boundary ownership
+  - absence of normative behavior change
+  - downstream proof-map compatibility

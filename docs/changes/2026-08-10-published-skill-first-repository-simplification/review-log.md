@@ -1,0 +1,259 @@
+# Review Log: Published-Skill-First Repository Simplification
+
+## Scope
+
+This ledger records formal lifecycle reviews for the repository-simplification change.
+
+## Review Entries
+
+### Review entry
+Review ID: code-review-final-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: commit 3dffeca0
+Status: clean-with-notes
+Detailed record: reviews/code-review-final-r2.md
+Resolution: review-resolution.md#code-review-final-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: code-review-final-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: complete initiative diff through commit b7d48adc
+Status: clean-with-notes
+Detailed record: reviews/code-review-final-r1.md
+Resolution: review-resolution.md#code-review-final-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: code-review-m4-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 04ad70bb
+Status: clean-with-notes
+Detailed record: reviews/code-review-m4-r1.md
+Resolution: review-resolution.md#code-review-m4-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: code-review-m6-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 474a5d3f
+Status: clean-with-notes
+Detailed record: reviews/code-review-m6-r1.md
+Resolution: review-resolution.md#code-review-m6-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: code-review-m5-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: commit 8103feaf
+Status: clean-with-notes
+Detailed record: reviews/code-review-m5-r2.md
+Resolution: review-resolution.md#code-review-m5-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: code-review-m3-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 2f428f7d
+Status: clean-with-notes
+Detailed record: reviews/code-review-m3-r1.md
+Resolution: review-resolution.md#code-review-m3-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: code-review-m2-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: commit cff56774
+Status: clean-with-notes
+Detailed record: reviews/code-review-m2-r2.md
+Resolution: review-resolution.md#code-review-m2-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit c845a3bf
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: PSR-CR-M2-R1-001
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: code-review-m1-r2
+Stage: code-review
+Round: 2
+Reviewed artifact: commit 1b7ed015
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r2.md
+Resolution: review-resolution.md#code-review-m1-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 09459a5f
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: PSR-CR-M1-R1-001, PSR-CR-M1-R1-002
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: 1
+Reviewed artifact: docs/proposals/2026-08-10-published-skill-first-repository-simplification.md
+Status: changes-requested
+Detailed record: reviews/proposal-review-r1.md
+Resolution: review-resolution.md#proposal-review-r1
+Material findings: PSR-PR1-001
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: architecture-review-r1
+Stage: architecture-review
+Round: 1
+Reviewed artifact: docs/architecture/system/architecture.md; docs/adr/ADR-20260810-published-skill-first-validation-architecture.md
+Status: changes-requested
+Detailed record: reviews/architecture-review-r1.md
+Resolution: review-resolution.md#architecture-review-r1
+Material findings: PSR-AR1-001
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: architecture-review-r2
+Stage: architecture-review
+Round: 2
+Reviewed artifact: docs/architecture/system/architecture.md; docs/adr/ADR-20260810-published-skill-first-validation-architecture.md
+Status: approved
+Detailed record: reviews/architecture-review-r2.md
+Resolution: review-resolution.md#architecture-review-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: spec-review-r1
+Stage: spec-review
+Round: 1
+Reviewed artifact: specs/published-skill-first-repository-simplification.md
+Status: approved
+Detailed record: reviews/spec-review-r1.md
+Resolution: review-resolution.md#spec-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: proposal-review-r2
+Stage: proposal-review
+Round: 2
+Reviewed artifact: docs/proposals/2026-08-10-published-skill-first-repository-simplification.md
+Status: approved
+Detailed record: reviews/proposal-review-r2.md
+Resolution: review-resolution.md#proposal-review-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: plan-review-r1
+Stage: plan-review
+Round: 1
+Reviewed artifact: docs/plans/2026-08-10-published-skill-first-repository-simplification.md
+Status: approved
+Detailed record: reviews/plan-review-r1.md
+Resolution: review-resolution.md#plan-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: spec-review-r2
+Stage: spec-review
+Round: 2
+Reviewed artifact: specs/published-skill-first-repository-simplification.md
+Status: approved
+Detailed record: reviews/spec-review-r2.md
+Resolution: review-resolution.md#spec-review-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: test-spec-review-r1
+Stage: test-spec-review
+Round: 1
+Reviewed artifact: specs/published-skill-first-repository-simplification.test.md
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r1.md
+Resolution: review-resolution.md#test-spec-review-r1
+Material findings: PSR-TSR1-001, PSR-TSR1-002
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: test-spec-review-r2
+Stage: test-spec-review
+Round: 2
+Reviewed artifact: specs/published-skill-first-repository-simplification.test.md
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r2.md
+Resolution: review-resolution.md#test-spec-review-r2
+Material findings: PSR-TSR2-001
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: test-spec-review-r3
+Stage: test-spec-review
+Round: 3
+Reviewed artifact: specs/published-skill-first-repository-simplification.test.md
+Status: approved
+Detailed record: reviews/test-spec-review-r3.md
+Resolution: review-resolution.md#test-spec-review-r3
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: code-review-m5-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 9af50407
+Status: changes-requested
+Detailed record: reviews/code-review-m5-r1.md
+Resolution: review-resolution.md#code-review-m5-r1
+Material findings: PSR-CR-M5-R1-001
+Open findings: None
+Recording status: recorded

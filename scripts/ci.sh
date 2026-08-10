@@ -1318,6 +1318,7 @@ required_fields = {
     "preflight_results",
     "rationale",
 }
+
 missing = sorted(required_fields - set(payload))
 if missing:
     fail(f"Selector JSON missing required fields: {', '.join(missing)}")
@@ -1438,6 +1439,108 @@ print("Selected CI checks passed.")
 PY
 }
 
+run_direct_check() {
+  local label="$1"
+  shift
+  if [[ "${RIGORLOOP_CI_DIRECT_DRY_RUN:-}" == "1" ]]; then
+    local command_text=""
+    printf -v command_text '%q ' "$@"
+    echo "==> $label"
+    echo "+ ${command_text% }"
+    return 0
+  fi
+  run_check "$label" "$@"
+}
+
+run_direct_product_gates() {
+  if [[ -z "$base" || -z "$head" ]]; then
+    if git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+      base="$(git rev-parse HEAD~1)"
+      head="$(git rev-parse HEAD)"
+    else
+      echo "Direct $mode mode requires --base and --head when HEAD~1 is unavailable." >&2
+      return 4
+    fi
+  fi
+
+  local adapter_output
+  adapter_output="$(mktemp -d)"
+  trap 'rm -rf "$adapter_output"' RETURN
+
+  echo "Direct deterministic product and governance gates ($mode)"
+
+  run_direct_check "Gate A: canonical skill integrity" \
+    python scripts/validate-skills.py
+  run_direct_check "Gate A: canonical skill regressions" \
+    python scripts/test-skill-validator.py
+  run_direct_check "Gate A: generated skill currency" \
+    python scripts/build-skills.py --check
+  run_direct_check "Gate A: boundary proof structure" \
+    python scripts/validate-boundary-first.py --check
+
+  run_direct_check "Gate B: adapter parity regressions" \
+    python scripts/test-adapter-distribution.py
+  run_direct_check "Gate B: build all adapter archives" \
+    python scripts/build-adapters.py --version v0.1.5 --output-dir "$adapter_output"
+  run_direct_check "Gate B: validate all adapter archives" \
+    python scripts/validate-adapters.py --version v0.1.5 --adapter-root "$adapter_output"
+
+  run_direct_check "Gate C: release integrity regressions" \
+    python scripts/test-release-transaction.py
+  run_direct_check "Public package regressions" \
+    npm test --prefix packages/rigorloop
+
+  run_direct_check "Governance: change metadata regressions" \
+    python scripts/test-change-metadata-validator.py
+  run_direct_check "Governance: lifecycle regressions" \
+    python scripts/test-artifact-lifecycle-validator.py
+  run_direct_check "Governance: review evidence regressions" \
+    python scripts/test-review-artifact-validator.py
+  run_direct_check "Governance: retirement ledger" \
+    python scripts/test-retirement-ledger.py
+  run_direct_check "Governance: change-record query" \
+    python scripts/test-query-change-record.py
+  run_direct_check "Governance: workflow engine" \
+    python scripts/test-workflow-automation.py
+  run_direct_check "Governance: workflow code state" \
+    python scripts/test-workflow-code-state.py
+  run_direct_check "Governance: workflow policy" \
+    python scripts/test-workflow-automation-policy.py
+  run_direct_check "Governance: workflow state" \
+    python scripts/test-workflow-automation-state.py
+  run_direct_check "Governance: workflow metadata" \
+    python scripts/test-validate-workflow-automation.py
+  run_direct_check "Governance: review fidelity" \
+    python scripts/test-fidelity-gate-spec-reads.py \
+      --review-set tests/fixtures/requirement-fidelity-gate/representative-reviews \
+      --max-bytes-per-clause 4096 --assert-no-broad-reads
+
+  run_direct_check "Contributor surface: README structure" \
+    python scripts/validate-readme.py README.md
+  run_direct_check "Contributor surface: vision markers" \
+    python scripts/validate-readme.py README.md --vision-markers
+  run_direct_check "Contributor surface: markdown structure regressions" \
+    python scripts/test-markdown-readability-validator.py
+  run_direct_check "Contributor surface: guide regressions" \
+    python scripts/test-guide-system-validator.py
+  run_direct_check "Contributor surface: guide structure" \
+    python scripts/validate-guide-system.py
+
+  if [[ "$mode" == "pr" ]]; then
+    run_direct_check "Governance: PR lifecycle scope" \
+      python scripts/validate-artifact-lifecycle.py --mode pr-ci --base "$base" --head "$head"
+  else
+    run_direct_check "Governance: main lifecycle scope" \
+      python scripts/validate-artifact-lifecycle.py --mode push-main-ci --before "$base" --after "$head"
+  fi
+
+  if [[ "${RIGORLOOP_CI_DIRECT_DRY_RUN:-}" == "1" ]]; then
+    echo "[PASS] direct gate graph selected without execution"
+  else
+    echo "[PASS] direct gate graph: ${broad_smoke_passed_checks} checks passed"
+  fi
+}
+
 parse_args "$@"
 
 if [[ -z "$jobs" ]]; then
@@ -1455,8 +1558,11 @@ if ! command -v python >/dev/null 2>&1; then
 fi
 
 case "$mode" in
-  local|explicit|pr|main|release)
+  local|explicit|release)
     run_selected_mode
+    ;;
+  pr|main)
+    run_direct_product_gates
     ;;
   broad-smoke)
     run_broad_smoke

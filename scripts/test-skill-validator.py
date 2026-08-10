@@ -764,6 +764,65 @@ class SkillValidatorFixtureTests(unittest.TestCase):
     def test_valid_skill_passes(self) -> None:
         self.assertFixturePasses("valid-basic")
 
+    def test_gate_a_accepts_structurally_valid_ambiguous_prose(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            skill = Path(temporary) / "ambiguous" / "SKILL.md"
+            skill.parent.mkdir()
+            skill.write_text(
+                """---
+name: ambiguous
+description: >
+  Do the thing when it seems appropriate.
+---
+
+# Ambiguous
+
+Use the inputs somehow and produce a useful result.
+
+## Expected output
+
+- Something useful.
+""",
+                encoding="utf-8",
+            )
+            result = run_validator(skill.parent)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Gate A (canonical skill integrity)", result.stdout)
+
+    def test_gate_a_command_has_no_target_runtime_dependency(self) -> None:
+        validator = VALIDATOR.read_text(encoding="utf-8")
+        domain = (ROOT / "scripts" / "skill_validation.py").read_text(encoding="utf-8")
+        for forbidden in (
+            "codex exec", "claude --", "opencode run", "prompt fixture",
+            "transcript grading", "model matrix",
+        ):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, validator.lower())
+                self.assertNotIn(forbidden, domain.lower())
+
+    def test_gate_a_missing_target_fails_without_traceback(self) -> None:
+        missing = ROOT / "tests" / "fixtures" / "skills" / "does-not-exist"
+        result = run_validator(missing)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Gate A (canonical skill integrity)", result.stderr)
+        self.assertIn(f"{missing}: target does not exist", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+
+    def test_code_review_owns_published_skill_semantic_checklist(self) -> None:
+        body = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        section = body.split("## Published-skill semantic review", 1)[1].split(
+            "\n## ", 1
+        )[0]
+        for concept in (
+            "description and trigger", "ownership", "prerequisites", "procedure",
+            "packaged resources", "stop conditions", "claims", "output and handoff",
+            "review finding", "Do not convert this checklist",
+        ):
+            with self.subTest(concept=concept):
+                self.assertIn(concept, section)
+
     def test_missing_name_fails(self) -> None:
         self.assertFixtureFails("missing-name", "name: missing required field")
 

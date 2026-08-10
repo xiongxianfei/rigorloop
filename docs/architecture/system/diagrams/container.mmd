@@ -21,6 +21,8 @@ flowchart TB
     validation_cache["Local validation execution cache<br/>[Untracked local state]"]:::container
     templates["Templates and diagram styles<br/>[Markdown and Mermaid]"]:::container
     scripts["Validation and generation scripts<br/>[Python and shell]"]:::container
+    product_gates["Published-skill product gates<br/>[Gate A skill integrity, Gate B adapter parity, Gate C release integrity]"]:::container
+    governance_validation["Lifecycle governance owner<br/>[Deterministic change-record validation]"]:::container
     generated["Generated runtime mirrors and adapters<br/>[Generated Markdown, metadata, commands, and release archives]"]:::container
     release["Release evidence<br/>[YAML, Markdown, checksums, smoke evidence]"]:::container
     legacy["Legacy architecture archive<br/>[Archived Markdown]"]:::container
@@ -69,6 +71,13 @@ flowchart TB
   npm_registry -->|delivers the published package to| package_runner
   generated -->|provides public Codex skills for benchmark temp fixtures used by| token_bench
   scripts -->|validate lifecycle, metadata, review artifacts, release data, and drift for| lifecycle
+  stage_skills -->|provide canonical skill and packaged-resource input to| product_gates
+  scripts -->|implement deterministic product proof for| product_gates
+  product_gates -->|generate and validate all supported target packages in| generated
+  product_gates -->|compose release-only proof into| release
+  changes -->|provide lifecycle state and review references to| governance_validation
+  scripts -->|implement one bounded deterministic owner for| governance_validation
+  reviewer -->|judges semantic skill quality separately from| product_gates
   scripts -->|route registered evidence and query bounded change-record slices in| changes
   scripts -->|read and write non-portable cache entries in| validation_cache
   validation_cache -->|may produce reviewable cache-hit claims recorded in| changes

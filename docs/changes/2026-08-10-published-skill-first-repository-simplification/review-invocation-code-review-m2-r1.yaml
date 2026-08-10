@@ -1,0 +1,36 @@
+schema_version: 1
+review_id: code-review-m2-r1
+review_stage: code-review
+review_target: commit:c845a3bf
+base_revision: 989f9aee
+head_revision: c845a3bf
+native_review_status: changes-requested
+review_gate_outcome: pause-for-resolution
+independence_level: L1
+author_context_id: root-m2-implementation
+reviewer_context_id: root-m2-context-reset-review
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: elevated
+risk_tier_triggers: [canonical-publication-gate, published-skill-change, semantic-automation-boundary]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts: [specs/published-skill-first-repository-simplification.md, specs/published-skill-first-repository-simplification.test.md, docs/plans/2026-08-10-published-skill-first-repository-simplification.md]
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - {path: commit:c845a3bf.diff, revision: c845a3bf, sha256: 41ad13f49a6903930b735657ba44eb9ba445989c2314dcf9d182b60a61cc2fd1}
+initial_packet_sha256: 41ad13f49a6903930b735657ba44eb9ba445989c2314dcf9d182b60a61cc2fd1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: false, satisfied: false, reviewer_context_id: none}
+requirement_fidelity: {applicability: applicable, reason: M2 implements the public Gate A boundary and the review-owned semantic checklist.}
+risk_map:
+  affected_behavior: canonical skill validation diagnostics and published-skill semantic review ownership
+  highest_impact_failure_modes: deterministic defects pass, semantic ambiguity fails automatically, target runtime is invoked, missing inputs crash, or checklist ownership is hollow
+  changed_boundaries: BND-INPUT-001, BND-AUTH-001, BND-COMPOSE-001, and BND-RECOVERY-001
+  evidence_expected: positive and negative structural fixtures, ambiguous-prose pass, no runtime dependency, missing-target failure, semantic MP1, and generated projection proof
+  direct_inspection_areas: Gate A entry point, new tests, code-review checklist, resource map, and M2 evidence
+  intentionally_out_of_scope: adapter generation, release composition, governance consolidation, CI cutover, and final verification
+  applicable_risk_classes: [correctness, error-handling, compatibility, semantic-boundary, requirement-fidelity]
+  non_applicable_risk_classes: [security-credentials, database-migration, network-publication, ui-accessibility]
+  falsifiable_questions: [Does ambiguous prose pass, do deterministic defects fail actionably, does a missing target avoid traceback, is semantic approval review-owned, does Gate A avoid target runtimes]

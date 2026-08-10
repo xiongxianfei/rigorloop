@@ -1,0 +1,36 @@
+schema_version: 1
+review_id: code-review-m2-r2
+review_stage: code-review
+review_target: commit:cff56774
+base_revision: 1a880716
+head_revision: cff56774
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: root-m2-review-resolution
+reviewer_context_id: root-m2-r2-context-reset-review
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: elevated
+risk_tier_triggers: [public-gate-error-path, prior-finding, generated-source-precedence]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts: [specs/published-skill-first-repository-simplification.md, specs/published-skill-first-repository-simplification.test.md, docs/plans/2026-08-10-published-skill-first-repository-simplification.md]
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - {path: commit:cff56774.diff, revision: cff56774, sha256: 892d12ec94b9bf1960ec62aed135e03450cb71f2ce426f794b8405327d108cd5}
+initial_packet_sha256: 892d12ec94b9bf1960ec62aed135e03450cb71f2ce426f794b8405327d108cd5
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: false, satisfied: false, reviewer_context_id: none}
+requirement_fidelity: {applicability: applicable, reason: The correction must preserve generated-source rejection while adding missing-target recovery.}
+risk_map:
+  affected_behavior: Gate A missing-target and generated-source error precedence
+  highest_impact_failure_modes: traceback remains, missing target passes, generated source receives weaker error, or unrelated semantic behavior changes
+  changed_boundaries: BND-INPUT-001 and BND-RECOVERY-001
+  evidence_expected: direct missing and generated path probes, targeted regression, full skill suite, and M2 commands
+  direct_inspection_areas: early validation order, CLI formatting, new test, and correction evidence
+  intentionally_out_of_scope: adapters, releases, governance, CI, and final verification
+  applicable_risk_classes: [correctness, error-handling, compatibility, requirement-fidelity]
+  non_applicable_risk_classes: [security-credentials, database-migration, network-publication, ui-accessibility]
+  falsifiable_questions: [Does missing target fail without traceback, does generated output retain its stronger source-of-truth diagnostic, do canonical and ambiguous fixtures retain prior outcomes]

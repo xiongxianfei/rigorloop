@@ -1,0 +1,36 @@
+schema_version: 1
+review_id: code-review-m6-r1
+review_stage: code-review
+review_target: commit:474a5d3f
+base_revision: 3512a547
+head_revision: 474a5d3f
+native_review_status: clean-with-notes
+review_gate_outcome: advance
+independence_level: L1
+author_context_id: root-m6-implementation
+reviewer_context_id: root-m6-context-reset-review
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: elevated
+risk_tier_triggers: [hosted-ci-routing, validation-coverage-cutover, active-contract-compatibility, target-runtime-exclusion]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts: [specs/published-skill-first-repository-simplification.md, specs/published-skill-first-repository-simplification.test.md, docs/architecture/system/architecture.md, docs/adr/ADR-20260810-published-skill-first-validation-architecture.md, docs/plans/2026-08-10-published-skill-first-repository-simplification.md]
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - {path: commit:474a5d3f.diff, revision: 474a5d3f, sha256: 9d5db4f2cb35adb94110f83d57f9b3f98b88b60a884c5d6abc7b77a281746163}
+initial_packet_sha256: 9d5db4f2cb35adb94110f83d57f9b3f98b88b60a884c5d6abc7b77a281746163
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: false, satisfied: false, reviewer_context_id: none}
+requirement_fidelity: {applicability: applicable, reason: M6 changes the default hosted acceptance graph and compatibility boundary.}
+risk_map:
+  affected_behavior: PR/main command routing, failure propagation, release-only package proof, compatibility selector/cache/scheduler invocation, and contributor guidance
+  highest_impact_failure_modes: named gate omission, selector remains default, release-only proof fails ordinary PRs, runtime behavior enters acceptance, first failure is hidden, hosted timeout is exceeded, or active compatibility contracts break
+  changed_boundaries: BND-COMPOSE-001, BND-COMPAT-001, BND-ENV-001, BND-RECOVERY-001, and INT-002
+  evidence_expected: exact dry command inventory, old-selector comparison, real 26-check run, full 152-test compatibility suite, runtime absence scan, workflow permission review, and rollback record
+  direct_inspection_areas: ci.sh dispatch and commands, workflow YAML, test updates, retirement ledger, current-state docs, and M6 evidence
+  intentionally_out_of_scope: deleting compatibility implementations, live hosted result, release publication, target runtime execution, final holistic review, verify, and PR
+  applicable_risk_classes: [correctness, ci-safety, compatibility, release-scope, external-boundary, requirement-fidelity]
+  non_applicable_risk_classes: [database-migration, ui-accessibility]
+  falsifiable_questions: [Do PR/main bypass selector/cache/scheduler, does every retained owner run, is publication-only proof absent, do target runtime terms appear, does first failure stop, does the graph finish within 20 minutes, do compatibility modes still pass]

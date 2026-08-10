@@ -70,6 +70,7 @@ This alignment requires `test-spec-review` before M1 relies on it.
 - Use focused proof for the published-skill resource-integrity pilot: pre-change architecture resource-chain evidence before mutation, validator fixtures for mapped resources and bounded legacy lint, architecture behavior-preservation evidence, raw-byte SHA-256 parity for generated and packed output, clean-install target-tree inspection from locally packed candidates, and repository-wide audit/enforcement evidence.
 - Do not add runtime workflow simulation, natural-language scoring, broad prose linting, a shared-block generation build step, a standalone `review-resolution` skill, or a `skills/ci-maintenance/SKILL.md` path.
 - Do not claim routing fixtures prove deterministic model auto-selection unless a later approved routing harness exists.
+- For changes governed by `specs/published-skill-first-repository-simplification.md`, apply its R26 prospective disposition: historical pilot evidence stays readable, but prompt, transcript, semantic behavior-parity, and all-target clean-install proof are not new acceptance obligations. Keep R35c, R35d, and deterministic canonical/package parity proof active.
 
 ## Requirement coverage map
 

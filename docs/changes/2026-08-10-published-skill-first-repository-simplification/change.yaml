@@ -1,0 +1,234 @@
+change_id: 2026-08-10-published-skill-first-repository-simplification
+title: Published-Skill-First Repository Simplification
+classification: governance-and-validation-policy
+risk: high
+lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-10-published-skill-first-repository-simplification.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r2
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/proposal-review-r2.md
+      round: r2
+  spec:
+    kind: spec
+    path: specs/published-skill-first-repository-simplification.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r2
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/spec-review-r2.md
+      round: r2
+  architecture:
+    kind: architecture
+    path: docs/architecture/system/architecture.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: architecture-review-r2
+      artifact_id: architecture
+      outcome: approved
+      record: docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/architecture-review-r2.md
+      round: r2
+  adr-published-skill-validation:
+    kind: adr
+    path: docs/adr/ADR-20260810-published-skill-first-validation-architecture.md
+    role: supporting
+    lifecycle_state: accepted
+    review:
+      id: architecture-review-r2
+      artifact_id: adr-published-skill-validation
+      outcome: approved
+      record: docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/architecture-review-r2.md
+      round: r2
+      adr_settlement: accepted
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-10-published-skill-first-repository-simplification.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r1
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/plan-review-r1.md
+      round: r1
+  test-spec:
+    kind: test-spec
+    path: specs/published-skill-first-repository-simplification.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r3
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/test-spec-review-r3.md
+      round: r3
+workflow_state:
+  lifecycle_state: completed
+  current_stage: pr
+  next_stage: none
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/proposal-authoring.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/proposal-review-r2.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/spec-review-r1.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/architecture-assessment.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/architecture-review-r2.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/plan-review-r1.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/spec-review-r2.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/test-spec-review-r3.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m1-r2.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m2-r2.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m3-r1.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m4-r1.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m5-r1.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m5-r2.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m6-r1.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-final-r1.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/explain-change.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/verify-report.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/pr.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/ci-clean-runner-ledger-fix.md
+    - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-final-r2.md
+  planned_work:
+    plan_artifact_id: plan
+    current_milestone: none
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+      M4:
+        kind: implementation
+        state: closed
+      M5:
+        kind: implementation
+        state: closed
+      M6:
+        kind: implementation
+        state: closed
+    remaining_implementation_milestones: []
+    latest_review:
+      status: approved
+      stage: code-review
+      round: r2
+      artifact_id: plan
+      occurrence: final
+      milestone_id: none
+      evidence:
+        - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m1-r1.md
+        - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m1-r2.md
+        - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m2-r1.md
+        - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m2-r2.md
+        - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m3-r1.md
+        - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m4-r1.md
+        - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m5-r1.md
+        - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m5-r2.md
+        - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m6-r1.md
+        - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-final-r2.md
+    final_closeout:
+      readiness: ready
+      reasons:
+        - ready
+      evidence:
+        - docs/changes/2026-08-10-published-skill-first-repository-simplification/pr.md
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: test-spec-review
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-10T00:00:00Z"
+      completion:
+        rule: formal test-spec review is recorded
+    status: completed
+    current_stage: test-spec-review
+    stop_reason: target-reached-with-review-findings-open
+    evidence:
+      - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/proposal-review-r2.md
+      - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/spec-review-r1.md
+      - docs/changes/2026-08-10-published-skill-first-repository-simplification/architecture-assessment.md
+      - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/architecture-review-r2.md
+      - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/plan-review-r1.md
+      - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/spec-review-r2.md
+      - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/test-spec-review-r1.md
+artifacts:
+  proposal: docs/proposals/2026-08-10-published-skill-first-repository-simplification.md
+  spec: specs/published-skill-first-repository-simplification.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260810-published-skill-first-validation-architecture.md
+  plan: docs/plans/2026-08-10-published-skill-first-repository-simplification.md
+  test_spec: specs/published-skill-first-repository-simplification.test.md
+requirements:
+  - Make published skills and their installable distribution the primary product boundary.
+  - Retain only scripts that protect a named public, governance, package, or release invariant.
+  - Consolidate overlapping checks without weakening deterministic safety boundaries.
+  - Restrict repository acceptance to deterministic skill, package, release, installer-filesystem, and lifecycle-governance invariants.
+  - Keep semantic skill quality in human or agent review and do not execute target agent runtimes for acceptance.
+tests:
+  - Compare retained gates with the public failures and governance invariants they prevent.
+  - Prove deterministic canonical skill integrity and package parity for all published adapter targets.
+  - Prove release integrity by composing canonical skill and package proof.
+  - Prove installer filesystem materialization only when installer logic exceeds package copying.
+  - Prove retired checks do not remove required negative-path coverage.
+validation: []
+changed_files:
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/change.yaml
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-10-published-skill-first-repository-simplification.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/review-log.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/review-resolution.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/proposal-revision-r1.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/proposal-revision-r2.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/proposal-review-r2.md
+  - specs/published-skill-first-repository-simplification.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/architecture-assessment.md
+  - docs/architecture/system/architecture.md
+  - docs/architecture/system/diagrams/context.mmd
+  - docs/architecture/system/diagrams/container.mmd
+  - docs/architecture/system/diagrams/component-published-skill-validation.mmd
+  - docs/adr/ADR-20260810-published-skill-first-validation-architecture.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/architecture-authoring.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/architecture-review-r1.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/architecture-review-r2.md
+  - docs/plans/2026-08-10-published-skill-first-repository-simplification.md
+  - docs/plan.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/plan-authoring.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/plan-review-r1.md
+  - specs/published-skill-first-repository-simplification.test.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/test-spec-authoring.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/spec-revision-r2.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/review-invocation-spec-review-r2.yaml
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/spec-review-r2.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/test-spec-revision-r2.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/test-spec-review-r2.md
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/test-spec-review-r3.md
+review:
+  status: approved
+  unresolved_items: 0
+  review_log: docs/changes/2026-08-10-published-skill-first-repository-simplification/review-log.md
+  review_resolution: docs/changes/2026-08-10-published-skill-first-repository-simplification/review-resolution.md

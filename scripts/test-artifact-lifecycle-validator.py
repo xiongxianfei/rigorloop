@@ -24,6 +24,8 @@ from workflow_automation import ActivePlanContext, AutomationContractError, bind
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "scripts" / "validate-artifact-lifecycle.py"
 FIXTURES = ROOT / "tests" / "fixtures" / "artifact-lifecycle"
+REVIEW_FIXTURES = ROOT / "tests" / "fixtures" / "review-artifacts"
+CHANGE_METADATA_FIXTURES = ROOT / "tests" / "fixtures" / "change-metadata"
 
 
 def copy_fixture(relative_path: str) -> Path:
@@ -425,6 +427,49 @@ def current_fixture_branch(path: Path) -> str:
 
 class ArtifactLifecycleValidatorFixtureTests(unittest.TestCase):
     maxDiff = None
+
+    def test_public_governance_entry_point_composes_review_artifact_validation(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="governance-composition-fixture-"))
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+        change_root = root / "docs" / "changes" / "invalid-unknown-native-review-status"
+        shutil.copytree(
+            REVIEW_FIXTURES / "invalid-unknown-native-review-status",
+            change_root,
+        )
+
+        result = validate_repository(
+            root,
+            mode="explicit-paths",
+            paths=["docs/changes/invalid-unknown-native-review-status/change.yaml"],
+        )
+
+        messages = "\n".join(finding.message for finding in result.blocking_findings)
+        self.assertIn("unsupported native review status 'rubber-stamp'", messages)
+        self.assertIn("allowed values are", messages)
+        self.assertTrue(
+            any(finding.artifact_class == "review_artifacts" for finding in result.blocking_findings)
+        )
+
+    def test_public_governance_entry_point_composes_full_change_metadata_validation(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="governance-metadata-fixture-"))
+        self.addCleanup(lambda: shutil.rmtree(root, ignore_errors=True))
+        change_root = root / "docs" / "changes" / "bad-artifact-key"
+        shutil.copytree(CHANGE_METADATA_FIXTURES / "bad-artifact-key", change_root)
+
+        result = validate_repository(
+            root,
+            mode="explicit-paths",
+            compose_change_metadata=True,
+            paths=["docs/changes/bad-artifact-key/change.yaml"],
+        )
+
+        messages = "\n".join(finding.message for finding in result.blocking_findings)
+        self.assertIn("artifacts.explain-change", messages)
+        self.assertIn("invalid artifact key", messages)
+        self.assertIn("use one of:", messages)
+        self.assertTrue(
+            any(finding.artifact_class == "change_metadata" for finding in result.blocking_findings)
+        )
 
     def addCleanupTree(self, path: Path) -> None:
         self.addCleanup(lambda: shutil.rmtree(path, ignore_errors=True))
@@ -4863,6 +4908,7 @@ Leave this draft stale.
     def test_cli_requires_explicit_paths(self) -> None:
         result = run_cli("--mode", "explicit-paths")
         self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Governance (lifecycle consistency)", result.stderr)
         self.assertIn("requires at least one --path", result.stderr + result.stdout)
 
     def test_cli_accepts_inner_loop_helper_mode_with_explicit_paths(self) -> None:
@@ -4884,7 +4930,7 @@ Leave this draft stale.
             env=cache_env,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("validated", result.stdout)
+        self.assertIn("Governance (lifecycle consistency): validated", result.stdout)
         self.assertIn("explicit-paths-inner-loop mode", result.stdout)
 
     def test_cli_helper_mode_requires_explicit_paths(self) -> None:

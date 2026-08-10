@@ -1,0 +1,35 @@
+flowchart LR
+  contributor["Contributor or agent"]:::person
+  reviewer["Semantic skill reviewer"]:::person
+  canonical["Canonical skills and resources<br/>[Markdown and packaged files]"]:::container
+  gate_a["Gate A: skill integrity<br/>[Deterministic validation]"]:::container
+  gate_b["Gate B: adapter parity<br/>[Generation, inventory, transforms, archives, bytes]"]:::container
+  codex["Codex package<br/>[Generated archive]"]:::container
+  claude["Claude Code package<br/>[Generated archive]"]:::container
+  opencode["opencode package<br/>[Generated archive]"]:::container
+  gate_c["Gate C: release integrity<br/>[Composed deterministic proof]"]:::container
+  governance["Lifecycle governance owner<br/>[Deterministic change-record validation]"]:::container
+  change_records["Change-local lifecycle records<br/>[YAML and Markdown]"]:::container
+  release_candidate["Local release candidate<br/>[Metadata, archives, checksums, notes]"]:::container
+  target_runtime["Target-agent runtimes<br/>[External consumers, not acceptance oracles]"]:::external
+
+  contributor -->|authors| canonical
+  canonical -->|deterministic integrity input| gate_a
+  gate_a -->|current canonical proof| gate_b
+  gate_b -->|generates and proves| codex
+  gate_b -->|generates and proves| claude
+  gate_b -->|generates and proves| opencode
+  codex -->|package inventory and identity| gate_c
+  claude -->|package inventory and identity| gate_c
+  opencode -->|package inventory and identity| gate_c
+  release_candidate -->|release-only inputs| gate_c
+  change_records -->|shape, transitions, references, closed values| governance
+  reviewer -->|judges semantic quality of| canonical
+  codex -->|consumed after publication| target_runtime
+  claude -->|consumed after publication| target_runtime
+  opencode -->|consumed after publication| target_runtime
+
+  classDef person fill:#08427b,stroke:#073b6f,color:#fff
+  classDef system fill:#1168bd,stroke:#0e5aa7,color:#fff
+  classDef external fill:#999,stroke:#666,color:#fff
+  classDef container fill:#438dd5,stroke:#3c7fc0,color:#fff
