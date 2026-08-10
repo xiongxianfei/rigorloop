@@ -73,8 +73,8 @@ artifact_states:
       round: r3
 workflow_state:
   lifecycle_state: active
-  current_stage: implement
-  next_stage: code-review
+  current_stage: code-review
+  next_stage: review-resolution
   blocker: null
   evidence:
     - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/proposal-authoring.md
@@ -98,7 +98,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: implementing
+        state: review-requested
       M3:
         kind: implementation
         state: planned
@@ -118,12 +118,12 @@ workflow_state:
       - M5
       - M6
     latest_review:
-      status: approved
+      status: review-requested
       stage: code-review
-      round: r2
+      round: r1
       artifact_id: plan
       occurrence: milestone
-      milestone_id: M1
+      milestone_id: M2
       evidence:
         - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m1-r1.md
         - docs/changes/2026-08-10-published-skill-first-repository-simplification/reviews/code-review-m1-r2.md
