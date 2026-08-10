@@ -60,7 +60,7 @@ Rationale: R12 and T8 require one public result to preserve metadata shape, sema
 Safe resolution path: Apply the declared-safe recipe in code-review-m5-r1 and rerun all M5 commands.
 Validation target: code-review-m5-r2
 Validation evidence: pending
-Implementation evidence: pending
+Implementation evidence: public CLI opts into the existing focused `validate_file` contract; `test_public_governance_entry_point_composes_full_change_metadata_validation` proves field and allowed-value diagnostics; all 170 lifecycle tests pass.
 needs-decision rationale: none
 
 ### code-review-m4-r1

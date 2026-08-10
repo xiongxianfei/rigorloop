@@ -12,10 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from artifact_lifecycle_contracts import ArtifactContract, classify_artifact
-from change_metadata_semantics import (
-    STAGE_OWNED_CONTRACT,
-    validate_stage_owned_lifecycle_metadata,
-)
+from change_metadata_semantics import STAGE_OWNED_CONTRACT, validate_stage_owned_lifecycle_metadata
 from lifecycle_state_sync import (
     has_structured_workflow_state_marker,
     has_workflow_state_handoff_section,
@@ -1824,6 +1821,7 @@ def validate_repository(
     root: Path,
     *,
     mode: str,
+    compose_change_metadata: bool = False,
     paths: list[str] | None = None,
     base: str | None = None,
     head: str | None = None,
@@ -1850,6 +1848,25 @@ def validate_repository(
     stage_owned_states: dict[Path, list[StageOwnedArtifactState]] = {}
 
     for path in scope.change_yaml_paths:
+        metadata_error_messages: set[str] = set()
+        if compose_change_metadata:
+            metadata_parser = _load_change_metadata_parser()
+            try:
+                metadata_errors = metadata_parser.validate_file(path)
+            except (FileNotFoundError, metadata_parser.MetadataValidationError) as exc:
+                metadata_errors = [f"invalid change metadata: {exc}"]
+            for message in metadata_errors:
+                metadata_error_messages.add(message)
+                blocking_findings.append(
+                    ValidationFinding(
+                        severity="block",
+                        path=path,
+                        artifact_class="change_metadata",
+                        status=None,
+                        message=message,
+                    )
+                )
+
         metadata_text = _read_repo_text(
             root_resolved,
             path,
@@ -1876,6 +1893,8 @@ def validate_repository(
         ):
             stage_owned_records.add(path)
             for message in validate_stage_owned_lifecycle_metadata(metadata):
+                if message in metadata_error_messages:
+                    continue
                 blocking_findings.append(
                     ValidationFinding(
                         severity="block",
