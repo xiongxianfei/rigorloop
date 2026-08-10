@@ -258,3 +258,10 @@ Review ID: code-review-m3-r1
 
 No findings. M3 closes with all-target archive and installed-tree parity,
 repeatable measurements, resolved ledger destinations, and approved MP1 proof.
+
+### code-review-final-r1
+
+Review ID: code-review-final-r1
+
+No findings. The final holistic review approves the complete cross-milestone
+diff and routes the change to explain-change without claiming verify readiness.
