@@ -7,6 +7,7 @@ Closeout status: closed
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
+Review closeout: code-review-m4-r1
 
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
@@ -41,6 +42,13 @@ Review closeout: test-spec-review-r3
 | PSR-CR-M2-R1-001 | accepted | resolved | Missing Gate A targets fail through the stable result contract without traceback. |
 
 ## Finding Details
+
+### code-review-m4-r1
+
+Review ID: code-review-m4-r1
+
+No findings. M4 composes deterministic release integrity without invoking or
+grading a target agent and preserves historical release evidence.
 
 ### code-review-m3-r1
 
