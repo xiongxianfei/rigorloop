@@ -800,6 +800,14 @@ Use the inputs somehow and produce a useful result.
                 self.assertNotIn(forbidden, validator.lower())
                 self.assertNotIn(forbidden, domain.lower())
 
+    def test_gate_a_missing_target_fails_without_traceback(self) -> None:
+        missing = ROOT / "tests" / "fixtures" / "skills" / "does-not-exist"
+        result = run_validator(missing)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Gate A (canonical skill integrity)", result.stderr)
+        self.assertIn(f"{missing}: target does not exist", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+
     def test_code_review_owns_published_skill_semantic_checklist(self) -> None:
         body = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(
             encoding="utf-8"

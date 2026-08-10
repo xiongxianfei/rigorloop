@@ -3662,6 +3662,10 @@ def validate_skill_tree(target: Path, *, allow_generated: bool = False) -> Valid
                 f"{target}: generated output path must not be used as authored source of truth"
             ],
         )
+    if not target.exists():
+        return ValidationResult(
+            checked_files=[], errors=[f"{target}: target does not exist"]
+        )
 
     skill_dirs = discover_source_skill_dirs(target)
     if not skill_dirs:
