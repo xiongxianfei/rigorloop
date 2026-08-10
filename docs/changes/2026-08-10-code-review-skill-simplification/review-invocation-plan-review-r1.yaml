@@ -1,0 +1,39 @@
+schema_version: 1
+review_id: plan-review-r1
+review_stage: plan-review
+review_target: docs/plans/2026-08-10-code-review-skill-simplification.md
+base_revision: 72ec76dc9b9e1efd6b49da76778d796ed6a330a6
+head_revision: working-tree
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L0
+author_context_id: root-plan-authoring-r1
+reviewer_context_id: root-plan-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-refactor
+  - installed-package-parity
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/code-review-skill-simplification.md
+  - docs/architecture/system/architecture.md
+  - docs/plans/2026-08-10-code-review-skill-simplification.md
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/code-review-skill-simplification.md
+    sha256: 8ccfd6a2cc3f8673fcadad8d66d522ce25fe66fae45c6c62ec2ca3d36404a741
+  - path: docs/architecture/system/architecture.md
+    sha256: 9cf16c0b380b089a1c4057d981d07379a6d9145e30e2a852dc5163241ae0a68a
+  - path: docs/plans/2026-08-10-code-review-skill-simplification.md
+    sha256: 38b66cce9961404b33811476aeb2f8686c3d7b63df3739a052b1dd05bc65180a
+prompt_template_version: plan-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: false
+review_focus:
+  - milestone independence
+  - exact validation commands
+  - boundary and interaction coverage
+  - rollback units

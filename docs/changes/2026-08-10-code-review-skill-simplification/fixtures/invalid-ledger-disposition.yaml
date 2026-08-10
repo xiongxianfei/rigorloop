@@ -1,0 +1,1 @@
+{"rule_id":"CR-RULE-INVALID-001","source_locations":["skills/code-review/SKILL.md#Rules"],"behavior":"Negative fixture for unknown disposition ordering.","disposition":"moved-somewhere","destination":"skills/code-review/SKILL.md#Rules","governing_requirements":["R9"]}

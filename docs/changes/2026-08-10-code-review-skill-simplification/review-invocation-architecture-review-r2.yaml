@@ -1,0 +1,39 @@
+schema_version: 1
+review_id: architecture-review-r2
+review_stage: architecture-review
+review_target: docs/architecture/system/architecture.md
+base_revision: 72ec76dc9b9e1efd6b49da76778d796ed6a330a6
+head_revision: working-tree
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-architecture-revision-r1
+reviewer_context_id: root-architecture-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - installed-package-parity-correction
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/code-review-skill-simplification.md
+  - docs/architecture/system/architecture.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/reviews/architecture-review-r1.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/architecture-revision-r1.md
+formal_criteria:
+  - architecture-review-v1
+initial_packet_inventory:
+  - path: specs/code-review-skill-simplification.md
+    sha256: 8ccfd6a2cc3f8673fcadad8d66d522ce25fe66fae45c6c62ec2ca3d36404a741
+  - path: docs/architecture/system/architecture.md
+    sha256: 9cf16c0b380b089a1c4057d981d07379a6d9145e30e2a852dc5163241ae0a68a
+  - path: docs/changes/2026-08-10-code-review-skill-simplification/evidence/architecture-revision-r1.md
+    sha256: 226ef9680198cd7bd5bccfa42a34697844d2caa641bd0d54a8725000fbc5c664
+prompt_template_version: architecture-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: false
+review_focus:
+  - CRSIM-AR1 reconciliation
+  - installed package parity
+  - runtime exclusion
+  - plan readiness

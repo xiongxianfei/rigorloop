@@ -1,0 +1,11 @@
+{
+  "scenarios": [
+    {"scenario":"direct-review","required":["resolve actual diff and governing authority","apply universal checklist","do not load workflow automation reference"],"forbidden":["claim branch readiness","start implementation","load automation-only phases"]},
+    {"scenario":"formal-recorded-review","required":["record review result","index review log","preserve native verdict"],"forbidden":["skip recording because invocation is isolated","change workflow routing from review"]},
+    {"scenario":"missing-governing-authority","required":["withhold clean branch-scoped conclusion","record independently supported findings or use inconclusive"],"forbidden":["infer missing authority","claim clean-with-notes"]},
+    {"scenario":"material-finding","required":["include evidence","include required outcome","include safe resolution or needs-decision rationale","route to review-resolution"],"forbidden":["fix before first-pass recording","advance downstream"]},
+    {"scenario":"clean-non-final-milestone","required":["close only reviewed milestone","route to next implementation milestone"],"forbidden":["claim final closeout","route directly to verify"]},
+    {"scenario":"clean-final-milestone","required":["confirm no implementation milestone remains","require final holistic review before explain-change"],"forbidden":["treat milestone-local review as holistic review","claim verify readiness"]},
+    {"scenario":"workflow-managed-automated-review","required":["load exactly one automation reference","record blind-first risk map","challenge evidence","apply requirement-fidelity gate when applicable","require receipts"],"forbidden":["expose forbidden author context","execute a target agent as acceptance proof","change native verdict semantics"]}
+  ]
+}

@@ -1,0 +1,200 @@
+change_id: 2026-08-10-code-review-skill-simplification
+title: Code-Review Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-10-code-review-skill-simplification.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r3
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-08-10-code-review-skill-simplification/reviews/proposal-review-r3.md
+      round: r3
+  spec:
+    kind: spec
+    path: specs/code-review-skill-simplification.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r2
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-10-code-review-skill-simplification/reviews/spec-review-r2.md
+      round: r2
+  architecture:
+    kind: architecture
+    path: docs/architecture/system/architecture.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: architecture-review-r2
+      artifact_id: architecture
+      outcome: approved
+      record: docs/changes/2026-08-10-code-review-skill-simplification/reviews/architecture-review-r2.md
+      round: r2
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-10-code-review-skill-simplification.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r2
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-10-code-review-skill-simplification/reviews/plan-review-r2.md
+      round: r2
+  test-spec:
+    kind: test-spec
+    path: specs/code-review-skill-simplification.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r2
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-10-code-review-skill-simplification/reviews/test-spec-review-r2.md
+      round: r2
+workflow_state:
+  lifecycle_state: active
+  current_stage: code-review
+  next_stage: code-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-10-code-review-skill-simplification/evidence/proposal-authoring.md
+    - docs/changes/2026-08-10-code-review-skill-simplification/reviews/proposal-review-r2.md
+    - docs/changes/2026-08-10-code-review-skill-simplification/evidence/proposal-revision-r2.md
+    - docs/changes/2026-08-10-code-review-skill-simplification/reviews/proposal-review-r3.md
+    - docs/changes/2026-08-10-code-review-skill-simplification/reviews/spec-review-r1.md
+    - docs/changes/2026-08-10-code-review-skill-simplification/architecture-assessment.md
+    - docs/changes/2026-08-10-code-review-skill-simplification/reviews/architecture-review-r2.md
+    - docs/changes/2026-08-10-code-review-skill-simplification/reviews/plan-review-r2.md
+    - docs/changes/2026-08-10-code-review-skill-simplification/reviews/spec-review-r2.md
+    - docs/changes/2026-08-10-code-review-skill-simplification/evidence/test-spec-authoring.md
+    - docs/changes/2026-08-10-code-review-skill-simplification/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-10-code-review-skill-simplification/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-10-code-review-skill-simplification/evidence/m1-rule-ownership.md
+  planned_work:
+    plan_artifact_id: plan
+    current_milestone: M1
+    milestones:
+      M1:
+        kind: implementation
+        state: review-requested
+      M2:
+        kind: implementation
+        state: planned
+      M3:
+        kind: implementation
+        state: planned
+    remaining_implementation_milestones:
+      - M1
+      - M2
+      - M3
+    latest_review:
+      status: not-started
+      stage: none
+      round: none
+      artifact_id: none
+      occurrence: none
+      milestone_id: none
+      evidence: []
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - lifecycle-gates-open
+        - implementation-milestones-open
+        - milestone-review-pending
+        - explain-change-pending
+        - verify-pending
+        - pr-handoff-pending
+      evidence: []
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: verify
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-10T23:12:05Z"
+      completion:
+        rule: final verification result is recorded
+    status: active
+    current_stage: code-review
+    stop_reason: null
+    evidence:
+      - docs/changes/2026-08-10-code-review-skill-simplification/reviews/proposal-review-r3.md
+      - docs/changes/2026-08-10-code-review-skill-simplification/reviews/spec-review-r1.md
+      - docs/changes/2026-08-10-code-review-skill-simplification/architecture-assessment.md
+      - docs/changes/2026-08-10-code-review-skill-simplification/reviews/architecture-review-r2.md
+      - docs/changes/2026-08-10-code-review-skill-simplification/reviews/plan-review-r2.md
+      - docs/changes/2026-08-10-code-review-skill-simplification/reviews/spec-review-r2.md
+      - docs/changes/2026-08-10-code-review-skill-simplification/evidence/test-spec-authoring.md
+      - docs/changes/2026-08-10-code-review-skill-simplification/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-10-code-review-skill-simplification/reviews/test-spec-review-r2.md
+      - docs/changes/2026-08-10-code-review-skill-simplification/evidence/m1-rule-ownership.md
+artifacts:
+  proposal: docs/proposals/2026-08-10-code-review-skill-simplification.md
+  spec: specs/code-review-skill-simplification.md
+  architecture: docs/architecture/system/architecture.md
+  plan: docs/plans/2026-08-10-code-review-skill-simplification.md
+  test_spec: specs/code-review-skill-simplification.test.md
+requirements:
+  - Reduce the common-path size and repetition of the published code-review skill without weakening its behavior.
+  - Preserve required review, recording, stop, claim-boundary, and workflow-handoff semantics.
+  - Keep packaged resources and generated adapter packages deterministic and self-contained.
+tests:
+  - Review the changed skill semantically against the governing contract.
+  - Run canonical skill, packaged-resource, and generated-package validation selected by the approved plan and test spec.
+validation: []
+changed_files:
+  - docs/changes/2026-08-10-code-review-skill-simplification/change.yaml
+  - docs/proposals/2026-08-10-code-review-skill-simplification.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/proposal-authoring.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/proposal-revision-r2.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/review-log.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/review-resolution.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/reviews/proposal-review-r3.md
+  - specs/code-review-skill-simplification.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-10-code-review-skill-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/architecture-assessment.md
+  - docs/architecture/system/architecture.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/architecture-authoring.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/review-invocation-architecture-review-r1.yaml
+  - docs/changes/2026-08-10-code-review-skill-simplification/reviews/architecture-review-r1.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/architecture-revision-r1.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/review-invocation-architecture-review-r2.yaml
+  - docs/changes/2026-08-10-code-review-skill-simplification/reviews/architecture-review-r2.md
+  - docs/plans/2026-08-10-code-review-skill-simplification.md
+  - docs/plan.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/plan-authoring.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-10-code-review-skill-simplification/reviews/plan-review-r1.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/plan-revision-r1.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/review-invocation-plan-review-r2.yaml
+  - docs/changes/2026-08-10-code-review-skill-simplification/reviews/plan-review-r2.md
+  - specs/code-review-skill-simplification.test.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/test-spec-authoring.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/spec-revision-r2.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/review-invocation-test-spec-review-r1.yaml
+  - docs/changes/2026-08-10-code-review-skill-simplification/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/review-invocation-spec-review-r2.yaml
+  - docs/changes/2026-08-10-code-review-skill-simplification/reviews/spec-review-r2.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/test-spec-revision-r1.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/review-invocation-test-spec-review-r2.yaml
+  - docs/changes/2026-08-10-code-review-skill-simplification/reviews/test-spec-review-r2.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/code-review-rule-disposition.yaml
+  - docs/changes/2026-08-10-code-review-skill-simplification/fixtures/scenario-contracts.yaml
+  - docs/changes/2026-08-10-code-review-skill-simplification/fixtures/invalid-ledger-disposition.yaml
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/m1-rule-ownership.md
+review:
+  status: approved
+  unresolved_items: 0

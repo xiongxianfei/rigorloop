@@ -1,0 +1,42 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/code-review-skill-simplification.md
+base_revision: 72ec76dc9b9e1efd6b49da76778d796ed6a330a6
+head_revision: working-tree
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-authoring-r1
+reviewer_context_id: root-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - conditional-policy-reference
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-10-code-review-skill-simplification.md
+  - specs/code-review-skill-simplification.md
+  - specs/skill-contract.md
+  - specs/published-skill-first-repository-simplification.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/change.yaml
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: docs/proposals/2026-08-10-code-review-skill-simplification.md
+    sha256: e3b3a341f494508a042ccaa5a31990a3bb21a7294a9e4dacea2ccf821cde8162
+  - path: specs/code-review-skill-simplification.md
+    sha256: 8ccfd6a2cc3f8673fcadad8d66d522ce25fe66fae45c6c62ec2ca3d36404a741
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: false
+review_focus:
+  - universal-inline versus conditional-reference ownership
+  - deterministic acceptance boundary
+  - rule-disposition semantic preservation
+  - package integrity and rollback
+  - boundary-record completeness
