@@ -98,11 +98,16 @@ entries:
     actionable_repair: Correct the owning change record or referenced stage evidence before handoff.
     fixture_inventory: [shape, transitions, dangling-evidence, contradictions, unknown-values-fail-closed]
     governing_clauses: [rigorloop-workflow, artifact-lifecycle-defaults, simplification-R12, simplification-R13]
-    contract_disposition: replacement-planned
-    state: inventoried
-    transition_evidence: {status: pending}
-    replacement_proof: M5 composed proof pending.
-    retirement_evidence: M5 evidence pending; focused modules remain internal owners.
+    contract_disposition: retained
+    state: dual-proof
+    transition_evidence:
+      status: complete
+      equivalence_proof: The public lifecycle validator composes change-metadata semantics and review-artifact structure validation; all three focused suites pass independently.
+      removal_decision: rejected
+      evidence_paths: [docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/m5-governance.md]
+      rollback_point: f4406555
+    replacement_proof: The public governance entry point rejects malformed review evidence with field, invalid value, allowed values, and repair surface while retaining focused parser tests.
+    retirement_evidence: M5 retains focused modules as internal owners and establishes validate-artifact-lifecycle.py as the single public composition surface.
     rollback: Revert the bounded M5 composition commit.
     retirement_decision: Retain invariants; simplify only the public entry surface.
 
