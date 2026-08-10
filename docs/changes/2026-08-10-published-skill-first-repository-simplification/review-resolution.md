@@ -6,6 +6,7 @@ Closeout status: closed
 
 Review closeout: code-review-m5-r1
 Review closeout: code-review-m5-r2
+Review closeout: code-review-m6-r1
 
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
@@ -46,6 +47,14 @@ Review closeout: test-spec-review-r3
 | PSR-CR-M5-R1-001 | accepted | resolved | The public governance entry point preserves the focused change-metadata contract. |
 
 ## Finding Details
+
+### code-review-m6-r1
+
+Review ID: code-review-m6-r1
+
+No findings. M6 moves hosted PR/main acceptance to the direct deterministic
+gate graph while preserving independently tested compatibility implementations
+and release-only proof boundaries.
 
 ### code-review-m5-r2
 
