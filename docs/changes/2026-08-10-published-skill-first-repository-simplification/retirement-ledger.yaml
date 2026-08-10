@@ -1,0 +1,214 @@
+schema_version: 1
+change_record: docs/changes/2026-08-10-published-skill-first-repository-simplification/change.yaml
+admission_budget:
+  standalone_validator_clis: 0
+  selector_systems: 0
+  validation_caches: 0
+  validation_schedulers: 0
+r26_disposition:
+  R35: superseded-prospectively
+  R35a: superseded-prospectively
+  R35b: superseded-prospectively
+  R35e: superseded-prospectively
+  R35f: superseded-prospectively
+  R35g: superseded-prospectively
+  R36i: superseded-prospectively
+  R36j: superseded-prospectively
+  R43d: superseded-prospectively
+  R44a: superseded-prospectively
+  R44e: superseded-prospectively
+  R45: superseded-prospectively
+  R45a: superseded-prospectively
+  R45b: superseded-prospectively
+  R45c: superseded-prospectively
+  R45d: superseded-prospectively
+  R52: superseded-prospectively
+  R52a: superseded-prospectively
+  R52b: superseded-prospectively
+  R55a:installed-target-tree: superseded-prospectively
+  R59b: superseded-prospectively
+retained_clauses: [R35c, R35d]
+retained_deterministic_parity: [R48, R50, R50a, R50b, R50c, R50d, R51, R51a, R55a:canonical-through-archive, R59a]
+
+# Every selector catalog ID is owned exactly once below. State is inventoried in
+# M1: no entry is eligible for deletion until a later milestone records dual proof.
+entries:
+  - id: canonical-skill-integrity
+    check_ids: [boundary_first.validate, boundary_first.reference_regression, boundary_first.regression, skills.validate, skills.regression, skills.generation_regression, skills.drift]
+    scripts: [scripts/validate-boundary-first.py, scripts/test-boundary-first-reference.py, scripts/test-boundary-first-validation.py, scripts/validate-skills.py, scripts/test-skill-validator.py, scripts/test-build-skills.py, scripts/build-skills.py]
+    protected_failure: Invalid canonical structure, resource map, path, placeholder, boundary projection, or generated local mirror drift.
+    owner: gate-a
+    deterministic_automation: Appropriate because all facts are repository-local structure, path, vocabulary, or byte facts.
+    existing_owner_decision: Consolidate inside the existing skill-validation and build modules; do not add a new CLI.
+    invocation: Selector catalog, CI wrapper, contributor commands, and release composition.
+    actionable_repair: Edit canonical skills or mapped resources and regenerate derived output.
+    fixture_inventory: [known-positive, known-negative, unknown-values-fail-closed]
+    governing_clauses: [skill-contract-R1-through-R34, skill-contract-R46-through-R51, simplification-R2, simplification-R11]
+    contract_disposition: replacement-planned
+    state: inventoried
+    replacement_proof: M2 dual proof pending.
+    retirement_evidence: M2 evidence pending; no M1 deletion.
+    rollback: Revert the bounded M2 consolidation commit.
+    retirement_decision: Retain until Gate A dual proof closes.
+
+  - id: adapter-package-parity
+    check_ids: [adapters.regression, adapters.drift, adapters.validate]
+    scripts: [scripts/build-adapters.py, scripts/validate-adapters.py, scripts/test-adapter-distribution.py, scripts/build-adapter-archives.py]
+    protected_failure: Missing, extra, stale, unsafe, malformed, or undeclared transformed content in a supported target package or archive.
+    owner: gate-b
+    deterministic_automation: Appropriate because inventory, paths, bytes, transforms, and archive shape are deterministic.
+    existing_owner_decision: Consolidate in the existing adapter build, validation, and regression owners.
+    invocation: Selector catalog, release verification, direct contributor commands, and CI.
+    actionable_repair: Regenerate all targets or declare and validate the target-specific transformation.
+    fixture_inventory: [codex, claude-code, opencode, archives, mapped-resources, invalid-transforms]
+    governing_clauses: [skill-contract-R46-through-R51, simplification-R4, simplification-R5]
+    contract_disposition: replacement-planned
+    state: inventoried
+    replacement_proof: M3 dual proof pending.
+    retirement_evidence: M3 evidence pending; no M1 deletion.
+    rollback: Revert the bounded M3 package-parity commit.
+    retirement_decision: Retain until Gate B dual proof closes.
+
+  - id: lifecycle-governance
+    check_ids: [review_artifacts.regression, review_artifacts.validate, artifact_lifecycle.regression, artifact_lifecycle.validate, change_metadata.regression, change_metadata.validate, change_record_query.regression, workflow_automation.code_state_regression, workflow_automation.engine_regression, workflow_automation.policy_regression, workflow_automation.state_regression, workflow_automation.validator_regression]
+    scripts: [scripts/validate-artifact-lifecycle.py, scripts/artifact_lifecycle_validation.py, scripts/test-artifact-lifecycle-validator.py, scripts/validate-review-artifacts.py, scripts/test-review-artifact-validator.py, scripts/validate-change-metadata.py, scripts/test-change-metadata-validator.py, scripts/query-change-record.py, scripts/test-query-change-record.py, scripts/workflow_automation.py, scripts/test-workflow-automation.py, scripts/test-workflow-code-state.py, scripts/test-workflow-automation-policy.py, scripts/test-workflow-automation-state.py, scripts/test-validate-workflow-automation.py, scripts/test-retirement-ledger.py]
+    protected_failure: Malformed lifecycle state, illegal transition, dangling evidence, contradictory state, invalid review record, or unknown closed-vocabulary value.
+    owner: governance
+    deterministic_automation: Appropriate because record shapes, references, transitions, and vocabularies are deterministic.
+    existing_owner_decision: Compose focused modules behind the existing artifact-lifecycle entry point in M5.
+    invocation: Workflow stages, selector catalog, CI, and direct lifecycle validation.
+    actionable_repair: Correct the owning change record or referenced stage evidence before handoff.
+    fixture_inventory: [shape, transitions, dangling-evidence, contradictions, unknown-values-fail-closed]
+    governing_clauses: [rigorloop-workflow, artifact-lifecycle-defaults, simplification-R12, simplification-R13]
+    contract_disposition: replacement-planned
+    state: inventoried
+    replacement_proof: M5 composed proof pending.
+    retirement_evidence: M5 evidence pending; focused modules remain internal owners.
+    rollback: Revert the bounded M5 composition commit.
+    retirement_decision: Retain invariants; simplify only the public entry surface.
+
+  - id: validation-cache
+    check_ids: [validation_cache.regression]
+    scripts: [scripts/validation_cache.py, scripts/test-validation-cache.py]
+    protected_failure: Cached proof is incorrectly reused after a relevant input or contract changes.
+    owner: governance
+    deterministic_automation: Existing cache correctness is deterministic, but its value must be measured before retention.
+    existing_owner_decision: Do not create a replacement cache; keep current owner until M6 disposition.
+    invocation: Artifact lifecycle and validation orchestration options.
+    actionable_repair: Invalidate the cache or run the owning proof directly.
+    fixture_inventory: [cache-hit, cache-miss, invalidation, corruption]
+    governing_clauses: [validation-cache-active-contract, simplification-R21]
+    contract_disposition: blocked-active-contract
+    state: inventoried
+    replacement_proof: M6 value and dependency audit pending.
+    retirement_evidence: None; active contract blocks removal.
+    rollback: Restore direct cache invocation from the M6 parent commit if later retired.
+    retirement_decision: Paused until measured evidence and exact clause disposition exist.
+
+  - id: release-integrity
+    check_ids: [release.validate, release_transaction.regression]
+    scripts: [scripts/validate-release.py, scripts/validate-release-ci.py, scripts/test-release-transaction.py, scripts/release-verify.sh]
+    protected_failure: A release candidate has stale product proof, wrong version or metadata, missing notes, invalid archive inventory, checksum drift, or inconsistent rollback data.
+    owner: gate-c
+    deterministic_automation: Appropriate because release metadata and local candidate artifacts are deterministic.
+    existing_owner_decision: Compose Gate A and Gate B through existing release owners instead of copying their semantics.
+    invocation: Release workflow, release verification, CI release mode, and direct contributor command.
+    actionable_repair: Repair the named underlying product gate or release-only metadata and rebuild locally.
+    fixture_inventory: [version, metadata, notes, archives, checksums, rollback, composed-gate-failure]
+    governing_clauses: [release-contracts, simplification-R7, simplification-R8]
+    contract_disposition: replacement-planned
+    state: inventoried
+    replacement_proof: M4 dual proof pending.
+    retirement_evidence: M4 evidence pending; no release owner is removed in M1.
+    rollback: Revert the bounded M4 composition commit.
+    retirement_decision: Retain as Gate C.
+
+  - id: contributor-document-structure
+    check_ids: [readme.validate, readme.vision_markers, markdown_readability.validate, markdown_readability.regression, guide_system.regression, guide_system.validate, documentation_prose.enforce, documentation_prose.audit, documentation_prose.regression]
+    scripts: [scripts/validate-readme.py, scripts/validate-markdown-readability.py, scripts/test-markdown-readability-validator.py, scripts/validate-guide-system.py, scripts/test-guide-system-validator.py, scripts/validate-documentation-prose.py, scripts/test-documentation-prose-validator.py]
+    protected_failure: Generated README markers or deterministic documentation structure drifts; prose heuristics may additionally produce advisory findings.
+    owner: governance
+    deterministic_automation: Marker and structure facts are deterministic; semantic prose quality is not.
+    existing_owner_decision: Separate deterministic structure from review-owned prose before any later retirement.
+    invocation: Selector catalog, CI wrapper, and contributor documentation checks.
+    actionable_repair: Restore required markers or structure; route prose clarity to review.
+    fixture_inventory: [markers, structure, formatting, heuristic-prose]
+    governing_clauses: [vision-contract, documentation-validation-active-contract, simplification-R14]
+    contract_disposition: blocked-active-contract
+    state: inventoried
+    replacement_proof: No exact cross-spec disposition yet.
+    retirement_evidence: None; mixed deterministic and semantic ownership requires classification.
+    rollback: Restore the last bounded documentation-check invocation if later changed.
+    retirement_decision: Paused; no M1 deletion or acceptance change.
+
+  - id: selector-and-broad-smoke
+    check_ids: [selector.regression, broad_smoke.repo]
+    scripts: [scripts/select-validation.py, scripts/validation_selection.py, scripts/test-select-validation.py, scripts/validate-broad-smoke-classification.py, scripts/ci.sh]
+    protected_failure: A required check is omitted for a changed path or broad-smoke trigger, or orchestration changes exit and failure behavior.
+    owner: governance
+    deterministic_automation: Current selection is deterministic, but its indirection needs measured justification.
+    existing_owner_decision: M6 moves stable owners to a direct graph; no replacement selector or scheduler may be added.
+    invocation: Pull-request, main, release, legacy broad-smoke, and local CI modes.
+    actionable_repair: Run the named direct owner and correct the command graph or authoritative trigger.
+    fixture_inventory: [path-selection, mixed-change, release, main, broad-smoke, exit-behavior]
+    governing_clauses: [validation-selection-active-contract, broad-smoke-active-contract, simplification-R21]
+    contract_disposition: blocked-active-contract
+    state: inventoried
+    replacement_proof: M6 dual-run and measurement pending.
+    retirement_evidence: None; selector and scheduler contracts remain active.
+    rollback: Restore the M6 parent command graph and direct invocation.
+    retirement_decision: Paused until exact disposition and dual proof.
+
+  - id: requirement-fidelity
+    check_ids: [requirement_fidelity.spec_reads]
+    scripts: [scripts/test-fidelity-gate-spec-reads.py]
+    protected_failure: A formal review claims requirement fidelity without reading the governing clauses.
+    owner: governance
+    deterministic_automation: Read-set evidence is deterministic; review quality remains review-owned.
+    existing_owner_decision: Retain the bounded evidence check pending exact workflow disposition.
+    invocation: Selector catalog and formal review evidence checks.
+    actionable_repair: Re-run review with bounded reads of every governing clause.
+    fixture_inventory: [representative-reviews, missing-read, broad-read]
+    governing_clauses: [formal-review-fidelity-contract]
+    contract_disposition: retained
+    state: inventoried
+    replacement_proof: Existing focused test remains authoritative.
+    retirement_evidence: Not proposed for retirement in this initiative.
+    rollback: Not applicable; retained.
+    retirement_decision: Retain.
+
+  - id: token-cost-analysis
+    check_ids: [token_cost.regression, token_cost.report_regression, token_cost.report_validate]
+    scripts: [scripts/test-token-cost-measurement.py, scripts/test-token-cost-report-validation.py, scripts/validate-token-cost-report.py]
+    protected_failure: A recorded token-cost report is malformed or a measurement implementation silently changes; semantic efficiency conclusions are advisory.
+    owner: governance
+    deterministic_automation: Report shape is deterministic; model-efficiency conclusions are not repository acceptance.
+    existing_owner_decision: Keep static release metadata proof separate from optional measurement analysis.
+    invocation: Selector catalog, release verification, and optional reporting workflows.
+    actionable_repair: Correct report metadata or rerun the optional local measurement outside acceptance.
+    fixture_inventory: [report-shape, measurement-regression, historical-results]
+    governing_clauses: [token-cost-active-contract, simplification-R6, simplification-R24]
+    contract_disposition: blocked-active-contract
+    state: inventoried
+    replacement_proof: Exact split and release dependency audit pending M4 and M6.
+    retirement_evidence: None; active clauses remain.
+    rollback: Restore the bounded invocation slice if later changed.
+    retirement_decision: Paused; no M1 deletion.
+
+  - id: public-cli-and-npm-package
+    check_ids: [rigorloop_cli.test, npm_package_publication.test]
+    scripts: [packages/rigorloop, scripts/test-npm-package-publication.py, scripts/validate-npm-package.py]
+    protected_failure: The public CLI or npm package cannot materialize the declared local package surface.
+    owner: product
+    deterministic_automation: CLI and package filesystem behavior is deterministic when run against local fixtures.
+    existing_owner_decision: Retain product-owned tests; M3 inventories whether any branch needs narrow materialization smoke.
+    invocation: Selector catalog, CI, npm test, and publication preparation.
+    actionable_repair: Fix package assembly or RigorLoop-owned filesystem materialization without launching a target runtime.
+    fixture_inventory: [package-files, local-install, cli-materialization]
+    governing_clauses: [public-cli-contract, npm-publication-contract, simplification-R9, simplification-R10]
+    contract_disposition: retained
+    state: inventoried
+    replacement_proof: M3 installer-boundary inventory pending.
+    retirement_evidence: Not proposed wholesale; only redundant branches may later retire.
+    rollback: Revert a bounded M3 materialization-test change.
+    retirement_decision: Retain public product coverage.

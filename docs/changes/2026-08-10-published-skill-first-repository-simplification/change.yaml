@@ -73,8 +73,8 @@ artifact_states:
       round: r3
 workflow_state:
   lifecycle_state: active
-  current_stage: test-spec-review
-  next_stage: implement
+  current_stage: implement
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-08-10-published-skill-first-repository-simplification/evidence/proposal-authoring.md
@@ -93,7 +93,7 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: planned
+        state: implementing
       M2:
         kind: implementation
         state: planned
