@@ -15,9 +15,10 @@ Status: passed
 Verification date: 2026-08-10
 Verified branch: proposal/published-skill-first-repository-simplification
 Verified implementation identity: feec34752630a0ca3d6bd5a90abf6d6c49e2f5ac..b7d48adc#sha256:282032c58e0eb81dc1f500dbdd5ae3950a702f63d8673a0a0352b359a23c1c8e
-Final review identity: code-review-final-r1@3734eebe
+CI correction identity: 3dffeca0
+Final review identity: code-review-final-r2@88033dd4
 Explanation identity: explain-change.md@f0d3f2a9
-Hosted CI status: not observed; all results below are local
+Hosted CI status: passed; run 31385108670, job 93443677878
 
 ## Verdict
 
@@ -84,14 +85,15 @@ Every command ran from the repository root.
 | `bash scripts/release-verify.sh v0.4.0` | expected non-candidate failure | Current unreleased archives differ from historical `v0.4.0` metadata; the command also reports the historical benchmark requirement. No publication or runtime occurred. |
 | `python scripts/validate-release.py --recorded-source-auto --version v0.4.0` | pass | Rebuilt all three archives and validated Gate C from recorded commit `c7b0babe6e8c91655c2b98f4092197eef5fabc69`. |
 | `RELEASE_VERIFY_DRY_RUN=1 RELEASE_OUTPUT_DIR=/tmp/rigorloop-gate-c-verify.9x0h86 RELEASE_COMMIT=fixture-commit bash scripts/release-verify.sh v0.4.0` | pass | Selected the real A/B/npm/archive/C sequence and published nothing. Temporary directory removed. |
+| `python scripts/test-retirement-ledger.py` after CI correction | pass | 16 tests; dependency-free loading under `python -S` and duplicate-key rejection. |
+| GitHub Actions run `31385108670` | pass | Clean Python 3.11 runner completed all direct gates in 1m43s. |
 
 ## Review and artifact coherence
 
-The final holistic review covers the implementation through `b7d48adc` and is
-clean-with-notes. Later commits add only the final review evidence, durable
-explanation, and workflow routing; they do not change product or validation
-behavior. The explanation uses the same reviewed implementation identity and
-accurately records the partial-retirement boundary.
+Final holistic review R1 covers the original implementation through `b7d48adc`.
+Final review R2 covers the clean-runner correction at `3dffeca0` and is
+clean-with-notes. The explanation records both the original reviewed identity
+and the dependency-free correction.
 
 `review-resolution.md` is closed, contains nine accepted and resolved findings,
 and has no `needs-decision` disposition. `review-log.md` has no open finding.
@@ -107,9 +109,9 @@ archive proof is produced in temporary directories by Gate B and recorded-source
 Gate C. `.github/workflows/ci.yml` remains least privilege and delegates PR/main
 to the verified direct graph.
 
-Hosted CI was not observed and is not claimed. No tag, push, merge, deployment,
-network publication, registry write, credential access, target runtime, prompt,
-transcript grading, or model benchmark was performed.
+Hosted CI run `31385108670` passed on GitHub's clean Python 3.11 runner. No tag,
+merge, deployment, network publication, registry write, credential access,
+target runtime, prompt, transcript grading, or model benchmark was performed.
 
 ## Remaining risks
 

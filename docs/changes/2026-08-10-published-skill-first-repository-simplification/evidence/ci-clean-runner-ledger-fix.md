@@ -3,7 +3,7 @@
 ## Result
 
 - Skill: bugfix, followed by CI-maintenance review
-- Status: implemented; hosted rerun pending
+- Status: verified
 - Affected PR: https://github.com/xiongxianfei/rigorloop/pull/131
 - Failed run: https://github.com/xiongxianfei/rigorloop/actions/runs/31384291330
 - Failed check: `Governance: retirement ledger`
@@ -59,4 +59,14 @@ network step, and still invokes the same 26 direct checks.
 - Permissions: `contents: read`
 - Secrets, write permissions, cache, dependency installation, target runtimes,
   publication, and deployment: absent
-- Hosted outcome: pending after the correction is pushed
+- Hosted outcome: pass; run `31385108670`, job `93443677878`, completed in
+  1m43s on clean GitHub Python 3.11.
+
+## Hosted verification
+
+The corrected run passed the complete direct graph:
+https://github.com/xiongxianfei/rigorloop/actions/runs/31385108670
+
+No dependency-install step was added. GitHub emitted only its standing Node 20
+action-runtime deprecation warning; it did not report a repository check
+failure.

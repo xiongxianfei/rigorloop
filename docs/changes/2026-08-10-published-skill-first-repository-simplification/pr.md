@@ -43,7 +43,8 @@ refactor: simplify published skill validation
 - [x] Fixture-safe Gate C wrapper dry-run selected the real command sequence and
   published nothing.
 - [x] Final holistic review was clean-with-notes with no material findings.
-- [ ] Hosted CI is pending after PR creation and is not claimed as passed.
+- [x] Hosted CI run `31385108670` passed the complete direct graph on the clean
+  GitHub Python 3.11 runner in 1m43s.
 
 The direct historical `v0.4.0` replay against the current unreleased tree
 failed closed as expected because current archives do not match historical
@@ -80,6 +81,8 @@ The approved recorded-source and fixture-safe release checks passed.
   opencode without runtime execution.
 - Confirm Gate C composes current product owners and lifecycle governance stays
   separate from semantic review.
+- Review the dependency-free retirement-ledger correction at `3dffeca0`: JSON
+  is semantically equal to the former YAML object and loads under `python -S`.
 
 ## External handoff
 

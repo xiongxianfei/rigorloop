@@ -50,7 +50,7 @@ after their protected failures and rollback paths are known.
 | `scripts/validate-adapters.py`, `scripts/test-adapter-distribution.py` | Gate B exposes the current `--adapter-root` interface, preserves its legacy alias, proves all target archives, and uses filesystem-materialization language. | Codex, Claude Code, and opencode need equivalent inventory, archive, transform, path, and byte proof without runtime execution. | R4-R5, R9-R10, R27-R28, T4-T5; 150 adapter regressions. |
 | `scripts/validate-release.py`, `scripts/release-verify.sh`, release tests | Release output is labeled Gate C, composes current A/B owners, and retains release-only metadata, notes, checksum, archive, version, and rollback proof. | Release verification must expose underlying product failures without copying their parsers or running an agent. | R6-R8, R24, R29, T6-T7; 104 release regressions and local rehearsal. |
 | `scripts/artifact_lifecycle_validation.py`, `scripts/validate-artifact-lifecycle.py`, lifecycle/review tests | The public lifecycle entry point composes full change-metadata and review-structure validation; review paths resolve their owning change record. | Contributors and CI need one governance result while focused internal parsers remain independently testable and fail closed. | R12-R13, T8; 170 lifecycle, 61 metadata, and 103 review tests. |
-| `scripts/retirement_ledger.py`, `retirement-ledger.json`, retirement tests | Every known check is mapped to a protected failure, owner, clauses, disposition, proof state, repair, and rollback. | A smaller architecture is safe only when removed or bypassed checks cannot silently lose contractual failures. | R14-R20, R22, R25, T1, T10, T13-T14, T16; 14 ledger tests. |
+| `scripts/retirement_ledger.py`, `retirement-ledger.json`, retirement tests | Every known check is mapped to a protected failure, owner, clauses, disposition, proof state, repair, and rollback. | A smaller architecture is safe only when removed or bypassed checks cannot silently lose contractual failures. | R14-R20, R22, R25, T1, T10, T13-T14, T16; 16 ledger tests. |
 | `scripts/ci.sh`, `.github/workflows/ci.yml`, selector tests | PR/main use 26 direct sequential commands; local, explicit, release, and legacy broad-smoke compatibility paths remain. | Hosted acceptance should visibly call stable owners and stop on their first failure without selector, cache, or scheduler indirection. | R21, R23, T9, T11, T15-T16; 152 compatibility tests and a real 618-second direct run. |
 | Architecture, project map, workflows, proposal/spec/test-spec/plan, and change-local evidence | Documentation records the new ownership, transition state, exact partial-retirement boundary, tests, reviews, and rollback. | Maintainers must be able to distinguish current product proof from historical or retained compatibility machinery. | Full R1-R29 trace and M1-M6 evidence. |
 
@@ -82,7 +82,8 @@ or model score would violate R3 and R11.
 - `python scripts/test-adapter-distribution.py` — 150 tests passed.
 - `python scripts/test-release-transaction.py` — 104 tests passed.
 - Lifecycle, metadata, and review suites — 170, 61, and 103 tests passed.
-- `python scripts/test-retirement-ledger.py` — 14 tests passed.
+- `python scripts/test-retirement-ledger.py` — 16 tests passed after the
+  clean-runner dependency correction.
 - `python scripts/test-select-validation.py` — 152 tests passed in 65.84 seconds.
 - `bash scripts/ci.sh --mode pr --base e77a351c --head 3512a547b1964e4f8505defc1132e4adb8035cf4` — 26 checks passed in 618 seconds.
 - Review-artifact closeout, change-metadata validation, explicit lifecycle
@@ -96,8 +97,8 @@ fresh final `verify` stage has passed.
 
 Nine material findings were recorded, accepted, corrected, and resolved. No
 finding is open or marked `needs-decision`. The durable dispositions are in
-[`review-resolution.md`](review-resolution.md); the final whole-change review is
-[`reviews/code-review-final-r1.md`](reviews/code-review-final-r1.md).
+[`review-resolution.md`](review-resolution.md); the current whole-change review
+is [`reviews/code-review-final-r2.md`](reviews/code-review-final-r2.md).
 
 The implementation-specific corrections made canonical missing input fail,
 made the public governance owner run the full metadata validator, associated
@@ -130,9 +131,16 @@ delete active selector/cache/broad-smoke compatibility implementations.
 - Compatibility machinery remains code to maintain. Its later deletion requires
   exact active-contract amendments and ledger transitions to `removable` or
   `retired`; this change does not pre-authorize that work.
-- Final verification must rerun the direct graph against the current committed
-  branch range, validate lifecycle and review closeout, and check derived and
-  release safety before PR readiness can be considered.
+- Any later behavior-bearing correction must rerun the direct graph and refresh
+  final review and verification evidence before readiness is reclaimed.
 
-The implementation and final holistic review are complete. The change is ready
-for the `verify` stage, not yet verified or PR-ready.
+## Hosted CI correction
+
+PR #131 initially exposed an undeclared PyYAML dependency in the new retirement
+ledger loader. The ledger was converted to standard-library JSON instead of
+adding a network dependency. Direct semantic comparison proved the JSON object
+equals the former YAML object, `python -S` proves clean-runner loading, duplicate
+keys fail closed, and hosted run `31385108670` passed the complete direct graph.
+
+The implementation, final holistic rereview, local verification, and hosted CI
+are complete. PR #131 is open for human review.
