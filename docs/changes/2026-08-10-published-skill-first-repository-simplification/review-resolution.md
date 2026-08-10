@@ -2,7 +2,9 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
+
+Review closeout: code-review-m5-r1
 
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
@@ -25,8 +27,8 @@ Review closeout: test-spec-review-r3
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `spec-review-r1`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `spec-review-r2`, `test-spec-review-r1`, `test-spec-review-r2`, `test-spec-review-r3`, `code-review-m1-r1`, `code-review-m1-r2`
 - Findings resolved: 8
-- Unresolved findings: 0
-- Current result: M2 code-review R2 resolves the missing-input finding and closes M2 for M3 handoff.
+- Unresolved findings: 1
+- Current result: M5 code-review R1 requires full change-metadata composition before milestone closeout.
 
 ## Resolution Overview
 
@@ -40,8 +42,26 @@ Review closeout: test-spec-review-r3
 | PSR-CR-M1-R1-001 | accepted | resolved | Structured completed proof replaces nonempty prose as removal authority. |
 | PSR-CR-M1-R1-002 | accepted | resolved | R26 disposition values fail closed, not only their key set. |
 | PSR-CR-M2-R1-001 | accepted | resolved | Missing Gate A targets fail through the stable result contract without traceback. |
+| PSR-CR-M5-R1-001 | accepted | open | The public governance entry point must preserve the focused change-metadata contract. |
 
 ## Finding Details
+
+### code-review-m5-r1
+
+Review ID: code-review-m5-r1
+
+Finding ID: PSR-CR-M5-R1-001
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: review-resolution
+Chosen action: Compose the existing focused `validate_file` contract behind the public lifecycle owner and add a regression proving parity.
+Rationale: R12 and T8 require one public result to preserve metadata shape, semantics, references, and closed vocabularies.
+Safe resolution path: Apply the declared-safe recipe in code-review-m5-r1 and rerun all M5 commands.
+Validation target: code-review-m5-r2
+Validation evidence: pending
+Implementation evidence: pending
+needs-decision rationale: none
 
 ### code-review-m4-r1
 

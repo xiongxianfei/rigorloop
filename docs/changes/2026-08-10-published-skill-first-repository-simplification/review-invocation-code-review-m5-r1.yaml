@@ -1,0 +1,36 @@
+schema_version: 1
+review_id: code-review-m5-r1
+review_stage: code-review
+review_target: commit:9af50407
+base_revision: f4406555
+head_revision: 9af50407
+native_review_status: changes-requested
+review_gate_outcome: pause-for-resolution
+independence_level: L1
+author_context_id: root-m5-implementation
+reviewer_context_id: root-m5-context-reset-review
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: elevated
+risk_tier_triggers: [governance-composition, closed-vocabulary-enforcement, review-evidence-integrity]
+risk_tier_classifier: deterministic-changed-surface-check
+governing_artifacts: [specs/published-skill-first-repository-simplification.md, specs/published-skill-first-repository-simplification.test.md, docs/architecture/system/architecture.md, docs/adr/ADR-20260810-published-skill-first-validation-architecture.md, docs/plans/2026-08-10-published-skill-first-repository-simplification.md]
+formal_criteria: [code-review-first-pass-v1, independent-review-gate-v1, requirement-fidelity-gate-v1]
+prompt_template_version: code-review-v1
+initial_packet_inventory:
+  - {path: commit:9af50407.diff, revision: 9af50407, sha256: cf4a4c4c4064bdb3659f90e5c46a99ec7b15b9fe0b8661730d942c216a769010}
+initial_packet_sha256: cf4a4c4c4064bdb3659f90e5c46a99ec7b15b9fe0b8661730d942c216a769010
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: false, satisfied: false, reviewer_context_id: none}
+requirement_fidelity: {applicability: applicable, reason: M5 implements the single public lifecycle-governance owner and fail-closed vocabulary boundary.}
+risk_map:
+  affected_behavior: lifecycle scope discovery, review-evidence composition, change-metadata enforcement, and public governance diagnostics
+  highest_impact_failure_modes: a focused governance invariant is omitted, an unknown value passes, review evidence is skipped, diagnostics lose repair information, or active selector/cache contracts are removed
+  changed_boundaries: BND-AUTH-001, BND-RECOVERY-001, BND-COMPAT-001, and INT-003
+  evidence_expected: public-path malformed metadata and review fixtures, focused suite parity, unknown-value failures before consistency, direct review-path association, and no new CLI or orchestration subsystem
+  direct_inspection_areas: lifecycle composition calls, scope expansion, focused validator APIs, diagnostic formatting, ledger, and M5 evidence
+  intentionally_out_of_scope: CI cutover, selector/cache retirement, M6, final verification, and PR
+  applicable_risk_classes: [correctness, error-handling, compatibility, governance-integrity, requirement-fidelity]
+  non_applicable_risk_classes: [network-publication, database-migration, ui-accessibility]
+  falsifiable_questions: [Does the public owner call full change-metadata validation, do changed review files resolve their change root, do unknown values name allowed values, do focused suites remain independent, was any new standalone validation machinery added]

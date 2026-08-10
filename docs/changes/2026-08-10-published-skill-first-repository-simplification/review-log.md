@@ -197,3 +197,15 @@ Resolution: review-resolution.md#test-spec-review-r3
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-m5-r1
+Stage: code-review
+Round: 1
+Reviewed artifact: commit 9af50407
+Status: changes-requested
+Detailed record: reviews/code-review-m5-r1.md
+Resolution: review-resolution.md#code-review-m5-r1
+Material findings: PSR-CR-M5-R1-001
+Open findings: PSR-CR-M5-R1-001
+Recording status: recorded
