@@ -37,6 +37,21 @@ class RetirementLedgerTests(unittest.TestCase):
             f"expected {fragment!r} in: {errors}",
         )
 
+    def make_removable(self, candidate: dict) -> dict:
+        entry = candidate["entries"][0]
+        entry["state"] = "removable"
+        entry["transition_evidence"] = {
+            "status": "complete",
+            "prior_states": ["inventoried", "dual-proof"],
+            "old_proof": {"command": "old-check", "result": "pass"},
+            "replacement_proof": {"command": "new-check", "result": "pass"},
+            "comparison_result": "match",
+            "removal_decision": "approved",
+            "evidence_paths": ["evidence/m6-ci-retirement.md"],
+            "rollback_point": "parent-commit",
+        }
+        return entry
+
     def test_repository_ledger_is_complete(self) -> None:
         self.assertEqual(
             validate_ledger(self.ledger, expected_check_ids=set(CHECK_CATALOG)), []
@@ -83,6 +98,11 @@ class RetirementLedgerTests(unittest.TestCase):
         candidate["entries"][0]["contract_disposition"] = "maybe"
         self.assert_invalid(candidate, "unknown contract_disposition")
 
+    def test_r26_unknown_value_fails_closed(self) -> None:
+        candidate = copy.deepcopy(self.ledger)
+        candidate["r26_disposition"]["R35"] = "still-required"
+        self.assert_invalid(candidate, "unknown R26 disposition")
+
     def test_duplicate_check_owner_fails_closed(self) -> None:
         candidate = copy.deepcopy(self.ledger)
         candidate["entries"][1]["check_ids"].append(
@@ -98,12 +118,22 @@ class RetirementLedgerTests(unittest.TestCase):
 
     def test_removal_requires_dual_proof_and_rollback(self) -> None:
         candidate = copy.deepcopy(self.ledger)
-        entry = candidate["entries"][0]
-        entry["state"] = "removable"
-        entry["replacement_proof"] = "none"
-        entry["rollback"] = "none"
-        self.assert_invalid(candidate, "replacement_proof")
-        self.assert_invalid(candidate, "rollback")
+        entry = self.make_removable(candidate)
+        del entry["transition_evidence"]["replacement_proof"]
+        del entry["transition_evidence"]["rollback_point"]
+        self.assert_invalid(candidate, "transition_evidence.replacement_proof")
+        self.assert_invalid(candidate, "transition_evidence.rollback_point")
+
+    def test_pending_evidence_cannot_authorize_removal(self) -> None:
+        candidate = copy.deepcopy(self.ledger)
+        candidate["entries"][0]["state"] = "removable"
+        self.assert_invalid(candidate, "transition_evidence.status")
+
+    def test_removal_requires_prior_dual_proof_state(self) -> None:
+        candidate = copy.deepcopy(self.ledger)
+        entry = self.make_removable(candidate)
+        entry["transition_evidence"]["prior_states"] = ["inventoried"]
+        self.assert_invalid(candidate, "prior_states")
 
     def test_r26_disposition_is_exact(self) -> None:
         expected = {

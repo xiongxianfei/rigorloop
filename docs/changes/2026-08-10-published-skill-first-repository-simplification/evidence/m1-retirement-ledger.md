@@ -39,10 +39,10 @@ semantic skill quality to formal review.
 
 ## Validation
 
-- `python scripts/test-retirement-ledger.py` — pass, 11 tests.
+- `python scripts/test-retirement-ledger.py` — pass, 14 tests after resolving code-review R1 findings.
 - `python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/changes/2026-08-10-published-skill-first-repository-simplification/retirement-ledger.yaml --path specs/skill-contract.md --path specs/skill-contract.test.md --path docs/workflows.md` — pass; two lifecycle-managed artifacts validated and non-governed paths safely ignored.
 - `python scripts/test-skill-validator.py` — pass, 285 tests, 16 skipped.
-- `python scripts/test-select-validation.py` — pass, 150 tests in 65.20 seconds.
+- `python scripts/test-select-validation.py` — pass, 150 tests in 65.90 seconds after the R1 correction.
 - `python scripts/validate-change-metadata.py docs/changes/2026-08-10-published-skill-first-repository-simplification/change.yaml` — pass.
 - `git diff --check` — pass.
 
@@ -50,3 +50,13 @@ semantic skill quality to formal review.
 
 Revert the single M1 commit. Because M1 removes no invocation or executable
 owner, rollback cannot reduce current repository acceptance coverage.
+
+## Code-review R1 correction evidence
+
+- `PSR-CR-M1-R1-001`: removal now requires structured `complete` transition
+  evidence, an `inventoried -> dual-proof` history, passing old and replacement
+  commands, a matching comparison, an approved decision, evidence paths, and a
+  rollback point. Pending prose cannot authorize removal.
+- `PSR-CR-M1-R1-002`: every R26 key now requires the exact closed value
+  `superseded-prospectively`; `test_r26_unknown_value_fails_closed` proves an
+  unknown value is rejected.

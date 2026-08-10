@@ -52,6 +52,7 @@ Rationale: R17-R20 make completed dual proof and recovery evidence authoritative
 Safe resolution path: Apply the declared-safe recipe recorded in code-review-m1-r1 without touching CI, selector, package, release, or skill bodies.
 Validation target: code-review-m1-r2
 Validation evidence: pending
+Implementation evidence: `scripts/retirement_ledger.py` structured transition checks and `test_pending_evidence_cannot_authorize_removal`, `test_removal_requires_prior_dual_proof_state`, and `test_removal_requires_dual_proof_and_rollback`; targeted suite passes 14 tests.
 needs-decision rationale: none
 
 #### PSR-CR-M1-R1-002 - R26 values do not fail closed
@@ -66,6 +67,7 @@ Rationale: The exact prospective disposition and repository closed-vocabulary ru
 Safe resolution path: Apply the mechanical constant-and-test correction without changing the approved clause set or retained deterministic parity.
 Validation target: code-review-m1-r2
 Validation evidence: pending
+Implementation evidence: `R26_APPROVED_VALUE`, exact per-clause value validation, and `test_r26_unknown_value_fails_closed`; targeted suite passes 14 tests.
 needs-decision rationale: none
 
 ### proposal-review-r1

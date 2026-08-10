@@ -46,6 +46,7 @@ entries:
     governing_clauses: [skill-contract-R1-through-R34, skill-contract-R46-through-R51, simplification-R2, simplification-R11]
     contract_disposition: replacement-planned
     state: inventoried
+    transition_evidence: {status: pending}
     replacement_proof: M2 dual proof pending.
     retirement_evidence: M2 evidence pending; no M1 deletion.
     rollback: Revert the bounded M2 consolidation commit.
@@ -64,6 +65,7 @@ entries:
     governing_clauses: [skill-contract-R46-through-R51, simplification-R4, simplification-R5]
     contract_disposition: replacement-planned
     state: inventoried
+    transition_evidence: {status: pending}
     replacement_proof: M3 dual proof pending.
     retirement_evidence: M3 evidence pending; no M1 deletion.
     rollback: Revert the bounded M3 package-parity commit.
@@ -82,6 +84,7 @@ entries:
     governing_clauses: [rigorloop-workflow, artifact-lifecycle-defaults, simplification-R12, simplification-R13]
     contract_disposition: replacement-planned
     state: inventoried
+    transition_evidence: {status: pending}
     replacement_proof: M5 composed proof pending.
     retirement_evidence: M5 evidence pending; focused modules remain internal owners.
     rollback: Revert the bounded M5 composition commit.
@@ -100,6 +103,7 @@ entries:
     governing_clauses: [validation-cache-active-contract, simplification-R21]
     contract_disposition: blocked-active-contract
     state: inventoried
+    transition_evidence: {status: pending}
     replacement_proof: M6 value and dependency audit pending.
     retirement_evidence: None; active contract blocks removal.
     rollback: Restore direct cache invocation from the M6 parent commit if later retired.
@@ -118,6 +122,7 @@ entries:
     governing_clauses: [release-contracts, simplification-R7, simplification-R8]
     contract_disposition: replacement-planned
     state: inventoried
+    transition_evidence: {status: pending}
     replacement_proof: M4 dual proof pending.
     retirement_evidence: M4 evidence pending; no release owner is removed in M1.
     rollback: Revert the bounded M4 composition commit.
@@ -136,6 +141,7 @@ entries:
     governing_clauses: [vision-contract, documentation-validation-active-contract, simplification-R14]
     contract_disposition: blocked-active-contract
     state: inventoried
+    transition_evidence: {status: pending}
     replacement_proof: No exact cross-spec disposition yet.
     retirement_evidence: None; mixed deterministic and semantic ownership requires classification.
     rollback: Restore the last bounded documentation-check invocation if later changed.
@@ -154,6 +160,7 @@ entries:
     governing_clauses: [validation-selection-active-contract, broad-smoke-active-contract, simplification-R21]
     contract_disposition: blocked-active-contract
     state: inventoried
+    transition_evidence: {status: pending}
     replacement_proof: M6 dual-run and measurement pending.
     retirement_evidence: None; selector and scheduler contracts remain active.
     rollback: Restore the M6 parent command graph and direct invocation.
@@ -172,6 +179,7 @@ entries:
     governing_clauses: [formal-review-fidelity-contract]
     contract_disposition: retained
     state: inventoried
+    transition_evidence: {status: pending}
     replacement_proof: Existing focused test remains authoritative.
     retirement_evidence: Not proposed for retirement in this initiative.
     rollback: Not applicable; retained.
@@ -190,6 +198,7 @@ entries:
     governing_clauses: [token-cost-active-contract, simplification-R6, simplification-R24]
     contract_disposition: blocked-active-contract
     state: inventoried
+    transition_evidence: {status: pending}
     replacement_proof: Exact split and release dependency audit pending M4 and M6.
     retirement_evidence: None; active clauses remain.
     rollback: Restore the bounded invocation slice if later changed.
@@ -208,6 +217,7 @@ entries:
     governing_clauses: [public-cli-contract, npm-publication-contract, simplification-R9, simplification-R10]
     contract_disposition: retained
     state: inventoried
+    transition_evidence: {status: pending}
     replacement_proof: M3 installer-boundary inventory pending.
     retirement_evidence: Not proposed wholesale; only redundant branches may later retire.
     rollback: Revert a bounded M3 materialization-test change.
