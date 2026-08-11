@@ -17,6 +17,7 @@ This ledger records formal lifecycle reviews for the test-spec-review skill simp
 | `code-review-m3-r2` | `code-review` | `r2` | M3 correction at `dd0662ce` | `reviews/code-review-m3-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r1` | `code-review` | `r1` | complete change `9b0cd7d4..55ac68e7` | `reviews/code-review-final-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r2` | `code-review` | `r2` | selector support change `750bc3ad..83a88e55` | `reviews/code-review-final-r2.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-final-r3` | `code-review` | `r3` | closeout-summary correction `c25919be` | `reviews/code-review-final-r3.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 

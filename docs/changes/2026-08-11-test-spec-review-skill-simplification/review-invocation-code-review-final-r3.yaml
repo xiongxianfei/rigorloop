@@ -1,0 +1,37 @@
+schema_version: 1
+review_id: code-review-final-r3
+review_stage: code-review
+review_target: commit:c25919be
+base_revision: 122ff32c
+head_revision: c25919be
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L1
+author_context_id: root-review-resolution-closeout-refresh
+reviewer_context_id: root-code-review-final-r3-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: standard
+risk_tier_triggers: [lifecycle-summary-refresh, pre-pr-final-head]
+governing_artifacts: [docs/changes/2026-08-11-test-spec-review-skill-simplification/review-resolution.md, docs/changes/2026-08-11-test-spec-review-skill-simplification/review-log.md]
+formal_criteria: [code-review-v1]
+initial_packet_inventory:
+  - {path: commit:c25919be.diff, sha256: 5f1fd160d40134fd2fc84a868e49dd986807665987d35213dfe7235aac87c8f9}
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity: {applicability: not-applicable, reason: The correction changes only a stale closeout summary sentence.}
+second_review: {required: false, satisfied: true, result: not-required}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+prior_finding_reconciliation: {TSRSIM-CR-M1-R1-001: resolved, TSRSIM-CR-M3-R1-001: resolved}
+risk_map:
+  affected_behavior: human-readable review-resolution closeout summary
+  highest_impact_failure_modes: summary contradicts same-stage rereview records or changes disposition counts
+  changed_boundaries: [BND-COMPAT-001]
+  evidence_expected: one-line semantic correction, unchanged counts and dispositions, passing closeout validation
+  direct_inspection_areas: [review-resolution summary, M1 R2 record, M3 R2 record, review log]
+  intentionally_out_of_scope: [skill behavior, package behavior, selector behavior]
+  applicable_risk_classes: [lifecycle-coherence, evidence-integrity]
+  non_applicable_risk_classes: [credentials, database-migration, network-publication]
+  falsifiable_questions:
+    - Does the sentence now agree with both same-stage rereview records?
+    - Are finding counts, dispositions, and evidence unchanged?
