@@ -7,7 +7,7 @@ Closeout status: open
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
 Review closeout: test-spec-review-r1
-Review closeout: code-review-m1-r1 pending
+Review closeout: code-review-m1-r1
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `test-spec-review-r1`, `code-review-m1-r1`
 - Findings resolved: 4
