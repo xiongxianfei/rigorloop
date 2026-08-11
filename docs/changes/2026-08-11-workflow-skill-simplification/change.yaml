@@ -109,6 +109,8 @@ workflow_state:
     - docs/changes/2026-08-11-workflow-skill-simplification/evidence/ci-selector-deferral.md
     - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-final-r2.yaml
     - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-final-r2.md
+    - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-final-r3.yaml
+    - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-final-r3.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -126,13 +128,13 @@ workflow_state:
     latest_review:
       status: approved
       stage: code-review
-      round: r2
+      round: r3
       artifact_id: plan
       occurrence: final
       milestone_id: none
       evidence:
-        - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-final-r2.yaml
-        - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-final-r2.md
+        - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-final-r3.yaml
+        - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-final-r3.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -189,6 +191,8 @@ workflow:
       - docs/changes/2026-08-11-workflow-skill-simplification/evidence/ci-selector-deferral.md
       - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-final-r2.yaml
       - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-final-r2.md
+      - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-final-r3.yaml
+      - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-final-r3.md
 artifacts:
   proposal: docs/proposals/2026-08-11-workflow-skill-simplification.md
   spec: specs/workflow-skill-simplification.md
@@ -272,6 +276,8 @@ changed_files:
   - docs/changes/2026-08-11-workflow-skill-simplification/evidence/ci-selector-deferral.md
   - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-final-r2.yaml
   - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-final-r2.md
+  - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-final-r3.yaml
+  - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-final-r3.md
 review:
   status: approved
   unresolved_items: 0

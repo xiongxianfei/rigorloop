@@ -20,11 +20,12 @@ Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
 Review closeout: code-review-final-r1
 Review closeout: code-review-final-r2
+Review closeout: code-review-final-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-final-r1`, `code-review-final-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-final-r1`, `code-review-final-r2`, `code-review-final-r3`
 - Findings resolved: 12
 - Unresolved findings: 0
-- Current result: final holistic R2 records no new findings on the selector deferrals and routes the complete branch back to verify.
+- Current result: final holistic R3 records no new findings on the review-disposition compatibility correction and routes the complete branch back to verify.
 
 ## Resolution Overview
 
@@ -44,6 +45,12 @@ Review closeout: code-review-final-r2
 | WFSIM-CR3 | accepted | resolved | All rule destinations resolve and literal classifications follow approved authority. |
 
 ## Finding Details
+
+### code-review-final-r3
+
+Review ID: code-review-final-r3
+
+No new findings. The verify-triggered correction restores the complete governed review-resolution vocabulary, records the normative literal dependency, refreshes affected measurements and rationale, and routes the complete branch back to verify.
 
 ### code-review-final-r2
 
