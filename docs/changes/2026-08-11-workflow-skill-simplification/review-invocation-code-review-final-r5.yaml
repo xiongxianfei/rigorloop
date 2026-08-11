@@ -1,0 +1,48 @@
+schema_version: 1
+review_id: code-review-final-r5
+review_stage: code-review
+review_target: verify-triggered plan-warning placement correction
+base_revision: 7280e0025868802a71a447038fb4c95e0444cb79
+head_revision: 78e5c0eb93417ee9686d6fa56d1612153352c43f
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-implement-plan-warning-placement
+reviewer_context_id: root-code-review-final-r5-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - verify-triggered-contract-placement-correction
+  - interacting-permanent-validator-contracts
+governing_artifacts:
+  - specs/workflow-skill-simplification.md
+  - docs/plans/2026-08-11-workflow-skill-simplification.md
+  - specs/workflow-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - requirement-fidelity-v1
+initial_packet_inventory:
+  - path: skills/workflow/SKILL.md
+    sha256: a18d54bafd74dc7462080029a15bee6f25f3353b76450f291e43583462dd3644
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/workflow-literal-compatibility.yaml
+    sha256: eaded00f9df96227394dc902cab6dbd14d506d93e0ffe40fc204bc8e28381dbf
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/evidence/simplification-measurements.md
+    sha256: b93ae4314901d833cd9d8c1f5a22efdce3aa92d8f7fca2fe7b941fb34b568b60
+prompt_template_version: code-review-v1
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+review_focus:
+  - canonical-only default-path section
+  - non-canonical warning availability
+  - literal source-location accuracy
+  - unchanged size arithmetic
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
