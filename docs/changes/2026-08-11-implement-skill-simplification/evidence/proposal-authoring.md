@@ -7,7 +7,8 @@ Artifact: `docs/proposals/2026-08-11-implement-skill-simplification.md`
 ## Initial intent
 
 The user selected `implement` as the next skill-optimization target and requested a new branch, a proposal, and formal proposal review.
-The preceding exploration favored one conditional workflow-managed reference, one output asset, and a consolidated universal common path while preserving implementation rigor.
+The initial exploration favored conditional workflow guidance, one output asset, and a consolidated universal common path while preserving implementation rigor.
+Proposal-review R1 then required profile-specific loaded-context proof and a proposal-level decision separating ordinary planned milestones from armed automation.
 
 ## Evidence used
 
@@ -31,3 +32,10 @@ The preceding exploration favored one conditional workflow-managed reference, on
 All required proposal sections are filled.
 Initial user goals and the triggered scope budget are explicitly classified.
 The artifact is ready for independent proposal review and does not claim approval or specification readiness.
+## R1 revision decisions
+
+- Accepted `IMPSIM-PR1`: the proposal now defines isolated, planned, and armed invocation profiles and evaluates the exact content each profile loads.
+- Accepted `IMPSIM-PR2`: the proposal now selects separate planned-milestone and automated-review/correction references, each with a distinct load condition.
+- Made material improvement in the isolated and planned profiles part of success, while requiring justified non-regression for the fully armed profile.
+- Kept the 30–45 percent value as non-normative planning evidence for the isolated profile rather than a semantic gate.
+- Added required and forbidden resource-load fixtures without introducing target-agent runtime execution.
