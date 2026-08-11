@@ -2,15 +2,16 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r3
+Review closeout: test-spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r3`, `test-spec-review-r1`
 - Findings resolved: 4
-- Unresolved findings: 0
-- Current result: revision R4 resolves every recorded proposal-review finding and is ready for independent rereview.
+- Unresolved findings: 2
+- Current result: test-spec revision is required before implementation handoff.
 
 ## Resolution Overview
 
@@ -20,6 +21,8 @@ Review closeout: proposal-review-r3
 | `PRRSIM-PR1` | accepted | resolved | Defined independent recording and automation modes with explicit write and handoff permissions. |
 | `PRRSIM-PR2` | accepted | resolved | Defined advisory durable-record location resolution and prohibited implicit governed-root creation. |
 | `PRRSIM-PR3` | accepted | resolved | Defined one core and four conditional result-asset groups without moving policy into the asset. |
+| `PRRSIM-TSR1` | accepted | open | Split baseline-executable M1 proof from post-refactor M3 measurement proof. |
+| `PRRSIM-TSR2` | accepted | open | Add direct interrupted-retry reconciliation and conflicting review-ID proof. |
 
 ## Common Resolution Metadata
 
@@ -82,6 +85,32 @@ Rationale: One structural asset can serve every profile only when its groups are
 Validation target: revised group table, applicability and omission rules, asset ownership boundary, static scenarios, and independent rereview.
 Validation evidence: the revised `Output ownership` group table and applicability rules, static scenarios and acceptance contract, `docs/changes/2026-08-11-proposal-review-skill-simplification/evidence/proposal-revision-r4.md`, and passing authoring validation
 
+### test-spec-review-r1
+
+#### PRRSIM-TSR1 - Separate M1 baseline proof from M3 measurement
+
+Finding ID: PRRSIM-TSR1
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Chosen action: Narrow M1 to baseline-executable scenario and inventory proof and move completed before-and-after assembly measurement to a distinct M3 case.
+Rationale: A milestone cannot depend on proof that requires a later milestone's package state.
+Validation target: revised coverage, proof obligations, milestone proof map, test cases, and independent rereview.
+Validation evidence: pending test-spec revision
+
+#### PRRSIM-TSR2 - Add retry and conflict proof
+
+Finding ID: PRRSIM-TSR2
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Chosen action: Add deterministic interrupted-write reconciliation without duplication and conflicting review-ID reuse without mutation.
+Rationale: Temporal ownership is not proved by initial-write scenarios alone.
+Validation target: revised temporal proof obligation, test case, fixtures, expected failure behavior, and independent rereview.
+Validation evidence: pending test-spec revision
+
 ## Closeout Checklist
 
 - [x] Every material finding has a disposition.
@@ -91,4 +120,5 @@ Validation evidence: the revised `Output ownership` group table and applicabilit
 - [x] Every `needs-decision` finding is resolved or none exist.
 - [x] Final revision validation evidence is recorded for R3 findings.
 - [x] Independent proposal rereview approves revision R4.
-- [x] Closeout status is closed.
+- [ ] `PRRSIM-TSR1` and `PRRSIM-TSR2` are resolved by a reviewed test-spec revision.
+- [ ] Closeout status is closed.
