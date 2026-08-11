@@ -3,7 +3,7 @@
     {
       "literal_id": "WF-LIT-001",
       "literal": "lifecycle_contract: stage-owned-change-local-v1",
-      "source_location": "skills/workflow/SKILL.md#Planned initiative state",
+      "source_location": "skills/workflow/references/governed-lifecycle-routing.md#Governed identity and evidence",
       "consumers": [
         "scripts/change_metadata_semantics.py",
         "scripts/workflow_automation_state.py",
@@ -17,7 +17,7 @@
     {
       "literal_id": "WF-LIT-002",
       "literal": "$workflow auto: <target-stage>",
-      "source_location": "skills/workflow/SKILL.md#Invocation context and continuation",
+      "source_location": "skills/workflow/SKILL.md#Resource map",
       "consumers": [
         "scripts/workflow_automation.py",
         "scripts/test-workflow-automation.py",
@@ -31,7 +31,7 @@
     {
       "literal_id": "WF-LIT-003",
       "literal": "$workflow auto: status",
-      "source_location": "skills/workflow/SKILL.md#Invocation context and continuation",
+      "source_location": "skills/workflow/SKILL.md#Resource map",
       "consumers": [
         "scripts/workflow_automation.py",
         "scripts/test-workflow-automation.py"
@@ -44,7 +44,7 @@
     {
       "literal_id": "WF-LIT-004",
       "literal": "$workflow auto: off",
-      "source_location": "skills/workflow/SKILL.md#Invocation context and continuation",
+      "source_location": "skills/workflow/SKILL.md#Resource map",
       "consumers": [
         "scripts/workflow_automation.py",
         "scripts/test-workflow-automation.py"
@@ -57,7 +57,7 @@
     {
       "literal_id": "WF-LIT-005",
       "literal": "no-active-run",
-      "source_location": "workflow automation behavior",
+      "source_location": "skills/workflow/references/bounded-workflow-automation.md#Command classification",
       "consumers": [
         "scripts/workflow_automation_state.py",
         "scripts/workflow_automation.py",
@@ -112,7 +112,7 @@
     {
       "literal_id": "WF-LIT-009",
       "literal": "Closeout status: open / closed",
-      "source_location": "skills/workflow/SKILL.md#Review validation and claim routing",
+      "source_location": "skills/workflow/SKILL.md#Claims this skill must not make",
       "consumers": [
         "scripts/review_artifact_validation.py",
         "scripts/workflow_automation.py",
@@ -167,7 +167,7 @@
     {
       "literal_id": "WF-LIT-013",
       "literal": "Workflow Categories",
-      "source_location": "skills/workflow/SKILL.md#Workflow Categories",
+      "source_location": "skills/workflow/SKILL.md#Lifecycle overview",
       "consumers": [
         "scripts/test-skill-validator.py::test_workflow_refactor_stage_skill_guidance_alignment"
       ],
