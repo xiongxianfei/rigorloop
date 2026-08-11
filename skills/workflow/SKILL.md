@@ -206,6 +206,8 @@ Do not require RigorLoop repository-internal specs or docs to be present. Use pr
 
 For a missing formal change root, follow the `<change-id>` convention in `docs/workflows.md`; if no project-local workflow guide exists, use `YYYY-MM-DD-slug`.
 
+Treat `docs/changes/<change-id>/plan.md` as a non-canonical historical or rejected plan-body path.
+
 ## Default artifact paths
 
 Use repository conventions first. Portable defaults are:
@@ -232,7 +234,7 @@ specs/slug.test.md
 docs/learn/sessions/YYYY-MM-DD-slug.md
 ```
 
-`docs/plan.md` is the stable navigation index and `docs/plans/YYYY-MM-DD-slug.md` is the detailed plan body. Treat `docs/changes/<change-id>/plan.md` as a non-canonical historical or rejected plan-body path.
+`docs/plan.md` is the stable navigation index and `docs/plans/YYYY-MM-DD-slug.md` is the detailed plan body.
 
 Do not overwrite an older durable artifact for a new initiative.
 
