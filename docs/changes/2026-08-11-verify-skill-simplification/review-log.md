@@ -20,6 +20,7 @@ This ledger records formal lifecycle reviews for the verify skill simplification
 | `code-review-m3-r1` | `code-review` | `r1` | M3 commit `e2ef1469` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r1` | `code-review` | `r1` | complete `db456735..8e14257f` diff | `reviews/code-review-final-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r2` | `code-review` | `r2` | support correction `7e67978b..b6b715be` | `reviews/code-review-final-r2.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-final-r3` | `code-review` | `r3` | compatibility correction `49f8da13..4ca4d706` | `reviews/code-review-final-r3.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 
