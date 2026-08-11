@@ -31,8 +31,13 @@ artifact_states:
     kind: plan
     path: docs/plans/2026-08-11-proposal-review-skill-simplification.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-11-proposal-review-skill-simplification/evidence/plan-authoring.md
+    lifecycle_state: active
+    review:
+      id: plan-review-r1
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-11-proposal-review-skill-simplification/reviews/plan-review-r1.md
+      round: r1
 
 workflow_state:
   lifecycle_state: active
@@ -50,6 +55,8 @@ workflow_state:
     - docs/changes/2026-08-11-proposal-review-skill-simplification/reviews/spec-review-r1.md
     - docs/changes/2026-08-11-proposal-review-skill-simplification/architecture-assessment.md
     - docs/changes/2026-08-11-proposal-review-skill-simplification/evidence/plan-authoring.md
+    - docs/changes/2026-08-11-proposal-review-skill-simplification/review-invocation-plan-review-r1.yaml
+    - docs/changes/2026-08-11-proposal-review-skill-simplification/reviews/plan-review-r1.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M1
@@ -107,6 +114,8 @@ workflow:
       - docs/changes/2026-08-11-proposal-review-skill-simplification/review-invocation-spec-review-r1.yaml
       - docs/changes/2026-08-11-proposal-review-skill-simplification/reviews/spec-review-r1.md
       - docs/changes/2026-08-11-proposal-review-skill-simplification/architecture-assessment.md
+      - docs/changes/2026-08-11-proposal-review-skill-simplification/review-invocation-plan-review-r1.yaml
+      - docs/changes/2026-08-11-proposal-review-skill-simplification/reviews/plan-review-r1.md
 
 artifacts:
   proposal: docs/proposals/2026-08-11-proposal-review-skill-simplification.md
@@ -141,6 +150,8 @@ changed_files:
   - docs/changes/2026-08-11-proposal-review-skill-simplification/evidence/plan-authoring.md
   - docs/plans/2026-08-11-proposal-review-skill-simplification.md
   - docs/plan.md
+  - docs/changes/2026-08-11-proposal-review-skill-simplification/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-11-proposal-review-skill-simplification/reviews/plan-review-r1.md
   - docs/changes/2026-08-11-proposal-review-skill-simplification/reviews/proposal-review-r1.md
   - docs/changes/2026-08-11-proposal-review-skill-simplification/reviews/proposal-review-r2.md
   - docs/changes/2026-08-11-proposal-review-skill-simplification/reviews/proposal-review-r3.md
