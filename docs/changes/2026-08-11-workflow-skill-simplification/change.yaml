@@ -142,6 +142,9 @@ workflow:
       - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-m2-r1.md
       - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-m2-r2.yaml
       - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-m2-r2.md
+      - docs/changes/2026-08-11-workflow-skill-simplification/evidence/simplification-measurements.md
+      - docs/changes/2026-08-11-workflow-skill-simplification/evidence/m3-package-proof.md
+      - docs/changes/2026-08-11-workflow-skill-simplification/evidence/semantic-preservation-review.md
 artifacts:
   proposal: docs/proposals/2026-08-11-workflow-skill-simplification.md
   spec: specs/workflow-skill-simplification.md
@@ -213,6 +216,9 @@ changed_files:
   - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-m2-r1.md
   - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-m2-r2.yaml
   - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-m2-r2.md
+  - docs/changes/2026-08-11-workflow-skill-simplification/evidence/simplification-measurements.md
+  - docs/changes/2026-08-11-workflow-skill-simplification/evidence/m3-package-proof.md
+  - docs/changes/2026-08-11-workflow-skill-simplification/evidence/semantic-preservation-review.md
 review:
   status: approved
   unresolved_items: 0

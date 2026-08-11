@@ -17,7 +17,7 @@
     {
       "literal_id": "WF-LIT-002",
       "literal": "$workflow auto: <target-stage>",
-      "source_location": "skills/workflow/SKILL.md#Resource map",
+      "source_location": "skills/workflow/SKILL.md#Invocation classification",
       "consumers": [
         "scripts/workflow_automation.py",
         "scripts/test-workflow-automation.py",
@@ -31,7 +31,7 @@
     {
       "literal_id": "WF-LIT-003",
       "literal": "$workflow auto: status",
-      "source_location": "skills/workflow/SKILL.md#Resource map",
+      "source_location": "skills/workflow/SKILL.md#Invocation classification",
       "consumers": [
         "scripts/workflow_automation.py",
         "scripts/test-workflow-automation.py"
@@ -44,7 +44,7 @@
     {
       "literal_id": "WF-LIT-004",
       "literal": "$workflow auto: off",
-      "source_location": "skills/workflow/SKILL.md#Resource map",
+      "source_location": "skills/workflow/SKILL.md#Invocation classification",
       "consumers": [
         "scripts/workflow_automation.py",
         "scripts/test-workflow-automation.py"

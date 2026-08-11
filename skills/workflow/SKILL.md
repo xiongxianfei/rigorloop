@@ -77,10 +77,17 @@ Produce a routing decision, authoritative current-stage assessment, blockers or 
 
 ## Invocation classification
 
-Classify these four predicates from authoritative evidence:
+Classify the four predicates below from authoritative evidence. Automation command forms are portable across supported adapters:
 
+- Adapter invocation equivalents preserve the same arguments: Codex uses
+  `$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and
+  OpenCode invokes the installed `workflow` skill with `auto: <argument>`.
+  Here `<argument>` is `<target-stage>`, `status`, or `off`.
+- `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
+- `$workflow auto: status` is read-only.
+  `$workflow auto: off` durably cancels the unified run and preserves transition evidence.
 - `governed_change_context`: a valid current governed change record exists.
-- `automation_command_context`: the invocation is an explicit `$workflow auto: ...` command, including a pre-persistence target bootstrap.
+- `automation_command_context`: the invocation is an explicit automation command, including a pre-persistence target bootstrap.
 - `armed_automation_context`: valid durable automation authorization or an active run exists for the same governed change.
 - `workflow_guide_authoring_context`: the invocation creates or substantially refreshes the project workflow guide.
 
@@ -105,7 +112,7 @@ Every predicate combination must match exactly one assembly row. Any other combi
 ## Resource map
 
 - READ `references/governed-lifecycle-routing.md` when current governed state must be interpreted, audited, resumed, settled, or mutated; after a successful automation bootstrap, load it before persisting automation state.
-- READ `references/bounded-workflow-automation.md` for `$workflow auto: <target-stage>`, `$workflow auto: status`, `$workflow auto: off`, an active or resumable automation run, automation bootstrap, packets, receipts, correction loops, or target promotion.
+- READ `references/bounded-workflow-automation.md` for an explicit automation target, status, or cancellation command; an active or resumable automation run; automation bootstrap; packets; receipts; correction loops; or target promotion.
 - READ `references/workflow-guide-authoring.md` when creating or substantially refreshing project-local `docs/workflows.md`.
 - READ `references/boundary-first-method-v1.md` when an approved boundary, interaction, or proof ID is missing, stale, unknown, ambiguous, conflicting, or insufficient for routing.
 - COPY `assets/workflows-skeleton.md` only with the guide-authoring reference when creating a new project-local `docs/workflows.md` or fully rewriting a stale workflow guide. Do not emit unfilled placeholders.
