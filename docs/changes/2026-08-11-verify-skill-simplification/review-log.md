@@ -22,5 +22,5 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r2.md
 Resolution: review-resolution.md#proposal-review-r2
 Material findings: VFSIM-PR1, VFSIM-PR2, VFSIM-PR3
-Open findings: VFSIM-PR1, VFSIM-PR2, VFSIM-PR3
+Open findings: None
 Recording status: recorded
