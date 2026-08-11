@@ -16,11 +16,12 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`
 - Findings resolved: 12
 - Unresolved findings: 0
-- Current result: WFSIM-CR1 through WFSIM-CR3 are corrected and validated; code-review M2 R2 is required before milestone closeout.
+- Current result: code-review M2 R2 confirms WFSIM-CR1 through WFSIM-CR3 are resolved and closes M2.
 
 ## Resolution Overview
 
@@ -40,6 +41,12 @@ Review closeout: code-review-m2-r1
 | WFSIM-CR3 | accepted | resolved | All rule destinations resolve and literal classifications follow approved authority. |
 
 ## Finding Details
+
+### code-review-m2-r2
+
+Review ID: code-review-m2-r2
+
+No new findings. R2 confirms WFSIM-CR1 through WFSIM-CR3 are resolved and closes implementation milestone M2.
 
 ### proposal-review-r1
 

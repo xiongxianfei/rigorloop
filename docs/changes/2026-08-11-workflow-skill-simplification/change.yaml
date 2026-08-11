@@ -61,8 +61,8 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: code-review
+  current_stage: implement
+  next_stage: implement
   blocker: null
   evidence:
     - docs/changes/2026-08-11-workflow-skill-simplification/evidence/proposal-authoring.md
@@ -74,30 +74,29 @@ workflow_state:
     - docs/changes/2026-08-11-workflow-skill-simplification/reviews/test-spec-review-r2.md
   planned_work:
     plan_artifact_id: plan
-    current_milestone: M2
+    current_milestone: M3
     milestones:
       M1:
         kind: implementation
         state: closed
       M2:
         kind: implementation
-        state: review-requested
+        state: closed
       M3:
         kind: implementation
-        state: planned
+        state: implementing
     remaining_implementation_milestones:
-      - M2
       - M3
     latest_review:
-      status: changes-requested
+      status: approved
       stage: code-review
-      round: r1
+      round: r2
       artifact_id: plan
       occurrence: milestone
       milestone_id: M2
       evidence:
-        - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-m2-r1.yaml
-        - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-m2-r1.md
+        - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-m2-r2.yaml
+        - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-m2-r2.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -116,7 +115,7 @@ workflow:
       completion:
         rule: final verification result is recorded
     status: active
-    current_stage: code-review
+    current_stage: implement
     stop_reason: null
     evidence:
       - docs/changes/2026-08-11-workflow-skill-simplification/reviews/proposal-review-r3.md
@@ -141,6 +140,8 @@ workflow:
       - docs/changes/2026-08-11-workflow-skill-simplification/evidence/m2-package-refactor.md
       - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-m2-r1.yaml
       - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-m2-r1.md
+      - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-m2-r2.yaml
+      - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-m2-r2.md
 artifacts:
   proposal: docs/proposals/2026-08-11-workflow-skill-simplification.md
   spec: specs/workflow-skill-simplification.md
@@ -210,6 +211,8 @@ changed_files:
   - scripts/test-skill-validator.py
   - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-m2-r1.yaml
   - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-m2-r1.md
+  - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-m2-r2.yaml
+  - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-m2-r2.md
 review:
-  status: changes-requested
+  status: approved
   unresolved_items: 0
