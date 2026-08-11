@@ -90,5 +90,5 @@ Validation evidence: the revised `Output ownership` group table and applicabilit
 - [x] Every deferred finding has follow-up or none exist.
 - [x] Every `needs-decision` finding is resolved or none exist.
 - [x] Final revision validation evidence is recorded for R3 findings.
-- [ ] Independent proposal rereview approves revision R4.
+- [x] Independent proposal rereview approves revision R4.
 - [x] Closeout status is closed.
