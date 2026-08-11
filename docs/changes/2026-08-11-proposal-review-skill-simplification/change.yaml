@@ -1,0 +1,46 @@
+change_id: 2026-08-11-proposal-review-skill-simplification
+title: Proposal-Review Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-11-proposal-review-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-11-proposal-review-skill-simplification/evidence/proposal-authoring.md
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-11-proposal-review-skill-simplification/evidence/proposal-authoring.md
+
+workflow: {}
+
+artifacts:
+  proposal: docs/proposals/2026-08-11-proposal-review-skill-simplification.md
+
+requirements:
+  - Preserve all behaviorally significant proposal-review judgment, status, recording, settlement, isolation, claim, and handoff semantics while reducing duplicated common-path content.
+  - Load durable recording and specialized proposal-gate procedure only from closed evidence predicates, with missing required resources failing safely.
+  - Prove semantic preservation, literal compatibility, static scenario behavior, and canonical-to-installed package parity without executing a target-agent runtime.
+
+tests:
+  - Independent semantic review of the proposal and, after specification, the final skill package and preservation inventories.
+  - Deterministic validation of artifact lifecycle, closed vocabularies, mapped resources, static contract fixtures, and generated package parity.
+
+validation: []
+
+changed_files:
+  - docs/proposals/2026-08-11-proposal-review-skill-simplification.md
+  - docs/changes/2026-08-11-proposal-review-skill-simplification/change.yaml
+  - docs/changes/2026-08-11-proposal-review-skill-simplification/evidence/proposal-authoring.md
+
+review:
+  status: not-reviewed
+  unresolved_items: 0
