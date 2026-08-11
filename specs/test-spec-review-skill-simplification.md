@@ -78,6 +78,12 @@ Given authoritative requirements and the proof map establish that `boundary-firs
 When review begins
 Then neither boundary-first reference loads and universal proof semantics remain sufficient for the review.
 
+### Example E9: advisory review cannot receive workflow-managed handoff
+
+Given lifecycle mode resolves `advisory` while current handoff evidence requests `workflow-managed`
+When invocation validity is checked
+Then review stops before proof judgment, recording, settlement, or downstream routing and identifies that workflow-managed continuation requires formal review context.
+
 ## Requirements
 
 R1. The complete authored `test-spec-review` package MUST remain owned by `skills/test-spec-review/` and MUST contain canonical `SKILL.md`, `references/test-spec-review-recording-and-settlement.md`, both existing boundary-first references, and both existing structural assets.
@@ -156,16 +162,18 @@ R37. Rollout and rollback MUST operate on one complete canonical package revisio
 
 R38. The simplification MUST preserve existing proof review, recording, settlement, staleness, status, claims, outputs, handoff, workflow integration, and implementation-eligibility behavior except for the approved resource-loading and ownership changes.
 
+R39. The lifecycle-by-handoff validity matrix MUST permit exactly `formal + isolated`, `formal + workflow-managed`, and `advisory + isolated`; `advisory + workflow-managed` MUST stop before review or downstream routing because workflow-managed continuation requires formal review identity and settlement authority.
+
 ## Boundary model
 
 Boundary model version: boundary-first-v1
-Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R33, R34, R35, R36, R37, R38
+Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39
 
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |
-| input-domain | applicable | R3, R4, R5, R6, R7, R9, R20 | BND-INPUT-001 | - |
-| state-lifecycle | applicable | R3, R4, R5, R7, R8, R11, R12, R14, R15, R16, R18, R23, R36, R37 | BND-STATE-001 | - |
-| identity-authority | applicable | R3, R4, R5, R11, R12, R14, R15, R21, R22, R24 | BND-AUTH-001 | - |
+| input-domain | applicable | R3, R4, R5, R6, R7, R9, R20, R39 | BND-INPUT-001 | - |
+| state-lifecycle | applicable | R3, R4, R5, R7, R8, R11, R12, R14, R15, R16, R18, R23, R36, R37, R39 | BND-STATE-001 | - |
+| identity-authority | applicable | R3, R4, R5, R11, R12, R14, R15, R21, R22, R24, R39 | BND-AUTH-001 | - |
 | composition-path | applicable | R1, R2, R8, R9, R10, R12, R13, R17, R18, R34, R35, R38 | BND-COMPOSE-001 | - |
 | temporal-retry | applicable | R8, R13, R14, R15, R18, R23, R24, R37 | BND-TEMPORAL-001 | - |
 | failure-recovery | applicable | R4, R6, R15, R16, R18, R26, R27, R30, R31, R36, R37 | BND-RECOVERY-001 | - |
@@ -176,9 +184,9 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 | Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |
 | --- | --- | --- | --- | --- | --- | --- |
-| BND-INPUT-001 | input-domain | R3, R4, R5, R6, R7, R9, R20 | formal or advisory lifecycle; isolated or workflow-managed handoff; boundary applicable or not; recording false then true; valid and unknown closed values | each classification has one authoritative value and unknown values fail closed | one valid assembly and authority set, or stop | R3 |
-| BND-STATE-001 | state-lifecycle | R3, R4, R5, R7, R8, R11, R12, R14, R15, R16, R18, R23, R36, R37 | advisory start to material outcome; formal authoring to review settlement; current to stale; complete to missing resource; architecture assessed or ambiguous | recording trigger may change without changing lifecycle or handoff authority | recorded and correctly settled result, isolated blocker, or safe stop | R11 |
-| BND-AUTH-001 | identity-authority | R3, R4, R5, R11, R12, R14, R15, R21, R22, R24 | caller, formal reviewer, workflow, test-spec author, and implement authority; same or mismatched target | review records only owned evidence; workflow routes; advisory result never establishes formal eligibility | bounded record and handoff, or authority stop | R14 |
+| BND-INPUT-001 | input-domain | R3, R4, R5, R6, R7, R9, R20, R39 | formal or advisory lifecycle; isolated or workflow-managed handoff; three valid pairs and one invalid pair; boundary applicable or not; recording false then true; valid and unknown closed values | each classification has one authoritative value and unknown or invalid pairs fail closed | one valid assembly and authority set, or stop | R39 |
+| BND-STATE-001 | state-lifecycle | R3, R4, R5, R7, R8, R11, R12, R14, R15, R16, R18, R23, R36, R37, R39 | advisory start to material outcome; formal authoring to review settlement; valid and invalid lifecycle-handoff pair; current to stale; complete to missing resource; architecture assessed or ambiguous | recording trigger may change without changing lifecycle or handoff authority; workflow-managed handoff requires formal lifecycle | recorded and correctly settled result, isolated blocker, or safe stop | R39 |
+| BND-AUTH-001 | identity-authority | R3, R4, R5, R11, R12, R14, R15, R21, R22, R24, R39 | caller, formal reviewer, workflow, test-spec author, and implement authority; same or mismatched target; formal or advisory continuation basis | review records only owned evidence; workflow routes only from formal review; advisory result never establishes formal eligibility | bounded record and handoff, or authority stop | R39 |
 | BND-COMPOSE-001 | composition-path | R1, R2, R8, R9, R10, R12, R13, R17, R18, R34, R35, R38 | TSR0, TSR0B, TSR1, TSR1B; late recording overlay; result and finding assets; canonical through installed packages | universal policy stays inline; conditional procedure and structural layouts each have one owner | exact resource assembly and behavior-preserving result | R9 |
 | BND-TEMPORAL-001 | temporal-retry | R8, R13, R14, R15, R18, R23, R24, R37 | pre-review formal load; post-outcome advisory load; record before fix; retry, stale evidence, partial package | material findings are durable before correction and stale approval never authorizes implementation | current record, deterministic retry, rereview, or blocker | R15 |
 | BND-RECOVERY-001 | failure-recovery | R4, R6, R15, R16, R18, R26, R27, R30, R31, R36, R37 | ambiguous authority; missing resource; blocked recording; unknown ledger value; unsafe reduction; ambiguous architecture; rollback | failure never invents procedure, suppresses a finding, or permits handoff | owner correction, recorded blocker, or atomic rollback | R18 |
@@ -189,7 +197,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 | Interaction ID | Governing requirement IDs | Boundary IDs | Hazard | Required composed outcome |
 | --- | --- | --- | --- | --- |
-| INT-001 | R3, R5, R7, R8, R11, R14 | BND-STATE-001, BND-AUTH-001 | formal settlement could be mistaken for workflow continuation | settlement records the review while isolated handoff still prevents automatic continuation |
+| INT-001 | R3, R5, R7, R8, R11, R14, R39 | BND-STATE-001, BND-AUTH-001 | formal settlement could be mistaken for workflow continuation, or advisory review could receive workflow-managed handoff | settlement records the review while isolated handoff still prevents automatic continuation; advisory plus workflow-managed stops |
 | INT-002 | R7, R8, R10, R12, R13, R15, R17 | BND-STATE-001, BND-COMPOSE-001 | advisory material finding appears after the common path was selected | recording overlay loads before output, finding asset records each finding, and formal-only settlement stays disabled |
 | INT-003 | R6, R9, R18, R34 | BND-INPUT-001, BND-COMPOSE-001 | conversational or textual cues could over- or under-load boundary guidance | authoritative applicability selects both boundary resources or stops as undecidable |
 | INT-004 | R15, R16, R18 | BND-TEMPORAL-001, BND-RECOVERY-001 | missing recording resources could erase an isolated finding | preserve the finding, report blocked recording and corrective action, and prohibit handoff |
@@ -209,6 +217,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | E6 | illustration | R9 | BND-INPUT-001, BND-COMPOSE-001 | - | - |
 | E7 | regression | R15, R18 | BND-TEMPORAL-001, BND-RECOVERY-001 | TSRSIM-PR1 | - |
 | E8 | illustration | R9 | BND-INPUT-001, BND-COMPOSE-001 | - | - |
+| E9 | illustration | R39 | BND-INPUT-001, BND-STATE-001, BND-AUTH-001 | - | - |
 
 ## Inputs and outputs
 
@@ -219,6 +228,7 @@ Every output identifies lifecycle mode, handoff mode, boundary applicability, re
 ## State and invariants
 
 - Lifecycle mode, handoff mode, boundary applicability, and durable recording are separate classifications.
+- The only valid lifecycle and handoff pairs are formal with either handoff mode and advisory with isolated handoff.
 - Durable recording is derived and may change after an advisory review begins.
 - Conditional procedure supplies mechanics but never grants authority.
 - Formal settlement writes only the matching test-spec artifact entry after review evidence is durable.
@@ -235,6 +245,7 @@ Every output identifies lifecycle mode, handoff mode, boundary applicability, re
 - Missing recording procedure preserves the finding or blocker and returns blocked recording rather than a partial durable record.
 - Missing boundary procedure stops the boundary-dependent verdict without affecting an unrelated ordinary review.
 - A late recording trigger never upgrades advisory lifecycle or isolated handoff authority.
+- Advisory lifecycle with workflow-managed handoff stops before review and cannot degrade silently to another mode.
 - Stale approval and open findings cannot authorize implementation.
 
 ## Compatibility and migration
@@ -293,6 +304,8 @@ EC11. A target-agent runtime is unavailable; deterministic static and package pr
 
 EC12. The architecture assessment finds a stale flat-package example; this change registers and owns the bounded architecture update before planning.
 
+EC13. Current automation evidence requests workflow-managed continuation but formal test-spec-review identity is absent; invocation stops before review and names the missing formal authority.
+
 ## Non-goals
 
 - Changing workflow stages, `change.yaml` schema, review outcome meanings, implementation eligibility, or workflow routing ownership.
@@ -325,6 +338,7 @@ EC12. The architecture assessment finds a stale flat-package example; this chang
 | AC-TSRSIM-016 | Canonical, generated, packed, archived, and installed packages preserve every mapped resource and required byte identity. |
 | AC-TSRSIM-017 | Existing review, recording, settlement, workflow, claim, and implementation-eligibility behavior remains intact. |
 | AC-TSRSIM-018 | Architecture applicability is recorded before planning, and rollout and rollback remain complete-package operations. |
+| AC-TSRSIM-019 | The lifecycle-by-handoff matrix permits exactly three pairs and rejects advisory plus workflow-managed before review or routing. |
 
 ## Open questions
 
