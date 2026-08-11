@@ -13,3 +13,4 @@
 - Next stage: `test-spec-review`
 
 The proof map covers every R1-R33 requirement, E1-E8 example, EC1-EC10 edge case, all eight boundaries, six selected interactions, and all three implementation milestones without target-agent execution.
+The authoring self-check also aligned test-case levels with their closed enum, made CMD1 prove unknown-value precedence, and made CMD7 stop on the first failed package step.
