@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
@@ -10,9 +10,9 @@ Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `test-spec-review-r1`, `code-review-m1-r1`
-- Findings resolved: 4
-- Unresolved findings: 1
-- Current result: upstream findings are resolved; M1 finding `TSRSIM-CR-M1-R1-001` requires accepted bounded correction and rereview.
+- Findings resolved: 5
+- Unresolved findings: 0
+- Current result: all recorded findings are resolved; M1 correction awaits independent rereview.
 
 ## Resolution Overview
 
@@ -22,7 +22,7 @@ Review closeout: code-review-m1-r1
 | `TSRSIM-SR1` | accepted | resolved | Added the closed lifecycle-by-handoff matrix and rejected advisory plus workflow-managed before review. |
 | `TSRSIM-TSR1` | accepted | resolved | Aligned M1 with baseline-only evidence and retained completed measurement in M3. |
 | `TSRSIM-TSR2` | accepted | resolved | Added deterministic interrupted-retry and conflicting-review-ID proof. |
-| `TSRSIM-CR-M1-R1-001` | accepted | open | Add the omitted generated-Markdown-readability semantic disposition and update M1 audit evidence. |
+| `TSRSIM-CR-M1-R1-001` | accepted | resolved | Added the omitted generated-Markdown-readability semantic disposition and updated M1 audit evidence. |
 
 ## Common Resolution Metadata
 
@@ -39,13 +39,13 @@ Review closeout: code-review-m1-r1
 
 Finding ID: TSRSIM-CR-M1-R1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implement
 Owning stage: review-resolution
 Chosen action: Add one retained-inline semantic row for the complete baseline `Generated Markdown readability` contract, update the M1 semantic count, rerun CMD1 and metadata validation, and rereview M1.
 Rationale: R25 requires one disposition for every behaviorally significant current rule; the existing readability section controls user-facing review evidence and cannot disappear during simplification.
 Validation target: M1 rule ledger, M1 preservation evidence, exact CMD1, unchanged canonical package, and code-review rereview.
-Validation evidence: pending bounded correction.
+Validation evidence: correction commit `d6aa1afe`; exact CMD1 reports 19 rules, 16 literals, 16 scenarios, and fail-closed unknown values; change metadata and review artifacts validate; canonical skill paths remain unchanged.
 
 ### test-spec-review-r1
 
@@ -111,5 +111,5 @@ Validation evidence: revised `Invocation classification`, `Loaded-resource assem
 - [x] Test-spec correction validation evidence is recorded.
 - [x] Spec correction validation evidence is recorded.
 - [x] Proposal revision validation evidence is recorded.
-- [ ] `TSRSIM-CR-M1-R1-001` correction is validated and rereviewed.
+- [x] `TSRSIM-CR-M1-R1-001` correction is validated; independent rereview remains the next gate.
 - [x] Closeout status is correct.

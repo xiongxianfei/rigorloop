@@ -25,7 +25,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: TSRSIM-CR-M1-R1-001
-Open findings: TSRSIM-CR-M1-R1-001
+Open findings: None
 Recording status: recorded
 
 ### Review entry
