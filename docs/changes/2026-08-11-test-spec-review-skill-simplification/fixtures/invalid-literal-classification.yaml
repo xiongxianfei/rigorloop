@@ -1,0 +1,1 @@
+{"literal_id":"TSR-LIT-INVALID-001","literal":"invalid fixture","source_location":"skills/test-spec-review/SKILL.md","consumers":["CMD1"],"classification":"unknown-classification-value","required_semantics":"Exercise fail-closed literal classification validation.","disposition":"reject","replacement":"none"}

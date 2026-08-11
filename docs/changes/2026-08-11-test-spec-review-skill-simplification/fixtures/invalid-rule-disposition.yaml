@@ -1,0 +1,1 @@
+{"rule_id":"TSR-RULE-INVALID-001","source_locations":["skills/test-spec-review/SKILL.md"],"behavior":"Exercise fail-closed semantic disposition validation.","governing_requirements":["R26"],"applicable_assemblies":["TSR0-isolated"],"disposition":"unknown-disposition-value","destination":"skills/test-spec-review/SKILL.md#Invalid","preservation_proof":["T6"]}
