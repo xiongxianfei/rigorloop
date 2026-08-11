@@ -1,7 +1,7 @@
 # M2 Implement Package Refactor Evidence
 
-Milestone: M2  
-Date: 2026-08-11  
+Milestone: M2
+Date: 2026-08-11
 Implementation owner: Codex implement context
 
 ## Result
@@ -34,6 +34,8 @@ The references do not own universal stop or claim policy. The asset does not def
 | `python scripts/test-build-skills.py` | pass; 7 tests |
 | `python scripts/build-skills.py --check` | pass; temporary generated tree validated |
 | `git diff --check` | pass |
+
+Review correction reran `git diff --check` after removing two trailing-whitespace defects and reran the complete 291-test skill-validator suite after restoring the unrelated code-review assertion. Both passed.
 
 No target-agent runtime, network call, publication, or new permanent validator was used.
 

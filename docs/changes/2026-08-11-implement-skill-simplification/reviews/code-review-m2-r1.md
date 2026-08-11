@@ -49,17 +49,17 @@ The principal risks were universal policy hidden behind a conditional reference,
 ### IMPSIM-CR1 — Validation evidence contradicts the committed diff
 
 Finding ID: IMPSIM-CR1
-Severity: major  
-Evidence: `git diff --check cd2b2dae..dfbb917b` reports trailing whitespace on lines 3 and 4 of `evidence/m2-package-refactor.md`, while that same evidence says `git diff --check` passed.  
-Required outcome: remove the trailing whitespace, rerun `git diff --check`, and correct the evidence so its claim matches the committed surface.  
+Severity: major
+Evidence: `git diff --check cd2b2dae..dfbb917b` reports trailing whitespace on lines 3 and 4 of `evidence/m2-package-refactor.md`, while that same evidence says `git diff --check` passed.
+Required outcome: remove the trailing whitespace, rerun `git diff --check`, and correct the evidence so its claim matches the committed surface.
 Safe resolution: mechanical; edit only the two affected Markdown lines and rerun the named check.
 
 ### IMPSIM-CR2 — M2 changes an unrelated code-review assertion
 
 Finding ID: IMPSIM-CR2
-Severity: major  
-Evidence: the M2 diff changes the existing code-review simplification assertion from `## Boundary-first bridge` to `## Boundary-first method`, although the code-review skill retains both headings and M2 governs only the implement package.  
-Required outcome: restore the pre-M2 code-review assertion and retain the new implement-package assertion separately.  
+Severity: major
+Evidence: the M2 diff changes the existing code-review simplification assertion from `## Boundary-first bridge` to `## Boundary-first method`, although the code-review skill retains both headings and M2 governs only the implement package.
+Required outcome: restore the pre-M2 code-review assertion and retain the new implement-package assertion separately.
 Safe resolution: mechanical; restore the single unrelated literal in `scripts/test-skill-validator.py`, then rerun the skill-validator suite.
 
 ## Handoff

@@ -50,8 +50,8 @@ artifact_states:
       round: r1
 workflow_state:
   lifecycle_state: active
-  current_stage: review-resolution
-  next_stage: implement
+  current_stage: code-review
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-08-11-implement-skill-simplification/evidence/proposal-authoring.md
@@ -76,7 +76,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: resolution-needed
+        state: review-requested
       M3:
         kind: implementation
         state: planned
@@ -115,7 +115,7 @@ workflow:
       completion:
         rule: final verification result is recorded
     status: active
-    current_stage: review-resolution
+    current_stage: code-review
     stop_reason: null
     evidence:
       - docs/changes/2026-08-11-implement-skill-simplification/reviews/proposal-review-r4.md
@@ -202,5 +202,5 @@ changed_files:
   - skills/implement/assets/implementation-result-skeleton.md
   - scripts/test-skill-validator.py
 review:
-  status: changes-requested
-  unresolved_items: 2
+  status: approved
+  unresolved_items: 0

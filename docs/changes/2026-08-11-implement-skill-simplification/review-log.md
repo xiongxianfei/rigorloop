@@ -123,5 +123,5 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-m2-r1
 Material findings: IMPSIM-CR1, IMPSIM-CR2
-Open findings: IMPSIM-CR1, IMPSIM-CR2
+Open findings: None
 Recording status: recorded

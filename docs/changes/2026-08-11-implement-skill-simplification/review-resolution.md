@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -16,9 +16,9 @@ Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`
-- Findings resolved: 5
+- Findings resolved: 7
 - Unresolved findings: 0
-- Current result: code-review M1 R1 closed the preservation-inventory milestone with no material findings.
+- Current result: code-review M2 R1 findings were corrected and are ready for independent rereview.
 
 ## Resolution Overview
 
@@ -166,22 +166,24 @@ No material findings.
 
 Finding ID: IMPSIM-CR1
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: implement
 Owning stage: implement
 Chosen action: Remove the two trailing-whitespace defects and rerun `git diff --check`.
 Rationale: Required reviewability proof must agree with the committed diff.
 Validation target: `git diff --check cd2b2dae..HEAD`
-Implementation evidence: pending bounded correction
+Validation evidence: `git diff --check` passed after correction.
+Implementation evidence: removed trailing whitespace from the two named evidence lines and from the review record without changing prose semantics.
 
 #### IMPSIM-CR2
 
 Finding ID: IMPSIM-CR2
 Disposition: accepted
-Status: in-progress
+Status: resolved
 Owner: implement
 Owning stage: implement
 Chosen action: Restore the unrelated code-review heading assertion and rerun the full skill-validator suite.
 Rationale: M2 must not modify tests for the already-settled code-review package.
 Validation target: `python scripts/test-skill-validator.py`
-Implementation evidence: pending bounded correction
+Validation evidence: `python scripts/test-skill-validator.py` passed 291 tests with 16 skips.
+Implementation evidence: restored `## Boundary-first bridge` only in the pre-existing code-review package assertion; retained the implement package's `## Boundary-first method` assertion.
