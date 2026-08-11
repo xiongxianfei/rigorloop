@@ -35,5 +35,5 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r3.md
 Resolution: review-resolution.md#proposal-review-r3
 Material findings: PRRSIM-PR1, PRRSIM-PR2, PRRSIM-PR3
-Open findings: PRRSIM-PR1, PRRSIM-PR2, PRRSIM-PR3
+Open findings: None
 Recording status: recorded
