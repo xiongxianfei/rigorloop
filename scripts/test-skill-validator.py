@@ -7891,6 +7891,25 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
         self.assertIn("Do not split a sentence across physical source lines", text)
         self.assertNotIn("use semantic source lines", text)
 
+    def test_canonical_skill_prose_has_no_suspected_sentence_splits(self) -> None:
+        skill_paths = sorted((ROOT / "skills").glob("*/SKILL.md"))
+        command = [
+            sys.executable,
+            str(ROOT / "scripts" / "validate-documentation-prose.py"),
+            "--mode",
+            "audit",
+        ]
+        for skill_path in skill_paths:
+            command.extend(("--path", str(skill_path.relative_to(ROOT))))
+
+        result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, check=False)
+
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertEqual(
+            f"documentation prose validation: errors=0 warnings=0 paths={len(skill_paths)}\n",
+            result.stdout,
+        )
+
 
 class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
     AUTHORING_ENTRY_KINDS = {

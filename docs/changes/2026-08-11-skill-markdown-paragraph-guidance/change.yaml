@@ -7,19 +7,23 @@ artifacts:
 requirements:
   - Instruct skills to write ordinary prose as normal Markdown paragraphs.
   - Do not split one sentence across physical source lines merely for wrapping or clause separation.
+  - Reflow existing canonical skill prose that already splits sentences across physical source lines.
   - Preserve structural line boundaries for Markdown lists, tables, commands, headings, and other structural units.
 tests:
   - Every affected skill contains the intact-sentence guidance and omits the former clause-per-line guidance.
   - Every affected authoring skeleton requests normal prose paragraphs and complete sentences.
+  - Canonical skill prose produces no suspected sentence-split diagnostics.
   - Canonical and generated skill validation passes.
 changed_files:
   - skills/proposal/SKILL.md
   - skills/spec/SKILL.md
   - skills/plan/SKILL.md
   - skills/test-spec/SKILL.md
+  - skills/test-spec-review/SKILL.md
   - skills/code-review/SKILL.md
   - skills/explain-change/SKILL.md
   - skills/verify/SKILL.md
+  - skills/workflow/SKILL.md
   - skills/implement/SKILL.md
   - skills/proposal/assets/proposal-skeleton.md
   - skills/spec/assets/spec-skeleton.md
@@ -36,12 +40,14 @@ review:
   status: not-reviewed
   unresolved_items: 0
 validation:
-  - command: python scripts/test-skill-validator.py MarkdownReadabilityGuidanceTests
-    result: pass_3_tests
+  - command: python scripts/test-skill-validator.py MarkdownReadabilityGuidanceTests -q
+    result: pass_4_tests
+  - command: python scripts/validate-documentation-prose.py --mode audit --path skills/test-spec-review/SKILL.md --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md
+    result: pass_0_errors_0_warnings
   - command: python scripts/validate-skills.py
     result: pass_24_skills
   - command: python scripts/test-skill-validator.py
-    result: pass_303_tests_16_skipped
+    result: pass_310_tests_16_skipped
   - command: python scripts/test-documentation-prose-validator.py
     result: pass_14_tests
   - command: python scripts/test-markdown-readability-validator.py
