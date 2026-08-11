@@ -19,8 +19,13 @@ artifact_states:
     kind: spec
     path: specs/verify-skill-simplification.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-11-verify-skill-simplification/evidence/spec-authoring.md
+    lifecycle_state: approved
+    review:
+      id: spec-review-r1
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-11-verify-skill-simplification/reviews/spec-review-r1.md
+      round: r1
 workflow_state:
   lifecycle_state: active
   current_stage: spec
@@ -80,6 +85,8 @@ changed_files:
   - docs/changes/2026-08-11-verify-skill-simplification/reviews/proposal-review-r3.md
   - docs/proposals/2026-08-11-verify-skill-simplification.md
   - docs/changes/2026-08-11-verify-skill-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-11-verify-skill-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-11-verify-skill-simplification/reviews/spec-review-r1.md
   - specs/verify-skill-simplification.md
 review:
   status: clean
