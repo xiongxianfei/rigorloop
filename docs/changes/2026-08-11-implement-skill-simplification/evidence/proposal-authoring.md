@@ -9,6 +9,7 @@ Artifact: `docs/proposals/2026-08-11-implement-skill-simplification.md`
 The user selected `implement` as the next skill-optimization target and requested a new branch, a proposal, and formal proposal review.
 The initial exploration favored conditional workflow guidance, one output asset, and a consolidated universal common path while preserving implementation rigor.
 Proposal-review R1 then required profile-specific loaded-context proof and a proposal-level decision separating ordinary planned milestones from armed automation.
+The user-supplied proposal-review R3 further required a closed profile lattice, one asset with conditional structural groups, and separate semantic-rule and literal-compatibility evidence.
 
 ## Evidence used
 
@@ -39,3 +40,11 @@ The artifact is ready for independent proposal review and does not claim approva
 - Made material improvement in the isolated and planned profiles part of success, while requiring justified non-regression for the fully armed profile.
 - Kept the 30–45 percent value as non-normative planning evidence for the isolated profile rather than a semantic gate.
 - Added required and forbidden resource-load fixtures without introducing target-agent runtime execution.
+
+## R3 revision decisions
+
+- Accepted `IMPSIM-PR3`: armed automation is valid only for the same current planned milestone; trigger evidence is durable and identity-bound; invalid or stale combinations stop.
+- Accepted `IMPSIM-PR4`: the single result asset has one universal core group plus planned and armed conditional groups, with inapplicable groups omitted and all policy retained outside the asset.
+- Accepted `IMPSIM-PR5`: semantic-rule dispositions and literal dependency classifications use separate change-local ledgers and closed vocabularies.
+- Made UTF-8 bytes and words the primary portable measurements; token estimates remain optional pinned evidence without a new dependency.
+- Recorded `architecture-not-required` as the expected bounded assessment outcome, with only documentation correction or a later package-model change triggering architecture work.

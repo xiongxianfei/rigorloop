@@ -6,11 +6,13 @@ Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
+Review closeout: proposal-review-r3
+Review closeout: proposal-review-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
-- Findings resolved: 2
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
+- Findings resolved: 5
 - Unresolved findings: 0
-- Current result: proposal-review R2 approved the revised proposal with no material findings.
+- Current result: proposal-review R4 approved the revised proposal with no material findings.
 
 ## Resolution Overview
 
@@ -18,6 +20,9 @@ Review closeout: proposal-review-r2
 | --- | --- | --- | --- |
 | IMPSIM-PR1 | accepted | resolved | The proposal defines isolated, planned, and armed profiles with profile-specific loaded-context evidence and success interpretation. |
 | IMPSIM-PR2 | accepted | resolved | The proposal selects distinct planned-milestone and automated-review/correction references with separate triggers. |
+| IMPSIM-PR3 | accepted | resolved | Armed automation is valid only within the same current planned milestone and requires durable identity-bound evidence. |
+| IMPSIM-PR4 | accepted | resolved | The result asset uses one core and two omitted-when-inapplicable conditional groups without owning policy. |
+| IMPSIM-PR5 | accepted | resolved | Semantic rules and literal dependencies use separate ledgers, closed vocabularies, and preservation treatments. |
 
 ## Finding Details
 
@@ -58,5 +63,63 @@ Implementation evidence: not applicable at proposal stage
 ### proposal-review-r2
 
 Review closeout: proposal-review-r2
+
+No material findings.
+
+### proposal-review-r3
+
+Review closeout: proposal-review-r3
+
+#### IMPSIM-PR3
+
+Finding ID: IMPSIM-PR3
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Choose the valid invocation profiles and authoritative trigger evidence.
+Chosen action: Support only `IP0-isolated`, `IP1-planned`, and `IP2-planned-armed`; require current matching plan, milestone, and automation evidence; stop on unplanned armed automation or missing, stale, mismatched, or ambiguous authority.
+Rationale: The current automation trigger appears independent even though the armed profile loads planned procedure.
+Safe resolution path: Make armed automation valid only within a current planned milestone and stop on missing, stale, mismatched, or ambiguous authority.
+Validation target: proposal-review-r4
+Validation evidence: Proposal revision completed; focused artifact validation passed; proposal-review R4 approved the revision.
+Implementation evidence: not applicable at proposal stage
+
+#### IMPSIM-PR4
+
+Finding ID: IMPSIM-PR4
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Choose the profile-applicability model for the single result asset.
+Chosen action: Use one core group for every profile, one planned group for `IP1-planned` and `IP2-planned-armed`, and one automation group only for `IP2-planned-armed`; omit inapplicable groups and keep policy outside the asset.
+Rationale: One undifferentiated result shape cannot represent all profiles without placeholders or policy leakage.
+Safe resolution path: Define one core group plus planned and automation conditional groups; omit inapplicable groups and keep policy outside the asset.
+Validation target: proposal-review-r4
+Validation evidence: Proposal revision completed; focused artifact validation passed; proposal-review R4 approved the revision.
+Implementation evidence: not applicable at proposal stage
+
+#### IMPSIM-PR5
+
+Finding ID: IMPSIM-PR5
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Choose separate preservation contracts for semantic rules and literal dependencies.
+Chosen action: Create separate semantic-rule and literal-compatibility ledgers with closed dispositions and classifications; preserve contract literals, migrate parser contracts atomically, update incidental tests, and remove obsolete literals with evidence.
+Rationale: Incidental test wording must not become a permanent public contract.
+Safe resolution path: Use separate change-local ledgers with closed semantic dispositions and literal classifications.
+Validation target: proposal-review-r4
+Validation evidence: Proposal revision completed; focused artifact validation passed; proposal-review R4 approved the revision.
+Implementation evidence: not applicable at proposal stage
+
+### proposal-review-r4
+
+Review closeout: proposal-review-r4
 
 No material findings.
