@@ -138,6 +138,7 @@ workflow:
       - docs/changes/2026-08-11-workflow-skill-simplification/evidence/m1-preservation-inventories.md
       - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-m1-r1.yaml
       - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-m1-r1.md
+      - docs/changes/2026-08-11-workflow-skill-simplification/evidence/m2-package-refactor.md
 artifacts:
   proposal: docs/proposals/2026-08-11-workflow-skill-simplification.md
   spec: specs/workflow-skill-simplification.md
@@ -199,6 +200,12 @@ changed_files:
   - docs/changes/2026-08-11-workflow-skill-simplification/evidence/m1-preservation-inventories.md
   - docs/changes/2026-08-11-workflow-skill-simplification/review-invocation-code-review-m1-r1.yaml
   - docs/changes/2026-08-11-workflow-skill-simplification/reviews/code-review-m1-r1.md
+  - docs/changes/2026-08-11-workflow-skill-simplification/evidence/m2-package-refactor.md
+  - skills/workflow/SKILL.md
+  - skills/workflow/references/governed-lifecycle-routing.md
+  - skills/workflow/references/bounded-workflow-automation.md
+  - skills/workflow/references/workflow-guide-authoring.md
+  - scripts/test-skill-validator.py
 review:
   status: approved
   unresolved_items: 0
