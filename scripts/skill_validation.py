@@ -230,6 +230,7 @@ RESOURCE_MAP_ENTRY_PATTERN = re.compile(
 )
 PACKAGED_NON_ASSET_RESOURCE_ALLOWLIST = {
     ("code-review", "references/workflow-managed-automated-review.md"),
+    ("test-spec-review", "references/test-spec-review-recording-and-settlement.md"),
 }
 
 
@@ -1809,7 +1810,19 @@ def validate_installed_skill_artifact_placement_contract(
     if review_path is None:
         return errors
 
-    placement = _extract_markdown_section(body, "Artifact placement")
+    placement_source = body
+    if skill_name == "test-spec-review":
+        recording_reference = (
+            path.parent
+            / "references"
+            / "test-spec-review-recording-and-settlement.md"
+        )
+        if recording_reference.is_file():
+            placement_source = "\n".join(
+                [body, recording_reference.read_text(encoding="utf-8")]
+            )
+
+    placement = _extract_markdown_section(placement_source, "Artifact placement")
     if placement is None:
         errors.append(
             f"{path}: installed-skill placement contract must include an Artifact placement section"

@@ -79,13 +79,9 @@ Produce a routing decision, authoritative current-stage assessment, blockers or 
 
 Classify the four predicates below from authoritative evidence. Automation command forms are portable across supported adapters:
 
-- Adapter invocation equivalents preserve the same arguments: Codex uses
-  `$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and
-  OpenCode invokes the installed `workflow` skill with `auto: <argument>`.
-  Here `<argument>` is `<target-stage>`, `status`, or `off`.
+- Adapter invocation equivalents preserve the same arguments: Codex uses `$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and OpenCode invokes the installed `workflow` skill with `auto: <argument>`. Here `<argument>` is `<target-stage>`, `status`, or `off`.
 - `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
-- `$workflow auto: status` is read-only.
-  `$workflow auto: off` durably cancels the unified run and preserves transition evidence.
+- `$workflow auto: status` is read-only. `$workflow auto: off` durably cancels the unified run and preserves transition evidence.
 - `governed_change_context`: a valid current governed change record exists.
 - `automation_command_context`: the invocation is an explicit automation command, including a pre-persistence target bootstrap.
 - `armed_automation_context`: valid durable automation authorization or an active run exists for the same governed change.

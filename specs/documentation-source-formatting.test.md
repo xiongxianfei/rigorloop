@@ -29,8 +29,8 @@ End-to-end browser or UI tests are not applicable because this is a repository v
 | R3 | T6, T18 | integration | Proves Tier B audit scope for skills and explain-change artifacts. |
 | R4 | T7, T18 | integration, migration | Proves Tier C exclusions stay outside first-slice enforcement. |
 | R5 | T2, T8 | unit, contract | Proves long complete source lines pass and line length alone is not an error. |
-| R6 | T3, T16 | unit, manual | Proves sentence-per-line source paragraphs are accepted and reviewable. |
-| R7 | T9, T16 | unit, manual | Proves deliberate clause boundaries are allowed or warned without fixed-width failure. |
+| R6 | T3, T16 | unit, manual | Proves normal paragraphs may contain multiple intact sentences. |
+| R7 | T9, T16 | unit, manual | Proves clause boundaries do not authorize splitting one sentence across source lines. |
 | R8 | T1, T2, T10 | unit, contract | Proves Tier A deterministic failures and no fixed line-length rule. |
 | R9 | T9, T11 | unit | Proves ambiguous cases warn instead of failing. |
 | R10 | T12 | unit | Proves Markdown blocks are segmented before prose evaluation. |
@@ -59,13 +59,13 @@ End-to-end browser or UI tests are not applicable because this is a repository v
 | Edge case | Covered by | Notes |
 | --- | --- | --- |
 | EC1 long complete source line | T2, T8 | No fixed-width failure. |
-| EC2 multi-line paragraph with semantic lines | T3 | Sentence-per-line paragraph passes. |
+| EC2 paragraph with multiple intact sentences | T3 | Multiple sentences may share one physical source line. |
 | EC3 `AI agents` split | T10 | Named regression fails. |
 | EC4 lifecycle chain split | T14 | Connected lifecycle elements fail when split mechanically. |
 | EC5 command split versus fenced command | T4 | Prose split fails; fenced command passes. |
 | EC6 tables as rows | T12 | Table rows are not prose paragraphs. |
 | EC7 README marker ownership | T19, T20 | No direct edit suggestion for marker-owned content. |
-| EC8 deliberate clause break | T9, T11 | Positive-list cases pass or warn; not fixed-width failure. |
+| EC8 deliberate clause break | T9, T11 | Ambiguous cases may warn, but clause separation does not make the split conforming. |
 | EC9 editor/tool rewrap | T10 | Previously valid Tier A semantic line fails after mechanical rewrap. |
 | EC10 excluded historical paths | T7, T18 | Tier C paths remain outside first-slice enforcement. |
 
@@ -91,14 +91,14 @@ End-to-end browser or UI tests are not applicable because this is a repository v
 - Failure proves: The implementation reintroduced fixed-width prose validation.
 - Automation location: `python scripts/test-documentation-prose-validator.py`
 
-### T3. Semantic sentence-per-line paragraph passes
+### T3. Normal paragraph with multiple intact sentences passes
 
 - Covers: R1, R6, E3, EC2
 - Level: unit
-- Fixture/setup: Markdown paragraph containing multiple physical lines, each a complete sentence.
+- Fixture/setup: Markdown paragraph containing multiple complete sentences on one physical source line.
 - Steps: Run the validator in enforce mode against the fixture.
 - Expected result: Exit is passing.
-- Failure proves: The validator incorrectly requires one paragraph per source line.
+- Failure proves: The validator incorrectly requires one sentence per physical source line.
 - Automation location: `python scripts/test-documentation-prose-validator.py`
 
 ### T4. Structured alternatives and command boundaries
@@ -151,14 +151,14 @@ End-to-end browser or UI tests are not applicable because this is a repository v
 - Failure proves: A fixed line-length rule is substituting for semantic validation.
 - Automation location: `python scripts/test-documentation-prose-validator.py`
 
-### T9. Deliberate clause boundaries
+### T9. Clause boundaries do not authorize sentence splitting
 
 - Covers: R7, R9, EC8
 - Level: unit
 - Fixture/setup: Fixtures with breaks after semicolons, colons, dashes, and before top-level coordinating conjunctions.
 - Steps: Run audit and enforce mode.
-- Expected result: Positive-list clause breaks pass or produce warnings, not deterministic fixed-width failures.
-- Failure proves: Human-review-owned clause breaks are being over-enforced.
+- Expected result: Known mechanical splits fail; ambiguous clause breaks may produce warnings for human review but are not accepted as conforming source formatting.
+- Failure proves: Clause separation can incorrectly override the intact-sentence contract.
 - Automation location: `python scripts/test-documentation-prose-validator.py`
 
 ### T10. Named regression and editor rewrap fixtures

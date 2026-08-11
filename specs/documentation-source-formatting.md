@@ -66,9 +66,9 @@ R4. First-slice enforcement MUST NOT include `specs/**`, `docs/plans/**`, `docs/
 
 R5. Long source lines MUST be allowed when they contain a complete semantic source unit.
 
-R6. Covered ordinary prose SHOULD use one complete sentence per physical source line when practical.
+R6. Covered ordinary prose SHOULD use normal Markdown paragraphs; multiple complete sentences MAY remain together on one physical source line.
 
-R7. Long sentences MAY be split at deliberate clause boundaries when the break improves source review, avoids splitting a compound term or lifecycle transition, and remains understandable without rendered reflow.
+R7. A complete sentence MUST NOT be split across physical source lines merely for wrapping or clause separation.
 
 R8. The validator MUST fail Tier A deterministic violations and MUST NOT fail solely because a line exceeds a fixed length.
 
@@ -164,7 +164,7 @@ Normal output should summarize results and expand details only for errors, warni
 
 EC1. A long complete source line passes even if it exceeds a common editor width.
 
-EC2. A Markdown paragraph containing multiple source lines passes when each physical line is a complete sentence or deliberate semantic unit.
+EC2. A Markdown paragraph may contain multiple complete sentences on one physical source line, and every sentence remains intact.
 
 EC3. A sentence split between a noun phrase such as `AI agents` fails when the split matches a deterministic regression pattern.
 
@@ -176,7 +176,7 @@ EC6. Tables are evaluated as rows, not prose paragraphs.
 
 EC7. README marker content generated from `VISION.md` is validated without suggesting direct hand edits to the marker-owned region.
 
-EC8. A deliberate clause break after a semicolon, colon, or top-level conjunction may pass or warn depending on rule confidence, but it is not treated as a fixed-width violation.
+EC8. A line break after a semicolon, colon, or top-level conjunction does not justify splitting one complete sentence across physical source lines.
 
 EC9. A formatter or editor that mechanically rewraps a previously valid Tier A semantic line produces a failing Tier A regression fixture.
 
