@@ -13,6 +13,7 @@ This ledger records formal lifecycle reviews for the test-spec-review skill simp
 | `plan-review-r1` | `plan-review` | `r1` | `docs/plans/2026-08-11-test-spec-review-skill-simplification.md` at `661a710b` | `reviews/plan-review-r1.md` | `approved` | 0 | `recorded` |
 | `test-spec-review-r2` | `test-spec-review` | `r2` | `specs/test-spec-review-skill-simplification.test.md` at `54d1eaae` | `reviews/test-spec-review-r2.md` | `approved` | 0 | `recorded` |
 | `code-review-m1-r2` | `code-review` | `r2` | M1 correction at `d6aa1afe` | `reviews/code-review-m1-r2.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-m2-r1` | `code-review` | `r1` | M2 implementation at `76b1f857` | `reviews/code-review-m2-r1.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 

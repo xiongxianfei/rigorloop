@@ -1,0 +1,41 @@
+schema_version: 1
+review_id: code-review-m2-r1
+review_stage: code-review
+review_target: commit:76b1f857
+base_revision: 1212cf91
+head_revision: 76b1f857
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L1
+author_context_id: root-implement-m2
+reviewer_context_id: root-code-review-m2-r1-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: elevated
+risk_tier_triggers: [published-skill-contract, conditional-resource-ownership, validator-consumer-migration]
+governing_artifacts: [specs/test-spec-review-skill-simplification.md, docs/plans/2026-08-11-test-spec-review-skill-simplification.md, specs/test-spec-review-skill-simplification.test.md]
+formal_criteria: [code-review-v1, boundary-first-v1, requirement-fidelity-v1]
+initial_packet_inventory:
+  - {path: commit:76b1f857.diff, sha256: 8cec561f2bbeac524be9cd825db818525045d23e81145207dd1b3aa6c84f44c6}
+  - {path: skills/test-spec-review/SKILL.md, sha256: c32e2880e8e0fdd07622557908dffaad244f5f0034638a3f7e7f95f5f5842bb4}
+  - {path: skills/test-spec-review/references/test-spec-review-recording-and-settlement.md, sha256: 5c3540fe5c096d9316d0adf4875d829604c2fa62506851d40e35299cabe78b29}
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity: {applicability: applicable, reason: M2 changes the complete published skill contract and validator ownership.}
+second_review: {required: false, satisfied: true, result: not-required}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, prior-findings-released, verdict-recorded]
+prior_finding_reconciliation: {TSRSIM-CR-M1-R1-001: resolved}
+risk_map:
+  affected_behavior: test-spec-review classification, proof judgment, recording, settlement, package loading, and validator compatibility
+  highest_impact_failure_modes: universal policy hidden behind recording, advisory authority upgraded, formal settlement leaks, resource failure falls through, or installed validation weakens
+  changed_boundaries: [BND-INPUT-001, BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001, BND-COMPAT-001]
+  evidence_expected: focused contract tests, stage settlement tests, boundary projection tests, complete suite, skill validation, and generated parity
+  direct_inspection_areas: [SKILL.md, recording reference, validator allowlist and package-aware placement, focused tests, unchanged assets and boundary references]
+  intentionally_out_of_scope: [adapter archives, final measurements, final semantic review, target-agent execution]
+  applicable_risk_classes: [correctness, authority, compatibility, package-integrity, requirement-fidelity]
+  non_applicable_risk_classes: [credentials, database-migration, network-publication]
+  falsifiable_questions:
+    - Can advisory review judge every proof surface without the reference?
+    - Can late recording change lifecycle or handoff authority?
+    - Can formal settlement mutate routing or a sibling artifact?
+    - Does installed validation read the complete package without duplicating policy?
