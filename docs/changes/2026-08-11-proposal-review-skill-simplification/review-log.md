@@ -6,7 +6,9 @@ This ledger records formal lifecycle reviews for the proposal-review skill simpl
 
 ## Clean review receipts
 
-None yet.
+| Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
+| --- | --- | --- | --- | --- | --- | ---: | --- |
+| `proposal-review-r2` | `proposal-review` | `r2` | `docs/proposals/2026-08-11-proposal-review-skill-simplification.md` at commit `76213c96` | `reviews/proposal-review-r2.md` | `approved` | 0 | `recorded` |
 
 ## Detailed review entries
 

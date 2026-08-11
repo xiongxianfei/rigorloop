@@ -48,5 +48,5 @@ Validation evidence: the revised `Conditional proposal-gates reference`, `Initia
 - [x] Every deferred finding has follow-up or none exist.
 - [x] Every `needs-decision` finding is resolved or none exist.
 - [x] Final revision validation evidence is recorded.
-- [ ] Independent proposal rereview approves the revised artifact.
+- [x] Independent proposal rereview approves the revised artifact.
 - [x] Closeout status is closed.
