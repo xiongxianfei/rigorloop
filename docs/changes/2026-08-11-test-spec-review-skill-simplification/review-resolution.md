@@ -2,20 +2,22 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
+Review closeout: spec-review-r1
 
-- Reviews covered: `proposal-review-r1`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`
 - Findings resolved: 1
-- Unresolved findings: 0
-- Current result: the proposal now preserves mandatory isolated material-finding recording and awaits independent rereview.
+- Unresolved findings: 1
+- Current result: proposal findings remain resolved; spec revision is required to close the lifecycle-by-handoff validity lattice.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
 | `TSRSIM-PR1` | accepted | resolved | Added an independent durable-recording trigger and phase-aware recording overlay without downstream handoff. |
+| `TSRSIM-SR1` | accepted | open | Reject advisory lifecycle with workflow-managed handoff and prove the closed validity matrix. |
 
 ## Common Resolution Metadata
 
@@ -25,6 +27,20 @@ Review closeout: proposal-review-r1
 - Validation evidence: revised proposal and `evidence/proposal-revision-r2.md`
 
 ## Finding Details
+
+### spec-review-r1
+
+#### TSRSIM-SR1 - Close lifecycle and handoff validity
+
+Finding ID: TSRSIM-SR1
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec
+Chosen action: Add a closed lifecycle-by-handoff validity matrix that permits formal with either handoff mode and advisory only with isolated handoff, and make advisory plus workflow-managed an explicit pre-review stop.
+Rationale: Workflow-managed continuation requires current formal review identity and settlement; advisory approval cannot establish implementation eligibility.
+Validation target: revised requirements, state invariants, errors, edge cases, acceptance criteria, boundary ownership, static fixture strategy, and independent spec rereview.
+Validation evidence: pending spec correction.
 
 ### proposal-review-r1
 
@@ -47,5 +63,6 @@ Validation evidence: revised `Invocation classification`, `Loaded-resource assem
 - [x] Every rejected finding has rationale or none exist.
 - [x] Every deferred finding has follow-up or none exist.
 - [x] Every `needs-decision` finding is resolved or none exist.
-- [x] Revision validation evidence is recorded.
+- [ ] Spec correction validation evidence is recorded.
+- [x] Proposal revision validation evidence is recorded.
 - [x] Closeout status is correct.
