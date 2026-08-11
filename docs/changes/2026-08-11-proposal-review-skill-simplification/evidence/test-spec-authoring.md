@@ -9,7 +9,7 @@
 - Approved plan: `docs/plans/2026-08-11-proposal-review-skill-simplification.md`
 - Boundary model: `boundary-first-v1`
 - Proof obligations: `PRF-001` through `PRF-014`
-- Test cases: `T1` through `T14`
+- Test cases: `T1` through `T15`
 - Manual procedures: `MP0`, `MP1`
 - Open authoring blockers: none
 - Next stage: `test-spec-review`

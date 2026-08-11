@@ -21,8 +21,8 @@ Review closeout: test-spec-review-r1
 | `PRRSIM-PR1` | accepted | resolved | Defined independent recording and automation modes with explicit write and handoff permissions. |
 | `PRRSIM-PR2` | accepted | resolved | Defined advisory durable-record location resolution and prohibited implicit governed-root creation. |
 | `PRRSIM-PR3` | accepted | resolved | Defined one core and four conditional result-asset groups without moving policy into the asset. |
-| `PRRSIM-TSR1` | accepted | open | Split baseline-executable M1 proof from post-refactor M3 measurement proof. |
-| `PRRSIM-TSR2` | accepted | open | Add direct interrupted-retry reconciliation and conflicting review-ID proof. |
+| `PRRSIM-TSR1` | accepted | resolved | Split baseline-executable M1 proof from post-refactor M3 measurement proof. |
+| `PRRSIM-TSR2` | accepted | resolved | Added direct interrupted-retry reconciliation and conflicting review-ID proof. |
 
 ## Common Resolution Metadata
 
@@ -91,25 +91,25 @@ Validation evidence: the revised `Output ownership` group table and applicabilit
 
 Finding ID: PRRSIM-TSR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Narrow M1 to baseline-executable scenario and inventory proof and move completed before-and-after assembly measurement to a distinct M3 case.
 Rationale: A milestone cannot depend on proof that requires a later milestone's package state.
 Validation target: revised coverage, proof obligations, milestone proof map, test cases, and independent rereview.
-Validation evidence: pending test-spec revision
+Validation evidence: revised T9 and T15, milestone proof map, coverage maps, and `evidence/test-spec-revision-r2.md`
 
 #### PRRSIM-TSR2 - Add retry and conflict proof
 
 Finding ID: PRRSIM-TSR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Add deterministic interrupted-write reconciliation without duplication and conflicting review-ID reuse without mutation.
 Rationale: Temporal ownership is not proved by initial-write scenarios alone.
 Validation target: revised temporal proof obligation, test case, fixtures, expected failure behavior, and independent rereview.
-Validation evidence: pending test-spec revision
+Validation evidence: revised T4, temporal proof mappings, edge coverage, and `evidence/test-spec-revision-r2.md`
 
 ## Closeout Checklist
 
