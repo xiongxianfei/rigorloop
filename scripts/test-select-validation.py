@@ -1371,12 +1371,15 @@ raise SystemExit({exit_code})
         *,
         deferral_fields: dict[str, str],
         change_id: str = "2026-04-25-deferral",
+        evidence_relative_path: str = "unregistered-evidence.md",
     ) -> tuple[Path, str]:
         repo = self.make_git_repo()
-        evidence_path = f"docs/changes/{change_id}/unregistered-evidence.md"
+        evidence_path = f"docs/changes/{change_id}/{evidence_relative_path}"
         change_root = repo / "docs" / "changes" / change_id
         change_root.mkdir(parents=True, exist_ok=True)
-        (change_root / "unregistered-evidence.md").write_text("manual evidence\n", encoding="utf-8")
+        evidence_file = change_root / evidence_relative_path
+        evidence_file.parent.mkdir(parents=True, exist_ok=True)
+        evidence_file.write_text("manual evidence\n", encoding="utf-8")
         field_lines = "\n".join(
             f"    {field}: {value}"
             for field, value in deferral_fields.items()
@@ -1439,6 +1442,33 @@ raise SystemExit({exit_code})
         self.assertEqual(debt["verify_readiness"], "blocked")
         self.assertIn("validation_impact", debt["missing_deferral_fields"])
         self.assertIn("follow_up", debt["missing_deferral_fields"])
+
+    def test_nested_change_local_evidence_with_complete_deferral_unblocks_readiness(self) -> None:
+        evidence_path = "docs/changes/2026-04-25-deferral/fixtures/scenario-contracts.yaml"
+        repo, selected_path = self.write_change_with_evidence_deferral(
+            deferral_fields={
+                "path": evidence_path,
+                "owner": "test-spec-review",
+                "reason": "one-change acceptance fixture",
+                "validation_impact": "exact test-spec command remains required",
+                "follow_up": "specs/example.test.md#CMD1",
+            },
+            evidence_relative_path="fixtures/scenario-contracts.yaml",
+        )
+
+        result = select_validation(SelectionRequest(mode="explicit", paths=(selected_path,), repo_root=repo))
+        payload = result.to_json_dict()
+
+        self.assertEqual(result.status, "ok")
+        self.assertIn(
+            {"path": evidence_path, "category": "change-local-unsupported"},
+            payload["classified_paths"],
+        )
+        self.assertEqual(payload["blocking_results"], [])
+        debt = next(item for item in payload["registration_debt"] if item["path"] == evidence_path)
+        self.assertEqual(debt["path_class"], "change-local-unsupported")
+        self.assertEqual(debt["verify_readiness"], "owner-deferred")
+        self.assertEqual(debt["deferral_status"], "complete")
 
     def test_owner_deferral_for_different_path_does_not_unblock_evidence(self) -> None:
         repo, evidence_path = self.write_change_with_evidence_deferral(

@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: test-spec-review-r3
+review_stage: test-spec-review
+review_target: specs/code-review-skill-simplification.test.md
+base_revision: 0d9f332c
+head_revision: working-tree
+native_review_status: approved
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-test-spec-revision-r3
+reviewer_context_id: root-test-spec-review-r3-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - command-fixture-trust-root
+  - clean-install-proof
+  - mid-implementation-proof-correction
+governing_artifacts:
+  - specs/code-review-skill-simplification.md
+  - docs/architecture/system/architecture.md
+  - docs/plans/2026-08-10-code-review-skill-simplification.md
+  - specs/code-review-skill-simplification.test.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/code-review-skill-simplification.md
+    sha256: fdf3592a0c8059dbd17936dd690134cd2a6054f4430b36bf984db14cbc06fc0e
+  - path: docs/architecture/system/architecture.md
+    sha256: 9cf16c0b380b089a1c4057d981d07379a6d9145e30e2a852dc5163241ae0a68a
+  - path: docs/plans/2026-08-10-code-review-skill-simplification.md
+    sha256: 1d24471dadda0cc4c00c97dc142e998c1da0ba292a5be75de34da656a9feaebb
+  - path: specs/code-review-skill-simplification.test.md
+    sha256: 0b40574979e75b7a18a4bae9687504c986fbad584e9fdfe25034d73ab8541166
+prompt_template_version: test-spec-review-v1
+manifest_owner: test-spec-review
+forbidden_initial_context_excluded: false
+review_focus:
+  - command validity and trusted fixture identity
+  - proof semantics preservation
+  - cleanup and side-effect boundary
+  - milestone and evidence ownership preservation
+  - target-runtime exclusion

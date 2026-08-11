@@ -228,10 +228,17 @@ RESOURCE_MAP_ENTRY_PATTERN = re.compile(
     r"^\s*-\s*(?P<verb>COPY|READ|RUN)\s+`(?P<path>[^`]+)`",
     re.IGNORECASE,
 )
+PACKAGED_NON_ASSET_RESOURCE_ALLOWLIST = {
+    ("code-review", "references/workflow-managed-automated-review.md"),
+}
+
+
 def _is_approved_packaged_non_asset_resource(
     skill_name: str | None,
     relative_resource: str,
 ) -> bool:
+    if (skill_name, relative_resource) in PACKAGED_NON_ASSET_RESOURCE_ALLOWLIST:
+        return True
     if skill_name not in BOUNDARY_FIRST_GOVERNED_SKILLS:
         return False
     manifest = load_resource_manifest(ROOT)

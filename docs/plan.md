@@ -29,6 +29,7 @@ Current blockers are not recorded in this index.
 
 | Plan | Owning change record |
 | --- | --- |
+| [Code-Review Skill Simplification](plans/2026-08-10-code-review-skill-simplification.md) | [change.yaml](changes/2026-08-10-code-review-skill-simplification/change.yaml) |
 | [Published-Skill-First Repository Simplification](plans/2026-08-10-published-skill-first-repository-simplification.md) | [change.yaml](changes/2026-08-10-published-skill-first-repository-simplification/change.yaml) |
 | [Usability-First Boundary-First v0.4.0 Release](plans/2026-08-06-usability-first-boundary-release.md) | [change.yaml](changes/2026-08-06-usability-first-boundary-release/change.yaml) |
 | [Progressive Boundary-First Skill Guidance](plans/2026-07-29-progressive-boundary-first-skill-guidance.md) | [change.yaml](changes/2026-07-29-progressive-boundary-first-skill-guidance/change.yaml) |

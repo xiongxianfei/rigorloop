@@ -1,0 +1,58 @@
+schema_version: 1
+review_id: code-review-m2-r1
+review_stage: code-review
+review_target: commit 0d9f332c
+base_revision: 698541d70ce0f33764cdd10c1a5505798c014aca
+head_revision: 0d9f332c
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-implement-m2
+reviewer_context_id: root-code-review-m2-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - published-skill-common-path-refactor
+  - conditional-resource-ownership
+  - deterministic-validator-allowlist
+governing_artifacts:
+  - specs/code-review-skill-simplification.md
+  - docs/architecture/system/architecture.md
+  - docs/plans/2026-08-10-code-review-skill-simplification.md
+  - specs/code-review-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/code-review-skill-simplification.md
+    sha256: fdf3592a0c8059dbd17936dd690134cd2a6054f4430b36bf984db14cbc06fc0e
+  - path: docs/architecture/system/architecture.md
+    sha256: 9cf16c0b380b089a1c4057d981d07379a6d9145e30e2a852dc5163241ae0a68a
+  - path: docs/plans/2026-08-10-code-review-skill-simplification.md
+    sha256: 1d24471dadda0cc4c00c97dc142e998c1da0ba292a5be75de34da656a9feaebb
+  - path: specs/code-review-skill-simplification.test.md
+    sha256: 2ee9e9785e371975f7093851bdec03351827613f6b5e79b2ca1ff02a64989ab9
+  - path: skills/code-review/SKILL.md
+    sha256: 08ad1e0f4329291b00eb182fc4c63ac102e739fee477cea7f70d181beecf4946
+  - path: skills/code-review/references/workflow-managed-automated-review.md
+    sha256: ebbe543544111cad91b68882261c69750668bac67668aac0b76e8cf674d52c82
+prompt_template_version: code-review-v1
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+review_focus:
+  - universal-inline-contract completeness
+  - exact conditional-reference trigger
+  - automation-only reference ownership
+  - asset-only repeated output structure
+  - native vocabulary and lifecycle preservation
+  - validator allowlist containment
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded

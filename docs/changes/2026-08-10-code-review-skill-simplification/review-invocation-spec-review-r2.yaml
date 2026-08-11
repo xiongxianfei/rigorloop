@@ -1,0 +1,37 @@
+schema_version: 1
+review_id: spec-review-r2
+review_stage: spec-review
+review_target: specs/code-review-skill-simplification.md
+base_revision: 72ec76dc9b9e1efd6b49da76778d796ed6a330a6
+head_revision: working-tree
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-revision-r2
+reviewer_context_id: root-spec-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - boundary-example-ownership-correction
+  - active-proof-map-input-refresh
+governing_artifacts:
+  - specs/code-review-skill-simplification.md
+  - specs/code-review-skill-simplification.test.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/spec-revision-r2.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/code-review-skill-simplification.md
+    sha256: fdf3592a0c8059dbd17936dd690134cd2a6054f4430b36bf984db14cbc06fc0e
+  - path: specs/code-review-skill-simplification.test.md
+    sha256: 6eaf55ba32e0b208389afa569ef6db835aa726b5ddcf46db55694e07fa0ffbb8
+  - path: docs/changes/2026-08-10-code-review-skill-simplification/evidence/spec-revision-r2.md
+    sha256: a22510b8259a5e84846fa3d1c9ab48984db52affdba212c8dbf955e02bd6db36
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: false
+review_focus:
+  - example-to-boundary requirement intersection
+  - absence of normative behavior change
+  - proof-map compatibility

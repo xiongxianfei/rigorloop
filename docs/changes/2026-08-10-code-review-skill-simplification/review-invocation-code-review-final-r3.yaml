@@ -1,0 +1,55 @@
+schema_version: 1
+review_id: code-review-final-r3
+review_stage: code-review
+review_target: 72ec76dc9b9e1efd6b49da76778d796ed6a330a6..05e6fd53
+base_revision: 72ec76dc9b9e1efd6b49da76778d796ed6a330a6
+head_revision: 05e6fd53
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-pr-gate-vocabulary-correction
+reviewer_context_id: root-code-review-final-r3-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - complete-cross-milestone-diff
+  - published-skill-contract-vocabulary
+  - final-verification-correction
+governing_artifacts:
+  - docs/proposals/2026-08-10-code-review-skill-simplification.md
+  - specs/code-review-skill-simplification.md
+  - docs/architecture/system/architecture.md
+  - docs/plans/2026-08-10-code-review-skill-simplification.md
+  - specs/code-review-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - boundary-first-v1
+  - requirement-fidelity
+initial_packet_inventory:
+  - path: specs/code-review-skill-simplification.md
+    sha256: fdf3592a0c8059dbd17936dd690134cd2a6054f4430b36bf984db14cbc06fc0e
+  - path: docs/architecture/system/architecture.md
+    sha256: 6b054bf958af77efd82475ba023aa81de534017eb0f0d36bcf7840c13506eb37
+  - path: docs/plans/2026-08-10-code-review-skill-simplification.md
+    sha256: 1d24471dadda0cc4c00c97dc142e998c1da0ba292a5be75de34da656a9feaebb
+  - path: specs/code-review-skill-simplification.test.md
+    sha256: 0b40574979e75b7a18a4bae9687504c986fbad584e9fdfe25034d73ab8541166
+prompt_template_version: code-review-v1
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+review_focus:
+  - complete R1-R25 and AC1-AC14 fidelity
+  - shared review-resolution vocabulary preservation
+  - final verification correction scope
+  - package and lifecycle semantic preservation
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - requirement-fidelity-recorded
+  - verdict-recorded

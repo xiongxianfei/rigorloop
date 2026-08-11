@@ -1,0 +1,39 @@
+schema_version: 1
+review_id: architecture-review-r1
+review_stage: architecture-review
+review_target: docs/architecture/system/architecture.md
+base_revision: 72ec76dc9b9e1efd6b49da76778d796ed6a330a6
+head_revision: working-tree
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L0
+author_context_id: root-architecture-authoring-r1
+reviewer_context_id: root-architecture-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - generated-and-installed-package-parity
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/code-review-skill-simplification.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260623-published-skill-resource-integrity.md
+  - docs/adr/ADR-20260810-published-skill-first-validation-architecture.md
+formal_criteria:
+  - architecture-review-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: specs/code-review-skill-simplification.md
+    sha256: 8ccfd6a2cc3f8673fcadad8d66d522ce25fe66fae45c6c62ec2ca3d36404a741
+  - path: docs/architecture/system/architecture.md
+    sha256: f504a03ad8fceda092b778fd9bdee43f8df27dceb7218fb344bc9982902a16bc
+prompt_template_version: architecture-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: false
+review_focus:
+  - spec-to-architecture package proof fidelity
+  - inline and conditional ownership
+  - generated and installed parity
+  - rollback and failure propagation
