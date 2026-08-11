@@ -29,6 +29,7 @@ The goal was to separate final aggregation from universal evidence truthfulness,
 | `scripts/test-skill-validator.py` | Added five focused package-contract tests. | Existing deterministic owners should prove mappings, closed profiles/modes, universal semantics, reference ownership, and fail-safe loading. | R4-R20, R30-R31; CMD3. |
 | Rule/literal ledgers and fixtures | Recorded stable dispositions, classifications, destinations, invalid values, and 17 static scenarios. | No meaningful rule may disappear, and incidental tests must not become prose-policy owners. | R23-R26, R29; CMD1, MP0-MP1. |
 | Measurements and package proof | Recorded every resource/profile/package word and byte count plus generated, archived, and installed validation. | Main-file reduction must not hide relocation, final-profile growth, or adapter loss. | R27-R30, R33; CMD2-CMD8. |
+| CI selector routing evidence | Added five repository-maintainer deferrals for the two change-local ledgers and three static fixtures. | The PR selector must expose unsupported one-change evidence without turning simplification artifacts into permanent evidence classes or silently waiving their approved proof. | R25-R29; CMD1, MP1, and final PR-mode selection. |
 | Change-local lifecycle and review records | Recorded accepted artifacts, four resolved upstream findings, clean M1-M3 reviews, and clean final holistic review. | Formal workflow gates require durable evidence and current state before final verification. | Workflow contract; CMD9-CMD10. |
 
 ## Tests added or changed
@@ -56,6 +57,8 @@ Five permanent focused assertions were added to the existing skill-validator sui
 - Boundary-first, change-metadata, review-structure/closeout, and diff-whitespace checks passed.
 - No target-agent runtime, network publication, or tracked generated-package hand-edit was used.
 
+The first final PR-mode selection correctly stopped on five unsupported change-local evidence paths. CI maintenance recorded owner-approved, exact-path deferrals that retain CMD1, MP1, and focused consumer proof; it changed no selector, registry, workflow, validator, or broad-smoke policy. Final verification must prove those paths appear as visible `owner-deferred` registration debt and that every selected PR check passes.
+
 M2’s first focused run failed as intended because the new reference and contracts did not exist. The full validator initially exposed genuine shared boundary-first, portability, closeout, and final-order contracts; those remained compactly inline. M3 semantic review found five stale rule-ledger destination anchors and corrected them to actual headings before all 16 destinations passed a direct anchor audit.
 
 ## Review resolution summary
@@ -79,10 +82,10 @@ The change does not alter workflow stage order, `change.yaml` schema, review out
 
 ## Risks and follow-ups
 
-The package has one additional mapped file, so exact resource triggers and archive/install parity remain important. Structural assertions cannot prove prose semantics; the retained rule ledger and independent semantic review record that judgment. The common-path word reduction is 26.1%, below the advisory 30-40% range, because universal boundary-first, portability, formal-review, evidence, claim, and result contracts must remain inline. Further extraction would weaken scoped self-sufficiency.
+The package has one additional mapped file, so exact resource triggers and archive/install parity remain important. Structural assertions cannot prove prose semantics; the retained rule ledger and independent semantic review record that judgment. The five exact-path selector deferrals preserve visible registration debt and direct proof obligations but intentionally do not generalize these artifacts into recurring selector classes. The common-path word reduction is 26.1%, below the advisory 30-40% range, because universal boundary-first, portability, formal-review, evidence, claim, and result contracts must remain inline. Further extraction would weaken scoped self-sufficiency.
 
 No follow-up is required for this scoped change. Other skill simplifications require separate proposals.
 
 ## Readiness
 
-All implementation milestones and review obligations are closed, and this explanation covers the final reviewed diff through `8e14257f`. Final `verify` must still rerun the required repository checks and owns any `branch-ready` result. This artifact does not claim PR, hosted-CI, release, or merge readiness.
+All implementation milestones remain closed. This explanation now covers the verify-triggered CI routing correction, which requires focused final rereview before final `verify` reruns the repository checks. This artifact does not claim PR, hosted-CI, release, or merge readiness.
