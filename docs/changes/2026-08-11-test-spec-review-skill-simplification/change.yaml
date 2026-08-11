@@ -17,13 +17,30 @@ artifact_states:
       round: r2
 workflow_state:
   lifecycle_state: active
-  current_stage: proposal
-  next_stage: proposal-review
+  current_stage: spec
+  next_stage: spec-review
   blocker: null
   evidence:
     - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/proposal-authoring.md
     - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r1.md
-workflow: {}
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r2.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: test-spec-review
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-11T19:52:06Z"
+      completion:
+        rule: formal test-spec review is recorded
+    status: active
+    current_stage: spec
+    stop_reason: null
+    evidence:
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r2.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
 artifacts:
   proposal: docs/proposals/2026-08-11-test-spec-review-skill-simplification.md
 requirements:
@@ -39,6 +56,7 @@ changed_files:
   - docs/changes/2026-08-11-test-spec-review-skill-simplification/change.yaml
   - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/proposal-authoring.md
   - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/proposal-revision-r2.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
   - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-log.md
   - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-resolution.md
   - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r1.md
