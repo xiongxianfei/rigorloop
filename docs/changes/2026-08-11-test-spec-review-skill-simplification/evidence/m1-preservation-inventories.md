@@ -6,7 +6,7 @@ Status: implementation-complete; review pending
 
 The complete 359-line baseline `skills/test-spec-review/SKILL.md`, both boundary references, both assets, and bounded consumers in skill validation, workflow automation, lifecycle settlement, review-artifact validation, boundary projection, package generation, and adapter validation were inspected before prose movement.
 
-Eighteen semantic-rule rows account for stage authority, invocation classification, evidence inputs, boundary loading, proof adequacy, statuses and routing, staleness, stops, findings, recording activation, shared recording, formal settlement, structural assets, resource failure, isolation, and bounded evidence reading. Sixteen literal rows separately classify normative and parser/package dependencies. No semantic rule or literal is classified obsolete.
+Nineteen semantic-rule rows account for stage authority, invocation classification, evidence inputs, boundary loading, proof adequacy, statuses and routing, staleness, stops, findings, recording activation, shared recording, formal settlement, structural assets, resource failure, isolation, generated-Markdown readability, and bounded evidence reading. Sixteen literal rows separately classify normative and parser/package dependencies. No semantic rule or literal is classified obsolete.
 
 The static scenario fixture contains exactly the sixteen approved identities with non-empty required and forbidden outcomes. Negative fixtures prove unknown semantic dispositions and literal classifications fail before field or destination consistency checks.
 
@@ -27,3 +27,5 @@ Unchanged with rationale:
 - Adapter/package tooling: the mapped package has not changed yet.
 
 CMD1 and change-metadata validation provide deterministic structure proof. This semantic audit provides the non-mechanical completeness check required by MP0. M1 does not close the milestone or claim downstream readiness; it becomes eligible for independent code review after validation succeeds.
+
+Correction evidence: code review finding `TSRSIM-CR-M1-R1-001` identified the omitted generated-Markdown-readability rule cluster. The accepted mechanical correction adds `TSR-RULE-READABILITY-001`, updates the count to 19, leaves canonical skill files unchanged, and requires CMD1 plus independent rereview before M1 closeout.
