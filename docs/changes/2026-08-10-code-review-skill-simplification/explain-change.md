@@ -30,7 +30,8 @@ Simply deleting prose or enforcing a size percentage would risk weakening the pu
 - Verify R1 found architecture ownership and selector-routing blockers.
 - Architecture revision R2 transferred the canonical architecture pointer to this change, and architecture-review R3 approved the correction.
 - CI maintenance reused the existing owner-deferral contract for nested deterministic evidence and restored the existing “selected checks” semantic in the simplified skill.
-- Final holistic code-review R2 approved the complete corrected diff with no material findings.
+- The first fresh PR-mode verify run exposed a case-sensitive shared review-resolution vocabulary regression; the skill now preserves the lowercase `required outcome` and `safe resolution` literals without changing their meaning.
+- Final holistic code-review R3 approved the complete corrected diff with no material findings.
 
 ## Diff rationale by area
 
@@ -38,6 +39,7 @@ Simply deleting prose or enforcing a size percentage would risk weakening the pu
 | --- | --- | --- | --- |
 | `skills/code-review/SKILL.md` | Reorganized the common path around purpose, authority, stops, review sequence, finding/status rules, recording, claims, handoff, and resource loading; removed repeated templates and conditional automation detail. | Keeps every direct or isolated review self-sufficient while eliminating common-path repetition. | `R1`-`R8`, `R10`, `R17`, `R19`; T2-T6, T8, T12; M2 and MP1. |
 | `skills/code-review/SKILL.md` validation sentence | Names “selected checks and validation evidence.” | Restores the existing validation-layering contract exposed by the full selector regression suite. | `test_workflow_guidance_aligns_with_validation_layering_contract`; refreshed CMD10 and CMD11. |
+| `skills/code-review/SKILL.md` finding sentence | Preserves lowercase `evidence`, `required outcome`, and `safe resolution path` literals. | Maintains the shared review-resolution vocabulary contract while retaining the same finding fields and semantics. | `test_review_stage_skills_align_with_review_resolution_contract`; final holistic code-review R3. |
 | `skills/code-review/references/workflow-managed-automated-review.md` | Added the single conditional procedure for formally armed workflow-managed automated review or correction loops. | Automation phases and correction-loop procedure do not need to load for ordinary reviews. | `R5`-`R7`, `R23`-`R25`; T3-T5, T13-T14; CMD3 and CMD6. |
 | Existing `skills/code-review/assets/` | Retained the mapped review-result and finding assets as the only repeated output structures. | Prevents inline and asset templates from drifting while leaving policy in `SKILL.md`. | `R4`, `R7`, `R11`, `R21`-`R22`; T4, T6-T8. |
 | `scripts/skill_validation.py` | Added a narrow allowlist for the exact workflow-managed automation reference mapping. | Extends the existing mapped-resource owner instead of creating a validator family. | `R4`, `R8`-`R10`, `R15`-`R16`; CMD2 and CMD3. |
@@ -56,6 +58,7 @@ Simply deleting prose or enforcing a size percentage would risk weakening the pu
 - Adapter-distribution tests and trusted `v0.3.6` temporary archives prove the canonical skill, conditional reference, and assets across Codex, Claude, and opencode packages and clean temporary installations.
 - MP1 checks trigger clarity, ownership, prerequisites, operating sequence, evidence, stops, claim boundaries, outputs, handoff, and the conditional load trigger.
 - The selector regression proves that a complete deferral can unblock exact nested evidence while missing, incomplete, or mismatched deferrals remain blocking.
+- The review-artifact regression proves that review-stage skills preserve the shared finding and resolution vocabulary.
 - No test executes a target agent.
 
 ## Validation evidence available before final verify
@@ -71,6 +74,7 @@ Simply deleting prose or enforcing a size percentage would risk weakening the pu
 - `python scripts/test-select-validation.py` passed 153 tests.
 - Explicit selection of the ledger and fixtures returned no blockers and three visible complete owner deferrals.
 - PR-mode selection through reviewed commit `76b94468` returned 13 selected checks, no blockers, three owner-deferred records, and no broad-smoke requirement.
+- The first full PR-mode execution after R2 found the lowercase review-resolution vocabulary regression; the focused 103-test review-artifact suite passed after the capitalization-only correction.
 - Explicit lifecycle validation passed after the architecture ownership transfer.
 - Review-artifact structure validation passed with 18 reviews and nine resolved findings.
 - Final verification has not yet been claimed.
@@ -111,5 +115,5 @@ Implementation reviews M1, M2, M3, final R1, architecture-review R3, and final h
 ## Readiness
 
 All implementation milestones, architecture correction, CI-maintenance correction, and final holistic code review are closed.
-This explanation is current for reviewed commit `76b94468` and is ready for final `verify`.
+This explanation is current for reviewed commit `05e6fd53` and is ready for final `verify`.
 It does not claim branch or PR readiness before that stage runs.

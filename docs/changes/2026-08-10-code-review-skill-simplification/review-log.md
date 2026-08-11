@@ -7,6 +7,18 @@ This ledger records formal lifecycle reviews for the code-review skill simplific
 ## Review Entries
 
 ### Review entry
+Review ID: code-review-final-r3
+Stage: code-review
+Round: r3
+Reviewed artifact: complete diff 72ec76d..05e6fd53
+Status: clean-with-notes
+Detailed record: reviews/code-review-final-r3.md
+Resolution: review-resolution.md#code-review-final-r3
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
 Review ID: code-review-final-r2
 Stage: code-review
 Round: r2
