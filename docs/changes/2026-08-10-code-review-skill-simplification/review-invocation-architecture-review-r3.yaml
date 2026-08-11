@@ -1,0 +1,38 @@
+schema_version: 1
+review_id: architecture-review-r3
+review_stage: architecture-review
+review_target: docs/architecture/system/architecture.md
+base_revision: 7ce9b523
+head_revision: working-tree
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-architecture-ownership-revision-r2
+reviewer_context_id: root-architecture-review-r3-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - canonical-architecture-ownership-transfer
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/code-review-skill-simplification.md
+  - docs/architecture/system/architecture.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/verify-report.md
+  - docs/changes/2026-08-10-code-review-skill-simplification/evidence/architecture-ownership-revision-r2.md
+formal_criteria:
+  - architecture-review-v1
+initial_packet_inventory:
+  - path: specs/code-review-skill-simplification.md
+    sha256: fdf3592a0c8059dbd17936dd690134cd2a6054f4430b36bf984db14cbc06fc0e
+  - path: docs/architecture/system/architecture.md
+    sha256: 6b054bf958af77efd82475ba023aa81de534017eb0f0d36bcf7840c13506eb37
+  - path: docs/changes/2026-08-10-code-review-skill-simplification/evidence/architecture-ownership-revision-r2.md
+    sha256: 672f9237e8e43bc4fa11057feb36b42b16ca78743d7871770f615cd2df4cea1a
+prompt_template_version: architecture-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: false
+review_focus:
+  - canonical ownership pointer
+  - single normalized lifecycle owner
+  - preservation of approved package design
+  - ADR and diagram impact

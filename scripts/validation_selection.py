@@ -1542,6 +1542,27 @@ def _apply_path_selection(
             blocking_results.append(debt_result)
         return
 
+    if category == "change-local-unsupported":
+        root = _change_root(path)
+        if root:
+            affected_roots.add(root)
+        governing_change_yaml = _change_root_change_yaml(path)
+        deferral = evaluate_evidence_registration_deferral(
+            evidence_path=path,
+            change_yaml_path=repo_root / governing_change_yaml if governing_change_yaml else None,
+            change_root=root,
+        )
+        debt_result = _evidence_registration_debt_result(
+            path,
+            deferral,
+            path_class="change-local-unsupported",
+        )
+        if deferral.status == "complete":
+            registration_debt.append(debt_result)
+        else:
+            blocking_results.append(debt_result)
+        return
+
     if category == "architecture-diagram":
         architecture_doc = _architecture_doc_for_diagram(path)
         _add_check(
@@ -2018,11 +2039,13 @@ def _add_lifecycle_warning_check(
 def _evidence_registration_debt_result(
     evidence_path: str,
     deferral: EvidenceDeferralStatus,
+    *,
+    path_class: str = "unregistered-change-evidence",
 ) -> dict[str, Any]:
     result: dict[str, Any] = {
         "code": "manual-routing-required",
         "path": evidence_path,
-        "path_class": "unregistered-change-evidence",
+        "path_class": path_class,
         "affected_class": "change-local evidence",
         "manual_routing_required": True,
         "debt": "evidence-registration",
