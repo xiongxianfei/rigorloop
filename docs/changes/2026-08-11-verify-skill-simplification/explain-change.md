@@ -67,7 +67,7 @@ M2’s first focused run failed as intended because the new reference and contra
 
 All four material upstream findings are accepted and closed: three proposal findings established target/mode/evidence ownership, and one test-spec finding aligned rollback proof with the trusted package fixture. There are no `needs-decision` or open review-log findings. See `review-resolution.md` for dispositions without repeating the review transcripts.
 
-M1, M2, M3, and the initial final holistic code review are clean with no material implementation finding. Focused final review R2 also approved the verify-triggered selector-routing correction through `b6b715be` with no material finding.
+M1, M2, M3, and the initial final holistic code review are clean with no material implementation finding. Focused final review R2 approved the selector-routing correction, and R3 approved the closeout-literal compatibility correction through `4ca4d706`, both with no material finding.
 
 ## Alternatives rejected
 
@@ -90,4 +90,4 @@ No follow-up is required for this scoped change. Other skill simplifications req
 
 ## Readiness
 
-All implementation milestones and review obligations are closed. This explanation covers the complete package change and the verify-triggered CI routing correction approved by final review R2. Final `verify` must still rerun the required repository checks and owns any `branch-ready` result. This artifact does not claim PR, hosted-CI, release, or merge readiness.
+All implementation milestones and review obligations are closed. This explanation covers the complete package change, selector-routing correction, and closeout-literal correction approved through final review R3. Final `verify` must still rerun the required repository checks and owns any `branch-ready` result. This artifact does not claim PR, hosted-CI, release, or merge readiness.
