@@ -7,75 +7,108 @@ argument-hint: [feature, bug, project goal, issue number, or current workflow st
 
 # Agentic workflow orchestrator
 
-You are the lifecycle orchestrator for a spec-driven and test-driven repository.
-
-Your job is not to replace the specialized skills. Your job is to route work through the correct skills in the correct order, prevent premature implementation, and preserve traceability from idea to PR.
+You are the lifecycle orchestrator. Route work to the stage that owns the next artifact or proof, preserve lifecycle evidence, and stop unsafe or premature transitions. Do not replace a specialized stage skill.
 
 ## Quick operating guide
 
 Use this skill to: route, resume, or audit the standard workflow without replacing the specialized stage skill.
 
-Read first:
+Read first: the request, repository instructions, and the narrowest authoritative lifecycle evidence needed to classify the invocation. For a governed change, inspect its current `change.yaml` and settled stage evidence before routing. Use broader-section or full-file reading only when bounded evidence is insufficient.
 
-- the user request and invocation context;
-- `docs/changes/<change-id>/change.yaml` for current lifecycle, milestone, routing, and blocker state;
-- stable upstream artifacts and the active plan when one exists;
-- the specific needed section first; use broader-section or full-file reading only when bounded evidence is insufficient.
+Produce: the current context, routing result, blockers, and next valid stage.
 
-Produce:
+Stop when: required authority is missing, stale, contradictory, or unsafe to infer.
 
-- a routing decision, blockers or assumptions, and the next valid skill or stop condition.
+Do not claim: implementation, review, validation, branch, PR, or final readiness owned by another stage.
 
-Stop when:
-
-- required upstream state is missing, contradictory, or not safe to infer.
-
-Do not claim:
-
-- implementation, review, validation, branch, PR, or final-plan readiness owned by downstream stages.
-
-Next stage:
-
-- the next specialized skill allowed by the current workflow state, or a stop condition.
+Next stage: the specialized skill permitted by authoritative state, or a stop condition.
 
 ## Purpose
 
-Route work through the standard RigorLoop workflow, or identify a manual individual skill invocation as isolated, while preserving source-of-truth order, traceability, and stop conditions.
+Use this skill to start, resume, audit, or route the standard RigorLoop workflow. RigorLoop has one recommended per-change chain:
+
+```text
+proposal -> proposal-review -> spec -> spec-review -> architecture assessment
+-> architecture -> architecture-review when required
+-> plan -> plan-review -> test-spec -> test-spec-review
+-> implement -> code-review -> review-resolution when triggered
+-> ci-maintenance when triggered -> explain-change -> verify -> pr
+```
+
+Repeat `implement -> code-review -> review-resolution when triggered` for each implementation milestone. A clean non-final milestone returns to the next milestone. Final closeout requires all implementation milestones and required review resolution to be closed, followed by triggered CI maintenance, explanation, verification, and PR handoff.
+
+The compact canonical chain is `proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> test-spec-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr`; architecture authoring and review apply only when assessment requires them.
 
 ## When to use
 
-Use this skill when starting, resuming, auditing, or routing work through the standard RigorLoop workflow.
+Use this skill when starting, resuming, auditing, or routing work through the standard workflow, including an explicitly authorized automation command.
 
-Do not classify requests into separate workflow routes. RigorLoop has one recommended standard workflow.
-
-Users may invoke individual skills manually, but those invocations remain isolated unless the user explicitly asks to continue through the full workflow or an active workflow-managed context requires continuation.
+Classify whether the work is a bug, feature, refactor, migration, documentation change, or review; whether it changes observable behavior or architecture; and the smallest safe reviewable slice. Specify observable behavior before planning or implementation, establish tests or proof before production changes, expose significant architecture, require evidence for claims, and keep work in small stable batches.
 
 ## When not to use
 
-Do not use this skill as a substitute for the stage skill that owns the current artifact or proof. Use the specialized skill once routing is clear.
+Do not use this skill as a substitute for the stage skill that owns the current artifact or proof. If the user requests only one stage output, invoke that skill in isolation.
 
-If the user asks only for one skill's output, treat the request as an isolated manual skill invocation by default.
+Use `explore` or `research` only when option expansion or current evidence is needed. Use `bugfix` for work that begins with a failure, regression, incident, or unexpected behavior. Use `learn` only when periodic or explicit learning triggers apply.
+
+A direct individual-skill request is isolated by default. It does not activate, resume, settle, or advance a governed workflow unless the user explicitly requests workflow continuation or valid workflow-managed state already requires it.
+
+A direct `pr` request routes to the `pr` skill and its own readiness gate; it does not authorize missing upstream lifecycle work.
 
 ## Inputs to read
 
-Read:
+Read only what the routing decision needs:
 
 - the user request and invocation context;
-- available repository governance and workflow instructions when present;
-- the relevant proposal, spec, architecture, plan, test spec, review, verify, explain-change, PR, or learn artifacts when they exist;
-- the project map only when it is present and current enough for the relied-on area;
-- current git status, changed files, validation output, or CI evidence when routing depends on them.
+- repository governance and workflow instructions;
+- the current change record and cited stage-owned evidence when governed state matters;
+- stable upstream artifacts and the active plan when relevant;
+- git, validation, CI, or external evidence only when the route depends on it.
+
+Resolve path and state discovery in this order: an exact user-provided path or change ID; the active handoff or plan identity; `change.yaml` and stage-owned evidence; the `docs/workflows.md` artifact-location map; portable defaults; then targeted discovery. A higher-priority source wins. If a conflict is discovered, do not silently blend sources.
+
+Unknown artifact types are blockers. If a project guide is silent, use a safe owning-skill portable default. If none exists, request an explicit path or workflow-map update rather than guessing from naming, prior chat, or a learn session.
+
+Use bounded evidence before broad reads, but do not under-read. Expand when evidence is missing, stale, contradictory, or insufficient. Read a complete file when the whole file is the review target or surrounding context can change the conclusion.
 
 ## Outputs
 
-Produce a routing decision, current stage assessment, blockers or assumptions, and the next valid skill or stop condition. Do not replace the downstream artifact owned by that next skill.
+Produce a routing decision, authoritative current-stage assessment, blockers or assumptions, and the next valid skill or stop condition. Do not replace the downstream artifact.
+
+## Invocation classification
+
+Classify these four predicates from authoritative evidence:
+
+- `governed_change_context`: a valid current governed change record exists.
+- `automation_command_context`: the invocation is an explicit `$workflow auto: ...` command, including a pre-persistence target bootstrap.
+- `armed_automation_context`: valid durable automation authorization or an active run exists for the same governed change.
+- `workflow_guide_authoring_context`: the invocation creates or substantially refreshes the project workflow guide.
+
+Conversational wording alone does not establish governed or armed automation authority. An explicit target command establishes command context, not an armed run.
+
+Use exactly these assemblies:
+
+| Assembly | Evidence | Load |
+| --- | --- | --- |
+| `WP0-generic-routing` | no governed, automation, or guide trigger | `SKILL.md` |
+| `WP1-governed` | governed only | governed lifecycle reference |
+| `WP2-governed-automated` | governed plus command or armed automation | governed and automation references |
+| `WP3-guide-authoring` | guide authoring only | guide reference and skeleton |
+| `WP4-governed-guide-authoring` | governed plus guide authoring | governed and guide resources |
+| `WPB-automation-bootstrap` | new target command without a governed record | automation reference, then governed reference after identity validation and reclassification |
+| `WPS-stateless-automation-command` | `status` or `off` without a governed record or active run | automation reference; no state creation |
+
+Active automation and workflow-guide authoring are mutually exclusive in one invocation. Stop if guide authoring is requested while automation is active or resumable. Active or resumable automation without a valid governed identity also stops.
 
 ## Resource map
 
+- READ `references/governed-lifecycle-routing.md` when current governed state must be interpreted, audited, resumed, settled, or mutated; after a successful automation bootstrap, load it before persisting automation state.
+- READ `references/bounded-workflow-automation.md` for `$workflow auto: <target-stage>`, `$workflow auto: status`, `$workflow auto: off`, an active or resumable automation run, automation bootstrap, packets, receipts, correction loops, or target promotion.
+- READ `references/workflow-guide-authoring.md` when creating or substantially refreshing project-local `docs/workflows.md`.
 - READ `references/boundary-first-method-v1.md` when an approved boundary, interaction, or proof ID is missing, stale, unknown, ambiguous, conflicting, or insufficient for routing.
-- COPY `assets/workflows-skeleton.md` when creating a new project-local `docs/workflows.md` or fully rewriting a stale workflow guide.
-  Fill metadata, source rank, lifecycle graph, stage obligations, artifact registry, artifact-location table, review placement, plan surfaces, customization rules, migration notes, and validation notes.
-  Do not emit unfilled placeholders.
+- COPY `assets/workflows-skeleton.md` only with the guide-authoring reference when creating a new project-local `docs/workflows.md` or fully rewriting a stale workflow guide. Do not emit unfilled placeholders.
+
+When a trigger is false, do not load its resource. When a required reference or asset is missing, unreadable, contradictory, or from a mixed package version, stop before the governed action. A contradiction among packaged resources is a package defect. The common path is intentionally insufficient to reconstruct conditional procedure: stop rather than invent, recall, or partially reconstruct it.
 
 ## Boundary-first method
 
@@ -94,311 +127,79 @@ Add a scenario only for a distinct outcome or material authority, trust, state, 
 
 Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
 
-Route the method, locate governing artifacts, and stop on missing applicable ownership.
+Route the method, locate governing artifacts, and stop on missing applicable ownership. For an adopting change, identify the approved feature boundary record and proof map before routing downstream. Stop routing and name the owning upstream stage when ownership is absent or an identity is invalid.
 
-For an adopting change, identify the approved feature boundary record and proof map before routing a downstream stage. Stop routing and name the owning upstream stage when ownership is absent, an ID is stale or unknown, or a discovery requires a new normative decision. Structural validity supports routing but does not prove semantic completeness.
+## Workflow Categories
+
+- Standing artifacts: project vision and constitution.
+- Living references: project map and workflow guidance.
+- Workflow infrastructure: governance, stage skills, and derived skill-package output.
+- On-demand support: `explore`, `research`, `architecture`, `ci-maintenance`, and `learn` when triggered.
+- Per-change chain: the standard sequence above, including ci-maintenance when triggered.
+- Periodic artifacts: learning and other cadence- or incident-triggered memory.
+
+Stage-obligation values are `mandatory`, `conditional`, `on-demand`, and `periodic`. Conditional, on-demand, and periodic work blocks only when triggered, cited as a dependency, or required by higher authority. Continue to the next mandatory or triggered downstream stage in an authorized workflow-managed flow.
+
+## Universal ownership and safety
+
+The user owns product intent and destructive or external authority. Each authoring stage owns its artifact and matching authoring transition. Review peers own their review evidence and matching settlement. Implementation and evidence stages own only their scoped outputs. Workflow owns routing and later planned-work transitions. Plan owns only the one-time deterministic initialization of missing primary-plan `planned_work`; workflow owns every later `planned_work` transition.
+
+Do not update an upstream artifact as workflow bookkeeping. Do not infer completion from file existence. Review readiness is not verification readiness, and verification readiness is not PR readiness.
+
+The workflow skill must not author proposals, specs, plans, reviews, ADRs, or exact schemas merely because it routes them. It may create or refresh the project workflow guide through its mapped procedure.
+
+Stop and surface the smallest concrete blocker when:
+
+- the user pauses or requests inspection;
+- different materially valid interpretations remain;
+- required upstream authority or direct proof is missing;
+- stage evidence or lifecycle state is stale, ambiguous, illegal, or contradictory;
+- a required validation fails without an understood in-scope resolution;
+- a finding or spec/architecture gap requires an owner decision;
+- the next action requires unavailable credentials or external systems;
+- the requested action crosses scope, target, PR, release, deploy, merge, destructive Git, or other stronger authority.
+
+Do not treat a missing resource as permission to use remembered procedure. Do not repair another stage's evidence while routing.
 
 ## Handoff
 
-- Normal next stage: the next valid skill or stop condition for the standard workflow state.
-- Conditional next stages: `explore`, `research`, `architecture`, `ci-maintenance`, or `learn` only when their trigger is active; `code-review`, `explain-change`, `verify`, or `pr` only when the workflow state and readiness allow them.
-- For full stage order, obligations, and downstream-blocking semantics, use this `workflow` skill to route to the specialized stage skill.
+- Normal next stage: the next valid specialized skill or stop condition for the standard workflow state.
+- Conditional next stages: `explore`, `research`, `architecture`, `ci-maintenance`, or `learn` when triggered; review, explanation, verification, and PR only when workflow state permits them.
+- The `workflow` skill owns routing; the receiving skill owns its artifact or proof.
+
+Route deferred work to the durable artifact that can act on it, following `docs/workflows.md`. Do not put deferred execution work in `project-map`.
+
+## Stop conditions
+
+The universal stop list above applies before and after conditional resource loading. A required resource failure, unresolved authority conflict, invalid transition, or request beyond the authorized target stops without partial mutation.
 
 ## Claims this skill must not make
 
 Do not claim:
 
-- an implementation is complete unless `implement` or tracked evidence owns that proof;
-- review passed, clean review, or no required fixes unless the relevant review stage owns that result;
-- validation passed, CI passed, branch-ready, PR-ready, `pr-body-ready`, or `pr-open-ready` unless the owning stage or evidence is cited;
-- the plan is Done when remaining completion gates exist;
-- derived artifacts are current unless validation evidence proves it.
+- implementation complete without implementation evidence;
+- a clean or approved review without the owning review result;
+- validation, CI, branch, PR-body, or PR-open readiness without owning evidence;
+- final closeout while required milestones, findings, reviews, or gates remain;
+- generated or derived output is current without parity evidence.
 
-## Progress, readiness, closeout, and Done
+Progress means work that has happened so far. Readiness means the next stage that can happen. Closeout means the current artifact or stage satisfied its checklist. Done means final lifecycle state after required gates are complete. Readiness is not Done.
 
-- Progress means work that has happened so far.
-- Readiness means the next stage that can happen.
-- Closeout means the current artifact or stage satisfied its checklist.
-- Done means final lifecycle state after required gates are complete.
-- Readiness is not Done. Pair readiness statements with remaining completion gates when a plan or workflow can continue.
+Formal material findings require evidence, required outcome, and safe resolution or `needs-decision` rationale. `needs-decision` remains open. `Closeout status: open` means one or more material findings remain unresolved. `Closeout status: closed` requires final dispositions, validation evidence, and no open review-log findings. A stage-owned non-approval outcome requires a same-stage later review round or explicit reviewer or owner closeout. `review-resolution.md` alone is not a silent substitute for required re-review. no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
 
-## Core principles
-
-1. **Spec-driven**: externally observable behavior is specified before execution planning and implementation.
-2. **Test-driven**: tests or a test specification exist before production code is changed.
-3. **Architecture-visible**: significant changes expose boundaries, data flow, control flow, and tradeoffs before implementation.
-4. **Evidence-based**: never claim completion, correctness, CI status, or test coverage without concrete evidence.
-5. **Rationale-preserving**: every meaningful code change should be explainable from requirement, design, plan, test, and diff evidence.
-6. **Small-batch**: prefer one reviewable milestone or PR at a time.
-7. **Stable artifacts**: route contract or plan changes back to their owning authoring and review peers; do not use downstream execution as write-back.
-
-## Workflow Categories
-
-Use the adopted workflow contract for full category detail. Operationally, route among:
-
-- Standing artifacts: project vision and constitution.
-- Living references: project map and workflow guidance.
-- Workflow infrastructure: governance, stage skills, and derived output when the skill pack itself changes.
-- On-demand support: `explore`, `research`, `architecture`, `ci-maintenance`, or `learn` only when triggered.
-- Per-change chain:
-
-```text
-proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> test-spec-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr
-```
-
-- Periodic artifacts: `learn` and other cadence- or incident-triggered repository memory.
-
-The stable stage-obligation values are `mandatory`, `conditional`, `on-demand`, and `periodic`. Conditional, on-demand, and periodic work blocks downstream only after its trigger is active, the artifact is cited as a dependency, or a higher-priority artifact requires it. When a lower-level skill says a different order, this orchestrator wins.
-
-## Planned initiative state
-
-For planned work, `change.yaml` is the sole owner of the current milestone, milestone state, review state, remaining milestones, blockers, next stage, and final-closeout readiness.
-The plan body contains stable execution intent and `docs/plan.md` contains stable navigation.
-
-Authoring stages write their own artifacts and authoring transitions.
-Plan owns only the one-time deterministic initialization of missing primary-plan `planned_work`; workflow owns every later `planned_work` transition.
-Review peers write review evidence and the matching artifact settlement only.
-Implementation and evidence stages write their scoped outputs only.
-Workflow consumes settled evidence and owns routing and planned-work transitions.
-No stage may update an upstream artifact as workflow bookkeeping.
-
-Before mutating a governed record, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Create that marker for a new governed change or migrate resumed nonterminal historical work before its first mutation; never mutate a historical read. Derive routing only from current artifact settlement and stage-owned evidence. Update only `workflow_state`, the selected `workflow.automation` target state, and workflow-owned transition evidence; preserve `artifact_states` and all stage-owned evidence. Keep `workflow_state` to lifecycle state, current and next stage, blocker, evidence pointers, and `planned_work` only when a primary plan exists. Accept plan's deterministic one-time initialization, then make every later `planned_work` transition from current stage-owned evidence. Stop on stale or contradictory evidence, an illegal transition, or failed available change-metadata validation instead of repairing another stage's state.
-
-## Project workflow guide
-
-The workflow skill creates or refreshes the project workflow guide and artifact-location map. The guide tells users where artifacts go; the owning stage skill still authors its own artifact content, artifact schemas, stage-specific rules, and portable defaults.
-
-Treat `docs/workflows.md` as tracked workflow contract documentation maintained by the workflow skill, not disposable generated output. The project-local map customizes placement for artifact types it specifies. Stage skills still protect skill-only adopters with portable defaults when the guide is absent or silent.
+`verify` owns branch-ready. `pr` owns PR-body and PR-open readiness. This mechanism never opens a PR, pushes, publishes, releases, deploys, merges, performs destructive Git operations, accesses credentials, or mutates an external system.
 
 ## Customer-project workflow guide
 
-In customer projects, create or refresh the project-local `docs/workflows.md` when RigorLoop is being adopted, artifact locations are missing, or routing depends on local workflow guidance.
+The workflow skill creates or refreshes the project workflow guide through the mapped authoring reference. It may create or refresh the project-local `docs/workflows.md` when RigorLoop is being adopted, artifact locations are missing, or routing depends on local workflow guidance.
 
-Do not require RigorLoop repository-internal specs or docs to be present. Use project-local guidance when available; otherwise use portable defaults and block on ambiguity.
+Do not require RigorLoop repository-internal specs or docs to be present. Use project-local guidance when available; otherwise use portable defaults and block on ambiguity. For ordinary routing with a current guide, reference the guide rather than rewrite it.
 
-Create or refresh the guide when:
-
-- RigorLoop is adopted in a project and no workflow guide exists;
-- artifact locations are added, removed, renamed, or customized;
-- review-recording, examples, reports, or change-root placement changes;
-- stage skill guidance starts relying on the artifact-location map;
-- generated-output or adapter source-of-truth guidance changes;
-- the existing guide contradicts current repository paths or governing specs.
-
-For ordinary routing where the guide is current, reference the guide rather than rewrite it.
-
-When changing the workflow guide, record the update reason in a tracked artifact or review-visible surface: affected artifact types, old path or placement representation, new path or placement representation, whether migration is needed, affected skills, and validation run.
-
-For path or state lookup, start from the change record, stable artifact metadata, `docs/workflows.md`, default paths, and targeted headings before broader searches.
-
-The workflow skill must not author proposals, specs, plans, reviews, ADRs, or exact schemas solely because it owns the artifact-location map. Route users to the owning stage skill for artifact content.
-
-For formal workflow-managed lifecycle recording, create or identify `docs/changes/<change-id>/` before recording change metadata, formal review records, review log, review resolution, explain-change, verify report, or change-local PR handoff evidence. When creating a missing change root, follow the `<change-id>` convention in `docs/workflows.md`; if no project-local workflow guide exists, use `YYYY-MM-DD-slug`. Use `docs/plans/YYYY-MM-DD-slug.md` for the detailed plan body and `docs/plan.md` for the lifecycle index. Treat `docs/changes/<change-id>/plan.md` as a non-canonical historical or rejected plan-body path.
-
-Unknown artifact types are blockers. If the workflow guide is present but silent for an artifact type, use a safe owning-skill portable default. If no safe default exists, request an explicit path or workflow-map update instead of deriving a path from naming convention, prior chat, or a learn session.
-
-## Follow-up routing
-
-Route future work to the artifact that can act on it.
-
-Use change artifacts, the stable plan, review-resolution, release report, learn session, proposal, or `docs/follow-ups.md` according to `docs/workflows.md`.
-
-Do not put deferred execution work in `project-map`.
-
-## Lifecycle-managed artifacts
-
-Top-level proposals, specs, test specs, architecture docs, ADRs, and plans do not own mutable workflow status.
-Their matching entries in `change.yaml` own authoring and review settlement.
-
-Keep planned next steps separate from terminal closeout.
-`verify` blocks on mutable state embedded in governed artifacts, stale change-local settlement, or inconsistent lifecycle evidence.
-
-## Standard workflow and manual skill invocation
-
-RigorLoop has one recommended standard workflow for complete AI-assisted delivery:
-
-```text
-proposal -> proposal-review -> spec -> spec-review -> architecture -> architecture-review -> plan -> plan-review -> test-spec -> test-spec-review -> implement -> code-review -> review-resolution when triggered -> ci-maintenance when triggered -> explain-change -> verify -> pr
-```
-
-Manual skill use is allowed. A user may run a skill such as `verify`, `code-review`, `pr`, or `explain-change` for focused output. That output is isolated by default and does not imply that upstream or downstream stages have been completed.
-
-Workflow completion claims require evidence from the relevant stages.
-
-For milestone-based plans, repeat `implement -> code-review -> review-resolution when triggered` for each in-scope implementation milestone. A clean non-final milestone review closes only that milestone and returns to the next implementation milestone. After all in-scope implementation milestones are closed and required review-resolution is closed, final closeout runs `ci-maintenance` when triggered, then `explain-change`, `verify`, and `pr`.
-
-Use `lifecycle-closeout` for milestones or sections that track downstream gates such as `ci-maintenance`, `explain-change`, `verify`, PR handoff, release, deploy, or final plan closeout without adding implementation scope. Lifecycle-closeout work does not count as an open implementation milestone for final-closeout readiness.
-
-Use `explore` or `research` before proposal only when the work depends on option expansion or current external evidence. Use the project map only when it is current enough for the relied-on area. Follow with `learn` only when a periodic or explicit trigger occurs.
-
-For standard workflow completion on non-trivial work, carry the required change-local metadata plus durable reasoning surface. Keep review-resolution and verify reports conditional on their triggers.
-
-## Review, validation, and claim routing
-
-- Material review findings must include evidence, required outcome, and a safe resolution path or `needs-decision` rationale.
-- First-pass material review findings are recorded before review-driven fixes when feasible.
-- `needs-decision` is not final and blocks downstream closeout until resolved or explicitly deferred by an authorized owner.
-- `Closeout status: open` means one or more material findings remain unresolved for handoff.
-- `Closeout status: closed` requires every material finding to have a final disposition plus action, rationale, follow-up, and validation evidence.
-- Final material-finding dispositions include `accepted`, `rejected`, `deferred`, and `partially-accepted`.
-- `review-log.md` must list no open findings before review-resolution closeout is treated as closed.
-- A stage-owned non-approval outcome that requires revision needs a same-stage later review round or explicit reviewer or owner closeout evidence.
-- `review-resolution.md` alone is not a silent substitute for required re-review.
-- no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
-- Before `code-review`, `implement` should satisfy a first-pass acceptable result and record required unchanged surfaces as unaffected with rationale.
-- Missing tracked governing authority blocks clean branch-scoped review conclusions but does not suppress independently supported findings.
-- Named edge cases need direct proof for clean review or branch-ready conclusions.
-- `verify` owns branch-ready. `pr` owns PR-body and PR-open readiness.
-
-Use targeted proof and targeted validation before broad smoke unless an authoritative trigger requires broad smoke. Required manual proof belongs in `verify-report.md`, and broad-smoke source attribution belongs in `broad_smoke.sources`. Preserve stable check IDs and validation source attribution when available.
-
-## Automated Review Gate Routing
-
-Workflow-managed automated `code-review` uses the independent adversarial review gate. The orchestrator creates the neutral review invocation manifest and initial packet before invoking review. It must withhold validation-result summaries, evidence menus, implementation notes, and prior finding content until the required phase receipts allow release.
-
-Workflow-managed automated `code-review` uses the requirement-fidelity gate when deterministic applicability is `applicable`. The requirement-fidelity gate is additive with the independent adversarial review gate; both receipts must pass when both contracts apply.
-
-Requirement-fidelity review starts from the relevant spec clause, then decomposition, expected surfaces, implementation diff, validator assertions, validation evidence, and prior findings.
-
-A clean automated review may advance only after the normalized `review_gate_outcome`, independence manifest, phase receipts, clean receipt, risk-tier gates, unresolved-finding check, and second-review policy all pass. A non-clean result pauses or routes to its fixed owner according to the recorded finding and stop reason without changing the reviewer's native verdict.
-
-Before `explain-change` or `verify`, require final holistic code-review evidence covering the complete final diff and cross-milestone interactions. Do not treat the latest milestone-local review as sufficient final holistic review evidence.
-
-### Bugfix skill invocation
-
-Use `bugfix` when the task starts from a failure, regression, incident, or unexpected behavior.
-
-The `bugfix` skill has its own explicit-step workflow:
-
-```text
-reproduce
-→ diagnose
-→ regression test
-→ minimal fix
-→ verify blast radius
-→ explain-change
-→ pr
-→ learn when recurrence prevention matters
-```
-
-If the bug reveals an unclear or missing contract, update or create the relevant spec.
-
-Bugfix skill invocation remains isolated by default unless the user asks to continue through the full workflow or an active workflow-managed context requires continuation.
-
-### Review-only manual invocation
-
-Use when the user asks for critique, readiness, audit, or explanation without changing files.
-
-Possible review skills:
-
-- `proposal-review`
-- `spec-review`
-- `architecture-review`
-- `plan-review`
-- `test-spec-review`
-- `code-review`
-- `verify`
-- `explain-change`
-
-Do not edit files unless the user asks for edits.
-
-## Invocation context and continuation
-
-Classify the request into one of these contexts before deciding whether to continue:
-
-- `workflow-managed`: the agent is carrying a change through its normal downstream stages toward completion under the standard workflow.
-- `isolated`: the user asked for one stage result only, such as standalone `proposal-review`, `spec-review`, `architecture-review`, `code-review`, `verify`, or `explain-change`.
-- `direct-pr`: the user directly invoked `pr`.
-
-Rules:
-
-- Workflow-managed automation uses one target-driven `bounded-review-fix` mechanism under `workflow.automation`.
-- Adapter invocation equivalents preserve the same arguments: Codex uses
-  `$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and
-  OpenCode invokes the installed `workflow` skill with `auto: <argument>`.
-  Here `<argument>` is `<target-stage>`, `status`, or `off`.
-- For every new governed change, create `lifecycle_contract: stage-owned-change-local-v1` in the change-local record without requiring another parameter.
-  Before the first mutation of resumed nonterminal historical work, migrate that record once; read-only historical inspection never creates the marker.
-- `$workflow auto: <target-stage>` selects a structured target. Supported targets are `proposal-review`, `spec`, `spec-review`, `architecture`, `architecture-review`, `plan`, `plan-review`, `test-spec`, `test-spec-review`, `implement`, `code-review`, and `verify`.
-- `$workflow auto: status` is read-only.
-  `$workflow auto: off` durably cancels the unified run and preserves transition evidence.
-- The requested target is the complete automation boundary.
-  Do not add a second authorization, capability, activation selector, or inferred continuation parameter.
-- Authoring routes through `proposal-review -> spec -> spec-review -> recorded architecture assessment -> architecture/architecture-review when required -> plan -> plan-review -> test-spec -> test-spec-review`.
-- Architecture assessment records exactly one of `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; ambiguity pauses the unified run.
-- Stop the unified run on non-clean review status that cannot enter a bounded correction, a material finding requiring a decision, open `needs-decision`, user pause or cancellation, contradictory workflow state, unreliable partial completion, exhausted transition budget, or an out-of-scope stage request.
-- Resume uses tracked artifact and review evidence. Do not rerun completed artifacts or clean reviews, do not infer completion from file existence alone, and pause when completion evidence is ambiguous.
-- Reaching a target stops the run at that exact stage occurrence. Repeated `implement` and `code-review` targets bind the unique current plan milestone before persistence and never silently rebind on resume.
-- Direct review invocations do not activate, resume, or advance automation, even when persisted unified state exists.
-- After approved recorded `spec-review`, record exactly one architecture assessment: `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`. Required routes through architecture stages; not-required skips them; ambiguous pauses for owner decision.
-- If the user requested a skipped conditional target, stop with `target-not-applicable` rather than claiming the target was reached.
-- A target that reaches implementation may run ordered milestone implementation, independent milestone review, reviewer-declared correction loops, triggered CI maintenance, and final holistic review only when those stages occur at or before the selected target.
-- Missing promotion evidence, unrelated dirty state, owner decisions, new findings, non-shrinking correction loops, verify failure, or any attempt to cross the PR boundary pauses the unified run.
-- Every result reports the target, canonical position source, stage outcome, review and clean-gate state when applicable, transitions, fixes, decisions, artifacts, stop reason, and next action.
-- The mechanism never opens a PR, pushes, publishes, releases, deploys, merges, performs destructive Git operations, accesses credentials, or mutates an external system.
-- Autoprogressed `code-review` emits a first-pass review before any review-driven fix begins.
-- First-pass `blocked` and `inconclusive` stop instead of entering review-resolution.
-- A clean non-final milestone review continues to the next in-scope implementation milestone.
-- A clean final milestone review reaches final closeout only when no implementation milestone or required review-resolution remains open.
-- Direct review, verify, explain-change, and manual skill invocations stay isolated unless the user explicitly asks for end-to-end continuation.
-- On-demand and periodic support actions do not auto-run by default.
-
-### Documentation and governance work
-
-Use when the task is about project rules, onboarding, architecture visibility, process, or repository memory.
-
-Common skills:
-
-- `constitution`
-- `project-map`
-- `architecture`
-- `explain-change`
-- `learn`
-
-## Initial routing checklist
-
-Before routing, classify the request:
-
-1. Is this a bug, a new feature, a refactor, a migration, documentation, or a review?
-2. Does it change externally observable behavior?
-3. Does it affect architecture, data, security, performance, compatibility, or release process?
-4. Is the problem statement stable enough to specify?
-5. Are there unknown assumptions that need research?
-6. Are current architecture boundaries visible enough to proceed?
-7. What is the smallest safe reviewable slice?
-
-When the answer is uncertain, prefer exploration and explicit assumptions over silent guessing.
-
-## Required traceability
-
-Maintain this chain whenever applicable:
-
-```text
-User problem or issue
-→ Explore option IDs
-→ Proposal decision
-→ Requirement IDs
-→ Architecture decisions / ADR IDs
-→ Plan milestones
-→ Test IDs
-→ Changed files
-→ Verification evidence
-→ PR summary
-→ Lessons learned
-```
-
-Use stable IDs:
-
-- Options: `O1`, `O2`, `O3`
-- Requirements: `R1`, `R2`, `R3`
-- ADRs: `ADR-YYYYMMDD-slug`
-- Milestones: `M1`, `M2`, `M3`
-- Tests: `T1`, `T2`, `T3`
-- Risks: `K1`, `K2`, `K3`
+For a missing formal change root, follow the `<change-id>` convention in `docs/workflows.md`; if no project-local workflow guide exists, use `YYYY-MM-DD-slug`.
 
 ## Default artifact paths
 
-Use existing repo conventions when present. If absent, prefer:
+Use repository conventions first. Portable defaults are:
 
 ```text
 AGENTS.md
@@ -422,40 +223,11 @@ specs/slug.test.md
 docs/learn/sessions/YYYY-MM-DD-slug.md
 ```
 
-Do not overwrite older durable artifacts for a new initiative. Create a new dated file and update the relevant index.
+Do not overwrite an older durable artifact for a new initiative.
 
-## Continuation and checkpoints
+## Required traceability
 
-For high-impact changes, produce the artifact and clearly mark whether it is ready for the next stage.
-
-Do not ask for redundant approval merely to enter an already-known next mandatory or triggered downstream stage in a workflow-managed flow.
-
-Pause instead when:
-
-- the user explicitly asks to stop, pause, or inspect before the next stage;
-- a spec gap, architecture conflict, failing validation result, or review finding requires a real user decision;
-- the active plan or spec defines a separately reviewable checkpoint that should not be crossed automatically;
-- missing permissions, network failures, or tool limitations prevent safe continuation;
-- the next action would be merge, deploy, release, tag publication, branch deletion, history rewrite, rollback, or another stronger external/destructive action than PR creation.
-
-Review-only or explicitly isolated stage requests stay isolated unless the user asks to continue.
-
-## Stop conditions
-
-Stop and surface the blocker when:
-
-- the user explicitly asks to stop, pause, or inspect before the next stage;
-- the requested behavior is ambiguous enough that different implementations would be valid;
-- there is no way to verify a `MUST` requirement;
-- the architecture boundary is unknown and the change is risky;
-- a validation command fails and the failure is not understood;
-- tests pass but do not actually assert the required behavior;
-- the implementation requires secrets, credentials, external systems, or unavailable tools;
-- a review finding, spec gap, or architecture conflict requires a real user decision;
-- the next action would be merge, deploy, release, tag publication, branch deletion, history rewrite, rollback, or another stronger external/destructive action than PR creation;
-- the diff introduces scope outside the approved spec or plan.
-
-When stopped, provide the smallest concrete next artifact or decision needed to resume.
+Preserve the applicable chain from problem or issue through proposal, requirement IDs, architecture decisions, milestones, tests, changed files, verification, PR summary, and lessons. Stable IDs should remain stable across downstream stages.
 
 ## Evidence collection efficiency
 
@@ -484,13 +256,4 @@ Start with:
 - Next stage:
 ```
 
-Then state:
-
-- workflow state and why;
-- invocation context and why;
-- current stage;
-- artifacts found, created, or missing;
-- next recommended skill or next automatic stage;
-- blockers or assumptions;
-- whether continuation happened, stopped, or is out of scope;
-- whether implementation is allowed yet.
+Then report the authoritative context and position, current stage, artifacts found or missing, transitions performed, next action or stop reason, and whether implementation is permitted. For automation, also report the target, occurrence when repeated, review or clean-gate state when applicable, fixes, and decisions.
