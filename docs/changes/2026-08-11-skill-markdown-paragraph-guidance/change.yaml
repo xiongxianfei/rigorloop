@@ -30,6 +30,7 @@ changed_files:
   - skills/plan/assets/plan-skeleton.md
   - skills/test-spec/assets/test-spec-skeleton.md
   - scripts/test-skill-validator.py
+  - scripts/adapter_distribution.py
   - specs/markdown-readability-contract.md
   - specs/markdown-readability-contract.test.md
   - specs/documentation-source-formatting.md
@@ -56,5 +57,7 @@ validation:
     result: pass
   - command: python scripts/test-build-skills.py
     result: pass_7_tests
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_150_tests
   - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/markdown-readability-contract.md --path specs/markdown-readability-contract.test.md --path specs/documentation-source-formatting.md --path specs/documentation-source-formatting.test.md --path docs/changes/2026-08-11-skill-markdown-paragraph-guidance/change.yaml
     result: pass_4_artifacts
