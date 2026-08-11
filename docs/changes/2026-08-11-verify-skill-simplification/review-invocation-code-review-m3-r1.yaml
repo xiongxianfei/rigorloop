@@ -1,0 +1,28 @@
+schema_version: 1
+review_id: code-review-m3-r1
+review_stage: code-review
+review_target: commit e2ef1469
+base_revision: 7571a562
+head_revision: e2ef1469
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-implement-m3
+reviewer_context_id: root-code-review-m3-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers: [package-parity, semantic-preservation, measurement]
+governing_artifacts: [specs/verify-skill-simplification.md, docs/plans/2026-08-11-verify-skill-simplification.md, specs/verify-skill-simplification.test.md]
+formal_criteria: [code-review-v1, boundary-first-v1, requirement-fidelity-v1]
+initial_packet_inventory:
+  - {path: specs/verify-skill-simplification.md, sha256: bbcc8c97186adc6539839257936eaad02c344b252cdf2873d3dc97ded3e2e397}
+  - {path: docs/plans/2026-08-11-verify-skill-simplification.md, sha256: 366dd20cc43f42f328cad8548c5628f2a012dfab731e3fb5e743807d7c9606e6}
+  - {path: specs/verify-skill-simplification.test.md, sha256: 94de3a50d0dd4c12a63acc939af77a18b02e88aa60b5f7eb22f30ae580fff986}
+  - {path: docs/changes/2026-08-11-verify-skill-simplification/evidence/simplification-measurements.md, sha256: 8305e248f55528e1379a063bf3f087b4e888c68453173ff45221886e86cbf742}
+  - {path: docs/changes/2026-08-11-verify-skill-simplification/evidence/semantic-preservation-review.md, sha256: 352fb130ae726f631b30ad0f216fea963dc4a7baf3bd5c9969d8cd3ff5825f91}
+  - {path: docs/changes/2026-08-11-verify-skill-simplification/evidence/m3-package-proof.md, sha256: 784dc048152ca4e1f35aa29b79a9bfe75c49b5737a256c12e4c2814618a0b1bf}
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+second_review: {required: false, satisfied: true, result: not-required}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, prior-findings-released, verdict-recorded]
