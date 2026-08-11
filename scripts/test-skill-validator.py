@@ -5564,7 +5564,7 @@ Use the inputs somehow and produce a useful result.
             "## Stop conditions",
             "## Claims this skill must not make",
             "## Status and milestone handoff",
-            "## Boundary-first method",
+            "## Boundary-first bridge",
             "## Resource map",
             "## Expected output",
         ):
