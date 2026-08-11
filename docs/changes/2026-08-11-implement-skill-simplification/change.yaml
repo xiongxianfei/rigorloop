@@ -3,6 +3,32 @@ title: Implement Skill Simplification
 classification: published-skill-contract
 risk: medium
 lifecycle_contract: stage-owned-change-local-v1
+evidence_registration_deferrals:
+  - path: docs/changes/2026-08-11-implement-skill-simplification/implement-rule-disposition.yaml
+    owner: repository-maintainer
+    reason: One-change semantic-rule disposition evidence is intentionally not a recurring selector evidence class.
+    validation_impact: Exact approved CMD1 and MP1 proof remains mandatory; no generic selector check is inferred.
+    follow_up: docs/changes/2026-08-11-implement-skill-simplification/evidence/m1-preservation-inventories.md
+  - path: docs/changes/2026-08-11-implement-skill-simplification/implement-literal-compatibility.yaml
+    owner: repository-maintainer
+    reason: One-change literal-compatibility evidence is intentionally not a recurring selector evidence class.
+    validation_impact: Exact approved CMD1, consumer assertions, and MP1 proof remain mandatory; tests do not become prose-policy owners.
+    follow_up: docs/changes/2026-08-11-implement-skill-simplification/evidence/m1-preservation-inventories.md
+  - path: docs/changes/2026-08-11-implement-skill-simplification/fixtures/scenario-contracts.yaml
+    owner: repository-maintainer
+    reason: One-change static acceptance scenarios are intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved CMD1 proof remains mandatory; no target-agent runtime or generic fixture route substitutes for it.
+    follow_up: docs/changes/2026-08-11-implement-skill-simplification/evidence/m1-preservation-inventories.md
+  - path: docs/changes/2026-08-11-implement-skill-simplification/fixtures/invalid-rule-disposition.yaml
+    owner: repository-maintainer
+    reason: One-change negative semantic-disposition fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved CMD1 fail-closed proof remains mandatory; no generic selector check is inferred.
+    follow_up: docs/changes/2026-08-11-implement-skill-simplification/evidence/m1-preservation-inventories.md
+  - path: docs/changes/2026-08-11-implement-skill-simplification/fixtures/invalid-literal-classification.yaml
+    owner: repository-maintainer
+    reason: One-change negative literal-classification fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved CMD1 fail-closed proof remains mandatory; no generic selector check is inferred.
+    follow_up: docs/changes/2026-08-11-implement-skill-simplification/evidence/m1-preservation-inventories.md
 artifact_states:
   proposal:
     kind: proposal
@@ -80,6 +106,7 @@ workflow_state:
     - docs/changes/2026-08-11-implement-skill-simplification/review-invocation-code-review-final-r1.yaml
     - docs/changes/2026-08-11-implement-skill-simplification/reviews/code-review-final-r1.md
     - docs/changes/2026-08-11-implement-skill-simplification/explain-change.md
+    - docs/changes/2026-08-11-implement-skill-simplification/evidence/ci-selector-deferral.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -151,6 +178,7 @@ workflow:
       - docs/changes/2026-08-11-implement-skill-simplification/review-invocation-code-review-final-r1.yaml
       - docs/changes/2026-08-11-implement-skill-simplification/reviews/code-review-final-r1.md
       - docs/changes/2026-08-11-implement-skill-simplification/explain-change.md
+      - docs/changes/2026-08-11-implement-skill-simplification/evidence/ci-selector-deferral.md
 artifacts:
   proposal: docs/proposals/2026-08-11-implement-skill-simplification.md
   spec: specs/implement-skill-simplification.md
@@ -238,6 +266,7 @@ changed_files:
   - docs/changes/2026-08-11-implement-skill-simplification/review-invocation-code-review-final-r1.yaml
   - docs/changes/2026-08-11-implement-skill-simplification/reviews/code-review-final-r1.md
   - docs/changes/2026-08-11-implement-skill-simplification/explain-change.md
+  - docs/changes/2026-08-11-implement-skill-simplification/evidence/ci-selector-deferral.md
   - skills/implement/SKILL.md
   - skills/implement/references/planned-milestone-implementation.md
   - skills/implement/references/automated-review-correction.md

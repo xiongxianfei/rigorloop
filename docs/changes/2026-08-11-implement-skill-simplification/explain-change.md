@@ -24,6 +24,7 @@ The accepted design keeps a self-sufficient universal contract, adds one planned
 | Rule and literal ledgers | Recorded 24 semantic rules, 18 literal dependencies, closed treatments, destinations, and negative fixtures. | Prevents silent semantic loss and distinguishes contracts from accidental test wording. | R16-R22; CMD1 and MP0/MP1. |
 | Measurements and package evidence | Recorded per-profile and total-package words/bytes plus canonical, generated, archive, and installed parity. | Makes relocation and armed-profile cost visible rather than presenting file movement as deletion. | R23-R30, R33; M3 review. |
 | Test-spec CMD7 | Replaced an untrusted synthetic version with immutable trusted fixture `v0.3.6` after the original command failed closed. | Clean-install proof requires a version present in the release-metadata trust root. | Test-spec revision and review R2; corrected CMD7. |
+| Selector routing debt | Recorded complete owner-approved deferrals for the two one-change ledgers and three static fixtures. | Keeps non-recurring evidence visible and blocked from generic routing without creating permanent simplicity infrastructure. | Existing owner-deferral contract; CMD1, MP0, MP1, and final selector rerun. |
 
 ## Test-first and review corrections
 
@@ -57,6 +58,8 @@ The original CMD7 built archives but all clean installs stopped before mutation 
 ## Scope and residual risk
 
 No new runtime, persistent state, dependency, service, lifecycle owner, validator family, scheduler, or release publication was introduced. Canonical authorship remains under `skills/`; generated adapters remain derived.
+
+The selector deferrals are exact-path repository-maintainer decisions. They do not waive CMD1, MP0, MP1, or focused literal-consumer proof and do not create a generic evidence bypass.
 
 The package now has more files, so exact Resource-map triggers and package parity remain important drift controls. Token estimates are advisory only. PR preparation remains outside the armed workflow target.
 
