@@ -1,0 +1,41 @@
+schema_version: 1
+review_id: test-spec-review-r1
+review_stage: test-spec-review
+review_target: specs/verify-skill-simplification.test.md
+base_revision: da5df2450b9c4784395e7356130d3893182124f1
+head_revision: da5df2450b9c4784395e7356130d3893182124f1
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L0
+author_context_id: root-test-spec-authoring
+reviewer_context_id: root-test-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-contract
+  - rollback-and-mixed-package-proof
+governing_artifacts:
+  - specs/verify-skill-simplification.md
+  - docs/plans/2026-08-11-verify-skill-simplification.md
+  - docs/changes/2026-08-11-verify-skill-simplification/architecture-assessment.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/verify-skill-simplification.test.md
+    sha256: 07008a437d3efb8c0aee5a07e18a0997132722d95b9237733300647564497e8e
+  - path: specs/verify-skill-simplification.md
+    sha256: bbcc8c97186adc6539839257936eaad02c344b252cdf2873d3dc97ded3e2e397
+  - path: docs/plans/2026-08-11-verify-skill-simplification.md
+    sha256: 366dd20cc43f42f328cad8548c5628f2a012dfab731e3fb5e743807d7c9606e6
+  - path: docs/changes/2026-08-11-verify-skill-simplification/evidence/test-spec-authoring.md
+    sha256: 3b1581e775cf17230e455742a4ff0ae8112ccba3acf6450a8b9d63de17ff7e60
+prompt_template_version: test-spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - requirement, example, boundary, and interaction traceability
+  - command ownership and executable proof paths
+  - milestone proof timing
+  - deterministic package rollback and mixed-version failure proof
+  - no target-agent runtime acceptance

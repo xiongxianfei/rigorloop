@@ -2,14 +2,15 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r2
+Review closeout: test-spec-review-r1
 
-- Reviews covered: `proposal-review-r2`
+- Reviews covered: `proposal-review-r2`, `test-spec-review-r1`
 - Findings resolved: 3
-- Unresolved findings: 0
-- Final result: all three accepted findings are resolved in the revised proposal; proposal-review R3 remains the independent settlement gate.
+- Unresolved findings: 1
+- Final result: proposal findings remain resolved; test-spec review requires command and milestone traceability corrections before implementation.
 
 ## Resolution Overview
 
@@ -18,6 +19,7 @@ Review closeout: proposal-review-r2
 | `VFSIM-PR1` | accepted | resolved | Added closed outcomes and deterministic target resolution. |
 | `VFSIM-PR2` | accepted | resolved | Separated loaded package from execution authority. |
 | `VFSIM-PR3` | accepted | resolved | Kept evidence semantics inline and final aggregation conditional. |
+| `VFSIM-TSR1` | accepted | open | Align rollback proof with its M3 adapter-distribution command owner. |
 
 ## Common Resolution Metadata
 
@@ -27,6 +29,20 @@ Review closeout: proposal-review-r2
 - Validation evidence: revised proposal sections, proposal revision evidence, review-artifact validation, change-metadata validation, artifact-lifecycle validation, and `git diff --check`
 
 ## Finding Details
+
+### test-spec-review-r1
+
+#### VFSIM-TSR1 - Align rollback proof timing and commands
+
+Finding ID: VFSIM-TSR1
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Chosen action: Align the affected proof rows and T13 with M3, CMD6 adapter-distribution failure fixtures, CMD7 valid selected-package proof, and CMD9 lifecycle metadata.
+Rationale: A proof row cannot claim a later package boundary at M2, and implementation must not infer which command produces rollback evidence.
+Validation target: revised proof rows, T13, milestone proof map, boundary validation, lifecycle validation, and independent test-spec rereview.
+Validation evidence: `test-spec-review-r1` records the current inconsistency; revision evidence is pending.
 
 ### proposal-review-r2
 
@@ -82,5 +98,5 @@ Validation evidence: expanded universal ownership section, narrowed conditional-
 - [x] Every rejected finding has rationale or none exist.
 - [x] Every deferred finding has follow-up or none exist.
 - [x] Every `needs-decision` finding is resolved or none exist.
-- [x] Validation evidence is recorded.
+- [ ] Final revision validation evidence is recorded for VFSIM-TSR1.
 - [x] Closeout status is correct.

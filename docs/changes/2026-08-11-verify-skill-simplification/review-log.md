@@ -19,6 +19,19 @@ This ledger records formal lifecycle reviews for the verify skill simplification
 
 ### Review entry
 
+Review ID: test-spec-review-r1
+Stage: test-spec-review
+Round: r1
+Reviewed artifact: specs/verify-skill-simplification.test.md at commit da5df245
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r1.md
+Resolution: review-resolution.md#test-spec-review-r1
+Material findings: VFSIM-TSR1
+Open findings: VFSIM-TSR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: proposal-review-r2
 Stage: proposal-review
 Round: r2
