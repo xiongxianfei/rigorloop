@@ -19,6 +19,19 @@ This ledger records formal lifecycle reviews for the test-spec-review skill simp
 
 ### Review entry
 
+Review ID: code-review-m3-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: commit 36b2f039
+Status: changes-requested
+Detailed record: reviews/code-review-m3-r1.md
+Resolution: review-resolution.md#code-review-m3-r1
+Material findings: TSRSIM-CR-M3-R1-001
+Open findings: TSRSIM-CR-M3-R1-001
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m1-r1
 Stage: code-review
 Round: r1

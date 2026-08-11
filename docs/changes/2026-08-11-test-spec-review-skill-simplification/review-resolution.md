@@ -2,17 +2,18 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m3-r1
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `test-spec-review-r1`, `code-review-m1-r1`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-m3-r1`
 - Findings resolved: 5
-- Unresolved findings: 0
-- Current result: all recorded findings are resolved; M1 correction awaits independent rereview.
+- Unresolved findings: 1
+- Current result: M3 requires one bounded whitespace correction before independent rereview.
 
 ## Resolution Overview
 
@@ -23,6 +24,7 @@ Review closeout: code-review-m1-r1
 | `TSRSIM-TSR1` | accepted | resolved | Aligned M1 with baseline-only evidence and retained completed measurement in M3. |
 | `TSRSIM-TSR2` | accepted | resolved | Added deterministic interrupted-retry and conflicting-review-ID proof. |
 | `TSRSIM-CR-M1-R1-001` | accepted | resolved | Added the omitted generated-Markdown-readability semantic disposition and updated M1 audit evidence. |
+| `TSRSIM-CR-M3-R1-001` | accepted | open | Remove trailing whitespace from the three M3 evidence files and rerun deterministic checks. |
 
 ## Common Resolution Metadata
 
@@ -32,6 +34,20 @@ Review closeout: code-review-m1-r1
 - Validation evidence: revised proposal and `evidence/proposal-revision-r2.md`
 
 ## Finding Details
+
+### code-review-m3-r1
+
+#### TSRSIM-CR-M3-R1-001 - Restore diff cleanliness
+
+Finding ID: TSRSIM-CR-M3-R1-001
+Disposition: accepted
+Status: open
+Owner: implement
+Owning stage: review-resolution
+Chosen action: Remove trailing spaces from the eight identified M3 evidence metadata lines without changing their meaning, then rerun diff and lifecycle validation and rereview M3.
+Rationale: The evidence is substantively correct, but the repository's required diff-integrity check must pass before milestone closeout.
+Validation target: the three M3 evidence files, `git diff --check`, change metadata, review artifacts, and code-review rereview.
+Validation evidence: pending bounded correction.
 
 ### code-review-m1-r1
 
@@ -112,4 +128,5 @@ Validation evidence: revised `Invocation classification`, `Loaded-resource assem
 - [x] Spec correction validation evidence is recorded.
 - [x] Proposal revision validation evidence is recorded.
 - [x] `TSRSIM-CR-M1-R1-001` correction is validated; independent rereview remains the next gate.
-- [x] Closeout status is correct.
+- [ ] `TSRSIM-CR-M3-R1-001` correction is validated and independently rereviewed.
+- [ ] Closeout status is correct after the M3 correction.

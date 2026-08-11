@@ -1,0 +1,42 @@
+schema_version: 1
+review_id: code-review-m3-r1
+review_stage: code-review
+review_target: commit:36b2f039
+base_revision: 38a13ee0
+head_revision: 36b2f039
+native_review_status: changes-requested
+review_gate_outcome: stop
+independence_level: L1
+author_context_id: root-implement-m3
+reviewer_context_id: root-code-review-m3-r1-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: standard
+risk_tier_triggers: [package-proof, semantic-preservation, measurement-evidence]
+governing_artifacts: [specs/test-spec-review-skill-simplification.md, docs/plans/2026-08-11-test-spec-review-skill-simplification.md, specs/test-spec-review-skill-simplification.test.md]
+formal_criteria: [code-review-v1, boundary-first-v1]
+initial_packet_inventory:
+  - {path: commit:36b2f039.diff, sha256: b35500f0f4535e2c80d282114da5b3b47f9a37caa5c50947cb226e1af7d55b06}
+  - {path: evidence/simplification-measurements.md, sha256: cd63072ab9f158e29a7869d942776179571e68ed3e4a8a9a83ebdad7fdc018be}
+  - {path: evidence/semantic-preservation-review.md, sha256: 332298b84bacc19f740dc78bdb73a40ec82738231de3f1295ba3a9424017a535}
+  - {path: evidence/m3-package-proof.md, sha256: 6c0c96cea6d31307a3f0b1a6fbd04fe95ad4bf05936694df5e3e8d0081cafca3}
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity: {applicability: applicable, reason: M3 supplies the acceptance proof for the published package change.}
+second_review: {required: false, satisfied: true, result: not-required}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+prior_finding_reconciliation: {TSRSIM-CR-M1-R1-001: resolved}
+risk_map:
+  affected_behavior: final simplification evidence, semantic acceptance, and distribution proof
+  highest_impact_failure_modes: misleading arithmetic, incomplete package selection, overclaimed validation, or repository-check failure
+  changed_boundaries: [BND-COMPOSE-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001, INT-005, INT-006, INT-007]
+  evidence_expected: reproducible counts, complete semantic ledger review, selected adapter clean-install proof, and clean repository diff
+  direct_inspection_areas: [measurement arithmetic, semantic disposition counts, command receipts, package selection, diff cleanliness]
+  intentionally_out_of_scope: [target-agent execution, publication, PR preparation]
+  applicable_risk_classes: [correctness, evidence-integrity, package-integrity, maintainability]
+  non_applicable_risk_classes: [credentials, database-migration, network-publication]
+  falsifiable_questions:
+    - Do resource totals and profile deltas recompute from canonical files?
+    - Does selected clean-install proof include the new reference for all adapters?
+    - Does semantic review account for every rule and literal?
+    - Does the required diff check pass?
