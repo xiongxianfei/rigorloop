@@ -9,13 +9,8 @@ argument-hint: [plan path, milestone ID, feature name, or implementation request
 
 # Test-driven implementation
 
-You are implementing the smallest scope-complete change for the approved slice with tests first.
-
-Do not expand scope. Do not silently alter the spec. Do not declare success without verification evidence.
-
-For planned initiatives, `implement` treats the plan and upstream artifacts as read-only.
-It writes implementation, tests, and implementation evidence only.
-Workflow consumes that evidence and owns milestone and routing updates in `change.yaml`.
+Implement the smallest scope-complete approved slice with tests or proof first.
+Do not expand scope, silently alter the contract, or claim success without direct evidence.
 
 ## Workflow role
 
@@ -23,106 +18,198 @@ Workflow consumes that evidence and owns milestone and routing updates in `chang
 - stage: execution
 - upstream: approved spec, active plan, active test spec plus recorded, approved, current test-spec-review evidence when required, accepted review-resolution finding, bugfix request, or isolated implementation request with clear scope
 - downstream: code-review
-- summary: Implement the smallest scope-complete slice with tests or proof first, record validation evidence, and hand the milestone to code-review.
+- summary: Implement one scope-complete slice, record validation evidence, and hand it to code-review.
 - must_not_claim: review passed, clean review, branch readiness, PR readiness, final verification, final closeout readiness, or derived artifact currency without owning proof.
+
+For planned initiatives, treat the plan and upstream artifacts as read-only.
+Write implementation, tests, and implementation evidence only; workflow owns milestone and routing state.
 
 ## Quick operating guide
 
-Use this skill to: implement one approved milestone with tests or proof first, then hand it to review.
+Use this skill to:
+- implement one approved milestone or isolated request with proof first.
 
 Read first:
-
-- `change.yaml` for current milestone and routing state;
-- the stable current milestone definition in the plan;
-- the governing spec, test spec, plan tasks, and relevant code/tests;
-- the specific needed section first; use broader-section or full-file reading only when bounded evidence is insufficient.
+- change-local state when planned;
+- the current milestone, governing spec, active test spec, recorded review evidence, relevant code/tests, and validation commands.
 
 Produce:
-
-- test/proof updates, implementation changes, validation evidence, and a review-requested milestone handoff.
+- tests or proof, implementation, validation evidence, and a code-review handoff.
 
 Stop when:
-
-- milestone state, requirements, scope, or validation evidence is missing, contradictory, or failing.
+- authority, scope, proof, or validation is missing, contradictory, stale, or failing.
 
 Do not claim:
-
-- review passed, branch-ready, PR-ready, final-closeout readiness, or derived artifact currency without owning evidence.
+- review, branch, PR, final-verification, or final-closeout outcomes.
 
 Next stage:
+- code-review.
 
-- `code-review` for the implemented milestone, unless a stop condition applies.
+Use full-file or broader-section reading when bounded evidence cannot preserve correctness.
 
 ## Purpose
 
-Implement one approved milestone as the smallest scope-complete, test-driven slice and prepare it for `code-review` without claiming downstream review or verification outcomes.
+Use after requirements and proof are stable enough to implement.
+Use `bugfix` for defect repair, `code-review` for review, `verify` for final readiness, and `pr` for PR handoff.
+Do not invent requirements, bypass required approvals, or use implementation to resolve unrecorded review findings.
+
+## When to use
+
+Use for an approved milestone or a clear isolated implementation request whose requirements and proof obligations are stable.
+
+## When not to use
+
+Do not use for defect investigation, artifact authoring or review, final verification, or PR preparation; route those tasks to their owning skill.
 
 ## Project-local evidence
 
 Public skills operate in customer-project mode by default.
-
-Use project-local artifacts when present and relevant, including `AGENTS.md`, `CONSTITUTION.md`, the active plan, approved specs, test specs, architecture records, ADRs, review-resolution evidence, `docs/workflows.md`, source files, tests, neighboring files, and CI or validation commands.
-
-Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists.
-
-## When to use
-
-Use this skill after the relevant spec, architecture, plan, plan-review, test-spec, and required test-spec-review are ready, or when the user explicitly requests isolated implementation output with clear scope and validation evidence.
-
-This skill is for implementation, tests, proof, and handoff. Use `bugfix` for defect repair, `code-review` for review, `verify` for final readiness, and `pr` for pull request handoff.
-
-## When not to use
-
-Do not use this skill to invent requirements, bypass missing specs, resolve review findings without a recorded finding loop, claim review or branch readiness, or continue into the next milestone before the current milestone is handed to review.
+Use relevant project-local artifacts such as `AGENTS.md`, `CONSTITUTION.md`, approved specs, the active plan and test spec, architecture records, review resolution, `docs/workflows.md`, code, tests, and CI commands.
+Do not require RigorLoop repository-internal artifacts in customer projects; use safe portable defaults and block on ambiguity.
 
 ## Inputs to read
 
 Read before editing:
 
-- `AGENTS.md`
-- `CONSTITUTION.md` if present
-- concrete execution plan
-- feature spec
-- test spec
-- recorded, approved, current test-spec-review evidence when a formal workflow-managed test spec is required
-- architecture doc and ADRs when relevant
-- code and tests listed in the milestone
-- existing patterns in neighboring files
-- CI or validation commands relevant to the milestone
+- `AGENTS.md` and `CONSTITUTION.md` when present;
+- the approved feature spec and concrete current milestone or isolated scope;
+- the active test spec and recorded, approved, current test-spec-review evidence when a formal workflow-managed test spec is required;
+- relevant architecture or ADRs when the slice touches their boundaries;
+- code, tests, neighboring patterns, and milestone validation commands;
+- accepted review-resolution evidence when implementing recorded findings.
 
 ## Evidence access
 
-Use the smallest sufficient evidence set for the milestone.
+Start with the smallest sufficient set: change-local state, current milestone, approved spec, active test spec, recorded, approved, current test-spec-review evidence when required, relevant code/tests, and scoped validation commands.
+Read architecture, review resolution, workflow guidance, governance, or neighboring code only when triggered.
+Expand when bounded evidence is missing, stale, contradictory, or insufficient; read the full file when the whole file or surrounding context controls the decision.
 
-Default evidence:
+## Invocation profiles and authority
 
-- `change.yaml` workflow and planned-work state
-- current milestone section
-- approved spec
-- test spec
-- recorded, approved, current test-spec-review evidence when required
-- code and tests named by the milestone
-- validation commands for the milestone
+Classify the invocation before loading conditional procedure or mutating implementation state.
 
-Conditional evidence:
+| Profile | Required authority | Conditional procedure |
+| --- | --- | --- |
+| `IP0-isolated` | Clear direct implementation scope | neither conditional reference |
+| `IP1-planned` | Valid `planned_milestone_context` | planned-milestone reference only |
+| `IP2-planned-armed` | Valid planned context plus matching `armed_automation_context` | both conditional references |
 
-- architecture or ADR when the milestone touches architecture boundaries
-- review-resolution when implementing accepted review findings
-- `docs/workflows.md` when stage routing or artifact placement is ambiguous
-- `CONSTITUTION.md` when governance, source-of-truth, or safety constraints matter
-- neighboring files when needed to follow existing patterns
+`planned_milestone_context` requires a workflow-managed invocation, a valid active plan, one exact current milestone owned by `implement`, and a milestone state that permits implementation.
 
-Bounded discovery is not evidence expansion. Record a compact reason only when reading substantive evidence outside the default and triggered conditional set.
+`armed_automation_context` additionally requires current durable workflow authorization, the current review or correction mode, matching change and milestone identity, and non-stale evidence.
 
-Use bounded evidence first, but do not under-read. Expand beyond the milestone when bounded evidence is missing, stale, contradictory, or insufficient to implement the approved slice. Full-file reads remain allowed when the whole file is the target, relevant sections cannot be isolated safely, bounded evidence is contradictory or incomplete, or whole-file context can change the implementation decision.
+Armed automation without a valid planned milestone is invalid.
+Conversational wording alone establishes neither predicate.
+Missing, stale, mismatched, contradictory, or ambiguous evidence stops before conditional procedure is loaded or implementation state is mutated.
+
+## First-pass completeness
+
+Before editing, identify the same-slice completeness set: in-scope requirements, authored and aligned surfaces, named edge cases, and targeted validation.
+
+A `first-pass acceptable result` means:
+
+- every in-scope requirement and edge case is addressed;
+- each required surface is updated or recorded as `unaffected with rationale`;
+- no known in-scope defect is deferred to review or cleanup;
+- the smallest scope-complete change, rather than merely the smallest diff, is implemented;
+- required targeted validation passes;
+- the result does not depend on later cleanup to become contract-complete.
+
+Record any unchanged required surface and its rationale in contributor-visible evidence.
+A later issue that this completeness set should have caught is a `preventable first-pass miss`.
+If missing or conflicting inputs prevent a complete first pass, stop rather than guess.
+If a formal workflow-managed test spec lacks recorded, approved, current `test-spec-review` evidence, or a substantive edit made that approval stale, stop before implementation and route to the owning authoring/review stage.
+
+## Implementation contract
+
+### Tests and validation
+
+- Write or update tests or deterministic proof first when feasible.
+- Confirm expected failure for new behavior or regression coverage when feasible.
+- Implement the minimum scope-complete change, rerun narrow proof, then refactor only within scope.
+- Prefer selector-selected targeted proof before optional broad smoke.
+- Preserve authoritative broad-smoke triggers and record stable selected check IDs when useful.
+- Stop on a failing required command until it is fixed or recorded as a blocker.
+
+### Scope and ownership
+
+- Implement only approved requirements and the current slice.
+- Do not add unrelated refactors or unapproved public behavior.
+- Do not defer a required same-slice correction.
+- Stop and route newly discovered spec, architecture, security, permission, or owner-decision gaps.
+- Do not update the plan, upstream artifacts, artifact settlement, or workflow as implementation bookkeeping.
+
+### Change-local evidence
+
+For ordinary non-trivial work, maintain `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning, normally `docs/changes/<change-id>/explain-change.md` unless an approved equivalent applies.
+When creating a root, follow the `<change-id>` convention in `docs/workflows.md`; if no project-local workflow guide exists, use `YYYY-MM-DD-slug`.
+Do not broaden this requirement to isolated manual work that does not claim complete workflow delivery.
+Keep `review-resolution.md` and `verify-report.md` conditional on their governing triggers.
+
+## Operating sequence
+
+1. Confirm authority, profile, scope, requirements, approved boundaries, proof obligations, and edge cases.
+2. Load only the resources mapped for that profile.
+3. Add or update tests/proof first and run the narrowest relevant command.
+4. Implement the smallest scope-complete change and rerun narrow proof.
+5. Audit authored and aligned surfaces; refactor only inside the slice.
+6. Run milestone-targeted validation before optional broad smoke.
+7. Record decisions, discoveries, commands, results, unchanged surfaces, and follow-ups in implementation evidence.
+8. For planned work, follow the mapped milestone procedure for commit and state-sync evidence.
+9. Hand the completed slice to `code-review`; do not start the next milestone before clean review.
+
+Tests must assert real behavior rather than broad mocks or snapshots that pass for the wrong reason.
+Before changing behavior, confirm every implemented boundary or selected interaction has an approved owner and proof obligation.
 
 ## Outputs
 
-Produce tests or proof surfaces first where feasible, implementation changes, implementation validation evidence, and a milestone handoff for workflow to record as `review-requested`.
+Produce tests or proof first where feasible, implementation changes, validation evidence, and a `code-review` handoff.
+
+## Handoff
+
+- Normal next stage: `code-review` for the implemented milestone or isolated slice.
+- Conditional next stages: stop for a spec, architecture, owner-decision, permission, or validation blocker; return to the same milestone for accepted review corrections; continue to another milestone only after workflow records clean review.
+- Route planned stage transitions through `workflow`.
+
+## Stop conditions
+
+Stop before mutation or review handoff when:
+
+- required authority, source artifacts, boundary ownership, or proof is missing, stale, unknown, or contradictory;
+- scope is ambiguous or a spec, architecture, security, permission, or owner decision is needed;
+- tests or required validation fail and are not fixed;
+- the slice cannot meet first-pass completeness;
+- planned work cannot produce current implementation evidence, state synchronization, and a review-requested handoff.
+
+## Claims this skill must not make
+
+Do not claim review passed, clean review, review-clean status, branch-ready, PR-ready, `pr-body-ready`, `pr-open-ready`, ready-for-final-closeout, final verification, final closeout, or generated-resource currency without owning proof.
+
+Implementation completion is evidence for review, not milestone closeout.
+
+## Progress, readiness, closeout, and Done
+
+- Progress means work that has happened so far.
+- Readiness means the next stage that can happen.
+- Closeout means the current artifact or stage satisfied its checklist.
+- Done means final lifecycle state after required gates are complete.
+- Readiness is not Done. Implementation readiness for `code-review` is not review closeout, branch readiness, or PR readiness.
+
+## Generated Markdown readability
+
+When creating generated or generator-shaped Markdown, use semantic source lines, stable IDs, and tables for repeated mappings.
+Diagrams are optional and should reduce real cognitive load.
+Do not require manual-proof contracts from readability guidance alone.
 
 ## Resource map
 
 - READ `references/boundary-first-method-v1.md` when approved boundary, interaction, or proof IDs are missing, stale, unknown, ambiguous, conflicting, or insufficient for implementation.
+- READ `references/planned-milestone-implementation.md` when authoritative workflow evidence establishes a current planned milestone owned by `implement`.
+- READ `references/automated-review-correction.md` only when durable workflow evidence formally arms automated review or correction for that same current change and milestone.
+- COPY `assets/implementation-result-skeleton.md` when producing the implementation result.
+  Fill: the core result and only the conditional groups applicable to the classified profile.
+  Omit: inapplicable groups, empty fields, and meaningless `not applicable` values.
+  Do not emit unfilled placeholders.
 
 ## Boundary-first method
 
@@ -145,193 +232,6 @@ Stop on missing boundary or proof ownership and implement against the approved m
 
 Before changing production behavior, confirm every implemented boundary or selected interaction has an approved owner and proof obligation. Stop implementation before mutation when an owner is absent, an ID is stale or unknown, required proof is missing, or implementation exposes a new boundary that requires an upstream decision.
 
-## Handoff
-
-- Normal next stage: `code-review` for the implemented milestone.
-- Conditional next stages: stop for a spec, architecture, owner-decision, or validation blocker; return to the same milestone when accepted review findings require fixes; continue to the next milestone only after clean review closes the current milestone.
-- For full stage order and downstream-blocking semantics, route through the `workflow` skill.
-
-## Claims this skill must not make
-
-Do not claim:
-
-- review passed, clean review, review-clean status, or no review fixes required;
-- branch-ready, PR-ready, `pr-body-ready`, or `pr-open-ready`;
-- ready-for-final-closeout or `Ready for final closeout` while any in-scope implementation milestone is open, unreviewed, unresolved, or not closed;
-- derived artifacts are current unless validation evidence proves it.
-
-## Progress, readiness, closeout, and Done
-
-- Progress means work that has happened so far.
-- Readiness means the next stage that can happen.
-- Closeout means the current artifact or stage satisfied its checklist.
-- Done means final lifecycle state after required gates are complete.
-- Readiness is not Done. Implementation readiness for `code-review` is not review closeout, branch readiness, or PR readiness.
-
-## Docs-changes baseline pack
-
-For ordinary non-trivial work, implementation scope includes the baseline change-local pack:
-
-- `docs/changes/<change-id>/change.yaml`
-- durable Markdown reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` for new work unless an approved equivalent reasoning surface already applies
-
-Rules:
-
-- When creating a missing change root, follow the `<change-id>` convention in `docs/workflows.md`; if no project-local workflow guide exists, use `YYYY-MM-DD-slug`.
-- Treat creating or updating that baseline pack as part of the milestone, not as optional follow-up.
-- Do not treat PR text alone as the durable reasoning surface for ordinary non-trivial work.
-- Do not broaden the docs-changes requirement into isolated manual skill invocations that are not claiming complete workflow delivery.
-- Keep standalone `review-resolution.md` and `verify-report.md` conditional; add them only when their governing workflow triggers apply.
-
-## Validation layering
-
-Use selector-selected targeted proof before optional broad smoke when the changed paths are known.
-
-- Inspect selected checks with the project's validation selector when one exists.
-- Execute selected checks with the project's validation command.
-- Record stable selected check IDs, such as `skills.validate`, `review_artifacts.validate`, or `selector.regression`, in the active plan or change metadata when they explain the proof scope.
-- Run the project's broad validation command only when an authoritative trigger requires broad smoke, such as `broad_smoke_required: true`, main/release mode, review-resolution, test-spec, or release metadata.
-
-## First-pass completeness
-
-Before editing:
-
-- identify the same-slice completeness set for the approved slice:
-  - in-scope requirements
-  - required authored surfaces
-  - required aligned surfaces
-  - required edge cases
-  - the targeted validation set
-- target a `first-pass acceptable result`, not merely a plausible first edit.
-- treat the `smallest scope-complete change` as the target, not the smallest diff.
-- a `first-pass acceptable result` means:
-  - every in-scope requirement for the slice is addressed
-  - every required authored surface in scope is updated, or explicitly marked `unaffected with rationale`
-  - every required aligned surface in scope is updated, or explicitly marked `unaffected with rationale`
-  - no known in-scope defect remains
-  - the required targeted validation set passes
-  - no required same-slice fix is deferred to later review or later cleanup
-  - the change does not rely on later cleanup to become contract-complete
-- if a required authored or aligned surface remains unchanged, record `unaffected with rationale` in a contributor-visible authoritative surface such as the active plan or required change-local artifacts.
-- required edge cases come from approved spec and test-spec items, named regression cases from the motivating incident, changed branch conditions or touched failure paths, existing governing tests or fixtures, and required aligned workflow or skill wording distinctions for the slice.
-- a later finding that should have been caught by the same-slice completeness set, required edge cases, or targeted validation is a `preventable first-pass miss`.
-- if missing inputs, contradictory instructions, or unresolved scope ambiguity prevent a scope-complete first pass, stop and report the blocker instead of handing off to `code-review`.
-- if a formal workflow-managed test spec lacks recorded, approved, current `test-spec-review` evidence, or if a substantive test-spec edit made that review stale, stop before implementation and route back to `test-spec-review` or the owning upstream revision stage.
-
-## Implementation loop
-
-For each milestone:
-
-1. Confirm milestone scope, requirements covered, and the same-slice completeness set.
-2. Identify the tests, proof surfaces, and required edge cases from the test spec and active plan.
-3. Write or update the tests first.
-4. Run the narrowest relevant test command.
-5. Confirm new tests fail for the expected reason when feasible.
-6. Implement the minimum production code needed to pass.
-7. Run the narrow tests again.
-8. Refactor only within milestone scope.
-9. Run milestone targeted validation commands before any optional broad smoke.
-10. Record implementation decisions, surprises, aligned-surface audit, and validation results in implementation evidence.
-11. When implementation work for the milestone is complete, create an implementation handoff commit using the subject format `M<n>: <implemented milestone outcome>` and include milestone validation in the commit body or referenced evidence.
-12. Stop before the next milestone unless the user asked to continue.
-
-Stopping before the next milestone does not cancel a required downstream workflow handoff. In a workflow-managed standard workflow, once the requested milestone is complete and no stop condition applies, hand off to `code-review` instead of waiting for redundant user confirmation.
-
-## Handoff inspection budget
-
-When checking milestone readiness or handoff state, start with the owning `change.yaml`.
-
-Use this order:
-
-1. `change.yaml` workflow and planned-work state
-2. stable current milestone section in the plan
-3. implementation validation evidence for that milestone
-4. review-resolution evidence only when findings exist
-5. governing artifacts needed for the implementation
-
-For milestone readiness, do not run broad repository searches to infer milestone state.
-
-Avoid broad repository searches before checking change-local state.
-
-If `change.yaml` does not identify the current milestone or next stage, stop and report the missing state instead of writing it.
-
-## Milestone-aware handoff
-
-For milestone-based plans, `implement` works on one in-scope implementation milestone at a time.
-
-- Workflow transitions the current milestone from `planned` to `implementing` before invoking implementation.
-- After implementation and targeted validation complete, record targeted validation evidence, decisions, surprises, and follow-ups in implementation evidence.
-- When no stop condition applies, report a review-requested handoff to workflow; workflow updates the milestone and routes to `code-review`.
-- Perform a state-sync check before claiming readiness for `code-review`.
-- Run the project artifact-lifecycle state-sync check before claiming readiness for `code-review`.
-- Implementation completion is handoff evidence, not milestone closeout. `implementation-complete` may appear as an evidence description, but it is not a milestone state.
-- The milestone becomes `closed` only after clean code-review and any required review-resolution are complete.
-- If accepted review findings return to implementation, keep fixes attached to the same milestone. After fixes and targeted validation evidence are complete, return that same milestone to `review-requested` before rerun review.
-
-`implement` must not write plan or workflow readiness.
-
-## Implementation autoprogression
-
-When unified workflow automation has valid implementation authority, implement only the current approved milestone in order. Implementation authority can run implementation and reviewer-declared auto-fix loops, but it cannot run `explain-change`, `verify`, or `pr`.
-
-When handing workflow-managed implementation work to automated `code-review`, hand off to the independent adversarial review gate. Provide tracked artifacts, the actual diff, governing contracts, and neutral routing metadata.
-
-When handing workflow-managed implementation work to automated `code-review`, include neutral routing metadata for requirement-fidelity applicability. Do not present implementation and validator agreement as sufficient proof of spec fidelity. When both contracts apply, downstream continuation requires both the independent-review receipt and the requirement-fidelity receipt.
-
-Do not provide R5 forbidden initial-context items in the initial review packet: author hidden reasoning, author chain-of-thought, author self-assessment, claims that the change is correct, desired review outcome, autoprogression round budget, message that approval is needed to continue, auto-fix budget, auto-fix eligibility, implementation-stage safety narrative, prior reviewer conclusion, prior finding content, validation-result summaries, and evidence menu.
-
-Automatic review-driven fixes are allowed only for reviewer-declared auto-fix findings that stay within the declared paths, approved generated outputs, workflow projections, and evidence records. Do not infer safety from a finding that merely looks small or obvious.
-
-Do not expose auto-fix classification to review discovery; findings and verdict are recorded before fixability is classified.
-
-Before Phase C can enter `explain-change` or `verify`, require final holistic code-review evidence for the complete cross-milestone diff.
-
-## TDD rules
-
-- Tests first for new behavior.
-- Regression test first for bugs.
-- Minimal implementation to make tests pass.
-- Refactor after green, not before.
-- Delete or rewrite tests that pass for the wrong reason.
-- Do not write broad mocks that bypass the behavior under test.
-
-## Scope rules
-
-- Implement only approved requirements and milestone tasks.
-- Prefer the `smallest scope-complete change` over the smallest diff.
-- Do not add unrelated refactors.
-- Do not change public behavior not covered by the spec.
-- Do not defer a required same-slice fix to later review, later milestone, or later cleanup.
-- If code reveals a spec or architecture gap, stop and update the artifact or document the blocker.
-- If validation fails, fix or report before moving on.
-- Do not mark a milestone complete without the milestone commit.
-- Do not assume every completed milestone needs its own PR; multiple completed milestones may continue in the same PR when that is the clearest review unit.
-
-## Workflow handoff
-
-- Do not hand off to `code-review` until the slice meets the `first-pass acceptable result` bar.
-- In a workflow-managed standard workflow, successful `implement` completion hands off to `code-review` unless a stop condition applies.
-- Implementation-stage closeout may report milestone completion, validation, blockers, readiness for `code-review`, or the next milestone.
-- Do not use `implement` to claim review findings, review-clean status, or `branch-ready`. If review has not happened yet, say the change is ready for `code-review`, not that no required fixes were found.
-- If milestone validation fails or the implementation reveals a blocker that needs a real user decision, stop before `code-review` and report the blocker explicitly.
-- Ordinary later review comments may still happen. A `preventable first-pass miss` is only a finding that should have been caught by the same-slice completeness set, required edge cases, or targeted validation before handoff.
-- This v1 autoprogression rule does not expand manual skill invocation or bugfix execution behavior through the `implement` skill.
-
-## Evidence update requirements
-
-Record implementation decisions, discoveries, validation commands and results, and follow-ups in implementation evidence.
-Do not update the plan, upstream artifacts, artifact settlement, or workflow routing.
-
-## Stop conditions
-
-Stop before handoff when:
-
-- required source artifacts are missing, contradictory, or not approved enough for the workflow state;
-- tests or targeted validation fail and the failure is not fixed;
-- a spec, architecture, owner-decision, security, permission, or scope blocker appears;
-- the slice cannot meet the first-pass acceptable result;
-- the current milestone cannot be updated to `review-requested` with validation evidence and a milestone commit.
-
 ## Evidence collection efficiency
 
 Use bounded evidence before broad reads or raw excerpts.
@@ -347,49 +247,14 @@ Read the full file when the whole file is the review target, the relevant sectio
 
 ## Output skeleton
 
-Fill placeholders such as `<paths or none>` with concrete milestone evidence.
-
 ```md
-## Result
-
-- Skill: implement
-- Status: implemented | blocked
-- Artifacts changed: <paths or none>
-- Open blockers: <blockers or none>
-- Next stage: code-review | blocked
-- Milestone: <milestone ID or isolated request>
-- Milestone state: review-requested | blocked
-- Tests or proof updated first:
-- Validation:
-- Plan updates:
-
-## Implementation summary
-<scope-complete change, same-slice coverage, and important decisions>
-
-## Validation evidence
-<commands and pass/fail results>
-
-## Handoff
-<review-requested milestone state, commit, or blocker>
+COPY `assets/implementation-result-skeleton.md` for the implementation result.
+Fill <core fields and applicable profile groups> required by this skill.
+Omit inapplicable groups and do not emit unfilled placeholders.
 ```
 
 ## Expected output
 
-Use the `## Output skeleton` shape.
-
-Start with:
-
-```md
-## Result
-
-- Skill: implement
-- Status: <implemented | blocked>
-- Artifacts changed: <paths or none>
-- Open blockers: <blockers or none>
-- Next stage: <code-review | blocked>
-- Validation: <commands and results>
-- Milestone state: <review-requested | blocked>
-```
-
-Then include the milestone implemented, tests or proof added first, validation results, blockers or spec gaps, and readiness for `code-review` or a clear blocked state.
-Do not imply review findings, final verification, final closeout readiness, or `branch-ready`.
+Copy `assets/implementation-result-skeleton.md` and emit its core result plus only the groups applicable to the invocation profile.
+The asset owns labels and layout; this file and the applicable procedure reference own status meaning, permission, claims, and handoff behavior.
+Do not imply review, verification, branch, PR, or final-closeout outcomes.
