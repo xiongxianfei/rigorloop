@@ -24,3 +24,16 @@ Resolution: review-resolution.md#proposal-review-r1
 Material findings: PRSIM-PR1
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: proposal-review-r3
+Stage: proposal-review
+Round: r3
+Reviewed artifact: docs/proposals/2026-08-11-proposal-review-skill-simplification.md at commit ea4785fa
+Status: changes-requested
+Detailed record: reviews/proposal-review-r3.md
+Resolution: review-resolution.md#proposal-review-r3
+Material findings: PRRSIM-PR1, PRRSIM-PR2, PRRSIM-PR3
+Open findings: PRRSIM-PR1, PRRSIM-PR2, PRRSIM-PR3
+Recording status: recorded
