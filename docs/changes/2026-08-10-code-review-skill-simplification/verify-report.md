@@ -1,112 +1,77 @@
 # Verify Report: Code-Review Skill Simplification
 
-Verification ID: verify-r1
+Verification ID: verify-r2
 Stage: verify
 Verifier: Codex verify
-Verification date: 2026-08-10
-Status: blocked
+Verification date: 2026-08-11
+Status: branch-ready
 PR readiness: not claimed
 
 ## Result
 
 - Skill: verify
-- Status: blocked
-- Branch readiness: not-ready
-- Open blockers: three path-selection results and one lifecycle ownership conflict
-- Next stage: none until the owning artifact and validation-routing stages resolve the blockers
+- Status: passed
+- Artifacts changed: this report and workflow-owned closeout state
+- Open blockers: none
+- Next stage: pr, not invoked
+- Validation: local PR gate and approved proof map passed
+- Readiness: branch-ready
 - Hosted CI: not observed
 
 ## Scope and verdict
 
-Final verification covered the branch change from `72ec76dc9b9e1efd6b49da76778d796ed6a330a6` through reviewed commit `0c9b80e0`.
+Final verification covered the branch change from `72ec76dc9b9e1efd6b49da76778d796ed6a330a6` through `d81b6845`, including the final reviewed implementation commit `05e6fd53` and its R3 review and rationale evidence.
 
-The implementation, focused tests, adapter packages, review closeout, semantic proof, and measurements pass their approved checks.
+The branch is `branch-ready`.
+The implementation, governing artifacts, tests, generated packages, temporary installed packages, review closeout, lifecycle state, semantic proof, measurements, and local PR validation agree.
 
-The branch is not `branch-ready` because repository-selected PR validation stops before execution on three unregistered change-local evidence paths, and explicit lifecycle validation finds multiple normalized owners for the touched shared architecture artifact.
+Verify R1's two blockers are closed:
 
-The workflow automation is paused at `verify` as required after a verification failure.
+- the canonical architecture now has one normalized owner in this change, with architecture-review R3 approved; and
+- the three one-change deterministic evidence paths have complete owner-approved deferrals, remain visible as registration debt, and retain their exact CMD1 and CMD11 proof.
 
-It does not automatically repair these upstream ownership and routing defects and does not invoke `pr`.
+No PR body, PR-open readiness, hosted CI result, target-agent execution, network publication, or merge readiness is claimed.
 
 ## Traceability and verification dimensions
 
 | Dimension | Result | Evidence |
 | --- | --- | --- |
-| Spec coverage | pass | `R1`-`R25`, `PRF-001`-`PRF-014`, T1-T16, and approved milestone evidence remain mapped. |
-| Requirement satisfaction | pass | The rule ledger, canonical package, conditional resource, assets, package parity, measurements, and MP1 semantic review cover every requirement area. |
-| Test coverage and validity | pass | CMD1-CMD11 proof applicable to the final branch state passed; the invalid disposition fixture fails closed and package checks exercise temporary generated and installed trees. |
-| Architecture coherence | concern | The implemented package matches the approved architecture text, but the shared architecture path has multiple normalized owners in stage-owned metadata. |
-| Artifact lifecycle state | block | Explicit lifecycle validation blocks `docs/architecture/system/architecture.md` because it has more than one normalized artifact entry. |
-| Plan completion | pass | M1-M3 are closed, no implementation milestone remains, and final holistic code review is approved. |
-| Validation evidence | block | Focused checks pass, but PR-mode selection reports three `manual-routing-required` results before its selected check graph can run. |
-| Drift detection | pass with concern | Canonical and generated skill checks pass; adapter archives and clean installs match; the architecture ownership conflict remains. |
-| Risk closure | pass | Semantic preservation, package rollback, non-runtime acceptance, and common-path versus package measurements are recorded. |
-| Release readiness | block | Branch readiness cannot be claimed until lifecycle and selector blockers are resolved and verification is rerun. |
+| Spec coverage | pass | R1-R25, AC1-AC14, PRF-001-PRF-014, and T1-T16 remain mapped to the final package and proof. |
+| Requirement satisfaction | pass | The ledger, canonical package, conditional reference, assets, package parity, measurements, and MP1 cover every requirement area. |
+| Test coverage | pass | CMD1-CMD11 applicable proof passed; static fixtures cover seven scenarios and unknown disposition rejection. |
+| Test validity | pass | Negative fixtures fail closed; adapter tests compare generated, archived, and temporary installed resources. |
+| Architecture coherence | pass | The package implementation matches the approved canonical architecture and its single current owner. |
+| Artifact lifecycle state | pass | Explicit lifecycle validation passed for the authoritative proposal, spec, test spec, architecture, plan, plan index, change record, and rationale set. |
+| Plan completion | pass | M1-M3 are closed, no implementation milestone remains, and final holistic code-review R3 is approved. |
+| Validation evidence | pass | The local PR gate passed 26 direct checks; the selector reports 13 selected checks, no blockers, and no broad-smoke requirement. |
+| Drift detection | pass | Canonical, generated, archived, and installed skill resources match. |
+| Risk closure | pass | Semantic preservation, rollback identity, runtime exclusion, selector debt, and common-path versus package accounting are recorded. |
+| Release readiness | pass for branch handoff | Branch-ready is supported; PR and release-stage claims remain outside verify. |
 
-## Blocking findings
+## Validation evidence
 
-### VR-CRSIM-001: shared architecture has multiple normalized owners
-
-Command:
-
-```bash
-python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-08-10-code-review-skill-simplification.md --path specs/code-review-skill-simplification.md --path specs/code-review-skill-simplification.test.md --path docs/architecture/system/architecture.md --path docs/plans/2026-08-10-code-review-skill-simplification.md --path docs/plan.md --path docs/changes/2026-08-10-code-review-skill-simplification/change.yaml --path docs/changes/2026-08-10-code-review-skill-simplification/explain-change.md
-```
-
-Result: blocked.
-
-Evidence: `Governance (lifecycle consistency): BLOCK docs/architecture/system/architecture.md [change_metadata]: stage-owned governed artifact must have exactly one normalized artifact entry`.
-
-Required outcome: the architecture-owning stage must establish one lifecycle owner for the shared architecture artifact or move this change's approved design delta to the repository's supported change-local architecture surface, then rereview the corrected architecture state.
-
-Rerun: explicit lifecycle validation and PR-mode selected validation must both pass on the corrected tracked state.
-
-### VR-CRSIM-002: change-local deterministic evidence lacks selector registration or deferral
-
-Command:
-
-```bash
-python scripts/select-validation.py --mode pr --base 72ec76dc --head HEAD
-```
-
-Result: blocked before selected checks ran.
-
-The selector returned `manual-routing-required` for:
-
-- `docs/changes/2026-08-10-code-review-skill-simplification/code-review-rule-disposition.yaml`, classified as unregistered deterministic change-local evidence;
-- `docs/changes/2026-08-10-code-review-skill-simplification/fixtures/invalid-ledger-disposition.yaml`, classified as an unsupported change-local path; and
-- `docs/changes/2026-08-10-code-review-skill-simplification/fixtures/scenario-contracts.yaml`, classified as an unsupported change-local path.
-
-Required outcome: the validation-routing owner must register these deterministic evidence classes and route them to their existing proof, or the governing owner must record a complete approved deferral with owner, path, reason, validation impact, and follow-up.
-
-The correction must preserve the approved non-goal against a new code-review-simplicity validator family.
-
-Rerun: PR-mode selection must return no blocking results, and `bash scripts/ci.sh --mode pr --base 72ec76dc --head HEAD` must execute the selected graph successfully.
-
-## Passing validation evidence
-
-All commands ran locally from the repository root on 2026-08-10.
+All commands ran locally from the repository root on 2026-08-11.
 
 | Command or proof | Result |
 | --- | --- |
-| CMD1 ledger and scenarios | pass; 22 rules, seven scenarios, unknown disposition rejected |
+| `bash scripts/ci.sh --mode pr --base 72ec76dc --head HEAD` | pass; 26 direct product and governance checks |
+| `python scripts/select-validation.py --mode pr --base 72ec76dc --head HEAD` | pass; 13 selected checks, zero blockers, three complete owner-deferred debts, broad smoke not required |
+| CMD1 ledger and scenarios | pass; 22 rules, seven scenarios, unknown disposition rejected before consistency checks |
 | `python scripts/validate-skills.py skills/code-review/SKILL.md` | pass; one canonical skill validated |
 | `python scripts/test-skill-validator.py` | pass; 290 tests, 16 governed skips |
 | `python scripts/build-skills.py --check` | pass; temporary generated tree matched |
-| `python scripts/test-adapter-distribution.py` | pass |
-| CMD6 trusted `v0.3.6` temporary build and clean-install proof | pass; Codex, Claude, and opencode archives and installed `code-review` package validated without target-agent execution |
-| `python scripts/validate-boundary-first.py --check --path specs/code-review-skill-simplification.md --path specs/code-review-skill-simplification.test.md` | pass |
-| `python scripts/validate-change-metadata.py docs/changes/2026-08-10-code-review-skill-simplification/change.yaml` | pass before blocked-state recording |
-| `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-10-code-review-skill-simplification` | pass; 16 reviews, nine resolved findings, no open finding |
-| CMD10 and CMD11 | pass; 355 lines, 2,647 words, 4,813 estimated tokens, zero duplicated clusters, zero inline templates, four mapped resources |
-| `python scripts/validate-skills.py` | pass; all 24 canonical skills validated |
-| `python scripts/test-build-skills.py` | pass; seven tests |
-| selected adapter archive regression | pass; one test |
-| `python scripts/test-change-metadata-validator.py` | pass; 61 tests |
-| `python scripts/validate-guide-system.py` | pass |
-| `git diff --check 72ec76dc..HEAD` | pass before this report was written |
+| `python scripts/test-review-artifact-validator.py` | pass; 103 tests after the lowercase vocabulary correction |
+| `python scripts/test-adapter-distribution.py` | pass; 150 tests |
+| CMD6 trusted `v0.3.6` temporary build and clean-install proof | pass; Codex, Claude, and opencode archives and installed `code-review` packages validated |
+| Boundary-first validation for the feature spec and test spec | pass; active snapshot and trusted rollback artifacts validated |
+| `python scripts/validate-change-metadata.py docs/changes/2026-08-10-code-review-skill-simplification/change.yaml` | pass before final state recording |
+| `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-10-code-review-skill-simplification` | pass; 19 reviews, nine resolved findings, no open finding |
+| Explicit authoritative artifact lifecycle validation | pass; four normalized lifecycle artifacts validated |
+| CMD10 and CMD11 | pass; 354 lines, 2,650 words, 4,818 estimated tokens, zero duplicate clusters, zero inline templates, four mapped resources |
+| `git diff --check 72ec76dc..HEAD` | pass before final state recording |
 
-The selector reported `broad_smoke_required: false`, so no broad-smoke result is claimed.
+The PR selector's three registration-debt records are nonblocking because each exact path has a complete repository-maintainer deferral with reason, validation impact, and follow-up.
+They do not substitute for CMD1 or CMD11; both commands passed.
 
 No hosted CI result is claimed.
 
@@ -116,42 +81,53 @@ Check ID: MP1
 
 Result: pass.
 
-Why manual: semantic preservation requires independent judgment over trigger clarity, ownership, prerequisites, sequence, evidence, stops, claims, outputs, handoff, and the conditional resource trigger.
+Why manual: semantic preservation requires independent judgment over trigger clarity, ownership, prerequisites, procedure, evidence, stops, claims, outputs, handoff, and the conditional resource trigger.
 
 Performer: Codex independent semantic review.
 
-Date: 2026-08-10.
+Date: 2026-08-11.
 
-Evidence: `docs/changes/2026-08-10-code-review-skill-simplification/evidence/semantic-preservation-review.md`.
+Evidence: `evidence/semantic-preservation-review.md`, `reviews/code-review-final-r3.md`, and the complete rule-disposition ledger.
 
-Rerun condition: repeat MP1 if the canonical skill, conditional reference, assets, rule destinations, or governing semantics change while resolving the blockers.
+The post-MP1 skill correction changed capitalization only to preserve the shared lowercase `required outcome` and `safe resolution` literals.
+R3 confirmed that the same finding fields and behavior remain intact.
+
+Rerun condition: repeat MP1 after a substantive change to the canonical skill, conditional reference, assets, rule destinations, or governing semantics.
+
+## Measurements
+
+| Metric | Before | Final | Change |
+| --- | ---: | ---: | ---: |
+| Common-path words | 4,514 | 2,650 | -41.3% |
+| Common-path estimated tokens | 8,160 | 4,818 | -41.0% |
+| Total package words | 5,569 | 4,591 | -17.6% |
+| Total package estimated tokens | 10,116 | 8,523 | -15.7% |
+| Duplicated rule clusters | 7 | 0 | all assigned one owner |
+| Inline output templates | present | 0 | assets are sole structural owners |
+
+The 35-45 percent common-path value remained a planning target, not a semantic gate.
+Total-package accounting is reported separately, and the complete package also became smaller.
 
 ## Nonblocking observations
 
-The documentation prose audit ran in audit mode and returned zero process failure while reporting 70 style errors and 69 warnings across the changed skill and explanation.
+The configured documentation prose audit passed in audit mode while retaining advisory findings in the published skill.
+Those observations are not correctness or lifecycle blockers and were not converted into a permanent prose-quality gate.
 
-Those findings do not override the selector's configured audit semantics, but the owning authoring stages should address them if either file is revised during blocker resolution.
+The selector intentionally reports three complete owner-deferred registration debts for the ledger and two fixture paths.
+Their exact follow-up is the existing M1 evidence; no generic validator family is warranted for these one-change artifacts.
 
-## Review, drift, and risk assessment
+## Drift and residual risk
 
-- M1, M2, M3, and the final holistic code review are approved with no implementation finding open.
-- `review-resolution.md` is closed with nine final dispositions and no `needs-decision` entry.
-- Common-path size fell 41.4 percent by words and 41.0 percent by estimated tokens.
-- Total package size fell 17.6 percent by words and 15.8 percent by estimated tokens.
-- All seven named duplication clusters have one destination owner.
-- The canonical package, generated skills, archives, and clean installed trees preserve the mapped conditional reference and assets.
-- No target-agent runtime, prompt journey, transcript grading, model selection, network publication, PR, or external mutation occurred.
+- Final holistic code-review R3 is clean-with-notes and records no material finding.
+- `review-resolution.md` has nine final dispositions, no open finding, and no `needs-decision` entry.
+- Canonical, generated, packed, and temporary installed package resources are current.
+- The final correction preserved shared review-resolution vocabulary without changing semantics.
+- No broad smoke was required by the selector.
+- Hosted CI remains unobserved and belongs to the later PR/CI surface.
 
-## Readiness and rerun conditions
+## Readiness
 
-Verdict: blocked; not `branch-ready`.
+Verdict: `branch-ready`.
 
-Before verification can pass:
-
-1. settle the shared architecture artifact's single lifecycle ownership and obtain any required architecture rereview;
-2. settle selector routing or an approved deferral for the ledger and two fixture paths;
-3. rerun any affected implementation and semantic proof;
-4. obtain a fresh final holistic code review if blocker resolution changes the reviewed diff; and
-5. rerun final verification, including lifecycle closeout and PR-mode selected CI.
-
-The stopped next stage is `pr`.
+The normal next stage is `pr`, but it was not invoked because the requested workflow target is successful verification.
+Human authorization remains required before PR preparation or opening under the active automation contract.

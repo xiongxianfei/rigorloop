@@ -78,7 +78,7 @@ artifact_states:
 workflow_state:
   lifecycle_state: active
   current_stage: verify
-  next_stage: verify
+  next_stage: pr
   blocker: null
   evidence:
     - docs/changes/2026-08-10-code-review-skill-simplification/evidence/proposal-authoring.md
@@ -138,7 +138,6 @@ workflow_state:
       readiness: not-ready
       reasons:
         - lifecycle-gates-open
-        - verify-pending
         - pr-handoff-pending
       evidence:
         - docs/changes/2026-08-10-code-review-skill-simplification/verify-report.md
@@ -152,9 +151,9 @@ workflow:
       bound_at: "2026-08-10T23:12:05Z"
       completion:
         rule: final verification result is recorded
-    status: active
+    status: completed
     current_stage: verify
-    stop_reason: null
+    stop_reason: target-reached
     evidence:
       - docs/changes/2026-08-10-code-review-skill-simplification/reviews/proposal-review-r3.md
       - docs/changes/2026-08-10-code-review-skill-simplification/reviews/spec-review-r1.md
@@ -235,6 +234,22 @@ validation:
     result: pass_ci_maintenance_common_path_4818_tokens_package_8523_tokens
   - command: python scripts/test-review-artifact-validator.py
     result: pass_verify_correction_103_tests
+  - command: bash scripts/ci.sh --mode pr --base 72ec76dc --head HEAD
+    result: pass_verify_r2_26_direct_checks
+  - command: python scripts/select-validation.py --mode pr --base 72ec76dc --head HEAD
+    result: pass_verify_r2_13_selected_checks_three_owner_deferred_debts_no_blockers
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_verify_r2_150_tests
+  - command: CMD6 trusted v0.3.6 temporary archive and clean-install proof
+    result: pass_verify_r2_codex_claude_opencode_code_review
+  - command: CMD1 through CMD11 final verification proof
+    result: pass_verify_r2_contract_package_lifecycle_and_measurement_proof
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths with authoritative change paths
+    result: pass_verify_r2_four_normalized_artifacts
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-10-code-review-skill-simplification
+    result: pass_verify_r2_19_reviews_9_resolved_findings
+  - command: git diff --check 72ec76dc..HEAD
+    result: pass_verify_r2_before_final_state_recording
 changed_files:
   - docs/changes/2026-08-10-code-review-skill-simplification/change.yaml
   - docs/proposals/2026-08-10-code-review-skill-simplification.md
