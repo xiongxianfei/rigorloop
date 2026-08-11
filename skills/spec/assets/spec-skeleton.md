@@ -2,7 +2,7 @@
 <!-- Skill: spec -->
 <!-- Template status: normative -->
 <!-- Maintained alongside: skills/spec/SKILL.md -->
-<!-- Readability contract: use semantic source lines; keep stable IDs and tables for repeated proof or mapping structures. -->
+<!-- Readability contract: use normal prose paragraphs, keep complete sentences intact, and retain stable IDs and tables for repeated proof or mapping structures. -->
 
 # <Spec title>
 

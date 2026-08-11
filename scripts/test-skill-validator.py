@@ -7843,7 +7843,8 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
         ]
         required_terms = [
             "Readability contract:",
-            "semantic source lines",
+            "normal prose paragraphs",
+            "complete sentences",
             "stable IDs",
             "tables",
         ]
@@ -7866,7 +7867,8 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
         ]
         required_terms = [
             "## Generated Markdown readability",
-            "semantic source lines",
+            "normal Markdown paragraphs",
+            "Do not split a sentence across physical source lines",
             "stable IDs",
             "Diagrams are optional",
             "Do not require manual-proof contracts",
@@ -7877,6 +7879,17 @@ class MarkdownReadabilityGuidanceTests(unittest.TestCase):
             for term in required_terms:
                 with self.subTest(skill=skill_path, term=term):
                     self.assertIn(term, text)
+
+            with self.subTest(skill=skill_path, term="legacy clause-per-line guidance"):
+                self.assertNotIn("one sentence or natural clause per source line", text)
+
+    def test_implementation_markdown_guidance_keeps_sentences_intact(self) -> None:
+        skill_path = ROOT / "skills" / "implement" / "SKILL.md"
+        text = skill_path.read_text(encoding="utf-8")
+
+        self.assertIn("normal Markdown paragraphs", text)
+        self.assertIn("Do not split a sentence across physical source lines", text)
+        self.assertNotIn("use semantic source lines", text)
 
 
 class StageOwnedLifecycleSkillContractTests(unittest.TestCase):

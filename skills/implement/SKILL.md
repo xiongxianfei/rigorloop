@@ -197,7 +197,7 @@ Implementation completion is evidence for review, not milestone closeout.
 
 ## Generated Markdown readability
 
-When creating generated or generator-shaped Markdown, use semantic source lines, stable IDs, and tables for repeated mappings.
+When creating generated or generator-shaped Markdown, write ordinary prose as normal Markdown paragraphs. Do not split a sentence across physical source lines merely for wrapping or clause separation; multiple sentences may remain in one paragraph. Keep stable IDs and use tables for repeated mappings.
 Diagrams are optional and should reduce real cognitive load.
 Do not require manual-proof contracts from readability guidance alone.
 

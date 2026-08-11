@@ -104,7 +104,7 @@ Migration coverage proves historical Markdown remains audit-only and no mass ref
 - Level: unit
 - Fixture/setup: positive and negative README or `VISION.md` fixture snippets containing `AI agents`, `proposal to spec`, and `reviewable in Git`.
 - Steps: Run the readability validator fixture test against changed-section negative fixtures and semantic-line positive fixtures.
-- Expected result: Known bad split phrases fail with stable `MDREAD-*` diagnostics, while semantic source-line fixtures pass.
+- Expected result: Known bad split phrases fail with stable `MDREAD-*` diagnostics, while fixtures with intact sentences pass.
 - Failure proves: prior hard-wrap regressions can recur undetected.
 - Automation location: `CMD1`
 
@@ -202,9 +202,9 @@ Migration coverage proves historical Markdown remains audit-only and no mass ref
 
 - Covers: R10, R36-R39, R44
 - Level: unit
-- Fixture/setup: audit-only fixtures for long lines, dense paragraphs, lifecycle chains, and ambiguous clause breaks.
+- Fixture/setup: audit-only fixtures for long lines, dense paragraphs, lifecycle chains, and ambiguous sentence splits.
 - Steps: Run validator tests for warning and failure modes.
-- Expected result: Generic long lines, subjective clause quality, and generic dense-paragraph concerns remain audit-only; only narrow fixture-backed deterministic cases can fail.
+- Expected result: Generic long lines, subjective prose quality, and generic dense-paragraph concerns remain audit-only; only narrow fixture-backed deterministic cases can fail.
 - Failure proves: the validator became a subjective prose judge.
 - Automation location: `CMD1`
 
