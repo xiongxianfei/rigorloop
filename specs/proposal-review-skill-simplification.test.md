@@ -62,8 +62,8 @@ Migration proof classifies exact consumers and migrates real contracts without f
 | R29 | T8, T14 | contract, manual | Semantic ledger is complete. |
 | R30 | T8 | unit | Unknown semantic disposition fails first. |
 | R31 | T8, T12, T14 | migration, manual | Literal consumers are independently classified and migrated. |
-| R32 | T9 | contract | LF-normalized assembly and package measurement. |
-| R33 | T9, T12 | contract, manual | Reduction remains advisory and semantic. |
+| R32 | T15 | contract | LF-normalized assembly and package measurement. |
+| R33 | T12, T15 | contract, manual | Reduction remains advisory and semantic. |
 | R34 | T8-T12 | contract, integration, manual | Deterministic proof only; no runtime or permanent machinery. |
 | R35 | T10, T11 | integration | Existing owners prove canonical through installed parity. |
 | R36 | T13 | contract | Architecture assessment precedes plan and routes ambiguity. |
@@ -97,12 +97,12 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | PRF-005 | covered | R8, R9, R12, R13, R17, R20, R37 | BND-TEMPORAL-001 | T2-T6, T13 | contract | automated | CMD1, CMD3, CMD6, CMD7 | `evidence/m2-package-refactor.md`; `evidence/m3-package-proof.md` | M3 | - | - |
 | PRF-006 | covered | R5, R6, R17, R20, R22, R23, R26, R30, R31, R36, R37 | BND-RECOVERY-001 | T1-T9, T13 | contract | automated | CMD1, CMD3, CMD6, CMD7, CMD9 | `evidence/m1-preservation-inventories.md`; `architecture-assessment.md`; `evidence/m3-package-proof.md` | M3 | - | - |
 | PRF-007 | covered | R4, R28, R29, R30, R31, R35, R36, R37 | BND-COMPAT-001 | T8, T10-T14 | integration | hybrid | CMD1, CMD3, CMD6, CMD7 | `evidence/semantic-preservation-review.md`; `evidence/m3-package-proof.md` | M3 | MP0, MP1 | - |
-| PRF-008 | covered | R14, R15, R16, R17, R23, R32, R34, R35, R37 | BND-ENV-001 | T2, T5, T9-T11, T13 | integration | automated | CMD1, CMD2, CMD3, CMD4, CMD5, CMD6, CMD7 | `evidence/simplification-measurements.md`; `evidence/m3-package-proof.md` | M3 | - | - |
+| PRF-008 | covered | R14, R15, R16, R17, R23, R32, R34, R35, R37 | BND-ENV-001 | T2, T5, T9-T11, T13, T15 | integration | automated | CMD1, CMD2, CMD3, CMD4, CMD5, CMD6, CMD7 | `evidence/simplification-measurements.md`; `evidence/m3-package-proof.md` | M3 | - | - |
 | PRF-009 | covered | R7, R8, R9, R17, R21 | INT-001 | T2, T5, T9 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
 | PRF-010 | covered | R10, R11, R12, R15, R16 | INT-002 | T2, T4, T12 | contract | hybrid | CMD3 | `evidence/semantic-preservation-review.md` | M3 | MP1 | - |
 | PRF-011 | covered | R18, R19, R20, R21 | INT-003 | T3, T5, T6, T12 | contract | hybrid | CMD3 | `evidence/semantic-preservation-review.md` | M3 | MP1 | - |
 | PRF-012 | covered | R23, R25, R26 | INT-004 | T5, T7, T9 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
-| PRF-013 | covered | R29, R30, R31, R32, R33 | INT-005 | T8, T9, T12, T14 | contract | hybrid | CMD1 | `evidence/m1-preservation-inventories.md`; `evidence/simplification-measurements.md`; `evidence/semantic-preservation-review.md` | M3 | MP0, MP1 | - |
+| PRF-013 | covered | R29, R30, R31, R32, R33 | INT-005 | T8, T12, T14, T15 | contract | hybrid | CMD1 | `evidence/m1-preservation-inventories.md`; `evidence/simplification-measurements.md`; `evidence/semantic-preservation-review.md` | M3 | MP0, MP1 | - |
 | PRF-014 | covered | R34, R35, R37 | INT-006 | T10, T11, T13 | integration | automated | CMD2, CMD3, CMD4, CMD5, CMD6, CMD7 | `evidence/m3-package-proof.md` | M3 | - | - |
 
 ## Edge case coverage
@@ -117,8 +117,10 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | EC6 installed adapter missing reference | T5, T11 | package and dependent review fail |
 | EC7 applicable group lacks receipt path | T7 | group reports blocked and blocker |
 | EC8 incidental exact-string test | T8, T14 | test migrates; semantics remain |
-| EC9 size reduction hides universal policy | T9, T12 | semantic acceptance fails |
+| EC9 size reduction hides universal policy | T12, T15 | semantic acceptance fails |
 | EC10 stale or cross-change automation | T1, T4 | automated mode is invalid |
+| interrupted identical recording retry | T4 | reconcile exactly once without duplicate receipt, finding, or log entry |
+| conflicting review-ID reuse | T4 | stop without mutation |
 
 ## Validation commands
 
@@ -144,7 +146,7 @@ CMD7 uses one managed temporary directory and performs no publication, network a
 | --- | --- | --- | --- | --- | --- | --- |
 | M1 | T8, T9, T14 | MP0 | CMD1, CMD9 | `evidence/profile-size-baseline.md`; `evidence/m1-preservation-inventories.md` | M1 code-review | Canonical package remains unchanged. |
 | M2 | T1-T7, T10 | none | CMD2, CMD3, CMD4, CMD5, CMD9 | `evidence/m2-package-refactor.md` | M2 code-review | Focused failing assertions precede package text changes. |
-| M3 | T9-T13 | MP1 | CMD1-CMD10 | `evidence/simplification-measurements.md`; `evidence/semantic-preservation-review.md`; `evidence/m3-package-proof.md` | M3 code-review and final review | Proves assembly, semantic, and package-chain acceptance. |
+| M3 | T10-T13, T15 | MP1 | CMD1-CMD10 | `evidence/simplification-measurements.md`; `evidence/semantic-preservation-review.md`; `evidence/m3-package-proof.md` | M3 code-review and final review | Proves assembly, semantic, and package-chain acceptance. |
 
 ## Test cases
 
@@ -192,10 +194,10 @@ CMD7 uses one managed temporary directory and performs no publication, network a
 - Covers: R9-R17, R28; E3-E5; EC2-EC4, EC10; BND-STATE-001, BND-AUTH-001, BND-TEMPORAL-001; INT-002
 - Level: integration
 - Command IDs: CMD2, CMD3
-- Fixture/setup: canonical reference and mode-specific positive and forbidden operation assertions.
-- Steps: verify advisory, formal manual, and formal automated branches and forbidden settlement, packet, correction, workflow, and handoff operations.
-- Expected result: detailed procedure is complete while every effect stays within classified authority.
-- Failure proves: reference loading became authority or a required recording branch is missing.
+- Fixture/setup: canonical reference, mode-specific operation assertions, an interrupted identical recording or settlement, and conflicting reuse of the same review ID for another target or result.
+- Steps: verify advisory, formal manual, and formal automated branches; retry the identical incomplete write and reconcile it exactly once; then reuse the review ID with conflicting identity and assert a stop without mutation.
+- Expected result: detailed procedure is complete, identical retry creates no duplicate receipt, finding, or log entry, conflicting reuse changes nothing, and every effect stays within classified authority.
+- Failure proves: reference loading became authority, a required recording branch is missing, retry duplicates evidence, or identity conflict mutates state.
 - Evidence artifact: `evidence/m2-package-refactor.md`
 - Automation location: focused skill-validator assertions
 - Required by milestone: M2
@@ -252,18 +254,18 @@ CMD7 uses one managed temporary directory and performs no publication, network a
 - Automation location: CMD1
 - Required by milestone: M1
 
-### T9. Static scenarios and measurements are deterministic and honest
+### T9. Static scenarios and baseline measurement are deterministic
 
-- Covers: R5-R8, R14-R17, R19-R20, R23, R25-R26, R32-R34; EC1-EC3, EC5, EC7, EC9; BND-INPUT-001, BND-RECOVERY-001, BND-ENV-001; INT-001, INT-004-INT-005
+- Covers: R5-R8, R14-R17, R19-R20, R23, R25-R26, R34; EC1-EC3, EC5, EC7; BND-INPUT-001, BND-RECOVERY-001, BND-ENV-001; INT-001, INT-004
 - Level: integration
 - Command IDs: CMD1, CMD3
-- Fixture/setup: exactly twenty-five scenario records and canonical before and after assembly definitions.
-- Steps: validate scenario identities and outcomes; normalize LF; count unique resources once; report every assembly and total package; reject runtime commands.
-- Expected result: required negative behavior is explicit, PRR0 materially shrinks, total movement is honest, and percentages stay advisory.
-- Failure proves: negative behavior or simplification evidence is incomplete or misleading.
-- Evidence artifact: `evidence/m1-preservation-inventories.md`; `evidence/simplification-measurements.md`
-- Automation location: CMD1, focused assertions, and repository-local measurement evidence
-- Required by milestone: M1 and M3
+- Fixture/setup: exactly twenty-five scenario records and the unchanged canonical baseline package.
+- Steps: validate scenario identities and outcomes, reject runtime commands, normalize the baseline package to LF, count each baseline resource once, and record baseline assemblies and total package.
+- Expected result: required negative behavior is explicit and the complete reproducible baseline exists before canonical prose moves.
+- Failure proves: negative behavior or the pre-movement baseline is incomplete.
+- Evidence artifact: `evidence/m1-preservation-inventories.md`; `evidence/profile-size-baseline.md`
+- Automation location: CMD1, focused assertions, and repository-local baseline measurement
+- Required by milestone: M1
 
 ### T10. Canonical and generated package validation uses existing owners
 
@@ -329,6 +331,19 @@ CMD7 uses one managed temporary directory and performs no publication, network a
 - Evidence artifact: `evidence/m1-preservation-inventories.md`
 - Automation location: manual audit supported by bounded `rg` searches and CMD1
 - Required by milestone: M1
+
+### T15. Final assembly measurements are deterministic and honest
+
+- Covers: R32-R34; EC9; BND-RECOVERY-001, BND-ENV-001; INT-005
+- Level: integration
+- Command IDs: CMD1, CMD2, CMD3
+- Fixture/setup: recorded M1 baseline, complete final canonical package, and documented PRR0, PRR0G, PRR1, and PRR1G load order.
+- Steps: normalize every canonical resource to LF, count each unique resource once, compute words and bytes for every resource, assembly, and total package, compare with baseline, and reconcile duplicate-cluster dispositions.
+- Expected result: PRR0 materially shrinks, every conditional and total-package delta is explicit, semantic acceptance outranks the advisory percentage, and no runtime or permanent metric gate is introduced.
+- Failure proves: relocation or duplication is misreported as simplification or numeric pressure removed required semantics.
+- Evidence artifact: `evidence/simplification-measurements.md`; `evidence/semantic-preservation-review.md`
+- Automation location: repository-local standard-library measurement plus focused assertions
+- Required by milestone: M3
 
 ## Fixtures and data
 
