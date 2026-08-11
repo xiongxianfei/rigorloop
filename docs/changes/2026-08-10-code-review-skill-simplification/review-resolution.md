@@ -271,3 +271,9 @@ diff and routes the change to explain-change without claiming verify readiness.
 Review ID: architecture-review-r3
 
 No findings. R3 approves the canonical ownership-pointer transfer to the current change, confirms one normalized architecture owner, and preserves the approved package design without a new ADR, diagram, or change-local architecture source.
+
+### code-review-final-r2
+
+Review ID: code-review-final-r2
+
+No findings. R2 approves the complete final diff through the architecture ownership transfer, nested owner-deferral support, three complete path-specific deferrals, selected-check semantic correction, and refreshed measurements without claiming verify readiness.
