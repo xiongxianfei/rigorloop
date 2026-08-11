@@ -1,0 +1,15 @@
+{
+  "scenarios": [
+    {"scenario":"isolated","required":["use self-sufficient SKILL.md","load result asset","omit planned and automation procedure"],"forbidden":["infer planned state","mutate workflow state","claim review passed"]},
+    {"scenario":"planned","required":["validate exact current implement milestone","load planned reference","emit planned result group"],"forbidden":["load automation reference","emit armed result group","advance before code-review"]},
+    {"scenario":"planned-armed","required":["validate matching current planned milestone and durable automation identity","load both references","emit all applicable result groups"],"forbidden":["infer authority from conversation","expose forbidden initial review context","skip rereview"]},
+    {"scenario":"invalid-unplanned-armed","required":["stop before conditional loading","report missing planned authority"],"forbidden":["load automation reference","mutate implementation state"]},
+    {"scenario":"stale-or-mismatched-authority","required":["reject stale or mismatched change and milestone evidence","stop before mutation"],"forbidden":["reuse stale authorization","silently rebind milestone"]},
+    {"scenario":"result-group-applicability","required":["always include core group","include only profile-applicable conditional groups","omit unfilled placeholders"],"forbidden":["emit meaningless not applicable groups","define policy in asset"]},
+    {"scenario":"validation-failure","required":["stop before review handoff","record failing command and blocker"],"forbidden":["claim implementation complete","continue to next milestone"]},
+    {"scenario":"specification-gap","required":["stop before guessing","route the gap to spec owner"],"forbidden":["silently alter contract","implement unapproved behavior"]},
+    {"scenario":"accepted-correction-return","required":["keep correction on same milestone","run required validation","return same milestone to rereview"],"forbidden":["open a new milestone","skip first-pass finding record"]},
+    {"scenario":"code-review-handoff","required":["record implementation evidence","use review-requested handoff","withhold downstream readiness claims"],"forbidden":["claim clean review","claim branch-ready"]},
+    {"scenario":"premature-next-milestone-transition","required":["stop while current milestone lacks clean review","retain current milestone identity"],"forbidden":["start next milestone","treat implementation-complete as closed"]}
+  ]
+}

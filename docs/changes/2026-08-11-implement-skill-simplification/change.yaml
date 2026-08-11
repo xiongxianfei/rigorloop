@@ -50,8 +50,8 @@ artifact_states:
       round: r1
 workflow_state:
   lifecycle_state: active
-  current_stage: test-spec-review
-  next_stage: implement
+  current_stage: code-review
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-08-11-implement-skill-simplification/evidence/proposal-authoring.md
@@ -62,13 +62,14 @@ workflow_state:
     - docs/changes/2026-08-11-implement-skill-simplification/evidence/test-spec-authoring.md
     - docs/changes/2026-08-11-implement-skill-simplification/reviews/plan-review-r2.md
     - docs/changes/2026-08-11-implement-skill-simplification/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-11-implement-skill-simplification/evidence/m1-preservation-inventories.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M1
     milestones:
       M1:
         kind: implementation
-        state: planned
+        state: review-requested
       M2:
         kind: implementation
         state: planned
@@ -80,13 +81,14 @@ workflow_state:
       - M2
       - M3
     latest_review:
-      status: not-started
-      stage: none
-      round: none
-      artifact_id: none
-      occurrence: none
-      milestone_id: none
-      evidence: []
+      status: review-requested
+      stage: code-review
+      round: r1
+      artifact_id: plan
+      occurrence: milestone
+      milestone_id: M1
+      evidence:
+        - docs/changes/2026-08-11-implement-skill-simplification/evidence/m1-preservation-inventories.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -102,15 +104,15 @@ workflow:
   automation:
     mechanism: bounded-review-fix
     target:
-      stage: test-spec-review
+      stage: verify
       occurrence:
         kind: singleton
-      bound_at: "2026-08-11T11:34:08Z"
+      bound_at: "2026-08-11T11:56:48Z"
       completion:
-        rule: formal test-spec review is recorded
-    status: completed
-    current_stage: test-spec-review
-    stop_reason: target-reached
+        rule: final verification result is recorded
+    status: active
+    current_stage: code-review
+    stop_reason: null
     evidence:
       - docs/changes/2026-08-11-implement-skill-simplification/reviews/proposal-review-r4.md
       - docs/changes/2026-08-11-implement-skill-simplification/reviews/spec-review-r1.md
@@ -119,6 +121,7 @@ workflow:
       - docs/changes/2026-08-11-implement-skill-simplification/evidence/test-spec-authoring.md
       - docs/changes/2026-08-11-implement-skill-simplification/reviews/plan-review-r2.md
       - docs/changes/2026-08-11-implement-skill-simplification/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-11-implement-skill-simplification/evidence/m1-preservation-inventories.md
 artifacts:
   proposal: docs/proposals/2026-08-11-implement-skill-simplification.md
   spec: specs/implement-skill-simplification.md
@@ -131,7 +134,13 @@ requirements:
 tests:
   - Review the changed skill semantically against its governing contract.
   - Validate canonical, generated, packed, and temporary installed package resources without executing a target agent.
-validation: []
+validation:
+  - command: CMD1 change-local ledger and fixture proof
+    result: pass_m1_24_rules_18_literals_11_scenarios_unknown_values_rejected
+  - command: sha256sum canonical implement package baseline
+    result: pass_m1_canonical_package_unchanged_from_53df8ce2
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-08-11-implement-skill-simplification/change.yaml
+    result: pass_m1
 changed_files:
   - docs/changes/2026-08-11-implement-skill-simplification/change.yaml
   - docs/changes/2026-08-11-implement-skill-simplification/evidence/proposal-authoring.md
@@ -159,6 +168,13 @@ changed_files:
   - docs/changes/2026-08-11-implement-skill-simplification/reviews/plan-review-r2.md
   - docs/changes/2026-08-11-implement-skill-simplification/review-invocation-test-spec-review-r1.yaml
   - docs/changes/2026-08-11-implement-skill-simplification/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-11-implement-skill-simplification/implement-rule-disposition.yaml
+  - docs/changes/2026-08-11-implement-skill-simplification/implement-literal-compatibility.yaml
+  - docs/changes/2026-08-11-implement-skill-simplification/fixtures/scenario-contracts.yaml
+  - docs/changes/2026-08-11-implement-skill-simplification/fixtures/invalid-rule-disposition.yaml
+  - docs/changes/2026-08-11-implement-skill-simplification/fixtures/invalid-literal-classification.yaml
+  - docs/changes/2026-08-11-implement-skill-simplification/evidence/profile-size-baseline.md
+  - docs/changes/2026-08-11-implement-skill-simplification/evidence/m1-preservation-inventories.md
 review:
   status: approved
   unresolved_items: 0
