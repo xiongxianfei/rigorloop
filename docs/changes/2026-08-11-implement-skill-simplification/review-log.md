@@ -53,3 +53,51 @@ Resolution: review-resolution.md#proposal-review-r4
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: spec-review-r1
+Stage: spec-review
+Round: r1
+Reviewed artifact: specs/implement-skill-simplification.md
+Status: approved
+Detailed record: reviews/spec-review-r1.md
+Resolution: review-resolution.md#spec-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: plan-review-r1
+Stage: plan-review
+Round: r1
+Reviewed artifact: docs/plans/2026-08-11-implement-skill-simplification.md
+Status: approved
+Detailed record: reviews/plan-review-r1.md
+Resolution: review-resolution.md#plan-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: plan-review-r2
+Stage: plan-review
+Round: r2
+Reviewed artifact: docs/plans/2026-08-11-implement-skill-simplification.md
+Status: approved
+Detailed record: reviews/plan-review-r2.md
+Resolution: review-resolution.md#plan-review-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+Review ID: test-spec-review-r1
+Stage: test-spec-review
+Round: r1
+Reviewed artifact: specs/implement-skill-simplification.test.md
+Status: approved
+Detailed record: reviews/test-spec-review-r1.md
+Resolution: review-resolution.md#test-spec-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded

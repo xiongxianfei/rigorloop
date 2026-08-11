@@ -8,11 +8,15 @@ Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
+Review closeout: spec-review-r1
+Review closeout: plan-review-r1
+Review closeout: plan-review-r2
+Review closeout: test-spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`
 - Findings resolved: 5
 - Unresolved findings: 0
-- Current result: proposal-review R4 approved the revised proposal with no material findings.
+- Current result: test-spec-review R1 approved the proof map with no material findings.
 
 ## Resolution Overview
 
@@ -63,6 +67,12 @@ Implementation evidence: not applicable at proposal stage
 ### proposal-review-r2
 
 Review closeout: proposal-review-r2
+
+No material findings.
+
+### spec-review-r1
+
+Review closeout: spec-review-r1
 
 No material findings.
 
@@ -121,5 +131,23 @@ Implementation evidence: not applicable at proposal stage
 ### proposal-review-r4
 
 Review closeout: proposal-review-r4
+
+No material findings.
+
+### plan-review-r1
+
+Review closeout: plan-review-r1
+
+No material findings.
+
+### plan-review-r2
+
+Review closeout: plan-review-r2
+
+No material findings.
+
+### test-spec-review-r1
+
+Review closeout: test-spec-review-r1
 
 No material findings.

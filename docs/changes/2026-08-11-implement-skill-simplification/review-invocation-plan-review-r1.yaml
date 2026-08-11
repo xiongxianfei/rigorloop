@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: plan-review-r1
+review_stage: plan-review
+review_target: docs/plans/2026-08-11-implement-skill-simplification.md
+base_revision: 3e495696d8de6f0eec9d56b38ba68f2e1607602c
+head_revision: working-tree
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-plan-authoring-r1
+reviewer_context_id: root-plan-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-refactor
+  - conditional-resource-ownership
+  - compatibility-sensitive-literal-migration
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/implement-skill-simplification.md
+  - docs/changes/2026-08-11-implement-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-11-implement-skill-simplification.md
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: specs/implement-skill-simplification.md
+    sha256: b2cedc4d386b00acfa609f844844f7ba87d7dbd1768e67c58c7a0f74aa697069
+  - path: docs/changes/2026-08-11-implement-skill-simplification/architecture-assessment.md
+    sha256: 2d36cf9faaea7511b101442cbb47142cc69ea49171660a1938b61f655e9f2657
+  - path: docs/plans/2026-08-11-implement-skill-simplification.md
+    sha256: 02e017edcdc45e5d3c09a41b329ab324a4e3ae8bc5ff31e963c2f0a40d01b327
+prompt_template_version: plan-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - source and boundary alignment
+  - independently closeable milestones
+  - deterministic proof commands and TDD readiness
+  - resource ownership and rollback safety
+  - test-spec readiness
