@@ -21,11 +21,12 @@ Review closeout: code-review-m3-r1
 Review closeout: code-review-final-r1
 Review closeout: code-review-final-r2
 Review closeout: code-review-final-r3
+Review closeout: code-review-final-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-final-r1`, `code-review-final-r2`, `code-review-final-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-final-r1`, `code-review-final-r2`, `code-review-final-r3`, `code-review-final-r4`
 - Findings resolved: 12
 - Unresolved findings: 0
-- Current result: final holistic R3 records no new findings on the review-disposition compatibility correction and routes the complete branch back to verify.
+- Current result: final holistic R4 records no new findings on the portable plan-path correction and routes the complete branch back to verify.
 
 ## Resolution Overview
 
@@ -45,6 +46,12 @@ Review closeout: code-review-final-r3
 | WFSIM-CR3 | accepted | resolved | All rule destinations resolve and literal classifications follow approved authority. |
 
 ## Finding Details
+
+### code-review-final-r4
+
+Review ID: code-review-final-r4
+
+No new findings. The verify-triggered correction restores the canonical plan index/body distinction and non-canonical change-local plan-path boundary, registers the parser-sensitive dependency, refreshes affected evidence, and routes the complete branch back to verify.
 
 ### code-review-final-r3
 

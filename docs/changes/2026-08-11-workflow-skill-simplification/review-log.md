@@ -7,6 +7,18 @@ This ledger records formal lifecycle reviews for the workflow skill simplificati
 ## Review Entries
 
 ### Review entry
+Review ID: code-review-final-r4
+Stage: code-review
+Round: r4
+Reviewed artifact: verify correction 17d93d1b..fdc511b7
+Status: clean-with-notes
+Detailed record: reviews/code-review-final-r4.md
+Resolution: review-resolution.md#code-review-final-r4
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
 Review ID: code-review-final-r3
 Stage: code-review
 Round: r3
