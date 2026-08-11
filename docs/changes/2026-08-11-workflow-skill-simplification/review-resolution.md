@@ -19,11 +19,12 @@ Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
 Review closeout: code-review-final-r1
+Review closeout: code-review-final-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-final-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-final-r1`, `code-review-final-r2`
 - Findings resolved: 12
 - Unresolved findings: 0
-- Current result: final holistic code review records no new findings and routes the complete branch to explain-change.
+- Current result: final holistic R2 records no new findings on the selector deferrals and routes the complete branch back to verify.
 
 ## Resolution Overview
 
@@ -43,6 +44,12 @@ Review closeout: code-review-final-r1
 | WFSIM-CR3 | accepted | resolved | All rule destinations resolve and literal classifications follow approved authority. |
 
 ## Finding Details
+
+### code-review-final-r2
+
+Review ID: code-review-final-r2
+
+No new findings. The five exact-path selector deferrals preserve mandatory direct proof, add no generic bypass, and keep the durable rationale current. The complete branch routes back to verify.
 
 ### code-review-final-r1
 
