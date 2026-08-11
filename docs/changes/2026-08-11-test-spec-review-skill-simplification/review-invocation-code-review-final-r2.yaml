@@ -1,0 +1,39 @@
+schema_version: 1
+review_id: code-review-final-r2
+review_stage: code-review
+review_target: range:750bc3ad..83a88e55
+base_revision: 750bc3ad
+head_revision: 83a88e55
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L1
+author_context_id: root-ci-maintenance-selector-deferral
+reviewer_context_id: root-code-review-final-r2-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: standard
+risk_tier_triggers: [selector-deferral, post-review-support-change]
+governing_artifacts: [specs/test-spec-review-skill-simplification.md, specs/change-record-catalog-registration-and-bounded-read-model.md]
+formal_criteria: [code-review-v1, requirement-fidelity-v1]
+initial_packet_inventory:
+  - {path: range:750bc3ad..83a88e55.diff, sha256: 5f45c5c351fbdf87c35c3fcac01637ad02bca94b90bb06146750697aaac8726d}
+  - {path: evidence/ci-selector-deferral.md, sha256: a1f8734c7a046ccff3a151fa801ac2bd1dafa6bd80a6a6120aca086b5c6155aa}
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity: {applicability: applicable, reason: The support change must preserve the no-new-validator non-goal and deferral schema.}
+second_review: {required: false, satisfied: true, result: not-required}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+prior_finding_reconciliation: {TSRSIM-CR-M1-R1-001: resolved, TSRSIM-CR-M3-R1-001: resolved}
+risk_map:
+  affected_behavior: selector classification of five one-change evidence paths
+  highest_impact_failure_modes: broad deferral matching, missing direct proof, hidden blocker, or permanent validator scope growth
+  changed_boundaries: [BND-COMPAT-001, BND-RECOVERY-001]
+  evidence_expected: exact-path deferrals, complete required fields, visible debt records, zero selector blockers, and unchanged mandatory CMD1 and MP1 proof
+  direct_inspection_areas: [change metadata deferrals, deferral rationale, selector output, unchanged code and tests]
+  intentionally_out_of_scope: [selector code changes, target-agent execution, publication]
+  applicable_risk_classes: [governance, compatibility, validation-routing]
+  non_applicable_risk_classes: [credentials, database-migration, network-publication]
+  falsifiable_questions:
+    - Does each deferral match exactly one path and contain every required field?
+    - Does selector output retain five visible owner-deferred debt records and zero blockers?
+    - Do CMD1 and MP1 remain mandatory rather than skipped?

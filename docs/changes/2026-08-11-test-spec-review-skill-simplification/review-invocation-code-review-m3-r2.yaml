@@ -1,0 +1,41 @@
+schema_version: 1
+review_id: code-review-m3-r2
+review_stage: code-review
+review_target: commit:dd0662ce
+base_revision: 6f19a68d
+head_revision: dd0662ce
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L1
+author_context_id: root-implement-m3-correction
+reviewer_context_id: root-code-review-m3-r2-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: standard
+risk_tier_triggers: [review-correction, evidence-integrity]
+governing_artifacts: [specs/test-spec-review-skill-simplification.md, docs/plans/2026-08-11-test-spec-review-skill-simplification.md, specs/test-spec-review-skill-simplification.test.md]
+formal_criteria: [code-review-v1, boundary-first-v1]
+initial_packet_inventory:
+  - {path: commit:dd0662ce.diff, sha256: 10cd0d86a1a5578f0bdf5ba177b9ec19696190536cc79d9d8ed24b58300cff09}
+  - {path: evidence/simplification-measurements.md, sha256: f6c6d516775929c6ebf3c30991fda2ff3e288c4d3e917e26a5e52caa66be5b4b}
+  - {path: evidence/semantic-preservation-review.md, sha256: 232c5d47e7193f9e1189d43126aa1068419557bca1cd04a34d846d7b875db003}
+  - {path: evidence/m3-package-proof.md, sha256: d1387f773bfaac019447db085cdeb5c1bc1d17095d30e959e4801b683d56884a}
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity: {applicability: applicable, reason: The correction must preserve all accepted M3 evidence semantics.}
+second_review: {required: false, satisfied: true, result: not-required}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, prior-findings-released, verdict-recorded]
+prior_finding_reconciliation: {TSRSIM-CR-M1-R1-001: resolved, TSRSIM-CR-M3-R1-001: resolved}
+risk_map:
+  affected_behavior: M3 evidence formatting and review closeout
+  highest_impact_failure_modes: semantic evidence changes hidden in mechanical correction or remaining whitespace defect
+  changed_boundaries: [BND-COMPAT-001]
+  evidence_expected: whitespace-only evidence diff, clean diff check, valid metadata, and closed review finding
+  direct_inspection_areas: [three evidence metadata blocks, review log, review resolution, change metadata]
+  intentionally_out_of_scope: [skill behavior, adapter behavior, target-agent execution]
+  applicable_risk_classes: [evidence-integrity, maintainability]
+  non_applicable_risk_classes: [credentials, database-migration, network-publication]
+  falsifiable_questions:
+    - Is the evidence correction limited to trailing-space removal?
+    - Does the complete M3 diff now pass diff checking?
+    - Is the finding closed consistently across review surfaces?

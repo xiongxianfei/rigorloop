@@ -1,0 +1,18 @@
+{"scenarios":[
+{"scenario":"advisory-clean-isolated","required":["TSR0-isolated","recording not required","isolated handoff"],"forbidden":["recording overlay","formal settlement","automatic implement"]},
+{"scenario":"advisory-explicit-recording","required":["TSR0-isolated then recording overlay","advisory lifecycle retained","durable clean record"],"forbidden":["formal settlement","workflow-managed handoff","authority upgrade"]},
+{"scenario":"advisory-material-late-overlay","required":["late recording overlay","material finding remains visible","record before fix or blocked recording"],"forbidden":["formal settlement","implementation handoff","silent finding loss"]},
+{"scenario":"formal-isolated","required":["TSR1-formal","record and settle one test-spec entry","implementation handoff field follows status"],"forbidden":["automatic implementation","workflow routing mutation","other artifact settlement"]},
+{"scenario":"formal-workflow-managed","required":["TSR1-formal","current workflow continuation authority","return control to workflow after settlement"],"forbidden":["reviewer-owned lifecycle continuation","direct implementation mutation","stale identity"]},
+{"scenario":"advisory-workflow-managed-invalid","required":["stop before proof judgment","identify invalid lifecycle-handoff pair"],"forbidden":["recording","settlement","downstream routing"]},
+{"scenario":"boundary-advisory","required":["TSR0B-isolated-boundary","both boundary references once","advisory authority"],"forbidden":["recording overlay without trigger","formal settlement","duplicate boundary load"]},
+{"scenario":"boundary-formal","required":["TSR1B-formal-boundary","both boundary references once","recording overlay once"],"forbidden":["duplicate resources","policy override","missing formal settlement"]},
+{"scenario":"missing-recording-reference","required":["recording status blocked","expected path","smallest corrective action"],"forbidden":["memory reconstruction","formal settlement","downstream handoff"]},
+{"scenario":"missing-result-asset","required":["recording status blocked","result asset path","finding visibility retained"],"forbidden":["invented result layout","recorded claim","downstream handoff"]},
+{"scenario":"missing-finding-asset","required":["recording status blocked","finding asset path","material finding summarized visibly"],"forbidden":["empty finding block","recorded claim","finding suppression"]},
+{"scenario":"missing-boundary-resource","required":["stop dependent boundary judgment","missing path diagnostic"],"forbidden":["memory reconstruction","partial boundary procedure","approval"]},
+{"scenario":"stale-formal-target","required":["stop before settlement","stale target evidence","route to owning stage"],"forbidden":["approval reliance","authoring evidence removal","implementation eligibility"]},
+{"scenario":"formal-settlement-isolation","required":["settle only matching test-spec entry","preserve routing and milestones","durable record first"],"forbidden":["other artifact mutation","workflow next-stage mutation","automatic implementation"]},
+{"scenario":"blocked-recording","required":["recording status blocked","required record path","smallest next action"],"forbidden":["recorded claim","silent omission","downstream handoff"]},
+{"scenario":"unknown-review-status","required":["fail closed","explicit unknown-value diagnostic"],"forbidden":["routing fallback","implementation handoff","settlement"]}
+]}

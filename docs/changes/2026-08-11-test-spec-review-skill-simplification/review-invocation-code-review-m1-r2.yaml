@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: code-review-m1-r2
+review_stage: code-review
+review_target: commit:d6aa1afe
+base_revision: 27942a64
+head_revision: d6aa1afe
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L1
+author_context_id: root-implement-m1-correction
+reviewer_context_id: root-code-review-m1-r2-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: standard
+risk_tier_triggers: [semantic-ledger-correction, prior-major-finding]
+governing_artifacts:
+  - specs/test-spec-review-skill-simplification.md
+  - docs/plans/2026-08-11-test-spec-review-skill-simplification.md
+  - specs/test-spec-review-skill-simplification.test.md
+formal_criteria: [code-review-v1, boundary-first-v1, requirement-fidelity-v1]
+initial_packet_inventory:
+  - {path: commit:d6aa1afe.diff, sha256: 4bc1ed7209fa1b3fac20f486a463ecd0cc1e09bdf1606f9a3947dedfac18beb9}
+  - {path: docs/changes/2026-08-11-test-spec-review-skill-simplification/test-spec-review-rule-disposition.yaml, sha256: 855ab0b9d874df57da6ebc0f835245bee96d7634f9ec60f979c4b540923d2ff0}
+  - {path: docs/changes/2026-08-11-test-spec-review-skill-simplification/test-spec-review-literal-compatibility.yaml, sha256: 5a994fc1bbd0b1c5bce4d03cef25ab698590cb20c15572b722ce0bd16350ca0e}
+  - {path: docs/changes/2026-08-11-test-spec-review-skill-simplification/fixtures/scenario-contracts.yaml, sha256: 5de703795cd96ed6d0b690894097f7d0af1090532d0cde091893a2b8c59e9fda}
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity: {applicability: applicable, reason: The correction must restore complete R25 semantic disposition without changing M1 scope.}
+second_review: {required: false, satisfied: true, result: not-required}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, prior-findings-released, verdict-recorded]
+prior_finding_reconciliation:
+  TSRSIM-CR-M1-R1-001: resolved
+risk_map:
+  affected_behavior: completeness of pre-movement semantic ownership
+  highest_impact_failure_modes: the omitted rule remains absent, is assigned to the wrong assembly, or correction alters the canonical package
+  changed_boundaries: [BND-COMPAT-001, BND-RECOVERY-001]
+  evidence_expected: one complete retained-inline row, updated audit count, exact CMD1, and unchanged package paths
+  direct_inspection_areas: [correction diff, complete rule IDs, readability row properties, M1 evidence, canonical package diff]
+  intentionally_out_of_scope: [M2 package rewrite, M3 distribution proof, final verification]
+  applicable_risk_classes: [correctness, compatibility, requirement-fidelity]
+  non_applicable_risk_classes: [credentials, network, database-migration, publication]
+  falsifiable_questions:
+    - Does the readability section now have exactly one disposition?
+    - Is the rule retained inline for every base assembly?
+    - Did the correction remain inside the declared M1 paths?

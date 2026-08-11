@@ -446,10 +446,10 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
         return False
 
     expected_block = (
-        "- Adapter invocation equivalents preserve the same arguments: Codex uses\n"
-        "  `$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and\n"
-        "  OpenCode invokes the installed `workflow` skill with `auto: <argument>`.\n"
-        "  Here `<argument>` is `<target-stage>`, `status`, or `off`.\n"
+        "- Adapter invocation equivalents preserve the same arguments: Codex uses "
+        "`$workflow auto: <argument>`, Claude uses `/workflow auto: <argument>`, and "
+        "OpenCode invokes the installed `workflow` skill with `auto: <argument>`. "
+        "Here `<argument>` is `<target-stage>`, `status`, or `off`.\n"
     )
     if equivalence_blocks[0] != expected_block:
         return False
@@ -462,9 +462,8 @@ def _documents_cross_adapter_skill_invocation(text: str) -> bool:
         "targets are `proposal-review`, `spec`, `spec-review`, `architecture`, "
         "`architecture-review`, `plan`, `plan-review`, `test-spec`, "
         "`test-spec-review`, `implement`, `code-review`, and `verify`.\n",
-        "- `$workflow auto: status` is read-only.\n"
-        "  `$workflow auto: off` durably cancels the unified run and preserves "
-        "transition evidence.\n",
+        "- `$workflow auto: status` is read-only. `$workflow auto: off` durably "
+        "cancels the unified run and preserves transition evidence.\n",
     )
     if tuple(command_blocks) != expected_command_blocks:
         return False

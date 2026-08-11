@@ -18,14 +18,14 @@ This spec defines a readability contract for generated and generator-shaped Rigo
 The contract exists because RigorLoop artifacts are reviewed both as rendered Markdown and as source diffs.
 Generated Markdown that renders well can still be difficult to review when source lines split semantic phrases, workflow chains, commands, or proof claims.
 
-The contract favors semantic source lines, stable skeletons, evidence-local structure, bounded deterministic validation, and audit-only treatment for subjective prose quality.
+The contract favors normal Markdown paragraphs with intact sentences, stable skeletons, evidence-local structure, bounded deterministic validation, and audit-only treatment for subjective prose quality.
 It explicitly rejects fixed-width line wrapping as the default prose rule and excludes manual-proof contract enforcement from this change.
 
 ## Glossary
 
 - `generated Markdown`: Markdown emitted by a script, skill, template, projection, or repeatable agent-owned skeleton.
 - `generator-shaped Markdown`: Markdown not fully script-generated, but expected to follow a stable skill-owned or template-owned structure.
-- `semantic source line`: a physical Markdown source line that preserves one complete sentence, natural clause, list item, table row, command, marker, or other meaningful unit.
+- `semantic source line`: a physical Markdown source line that preserves complete sentences or one structural Markdown unit such as a list item, table row, command, or marker.
 - `mechanical hard wrap`: a physical source line break inserted only to satisfy a column width, even when it splits a semantic unit.
 - `readability validator`: the repository-owned Markdown readability validator at `scripts/validate-markdown-readability.py`.
 - `generated region`: a Markdown region delimited by RigorLoop generated-region markers and owned by a canonical source or generator.
@@ -35,10 +35,10 @@ It explicitly rejects fixed-width line wrapping as the default prose rule and ex
 
 ## Examples first
 
-Example E1: semantic source lines preserve review-critical prose
+Example E1: intact sentences preserve review-critical prose
 Given generated README prose contains the phrase `reviewable in Git`
 When the Markdown source is emitted
-Then the phrase stays on one semantic source line unless structure requires otherwise.
+Then the complete sentence stays intact on one physical source line unless Markdown structure requires a separate line.
 
 Example E2: long semantic line passes
 Given a generated sentence is long but forms one complete semantic unit
@@ -62,7 +62,7 @@ Then the contract does not require a manual-proof contract block.
 
 ## Requirements
 
-R1. Generated and generator-shaped Markdown SHOULD use semantic source lines for review-critical prose.
+R1. Generated and generator-shaped Markdown SHOULD use normal Markdown paragraphs for review-critical prose.
 
 R2. Mechanical hard wrapping MUST NOT be the default formatting rule for generated or generator-shaped Markdown prose.
 
@@ -70,9 +70,9 @@ R3. A generated source line MUST NOT fail readability validation solely because 
 
 R4. The readability contract MUST NOT define or enforce a universal Markdown line-length limit.
 
-R5. Human-facing generated prose SHOULD use one complete sentence per source line when practical.
+R5. Human-facing generated prose SHOULD keep every complete sentence intact on one physical source line; multiple sentences MAY remain together in the same paragraph.
 
-R6. Long human-facing generated sentences SHOULD use one natural clause per source line when splitting improves source review.
+R6. Human-facing generated prose MUST NOT split a sentence across physical source lines merely for wrapping or clause separation.
 
 R7. Generated list content SHOULD keep one complete list item per Markdown bullet.
 
@@ -191,7 +191,7 @@ Outputs:
 
 ## State and invariants
 
-- Semantic source lines are the preferred source-review convention for generated prose.
+- Normal Markdown paragraphs with intact sentences are the preferred source-review convention for generated prose.
 - Fixed-width wrapping is not a correctness criterion.
 - The readability validator owns deterministic readability checks.
 - Existing validators compose readability checks for their relevant paths.
@@ -206,7 +206,7 @@ Outputs:
 - Missing required marker metadata fails when the region claims RigorLoop-generated ownership.
 - Changed README or `VISION.md` sections with known hard-wrap regressions fail when changed-section enforcement applies.
 - Generic line length does not fail validation.
-- Subjective clause quality, dense prose, and diagram usefulness stay audit-only unless narrowed into deterministic fixture-backed checks.
+- Subjective prose quality, dense prose, and diagram usefulness stay audit-only unless narrowed into deterministic fixture-backed checks.
 - Generated-region hand edits fail only when projection consistency or source-owner validation can prove the edit bypassed the canonical source.
 
 ## Compatibility and migration
@@ -278,7 +278,7 @@ EC8. A diagram would decorate rather than clarify; the artifact uses a table or 
 
 ## Acceptance criteria
 
-AC1. The spec defines semantic source-line guidance without a fixed line-length limit.
+AC1. The spec defines normal-paragraph and intact-sentence guidance without a fixed line-length limit.
 
 AC2. The spec assigns readability validation ownership to `scripts/validate-markdown-readability.py`.
 

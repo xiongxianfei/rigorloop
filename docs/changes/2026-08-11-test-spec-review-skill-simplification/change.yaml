@@ -1,0 +1,302 @@
+change_id: 2026-08-11-test-spec-review-skill-simplification
+title: Test-Spec-Review Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+evidence_registration_deferrals:
+  - path: docs/changes/2026-08-11-test-spec-review-skill-simplification/test-spec-review-rule-disposition.yaml
+    owner: repository-maintainer
+    reason: One-change semantic-rule disposition evidence is intentionally not a recurring selector evidence class.
+    validation_impact: Exact approved CMD1 and MP1 proof remains mandatory; no generic selector check is inferred.
+    follow_up: docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m1-preservation-inventories.md
+  - path: docs/changes/2026-08-11-test-spec-review-skill-simplification/test-spec-review-literal-compatibility.yaml
+    owner: repository-maintainer
+    reason: One-change literal-compatibility evidence is intentionally not a recurring selector evidence class.
+    validation_impact: Exact approved CMD1, focused consumer assertions, and MP1 proof remain mandatory; tests do not become prose-policy owners.
+    follow_up: docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m1-preservation-inventories.md
+  - path: docs/changes/2026-08-11-test-spec-review-skill-simplification/fixtures/scenario-contracts.yaml
+    owner: repository-maintainer
+    reason: One-change static acceptance scenarios are intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved CMD1 proof remains mandatory; no target-agent runtime or generic fixture route substitutes for it.
+    follow_up: docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m1-preservation-inventories.md
+  - path: docs/changes/2026-08-11-test-spec-review-skill-simplification/fixtures/invalid-rule-disposition.yaml
+    owner: repository-maintainer
+    reason: One-change negative semantic-disposition fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved CMD1 fail-closed proof remains mandatory; no generic selector check is inferred.
+    follow_up: docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m1-preservation-inventories.md
+  - path: docs/changes/2026-08-11-test-spec-review-skill-simplification/fixtures/invalid-literal-classification.yaml
+    owner: repository-maintainer
+    reason: One-change negative literal-classification fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved CMD1 fail-closed proof remains mandatory; no generic selector check is inferred.
+    follow_up: docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m1-preservation-inventories.md
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-11-test-spec-review-skill-simplification.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r2
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r2.md
+      round: r2
+  spec:
+    kind: spec
+    path: specs/test-spec-review-skill-simplification.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r2
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/spec-review-r2.md
+      round: r2
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-11-test-spec-review-skill-simplification.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r1
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/plan-review-r1.md
+      round: r1
+  test-spec:
+    kind: test-spec
+    path: specs/test-spec-review-skill-simplification.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r2
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/test-spec-review-r2.md
+      round: r2
+workflow_state:
+  lifecycle_state: active
+  current_stage: pr
+  next_stage: none
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/proposal-authoring.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r1.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r2.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-spec-review-r2.yaml
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/spec-review-r2.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/architecture-assessment.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/plan-authoring.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-plan-review-r1.yaml
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/plan-review-r1.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/test-spec-authoring.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-test-spec-review-r1.yaml
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/test-spec-revision-r2.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-test-spec-review-r2.yaml
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/workflow-automation-target-verify.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m1-preservation-inventories.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m1-r1.yaml
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m1-r2.yaml
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m1-r2.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m2-package-refactor.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m2-r1.yaml
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/simplification-measurements.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/semantic-preservation-review.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m3-package-proof.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m3-r1.yaml
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m3-r1.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m3-r2.yaml
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m3-r2.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-final-r1.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/explain-change.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/ci-selector-deferral.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-final-r2.yaml
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-final-r2.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/verify-report.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-final-r3.yaml
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-final-r3.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/pr.md
+  planned_work:
+    plan_artifact_id: plan
+    current_milestone: none
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+    remaining_implementation_milestones: []
+    latest_review:
+      status: approved
+      stage: code-review
+      round: r3
+      artifact_id: code-review-final-r3
+      occurrence: final
+      milestone_id: none
+      evidence:
+        - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-final-r3.yaml
+        - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-final-r3.md
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - lifecycle-gates-open
+        - external-completion-event-pending
+      evidence:
+        - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/plan-authoring.md
+        - docs/changes/2026-08-11-test-spec-review-skill-simplification/verify-report.md
+        - docs/changes/2026-08-11-test-spec-review-skill-simplification/pr.md
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: verify
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-11T20:19:07Z"
+      completion:
+        rule: final verification result is recorded
+    status: completed
+    current_stage: verify
+    stop_reason: target-reached
+    evidence:
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r2.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-spec-review-r2.yaml
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/spec-review-r2.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/architecture-assessment.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/plan-authoring.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-plan-review-r1.yaml
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/plan-review-r1.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/test-spec-authoring.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-test-spec-review-r1.yaml
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/test-spec-revision-r2.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-test-spec-review-r2.yaml
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/test-spec-review-r2.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/workflow-automation-target-verify.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m1-preservation-inventories.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m1-r1.yaml
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m1-r1.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m1-r2.yaml
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m1-r2.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m2-package-refactor.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m2-r1.yaml
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m2-r1.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/simplification-measurements.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/semantic-preservation-review.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m3-package-proof.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m3-r1.yaml
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m3-r1.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m3-r2.yaml
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m3-r2.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-final-r1.yaml
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-final-r1.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/explain-change.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/ci-selector-deferral.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-final-r2.yaml
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-final-r2.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/verify-report.md
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-final-r3.yaml
+      - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-final-r3.md
+artifacts:
+  proposal: docs/proposals/2026-08-11-test-spec-review-skill-simplification.md
+  spec: specs/test-spec-review-skill-simplification.md
+  plan: docs/plans/2026-08-11-test-spec-review-skill-simplification.md
+  test_spec: specs/test-spec-review-skill-simplification.test.md
+requirements:
+  - Preserve all behaviorally significant test-spec-review proof, status, recording, claim, and handoff semantics while reducing duplicated common-path content.
+  - Load durable recording, formal settlement, and boundary-first procedure only from exact evidence and outcome predicates, with missing required resources failing safely.
+  - Prove semantic preservation, literal compatibility, static scenario behavior, and canonical-to-installed package parity without executing a target-agent runtime.
+tests:
+  - Independent semantic review of the proposal and, after specification, the final skill package and preservation inventories.
+  - Deterministic validation of artifact lifecycle, closed vocabularies, mapped resources, static contract fixtures, and generated package parity.
+validation:
+  - command: bash scripts/ci.sh --mode pr --base 9b0cd7d4 --head HEAD
+    result: passed
+  - command: python scripts/select-validation.py --mode pr --base 9b0cd7d4 --head HEAD
+    result: passed
+  - command: python scripts/test-skill-validator.py
+    result: passed
+  - command: python scripts/test-adapter-distribution.py
+    result: passed
+  - command: temporary adapter build and clean-install smoke for test-spec-review
+    result: passed
+changed_files:
+  - docs/proposals/2026-08-11-test-spec-review-skill-simplification.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/change.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/proposal-authoring.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/proposal-revision-r2.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/spec-revision-r2.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-spec-review-r2.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/spec-review-r2.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/architecture-assessment.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/plan-authoring.md
+  - docs/plans/2026-08-11-test-spec-review-skill-simplification.md
+  - docs/plan.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/plan-review-r1.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/test-spec-authoring.md
+  - specs/test-spec-review-skill-simplification.test.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-test-spec-review-r1.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/test-spec-revision-r2.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-test-spec-review-r2.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/test-spec-review-r2.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/workflow-automation-target-verify.md
+  - specs/test-spec-review-skill-simplification.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-log.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-resolution.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/test-spec-review-rule-disposition.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/test-spec-review-literal-compatibility.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/fixtures/scenario-contracts.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/fixtures/invalid-rule-disposition.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/fixtures/invalid-literal-classification.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/profile-size-baseline.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m1-preservation-inventories.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m1-r1.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m1-r1.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m1-r2.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m1-r2.md
+  - skills/test-spec-review/SKILL.md
+  - skills/test-spec-review/references/test-spec-review-recording-and-settlement.md
+  - scripts/skill_validation.py
+  - scripts/test-skill-validator.py
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m2-package-refactor.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m2-r1.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m2-r1.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/simplification-measurements.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/semantic-preservation-review.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/m3-package-proof.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m3-r1.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m3-r1.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-m3-r2.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-m3-r2.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-final-r1.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-final-r1.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/explain-change.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/ci-selector-deferral.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-final-r2.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-final-r2.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/verify-report.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-invocation-code-review-final-r3.yaml
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/code-review-final-r3.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/pr.md
+review:
+  status: approved
+  unresolved_items: 0

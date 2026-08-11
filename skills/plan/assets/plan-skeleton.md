@@ -3,7 +3,7 @@
 <!-- Template status: normative -->
 <!-- Structural-fingerprint: sha256:0470fc97e393450e93f5fde427bce22a6627f7f5d0f19679e290ab4c9de06712 -->
 <!-- Maintained alongside: skills/plan/SKILL.md -->
-<!-- Readability contract: use semantic source lines; keep stable IDs and tables for repeated proof or mapping structures. -->
+<!-- Readability contract: use normal prose paragraphs, keep complete sentences intact, and retain stable IDs and tables for repeated proof or mapping structures. -->
 
 ## Purpose / big picture
 

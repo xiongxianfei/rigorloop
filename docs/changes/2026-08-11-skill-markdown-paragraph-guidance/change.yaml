@@ -1,0 +1,63 @@
+change_id: 2026-08-11-skill-markdown-paragraph-guidance
+title: Keep Generated Markdown Sentences Intact
+classification: published-skill-contract
+risk: low
+artifacts:
+  spec: specs/markdown-readability-contract.md
+requirements:
+  - Instruct skills to write ordinary prose as normal Markdown paragraphs.
+  - Do not split one sentence across physical source lines merely for wrapping or clause separation.
+  - Reflow existing canonical skill prose that already splits sentences across physical source lines.
+  - Preserve structural line boundaries for Markdown lists, tables, commands, headings, and other structural units.
+tests:
+  - Every affected skill contains the intact-sentence guidance and omits the former clause-per-line guidance.
+  - Every affected authoring skeleton requests normal prose paragraphs and complete sentences.
+  - Canonical skill prose produces no suspected sentence-split diagnostics.
+  - Canonical and generated skill validation passes.
+changed_files:
+  - skills/proposal/SKILL.md
+  - skills/spec/SKILL.md
+  - skills/plan/SKILL.md
+  - skills/test-spec/SKILL.md
+  - skills/test-spec-review/SKILL.md
+  - skills/code-review/SKILL.md
+  - skills/explain-change/SKILL.md
+  - skills/verify/SKILL.md
+  - skills/workflow/SKILL.md
+  - skills/implement/SKILL.md
+  - skills/proposal/assets/proposal-skeleton.md
+  - skills/spec/assets/spec-skeleton.md
+  - skills/plan/assets/plan-skeleton.md
+  - skills/test-spec/assets/test-spec-skeleton.md
+  - scripts/test-skill-validator.py
+  - scripts/adapter_distribution.py
+  - specs/markdown-readability-contract.md
+  - specs/markdown-readability-contract.test.md
+  - specs/documentation-source-formatting.md
+  - specs/documentation-source-formatting.test.md
+  - docs/changes/2026-08-11-skill-markdown-paragraph-guidance/change.yaml
+  - docs/changes/2026-08-11-skill-markdown-paragraph-guidance/explain-change.md
+review:
+  status: not-reviewed
+  unresolved_items: 0
+validation:
+  - command: python scripts/test-skill-validator.py MarkdownReadabilityGuidanceTests -q
+    result: pass_4_tests
+  - command: python scripts/validate-documentation-prose.py --mode audit --path skills/test-spec-review/SKILL.md --path skills/code-review/SKILL.md --path skills/workflow/SKILL.md
+    result: pass_0_errors_0_warnings
+  - command: python scripts/validate-skills.py
+    result: pass_24_skills
+  - command: python scripts/test-skill-validator.py
+    result: pass_310_tests_16_skipped
+  - command: python scripts/test-documentation-prose-validator.py
+    result: pass_14_tests
+  - command: python scripts/test-markdown-readability-validator.py
+    result: pass_7_tests
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass_7_tests
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_150_tests
+  - command: python scripts/validate-artifact-lifecycle.py --mode explicit-paths --path specs/markdown-readability-contract.md --path specs/markdown-readability-contract.test.md --path specs/documentation-source-formatting.md --path specs/documentation-source-formatting.test.md --path docs/changes/2026-08-11-skill-markdown-paragraph-guidance/change.yaml
+    result: pass_4_artifacts

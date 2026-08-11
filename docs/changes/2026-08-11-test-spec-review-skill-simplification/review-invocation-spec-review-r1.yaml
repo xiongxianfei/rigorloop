@@ -1,0 +1,46 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/test-spec-review-skill-simplification.md
+base_revision: aec6a9dd
+head_revision: aec6a9dd
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L0
+author_context_id: root-spec-authoring-r1
+reviewer_context_id: root-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - phase-aware-durable-recording
+  - formal-settlement-and-handoff-authority
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-11-test-spec-review-skill-simplification.md
+  - specs/test-spec-review-skill-simplification.md
+  - specs/skill-contract.md
+  - specs/test-spec-review-gate.md
+  - specs/formal-review-recording.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: docs/proposals/2026-08-11-test-spec-review-skill-simplification.md
+    sha256: b339c53a0d936278fd17568a349de84be10bf2e4783b7633a12927797a3879ec
+  - path: specs/test-spec-review-skill-simplification.md
+    sha256: f7dd70d04d1ec5719a0f6f55b976c8e9b304e70b82a700a7e387f763980a9de6
+  - path: specs/skill-contract.md
+    sha256: 499aad357cf7ed2cbddb08006923ad13303518deb1d7fd627d258c02e56a9435
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - lifecycle and handoff validity lattice
+  - outcome-triggered durable recording
+  - recording versus formal settlement ownership
+  - boundary-first resource applicability
+  - proof, status, staleness, and implementation eligibility preservation
+  - deterministic acceptance and package rollback
