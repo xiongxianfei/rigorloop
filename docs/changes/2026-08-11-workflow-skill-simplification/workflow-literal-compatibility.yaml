@@ -175,6 +175,19 @@
       "required_semantics": "Lifecycle categories remain explained without exact capitalization dependency.",
       "disposition": "update-incidental-consumers",
       "replacement": "Lifecycle overview"
+    },
+    {
+      "literal_id": "WF-LIT-014",
+      "literal": "accepted / rejected / deferred / partially-accepted / needs-decision",
+      "source_location": "skills/workflow/SKILL.md#Claims this skill must not make",
+      "consumers": [
+        "scripts/test-review-artifact-validator.py::test_review_stage_skills_align_with_review_resolution_contract",
+        "specs/formal-review-recording.md"
+      ],
+      "classification": "normative-contract",
+      "required_semantics": "Closed review-resolution disposition vocabulary used by workflow closeout routing.",
+      "disposition": "preserve-semantics-and-values",
+      "replacement": "accepted / rejected / deferred / partially-accepted / needs-decision"
     }
   ]
 }
