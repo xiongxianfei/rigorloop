@@ -16,5 +16,5 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r1.md
 Resolution: review-resolution.md#proposal-review-r1
 Material findings: TSRSIM-PR1
-Open findings: TSRSIM-PR1
+Open findings: None
 Recording status: recorded

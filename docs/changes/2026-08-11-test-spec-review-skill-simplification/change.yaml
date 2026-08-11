@@ -8,13 +8,8 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-11-test-spec-review-skill-simplification.md
     role: primary
-    lifecycle_state: revision-required
-    review:
-      id: proposal-review-r1
-      artifact_id: proposal
-      outcome: changes-requested
-      record: docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r1.md
-      round: r1
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/proposal-revision-r2.md
 workflow_state:
   lifecycle_state: active
   current_stage: proposal
@@ -28,7 +23,7 @@ artifacts:
   proposal: docs/proposals/2026-08-11-test-spec-review-skill-simplification.md
 requirements:
   - Preserve all behaviorally significant test-spec-review proof, status, recording, claim, and handoff semantics while reducing duplicated common-path content.
-  - Load formal settlement and boundary-first procedure only from exact, evidence-based invocation predicates, with missing required resources failing safely.
+  - Load durable recording, formal settlement, and boundary-first procedure only from exact evidence and outcome predicates, with missing required resources failing safely.
   - Prove semantic preservation, literal compatibility, static scenario behavior, and canonical-to-installed package parity without executing a target-agent runtime.
 tests:
   - Independent semantic review of the proposal and, after specification, the final skill package and preservation inventories.
@@ -38,9 +33,10 @@ changed_files:
   - docs/proposals/2026-08-11-test-spec-review-skill-simplification.md
   - docs/changes/2026-08-11-test-spec-review-skill-simplification/change.yaml
   - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/proposal-authoring.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/proposal-revision-r2.md
   - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-log.md
   - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-resolution.md
   - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r1.md
 review:
-  status: changes-requested
-  unresolved_items: 1
+  status: pending
+  unresolved_items: 0
