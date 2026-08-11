@@ -1,0 +1,52 @@
+schema_version: 1
+review_id: code-review-m2-r2
+review_stage: code-review
+review_target: M2 aggregate through commit 202fea941d92ff4b4694d28e8151a85b7fd42198
+base_revision: cd2b2dae5173fb6b0dbc374404f91339215acc66
+head_revision: 202fea941d92ff4b4694d28e8151a85b7fd42198
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-implement-m2-correction
+reviewer_context_id: root-code-review-m2-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - conditional-resource-loading
+  - exact-consumer-migration
+governing_artifacts:
+  - specs/implement-skill-simplification.md
+  - docs/plans/2026-08-11-implement-skill-simplification.md
+  - specs/implement-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - boundary-first-v1
+  - requirement-fidelity-v1
+initial_packet_inventory:
+  - path: skills/implement/SKILL.md
+    sha256: f28889bb5f1d30e47c0e31b3b4ead07fad76e583bfa2032145dbc0e6ae8136b8
+  - path: skills/implement/references/planned-milestone-implementation.md
+    sha256: 4450380ea9989c7fccca1b4e0b67713dd728d55d9fa6ec0d88d2c6906672390a
+  - path: skills/implement/references/automated-review-correction.md
+    sha256: e94a2d52c08e495a3f188f48db81d70fe754103e812f7f114ba21235727d9a54
+  - path: skills/implement/assets/implementation-result-skeleton.md
+    sha256: c3b6dc912d2d0afd18fcc9a89a308aaa86cbe14d35f3e604846c703c35a2ee2d
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - corrected reviewability evidence
+  - correction path containment
+  - aggregate M2 contract fidelity
+  - exact conditional ownership
+second_review:
+  required: true
+  satisfied: true
+  result: clean-with-notes
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded

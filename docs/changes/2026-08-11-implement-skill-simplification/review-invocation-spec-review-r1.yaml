@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/implement-skill-simplification.md
+base_revision: 3e495696d8de6f0eec9d56b38ba68f2e1607602c
+head_revision: working-tree
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-authoring-r1
+reviewer_context_id: root-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - conditional-procedure-references
+  - workflow-authority-classification
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-11-implement-skill-simplification.md
+  - specs/implement-skill-simplification.md
+  - specs/skill-contract.md
+  - docs/changes/2026-08-11-implement-skill-simplification/change.yaml
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: docs/proposals/2026-08-11-implement-skill-simplification.md
+    sha256: ccb3cc37557b5f7586c1e1ace8d864df8cdbcb3b1c646ed98937487180249db1
+  - path: specs/implement-skill-simplification.md
+    sha256: b2cedc4d386b00acfa609f844844f7ba87d7dbd1768e67c58c7a0f74aa697069
+  - path: specs/skill-contract.md
+    sha256: 499aad357cf7ed2cbddb08006923ad13303518deb1d7fd627d258c02e56a9435
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - invocation-profile authority and failure behavior
+  - universal versus conditional procedure ownership
+  - result-group structural applicability
+  - semantic-rule versus literal-compatibility preservation
+  - deterministic acceptance and package rollback
+  - boundary-record completeness
