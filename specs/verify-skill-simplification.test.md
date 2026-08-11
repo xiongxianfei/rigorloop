@@ -87,11 +87,11 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | Proof obligation ID | Coverage state | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Proof level | Automation mode | Command IDs | Evidence artifact | Required milestone | Manual procedure IDs | Uncovered gap ID |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | PRF-001 | covered | R4, R5, R6, R7, R8, R9 | BND-INPUT-001 | T1, T9 | contract | automated | CMD1, CMD3 | `evidence/m1-preservation-inventories.md`; `evidence/m2-package-refactor.md` | M2 | - | - |
-| PRF-002 | covered | R7, R8, R9, R10, R11, R12, R16, R32, R33 | BND-STATE-001 | T1, T2, T5, T13 | contract | automated | CMD1, CMD3, CMD9 | `evidence/m2-package-refactor.md`; `architecture-assessment.md` | M2 | - | - |
+| PRF-002 | covered | R7, R8, R9, R10, R11, R12, R16, R32, R33 | BND-STATE-001 | T1, T2, T5, T13 | contract | automated | CMD1, CMD3, CMD6, CMD7, CMD9 | `evidence/m2-package-refactor.md`; `architecture-assessment.md`; `evidence/m3-package-proof.md` | M3 | - | - |
 | PRF-003 | covered | R6, R7, R8, R9, R10, R11, R12, R14, R18, R19, R22 | BND-AUTH-001 | T1, T2, T4, T12 | contract | hybrid | CMD1, CMD3 | `evidence/m2-package-refactor.md`; `evidence/semantic-preservation-review.md` | M3 | MP1 | - |
 | PRF-004 | covered | R1, R2, R3, R13, R14, R15, R16, R17, R18, R19, R20, R30, R31 | BND-COMPOSE-001 | T1, T3-T5, T10-T12 | integration | hybrid | CMD2, CMD3, CMD4, CMD5, CMD6, CMD7 | `evidence/m2-package-refactor.md`; `evidence/m3-package-proof.md`; `evidence/semantic-preservation-review.md` | M3 | MP1 | - |
-| PRF-005 | covered | R7, R8, R16, R17, R33 | BND-TEMPORAL-001 | T1, T3, T5, T9, T13 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
-| PRF-006 | covered | R4, R8, R16, R24, R25, R26, R28, R29, R32, R33 | BND-RECOVERY-001 | T1, T5-T9, T13 | contract | automated | CMD1, CMD3, CMD9 | `evidence/m1-preservation-inventories.md`; `evidence/m3-package-proof.md` | M3 | - | - |
+| PRF-005 | covered | R7, R8, R16, R17, R33 | BND-TEMPORAL-001 | T1, T3, T5, T9, T13 | contract | automated | CMD1, CMD3, CMD6, CMD7 | `evidence/m2-package-refactor.md`; `evidence/m3-package-proof.md` | M3 | - | - |
+| PRF-006 | covered | R4, R8, R16, R24, R25, R26, R28, R29, R32, R33 | BND-RECOVERY-001 | T1, T5-T9, T13 | contract | automated | CMD1, CMD3, CMD6, CMD7, CMD9 | `evidence/m1-preservation-inventories.md`; `architecture-assessment.md`; `evidence/m3-package-proof.md` | M3 | - | - |
 | PRF-007 | covered | R23, R24, R25, R26, R30, R31, R32, R33 | BND-COMPAT-001 | T6, T7, T11-T14 | integration | hybrid | CMD1, CMD3, CMD6, CMD7 | `evidence/semantic-preservation-review.md`; `evidence/m3-package-proof.md` | M3 | MP0, MP1 | - |
 | PRF-008 | covered | R16, R27, R29, R30, R33 | BND-ENV-001 | T5, T8-T11, T13 | integration | automated | CMD1, CMD2, CMD3, CMD4, CMD5, CMD6, CMD7 | `evidence/simplification-measurements.md`; `evidence/m3-package-proof.md` | M3 | - | - |
 | PRF-009 | covered | R4, R5, R6, R7, R8, R13, R14 | INT-001 | T1, T5, T9 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
@@ -304,13 +304,13 @@ CMD7 intentionally uses a temporary directory and does not clean it through a de
 
 - Covers: R32-R33; BND-STATE-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001; INT-006
 - Level: integration
-- Command IDs: CMD7, CMD9
+- Command IDs: CMD6, CMD7, CMD9
 - Fixture/setup: recorded assessment, complete current package, simulated incomplete package, and prior complete package identities.
-- Steps: verify assessment predates plan; assert reassessment triggers; prove partial rollout fails and full prior revision restores valid parity.
+- Steps: verify assessment predates plan; assert reassessment triggers; use CMD6 failure fixtures to reject incomplete and mixed package assemblies; use CMD7 to prove the selected complete package path; restore the trusted complete prior-package fixture and prove valid parity again.
 - Expected result: no architecture work is invented, ambiguity routes upstream, and rollout/rollback are atomic.
 - Failure proves: planning bypassed architecture applicability or package recovery is unsafe.
 - Evidence artifact: `architecture-assessment.md`; `evidence/m3-package-proof.md`
-- Automation location: metadata/package assertions
+- Automation location: change-metadata assertions plus rollback and mixed-package fixtures in `scripts/test-adapter-distribution.py`
 - Required by milestone: M3
 
 ### T14. Current rules and literal consumers are fully inventoried
