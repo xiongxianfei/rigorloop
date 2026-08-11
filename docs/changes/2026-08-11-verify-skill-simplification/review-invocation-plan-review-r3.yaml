@@ -1,0 +1,36 @@
+schema_version: 1
+review_id: plan-review-r3
+review_stage: plan-review
+review_target: docs/plans/2026-08-11-verify-skill-simplification.md
+base_revision: 2923e6678061bd6f35af820ddf4d6c7c39e408e9
+head_revision: 2923e6678061bd6f35af820ddf4d6c7c39e408e9
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-plan-revision-r3
+reviewer_context_id: root-plan-review-r3-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - trusted-adapter-fixture-identity
+  - disposition-destination-validation
+governing_artifacts:
+  - specs/verify-skill-simplification.md
+  - docs/plans/2026-08-11-verify-skill-simplification.md
+  - docs/changes/2026-08-11-verify-skill-simplification/evidence/plan-revision-r3.md
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: docs/plans/2026-08-11-verify-skill-simplification.md
+    sha256: 366dd20cc43f42f328cad8548c5628f2a012dfab731e3fb5e743807d7c9606e6
+  - path: docs/changes/2026-08-11-verify-skill-simplification/evidence/plan-revision-r3.md
+    sha256: dd33c07a62fb730f3ebf8c09573e6a01657f0a969745ab5b45ff1d2d5731a6a0
+prompt_template_version: plan-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - trusted immutable adapter identity
+  - checked subprocess and cleanup behavior
+  - fail-closed destination validation
+  - unchanged milestones and side-effect limits
