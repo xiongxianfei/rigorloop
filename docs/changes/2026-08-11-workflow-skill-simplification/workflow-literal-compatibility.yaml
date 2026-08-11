@@ -192,7 +192,7 @@
     {
       "literal_id": "WF-LIT-015",
       "literal": "docs/changes/<change-id>/plan.md / non-canonical",
-      "source_location": "skills/workflow/SKILL.md#Default artifact paths",
+      "source_location": "skills/workflow/SKILL.md#Customer-project workflow guide",
       "consumers": [
         "scripts/validate-guide-system.py::_validate_stage_skill_plan_defaults",
         "docs/plan.md"

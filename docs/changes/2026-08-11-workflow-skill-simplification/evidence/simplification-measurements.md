@@ -9,7 +9,7 @@ Convention: canonical authored files, LF-normalized text, Unicode whitespace-sep
 
 | Resource | SHA-256 | Words | UTF-8 bytes |
 | --- | --- | ---: | ---: |
-| `SKILL.md` | `e872193013dfdf9e403613eda39f6d7e2717ea19075d49a6099034bcde3299e8` | 2,742 | 20,532 |
+| `SKILL.md` | `a18d54bafd74dc7462080029a15bee6f25f3353b76450f291e43583462dd3644` | 2,742 | 20,532 |
 | governed reference | `e7e533ecc3ab1e2b38c0b2b01d498cc6bf87035b613a1886b7002bb985e1aafb` | 568 | 4,601 |
 | automation reference | `da189e873228d2258ed3756fc83381c43d31f07bb0d2c86bad77b62ab439fbc0` | 724 | 5,689 |
 | guide reference | `c42d12d4d4d6a66bf123df6b6994b35c27cb46d16504d8fc74e573e9356ae82c` | 409 | 3,046 |
