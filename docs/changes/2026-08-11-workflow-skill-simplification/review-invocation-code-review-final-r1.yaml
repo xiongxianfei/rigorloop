@@ -1,0 +1,62 @@
+schema_version: 1
+review_id: code-review-final-r1
+review_stage: code-review
+review_target: complete branch change 01884c86..7915d753
+base_revision: 01884c86c132d3bb50518f3dc5335ee5e8861723
+head_revision: 7915d753
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-workflow-simplification-complete
+reviewer_context_id: root-code-review-final-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-workflow-contract
+  - architecture-package-responsibility-update
+  - cross-adapter-compatibility-correction
+  - complete-cross-milestone-review
+governing_artifacts:
+  - specs/workflow-skill-simplification.md
+  - docs/architecture/system/architecture.md
+  - docs/plans/2026-08-11-workflow-skill-simplification.md
+  - specs/workflow-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - published-skill-semantic-review
+  - boundary-first-v1
+  - requirement-fidelity-v1
+initial_packet_inventory:
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/change.yaml
+    sha256: d91e100d0752cbfd4c9c09f9b27cec1214a4cd2a399152bb7ac97f58863daec6
+  - path: specs/workflow-skill-simplification.md
+    sha256: 168b0842fc49739be9cb4b7eb322b00e66884dd26eb8a6d6b63bae90481bc977
+  - path: docs/plans/2026-08-11-workflow-skill-simplification.md
+    sha256: f8d463eacc060cb2a714d22225c17bc5e53354211765174aad5866f2b2fb50be
+  - path: specs/workflow-skill-simplification.test.md
+    sha256: 15eedb03de816793c17985d46d648db15039a799457faebe61db21219241ec0e
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/evidence/simplification-measurements.md
+    sha256: 9d6bb77321976e54ac1acbc2e3c614e91979d0ba3fc44d3c3540dc8c7f7c5175
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/evidence/semantic-preservation-review.md
+    sha256: 27f0695f4bed70d6661b57a1c9f2451cc3dacff1d86b480888ec08f6bae79860
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/evidence/m3-package-proof.md
+    sha256: f70f8621c8e555702e77b2b6d68866a064f3fcc4536383c0f73352fdedda372c
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - complete proposal-to-package requirement fidelity
+  - architecture and package ownership coherence
+  - cross-milestone semantic and literal preservation
+  - exact profile loading and failure boundaries
+  - review-correction and package-validation completeness
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
