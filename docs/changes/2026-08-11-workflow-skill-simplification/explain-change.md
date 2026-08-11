@@ -4,7 +4,7 @@
 
 This change makes the published `workflow` skill materially smaller for generic routing while preserving its lifecycle authority, fail-safe classification, automation, guide-authoring, review, milestone, claim, and handoff contracts.
 
-The universal `SKILL.md` falls from 4,333 to 2,710 words. `WP0-generic-routing` is 37.5% smaller by words and 36.9% smaller by bytes; every other valid assembly is also smaller. Total package content grows 1.2% by words and 3.1% by bytes because three conditional procedures and their exact safety boundaries are now explicit. The change reports that maintenance cost instead of presenting relocation as deletion.
+The universal `SKILL.md` falls from 4,333 to 2,742 words. `WP0-generic-routing` is 36.7% smaller by words and 36.0% smaller by bytes; every other valid assembly is also smaller. Total package content grows 1.7% by words and 3.7% by bytes because three conditional procedures and their exact safety boundaries are now explicit. The change reports that maintenance cost instead of presenting relocation as deletion.
 
 ## Problem
 
@@ -64,6 +64,8 @@ The first final PR-mode validation run then exposed one additional governed-cont
 
 That rerun reached the guide-system gate and exposed another portable-default dependency: the common path listed both canonical plan paths but no longer rejected `docs/changes/<change-id>/plan.md`. The correction restored the compact index/body/non-canonical distinction and registered its existing guide-validator consumer without changing validation logic.
 
+The next complete run showed that the warning belonged outside the canonical `Default artifact paths` section. Moving it into customer-project routing guidance satisfied both permanent contracts: the defaults list stays canonical-only, while the rejected change-local plan path remains explicitly documented. Final code-review R5 approved that placement correction before verification passed.
+
 The first final verify selection also failed closed on five unregistered one-change evidence paths. Repository-maintainer deferrals now name each exact ledger or fixture, why it should not become a recurring selector class, which direct proof remains mandatory, and its follow-up evidence. No selector or validator code changed, and the deferrals cannot match other paths.
 
 ## Review resolution summary
@@ -92,4 +94,4 @@ No follow-up is required for the scoped change. Other skill optimizations requir
 
 ## Readiness
 
-All implementation milestones and material finding resolutions are closed. This explanation covers the final reviewed implementation through `7915d753`, its first final review recorded in `92b129d1`, and the later exact-path selector deferrals. A focused final rereview is required before the `verify` gate resumes; this artifact does not claim branch, PR, release, or merge readiness.
+All implementation milestones and material finding resolutions are closed. This explanation covers the final implementation and support corrections through `78e5c0eb`, final holistic code-review through R5, and the successful verification recorded in `verify-report.md`. The owning verify evidence establishes `branch-ready`; PR-body, PR-open, hosted-CI, release, and merge readiness remain outside this artifact.
