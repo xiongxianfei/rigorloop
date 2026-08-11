@@ -2,7 +2,7 @@
 
 ## Owning change record
 
-`docs/changes/2026-08-10-published-skill-first-repository-simplification/change.yaml`
+`docs/changes/2026-08-10-code-review-skill-simplification/change.yaml`
 
 ## Related artifacts
 

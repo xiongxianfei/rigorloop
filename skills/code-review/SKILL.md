@@ -121,8 +121,7 @@ ambiguity. Do not broad-search authoritative documents merely to find paths.
 3. Inspect tests and direct proof for public, sibling, helper, failure,
    recovery, compatibility, generated, and external paths that can change the
    outcome.
-4. Challenge whether the selected validation is relevant and sufficient; do
-   not confuse passing checks with compliance.
+4. Challenge whether the selected checks and validation evidence are relevant and sufficient; do not confuse passing checks with compliance.
 5. Apply every checklist item, choose one native status, and record findings or
    an evidence-backed no-finding rationale before any fix begins.
 6. Record the formal review, then report the milestone-aware handoff to
