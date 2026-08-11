@@ -101,3 +101,15 @@ Resolution: review-resolution.md#test-spec-review-r1
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: commit 5e7602b5b24fc05c8c6d9a5c9e7370d37ba9eef7
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: None
+Open findings: None
+Recording status: recorded

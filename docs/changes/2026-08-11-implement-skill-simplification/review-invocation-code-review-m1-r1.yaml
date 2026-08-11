@@ -1,0 +1,58 @@
+schema_version: 1
+review_id: code-review-m1-r1
+review_stage: code-review
+review_target: commit 5e7602b5b24fc05c8c6d9a5c9e7370d37ba9eef7
+base_revision: 53df8ce200c6e4c2212b77ed6864efca76bb4168
+head_revision: 5e7602b5b24fc05c8c6d9a5c9e7370d37ba9eef7
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-implement-m1
+reviewer_context_id: root-code-review-m1-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - change-local-semantic-rule-ledger
+  - literal-compatibility-ledger
+  - static-scenario-fixtures
+  - closed-vocabulary-negative-proof
+governing_artifacts:
+  - specs/implement-skill-simplification.md
+  - docs/plans/2026-08-11-implement-skill-simplification.md
+  - specs/implement-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - boundary-first-v1
+  - requirement-fidelity-v1
+initial_packet_inventory:
+  - path: specs/implement-skill-simplification.md
+    sha256: b2cedc4d386b00acfa609f844844f7ba87d7dbd1768e67c58c7a0f74aa697069
+  - path: docs/plans/2026-08-11-implement-skill-simplification.md
+    sha256: 4366d514ea34ab2309daea284d9b6312e43b6958e68f8de6c61541fe7adab235
+  - path: specs/implement-skill-simplification.test.md
+    sha256: f8a0ba36f9dc9adaf0275b6ed639990f215d21a9ea3d214235c34dd9a2e65bff
+  - path: docs/changes/2026-08-11-implement-skill-simplification/implement-rule-disposition.yaml
+    sha256: 253fbf19eb57d9cc5ce89d69b8d2902afdd3fd88b6824b59c5235e574cbb4d6c
+  - path: docs/changes/2026-08-11-implement-skill-simplification/implement-literal-compatibility.yaml
+    sha256: b009aed868c0e9051faa6d763ea6020a89ddb6cce32469a16385a52238fa71ed
+  - path: docs/changes/2026-08-11-implement-skill-simplification/fixtures/scenario-contracts.yaml
+    sha256: ffb096341e7cab39c88dbf249c193c51e84733bff25aed67322f796eaffc69c7
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - complete source-rule and exact-consumer accounting
+  - separate semantic and literal ownership
+  - fail-closed disposition and classification vocabularies
+  - deterministic scenario coverage
+  - unchanged canonical package baseline
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
