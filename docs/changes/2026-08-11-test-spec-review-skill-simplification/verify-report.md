@@ -1,6 +1,6 @@
 # Verify Report: Test-Spec-Review Skill Simplification
 
-Verification ID: verify-r1
+Verification ID: verify-r2
 Stage: verify
 Verifier: Codex verify
 Verification date: 2026-08-11
@@ -20,7 +20,7 @@ PR readiness: not claimed
 
 ## Scope and verdict
 
-Final verification covered the complete branch from baseline `9b0cd7d475725bcf6fa0de21907a16be679264f8` through rationale and workflow-state commit `fe5c70b64e899d786987a3e39379b2448b0b31c2`. The exact governed change is `2026-08-11-test-spec-review-skill-simplification`, all three implementation milestones are closed, final code review R2 is current, and review resolution is closed.
+Final verification covered the complete branch from baseline `9b0cd7d475725bcf6fa0de21907a16be679264f8` through final review identity commit `151f0c2a`. The exact governed change is `2026-08-11-test-spec-review-skill-simplification`, all three implementation milestones are closed, final code review R3 is current, and review resolution is closed.
 
 The branch is `branch-ready`. Governing artifacts, canonical package, static proof, tests, generated and installed resources, review closeout, lifecycle state, semantic preservation, measurements, selector routing, and local PR validation agree.
 
@@ -34,8 +34,8 @@ No PR body, PR-open readiness, hosted CI result, target-agent execution, network
 | Requirement satisfaction | pass | Closed lifecycle/handoff profiles, universal proof semantics, additive recording, formal-only settlement, fail-safe resources, exact assets, and package parity are implemented. |
 | Test validity | pass | Unknown values fail first; focused tests cover classification, resource mapping, authority isolation, structural assets, and missing-resource behavior. |
 | Architecture coherence | pass | The existing mapped-resource package model remains authoritative; no runtime, persistence, selector behavior, or independent policy owner was introduced. |
-| Artifact lifecycle | pass | Proposal, spec, test spec, plan, architecture assessment, 14 formal reviews, review resolution, rationale, and change metadata are coherent. |
-| Plan completion | pass | M1-M3 are closed, no implementation milestone remains, and final holistic review R2 covers the post-review selector support change. |
+| Artifact lifecycle | pass | Proposal, spec, test spec, plan, architecture assessment, 15 formal reviews, review resolution, rationale, and change metadata are coherent. |
+| Plan completion | pass | M1-M3 are closed, no implementation milestone remains, final review R2 covers selector support, and R3 covers the closeout-summary refresh. |
 | Validation evidence | pass | The complete local PR gate passed 26 direct product and governance checks. Selection reports 11 checks, zero blockers, and no broad-smoke requirement. |
 | Drift and distribution | pass | Canonical, generated, archive, and temporary installed resources have direct parity proof; a fresh selected clean install passed for all three adapters. |
 | Review closeout | pass | Six accepted material findings are resolved, no open or `needs-decision` finding remains, and closeout validation passes. |
@@ -47,7 +47,7 @@ All commands ran locally from the repository root on 2026-08-11.
 
 | Command or proof | Result |
 | --- | --- |
-| `bash scripts/ci.sh --mode pr --base 9b0cd7d4 --head HEAD` | pass at head `fe5c70b6`; 26 direct product and governance checks |
+| `bash scripts/ci.sh --mode pr --base 9b0cd7d4 --head HEAD` | pass at head `151f0c2a`; 26 direct product and governance checks |
 | `python scripts/select-validation.py --mode pr --base 9b0cd7d4 --head HEAD` | pass; 11 selected checks, zero blockers, five complete owner-deferred debt records, broad smoke not required |
 | CMD1 ledger and scenarios | pass; 19 rules, 16 literals, 16 scenarios, unknown values rejected first |
 | `python scripts/validate-skills.py skills/test-spec-review/SKILL.md` | pass |
@@ -58,10 +58,10 @@ All commands ran locally from the repository root on 2026-08-11.
 | Temporary `v0.3.6` adapter build with `--clean-install-smoke --skill test-spec-review` | pass on the final reviewed package for Codex, Claude, and OpenCode |
 | `python scripts/validate-boundary-first.py --check --path specs/test-spec-review-skill-simplification.md` | pass |
 | `python scripts/validate-change-metadata.py docs/changes/2026-08-11-test-spec-review-skill-simplification/change.yaml` | pass before final state recording |
-| `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-11-test-spec-review-skill-simplification` | pass; 14 reviews, six resolved findings, no open finding |
+| `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-11-test-spec-review-skill-simplification` | pass; 15 reviews, six resolved findings, no open finding |
 | `git diff --check` and clean-worktree check | pass before final state recording |
 
-The first selector run correctly blocked on five unregistered one-change evidence paths. Exact repository-maintainer deferrals now keep those paths visible as complete `owner-deferred` registration debt while preserving CMD1, focused consumer assertions, and MP1. Final review R2 approved the support change before verification resumed.
+The first selector run correctly blocked on five unregistered one-change evidence paths. Exact repository-maintainer deferrals now keep those paths visible as complete `owner-deferred` registration debt while preserving CMD1, focused consumer assertions, and MP1. Final review R2 approved the support change. A PR readiness audit then found one stale human-readable closeout sentence; the review-resolution owner corrected it, final review R3 approved the correction, and the complete 26-check gate passed again before this receipt was refreshed.
 
 No hosted CI result is claimed. The local PR gate proves configured repository behavior for this head; hosted execution remains a later PR/CI observation.
 
