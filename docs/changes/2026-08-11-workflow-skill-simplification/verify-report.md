@@ -1,6 +1,6 @@
 # Verify Report: Workflow Skill Simplification
 
-Verification ID: verify-r1
+Verification ID: verify-r2
 Stage: verify
 Verifier: Codex verify
 Verification date: 2026-08-11
@@ -20,7 +20,7 @@ PR readiness: not claimed
 
 ## Scope and verdict
 
-Final verification covered the complete branch from `01884c86c132d3bb50518f3dc5335ee5e8861723` through reviewed commit `284149a7`, including the proposal, requirements, architecture update and assessment, plan, proof map, three implementation milestones, review corrections, selector deferrals, rationale, and final holistic code reviews through R5.
+Final verification covered the complete branch from `01884c86c132d3bb50518f3dc5335ee5e8861723` through rationale-refresh commit `34d0a014`, including the proposal, requirements, architecture update and assessment, plan, proof map, three implementation milestones, review corrections, selector deferrals, final holistic code reviews through R5, and the current durable rationale.
 
 The branch is `branch-ready`. Governing artifacts, canonical workflow package, tests, generated and installed package evidence, review closeout, lifecycle state, semantic proof, assembly measurements, and local PR validation agree.
 
@@ -47,7 +47,7 @@ All commands ran locally from the repository root on 2026-08-11.
 
 | Command or proof | Result |
 | --- | --- |
-| `bash scripts/ci.sh --mode pr --base 01884c86c132d3bb50518f3dc5335ee5e8861723 --head HEAD` | pass at reviewed head `284149a7`; 26 direct product and governance checks |
+| `bash scripts/ci.sh --mode pr --base 01884c86c132d3bb50518f3dc5335ee5e8861723 --head HEAD` | pass after rationale refresh at head `34d0a014`; 26 direct product and governance checks |
 | `python scripts/select-validation.py --mode pr --base 01884c86c132d3bb50518f3dc5335ee5e8861723 --head HEAD` | pass; 12 selected checks, zero blockers, zero registration debt, broad smoke not required |
 | CMD1 ledger and scenarios | pass; 26 rules, 15 literals, 16 scenarios, unknown values rejected |
 | `python scripts/validate-skills.py skills/workflow/SKILL.md` | pass in the PR gate |
@@ -64,6 +64,8 @@ All commands ran locally from the repository root on 2026-08-11.
 | `git diff --check 01884c86c132d3bb50518f3dc5335ee5e8861723..HEAD` | pass before final state recording |
 
 The PR gate was intentionally rerun after each correction. Its failed-first evidence identified three contract gaps in sequence: the missing `partially-accepted` disposition, the missing portable plan-path warning, and the warning's placement inside the canonical defaults section. Each gap received a minimal implementation correction, focused proof, a formal code review, and a complete gate rerun. The final uninterrupted run passed all 26 checks.
+
+PR preparation found stale pre-correction measurements and readiness wording in `explain-change.md`. The owning explanation stage refreshed that artifact from the final diff, and verify reran the unchanged 12-check selection plus the complete 26-check PR gate successfully before this report was updated.
 
 No hosted CI result is claimed. `.github/workflows/ci.yml` is configured to invoke the same PR-mode wrapper for pull requests, but no hosted run exists for this local head.
 
