@@ -163,8 +163,8 @@ Use exactly one first-pass status:
 
 Use severity `blocker`, `major`, `minor`, `nit`, or `positive`. A material
 finding is a required change or decision, not a quota. Every material finding
-must include Finding ID, Severity, Location, Evidence, Required outcome, and a
-Safe resolution path or `needs-decision` rationale naming the decision and
+must include Finding ID, Severity, Location, evidence, required outcome, and a
+safe resolution path or `needs-decision` rationale naming the decision and
 owner. Clearly fixable in-scope issues use `changes-requested`, not `blocked`.
 
 ## Isolation and Recording
