@@ -1,0 +1,46 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/workflow-skill-simplification.md
+base_revision: 01884c86c132d3bb50518f3dc5335ee5e8861723
+head_revision: working-tree
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L0
+author_context_id: root-spec-authoring-r1
+reviewer_context_id: root-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - workflow-authority-classification
+  - automation-persistence-boundary
+  - conditional-policy-references
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-11-workflow-skill-simplification.md
+  - specs/workflow-skill-simplification.md
+  - specs/skill-contract.md
+  - specs/rigorloop-workflow.md
+  - docs/changes/2026-08-11-workflow-skill-simplification/change.yaml
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: docs/proposals/2026-08-11-workflow-skill-simplification.md
+    sha256: 18607d66b2a86bf56f390ad611b2e47e10302591f2576e8412a61185c8c051f5
+  - path: specs/workflow-skill-simplification.md
+    sha256: cf25ff8c4578787f2f71af4ac988642c041a3746d3cc162e34423a5b59e3447a
+  - path: specs/skill-contract.md
+    sha256: 499aad357cf7ed2cbddb08006923ad13303518deb1d7fd627d258c02e56a9435
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - complete invocation lattice and bootstrap authority
+  - non-overlapping conditional-reference ownership
+  - required-resource stop behavior
+  - lifecycle and compatibility preservation
+  - deterministic acceptance boundary
+  - boundary-record completeness

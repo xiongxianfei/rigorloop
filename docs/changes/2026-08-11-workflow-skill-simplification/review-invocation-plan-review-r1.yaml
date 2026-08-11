@@ -1,0 +1,41 @@
+schema_version: 1
+review_id: plan-review-r1
+review_stage: plan-review
+review_target: docs/plans/2026-08-11-workflow-skill-simplification.md
+base_revision: 28c8cc8f
+head_revision: working-tree
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-plan-authoring
+reviewer_context_id: root-plan-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - published-workflow-package-refactor
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-11-workflow-skill-simplification.md
+  - specs/workflow-skill-simplification.md
+  - docs/architecture/system/architecture.md
+  - docs/plans/2026-08-11-workflow-skill-simplification.md
+formal_criteria:
+  - plan-review-v1
+initial_packet_inventory:
+  - path: specs/workflow-skill-simplification.md
+    sha256: 168b0842fc49739be9cb4b7eb322b00e66884dd26eb8a6d6b63bae90481bc977
+  - path: docs/architecture/system/architecture.md
+    sha256: a8462a923d49e47789e76c1a3e33577a7a28fd49d642da86e320cb881945f2dc
+  - path: docs/plans/2026-08-11-workflow-skill-simplification.md
+    sha256: f8d463eacc060cb2a714d22225c17bc5e53354211765174aad5866f2b2fb50be
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/evidence/plan-authoring.md
+    sha256: b912e29b1b3dd1a7751045ea0769d043a0cea87fa99ea107342b6aed847aed39
+prompt_template_version: plan-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: false
+review_focus:
+  - requirement and boundary traceability
+  - milestone independence and ordering
+  - test-first package refactor
+  - deterministic package proof
+  - rollback and runtime-exclusion boundaries
