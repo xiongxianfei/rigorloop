@@ -178,24 +178,24 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 | Interaction ID | Governing requirement IDs | Boundary IDs | Hazard | Required composed outcome |
 | --- | --- | --- | --- | --- |
-| INT-001 | R4-R8, R13-R14 | BND-INPUT-001, BND-COMPOSE-001 | ambiguous outcome or target could load final procedure | stop before `VP1` assembly and name the unresolved identity |
-| INT-002 | R10-R12, R18-R19 | BND-AUTH-001, BND-COMPOSE-001 | shared final-readiness procedure could leak governed writes into direct use | loaded resources stay shared while mode-specific writes remain isolated |
-| INT-003 | R16-R20 | BND-COMPOSE-001, BND-RECOVERY-001 | moving item semantics behind the reference could under-specify scoped checks | universal semantics stay inline and missing final procedure stops only dependent outcomes |
-| INT-004 | R7-R8, R16-R17 | BND-STATE-001, BND-TEMPORAL-001 | stale authority or evidence could be replayed as current | reclassify from current evidence or stop; never reuse stale authority |
-| INT-005 | R23-R28, R31 | BND-RECOVERY-001, BND-COMPAT-001 | size pressure or incidental tests could remove semantic rules | closed ledgers, semantic review, and advisory metrics preserve the contract |
-| INT-006 | R29-R30, R33 | BND-COMPOSE-001, BND-ENV-001 | one target package could omit or transform a required reference | existing package-chain checks prove complete raw-byte-consistent resources |
+| INT-001 | R4, R5, R6, R7, R8, R13, R14 | BND-INPUT-001, BND-COMPOSE-001 | ambiguous outcome or target could load final procedure | stop before `VP1` assembly and name the unresolved identity |
+| INT-002 | R10, R11, R12, R18, R19 | BND-AUTH-001, BND-COMPOSE-001 | shared final-readiness procedure could leak governed writes into direct use | loaded resources stay shared while mode-specific writes remain isolated |
+| INT-003 | R16, R17, R18, R19, R20 | BND-COMPOSE-001, BND-RECOVERY-001 | moving item semantics behind the reference could under-specify scoped checks | universal semantics stay inline and missing final procedure stops only dependent outcomes |
+| INT-004 | R7, R8, R16, R17 | BND-STATE-001, BND-TEMPORAL-001 | stale authority or evidence could be replayed as current | reclassify from current evidence or stop; never reuse stale authority |
+| INT-005 | R23, R24, R25, R26, R27, R28, R31 | BND-RECOVERY-001, BND-COMPAT-001 | size pressure or incidental tests could remove semantic rules | closed ledgers, semantic review, and advisory metrics preserve the contract |
+| INT-006 | R29, R30, R33 | BND-COMPOSE-001, BND-ENV-001 | one target package could omit or transform a required reference | existing package-chain checks prove complete raw-byte-consistent resources |
 
 ## Example ownership
 
 | Example ID | Classification | Governing requirement IDs | Boundary IDs | Regression ID | Discovery gap ID |
 | --- | --- | --- | --- | --- | --- |
-| E1 | illustration | R2, R5, R13, R17 | BND-INPUT-001, BND-COMPOSE-001 | - | - |
+| E1 | illustration | R5 | BND-INPUT-001 | - | - |
 | E2 | illustration | R17, R20 | BND-COMPOSE-001 | - | - |
-| E3 | illustration | R6, R10-R11, R14 | BND-AUTH-001, BND-COMPOSE-001 | - | - |
-| E4 | illustration | R7, R10, R12, R14 | BND-STATE-001, BND-AUTH-001 | - | - |
-| E5 | illustration | R4, R7-R8 | BND-INPUT-001, BND-RECOVERY-001 | - | - |
-| E6 | illustration | R9, R18, R22 | BND-INPUT-001, BND-AUTH-001 | - | - |
-| E7 | illustration | R16, R33 | BND-RECOVERY-001, BND-ENV-001 | - | - |
+| E3 | illustration | R14 | BND-AUTH-001, BND-COMPOSE-001 | - | - |
+| E4 | illustration | R12 | BND-STATE-001, BND-AUTH-001 | - | - |
+| E5 | illustration | R8 | BND-INPUT-001, BND-RECOVERY-001 | - | - |
+| E6 | illustration | R9 | BND-INPUT-001, BND-AUTH-001 | - | - |
+| E7 | illustration | R16 | BND-RECOVERY-001, BND-ENV-001 | - | - |
 | E8 | illustration | R13, R15 | BND-COMPOSE-001 | - | - |
 
 ## Inputs and outputs
