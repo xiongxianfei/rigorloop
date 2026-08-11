@@ -14,8 +14,9 @@ Review closeout: plan-review-r2
 Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`
 - Findings resolved: 7
 - Unresolved findings: 0
 - Current result: code-review M2 R1 findings were corrected and are ready for independent rereview.
@@ -187,3 +188,9 @@ Rationale: M2 must not modify tests for the already-settled code-review package.
 Validation target: `python scripts/test-skill-validator.py`
 Validation evidence: `python scripts/test-skill-validator.py` passed 291 tests with 16 skips.
 Implementation evidence: restored `## Boundary-first bridge` only in the pre-existing code-review package assertion; retained the implement package's `## Boundary-first method` assertion.
+
+### code-review-m2-r2
+
+Review closeout: code-review-m2-r2
+
+No material findings.
