@@ -1,0 +1,45 @@
+change_id: 2026-08-11-implement-skill-simplification
+title: Implement Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-11-implement-skill-simplification.md
+    role: primary
+    lifecycle_state: revision-required
+    review:
+      id: proposal-review-r1
+      artifact_id: proposal
+      outcome: changes-requested
+      record: docs/changes/2026-08-11-implement-skill-simplification/reviews/proposal-review-r1.md
+      round: r1
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-11-implement-skill-simplification/evidence/proposal-authoring.md
+workflow: {}
+artifacts:
+  proposal: docs/proposals/2026-08-11-implement-skill-simplification.md
+requirements:
+  - Reduce the common-path size and repetition of the published implement skill without weakening its behavior.
+  - Preserve implementation authority, test-first practice, validation, stop, claim-boundary, milestone, and handoff semantics.
+  - Keep packaged resources and generated adapter packages deterministic and self-contained.
+tests:
+  - Review the changed skill semantically against its governing contract.
+  - Validate canonical, generated, packed, and temporary installed package resources without executing a target agent.
+validation: []
+changed_files:
+  - docs/changes/2026-08-11-implement-skill-simplification/change.yaml
+  - docs/changes/2026-08-11-implement-skill-simplification/evidence/proposal-authoring.md
+  - docs/changes/2026-08-11-implement-skill-simplification/review-log.md
+  - docs/changes/2026-08-11-implement-skill-simplification/review-resolution.md
+  - docs/changes/2026-08-11-implement-skill-simplification/reviews/proposal-review-r1.md
+  - docs/proposals/2026-08-11-implement-skill-simplification.md
+review:
+  status: changes-requested
+  unresolved_items: 2
