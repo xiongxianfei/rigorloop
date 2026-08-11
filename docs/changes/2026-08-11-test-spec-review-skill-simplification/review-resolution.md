@@ -2,16 +2,16 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
 Review closeout: test-spec-review-r1
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `test-spec-review-r1`
-- Findings resolved: 2
-- Unresolved findings: 2
-- Current result: proposal and spec findings are resolved; test-spec findings require correction and rereview.
+- Findings resolved: 4
+- Unresolved findings: 0
+- Current result: proposal, spec, and test-spec findings are resolved; the corrected test spec awaits independent rereview.
 
 ## Resolution Overview
 
@@ -19,8 +19,8 @@ Review closeout: test-spec-review-r1
 | --- | --- | --- | --- |
 | `TSRSIM-PR1` | accepted | resolved | Added an independent durable-recording trigger and phase-aware recording overlay without downstream handoff. |
 | `TSRSIM-SR1` | accepted | resolved | Added the closed lifecycle-by-handoff matrix and rejected advisory plus workflow-managed before review. |
-| `TSRSIM-TSR1` | accepted | open | Align M1 proof with baseline-only evidence and keep completed measurement in M3. |
-| `TSRSIM-TSR2` | accepted | open | Add deterministic interrupted-retry and conflicting-review-ID proof. |
+| `TSRSIM-TSR1` | accepted | resolved | Aligned M1 with baseline-only evidence and retained completed measurement in M3. |
+| `TSRSIM-TSR2` | accepted | resolved | Added deterministic interrupted-retry and conflicting-review-ID proof. |
 
 ## Common Resolution Metadata
 
@@ -37,25 +37,25 @@ Review closeout: test-spec-review-r1
 
 Finding ID: TSRSIM-TSR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Remove T8 from the M1 required test set while retaining baseline measurement evidence in M1 and complete before-and-after measurement in M3.
 Rationale: T8 requires the post-refactor package and cannot close before M1 code review.
 Validation target: revised milestone proof map, unchanged plan alignment, boundary validation, and independent test-spec rereview.
-Validation evidence: pending test-spec revision.
+Validation evidence: revised M1 milestone proof row and `evidence/test-spec-revision-r2.md`.
 
 #### TSRSIM-TSR2 - Add recording retry and conflict proof
 
 Finding ID: TSRSIM-TSR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Extend T16 with interrupted identical settlement retry and conflicting review-ID reuse fixtures, steps, expected results, and failure meaning.
 Rationale: R13 and PRF-005 require direct temporal proof rather than record-shape inference.
 Validation target: revised T16, PRF-005 alignment, existing command ownership, boundary validation, and independent test-spec rereview.
-Validation evidence: pending test-spec revision.
+Validation evidence: revised T16 fixture, steps, expected result, failure meaning, and `evidence/test-spec-revision-r2.md`.
 
 ### spec-review-r1
 
@@ -92,7 +92,7 @@ Validation evidence: revised `Invocation classification`, `Loaded-resource assem
 - [x] Every rejected finding has rationale or none exist.
 - [x] Every deferred finding has follow-up or none exist.
 - [x] Every `needs-decision` finding is resolved or none exist.
-- [ ] Test-spec correction validation evidence is recorded.
+- [x] Test-spec correction validation evidence is recorded.
 - [x] Spec correction validation evidence is recorded.
 - [x] Proposal revision validation evidence is recorded.
 - [x] Closeout status is correct.

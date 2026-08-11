@@ -149,7 +149,7 @@ CMD7 intentionally uses a temporary directory and does not clean it through a de
 
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| M1 | T6-T9, T14 | MP0 | CMD1, CMD9 | `evidence/profile-size-baseline.md`; `evidence/m1-preservation-inventories.md` | M1 code-review | Canonical package remains unchanged. |
+| M1 | T6, T7, T9, T14 | MP0 | CMD1, CMD9 | `evidence/profile-size-baseline.md`; `evidence/m1-preservation-inventories.md` | M1 code-review | Canonical package remains unchanged; completed before-and-after measurement remains deferred to T8 in M3. |
 | M2 | T1-T5, T9-T10, T15-T16 | none | CMD2, CMD3, CMD4, CMD5, CMD9 | `evidence/m2-package-refactor.md` | M2 code-review | Focused failing assertions precede package text changes. |
 | M3 | T8-T13 | MP1 | CMD1, CMD2, CMD3, CMD4, CMD5, CMD6, CMD7, CMD8, CMD9, CMD10 | `evidence/simplification-measurements.md`; `evidence/semantic-preservation-review.md`; `evidence/m3-package-proof.md` | M3 code-review and final review | Proves assembly, semantic, and package-chain acceptance. |
 
@@ -355,10 +355,10 @@ CMD7 intentionally uses a temporary directory and does not clean it through a de
 - Covers: R10, R13-R17, R38; E2, E7; EC2-EC5; BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001; INT-002, INT-004
 - Level: integration
 - Command IDs: CMD3, CMD10
-- Fixture/setup: clean formal receipt, material detailed record, two findings, blocked recording, and formal settlement fixtures.
-- Steps: validate result and finding labels, no empty finding block, required detailed fields, review-log links, conditional resolution, blocked diagnostics, record-before-settlement, and matching-entry-only writes.
-- Expected result: assets provide layout while procedure and authority remain outside them.
-- Failure proves: structural simplification changed recording completeness or made assets policy owners.
+- Fixture/setup: clean formal receipt, material detailed record, two findings, blocked recording, formal settlement, interrupted identical settlement, and conflicting review-ID reuse fixtures.
+- Steps: validate result and finding labels, no empty finding block, required detailed fields, review-log links, conditional resolution, blocked diagnostics, record-before-settlement, matching-entry-only writes, idempotent reconciliation of an identical incomplete settlement without duplicate evidence, and conflict stop without mutation when a review ID is reused for different evidence.
+- Expected result: assets provide layout while procedure and authority remain outside them; identical retry completes once and conflicting reuse stops safely.
+- Failure proves: structural simplification changed recording completeness, made assets policy owners, duplicated retry evidence, or allowed conflicting review identity to mutate state.
 - Evidence artifact: `evidence/m2-package-refactor.md`
 - Automation location: skill-validator and review-artifact validation fixtures
 - Required by milestone: M2
