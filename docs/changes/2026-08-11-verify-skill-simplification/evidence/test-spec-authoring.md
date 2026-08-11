@@ -5,7 +5,7 @@
 - Artifact: `specs/verify-skill-simplification.test.md`
 - Owning change: `docs/changes/2026-08-11-verify-skill-simplification/change.yaml`
 - Authoring result: `review-required`
-- Governing inputs: approved `spec` and revised plan approved by `plan-review-r2`
+- Governing inputs: approved `spec` and revised plan approved by `plan-review-r3`
 - Boundary proof obligations: `PRF-001` through `PRF-014`
 - Validation commands: `CMD1` through `CMD10`
 - Manual procedures: `MP0`, `MP1`
