@@ -34,6 +34,7 @@ The goal was to separate procedure by the authority that activates it, not to we
 | Skill-validator tests | Added six focused workflow-package contract tests and redirected older assertions to the resource that now owns each procedure. | Existing deterministic owners should prove triggers, assemblies, bootstrap, ownership, universal stops, and structural skeleton boundaries without a model runtime. | R25, R28-R30; T1-T10; 297-test pass. |
 | Rule/literal ledgers and fixtures | Recorded 26 semantic rules, 13 literal dependencies, 16 scenarios, closed classifications, destinations, and invalid-value fixtures. | No behavior may disappear, and accidental wording consumers must not become policy owners. | R21-R24; CMD1, MP1-MP2. |
 | Measurements and package proof | Recorded resource hashes, words, bytes, all assemblies, boundary additions, total package size, failed-first compatibility evidence, adapter archives, and temporary installs. | Common-path improvement and package maintenance cost require separate, reproducible evidence. | R26-R29, R32; T10-T15; M3 review. |
+| Selector routing debt | Recorded complete owner-approved deferrals for the two one-change ledgers and three static fixtures. | Keeps non-recurring evidence visible and blocked from generic routing without creating permanent simplicity infrastructure. | Existing owner-deferral contract; CMD1, MP1, MP2, and focused consumer proof remain mandatory. |
 | Change-local review and lifecycle evidence | Recorded proposal, spec, architecture, plan, test-spec, milestone, correction, and final holistic reviews plus dispositions and state transitions. | Formal gates and all 12 material findings require durable evidence before verification. | Workflow contract; review-resolution closeout. |
 
 ## Tests added or changed
@@ -59,6 +60,8 @@ The goal was to separate procedure by the authority that activates it, not to we
 
 The first M3 adapter run failed because the shortened file omitted the exact cross-adapter invocation-equivalence block and duplicated Codex command spans outside its analyzer-owned location. The repair restored one compact universal block, removed duplicates, added the missed semantic rule, updated measurements, passed focused portability/archive tests, then passed the complete 150-test suite and fresh all-target install proof.
 
+The first final verify selection also failed closed on five unregistered one-change evidence paths. Repository-maintainer deferrals now name each exact ledger or fixture, why it should not become a recurring selector class, which direct proof remains mandatory, and its follow-up evidence. No selector or validator code changed, and the deferrals cannot match other paths.
+
 ## Review resolution summary
 
 All 12 material findings are accepted and resolved; there are no `needs-decision` or open review-log findings. They cover proposal trigger/ownership/failure contracts, stateless automation, architecture wording, proof-map commands, and M2 universal/bootstrap/ledger corrections. See `review-resolution.md` for the durable dispositions without repeating review transcripts.
@@ -79,8 +82,10 @@ The change does not alter stage order, stage obligations, `change.yaml` schema, 
 
 The package has more files, so exact resource triggers and archive/install parity remain important drift controls. The universal cross-adapter invocation block is parser-sensitive and must remain one exact owner. Semantic meaning still requires human or independent review because structural tests cannot prove prose equivalence. Token counts remain advisory and were omitted because the repository has no required pinned tokenizer for this change.
 
+The five selector deferrals are exact-path repository-maintainer decisions. They do not waive CMD1, MP1, MP2, or focused package/literal-consumer checks and do not create a generic evidence bypass.
+
 No follow-up is required for the scoped change. Other skill optimizations require separate proposals.
 
 ## Readiness
 
-All implementation milestones, material finding resolutions, and the final holistic code review are closed. This explanation covers the final reviewed implementation through `7915d753` and its final review recorded in `92b129d1`. The change is ready for the `verify` gate; it does not claim branch, PR, release, or merge readiness before verification runs.
+All implementation milestones and material finding resolutions are closed. This explanation covers the final reviewed implementation through `7915d753`, its first final review recorded in `92b129d1`, and the later exact-path selector deferrals. A focused final rereview is required before the `verify` gate resumes; this artifact does not claim branch, PR, release, or merge readiness.
