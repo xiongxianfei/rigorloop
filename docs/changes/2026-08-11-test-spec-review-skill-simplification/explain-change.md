@@ -35,6 +35,7 @@ The original skill mixed universal review work with procedure needed only when d
 | Scenario and invalid fixtures | Added 16 positive/negative scenarios plus unknown disposition and classification fixtures. | Classification, resource failure, staleness, isolation, and fail-closed values require deterministic proof. | R3-R18, R20-R24, R39. |
 | Measurement and semantic evidence | Reported each resource, assembly, overlay, total package, ownership count, and independent semantic conclusion. | Main-file reduction alone could hide relocation or behavioral loss. | R29-R30, R38; M3 evidence. |
 | Review records and lifecycle metadata | Recorded all artifact and code reviews, two implementation corrections, closeout, and milestone routing. | Formal lifecycle evidence must reflect the actual review and correction history. | Workflow contract and repository governance. |
+| Selector deferral evidence | Recorded five exact-path repository-maintainer deferrals for one-change ledgers and fixtures. | The permanent selector intentionally has no generic simplicity-evidence class; approved CMD1 and MP1 proof remain mandatory and visible. | Evidence-registration contract; final review R2. |
 
 The two boundary references, result asset, and finding asset were not edited. Their unchanged hashes prove that this change did not silently redesign boundary analysis or output structure.
 
@@ -56,6 +57,7 @@ Validation available before final verification:
 - `python scripts/test-adapter-distribution.py` — 150 passed.
 - Temporary `v0.3.6` adapter build and `--clean-install-smoke --skill test-spec-review` — passed for Codex, Claude, and OpenCode.
 - Boundary coverage, change metadata, review artifacts, and diff checks — passed.
+- PR-mode validation selection after deferral — passed with 11 selected checks, zero blockers, five complete owner-deferred debt records, and no broad-smoke requirement.
 
 ## Review resolution summary
 
@@ -67,10 +69,11 @@ Six material findings are closed with accepted dispositions. Proposal, spec, and
 - Many small references would increase trigger and package complexity without creating distinct authority boundaries.
 - A generic checklist would remove project-specific lifecycle, proof, and recording rigor.
 - Target-agent journeys, a permanent size gate, or a new tokenizer would add runtime and maintenance machinery unrelated to semantic preservation.
+- Registering a permanent selector class for five one-change evidence files would contradict their change-local role; exact owner deferrals keep the debt visible without adding generic infrastructure.
 
 ## Scope control
 
-The change does not alter `change.yaml` schema, lifecycle ownership, boundary-first policy, output asset structure, adapter architecture, release behavior, or another skill. It adds no runtime, persistent state, dependency, scheduler, transcript grader, network action, or generated-source edit.
+The change does not alter `change.yaml` schema, lifecycle ownership, boundary-first policy, output asset structure, adapter architecture, release behavior, or another skill. Existing change-metadata deferral fields are populated, but no schema or selector behavior changes. The change adds no runtime, persistent state, dependency, scheduler, transcript grader, network action, or generated-source edit.
 
 ## Risks and follow-ups
 
