@@ -2,7 +2,7 @@
 
 ## Owning change record
 
-`docs/changes/2026-08-10-code-review-skill-simplification/change.yaml`
+`docs/changes/2026-08-11-workflow-skill-simplification/change.yaml`
 
 ## Related artifacts
 
@@ -154,6 +154,9 @@
 - Code-Review Skill Simplification proposal: `docs/proposals/2026-08-10-code-review-skill-simplification.md`
 - Code-Review Skill Simplification spec: `specs/code-review-skill-simplification.md`
 - Code-Review Skill Simplification change metadata: `docs/changes/2026-08-10-code-review-skill-simplification/change.yaml`
+- Workflow Skill Simplification proposal: `docs/proposals/2026-08-11-workflow-skill-simplification.md`
+- Workflow Skill Simplification spec: `specs/workflow-skill-simplification.md`
+- Workflow Skill Simplification change metadata: `docs/changes/2026-08-11-workflow-skill-simplification/change.yaml`
 
 ## Introduction and Goals
 
@@ -415,7 +418,7 @@ It is separate from `Architecture`: project maps describe observed repository re
 | RigorLoop CLI package | Provides the `rigorloop` binary, project scaffolding, change metadata scaffolding, stable human/JSON command envelopes, bundled adapter metadata, verified adapter archive installation for supported adapters, proxy-safe download diagnostics, and durable lockfile writes for verified generated adapter output | Node/npm package under `packages/rigorloop`, published as `@xiongxianfei/rigorloop` only through the approved npm publication boundary |
 | Canonical architecture package | Long-lived current architecture source of truth, including arc42 prose and C4 diagram source | Markdown and Mermaid in `docs/architecture/system/` |
 | Change-local lifecycle and evidence | Sole mutable owner of governed artifact lifecycle, workflow routing, planned-work state, blockers, closeout readiness, the selected automation target, and evidence links; also owns review, resolution, explanation, validation, verification, and historical evidence | Markdown/YAML in `docs/changes/<change-id>/`, centered on `change.yaml` |
-| Workflow automation orchestration semantics | Defines public `$workflow auto: <stage>`, status, off, pause, and stage-handoff semantics without implementing the state machine or writing automation state | Markdown in `skills/workflow/SKILL.md` |
+| Workflow automation orchestration semantics | Defines public `$workflow auto: <stage>`, status, off, pause, and stage-handoff semantics without implementing a separate state machine or owning stage settlement | Markdown in the mapped `skills/workflow/` package: universal policy in `SKILL.md` plus governed lifecycle, bounded automation, and guide-authoring references |
 | Workflow lifecycle support | Validates structured targets, current prerequisites, fixed stage write boundaries, closed transitions, evidence consistency, and prospective migration without becoming a second normative workflow or claiming writer attribution | Published skills plus repository-owned validation and generation scripts |
 | Templates and diagram styles | Canonical scaffolding for architecture, ADRs, and shared Mermaid C4 role styling | Markdown/Mermaid under `templates/` |
 | Canonical skills and adapter templates | Source instructions, packaged skill-local resources, workflow stages, and thin adapter entrypoints | Markdown in `skills/`, skill-local resources under each skill root, templates in `scripts/adapter_templates/` |
@@ -539,6 +542,36 @@ The reference load is conditional disclosure, not delegation. `code-review` rema
 A change-local rule-disposition ledger maps every behaviorally significant current rule or duplication cluster to exactly one inline, conditional-reference, asset, duplicate-removal, or approved-obsolete destination. The ledger is implementation and semantic-review evidence, not another published runtime contract or permanent validation subsystem.
 
 Existing Gate A proves package structure, closed resource mappings, containment, presence, placeholders, and narrow forbidden claims. Gate B proves the same complete package across supported generated and packed adapter targets, including relative paths and raw-byte identity for untransformed resources. For `code-review`, deterministic install proof also materializes every supported target into a temporary tree and compares mapped-resource inventory, relative paths, and raw-byte identity; additional installer logic may add bounded filesystem checks. Semantic review separately proves that relocated rules keep their owner and meaning; no target-agent execution or transcript grading participates in acceptance.
+
+### Level 2 White-Box: Workflow Skill Package
+
+The published `workflow` capability is one governed package with five bounded parts:
+
+- canonical `SKILL.md` owns universal classification, source precedence, unknown-artifact behavior, lifecycle outline, isolation, high-level state ownership, stop and claim boundaries, resource triggers, and result or handoff policy;
+- `references/governed-lifecycle-routing.md` owns governed identity interpretation, lifecycle and architecture-assessment applicability, settlement, stage transitions, milestone and review-resolution return, final review, closeout, and contradictory-state procedure;
+- `references/bounded-workflow-automation.md` owns automation commands, target and occurrence, authorization identity, status, pause, resume, cancellation, packets, receipts, budgets, correction cycles, and automation-specific promotion procedure;
+- `references/workflow-guide-authoring.md` owns project workflow-guide creation, refresh, skeleton use, customization recording, and migration notes; and
+- `references/boundary-first-method-v1.md` and `assets/workflows-skeleton.md` retain their existing shared-method and structural-layout responsibilities.
+
+Conditional disclosure does not delegate workflow authority.
+Automation consumes governed transition decisions and cannot redefine stage order, applicability, settlement, architecture assessment, final review, or closeout.
+Guide authoring renders established routing rules and cannot redefine source precedence or lifecycle policy.
+Any contradiction between the universal file and mapped references is a package defect rather than a local precedence choice.
+
+Invocation assembly is authority-bound.
+Generic, governed, governed-automated, guide-authoring, governed-guide, transient target-bootstrap, and stateless status-or-off commands have explicit resource sets.
+Command context is not armed authority.
+Target bootstrap persists nothing until governed identity is established and validated, while stateless status or off returns `no-active-run` without creating governed or automation state.
+Active automation and guide authoring do not combine in one invocation.
+
+Required conditional resources fail safe.
+After classification and before dependent interpretation or action, the package checks that triggered references and assets are available and readable.
+Missing, unreadable, contradictory, or mixed-version required resources stop the affected operation without remembered, invented, or partial reconstruction.
+Resources whose triggers are false remain unloaded.
+
+The complete workflow package is one canonical, generated, packed, archived, installed, and rollback unit.
+Gate A and Gate B retain structural, containment, inventory, path, and raw-byte identity ownership.
+Change-local fixtures and semantic review prove assembly selection, policy ownership, bootstrap ordering, failure behavior, and lifecycle preservation without executing or grading a target-agent runtime.
 
 ### Level 2 White-Box: Unified Workflow Automation
 
@@ -717,6 +750,18 @@ arbitrary file write.
 6. Implementation records every current rule in the change-local disposition ledger before deleting or relocating prose. Unknown dispositions and missing destinations fail closed.
 7. Deterministic fixtures prove required and forbidden outcomes for representative modes without running an agent. Independent semantic review checks the complete package and ledger.
 8. Gate A and Gate B must both accept the complete resource move before publication. Each supported package is then materialized into a temporary installed tree whose mapped-resource inventory, relative paths, and raw-byte identities match the proved package. Partial canonical, generated, packed, or installed targets stop; rollback restores the prior canonical package and regenerates derived targets as one version.
+
+### Workflow package loading and simplification flow
+
+1. Every invocation enters canonical `skills/workflow/SKILL.md` and receives universal classification, authority, isolation, stop, claim, resource-trigger, and handoff policy.
+2. Classification selects exactly one valid assembly or an explicit stop outcome from current governed, command, armed, and guide-authoring evidence.
+3. Governed reads or transitions load `references/governed-lifecycle-routing.md`; read-only use does not imply mutation authority.
+4. Stateless `status` or `off` loads only automation procedure and creates no state. A new target enters transient bootstrap, validates governed identity, reclassifies, loads governed procedure, and only then persists authorization or run state.
+5. Armed automation loads governed and automation procedure. Automation asks governed procedure for each lifecycle transition and never becomes the stage-order owner.
+6. Guide creation or substantial refresh loads guide procedure and the skeleton. Active automation combined with guide authoring stops until the run is inactive.
+7. Before conditional interpretation or action, every triggered resource must be present and readable. Missing, contradictory, or mixed-version resources stop without fallback reconstruction.
+8. Change-local semantic and literal inventories account for every moved, retained, or removed rule and genuine exact-text dependency. Static fixtures prove valid and invalid assemblies without running a model.
+9. Gate A and Gate B accept the complete resource move before publication. Rollback restores the prior complete canonical package and regenerates all derived targets as one version.
 
 ### Published-skill product-gate and retirement flow
 
@@ -970,6 +1015,8 @@ No retirement slice may remove them until old-versus-replacement proof and rollb
 
 For `code-review`, `SKILL.md`, the boundary reference, the conditional automation reference, and both structural assets deploy as one package revision. Generated targets may not mix old inline procedure with a new reference or vice versa. Every supported target, including a pure-copy install, is materialized into a temporary tree and checked for mapped-resource inventory, relative paths, and raw-byte identity. The proof ends at filesystem identity and never invokes Codex, Claude Code, opencode, or another model runtime.
 
+For `workflow`, `SKILL.md`, the boundary reference, the governed lifecycle reference, the bounded automation reference, the guide-authoring reference, and the workflow-guide skeleton deploy as one package revision. Generated, archived, and installed targets may not mix old inline procedure with new conditional references or combine resources from different package versions. Existing mapped-resource inventory, containment, relative-path, and raw-byte parity checks remain the deterministic deployment proof; semantic assembly and ownership remain review evidence. The proof ends before any target runtime starts or receives a prompt.
+
 The main execution and publication boundaries are:
 
 - local contributor shell: runs selector, CI wrapper, validation, change-record query helper, generation, and drift checks;
@@ -1125,6 +1172,31 @@ Assets are structural leaves: the skill may copy and fill them, but they cannot 
 Simplification evidence has two distinct scopes. Common-path lines, words, and tokens estimate ordinary loading cost; total package words and tokens expose the true maintenance footprint. The 35–45 percent range is planning evidence only. Architectural acceptance depends on one owner per repeated rule, complete ledger disposition, material common-path reduction, canonical, generated, packed, and temporary installed-tree parity, and independent semantic preservation.
 
 No new service, persistent state, selector, scheduler, cache, validator family, runtime journey, transcript grader, or model matrix is introduced. Existing deterministic owners may gain focused fixtures only for invariants they already own.
+
+### Workflow package composition
+
+The `workflow` package follows universal-before-conditional classification.
+Anything needed to classify an invocation, apply source precedence, reject unknown artifacts or stages, preserve manual isolation, constrain mutation and claims, stop safely, select resources, or report the next handoff remains in `SKILL.md`.
+Governed lifecycle, bounded automation, and guide-authoring references own only the detailed procedure activated by their exact evidence predicates.
+
+Reference dependencies are one-way.
+Automation consumes governed lifecycle applicability and transition decisions.
+Guide authoring renders established policy into project guidance.
+Neither may override its upstream owner, and contradiction stops as a package defect.
+The skeleton remains a structural leaf.
+
+Automation-command context is separate from armed authority.
+New-target bootstrap is transient and persists state only after governed identity validation.
+Stateless status and off commands return `no-active-run` without state creation.
+These loading rules refine skill-package composition without changing the accepted `change.yaml` schema, automation persistence owner, lifecycle transition model, or stage write boundaries.
+
+Required references are not convenience fallbacks.
+When their trigger is true, absence, unreadability, contradiction, or mixed package identity stops the affected operation.
+The common path cannot reconstruct intentionally disclosed procedure.
+Existing resource-integrity and adapter parity owners prevent incomplete distribution, while the runtime stop rule contains an unexpected incomplete installation.
+
+Simplification evidence separates loaded assembly size from total package size and separates semantic-rule disposition from literal compatibility.
+The target percentage is advisory; architecture acceptance depends on material common-path improvement, preserved behavior, one policy owner per rule, deterministic complete-package parity, and independent semantic review.
 
 ### Progressive boundary-first guidance
 
@@ -1457,6 +1529,8 @@ No additional ADR is required for script output optimization because it refines 
 
 No additional ADR is required for the evidence-bound `project-map` update because it applies existing published skill resource-integrity, generated-output, and living-reference workflow decisions to one skill and one packaged skeleton asset. The durable current behavior is carried by `specs/project-map.md` and this canonical package.
 
+No additional ADR is required for workflow skill simplification because it applies the existing mapped-resource skill-package model to the current workflow component without changing the durable package model, `change.yaml` persistence, lifecycle ownership, runtime boundary, or deployment topology. The approved behavior is carried by `specs/workflow-skill-simplification.md` and this canonical package update.
+
 ADR `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md` is
 required because this change replaces plan-owned live state and capability-
 driven automation with one change-local lifecycle model and fixed peer-stage
@@ -1635,6 +1709,9 @@ decisions from ADR-20260728 and ADR-20260729.
 | Second-review cost could erase automation value | Rollout sampling uses a 20% floor plus a minimum evidence count for standard-risk clean reviews, then adjusts standard-risk sampling from measured material-disagreement confidence; elevated-risk clean reviews remain second-reviewed. |
 | Resource-integrity lint could over-classify examples as dependencies | Migration lint is bounded to recognized resource-loading instructions and approved skill-local prefixes; ordinary artifact paths, customer-project paths, and code examples stay outside the package contract unless used as load/copy/read/run instructions. |
 | Runtime fallback could hide a broken package | Package validation remains failing for missing mapped resources, and fallback is allowed only for redundant convenience resources whose full contract already exists in `SKILL.md`. |
+| Workflow bootstrap could persist authority before governed identity exists | Automation-command context is distinct from armed context; target bootstrap remains transient and persists only after governed validation and reclassification. |
+| Workflow references could become competing policy owners | Universal, governed, automation, guide, and asset responsibilities are non-overlapping; automation and guide procedure consume upstream decisions, and contradiction stops as a package defect. |
+| A shortened workflow common path could reconstruct missing procedure | Governed, automation, and guide resources are required when triggered; missing, unreadable, or mixed resources stop without fallback invention. |
 | Progressive resource splitting could create competing semantic models | The contract version stays `boundary-first-v1`; the resource manifest assigns non-overlapping ownership, and semantic review checks compact, authoring, proof, and stage-local boundaries. |
 | Inline compact-scan copies could drift | One contributor-owned shared block supplies the copied questions and skill validation checks exact block drift; generated packages derive from canonical skill text. |
 | A declarative manifest could drift from executable projection behavior | Projection, validation, measurement, and activation all interpret the same closed manifest; unknown fields, resources, consumers, duplicates, unsafe paths, and missing or additional mappings fail closed. |
@@ -1791,10 +1868,11 @@ decisions from ADR-20260728 and ADR-20260729.
 
 ## Next artifacts
 
-- Architecture-review for the published-skill-first canonical update, focused component diagram, and validation-architecture ADR.
+- Architecture-review for the workflow skill package-composition update.
 
 ## Follow-on artifacts
 
+- Code-Review Skill Simplification: the prior canonical package update and its architecture-review history remain recorded under `docs/changes/2026-08-10-code-review-skill-simplification/`; the current workflow change supersedes only the canonical owning-change pointer.
 - Usability-First Boundary-First v0.4.0 Release: approved spec and this
   canonical update make stage-owned boundary behavior automatic and concise,
   replace transition-based activation with checked-revision snapshots, retire
@@ -1859,6 +1937,10 @@ decisions from ADR-20260728 and ADR-20260729.
   superseded by the stage-owned change-local lifecycle model.
 
 ## Readiness
+
+The workflow skill package-composition update is authored under `specs/workflow-skill-simplification.md` and is ready for architecture review.
+No diagram or ADR changes are required because container boundaries, persistence, deployment topology, and durable package decisions remain unchanged.
+Planning must wait for matching architecture-review settlement.
 
 The published-skill-first validation architecture is authored under its approved feature specification.
 Reliance on the new gate composition, semantic-review boundary, conditional materialization smoke, or retirement flow requires matching architecture and ADR review settlement.

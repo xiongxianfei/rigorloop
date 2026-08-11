@@ -29,6 +29,7 @@ Current blockers are not recorded in this index.
 
 | Plan | Owning change record |
 | --- | --- |
+| [Workflow Skill Simplification](plans/2026-08-11-workflow-skill-simplification.md) | [change.yaml](changes/2026-08-11-workflow-skill-simplification/change.yaml) |
 | [Implement Skill Simplification](plans/2026-08-11-implement-skill-simplification.md) | [change.yaml](changes/2026-08-11-implement-skill-simplification/change.yaml) |
 | [Code-Review Skill Simplification](plans/2026-08-10-code-review-skill-simplification.md) | [change.yaml](changes/2026-08-10-code-review-skill-simplification/change.yaml) |
 | [Published-Skill-First Repository Simplification](plans/2026-08-10-published-skill-first-repository-simplification.md) | [change.yaml](changes/2026-08-10-published-skill-first-repository-simplification/change.yaml) |

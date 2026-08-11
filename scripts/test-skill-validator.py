@@ -3791,7 +3791,7 @@ Use the inputs somehow and produce a useful result.
         verify = (ROOT / "skills" / "verify" / "SKILL.md").read_text(encoding="utf-8")
 
         workflow_terms = [
-            "## Workflow Categories",
+            "## Lifecycle overview",
             "Standing artifacts",
             "Living references",
             "Workflow infrastructure",
@@ -5434,7 +5434,15 @@ Use the inputs somehow and produce a useful result.
         }
         for skill_name, terms in required_by_skill.items():
             path = ROOT / "skills" / skill_name / "SKILL.md"
-            if skill_name == "implement":
+            if skill_name == "workflow":
+                path = (
+                    ROOT
+                    / "skills"
+                    / "workflow"
+                    / "references"
+                    / "bounded-workflow-automation.md"
+                )
+            elif skill_name == "implement":
                 path = (
                     ROOT
                     / "skills"
@@ -5523,6 +5531,14 @@ Use the inputs somehow and produce a useful result.
                     / "code-review"
                     / "references"
                     / "workflow-managed-automated-review.md"
+                )
+            elif skill_name == "workflow":
+                path = (
+                    ROOT
+                    / "skills"
+                    / "workflow"
+                    / "references"
+                    / "bounded-workflow-automation.md"
                 )
             elif skill_name == "implement":
                 path = (
@@ -7098,7 +7114,13 @@ and result format.
     def test_project_artifact_location_m1_workflow_skill_refreshes_guide_on_defined_triggers(
         self,
     ) -> None:
-        workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
+        workflow = (
+            ROOT
+            / "skills"
+            / "workflow"
+            / "references"
+            / "workflow-guide-authoring.md"
+        ).read_text(encoding="utf-8")
 
         required_terms = [
             "creates or refreshes the project workflow guide",
@@ -7957,9 +7979,13 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                     self.assertIn(" ".join(phrase.split()), normalized)
 
     def test_workflow_defines_bounded_change_record_mutation(self) -> None:
-        body = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(
-            encoding="utf-8"
-        )
+        body = (
+            ROOT
+            / "skills"
+            / "workflow"
+            / "references"
+            / "governed-lifecycle-routing.md"
+        ).read_text(encoding="utf-8")
         for phrase in (
             "read the complete `change.yaml`",
             "`lifecycle_contract: stage-owned-change-local-v1`",
@@ -7977,9 +8003,13 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
         plan_body = (ROOT / "skills" / "plan" / "SKILL.md").read_text(
             encoding="utf-8"
         )
-        workflow_body = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(
-            encoding="utf-8"
-        )
+        workflow_body = (
+            ROOT
+            / "skills"
+            / "workflow"
+            / "references"
+            / "governed-lifecycle-routing.md"
+        ).read_text(encoding="utf-8")
 
         for phrase in (
             "initialize `workflow_state.planned_work` exactly once",
@@ -8043,9 +8073,13 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                     self.assertNotIn(phrase, text)
 
     def test_workflow_uses_one_target_and_evidence_first_recovery(self) -> None:
-        body = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(
-            encoding="utf-8"
-        )
+        body = (
+            ROOT
+            / "skills"
+            / "workflow"
+            / "references"
+            / "bounded-workflow-automation.md"
+        ).read_text(encoding="utf-8")
         required = (
             "one target-driven",
             "The requested target is the complete automation boundary.",
@@ -8064,9 +8098,13 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                 self.assertNotIn(retired, body.lower())
 
     def test_workflow_activates_stage_owned_contract_without_another_parameter(self) -> None:
-        body = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(
-            encoding="utf-8"
-        )
+        body = (
+            ROOT
+            / "skills"
+            / "workflow"
+            / "references"
+            / "governed-lifecycle-routing.md"
+        ).read_text(encoding="utf-8")
         for phrase in (
             "For every new governed change, create",
             "`lifecycle_contract: stage-owned-change-local-v1`",
@@ -9350,6 +9388,93 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
             "semantic cases must cover the exact governed skill set",
             self.semantic_fixture_errors(missing_plan),
         )
+
+
+class WorkflowSkillSimplificationContractTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "workflow"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+
+    def test_workflow_simplification_maps_exact_conditional_resources(self) -> None:
+        expected = {
+            "references/governed-lifecycle-routing.md": "READ",
+            "references/bounded-workflow-automation.md": "READ",
+            "references/workflow-guide-authoring.md": "READ",
+            "references/boundary-first-method-v1.md": "READ",
+            "assets/workflows-skeleton.md": "COPY",
+        }
+        for relative_path, verb in expected.items():
+            with self.subTest(resource=relative_path):
+                self.assertTrue((self.root / relative_path).is_file())
+                self.assertIn(f"- {verb} `{relative_path}`", self.skill)
+
+    def test_workflow_simplification_declares_exact_predicates_and_assemblies(self) -> None:
+        for predicate in (
+            "governed_change_context",
+            "automation_command_context",
+            "armed_automation_context",
+            "workflow_guide_authoring_context",
+        ):
+            self.assertIn(predicate, self.skill)
+        for assembly in (
+            "WP0-generic-routing",
+            "WP1-governed",
+            "WP2-governed-automated",
+            "WP3-guide-authoring",
+            "WP4-governed-guide-authoring",
+            "WPB-automation-bootstrap",
+            "WPS-stateless-automation-command",
+        ):
+            self.assertIn(assembly, self.skill)
+
+    def test_workflow_simplification_keeps_universal_stops_inline(self) -> None:
+        for phrase in (
+            "Conversational wording alone does not establish",
+            "Unknown artifact types and unknown lifecycle stages are blockers",
+            "Every predicate combination must match exactly one assembly row",
+            "After classification and before resource-dependent interpretation or action",
+            "contradiction among packaged resources",
+            "stop rather than invent, recall, or partially reconstruct",
+            "Active automation and workflow-guide authoring",
+        ):
+            self.assertIn(phrase, self.skill)
+
+    def test_workflow_simplification_references_have_non_overlapping_owners(self) -> None:
+        governed = (self.root / "references" / "governed-lifecycle-routing.md").read_text(encoding="utf-8")
+        automation = (self.root / "references" / "bounded-workflow-automation.md").read_text(encoding="utf-8")
+        guide = (self.root / "references" / "workflow-guide-authoring.md").read_text(encoding="utf-8")
+        self.assertIn("Architecture-assessment applicability", governed)
+        self.assertIn("Stage transitions and settlement", governed)
+        self.assertIn("asks governed lifecycle procedure", automation)
+        self.assertIn("must not redefine stage order", automation)
+        self.assertIn("renders established routing policy", guide)
+        self.assertIn("must not own source precedence", guide)
+
+    def test_workflow_simplification_bootstrap_and_stateless_paths_are_explicit(self) -> None:
+        automation = (self.root / "references" / "bounded-workflow-automation.md").read_text(encoding="utf-8")
+        bootstrap_steps = (
+            "Recognize the explicit target command",
+            "Load bounded workflow automation procedure",
+            "Resolve or create governed change identity",
+            "Validate the governed record",
+            "Reclassify as governed",
+            "Load governed lifecycle procedure",
+            "Only then persist authorization",
+        )
+        positions = [automation.index(step) for step in bootstrap_steps]
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn("no-active-run", automation)
+        self.assertIn("creates no governed or automation state", automation)
+
+    def test_workflow_simplification_skeleton_stays_structural(self) -> None:
+        skeleton = (self.root / "assets" / "workflows-skeleton.md").read_text(encoding="utf-8")
+        for forbidden in (
+            "governed_change_context",
+            "armed_automation_context",
+            "WPB-automation-bootstrap",
+            "no-active-run",
+        ):
+            self.assertNotIn(forbidden, skeleton)
 
 
 if __name__ == "__main__":
