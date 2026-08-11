@@ -186,6 +186,13 @@ changed_files:
   - specs/workflow-skill-simplification.test.md
   - docs/plan.md
   - specs/workflow-skill-simplification.md
+  - docs/changes/2026-08-11-workflow-skill-simplification/workflow-rule-disposition.yaml
+  - docs/changes/2026-08-11-workflow-skill-simplification/workflow-literal-compatibility.yaml
+  - docs/changes/2026-08-11-workflow-skill-simplification/fixtures/scenario-contracts.yaml
+  - docs/changes/2026-08-11-workflow-skill-simplification/fixtures/invalid-rule-disposition.yaml
+  - docs/changes/2026-08-11-workflow-skill-simplification/fixtures/invalid-literal-classification.yaml
+  - docs/changes/2026-08-11-workflow-skill-simplification/evidence/assembly-size-baseline.md
+  - docs/changes/2026-08-11-workflow-skill-simplification/evidence/m1-preservation-inventories.md
 review:
   status: approved
   unresolved_items: 0
