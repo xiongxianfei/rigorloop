@@ -16,13 +16,13 @@ Repeated passages currently carry compatibility-sensitive distinctions about tes
 
 ## Goals
 
-- Make isolated and direct implementation work easier to understand by reducing repeated common-path prose.
+- Make isolated, planned-milestone, and armed correction journeys easier to understand by reducing the context each journey actually loads.
 - Give each behaviorally significant implementation rule one explicit owner and destination.
 - Keep the universal implementation contract self-sufficient in `SKILL.md`.
-- Load planned-work and automation procedure only when its exact invocation condition applies.
+- Load planned-milestone and automation-only procedure independently, only when each exact invocation condition applies.
 - Make one packaged asset the sole owner of repeated implementation-result structure.
 - Preserve deterministic canonical, generated, archived, and installed package behavior across supported adapters.
-- Measure common-path reduction separately from total package size and subordinate both measurements to semantic preservation.
+- Measure loaded context for each invocation profile separately from `SKILL.md` and total package size, and subordinate every size measurement to semantic preservation.
 
 ## Non-goals
 
@@ -69,8 +69,9 @@ Additional repetition exists across the preamble, workflow role, quick guide, pu
 | Work item | Treatment | Reason |
 | --- | --- | --- |
 | Inventory and disposition current `implement` rules | core to this proposal | Semantic preservation requires explicit source-to-destination accounting. |
-| Consolidate universal common-path prose | core to this proposal | This directly improves isolated and direct implementation use. |
-| Add one workflow-managed implementation reference | core to this proposal | Planned-work and automation detail is genuinely conditional. |
+| Consolidate universal common-path prose | core to this proposal | This improves every invocation profile before conditional resources are loaded. |
+| Add one planned-milestone implementation reference | core to this proposal | Planned lifecycle procedure is conditional on workflow-managed milestone execution. |
+| Add one armed automated review/correction reference | core to this proposal | Review-packet and correction-loop procedure is conditional on explicitly armed automation. |
 | Add one implementation-result asset | core to this proposal | Repeated output structure needs one structural owner. |
 | Extend existing skill and adapter proof | same-slice dependency | New mapped resources require deterministic package parity. |
 | Assess canonical architecture impact | same-slice dependency | The change adds packaged resources but should reuse the existing published-skill package model. |
@@ -97,13 +98,13 @@ This adds one structural owner for output and consolidates common prose.
 It should improve maintainability and may reduce common-path content by roughly 20–30 percent.
 Workflow-managed procedure would still occupy the ordinary path.
 
-### O3: Consolidate the universal contract, add one conditional workflow-managed reference, and add one output asset
+### O3: Consolidate the universal contract, add two independently triggered procedure references, and add one output asset
 
-This keeps direct implementation self-sufficient while moving only planned-work and automation procedure behind an exact load trigger.
-It applies the proven progressive-disclosure model without creating several small references.
-The expected planning range is a 30–45 percent common-path reduction, subject to semantic preservation.
+This keeps direct implementation self-sufficient, separates ordinary planned-milestone procedure from automation-only review and correction procedure, and gives each invocation profile an exact resource set.
+It applies progressive disclosure at the two real authority boundaries without fragmenting universal policy.
+The expected planning range is a 30–45 percent reduction for the isolated profile; every profile is evaluated by its actual loaded context, subject to semantic preservation.
 
-### O4: Split execution, milestone, evidence, automation, and output guidance into several resources
+### O4: Split execution, milestone, evidence, automation, and output guidance into three or more procedure references
 
 This could minimize the main file further and enable narrow loading.
 It would increase package navigation, resource-map complexity, partial-load risk, and maintenance across several policy fragments.
@@ -114,9 +115,24 @@ Choose O3.
 
 Keep a shorter linear `SKILL.md` that owns purpose and trigger, stage authority, prerequisites, test-first execution, the definition of a scope-complete first pass, core validation layering, scope and stop rules, claim boundaries, direct review handoff, exact resource triggers, and required output fields.
 
-Add one mapped `references/workflow-managed-implementation.md` resource.
-Load it only for a planned workflow-managed milestone or an armed review-fix correction loop.
-It should own change-record milestone inspection, baseline change-pack procedure, state-sync and planned-milestone handoff procedure, milestone commit convention, accepted review-fix returns, automated adversarial-review packet construction, requirement-fidelity routing metadata, forbidden initial-review context, reviewer-declared auto-fix constraints, and the final holistic-review prerequisite for later Phase C work.
+Add `references/planned-milestone-implementation.md`.
+Load it only when executing a planned workflow-managed milestone.
+It should own change-record milestone inspection, baseline change-pack procedure, state synchronization, planned-milestone handoff procedure, milestone commit convention, and accepted review-fix return to the same milestone.
+
+Add `references/automated-review-correction.md`.
+Load it only when workflow has formally armed automated independent review or a bounded correction loop.
+It should own automated adversarial-review packet construction, requirement-fidelity routing metadata, forbidden initial-review context, phase receipts and release conditions, reviewer-declared auto-fix constraints, bounded correction procedure, and the final holistic-review prerequisite for later Phase C work.
+
+Use these invocation profiles as the optimization boundary:
+
+| Profile | Invocation | Loaded package content after the change | Success interpretation |
+| --- | --- | --- | --- |
+| `IP0-isolated` | Direct or isolated implementation | `SKILL.md` and the result asset; the existing boundary-first reference only when its independent trigger applies | Materially less loaded prose than the current skill, with no universal behavior loss. |
+| `IP1-planned` | Planned workflow-managed milestone without armed automation | `SKILL.md`, the planned-milestone reference, and the result asset; boundary-first only when triggered | Materially less loaded prose than the equivalent current planned journey; automation-only procedure is absent. |
+| `IP2-armed` | Formally armed automated review or correction | `SKILL.md`, both conditional references, and the result asset; boundary-first only when triggered | No unjustified loaded-context growth, and automation authority remains complete and isolated from other profiles. |
+
+The result asset is counted when comparing packaged content even though copying its structure into output is distinct from reading policy.
+The specification should define one deterministic measurement convention and apply it unchanged to before-and-after profile totals.
 
 Keep the compact boundary decision bridge inline and let the existing mapped boundary-first reference own the detailed shared method.
 
@@ -130,15 +146,15 @@ No rule should disappear without an explicit destination or approved semantic ch
 ## Expected Behavior Changes
 
 - Isolated implementation requests encounter a shorter, linear common path with less repeated orientation and handoff prose.
-- Planned workflow-managed milestones load one additional procedure reference with an exact trigger.
-- Armed review-fix loops continue to receive all existing packet, independence, fix-authority, and final-review constraints through that reference.
+- Planned workflow-managed milestones load the planned-milestone reference but not automation-only procedure.
+- Armed automated review or correction loads both references and continues to receive all existing packet, independence, fix-authority, and final-review constraints.
 - Implementation outputs use one mapped result skeleton rather than two overlapping inline structures.
 - Canonical, generated, archived, and temporary installed packages include identical mapped resources at stable relative paths.
 - Status, milestone, validation, stop, claim, and downstream handoff behavior remains unchanged.
 
 ## Architecture Impact
 
-The change affects the published `implement` skill package boundary by adding one conditional reference and one asset.
+The change affects the published `implement` skill package boundary by adding two conditional references and one asset.
 It reuses the existing canonical-skill, mapped-resource, adapter-generation, and installed-resource integrity architecture.
 
 No new runtime, dependency, persistent state, selector family, or lifecycle owner is expected.
@@ -156,14 +172,16 @@ Use four proof classes:
 3. Existing skill generation and adapter-distribution proof for canonical, generated, archived, and temporary installed resource parity across Codex, Claude, and opencode.
 4. Independent semantic review of trigger clarity, authority, prerequisites, test-first sequence, completeness, validation, stops, claims, milestone behavior, output, handoff, and conditional loading.
 
-Representative static scenarios should include isolated implementation, planned milestone execution, missing or stale authority, failing tests, a discovered specification gap, accepted review-fix return, workflow-managed automated review handoff, and an attempted next-milestone transition before review closeout.
+Representative static scenarios should include `IP0-isolated`, `IP1-planned`, and `IP2-armed`, plus missing or stale authority, failing tests, a discovered specification gap, accepted review-fix return, workflow-managed automated review handoff, and an attempted next-milestone transition before review closeout.
+Fixtures should prove both required and forbidden resource loads for each profile without executing an agent runtime.
 
 Inventory existing validator assertions that depend on literal headings, phrases, or capitalization before editing the skill.
 This avoids discovering compatibility vocabulary only during final verification.
 
-Report before and after line, word, and deterministic token estimates for `SKILL.md`, the conditional reference, and the total package.
-Also report duplicate-cluster owners, inline-template count, and mapped-resource count.
-The planning percentage is evidence, not an acceptance threshold.
+Report before and after loaded words, deterministic token estimates, and resource lists for every invocation profile.
+Also report `SKILL.md` lines, words, and tokens; each conditional resource; total package words and tokens; duplicate-cluster owners; inline-template count; and mapped-resource count.
+The 30–45 percent isolated-profile range is planning evidence, not an acceptance threshold.
+Acceptance depends on complete rule disposition, one owner per duplication cluster, material improvement for `IP0-isolated` and `IP1-planned`, justified non-regression for `IP2-armed`, honest total-package accounting, and preserved semantic and lifecycle behavior.
 
 No acceptance command should execute or grade Codex, Claude Code, opencode, or another target-agent runtime.
 
@@ -183,17 +201,18 @@ No user data migration, feature flag, external service rollout, or dependency ch
 | --- | --- | --- |
 | Universal policy moves behind a conditional trigger | Isolated implementations could weaken authority, testing, stops, or handoff behavior. | Define inline and conditional ownership before editing; verify direct scenarios and conduct semantic review. |
 | Similar paragraphs encode different behavior | Deduplication could erase planned-versus-isolated or implementation-versus-workflow distinctions. | Use a closed rule ledger with source locations, behavior summaries, and destinations. |
-| The conditional trigger is too broad or too narrow | Required workflow procedure may load unnecessarily or fail to load. | Specify one exact trigger and test direct, planned, and armed correction contexts. |
+| A conditional trigger is too broad or too narrow | Required procedure may load unnecessarily or fail to load. | Specify separate planned and armed triggers and test required and forbidden loads for all three profiles. |
 | The output asset becomes a policy owner | Structure and behavioral rules could drift between files. | Keep only fields and layout in the asset; retain policy and claim rules inline. |
 | Literal compatibility dependencies are missed | Repository regression tests may fail late despite semantic preservation. | Inventory required headings, phrases, and capitalization before refactoring. |
-| Common-path reduction hides package growth | A relocation-only win could increase maintenance cost. | Report common-path and total-package measurements separately. |
-| Several small resources fragment execution guidance | Agents and maintainers could miss required procedure. | Use one conditional procedure reference and one structural asset, not a reference per section. |
+| Main-file reduction hides a planned-journey regression | A smaller `SKILL.md` could still increase the context loaded by the central milestone journey. | Measure actual loaded resources and tokens for all three invocation profiles before and after. |
+| Package growth is hidden by profile improvements | Progressive disclosure could reduce invocation cost while increasing maintenance footprint. | Report every profile and the total package separately, and explain any package growth. |
+| Several small resources fragment execution guidance | Agents and maintainers could miss required procedure. | Use exactly two procedure references aligned to distinct authority boundaries and one structural asset. |
 | Permanent simplicity checks overfit one change | Future semantic improvements could be blocked by arbitrary prose budgets. | Keep measurements and the rule ledger change-local; reuse only durable structural and package validators. |
 
 ## Open Questions
 
 - Which current literal headings and phrases are compatibility-sensitive in existing skill and review validators?
-- Should the exact conditional trigger distinguish every planned milestone from only workflow-managed planned milestones?
+- What deterministic tokenization convention should profile accounting use so before-and-after measurements remain reproducible?
 - Does the existing architecture need a pointer or example update when `implement` gains mapped resources, or is an architecture-not-required assessment sufficient?
 
 These questions can be resolved during specification, architecture assessment, and test-spec authoring without changing the selected direction.
@@ -202,7 +221,8 @@ These questions can be resolved during specification, architecture assessment, a
 
 | Date | Decision | Reason | Alternatives rejected |
 | --- | --- | --- | --- |
-| 2026-08-11 | Select O3: one conditional workflow-managed reference, one output asset, and one consolidated universal contract. | It offers the best balance of common-path reduction, direct-use clarity, semantic ownership, and bounded package complexity. | O0 leaves the problem intact; O1 and O2 leave conditional procedure inline; O4 fragments policy across too many resources. |
+| 2026-08-11 | Revise O3 to use separate planned-milestone and armed-automation references, one output asset, and one consolidated universal contract. | The two references align resource loading with distinct invocation and authority profiles while avoiding broad policy fragmentation. | A single reference couples ordinary milestone execution to automation-only procedure; three or more procedure references add unnecessary navigation. |
+| 2026-08-11 | Optimize and measure `IP0-isolated`, `IP1-planned`, and `IP2-armed` by their actual loaded resources. | `SKILL.md` size alone cannot establish improvement for planned or armed journeys. | File-only and total-package-only measurements hide invocation-specific regressions. |
 | 2026-08-11 | Treat 30–45 percent as a planning range rather than an acceptance threshold. | Semantic and lifecycle preservation take precedence over numeric optimization. | A hard threshold could encourage unsafe deletion or concealment. |
 | 2026-08-11 | Exclude target-agent runtime acceptance. | Deterministic package proof and independent semantic review establish the relevant contract without creating a model-behavior test system. | Prompt journeys and transcript grading are nondeterministic and outside repository ownership. |
 
@@ -219,5 +239,6 @@ None yet
 
 ## Readiness
 
-Ready for `proposal-review`.
-The proposal selects one bounded package design and leaves only specification-level trigger wording, compatibility inventory, and architecture-assessment questions open.
+Ready for `proposal-review` R2.
+The proposal settles the invocation-profile success model and the two-reference ownership boundary.
+Only specification-level trigger syntax, measurement convention, compatibility inventory, and architecture-assessment questions remain open.
