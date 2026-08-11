@@ -41,8 +41,13 @@ artifact_states:
     kind: test-spec
     path: specs/verify-skill-simplification.test.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-11-verify-skill-simplification/evidence/test-spec-revision-r2.md
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r2
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-11-verify-skill-simplification/reviews/test-spec-review-r2.md
+      round: r2
 workflow_state:
   lifecycle_state: active
   current_stage: test-spec-review
