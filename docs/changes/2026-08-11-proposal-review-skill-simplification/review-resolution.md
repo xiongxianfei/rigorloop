@@ -2,16 +2,17 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r3
 Review closeout: test-spec-review-r1
+Review closeout: test-spec-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r3`, `test-spec-review-r1`
-- Findings resolved: 4
-- Unresolved findings: 2
-- Current result: test-spec revision is required before implementation handoff.
+- Findings resolved: 6
+- Unresolved findings: 0
+- Current result: test-spec revision R2 resolves every finding and is approved for implementation handoff.
 
 ## Resolution Overview
 
@@ -120,5 +121,5 @@ Validation evidence: revised T4, temporal proof mappings, edge coverage, and `ev
 - [x] Every `needs-decision` finding is resolved or none exist.
 - [x] Final revision validation evidence is recorded for R3 findings.
 - [x] Independent proposal rereview approves revision R4.
-- [ ] `PRRSIM-TSR1` and `PRRSIM-TSR2` are resolved by a reviewed test-spec revision.
-- [ ] Closeout status is closed.
+- [x] `PRRSIM-TSR1` and `PRRSIM-TSR2` are resolved by reviewed test-spec revision R2.
+- [x] Closeout status is closed.

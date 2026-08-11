@@ -13,6 +13,7 @@ This ledger records formal lifecycle reviews for the proposal-review skill simpl
 | `proposal-review-r5` | `proposal-review` | `r5` | `docs/proposals/2026-08-11-proposal-review-skill-simplification.md` at commit `fa4db972` | `reviews/proposal-review-r5.md` | `approved` | 0 | `recorded` |
 | `spec-review-r1` | `spec-review` | `r1` | `specs/proposal-review-skill-simplification.md` at commit `2ac4a379` | `reviews/spec-review-r1.md` | `approved` | 0 | `recorded` |
 | `plan-review-r1` | `plan-review` | `r1` | `docs/plans/2026-08-11-proposal-review-skill-simplification.md` at commit `9209679e` | `reviews/plan-review-r1.md` | `approved` | 0 | `recorded` |
+| `test-spec-review-r2` | `test-spec-review` | `r2` | `specs/proposal-review-skill-simplification.test.md` at commit `60ba95d9` | `reviews/test-spec-review-r2.md` | `approved` | 0 | `recorded` |
 
 ## Detailed review entries
 

@@ -1,0 +1,44 @@
+schema_version: 1
+review_id: test-spec-review-r2
+review_stage: test-spec-review
+review_target: specs/proposal-review-skill-simplification.test.md
+base_revision: 60ba95d90e473cb4340839b884a468e9223a732b
+head_revision: 60ba95d90e473cb4340839b884a468e9223a732b
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-test-spec-revision-r2
+reviewer_context_id: root-test-spec-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - formal-review-recording-authority
+  - generated-and-installed-package-parity
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/proposal-review-skill-simplification.md
+  - docs/plans/2026-08-11-proposal-review-skill-simplification.md
+  - specs/proposal-review-skill-simplification.test.md
+  - docs/changes/2026-08-11-proposal-review-skill-simplification/change.yaml
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: specs/proposal-review-skill-simplification.md
+    sha256: f87432a4b4eb915ab335ec5f31f52410eb0d19b0d23a3d5361f470c59e09596d
+  - path: docs/plans/2026-08-11-proposal-review-skill-simplification.md
+    sha256: 20331ea5fc7d4da8c0d46b70c42b08dce802705be9fde872caa9ebe69bc2f6ae
+  - path: specs/proposal-review-skill-simplification.test.md
+    sha256: 1347507caf412d45bc973f88da864f830d93690a10246e7335165c308164392e
+prompt_template_version: test-spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - PRRSIM-TSR1 milestone proof correction
+  - PRRSIM-TSR2 retry and conflict proof correction
+  - complete requirement and boundary traceability
+  - command and manual-proof feasibility
+  - implementation handoff safety
