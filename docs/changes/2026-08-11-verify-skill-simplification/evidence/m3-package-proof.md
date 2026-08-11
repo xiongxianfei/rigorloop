@@ -8,7 +8,7 @@ Canonical, generated, archived, and temporary installed `verify` packages contai
 
 | ID | Command | Result | Important output |
 | --- | --- | --- | --- |
-| CMD1 | approved ledger/scenario Python assertion | pass | 16 rules, 14 literals, 17 scenarios; unknown values rejected first |
+| CMD1 | approved ledger/scenario Python assertion | pass | 16 rules, 15 literals, 17 scenarios; unknown values rejected first |
 | CMD2 | `python scripts/validate-skills.py skills/verify/SKILL.md` | pass | canonical verify package valid |
 | CMD3 | `python scripts/test-skill-validator.py` | pass | 302 tests passed; 16 intentional skips |
 | CMD4 | `python scripts/test-build-skills.py` | pass | 7 tests passed |

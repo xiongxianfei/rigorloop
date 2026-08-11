@@ -10,21 +10,21 @@ No tokenizer was added. The percentage target remains advisory.
 
 | Resource | Before lines | After lines | Before words | After words | Before bytes | After bytes |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `SKILL.md` | 308 | 205 | 2,896 | 2,141 | 20,715 | 15,607 |
+| `SKILL.md` | 308 | 205 | 2,896 | 2,140 | 20,715 | 15,608 |
 | branch-readiness reference | 0 | 46 | 0 | 502 | 0 | 3,827 |
 | boundary-first reference | 110 | 110 | 857 | 857 | 6,346 | 6,346 |
-| Total package | 418 | 361 | 3,753 | 3,500 | 27,061 | 25,780 |
+| Total package | 418 | 361 | 3,753 | 3,499 | 27,061 | 25,781 |
 
-The common path is 33.4% shorter by lines, 26.1% smaller by words, and 24.7% smaller by bytes. Total package content also decreases: 6.7% by words and 4.7% by bytes.
+The common path is 33.4% shorter by lines, 26.1% smaller by words, and 24.7% smaller by bytes. Total package content also decreases: 6.8% by words and 4.7% by bytes.
 
 ## Loaded profiles
 
 | Profile | Loaded resources | Before words | After words | Word delta | Before bytes | After bytes | Byte delta |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `VP0-scoped` | skill | 2,896 | 2,141 | -26.1% | 20,715 | 15,607 | -24.7% |
-| `VP0B-scoped-boundary` | skill + boundary | 3,753 | 2,998 | -20.1% | 27,061 | 21,953 | -18.9% |
-| `VP1-final-readiness` | skill + branch | 2,896 | 2,643 | -8.7% | 20,715 | 19,434 | -6.2% |
-| `VP1B-final-readiness-boundary` | skill + branch + boundary | 3,753 | 3,500 | -6.7% | 27,061 | 25,780 | -4.7% |
+| `VP0-scoped` | skill | 2,896 | 2,140 | -26.1% | 20,715 | 15,608 | -24.7% |
+| `VP0B-scoped-boundary` | skill + boundary | 3,753 | 2,997 | -20.1% | 27,061 | 21,954 | -18.9% |
+| `VP1-final-readiness` | skill + branch | 2,896 | 2,642 | -8.8% | 20,715 | 19,435 | -6.2% |
+| `VP1B-final-readiness-boundary` | skill + branch + boundary | 3,753 | 3,499 | -6.8% | 27,061 | 25,781 | -4.7% |
 
 Before the split, final-readiness procedure was always inline, so both scoped and final profiles loaded the same main file. The new reference adds no final-profile growth; every profile and the package are smaller.
 

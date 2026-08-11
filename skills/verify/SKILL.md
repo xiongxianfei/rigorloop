@@ -99,7 +99,7 @@ When `broad_smoke_required: true` appears in governing evidence, missing broad s
 
 ## Review and lifecycle closeout
 
-For material review findings, inspect `review-resolution.md`, `review-log.md`, and the project's review-artifact closeout validation. Block on `Closeout status: open`, `needs-decision`, missing final dispositions, missing required `Validation evidence`, open findings, or when closeout validation does not pass. `Closeout status: closed` requires final dispositions and no open findings.
+For material review findings, inspect `review-resolution.md`, `review-log.md`, and the project's review-artifact closeout validation. Block on `Closeout status: open`, `needs-decision`, missing final dispositions, missing required `Validation evidence`, or open findings. Block unless closeout validation passes. `Closeout status: closed` requires final dispositions and no open findings.
 
 A stage-owned non-approval outcome that blocks progress or requires revision needs a same-stage later review round or explicit reviewer or owner closeout; `review-resolution.md` alone is not a silent substitute. For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
 

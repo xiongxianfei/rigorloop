@@ -4,7 +4,7 @@
 
 This change makes ordinary `verify` invocations materially smaller and easier to classify while preserving `branch-ready`, evidence, review-closeout, lifecycle, release, claim, and handoff rigor.
 
-The universal `SKILL.md` falls from 2,896 to 2,141 words. `VP0-scoped` is 26.1% smaller by words and 24.7% smaller by bytes; all final profiles and the total package also shrink. One 502-word branch-readiness reference now loads only for direct branch readiness or governed final verification.
+The universal `SKILL.md` falls from 2,896 to 2,140 words. `VP0-scoped` is 26.1% smaller by words and 24.7% smaller by bytes; all final profiles and the total package also shrink. One 502-word branch-readiness reference now loads only for direct branch readiness or governed final verification.
 
 ## Problem
 
@@ -18,7 +18,7 @@ The goal was to separate final aggregation from universal evidence truthfulness,
 - R1-R22 define the three outcomes, exact target resolution, four resource profiles, two independent execution modes, universal evidence semantics, conditional ownership, missing-resource stops, and claim boundaries.
 - R23-R29 require separate semantic and literal ledgers, deterministic profile accounting, an advisory size target, and no target-agent acceptance.
 - R30-R33 require package-chain parity, behavioral compatibility, a bounded architecture assessment, and atomic rollback. The assessment returned `architecture-not-required` because the existing packaged-skill model already covers mapped references.
-- M1 froze 16 semantic rules, 14 literal dependencies, 17 scenarios, and the baseline. M2 refactored the package and permanent tests. M3 measured final profiles, corrected stale evidence anchors, and proved generated/archive/install parity.
+- M1 froze 16 semantic rules, 15 literal dependencies, 17 scenarios, and the baseline. M2 refactored the package and permanent tests. M3 measured final profiles, corrected stale evidence anchors, and proved generated/archive/install parity. Final PR-gate verification restored one parser/package closeout phrase omitted from the initial literal inventory.
 
 ## Diff rationale by area
 
@@ -47,7 +47,7 @@ Five permanent focused assertions were added to the existing skill-validator sui
 
 ## Validation evidence available before final verify
 
-- CMD1: 16 rules, 14 literals, and 17 scenarios passed; unknown values were rejected first.
+- CMD1: 16 rules, 15 literals, and 17 scenarios passed; unknown values were rejected first.
 - Canonical `verify` skill validation passed.
 - `scripts/test-skill-validator.py`: 302 tests passed, 16 skipped.
 - `scripts/test-build-skills.py`: seven tests passed.
@@ -58,6 +58,8 @@ Five permanent focused assertions were added to the existing skill-validator sui
 - No target-agent runtime, network publication, or tracked generated-package hand-edit was used.
 
 The first final PR-mode selection correctly stopped on five unsupported change-local evidence paths. CI maintenance recorded owner-approved, exact-path deferrals that retain CMD1, MP1, and focused consumer proof; it changed no selector, registry, workflow, validator, or broad-smoke policy. Final verification must prove those paths appear as visible `owner-deferred` registration debt and that every selected PR check passes.
+
+The first full PR gate then exposed an existing parser/package dependency on the exact phrase `closeout validation passes`. The simplified text already preserved the same fail-closed meaning, but exact compatibility had been omitted from the literal inventory. The correction restores the phrase and records `VER-LIT-CLOSEOUT-001`; it does not change verify authority or closeout behavior.
 
 M2’s first focused run failed as intended because the new reference and contracts did not exist. The full validator initially exposed genuine shared boundary-first, portability, closeout, and final-order contracts; those remained compactly inline. M3 semantic review found five stale rule-ledger destination anchors and corrected them to actual headings before all 16 destinations passed a direct anchor audit.
 

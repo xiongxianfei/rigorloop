@@ -9,7 +9,7 @@ The final `verify` package preserves the approved behavior and separates univers
 ## Source-to-destination review
 
 - All 16 semantic rule rows have one closed disposition, a real destination, and preservation proof. A final anchor audit resolved every recorded destination against the actual package headings.
-- All 14 literal dependencies remain separately classified. Normative and parser/package contracts are present in the canonical package or their existing consumers; no incidental test phrase was promoted to policy.
+- All 15 literal dependencies remain separately classified. Normative and parser/package contracts are present in the canonical package or their existing consumers. Final verification identified and restored the existing parser/package phrase `closeout validation passes`; it already expressed governing fail-closed behavior and was not promoted solely from an incidental snapshot.
 - The one `removed-duplicate` rule retains its behavior through the compact operating sequence, output, stop, claim, and handoff sections.
 - The unchanged boundary-first reference retains SHA-256 `4268fbe89ecdfd7b79ca1321b8d6b19b2ed24e8adeda17cae8c319b087760f6f`.
 
@@ -34,6 +34,6 @@ All 17 static scenarios have non-empty required and forbidden outcomes and cover
 
 ## Findings and correction
 
-The review found five stale destination anchors in the change-local rule ledger. The final package behavior was already correct and fully tested; M3 corrected the ledger to the actual `Operating sequence`, `Inputs to read`, `Claims this skill must not make`, `Stop conditions`, and `Evidence collection efficiency` headings. A standard-library anchor audit then passed all 16 rows.
+The review found five stale destination anchors in the change-local rule ledger. The final package behavior was already correct and fully tested; M3 corrected the ledger to the actual `Operating sequence`, `Inputs to read`, `Claims this skill must not make`, `Stop conditions`, and `Evidence collection efficiency` headings. A standard-library anchor audit then passed all 16 rows. Final PR-gate verification later found one missing parser/package literal required by the repository-wide review-evidence regression suite; the exact closeout phrase and ledger row were restored, and semantic behavior remained unchanged.
 
 No unresolved semantic finding remains.
