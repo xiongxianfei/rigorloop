@@ -1,8 +1,8 @@
 # Test-Spec-Review Semantic Preservation Review
 
-Milestone: M3  
-Reviewer: independent blind-first semantic review  
-Date: 2026-08-11  
+Milestone: M3
+Reviewer: independent blind-first semantic review
+Date: 2026-08-11
 Result: pass
 
 ## Review method

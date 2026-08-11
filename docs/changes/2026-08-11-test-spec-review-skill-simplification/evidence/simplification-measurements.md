@@ -1,8 +1,8 @@
 # Test-Spec-Review Simplification Measurements
 
-Milestone: M3  
-Date: 2026-08-11  
-Baseline commit: `9b0cd7d4`  
+Milestone: M3
+Date: 2026-08-11
+Baseline commit: `9b0cd7d4`
 After implementation commit: `76b1f857`
 
 Measurements use canonical authored files, LF-normalized UTF-8 bytes, Unicode whitespace-separated words, and one count per unique loaded resource in documented load order. No tokenizer estimate is used.

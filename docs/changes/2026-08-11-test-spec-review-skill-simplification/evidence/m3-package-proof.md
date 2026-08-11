@@ -1,7 +1,7 @@
 # M3 Package and Distribution Proof
 
-Milestone: M3  
-Date: 2026-08-11  
+Milestone: M3
+Date: 2026-08-11
 Implementation result: passed
 
 ## Scope completed
