@@ -1,0 +1,19 @@
+{"scenarios":[
+{"scenario":"scoped-command","required":["VP0-scoped","scoped pass fail or inconclusive"],"forbidden":["branch reference","branch-ready"]},
+{"scenario":"scoped-ci","required":["item-level CI truthfulness","local versus hosted limitation"],"forbidden":["final aggregation","unobserved hosted success"]},
+{"scenario":"scoped-generated-output","required":["source-bound currency check","scoped verdict"],"forbidden":["unsupported current claim","branch reference"]},
+{"scenario":"scoped-manual-proof","required":["minimum validity check","scoped limitation"],"forbidden":["invented evidence","final verdict"]},
+{"scenario":"scoped-release-metadata","required":["release artifact scope","no release authority"],"forbidden":["publication claim","final aggregation"]},
+{"scenario":"direct-branch-readiness","required":["VP1-final-readiness","isolated mode","exact target"],"forbidden":["workflow write","invoke pr"]},
+{"scenario":"governed-final-verification","required":["VP1-final-readiness","governed-final mode","same-change authority"],"forbidden":["pr preparation","workflow-owned transition"]},
+{"scenario":"ambiguous-target","required":["fail closed","name unresolved target"],"forbidden":["load branch reference","partial verdict"]},
+{"scenario":"cross-target-evidence","required":["reject mismatched evidence","stop final readiness"],"forbidden":["aggregate foreign evidence","branch-ready"]},
+{"scenario":"informal-final-wording","required":["no governed-final inference","resolve explicit scope or stop"],"forbidden":["conversational authority","workflow recording"]},
+{"scenario":"release-sensitive","required":["boolean applicability","additional final evidence"],"forbidden":["new outcome","release completion claim"]},
+{"scenario":"missing-branch-reference","required":["stop before dependent work","package diagnostic"],"forbidden":["memory reconstruction","partial final verdict"]},
+{"scenario":"boundary-additive-scoped","required":["VP0B-scoped-boundary","unchanged boundary reference"],"forbidden":["branch reference","authority change"]},
+{"scenario":"boundary-additive-final","required":["VP1B-final-readiness-boundary","both references"],"forbidden":["duplicate policy","authority change"]},
+{"scenario":"isolated-write-prohibition","required":["report result only","no lifecycle mutation"],"forbidden":["advance workflow","prepare PR"]},
+{"scenario":"governed-handoff","required":["verify-owned recording only","return control to workflow"],"forbidden":["workflow transition write","invoke pr"]},
+{"scenario":"stale-evidence","required":["identify stale evidence","stop current claim"],"forbidden":["reuse stale authority","branch-ready"]}
+]}

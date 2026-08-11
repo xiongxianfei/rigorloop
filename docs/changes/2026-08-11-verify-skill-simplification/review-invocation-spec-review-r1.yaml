@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/verify-skill-simplification.md
+base_revision: 5df5933fb68c37caa3356c9b0abfe255727504ed
+head_revision: 5df5933fb68c37caa3356c9b0abfe255727504ed
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-authoring-r1
+reviewer_context_id: root-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - conditional-final-readiness-procedure
+  - branch-ready-authority-classification
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-11-verify-skill-simplification.md
+  - specs/verify-skill-simplification.md
+  - specs/skill-contract.md
+  - docs/changes/2026-08-11-verify-skill-simplification/change.yaml
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: docs/proposals/2026-08-11-verify-skill-simplification.md
+    sha256: e46c22f02243034ef760c3ba5a9a25a88752b46e7948ee5d7187257b92ce51cc
+  - path: specs/verify-skill-simplification.md
+    sha256: bbcc8c97186adc6539839257936eaad02c344b252cdf2873d3dc97ded3e2e397
+  - path: specs/skill-contract.md
+    sha256: 499aad357cf7ed2cbddb08006923ad13303518deb1d7fd627d258c02e56a9435
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - requested-outcome and exact-target classification
+  - resource profile versus execution authority
+  - universal evidence semantics versus final aggregation
+  - claim, recording, workflow, and pr ownership
+  - deterministic acceptance and package rollback
+  - boundary-record completeness

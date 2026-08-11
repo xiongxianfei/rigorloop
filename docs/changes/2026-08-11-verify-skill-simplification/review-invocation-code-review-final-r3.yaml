@@ -1,0 +1,54 @@
+schema_version: 1
+review_id: code-review-final-r3
+review_stage: code-review
+review_target: final compatibility correction through 4ca4d706
+base_revision: 49f8da13
+head_revision: 4ca4d706
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-verify-closeout-literal-correction
+reviewer_context_id: root-code-review-final-r3-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - final-pr-gate-compatibility-correction
+  - published-verify-literal-contract
+governing_artifacts:
+  - specs/verify-skill-simplification.md
+  - docs/plans/2026-08-11-verify-skill-simplification.md
+  - specs/verify-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - requirement-fidelity-v1
+initial_packet_inventory:
+  - path: docs/changes/2026-08-11-verify-skill-simplification/change.yaml
+    sha256: 01a7027ddbf13623d6090107d25eaf5eaca7383ff7983081efe5bb00025ead7b
+  - path: docs/changes/2026-08-11-verify-skill-simplification/verify-literal-compatibility.yaml
+    sha256: 340537feb68b8a3a0ea674081a267a063ee4e54f04527dc162333599ffd96793
+  - path: skills/verify/SKILL.md
+    sha256: f1c89518e257cf991f50d0c453ca110bfca9c5479867206a9d399d7c15247935
+  - path: docs/changes/2026-08-11-verify-skill-simplification/evidence/semantic-preservation-review.md
+    sha256: 0eeafea80bd76e07871e145639ec0627503ae2e2356f5e9e81dfcca344104b88
+  - path: docs/changes/2026-08-11-verify-skill-simplification/evidence/simplification-measurements.md
+    sha256: f3a39c3b53622cd4ace60fcc90c4b446e8e22d7e3fc4bcdf6ee633416c942d78
+  - path: docs/changes/2026-08-11-verify-skill-simplification/explain-change.md
+    sha256: 6c814ad1facbf8846f353a4420d3a6c0bf0971dfbce3b6d836c9fbcd9e363deb
+prompt_template_version: code-review-v1
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+review_focus:
+  - exact parser-package literal restoration
+  - unchanged fail-closed closeout semantics
+  - literal inventory completeness
+  - measurement and rationale currency
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded

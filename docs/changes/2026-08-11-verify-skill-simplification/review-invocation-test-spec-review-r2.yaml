@@ -1,0 +1,41 @@
+schema_version: 1
+review_id: test-spec-review-r2
+review_stage: test-spec-review
+review_target: specs/verify-skill-simplification.test.md
+base_revision: ae8dca685617d60538162df370639dceab089ff4
+head_revision: ae8dca685617d60538162df370639dceab089ff4
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-test-spec-revision-r2
+reviewer_context_id: root-test-spec-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-contract
+  - rollback-and-mixed-package-proof
+governing_artifacts:
+  - specs/verify-skill-simplification.md
+  - docs/plans/2026-08-11-verify-skill-simplification.md
+  - docs/changes/2026-08-11-verify-skill-simplification/architecture-assessment.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/verify-skill-simplification.test.md
+    sha256: 94de3a50d0dd4c12a63acc939af77a18b02e88aa60b5f7eb22f30ae580fff986
+  - path: specs/verify-skill-simplification.md
+    sha256: bbcc8c97186adc6539839257936eaad02c344b252cdf2873d3dc97ded3e2e397
+  - path: docs/plans/2026-08-11-verify-skill-simplification.md
+    sha256: 366dd20cc43f42f328cad8548c5628f2a012dfab731e3fb5e743807d7c9606e6
+  - path: docs/changes/2026-08-11-verify-skill-simplification/evidence/test-spec-revision-r2.md
+    sha256: b3a44985288a79fcdaf751b613b3d9db69e261b10ca7f86483976da1c82fa755
+prompt_template_version: test-spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - VFSIM-TSR1 resolution
+  - rollback proof command ownership
+  - M3 proof timing and evidence
+  - requirement, example, boundary, and interaction traceability
+  - no target-agent runtime acceptance

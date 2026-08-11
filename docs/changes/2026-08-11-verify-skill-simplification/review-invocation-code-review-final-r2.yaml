@@ -1,0 +1,49 @@
+schema_version: 1
+review_id: code-review-final-r2
+review_stage: code-review
+review_target: final support correction through b6b715be
+base_revision: 7e67978b
+head_revision: b6b715be
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-ci-maintenance-deferral
+reviewer_context_id: root-code-review-final-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - final-verify-routing-correction
+  - owner-approved-evidence-deferrals
+  - durable-rationale-refresh
+governing_artifacts:
+  - specs/verify-skill-simplification.md
+  - docs/plans/2026-08-11-verify-skill-simplification.md
+  - specs/verify-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - requirement-fidelity-v1
+initial_packet_inventory:
+  - path: docs/changes/2026-08-11-verify-skill-simplification/change.yaml
+    sha256: 69aa94d4f6feefb2782bd007a57c1d6b06d5af487986f52ceb8acc97eee9cf83
+  - path: docs/changes/2026-08-11-verify-skill-simplification/evidence/ci-selector-deferral.md
+    sha256: 78f07389610f7b85240675834a4bc8f5f66422c925523de828bf6c785e255842
+  - path: docs/changes/2026-08-11-verify-skill-simplification/explain-change.md
+    sha256: fe178c5f479cfb5cb493c2d0a755ed6789a3212f7654bc1615ce5e62a7b34057
+prompt_template_version: code-review-v1
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+review_focus:
+  - exact-path deferral completeness
+  - preservation of mandatory direct proof
+  - absence of generic selector bypass
+  - rationale and lifecycle currency
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
