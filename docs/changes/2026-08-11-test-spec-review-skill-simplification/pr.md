@@ -2,8 +2,8 @@
 
 | Field | Value |
 | --- | --- |
-| PR URL | pending creation |
-| PR state | pending creation |
+| PR URL | https://github.com/xiongxianfei/rigorloop/pull/136 |
+| PR state | open |
 | Base branch | main |
 | Head branch | proposal/test-spec-review-skill-simplification |
 
