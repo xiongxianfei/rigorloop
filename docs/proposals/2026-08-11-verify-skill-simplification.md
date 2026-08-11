@@ -22,8 +22,11 @@ The problem is that universal verification safety and conditional branch-readine
 
 - Make scoped direct verification shorter and easier to execute correctly.
 - Keep `SKILL.md` self-sufficient for invocation classification, safe evidence handling, scoped verification, and truthful claims.
+- Classify every invocation through a closed requested-outcome vocabulary and an exact target-resolution result.
+- Separate loaded-resource selection from isolated versus governed execution authority.
 - Give each behaviorally significant verification rule one explicit owner and destination.
 - Load detailed branch-readiness and final-closeout procedure only when the requested result depends on it.
+- Keep evidence-type truthfulness available to scoped verification while conditionalizing only final evidence applicability and aggregation.
 - Preserve `verify` ownership of `branch-ready` while preserving `pr` ownership of PR-body and PR-open readiness.
 - Preserve lifecycle, review-resolution, validation, CI, release, generated-output, manual-proof, boundary-first, stop, and handoff semantics.
 - Preserve deterministic canonical, generated, packed, and installed package resources.
@@ -33,6 +36,7 @@ The problem is that universal verification safety and conditional branch-readine
 
 - Weakening the evidence required for `branch-ready` or changing which stage owns that claim.
 - Changing workflow stage order, `change.yaml` schema, review settlement, planned-work semantics, selector behavior, CI policy, release policy, or PR authorization.
+- Giving `verify` authority to claim release publication, deployment completion, PR-body readiness, PR-open readiness, or external action completion.
 - Turning `verify` into code review, review resolution, artifact authoring, automatic repair, PR preparation, or PR opening.
 - Creating an executable verification engine, scheduler, cache, state store, or agent-runtime harness.
 - Splitting every verification dimension into a separate reference.
@@ -142,8 +146,9 @@ The main file remains sufficient for every scoped direct verification and owns:
 | Inline contract | Reason |
 | --- | --- |
 | Purpose, description, trigger, workflow role, and near-miss routing | Needed before reference selection. |
-| Invocation classification and exact resource triggers | Determines the valid loaded package. |
+| Closed requested outcomes, target resolution, execution-mode classification, and exact resource triggers | Determines the valid loaded package and permitted authority. |
 | Evidence authority and source precedence | Universal to every verification claim. |
+| Evidence-type interpretation | Any scoped request may inspect commands, CI, generated output, manual proof, or release metadata. |
 | Compact verification dimensions | Every verification scope needs a consistent quality model. |
 | Validation integrity | Tests, commands, CI, and generated-artifact claims must remain evidence-bound. |
 | Direct-verification isolation | A scoped check must not imply workflow completion. |
@@ -154,51 +159,133 @@ The main file remains sufficient for every scoped direct verification and owns:
 
 The inline verification dimensions may be expressed compactly, but they continue to cover contract satisfaction, proof validity, architecture and artifact coherence, lifecycle and review state, validation evidence, drift, risk, and release or handoff readiness when applicable.
 
+Universal evidence interpretation remains inline:
+
+- actual execution is distinct from a configured or suggested command;
+- current evidence is distinct from stale evidence;
+- passed, failed, skipped, pending, not-run, and unknown states are not interchangeable;
+- CI claims require observed CI evidence and remain distinct from local validation;
+- generated-output currency is judged against its authoritative source and applicable generation contract;
+- manual proof has a minimum validity contract and cannot be inferred from assertion alone;
+- unknown, conflicting, circular, or insufficient evidence cannot support a stronger claim;
+- a scoped conclusion identifies when broader readiness would require more evidence; and
+- network, destructive-action, publication, credential, and external-state boundaries apply before any optional procedure.
+
+A scoped verification can therefore assess an individual CI result, generated artifact, manual-proof record, release-metadata file, command result, requirement, or other supported evidence surface without loading final-closeout procedure.
+
 ### Conditional branch-readiness reference ownership
 
-`references/branch-readiness-verification.md` owns only the detailed procedure needed when the requested outcome would support branch readiness, workflow final closeout, or release-sensitive final readiness:
+`references/branch-readiness-verification.md` owns only the detailed procedure needed when the requested outcome is `branch-readiness` or `workflow-final-verification`:
 
 - final-verification prerequisites and authoritative related-artifact assembly;
 - requirement-to-test-to-diff-to-evidence traceability procedure;
 - baseline change-pack and durable-rationale checks;
 - lifecycle artifact, plan/index, milestone, review-log, and review-resolution closeout inspection;
 - tracked governing branch-state requirements;
-- targeted proof, broad-smoke triggers, CI evidence, generated-output drift, and manual-proof handling;
-- release-metadata and release-sensitive evidence handling when applicable;
-- workflow-managed Phase C and fresh-actual-run constraints;
+- determination of which targeted proof, broad smoke, CI evidence, generated outputs, manual proof, and release metadata are mandatory for the resolved target;
+- final composition of those evidence classes, including when targeted proof must be supplemented by broad smoke and when current CI evidence is required;
+- release-sensitive final evidence composition when `release_sensitive: true`;
+- workflow-managed Phase C applicability and fresh-actual-run completeness;
 - final blocker aggregation, `branch-ready` calculation, verification recording, and `pr` handoff.
 
-The reference does not redefine status vocabulary, claim authority, universal stop rules, evidence truthfulness, workflow stage order, or PR authorization.
+The reference does not redefine status vocabulary, evidence-type meaning, claim authority, universal stop rules, workflow stage order, or PR authorization.
 It remains part of the `verify` skill package and does not become an independent lifecycle owner.
 
-### Closed invocation profiles
+The reference may contain clearly marked common final-readiness, isolated completion, and governed-final completion sections.
+Execution-mode classification determines which completion section applies.
+The reference cannot infer execution mode from informal prompt wording.
 
-Classification follows the requested claim and governing context, not merely whether the user invoked the skill directly.
+### Requested verification outcomes
 
-`branch_readiness_context` is true when either:
+The first version supports exactly three requested outcomes:
 
-- the governed workflow is at final `verify`; or
-- the user explicitly requests branch readiness, final workflow closeout readiness, or release-sensitive final readiness whose result would be used for PR handoff.
+```text
+scoped-verification
+branch-readiness
+workflow-final-verification
+```
 
-A direct request for one bounded command, artifact, requirement, or validation scope does not establish branch-readiness context.
-Conversational use of words such as “check,” “verify,” or “ready” does not silently broaden the claim.
+| Requested outcome | Required context | Branch-readiness reference | Permitted top-level claim |
+| --- | --- | ---: | --- |
+| `scoped-verification` | One explicit command, artifact, requirement, evidence item, or validation surface | no | Scoped `pass`, `fail`, or `inconclusive` only |
+| `branch-readiness` | Explicit repository and branch or commit plus exactly one governed change or explicit evidence root | yes | `branch-ready` or `not-ready` for the resolved target |
+| `workflow-final-verification` | Exactly one valid governed change whose current authoritative routing resolves final `verify` as the applicable stage | yes | Formal final-verification outcome under existing verify authority |
+| Unknown or ambiguous | No valid context | no | Stop before conditional procedure loads |
+
+A direct invocation may request `branch-readiness` when its target resolves exactly.
+A direct invocation cannot create `workflow-final-verification` by using words such as “final,” “closeout,” “ready,” or “verify”; that outcome requires current governed lifecycle evidence.
+A scoped request cannot silently broaden into final readiness.
+
+Release sensitivity is a boolean evidence-applicability property of the resolved change:
+
+```yaml
+release_sensitive: true
+```
+
+It selects additional evidence inside final-readiness procedure.
+It does not create a fourth requested outcome or authorize a release, publication, deployment, or external-completion claim.
+
+### Target resolution
+
+Before loading the branch-readiness reference:
+
+1. Resolve the repository and exact branch or commit being assessed.
+2. Resolve exactly one governed change root or user-supplied explicit evidence root.
+3. Confirm the proposed evidence set belongs to that repository, revision, and change or evidence identity.
+4. Determine release sensitivity from governing evidence, or stop when applicability is material and undecidable.
+5. Stop when any identity is missing, ambiguous, stale, contradictory, or spans multiple candidate changes.
+
+The stop result names the unresolved identity and does not load or partially reconstruct final-readiness procedure.
+The recommended diagnostic shape is:
+
+```text
+cannot perform branch-readiness verification:
+the request does not resolve exactly one governed change or evidence root and one branch or commit identity
+```
+
+### Loaded-package profiles
+
+Loaded resources follow requested outcome and boundary applicability, not execution authority.
 
 The boundary-first trigger remains independently additive when approved boundary, interaction, or proof trace is missing, stale, unknown, ambiguous, conflicting, or insufficient.
 
-| Profile | Branch-readiness context | Boundary-first trigger | Loaded package |
+| Profile | Requested outcome | Boundary-first trigger | Loaded package |
 | --- | ---: | ---: | --- |
-| `VP0-scoped` | no | no | `SKILL.md` |
-| `VP0B-scoped-boundary` | no | yes | `SKILL.md` plus boundary-first reference |
-| `VP1-final-readiness` | yes | no | `SKILL.md` plus branch-readiness reference |
-| `VP1B-final-readiness-boundary` | yes | yes | `SKILL.md` plus both references |
+| `VP0-scoped` | `scoped-verification` | no | `SKILL.md` |
+| `VP0B-scoped-boundary` | `scoped-verification` | yes | `SKILL.md` plus boundary-first reference |
+| `VP1-final-readiness` | `branch-readiness` or `workflow-final-verification` | no | `SKILL.md` plus branch-readiness reference |
+| `VP1B-final-readiness-boundary` | `branch-readiness` or `workflow-final-verification` | yes | `SKILL.md` plus both references |
 
 A scoped direct verification may report only the evidence and verdict for its requested scope.
 It does not claim branch readiness or workflow completion.
-A direct invocation that explicitly requests a full branch-readiness verdict is valid `VP1`, remains isolated after reporting, and does not invoke `pr`.
+A direct invocation that explicitly requests a resolved branch-readiness verdict is valid `VP1` or `VP1B` and remains isolated after reporting.
+
+### Execution authority
+
+Loaded-package profile and execution authority are independent.
+The closed execution modes are:
+
+```text
+isolated
+governed-final
+```
+
+`VP1` and `VP1B` may use either mode.
+Resources determine which procedure is available; execution mode determines which completion branch and writes are permitted.
+
+| Execution mode | Required authority | Verify-owned recording | Workflow progression | PR behavior |
+| --- | --- | --- | --- | --- |
+| `isolated` | Direct scoped verification, or a direct branch-readiness request with an exactly resolved target | Only when explicitly requested and already allowed by the existing verify contract | forbidden | Report `pr` only as a possible next stage; never invoke it or prepare PR content |
+| `governed-final` | Current governed evidence establishes `workflow-final-verification` for the same change identity | Required according to existing verify ownership | Performed only by the existing workflow owner, never by `verify` inference | Hand off toward `pr`; never prepare or open the PR itself |
+
+`verify` writes only artifacts and evidence already assigned to `verify`.
+`workflow` owns lifecycle transition and continuation.
+`pr` owns PR-body preparation and PR opening.
+A clean isolated result never advances workflow state.
 
 ### Resource failure behavior
 
-If branch-readiness context is true and `branch-readiness-verification.md` is missing or unreadable, verification stops before a branch-readiness verdict or state-changing handoff.
+If the requested outcome is `branch-readiness` or `workflow-final-verification` and `branch-readiness-verification.md` is missing or unreadable, verification stops before a dependent verdict, recording action, or handoff.
 If the boundary-first trigger is true and its governed reference is missing or unreadable, verification stops with the package-integrity blocker required by the existing boundary contract.
 An untriggered conditional reference is not loaded and does not block `VP0`.
 The shortened common path is intentionally insufficient to reconstruct missing conditional procedure from memory.
@@ -244,8 +331,13 @@ This change does not add a permanent simplicity validator, profile-size gate, pr
 ## Expected Behavior Changes
 
 - Scoped verification loads a shorter common path and omits final-closeout procedure it cannot use.
-- Requests that support `branch-ready`, workflow final closeout, or release-sensitive final readiness load one coherent branch-readiness procedure.
+- Every invocation resolves to one of three requested outcomes or stops as unknown or ambiguous.
+- Branch readiness resolves one repository revision and one governed change or explicit evidence root before conditional procedure loads.
+- Release sensitivity adds evidence requirements without creating publication or release authority.
+- Requests for `branch-readiness` or `workflow-final-verification` load one coherent branch-readiness procedure.
 - Direct full branch-readiness verification remains possible but isolated; direct invocation does not activate workflow continuation.
+- Loaded resources and execution authority remain independent, so direct and governed final verification can share procedure without sharing write permissions.
+- Scoped requests can judge CI, generated output, manual proof, command evidence, and release metadata without loading final aggregation procedure.
 - Boundary-first guidance loads only under its existing governed trigger and no longer has a long duplicate owner inline.
 - Missing required conditional resources stop safely instead of causing partial reconstruction.
 - Output retains a compact verdict, scope, evidence, blockers, validation, readiness, and next-stage summary without adding profile-inapplicable placeholders.
@@ -265,7 +357,7 @@ An ADR is needed only if downstream specification changes the normative package 
 Use four proof classes:
 
 1. Deterministic structural proof checks frontmatter, required sections, claim vocabulary, both Resource-map entries, resource existence, placeholder absence, and package containment.
-2. Static contract scenarios cover every profile, direct versus final-readiness classification, required and forbidden reference loads, missing-resource stops, scoped claim limits, branch-ready blockers, review and lifecycle closeout, release-sensitive evidence, and boundary-first additive loading.
+2. Static contract scenarios cover all three requested outcomes; successful, missing, and ambiguous target resolution; both execution modes; every profile; required and forbidden reference loads; missing-resource stops; isolated write prohibitions; scoped evidence-type checks; branch-ready blockers; review and lifecycle closeout; `release_sensitive` true and false; and boundary-first additive loading.
 3. Package-chain proof compares canonical, generated, locally packed, and temporary installed Codex, Claude Code, and opencode resources through existing repository commands.
 4. Independent semantic review compares the final package against the rule ledger, literal inventory, governing contracts, current skill behavior, and expected profile outcomes.
 
@@ -287,6 +379,19 @@ Report before and after for:
 A 30–40 percent reduction in `VP0` loaded words is a planning target, not a normative semantic gate.
 Acceptance requires complete rule disposition, one owner per repeated cluster, material scoped-profile reduction, no unjustified final-readiness profile growth, honest total-package accounting, and preserved behavior.
 
+The downstream specification should make these proposal decisions directly testable:
+
+| Acceptance area | Expected contract |
+| --- | --- |
+| Requested outcomes | Exactly the three named outcomes; unknown or ambiguous requests stop. |
+| Target identity | Final readiness resolves one repository revision and one change or evidence root. |
+| Release sensitivity | Boolean applicability only; no release or publication claim. |
+| Resource profiles | Exactly four loaded-package assemblies with boundary-first additive. |
+| Execution authority | `isolated` and `governed-final` are independent of resource assembly. |
+| Write boundaries | Isolated mode does not advance workflow or invoke `pr`; governed mode preserves existing verify, workflow, and pr ownership. |
+| Evidence ownership | Item-level truthfulness stays inline; final applicability and aggregation live in the branch-readiness reference. |
+| Scoped capability | CI, generated output, manual proof, commands, and release metadata can be assessed without final-closeout loading. |
+
 ## Rollout and Rollback
 
 Roll out the canonical `verify` package, both mapped references, validator or consumer migrations, and generated package proof atomically.
@@ -302,6 +407,9 @@ Change-local ledgers and measurements remain as historical evidence even if the 
 | A universal blocker moves behind the conditional reference | Scoped verification could overclaim or proceed unsafely. | Closed ownership table plus complete semantic-rule ledger and independent review. |
 | Branch-readiness classification is too narrow | Full verification may omit required procedure. | Define the trigger by requested claim and governed stage; cover direct and workflow-managed cases statically. |
 | Branch-readiness classification is too broad | Context savings disappear for ordinary checks. | Add required and forbidden load scenarios and measure every profile. |
+| Ambiguous target combines evidence from different changes or revisions | A final verdict may be unsound. | Require one repository revision and one change or explicit evidence root before loading final procedure. |
+| Direct and governed verification share resources and accidentally share authority | An isolated check could mutate lifecycle state or a governed run could omit recording. | Classify execution mode independently and test every permitted write and handoff. |
+| Evidence-type semantics move behind final readiness | Scoped CI, drift, manual-proof, or release-metadata checks become under-specified. | Keep item-level semantics inline and conditionalize only applicability and aggregation. |
 | The new reference becomes a competing policy owner | Lifecycle or claim behavior can diverge. | Keep universal authority inline and limit the reference to procedure. |
 | Relocation increases total package size | Maintenance cost may grow despite a shorter main file. | Report common-path and package totals separately; reject unjustified duplication. |
 | Tests freeze accidental wording | Simplification becomes cosmetic. | Separate semantic rules from literal consumers and migrate incidental tests. |
@@ -323,6 +431,9 @@ Change-local ledgers and measurements remain as historical evidence even if the 
 | 2026-08-11 | Keep the result structure inline. | It is compact, shared across profiles, and does not justify another package resource. | A new asset adds indirection without meaningful common-path savings. |
 | 2026-08-11 | Keep simplification evidence change-local. | Size and disposition evidence proves this refactor but is not a durable product invariant. | Permanent simplicity gates and runtime journeys add unrelated infrastructure. |
 | 2026-08-11 | Default architecture assessment to not required. | Existing architecture already defines mapped skill packages and parity. | Architecture changes remain conditional and will be owned by this change if required. |
+| 2026-08-11 | Use three requested outcomes and exact target resolution. | Scoped, direct branch, and governed final verification need deterministic claim boundaries. | Open-ended phrases such as final or release readiness are too ambiguous. |
+| 2026-08-11 | Separate loaded profiles from execution authority. | Direct and governed final verification may share procedure without sharing lifecycle permissions. | Multiplying package profiles would couple authority to content loading. |
+| 2026-08-11 | Keep evidence interpretation inline. | Scoped verification must judge individual evidence classes without final aggregation procedure. | Moving CI, drift, manual-proof, or release semantics entirely into the reference under-specifies `VP0`. |
 
 ## Next Artifacts
 
@@ -338,5 +449,5 @@ None yet
 ## Readiness
 
 Ready for independent `proposal-review`.
-The proposal selects the package boundary, trigger model, resource ownership, failure behavior, proof boundary, and measurement interpretation needed for review.
+The proposal selects the package boundary, requested outcomes, target resolution, resource profiles, execution authority, evidence-rule ownership, failure behavior, proof boundary, and measurement interpretation needed for review.
 It does not claim specification or implementation readiness.
