@@ -15,6 +15,7 @@ This ledger records formal lifecycle reviews for the verify skill simplification
 | `plan-review-r2` | `plan-review` | `r2` | `docs/plans/2026-08-11-verify-skill-simplification.md` | `reviews/plan-review-r2.md` | `approved` | 0 | `recorded` |
 | `plan-review-r3` | `plan-review` | `r3` | `docs/plans/2026-08-11-verify-skill-simplification.md` | `reviews/plan-review-r3.md` | `approved` | 0 | `recorded` |
 | `test-spec-review-r2` | `test-spec-review` | `r2` | `specs/verify-skill-simplification.test.md` | `reviews/test-spec-review-r2.md` | `approved` | 0 | `recorded` |
+| `code-review-m1-r1` | `code-review` | `r1` | M1 commit `af9d7ef9` | `reviews/code-review-m1-r1.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 
