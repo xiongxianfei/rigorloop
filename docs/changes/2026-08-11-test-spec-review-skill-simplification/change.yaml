@@ -8,8 +8,13 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-11-test-spec-review-skill-simplification.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/proposal-authoring.md
+    lifecycle_state: revision-required
+    review:
+      id: proposal-review-r1
+      artifact_id: proposal
+      outcome: changes-requested
+      record: docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r1.md
+      round: r1
 workflow_state:
   lifecycle_state: active
   current_stage: proposal
@@ -17,6 +22,7 @@ workflow_state:
   blocker: null
   evidence:
     - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/proposal-authoring.md
+    - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r1.md
 workflow: {}
 artifacts:
   proposal: docs/proposals/2026-08-11-test-spec-review-skill-simplification.md
@@ -32,6 +38,9 @@ changed_files:
   - docs/proposals/2026-08-11-test-spec-review-skill-simplification.md
   - docs/changes/2026-08-11-test-spec-review-skill-simplification/change.yaml
   - docs/changes/2026-08-11-test-spec-review-skill-simplification/evidence/proposal-authoring.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-log.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/review-resolution.md
+  - docs/changes/2026-08-11-test-spec-review-skill-simplification/reviews/proposal-review-r1.md
 review:
-  status: pending
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 1
