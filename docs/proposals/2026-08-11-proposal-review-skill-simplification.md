@@ -34,7 +34,9 @@ The optimization must reduce ordinary loaded context without weakening independe
 
 ## Vision fit
 
-**Aligned.** The change strengthens the project vision of explicit, auditable, deterministic workflow contracts by reducing accidental prose duplication while keeping evidence, review independence, lifecycle recording, and claim safety intact. Progressive disclosure improves daily usability without replacing governed procedure with opaque automation.
+fits the current vision
+
+The change strengthens the project vision of explicit, auditable, deterministic workflow contracts by reducing accidental prose duplication while keeping evidence, review independence, lifecycle recording, and claim safety intact. Progressive disclosure improves daily usability without replacing governed procedure with opaque automation.
 
 ## Context
 
@@ -52,7 +54,30 @@ The skill serves several different contexts:
 
 The existing architecture already defines a published skill as a canonical `SKILL.md` plus explicitly mapped references and assets. References are packaged procedure rather than independent lifecycle owners, and assets may own structure but not policy. This change applies that model to `proposal-review`.
 
-The initial user goals are all in scope: optimize `proposal-review`, select the best solution, work on a new branch, author a proposal, and perform proposal review. No initial goal is dropped or deferred.
+## Initial intent preservation
+
+| Initial user goal | Proposal treatment | Where recorded |
+| --- | --- | --- |
+| Optimize `proposal-review`. | in scope | Problem, Goals, and Recommended Direction |
+| Select the best solution. | in scope | Options Considered and Recommended Direction |
+| Work on a new branch. | in scope | Owning change record and change-local authoring evidence |
+| Author a proposal. | in scope | This proposal |
+| Perform formal `proposal-review`. | in scope | Next Artifacts and change-local review evidence |
+
+No initial goal is dropped, deferred, rejected, or left open.
+
+## Scope budget
+
+| Work item | Treatment | Reason |
+| --- | --- | --- |
+| Simplify the universal `proposal-review` common path. | core to this proposal | This is the primary user-visible optimization objective. |
+| Add recording-and-settlement and conditional-gate references. | core to this proposal | The references implement the selected progressive-disclosure boundary. |
+| Preserve the two existing structural assets as sole output layouts. | same-slice dependency | Removing inline duplication depends on retaining authoritative output structures. |
+| Amend directly coupled skill-contract or artifact-placement requirements when necessary. | same-slice dependency | Published behavior and portable placement claims must remain aligned with the package. |
+| Add deterministic static scenarios and package-parity proof. | same-slice dependency | The behavior and packaged-resource changes require proof in the same change. |
+| Record a bounded architecture assessment and any required change-owned architecture correction. | same-slice dependency | The assessment confirms that the existing package model covers the new references. |
+| Optimize other review or authoring skills. | out of scope | Each skill requires its own evidence, proposal, and ownership analysis. |
+| Add runtime journeys, model grading, or permanent simplicity validators. | out of scope | These mechanisms do not prove the package refactor and would add unrelated infrastructure. |
 
 ## Options Considered
 
@@ -144,6 +169,22 @@ standing_artifact_context
 scope_budget_context
 ```
 
+The predicates use observable proposal and repository evidence:
+
+| Predicate | Positive evidence | Evidence that does not activate it |
+| --- | --- | --- |
+| `vision_exception_context` | The proposal uses `may conflict with the current vision` or `proposes a vision revision`; requests or records an explicit vision exception; or bounded review evidence identifies a conflict, unsupported fit claim, or incomplete exception. | Merely reading or citing `VISION.md`, or a supported `fits the current vision` result with no contrary evidence. |
+| `standing_artifact_context` | The proposal bootstraps, creates, migrates, or materially changes a required standing artifact; or governance, workflow-governance, adoption, or source-of-truth direction depends on a required `VISION.md` or `CONSTITUTION.md` that is absent or being replaced. | Merely reading, citing, or remaining consistent with an existing standing artifact. |
+| `scope_budget_context` | The proposal contains multiple independent work items or lifecycle families, could require multiple downstream specs or plans, changes policy, generated output, public skill behavior, or validation policy under a governing scope-budget contract, explicitly allocates follow-up work, or review evidence identifies silent narrowing, hidden follow-up risk, or multi-workstream ambiguity. | A focused single-decision change merely touching several files or components when no governing scope-budget trigger or hidden follow-up exists. |
+
+Classify the predicates before substantive judgment using the proposal, initial intent, and available standing artifacts. Conversational wording alone does not activate or suppress a predicate.
+
+When multiple predicates are true, load the reference once and apply every active gate section. Predicate combinations do not create another package profile or precedence order.
+
+If review evidence first establishes a predicate after judgment has started, load the reference immediately and complete the triggered gate before selecting review status or readiness. A late trigger does not discard already valid core review evidence.
+
+When bounded evidence cannot determine whether a predicate is true, stop before approval and report the unresolved trigger as a blocker or material proposal finding. Do not treat ambiguity as a false predicate, infer procedure from memory, or approve from the common path alone.
+
 Basic vision alignment, initial-goal preservation, ordinary scope control, and unknown-authority stops remain inline. The conditional reference specializes a triggered gate but does not redefine review status, materiality, recording, or handoff.
 
 ### Closed resource assemblies
@@ -219,8 +260,14 @@ Create change-local fixtures for at least:
 - an advisory review that discovers a material finding and loads recording late;
 - a formal review whose record cannot be written;
 - a vision-conflict proposal using the conditional gates reference;
+- a proposal with supported ordinary vision alignment that does not activate `vision_exception_context`;
 - a bootstrap or standing-artifact proposal;
+- a proposal that merely cites an existing standing artifact without activating `standing_artifact_context`;
 - a broad multi-workstream scope-budget review;
+- a focused multi-file single-decision proposal with no governing scope-budget trigger;
+- reviewer-discovered evidence that activates a specialized predicate after review begins;
+- multiple simultaneous specialized predicates that load the reference once and apply every active gate;
+- unresolved specialized-trigger ambiguity that blocks approval;
 - a review with no specialized trigger that does not load the conditional gates reference;
 - a formal specialized review using both references;
 - isolated recording without lifecycle settlement;
@@ -250,6 +297,7 @@ Rollback reverts the canonical skill, references, coupled contract changes, and 
 | A universal review rule is hidden behind a conditional reference. | Require a complete semantic rule-disposition ledger and independent semantic review; keep target, evidence, materiality, status, isolation, stops, and claims inline. |
 | A recorded isolated review accidentally settles workflow state. | Separate loading profile from execution authority and make formal settlement depend on current identity-bound workflow evidence. |
 | Specialized gates overlap with the core review method. | Give the reference only detailed exception, bootstrap, standing-artifact, and scope-budget procedure; retain ordinary vision and scope judgment inline. |
+| A specialized predicate produces a false negative or changes during review. | Define positive and forbidden evidence, reclassify on newly discovered evidence, apply all combined predicates, and block approval on unresolved ambiguity. |
 | Assets become policy owners. | Limit assets to labels and layout and reject policy explanations or status semantics in them. |
 | Tests freeze incidental prose. | Classify literal dependencies separately and update test-only incidental assertions rather than preserving accidental wording. |
 | Relocation is reported as deletion. | Report common-path and total-package measurements separately and explain any package growth. |
@@ -271,6 +319,7 @@ None. The specification should inventory exact current literal consumers and val
 | 2026-08-11 | Use semantic and literal ledgers as change-local evidence. | Behavior preservation and accidental wording compatibility are different proof problems. |
 | 2026-08-11 | Exclude target-agent runtime testing and permanent simplicity gates. | Static contract proof, package parity, and independent semantic review match the change boundary. |
 | 2026-08-11 | Treat percentage reduction as advisory. | Semantic preservation and single ownership outrank numeric optimization. |
+| 2026-08-11 | Define specialized-gate predicates from observable evidence. | Deterministic positive, negative, combined, late-trigger, and ambiguity behavior prevents conditional loading from hiding required review procedure. |
 
 ## Next Artifacts
 
