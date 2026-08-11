@@ -148,9 +148,72 @@ skills/proposal-review/
 - automated formal-review independence, neutral packet, phase receipt, and correction-loop boundaries;
 - workflow-managed review completion and handoff mechanics.
 
-The reference loads when `durable_recording_context` is true. That predicate is true for a formal lifecycle review, a material or blocking result, or an explicit durable-record request. Formal review implies durable recording, but durable recording does not imply workflow authority or downstream continuation.
+The reference loads when `durable_recording_context` is true. Formal review implies durable recording, but durable recording does not imply workflow authority or downstream continuation.
 
-The formal-only settlement subsection applies only when current workflow evidence identifies this exact proposal review for the same governed change. An isolated material review records findings but does not settle lifecycle state or advance the workflow.
+The durable trigger is exhaustive. It is true for a formal lifecycle review, an explicit durable-record request, at least one material finding, or a review outcome of `changes-requested`, `blocked`, or `inconclusive`.
+
+Classify the initial recording mode from invocation authority and explicit recording intent, then reclassify before final output if findings or outcome activate durable recording. Late activation loads the reference before any required write or recording claim.
+
+#### Recording and execution modes
+
+Loading the recording reference does not grant formal settlement or automation authority. The first version uses two independent axes:
+
+```text
+recording_mode:
+  none
+  advisory-durable
+  formal-lifecycle
+
+automation_mode:
+  manual
+  workflow-managed-automated
+```
+
+| Recording mode | Automation mode | Validity and required behavior |
+| --- | --- | --- |
+| `none` | `manual` | Valid only for a clean advisory review with no explicit durable request; emit invocation output and perform no durable write. |
+| `advisory-durable` | `manual` | Record to an authorized location; preserve required material or blocking evidence when an existing change root is available; never settle the proposal entry or continue workflow. |
+| `formal-lifecycle` | `manual` | Write formal evidence, synchronize required change-local review artifacts, settle only the proposal entry, and report next-stage eligibility without advancing workflow. |
+| `formal-lifecycle` | `workflow-managed-automated` | Apply formal behavior plus neutral packet, phase receipt, reviewer independence, authorized correction limits, rereview, and automation-specific pause or handoff evidence. |
+| `advisory-durable` | `workflow-managed-automated` | Invalid; automated proposal review requires current formal governed authority. |
+| `none` | `workflow-managed-automated` | Invalid. |
+
+The formal-only settlement subsection applies only when current workflow evidence identifies this exact proposal review for the same governed change. An isolated material review records required evidence when a valid location exists but does not settle lifecycle state or advance workflow.
+
+#### Side-effect authority
+
+| Operation | Advisory durable manual | Formal lifecycle manual | Formal lifecycle automated |
+| --- | ---: | ---: | ---: |
+| Write review or finding record | yes | yes | yes |
+| Update `review-log.md` | only for material, `changes-requested`, blocking, or inconclusive evidence in an existing change root when project governance requires it | yes | yes |
+| Create or update `review-resolution.md` | only for material findings, `changes-requested`, blocking or inconclusive outcomes, or required dispositions in an existing change root | when required | when required |
+| Set proposal review settlement in `change.yaml` | no | yes | yes |
+| Advance workflow state | no | no | no |
+| Report formal next-stage eligibility | no | yes | yes |
+| Write automation packet or phase receipt | no | no | yes |
+| Apply correction automatically | no | no | only under separately valid correction authority |
+
+Workflow remains the only continuation owner. A formal review may report that the proposal is eligible for the next stage, but neither manual nor automated `proposal-review` advances routing itself.
+
+#### Advisory recording location and authority
+
+Resolve an `advisory-durable` location in this order:
+
+1. Use an explicit user-provided record path when it is valid under project governance.
+2. Otherwise use the existing owning change root identified by the reviewed proposal.
+3. Otherwise use an existing active change root whose identity matches the same proposal and change.
+4. Otherwise use a project-local advisory-review location only when `docs/workflows.md` explicitly defines one.
+5. Otherwise set recording status to `blocked`.
+
+An advisory review never implicitly creates `docs/changes/<new-change-id>/`, `change.yaml`, a governed review log, a review-resolution artifact, or lifecycle settlement. When repository governance requires material findings or blocking outcomes to be change-local, an explicit standalone path is insufficient unless it belongs to an existing valid change root.
+
+When no valid location exists, complete the review judgment, return every material finding in full, set recording status to `blocked`, name the exact missing-location blocker, and claim neither durable recording nor lifecycle settlement. The recommended diagnostic is:
+
+```text
+durable advisory review recording blocked: no explicit valid record path, existing owning change root, matching active change root, or project-local advisory review location could be resolved
+```
+
+A formal lifecycle review requires an existing or validly established governed change root before formal recording begins. Without that authority, stop before claiming formal completion; an advisory assessment may still be returned only when it is explicitly labelled and obeys the advisory recording rules.
 
 ### Conditional proposal-gates reference
 
@@ -179,6 +242,8 @@ The predicates use observable proposal and repository evidence:
 
 Classify the predicates before substantive judgment using the proposal, initial intent, and available standing artifacts. Conversational wording alone does not activate or suppress a predicate.
 
+Specialized-gate predicate classification is proposal-review judgment. Deterministic validation may check the closed predicate vocabulary, known combinations, recorded outcome shape, and package integrity, but it does not infer semantic predicate truth from proposal prose.
+
 When multiple predicates are true, load the reference once and apply every active gate section. Predicate combinations do not create another package profile or precedence order.
 
 If review evidence first establishes a predicate after judgment has started, load the reference immediately and complete the triggered gate before selecting review status or readiness. A late trigger does not discard already valid core review evidence.
@@ -202,9 +267,19 @@ If a clean advisory review becomes material during judgment, the skill loads the
 
 ### Output ownership
 
-`assets/review-result-skeleton.md` remains the sole copy-and-fill structure for the overall result. `assets/material-finding.md` remains the sole repeated structure for each material finding. The assets own labels and layout only; `SKILL.md` and the applicable reference own field meaning, status selection, applicability, recording, and handoff policy.
+`assets/review-result-skeleton.md` remains the sole copy-and-fill structure for the overall result. It contains one universal group and four conditional groups:
 
-Inapplicable conditional fields are omitted. Unfilled placeholders and inline copies of the asset structures are forbidden.
+| Result group | Applicability | Structural fields |
+| --- | --- | --- |
+| Core | Every review | skill, review target, recording mode, automation mode, review status, material finding IDs or none, open blockers, proposal readiness, immediate next stage, automatic downstream handoff, and claim limitations |
+| Specialized gate | `PRR0G-context-gated` and `PRR1G-recorded-context-gated` | active gate predicates, gate outcomes, unresolved trigger ambiguity, standing-artifact or vision-exception result, and scope-budget result |
+| Durable recording | `recording_mode` is not `none` | recording status, record path, recording blocker, and finding-record paths |
+| Formal settlement | `recording_mode` is `formal-lifecycle` | review ID, governed change identity, review log, review-resolution path, proposal settlement, and formal next-stage eligibility |
+| Automated review | `automation_mode` is `workflow-managed-automated` | packet identity, phase receipt identity, independence result, correction eligibility, correction-cycle state, promotion or pause result, and rereview requirement |
+
+`assets/material-finding.md` remains the sole repeated structure for each material finding. The assets own section order, labels, table shapes, and placeholders only; `SKILL.md` and the applicable reference select groups and own field meaning, status, recording authority, settlement, correction, and handoff policy.
+
+An inapplicable conditional group is omitted completely. An applicable group whose required data is unavailable is emitted with an explicit `blocked` or `unknown` state and its blocker. Unfilled placeholders and inline copies of the asset structures are forbidden.
 
 ### Conflict and failure rules
 
@@ -229,9 +304,11 @@ Every exact heading, phrase, field label, path, and vocabulary dependency is sep
 
 - A routine advisory proposal review loads a shorter linear `SKILL.md` and the applicable structural assets, without detailed formal lifecycle or specialized-gate procedure.
 - A formal review loads the recording-and-settlement reference and preserves current durable evidence, settlement, independence, and handoff behavior.
-- An isolated material review records detailed findings while remaining isolated from lifecycle mutation and downstream continuation.
+- An isolated material review records detailed findings and required change-local log and resolution evidence when an existing authorized change root is available, while remaining isolated from proposal settlement and downstream continuation.
+- An advisory review without a valid durable location returns complete findings with blocked recording and never creates a governed change root implicitly.
+- Formal manual and formal automated reviews use separate mode branches and side-effect permissions inside the same recording reference.
 - Vision exceptions, standing-artifact or bootstrap cases, and broad multi-workstream proposals load the conditional proposal-gates reference only when their evidence predicates apply.
-- Result and material-finding structures are copied from the existing assets instead of being restated inline.
+- Result and material-finding structures are copied from the existing assets, with one core and four closed conditional result groups, instead of being restated inline.
 - Missing required resources stop the dependent action with a precise package-incomplete diagnostic.
 - Review statuses, severity, proposal readiness, recording requirements, and stage ownership remain unchanged.
 
@@ -256,9 +333,19 @@ Validate frontmatter, normalized headings, closed vocabularies, `Resource map` s
 Create change-local fixtures for at least:
 
 - clean direct advisory review using `PRR0-core`;
+- clean advisory review with an explicit durable request using `advisory-durable` and `manual` modes;
 - clean formal lifecycle review using `PRR1-recorded`;
 - an advisory review that discovers a material finding and loads recording late;
+- a material advisory review that records detailed evidence, review-log, and review-resolution entries in an existing change root without settlement;
+- a material advisory review with no valid durable location that reports blocked recording and returns the complete finding;
+- an explicit standalone advisory path rejected when project governance requires an existing change-local root;
 - a formal review whose record cannot be written;
+- a claimed formal review with no governed change root that cannot claim formal completion;
+- every valid recording-mode and automation-mode combination;
+- both invalid automated combinations;
+- `changes-requested`, `blocked`, and `inconclusive` outcomes activating durable recording;
+- formal manual review proving no automation packet or automatic correction;
+- formal automated review proving packet, receipt, independence, correction-authority, and rereview boundaries;
 - a vision-conflict proposal using the conditional gates reference;
 - a proposal with supported ordinary vision alignment that does not activate `vision_exception_context`;
 - a bootstrap or standing-artifact proposal;
@@ -271,6 +358,9 @@ Create change-local fixtures for at least:
 - a review with no specialized trigger that does not load the conditional gates reference;
 - a formal specialized review using both references;
 - isolated recording without lifecycle settlement;
+- each result group independently applicable and every valid combined group assembly;
+- an applicable result group with unavailable data emitting an explicit blocker;
+- inapplicable groups omitted and unfilled placeholders rejected;
 - missing required reference and missing required asset failures;
 - canonical, generated, packed, and installed package parity.
 
@@ -284,6 +374,27 @@ Do not execute Codex, Claude Code, opencode, or another target-agent runtime for
 
 Use normalized-LF UTF-8 bytes and Unicode whitespace-separated words as primary measurements. Count each uniquely loaded resource once in documented load order. Report `SKILL.md`, each resource, each valid assembly, and total package size separately. A 30–45 percent reduction in common-path words and bytes is a planning target, not a normative semantic gate; no material common-path reduction means the proposal objective is not met.
 
+### Acceptance contract
+
+| ID | Criterion |
+| --- | --- |
+| `AC-PRRSIM-001` | Recording mode and automation mode use separate closed values. |
+| `AC-PRRSIM-002` | Every valid mode combination has explicit allowed writes and handoff behavior. |
+| `AC-PRRSIM-003` | `changes-requested`, `blocked`, and `inconclusive` have deterministic durable-recording behavior. |
+| `AC-PRRSIM-004` | Advisory durable recording never implies formal lifecycle settlement or continuation. |
+| `AC-PRRSIM-005` | Workflow-managed automated procedure applies only with current formal authority. |
+| `AC-PRRSIM-006` | Advisory review never creates a governed change root implicitly. |
+| `AC-PRRSIM-007` | Missing advisory location produces blocked recording and preserves the complete invocation finding. |
+| `AC-PRRSIM-008` | Formal review cannot claim completion without a valid governed recording location. |
+| `AC-PRRSIM-009` | Existing-root isolated material findings receive required detailed, log, and resolution evidence without proposal settlement. |
+| `AC-PRRSIM-010` | The result asset contains one core and four closed conditional groups. |
+| `AC-PRRSIM-011` | Inapplicable groups are omitted and applicable blocked groups report explicit blockers. |
+| `AC-PRRSIM-012` | Assets never determine status, settlement, correction, or handoff policy. |
+| `AC-PRRSIM-013` | Specialized-gate semantic classification remains review-owned. |
+| `AC-PRRSIM-014` | No target-agent runtime is used for acceptance. |
+| `AC-PRRSIM-015` | Canonical, generated, packed, and installed resources retain required parity. |
+| `AC-PRRSIM-016` | Every semantic rule and literal dependency has one classified disposition. |
+
 ## Rollout and Rollback
 
 Implement the change atomically in canonical `skills/` source, update directly coupled specs or deterministic consumers, regenerate temporary adapter packages through existing commands, and prove mapped-resource parity before release. Do not hand-edit generated public adapter output.
@@ -296,9 +407,12 @@ Rollback reverts the canonical skill, references, coupled contract changes, and 
 | --- | --- |
 | A universal review rule is hidden behind a conditional reference. | Require a complete semantic rule-disposition ledger and independent semantic review; keep target, evidence, materiality, status, isolation, stops, and claims inline. |
 | A recorded isolated review accidentally settles workflow state. | Separate loading profile from execution authority and make formal settlement depend on current identity-bound workflow evidence. |
+| One recording trigger grants excessive side effects. | Use independent closed recording and automation modes plus an explicit side-effect matrix. |
+| An advisory finding has no authorized durable location. | Resolve only explicit or existing authorized locations, prohibit implicit governed-root creation, and report blocked recording with the complete finding. |
 | Specialized gates overlap with the core review method. | Give the reference only detailed exception, bootstrap, standing-artifact, and scope-budget procedure; retain ordinary vision and scope judgment inline. |
 | A specialized predicate produces a false negative or changes during review. | Define positive and forbidden evidence, reclassify on newly discovered evidence, apply all combined predicates, and block approval on unresolved ambiguity. |
 | Assets become policy owners. | Limit assets to labels and layout and reject policy explanations or status semantics in them. |
+| One result asset becomes ambiguous across profiles. | Define one core and four conditional groups, omit inapplicable groups, and emit explicit blockers for unavailable required data. |
 | Tests freeze incidental prose. | Classify literal dependencies separately and update test-only incidental assertions rather than preserving accidental wording. |
 | Relocation is reported as deletion. | Report common-path and total-package measurements separately and explain any package growth. |
 | A partial installation encourages invented fallback behavior. | Stop before dependent actions when a triggered resource is unavailable and preserve deterministic package parity checks. |
@@ -320,6 +434,9 @@ None. The specification should inventory exact current literal consumers and val
 | 2026-08-11 | Exclude target-agent runtime testing and permanent simplicity gates. | Static contract proof, package parity, and independent semantic review match the change boundary. |
 | 2026-08-11 | Treat percentage reduction as advisory. | Semantic preservation and single ownership outrank numeric optimization. |
 | 2026-08-11 | Define specialized-gate predicates from observable evidence. | Deterministic positive, negative, combined, late-trigger, and ambiguity behavior prevents conditional loading from hiding required review procedure. |
+| 2026-08-11 | Separate recording mode from automation mode. | Resource loading, durable recording, formal settlement, and automated procedure require different authority boundaries. |
+| 2026-08-11 | Prohibit implicit governed-root creation from advisory review. | A material finding creates a recording obligation but does not grant lifecycle-creation authority. |
+| 2026-08-11 | Give the result asset one core and four conditional groups. | Closed structural applicability preserves a single layout owner without moving policy into the asset. |
 
 ## Next Artifacts
 
