@@ -2,15 +2,15 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r2
 Review closeout: test-spec-review-r1
 
 - Reviews covered: `proposal-review-r2`, `test-spec-review-r1`
-- Findings resolved: 3
-- Unresolved findings: 1
-- Final result: proposal findings remain resolved; test-spec review requires command and milestone traceability corrections before implementation.
+- Findings resolved: 4
+- Unresolved findings: 0
+- Final result: proposal findings remain resolved; the test-spec now aligns rollback proof with its M3 command and evidence owners and awaits independent rereview.
 
 ## Resolution Overview
 
@@ -19,7 +19,7 @@ Review closeout: test-spec-review-r1
 | `VFSIM-PR1` | accepted | resolved | Added closed outcomes and deterministic target resolution. |
 | `VFSIM-PR2` | accepted | resolved | Separated loaded package from execution authority. |
 | `VFSIM-PR3` | accepted | resolved | Kept evidence semantics inline and final aggregation conditional. |
-| `VFSIM-TSR1` | accepted | open | Align rollback proof with its M3 adapter-distribution command owner. |
+| `VFSIM-TSR1` | accepted | resolved | Aligned rollback proof with its M3 adapter-distribution command owner. |
 
 ## Common Resolution Metadata
 
@@ -36,13 +36,13 @@ Review closeout: test-spec-review-r1
 
 Finding ID: VFSIM-TSR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Align the affected proof rows and T13 with M3, CMD6 adapter-distribution failure fixtures, CMD7 valid selected-package proof, and CMD9 lifecycle metadata.
 Rationale: A proof row cannot claim a later package boundary at M2, and implementation must not infer which command produces rollback evidence.
 Validation target: revised proof rows, T13, milestone proof map, boundary validation, lifecycle validation, and independent test-spec rereview.
-Validation evidence: `test-spec-review-r1` records the current inconsistency; revision evidence is pending.
+Validation evidence: revised `PRF-002`, `PRF-005`, `PRF-006`, and T13; `docs/changes/2026-08-11-verify-skill-simplification/evidence/test-spec-revision-r2.md`; boundary, review-artifact, change-metadata, artifact-lifecycle, and diff validation.
 
 ### proposal-review-r2
 
@@ -98,5 +98,5 @@ Validation evidence: expanded universal ownership section, narrowed conditional-
 - [x] Every rejected finding has rationale or none exist.
 - [x] Every deferred finding has follow-up or none exist.
 - [x] Every `needs-decision` finding is resolved or none exist.
-- [ ] Final revision validation evidence is recorded for VFSIM-TSR1.
+- [x] Final revision validation evidence is recorded for VFSIM-TSR1.
 - [x] Closeout status is correct.
