@@ -1,0 +1,47 @@
+schema_version: 1
+review_id: code-review-m1-r1
+review_stage: code-review
+review_target: commit:27942a64
+base_revision: 9b0cd7d4
+head_revision: 27942a64
+native_review_status: changes-requested
+review_gate_outcome: pause-for-resolution
+independence_level: L1
+author_context_id: root-implement-m1
+reviewer_context_id: root-code-review-m1-r1-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: standard
+risk_tier_triggers: [semantic-ledger, literal-ledger, negative-fixtures]
+governing_artifacts:
+  - specs/test-spec-review-skill-simplification.md
+  - docs/plans/2026-08-11-test-spec-review-skill-simplification.md
+  - specs/test-spec-review-skill-simplification.test.md
+formal_criteria: [code-review-v1, boundary-first-v1, requirement-fidelity-v1]
+initial_packet_inventory:
+  - {path: commit:27942a64.diff, sha256: c826ad54dbdda95cb3a918a69834cb9180a9d876d0fae7549a6ed47320698b59}
+  - {path: specs/test-spec-review-skill-simplification.md, sha256: e5d0740e108e60e32c9369a66775cf863a31c0dc2e6ad57e3c0ead2c7d501d3a}
+  - {path: docs/plans/2026-08-11-test-spec-review-skill-simplification.md, sha256: 2d559ef9c128036a1b00fea2de58b1e6660a18b929e0f7068f8e92c85c1c2ee2}
+  - {path: specs/test-spec-review-skill-simplification.test.md, sha256: 2d74ce6bdd8fc25fd98c14831f8c583439506a69dfa6449786dc679e5b991fb0}
+  - {path: docs/changes/2026-08-11-test-spec-review-skill-simplification/test-spec-review-rule-disposition.yaml, sha256: f951d11c1c615efe27a9a3dc2f5f8ba9d359783d30ee0353fe10da41713bd33a}
+  - {path: docs/changes/2026-08-11-test-spec-review-skill-simplification/test-spec-review-literal-compatibility.yaml, sha256: 5a994fc1bbd0b1c5bce4d03cef25ab698590cb20c15572b722ce0bd16350ca0e}
+  - {path: docs/changes/2026-08-11-test-spec-review-skill-simplification/fixtures/scenario-contracts.yaml, sha256: 5de703795cd96ed6d0b690894097f7d0af1090532d0cde091893a2b8c59e9fda}
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity: {applicability: applicable, reason: M1 directly implements R25-R30 semantic preservation and compatibility evidence.}
+second_review: {required: false, satisfied: false, result: not-required}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+risk_map:
+  affected_behavior: preservation ownership before the test-spec-review package is simplified
+  highest_impact_failure_modes: a universal review rule disappears, a literal consumer is misclassified, an unknown closed value passes, or canonical prose moves before ownership is closed
+  changed_boundaries: [BND-INPUT-001, BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001]
+  evidence_expected: complete semantic and literal inventories, exact scenarios, fail-closed negatives, baseline hashes, and an unchanged canonical package
+  direct_inspection_areas: [complete baseline skill, rule ledger, literal ledger, static fixtures, exact validator consumers, baseline measurement]
+  intentionally_out_of_scope: [M2 skill rewrite, M3 package parity, target-agent execution, final verification]
+  applicable_risk_classes: [correctness, compatibility, fail-closed-validation, requirement-fidelity]
+  non_applicable_risk_classes: [credentials, network, database-migration, publication]
+  falsifiable_questions:
+    - Does every behaviorally significant baseline section have one semantic disposition?
+    - Does every known exact-string consumer have a classified literal treatment?
+    - Do unknown disposition and classification values fail before dependent checks?
+    - Did M1 leave the canonical skill package unchanged?
