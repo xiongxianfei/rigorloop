@@ -15,7 +15,7 @@
 | Input | Path | Artifact ID | Review evidence |
 | --- | --- | --- | --- |
 | feature spec | `specs/verify-skill-simplification.md` | `spec` | `spec-review-r1`; `docs/changes/2026-08-11-verify-skill-simplification/reviews/spec-review-r1.md` |
-| execution plan | `docs/plans/2026-08-11-verify-skill-simplification.md` | `plan` | `plan-review-r1`; `docs/changes/2026-08-11-verify-skill-simplification/reviews/plan-review-r1.md` |
+| execution plan | `docs/plans/2026-08-11-verify-skill-simplification.md` | `plan` | `plan-review-r2`; `docs/changes/2026-08-11-verify-skill-simplification/reviews/plan-review-r2.md` |
 | architecture assessment | `docs/changes/2026-08-11-verify-skill-simplification/architecture-assessment.md` | not applicable | `architecture-not-required`; no architecture artifact entry or review required |
 
 ## Testing strategy
