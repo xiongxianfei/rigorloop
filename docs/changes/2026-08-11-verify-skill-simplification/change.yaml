@@ -1,0 +1,37 @@
+change_id: 2026-08-11-verify-skill-simplification
+title: Verify Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-11-verify-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-11-verify-skill-simplification/evidence/proposal-authoring.md
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-11-verify-skill-simplification/evidence/proposal-authoring.md
+workflow: {}
+artifacts:
+  proposal: docs/proposals/2026-08-11-verify-skill-simplification.md
+requirements:
+  - Reduce the common-path size and repetition of the published verify skill without weakening verification rigor or branch-ready authority.
+  - Preserve direct verification, workflow-managed final verification, lifecycle, review, validation, release, evidence, stop, claim, and handoff semantics.
+  - Keep mapped resources and generated adapter packages deterministic and self-contained.
+tests:
+  - Review the complete verify skill package semantically against its governing contracts.
+  - Validate canonical, generated, packed, and temporary installed package resources without executing a target agent.
+validation: []
+changed_files:
+  - docs/changes/2026-08-11-verify-skill-simplification/change.yaml
+  - docs/changes/2026-08-11-verify-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-11-verify-skill-simplification.md
+review:
+  status: pending
+  unresolved_items: 0
