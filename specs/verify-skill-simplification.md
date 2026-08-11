@@ -148,31 +148,31 @@ R33. Rollout and rollback MUST operate on one complete package revision with eve
 ## Boundary model
 
 Boundary model version: boundary-first-v1
-Boundary model scope: R1-R33
+Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R33
 
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |
-| `input-domain` | applicable | R4-R9 | BND-INPUT-001 | - |
-| `state-lifecycle` | applicable | R7-R12, R16, R32-R33 | BND-STATE-001 | - |
-| `identity-authority` | applicable | R6-R12, R14, R18-R19, R22 | BND-AUTH-001 | - |
-| `composition-path` | applicable | R1-R3, R13-R20, R30-R31 | BND-COMPOSE-001 | - |
-| `temporal-retry` | applicable | R7-R8, R16-R17, R33 | BND-TEMPORAL-001 | - |
-| `failure-recovery` | applicable | R4, R8, R16, R24-R26, R28-R29, R32-R33 | BND-RECOVERY-001 | - |
-| `compatibility-migration` | applicable | R23-R26, R30-R33 | BND-COMPAT-001 | - |
-| `external-environment` | applicable | R16, R27, R29-R30, R33 | BND-ENV-001 | - |
+| input-domain | applicable | R4, R5, R6, R7, R8, R9 | BND-INPUT-001 | - |
+| state-lifecycle | applicable | R7, R8, R9, R10, R11, R12, R16, R32, R33 | BND-STATE-001 | - |
+| identity-authority | applicable | R6, R7, R8, R9, R10, R11, R12, R14, R18, R19, R22 | BND-AUTH-001 | - |
+| composition-path | applicable | R1, R2, R3, R13, R14, R15, R16, R17, R18, R19, R20, R30, R31 | BND-COMPOSE-001 | - |
+| temporal-retry | applicable | R7, R8, R16, R17, R33 | BND-TEMPORAL-001 | - |
+| failure-recovery | applicable | R4, R8, R16, R24, R25, R26, R28, R29, R32, R33 | BND-RECOVERY-001 | - |
+| compatibility-migration | applicable | R23, R24, R25, R26, R30, R31, R32, R33 | BND-COMPAT-001 | - |
+| external-environment | applicable | R16, R27, R29, R30, R33 | BND-ENV-001 | - |
 
 ## Boundary definitions
 
 | Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |
 | --- | --- | --- | --- | --- | --- | --- |
-| BND-INPUT-001 | `input-domain` | R4-R9 | three valid outcomes; exact, missing, unknown, ambiguous, contradictory, cross-target identities; release flag true or false | one outcome and one permitted target identity govern a verdict | valid scoped/final classification or fail-closed stop | R4 |
-| BND-STATE-001 | `state-lifecycle` | R7-R12, R16, R32-R33 | isolated/governed-final; current/stale authority; complete/missing resource; assessed/unassessed architecture; complete/partial rollout | resource availability never grants execution authority; only owners write their state | permitted mode-specific completion or stop before dependent work | R10 |
-| BND-AUTH-001 | `identity-authority` | R6-R12, R14, R18-R19, R22 | direct caller, governed workflow, verify, workflow, and pr authority; same/mismatched identity | verify owns branch-ready only; workflow and pr retain their existing ownership | bounded verdict and handoff, or authority stop | R12 |
-| BND-COMPOSE-001 | `composition-path` | R1-R3, R13-R20, R30-R31 | VP0, VP0B, VP1, VP1B; inline item semantics; conditional final aggregation; canonical through installed packages | every rule and resource has one owner; scoped paths remain self-sufficient | exact load assembly and behavior-preserving result | R13 |
-| BND-TEMPORAL-001 | `temporal-retry` | R7-R8, R16-R17, R33 | current/stale evidence; retry after missing resource; pre/post package revision | stale evidence never supports a current claim; retry reclassifies from current evidence | current verdict or explicit stale/package blocker | R17 |
-| BND-RECOVERY-001 | `failure-recovery` | R4, R8, R16, R24-R26, R28-R29, R32-R33 | unknown vocabulary, unresolved target, unreadable reference, unsafe reduction, ambiguous architecture, partial rollout | failures stop at the owning boundary without invented procedure | correction at owner, atomic rollback, or explicit blocker | R16 |
-| BND-COMPAT-001 | `compatibility-migration` | R23-R26, R30-R33 | normative/parser/incidental/obsolete literal; prior/current package; rollout/rollback | behaviorally significant rules never disappear; consumers migrate atomically | compatible current package or complete prior-package rollback | R26 |
-| BND-ENV-001 | `external-environment` | R16, R27, R29-R30, R33 | canonical/generated/packed/installed filesystems; supported adapters; runtime present/absent | acceptance is deterministic and filesystem/package based, never model-runtime based | parity proof, package-integrity failure, or safe omission of runtime proof | R29 |
+| BND-INPUT-001 | input-domain | R4, R5, R6, R7, R8, R9 | three valid outcomes; exact, missing, unknown, ambiguous, contradictory, cross-target identities; release flag true or false | one outcome and one permitted target identity govern a verdict | valid scoped/final classification or fail-closed stop | R4 |
+| BND-STATE-001 | state-lifecycle | R7, R8, R9, R10, R11, R12, R16, R32, R33 | isolated/governed-final; current/stale authority; complete/missing resource; assessed/unassessed architecture; complete/partial rollout | resource availability never grants execution authority; only owners write their state | permitted mode-specific completion or stop before dependent work | R10 |
+| BND-AUTH-001 | identity-authority | R6, R7, R8, R9, R10, R11, R12, R14, R18, R19, R22 | direct caller, governed workflow, verify, workflow, and pr authority; same/mismatched identity | verify owns branch-ready only; workflow and pr retain their existing ownership | bounded verdict and handoff, or authority stop | R12 |
+| BND-COMPOSE-001 | composition-path | R1, R2, R3, R13, R14, R15, R16, R17, R18, R19, R20, R30, R31 | VP0, VP0B, VP1, VP1B; inline item semantics; conditional final aggregation; canonical through installed packages | every rule and resource has one owner; scoped paths remain self-sufficient | exact load assembly and behavior-preserving result | R13 |
+| BND-TEMPORAL-001 | temporal-retry | R7, R8, R16, R17, R33 | current/stale evidence; retry after missing resource; pre/post package revision | stale evidence never supports a current claim; retry reclassifies from current evidence | current verdict or explicit stale/package blocker | R17 |
+| BND-RECOVERY-001 | failure-recovery | R4, R8, R16, R24, R25, R26, R28, R29, R32, R33 | unknown vocabulary, unresolved target, unreadable reference, unsafe reduction, ambiguous architecture, partial rollout | failures stop at the owning boundary without invented procedure | correction at owner, atomic rollback, or explicit blocker | R16 |
+| BND-COMPAT-001 | compatibility-migration | R23, R24, R25, R26, R30, R31, R32, R33 | normative/parser/incidental/obsolete literal; prior/current package; rollout/rollback | behaviorally significant rules never disappear; consumers migrate atomically | compatible current package or complete prior-package rollback | R26 |
+| BND-ENV-001 | external-environment | R16, R27, R29, R30, R33 | canonical/generated/packed/installed filesystems; supported adapters; runtime present/absent | acceptance is deterministic and filesystem/package based, never model-runtime based | parity proof, package-integrity failure, or safe omission of runtime proof | R29 |
 
 ## Selected interactions
 
