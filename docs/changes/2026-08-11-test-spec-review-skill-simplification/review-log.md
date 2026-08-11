@@ -4,6 +4,12 @@
 
 This ledger records formal lifecycle reviews for the test-spec-review skill simplification change.
 
+## Clean review receipts
+
+| Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
+| --- | --- | --- | --- | --- | --- | ---: | --- |
+| `proposal-review-r2` | `proposal-review` | `r2` | `docs/proposals/2026-08-11-test-spec-review-skill-simplification.md` at `5e3416ac` | `reviews/proposal-review-r2.md` | `approved` | 0 | `recorded` |
+
 ## Detailed review entries
 
 ### Review entry
