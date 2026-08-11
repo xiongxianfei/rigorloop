@@ -13,7 +13,7 @@ Review closeout: code-review-m3-r1
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-m3-r1`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Current result: all recorded findings are resolved; M3 correction awaits independent rereview.
+- Current result: all recorded findings are resolved; same-stage rereviews closed both implementation findings.
 
 ## Resolution Overview
 
