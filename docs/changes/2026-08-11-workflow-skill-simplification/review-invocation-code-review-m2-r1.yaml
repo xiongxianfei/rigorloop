@@ -1,0 +1,63 @@
+schema_version: 1
+review_id: code-review-m2-r1
+review_stage: code-review
+review_target: commit b755f418
+base_revision: 542e74e9
+head_revision: b755f418
+native_review_status: changes-requested
+review_gate_outcome: pause
+independence_level: L0
+author_context_id: root-implement-m2
+reviewer_context_id: root-code-review-m2-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - universal-policy-extraction
+  - conditional-reference-ownership
+  - automation-bootstrap-authority
+  - packaged-resource-failure-boundary
+  - exact-literal-consumer-migration
+governing_artifacts:
+  - specs/workflow-skill-simplification.md
+  - docs/plans/2026-08-11-workflow-skill-simplification.md
+  - specs/workflow-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - published-skill-semantic-review
+  - boundary-first-v1
+  - requirement-fidelity-v1
+initial_packet_inventory:
+  - path: specs/workflow-skill-simplification.md
+    sha256: 168b0842fc49739be9cb4b7eb322b00e66884dd26eb8a6d6b63bae90481bc977
+  - path: docs/plans/2026-08-11-workflow-skill-simplification.md
+    sha256: f8d463eacc060cb2a714d22225c17bc5e53354211765174aad5866f2b2fb50be
+  - path: specs/workflow-skill-simplification.test.md
+    sha256: 15eedb03de816793c17985d46d648db15039a799457faebe61db21219241ec0e
+  - path: skills/workflow/SKILL.md
+    sha256: 2f9e8da23f312618614166db6ea84ad944b10390f6e72e065bf83b99ba54f745
+  - path: skills/workflow/references/governed-lifecycle-routing.md
+    sha256: e7e533ecc3ab1e2b38c0b2b01d498cc6bf87035b613a1886b7002bb985e1aafb
+  - path: skills/workflow/references/bounded-workflow-automation.md
+    sha256: d5a2f734c0141013470bb39b91e4a0dc726ce1d6f2fdb1669d46b3e092bc992e
+  - path: skills/workflow/references/workflow-guide-authoring.md
+    sha256: c42d12d4d4d6a66bf123df6b6994b35c27cb46d16504d8fc74e573e9356ae82c
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - universal common-path completeness and claim safety
+  - exact predicate and seven-assembly classification
+  - non-circular bootstrap and state-free commands
+  - exclusive lifecycle, automation, and guide ownership
+  - fail-safe resource loading and package contradiction behavior
+  - semantic and exact-literal preservation
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded

@@ -67,7 +67,7 @@ Read only what the routing decision needs:
 
 Resolve path and state discovery in this order: an exact user-provided path or change ID; the active handoff or plan identity; `change.yaml` and stage-owned evidence; the `docs/workflows.md` artifact-location map; portable defaults; then targeted discovery. A higher-priority source wins. If a conflict is discovered, do not silently blend sources.
 
-Unknown artifact types are blockers. If a project guide is silent, use a safe owning-skill portable default. If none exists, request an explicit path or workflow-map update rather than guessing from naming, prior chat, or a learn session.
+Unknown artifact types and unknown lifecycle stages are blockers. If a project guide is silent, use a safe owning-skill portable default. If none exists, request an explicit path or workflow-map update rather than guessing from naming, prior chat, or a learn session.
 
 Use bounded evidence before broad reads, but do not under-read. Expand when evidence is missing, stale, contradictory, or insufficient. Read a complete file when the whole file is the review target or surrounding context can change the conclusion.
 
@@ -100,6 +100,8 @@ Use exactly these assemblies:
 
 Active automation and workflow-guide authoring are mutually exclusive in one invocation. Stop if guide authoring is requested while automation is active or resumable. Active or resumable automation without a valid governed identity also stops.
 
+Every predicate combination must match exactly one assembly row. Any other combination, or any combination matching more than one row, stops as invalid invocation context before resource-dependent interpretation or mutation.
+
 ## Resource map
 
 - READ `references/governed-lifecycle-routing.md` when current governed state must be interpreted, audited, resumed, settled, or mutated; after a successful automation bootstrap, load it before persisting automation state.
@@ -108,7 +110,7 @@ Active automation and workflow-guide authoring are mutually exclusive in one inv
 - READ `references/boundary-first-method-v1.md` when an approved boundary, interaction, or proof ID is missing, stale, unknown, ambiguous, conflicting, or insufficient for routing.
 - COPY `assets/workflows-skeleton.md` only with the guide-authoring reference when creating a new project-local `docs/workflows.md` or fully rewriting a stale workflow guide. Do not emit unfilled placeholders.
 
-When a trigger is false, do not load its resource. When a required reference or asset is missing, unreadable, contradictory, or from a mixed package version, stop before the governed action. A contradiction among packaged resources is a package defect. The common path is intentionally insufficient to reconstruct conditional procedure: stop rather than invent, recall, or partially reconstruct it.
+When a trigger is false, do not load its resource. After classification and before resource-dependent interpretation or action, confirm every required reference and asset is present and readable. When a required resource is missing, unreadable, contradictory, or from a mixed package version, stop before the governed action. A contradiction among packaged resources is a package defect. The common path is intentionally insufficient to reconstruct conditional procedure: stop rather than invent, recall, or partially reconstruct it.
 
 ## Boundary-first method
 
@@ -129,7 +131,7 @@ Capability state controls formal adoption: `pending` never claims active adoptio
 
 Route the method, locate governing artifacts, and stop on missing applicable ownership. For an adopting change, identify the approved feature boundary record and proof map before routing downstream. Stop routing and name the owning upstream stage when ownership is absent or an identity is invalid.
 
-## Workflow Categories
+## Lifecycle overview
 
 - Standing artifacts: project vision and constitution.
 - Living references: project map and workflow guidance.

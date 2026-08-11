@@ -15,11 +15,12 @@ Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m2-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`
-- Findings resolved: 9
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`
+- Findings resolved: 12
 - Unresolved findings: 0
-- Current result: code-review M1 R1 closes the preservation-inventory milestone with no material findings.
+- Current result: WFSIM-CR1 through WFSIM-CR3 are corrected and validated; code-review M2 R2 is required before milestone closeout.
 
 ## Resolution Overview
 
@@ -34,6 +35,9 @@ Review closeout: code-review-m1-r1
 | WFSIM-AR1 | accepted | resolved | Canonical Architecture Decisions now records the update-specific no-ADR determination. |
 | WFSIM-TR1 | accepted | resolved | CMD1 now executes workflow-specific deterministic ledger and scenario proof. |
 | WFSIM-TR2 | accepted | resolved | MP1 and MP2 now define rationale, environment, ownership, pass, and failure boundaries. |
+| WFSIM-CR1 | accepted | resolved | Explicit fail-closed universal dispatcher properties and focused proof are present. |
+| WFSIM-CR2 | accepted | resolved | Automation-reference loading is in the exact bootstrap order and proof. |
+| WFSIM-CR3 | accepted | resolved | All rule destinations resolve and literal classifications follow approved authority. |
 
 ## Finding Details
 
@@ -200,6 +204,59 @@ Safe resolution path: Revise CMD1 and rereview.
 Validation target: test-spec-review-r2
 Validation evidence: `docs/changes/2026-08-11-workflow-skill-simplification/evidence/test-spec-revision-r1.md`; independent test-spec-review R2 pending
 Implementation evidence: not applicable at test-spec stage
+needs-decision rationale: none
+
+### code-review-m2-r1
+
+#### WFSIM-CR1
+
+Finding ID: WFSIM-CR1
+Disposition: accepted
+Status: resolved
+Owner: implementation
+Owning stage: implement
+Decision owner: none
+Decision needed: none
+Chosen action: Add the missing universal fail-closed clauses and direct tests.
+Rationale: R2, R5, and R16 require these properties inline.
+Safe resolution path: Make the bounded `SKILL.md` and test updates declared by the reviewer, validate, and rereview M2.
+Validation target: code-review-m2-r2
+Validation evidence: focused workflow tests; complete skill-validator and build-skill suites; resolved-destination and closed-vocabulary change-local proof
+Implementation evidence: `skills/workflow/SKILL.md`; `scripts/test-skill-validator.py`
+needs-decision rationale: none
+
+#### WFSIM-CR2
+
+Finding ID: WFSIM-CR2
+Disposition: accepted
+Status: resolved
+Owner: implementation
+Owning stage: implement
+Decision owner: none
+Decision needed: none
+Chosen action: Add automation-reference loading to the exact bootstrap list and order test.
+Rationale: R7 defines the complete ordered bootstrap contract.
+Safe resolution path: Apply the mechanical reference and test correction, validate, and rereview M2.
+Validation target: code-review-m2-r2
+Validation evidence: focused workflow tests and complete skill-validator suite
+Implementation evidence: `skills/workflow/references/bounded-workflow-automation.md`; `scripts/test-skill-validator.py`
+needs-decision rationale: none
+
+#### WFSIM-CR3
+
+Finding ID: WFSIM-CR3
+Disposition: accepted
+Status: resolved
+Owner: implementation
+Owning stage: implement
+Decision owner: none
+Decision needed: none
+Chosen action: Resolve every destination against the final package and correct literal classifications from approved authority.
+Rationale: Preservation evidence must describe the implementation that will be accepted.
+Safe resolution path: Update both ledgers and deterministic change-local proof, validate, and rereview M2.
+Validation target: code-review-m2-r2
+Validation evidence: `rules=25 literals=13 scenarios=16 destinations=resolved unknown_values=rejected`
+Implementation evidence: `workflow-rule-disposition.yaml`; `workflow-literal-compatibility.yaml`; migrated incidental test assertion
 needs-decision rationale: none
 
 ### test-spec-review-r2

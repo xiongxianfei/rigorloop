@@ -61,15 +61,26 @@ LF-normalized canonical file counts after M2:
 
 | Resource | Lines | Words | UTF-8 bytes |
 | --- | ---: | ---: | ---: |
-| `SKILL.md` | 259 | 2,577 | 19,111 |
+| `SKILL.md` | 261 | 2,627 | 19,500 |
 | governed reference | 57 | 568 | 4,601 |
-| automation reference | 64 | 715 | 5,618 |
+| automation reference | 65 | 724 | 5,689 |
 | guide reference | 44 | 409 | 3,046 |
 | boundary reference | 110 | 857 | 6,346 |
 | guide skeleton | 234 | 1,236 | 9,551 |
-| package total | 768 | 6,362 | 48,273 |
+| package total | 771 | 6,421 | 48,733 |
 
-Compared with the M1 baseline, `SKILL.md` fell from 4,333 to 2,577 words (40.5 percent) and from 32,074 to 19,111 bytes (40.4 percent). Total package content fell from 6,426 to 6,362 words (1.0 percent), while bytes rose from 47,971 to 48,273 (0.6 percent). The small byte increase is the explicit trigger and ownership structure needed for progressive disclosure, not hidden deletion. M3 will record exact assembly-specific measurements and adapter/archive/install parity.
+Compared with the M1 baseline, `SKILL.md` fell from 4,333 to 2,627 words (39.4 percent) and from 32,074 to 19,500 bytes (39.2 percent). Total package content fell from 6,426 to 6,421 words (0.1 percent), while bytes rose from 47,971 to 48,733 (1.6 percent). The small byte increase is the explicit trigger and ownership structure needed for progressive disclosure, not hidden deletion. M3 will record exact assembly-specific measurements and adapter/archive/install parity.
+
+## Review-resolution evidence
+
+Code review M2 R1 recorded WFSIM-CR1 through WFSIM-CR3 before correction. The accepted correction:
+
+- made unknown stages, every unmatched or multiply matched predicate combination, and post-classification resource confirmation explicit inline;
+- added automation-reference loading to the complete ordered bootstrap procedure and test;
+- resolved all 25 semantic-rule destinations against actual final headings;
+- reclassified the exact `Quick operating guide` heading from its approved R2-R2a authority and migrated the incidental `Workflow Categories` assertion to `Lifecycle overview`.
+
+The final change-local proof reported `rules=25 literals=13 scenarios=16 destinations=resolved unknown_values=rejected`; the full permanent validation commands remained green.
 
 ## Unchanged surfaces
 

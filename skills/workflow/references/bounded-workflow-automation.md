@@ -21,11 +21,12 @@ Direct review invocations do not activate, resume, or advance automation. Manual
 For a new target command without an existing governed record, use this exact order:
 
 1. Recognize the explicit target command and enter transient bootstrap state.
-2. Resolve or create governed change identity under existing workflow authority.
-3. Validate the governed record and exact change identity.
-4. Reclassify as governed context.
-5. Load governed lifecycle procedure.
-6. Only then persist authorization, target, occurrence, and run state.
+2. Load bounded workflow automation procedure for bootstrap semantics.
+3. Resolve or create governed change identity under existing workflow authority.
+4. Validate the governed record and exact change identity.
+5. Reclassify as governed context.
+6. Load governed lifecycle procedure.
+7. Only then persist authorization, target, occurrence, and run state.
 
 Bootstrap is transient and is never persisted as an armed run. If identity creation or validation fails, stop without partial automation state. Active or resumable automation without a valid governed identity is invalid.
 

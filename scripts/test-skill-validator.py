@@ -3791,7 +3791,7 @@ Use the inputs somehow and produce a useful result.
         verify = (ROOT / "skills" / "verify" / "SKILL.md").read_text(encoding="utf-8")
 
         workflow_terms = [
-            "## Workflow Categories",
+            "## Lifecycle overview",
             "Standing artifacts",
             "Living references",
             "Workflow infrastructure",
@@ -9430,7 +9430,9 @@ class WorkflowSkillSimplificationContractTests(unittest.TestCase):
     def test_workflow_simplification_keeps_universal_stops_inline(self) -> None:
         for phrase in (
             "Conversational wording alone does not establish",
-            "Unknown artifact types are blockers",
+            "Unknown artifact types and unknown lifecycle stages are blockers",
+            "Every predicate combination must match exactly one assembly row",
+            "After classification and before resource-dependent interpretation or action",
             "contradiction among packaged resources",
             "stop rather than invent, recall, or partially reconstruct",
             "Active automation and workflow-guide authoring",
@@ -9452,6 +9454,7 @@ class WorkflowSkillSimplificationContractTests(unittest.TestCase):
         automation = (self.root / "references" / "bounded-workflow-automation.md").read_text(encoding="utf-8")
         bootstrap_steps = (
             "Recognize the explicit target command",
+            "Load bounded workflow automation procedure",
             "Resolve or create governed change identity",
             "Validate the governed record",
             "Reclassify as governed",
