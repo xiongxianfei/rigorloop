@@ -1,0 +1,39 @@
+schema_version: 1
+review_id: architecture-review-r1
+review_stage: architecture-review
+review_target: docs/architecture/system/architecture.md
+base_revision: 28c8cc8f
+head_revision: working-tree
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L0
+author_context_id: root-architecture-authoring
+reviewer_context_id: root-architecture-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - canonical-architecture-package-ownership-update
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-11-workflow-skill-simplification.md
+  - specs/workflow-skill-simplification.md
+  - docs/architecture/system/architecture.md
+  - docs/changes/2026-08-11-workflow-skill-simplification/evidence/architecture-authoring.md
+formal_criteria:
+  - architecture-review-v1
+initial_packet_inventory:
+  - path: specs/workflow-skill-simplification.md
+    sha256: 168b0842fc49739be9cb4b7eb322b00e66884dd26eb8a6d6b63bae90481bc977
+  - path: docs/architecture/system/architecture.md
+    sha256: d2527206249b19af13ba4ce9ba2ae4241799a783fba8a703d4dde250fd1bce03
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/evidence/architecture-authoring.md
+    sha256: 717f901f4500255d7e5ce3efe1e2108201aaf48f6ef7501c3ccdc0add303c15f
+prompt_template_version: architecture-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: false
+review_focus:
+  - workflow package ownership and dependency direction
+  - bootstrap and stateless command flows
+  - required-resource failure behavior
+  - package deployment parity
+  - ADR and diagram impact

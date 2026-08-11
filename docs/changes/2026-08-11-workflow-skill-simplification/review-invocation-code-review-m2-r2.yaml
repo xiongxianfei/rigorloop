@@ -1,0 +1,65 @@
+schema_version: 1
+review_id: code-review-m2-r2
+review_stage: code-review
+review_target: M2 commits b755f418, 06e40055, and 05059be1
+base_revision: 542e74e9
+head_revision: 05059be1
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-review-resolution-m2
+reviewer_context_id: root-code-review-m2-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - rereview-three-material-findings
+  - universal-policy-extraction
+  - automation-bootstrap-authority
+  - preservation-ledger-correction
+governing_artifacts:
+  - specs/workflow-skill-simplification.md
+  - docs/plans/2026-08-11-workflow-skill-simplification.md
+  - specs/workflow-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - published-skill-semantic-review
+  - boundary-first-v1
+  - requirement-fidelity-v1
+initial_packet_inventory:
+  - path: specs/workflow-skill-simplification.md
+    sha256: 168b0842fc49739be9cb4b7eb322b00e66884dd26eb8a6d6b63bae90481bc977
+  - path: docs/plans/2026-08-11-workflow-skill-simplification.md
+    sha256: f8d463eacc060cb2a714d22225c17bc5e53354211765174aad5866f2b2fb50be
+  - path: specs/workflow-skill-simplification.test.md
+    sha256: 15eedb03de816793c17985d46d648db15039a799457faebe61db21219241ec0e
+  - path: skills/workflow/SKILL.md
+    sha256: 593db7cd930f10cbf80c058db3bcb0e28145b9267d80de4013370ae5bf51f022
+  - path: skills/workflow/references/governed-lifecycle-routing.md
+    sha256: e7e533ecc3ab1e2b38c0b2b01d498cc6bf87035b613a1886b7002bb985e1aafb
+  - path: skills/workflow/references/bounded-workflow-automation.md
+    sha256: da189e873228d2258ed3756fc83381c43d31f07bb0d2c86bad77b62ab439fbc0
+  - path: skills/workflow/references/workflow-guide-authoring.md
+    sha256: c42d12d4d4d6a66bf123df6b6994b35c27cb46d16504d8fc74e573e9356ae82c
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/workflow-rule-disposition.yaml
+    sha256: 09135ec7857b77c4b5bda22d3c6433cbae5a5626a871ba1216ad08dc80f48f69
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/workflow-literal-compatibility.yaml
+    sha256: 576ec701b8ecf92bb07b532ddadfc0fe990c1ebb09efcc6d5710cf2b13752cbc
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - complete universal dispatcher requirements
+  - exact ordered bootstrap authority
+  - final heading destination integrity
+  - literal authority classification
+  - regression and unchanged lifecycle semantics
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded

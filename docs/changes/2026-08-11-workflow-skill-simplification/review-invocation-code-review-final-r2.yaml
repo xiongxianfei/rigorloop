@@ -1,0 +1,49 @@
+schema_version: 1
+review_id: code-review-final-r2
+review_stage: code-review
+review_target: final support correction through 0c60034b
+base_revision: 325da922c5b3980a082fa8b5b1f2c3357bc5c4c3
+head_revision: 0c60034baa81369a041c07bc7d84fb2a40a3118b
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-ci-maintenance-deferral
+reviewer_context_id: root-code-review-final-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - final-verify-routing-correction
+  - owner-approved-evidence-deferrals
+  - durable-rationale-refresh
+governing_artifacts:
+  - specs/workflow-skill-simplification.md
+  - docs/plans/2026-08-11-workflow-skill-simplification.md
+  - specs/workflow-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - requirement-fidelity-v1
+initial_packet_inventory:
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/change.yaml
+    sha256: 8d19123de1b4d4441cf10b9b2b1a38fd93d721e5feda0ec04d262baf1e6f3825
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/evidence/ci-selector-deferral.md
+    sha256: b78cbb5c98ee957a9d938b6a556e18e759a56837c30074f521db55cbc072c7f9
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/explain-change.md
+    sha256: fe86c5a15d63b795dbd0ecd6542914593904bec336a3a811fdf9c07e63af7054
+prompt_template_version: code-review-v1
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+review_focus:
+  - exact-path deferral completeness
+  - preservation of mandatory direct proof
+  - absence of generic selector bypass
+  - rationale and lifecycle currency
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded

@@ -1,0 +1,20 @@
+{
+  "scenarios": [
+    {"scenario":"wp0-generic-routing","required":["SKILL.md only unless boundary independently triggers","no conditional workflow procedure"],"forbidden":["governed reference","automation reference","guide reference","state mutation"]},
+    {"scenario":"wp1-governed","required":["SKILL.md","governed reference","read-only remains read-only when applicable"],"forbidden":["automation reference","guide reference without guide trigger"]},
+    {"scenario":"wp2-governed-automated","required":["SKILL.md","governed reference","automation reference","matching durable identity"],"forbidden":["automation-owned lifecycle transition"]},
+    {"scenario":"wp3-guide-authoring","required":["SKILL.md","guide reference","workflow skeleton"],"forbidden":["governed reference without governed evidence","automation reference"]},
+    {"scenario":"wp4-governed-guide-authoring","required":["SKILL.md","governed reference","guide reference","workflow skeleton"],"forbidden":["automation reference","active automation"]},
+    {"scenario":"wpb-automation-bootstrap","required":["automation reference first","governed identity validation","reclassification","governed reference before persistence"],"forbidden":["armed state before governed validation","persisted bootstrap state"]},
+    {"scenario":"wps-stateless-automation-command","required":["SKILL.md","automation reference","no-active-run","no state creation"],"forbidden":["governed reference","armed state"]},
+    {"scenario":"conversation-not-armed","required":["ordinary classification","no durable authorization inferred"],"forbidden":["automation state create","resume","cancel","rebind"]},
+    {"scenario":"active-automation-guide-stop","required":["explicit stop","separate later guide invocation"],"forbidden":["guide write","combined active automation and authoring"]},
+    {"scenario":"active-without-governed-stop","required":["explicit stop before action"],"forbidden":["resume","cancel","mutation","fallback identity"]},
+    {"scenario":"stale-or-mismatched-authority","required":["identity-bound stop"],"forbidden":["rebind","resume","cancel","mutation"]},
+    {"scenario":"missing-or-unreadable-resource","required":["stop before dependent interpretation or action"],"forbidden":["remembered reconstruction","partial procedure"]},
+    {"scenario":"contradictory-or-mixed-resource","required":["package-defect stop"],"forbidden":["local precedence guess","mixed procedure continuation"]},
+    {"scenario":"governed-read-only","required":["governed reference","authoritative state interpretation"],"forbidden":["mutation authority inferred"]},
+    {"scenario":"milestone-and-review-routing","required":["governed transition owner","clean review evidence before promotion"],"forbidden":["automation-defined stage order","premature milestone close"]},
+    {"scenario":"final-holistic-review","required":["complete-diff review before explain-change or verify"],"forbidden":["milestone-local review treated as final"]}
+  ]
+}

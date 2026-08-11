@@ -1,0 +1,51 @@
+schema_version: 1
+review_id: code-review-final-r3
+review_stage: code-review
+review_target: verify-triggered review-disposition compatibility correction
+base_revision: 06c8f994dd2d12e26f0c6f055c3957c3a0c85603
+head_revision: c8879dd8ba19a49d29e54b87da81d5bc953bbbbe
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-implement-verify-correction
+reviewer_context_id: root-code-review-final-r3-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - verify-triggered-contract-compatibility-correction
+  - canonical-skill-prose-change
+  - change-local-measurement-refresh
+governing_artifacts:
+  - specs/workflow-skill-simplification.md
+  - docs/plans/2026-08-11-workflow-skill-simplification.md
+  - specs/workflow-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - requirement-fidelity-v1
+initial_packet_inventory:
+  - path: skills/workflow/SKILL.md
+    sha256: adeb3aa29dab0792d1f3e2d0be96eaa127c29027a8af491fe4927a870a2f6f9d
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/workflow-literal-compatibility.yaml
+    sha256: 526708f6849806c6450a5a1f013e494a9419df628e46a6bf130012e0617b6b27
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/evidence/simplification-measurements.md
+    sha256: fcb46b3106f3658db0a7d0627f59734f3fec69731c5b39c0b27f9fa07b67e822
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/explain-change.md
+    sha256: 02721aadd47ec0d09f4dde787b62d87fb34943da07867aa0541eb5192c897199
+prompt_template_version: code-review-v1
+manifest_owner: code-review
+forbidden_initial_context_excluded: true
+review_focus:
+  - complete review-resolution vocabulary
+  - literal dependency classification
+  - measurement arithmetic and identities
+  - absence of validator or scope expansion
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
