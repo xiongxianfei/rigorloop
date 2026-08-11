@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -13,8 +13,9 @@ Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m2-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `plan-review-r2`, `test-spec-review-r1`, `code-review-m1-r1`, `code-review-m2-r1`
 - Findings resolved: 5
 - Unresolved findings: 0
 - Current result: code-review M1 R1 closed the preservation-inventory milestone with no material findings.
@@ -158,3 +159,29 @@ No material findings.
 Review closeout: code-review-m1-r1
 
 No material findings.
+
+### code-review-m2-r1
+
+#### IMPSIM-CR1
+
+Finding ID: IMPSIM-CR1
+Disposition: accepted
+Status: in-progress
+Owner: implement
+Owning stage: implement
+Chosen action: Remove the two trailing-whitespace defects and rerun `git diff --check`.
+Rationale: Required reviewability proof must agree with the committed diff.
+Validation target: `git diff --check cd2b2dae..HEAD`
+Implementation evidence: pending bounded correction
+
+#### IMPSIM-CR2
+
+Finding ID: IMPSIM-CR2
+Disposition: accepted
+Status: in-progress
+Owner: implement
+Owning stage: implement
+Chosen action: Restore the unrelated code-review heading assertion and rerun the full skill-validator suite.
+Rationale: M2 must not modify tests for the already-settled code-review package.
+Validation target: `python scripts/test-skill-validator.py`
+Implementation evidence: pending bounded correction

@@ -113,3 +113,15 @@ Resolution: review-resolution.md#code-review-m1-r1
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: commit dfbb917b55c86d87f4351a16ad051230b3755b77
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: IMPSIM-CR1, IMPSIM-CR2
+Open findings: IMPSIM-CR1, IMPSIM-CR2
+Recording status: recorded

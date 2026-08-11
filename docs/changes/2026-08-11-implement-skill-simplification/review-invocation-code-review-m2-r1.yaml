@@ -1,0 +1,53 @@
+schema_version: 1
+review_id: code-review-m2-r1
+review_stage: code-review
+review_target: commit dfbb917b55c86d87f4351a16ad051230b3755b77
+base_revision: cd2b2dae5173fb6b0dbc374404f91339215acc66
+head_revision: dfbb917b55c86d87f4351a16ad051230b3755b77
+native_review_status: changes-requested
+review_gate_outcome: return-to-implement
+independence_level: L0
+author_context_id: root-implement-m2
+reviewer_context_id: root-code-review-m2-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - conditional-resource-loading
+  - exact-consumer-migration
+governing_artifacts:
+  - specs/implement-skill-simplification.md
+  - docs/plans/2026-08-11-implement-skill-simplification.md
+  - specs/implement-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - boundary-first-v1
+  - requirement-fidelity-v1
+initial_packet_inventory:
+  - path: specs/implement-skill-simplification.md
+    sha256: b2cedc4d386b00acfa609f844844f7ba87d7dbd1768e67c58c7a0f74aa697069
+  - path: docs/plans/2026-08-11-implement-skill-simplification.md
+    sha256: 4366d514ea34ab2309daea284d9b6312e43b6958e68f8de6c61541fe7adab235
+  - path: specs/implement-skill-simplification.test.md
+    sha256: f8a0ba36f9dc9adaf0275b6ed639990f215d21a9ea3d214235c34dd9a2e65bff
+  - path: skills/implement/SKILL.md
+    sha256: f28889bb5f1d30e47c0e31b3b4ead07fad76e583bfa2032145dbc0e6ae8136b8
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - universal-policy completeness
+  - identity-bound conditional loading
+  - reference and asset ownership
+  - literal-consumer migration
+  - validation truthfulness and reviewability
+second_review:
+  required: true
+  satisfied: false
+  result: pending-after-correction
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
