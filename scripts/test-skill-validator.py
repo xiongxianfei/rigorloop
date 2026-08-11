@@ -5270,7 +5270,17 @@ Use the inputs somehow and produce a useful result.
             ],
         }
         for skill_name, terms in required_by_skill.items():
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            if skill_name == "implement":
+                path = (
+                    ROOT
+                    / "skills"
+                    / "implement"
+                    / "references"
+                    / "automated-review-correction.md"
+                )
+            else:
+                path = ROOT / "skills" / skill_name / "SKILL.md"
+            body = path.read_text(encoding="utf-8")
             for term in terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
@@ -5423,7 +5433,16 @@ Use the inputs somehow and produce a useful result.
             ],
         }
         for skill_name, terms in required_by_skill.items():
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            path = ROOT / "skills" / skill_name / "SKILL.md"
+            if skill_name == "implement":
+                path = (
+                    ROOT
+                    / "skills"
+                    / "implement"
+                    / "references"
+                    / "automated-review-correction.md"
+                )
+            body = path.read_text(encoding="utf-8")
             for term in terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
@@ -5436,7 +5455,13 @@ Use the inputs somehow and produce a useful result.
         for term in workflow_doc_terms:
             with self.subTest(surface="docs/workflows.md", term=term):
                 self.assertIn(term, workflow_docs)
-        implement_body = (ROOT / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
+        implement_body = (
+            ROOT
+            / "skills"
+            / "implement"
+            / "references"
+            / "automated-review-correction.md"
+        ).read_text(encoding="utf-8")
         for item in R5_FORBIDDEN_INITIAL_PACKET_ITEMS:
             with self.subTest(skill="implement", forbidden_initial_packet_item=item):
                 self.assertIn(item, implement_body)
@@ -5499,6 +5524,14 @@ Use the inputs somehow and produce a useful result.
                     / "references"
                     / "workflow-managed-automated-review.md"
                 )
+            elif skill_name == "implement":
+                path = (
+                    ROOT
+                    / "skills"
+                    / "implement"
+                    / "references"
+                    / "automated-review-correction.md"
+                )
             else:
                 path = ROOT / "skills" / skill_name / "SKILL.md"
             body = path.read_text(encoding="utf-8")
@@ -5531,7 +5564,7 @@ Use the inputs somehow and produce a useful result.
             "## Stop conditions",
             "## Claims this skill must not make",
             "## Status and milestone handoff",
-            "## Boundary-first bridge",
+            "## Boundary-first method",
             "## Resource map",
             "## Expected output",
         ):
@@ -5584,6 +5617,123 @@ Use the inputs somehow and produce a useful result.
             with self.subTest(surface="docs/workflows.md", term=term):
                 self.assertIn(term, workflow_docs)
 
+    def test_implement_simplification_m2_package_contract(self) -> None:
+        """M2 keeps universal implementation policy inline and splits conditional procedure."""
+
+        root = ROOT / "skills" / "implement"
+        body = (root / "SKILL.md").read_text(encoding="utf-8")
+        planned = (
+            root / "references" / "planned-milestone-implementation.md"
+        ).read_text(encoding="utf-8")
+        automation = (
+            root / "references" / "automated-review-correction.md"
+        ).read_text(encoding="utf-8")
+        result = (
+            root / "assets" / "implementation-result-skeleton.md"
+        ).read_text(encoding="utf-8")
+
+        planned_mapping = (
+            "- READ `references/planned-milestone-implementation.md` when "
+            "authoritative workflow evidence establishes a current planned milestone "
+            "owned by `implement`."
+        )
+        automation_mapping = (
+            "- READ `references/automated-review-correction.md` only when durable "
+            "workflow evidence formally arms automated review or correction for that "
+            "same current change and milestone."
+        )
+        result_mapping = (
+            "- COPY `assets/implementation-result-skeleton.md` when producing the "
+            "implementation result."
+        )
+        self.assertEqual(body.count(planned_mapping), 1)
+        self.assertEqual(body.count(automation_mapping), 1)
+        self.assertEqual(body.count(result_mapping), 1)
+
+        for heading in (
+            "## Workflow role",
+            "## Quick operating guide",
+            "## Inputs to read",
+            "## Evidence access",
+            "## Invocation profiles and authority",
+            "## First-pass completeness",
+            "## Implementation contract",
+            "## Operating sequence",
+            "## Stop conditions",
+            "## Claims this skill must not make",
+            "## Resource map",
+            "## Boundary-first method",
+            "## Expected output",
+        ):
+            with self.subTest(inline_heading=heading):
+                self.assertIn(heading, body)
+
+        for term in (
+            "`IP0-isolated`",
+            "`IP1-planned`",
+            "`IP2-planned-armed`",
+            "Armed automation without a valid planned milestone is invalid",
+            "Conversational wording alone establishes neither predicate",
+            "Missing, stale, mismatched, contradictory, or ambiguous evidence stops before conditional procedure is loaded or implementation state is mutated.",
+        ):
+            with self.subTest(profile_contract=term):
+                self.assertIn(term, body)
+
+        for heading in (
+            "## Load conditions",
+            "## Milestone authority and inspection",
+            "## Baseline change pack",
+            "## Milestone execution and validation",
+            "## Commit and review handoff",
+            "## Accepted correction return",
+        ):
+            with self.subTest(planned_heading=heading):
+                self.assertIn(heading, planned)
+
+        for heading in (
+            "## Load conditions",
+            "## Armed authority",
+            "## Independent review packet",
+            "## Requirement-fidelity routing",
+            "## Correction and rereview",
+            "## Promotion and pause",
+        ):
+            with self.subTest(automation_heading=heading):
+                self.assertIn(heading, automation)
+
+        for forbidden_policy in (
+            "## First-pass completeness",
+            "## Stop conditions",
+            "## Claims this skill must not make",
+        ):
+            with self.subTest(reference="planned", forbidden=forbidden_policy):
+                self.assertNotIn(forbidden_policy, planned)
+            with self.subTest(reference="automation", forbidden=forbidden_policy):
+                self.assertNotIn(forbidden_policy, automation)
+
+        for heading in (
+            "## Core result",
+            "## Planned milestone",
+            "## Armed automation",
+        ):
+            with self.subTest(result_group=heading):
+                self.assertIn(heading, result)
+        for policy_term in (
+            "what status means",
+            "when correction is allowed",
+            "when review-requested is legal",
+            "what readiness may be claimed",
+        ):
+            with self.subTest(asset_policy=policy_term):
+                self.assertNotIn(policy_term, result.lower())
+
+        self.assertNotIn("## Result\n\n- Skill: implement", body)
+        self.assertNotIn("## Implementation summary", body)
+        self.assertIn(
+            "Armed implementation automation is valid only inside a current planned workflow-managed milestone.",
+            automation,
+        )
+
     def test_requirement_fidelity_m3_r26_implement_skill_property_matrix(self) -> None:
         """R26 uses one property list multiplied by required implement skill surfaces."""
 
@@ -5608,7 +5758,7 @@ Use the inputs somehow and produce a useful result.
 
         implement_body = (ROOT / "skills" / "implement" / "SKILL.md").read_text(encoding="utf-8")
         first_pass_block = extract_markdown_block(implement_body, "First-pass completeness")
-        compressed_first_pass_block = first_pass_block.replace("recorded, approved, current ", "approved, current ")
+        compressed_first_pass_block = first_pass_block.replace("recorded", "")
         compressed_body = implement_body.replace(first_pass_block, compressed_first_pass_block)
 
         with self.assertRaisesRegex(
@@ -6436,6 +6586,14 @@ and result format.
                         / "code-review"
                         / "assets"
                         / "review-result-skeleton.md"
+                    ).read_text(encoding="utf-8")
+                elif skill_name == "implement":
+                    result_surface = (
+                        ROOT
+                        / "skills"
+                        / "implement"
+                        / "assets"
+                        / "implementation-result-skeleton.md"
                     ).read_text(encoding="utf-8")
                 self.assertIn("## Result", result_surface)
                 for field in SKILL_CONTRACT_RESULT_FIELDS:
