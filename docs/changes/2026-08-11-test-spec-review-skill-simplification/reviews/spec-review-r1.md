@@ -5,8 +5,9 @@ Stage: spec-review
 Round: r1
 Reviewer: Codex independent spec-review context
 
-- Target: `specs/test-spec-review-skill-simplification.md`
-- Reviewed artifact: `specs/test-spec-review-skill-simplification.md` at commit `aec6a9dd`
+Target: `specs/test-spec-review-skill-simplification.md`
+
+Reviewed artifact: `specs/test-spec-review-skill-simplification.md` at commit `aec6a9dd`
 
 Review date: 2026-08-11
 Status: changes-requested

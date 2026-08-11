@@ -2,22 +2,22 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: spec-review-r1
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`
-- Findings resolved: 1
-- Unresolved findings: 1
-- Current result: proposal findings remain resolved; spec revision is required to close the lifecycle-by-handoff validity lattice.
+- Findings resolved: 2
+- Unresolved findings: 0
+- Current result: proposal and spec findings are resolved; the corrected spec awaits independent rereview.
 
 ## Resolution Overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
 | `TSRSIM-PR1` | accepted | resolved | Added an independent durable-recording trigger and phase-aware recording overlay without downstream handoff. |
-| `TSRSIM-SR1` | accepted | open | Reject advisory lifecycle with workflow-managed handoff and prove the closed validity matrix. |
+| `TSRSIM-SR1` | accepted | resolved | Added the closed lifecycle-by-handoff matrix and rejected advisory plus workflow-managed before review. |
 
 ## Common Resolution Metadata
 
@@ -34,13 +34,13 @@ Review closeout: spec-review-r1
 
 Finding ID: TSRSIM-SR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec author
 Owning stage: spec
 Chosen action: Add a closed lifecycle-by-handoff validity matrix that permits formal with either handoff mode and advisory only with isolated handoff, and make advisory plus workflow-managed an explicit pre-review stop.
 Rationale: Workflow-managed continuation requires current formal review identity and settlement; advisory approval cannot establish implementation eligibility.
 Validation target: revised requirements, state invariants, errors, edge cases, acceptance criteria, boundary ownership, static fixture strategy, and independent spec rereview.
-Validation evidence: pending spec correction.
+Validation evidence: R39, E9, EC13, AC-TSRSIM-019, revised boundary and interaction rows, state and error rules, and `evidence/spec-revision-r2.md`.
 
 ### proposal-review-r1
 
@@ -63,6 +63,6 @@ Validation evidence: revised `Invocation classification`, `Loaded-resource assem
 - [x] Every rejected finding has rationale or none exist.
 - [x] Every deferred finding has follow-up or none exist.
 - [x] Every `needs-decision` finding is resolved or none exist.
-- [ ] Spec correction validation evidence is recorded.
+- [x] Spec correction validation evidence is recorded.
 - [x] Proposal revision validation evidence is recorded.
 - [x] Closeout status is correct.
