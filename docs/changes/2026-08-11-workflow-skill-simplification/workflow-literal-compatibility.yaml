@@ -188,6 +188,19 @@
       "required_semantics": "Closed review-resolution disposition vocabulary used by workflow closeout routing.",
       "disposition": "preserve-semantics-and-values",
       "replacement": "accepted / rejected / deferred / partially-accepted / needs-decision"
+    },
+    {
+      "literal_id": "WF-LIT-015",
+      "literal": "docs/changes/<change-id>/plan.md / non-canonical",
+      "source_location": "skills/workflow/SKILL.md#Default artifact paths",
+      "consumers": [
+        "scripts/validate-guide-system.py::_validate_stage_skill_plan_defaults",
+        "docs/plan.md"
+      ],
+      "classification": "parser-or-package-contract",
+      "required_semantics": "Portable plan routing distinguishes the stable plan index and canonical plan body from the non-canonical change-local plan path.",
+      "disposition": "preserve-semantics-and-values",
+      "replacement": "docs/plan.md is the stable navigation index; docs/plans/YYYY-MM-DD-slug.md is the plan body; docs/changes/<change-id>/plan.md is non-canonical"
     }
   ]
 }

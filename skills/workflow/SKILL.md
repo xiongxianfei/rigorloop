@@ -232,6 +232,8 @@ specs/slug.test.md
 docs/learn/sessions/YYYY-MM-DD-slug.md
 ```
 
+`docs/plan.md` is the stable navigation index and `docs/plans/YYYY-MM-DD-slug.md` is the detailed plan body. Treat `docs/changes/<change-id>/plan.md` as a non-canonical historical or rejected plan-body path.
+
 Do not overwrite an older durable artifact for a new initiative.
 
 ## Required traceability
