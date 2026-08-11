@@ -14,11 +14,12 @@ Review closeout: architecture-review-r2
 Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
+Review closeout: code-review-m1-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`, `architecture-review-r1`, `architecture-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`
 - Findings resolved: 9
 - Unresolved findings: 0
-- Current result: test-spec-review R2 approves the corrected proof map and closes `WFSIM-TR1` and `WFSIM-TR2`.
+- Current result: code-review M1 R1 closes the preservation-inventory milestone with no material findings.
 
 ## Resolution Overview
 
@@ -206,6 +207,12 @@ needs-decision rationale: none
 Review ID: test-spec-review-r2
 
 No new findings. R2 confirms that `WFSIM-TR1` and `WFSIM-TR2` are resolved and permits implementation handoff.
+
+### code-review-m1-r1
+
+Review ID: code-review-m1-r1
+
+No findings. The review closes M1 and routes to implementation milestone M2.
 
 #### WFSIM-TR2
 

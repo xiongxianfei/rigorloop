@@ -1,0 +1,58 @@
+schema_version: 1
+review_id: code-review-m1-r1
+review_stage: code-review
+review_target: commit c2e4cbd0
+base_revision: 320b41f6
+head_revision: c2e4cbd0
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L0
+author_context_id: root-implement-m1
+reviewer_context_id: root-code-review-m1-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - change-local-semantic-rule-ledger
+  - literal-compatibility-ledger
+  - static-workflow-assembly-fixtures
+  - closed-vocabulary-negative-proof
+governing_artifacts:
+  - specs/workflow-skill-simplification.md
+  - docs/plans/2026-08-11-workflow-skill-simplification.md
+  - specs/workflow-skill-simplification.test.md
+formal_criteria:
+  - code-review-v1
+  - boundary-first-v1
+  - requirement-fidelity-v1
+initial_packet_inventory:
+  - path: specs/workflow-skill-simplification.md
+    sha256: 168b0842fc49739be9cb4b7eb322b00e66884dd26eb8a6d6b63bae90481bc977
+  - path: docs/plans/2026-08-11-workflow-skill-simplification.md
+    sha256: f8d463eacc060cb2a714d22225c17bc5e53354211765174aad5866f2b2fb50be
+  - path: specs/workflow-skill-simplification.test.md
+    sha256: 15eedb03de816793c17985d46d648db15039a799457faebe61db21219241ec0e
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/workflow-rule-disposition.yaml
+    sha256: 2dd4ad5d73cc90376ae1fad2448258a6e56bac3bee906688a733a7e01688b6fd
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/workflow-literal-compatibility.yaml
+    sha256: a0d1b422630a3f13da5f40684e6730830df726cce1b3fa90653543f910742525
+  - path: docs/changes/2026-08-11-workflow-skill-simplification/fixtures/scenario-contracts.yaml
+    sha256: 93b516592bff53fd60fd4ca1bf683c02224121cc2182707ec912e41f5bda87aa
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - complete source-rule and exact-consumer accounting
+  - separate semantic and literal ownership
+  - fail-closed disposition and classification vocabularies
+  - deterministic assembly and failure coverage
+  - unchanged canonical package baseline
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
