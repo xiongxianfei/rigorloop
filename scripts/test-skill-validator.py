@@ -7904,6 +7904,23 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
         "pr": "upstream artifacts as read-only",
     }
 
+    @staticmethod
+    def review_contract_body(skill_name: str) -> str:
+        skill_root = ROOT / "skills" / skill_name
+        body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
+        if skill_name == "test-spec-review":
+            body = "\n".join(
+                [
+                    body,
+                    (
+                        skill_root
+                        / "references"
+                        / "test-spec-review-recording-and-settlement.md"
+                    ).read_text(encoding="utf-8"),
+                ]
+            )
+        return body
+
     def test_authoring_peers_define_an_executable_change_record_transition(self) -> None:
         required = (
             "read the complete `change.yaml` before writing",
@@ -7930,9 +7947,7 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
 
     def test_review_peers_settle_only_the_matching_change_local_entry(self) -> None:
         for skill_name, phrase in self.REVIEW_SETTLEMENT_PHRASES.items():
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
-                encoding="utf-8"
-            )
+            body = self.review_contract_body(skill_name)
             with self.subTest(skill=skill_name):
                 self.assertIn("change.yaml", body)
                 self.assertIn(phrase, body)
@@ -7968,12 +7983,15 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             "stops without advancing routing",
         )
         for skill_name, settlement in expected_settlement.items():
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
-                encoding="utf-8"
-            )
+            body = self.review_contract_body(skill_name)
             normalized = " ".join(body.split())
             with self.subTest(skill=skill_name):
-                self.assertIn("## Change-record review settlement", normalized)
+                expected_heading = (
+                    "## Formal-only settlement"
+                    if skill_name == "test-spec-review"
+                    else "## Change-record review settlement"
+                )
+                self.assertIn(expected_heading, normalized)
                 self.assertIn(settlement, normalized)
                 for phrase in required:
                     self.assertIn(" ".join(phrase.split()), normalized)
@@ -9527,6 +9545,91 @@ class VerifySkillSimplificationContractTests(unittest.TestCase):
             "untriggered reference does not load",
         ):
             self.assertIn(phrase, self.skill)
+
+
+class TestSpecReviewSkillSimplificationContractTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "test-spec-review"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+
+    def test_test_spec_review_simplification_maps_exact_resources(self) -> None:
+        expected = {
+            "references/test-spec-review-recording-and-settlement.md": "READ",
+            "references/boundary-first-method-v1.md": "READ",
+            "references/boundary-first-proof-v1.md": "READ",
+            "assets/review-result-skeleton.md": "COPY",
+            "assets/material-finding.md": "COPY",
+        }
+        for relative_path, verb in expected.items():
+            with self.subTest(resource=relative_path):
+                self.assertTrue((self.root / relative_path).is_file())
+                self.assertIn(f"- {verb} `{relative_path}`", self.skill)
+
+    def test_test_spec_review_simplification_declares_closed_modes_and_assemblies(self) -> None:
+        for value in ("formal", "advisory", "isolated", "workflow-managed"):
+            self.assertIn(f"`{value}`", self.skill)
+        for assembly in (
+            "TSR0-isolated",
+            "TSR0B-isolated-boundary",
+            "TSR1-formal",
+            "TSR1B-formal-boundary",
+        ):
+            self.assertIn(assembly, self.skill)
+        self.assertIn("advisory + workflow-managed", self.skill)
+        self.assertIn("invalid", self.skill)
+
+    def test_test_spec_review_simplification_keeps_universal_review_contract_inline(self) -> None:
+        for phrase in (
+            "requirement and acceptance-criterion traceability",
+            "negative and failure coverage",
+            "command ownership",
+            "deterministic fixtures",
+            "manual proof",
+            "approved",
+            "changes-requested",
+            "blocked",
+            "inconclusive",
+            "substantive test-spec change",
+            "Do not claim",
+            "Generated Markdown readability",
+        ):
+            self.assertIn(phrase, self.skill)
+
+    def test_test_spec_review_simplification_reference_separates_recording_and_settlement(self) -> None:
+        reference = (
+            self.root
+            / "references"
+            / "test-spec-review-recording-and-settlement.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("## Shared recording procedure", reference)
+        self.assertIn("## Formal-only settlement", reference)
+        self.assertIn("Every formal lifecycle review result must be recorded or explicitly blocked.", reference)
+        self.assertIn("settle only the matching test-spec entry", reference)
+        self.assertIn("must not execute", reference)
+        self.assertNotIn("Review status: approved` requires", reference)
+
+    def test_test_spec_review_simplification_fails_safe_on_required_resources(self) -> None:
+        for phrase in (
+            "missing or unreadable triggered reference",
+            "Recording status: blocked",
+            "must not reconstruct",
+            "untriggered resource does not load",
+            "does not change lifecycle mode, handoff mode, review status meaning, or implementation authority",
+        ):
+            self.assertIn(phrase, self.skill)
+
+    def test_test_spec_review_simplification_assets_remain_structural(self) -> None:
+        assets = "\n".join(
+            (self.root / "assets" / name).read_text(encoding="utf-8")
+            for name in ("review-result-skeleton.md", "material-finding.md")
+        )
+        for forbidden in (
+            "durable_recording_context",
+            "formal-only settlement",
+            "workflow-managed continuation",
+            "substantive test-spec change",
+        ):
+            self.assertNotIn(forbidden, assets)
 
 
 if __name__ == "__main__":
