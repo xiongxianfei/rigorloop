@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -30,6 +30,7 @@ Review closeout: spec-review-r1
 | `SRSIM-R4-PR1` | accepted | resolved | Removed non-formal profiles and alternate result cores, leaving only formal and formal-boundary assemblies. |
 | `SRSIM-R5-PR1` | accepted | resolved | Kept universal recording inline and moved only governed settlement and automation into the conditional reference. |
 | `SRSS-SR1` | accepted | resolved | Closed the canonical finding-asset path to `assets/material-finding.md`. |
+| `SRSS-PL1` | accepted | resolved | Replaced the adapter-proof placeholder with one exact recoverable command. |
 
 ## Finding details
 
@@ -196,6 +197,22 @@ Validation evidence: R1 now names exactly `assets/material-finding.md`; same-sta
 Review closeout: spec-review-r2
 
 No material findings; no resolution entry required. The same-stage spec-review rerun approved the revised specification and closed `SRSS-SR1`.
+
+### plan-review-r1
+
+#### SRSS-PL1
+
+Finding ID: SRSS-PL1
+Disposition: accepted
+Status: resolved
+Owner: plan author
+Owning stage: plan
+Chosen action: Add the exact current-version temporary adapter build and clean-install command with automatic cleanup.
+Rationale: A required package proof must be executable without an implementer choosing missing arguments.
+Required outcome: Provide one exact repository-valid temporary adapter proof command.
+Safe resolution path: Add the current `v0.1.5` command and rerun plan review.
+Validation target: Fresh plan review plus metadata, lifecycle, review-artifact, readability, and diff validation.
+Validation evidence: Pending plan revision and rereview.
 
 ## Shared validation evidence
 
