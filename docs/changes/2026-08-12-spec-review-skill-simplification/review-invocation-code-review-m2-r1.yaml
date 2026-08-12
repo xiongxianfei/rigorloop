@@ -1,0 +1,17 @@
+schema_version: 1
+review_id: code-review-m2-r1
+review_stage: code-review
+review_target: commit:8ebe9ba5
+base_revision: b7213a40
+head_revision: 8ebe9ba5
+native_review_status: changes-requested
+review_gate_outcome: correct
+independence_level: L1
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: standard
+formal_criteria: [code-review-v1, boundary-first-v1, requirement-fidelity-v1]
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity: {applicability: applicable, result: failed, finding: SRSS-CR-M2-R1-001}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+second_review: {required: false, satisfied: true, result: not-required}

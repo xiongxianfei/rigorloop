@@ -2615,6 +2615,49 @@ Use the inputs somehow and produce a useful result.
             [],
         )
 
+    def test_spec_review_package_separates_isolated_recording_from_governed_settlement(self) -> None:
+        skill_dir = ROOT / "skills" / "spec-review"
+        skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        governed_path = skill_dir / "references" / "governed-spec-review-settlement.md"
+
+        self.assertTrue(governed_path.is_file())
+        self.assertIn(
+            "- READ `references/governed-spec-review-settlement.md` exactly for `governed-spec-entry`",
+            skill_text,
+        )
+        self.assertIn("Settlement inside the reference waits for universal recording.", skill_text)
+        self.assertIn("`SR1-isolated-formal`", skill_text)
+        self.assertIn("`SR1B-isolated-formal-boundary`", skill_text)
+        self.assertIn("`SR2-governed-formal`", skill_text)
+        self.assertIn("`SR2B-governed-formal-boundary`", skill_text)
+        self.assertIn("unknown, missing, stale, contradictory, or ambiguous", skill_text)
+        self.assertNotIn("## Change-record review settlement", skill_text)
+
+        governed = governed_path.read_text(encoding="utf-8")
+        self.assertIn("## Change-record review settlement", governed)
+        self.assertIn("Run settlement only after universal review recording succeeds.", governed)
+        self.assertIn("settle only the matching spec entry", governed)
+        self.assertIn("## Workflow-managed automation", governed)
+        self.assertIn("does not grant", governed)
+
+    def test_spec_review_result_asset_has_closed_conditional_groups(self) -> None:
+        result = (
+            ROOT / "skills" / "spec-review" / "assets" / "review-result-skeleton.md"
+        ).read_text(encoding="utf-8")
+
+        for heading in (
+            "## Result",
+            "## Recording",
+            "## Governed settlement",
+            "## Boundary review",
+            "## Automated review",
+            "## Findings",
+        ):
+            self.assertIn(heading, result)
+        self.assertIn("- Settlement mode:", result)
+        self.assertIn("- Automation mode:", result)
+        self.assertIn("- Boundary applicability:", result)
+
     def test_spec_review_canonical_contract_rejects_test_spec_immediate_stage(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -5333,6 +5376,8 @@ Use the inputs somehow and produce a useful result.
             path = ROOT / "skills" / skill_name / "SKILL.md"
             if skill_name == "proposal-review":
                 path = ROOT / "skills" / skill_name / "references" / "proposal-review-recording-and-settlement.md"
+            elif skill_name == "spec-review":
+                path = ROOT / "skills" / skill_name / "references" / "governed-spec-review-settlement.md"
             body = path.read_text(encoding="utf-8")
             for term in required_terms:
                 with self.subTest(skill=skill_name, term=term):
@@ -5528,7 +5573,10 @@ Use the inputs somehow and produce a useful result.
             ],
         }
         for skill_name, terms in required_by_skill.items():
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            path = ROOT / "skills" / skill_name / "SKILL.md"
+            if skill_name == "spec-review":
+                path = ROOT / "skills" / skill_name / "references" / "governed-spec-review-settlement.md"
+            body = path.read_text(encoding="utf-8")
             for term in terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
@@ -7978,11 +8026,15 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
     def review_contract_body(skill_name: str) -> str:
         skill_root = ROOT / "skills" / skill_name
         body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
-        if skill_name in {"proposal-review", "test-spec-review"}:
+        if skill_name in {"proposal-review", "spec-review", "test-spec-review"}:
             reference_name = (
                 "proposal-review-recording-and-settlement.md"
                 if skill_name == "proposal-review"
-                else "test-spec-review-recording-and-settlement.md"
+                else (
+                    "governed-spec-review-settlement.md"
+                    if skill_name == "spec-review"
+                    else "test-spec-review-recording-and-settlement.md"
+                )
             )
             body = "\n".join(
                 [

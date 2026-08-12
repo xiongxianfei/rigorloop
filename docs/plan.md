@@ -29,6 +29,7 @@ Current blockers are not recorded in this index.
 
 | Plan | Owning change record |
 | --- | --- |
+| [Spec-Review Skill Simplification](plans/2026-08-12-spec-review-skill-simplification.md) | [change.yaml](changes/2026-08-12-spec-review-skill-simplification/change.yaml) |
 | [Proposal-Review Skill Simplification](plans/2026-08-11-proposal-review-skill-simplification.md) | [change.yaml](changes/2026-08-11-proposal-review-skill-simplification/change.yaml) |
 | [Test-Spec-Review Skill Simplification](plans/2026-08-11-test-spec-review-skill-simplification.md) | [change.yaml](changes/2026-08-11-test-spec-review-skill-simplification/change.yaml) |
 | [Verify Skill Simplification](plans/2026-08-11-verify-skill-simplification.md) | [change.yaml](changes/2026-08-11-verify-skill-simplification/change.yaml) |

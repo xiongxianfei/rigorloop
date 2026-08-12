@@ -1375,3 +1375,9 @@ and current-handoff templates that duplicate change-local state to
 
 Normalized skill structure, resource and asset integrity, claim boundaries,
 portability, and generated-adapter parity remain governed here.
+
+## Spec-review conditional-procedure amendment
+
+The published `spec-review` package may map `references/governed-spec-review-settlement.md`. Its universal `SKILL.md` owns formal review classification, isolated recording, judgment, status, findings, boundary activation, stops, claims, and output applicability. The reference loads only after exact `governed-spec-entry` authority exists; settlement inside it waits for universal recording. It owns matching-entry settlement and workflow-managed automation procedure without gaining lifecycle continuation authority.
+
+Canonical, generated, packed, and installed packages must contain this mapped reference at the same skill-root-relative path with raw-byte parity. Missing or mixed versions block dependent governed action and do not authorize memory-based reconstruction.

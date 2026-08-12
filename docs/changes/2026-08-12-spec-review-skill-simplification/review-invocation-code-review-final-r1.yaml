@@ -1,0 +1,53 @@
+schema_version: 1
+review_id: code-review-final-r1
+review_stage: code-review
+review_target: branch:proposal/spec-review-skill-simplification
+base_revision: 722217187954161756c9f1eec62ad6d11d2aea78
+head_revision: 58c62b3b2ae74c6a54d948252c31629cae9026a8
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L1
+author_context_id: root-implementation-context
+reviewer_context_id: root-code-review-final-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: standard
+risk_tier_triggers: [published-skill-contract, validator-migration, package-resource-addition]
+governing_artifacts:
+  - specs/spec-review-skill-simplification.md
+  - specs/spec-review-skill-simplification.test.md
+  - docs/plans/2026-08-12-spec-review-skill-simplification.md
+formal_criteria: [code-review-v1]
+initial_packet_inventory:
+  - path: skills/spec-review/SKILL.md
+  - path: skills/spec-review/references/governed-spec-review-settlement.md
+  - path: skills/spec-review/assets/review-result-skeleton.md
+  - path: scripts/skill_validation.py
+  - path: scripts/test-skill-validator.py
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity:
+  applicability: applicable
+  result: pass
+  evidence: rule and literal ledgers, static scenarios, profile measurements, and M1-M3 proof
+second_review:
+  required: false
+  satisfied: true
+  result: not-required
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+prior_finding_reconciliation:
+  SRSS-CR-M2-R1-001: resolved
+risk_map:
+  affected_behavior: spec-review classification, recording, governed settlement, packaged-resource loading, and result structure
+  highest_impact_failure_modes: isolated review gains settlement authority; governed automation loads too late; universal review rules disappear; packaged reference is omitted
+  changed_boundaries: [skill-contract, stage-owned-lifecycle, generated-package-parity]
+  evidence_expected: complete semantic disposition, focused validators, full skill suite, package parity, clean installs, and final diff inspection
+  direct_inspection_areas: [skill common path, governed reference, result asset, validator consumers, coupled contract amendments]
+  intentionally_out_of_scope: [new runtime, new lifecycle schema, other skill redesign]
+  applicable_risk_classes: [contract-preservation, lifecycle-authority, package-integrity, validation-coverage]
+  non_applicable_risk_classes: [credentials, database-migration, network-publication]
+  falsifiable_questions:
+    - Can isolated formal review complete without loading governed settlement procedure?
+    - Can governed settlement run before durable review recording succeeds?
+    - Does every behaviorally significant rule retain exactly one destination?
+    - Do generated, archived, and installed packages include the mapped reference?

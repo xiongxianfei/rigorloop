@@ -1,0 +1,19 @@
+{"scenarios":[
+{"scenario":"outside-skill-feedback","required":["route outside spec-review","no formal status"],"forbidden":["formal profile","durable review evidence"]},
+{"scenario":"isolated-clean","required":["SR1","clean receipt","isolated handoff"],"forbidden":["governed reference","workflow advancement"]},
+{"scenario":"isolated-material","required":["SR1","detailed finding","review resolution when triggered"],"forbidden":["governed settlement","automatic correction"]},
+{"scenario":"isolated-recording-root","required":["approved recording placement","recording-only authority"],"forbidden":["governed change activation","workflow mutation"]},
+{"scenario":"blocked-recording","required":["recording status blocked","exact blocker","claim limitation"],"forbidden":["recorded claim","formal completion"]},
+{"scenario":"governed-manual","required":["SR2","record first","matching spec settlement"],"forbidden":["other artifact mutation","workflow continuation by reviewer"]},
+{"scenario":"governed-automated","required":["SR2","matching authorization","independent review evidence"],"forbidden":["fifth profile","authority by resource availability"]},
+{"scenario":"stale-authorization","required":["stop before settlement","stale identity diagnostic"],"forbidden":["automation","state mutation"]},
+{"scenario":"missing-governed-reference","required":["record preserved","settlement blocked","missing path"],"forbidden":["memory reconstruction","partial governed action"]},
+{"scenario":"isolated-boundary","required":["SR1B","boundary resources once","isolated authority"],"forbidden":["governed reference","duplicate load"]},
+{"scenario":"governed-boundary","required":["SR2B","governed and boundary resources once"],"forbidden":["duplicate load","authority override"]},
+{"scenario":"late-boundary-activation","required":["method before feature reference","classification before verdict"],"forbidden":["premature approval","duplicate load"]},
+{"scenario":"grandfathered-nonsubstantive","required":["existing grandfathering retained","no forced adoption"],"forbidden":["new activation policy","invented boundary record"]},
+{"scenario":"substantive-ambiguous","required":["approval stopped","owner resolution"],"forbidden":["guessed classification","approval"]},
+{"scenario":"asset-groups","required":["formal core","recording group","only applicable conditional groups"],"forbidden":["unfilled placeholders","asset-owned policy"]},
+{"scenario":"retry-conflict","required":["idempotent retry","conflicting identity stop"],"forbidden":["duplicate evidence","overwrite"]},
+{"scenario":"invalid-axis","required":["fail closed","explicit diagnostic"],"forbidden":["fallback profile","dependent mutation"]}
+]}

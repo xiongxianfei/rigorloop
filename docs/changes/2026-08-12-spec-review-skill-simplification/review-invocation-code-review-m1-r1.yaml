@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: code-review-m1-r1
+review_stage: code-review
+review_target: commit:1c02c87b
+base_revision: 027eb7f6
+head_revision: 1c02c87b
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L1
+author_context_id: root-implement-m1
+reviewer_context_id: root-code-review-m1-r1-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: standard
+risk_tier_triggers: [semantic-preservation-ledger, literal-compatibility-inventory, static-contract-fixtures]
+governing_artifacts:
+  - specs/spec-review-skill-simplification.md
+  - docs/plans/2026-08-12-spec-review-skill-simplification.md
+  - specs/spec-review-skill-simplification.test.md
+formal_criteria: [code-review-v1, boundary-first-v1, requirement-fidelity-v1]
+initial_packet_inventory:
+  - {path: commit:1c02c87b.diff, sha256: ae18bca59d19852b2570dcb44c89fbd03b79323f5a77160d0b48ac0377b2787c}
+  - {path: docs/changes/2026-08-12-spec-review-skill-simplification/spec-review-rule-disposition.yaml, sha256: 39fa78e235eeda8b40a4b31720847d9f971bb7a44470e46dcf066ae031c24671}
+  - {path: docs/changes/2026-08-12-spec-review-skill-simplification/spec-review-literal-compatibility.yaml, sha256: 03d7f48c754c6989eee761e3bc6290fd85c9fb4a358b791d564a062340852697}
+  - {path: docs/changes/2026-08-12-spec-review-skill-simplification/fixtures/scenario-contracts.yaml, sha256: 8c9d68951d19af1a2b59849859a43af0f5a4d60f28676ad8499dc3af661246aa}
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity: {applicability: applicable, reason: M1 must account for every R33-R40 preservation and measurement property before prose moves.}
+second_review: {required: false, satisfied: true, result: not-required}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+prior_finding_reconciliation: {}
+risk_map:
+  affected_behavior: pre-refactor semantic, literal, scenario, and profile evidence
+  highest_impact_failure_modes: omitted behavior cluster, accidental literal policy, incomplete negative scenarios, or changed canonical package bytes
+  changed_boundaries: [BND-RECOVERY-001, BND-COMPAT-001, BND-ENV-001]
+  evidence_expected: complete closed ledgers, seventeen exact scenarios, portable baseline metrics, and unchanged canonical package hashes
+  direct_inspection_areas: [M1 diff, rule IDs, literal consumers, scenarios, baseline hashes, canonical package diff]
+  intentionally_out_of_scope: [M2 package rewrite, M3 distribution proof, final verification]
+  applicable_risk_classes: [correctness, compatibility, requirement-fidelity, recovery]
+  non_applicable_risk_classes: [credentials, network, database-migration, publication]
+  falsifiable_questions:
+    - Does every baseline spec-review rule cluster have exactly one disposition?
+    - Are exact-string dependencies classified separately from semantic rules?
+    - Do unknown closed values fail before completeness checks?
+    - Are canonical spec-review package bytes unchanged?

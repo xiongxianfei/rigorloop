@@ -1,0 +1,1 @@
+{"rule_id":"SR-RULE-INVALID","source_locations":["skills/spec-review/SKILL.md"],"behavior":"Reject unknown semantic disposition.","governing_requirements":["R34"],"applicable_profiles":["SR1"],"disposition":"unknown-value","destination":"none","preservation_proof":["T6"]}
