@@ -1,0 +1,1 @@
+{"rule_id":"PRR-RULE-INVALID-001","source_locations":["skills/proposal-review/SKILL.md"],"behavior":"Invalid fixture proves unknown dispositions fail first.","governing_requirements":["R30"],"applicable_assemblies":["PRR0-core"],"disposition":"unknown-disposition-value","destination":"skills/proposal-review/SKILL.md#Invalid","preservation_proof":["T8"]}

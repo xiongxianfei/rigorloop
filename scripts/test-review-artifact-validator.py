@@ -3039,7 +3039,7 @@ Validation target: Run tests.
             "skills/code-review/SKILL.md",
         ]:
             with self.subTest(path=path):
-                review_skill = read_repo_file(path)
+                review_skill = read_repo_file(path).casefold()
                 for term in ["evidence", "required outcome", "safe resolution", "needs-decision", "review-resolution.md"]:
                     self.assertIn(term, review_skill)
 

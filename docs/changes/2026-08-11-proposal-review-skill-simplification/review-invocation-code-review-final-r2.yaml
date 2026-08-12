@@ -1,0 +1,35 @@
+schema_version: 1
+review_id: code-review-final-r2
+review_stage: code-review
+review_target: commit:4939a268
+base_revision: 33e1c6cc
+head_revision: 4939a268
+native_review_status: clean
+review_gate_outcome: continue
+independence_level: L1
+author_context_id: root-ci-maintenance-deferral
+reviewer_context_id: root-code-review-final-r2-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: low
+risk_tier_triggers: [selector-deferral, final-verification-support]
+governing_artifacts: [specs/proposal-review-skill-simplification.md, specs/proposal-review-skill-simplification.test.md]
+formal_criteria: [code-review-v1, requirement-fidelity-v1]
+initial_packet_inventory:
+  - {path: commit:4939a268.diff, sha256: reviewed-directly}
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity: {applicability: applicable, reason: The support change must preserve the non-goal against permanent simplicity infrastructure while satisfying repository selector ownership.}
+second_review: {required: false, satisfied: true, result: not-required}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+prior_finding_reconciliation: {PRRSIM-CR-M2-R1-001: remains-resolved}
+risk_map:
+  affected_behavior: validation routing for five change-local evidence paths
+  highest_impact_failure_modes: broad deferral, hidden proof gap, or permanent selector expansion
+  changed_boundaries: [BND-ENV-001]
+  evidence_expected: exact path match, complete deferral fields, visible debt, selector pass, and full CI pass
+  direct_inspection_areas: [change metadata deferrals, deferral evidence, selector result, PR-mode CI result]
+  intentionally_out_of_scope: [skill semantics, PR opening, hosted CI]
+  applicable_risk_classes: [correctness, governance, validation-routing]
+  non_applicable_risk_classes: [credentials, network, database-migration, publication]
+  falsifiable_questions: [Are exactly five paths deferred?, Does CMD1 and MP1 remain mandatory?, Does the selector retain visible debt and pass?]

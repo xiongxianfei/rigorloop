@@ -1,0 +1,35 @@
+schema_version: 1
+review_id: code-review-m3-r1
+review_stage: code-review
+review_target: commit:33e7b9e9
+base_revision: 57b47a60
+head_revision: 33e7b9e9
+native_review_status: clean
+review_gate_outcome: continue
+independence_level: L1
+author_context_id: root-implement-m3
+reviewer_context_id: root-code-review-m3-r1-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: standard
+risk_tier_triggers: [semantic-preservation, package-parity, simplification-measurement]
+governing_artifacts: [specs/proposal-review-skill-simplification.md, docs/plans/2026-08-11-proposal-review-skill-simplification.md, specs/proposal-review-skill-simplification.test.md]
+formal_criteria: [code-review-v1, boundary-first-v1, requirement-fidelity-v1]
+initial_packet_inventory:
+  - {path: commit:33e7b9e9.diff, sha256: 6c0e7f43e0c0ac53b147a9f2fba8e2fe6a799d506b909aca5a73b1ddab55982c}
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity: {applicability: applicable, reason: M3 proves R32-R35 and R37 across loaded context, semantic ownership, and package layers.}
+second_review: {required: false, satisfied: true, result: not-required}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+prior_finding_reconciliation: {PRRSIM-CR-M2-R1-001: remains-resolved}
+risk_map:
+  affected_behavior: final common-path wording and acceptance evidence
+  highest_impact_failure_modes: misleading reduction, semantic loss, stale generated resources, or target-runtime acceptance
+  changed_boundaries: [BND-COMPOSE-001, BND-COMPAT-001, BND-ENV-001]
+  evidence_expected: reproducible profiles, MP1 semantic review, complete adapter parity, and no runtime execution
+  direct_inspection_areas: [final package, measurements, semantic review, adapter proof, M3 diff]
+  intentionally_out_of_scope: [PR opening and publication]
+  applicable_risk_classes: [correctness, compatibility, requirement-fidelity, release-packaging]
+  non_applicable_risk_classes: [credentials, network, database-migration, publication]
+  falsifiable_questions: [Is PRR0 materially smaller?, Is package growth disclosed?, Does every rule retain one owner?, Do all adapter layers contain identical resources?]

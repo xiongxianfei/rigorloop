@@ -1,0 +1,35 @@
+schema_version: 1
+review_id: code-review-m2-r2
+review_stage: code-review
+review_target: commit:6a405d0f
+base_revision: 3c22b05a
+head_revision: 6a405d0f
+native_review_status: clean
+review_gate_outcome: continue
+independence_level: L1
+author_context_id: root-implement-m2-correction
+reviewer_context_id: root-code-review-m2-r2-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: standard
+risk_tier_triggers: [published-skill-contract, validator-compatibility]
+governing_artifacts: [specs/proposal-review-skill-simplification.md, docs/plans/2026-08-11-proposal-review-skill-simplification.md, specs/proposal-review-skill-simplification.test.md]
+formal_criteria: [code-review-v1, boundary-first-v1, requirement-fidelity-v1]
+initial_packet_inventory:
+  - {path: commit:6a405d0f.diff, sha256: correction-reviewed-directly}
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity: {applicability: applicable, reason: Rereview proves the accepted ownership correction without widening scope.}
+second_review: {required: false, satisfied: true, result: correction-clean}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+prior_finding_reconciliation: {PRRSIM-CR-M2-R1-001: resolved-and-validated}
+risk_map:
+  affected_behavior: formal settlement wording and its exact-string validator consumer
+  highest_impact_failure_modes: semantic loss or a stale exact-heading assertion
+  changed_boundaries: [BND-COMPAT-001]
+  evidence_expected: one settlement owner and passing focused plus full skill validation
+  direct_inspection_areas: [correction diff, canonical settlement section, exact-string consumer]
+  intentionally_out_of_scope: [M3 package-chain parity]
+  applicable_risk_classes: [correctness, compatibility, maintainability]
+  non_applicable_risk_classes: [credentials, network, database-migration, publication]
+  falsifiable_questions: [Is the duplicate section gone?, Are all settlement semantics retained?, Does the validator follow the canonical heading?]

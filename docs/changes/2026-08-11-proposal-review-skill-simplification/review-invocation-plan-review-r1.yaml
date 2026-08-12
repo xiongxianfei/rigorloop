@@ -1,0 +1,47 @@
+schema_version: 1
+review_id: plan-review-r1
+review_stage: plan-review
+review_target: docs/plans/2026-08-11-proposal-review-skill-simplification.md
+base_revision: 9209679e6eb7d9d288b18363be75996b271c5f9b
+head_revision: 9209679e6eb7d9d288b18363be75996b271c5f9b
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-plan-authoring-r1
+reviewer_context_id: root-plan-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - formal-review-recording-authority
+  - generated-and-installed-package-parity
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-11-proposal-review-skill-simplification.md
+  - specs/proposal-review-skill-simplification.md
+  - docs/changes/2026-08-11-proposal-review-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-11-proposal-review-skill-simplification.md
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: docs/proposals/2026-08-11-proposal-review-skill-simplification.md
+    sha256: 5f8f7162bbd2689cefbea199f6f1061d0aaa82fba09c7a28c631537ef6cb8ddb
+  - path: specs/proposal-review-skill-simplification.md
+    sha256: f87432a4b4eb915ab335ec5f31f52410eb0d19b0d23a3d5361f470c59e09596d
+  - path: docs/changes/2026-08-11-proposal-review-skill-simplification/architecture-assessment.md
+    sha256: f9488be9e91af5a558e58816162a3dda37f5374777499eaccbb5179cc787efc0
+  - path: docs/plans/2026-08-11-proposal-review-skill-simplification.md
+    sha256: 20331ea5fc7d4da8c0d46b70c42b08dce802705be9fde872caa9ebe69bc2f6ae
+prompt_template_version: plan-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - rule and literal preservation before prose movement
+  - recording, settlement, automation, and continuation isolation
+  - specialized gate and result-group ownership
+  - exact validation commands and package proof
+  - milestone rollback independence
+  - boundary and interaction coverage
