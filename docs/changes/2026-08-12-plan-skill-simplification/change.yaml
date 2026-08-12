@@ -1,0 +1,48 @@
+change_id: 2026-08-12-plan-skill-simplification
+title: Plan Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-12-plan-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-12-plan-skill-simplification/evidence/proposal-authoring.md
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/proposal-authoring.md
+
+workflow: {}
+
+artifacts:
+  proposal: docs/proposals/2026-08-12-plan-skill-simplification.md
+
+requirements:
+  - Preserve plan quality, lifecycle ownership, one-time planned-work initialization, boundary-first behavior, and claim limits while reducing portable and governed loaded context.
+  - Give universal planning policy, governed procedure, boundary method, and structural assets one explicit owner each.
+  - Align copied milestone structure and live consumers with change.yaml as the sole mutable milestone-state owner.
+  - Prove semantic preservation, literal compatibility, profile reduction, parser migration, and package parity without target-agent runtime execution.
+
+tests:
+  - Independent semantic review of the proposal and final skill package.
+  - Deterministic validation of closed profiles, authority triggers, mapped resources, asset structure, state ownership, failure behavior, and package parity.
+  - Static migration fixtures proving current state reads use change.yaml while historical plans remain readable evidence.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-12-plan-skill-simplification/change.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-12-plan-skill-simplification.md
+
+review:
+  status: review-requested
+  unresolved_items: 0
