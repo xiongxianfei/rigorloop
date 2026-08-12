@@ -10,6 +10,7 @@ This ledger records formal lifecycle reviews for the spec-review skill simplific
 | --- | --- | --- | --- | --- | --- | ---: | --- |
 | `code-review-m1-r1` | `code-review` | `r1` | M1 implementation at `1c02c87b` | `reviews/code-review-m1-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m2-r2` | `code-review` | `r2` | M2 correction at `915e9bda` | `reviews/code-review-m2-r2.md` | `clean` | 0 | `recorded` |
+| `code-review-m3-r1` | `code-review` | `r1` | M3 proof at `586ff296` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 
