@@ -23,6 +23,12 @@
       "bundled_metadata_sha256": "c7997daff9af7ceb3d38c150bd778548a2af71900f614dfed8c38cb5929d36aa",
       "release_tag": "v0.4.0",
       "source_repository": "xiongxianfei/rigorloop"
+    },
+    "v0.4.1": {
+      "bundled_metadata": "adapter-artifacts-v0.4.1.json",
+      "bundled_metadata_sha256": "42d453ad003e2388fe9893d747ee5e5b6c5d9a21641d131265b4a32846262458",
+      "release_tag": "v0.4.1",
+      "source_repository": "xiongxianfei/rigorloop"
     }
   },
   "schema_version": 1
