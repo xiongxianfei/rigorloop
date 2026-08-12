@@ -1672,6 +1672,7 @@ def _plan_standing_release_record(
         if _is_finalized_standing_release_record(existing, profile):
             planned[path] = existing
             return
+    version_decision = _semantic_version_decision(profile.package_version)
     planned[path] = (
         f"# Release {profile.release_tag}\n\n"
         "## Result\n\n"
@@ -1693,8 +1694,8 @@ def _plan_standing_release_record(
         f"- npm publication evidence: docs/releases/{profile.release_tag}/npm-publication.md\n"
         f"- Adapter artifact metadata: docs/reports/adapter-artifacts/releases/{profile.release_tag}.yaml\n\n"
         "## Version Decision\n\n"
-        "- Change summary: usability-first boundary behavior and routine package parity.\n"
-        "- Version decision: minor\n"
+        "- Change summary: routine reviewed product and package updates.\n"
+        f"- Version decision: {version_decision}\n"
         f"- Dist-tag decision: {profile.npm_dist_tag} after successful trusted publication\n"
         "- No-op check: pending final reviewed release commit\n\n"
         "## Routine Publish Boundary\n\n"
@@ -1705,7 +1706,7 @@ def _plan_standing_release_record(
         "| no release-process change | pass | existing routine workflow retained |\n"
         "| no package name/scope change | pass | package scope unchanged |\n"
         "| no adapter target/install-root change | pass | codex, claude, and opencode retained |\n"
-        "| upstream breaking change approval | not-applicable | minor release |\n\n"
+        f"| upstream breaking change approval | not-applicable | {version_decision} release |\n\n"
         "## Preflight Gate\n\n"
         "| Check | Result | Evidence |\n"
         "| --- | --- | --- |\n"
@@ -1760,6 +1761,17 @@ def _plan_standing_release_record(
         "Do not record tokens, OTPs, credentials, raw private environment values, usernames, hostnames, "
         "or machine-local absolute paths. Summarize command results instead of pasting raw environment output.\n"
     )
+
+
+def _semantic_version_decision(package_version: str) -> str:
+    major, minor, patch = (int(part) for part in package_version.split("."))
+    if patch:
+        return "patch"
+    if minor:
+        return "minor"
+    if major:
+        return "major"
+    return "prerelease"
 
 
 def _plan_timing_evidence(
