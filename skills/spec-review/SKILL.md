@@ -9,9 +9,7 @@ argument-hint: [spec path or feature name]
 
 # Spec review
 
-You are an independent contract reviewer.
-
-Your job is to make the spec precise enough that tests, architecture, and implementation can follow without guessing.
+Independently review a feature specification as a formal contract gate. Produce durable evidence or report blocked recording. Explicit feedback requesting no formal status, readiness, record, or lifecycle use belongs outside `spec-review`.
 
 ## Workflow role
 
@@ -19,93 +17,52 @@ Your job is to make the spec precise enough that tests, architecture, and implem
 - stage: review
 - upstream: feature spec, linked proposal, exploration, research, local contracts, and workflow evidence
 - downstream: spec revision, review-resolution, architecture, plan, no handoff, and eventual test-spec readiness assessment
-- summary: Review the feature spec as a lifecycle gate and record approval, changes requested, blockers, or inconclusive state.
-- must_not_claim: architecture completion, plan completion, test-spec completion, implementation readiness, verification, branch readiness, or PR readiness.
+- summary: Review the feature spec and record approval, changes requested, blockers, or inconclusive state.
+- ownership: Write formal review evidence and, with exact governed authority, settle only the matching spec entry. Workflow owns routing and continuation.
+- must_not_claim: architecture completion, plan completion, test-spec completion, implementation readiness, verification, branch readiness, or PR readiness
 
-## Inputs to read
+Do not edit the specification unless explicitly asked for combined review and revision. Record first-pass review before any authorized correction.
 
-Read the feature spec first, then linked proposal, exploration, research, project-local instructions, related specs and contracts, `docs/workflows.md` when the feature touches existing runtime flow, and `docs/project-map.md` when boundary context matters.
+## Invocation classification
 
-Do not review implementation code unless the spec claims current behavior and you need to verify the claim.
+Classify before conditional loading or mutation. Settlement mode is exactly `isolated` or `governed-spec-entry`; governed mode requires one current `stage-owned-change-local-v1` change, specification, and matching reviewable entry. Recording and direct wording never grant governed authority.
+
+Automation mode is exactly `manual` or `workflow-managed-automated`; automated mode requires current same-change and same-entry authorization and implies governed mode. Conversation, stale evidence, and recording-only roots do not arm automation.
+
+unknown, missing, stale, contradictory, or ambiguous classification evidence fails closed before governed loading, settlement, automation, or dependent claims.
+
+Use exactly these profiles:
+
+| Profile | Settlement | Boundary procedure | Loaded resources |
+| --- | --- | ---: | --- |
+| `SR1-isolated-formal` | isolated | no | `SKILL.md` and result asset |
+| `SR1B-isolated-formal-boundary` | isolated | yes | SR1 plus applicable boundary references |
+| `SR2-governed-formal` | governed | no | SR1 plus governed reference |
+| `SR2B-governed-formal-boundary` | governed | yes | SR1 plus governed and applicable boundary references |
+
+Add the finding asset once per material finding. Automation stays inside SR2/SR2B. Load each resource once; availability never grants authority.
+
+## Review inputs and evidence
+
+Read the complete specification first, then only relied-on intent, proposal, instructions, contracts, architecture, and workflow evidence. Use project guidance for routing and placement. Read code only to confirm claimed current behavior.
 
 ## Artifact placement
 
-Use the project workflow guide for artifact locations when placement matters.
+Use project-local placement. In RigorLoop, formal spec-review records default to `docs/changes/<change-id>/reviews/spec-review-r<n>.md` and `docs/changes/<change-id>/review-log.md`; use `docs/changes/<change-id>/review-resolution.md` only when disposition is required.
 
-Formal spec-review records default to:
+Resolve placement in this order: explicit valid path or change ID; existing active owning root; reviewed-artifact metadata; project workflow guide; portable generated `YYYY-MM-DD-<subject>-review-recording` root. Stop on ambiguity, unrelated-root collision, unsafe placement, or write failure.
 
-`docs/changes/<change-id>/reviews/spec-review-r<n>.md`
+A fallback contains only recording metadata, review evidence, the log, and conditional resolution. It grants no settlement, plan, routing, lifecycle, or automation authority.
 
-Record the review-log entry in:
+Create or request the recording change pack before claiming `Recording status: recorded`. Explicit critique routed outside `spec-review` creates no formal recording and no lifecycle artifacts.
 
-`docs/changes/<change-id>/review-log.md`
+Create and log a clean receipt without empty resolution. Material or blocking results use a detailed record and conditional resolution. Reconcile identical interrupted writes once; conflicting review-ID reuse stops.
 
-Conditional review-resolution path:
+If placement or writing fails, the judgment may remain visible, but report `Recording status: blocked`, the exact blocker, and smallest next action. Do not claim formal completion, settlement, or continuation. Recording never grants settlement authority.
 
-`docs/changes/<change-id>/review-resolution.md`
+## Core review contract
 
-Create that artifact only when material findings, blocking outcomes, or accepted dispositions require it.
-
-If this is a formal lifecycle review and no change pack exists, create or request `docs/changes/<change-id>/` before claiming `Recording status: recorded`. This applies to clean and material reviews. A clean formal review records a receipt and `review-log.md` without creating an empty `review-resolution.md`.
-
-If the user requested an isolated advisory review and no formal recording is required, do not create lifecycle artifacts unless explicitly asked.
-
-Lookup order:
-
-1. explicit user path or change ID;
-2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
-3. known governing spec or schema constraint when directly relevant;
-4. `docs/workflows.md` artifact-location table;
-5. this skill's portable default path;
-6. block on ambiguity.
-
-This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
-
-Use `docs/workflows.md` only for artifact types it specifies. If it is present but silent for this record, use this skill's portable default path.
-
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
-
-## Change-record review settlement
-
-Before settlement, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Resolve exactly one spec entry by the artifact ID, `kind`, and normalized `path` named by the review.
-Require `review-required` and complete authoring evidence. Write the durable review record first, then remove `authoring_evidence`, set the exact `review` mapping (`id`, `artifact_id`, `outcome`, `record`, and `round`), and map `approved` to `approved`, `changes-requested` to `revision-required`, and `blocked` or `inconclusive` to `blocked`. Preserve every other entry and `workflow_state`. Retry identical incomplete settlement without rerunning the review; stop on conflicting review-ID reuse, ambiguity, an illegal transition, or failed available change-metadata validation. An independent invocation settles this entry and stops without advancing routing.
-
-## Resource map
-
-- READ `references/boundary-first-method-v1.md` when reviewing a `boundary-first-v1` behavior contract.
-- READ `references/boundary-first-feature-authoring-v1.md` when judging formal boundary-record completeness or a substantive grandfathered revision.
-- COPY `assets/review-result-skeleton.md` when recording the review result.
-  Fill: review title, result fields, findings summary, immediate next stage, eventual test-spec readiness, and stop condition.
-  Do not emit unfilled placeholders.
-- COPY `assets/material-finding.md` when recording each material finding.
-  Fill: the fields defined in the asset, including Finding ID:.
-  Confirm the literal `Finding ID:` line exists before linking the finding from `review-log.md` or `review-resolution.md`.
-  Do not emit unfilled placeholders.
-
-## Boundary-first method
-
-Run this compact scan before any stage-owned decision that can change observable behavior, and whenever the input cites an active boundary contract or stable boundary, interaction, or proof ID. Do not wait for the user to name the method.
-
-1. Which inputs or actors can change the outcome?
-2. Which state or timing conditions can change the outcome?
-3. Which public, sibling, helper, or alternate path can change the outcome?
-4. Which failure, retry, recovery, compatibility, or external condition can change the outcome?
-
-If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
-
-Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`; a proof-only gap routes to `test-spec`. Downstream stages do not redefine or rename upstream IDs.
-
-Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
-
-Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
-
-Judge applicability, boundary completeness, interactions, invariants, outcomes, and example ownership.
-
-Structural validation proves only shape, closed values, and references. Stop review with a material finding when semantic ownership is absent, a dimension is unjustifiably inapplicable, an interaction or outcome is missing, an example invents behavior, or a substantive revision has not adopted the contract.
-
-## Review dimensions
-
-Evaluate each review dimension with `<review dimension verdict>`.
+Evaluate each dimension with `pass`, `concern`, or `block`.
 
 | Review dimension | Verdict |
 | --- | --- |
@@ -120,72 +77,19 @@ Evaluate each review dimension with `<review dimension verdict>`.
 | non-goals | `<review dimension verdict>` |
 | acceptance criteria | `<review dimension verdict>` |
 
-Check normal, empty, boundary, error, permission, migration, rollout, rollback, old-client, and old-data behavior when relevant. Acceptance must be observable, not aspirational.
+Check relevant normal, empty, boundary, error, permission, migration, rollout, rollback, old-client, and old-data behavior. Acceptance must be observable. Reject vague `MUST` requirements and examples treated as exhaustive; do not review plans or code or demand irrelevant implementation detail.
 
-## Closed enums
-
-Review dimension verdict:
-
-```text
-pass
-concern
-block
-```
-
-## Finding severity
-
-Use:
-
-- `blocking`: implementation would require guessing or could violate user expectations.
-- `major`: important gap that should be fixed before tests or architecture.
-- `minor`: clarity or completeness improvement that does not block.
-
-## Material findings
-
-For every material finding, include evidence, the required outcome, and a safe resolution path.
-
-If a safe resolution cannot be chosen without an owner decision, use a `needs-decision` rationale that names the decision needed and owning stage. A material finding lacking evidence, required outcome, or safe resolution or `needs-decision` rationale is incomplete.
+Severity is `blocking` for unsafe guessing, `major` for important pre-implementation gaps, and `minor` for non-blocking clarity. Every material finding has evidence, required outcome, and safe resolution or owner-naming `needs-decision` rationale.
 
 ## Routing and testability assessment
 
-Keep immediate routing separate from eventual testability.
+Use exactly one review status: `approved`, `changes-requested`, `blocked`, or `inconclusive`.
 
-`Immediate next stage` is the routing field. Use only:
+`Immediate next stage` is `spec revision`, `review-resolution`, `architecture`, `plan`, or `none`; never `test-spec`. Approved uses required unsettled `architecture`, otherwise `plan`; changes requested uses revision or resolution; blocked uses resolution or none; inconclusive uses none.
 
-```text
-spec revision
-review-resolution
-architecture
-plan
-none
-```
+`Eventual test-spec readiness` is `ready`, `conditionally-ready`, or `not-ready`. A result is approved only when `Eventual test-spec readiness` is `ready` or `conditionally-ready`; name the condition. Other statuses use `not-ready`.
 
-Do not put `test-spec` in `Immediate next stage`.
-
-The values `architecture` and `plan` are forward repository-stage handoff values. The values `spec revision`, `review-resolution`, and `none` are revision, disposition, or no-handoff routing values.
-
-Bind routing to review status:
-
-- `approved` uses `architecture` when architecture remains required, or `plan` when architecture is not required or already settled.
-- `changes-requested` uses `spec revision` or `review-resolution`.
-- `blocked` uses `review-resolution` or `none`.
-- `inconclusive` uses `none`.
-
-Under an explicitly authorized workflow-managed `bounded-review-fix` run, approved spec-review must be followed by recorded architecture assessment before any automation-driven downstream action. The assessment records exactly one of `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; `architecture-ambiguous` is a stop condition rather than permission to choose a path.
-
-`Eventual test-spec readiness` is the quality assessment. Use only:
-
-```text
-ready
-conditionally-ready
-not-ready
-```
-
-Do not report `Review status: approved` unless `Eventual test-spec readiness` is `ready` or `conditionally-ready`.
-
-`conditionally-ready` names the condition. Use `not-ready` for `changes-requested`, `blocked`, or `inconclusive` outcomes.
-
-If required inputs are missing, use `Review status: inconclusive`, `Immediate next stage: none`, `Eventual test-spec readiness: not-ready`, and an explicit stop condition.
+Missing required inputs produce `Review status: inconclusive`, `Immediate next stage: none`, `Eventual test-spec readiness: not-ready`, and an exact stop condition. Workflow-managed approval routes first to recorded architecture assessment; `architecture-ambiguous` stops rather than selecting a path.
 
 ## Isolation and Recording
 
@@ -221,41 +125,42 @@ For an isolated review with material findings, the final review output must stat
 - whether the record must be created before fixing or reconstructed
 - whether owner decision is needed
 
-## Authoring Profile Review Independence
+## Boundary-first method
 
-For automated `bounded-review-fix` authoring, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any automation-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
+Run this compact scan before any stage-owned decision that can change observable behavior, and whenever the input cites an active boundary contract or stable boundary, interaction, or proof ID. Do not wait for the user to name the method.
 
-## Automated Manifest Pilot
+1. Which inputs or actors can change the outcome?
+2. Which state or timing conditions can change the outcome?
+3. Which public, sibling, helper, or alternate path can change the outcome?
+4. Which failure, retry, recovery, compatibility, or external condition can change the outcome?
 
-During Phase 1 of independent automated review rollout, workflow-managed automated `spec-review` should at least record a review invocation manifest before automated handoff. This is manifest-only evidence for `spec-review`; it does not yet require the full blind-first automated review protocol unless a later approved slice adopts it.
+If the work is non-behavioral, cites no active boundary identity, and the scan finds no outcome-changing condition, continue under the ordinary stage contract. The scan alone does not create a formal record, ID, proof map, artifact, or user-visible scenario inventory.
+
+Start with the exact approved rows cited for the current decision. Expand approved context only when an ID or outcome is missing, stale, unknown, ambiguous, conflicting, escaped, or insufficient to explain observed behavior. A new or changed normative outcome routes to `spec`; a proof-only gap routes to `test-spec`. Downstream stages do not redefine or rename upstream IDs.
+
+Add a scenario only for a distinct outcome or material authority, trust, state, timing, recovery, path, compatibility, external-dependency, incident, or regression hazard. Stop when every applicable boundary and selected interaction has direct proof; do not build a Cartesian inventory.
+
+Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
+
+Judge applicability, boundary completeness, interactions, invariants, outcomes, and example ownership. Structural validation proves only shape, closed values, and references. Stop review with a material finding when semantic ownership is absent, a dimension is unjustifiably inapplicable, an interaction or outcome is missing, an example invents behavior, or a substantive revision has not adopted the contract.
+
+## Stop conditions and claims
+
+Stop on unresolved target identity, ambiguous review classification, unsafe or failed recording, missing or stale governed authority, conflicting resource procedure, missing triggered resources, illegal transition, or owner decision. Keep findings visible when recording is blocked.
+
+Do not claim architecture, plan, test-spec, implementation, verification, branch, or PR completion. Direct reviews stop after recording. Governed reviews settle only their exact spec entry after recording and return control to workflow; the reviewer never advances routing.
 
 Direct or review-only `spec-review` requests remain isolated by default.
 
-## Requirement-Fidelity Manual Opt-In
+## Resource map
 
-Manual reviews may voluntarily apply the requirement-fidelity gate and record a fidelity receipt.
+- READ `references/governed-spec-review-settlement.md` exactly for `governed-spec-entry`, after authority is established. Settlement inside the reference waits for universal recording. Stop dependent settlement or automation if the reference is missing or unreadable.
+- READ `references/boundary-first-method-v1.md` when reviewing a `boundary-first-v1` behavior contract.
+- READ `references/boundary-first-feature-authoring-v1.md` when judging formal boundary-record completeness or a substantive grandfathered revision, after the method reference.
+- COPY `assets/review-result-skeleton.md` for every formal result. Fill: the formal core and recording groups plus only applicable governed-settlement, boundary-review, and automated-review groups. Omit inapplicable groups; report applicable unavailable data as blocked or unknown with its blocker. Do not emit unfilled placeholders.
+- COPY `assets/material-finding.md` exactly once per material finding. Fill: the fields defined in the asset, including Finding ID:, and confirm the literal `Finding ID:` line before linking it. Do not emit unfilled placeholders.
 
-Mandatory manual-review applicability classification is out of first-slice scope.
-
-Direct or review-only requests remain isolated by default.
-
-## Rules
-
-- Do not approve vague or untestable `MUST` requirements.
-- Do not assume examples cover all edge cases.
-- Do not collapse spec review into plan or code review.
-- Do not require implementation detail unless it is needed for the observable contract.
-- Do not edit the spec unless the user explicitly asks.
-- When the review outcome is `approved`, write the review evidence first and then settle only the matching spec entry in `change.yaml`.
-  Do not edit the spec, other artifact entries, milestone state, or routing.
-- Follow the routing and testability assessment contract for every review result.
-
-## Workflow handoff behavior
-
-- Direct or review-only `spec-review` requests remain isolated by default.
-- In v1, `spec-review` does not auto-continue into `architecture`, `plan`, or `test-spec` by default; it reports review outcome, `Immediate next stage`, eventual `test-spec` readiness, and any stop condition, then stops there unless the user explicitly requests a later stage.
-- Only an explicitly authorized workflow-managed `bounded-review-fix` run may continue from review into the next authoring stage. A clean recorded spec-review routes to recorded architecture assessment before `architecture` or `plan`.
-- Keep all other review-to-next-authoring transitions out of scope in this skill's wording.
+Do not emit unfilled placeholders. Any missing, unreadable, escaped, contradictory, or mixed-version triggered resource stops dependent work. Do not reconstruct procedure or layout from memory; an untriggered resource does not load or block.
 
 ## Evidence collection efficiency
 
@@ -270,15 +175,19 @@ Read exact ranges after locating relevant lines, then expand only when the narro
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
+## Expected output
+
+Copy the result asset and applicable conditional groups, then the finding asset once per material finding. Assets own labels and layout only; this skill and its references own applicability, meaning, status, settlement, automation, and handoff.
+
+Report Review record, Review log, Review resolution, material Finding IDs, exact wording suggestions, the immediate next stage, eventual test-spec readiness, and any stop condition.
+
+Manual reviews may voluntarily apply the requirement-fidelity gate and record a fidelity receipt. Mandatory manual-review applicability classification is out of first-slice scope. Direct or review-only requests remain isolated by default.
+
 ## Output skeleton
 
 ```md
-COPY `assets/review-result-skeleton.md` for <spec review result>.
+COPY `assets/review-result-skeleton.md` for the formal review result.
 COPY `assets/material-finding.md` once per material finding.
+Fill <core and applicable conditional groups> required by this skill.
 Do not emit unfilled placeholders.
 ```
-
-## Expected output
-
-Use the `## Output skeleton` guidance and review-result asset structure.
-Include Review record, Review log, Review resolution, findings, exact wording suggestions, next stage, `test-spec` readiness, and any stop condition.
