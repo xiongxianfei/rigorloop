@@ -8061,11 +8061,10 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             body = self.review_contract_body(skill_name)
             normalized = " ".join(body.split())
             with self.subTest(skill=skill_name):
-                expected_heading = (
-                    "## Formal-only settlement"
-                    if skill_name == "test-spec-review"
-                    else "## Change-record review settlement"
-                )
+                expected_heading = {
+                    "proposal-review": "## Formal lifecycle settlement",
+                    "test-spec-review": "## Formal-only settlement",
+                }.get(skill_name, "## Change-record review settlement")
                 self.assertIn(expected_heading, normalized)
                 self.assertIn(settlement, normalized)
                 for phrase in required:
