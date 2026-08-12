@@ -18,6 +18,7 @@ Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
 Review closeout: code-review-m2-r1
 Review closeout: code-review-final-r1
+Review closeout: code-review-final-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `proposal-review-r5`, `proposal-review-r6`
 - Findings resolved: 10
@@ -67,6 +68,12 @@ Validation evidence: CMD2-CMD5 passed; `reviews/code-review-m2-r2.md` reconciles
 Review closeout: code-review-final-r1
 
 No material findings; no resolution entry required. The final holistic review found the complete branch diff clean with notes and authorized handoff to durable rationale and final verification.
+
+### code-review-final-r2
+
+Review closeout: code-review-final-r2
+
+No material findings; no resolution entry required. The post-rationale review approved the bounded evidence-registration deferrals and preserved the complete branch review.
 
 ### proposal-review-r1
 

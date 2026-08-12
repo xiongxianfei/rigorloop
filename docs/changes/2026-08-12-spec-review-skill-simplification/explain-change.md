@@ -34,6 +34,7 @@ The former common path repeated orientation, routing, recording, settlement, aut
 | Coupled skill contracts | Amended the published-skill and spec-family resource contracts. | The approved new reference and structural groups must have explicit governing ownership. | R41-R44; boundary and skill validation. |
 | Change-local ledgers and fixtures | Recorded semantic dispositions, literal classifications, closed scenarios, invalid values, baseline, measurements, and semantic review. | No significant rule may disappear, and incidental test wording must not become policy. | R33-R40; CMD1 and MP1. |
 | Lifecycle evidence | Recorded proposal through final code-review decisions, the M2 correction, and milestone proof. | Formal workflow state must match the actual review and correction history. | Review log, resolution, change metadata, and M1-M3 reviews. |
+| Evidence-routing deferrals | Recorded five exact repository-maintainer deferrals for one-change ledgers and fixtures. | Their approved CMD1 and MP1 proof remains mandatory without creating a permanent generic simplicity-evidence class. | Validation selector: 12 checks, zero blockers, five visible owner-deferred debts. |
 
 The existing boundary-first references and material-finding asset were not redesigned. Their identities remain governed by the existing boundary contract.
 
@@ -66,6 +67,7 @@ Fourteen material findings are closed with accepted dispositions. Proposal and s
 - Multiple small settlement and automation references would add package and trigger complexity without independent authority boundaries.
 - A generic checklist would remove repository-specific lifecycle, recording, boundary, and claim rigor.
 - Target-agent journeys, permanent size gates, or a new tokenizer would add unrelated nondeterministic machinery.
+- A permanent selector class for five one-change evidence files would contradict their change-local role; exact owner deferrals preserve proof and keep registration debt visible.
 
 ## Scope control
 

@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: code-review-final-r2
+review_stage: code-review
+review_target: commit:d7a1e4c4
+base_revision: 2a28343a
+head_revision: d7a1e4c4
+native_review_status: clean-with-notes
+review_gate_outcome: continue
+independence_level: L1
+author_context_id: root-verify-routing-deferral
+reviewer_context_id: root-code-review-final-r2-context-reset
+context_separation_mechanism: same-session-blind-first-context-reset
+risk_tier: standard
+risk_tier_triggers: [lifecycle-metadata, validation-selection, pre-verify-head]
+governing_artifacts:
+  - docs/changes/2026-08-12-spec-review-skill-simplification/change.yaml
+  - specs/spec-review-skill-simplification.test.md
+formal_criteria: [code-review-v1]
+initial_packet_inventory:
+  - path: commit:d7a1e4c4.diff
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+requirement_fidelity:
+  applicability: applicable
+  result: pass
+  evidence: approved CMD1 and MP1 remain mandatory for all five exact paths
+second_review: {required: false, satisfied: true, result: not-required}
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]
+prior_finding_reconciliation: {}
+risk_map:
+  affected_behavior: selector treatment of five one-change ledgers and fixtures
+  highest_impact_failure_modes: permanent generic policy is added accidentally; evidence becomes unvalidated; a path remains blocking
+  changed_boundaries: [validation-selection, lifecycle-metadata]
+  evidence_expected: exact path entries, complete required fields, CMD1 and MP1 retained, selector zero blockers
+  direct_inspection_areas: [change metadata deferrals, selector output, approved proof commands]
+  intentionally_out_of_scope: [skill behavior, package behavior, selector implementation]
+  applicable_risk_classes: [evidence-integrity, lifecycle-coherence]
+  non_applicable_risk_classes: [credentials, database-migration, network-publication]
+  falsifiable_questions:
+    - Does every previously blocked path have one complete exact deferral?
+    - Do CMD1 and MP1 remain required for the deferred evidence?
+    - Does selection report zero blockers while retaining visible registration debt?
