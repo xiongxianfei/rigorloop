@@ -34,6 +34,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: proposal-review-r4
+Stage: proposal-review
+Round: r4
+Reviewed artifact: `docs/proposals/2026-08-12-spec-review-skill-simplification.md` at commit `1486d726`
+Status: changes-requested
+Detailed record: reviews/proposal-review-r4.md
+Resolution: review-resolution.md#proposal-review-r4
+Material findings: SRSIM-R4-PR1
+Open findings: SRSIM-R4-PR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: proposal-review-r3
 Stage: proposal-review
 Round: r3
