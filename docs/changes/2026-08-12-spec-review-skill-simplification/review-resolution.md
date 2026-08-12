@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -28,6 +28,7 @@ Review closeout: proposal-review-r5
 | `SRSIM-R3-PR1` | accepted | resolved | Defined mutually exclusive non-formal feedback and formal review core groups in the existing result asset. |
 | `SRSIM-R4-PR1` | accepted | resolved | Removed non-formal profiles and alternate result cores, leaving only formal and formal-boundary assemblies. |
 | `SRSIM-R5-PR1` | accepted | resolved | Kept universal recording inline and moved only governed settlement and automation into the conditional reference. |
+| `SRSS-SR1` | accepted | resolved | Closed the canonical finding-asset path to `assets/material-finding.md`. |
 
 ## Finding details
 
@@ -172,6 +173,22 @@ Validation evidence: The proposal now defines isolated profiles without the new 
 Review closeout: proposal-review-r6
 
 No material findings; no resolution entry required. The same-stage proposal-review rerun approved the revised proposal and closed all findings through `proposal-review-r5`.
+
+### spec-review-r1
+
+#### SRSS-SR1
+
+Finding ID: SRSS-SR1
+Disposition: accepted
+Status: resolved
+Owner: spec author
+Owning stage: spec
+Chosen action: Replace the alternative asset-name clause with the exact existing canonical path `assets/material-finding.md`.
+Rationale: The finding is correct; a deterministic package contract must name one resource identity.
+Required outcome: Name the canonical existing asset and remove the alternative-name escape clause.
+Safe resolution path: Make the one-line R1 correction and rerun formal spec review.
+Validation target: Fresh spec-review plus metadata, lifecycle, review-artifact, readability, and diff validation.
+Validation evidence: Pending spec revision and rereview.
 
 ## Shared validation evidence
 
