@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -13,6 +13,8 @@ Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: spec-review-r3
 Review closeout: spec-review-r4
+Review closeout: test-spec-review-r1
+Review closeout: test-spec-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `proposal-review-r5`, `proposal-review-r6`
 - Findings resolved: 9
@@ -35,7 +37,7 @@ Review closeout: spec-review-r4
 | `SRSS-SR1` | accepted | resolved | Closed the canonical finding-asset path to `assets/material-finding.md`. |
 | `SRSS-SR2` | accepted | resolved | Expanded boundary requirement sets and corrected example ownership under the checked contract. |
 | `SRSS-PL1` | accepted | resolved | Replaced the adapter-proof placeholder with one exact recoverable command. |
-| `SRSS-TSR1` | accepted | open | Remove final profile comparison from the M1 proof gate and retain it in M3. |
+| `SRSS-TSR1` | accepted | resolved | Removed final profile comparison from the M1 proof gate and retained it in M3. |
 
 ## Finding details
 
@@ -253,7 +255,7 @@ No material findings; no resolution entry required. The same-stage plan-review r
 
 Finding ID: SRSS-TSR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Chosen action: Replace the M1 range containing T8 with the exact baseline-valid set `T6, T7, T9, T14`.
@@ -261,7 +263,13 @@ Rationale: T8 needs the completed refactor and is owned by M3; M1 can establish 
 Required outcome: Make every milestone gate executable at the point where the plan requires it.
 Safe resolution path: Apply the one-row mapping correction, preserve T8 in M3, and rerun formal test-spec review.
 Validation target: Boundary proof validation, lifecycle validation, and fresh test-spec review.
-Validation evidence: Pending test-spec revision and rereview.
+Validation evidence: The M1 proof map names only baseline-valid tests; boundary validation passes and test-spec-review-r2 approved the corrected proof map.
+
+### test-spec-review-r2
+
+Review closeout: test-spec-review-r2
+
+No material findings; no resolution entry required. The same-stage test-spec-review rerun approved the revised proof map and closed `SRSS-TSR1`.
 
 ## Shared validation evidence
 
@@ -277,5 +285,5 @@ Validation evidence: Pending test-spec revision and rereview.
 
 - [x] Every material finding has a final disposition.
 - [x] Every accepted finding has a chosen action.
-- [ ] Every accepted finding has validation evidence.
-- [ ] No findings remain open.
+- [x] Every accepted finding has validation evidence.
+- [x] No findings remain open.
