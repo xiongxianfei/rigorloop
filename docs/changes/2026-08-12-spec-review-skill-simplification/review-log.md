@@ -21,6 +21,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: spec-review-r4
+Stage: spec-review
+Round: r4
+Reviewed artifact: `specs/spec-review-skill-simplification.md` at commit `f60f7ded`
+Status: approved
+Detailed record: reviews/spec-review-r4.md
+Resolution: review-resolution.md#spec-review-r4
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: spec-review-r3
 Stage: spec-review
 Round: r3
@@ -29,7 +42,7 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r3.md
 Resolution: review-resolution.md#spec-review-r3
 Material findings: SRSS-SR2
-Open findings: SRSS-SR2
+Open findings: None
 Recording status: recorded
 
 ### Review entry

@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -11,6 +11,8 @@ Review closeout: proposal-review-r4
 Review closeout: proposal-review-r5
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
+Review closeout: spec-review-r3
+Review closeout: spec-review-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `proposal-review-r5`, `proposal-review-r6`
 - Findings resolved: 9
@@ -31,7 +33,7 @@ Review closeout: plan-review-r1
 | `SRSIM-R4-PR1` | accepted | resolved | Removed non-formal profiles and alternate result cores, leaving only formal and formal-boundary assemblies. |
 | `SRSIM-R5-PR1` | accepted | resolved | Kept universal recording inline and moved only governed settlement and automation into the conditional reference. |
 | `SRSS-SR1` | accepted | resolved | Closed the canonical finding-asset path to `assets/material-finding.md`. |
-| `SRSS-SR2` | accepted | open | Expand boundary requirement sets and correct example ownership before same-stage rereview. |
+| `SRSS-SR2` | accepted | resolved | Expanded boundary requirement sets and corrected example ownership under the checked contract. |
 | `SRSS-PL1` | accepted | resolved | Replaced the adapter-proof placeholder with one exact recoverable command. |
 
 ## Finding details
@@ -206,7 +208,7 @@ No material findings; no resolution entry required. The same-stage spec-review r
 
 Finding ID: SRSS-SR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: spec author
 Owning stage: spec
 Chosen action: Expand every boundary range into explicit requirement IDs and narrow example ownership to requirements jointly governed by every cited boundary.
@@ -214,7 +216,13 @@ Rationale: The checked boundary contract requires deterministic explicit identit
 Required outcome: Make the feature boundary record pass repository validation without altering the intended behavioral contract.
 Safe resolution path: Apply the mechanical serialization and ownership correction, rerun the boundary validator, and complete a fresh formal spec review.
 Validation target: `python scripts/validate-boundary-first.py --check --path specs/spec-review-skill-simplification.md`
-Validation evidence: Pending spec revision and rereview.
+Validation evidence: The corrected feature and proof records pass `python scripts/validate-boundary-first.py --check --path specs/spec-review-skill-simplification.md`; spec-review-r4 approved the result.
+
+### spec-review-r4
+
+Review closeout: spec-review-r4
+
+No material findings; no resolution entry required. The same-stage spec-review rerun approved the corrected boundary record and closed `SRSS-SR2`.
 
 ### plan-review-r1
 
@@ -252,5 +260,5 @@ No material findings; no resolution entry required. The same-stage plan-review r
 
 - [x] Every material finding has a final disposition.
 - [x] Every accepted finding has a chosen action.
-- [ ] Every accepted finding has validation evidence.
-- [ ] No findings remain open.
+- [x] Every accepted finding has validation evidence.
+- [x] No findings remain open.
