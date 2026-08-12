@@ -50,13 +50,11 @@ Use exactly these resource assemblies:
 
 ## Review inputs and evidence
 
-Read the proposal and original user intent first. Use the smallest sufficient project-local evidence: `VISION.md` or `CONSTITUTION.md` when standing authority matters, then linked research, exploration, specs, ADRs, plans, learn sessions, project map, workflow guidance, or code only when the proposal relies on them. Public skills use customer-project evidence and portable defaults; do not require RigorLoop-internal files outside this repository.
-
-For change-backed review, use prior log and resolution only to inspect prior findings or dispositions. Read complete `change.yaml` only for formal settlement, forensic reconstruction, disputed evidence, or whole-record review. Expand bounded evidence when missing, stale, contradictory, or context-sensitive; read the full proposal because it is the review target.
+Read the complete proposal and original intent first. Add only evidence the proposal relies on: standing authority, linked research or artifacts, workflow guidance, or current code. Use prior review evidence for prior findings, and read complete `change.yaml` only for formal settlement, reconstruction, dispute, or whole-record review.
 
 ## Project-local evidence
 
-Public skills operate in customer-project mode by default. Use project-local proposal, intent, standing authority, workflow guidance, and linked evidence when present. Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, `CONSTITUTION.md`, or `AGENTS.md` in a customer project; use portable defaults where safe and block on ambiguity. Consult `docs/workflows.md` when project-local routing or placement depends on it.
+Public skills operate in customer-project mode by default. Use project-local evidence and portable defaults; do not require RigorLoop repository-internal files outside this repository. Consult `docs/workflows.md` for project-local routing or placement and block on ambiguity.
 
 ## Evidence access
 
@@ -72,7 +70,7 @@ Conditional evidence:
 - `docs/workflows.md` when workflow behavior or artifact placement is proposed
 - code only when the proposal depends on current implementation reality
 
-Bounded discovery is not evidence expansion. Record a compact reason only when reading substantive evidence outside the default and triggered conditional set. Expand to a broader section or full-file read when bounded evidence is incomplete, contradictory, or insufficient.
+Bounded discovery is not evidence expansion. Record a compact reason only when reading substantive evidence outside the default and triggered conditional set. Expand further only when bounded evidence is incomplete, contradictory, or insufficient.
 
 ## Artifact placement
 
@@ -98,7 +96,7 @@ Judge every proposal across:
 | Rollout realism | Are migration, adoption, and rollback proportionate? |
 | Readiness for spec | Are remaining questions small enough for contract authoring? |
 
-Use dimension results `pass`, `concern`, or `block`. Ask adversarially what would make the proposal a bad investment, what simpler option was dismissed, what cost is deferred, who could be harmed or confused, what must not change, and what proof would establish value.
+Use `pass`, `concern`, or `block`. Challenge investment value, simpler dismissed options, deferred cost, affected users, invariants, and proof of value.
 
 ### Vision fit
 
@@ -180,7 +178,7 @@ For an isolated review with material findings, the final review output must stat
 
 ## Isolation and handoff
 
-Direct and review-only requests remain isolated even when durable recording is required. `advisory-durable` never settles lifecycle state or reports formal next-stage eligibility. `formal-lifecycle` may settle only the exact same-change proposal entry after recording; it never advances workflow. Workflow-managed continuation returns control to workflow, and only `formal-lifecycle/workflow-managed-automated` may use automation-only procedure.
+Direct and review-only requests remain isolated. `advisory-durable` never settles or reports formal eligibility; `formal-lifecycle` settles only the exact same-change proposal entry after recording and never advances workflow. Only `formal-lifecycle/workflow-managed-automated` uses automation procedure before returning control to workflow.
 
 Direct or review-only `proposal-review` requests remain isolated by default.
 
@@ -214,7 +212,7 @@ Read the full file when the whole file is the review target, the relevant sectio
 
 ## Expected output
 
-Copy the result asset and include its core group plus only applicable conditional groups. Inapplicable groups are omitted; applicable groups with unavailable data report explicit `blocked` or `unknown` state and blocker. The assets own labels and layout only; this file and applicable references own meaning, applicability, status, authority, and handoff.
+Copy the result asset with the core and applicable conditional groups. Omit inapplicable groups; report unavailable required data as `blocked` or `unknown` with its blocker. Assets own layout only; skill procedure owns meaning and authority.
 
 ## Output skeleton
 
