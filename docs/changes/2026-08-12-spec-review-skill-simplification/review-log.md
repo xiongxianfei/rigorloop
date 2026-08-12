@@ -21,6 +21,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: plan-review-r2
+Stage: plan-review
+Round: r2
+Reviewed artifact: `docs/plans/2026-08-12-spec-review-skill-simplification.md` at commit `cb256df9`
+Status: approved
+Detailed record: reviews/plan-review-r2.md
+Resolution: review-resolution.md#plan-review-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: plan-review-r1
 Stage: plan-review
 Round: r1

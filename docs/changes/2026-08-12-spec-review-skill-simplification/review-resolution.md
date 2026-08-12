@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -10,6 +10,7 @@ Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
 Review closeout: proposal-review-r5
 Review closeout: spec-review-r1
+Review closeout: plan-review-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `proposal-review-r5`, `proposal-review-r6`
 - Findings resolved: 9
@@ -213,6 +214,12 @@ Required outcome: Provide one exact repository-valid temporary adapter proof com
 Safe resolution path: Add the current `v0.1.5` command and rerun plan review.
 Validation target: Fresh plan review plus metadata, lifecycle, review-artifact, readability, and diff validation.
 Validation evidence: The plan now includes the exact current-version temporary adapter proof command; same-stage rereview remains required.
+
+### plan-review-r2
+
+Review closeout: plan-review-r2
+
+No material findings; no resolution entry required. The same-stage plan-review rerun approved the revised plan and closed `SRSS-PL1`.
 
 ## Shared validation evidence
 
