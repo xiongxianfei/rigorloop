@@ -2,17 +2,18 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r3
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
+Review closeout: code-review-m2-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r3`, `test-spec-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r3`, `test-spec-review-r1`, `code-review-m2-r1`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Current result: test-spec revision R2 resolves every finding and is approved for implementation handoff.
+- Unresolved findings: 1
+- Current result: M2 requires one accepted mechanical correction and independent rereview.
 
 ## Resolution Overview
 
@@ -24,6 +25,7 @@ Review closeout: test-spec-review-r2
 | `PRRSIM-PR3` | accepted | resolved | Defined one core and four conditional result-asset groups without moving policy into the asset. |
 | `PRRSIM-TSR1` | accepted | resolved | Split baseline-executable M1 proof from post-refactor M3 measurement proof. |
 | `PRRSIM-TSR2` | accepted | resolved | Added direct interrupted-retry reconciliation and conflicting review-ID proof. |
+| `PRRSIM-CR-M2-R1-001` | accepted | open | Remove duplicated formal record placement and settlement prose, then migrate the incidental exact-string consumer. |
 
 ## Common Resolution Metadata
 
@@ -112,6 +114,20 @@ Rationale: Temporal ownership is not proved by initial-write scenarios alone.
 Validation target: revised temporal proof obligation, test case, fixtures, expected failure behavior, and independent rereview.
 Validation evidence: revised T4, temporal proof mappings, edge coverage, and `evidence/test-spec-revision-r2.md`
 
+### code-review-m2-r1
+
+#### PRRSIM-CR-M2-R1-001 - Remove validator-preserved duplicate ownership
+
+Finding ID: PRRSIM-CR-M2-R1-001
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: implement
+Chosen action: Retain one artifact-placement statement and one formal-settlement section, update the incidental validator consumer to use the canonical heading, and rerun skill validation before rereview.
+Rationale: Exact-string compatibility must not force duplicate published procedure or undermine the simplification objective.
+Validation target: focused proposal-review validator test, complete skill validator suite, target skill validation, generated-skill drift check, and independent M2 rereview.
+Validation evidence: pending correction
+
 ## Closeout Checklist
 
 - [x] Every material finding has a disposition.
@@ -122,4 +138,5 @@ Validation evidence: revised T4, temporal proof mappings, edge coverage, and `ev
 - [x] Final revision validation evidence is recorded for R3 findings.
 - [x] Independent proposal rereview approves revision R4.
 - [x] `PRRSIM-TSR1` and `PRRSIM-TSR2` are resolved by reviewed test-spec revision R2.
-- [x] Closeout status is closed.
+- [ ] `PRRSIM-CR-M2-R1-001` correction is validated and independently rereviewed.
+- [ ] Closeout status is closed.
