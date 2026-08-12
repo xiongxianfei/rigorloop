@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -31,6 +31,7 @@ Review closeout: plan-review-r1
 | `SRSIM-R4-PR1` | accepted | resolved | Removed non-formal profiles and alternate result cores, leaving only formal and formal-boundary assemblies. |
 | `SRSIM-R5-PR1` | accepted | resolved | Kept universal recording inline and moved only governed settlement and automation into the conditional reference. |
 | `SRSS-SR1` | accepted | resolved | Closed the canonical finding-asset path to `assets/material-finding.md`. |
+| `SRSS-SR2` | accepted | open | Expand boundary requirement sets and correct example ownership before same-stage rereview. |
 | `SRSS-PL1` | accepted | resolved | Replaced the adapter-proof placeholder with one exact recoverable command. |
 
 ## Finding details
@@ -199,6 +200,22 @@ Review closeout: spec-review-r2
 
 No material findings; no resolution entry required. The same-stage spec-review rerun approved the revised specification and closed `SRSS-SR1`.
 
+### spec-review-r3
+
+#### SRSS-SR2
+
+Finding ID: SRSS-SR2
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec
+Chosen action: Expand every boundary range into explicit requirement IDs and narrow example ownership to requirements jointly governed by every cited boundary.
+Rationale: The checked boundary contract requires deterministic explicit identities and shared boundary ownership for each example.
+Required outcome: Make the feature boundary record pass repository validation without altering the intended behavioral contract.
+Safe resolution path: Apply the mechanical serialization and ownership correction, rerun the boundary validator, and complete a fresh formal spec review.
+Validation target: `python scripts/validate-boundary-first.py --check --path specs/spec-review-skill-simplification.md`
+Validation evidence: Pending spec revision and rereview.
+
 ### plan-review-r1
 
 #### SRSS-PL1
@@ -235,5 +252,5 @@ No material findings; no resolution entry required. The same-stage plan-review r
 
 - [x] Every material finding has a final disposition.
 - [x] Every accepted finding has a chosen action.
-- [x] Every accepted finding has proposal-level validation evidence.
-- [x] No findings remain open.
+- [ ] Every accepted finding has validation evidence.
+- [ ] No findings remain open.
