@@ -232,6 +232,7 @@ PACKAGED_NON_ASSET_RESOURCE_ALLOWLIST = {
     ("code-review", "references/workflow-managed-automated-review.md"),
     ("proposal-review", "references/proposal-review-recording-and-settlement.md"),
     ("proposal-review", "references/conditional-proposal-gates.md"),
+    ("spec-review", "references/governed-spec-review-settlement.md"),
     ("test-spec-review", "references/test-spec-review-recording-and-settlement.md"),
 }
 
@@ -518,6 +519,15 @@ SPEC_REVIEW_ASSET_APPROVED_LABELS = {
     "immediate-next-stage",
     "eventual-test-spec-readiness",
     "stop-condition",
+    "settlement-mode",
+    "settlement-status",
+    "governed-change-identity",
+    "boundary-applicability",
+    "boundary-resources",
+    "boundary-blocker",
+    "automation-mode",
+    "automation-evidence",
+    "automation-result",
     "finding-id",
     "severity",
     "location",
@@ -1779,11 +1789,12 @@ def _has_conditional_review_resolution_behavior(text: str) -> bool:
 def _has_isolated_advisory_carveout(text: str) -> bool:
     normalized = _normalized_prose(text)
     return (
-        "isolated advisory" in normalized
+        ("isolated advisory" in normalized or "outside `spec-review`" in normalized)
         and (
             "do not create lifecycle artifacts" in normalized
             or "without lifecycle artifacts" in normalized
             or "no formal recording" in normalized
+            or "no lifecycle artifacts" in normalized
         )
     )
 

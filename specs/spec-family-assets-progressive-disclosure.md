@@ -80,7 +80,7 @@ SFA-R7. `spec` MUST use `assets/spec-skeleton.md` as its full output skeleton un
 
 SFA-R8. `spec` MUST include only `spec-skeleton.md` in this slice unless the plan records the required exception justification. Requirement, acceptance-criterion, and decision-log row shapes remain inline because they are trivial relative to their metadata and are already governed by inline format guidance.
 
-SFA-R9. `spec-review` MUST use only `review-result-skeleton.md` and `review-finding.md` assets in this slice.
+SFA-R9. `spec-review` MUST use only `review-result-skeleton.md` and `material-finding.md` assets. A later approved simplification MAY add skill-local references while keeping these assets structural.
 
 SFA-R10. `spec-review` MUST NOT include a review-dimension row asset, a full review-dimensions asset, or any asset that defines review dimensions or review judgment.
 
@@ -331,3 +331,9 @@ active-plan handoff ownership to
 
 Spec-family asset packaging, progressive disclosure, boundary guidance, and
 evidence-access behavior remain governed here.
+
+## Spec-review simplification amendment
+
+The approved [Spec-Review Skill Simplification](spec-review-skill-simplification.md) permits one additional mapped reference, `references/governed-spec-review-settlement.md`, owned by the `spec-review` package. `SKILL.md` remains self-sufficient for isolated formal judgment and recording; the reference owns only exact governed settlement and workflow-managed automation procedure.
+
+The result asset may contain one formal core, one required recording group, and governed-settlement, boundary-review, and automated-review conditional groups. Inapplicable groups are omitted. Assets remain structural and do not decide applicability, status, recording, settlement, automation, or handoff.
