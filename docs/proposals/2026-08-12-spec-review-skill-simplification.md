@@ -14,7 +14,7 @@ The optimization must respect existing contracts that require review dimensions,
 
 ## Goals
 
-- Make ordinary direct spec review materially shorter and easier to scan without weakening contract judgment or downstream safety.
+- Make the universal review contract materially shorter and easier to scan, and remove duplicated procedure from the loaded formal-review profiles without weakening contract judgment or downstream safety.
 - Keep `SKILL.md` self-sufficient for review classification, evidence, review dimensions, material findings, statuses, routing, readiness, isolation, universal recording obligations, lifecycle boundaries, stops, claims, and resource selection.
 - Give detailed durable recording and exact formal settlement one conditional owner.
 - Preserve the checked inline boundary scan while relying on existing boundary references for full boundary vocabulary and feature-record procedure.
@@ -120,32 +120,44 @@ skills/spec-review/
     └── material-finding.md
 ```
 
-### Closed invocation predicates
+### Review classification and authority axes
 
-Classify these predicates from current evidence before dependent side effects:
+Classify four independent axes from current evidence before dependent writes, settlement, automation, or claims:
 
-| Predicate | True when | False when |
+| Axis | Closed values | Governing rule |
 | --- | --- | --- |
-| `durable_recording_context` | The invocation is formal lifecycle review, explicitly requests durable recording, produces a material finding, or returns `changes-requested`, `blocked`, or `inconclusive`. | A clean isolated advisory review has no durable request or governing recording trigger. |
-| `formal_lifecycle_context` | A current governed change resolves exactly one `spec` entry for this artifact in a reviewable state and grants spec-review settlement authority. | A direct request, an advisory recording root, ambiguous identity, or conversational wording alone. |
-| `workflow_automated_context` | Current durable workflow authorization selects automated `spec-review` for the same governed change and spec entry. | Manual review, stale or mismatched authorization, or prompt wording alone. |
-| `boundary_first_context` | The reviewed behavior contract is governed by active `boundary-first-v1`, or current checked-revision adoption makes the boundary contract applicable. | Non-behavioral or grandfathered non-substantive review with no active boundary contract. |
-| `formal_boundary_record_context` | Review must judge the formal boundary record or a substantive grandfathered revision. | The compact scan suffices and no formal record completeness decision is required. |
+| `review_kind` | `formal-lifecycle`, `non-formal-review-like` | Every supported `spec-review` invocation is `formal-lifecycle`; the non-formal value is limited to existing feedback-like requests that do not claim a lifecycle review result. |
+| `recording_mode` | `required`, `not-required` | Every `formal-lifecycle` review requires durable recording, including clean direct reviews; only `non-formal-review-like` may be `not-required`. |
+| `settlement_mode` | `isolated`, `governed-spec-entry` | Direct wording, a generated recording root, or a material finding never grants settlement; only current evidence resolving the exact same change, spec artifact, and reviewable spec entry permits `governed-spec-entry`. |
+| `automation_mode` | `manual`, `workflow-managed-automated` | Automation requires current durable workflow authorization for the same governed change and spec entry; conversational wording, stale evidence, or mismatched identity is insufficient. |
 
-`workflow_automated_context` implies `formal_lifecycle_context`. `formal_boundary_record_context` implies `boundary_first_context`. Unknown, stale, contradictory, or ambiguous predicate evidence stops before the dependent judgment, write, or claim. Late discovery reclassifies and loads the required resource before final status or recording.
+The valid implications are closed: `formal-lifecycle` implies `recording_mode: required`, and `workflow-managed-automated` implies `settlement_mode: governed-spec-entry`. A direct formal review may create or use the minimal review-recording root allowed by the existing formal-review contract while remaining `settlement_mode: isolated`. An isolated review records evidence but never updates formal spec settlement or advances workflow. Unknown, stale, contradictory, or ambiguous evidence stops the dependent write, settlement, automation, or claim. Late discovery requires reclassification before final status or recording.
 
 ### Closed loaded-resource profiles
 
-Recording authority and boundary applicability remain independent, producing four resource assemblies:
+Formal recording and boundary applicability determine loaded resources; settlement and automation determine permitted branches inside the recording procedure rather than granting resources authority:
 
-| Profile | Durable procedure | Boundary procedure | Loaded resources |
-| --- | ---: | ---: | --- |
-| `SR0-core` | no | no | `SKILL.md` plus result asset; finding asset only when used |
-| `SR0B-boundary` | no | yes | core plus boundary method and, when formally required, feature-authoring reference |
-| `SR1-recorded` | yes | no | core plus recording-and-settlement reference |
-| `SR1B-recorded-boundary` | yes | yes | core plus recording reference and applicable boundary references |
+| Profile | Review kind | Boundary procedure | Loaded resources |
+| --- | --- | ---: | --- |
+| `SR0-non-formal` | `non-formal-review-like` | no | `SKILL.md` plus result asset; finding asset only when used |
+| `SR0B-non-formal-boundary` | `non-formal-review-like` | yes | core plus the boundary method and, only when its checked trigger applies, feature-authoring reference |
+| `SR1-formal` | `formal-lifecycle` | no | core plus recording-and-settlement reference |
+| `SR1B-formal-boundary` | `formal-lifecycle` | yes | core plus recording reference and applicable boundary references |
 
-The exact feature-authoring reference trigger is an additive subcondition inside the boundary profiles, not a fifth authority profile. Each unique resource loads once.
+Every supported direct `spec-review` is `SR1-formal` or `SR1B-formal-boundary`; a clean direct review cannot use `SR0`. The exact feature-authoring trigger remains an additive checked condition inside boundary profiles. Each unique resource loads once.
+
+### Recording and settlement side effects
+
+Loading the recording reference grants no write, settlement, automation, or continuation authority. The closed authority matrix is:
+
+| Review execution | Durable review evidence | Spec-entry settlement | Workflow continuation | Automation evidence |
+| --- | ---: | ---: | ---: | ---: |
+| Non-formal review-like | only when separately required by existing policy | no | no | no |
+| Isolated formal manual | yes | no | no | no |
+| Governed formal manual | yes | yes, for the exact matching spec entry only | no; return control to workflow | no |
+| Governed formal automated | yes | yes, for the exact matching spec entry only | no; return control to workflow | yes, under current same-change authorization |
+
+Formal recording location resolution follows the existing formal-review policy. A direct formal review may use or create only its permitted minimal recording root; creating that root does not establish a governed change, grant settlement, or authorize continuation. Missing or blocked recording must be reported and prevents a claim of completed formal review when the governing contract requires durable evidence.
 
 ### Universal `SKILL.md` ownership
 
@@ -177,17 +189,29 @@ Keep inline:
 - workflow-managed context reset and manifest-only evidence required by the current rollout;
 - automation-specific pause and return-to-workflow procedure.
 
-Loading this reference grants no authority. `advisory-durable` may record but never settle. `formal-lifecycle/manual` may settle only the matching spec entry after recording. `formal-lifecycle/workflow-managed-automated` adds current manifest-only evidence and returns control to workflow. No mode advances routing or edits the reviewed spec.
+The reference contains clearly separated isolated-recording, governed-settlement, and governed-automation branches. `SKILL.md` selects the valid branch from the four authority axes. Isolated formal review may record but never settle; governed manual review may settle only the matching spec entry after recording; governed automated review adds current manifest-only evidence and returns control to workflow. No branch advances routing or edits the reviewed spec.
 
 ### Boundary reference ownership
 
-The inline compact scan decides applicability. `boundary-first-method-v1.md` owns detailed vocabulary, dimensions, identifiers, interactions, examples, consumption, semantic-versus-structural proof, and portable stops. `boundary-first-feature-authoring-v1.md` owns formal feature-record headings, tables, and owner-scoped completeness procedure.
+The existing checked-revision boundary contract and `specs/boundary-first-resources.yaml` remain the sole activation owners. `spec-review` consumes their decision and does not define a second local activation policy. The inline four-question scan always runs. Load `boundary-first-method-v1.md` when the checked contract requires active boundary interpretation, then load `boundary-first-feature-authoring-v1.md` only when formal boundary-record completeness must be judged or a grandfathered revision is potentially substantive.
+
+A grandfathered non-substantive revision does not trigger formal boundary-record adoption. Unknown substantive classification stops approval until resolved. Late discovery loads the method first and then the feature-authoring reference when required before the boundary conclusion or final verdict. A missing required reference stops the dependent conclusion. Existing activation grammar, grandfathering behavior, projection ownership, paths, and raw-byte parity remain unchanged.
 
 The skill retains stage-specific judgment: whether the reviewed spec has adequate applicable boundaries, interactions, invariants, outcomes, and example ownership. It does not duplicate resource tables or identifier grammar inline. Existing projection ownership, paths, and raw bytes remain unchanged.
 
 ### Asset ownership
 
-The result and finding assets remain the only structural assets. They own headings, labels, ordering, and placeholders only. `SKILL.md` and applicable references own field meaning, applicability, status, recording, settlement, and handoff. Inapplicable optional sections are omitted; applicable unavailable data reports `blocked` or `unknown`; unfilled placeholders are forbidden.
+The result and finding assets remain the only structural assets. The result asset contains these closed groups:
+
+| Group | Applies when | Structural fields |
+| --- | --- | --- |
+| Core result | every result | skill, review target, review kind, review status, material finding IDs or none, blockers, immediate next stage, eventual test-spec readiness, stop condition, and claim limitations |
+| Recording | every `formal-lifecycle` review | recording status, recording blocker, review record, review log, and review-resolution path when applicable |
+| Governed settlement | `settlement_mode: governed-spec-entry` | governed change identity, spec-entry identity, settlement result, and formal next-stage eligibility |
+| Boundary review | checked boundary activation applies | activation evidence, boundary method outcome, feature-record outcome when applicable, and unresolved boundary blocker |
+| Automated review | `automation_mode: workflow-managed-automated` | authorization or manifest identity, phase receipt, pause or promotion result, correction eligibility, and rereview requirement |
+
+The assets own headings, labels, ordering, tables, and placeholders only. `SKILL.md` and applicable references own group applicability, field meaning, status, recording, settlement, correction, and handoff policy. Inapplicable groups are omitted. An applicable group with unavailable required data reports an explicit `blocked` or `unknown` value and its blocker. Unfilled placeholders are forbidden, and no additional asset is introduced.
 
 ### Conflict and failure behavior
 
@@ -199,12 +223,12 @@ Missing or unreadable recording procedure stops required recording or settlement
 
 Before moving prose, create separate change-local ledgers for semantic rules and literal dependencies. Semantic dispositions must account for every significant rule as retained inline, retained in the recording reference, retained in an existing boundary reference, asset-owned, removed duplicate, or removed only with an approved contract change. Literal dependencies must be classified as normative contract, parser/package contract, incidental test, or obsolete. Incidental tests must not become capitalization or prose-policy owners.
 
-Measure LF-normalized canonical resources using UTF-8 bytes and Unicode whitespace-separated words. Report `SKILL.md`, every resource, each profile, and the complete package separately. A 25–40 percent `SR0-core` reduction is a planning target, not a semantic acceptance threshold. No material ordinary-path reduction means the proposal objective was not met.
+Measure LF-normalized canonical resources using UTF-8 bytes and Unicode whitespace-separated words. Report `SKILL.md`, every resource, `SR0`, isolated `SR1`, governed-manual `SR1`, governed-automated `SR1`, boundary variants, and the complete package separately. A 25–40 percent `SKILL.md` reduction is a planning target, not a semantic acceptance threshold. The primary usage measurement is isolated formal review, not the non-formal profile; its loaded context must be reported honestly and must not grow without an explicit semantic-preservation reason. No material universal-contract reduction or no elimination of the identified duplicate ownership clusters means the proposal objective was not met.
 
 ## Expected Behavior Changes
 
-- Ordinary direct reviews load a shorter self-sufficient contract and the result structure.
-- Durable or formal reviews additionally load one recording-and-settlement reference.
+- Non-formal feedback-like requests may use the shorter universal contract without formal recording procedure.
+- Every supported direct or governed formal spec review loads the recording-and-settlement reference, while settlement and automation remain separately authorized.
 - Boundary-first reviews load only the existing boundary resources required by their active context.
 - Review outcomes, finding rigor, routing, readiness, recording duties, settlement authority, and workflow ownership remain unchanged.
 - Missing required resources fail safely instead of causing partial or remembered procedure.
@@ -220,7 +244,7 @@ A bounded architecture documentation update is required only if the current pack
 Use three proof classes:
 
 1. Deterministic structure and package proof for frontmatter, required inline sections, closed values, resource-map syntax, mapped resource existence, projection identity, placeholders, canonical/generated/archive/install parity, and missing-resource failure.
-2. Static scenario fixtures for direct clean review, late material finding, advisory recording, formal manual review, formal automated review, boundary review, formal boundary record, combined contexts, ambiguous identity, stale authorization, retry, blocked recording, and invalid predicate implications.
+2. Static scenario fixtures for non-formal feedback, isolated clean formal review, isolated formal material finding, governed manual review, governed automated review, generated minimal recording root without settlement, checked boundary review, grandfathered non-substantive revision, potentially substantive revision, formal boundary record, late activation, ambiguous identity, stale authorization, retry, blocked recording, result-group applicability, and invalid axis combinations.
 3. Independent semantic review of the final package against the rule-disposition and literal-compatibility ledgers.
 
 Do not execute Codex, Claude Code, opencode, or another target-agent runtime. Do not add prompt journeys, transcript grading, model fixtures, permanent simplicity validators, tokenizer dependencies, or a new validator family. Extend existing skill, review-artifact, boundary, build, and adapter proof owners only when permanent contract coverage is genuinely missing.
@@ -235,14 +259,14 @@ Rollback restores the complete previous canonical package and coupled consumers,
 
 | Risk | Mitigation |
 | --- | --- |
-| Universal policy is hidden behind the recording reference. | Closed inline ownership list, rule ledger, semantic review, and direct-profile fixtures. |
+| Universal policy is hidden behind the recording reference. | Closed inline ownership list, rule ledger, semantic review, and isolated-formal fixtures. |
 | Older `SFA-R6` wording is violated or silently ignored. | Amend it explicitly to distinguish inline obligations from conditional mechanics. |
-| Boundary-first compatibility is weakened. | Preserve the checked compact scan, exact reference paths, projection manifest, and raw-byte parity. |
+| Boundary-first compatibility is weakened. | Consume the existing checked-revision activation decision, preserve the compact scan, exact load order, reference paths, projection manifest, grandfathering, and raw-byte parity. |
 | Resource triggers become ambiguous. | Closed predicates, implication rules, late reclassification, and fail-safe ambiguity behavior. |
 | Automation gains authority through resource loading. | Separate loaded profiles from authority modes; automation requires current same-change formal authority. |
 | Relocation is misreported as deletion. | Report profile and total-package measurements separately. |
 | Tests freeze incidental wording. | Separate semantic and literal ledgers; migrate incidental consumers rather than preserving accidental prose. |
-| Package growth outweighs direct benefit. | Require material `SR0` reduction and explain every total-package delta. |
+| Package growth outweighs direct benefit. | Measure isolated formal review as the primary usage profile, require material universal-contract simplification, and explain every profile and total-package delta. |
 
 ## Open Questions
 
@@ -256,6 +280,9 @@ None. The specification must inventory exact current consumers and requirement I
 | 2026-08-12 | Preserve universal obligations and the compact boundary scan inline. | Existing contracts require them and direct review must remain safe without optional procedure. | Moving all recording or boundary policy out of `SKILL.md` |
 | 2026-08-12 | Keep target-runtime execution outside acceptance. | Static contract, package, and semantic proof are deterministic and proportionate. | Agent journeys and transcript grading |
 | 2026-08-12 | Treat size reduction as evidence rather than a hard percentage. | Semantic preservation must not be traded for numerical optimization. | Permanent line, token, or prose-quality gates |
+| 2026-08-12 | Separate formal recording, governed settlement, and automation authority. | Every supported formal review records evidence, while only exact same-change governed authority permits settlement or automation. | One broad durable/formal predicate |
+| 2026-08-12 | Keep one result asset with four conditional groups around a universal core. | Closed applicability preserves one structural owner without moving policy into the asset. | Inline output variants or additional assets |
+| 2026-08-12 | Consume the existing checked-revision boundary activation contract. | Simplification must not create a second activation or grandfathering owner. | Local boundary activation predicates |
 
 ## Next Artifacts
 
