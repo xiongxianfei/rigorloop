@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`
-- Findings resolved: 3
-- Unresolved findings: 3
-- Current result: proposal-review-r1 is closed; proposal-review-r2 requires proposal revision.
+- Findings resolved: 6
+- Unresolved findings: 0
+- Final result: all findings from proposal-review-r1 and proposal-review-r2 were accepted and addressed.
 
 ## Resolution overview
 
@@ -18,9 +18,9 @@ Review closeout: proposal-review-r2
 | `SRSIM-PR1` | accepted | resolved | Separated review kind, recording, governed settlement, and automation into closed authority axes with explicit side effects. |
 | `SRSIM-PR2` | accepted | resolved | Defined one core result group and four conditional groups in the existing result asset. |
 | `SRSIM-PR3` | accepted | resolved | Bound reference loading to the existing checked-revision activation owner and closed load order and grandfathering behavior. |
-| `SRSIM-R2-PR1` | needs-decision | open | Proposal author must derive recording from review kind and remove the unsupported non-formal durable state. |
-| `SRSIM-R2-PR2` | needs-decision | open | Proposal author must bind isolated recording to the existing contract and close its write set. |
-| `SRSIM-R2-PR3` | needs-decision | open | Proposal author must make isolated-formal loaded-profile reduction the primary acceptance surface. |
+| `SRSIM-R2-PR1` | accepted | resolved | Derived recording from review kind and promoted durable requests to isolated formal review. |
+| `SRSIM-R2-PR2` | accepted | resolved | Bound isolated recording to the existing formal-review requirements and enumerated its permitted writes. |
+| `SRSIM-R2-PR3` | accepted | resolved | Made lower loaded words and bytes for `SR1-isolated-formal` a normative success condition. |
 
 ## Finding details
 
@@ -73,50 +73,44 @@ Validation evidence: The revised proposal always runs the inline scan, loads the
 #### SRSIM-R2-PR1
 
 Finding ID: SRSIM-R2-PR1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: proposal author
 Owning stage: proposal
-Decision owner: proposal author
-Decision needed: Derive recording behavior from formal versus non-formal review classification.
-Chosen action: pending proposal revision
+Chosen action: Remove recording as an independent axis, forbid non-formal durable evidence, and promote every durable-record request to isolated formal review.
 Rationale: The current independent recording axis creates a non-formal durable state without a recording-procedure assembly.
 Required outcome: Make formal review recording mandatory and non-formal durable evidence forbidden, with durable requests promoted to isolated formal review.
 Safe resolution path: Adopt the simplified three-axis model from proposal-review-r2.
-Validation target: Revised classification, resource-profile, side-effect, and scenario sections plus independent rereview.
-Validation evidence: pending
+Validation target: Revised classification, resource-profile, side-effect, and scenario sections.
+Validation evidence: The proposal now defines exhaustive formal triggers, strict non-formal conditions, derived recording, durable-request promotion, and no non-formal durable profile.
 
 #### SRSIM-R2-PR2
 
 Finding ID: SRSIM-R2-PR2
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: proposal author
 Owning stage: proposal
-Decision owner: proposal author
-Decision needed: Bind isolated recording to the exact existing formal-review placement and artifact contract.
-Chosen action: pending proposal revision
+Chosen action: Cite `R31a` through `R31n`, `R4h` through `R4l`, and `R24` through `R26`; enumerate permitted artifacts and forbidden governed mutations.
 Rationale: Simplification cannot introduce an implicit lifecycle-root creation model.
 Required outcome: Cite `R31a` through `R31n`, enumerate permitted isolated writes, forbid governed mutations, and define blocked recording.
 Safe resolution path: Reuse the existing formal-review-recording contract without redefining it.
-Validation target: Revised recording boundary, ownership, failure, and scenario sections plus independent rereview.
-Validation evidence: pending
+Validation target: Revised recording boundary, ownership, failure, and scenario sections.
+Validation evidence: The proposal now reuses the exact selection order, closes clean and material root shapes, forbids settlement, plan, routing, lifecycle, and automation mutations, and blocks completion when placement fails.
 
 #### SRSIM-R2-PR3
 
 Finding ID: SRSIM-R2-PR3
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: proposal author
 Owning stage: proposal
-Decision owner: proposal author
-Decision needed: Make primary formal loaded-context reduction an acceptance requirement.
-Chosen action: pending proposal revision
+Chosen action: Make lower loaded words and bytes for `SR1-isolated-formal` mandatory and add one-loaded-owner and profile-reporting requirements.
 Rationale: Main-file reduction alone can relocate rather than reduce the context loaded by every supported direct review.
 Required outcome: Require lower loaded words and bytes for `SR1-isolated-formal`, one loaded owner per duplicate cluster, and separate profile and package reporting.
 Safe resolution path: Adopt the closed simplification success criteria from proposal-review-r2.
-Validation target: Revised success criteria, measurement assemblies, risks, and scenarios plus independent rereview.
-Validation evidence: pending
+Validation target: Revised success criteria, measurement assemblies, risks, and scenarios.
+Validation evidence: The proposal now names six measurement profiles, requires lower isolated-formal words and bytes, rejects duplicated loaded ownership, and reports governed and total-package deltas separately.
 
 ## Shared validation evidence
 
