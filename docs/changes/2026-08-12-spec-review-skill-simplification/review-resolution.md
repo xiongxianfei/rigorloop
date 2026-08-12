@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
-Review closeout: proposal-review-r4
+Review closeout: proposal-review-r5
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `proposal-review-r5`
 - Findings resolved: 8
-- Unresolved findings: 0
-- Final result: all findings through proposal-review-r4 were accepted and addressed.
+- Unresolved findings: 1
+- Current result: prior findings are closed; proposal-review-r5 requires a package-resource boundary revision.
 
 ## Resolution overview
 
@@ -23,6 +23,7 @@ Review closeout: proposal-review-r4
 | `SRSIM-R2-PR3` | accepted | resolved | Made lower loaded words and bytes for `SR1-isolated-formal` a normative success condition. |
 | `SRSIM-R3-PR1` | accepted | resolved | Defined mutually exclusive non-formal feedback and formal review core groups in the existing result asset. |
 | `SRSIM-R4-PR1` | accepted | resolved | Removed non-formal profiles and alternate result cores, leaving only formal and formal-boundary assemblies. |
+| `SRSIM-R5-PR1` | needs-decision | open | Proposal author must align the new reference with a genuinely conditional authority boundary. |
 
 ## Finding details
 
@@ -145,6 +146,24 @@ Required outcome: Give `SR0B` one exact output assembly and reconcile formal bou
 Safe resolution path: Keep the boundary group formal-only and map non-formal boundary evidence into feedback observations and limitations.
 Validation target: Revised invocation, profile, asset, scenario, measurement, and decision-log text.
 Validation evidence: The proposal now has one formal invocation model, two resource profiles, one formal core, required recording, and formal-only boundary output.
+
+### proposal-review-r5
+
+#### SRSIM-R5-PR1
+
+Finding ID: SRSIM-R5-PR1
+Disposition: needs-decision
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Select a resource boundary that actually reduces isolated formal loaded context.
+Chosen action: pending proposal revision
+Rationale: Every real invocation loads the proposed recording-and-settlement reference, including governed-only procedure that isolated review cannot use.
+Required outcome: Align progressive disclosure with governed settlement and automation or explicitly abandon loaded-context reduction as the primary objective.
+Safe resolution path: Keep concise recording procedure inline and move only governed settlement and automation into the conditional reference.
+Validation target: Revised package shape, ownership table, profiles, measurement, options, risks, and static scenarios plus independent rereview.
+Validation evidence: pending
 
 ## Shared validation evidence
 

@@ -21,6 +21,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: proposal-review-r5
+Stage: proposal-review
+Round: r5
+Reviewed artifact: `docs/proposals/2026-08-12-spec-review-skill-simplification.md` at commit `505d05b5`
+Status: changes-requested
+Detailed record: reviews/proposal-review-r5.md
+Resolution: review-resolution.md#proposal-review-r5
+Material findings: SRSIM-R5-PR1
+Open findings: SRSIM-R5-PR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: proposal-review-r2
 Stage: proposal-review
 Round: r2
