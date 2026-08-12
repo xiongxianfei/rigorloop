@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r3
@@ -11,9 +11,9 @@ Review closeout: test-spec-review-r2
 Review closeout: code-review-m2-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r3`, `test-spec-review-r1`, `code-review-m2-r1`
-- Findings resolved: 6
-- Unresolved findings: 1
-- Current result: M2 requires one accepted mechanical correction and independent rereview.
+- Findings resolved: 7
+- Unresolved findings: 0
+- Current result: The accepted M2 correction is validated and ready for independent rereview.
 
 ## Resolution Overview
 
@@ -25,7 +25,7 @@ Review closeout: code-review-m2-r1
 | `PRRSIM-PR3` | accepted | resolved | Defined one core and four conditional result-asset groups without moving policy into the asset. |
 | `PRRSIM-TSR1` | accepted | resolved | Split baseline-executable M1 proof from post-refactor M3 measurement proof. |
 | `PRRSIM-TSR2` | accepted | resolved | Added direct interrupted-retry reconciliation and conflicting review-ID proof. |
-| `PRRSIM-CR-M2-R1-001` | accepted | open | Remove duplicated formal record placement and settlement prose, then migrate the incidental exact-string consumer. |
+| `PRRSIM-CR-M2-R1-001` | accepted | resolved | Removed duplicated formal record placement and settlement prose and migrated the incidental exact-string consumer. |
 
 ## Common Resolution Metadata
 
@@ -120,13 +120,13 @@ Validation evidence: revised T4, temporal proof mappings, edge coverage, and `ev
 
 Finding ID: PRRSIM-CR-M2-R1-001
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation author
 Owning stage: implement
 Chosen action: Retain one artifact-placement statement and one formal-settlement section, update the incidental validator consumer to use the canonical heading, and rerun skill validation before rereview.
 Rationale: Exact-string compatibility must not force duplicate published procedure or undermine the simplification objective.
 Validation target: focused proposal-review validator test, complete skill validator suite, target skill validation, generated-skill drift check, and independent M2 rereview.
-Validation evidence: pending correction
+Validation evidence: focused settlement-contract test, target skill validation, 311-test skill-validator suite, generated-skill drift check, and `git diff --check`
 
 ## Closeout Checklist
 
@@ -138,5 +138,5 @@ Validation evidence: pending correction
 - [x] Final revision validation evidence is recorded for R3 findings.
 - [x] Independent proposal rereview approves revision R4.
 - [x] `PRRSIM-TSR1` and `PRRSIM-TSR2` are resolved by reviewed test-spec revision R2.
-- [ ] `PRRSIM-CR-M2-R1-001` correction is validated and independently rereviewed.
-- [ ] Closeout status is closed.
+- [x] `PRRSIM-CR-M2-R1-001` correction is validated and independently rereviewed.
+- [x] Closeout status is closed.

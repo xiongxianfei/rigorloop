@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: review-resolution
-  next_stage: implement
+  current_stage: code-review
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-08-11-proposal-review-skill-simplification/evidence/proposal-authoring.md
@@ -86,7 +86,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: resolution-needed
+        state: review-requested
       M3:
         kind: implementation
         state: planned
@@ -125,7 +125,7 @@ workflow:
       bound_at: 2026-08-12T07:09:14Z
       completion:
         rule: final verification result is recorded
-    current_stage: review-resolution
+    current_stage: code-review
     status: active
     stop_reason: null
     evidence:
@@ -202,5 +202,5 @@ changed_files:
   - docs/changes/2026-08-11-proposal-review-skill-simplification/review-resolution.md
 
 review:
-  status: changes-requested
-  unresolved_items: 1
+  status: approved
+  unresolved_items: 0

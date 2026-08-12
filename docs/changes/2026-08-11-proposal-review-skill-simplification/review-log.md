@@ -28,7 +28,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-m2-r1
 Material findings: PRRSIM-CR-M2-R1-001
-Open findings: PRRSIM-CR-M2-R1-001
+Open findings: None
 Recording status: recorded
 
 ### Review entry

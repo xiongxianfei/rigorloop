@@ -54,8 +54,6 @@ Read the proposal and original user intent first. Use the smallest sufficient pr
 
 For change-backed review, use prior log and resolution only to inspect prior findings or dispositions. Read complete `change.yaml` only for formal settlement, forensic reconstruction, disputed evidence, or whole-record review. Expand bounded evidence when missing, stale, contradictory, or context-sensitive; read the full proposal because it is the review target.
 
-Formal proposal-review records default to `docs/changes/<change-id>/reviews/proposal-review-r<n>.md`. Use explicit user identity first, then current artifact or change metadata, project workflow guidance, and the portable default; block on remaining ambiguity.
-
 ## Project-local evidence
 
 Public skills operate in customer-project mode by default. Use project-local proposal, intent, standing authority, workflow guidance, and linked evidence when present. Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, `CONSTITUTION.md`, or `AGENTS.md` in a customer project; use portable defaults where safe and block on ambiguity. Consult `docs/workflows.md` when project-local routing or placement depends on it.

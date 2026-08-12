@@ -31,15 +31,11 @@ When no valid location can be resolved, report `Recording status: blocked`, the 
 
 ## Formal lifecycle settlement
 
-Run only in `formal-lifecycle`. Write the durable review evidence first. Then read complete `change.yaml`, require `lifecycle_contract: stage-owned-change-local-v1`, and resolve exactly one proposal entry by artifact ID, `kind`, and normalized path. Require current review authority and complete authoring evidence.
+Run only in `formal-lifecycle`. Write the durable review record first. Then read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Require `review-required` and complete authoring evidence, then resolve exactly one proposal entry by artifact ID, `kind`, and normalized path.
 
-Set only the exact proposal review mapping with `id`, `artifact_id`, `outcome`, `record`, and `round`, remove matching authoring evidence when the governing lifecycle contract requires it, and map `approved` to `accepted`, `changes-requested` to `revision-required`, and `blocked` or `inconclusive` to `blocked`. Preserve every other artifact entry, milestone, and workflow field.
+Set only the exact proposal review mapping with `id`, `artifact_id`, `outcome`, `record`, and `round`, remove `authoring_evidence` when the governing lifecycle contract requires it, and map `approved` to `accepted`, `changes-requested` to `revision-required`, and `blocked` or `inconclusive` to `blocked`. Preserve every other artifact entry, milestone, and workflow field.
 
-Formal settlement must not advance workflow. Retry identical incomplete settlement without rerunning review; conflicting review-ID reuse, mismatched identity, illegal transition, stale evidence, or failed available metadata validation stops without unrelated mutation.
-
-## Change-record review settlement
-
-The formal procedure above must read the complete `change.yaml`, require `lifecycle_contract: stage-owned-change-local-v1`, Require `review-required` and complete authoring evidence, Write the durable review record first, remove `authoring_evidence`, and write only `id`, `artifact_id`, `outcome`, `record`, and `round`. It maps `approved` to `accepted`, `changes-requested` to `revision-required`, and `blocked` or `inconclusive` to `blocked`. Retry identical incomplete settlement without rerunning the review, stop on failed available change-metadata validation, and stops without advancing routing.
+Formal settlement stops without advancing routing. Retry identical incomplete settlement without rerunning the review; conflicting review-ID reuse, mismatched identity, illegal transition, stale evidence, or failed available change-metadata validation stops without unrelated mutation.
 
 ## Workflow-managed automated review
 
