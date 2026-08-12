@@ -1,14 +1,5 @@
 # Review Resolution: Spec-Review Skill Simplification
 
-## code-review-m2-r1
-
-Review ID: code-review-m2-r1
-Finding ID: SRSS-CR-M2-R1-001
-Disposition: accepted
-Resolution: Load the governed reference after exact governed authority, and gate only settlement on successful universal recording. The correction is limited to the mapped load condition, reference preamble and settlement precondition, coupled skill-contract wording, and focused assertion.
-Validation: CMD2-CMD5 required before rereview.
-Closeout status: open
-
 ## Summary
 
 Closeout status: closed
@@ -25,9 +16,10 @@ Review closeout: spec-review-r4
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
+Review closeout: code-review-m2-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `proposal-review-r5`, `proposal-review-r6`
-- Findings resolved: 9
+- Findings resolved: 10
 - Unresolved findings: 0
 - Final result: all findings through proposal-review-r5 were accepted and addressed; proposal-review-r6 approved the revised proposal with no material findings.
 
@@ -48,8 +40,26 @@ Review closeout: test-spec-review-r3
 | `SRSS-SR2` | accepted | resolved | Expanded boundary requirement sets and corrected example ownership under the checked contract. |
 | `SRSS-PL1` | accepted | resolved | Replaced the adapter-proof placeholder with one exact recoverable command. |
 | `SRSS-TSR1` | accepted | resolved | Removed final profile comparison from the M1 proof gate and retained it in M3. |
+| `SRSS-CR-M2-R1-001` | accepted | resolved | Loaded governed procedure after authority and gated only settlement on recording. |
 
 ## Finding details
+
+### code-review-m2-r1
+
+#### SRSS-CR-M2-R1-001
+
+Review ID: code-review-m2-r1
+Finding ID: SRSS-CR-M2-R1-001
+Disposition: accepted
+Status: resolved
+Owner: implementation author
+Owning stage: implement
+Chosen action: Load the governed reference after exact governed authority and gate only settlement on successful universal recording.
+Rationale: Automation needs the reference before review judgment and recording, while R25 gates only matching-entry settlement on recording.
+Required outcome: Remove the circular pre-recording load condition without widening settlement authority.
+Safe resolution path: Change the map and reference preamble, add the settlement precondition, and update the coupled contract and focused assertion.
+Validation target: CMD2-CMD5 and context-reset M2 rereview.
+Validation evidence: CMD2-CMD5 passed; `reviews/code-review-m2-r2.md` reconciles the finding as resolved at `915e9bda`.
 
 ### proposal-review-r1
 

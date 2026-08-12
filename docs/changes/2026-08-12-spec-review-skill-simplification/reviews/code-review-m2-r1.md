@@ -5,6 +5,7 @@ Stage: code-review
 Round: r1
 Reviewer: Codex independent code-review context
 Target: implementation commit `8ebe9ba5`
+Reviewed artifact: commit `8ebe9ba5`
 Reviewed milestone: M2
 Review date: 2026-08-12
 Status: changes-requested
@@ -33,6 +34,14 @@ Recording status: recorded
 - Auto-fix class: declared-safe
 - Declared-safe boundary: the named load-condition and settlement-precondition wording, coupled contract sentence, and focused test only
 - Required validation: CMD2, CMD3, CMD4, CMD5
+
+Finding ID: SRSS-CR-M2-R1-001
+Severity: major
+Location: `skills/spec-review/SKILL.md` Resource map and `references/governed-spec-review-settlement.md` load condition
+Evidence: The reference owns workflow-managed pre-recording procedure but its load condition waited for recording.
+Required outcome: Load after exact governed authority and gate only settlement on recording.
+Safe resolution path: Apply the R14/R23/R25 wording correction and rerun CMD2-CMD5.
+needs-decision rationale: not-required
 
 ## Handoff
 
