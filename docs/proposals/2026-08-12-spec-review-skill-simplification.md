@@ -222,17 +222,20 @@ The skill retains stage-specific judgment: whether the reviewed spec has adequat
 
 ### Asset ownership
 
-The result and finding assets remain the only structural assets. The result asset contains these closed groups:
+The result and finding assets remain the only structural assets. The result asset contains two mutually exclusive core groups and four formal conditional groups:
 
 | Group | Applies when | Structural fields |
 | --- | --- | --- |
-| Core result | every result | skill, review target, review kind, review status, material finding IDs or none, blockers, immediate next stage, eventual test-spec readiness, stop condition, and claim limitations |
+| Non-formal feedback core | `review_kind: non-formal-feedback` only | skill, review target, feedback scope, observations, limitations, and optional suggested next action |
+| Formal review core | `review_kind: formal-lifecycle` only | skill, review target, review status, material finding IDs or none, blockers, immediate next stage, eventual test-spec readiness, stop condition, and claim limitations |
 | Recording | every `formal-lifecycle` review | recording status, recording blocker, review record, review log, and review-resolution path when applicable |
 | Governed settlement | `settlement_mode: governed-spec-entry` | governed change identity, spec-entry identity, settlement result, and formal next-stage eligibility |
 | Boundary review | checked boundary activation applies | activation evidence, boundary method outcome, feature-record outcome when applicable, and unresolved boundary blocker |
 | Automated review | `automation_mode: workflow-managed-automated` | authorization or manifest identity, phase receipt, pause or promotion result, correction eligibility, and rereview requirement |
 
-The assets own headings, labels, ordering, tables, and placeholders only. `SKILL.md` and applicable references own group applicability, field meaning, status, recording, settlement, correction, and handoff policy. Inapplicable groups are omitted. An applicable group with unavailable required data reports an explicit `blocked` or `unknown` value and its blocker. Unfilled placeholders are forbidden, and no additional asset is introduced.
+Every result emits exactly one core group. `SR0` emits the non-formal feedback core and omits review status, approval, eventual test-spec readiness, recording, settlement, automatic handoff, and every other formal-only field. `SR1` emits the formal review core and recording group, then adds only the governed-settlement, boundary-review, and automated-review groups selected by current evidence. A result containing both core groups is invalid.
+
+The assets own headings, labels, ordering, tables, and placeholders only. `SKILL.md` and applicable references own group applicability, field meaning, status, recording, settlement, correction, and handoff policy. Inapplicable groups are omitted rather than filled with `not-applicable`. An applicable group with unavailable required data reports an explicit `blocked` or `unknown` value and its blocker. Unfilled placeholders are forbidden, and no additional asset is introduced.
 
 ### Conflict and failure behavior
 
@@ -276,7 +279,7 @@ A bounded architecture documentation update is required only if the current pack
 Use three proof classes:
 
 1. Deterministic structure and package proof for frontmatter, required inline sections, closed values, resource-map syntax, mapped resource existence, projection identity, placeholders, canonical/generated/archive/install parity, and missing-resource failure.
-2. Static scenario fixtures for non-formal feedback without recording or lifecycle claims, durable request promotion to isolated formal review, isolated clean formal review, isolated formal material finding, governed manual review, governed automated review, each permitted recording-root shape, forbidden governed mutations, blocked location without downgrade, checked boundary review, grandfathered non-substantive revision, potentially substantive revision, formal boundary record, late activation, ambiguous identity, stale authorization, retry, result-group applicability, and invalid axis combinations.
+2. Static scenario fixtures for non-formal feedback with only the feedback core; invalid feedback containing status, readiness, recording, settlement, or automatic-handoff fields; invalid output containing both core groups; durable request promotion to isolated formal review; isolated clean formal review with formal core and recording group; isolated formal material finding; governed manual review with settlement group; governed automated review with automation group; boundary-enabled formal review; each permitted recording-root shape; forbidden governed mutations; blocked location without downgrade; grandfathered non-substantive revision; potentially substantive revision; formal boundary record; late activation; ambiguous identity; stale authorization; retry; and invalid axis combinations.
 3. Independent semantic review of the final package against the rule-disposition and literal-compatibility ledgers.
 
 Do not execute Codex, Claude Code, opencode, or another target-agent runtime. Do not add prompt journeys, transcript grading, model fixtures, permanent simplicity validators, tokenizer dependencies, or a new validator family. Extend existing skill, review-artifact, boundary, build, and adapter proof owners only when permanent contract coverage is genuinely missing.
@@ -318,6 +321,7 @@ None. The specification must inventory exact current consumers and requirement I
 | 2026-08-12 | Derive recording from review kind. | Non-formal durable recording created an impossible package profile; durable requests are formal isolated reviews. | Independent recording-mode axis |
 | 2026-08-12 | Reuse `R31a`–`R31n`, `R4h`–`R4l`, and `R24`–`R26` for isolated recording. | The simplification must preserve the exact existing selection and artifact contract without creating governed authority. | New placement or root model |
 | 2026-08-12 | Make `SR1-isolated-formal` reduction normative. | Main-file reduction alone can relocate the context loaded by every direct formal review. | `SKILL.md`-only acceptance |
+| 2026-08-12 | Use mutually exclusive feedback and formal core groups in one result asset. | Non-formal feedback must remain structurally fillable without emitting forbidden lifecycle fields. | Universal formal core or a second asset |
 
 ## Next Artifacts
 
