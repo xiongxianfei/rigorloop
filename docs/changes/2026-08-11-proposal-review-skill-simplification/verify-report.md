@@ -20,7 +20,7 @@ PR readiness: not claimed
 
 ## Post-PR CI correction refresh
 
-The hosted run `31575883158` exposed a case-sensitive incidental prose assertion after PR creation. Commit `9918c8ad` case-folds the semantic-presence input, records the missed exact-string consumer as `test-only-incidental`, and preserves every normative output label. Post-correction code review is clean with notes, all review findings remain closed, and the current-base PR gate passes. Hosted CI for the replacement head is pending and is not claimed.
+The hosted run `31575883158` exposed a case-sensitive incidental prose assertion after PR creation. Commit `9918c8ad` case-folds the semantic-presence input, records the missed exact-string consumer as `test-only-incidental`, and preserves every normative output label. Post-correction code review is clean with notes, all review findings remain closed, and the current-base PR gate passes. Replacement hosted run `31583874211` passed on correction head `7cc23982`.
 
 ## Scope and verdict
 

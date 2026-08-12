@@ -50,7 +50,7 @@ refactor: simplify proposal-review common path
 - [x] `python scripts/test-adapter-distribution.py` — passed.
 - [x] Trusted `v0.3.6` Codex, Claude, and opencode archive/clean-install proof — passed.
 - [x] Formal review closeout — 15 reviews, 7 resolved findings, zero open findings.
-- [ ] Hosted CI — the first run exposed and now has a local fix for a case-sensitive incidental prose assertion; the replacement run is pending.
+- [x] Hosted CI — replacement run `31583874211` passed on correction head `7cc23982`.
 
 ## Requirement coverage
 
