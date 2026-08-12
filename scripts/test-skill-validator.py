@@ -2186,6 +2186,27 @@ Use the inputs somehow and produce a useful result.
                 output,
             )
 
+    def test_proposal_review_simplification_package_contract(self) -> None:
+        skill_dir = ROOT / "skills" / "proposal-review"
+        skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        recording = (skill_dir / "references" / "proposal-review-recording-and-settlement.md").read_text(encoding="utf-8")
+        gates = (skill_dir / "references" / "conditional-proposal-gates.md").read_text(encoding="utf-8")
+        result = (skill_dir / "assets" / "review-result-skeleton.md").read_text(encoding="utf-8")
+        for value in ("none", "advisory-durable", "formal-lifecycle", "manual", "workflow-managed-automated"):
+            self.assertIn(value, skill_text)
+        for assembly in ("PRR0-core", "PRR0G-context-gated", "PRR1-recorded", "PRR1G-recorded-context-gated"):
+            self.assertIn(assembly, skill_text)
+        for predicate in ("vision_exception_context", "standing_artifact_context", "scope_budget_context"):
+            self.assertIn(predicate, skill_text)
+            self.assertIn(predicate, gates)
+        self.assertIn("generated `YYYY-MM-DD-<subject>-review-recording`", recording)
+        self.assertIn("must not advance workflow", recording.lower())
+        self.assertIn("## Specialized-gate group", result)
+        self.assertIn("## Durable-recording group", result)
+        self.assertIn("## Formal-settlement group", result)
+        self.assertIn("## Automated-review group", result)
+        self.assertNotIn("what review status means", result.lower())
+
     def test_proposal_family_asset_rejects_unapproved_asset_paths(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -3662,6 +3683,9 @@ Use the inputs somehow and produce a useful result.
         proposal_review_body = (
             ROOT / "skills" / "proposal-review" / "SKILL.md"
         ).read_text(encoding="utf-8")
+        proposal_review_body += "\n" + (
+            ROOT / "skills" / "proposal-review" / "references" / "conditional-proposal-gates.md"
+        ).read_text(encoding="utf-8")
 
         proposal_terms = [
             "`Vision fit`",
@@ -3785,6 +3809,9 @@ Use the inputs somehow and produce a useful result.
         proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
         proposal_review = (
             ROOT / "skills" / "proposal-review" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+        proposal_review += "\n" + (
+            ROOT / "skills" / "proposal-review" / "references" / "conditional-proposal-gates.md"
         ).read_text(encoding="utf-8")
         ci = (ROOT / "skills" / "ci-maintenance" / "SKILL.md").read_text(encoding="utf-8")
         learn = (ROOT / "skills" / "learn" / "SKILL.md").read_text(encoding="utf-8")
@@ -4496,6 +4523,14 @@ Use the inputs somehow and produce a useful result.
 
         for skill_name in FORMAL_REVIEW_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            if skill_name == "proposal-review":
+                body = "\n".join(
+                    [
+                        body,
+                        (ROOT / "skills" / skill_name / "references" / "proposal-review-recording-and-settlement.md").read_text(encoding="utf-8"),
+                        (ROOT / "skills" / skill_name / "assets" / "review-result-skeleton.md").read_text(encoding="utf-8"),
+                    ]
+                )
             material_asset = ""
             if skill_name == "spec-review":
                 material_asset = (
@@ -5295,7 +5330,10 @@ Use the inputs somehow and produce a useful result.
             "Do not edit the reviewed artifact during review.",
         ]
         for skill_name in ["proposal-review", "spec-review", "architecture-review", "plan-review"]:
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            path = ROOT / "skills" / skill_name / "SKILL.md"
+            if skill_name == "proposal-review":
+                path = ROOT / "skills" / skill_name / "references" / "proposal-review-recording-and-settlement.md"
+            body = path.read_text(encoding="utf-8")
             for term in required_terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
@@ -6371,7 +6409,7 @@ and result format.
 
     def test_cost_bounded_rigor_m1_proposal_review_scope_budget_guidance(self) -> None:
         proposal_review = (
-            ROOT / "skills" / "proposal-review" / "SKILL.md"
+            ROOT / "skills" / "proposal-review" / "references" / "conditional-proposal-gates.md"
         ).read_text(encoding="utf-8")
 
         required_terms = [
@@ -7940,14 +7978,19 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
     def review_contract_body(skill_name: str) -> str:
         skill_root = ROOT / "skills" / skill_name
         body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
-        if skill_name == "test-spec-review":
+        if skill_name in {"proposal-review", "test-spec-review"}:
+            reference_name = (
+                "proposal-review-recording-and-settlement.md"
+                if skill_name == "proposal-review"
+                else "test-spec-review-recording-and-settlement.md"
+            )
             body = "\n".join(
                 [
                     body,
                     (
                         skill_root
                         / "references"
-                        / "test-spec-review-recording-and-settlement.md"
+                        / reference_name
                     ).read_text(encoding="utf-8"),
                 ]
             )
@@ -8018,11 +8061,10 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             body = self.review_contract_body(skill_name)
             normalized = " ".join(body.split())
             with self.subTest(skill=skill_name):
-                expected_heading = (
-                    "## Formal-only settlement"
-                    if skill_name == "test-spec-review"
-                    else "## Change-record review settlement"
-                )
+                expected_heading = {
+                    "proposal-review": "## Formal lifecycle settlement",
+                    "test-spec-review": "## Formal-only settlement",
+                }.get(skill_name, "## Change-record review settlement")
                 self.assertIn(expected_heading, normalized)
                 self.assertIn(settlement, normalized)
                 for phrase in required:

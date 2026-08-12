@@ -230,6 +230,8 @@ RESOURCE_MAP_ENTRY_PATTERN = re.compile(
 )
 PACKAGED_NON_ASSET_RESOURCE_ALLOWLIST = {
     ("code-review", "references/workflow-managed-automated-review.md"),
+    ("proposal-review", "references/proposal-review-recording-and-settlement.md"),
+    ("proposal-review", "references/conditional-proposal-gates.md"),
     ("test-spec-review", "references/test-spec-review-recording-and-settlement.md"),
 }
 
@@ -550,10 +552,29 @@ PROPOSAL_REVIEW_ASSET_ALLOWED_FIELD_LABELS = {
     "review-resolution",
     "open-blockers",
     "immediate-next-stage",
+    "proposal-readiness",
+    "automatic-downstream-handoff",
+    "claim-limitations",
     "review-dimensions",
     "scope-preservation-result",
     "recommended-edits",
     "recommendation",
+    "active-gate-predicates",
+    "gate-outcomes",
+    "trigger-ambiguity",
+    "record-path",
+    "finding-record-paths",
+    "review-id",
+    "proposal-settlement",
+    "governed-change-identity",
+    "formal-next-stage-eligibility",
+    "packet-identity",
+    "phase-receipt-identity",
+    "independence-result",
+    "correction-eligibility",
+    "correction-cycle-state",
+    "promotion-or-pause-result",
+    "rereview-requirement",
     "finding-id",
     "severity",
     "location",
@@ -3039,6 +3060,9 @@ def _validate_proposal_family_asset_rollout(
         resource.relative_to(skill_dir).as_posix()
         for resource in resources
         if not resource.relative_to(skill_dir).as_posix().startswith("assets/")
+        and not _is_approved_packaged_non_asset_resource(
+            skill_name, resource.relative_to(skill_dir).as_posix()
+        )
     ]
     for relative_resource in unexpected_resource_classes:
         errors.append(
