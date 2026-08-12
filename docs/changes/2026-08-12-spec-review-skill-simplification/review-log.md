@@ -4,6 +4,12 @@
 
 This ledger records formal lifecycle reviews for the spec-review skill simplification change.
 
+## Clean review receipts
+
+| Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
+| --- | --- | --- | --- | --- | --- | ---: | --- |
+| `code-review-m1-r1` | `code-review` | `r1` | M1 implementation at `1c02c87b` | `reviews/code-review-m1-r1.md` | `clean-with-notes` | 0 | `recorded` |
+
 ## Detailed review entries
 
 ### Review entry
