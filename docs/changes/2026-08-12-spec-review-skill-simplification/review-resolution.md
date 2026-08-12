@@ -188,7 +188,7 @@ Rationale: The finding is correct; a deterministic package contract must name on
 Required outcome: Name the canonical existing asset and remove the alternative-name escape clause.
 Safe resolution path: Make the one-line R1 correction and rerun formal spec review.
 Validation target: Fresh spec-review plus metadata, lifecycle, review-artifact, readability, and diff validation.
-Validation evidence: Pending spec revision and rereview.
+Validation evidence: R1 now names exactly `assets/material-finding.md`; same-stage rereview remains required.
 
 ## Shared validation evidence
 

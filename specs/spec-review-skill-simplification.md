@@ -78,7 +78,7 @@ Then acceptance still fails unless isolated loaded words and bytes decrease, eve
 
 ## Requirements
 
-R1. The canonical published package MUST remain owned by `skills/spec-review/` and MUST contain `SKILL.md`, `references/governed-spec-review-settlement.md`, the two existing boundary references, `assets/review-result-skeleton.md`, and `assets/review-finding.md` or the current contract-compatible material-finding asset name.
+R1. The canonical published package MUST remain owned by `skills/spec-review/` and MUST contain `SKILL.md`, `references/governed-spec-review-settlement.md`, the two existing boundary references, `assets/review-result-skeleton.md`, and `assets/material-finding.md`.
 
 R2. `SKILL.md` MUST be self-sufficient for isolated formal review judgment, durable recording, safe result reporting, and routing without loading the governed reference.
 
