@@ -17,6 +17,7 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: test-spec-review-r3
 Review closeout: code-review-m2-r1
+Review closeout: code-review-final-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `proposal-review-r5`, `proposal-review-r6`
 - Findings resolved: 10
@@ -60,6 +61,12 @@ Required outcome: Remove the circular pre-recording load condition without widen
 Safe resolution path: Change the map and reference preamble, add the settlement precondition, and update the coupled contract and focused assertion.
 Validation target: CMD2-CMD5 and context-reset M2 rereview.
 Validation evidence: CMD2-CMD5 passed; `reviews/code-review-m2-r2.md` reconciles the finding as resolved at `915e9bda`.
+
+### code-review-final-r1
+
+Review closeout: code-review-final-r1
+
+No material findings; no resolution entry required. The final holistic review found the complete branch diff clean with notes and authorized handoff to durable rationale and final verification.
 
 ### proposal-review-r1
 
