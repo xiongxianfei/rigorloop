@@ -37,7 +37,7 @@ refactor: simplify proposal-review common path
 - Added `references/proposal-review-recording-and-settlement.md` for location selection, durable evidence, retry reconciliation, formal settlement, and workflow-managed automated review.
 - Added `references/conditional-proposal-gates.md` for vision exceptions, standing-artifact bootstrap, scope-budget review, composition, and ambiguity handling.
 - Expanded the result skeleton into one core and four conditional structural groups without moving status or authority policy into assets.
-- Updated existing validators and consumers to understand package ownership, and added 21 semantic dispositions, 16 literal dependencies, 25 static scenarios, negative closed-value fixtures, measurements, and package proof.
+- Updated existing validators and consumers to understand package ownership, and added 21 semantic dispositions, 17 literal dependencies, 25 static scenarios, negative closed-value fixtures, measurements, and package proof.
 - Recorded five exact-path selector deferrals for one-change evidence instead of introducing permanent simplicity or fixture-routing infrastructure.
 
 ## Tests and verification
@@ -50,7 +50,7 @@ refactor: simplify proposal-review common path
 - [x] `python scripts/test-adapter-distribution.py` — passed.
 - [x] Trusted `v0.3.6` Codex, Claude, and opencode archive/clean-install proof — passed.
 - [x] Formal review closeout — 15 reviews, 7 resolved findings, zero open findings.
-- [ ] Hosted CI — pending after PR creation.
+- [ ] Hosted CI — the first run exposed and now has a local fix for a case-sensitive incidental prose assertion; the replacement run is pending.
 
 ## Requirement coverage
 

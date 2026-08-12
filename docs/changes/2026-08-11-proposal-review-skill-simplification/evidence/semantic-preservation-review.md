@@ -6,7 +6,7 @@ Result: passed
 
 ## Ledger reconciliation
 
-All 21 semantic rows have one closed disposition and one final destination: 12 remain inline, 3 live in the recording reference, 3 live in the conditional-gates reference, 2 are asset-owned, and 1 repeated output cluster is removed. All 16 literal rows remain separately classified as normative or parser/package contracts; validator consumers follow the final package owners rather than forcing duplicate procedure.
+All 21 semantic rows have one closed disposition and one final destination: 12 remain inline, 3 live in the recording reference, 3 live in the conditional-gates reference, 2 are asset-owned, and 1 repeated output cluster is removed. All 17 literal rows remain separately classified as normative, parser/package, or incidental-test contracts; validator consumers follow the final package owners rather than forcing duplicate procedure or capitalization.
 
 ## Assembly review
 

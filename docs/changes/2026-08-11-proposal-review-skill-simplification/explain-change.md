@@ -21,7 +21,7 @@ The accepted proposal selected a compact universal skill plus two conditional re
 | Conditional-gates reference | Added vision-exception, standing-artifact, scope-budget, composition, and ambiguity procedure. | Load detailed exceptional judgment only when review evidence activates a gate. | R18-R20, R22-R24 |
 | Result asset | Added one core and four conditional structural groups. | Keep labels and repeated result structure in one asset without moving policy into it. | R25-R27 |
 | Validator and tests | Allowed the two references, extended structural labels, and migrated consumers from literal `SKILL.md` assumptions to package owners. | Preserve package integrity while preventing tests from becoming accidental prose-policy owners. | R29-R31, R34-R37 |
-| Change-local fixtures and ledgers | Added 21 semantic dispositions, 16 literal dependencies, 25 scenarios, and invalid closed-value fixtures. | Prove no significant rule or real compatibility dependency silently disappeared. | M1, CMD1, MP0 |
+| Change-local fixtures and ledgers | Added 21 semantic dispositions, 17 literal dependencies, 25 scenarios, and invalid closed-value fixtures. | Prove no significant rule or real compatibility dependency silently disappeared; the post-PR CI correction classifies the review-material exact-string assertion as incidental and makes it capitalization-independent. | M1, CMD1, MP0 |
 | Measurement and package evidence | Added per-resource and per-assembly words/bytes, semantic review, and generated/archive/install parity. | Distinguish ordinary context savings from total maintenance footprint and prove every supported adapter contains the package. | R32-R35, R37; M3, MP1 |
 
 ## Tests added or changed
