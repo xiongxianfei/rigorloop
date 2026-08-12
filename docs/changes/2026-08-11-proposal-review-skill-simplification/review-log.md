@@ -19,6 +19,7 @@ This ledger records formal lifecycle reviews for the proposal-review skill simpl
 | `code-review-m3-r1` | `code-review` | `r1` | M3 implementation at `33e7b9e9` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r1` | `code-review` | `r1` | Complete branch through `06a6dee5` | `reviews/code-review-final-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r2` | `code-review` | `r2` | Selector deferral at `4939a268` | `reviews/code-review-final-r2.md` | `clean` | 0 | `recorded` |
+| `code-review-post-pr-ci-r1` | `code-review` | `r1` | Post-PR CI correction at `9918c8ad` | `reviews/code-review-post-pr-ci-r1.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 
