@@ -171,55 +171,55 @@ R45. `SFA-R6` remains satisfied by keeping recording obligations and lifecycle b
 ## Boundary model
 
 Boundary model version: boundary-first-v1
-Boundary model scope: R1-R45
+Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45
 
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |
-| input-domain | applicable | R3-R10 | BND-INPUT-001 | - |
-| state-lifecycle | applicable | R6-R10, R20-R25, R32, R43-R44 | BND-STATE-001 | - |
-| identity-authority | applicable | R6-R10, R20-R25 | BND-AUTH-001 | - |
-| composition-path | applicable | R1-R2, R11-R19, R23-R32, R41-R42 | BND-COMPOSE-001 | - |
-| temporal-retry | applicable | R18-R25, R32, R44 | BND-TEMPORAL-001 | - |
-| failure-recovery | applicable | R5-R10, R22, R28, R32-R40, R43-R44 | BND-RECOVERY-001 | - |
-| compatibility-migration | applicable | R26-R28, R33-R45 | BND-COMPAT-001 | - |
-| external-environment | applicable | R32, R37, R40-R41, R44 | BND-ENV-001 | - |
+| input-domain | applicable | R3, R4, R5, R6, R7, R8, R9, R10 | BND-INPUT-001 | - |
+| state-lifecycle | applicable | R6, R7, R8, R9, R10, R20, R21, R22, R23, R24, R25, R32, R43, R44 | BND-STATE-001 | - |
+| identity-authority | applicable | R6, R7, R8, R9, R10, R20, R21, R22, R23, R24, R25 | BND-AUTH-001 | - |
+| composition-path | applicable | R1, R2, R11, R12, R13, R14, R15, R16, R17, R18, R19, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R41, R42 | BND-COMPOSE-001 | - |
+| temporal-retry | applicable | R18, R19, R20, R21, R22, R23, R24, R25, R32, R44 | BND-TEMPORAL-001 | - |
+| failure-recovery | applicable | R5, R6, R7, R8, R9, R10, R22, R28, R32, R33, R34, R35, R36, R37, R38, R39, R40, R43, R44 | BND-RECOVERY-001 | - |
+| compatibility-migration | applicable | R26, R27, R28, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45 | BND-COMPAT-001 | - |
+| external-environment | applicable | R32, R37, R40, R41, R44 | BND-ENV-001 | - |
 
 ## Boundary definitions
 
 | Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |
 | --- | --- | --- | --- | --- | --- | --- |
-| BND-INPUT-001 | input-domain | R3-R10 | formal or outside-skill request; isolated or governed settlement; manual or automated execution; valid, stale, mismatched, or ambiguous evidence | every invocation has one valid classification before dependent work | valid profile or fail-closed routing result | R6 |
-| BND-STATE-001 | state-lifecycle | R6-R10, R20-R25, R32, R43-R44 | recorded/blocked; isolated/governed; manual/automated; complete/missing resource; assessed/ambiguous architecture | recording precedes settlement; resources never grant authority | bounded write, safe stop, or atomic rollback | R25 |
-| BND-AUTH-001 | identity-authority | R6-R10, R20-R25 | caller, review peer, governed spec entry, workflow authorization, workflow continuation owner | isolated evidence never becomes governed authority | permitted exact-entry mutation or authority blocker | R8 |
-| BND-COMPOSE-001 | composition-path | R1-R2, R11-R19, R23-R32, R41-R42 | SR1, SR1B, SR2, SR2B; main file, governed reference, boundary resources, assets, derived packages | each rule and structure has one owner; each resource loads once | exact package assembly with preserved behavior | R11 |
-| BND-TEMPORAL-001 | temporal-retry | R18-R25, R32, R44 | first recording, retry, conflict, stale authority, partial rollout, rollback | retries re-read current evidence and preserve first-pass review identity | idempotent completion, explicit conflict, or stop | R18 |
-| BND-RECOVERY-001 | failure-recovery | R5-R10, R22, R28, R32-R40, R43-R44 | ambiguity, blocked recording, missing resource, invalid vocabulary, unsafe reduction, architecture ambiguity | failure never invents authority, procedure, or semantic deletion | owner-routed correction, blocker, or rollback | R32 |
-| BND-COMPAT-001 | compatibility-migration | R26-R28, R33-R45 | retained, moved, duplicate, obsolete rules; normative, parser, incidental, obsolete literals; old/current package | significant rules never disappear and projected resources do not drift | compatible current package or complete rollback | R42 |
-| BND-ENV-001 | external-environment | R32, R37, R40-R41, R44 | canonical, generated, packed, installed trees; runtime present or absent | acceptance is deterministic and filesystem/package based | parity proof or package-integrity failure | R40 |
+| BND-INPUT-001 | input-domain | R3, R4, R5, R6, R7, R8, R9, R10 | formal or outside-skill request; isolated or governed settlement; manual or automated execution; valid, stale, mismatched, or ambiguous evidence | every invocation has one valid classification before dependent work | valid profile or fail-closed routing result | R6 |
+| BND-STATE-001 | state-lifecycle | R6, R7, R8, R9, R10, R20, R21, R22, R23, R24, R25, R32, R43, R44 | recorded/blocked; isolated/governed; manual/automated; complete/missing resource; assessed/ambiguous architecture | recording precedes settlement; resources never grant authority | bounded write, safe stop, or atomic rollback | R25 |
+| BND-AUTH-001 | identity-authority | R6, R7, R8, R9, R10, R20, R21, R22, R23, R24, R25 | caller, review peer, governed spec entry, workflow authorization, workflow continuation owner | isolated evidence never becomes governed authority | permitted exact-entry mutation or authority blocker | R8 |
+| BND-COMPOSE-001 | composition-path | R1, R2, R11, R12, R13, R14, R15, R16, R17, R18, R19, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R41, R42 | SR1, SR1B, SR2, SR2B; main file, governed reference, boundary resources, assets, derived packages | each rule and structure has one owner; each resource loads once | exact package assembly with preserved behavior | R11 |
+| BND-TEMPORAL-001 | temporal-retry | R18, R19, R20, R21, R22, R23, R24, R25, R32, R44 | first recording, retry, conflict, stale authority, partial rollout, rollback | retries re-read current evidence and preserve first-pass review identity | idempotent completion, explicit conflict, or stop | R18 |
+| BND-RECOVERY-001 | failure-recovery | R5, R6, R7, R8, R9, R10, R22, R28, R32, R33, R34, R35, R36, R37, R38, R39, R40, R43, R44 | ambiguity, blocked recording, missing resource, invalid vocabulary, unsafe reduction, architecture ambiguity | failure never invents authority, procedure, or semantic deletion | owner-routed correction, blocker, or rollback | R32 |
+| BND-COMPAT-001 | compatibility-migration | R26, R27, R28, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45 | retained, moved, duplicate, obsolete rules; normative, parser, incidental, obsolete literals; old/current package | significant rules never disappear and projected resources do not drift | compatible current package or complete rollback | R42 |
+| BND-ENV-001 | external-environment | R32, R37, R40, R41, R44 | canonical, generated, packed, installed trees; runtime present or absent | acceptance is deterministic and filesystem/package based | parity proof or package-integrity failure | R40 |
 
 ## Selected interactions
 
 | Interaction ID | Governing requirement IDs | Boundary IDs | Hazard | Required composed outcome |
 | --- | --- | --- | --- | --- |
-| INT-001 | R6-R16 | BND-INPUT-001, BND-COMPOSE-001 | ambiguous authority could load governed procedure or automation | stop before governed loading or mutation |
-| INT-002 | R18-R25 | BND-STATE-001, BND-AUTH-001 | durable recording could be mistaken for settlement authority | record successfully while preserving isolated mutation limits |
-| INT-003 | R23-R25, R32 | BND-COMPOSE-001, BND-RECOVERY-001 | missing governed resource after recording could erase or overstate review outcome | preserve the record and stop only dependent settlement and automation |
-| INT-004 | R26-R28, R32 | BND-COMPOSE-001, BND-COMPAT-001 | local simplification could diverge from checked boundary activation or projected bytes | consume the existing decision and preserve projection identity |
-| INT-005 | R33-R40, R42 | BND-RECOVERY-001, BND-COMPAT-001 | size pressure or incidental tests could remove governing behavior | closed ledgers and semantic review block unsafe reduction |
+| INT-001 | R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16 | BND-INPUT-001, BND-COMPOSE-001 | ambiguous authority could load governed procedure or automation | stop before governed loading or mutation |
+| INT-002 | R18, R19, R20, R21, R22, R23, R24, R25 | BND-STATE-001, BND-AUTH-001 | durable recording could be mistaken for settlement authority | record successfully while preserving isolated mutation limits |
+| INT-003 | R23, R24, R25, R32 | BND-COMPOSE-001, BND-RECOVERY-001 | missing governed resource after recording could erase or overstate review outcome | preserve the record and stop only dependent settlement and automation |
+| INT-004 | R26, R27, R28, R32 | BND-COMPOSE-001, BND-COMPAT-001 | local simplification could diverge from checked boundary activation or projected bytes | consume the existing decision and preserve projection identity |
+| INT-005 | R33, R34, R35, R36, R37, R38, R39, R40, R42 | BND-RECOVERY-001, BND-COMPAT-001 | size pressure or incidental tests could remove governing behavior | closed ledgers and semantic review block unsafe reduction |
 | INT-006 | R41, R44 | BND-COMPOSE-001, BND-ENV-001 | a generated or installed package could omit the new reference | package-chain parity fails before release or dependent runtime use |
 
 ## Example ownership
 
 | Example ID | Classification | Governing requirement IDs | Boundary IDs | Regression ID | Discovery gap ID |
 | --- | --- | --- | --- | --- | --- |
-| E1 | illustration | R2, R3, R12, R18 | BND-COMPOSE-001 | - | - |
-| E2 | illustration | R18-R22 | BND-STATE-001, BND-AUTH-001 | - | - |
-| E3 | illustration | R7, R14, R23-R25 | BND-AUTH-001, BND-COMPOSE-001 | - | - |
-| E4 | illustration | R9, R16, R23-R25 | BND-STATE-001, BND-AUTH-001 | - | - |
-| E5 | illustration | R4-R5 | BND-INPUT-001 | - | - |
-| E6 | illustration | R13, R15, R26-R28 | BND-COMPOSE-001, BND-COMPAT-001 | - | - |
-| E7 | illustration | R22-R25, R32 | BND-COMPOSE-001, BND-RECOVERY-001 | - | - |
-| E8 | illustration | R33-R40 | BND-RECOVERY-001, BND-COMPAT-001 | - | - |
+| E1 | illustration | R2, R12, R18 | BND-COMPOSE-001 | - | - |
+| E2 | illustration | R20, R21, R22 | BND-STATE-001, BND-AUTH-001 | - | - |
+| E3 | illustration | R23, R24, R25 | BND-AUTH-001, BND-COMPOSE-001 | - | - |
+| E4 | illustration | R9, R23, R24, R25 | BND-STATE-001, BND-AUTH-001 | - | - |
+| E5 | illustration | R4, R5 | BND-INPUT-001 | - | - |
+| E6 | illustration | R26, R27, R28 | BND-COMPOSE-001, BND-COMPAT-001 | - | - |
+| E7 | illustration | R28, R32 | BND-COMPOSE-001, BND-RECOVERY-001 | - | - |
+| E8 | illustration | R33, R34, R35, R36, R37, R38, R39, R40 | BND-RECOVERY-001, BND-COMPAT-001 | - | - |
 
 ## Inputs and outputs
 
