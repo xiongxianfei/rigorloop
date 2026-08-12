@@ -3,6 +3,32 @@ title: Spec-Review Skill Simplification
 classification: published-skill-contract
 risk: medium
 lifecycle_contract: stage-owned-change-local-v1
+evidence_registration_deferrals:
+  - path: docs/changes/2026-08-12-spec-review-skill-simplification/spec-review-rule-disposition.yaml
+    owner: repository-maintainer
+    reason: One-change semantic-rule disposition evidence is intentionally not a recurring selector evidence class.
+    validation_impact: Exact approved CMD1 and MP1 proof remains mandatory; no generic selector check is inferred.
+    follow_up: docs/changes/2026-08-12-spec-review-skill-simplification/evidence/m1-preservation-inventories.md
+  - path: docs/changes/2026-08-12-spec-review-skill-simplification/spec-review-literal-compatibility.yaml
+    owner: repository-maintainer
+    reason: One-change literal-compatibility evidence is intentionally not a recurring selector evidence class.
+    validation_impact: Exact approved CMD1, focused consumer assertions, and MP1 proof remain mandatory; tests do not become prose-policy owners.
+    follow_up: docs/changes/2026-08-12-spec-review-skill-simplification/evidence/m1-preservation-inventories.md
+  - path: docs/changes/2026-08-12-spec-review-skill-simplification/fixtures/scenario-contracts.yaml
+    owner: repository-maintainer
+    reason: One-change static acceptance scenarios are intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved CMD1 proof remains mandatory; no target-agent runtime or generic fixture route substitutes for it.
+    follow_up: docs/changes/2026-08-12-spec-review-skill-simplification/evidence/m1-preservation-inventories.md
+  - path: docs/changes/2026-08-12-spec-review-skill-simplification/fixtures/invalid-rule-disposition.yaml
+    owner: repository-maintainer
+    reason: One-change negative semantic-disposition fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved CMD1 fail-closed proof remains mandatory; no generic selector check is inferred.
+    follow_up: docs/changes/2026-08-12-spec-review-skill-simplification/evidence/m1-preservation-inventories.md
+  - path: docs/changes/2026-08-12-spec-review-skill-simplification/fixtures/invalid-literal-classification.yaml
+    owner: repository-maintainer
+    reason: One-change negative literal-classification fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved CMD1 fail-closed proof remains mandatory; no generic selector check is inferred.
+    follow_up: docs/changes/2026-08-12-spec-review-skill-simplification/evidence/m1-preservation-inventories.md
 
 artifact_states:
   proposal:
@@ -51,7 +77,7 @@ artifact_states:
       round: r3
 workflow_state:
   lifecycle_state: active
-  current_stage: explain-change
+  current_stage: verify
   next_stage: verify
   blocker: null
   evidence:
@@ -147,7 +173,7 @@ workflow:
       completion:
         rule: final verify completes with branch-ready evidence
     status: active
-    current_stage: explain-change
+    current_stage: verify
     stop_reason: null
     evidence:
       - docs/proposals/2026-08-12-spec-review-skill-simplification.md
