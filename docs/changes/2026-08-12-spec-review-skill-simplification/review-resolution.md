@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
-Review closeout: proposal-review-r2
+Review closeout: proposal-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Final result: all findings from proposal-review-r1 and proposal-review-r2 were accepted and addressed.
+- Unresolved findings: 1
+- Current result: prior findings are closed; proposal-review-r3 requires one result-applicability revision.
 
 ## Resolution overview
 
@@ -21,6 +21,7 @@ Review closeout: proposal-review-r2
 | `SRSIM-R2-PR1` | accepted | resolved | Derived recording from review kind and promoted durable requests to isolated formal review. |
 | `SRSIM-R2-PR2` | accepted | resolved | Bound isolated recording to the existing formal-review requirements and enumerated its permitted writes. |
 | `SRSIM-R2-PR3` | accepted | resolved | Made lower loaded words and bytes for `SR1-isolated-formal` a normative success condition. |
+| `SRSIM-R3-PR1` | needs-decision | open | Proposal author must reconcile non-formal status prohibitions with the universal result group. |
 
 ## Finding details
 
@@ -111,6 +112,24 @@ Required outcome: Require lower loaded words and bytes for `SR1-isolated-formal`
 Safe resolution path: Adopt the closed simplification success criteria from proposal-review-r2.
 Validation target: Revised success criteria, measurement assemblies, risks, and scenarios.
 Validation evidence: The proposal now names six measurement profiles, requires lower isolated-formal words and bytes, rejects duplicated loaded ownership, and reports governed and total-package deltas separately.
+
+### proposal-review-r3
+
+#### SRSIM-R3-PR1
+
+Finding ID: SRSIM-R3-PR1
+Disposition: needs-decision
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Define a fillable result structure for non-formal feedback without formal lifecycle fields.
+Chosen action: pending proposal revision
+Rationale: The current universal core requires status and readiness fields that the non-formal classification forbids.
+Required outcome: Keep formal status, readiness, recording, and settlement fields out of non-formal feedback while retaining one structural asset.
+Safe resolution path: Add separate non-formal and formal core groups inside the existing asset, or route feedback outside the formal result asset if the governing contract permits it.
+Validation target: Revised result-group applicability and static formal/non-formal fixture coverage plus independent rereview.
+Validation evidence: pending
 
 ## Shared validation evidence
 
