@@ -258,7 +258,7 @@ CMD1 copies the approved plan's `M1 change-local evidence proof` exactly. CMD7 i
 ### T11. Archives and temporary installations preserve resources
 
 - Covers: R1, R26, R32, R40-R41, R44; BND-COMPOSE-001, BND-COMPAT-001, BND-ENV-001; INT-006
-- Level: end-to-end
+- Level: e2e
 - Command IDs: CMD6, CMD7
 - Fixture/setup: locally generated Codex, Claude Code, and opencode release candidates in a fresh temporary directory.
 - Steps: inspect archives and clean installations for all mapped references and assets at canonical paths and bytes; exercise incomplete/mixed failure fixtures.
@@ -272,7 +272,7 @@ CMD1 copies the approved plan's `M1 change-local evidence proof` exactly. CMD7 i
 
 - Covers: R1-R3, R17-R25, R29-R31, R36-R45; E8; EC8-EC10; BND-AUTH-001, BND-COMPOSE-001, BND-COMPAT-001; INT-002-INT-003, INT-005
 - Level: manual
-- Command IDs: -
+- Command IDs: none
 - Fixture/setup: complete final package, governing artifacts, ledgers, scenarios, baseline skill, literal consumers, measurements, and package proof.
 - Steps: execute MP1.
 - Expected result: every rule has one correct owner; universal recording and claims remain inline; governed and boundary resources specialize only their triggers; no unapproved semantic change exists.
