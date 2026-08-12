@@ -81,7 +81,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | PRF-011 | covered | R23, R24, R25, R32 | INT-003 | T4, T5, T9, T12 | contract | hybrid | CMD3 | `evidence/semantic-preservation-review.md` | M3 | MP1 | - |
 | PRF-012 | covered | R26, R27, R28, R32 | INT-004 | T5, T10, T13 | integration | automated | CMD3, CMD8 | `evidence/m2-package-refactor.md`; `evidence/m3-package-proof.md` | M3 | - | - |
 | PRF-013 | covered | R33, R34, R35, R36, R37, R38, R39, R40, R42 | INT-005 | T6, T7, T8, T12, T14 | contract | hybrid | CMD1 | `evidence/m1-preservation-inventories.md`; `evidence/simplification-measurements.md`; `evidence/semantic-preservation-review.md` | M3 | MP0, MP1 | - |
-| PRF-014 | covered | R41, R44 | INT-006 | T10-T11, T13 | integration | automated | CMD2-CMD7 | `evidence/m3-package-proof.md` | M3 | - | - |
+| PRF-014 | covered | R41, R44 | INT-006 | T10, T11, T13 | integration | automated | CMD2, CMD3, CMD4, CMD5, CMD6, CMD7 | `evidence/m3-package-proof.md` | M3 | - | - |
 
 ## Edge case coverage
 
