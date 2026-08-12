@@ -568,6 +568,7 @@ class PrepareReleaseTests(unittest.TestCase):
         self.assertIn("npx @xiongxianfei/rigorloop@0.3.5 init codex --json", after_first["packages/rigorloop/README.md"])
         self.assertNotIn("@0.3.4 init codex", after_first["packages/rigorloop/README.md"])
         self.assertIn("npm dist-tag: latest", after_first["docs/releases/v0.3.5.md"])
+        self.assertIn("Version decision: patch", after_first["docs/releases/v0.3.5.md"])
 
     def test_prepare_release_check_accepts_finalized_prepublication_evidence(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
