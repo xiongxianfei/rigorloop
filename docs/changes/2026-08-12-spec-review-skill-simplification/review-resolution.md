@@ -2,13 +2,14 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
 Review closeout: proposal-review-r5
+Review closeout: spec-review-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `proposal-review-r5`, `proposal-review-r6`
 - Findings resolved: 9
@@ -189,6 +190,12 @@ Required outcome: Name the canonical existing asset and remove the alternative-n
 Safe resolution path: Make the one-line R1 correction and rerun formal spec review.
 Validation target: Fresh spec-review plus metadata, lifecycle, review-artifact, readability, and diff validation.
 Validation evidence: R1 now names exactly `assets/material-finding.md`; same-stage rereview remains required.
+
+### spec-review-r2
+
+Review closeout: spec-review-r2
+
+No material findings; no resolution entry required. The same-stage spec-review rerun approved the revised specification and closed `SRSS-SR1`.
 
 ## Shared validation evidence
 

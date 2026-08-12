@@ -20,13 +20,18 @@ artifact_states:
     kind: spec
     path: specs/spec-review-skill-simplification.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-12-spec-review-skill-simplification/evidence/spec-revision-r1.md
+    lifecycle_state: approved
+    review:
+      id: spec-review-r2
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-12-spec-review-skill-simplification/reviews/spec-review-r2.md
+      round: r2
 
 workflow_state:
   lifecycle_state: active
-  current_stage: spec-review
-  next_stage: spec-review
+  current_stage: architecture-assessment
+  next_stage: architecture-assessment
   blocker: null
   evidence:
     - docs/changes/2026-08-12-spec-review-skill-simplification/evidence/proposal-authoring.md
@@ -45,6 +50,7 @@ workflow_state:
     - docs/changes/2026-08-12-spec-review-skill-simplification/evidence/spec-authoring.md
     - docs/changes/2026-08-12-spec-review-skill-simplification/reviews/spec-review-r1.md
     - docs/changes/2026-08-12-spec-review-skill-simplification/evidence/spec-revision-r1.md
+    - docs/changes/2026-08-12-spec-review-skill-simplification/reviews/spec-review-r2.md
 
 workflow:
   automation:
@@ -57,7 +63,7 @@ workflow:
       completion:
         rule: approved formal test-spec-review occurrence is recorded
     status: active
-    current_stage: spec-review
+    current_stage: architecture-assessment
     stop_reason: null
     evidence:
       - docs/proposals/2026-08-12-spec-review-skill-simplification.md
@@ -65,6 +71,7 @@ workflow:
       - docs/changes/2026-08-12-spec-review-skill-simplification/review-resolution.md
       - specs/spec-review-skill-simplification.md
       - docs/changes/2026-08-12-spec-review-skill-simplification/evidence/spec-authoring.md
+      - docs/changes/2026-08-12-spec-review-skill-simplification/reviews/spec-review-r2.md
 
 artifacts:
   proposal: docs/proposals/2026-08-12-spec-review-skill-simplification.md
@@ -102,7 +109,8 @@ changed_files:
   - docs/changes/2026-08-12-spec-review-skill-simplification/evidence/spec-authoring.md
   - docs/changes/2026-08-12-spec-review-skill-simplification/reviews/spec-review-r1.md
   - docs/changes/2026-08-12-spec-review-skill-simplification/evidence/spec-revision-r1.md
+  - docs/changes/2026-08-12-spec-review-skill-simplification/reviews/spec-review-r2.md
 
 review:
-  status: changes-requested
+  status: approved
   unresolved_items: 0
