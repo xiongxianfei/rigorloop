@@ -1,5 +1,14 @@
 # Review Resolution: Spec-Review Skill Simplification
 
+## code-review-m2-r1
+
+Review ID: code-review-m2-r1
+Finding ID: SRSS-CR-M2-R1-001
+Disposition: accepted
+Resolution: Load the governed reference after exact governed authority, and gate only settlement on successful universal recording. The correction is limited to the mapped load condition, reference preamble and settlement precondition, coupled skill-contract wording, and focused assertion.
+Validation: CMD2-CMD5 required before rereview.
+Closeout status: open
+
 ## Summary
 
 Closeout status: closed

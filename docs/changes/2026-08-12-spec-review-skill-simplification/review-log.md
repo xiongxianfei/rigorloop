@@ -14,6 +14,19 @@ This ledger records formal lifecycle reviews for the spec-review skill simplific
 
 ### Review entry
 
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: M2 implementation at commit 8ebe9ba5
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: SRSS-CR-M2-R1-001
+Open findings: SRSS-CR-M2-R1-001
+Recording status: recorded
+
+### Review entry
+
 Review ID: test-spec-review-r3
 Stage: test-spec-review
 Round: r3
