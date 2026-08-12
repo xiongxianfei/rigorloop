@@ -16,6 +16,7 @@ This ledger records formal lifecycle reviews for the proposal-review skill simpl
 | `test-spec-review-r2` | `test-spec-review` | `r2` | `specs/proposal-review-skill-simplification.test.md` at commit `60ba95d9` | `reviews/test-spec-review-r2.md` | `approved` | 0 | `recorded` |
 | `code-review-m1-r1` | `code-review` | `r1` | M1 implementation at `b1929b23` | `reviews/code-review-m1-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m2-r2` | `code-review` | `r2` | M2 correction at `6a405d0f` | `reviews/code-review-m2-r2.md` | `clean` | 0 | `recorded` |
+| `code-review-m3-r1` | `code-review` | `r1` | M3 implementation at `33e7b9e9` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 
