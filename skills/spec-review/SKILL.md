@@ -154,7 +154,7 @@ Direct or review-only `spec-review` requests remain isolated by default.
 
 ## Resource map
 
-- READ `references/governed-spec-review-settlement.md` exactly for `governed-spec-entry`, after authority is established and universal recording succeeds. Stop dependent settlement or automation if it is missing or unreadable.
+- READ `references/governed-spec-review-settlement.md` exactly for `governed-spec-entry`, after authority is established. Settlement inside the reference waits for universal recording. Stop dependent settlement or automation if the reference is missing or unreadable.
 - READ `references/boundary-first-method-v1.md` when reviewing a `boundary-first-v1` behavior contract.
 - READ `references/boundary-first-feature-authoring-v1.md` when judging formal boundary-record completeness or a substantive grandfathered revision, after the method reference.
 - COPY `assets/review-result-skeleton.md` for every formal result. Fill: the formal core and recording groups plus only applicable governed-settlement, boundary-review, and automated-review groups. Omit inapplicable groups; report applicable unavailable data as blocked or unknown with its blocker. Do not emit unfilled placeholders.

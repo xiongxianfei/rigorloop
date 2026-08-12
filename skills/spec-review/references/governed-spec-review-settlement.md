@@ -1,10 +1,10 @@
 # Governed spec-review settlement
 
-Load this reference only after `governed-spec-entry` authority is established and universal review recording succeeds. The parent skill owns judgment, status, severity, materiality, recording, boundary activation, stops, claims, and handoff. Loading this procedure does not grant settlement, automation, correction, or continuation authority.
+Load this reference only after `governed-spec-entry` authority is established. The parent skill owns judgment, status, severity, materiality, recording, boundary activation, stops, claims, and handoff. Loading this procedure does not grant settlement, automation, correction, or continuation authority.
 
 ## Change-record review settlement
 
-Before settlement, read the complete `change.yaml` before writing and require `lifecycle_contract: stage-owned-change-local-v1`. Resolve exactly one spec entry by artifact ID, `kind`, and normalized reviewed path. Require `review-required` and complete authoring evidence, plus a lifecycle state that requests `spec-review`.
+Run settlement only after universal review recording succeeds. Before settlement, read the complete `change.yaml` before writing and require `lifecycle_contract: stage-owned-change-local-v1`. Resolve exactly one spec entry by artifact ID, `kind`, and normalized reviewed path. Require `review-required` and complete authoring evidence, plus a lifecycle state that requests `spec-review`.
 
 Write the durable review record first. Then remove `authoring_evidence`, set only the exact review mapping with `id`, `artifact_id`, `outcome`, `record`, and `round`, and map `approved` to `approved`, `changes-requested` to `revision-required`, and `blocked` or `inconclusive` to `blocked`. The procedure must settle only the matching spec entry. Preserve every other artifact entry, milestone, workflow route, and next-stage field.
 

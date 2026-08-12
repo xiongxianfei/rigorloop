@@ -2625,6 +2625,7 @@ Use the inputs somehow and produce a useful result.
             "- READ `references/governed-spec-review-settlement.md` exactly for `governed-spec-entry`",
             skill_text,
         )
+        self.assertIn("Settlement inside the reference waits for universal recording.", skill_text)
         self.assertIn("`SR1-isolated-formal`", skill_text)
         self.assertIn("`SR1B-isolated-formal-boundary`", skill_text)
         self.assertIn("`SR2-governed-formal`", skill_text)
@@ -2634,6 +2635,7 @@ Use the inputs somehow and produce a useful result.
 
         governed = governed_path.read_text(encoding="utf-8")
         self.assertIn("## Change-record review settlement", governed)
+        self.assertIn("Run settlement only after universal review recording succeeds.", governed)
         self.assertIn("settle only the matching spec entry", governed)
         self.assertIn("## Workflow-managed automation", governed)
         self.assertIn("does not grant", governed)
