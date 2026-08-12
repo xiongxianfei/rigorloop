@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: test-spec-review-r3
+review_stage: test-spec-review
+review_target: specs/spec-review-skill-simplification.test.md
+base_revision: 0e2ae9f98ddd861ea259c859813067981cfdf3a1
+head_revision: 0e2ae9f98ddd861ea259c859813067981cfdf3a1
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-test-spec-revision-r2
+reviewer_context_id: root-test-spec-review-r3-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-contract
+  - boundary-first-proof-map
+  - adapter-package-and-rollback-proof
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/spec-review-skill-simplification.md
+  - docs/plans/2026-08-12-spec-review-skill-simplification.md
+  - docs/changes/2026-08-12-spec-review-skill-simplification/architecture-assessment.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+  - boundary-first-proof-v1
+initial_packet_inventory:
+  - path: specs/spec-review-skill-simplification.md
+    sha256: 25522d5f55d9b24c65d5e20a9348e997ddc4964bf25f12d904b36ba9b91a9b4f
+  - path: docs/plans/2026-08-12-spec-review-skill-simplification.md
+    sha256: 61a520d55472781438e701b945124db1b6a79ea539edc5b4cbb138a0f7dd7264
+  - path: specs/spec-review-skill-simplification.test.md
+    sha256: b12ccf914370bfe6c6fb65439b3dbbb94c54089bf96cb86f2bcc14b33c55f3fa
+  - path: docs/changes/2026-08-12-spec-review-skill-simplification/evidence/test-spec-revision-r2.md
+    sha256: bb94d7bc2a27aad1d5bcbdc910e050fde19e64a82860f2fda0b8b638d52bfe68
+prompt_template_version: test-spec-review-v1
+manifest_owner: review-invoker
+forbidden_initial_context_excluded: true
+review_focus:
+  - test-case and proof-map schema vocabulary
+  - explicit proof identities
+  - milestone proof timing
+  - requirement, example, boundary, and interaction traceability
+  - command executability and ownership
+  - no target-agent runtime acceptance

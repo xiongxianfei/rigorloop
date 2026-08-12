@@ -15,6 +15,7 @@ Review closeout: spec-review-r3
 Review closeout: spec-review-r4
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
+Review closeout: test-spec-review-r3
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `proposal-review-r5`, `proposal-review-r6`
 - Findings resolved: 9
@@ -270,6 +271,12 @@ Validation evidence: The M1 proof map names only baseline-valid tests; boundary 
 Review closeout: test-spec-review-r2
 
 No material findings; no resolution entry required. The same-stage test-spec-review rerun approved the revised proof map and closed `SRSS-TSR1`.
+
+### test-spec-review-r3
+
+Review closeout: test-spec-review-r3
+
+No material findings; no resolution entry required. The fresh isolated formal review approved the schema-vocabulary and explicit-identity refinement without changing proof scope.
 
 ## Shared validation evidence
 
