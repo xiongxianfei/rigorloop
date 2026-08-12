@@ -119,7 +119,7 @@ CMD1 copies the approved plan's `M1 change-local evidence proof` exactly. CMD7 i
 
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| M1 | T6-T9, T14 | MP0 | CMD1, CMD9 | `evidence/profile-size-baseline.md`; `evidence/m1-preservation-inventories.md` | M1 code-review | Canonical package remains unchanged. |
+| M1 | T6, T7, T9, T14 | MP0 | CMD1, CMD9 | `evidence/profile-size-baseline.md`; `evidence/m1-preservation-inventories.md` | M1 code-review | Canonical package remains unchanged. |
 | M2 | T1-T5, T9-T10 | none | CMD2-CMD5, CMD9 | `evidence/m2-package-refactor.md` | M2 code-review | Focused failing assertions precede package text changes. |
 | M3 | T8-T14 | MP1 | CMD1-CMD10 | `evidence/simplification-measurements.md`; `evidence/semantic-preservation-review.md`; `evidence/m3-package-proof.md` | M3 code-review and final review | Proves profile, semantic, boundary, and package-chain acceptance. |
 
