@@ -70,3 +70,16 @@ Resolution: review-resolution.md#proposal-review-r3
 Material findings: SRSIM-R3-PR1
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: proposal-review-r6
+Stage: proposal-review
+Round: r6
+Reviewed artifact: `docs/proposals/2026-08-12-spec-review-skill-simplification.md` at commit `ff95d2c3`
+Status: approved
+Detailed record: reviews/proposal-review-r6.md
+Resolution: review-resolution.md#proposal-review-r6
+Material findings: None
+Open findings: None
+Recording status: recorded

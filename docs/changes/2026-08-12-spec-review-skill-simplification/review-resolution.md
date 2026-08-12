@@ -4,12 +4,16 @@
 
 Closeout status: closed
 
+Review closeout: proposal-review-r1
+Review closeout: proposal-review-r2
+Review closeout: proposal-review-r3
+Review closeout: proposal-review-r4
 Review closeout: proposal-review-r5
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `proposal-review-r5`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `proposal-review-r5`, `proposal-review-r6`
 - Findings resolved: 9
 - Unresolved findings: 0
-- Final result: all findings through proposal-review-r5 were accepted and addressed.
+- Final result: all findings through proposal-review-r5 were accepted and addressed; proposal-review-r6 approved the revised proposal with no material findings.
 
 ## Resolution overview
 
@@ -162,6 +166,12 @@ Required outcome: Align progressive disclosure with governed settlement and auto
 Safe resolution path: Keep concise recording procedure inline and move only governed settlement and automation into the conditional reference.
 Validation target: Revised package shape, ownership table, profiles, measurement, options, risks, and static scenarios.
 Validation evidence: The proposal now defines isolated profiles without the new reference and governed profiles that load it only after same-change authority is established.
+
+### proposal-review-r6
+
+Review closeout: proposal-review-r6
+
+No material findings; no resolution entry required. The same-stage proposal-review rerun approved the revised proposal and closed all findings through `proposal-review-r5`.
 
 ## Shared validation evidence
 
