@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r5
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `proposal-review-r5`
-- Findings resolved: 8
-- Unresolved findings: 1
-- Current result: prior findings are closed; proposal-review-r5 requires a package-resource boundary revision.
+- Findings resolved: 9
+- Unresolved findings: 0
+- Final result: all findings through proposal-review-r5 were accepted and addressed.
 
 ## Resolution overview
 
@@ -23,7 +23,7 @@ Review closeout: proposal-review-r5
 | `SRSIM-R2-PR3` | accepted | resolved | Made lower loaded words and bytes for `SR1-isolated-formal` a normative success condition. |
 | `SRSIM-R3-PR1` | accepted | resolved | Defined mutually exclusive non-formal feedback and formal review core groups in the existing result asset. |
 | `SRSIM-R4-PR1` | accepted | resolved | Removed non-formal profiles and alternate result cores, leaving only formal and formal-boundary assemblies. |
-| `SRSIM-R5-PR1` | needs-decision | open | Proposal author must align the new reference with a genuinely conditional authority boundary. |
+| `SRSIM-R5-PR1` | accepted | resolved | Kept universal recording inline and moved only governed settlement and automation into the conditional reference. |
 
 ## Finding details
 
@@ -145,25 +145,23 @@ Rationale: Informal critique belongs outside this formal lifecycle skill; removi
 Required outcome: Give `SR0B` one exact output assembly and reconcile formal boundary-group applicability and decision history.
 Safe resolution path: Keep the boundary group formal-only and map non-formal boundary evidence into feedback observations and limitations.
 Validation target: Revised invocation, profile, asset, scenario, measurement, and decision-log text.
-Validation evidence: The proposal now has one formal invocation model, two resource profiles, one formal core, required recording, and formal-only boundary output.
+Validation evidence: The proposal revision at that round had one formal invocation model, two resource profiles, one formal core, required recording, and formal-only boundary output; the later R6 revision supersedes the two-profile package detail.
 
 ### proposal-review-r5
 
 #### SRSIM-R5-PR1
 
 Finding ID: SRSIM-R5-PR1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: proposal author
 Owning stage: proposal
-Decision owner: proposal author
-Decision needed: Select a resource boundary that actually reduces isolated formal loaded context.
-Chosen action: pending proposal revision
+Chosen action: Replace the always-loaded recording reference with `governed-spec-review-settlement.md`, keep concise recording inline, and load the reference only for `governed-spec-entry`.
 Rationale: Every real invocation loads the proposed recording-and-settlement reference, including governed-only procedure that isolated review cannot use.
 Required outcome: Align progressive disclosure with governed settlement and automation or explicitly abandon loaded-context reduction as the primary objective.
 Safe resolution path: Keep concise recording procedure inline and move only governed settlement and automation into the conditional reference.
-Validation target: Revised package shape, ownership table, profiles, measurement, options, risks, and static scenarios plus independent rereview.
-Validation evidence: pending
+Validation target: Revised package shape, ownership table, profiles, measurement, options, risks, and static scenarios.
+Validation evidence: The proposal now defines isolated profiles without the new reference and governed profiles that load it only after same-change authority is established.
 
 ## Shared validation evidence
 

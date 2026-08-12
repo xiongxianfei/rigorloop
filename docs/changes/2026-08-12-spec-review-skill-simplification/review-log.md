@@ -29,7 +29,7 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r5.md
 Resolution: review-resolution.md#proposal-review-r5
 Material findings: SRSIM-R5-PR1
-Open findings: SRSIM-R5-PR1
+Open findings: None
 Recording status: recorded
 
 ### Review entry
