@@ -150,7 +150,7 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
   - independently review the final package against both ledgers and R42
 - Validation commands:
   - `python scripts/test-adapter-distribution.py`
-  - temporary adapter build followed by `python scripts/validate-adapters.py --clean-install-smoke --skill spec-review`
+  - run the exact `Temporary spec-review adapter proof` command in the Validation plan
   - `python scripts/validate-skills.py skills/spec-review/SKILL.md`
   - `python scripts/test-skill-validator.py`
   - `python scripts/validate-boundary-first.py --check --path specs/spec-review-skill-simplification.md`
@@ -179,7 +179,15 @@ python -c 'import json; from pathlib import Path; root=Path("docs/changes/2026-0
 - `python scripts/test-skill-validator.py`: focused skill-contract and regression proof.
 - `python scripts/test-build-skills.py` and `python scripts/build-skills.py --check`: generated inventory and resource parity.
 - `python scripts/test-adapter-distribution.py`: adapter generation, archive, and installed-resource regressions.
-- Temporary adapter generation plus clean-install validation for `spec-review`: direct all-target package proof.
+- `Temporary spec-review adapter proof`: direct all-target package proof using the current tracked adapter-manifest version.
+
+```bash
+spec_review_adapter_tmp="$(mktemp -d)"
+trap 'rm -rf "$spec_review_adapter_tmp"' EXIT
+python scripts/build-adapters.py --version v0.1.5 --output-dir "$spec_review_adapter_tmp"
+python scripts/validate-adapters.py --version v0.1.5 --adapter-root "$spec_review_adapter_tmp" --clean-install-smoke --skill spec-review
+```
+
 - `python scripts/validate-boundary-first.py --check --path specs/spec-review-skill-simplification.md`: boundary record and later proof-map coverage.
 - Review artifact, change metadata, lifecycle, Markdown readability, and diff checks: change-local governance proof.
 - Independent semantic review: invocation classification, universal recording, authority, profiles, boundary activation, assets, failures, statuses, claims, handoff, and literal treatment.

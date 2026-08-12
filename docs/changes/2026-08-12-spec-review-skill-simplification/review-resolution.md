@@ -212,7 +212,7 @@ Rationale: A required package proof must be executable without an implementer ch
 Required outcome: Provide one exact repository-valid temporary adapter proof command.
 Safe resolution path: Add the current `v0.1.5` command and rerun plan review.
 Validation target: Fresh plan review plus metadata, lifecycle, review-artifact, readability, and diff validation.
-Validation evidence: Pending plan revision and rereview.
+Validation evidence: The plan now includes the exact current-version temporary adapter proof command; same-stage rereview remains required.
 
 ## Shared validation evidence
 
