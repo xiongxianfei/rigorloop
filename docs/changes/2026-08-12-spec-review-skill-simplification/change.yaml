@@ -1,0 +1,46 @@
+change_id: 2026-08-12-spec-review-skill-simplification
+title: Spec-Review Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-12-spec-review-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-12-spec-review-skill-simplification/evidence/proposal-authoring.md
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-12-spec-review-skill-simplification/evidence/proposal-authoring.md
+
+workflow: {}
+
+artifacts:
+  proposal: docs/proposals/2026-08-12-spec-review-skill-simplification.md
+
+requirements:
+  - Preserve spec-review judgment, routing, recording, lifecycle, boundary-first, and claim behavior while reducing ordinary loaded context.
+  - Give universal policy, conditional procedure, and output structure one explicit owner each.
+  - Prove semantic preservation, literal compatibility, resource parity, and profile-specific context change without target-agent runtime execution.
+
+tests:
+  - Independent semantic review of the proposal and final skill package.
+  - Deterministic validation of closed profiles, triggers, mapped resources, result shape, failure behavior, and package parity.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-12-spec-review-skill-simplification/change.yaml
+  - docs/changes/2026-08-12-spec-review-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-12-spec-review-skill-simplification.md
+
+review:
+  status: review-requested
+  unresolved_items: 0
