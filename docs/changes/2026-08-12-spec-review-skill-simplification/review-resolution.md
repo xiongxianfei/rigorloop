@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r4
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
-- Findings resolved: 7
-- Unresolved findings: 1
-- Current result: prior findings are closed; proposal-review-r4 requires one boundary-output applicability revision.
+- Findings resolved: 8
+- Unresolved findings: 0
+- Final result: all findings through proposal-review-r4 were accepted and addressed.
 
 ## Resolution overview
 
@@ -22,7 +22,7 @@ Review closeout: proposal-review-r4
 | `SRSIM-R2-PR2` | accepted | resolved | Bound isolated recording to the existing formal-review requirements and enumerated its permitted writes. |
 | `SRSIM-R2-PR3` | accepted | resolved | Made lower loaded words and bytes for `SR1-isolated-formal` a normative success condition. |
 | `SRSIM-R3-PR1` | accepted | resolved | Defined mutually exclusive non-formal feedback and formal review core groups in the existing result asset. |
-| `SRSIM-R4-PR1` | needs-decision | open | Proposal author must close boundary output applicability for `SR0B` and reconcile the decision log. |
+| `SRSIM-R4-PR1` | accepted | resolved | Removed non-formal profiles and alternate result cores, leaving only formal and formal-boundary assemblies. |
 
 ## Finding details
 
@@ -135,18 +135,16 @@ Validation evidence: The proposal now requires exactly one core group, forbids f
 #### SRSIM-R4-PR1
 
 Finding ID: SRSIM-R4-PR1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: proposal author
 Owning stage: proposal
-Decision owner: proposal author
-Decision needed: Define whether and how non-formal boundary feedback emits boundary-specific structure.
-Chosen action: pending proposal revision
-Rationale: The current profile and asset rules permit contradictory output assemblies for `SR0B`.
+Chosen action: Remove non-formal feedback from the `spec-review` contract and retain only formal and formal-boundary profiles with one formal result core.
+Rationale: Informal critique belongs outside this formal lifecycle skill; removing it resolves the `SR0B` ambiguity and reduces unnecessary classifications, output variants, and fixtures.
 Required outcome: Give `SR0B` one exact output assembly and reconcile formal boundary-group applicability and decision history.
 Safe resolution path: Keep the boundary group formal-only and map non-formal boundary evidence into feedback observations and limitations.
-Validation target: Revised profile, asset, scenario, and decision-log text plus independent rereview.
-Validation evidence: pending
+Validation target: Revised invocation, profile, asset, scenario, measurement, and decision-log text.
+Validation evidence: The proposal now has one formal invocation model, two resource profiles, one formal core, required recording, and formal-only boundary output.
 
 ## Shared validation evidence
 
