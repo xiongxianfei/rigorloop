@@ -2,8 +2,8 @@
 
 | Field | Value |
 | --- | --- |
-| PR URL | pending open action |
-| PR state | pending |
+| PR URL | https://github.com/xiongxianfei/rigorloop/pull/137 |
+| PR state | open |
 | Base branch | main |
 | Head branch | proposal/proposal-review-skill-simplification |
 
