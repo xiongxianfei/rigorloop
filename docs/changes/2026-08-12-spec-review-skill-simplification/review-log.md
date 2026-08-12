@@ -42,5 +42,5 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r3.md
 Resolution: review-resolution.md#proposal-review-r3
 Material findings: SRSIM-R3-PR1
-Open findings: SRSIM-R3-PR1
+Open findings: None
 Recording status: recorded
