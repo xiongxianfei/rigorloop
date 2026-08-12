@@ -1,0 +1,1 @@
+{"literal_id":"SR-LIT-INVALID","literal":"invalid","source_location":"skills/spec-review/SKILL.md","consumers":["none"],"classification":"unknown-value","required_semantics":"Reject unknown literal classification.","disposition":"reject","replacement":"none"}
