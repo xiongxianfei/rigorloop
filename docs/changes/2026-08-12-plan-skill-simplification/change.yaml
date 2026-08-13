@@ -347,6 +347,10 @@ changed_files:
   - docs/changes/2026-08-12-plan-skill-simplification/evidence/ci-selector-deferral.md
   - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-final-r2.yaml
   - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r2.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml
+  - docs/changes/2026-08-10-code-review-skill-simplification/change.yaml
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/change.yaml
+  - docs/changes/2026-08-11-workflow-skill-simplification/change.yaml
 
 review:
   status: approved

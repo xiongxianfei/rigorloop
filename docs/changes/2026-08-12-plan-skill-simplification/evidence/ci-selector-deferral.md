@@ -22,6 +22,8 @@ The change records a complete repository-maintainer deferral for each exact path
 
 No workflow file, check catalog, evidence-class registry, selector code, validator family, target runtime, or broad-smoke policy changed. The deferrals apply only to the eight named paths and cannot match other evidence.
 
+The first PR gate additionally found that four historical change records still carried current `artifact_states` entries for `docs/architecture/system/architecture.md`, although this change's metadata and the architecture document identify `2026-08-12-plan-skill-simplification` as the current owner. CI maintenance removed those four stale ownership entries and preserved their architecture review records and evidence. This applies the existing single-owner lifecycle contract and the repository rule that the change updating canonical architecture owns its current entry; it does not remove historical review evidence or architecture content.
+
 ## Result
 
 - Skill: ci-maintenance
@@ -30,5 +32,5 @@ No workflow file, check catalog, evidence-class registry, selector code, validat
 - PR checks: existing selector and PR-mode commands unchanged
 - Boundary checks: existing broad-smoke command unchanged
 - Risk coverage: exact-path owner deferrals retain direct T7-T9, CMD7, and MP1 proof
-- Open blockers: focused code review and selector rerun required
+- Open blockers: focused code review and PR-gate rerun required
 - Next stage: code-review
