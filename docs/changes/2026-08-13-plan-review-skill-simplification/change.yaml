@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: implement
-  next_stage: implement
+  current_stage: code-review
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/proposal-authoring.md
@@ -102,7 +102,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: planned
+        state: review-requested
       M3:
         kind: implementation
         state: planned
@@ -138,7 +138,7 @@ workflow:
       completion:
         rule: first formal verify result is durably recorded
     status: active
-    current_stage: implement
+    current_stage: code-review
     stop_reason: null
     evidence:
       - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
