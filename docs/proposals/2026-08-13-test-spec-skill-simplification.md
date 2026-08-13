@@ -22,7 +22,7 @@ The problem is not that the test-spec contract is too rigorous. Requirement trac
 
 - Reduce the procedural context loaded for portable and governed test-spec authoring without weakening proof quality or lifecycle safety.
 - Keep a self-sufficient universal `SKILL.md` for proof design, coverage integrity, stop conditions, claims, and handoff.
-- Move only governed artifact-entry mutation and workflow-managed settlement procedure into one conditionally loaded reference.
+- Move only governed artifact creation, revision, authoring evidence, and the matching `authoring → review-required` transition into one conditionally loaded reference.
 - Preserve the existing contract that `test-spec` initially loads both boundary-first references; remove duplicated inline boundary procedure instead of changing that loading policy.
 - Make the five existing assets the sole owners of repeated output labels, columns, ordering, and placeholders.
 - Preserve current requirement, example, edge-case, command, milestone, manual-proof, and boundary-proof semantics.
@@ -169,13 +169,54 @@ Creation requires one exact change, settled governing inputs, current test-spec 
 
 Loading the reference never grants workflow continuation, test-spec-review settlement, implementation authority, or permission to modify another artifact-state entry or `workflow_state`.
 
+### Governed creation and retry
+
+New governed creation uses one ordered authoring transaction:
+
+1. Resolve exactly one change, one stable test-spec artifact ID, one normalized intended path, one authoring-evidence path, and the current governing input identities.
+2. Confirm that no unrelated file, entry, or competing primary test spec occupies those identities.
+3. Create the matching test-spec entry in `authoring` with the intended path and authoring-evidence path before substantive test-spec content is written.
+4. Write the test-spec file using the applicable structural assets.
+5. Write the complete authoring record.
+6. Validate the artifact ID, normalized path, input identities, content, and complete authoring evidence.
+7. Move only the same test-spec entry from `authoring` to `review-required`.
+
+The retry identity is the tuple of change ID, artifact ID, normalized test-spec path, authoring-evidence path, and governing input identities. An identical retry reconciles only these partial states:
+
+| Observed state | Required result |
+| --- | --- |
+| Matching `authoring` entry; file absent | Resume file creation. |
+| Matching entry and file; authoring evidence absent or incomplete | Complete the authoring record after validating the content basis. |
+| Matching entry, file, and complete authoring evidence | Validate and move the same entry to `review-required`. |
+| Matching entry already `review-required` with the same completed basis | Return idempotent authoring success without another write. |
+| File exists without the matching entry | Stop as an unrelated or ambiguous collision; do not adopt it implicitly. |
+| Entry exists with a different path, artifact ID, evidence path, or input basis | Stop. |
+| Multiple candidate files or entries exist | Stop. |
+| The intended content or governing input basis changed during retry | Stop and begin an explicitly authorized revision instead of reconciling creation. |
+
+The transaction never writes review evidence, review settlement, another artifact entry, `workflow_state`, routing, or automation state.
+
+### Authoring, review settlement, and workflow settlement
+
+Use one non-overlapping ownership and handoff model:
+
+| Operation | Owner | Allowed result and write boundary | Forbidden behavior |
+| --- | --- | --- | --- |
+| Test-spec authoring | `test-spec` | Create or revise the proof map, write authoring evidence, and leave only its matching entry `review-required`. | No review evidence, activation, routing, automation, or implementation eligibility. |
+| Peer review settlement | `test-spec-review` | Record independent review evidence and, when approved, move only the matching entry from `review-required` to `active`. | No test-spec editing, workflow routing, or implementation work. |
+| Implementation settlement gate | `workflow` | Validate the active test spec, current approved review, proof completeness, and input synchronization, then record only workflow-owned gate or routing evidence under existing authority. | No test-spec rewriting, artifact or review settlement, proof invention, or authoring-state mutation. |
+
+The governed authoring reference owns only the first row. It contains no workflow settlement or peer-review procedure. In an armed workflow invocation, `test-spec` emits its authoring result and returns control to workflow; workflow may route to `test-spec-review` under existing authority, but `test-spec` itself does not advance routing. Later workflow-managed test-spec settlement remains a workflow-owned validation gate and is not another test-spec authoring operation.
+
 ### Resource ownership
 
 | Content | Owner |
 | --- | --- |
 | Purpose, prerequisites, evidence selection, proof-design policy, coverage integrity, stops, claims, and handoff | `SKILL.md` |
 | Governed candidate trigger and missing-resource stop | `SKILL.md` |
-| Exact governed validation, create/revise transition, authoring evidence, retry, and workflow-managed settlement preparation | `governed-test-spec-authoring.md` |
+| Exact governed validation, create/revise transaction, authoring evidence, and identical retry through `review-required` | `governed-test-spec-authoring.md` |
+| Independent review evidence and `review-required → active` settlement | `test-spec-review` under its existing contract |
+| Active test-spec, approved-review, completeness, and input-synchronization gate before implementation | `workflow` under its existing contract |
 | Shared boundary vocabulary, compact scan, identifiers, interactions, and upstream-gap routing | Existing boundary-first method reference |
 | Boundary proof record, coverage state, proof levels, automation modes, negative/composed proof, and adequacy checks | Existing boundary-first proof reference |
 | Document headings, test-case labels, row columns, ordering, and placeholders | Existing five assets |
@@ -210,6 +251,20 @@ Delete the inline `Test case format` and `Output skeleton` blocks and avoid repr
 - never emit an unfilled placeholder;
 - assets define layout only and never determine proof adequacy, lifecycle state, or handoff.
 
+Use one exact composition model:
+
+| Asset | Sole structural ownership |
+| --- | --- |
+| `test-spec-skeleton.md` | Document section order, section headings, table headings, and named insertion positions. |
+| `test-case.md` | One complete repeated test-case body. |
+| `coverage-map-row.md` | Requirement-coverage and example-coverage data-row bodies. |
+| `validation-command-row.md` | One validation-command data-row body. |
+| `milestone-proof-row.md` | One milestone-proof data-row body. |
+
+Remove repeated example data rows and test-case bodies from the full skeleton. Replace them with named insertion markers for coverage rows, validation-command rows or the explicit no-command rationale, milestone-proof rows or the explicit not-applicable rationale, and test cases. Table headers stay in the skeleton and are not copied from row assets.
+
+Full creation or full rewrite copies the skeleton, expands every applicable insertion using the smaller mapped assets, and removes every insertion marker before output. A bounded revision copies only the affected row or test-case asset unless it changes document-wide structure and therefore requires a full rewrite. The emitted artifact must contain neither named insertion markers nor unfilled placeholders. `SKILL.md` and the references continue to decide applicability, vocabulary meaning, proof adequacy, lifecycle state, and readiness.
+
 ### Missing-resource behavior
 
 The two boundary references are required for every test-spec authoring profile. If either is missing, unreadable, escaped, or mixed-version, stop before proof-map authoring. If governed candidate context is true and the governed reference is unavailable, stop before reading or mutating governed state. Missing inapplicable structural assets block only the authoring operation that requires them. The skill must not reconstruct missing procedure or layout from memory.
@@ -219,6 +274,8 @@ The two boundary references are required for every test-spec authoring profile. 
 - Portable authoring loads a shorter stage-local contract while retaining the same two required boundary references and proof rigor.
 - Governed authoring additionally loads one reference that validates exact change authority and owns only the permitted artifact-entry transition.
 - New governed test-spec creation no longer depends on a pre-existing test-spec identity; revision still requires an exact current identity.
+- Interrupted governed creation resumes only when its complete retry identity matches; collisions and changed bases fail closed.
+- Test-spec authoring stops at `review-required`, peer review alone may settle the artifact to `active`, and workflow alone owns the later implementation settlement gate.
 - Repeated test-case, coverage, command, milestone, and document layouts come only from their mapped assets.
 - Detailed boundary-first procedure appears only in its existing mapped references, not again in stage-local prose.
 - Coverage, command, milestone, manual-proof, stop, claim, and handoff behavior remains unchanged.
@@ -255,6 +312,7 @@ Cover at least:
 
 - portable creation and bounded revision;
 - governed new-entry creation and existing-entry revision;
+- every interrupted governed-creation point, identical retry, unrelated collision, changed basis, and already-complete idempotent retry;
 - candidate loading followed by valid or invalid authority;
 - entry/file absence, asymmetry, mismatch, multiplicity, stale input, illegal state, and concurrent-write stops;
 - boundary proof with exact approved IDs and upstream routing for new behavior or proof-only gaps;
@@ -263,6 +321,8 @@ Cover at least:
 - uncovered gaps blocking downstream reliance;
 - missing governed, boundary, or structural resources;
 - isolated versus workflow-managed handoff and forbidden writes.
+- authoring completion at `review-required`, peer activation at `active`, and workflow settlement without test-spec or review-state mutation;
+- full-skeleton creation, nested row/case expansion, bounded row/case revision, and rejection of emitted insertion markers or placeholders.
 
 Scenario proof is deterministic and fixture-based. It does not execute Codex, Claude Code, opencode, or another target-agent runtime.
 
@@ -296,9 +356,29 @@ Acceptance requires both procedural profiles to decrease, every rule and literal
 
 Permanent validation should enforce durable structure, vocabularies, resource integrity, and package parity. Change-local size measurements, disposition ledgers, duplicate counts, and prose judgment must not create a new permanent validator family.
 
+### Acceptance criteria
+
+| ID | Criterion |
+| --- | --- |
+| `AC-TSSIM-001` | `test-spec` authoring ends with only the matching test-spec entry at `review-required`. |
+| `AC-TSSIM-002` | Only `test-spec-review` may settle the matching test-spec entry from `review-required` to `active`. |
+| `AC-TSSIM-003` | Workflow settlement may record workflow-owned gate or routing evidence but may not rewrite the test spec or artifact-review settlement. |
+| `AC-TSSIM-004` | Every interrupted governed-creation state has one deterministic resume, idempotent-success, or stop result. |
+| `AC-TSSIM-005` | Identical retries require the complete retry identity; conflicting or ambiguous identities fail closed. |
+| `AC-TSSIM-006` | The full skeleton owns section order, headings, table headers, and insertion positions but no repeated row or test-case body. |
+| `AC-TSSIM-007` | Each smaller asset exclusively owns its repeated body shape. |
+| `AC-TSSIM-008` | Full creation and bounded revision use the closed asset-composition rules and emit no insertion marker or unfilled placeholder. |
+| `AC-TSSIM-009` | Both existing boundary-first references, canonical bytes, and initial-loading contract remain unchanged. |
+| `AC-TSSIM-010` | Portable and governed procedural profiles both decrease from baseline without semantic loss. |
+| `AC-TSSIM-011` | Every semantic rule and literal dependency has one classified disposition. |
+| `AC-TSSIM-012` | No target-agent runtime, permanent simplicity validator, or tokenizer dependency is introduced. |
+| `AC-TSSIM-013` | Canonical, generated, archived, and clean-installed packages retain required resource parity. |
+
 ## Rollout and Rollback
 
 Implement the canonical package and directly coupled validators or fixtures atomically. Regenerate or validate all supported adapter packages through existing repository-owned commands. Do not hand-edit generated public adapter bodies.
+
+Migrate structural assets atomically: update the skeleton insertion markers, repeated assets, resource-map instructions, and directly coupled validators in the same implementation slice. Do not publish a mixed package in which the skeleton still owns example body rows while smaller assets claim exclusive ownership.
 
 Historical test specs remain unchanged. Existing boundary references retain their canonical bytes and current initial-loading classification. The new skill writes the existing test-spec format; this change introduces no document migration.
 
@@ -312,7 +392,10 @@ Rollback is an atomic revert of `SKILL.md`, the governed reference, directly cou
 | The boundary-first loading contract is weakened accidentally | Preserve both references, initial-resource fixtures, canonical bytes, and boundary validation unchanged. |
 | Structural assets become policy owners | Limit assets to labels and layout; keep applicability and meaning in procedure. |
 | New governed creation becomes circular | Separate candidate loading from authority validation and creation from revision. |
+| Interrupted creation leaves a file or entry that cannot be classified | Use the authoring-first identity sequence and reconcile only the exact retry tuple. |
+| Test-spec authoring crosses peer or workflow settlement ownership | End authoring at `review-required`; reserve activation for `test-spec-review` and the later workflow-owned gate for validation and routing evidence only. |
 | Loading a reference is mistaken for write authority | State that exact validation occurs after loading and stops before mutation on mismatch. |
+| The skeleton and smaller assets retain duplicate structural owners | Make the skeleton own headings and insertion positions and smaller assets own repeated bodies; validate the composed output. |
 | Package splitting merely moves content | Require both loaded profiles to shrink and report total package size separately. |
 | Literal assertions freeze accidental wording | Classify semantic rules and literal consumers in separate inventories. |
 | Missing resources lead to remembered or partial procedure | Make every triggered missing resource a fail-safe stop. |
@@ -333,6 +416,9 @@ None at proposal level. The specification should inventory exact literal consume
 | 2026-08-13 | Keep proof-ledger semantics inline but remove asset-owned shapes. | Commands and milestones are broadly applicable; their structures already have owners. | Another common-path reference or duplicated formats. |
 | 2026-08-13 | Require portable and governed profile reduction without a fixed percentage. | Loaded context is the real outcome, while semantic safety outranks numeric optimization. | `SKILL.md`-only or hard percentage acceptance. |
 | 2026-08-13 | Exclude target-agent runtime acceptance and permanent simplicity validators. | Static contract proof, package parity, and semantic review are proportionate. | Model journeys, transcript grading, and token-budget gates. |
+| 2026-08-13 | Separate test-spec authoring, peer activation, and workflow settlement. | The accepted lifecycle contract assigns each operation to a different owner. | Open-ended settlement preparation in the authoring reference. |
+| 2026-08-13 | Use an authoring-entry-first creation transaction with exact retry identity. | It makes partial creation recoverable without adopting unrelated files or entries. | File-first creation and unconditional asymmetry failure. |
+| 2026-08-13 | Make the full skeleton own headings and insertion positions while smaller assets own repeated bodies. | This removes structural duplication and gives creation and bounded revision deterministic composition. | Duplicate example rows or a new combined asset. |
 
 ## Next Artifacts
 
