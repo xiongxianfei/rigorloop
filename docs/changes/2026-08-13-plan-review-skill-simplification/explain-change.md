@@ -22,6 +22,7 @@ The accepted proposal selected one governed reference plus the existing boundary
 | Finding asset | Added the standard review-family finding block. | Every material finding must have one byte-consistent structural owner. | R18, R43; T11. |
 | Validator tests | Added profile, vocabulary, transaction, asset, authority, and inventory assertions; migrated incidental inline-output consumers to assets/references. | Prove the new ownership model without freezing obsolete prose. | R48-R55; T1-T12. |
 | Change-local evidence | Added ledgers, static scenarios, measurements, semantic review, package proof, and milestone reviews. | Demonstrate no rule disappeared and distinguish relocation from deletion. | R48-R55; MP1-MP4. |
+| Selector deferrals | Recorded five exact-path repository-maintainer deferrals for one-change ledgers and fixtures. | Keep registration debt visible without creating permanent simplicity-specific selector or validator infrastructure. | R53; final selector proof. |
 
 ## Tests added or changed
 
@@ -37,6 +38,7 @@ The accepted proposal selected one governed reference plus the existing boundary
 - `python scripts/test-adapter-distribution.py`: 150 tests passed.
 - Temporary `v0.1.5` adapter build and selected clean-install validation for `plan-review`: passed.
 - Change metadata and review-artifact structure validation: passed.
+- PR-mode selector: passed after five exact current-change debts were recorded as `owner-deferred`.
 
 Hosted CI status is not yet claimed; final verify still owns readiness.
 

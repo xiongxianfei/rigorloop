@@ -188,3 +188,9 @@ No material findings; no resolution entry required. The milestone review approve
 Review closeout: code-review-final-r1
 
 No material findings; no resolution entry required. The final holistic review approved the complete diff and all implementation milestone closeout evidence.
+
+### code-review-final-r2
+
+Review closeout: code-review-final-r2
+
+No material findings; no resolution entry required. The focused final review approved the exact-path selector deferrals and retained validation obligations.
