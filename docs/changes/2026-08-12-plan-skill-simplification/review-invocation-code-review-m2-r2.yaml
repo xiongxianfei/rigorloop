@@ -1,0 +1,41 @@
+schema_version: 1
+review_id: code-review-m2-r2
+review_stage: code-review
+review_target: commit 92d636043c6544d8ea5722d9de819215f479e6c4
+base_revision: b2010ace7f5ca73bc8f7010926f0154f5fd444c7
+head_revision: 92d636043c6544d8ea5722d9de819215f479e6c4
+native_review_status: clean-with-notes
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-implement-m2-resolution
+reviewer_context_id: root-code-review-m2-r2-context-reset
+context_separation_mechanism: diff-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - material-finding-rereview
+  - published-skill-contract-change
+governing_artifacts:
+  - specs/plan-skill-simplification.md
+  - specs/plan-skill-simplification.test.md
+  - docs/adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md
+  - docs/plans/2026-08-12-plan-skill-simplification.md
+formal_criteria:
+  - code-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/plan-skill-simplification.md
+    sha256: b4e95d396f1e7e54aa12267e33389700457226487a52ed4cdd1022f391936414
+  - path: specs/plan-skill-simplification.test.md
+    sha256: 004ce59bbe036c559e64eb20437db9e820df21bf06066c43d39e71276730dfed
+  - path: docs/plans/2026-08-12-plan-skill-simplification.md
+    sha256: f40d75327036c5a4ee7fd1940ad62a012ba81084f96780ea7ea6300ef1c8ae45
+  - path: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+    sha256: 853bfc19c01f63516ed2888441a7bffea92a844fa146ee2ee356ecdbbfaa89d5
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - PLSIM-CR1 exact identity fields
+  - PLSIM-CR2 invalid-ledger proof
+  - profile reduction after correction
+  - regression validation

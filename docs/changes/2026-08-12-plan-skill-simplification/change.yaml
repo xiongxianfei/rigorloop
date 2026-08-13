@@ -115,31 +115,32 @@ workflow_state:
     - docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
     - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m2-r1.yaml
     - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m2-r2.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r2.md
   planned_work:
     plan_artifact_id: plan
-    current_milestone: M2
+    current_milestone: M3
     milestones:
       M1:
         kind: implementation
         state: closed
       M2:
         kind: implementation
-        state: review-requested
+        state: closed
       M3:
         kind: implementation
-        state: planned
+        state: implementing
     remaining_implementation_milestones:
-      - M2
       - M3
     latest_review:
-      status: review-requested
+      status: approved
       stage: code-review
       round: r2
       artifact_id: code-review-m2-r2
       occurrence: milestone
       milestone_id: M2
       evidence:
-        - docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+        - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r2.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -190,6 +191,8 @@ workflow:
       - docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
       - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m2-r1.yaml
       - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r1.md
+      - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m2-r2.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r2.md
 
 artifacts:
   proposal: docs/proposals/2026-08-12-plan-skill-simplification.md
@@ -269,7 +272,9 @@ changed_files:
   - docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-rule-duplicate-id.yaml
   - docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-literal-missing-field.yaml
   - docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-rule-destination.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m2-r2.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r2.md
 
 review:
-  status: changes-requested
+  status: approved
   unresolved_items: 0

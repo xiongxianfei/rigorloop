@@ -13,11 +13,14 @@ Review closeout: architecture-review-r1
 Review closeout: spec-review-r2
 Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
+Review closeout: code-review-m1-r1
+Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
-- Findings resolved: 9
+- Findings resolved: 11
 - Unresolved findings: 0
-- Current result: proposal approved
+- Current result: M2 implementation approved
 
 ## Resolution overview
 
@@ -32,8 +35,14 @@ Review closeout: test-spec-review-r1
 | `PLSIM-PR7` | accepted | closed | Clean review evidence, plan-owned initialization, and identical settlement retry now form one closed transaction. |
 | `PLSIM-PR8` | accepted | closed | Stable artifact metadata and existing review revision evidence define identity without hashes. |
 | `PLSIM-PR9` | accepted | closed | Canonical architecture updates and a narrow successor ADR are required in this change. |
+| `PLSIM-CR1` | accepted | closed | Exact stable-artifact and reviewed-revision identity fields were restored without losing profile reduction. |
+| `PLSIM-CR2` | accepted | closed | The invalid-ledger proof now covers vocabulary ordering, duplicates, missing fields, and destination consistency. |
 
 ## Finding details
+
+### code-review-m2-r2
+
+No material findings. The clean rereview confirmed both M2 findings are closed, both procedural profiles remain below baseline, and the complete skill suite passes.
 
 ### code-review-m1-r1
 
