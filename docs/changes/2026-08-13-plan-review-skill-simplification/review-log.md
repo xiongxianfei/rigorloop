@@ -8,6 +8,19 @@ This ledger records formal lifecycle reviews for the plan-review skill simplific
 
 ### Review entry
 
+Review ID: code-review-M1-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: implementation milestone M1 at commit `5930e55d`
+Status: clean-with-notes
+Detailed record: reviews/code-review-M1-r1.md
+Resolution: review-resolution.md#code-review-M1-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: test-spec-review-r1
 Stage: test-spec-review
 Round: r1

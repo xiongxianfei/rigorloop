@@ -164,3 +164,9 @@ No material findings; no resolution entry required. The corrected boundary activ
 Review closeout: test-spec-review-r1
 
 No material findings; no resolution entry required. The formal review approved the complete proof map and implementation handoff.
+
+### code-review-M1-r1
+
+Review closeout: code-review-M1-r1
+
+No material findings; no resolution entry required. The milestone review approved the preservation inventories, scenario fixtures, and baseline evidence.

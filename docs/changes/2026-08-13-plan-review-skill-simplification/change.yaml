@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: code-review
+  current_stage: implement
+  next_stage: implement
   blocker: null
   evidence:
     - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/proposal-authoring.md
@@ -94,11 +94,11 @@ workflow_state:
       review_record: docs/changes/2026-08-13-plan-review-skill-simplification/reviews/plan-review-r1.md
       reviewed_artifact_path: docs/plans/2026-08-13-plan-review-skill-simplification.md
       reviewed_revision: 717e3a49
-    current_milestone: M1
+    current_milestone: M2
     milestones:
       M1:
         kind: implementation
-        state: review-requested
+        state: closed
       M2:
         kind: implementation
         state: planned
@@ -106,18 +106,18 @@ workflow_state:
         kind: implementation
         state: planned
     remaining_implementation_milestones:
-      - M1
       - M2
       - M3
     latest_review:
-      status: review-requested
+      status: approved
       stage: code-review
       round: r1
       artifact_id: implementation-M1
       occurrence: milestone
       milestone_id: M1
       evidence:
-        - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/m1-preservation-inventories.md
+        - docs/changes/2026-08-13-plan-review-skill-simplification/review-invocation-code-review-M1-r1.yaml
+        - docs/changes/2026-08-13-plan-review-skill-simplification/reviews/code-review-M1-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -137,7 +137,7 @@ workflow:
       completion:
         rule: first formal verify result is durably recorded
     status: active
-    current_stage: code-review
+    current_stage: implement
     stop_reason: null
     evidence:
       - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
@@ -166,6 +166,8 @@ workflow:
       - docs/changes/2026-08-13-plan-review-skill-simplification/reviews/test-spec-review-r1.md
       - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/workflow-automation-target-verify.md
       - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/m1-preservation-inventories.md
+      - docs/changes/2026-08-13-plan-review-skill-simplification/review-invocation-code-review-M1-r1.yaml
+      - docs/changes/2026-08-13-plan-review-skill-simplification/reviews/code-review-M1-r1.md
 
 artifacts:
   proposal: docs/proposals/2026-08-13-plan-review-skill-simplification.md
@@ -227,6 +229,8 @@ changed_files:
   - docs/changes/2026-08-13-plan-review-skill-simplification/fixtures/invalid-literal-classification.yaml
   - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/profile-size-baseline.md
   - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/m1-preservation-inventories.md
+  - docs/changes/2026-08-13-plan-review-skill-simplification/review-invocation-code-review-M1-r1.yaml
+  - docs/changes/2026-08-13-plan-review-skill-simplification/reviews/code-review-M1-r1.md
 
 review:
   status: approved
