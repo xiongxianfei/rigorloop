@@ -7,11 +7,12 @@ Closeout status: closed
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
+Review closeout: proposal-review-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: proposal revised; independent rereview required
+- Current result: proposal approved; ready for focused specification through a separate request or workflow invocation
 
 ## Resolution overview
 
@@ -144,3 +145,9 @@ Required outcome: Define a legal same-entry restart or explicitly amend the life
 Safe resolution path: Keep the exact incomplete entry in `authoring`; under workflow-routed authorization, let `test-spec` bind a new authoring-evidence path and retry identity while preserving artifact ID and canonical path.
 Validation target: revised stale-restart, scenarios, acceptance, risks, rollout, and decision sections plus independent rereview.
 Validation evidence: `evidence/proposal-revision-r3.md`; revised Stale interrupted authoring, Expected Behavior Changes, Static contract scenarios, Acceptance criteria, Rollout and Rollback, Risks and Mitigations, and Decision Log.
+
+### proposal-review-r4
+
+Review closeout: proposal-review-r4
+
+No material findings; no resolution entry required. The same-stage proposal-review rerun approved the revised proposal and closed all findings through `proposal-review-r3`.

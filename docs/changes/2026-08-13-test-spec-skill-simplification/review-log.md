@@ -21,6 +21,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: proposal-review-r4
+Stage: proposal-review
+Round: r4
+Reviewed artifact: `docs/proposals/2026-08-13-test-spec-skill-simplification.md` at commit `cdd17ce1`
+Status: approved
+Detailed record: reviews/proposal-review-r4.md
+Resolution: review-resolution.md#proposal-review-r4
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: proposal-review-r3
 Stage: proposal-review
 Round: r3
