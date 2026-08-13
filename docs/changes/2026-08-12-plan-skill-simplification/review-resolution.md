@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
-Review closeout: proposal-review-r2
+Review closeout: proposal-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Current result: proposal revised and ready for independent rereview
+- Unresolved findings: 3
+- Current result: proposal revision required
 
 ## Resolution overview
 
@@ -21,6 +21,9 @@ Review closeout: proposal-review-r2
 | `PLSIM-PR4` | accepted | closed | Governed authority and closed create/revise operations are classified independently. |
 | `PLSIM-PR5` | accepted | closed | Plan-owned initialization now binds to clean review-settled plan and review identities. |
 | `PLSIM-PR6` | accepted | closed | Milestone migration is read-old/write-new with change-local state as sole active authority. |
+| `PLSIM-PR7` | needs-decision | open | Post-review initialization requires legal temporary states and settlement retry sequencing. |
+| `PLSIM-PR8` | needs-decision | open | Stable plan identity and reviewed revision identity need one explicit representation. |
+| `PLSIM-PR9` | needs-decision | open | The lifecycle-order change requires architecture and ADR updates. |
 
 ## Finding details
 
@@ -123,3 +126,53 @@ Required outcome: Close writer, reader, authority, active legacy, historical, co
 Safe resolution path: Adopt the compatibility matrix in `proposal-review-r2`.
 Validation target: revised compatibility, parser migration, rollout, rollback, and fixture sections plus independent rereview.
 Validation evidence: `evidence/proposal-revision-r2.md`; revised Asset ownership, Milestone-format compatibility, Testing and Verification Strategy, Rollout and Rollback, Risks and Mitigations, and Decision Log sections.
+
+### proposal-review-r3
+
+#### PLSIM-PR7
+
+Finding ID: PLSIM-PR7
+Disposition: needs-decision
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Define the evidence-first initialization and settlement transaction.
+Chosen action: pending proposal revision
+Rationale: The current primary-plan/planned-work invariant does not permit the proposed intermediate states.
+Required outcome: Close legal combinations, invocation ownership, retry, failure, and routing behavior.
+Safe resolution path: Adopt the two-phase review evidence, plan initialization, and settlement retry model in `proposal-review-r3`.
+Validation target: revised state sequence, schema amendment, direct/workflow-managed behavior, failure, and tests plus independent rereview.
+Validation evidence: pending
+
+#### PLSIM-PR8
+
+Finding ID: PLSIM-PR8
+Disposition: needs-decision
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Select the stable artifact and reviewed revision identity model.
+Chosen action: pending proposal revision
+Rationale: The proposal's undefined content identity could silently introduce a rejected hash or schema field.
+Required outcome: Define identity through existing artifact and review evidence or explicitly amend architecture.
+Safe resolution path: Use artifact ID/kind/role/path plus review record and reviewed commit, without a new content hash.
+Validation target: revised creation, revision, initialization, compatibility, and architecture sections plus independent rereview.
+Validation evidence: pending
+
+#### PLSIM-PR9
+
+Finding ID: PLSIM-PR9
+Disposition: needs-decision
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Correct the architecture disposition for the selected lifecycle-order change.
+Chosen action: pending proposal revision
+Rationale: Current architecture and ADR text explicitly owns the ordering and no-hash decision being changed or relied upon.
+Required outcome: Require canonical architecture and ADR amendment or successor work.
+Safe resolution path: Replace `architecture-not-required` expectation with architecture-update-required and enumerate affected decision surfaces.
+Validation target: revised Architecture Impact, scope budget, rollout, and decision log plus independent rereview.
+Validation evidence: pending
