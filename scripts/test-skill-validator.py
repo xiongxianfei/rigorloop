@@ -2775,7 +2775,13 @@ Use the inputs somehow and produce a useful result.
             encoding="utf-8"
         )
 
-        self.assertIn("- Immediate next stage: <test-spec | plan revision | blocked>", plan_review)
+        plan_review_result = (
+            ROOT / "skills" / "plan-review" / "assets" / "review-result-skeleton.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn(
+            "- Immediate next stage: <test-spec | plan revision | review-resolution | none>",
+            plan_review_result,
+        )
         self.assertIn("implementation-readiness notes only when clearly downstream", plan_review)
         self.assertNotIn("not-assessed", test_spec)
         self.assertIn("eventual `test-spec` readiness as `not-ready`", test_spec)
@@ -4574,14 +4580,22 @@ Use the inputs somehow and produce a useful result.
                         (ROOT / "skills" / skill_name / "assets" / "review-result-skeleton.md").read_text(encoding="utf-8"),
                     ]
                 )
+            elif skill_name == "plan-review":
+                body = "\n".join(
+                    [
+                        body,
+                        (ROOT / "skills" / skill_name / "assets" / "review-result-skeleton.md").read_text(encoding="utf-8"),
+                        (ROOT / "skills" / skill_name / "assets" / "material-finding.md").read_text(encoding="utf-8"),
+                    ]
+                )
             material_asset = ""
-            if skill_name == "spec-review":
+            if skill_name in {"spec-review", "plan-review"}:
                 material_asset = (
                     ROOT / "skills" / skill_name / "assets" / "material-finding.md"
                 ).read_text(encoding="utf-8")
             for term in required_terms:
                 with self.subTest(skill=skill_name, term=term):
-                    if skill_name == "spec-review" and term in asset_owned_material_terms:
+                    if skill_name in {"spec-review", "plan-review"} and term in asset_owned_material_terms:
                         self.assertIn(f"- {term}:", material_asset)
                     else:
                         self.assertIn(term, body)
@@ -5567,8 +5581,8 @@ Use the inputs somehow and produce a useful result.
                 "Direct or review-only `spec-review` requests remain isolated by default.",
             ],
             "plan-review": [
-                "During Phase 1 of independent automated review rollout, workflow-managed automated `plan-review` should at least record a review invocation manifest before automated handoff.",
-                "This is manifest-only evidence for `plan-review`; it does not yet require the full blind-first automated review protocol unless a later approved slice adopts it.",
+                "Phase 1 manifest",
+                "Automation, settlement, and continuation authority remain separate.",
                 "Direct or review-only `plan-review` requests remain isolated by default.",
             ],
         }
@@ -5577,6 +5591,14 @@ Use the inputs somehow and produce a useful result.
             if skill_name == "spec-review":
                 path = ROOT / "skills" / skill_name / "references" / "governed-spec-review-settlement.md"
             body = path.read_text(encoding="utf-8")
+            if skill_name == "plan-review":
+                body += (
+                    ROOT
+                    / "skills"
+                    / skill_name
+                    / "references"
+                    / "governed-plan-review-settlement.md"
+                ).read_text(encoding="utf-8")
             for term in terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
@@ -8026,14 +8048,18 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
     def review_contract_body(skill_name: str) -> str:
         skill_root = ROOT / "skills" / skill_name
         body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
-        if skill_name in {"proposal-review", "spec-review", "test-spec-review"}:
+        if skill_name in {"proposal-review", "spec-review", "plan-review", "test-spec-review"}:
             reference_name = (
                 "proposal-review-recording-and-settlement.md"
                 if skill_name == "proposal-review"
                 else (
                     "governed-spec-review-settlement.md"
                     if skill_name == "spec-review"
-                    else "test-spec-review-recording-and-settlement.md"
+                    else (
+                        "governed-plan-review-settlement.md"
+                        if skill_name == "plan-review"
+                        else "test-spec-review-recording-and-settlement.md"
+                    )
                 )
             )
             body = "\n".join(
@@ -8109,7 +8135,6 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             "`lifecycle_contract: stage-owned-change-local-v1`",
             "Require `review-required` and complete authoring evidence",
             "Write the durable review record first",
-            "remove `authoring_evidence`",
             "`id`, `artifact_id`, `outcome`, `record`, and `round`",
             "`changes-requested` to `revision-required`",
             "`blocked` or `inconclusive` to `blocked`",
@@ -8129,6 +8154,13 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                 self.assertIn(settlement, normalized)
                 for phrase in required:
                     self.assertIn(" ".join(phrase.split()), normalized)
+                if skill_name == "plan-review":
+                    self.assertIn(
+                        "preserve authoring, review, and initialization evidence",
+                        normalized,
+                    )
+                else:
+                    self.assertIn("remove `authoring_evidence`", normalized)
 
     def test_workflow_defines_bounded_change_record_mutation(self) -> None:
         body = (
@@ -9771,6 +9803,130 @@ class TestSpecReviewSkillSimplificationContractTests(unittest.TestCase):
             "substantive test-spec change",
         ):
             self.assertNotIn(forbidden, assets)
+
+
+class PlanReviewSkillSimplificationContractTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "plan-review"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        self.change_root = (
+            ROOT
+            / "docs"
+            / "changes"
+            / "2026-08-13-plan-review-skill-simplification"
+        )
+
+    def test_plan_review_package_profiles_and_resources_are_closed(self) -> None:
+        governed = (
+            self.root / "references" / "governed-plan-review-settlement.md"
+        ).read_text(encoding="utf-8")
+        self.assertEqual(
+            sorted(path.name for path in (self.root / "assets").iterdir()),
+            ["material-finding.md", "review-result-skeleton.md"],
+        )
+        for profile in (
+            "PRV0-portable",
+            "PRV0B-portable-boundary",
+            "PRV1-governed",
+            "PRV1B-governed-boundary",
+        ):
+            self.assertIn(profile, self.skill)
+        self.assertIn("references/governed-plan-review-settlement.md", self.skill)
+        self.assertIn("references/boundary-first-method-v1.md", self.skill)
+        self.assertIn("candidate", governed)
+        self.assertIn("settlement-retry", governed)
+
+    def test_plan_review_operation_and_transaction_vocabularies_are_closed(self) -> None:
+        combined = self.skill + (
+            self.root / "references" / "governed-plan-review-settlement.md"
+        ).read_text(encoding="utf-8")
+        for value in (
+            "initial-review",
+            "settlement-retry",
+            "recorded-isolated",
+            "initialization-required",
+            "revision-required",
+            "settled-active",
+            "not-settled",
+        ):
+            self.assertIn(value, combined)
+        self.assertIn("unknown", combined.lower())
+        self.assertIn("fail", combined.lower())
+
+    def test_plan_review_governed_reference_preserves_transaction_contract(self) -> None:
+        reference = (
+            self.root / "references" / "governed-plan-review-settlement.md"
+        ).read_text(encoding="utf-8")
+        for phrase in (
+            "planned_work",
+            "initialization-required",
+            "state_changed: false",
+            "preserve authoring, review, and initialization evidence",
+            "must not perform semantic rereview",
+            "must not initialize or mutate `planned_work`",
+        ):
+            self.assertIn(phrase, reference)
+        self.assertNotIn("content_identity", reference)
+
+    def test_plan_review_result_assets_separate_judgment_and_transaction(self) -> None:
+        result = (self.root / "assets" / "review-result-skeleton.md").read_text(
+            encoding="utf-8"
+        )
+        for heading in (
+            "## Core operation",
+            "## Semantic judgment",
+            "## Durable recording",
+            "## Governed settlement",
+            "## Boundary review",
+            "## Workflow-managed review",
+        ):
+            self.assertIn(heading, result)
+        self.assertIn("Transaction result", result)
+        self.assertIn("Review status", result)
+        self.assertNotIn("when approved", result.lower())
+        self.assertNotIn("settlement is legal", result.lower())
+
+    def test_plan_review_material_finding_matches_review_family(self) -> None:
+        plan_review = (self.root / "assets" / "material-finding.md").read_bytes()
+        code_review = (
+            ROOT / "skills" / "code-review" / "assets" / "material-finding.md"
+        ).read_bytes()
+        plan_body = plan_review.split(b"\n\n", 3)[-1]
+        code_body = code_review.split(b"\n\n", 3)[-1]
+        self.assertEqual(plan_body, code_body)
+
+    def test_plan_review_inventories_reject_unknown_values_first(self) -> None:
+        rules = json.loads(
+            (self.change_root / "plan-review-rule-disposition.yaml").read_text()
+        )["rules"]
+        literals = json.loads(
+            (self.change_root / "plan-review-literal-compatibility.yaml").read_text()
+        )["literals"]
+        allowed_rules = {
+            "retained-inline",
+            "retained-governed-reference",
+            "retained-boundary-reference",
+            "asset-owned",
+            "removed-duplicate",
+            "removed-obsolete-with-approved-contract-change",
+        }
+        allowed_literals = {
+            "normative-contract",
+            "parser-or-package-contract",
+            "test-only-incidental",
+            "obsolete",
+            "historical-fixture",
+        }
+        self.assertTrue(all(row["disposition"] in allowed_rules for row in rules))
+        self.assertTrue(all(row["classification"] in allowed_literals for row in literals))
+        bad_rule = json.loads(
+            (self.change_root / "fixtures" / "invalid-rule-disposition.yaml").read_text()
+        )
+        bad_literal = json.loads(
+            (self.change_root / "fixtures" / "invalid-literal-classification.yaml").read_text()
+        )
+        self.assertNotIn(bad_rule["disposition"], allowed_rules)
+        self.assertNotIn(bad_literal["classification"], allowed_literals)
 
 
 class PlanSkillSimplificationContractTests(unittest.TestCase):
