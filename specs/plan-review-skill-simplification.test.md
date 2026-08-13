@@ -58,23 +58,24 @@ Use deterministic contract fixtures for operation classification, authority, sta
 ## Proof map
 
 Boundary model version: boundary-first-v1
+Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47, R48, R49, R50, R51, R52, R53, R54, R55
 
 | Proof obligation ID | Coverage state | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Proof level | Automation mode | Command IDs | Evidence artifact | Required milestone | Manual procedure IDs | Uncovered gap ID |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | PRF-001 | covered | R4, R11, R13, R16, R18, R19 | BND-INPUT-001 | T2, T3, T9, T13 | contract | automated | CMD1, CMD3 | `evidence/m1-preservation-inventories.md`; `evidence/m2-package-refactor.md` | M2 | - | - |
-| PRF-002 | covered | R4-R10, R20-R32 | BND-STATE-001 | T3-T7 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
-| PRF-003 | covered | R5, R7, R8, R10-R17, R27-R30, R39 | BND-AUTH-001 | T2, T3, T6-T8 | contract | hybrid | CMD1, CMD3 | `evidence/m2-package-refactor.md`; `evidence/semantic-preservation-review.md` | M3 | MP1 | - |
-| PRF-004 | covered | R1, R2, R12, R33-R47 | BND-COMPOSE-001 | T1, T8-T11, T15 | integration | hybrid | CMD2-CMD8 | `evidence/m2-package-refactor.md`; `evidence/m3-package-proof.md` | M3 | MP1 | - |
-| PRF-005 | covered | R4-R10, R26-R32 | BND-TEMPORAL-001 | T4-T7 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
-| PRF-006 | covered | R10, R13, R24, R25, R29, R30, R32, R35, R36, R44, R45, R49, R50, R52-R55 | BND-RECOVERY-001 | T7-T10, T12-T16 | contract | hybrid | CMD1-CMD10 | `evidence/m3-package-proof.md`; `evidence/semantic-preservation-review.md` | M3 | MP1 | - |
-| PRF-007 | covered | R18, R19, R31, R40, R47-R55 | BND-COMPAT-001 | T6, T10-T16 | integration | hybrid | CMD1, CMD3-CMD8 | `evidence/m1-preservation-inventories.md`; `evidence/m3-package-proof.md` | M3 | MP0, MP1 | - |
+| PRF-002 | covered | R4, R5, R7, R9, R10, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32 | BND-STATE-001 | T3-T7 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
+| PRF-003 | covered | R5, R7, R8, R10, R11, R12, R13, R14, R15, R16, R17, R27, R28, R29, R30, R39 | BND-AUTH-001 | T2, T3, T6-T8 | contract | hybrid | CMD1, CMD3 | `evidence/m2-package-refactor.md`; `evidence/semantic-preservation-review.md` | M3 | MP1 | - |
+| PRF-004 | covered | R1, R2, R12, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47 | BND-COMPOSE-001 | T1, T8-T11, T15 | integration | hybrid | CMD2, CMD3, CMD4, CMD5, CMD6, CMD7, CMD8 | `evidence/m2-package-refactor.md`; `evidence/m3-package-proof.md` | M3 | MP1 | - |
+| PRF-005 | covered | R4, R5, R6, R7, R8, R9, R10, R26, R27, R28, R29, R30, R31, R32 | BND-TEMPORAL-001 | T4-T7 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
+| PRF-006 | covered | R10, R13, R24, R25, R29, R30, R32, R35, R36, R44, R45, R49, R50, R52, R53, R54, R55 | BND-RECOVERY-001 | T7-T10, T12-T16 | contract | hybrid | CMD1, CMD2, CMD3, CMD4, CMD5, CMD6, CMD7, CMD8, CMD9, CMD10 | `evidence/m3-package-proof.md`; `evidence/semantic-preservation-review.md` | M3 | MP1 | - |
+| PRF-007 | covered | R18, R19, R31, R40, R47, R48, R49, R50, R51, R52, R53, R54, R55 | BND-COMPAT-001 | T6, T10-T16 | integration | hybrid | CMD1, CMD3, CMD4, CMD5, CMD6, CMD7, CMD8 | `evidence/m1-preservation-inventories.md`; `evidence/m3-package-proof.md` | M3 | MP0, MP1 | - |
 | PRF-008 | covered | R36, R51, R53, R54 | BND-ENV-001 | T8, T14-T16 | integration | automated | CMD2-CMD8 | `evidence/m3-package-proof.md` | M3 | - | - |
-| PRF-009 | covered | R4, R5, R7, R11-R15 | INT-001 | T3, T5, T8 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
+| PRF-009 | covered | R4, R5, R7, R11, R12, R13, R14, R15 | INT-001 | T3, T5, T8 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
 | PRF-010 | covered | R7, R8, R21, R26 | INT-002 | T5 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
-| PRF-011 | covered | R27, R28, R30-R32 | INT-003 | T6, T7 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
-| PRF-012 | covered | R29, R42-R45 | INT-004 | T7, T9 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
-| PRF-013 | covered | R33-R41 | INT-005 | T1, T8, T10 | contract | hybrid | CMD2-CMD5 | `evidence/m2-package-refactor.md`; `evidence/semantic-preservation-review.md` | M3 | MP1 | - |
-| PRF-014 | covered | R48-R53 | INT-006 | T12-T14, T16 | contract | hybrid | CMD1, CMD3 | `evidence/m1-preservation-inventories.md`; `evidence/semantic-preservation-review.md` | M3 | MP0, MP1 | - |
+| PRF-011 | covered | R27, R28, R30, R31, R32 | INT-003 | T6, T7 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
+| PRF-012 | covered | R29, R42, R43, R44, R45 | INT-004 | T7, T9 | contract | automated | CMD1, CMD3 | `evidence/m2-package-refactor.md` | M2 | - | - |
+| PRF-013 | covered | R33, R34, R35, R36, R38, R39, R40, R41 | INT-005 | T1, T8, T10 | contract | hybrid | CMD2, CMD3, CMD4, CMD5 | `evidence/m2-package-refactor.md`; `evidence/semantic-preservation-review.md` | M3 | MP1 | - |
+| PRF-014 | covered | R48, R49, R50, R51, R52, R53 | INT-006 | T12-T14, T16 | contract | hybrid | CMD1, CMD3 | `evidence/m1-preservation-inventories.md`; `evidence/semantic-preservation-review.md` | M3 | MP0, MP1 | - |
 | PRF-015 | covered | R47, R54 | INT-007 | T11, T15 | integration | automated | CMD4-CMD8 | `evidence/m3-package-proof.md` | M3 | - | - |
 
 ## Edge case coverage

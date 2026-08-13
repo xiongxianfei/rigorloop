@@ -4,6 +4,8 @@
 
 `docs/changes/2026-08-13-plan-review-skill-simplification/change.yaml`
 
+boundary_contract: boundary-first-v1
+
 ## Related proposal
 
 `docs/proposals/2026-08-13-plan-review-skill-simplification.md`
@@ -197,7 +199,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |
 | input-domain | applicable | R4, R11, R13, R16, R18, R19 | BND-INPUT-001 | - |
-| state-lifecycle | applicable | R4, R5, R7, R9, R10, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32 | BND-STATE-001 | - |
+| state-lifecycle | applicable | R4, R5, R7, R9, R10, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32 | BND-STATE-001 | - |
 | identity-authority | applicable | R5, R7, R8, R10, R11, R12, R13, R14, R15, R16, R17, R27, R28, R29, R30, R39 | BND-AUTH-001 | - |
 | composition-path | applicable | R1, R2, R12, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47 | BND-COMPOSE-001 | - |
 | temporal-retry | applicable | R4, R5, R6, R7, R8, R9, R10, R26, R27, R28, R29, R30, R31, R32 | BND-TEMPORAL-001 | - |
@@ -210,7 +212,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |
 | --- | --- | --- | --- | --- | --- | --- |
 | BND-INPUT-001 | input-domain | R4, R11, R13, R16, R18, R19 | initial or retry; candidate or portable; isolated or governed; manual or managed; known or unknown vocabulary | every invocation resolves one supported classification before dependent work | valid profile and operation or fail-closed stop | R4 |
-| BND-STATE-001 | state-lifecycle | R4, R5, R7, R9, R10, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32 | no review, clean review, absent/matching/invalid initialization, review-required, revision-required, blocked, active, interrupted | judgment precedes initialization and settlement; only exact retry activates | recorded-isolated, initialization-required, revision-required, blocked, settled-active, or not-settled | R19 |
+| BND-STATE-001 | state-lifecycle | R4, R5, R7, R9, R10, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32 | no review, clean review, absent/matching/invalid initialization, review-required, revision-required, blocked, active, interrupted | judgment precedes initialization and settlement; only exact retry activates | recorded-isolated, initialization-required, revision-required, blocked, settled-active, or not-settled | R19 |
 | BND-AUTH-001 | identity-authority | R5, R7, R8, R10, R11, R12, R13, R14, R15, R16, R17, R27, R28, R29, R30, R39 | portable, candidate, validated entry, invalid candidate, workflow-managed authorization | candidate and resources never grant authority; exact identities bind every write | bounded exact-entry mutation or authority blocker | R17 |
 | BND-COMPOSE-001 | composition-path | R1, R2, R12, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47 | four procedural profiles, two references, two assets, canonical and derived packages | one owner per rule and structure; resources load once; portable review stays executable | exact assembly, safe missing-resource stop, or parity failure | R33 |
 | BND-TEMPORAL-001 | temporal-retry | R4, R5, R6, R7, R8, R9, R10, R26, R27, R28, R29, R30, R31, R32 | first review, pending initialization, matching retry, already-active retry, stale identity, concurrent conflict, interruption | one semantic review per exact tuple and one settlement transition | idempotent reuse, exact activation, fresh review requirement, or stop | R7 |
@@ -234,16 +236,16 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 | Example ID | Classification | Governing requirement IDs | Boundary IDs | Regression ID | Discovery gap ID |
 | --- | --- | --- | --- | --- | --- |
-| E1 | illustration | R2, R20, R33, R34 | BND-COMPOSE-001 | - | - |
-| E2 | illustration | R11, R12, R13, R14 | BND-AUTH-001, BND-RECOVERY-001 | - | - |
-| E3 | illustration | R5, R6, R21 | BND-STATE-001, BND-TEMPORAL-001 | - | - |
-| E4 | illustration | R7, R8, R26 | BND-STATE-001, BND-TEMPORAL-001 | - | - |
-| E5 | illustration | R27, R30, R31 | BND-STATE-001, BND-AUTH-001 | - | - |
-| E6 | illustration | R28, R32 | BND-TEMPORAL-001, BND-RECOVERY-001 | - | - |
-| E7 | illustration | R10, R29, R43, R44 | BND-STATE-001, BND-RECOVERY-001 | - | - |
+| E1 | illustration | R2, R33, R34 | BND-COMPOSE-001 | - | - |
+| E2 | illustration | R13 | BND-AUTH-001, BND-RECOVERY-001 | - | - |
+| E3 | illustration | R5 | BND-STATE-001, BND-TEMPORAL-001 | - | - |
+| E4 | illustration | R7 | BND-STATE-001, BND-TEMPORAL-001 | - | - |
+| E5 | illustration | R27, R30 | BND-STATE-001, BND-AUTH-001 | - | - |
+| E6 | illustration | R32 | BND-TEMPORAL-001, BND-RECOVERY-001 | - | - |
+| E7 | illustration | R10, R29 | BND-STATE-001, BND-RECOVERY-001 | - | - |
 | E8 | illustration | R22, R23, R24, R25 | BND-STATE-001 | - | - |
 | E9 | illustration | R35, R36 | BND-COMPOSE-001, BND-RECOVERY-001 | - | - |
-| E10 | illustration | R48, R49, R50, R51, R52, R53 | BND-RECOVERY-001, BND-COMPAT-001 | - | - |
+| E10 | illustration | R49, R50, R52, R53 | BND-RECOVERY-001, BND-COMPAT-001 | - | - |
 
 ## Inputs and outputs
 
