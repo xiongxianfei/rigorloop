@@ -16,6 +16,12 @@ artifact_states:
       outcome: approved
       record: docs/changes/2026-08-13-test-spec-skill-simplification/reviews/proposal-review-r4.md
       round: r4
+  spec:
+    kind: spec
+    path: specs/test-spec-skill-simplification.md
+    role: primary
+    lifecycle_state: authoring
+    authoring_evidence: docs/changes/2026-08-13-test-spec-skill-simplification/evidence/spec-authoring.md
 
 workflow_state:
   lifecycle_state: active
@@ -54,6 +60,7 @@ workflow:
 
 artifacts:
   proposal: docs/proposals/2026-08-13-test-spec-skill-simplification.md
+  spec: specs/test-spec-skill-simplification.md
 
 requirements:
   - Reduce portable and governed test-spec procedural context while preserving proof rigor, boundary-first behavior, lifecycle isolation, and handoff authority.
@@ -82,6 +89,8 @@ changed_files:
   - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/proposal-revision-r3.md
   - docs/changes/2026-08-13-test-spec-skill-simplification/reviews/proposal-review-r4.md
   - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+  - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/spec-authoring.md
+  - specs/test-spec-skill-simplification.md
 
 review:
   status: approved
