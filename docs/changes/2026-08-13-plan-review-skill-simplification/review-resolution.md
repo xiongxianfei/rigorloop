@@ -7,11 +7,12 @@ Closeout status: closed
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
+Review closeout: spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Current result: proposal-review-r3 approved the revised proposal with no material findings; ready for focused specification through a separate invocation
+- Current result: spec-review-r1 approved the specification with no material findings; bounded architecture assessment is next
 
 ## Resolution overview
 
@@ -131,3 +132,9 @@ Validation evidence: `evidence/proposal-revision-r2.md`; revised Governed refere
 Review closeout: proposal-review-r3
 
 No material findings; no resolution entry required. The same-stage proposal-review rerun approved the revised proposal and closed all findings through `proposal-review-r2`.
+
+### spec-review-r1
+
+Review closeout: spec-review-r1
+
+No material findings; no resolution entry required. The formal spec review approved the requirement and boundary contract for architecture assessment and downstream planning.
