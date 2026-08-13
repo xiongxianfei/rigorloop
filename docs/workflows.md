@@ -408,7 +408,7 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - For non-trivial work, the baseline change-local pack is `docs/changes/<change-id>/change.yaml` plus durable Markdown reasoning.
 - `change.yaml` is the sole owner of mutable artifact lifecycle state, planned-work progress, current review state, blockers, routing, and final-closeout readiness.
 - Governed artifacts and plans keep stable intent and a pointer to the owning change record. They do not mirror mutable current state.
-- Authoring stages update only their own governed content and matching authoring-state transition. `plan` additionally initializes missing `workflow_state.planned_work` exactly once for a new primary plan. Review peers record evidence and settle only the matching artifact entry. `workflow` updates routing and every later planned-work transition.
+- Authoring stages update only their own governed content and matching authoring-state transition. After clean current plan-review evidence exists, `plan` additionally initializes missing `workflow_state.planned_work` exactly once from that reviewed revision. Plan-review settles the plan only through an identical retry after matching initialization. Review peers record evidence and settle only the matching artifact entry. `workflow` coordinates this transaction, updates routing, and owns every later planned-work transition.
 - Downstream and support stages treat upstream governed artifacts and state as read-only and route corrections to the owning stage.
 - For new non-trivial work, the default durable reasoning artifact is `docs/changes/<change-id>/explain-change.md`.
 - PR text remains the reviewer-facing summary surface; it does not replace required durable reasoning for non-trivial work.
@@ -485,7 +485,7 @@ Lifecycle token-cost summaries are conditional diagnostic evidence, not a defaul
 - `docs/plan.md` is a navigation index; concrete plan bodies live under `docs/plans/`.
 - Plan bodies own stable scope, milestone definitions, dependencies, validation strategy, and recovery intent.
 - `change.yaml#workflow_state.planned_work` owns the current milestone, milestone states, latest review, remaining implementation milestones, and final-closeout readiness.
-- `plan` initializes that state exactly once from a new primary plan: every implementation milestone is `planned`, the first is current, all remain, review is `not-started`, and closeout is `not-ready`.
+- `plan` initializes that state exactly once from an exact clean-reviewed primary plan revision: every implementation milestone is `planned`, the first is current, all remain, review is `not-started`, and closeout is `not-ready`.
 - Existing `planned_work` is read-only to `plan`; `workflow` owns every later transition.
 - Each implementation milestone has one `Milestone state`: `planned`, `implementing`, `review-requested`, `resolution-needed`, or `closed`.
 - Use `review-requested` after implementation and targeted validation are complete and the milestone is handed to `code-review`.

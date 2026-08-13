@@ -489,7 +489,10 @@ def workflow_state_slice(data: dict[str, Any]) -> dict[str, Any] | None:
         result["planned_work"] = {
             key: planned_work.get(key)
             for key in (
+                "plan_artifact_id",
+                "initialization_basis",
                 "current_milestone",
+                "milestones",
                 "remaining_implementation_milestones",
                 "latest_review",
                 "final_closeout",
