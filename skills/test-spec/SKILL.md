@@ -39,7 +39,7 @@ Next stage: required `test-spec-review` for formal governed authoring.
 
 ## Purpose and use
 
-Before implementation, create or revise proof from governing artifacts, repository guidance, test conventions, fixtures, commands, and related tests. Resolve placement from explicit path, current metadata, governing contract, project guidance, then the portable test-spec default; stop on conflict or ambiguity.
+Before implementation, create or revise proof from governing artifacts, repository guidance, test conventions, fixtures, commands, and related tests. Resolve placement from explicit path, current metadata, governing contract, project guidance, then the portable default `specs/slug.test.md`; stop on conflict or ambiguity.
 
 ## Invocation profiles and authority
 
@@ -72,7 +72,7 @@ Automation mode is exactly `automated`, `manual`, or `hybrid`. Manual or hybrid 
 
 ## Output content and composition
 
-Copy the skeleton and applicable body assets for full creation; copy only changed structures for revision. The skeleton owns document structure, and smaller assets own repeated bodies. Assets own layout, never policy. Omit inapplicable structures or use the approved sentinel; never emit markers, placeholders, duplicates, or ad hoc replacements.
+Copy the skeleton and applicable body assets for full creation; copy only changed structures for revision. The skeleton owns document structure, and smaller assets own repeated bodies. Assets own layout, never policy. Omit inapplicable structures or use the approved sentinel; never emit markers, placeholders, duplicates, or ad hoc replacements. Before real follow-ons exist, use `None yet`.
 
 ## Generated Markdown readability
 
