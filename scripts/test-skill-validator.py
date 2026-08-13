@@ -8065,6 +8065,14 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
                 encoding="utf-8"
             )
+            if skill_name == "plan":
+                body += (
+                    ROOT
+                    / "skills"
+                    / "plan"
+                    / "references"
+                    / "governed-plan-authoring.md"
+                ).read_text(encoding="utf-8")
             normalized = " ".join(body.split())
             with self.subTest(skill=skill_name):
                 self.assertIn("## Change-record authoring transition", normalized)
@@ -8147,6 +8155,13 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
         plan_body = (ROOT / "skills" / "plan" / "SKILL.md").read_text(
             encoding="utf-8"
         )
+        plan_body += (
+            ROOT
+            / "skills"
+            / "plan"
+            / "references"
+            / "governed-plan-authoring.md"
+        ).read_text(encoding="utf-8")
         workflow_body = (
             ROOT
             / "skills"
@@ -9756,6 +9771,118 @@ class TestSpecReviewSkillSimplificationContractTests(unittest.TestCase):
             "substantive test-spec change",
         ):
             self.assertNotIn(forbidden, assets)
+
+
+class PlanSkillSimplificationContractTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "plan"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        self.reference = (
+            self.root / "references" / "governed-plan-authoring.md"
+        ).read_text(encoding="utf-8")
+        self.change_root = (
+            ROOT / "docs" / "changes" / "2026-08-12-plan-skill-simplification"
+        )
+
+    def test_plan_simplification_package_and_profiles_are_closed(self) -> None:
+        self.assertEqual(
+            sorted(path.name for path in (self.root / "assets").iterdir()),
+            ["decision-log-row.md", "milestone.md", "plan-skeleton.md"],
+        )
+        self.assertIn("references/governed-plan-authoring.md", self.skill)
+        self.assertIn("references/boundary-first-method-v1.md", self.skill)
+        for operation in (
+            "create-primary-plan",
+            "revise-primary-plan",
+            "initialize-approved-plan",
+        ):
+            self.assertIn(operation, self.skill)
+            self.assertIn(operation, self.reference)
+        self.assertIn("Conversational wording", self.skill)
+        self.assertIn("does not establish governed authority", self.skill)
+
+    def test_plan_simplification_governed_reference_owns_only_governed_procedure(self) -> None:
+        for phrase in (
+            "review-required",
+            "initialization-required",
+            "settlement-retry-required",
+            "idempotent no-op",
+            "must not replace or update existing `planned_work`",
+            "workflow owns every later `planned_work` transition",
+            "Never reverse-synchronize",
+        ):
+            self.assertIn(phrase, self.reference)
+        self.assertIn("Load this reference only", self.reference)
+        self.assertNotIn("branch-ready", self.reference)
+
+    def test_plan_simplification_assets_are_stable_intent_only(self) -> None:
+        milestone = (self.root / "assets" / "milestone.md").read_text(
+            encoding="utf-8"
+        )
+        for required in (
+            "Milestone kind",
+            "Completion criteria",
+            "Required evidence",
+            "Review handoff",
+            "Rollback/recovery",
+        ):
+            self.assertIn(required, milestone)
+        for forbidden in (
+            "Milestone state:",
+            "validation passed",
+            "progress updated",
+            "milestone committed",
+        ):
+            self.assertNotIn(forbidden, milestone)
+
+    def test_plan_simplification_inventories_and_scenarios_fail_closed(self) -> None:
+        rules = json.loads(
+            (self.change_root / "plan-rule-disposition.yaml").read_text(
+                encoding="utf-8"
+            )
+        )["rules"]
+        literals = json.loads(
+            (self.change_root / "plan-literal-compatibility.yaml").read_text(
+                encoding="utf-8"
+            )
+        )["literals"]
+        scenarios = json.loads(
+            (self.change_root / "fixtures" / "scenario-contracts.yaml").read_text(
+                encoding="utf-8"
+            )
+        )["scenarios"]
+        valid_dispositions = {
+            "retained-inline",
+            "retained-governed-reference",
+            "retained-boundary-reference",
+            "asset-owned",
+            "removed-duplicate",
+            "removed-obsolete-with-approved-contract-change",
+        }
+        valid_classifications = {
+            "normative-contract",
+            "parser-or-package-contract",
+            "test-only-incidental",
+            "obsolete",
+            "historical-fixture",
+        }
+        self.assertGreaterEqual(len(rules), 15)
+        self.assertGreaterEqual(len(literals), 13)
+        self.assertGreaterEqual(len(scenarios), 14)
+        self.assertTrue(all(rule["disposition"] in valid_dispositions for rule in rules))
+        self.assertTrue(
+            all(item["classification"] in valid_classifications for item in literals)
+        )
+        invalid_rule = json.loads(
+            (self.change_root / "fixtures" / "invalid-rule-disposition.yaml")
+            .read_text(encoding="utf-8")
+        )["rules"][0]
+        invalid_literal = json.loads(
+            (self.change_root / "fixtures" / "invalid-literal-classification.yaml")
+            .read_text(encoding="utf-8")
+        )["literals"][0]
+        self.assertNotIn(invalid_rule["disposition"], valid_dispositions)
+        self.assertNotIn(invalid_literal["classification"], valid_classifications)
 
 
 if __name__ == "__main__":
