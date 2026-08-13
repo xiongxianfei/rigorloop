@@ -24,6 +24,7 @@ The accepted proposal selected one governed reference rather than editorial comp
 | Lifecycle and workflow specs, tests, `CONSTITUTION.md`, `AGENTS.md`, and `docs/workflows.md` | Aligned normative ordering, ownership, temporary states, retry, and migration guidance. | Avoid conflicting higher-authority lifecycle instructions. | PSIM-R034-R035; architecture review R1 |
 | Validator and workflow test files | Added valid, invalid, stale, retry, ownership, historical, profile, asset, and ledger regression coverage. | Prove the contract without executing a target agent. | T1-T10; CMD1-CMD9; PLSIM-CR2 |
 | Change-local ledgers, fixtures, measurements, package evidence, and review records | Recorded every semantic/literal disposition, negative fixture, profile/resource identity, adapter result, and review outcome. | Make simplification and preservation auditable without permanent size policy. | PSIM-R029-R033; T7-T13 |
+| Selector routing evidence | Recorded eight exact owner-approved deferrals for one-change ledgers and fixtures. | Keep registration debt visible and retain direct proof without creating permanent simplicity routing. | Existing owner-deferral contract; T7-T9, CMD7, MP1 |
 
 ## Tests added or changed
 
@@ -49,4 +50,4 @@ The change does not add a runtime, selector, scheduler, state store, schema fiel
 
 ## Risks and follow-ups
 
-The governed profile reduction is intentionally modest because deterministic identity and failure procedure remain explicit. Active legacy plans with incomplete `planned_work` still require explicit workflow-owned migration rather than automatic repair. Final repository verification and hosted CI remain downstream gates; this explanation claims readiness for `verify`, not branch readiness or PR readiness.
+The governed profile reduction is intentionally modest because deterministic identity and failure procedure remain explicit. Active legacy plans with incomplete `planned_work` still require explicit workflow-owned migration rather than automatic repair. The first final PR-mode selector correctly stopped on eight unsupported one-change evidence paths. Exact repository-maintainer deferrals preserve T7-T9, CMD7, and MP1, change no selector or check catalog, and require a focused rereview plus selector rerun. Final repository verification and hosted CI remain downstream gates; this explanation does not claim branch readiness or PR readiness.

@@ -3,6 +3,47 @@ title: Plan Skill Simplification
 classification: published-skill-contract
 risk: medium
 lifecycle_contract: stage-owned-change-local-v1
+evidence_registration_deferrals:
+  - path: docs/changes/2026-08-12-plan-skill-simplification/plan-rule-disposition.yaml
+    owner: repository-maintainer
+    reason: One-change semantic-rule disposition evidence is intentionally not a recurring selector evidence class.
+    validation_impact: Exact approved T7, CMD7, and MP1 proof remains mandatory; no generic selector check is inferred.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/plan-literal-compatibility.yaml
+    owner: repository-maintainer
+    reason: One-change literal-compatibility evidence is intentionally not a recurring selector evidence class.
+    validation_impact: Exact approved T7, CMD7, focused consumer assertions, and MP1 proof remain mandatory.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/fixtures/scenario-contracts.yaml
+    owner: repository-maintainer
+    reason: One-change static acceptance scenarios are intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T7-T9 and CMD7 proof remains mandatory; no target runtime or generic fixture route substitutes for it.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-rule-disposition.yaml
+    owner: repository-maintainer
+    reason: One-change negative rule-disposition fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T7 and CMD7 unknown-first proof remains mandatory.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-literal-classification.yaml
+    owner: repository-maintainer
+    reason: One-change negative literal-classification fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T7 and CMD7 unknown-first proof remains mandatory.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-rule-duplicate-id.yaml
+    owner: repository-maintainer
+    reason: One-change duplicate rule-ID fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T7 and CMD7 duplicate-ID proof remains mandatory.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-literal-missing-field.yaml
+    owner: repository-maintainer
+    reason: One-change missing literal-field fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T7 and CMD7 missing-field proof remains mandatory.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-rule-destination.yaml
+    owner: repository-maintainer
+    reason: One-change inconsistent rule-destination fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T7 and CMD7 destination-consistency proof remains mandatory.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
 
 artifact_states:
   proposal:
@@ -75,8 +116,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: verify
-  next_stage: pr
+  current_stage: ci-maintenance
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-08-12-plan-skill-simplification/evidence/proposal-authoring.md
@@ -125,6 +166,7 @@ workflow_state:
     - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-final-r1.yaml
     - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r1.md
     - docs/changes/2026-08-12-plan-skill-simplification/explain-change.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/ci-selector-deferral.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -168,7 +210,7 @@ workflow:
       completion:
         rule: final verify completes with a recorded readiness result
     status: active
-    current_stage: verify
+    current_stage: ci-maintenance
     stop_reason: null
     evidence:
       - docs/changes/2026-08-12-plan-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
@@ -208,6 +250,7 @@ workflow:
       - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-final-r1.yaml
       - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r1.md
       - docs/changes/2026-08-12-plan-skill-simplification/explain-change.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/ci-selector-deferral.md
 
 artifacts:
   proposal: docs/proposals/2026-08-12-plan-skill-simplification.md
@@ -297,6 +340,7 @@ changed_files:
   - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-final-r1.yaml
   - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r1.md
   - docs/changes/2026-08-12-plan-skill-simplification/explain-change.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/ci-selector-deferral.md
 
 review:
   status: approved
