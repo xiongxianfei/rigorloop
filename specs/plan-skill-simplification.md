@@ -4,6 +4,8 @@
 
 `docs/changes/2026-08-12-plan-skill-simplification/change.yaml`
 
+boundary_contract: boundary-first-v1
+
 ## Related proposal
 
 `docs/proposals/2026-08-12-plan-skill-simplification.md`
@@ -143,7 +145,7 @@ PSIM-R035. The owning `change.yaml` MUST own mutable architecture-assessment sta
 ## Boundary model
 
 Boundary model version: boundary-first-v1
-Boundary model scope: PSIM-R001 through PSIM-R035
+Boundary model scope: PSIM-R001, PSIM-R002, PSIM-R003, PSIM-R004, PSIM-R005, PSIM-R006, PSIM-R007, PSIM-R008, PSIM-R009, PSIM-R010, PSIM-R011, PSIM-R012, PSIM-R013, PSIM-R014, PSIM-R015, PSIM-R016, PSIM-R017, PSIM-R018, PSIM-R019, PSIM-R020, PSIM-R021, PSIM-R022, PSIM-R023, PSIM-R024, PSIM-R025, PSIM-R026, PSIM-R027, PSIM-R028, PSIM-R029, PSIM-R030, PSIM-R031, PSIM-R032, PSIM-R033, PSIM-R034, PSIM-R035
 
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |
