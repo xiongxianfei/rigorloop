@@ -4,6 +4,33 @@ classification: published-skill-contract
 risk: medium
 lifecycle_contract: stage-owned-change-local-v1
 
+evidence_registration_deferrals:
+  - path: docs/changes/2026-08-13-plan-review-skill-simplification/plan-review-rule-disposition.yaml
+    owner: repository-maintainer
+    reason: One-change semantic-rule disposition evidence is intentionally not a recurring selector evidence class.
+    validation_impact: Exact approved T1, T12, CMD1, focused contract tests, and MP1 remain mandatory; no generic selector check is inferred.
+    follow_up: docs/changes/2026-08-13-plan-review-skill-simplification/evidence/m3-package-proof.md
+  - path: docs/changes/2026-08-13-plan-review-skill-simplification/plan-review-literal-compatibility.yaml
+    owner: repository-maintainer
+    reason: One-change literal-compatibility evidence is intentionally not a recurring selector evidence class.
+    validation_impact: Exact approved T1, T12, CMD1, focused consumer assertions, and MP1 remain mandatory.
+    follow_up: docs/changes/2026-08-13-plan-review-skill-simplification/evidence/m3-package-proof.md
+  - path: docs/changes/2026-08-13-plan-review-skill-simplification/fixtures/scenario-contracts.yaml
+    owner: repository-maintainer
+    reason: One-change static acceptance scenarios are intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T2-T10 and CMD1 proof remains mandatory; no target runtime or generic fixture route substitutes for it.
+    follow_up: docs/changes/2026-08-13-plan-review-skill-simplification/evidence/m3-package-proof.md
+  - path: docs/changes/2026-08-13-plan-review-skill-simplification/fixtures/invalid-rule-disposition.yaml
+    owner: repository-maintainer
+    reason: One-change negative rule-disposition fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T1, T12, and CMD1 unknown-first proof remains mandatory.
+    follow_up: docs/changes/2026-08-13-plan-review-skill-simplification/evidence/m3-package-proof.md
+  - path: docs/changes/2026-08-13-plan-review-skill-simplification/fixtures/invalid-literal-classification.yaml
+    owner: repository-maintainer
+    reason: One-change negative literal-classification fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T1, T12, and CMD1 unknown-first proof remains mandatory.
+    follow_up: docs/changes/2026-08-13-plan-review-skill-simplification/evidence/m3-package-proof.md
+
 artifact_states:
   proposal:
     kind: proposal
@@ -97,6 +124,7 @@ workflow_state:
     - docs/changes/2026-08-13-plan-review-skill-simplification/review-invocation-code-review-final-r1.yaml
     - docs/changes/2026-08-13-plan-review-skill-simplification/reviews/code-review-final-r1.md
     - docs/changes/2026-08-13-plan-review-skill-simplification/explain-change.md
+    - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/ci-selector-deferral.md
   planned_work:
     plan_artifact_id: plan
     initialization_basis:
@@ -187,6 +215,7 @@ workflow:
       - docs/changes/2026-08-13-plan-review-skill-simplification/review-invocation-code-review-final-r1.yaml
       - docs/changes/2026-08-13-plan-review-skill-simplification/reviews/code-review-final-r1.md
       - docs/changes/2026-08-13-plan-review-skill-simplification/explain-change.md
+      - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/ci-selector-deferral.md
 
 artifacts:
   proposal: docs/proposals/2026-08-13-plan-review-skill-simplification.md
@@ -266,6 +295,7 @@ changed_files:
   - docs/changes/2026-08-13-plan-review-skill-simplification/review-invocation-code-review-final-r1.yaml
   - docs/changes/2026-08-13-plan-review-skill-simplification/reviews/code-review-final-r1.md
   - docs/changes/2026-08-13-plan-review-skill-simplification/explain-change.md
+  - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/ci-selector-deferral.md
 
 review:
   status: approved
