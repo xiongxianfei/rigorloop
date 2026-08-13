@@ -8,6 +8,19 @@ This ledger records formal lifecycle reviews for the test-spec skill simplificat
 
 ### Review entry
 
+Review ID: code-review-M2-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: implementation milestone M2 at commit `4d2b7cc8`
+Status: clean-with-notes
+Detailed record: reviews/code-review-M2-r1.md
+Resolution: review-resolution.md#code-review-M2-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: test-spec-review-r2
 Stage: test-spec-review
 Round: r2
