@@ -2,7 +2,7 @@
 
 ## Owning change record
 
-`docs/changes/2026-08-11-workflow-skill-simplification/change.yaml`
+`docs/changes/2026-08-12-plan-skill-simplification/change.yaml`
 
 ## Related artifacts
 
@@ -304,9 +304,11 @@ The goals are:
   stable intent and one change-record pointer; they do not carry mutable
   lifecycle, progress, review, blocker, or routing fields.
 - Authoring and review skills are peers with transition-scoped writes to one
-  matching artifact-state entry. `plan` also initializes missing planned-work
-  state exactly once for a new primary plan. `workflow` writes routing and
-  every later planned-work transition only. Downstream
+  matching artifact-state entry. A new primary plan reaches `review-required`
+  without live planned work; after clean review evidence, `plan` initializes
+  missing planned-work state exactly once from the reviewed revision, and the
+  same review occurrence retries settlement. `workflow` coordinates those
+  calls and writes routing and every later planned-work transition only. Downstream
   skills write their own evidence and route upstream defects to the owner.
 - `bounded-review-fix` remains the only writable workflow-automation
   mechanism. One structured target is the complete public consent boundary
@@ -673,6 +675,17 @@ arbitrary file write.
 19. Workflow-managed automated reviews run through the independent adversarial review gate before their result may advance workflow routing. The orchestrator creates an immutable review invocation manifest from tracked artifacts, records a verifiable initial-packet inventory and hash, records the reviewer context identity, and fails closed when the context is `L0` or the required independence level cannot be proven.
 20. The review gate releases evidence in phases. The reviewer first receives only the review target, governing artifacts, formal criteria, neutral routing metadata, and previous-round existence facts when applicable. After the reviewer records the risk map, the orchestrator records `risk-map-recorded`, releases the evidence menu, then records subsequent receipts for evidence-result release, prior-finding release, and verdict recording.
 21. Risk-tier classification is orchestrator-owned and fail-closed. Standard risk requires L1, elevated risk requires L2 plus required direct proof and second-review policy, and critical risk requires L3 or human authority according to the trigger. Ambiguous trigger matches classify upward.
+
+### Reviewed plan initialization and settlement flow
+
+1. `plan` writes or revises the canonical stable-intent plan, registers the stable artifact tuple, and leaves the plan entry `review-required` without `planned_work`.
+2. `plan-review` records a clean result for the exact reviewed repository revision. It leaves the entry `review-required` and reports `initialization-required` rather than claiming active settlement.
+3. In workflow-managed execution, `workflow` invokes the plan-owned `initialize-approved-plan` operation. Isolated review stops after reporting the required operation.
+4. `plan` validates the stable artifact tuple, clean review identity, unchanged reviewed revision, closed resolution state, milestone definitions, and absence of `planned_work`; it writes only the missing initial `planned_work` projection.
+5. `workflow` invokes an identical settlement retry. `plan-review` reuses the existing judgment and durable review record, then moves only the plan entry to `active`.
+6. Workflow routes onward only after initialization and settlement both succeed. Interruption preserves evidence and retries the owning operation; stale or conflicting identity, state, or evidence fails closed.
+
+Legal temporary states are limited to authoring/revision/blocked without `planned_work`, review-required before review, review-required with clean evidence and no `planned_work`, review-required with clean evidence and matching `planned_work`, and active with settled clean review and matching `planned_work`. No content hash or new identity field participates in this flow.
 22. The reviewer records the stage-native verdict, findings or clean-review sufficiency receipt, confidence, evidence challenge, and reconciliation results. The orchestrator derives `review_gate_outcome` only after manifest, phase-receipt, risk-tier, clean-receipt, second-review, and unresolved-finding gates are evaluated.
 23. When the affected paths or changed content trigger requirement-fidelity applicability, the workflow or pre-review stage records an applicability manifest before the reviewer compares implementation wording or validator assertions.
 24. Applicable review packets present the relevant spec clauses first, then accepted decompositions when present, expected surfaces, implementation diff, validator assertions, validation evidence, and prior findings. If no accepted decomposition exists, the reviewer records a reviewer-authored decomposition before artifact comparison.
@@ -1153,6 +1166,14 @@ conflicting review identity or evidence fails closed.
 Legacy profile, plan-owned, and artifact-local state remains read-only
 compatibility evidence after a one-way migration.
 
+### Plan baseline and state ownership
+
+The stable plan artifact owns ordered execution intent, completion criteria, required evidence, and review handoff. `change.yaml#workflow_state.planned_work` owns current milestone and closeout state. New writers emit no mutable milestone-state or progress fields in plan bodies. Readers may accept compatible historical plan structures, but historical embedded state never overrides or repairs governed live state.
+
+Stable plan identity is artifact ID, kind, role, and normalized path. Reviewed revision identity is the durable review ID, round, record path, reviewed artifact path, and reviewed repository revision or commit. Governed-document hashes remain outside the lifecycle architecture.
+
+After initialization and settlement, changes to milestone ID, order, kind, completion criteria, or required evidence require a governed replan or explicit workflow-owned migration. Ordinary plan authoring cannot replace or update existing `planned_work`.
+
 ### Published skill resource integrity
 
 Published skill resource integrity is a cross-cutting validation and packaging rule. `skills/` remains the only authored skill source. Packaged skill-local resources live beneath their skill root and are valid only when mapped in `SKILL.md`, present in canonical source, included in generated output, included in packed release candidates, and present after target installation.
@@ -1487,6 +1508,8 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 
 ## Architecture Decisions
 
+- [ADR-20260813: Reviewed Plan Initialization and Settlement](../../adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md) amends the initialization timing in ADR-20260729 while preserving single-state ownership, stage-owned writes, and the no-hash boundary.
+
 - `docs/adr/ADR-20260810-published-skill-first-validation-architecture.md`: three composed deterministic product gates, one lifecycle-governance entry point, review-owned semantic quality, no target-runtime acceptance, and ledger-backed retirement slices.
 - `docs/adr/ADR-20260428-architecture-package-method.md`: default C4 plus official arc42 plus ADR architecture package method.
 - `docs/adr/ADR-20260509-architecture-skill-surface-simplification.md`: removes change-local deltas from the normal architecture authoring path and requires architecture-review surface classification.
@@ -1597,8 +1620,9 @@ decisions from ADR-20260728 and ADR-20260729.
 | Lifecycle-state consistency | A stage updates one artifact or workflow transition while its linked review, milestone, blocker, or closeout evidence is absent, stale, or contradictory. | Validation reports the exact entry and evidence mismatch and blocks downstream reliance; plans and governed artifacts remain unchanged. |
 | Unified automation single-write safety | A user starts or resumes workflow automation through a current or legacy command. | The command resolves to one structured target, writes routing only through `workflow_state`, and leaves retired artifact, plan, and profile state unchanged. |
 | Published stage-ownership completeness | A maintainer adds or changes an automatable stage. | The canonical skill defines one fixed content, evidence, and lifecycle-state write boundary; workflow routing cannot widen it; generated adapters preserve it byte-for-byte or semantically as required by the adapter contract. |
-| Artifact-state write isolation | Multiple peers participate in one lifecycle transition. | The author or review peer writes only the matching artifact entry; plan may additionally initialize missing planned work once; workflow writes routing and later planned-work transitions; any other cross-owner mutation blocks reliance. |
+| Artifact-state write isolation | Multiple peers participate in one lifecycle transition. | The author or review peer writes only the matching artifact entry; plan may initialize missing planned work once only from current clean review evidence; workflow coordinates the owning calls and writes routing and later planned-work transitions; any other cross-owner mutation blocks reliance. |
 | Settlement-stable resume | Review evidence is durable but its matching settlement write is interrupted. | The same review identity reconciles idempotently; conflicting identity or evidence fails closed, and workflow never substitutes its own verdict. |
+| Reviewed plan activation | A clean primary-plan review precedes live work initialization. | Clean evidence leaves the plan `review-required`; plan initializes only the exact reviewed revision; identical review settlement retry activates it; no downstream route occurs earlier. |
 | Target-bound execution | A run targets a later stage before its prerequisites exist. | The target remains sufficient repository-local consent, but workflow invokes only the current basis-complete stage and never widens that stage's fixed write boundary. |
 | Interrupted-stage recovery | Execution stops after stage-owned output is partially or fully written. | Resume inspects the owning evidence, reconciles a complete idempotent transition, and pauses on contradiction or partial output rather than inventing completion. |
 | Repeated-target identity | `code-review@M2` resumes after the active plan has advanced to M3. | The run remains bound to M2 and cannot silently reinterpret the target as M3. |
@@ -1690,6 +1714,8 @@ decisions from ADR-20260728 and ADR-20260729.
 | Unified automation could become blanket autopilot | One target covers only repository-local prerequisite stages; fixed stage ownership, current prerequisite checks, explicit stop conditions, and the external-action prohibition remain non-bypassable. |
 | Shared change-local state could blur ownership | `artifact_states` uses transition-scoped author/reviewer ownership, `workflow_state` is workflow-owned, and all other entries are read-only to the current stage. |
 | Interrupted writes could repeat or skip work | Review settlement is evidence-first and idempotent for the same identity; other incomplete or contradictory stage evidence pauses conservative recovery. |
+| Clean plan review could be mistaken for active execution authority | Plan review reports `initialization-required`, workflow blocks onward routing, and only matching initialization plus settlement retry makes the plan active. |
+| Historical plan state could regain authority | Readers use old plan fields only as historical stable intent; governed current state comes only from matching `planned_work`, and incomplete active legacy state requires explicit migration. |
 | Consecutive stages could collapse review independence | Each automated review is a distinct formal invocation over tracked artifacts, governing sources, formal criteria, and recorded findings, with context reset when fresh context is unavailable. |
 | Legacy and unified writers could diverge | Migration is dual-read and single-write; mutating resume records one migration event and unified state, while mixed writable legacy and unified state fails closed. |
 | Typed stage policy could become a second normative source | Approved specs remain normative; the immutable Python registry is an executable projection with exhaustive conformance tests and policy-version checks. |
@@ -1830,9 +1856,9 @@ decisions from ADR-20260728 and ADR-20260729.
 - structured target: a requested public stage plus occurrence identity and completion predicate, bound before persistence.
 - artifact-state entry: change-local lifecycle record for one stable governed
   artifact ID, changed only by its matching authoring or review transition.
-- workflow state: the sole change-local current routing and planned-work
-  snapshot; `plan` initializes missing primary-plan state once and `workflow`
-  writes every later transition from settled artifacts and stage evidence.
+- workflow state: the sole change-local current routing and planned-work snapshot; `plan` initializes missing primary-plan state once from current clean review evidence, `plan-review` retries settlement, and `workflow` writes every later transition from settled artifacts and stage evidence.
+- stable plan identity: artifact ID, kind, role, and normalized path; it names the durable plan artifact without hashing its content.
+- reviewed revision identity: review ID, round, record path, reviewed artifact path, and reviewed repository revision or commit used to prove which plan revision was judged.
 - fixed stage write boundary: the published-skill rule that defines the
   artifact, evidence, or transition a stage may write regardless of manual or
   automated invocation.
