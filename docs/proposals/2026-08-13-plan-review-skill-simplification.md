@@ -121,14 +121,16 @@ skills/plan-review/
 
 ### Invocation and operation classification
 
-Every explicit `plan-review` invocation is a formal review. Classify exactly one review operation before side effects:
+Every explicit `plan-review` invocation is a formal review. Determine the operation from complete current transaction state before semantic judgment or writes:
 
 ```text
 initial-review
 settlement-retry
 ```
 
-`initial-review` performs semantic plan judgment and records a new result. `settlement-retry` is valid only when current same-change evidence identifies a prior clean review, the exact reviewed artifact tuple and repository revision, matching plan-owned initialization basis, and an incomplete settlement for that same review occurrence. It reuses the existing judgment and record without semantic rereview. Unknown, ambiguous, stale, contradictory, or conflicting operation evidence stops before writes.
+`initial-review` is valid only when the current plan revision is reviewable, the matching plan entry is `review-required` where governed, required authoring evidence is current, `planned_work` is absent, and no current clean review exists for the exact plan path, content identity, and repository revision tuple. It performs semantic plan judgment and records one new review occurrence.
+
+Once one exact current clean review exists for that tuple, every later invocation is `settlement-retry`, including while `planned_work` remains absent. A retry reuses the existing judgment and record without semantic rereview. A changed plan identity makes the prior review stale and requires a fresh `initial-review`; multiple matching reviews or initialization bases, an open review resolution, `planned_work` without one valid current clean review, mismatched initialization basis, or other contradictory state blocks before writes. This classification prevents duplicate clean reviews while plan-owned initialization is pending.
 
 Classify a load-only predicate before validating settlement authority:
 
@@ -170,12 +172,16 @@ Use this closed matrix:
 | Portable `initial-review`, clean | `approved` | Create one clean receipt and log entry. | none | `recorded-isolated` | Report `test-spec` only as a possible next stage; no formal eligibility. |
 | Governed `initial-review`, clean, `planned_work` absent | `approved` | Create one clean receipt and review mapping. | remain `review-required` | `initialization-required` | Plan-owned initialization; withhold `test-spec` eligibility. |
 | Governed `initial-review`, material actionable findings | `changes-requested` | Create detailed record, log, and required resolution. | `revision-required` | `revision-required` | Plan revision. |
-| Governed `initial-review`, authority or evidence blocker | `blocked` or `inconclusive` | Record the formal result when possible. | `blocked` when the governing contract permits settlement; otherwise unchanged | `blocked` | Resolve the blocker or obtain owner evidence. |
+| Governed `initial-review`, blocking result | `blocked` | Create detailed record, log, and required resolution before settlement. | `blocked` after recording succeeds | `blocked` | Resolve the blocker through its owner. |
+| Governed `initial-review`, insufficient evidence | `inconclusive` | Record the formal result when possible. | remain `review-required` | `blocked` with `review-inconclusive` reason | Supply authority or evidence before another review. |
 | Any `initial-review` with blocked required recording | judgment may be returned | Report paths as blocked and create no settlement. | unchanged | `not-settled` | Repair recording before formal completion. |
-| Matching `settlement-retry` | reuse prior `approved` | Reuse the existing receipt, review mapping, and log entry; create no new review evidence. | `active` | `settled-active` | `test-spec` becomes formally eligible; return control to workflow when managed. |
-| Invalid, stale, ambiguous, or conflicting `settlement-retry` | no new review status | Create no new review evidence. | unchanged | `blocked` | Fresh review or correction by the owning stage. |
+| Exact `settlement-retry`, `planned_work` absent | reuse prior `approved` | Reuse the existing receipt, review mapping, and log entry; create no new review evidence. | remain `review-required` | `initialization-required` | Plan-owned initialization. |
+| Exact `settlement-retry`, matching `planned_work`, entry `review-required` | reuse prior `approved` | Reuse existing evidence; create no new review evidence. | compare-and-set to `active` | `settled-active` | `test-spec` becomes formally eligible; return control to workflow when managed. |
+| Exact `settlement-retry`, matching `planned_work`, entry already `active` | reuse prior `approved` | Reuse existing evidence; create no new review evidence. | remain `active`; no write | `settled-active` | Report idempotent success with `state_changed: false`. |
+| Changed plan identity after prior review | no reused status | Create no retry evidence. | unchanged | `blocked` | Perform a fresh `initial-review` for the changed revision. |
+| Mismatched basis, multiple matching reviews or bases, open resolution, or `planned_work` without clean review | no new review status unless one exact prior judgment is safely resolved | Create no new review evidence. | unchanged | `blocked` | Correct the contradictory or ambiguous state through its owner. |
 
-A settlement retry never performs semantic rereview, creates another receipt, finding set, resolution entry, or review-log entry, changes the prior review ID or round, initializes or modifies `planned_work`, or advances workflow routing. It may validate and settle only the exact matching plan entry.
+A settlement retry never performs semantic rereview, creates another receipt, finding set, resolution entry, or review-log entry, changes the prior review ID or round, initializes or modifies `planned_work`, or advances workflow routing. It may validate and settle only the exact matching plan entry. Retry success with an already-active exact entry is idempotent and creates no receipt, log entry, resolution entry, workflow transition, or other duplicate evidence.
 
 ### Loaded-resource profiles
 
@@ -216,7 +222,9 @@ The universal file remains sufficient to perform and record a portable formal pl
 - complete `change.yaml` inspection, candidate validation, and exact plan-entry resolution by artifact ID, kind, role, normalized path, review ID, round, record path, reviewed artifact path, and reviewed repository revision;
 - initial-review preconditions, review-first durable evidence, exact review mapping, and legal mapping of non-clean statuses;
 - clean initial review with absent `planned_work`, preservation of `review-required`, and `initialization-required` reporting;
-- settlement-retry preconditions, exact initialization-basis comparison, reuse of prior judgment, optional authoring-evidence removal when governed, and the sole matching `review-required` to `active` settlement write;
+- complete operation-state validation, including clean-review reuse before initialization, already-active idempotency, changed plan identity, missing clean review, duplicate bases, and open resolution;
+- settlement-retry preconditions, exact initialization-basis comparison, reuse of prior judgment, and the sole matching `review-required` to `active` compare-and-set write;
+- deterministic settlement retention of authoring, review, and initialization evidence as immutable historical basis evidence;
 - identical interrupted-write reconciliation, concurrent-write checks, conflicting review-ID reuse, stale revision, open resolution, illegal state, and failed validation handling;
 - workflow-managed review manifest and profile-completion procedure only where current workflow authority already requires it;
 - fail-closed diagnostics for missing, invalid, stale, ambiguous, or contradictory candidate evidence without portable fallback.
@@ -225,19 +233,34 @@ The reference does not own plan-quality judgment, finding materiality, recording
 
 ### Structural assets
 
-Add `assets/review-result-skeleton.md` with one universal core group, one always-applicable formal-recording group, and three conditional groups:
+Add `assets/review-result-skeleton.md` with one universal operation group and five applicability-controlled groups:
 
 | Group | Applicability | Structural content |
 | --- | --- | --- |
-| Core | every formal review | skill, target, operation, review status, material findings, blockers, immediate next stage, claim limits |
-| Durable recording | every formal review | recording status, recording blocker, review record, review log, review resolution, finding-record paths |
-| Governed settlement | `validated-governed-plan-entry` | change identity, plan identity, reviewed revision, lifecycle state, initialization result, transaction result, settlement status, formal eligibility |
+| Core operation | every formal invocation | skill, target, operation, transaction result, blockers, immediate action or handoff, claim limitations |
+| Semantic judgment | an initial review performed judgment or a retry safely resolved one exact prior judgment | judgment mode `performed` or `reused`, review ID, round, reviewed plan identity, review status, material finding IDs |
+| Durable recording | every formal invocation | recording status, recording blocker, review record, review log, review resolution, finding-record paths, and whether new evidence was created |
+| Governed settlement | `validated-governed-plan-entry` | change identity, plan-entry identity, reviewed revision, `planned_work` basis result, entry state before and after, settlement result, state-changed flag, formal eligibility |
 | Boundary review | boundary procedure loaded | active boundary and interaction IDs, boundary outcome, unresolved gap |
 | Workflow-managed | current workflow-managed execution | manifest/profile identity, pause or completion result, workflow handoff |
 
 Add `assets/material-finding.md` with the byte-identical parser-owned review-family field block. The existing review-family validator will be extended to cover `plan-review` rather than creating a new validator family.
 
-The durable-recording group is never omitted because every explicit `plan-review` is formal. Other inapplicable groups are omitted. Applicable groups with unavailable required data report an explicit `blocked` or `unknown` value and the blocker. Unfilled placeholders are forbidden. Assets own labels and layout only; `SKILL.md` and the governed reference own applicability, status meaning, settlement, authority, and handoff.
+The core operation and durable-recording groups are never omitted because every explicit `plan-review` is formal. The semantic-judgment group appears only when judgment was performed or one exact prior judgment was safely reused. An invalid retry emits `operation: settlement-retry`, transaction result `blocked`, the exact blocker, and no new review evidence; it omits semantic judgment unless one exact prior review was safely resolved. Other inapplicable groups are omitted. Applicable groups with unavailable required data report an explicit `blocked` or `unknown` value and the blocker. Unfilled placeholders are forbidden. Assets own labels and layout only; `SKILL.md` and the governed reference own applicability, status meaning, settlement, authority, and handoff.
+
+### Deterministic settlement sequence
+
+The governed reference uses one settlement sequence:
+
+1. Read the complete current change record.
+2. Validate the exact plan identity, clean review identity, repository revision, initialization identity, entry state, and absence of open or competing resolution.
+3. Reject stale, mismatched, conflicting, ambiguous, or unsupported state before mutation.
+4. If the exact matching plan entry is already `active`, return idempotent `settled-active` with `state_changed: false`.
+5. Otherwise compare-and-set only the exact matching entry from `review-required` to `active`.
+6. Preserve authoring, review, and initialization evidence unchanged as durable historical evidence.
+7. Validate the resulting change record and report `settled-active`.
+
+Any failure before the compare-and-set leaves state unchanged. An interruption after that write is reconciled by rereading the record and accepting only the exact active entry with the same review and initialization identities; reconciliation performs no semantic rereview and creates no duplicate record.
 
 ### Boundary-first ownership
 
@@ -259,7 +282,10 @@ Create separate change-local inventories for behaviorally significant rules and 
 - An explicit governed candidate loads the reference before authority validation; an invalid candidate stops and never falls back to portable review.
 - A governed initial review loads one reference, writes review evidence first, and reports `initialization-required` when live state is absent without activating the plan.
 - `approved` remains the semantic review status while `initialization-required` remains a separate transaction result.
-- A matching settlement retry reuses the original clean judgment and recording artifacts and activates only the exact plan entry after matching initialization; it does not rerun semantic review or duplicate review evidence.
+- A second invocation after an exact clean review is a settlement retry even before initialization; it reuses the review and reports `initialization-required` without duplicate semantic evidence.
+- A matching settlement retry activates only the exact plan entry after matching initialization, while an already-active exact entry returns idempotent success without another write.
+- A retry with stale, contradictory, ambiguous, or unresolved evidence blocks without manufacturing a semantic review status.
+- Settlement retains authoring, review, and initialization evidence and converges on one identity-bound final state.
 - Direct and isolated review never advances routing, even when formal settlement is permitted.
 - Workflow-managed review records only its current manifest/profile evidence and returns control to workflow; it does not start `test-spec` or implementation.
 - Review results and material findings use the two mapped assets, omitting inapplicable groups and forbidding empty placeholders.
@@ -276,7 +302,7 @@ A bounded assessment is still required after specification review. If current ar
 Use three proof classes:
 
 1. Deterministic structural and package proof for frontmatter, required headings, Resource map verbs, reference and asset existence, path containment, closed vocabularies, placeholder absence, review-family asset parity, generated resources, archives, and clean-installed parity.
-2. Static contract scenarios for absent, valid, stale, ambiguous, conflicting, and late-discovered governed candidates; portable and governed initial review; every row in the closed review-status and transaction-result matrix; blocked recording; absent and matching initialization; identical retry; conflicting review ID; boundary loading; isolated execution; workflow-managed execution; missing resources; and forbidden writes.
+2. Static contract scenarios for absent, valid, stale, ambiguous, conflicting, and late-discovered governed candidates; portable and governed initial review; every row in the closed review-status and transaction-result matrix; blocked recording; clean review with absent initialization; matching initialization; already-active idempotent retry; changed plan identity; duplicate reviews or bases; open resolution; `planned_work` without clean review; blocked and inconclusive outcomes; invalid-retry judgment omission; retained basis evidence; pre-write failure; interrupted-write reconciliation; boundary loading; isolated execution; workflow-managed execution; missing resources; and forbidden writes.
 3. Independent semantic review of the final package against the rule ledger, literal inventory, governing lifecycle contract, and current skill behavior.
 
 Do not execute Codex, Claude Code, opencode, or another target-agent runtime for acceptance. Do not add prompt journeys, transcript grading, model-version evidence, a permanent token budget, or a new validator family. Words and bytes are required metrics; token estimates are optional only when an existing pinned repository-owned implementation already supports the exact assemblies.
@@ -295,6 +321,9 @@ Rollback restores the previous complete canonical `plan-review` package, validat
 | --- | --- |
 | Universal formal-recording safety moves behind the governed trigger. | Keep recording obligations, location fallback, clean/detailed record distinction, and blocked-recording behavior inline; cover portable formal review directly. |
 | Settlement retry accidentally performs semantic rereview or replaces judgment. | Use a closed operation classification and exact review/plan/revision/initialization identity with static retry and conflict scenarios. |
+| A second invocation while initialization is pending creates a duplicate clean review. | Once one exact clean review exists, classify every same-tuple invocation as settlement retry and return `initialization-required` until initialization appears. |
+| An invalid retry manufactures a semantic status. | Keep transaction output universal and emit semantic judgment only when performed or safely reused. |
+| Optional evidence cleanup creates divergent success states. | Retain authoring, review, and initialization evidence and use one identity-checked compare-and-set transition. |
 | Loading a reference is mistaken for settlement or automation authority. | Classify resource profile, settlement mode, and execution mode independently; require exact current evidence before writes. |
 | Candidate validation becomes circular or an invalid candidate falls back to portable behavior. | Use candidate evidence only to load the reference; validate authority inside it and stop invalid candidates without fallback. |
 | Review status, initialization, and settlement are conflated. | Use separate closed review-status and transaction-result vocabularies with one complete outcome matrix. |
@@ -308,6 +337,27 @@ Rollback restores the previous complete canonical `plan-review` package, validat
 
 None. The downstream specification should inventory exact compatibility-sensitive literals and existing validator consumers before editing, but the ownership and acceptance decisions are closed here.
 
+## Acceptance Criteria
+
+| ID | Criterion |
+| --- | --- |
+| `AC-PRVSIM-001` | An exact current clean review prevents duplicate semantic rereview of the same plan revision. |
+| `AC-PRVSIM-002` | A settlement retry returns `initialization-required` while `planned_work` remains absent. |
+| `AC-PRVSIM-003` | Matching initialized state and `review-required` settle exactly one plan entry. |
+| `AC-PRVSIM-004` | An already-active matching entry returns idempotent `settled-active` with no duplicate write or evidence. |
+| `AC-PRVSIM-005` | `planned_work` without one valid current clean review fails closed. |
+| `AC-PRVSIM-006` | Multiple matching review or initialization bases fail closed. |
+| `AC-PRVSIM-007` | `blocked` and `inconclusive` produce distinct deterministic plan-entry effects. |
+| `AC-PRVSIM-008` | Review status is emitted only for a performed or safely reused semantic judgment. |
+| `AC-PRVSIM-009` | An invalid settlement retry does not manufacture a review status. |
+| `AC-PRVSIM-010` | Operation result and semantic judgment use separate result-asset groups. |
+| `AC-PRVSIM-011` | Settlement retry has one deterministic final evidence state. |
+| `AC-PRVSIM-012` | Authoring, review, and initialization evidence remains durable after settlement. |
+| `AC-PRVSIM-013` | Retry creates no duplicate review, log, resolution, finding, receipt, or workflow-transition records. |
+| `AC-PRVSIM-014` | Missing or conflicting required resources and identities stop before writes. |
+| `AC-PRVSIM-015` | Portable and governed loaded profiles both decrease from their baselines. |
+| `AC-PRVSIM-016` | No target-agent runtime executes during acceptance. |
+
 ## Decision Log
 
 | Date | Decision | Reason | Alternatives rejected |
@@ -320,6 +370,9 @@ None. The downstream specification should inventory exact compatibility-sensitiv
 | 2026-08-13 | Use candidate-trigger loading followed by reference-owned authority validation. | The resource trigger must not depend on validation owned by the triggered resource. | Validate the complete governed contract inline or fall back after failed validation. |
 | 2026-08-13 | Separate semantic review status from lifecycle transaction result. | `approved`, `initialization-required`, and `settled-active` are different claims with different effects. | Add another review status or infer handoff from approval alone. |
 | 2026-08-13 | Require a durable-recording asset group for every result. | Every explicit plan review is formal and must report recording paths or blocked states. | Keep recording fields inline or omit them from portable results. |
+| 2026-08-13 | Select retry from complete transaction state once an exact clean review exists. | Initialization delay must not cause duplicate semantic review. | Require initialization before retry classification or rerun review while pending. |
+| 2026-08-13 | Separate universal operation output from conditional semantic judgment. | Invalid retries are transaction failures, not new plan-quality verdicts. | Require review status in every result or add a fifth non-review status. |
+| 2026-08-13 | Retain all authoring, review, and initialization basis evidence after settlement. | One immutable evidence policy makes settlement deterministic, auditable, and idempotent. | Optional or mandatory evidence deletion during settlement. |
 
 ## Next Artifacts
 
