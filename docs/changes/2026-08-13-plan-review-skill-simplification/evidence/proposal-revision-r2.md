@@ -19,6 +19,8 @@ The supplied second review reused first-round labels for new findings. The durab
 
 The revision retains one universal file, one governed reference, one existing boundary reference, and two structural assets. It adds no review status, lifecycle state, runtime, persistence mechanism, resource family, validator family, target-agent acceptance, or cross-stage write authority.
 
+The final authoring consistency pass also separated governed retry validity from initialization availability: one exact clean review validates retry classification, then absent, matching, or invalid initialization evidence selects the retry sub-result.
+
 ## Validation
 
 - `python scripts/validate-change-metadata.py docs/changes/2026-08-13-plan-review-skill-simplification/change.yaml`
