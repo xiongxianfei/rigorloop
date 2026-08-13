@@ -8099,8 +8099,30 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                     / "references"
                     / "governed-plan-authoring.md"
                 ).read_text(encoding="utf-8")
+            if skill_name == "test-spec":
+                body += (
+                    ROOT
+                    / "skills"
+                    / "test-spec"
+                    / "references"
+                    / "governed-test-spec-authoring.md"
+                ).read_text(encoding="utf-8")
             normalized = " ".join(body.split())
             with self.subTest(skill=skill_name):
+                if skill_name == "test-spec":
+                    self.assertIn("# Governed test-spec authoring", normalized)
+                    for phrase in (
+                        "Read the complete current `change.yaml`",
+                        "`lifecycle_contract: stage-owned-change-local-v1`",
+                        "stable artifact ID",
+                        "normalized canonical path",
+                        "`authoring`",
+                        "authoring-evidence path",
+                        "`review-required`",
+                        "must not mutate `workflow_state`",
+                    ):
+                        self.assertIn(" ".join(phrase.split()), normalized)
+                    continue
                 self.assertIn("## Change-record authoring transition", normalized)
                 self.assertIn(entry_kind, normalized)
                 for phrase in required:
@@ -8438,6 +8460,15 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
         "progressive.structural-pass-semantic-gap",
     }
 
+    @staticmethod
+    def boundary_guidance_body(skill_name: str) -> str:
+        skill_root = ROOT / "skills" / skill_name
+        body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
+        if skill_name == "test-spec":
+            body += "\n" + (skill_root / "references" / "boundary-first-method-v1.md").read_text(encoding="utf-8")
+            body += "\n" + (skill_root / "references" / "boundary-first-proof-v1.md").read_text(encoding="utf-8")
+        return body
+
     def test_governed_skills_embed_the_exact_compact_scan_once(self) -> None:
         compact_scan = self.COMPACT_SCAN_PATH.read_text(encoding="utf-8").strip()
         questions = (
@@ -8447,9 +8478,7 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
             "Which failure, retry, recovery, compatibility, or external condition can change the outcome?",
         )
         for skill_name in self.GOVERNED_SKILLS:
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
-                encoding="utf-8"
-            )
+            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
             with self.subTest(skill=skill_name):
                 self.assertEqual(body.count(compact_scan), 1)
                 for question in questions:
@@ -8564,9 +8593,7 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
             "test-spec-review": "Judge proof adequacy, negative coverage, fixtures, command ownership, and manual-proof boundaries.",
         }
         for skill_name, phrase in expected_owner_text.items():
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
-                encoding="utf-8"
-            )
+            body = self.boundary_guidance_body(skill_name)
             with self.subTest(skill=skill_name):
                 self.assertIn(phrase, body)
 
@@ -8598,9 +8625,7 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
 
     def test_progressive_guidance_distinguishes_activation_and_revision_states(self) -> None:
         for skill_name in self.GOVERNED_SKILLS:
-            body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
-                encoding="utf-8"
-            )
+            body = self.boundary_guidance_body(skill_name)
             with self.subTest(skill=skill_name):
                 self.assertIn("`pending` never claims active adoption", body)
                 self.assertIn(
@@ -8754,9 +8779,7 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
                 errors.append(
                     f"{case['case_id']}: expected decision {expected!r} does not match {actual!r}"
                 )
-            body = (ROOT / "skills" / str(case["skill"]) / "SKILL.md").read_text(
-                encoding="utf-8"
-            )
+            body = self.boundary_guidance_body(str(case["skill"]))
             for phrase in case["required_guidance"]:
                 if phrase not in body:
                     errors.append(f"{case['case_id']}: missing guidance {phrase!r}")
@@ -9439,12 +9462,16 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
             skill_root = ROOT / "skills" / skill_name
             body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
             entry = (
-                "- READ `references/boundary-first-method-v1.md` when "
-                + load_condition
+                "- READ `references/boundary-first-method-v1.md` initially for every `test-spec` invocation."
+                if skill_name == "test-spec"
+                else "- READ `references/boundary-first-method-v1.md` when " + load_condition
             )
             with self.subTest(skill=skill_name):
                 self.assertIn(entry, body)
-                self.assertIn("## Boundary-first method", body)
+                self.assertIn(
+                    "## Boundary-first bridge" if skill_name == "test-spec" else "## Boundary-first method",
+                    body,
+                )
                 self.assertIn(responsibility, body)
                 self.assertIn(stop_phrase, body)
                 self.assertEqual(
@@ -9474,10 +9501,11 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
             family_resource = owned_family_resources.get(skill_name)
             if family_resource:
                 expected_references.add(family_resource)
-                self.assertIn(
-                    f"- READ `references/{family_resource}` when ",
-                    (skill_root / "SKILL.md").read_text(encoding="utf-8"),
-                )
+                skill_body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
+                resource_prefix = f"- READ `references/{family_resource}`"
+                self.assertIn(resource_prefix, skill_body)
+                resource_entry = next(line for line in skill_body.splitlines() if line.startswith(resource_prefix))
+                self.assertRegex(resource_entry, r"\b(?:when|initially)\b")
                 self.assertEqual(
                     (skill_root / "references" / family_resource).read_bytes(),
                     (
@@ -9510,9 +9538,7 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
         self.assertEqual(self.semantic_fixture_errors(document), [])
         for case in document["cases"]:
             skill_name = case["owning_skill"]
-            body = (
-                ROOT / "skills" / skill_name / "SKILL.md"
-            ).read_text(encoding="utf-8")
+            body = self.boundary_guidance_body(skill_name)
             with self.subTest(case=case["case_id"], skill=skill_name):
                 for guidance in case["required_guidance"]:
                     self.assertIn(guidance, body)
@@ -10158,6 +10184,130 @@ class PlanSkillSimplificationContractTests(unittest.TestCase):
                     entries, id_field=id_field, required_fields=fields,
                     vocabulary_field=vocabulary_field, allowed_values=allowed,
                 )
+
+
+class TestSpecSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "test-spec"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        self.reference = (
+            self.root / "references" / "governed-test-spec-authoring.md"
+        ).read_text(encoding="utf-8")
+
+    def test_package_profiles_resources_and_initial_boundary_load_are_closed(self) -> None:
+        self.assertEqual(
+            sorted(path.name for path in (self.root / "assets").iterdir()),
+            [
+                "coverage-map-row.md",
+                "milestone-proof-row.md",
+                "test-case.md",
+                "test-spec-skeleton.md",
+                "validation-command-row.md",
+            ],
+        )
+        self.assertEqual(
+            sorted(path.name for path in (self.root / "references").iterdir()),
+            [
+                "boundary-first-method-v1.md",
+                "boundary-first-proof-v1.md",
+                "governed-test-spec-authoring.md",
+            ],
+        )
+        for value in ("TSA0-portable", "TSA1-governed"):
+            self.assertIn(value, self.skill)
+        self.assertIn("READ `references/boundary-first-method-v1.md` initially", self.skill)
+        self.assertIn("READ `references/boundary-first-proof-v1.md` initially", self.skill)
+        self.assertIn("governed_test_spec_candidate_context", self.skill)
+        self.assertIn("Loading does not grant mutation authority", self.skill)
+
+    def test_governed_operations_and_retry_identifiers_are_complete(self) -> None:
+        for operation in (
+            "create-primary-test-spec",
+            "revise-primary-test-spec",
+            "restart-stale-authoring",
+        ):
+            self.assertIn(operation, self.skill)
+            self.assertIn(operation, self.reference)
+        for phrase in (
+            "change ID",
+            "artifact ID",
+            "normalized path",
+            "authoring-evidence path",
+            "governing input identities",
+            "prior content identity",
+            "authorizing finding or upstream-change identity",
+        ):
+            self.assertIn(phrase, self.reference)
+        self.assertIn("stale-authoring-attempt", self.reference)
+        self.assertIn("idempotent success", self.reference)
+
+    def test_governed_write_boundaries_and_settlement_are_narrow(self) -> None:
+        for phrase in (
+            "review-required",
+            "test-spec-review",
+            "must not write peer-review settlement",
+            "must not mutate `workflow_state`",
+            "must not authorize implementation",
+            "same entry",
+            "same canonical path",
+        ):
+            self.assertIn(phrase, self.reference)
+        self.assertNotIn("branch-ready", self.reference)
+        self.assertIn("workflow-managed execution does not enlarge", self.skill.lower())
+
+    def test_structural_assets_have_one_body_owner_and_no_sixth_asset(self) -> None:
+        skeleton = (self.root / "assets" / "test-spec-skeleton.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn("| <requirement ID> |", skeleton)
+        self.assertNotIn("| <command ID> |", skeleton)
+        self.assertNotIn("### <test ID>.", skeleton)
+        self.assertNotIn("| <milestone> |", skeleton)
+        for marker in (
+            "<insert requirement coverage rows>",
+            "<insert example coverage rows>",
+            "<insert validation command rows",
+            "<insert milestone proof rows",
+            "<insert test case blocks>",
+        ):
+            self.assertIn(marker, skeleton)
+        self.assertNotIn("manual-proof", " ".join(path.name for path in (self.root / "assets").iterdir()))
+
+    def test_optional_manual_verification_keeps_existing_distributed_owners(self) -> None:
+        combined = self.skill + self.reference
+        for phrase in (
+            "automated",
+            "manual",
+            "hybrid",
+            "Manual QA checklist",
+            "manual procedure",
+            "evidence artifact",
+        ):
+            self.assertIn(phrase, combined)
+        self.assertIn("no new manual-proof contract", self.skill)
+        self.assertIn("no sixth asset", self.skill)
+
+    def test_resource_failure_and_claim_boundaries_fail_closed(self) -> None:
+        for phrase in (
+            "missing",
+            "unreadable",
+            "escaped",
+            "contradictory",
+            "mixed-version",
+            "stop before dependent interpretation or mutation",
+            "must not reconstruct",
+        ):
+            self.assertIn(phrase, self.skill.lower())
+        for claim in (
+            "implementation",
+            "verification",
+            "branch",
+            "PR",
+            "release",
+            "deployment",
+            "publication",
+        ):
+            self.assertIn(claim.lower(), self.skill.lower())
 
 
 if __name__ == "__main__":
