@@ -16,7 +16,7 @@
 
 | Input | Path | Artifact ID | Review evidence |
 | --- | --- | --- | --- |
-| Feature spec | `specs/plan-review-skill-simplification.md` | `spec` | `spec-review-r2`; `docs/changes/2026-08-13-plan-review-skill-simplification/reviews/spec-review-r2.md` |
+| Feature spec | `specs/plan-review-skill-simplification.md` | `spec` | `spec-review-r3`; `docs/changes/2026-08-13-plan-review-skill-simplification/reviews/spec-review-r3.md` |
 | Execution plan | `docs/plans/2026-08-13-plan-review-skill-simplification.md` | `plan` | `plan-review-r1`; `docs/changes/2026-08-13-plan-review-skill-simplification/reviews/plan-review-r1.md` |
 | Architecture assessment | `docs/changes/2026-08-13-plan-review-skill-simplification/architecture-assessment.md` | `architecture-assessment` | `architecture-not-required` |
 
