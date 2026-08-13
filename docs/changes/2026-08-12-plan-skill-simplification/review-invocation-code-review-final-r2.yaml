@@ -1,0 +1,38 @@
+schema_version: 1
+review_id: code-review-final-r2
+review_stage: code-review
+review_target: commit 01b5c0e1
+base_revision: 9bda7a1c
+head_revision: 01b5c0e1
+native_review_status: clean-with-notes
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-ci-maintenance-selector-deferrals
+reviewer_context_id: root-code-review-final-r2-context-reset
+context_separation_mechanism: focused-support-diff-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - final-verify-support-change
+  - selector-owner-deferral
+governing_artifacts:
+  - specs/plan-skill-simplification.md
+  - specs/plan-skill-simplification.test.md
+  - docs/workflows.md
+formal_criteria:
+  - code-review-v1
+  - owner-deferral-contract
+initial_packet_inventory:
+  - path: docs/changes/2026-08-12-plan-skill-simplification/change.yaml
+    sha256: 0d2b697937db85280380e8ee8bf08c04581873737f2385f609a9691eddea3cdb
+  - path: docs/changes/2026-08-12-plan-skill-simplification/evidence/ci-selector-deferral.md
+    sha256: 57d9ee81647c5becee007538dc9806fe475f4c1e8cebac60c3e280a8b5667ccb
+  - path: docs/changes/2026-08-12-plan-skill-simplification/explain-change.md
+    sha256: a06773dd6c7f9ab359001bc5e32c884c4ab81cade9e95b1c5719162d049f421e
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - exact-path deferral completeness
+  - direct proof preservation
+  - selector scope and non-generalization
+  - rationale currency

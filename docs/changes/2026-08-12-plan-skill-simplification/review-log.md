@@ -73,6 +73,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: code-review-final-r2
+Stage: code-review
+Round: r2
+Reviewed artifact: support commit `01b5c0e1`
+Status: clean-with-notes
+Detailed record: reviews/code-review-final-r2.md
+Resolution: review-resolution.md#code-review-final-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: test-spec-review-r1
 Stage: test-spec-review
 Round: r1

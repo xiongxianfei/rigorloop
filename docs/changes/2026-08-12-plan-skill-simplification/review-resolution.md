@@ -18,6 +18,7 @@ Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
 Review closeout: code-review-final-r1
+Review closeout: code-review-final-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
 - Findings resolved: 11
@@ -41,6 +42,10 @@ Review closeout: code-review-final-r1
 | `PLSIM-CR2` | accepted | closed | The invalid-ledger proof now covers vocabulary ordering, duplicates, missing fields, and destination consistency. |
 
 ## Finding details
+
+### code-review-final-r2
+
+No material findings. The focused final rereview approved eight exact owner deferrals, retained direct proof, unchanged selector policy, and refreshed rationale.
 
 ### code-review-final-r1
 
