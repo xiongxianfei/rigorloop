@@ -96,7 +96,7 @@ workflow_state:
       review_record: docs/changes/2026-08-13-test-spec-skill-simplification/reviews/plan-review-r1.md
       reviewed_artifact_path: docs/plans/2026-08-13-test-spec-skill-simplification.md
       reviewed_revision: 9a5e28b0
-    current_milestone: M3
+    current_milestone: none
     milestones:
       M1:
         kind: implementation
@@ -106,9 +106,8 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: review-requested
-    remaining_implementation_milestones:
-      - M3
+        state: closed
+    remaining_implementation_milestones: []
     latest_review:
       status: approved
       stage: code-review
@@ -121,10 +120,10 @@ workflow_state:
     final_closeout:
       readiness: not-ready
       reasons:
-        - implementation-milestones-open
         - lifecycle-gates-open
       evidence:
         - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/plan-authoring.md
+        - docs/changes/2026-08-13-test-spec-skill-simplification/reviews/code-review-M3-r1.md
 
 workflow:
   automation:
