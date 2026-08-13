@@ -1,32 +1,30 @@
 <!-- Template: plan-milestone-v1 -->
 <!-- Skill: plan -->
 <!-- Template status: normative -->
-<!-- Structural-fingerprint: sha256:49fe0a26b445054313a716d774205196214788d539fc013a7a82fef9dc1ca434 -->
+<!-- Structural-fingerprint: sha256:2a4c1dca788f27af29fe6c5472fc4ab2147e1814751f82da0aae5efaed8af3e8 -->
 <!-- Maintained alongside: skills/plan/SKILL.md -->
 
 ### M<milestone-number>. <title>
 
-- Milestone state: <planned | implementing | review-requested | resolution-needed | closed>
+- Milestone kind: <implementation | lifecycle-closeout>
 - Goal: <milestone goal>
 - Requirements: <requirement ids>
+- Architecture decisions: <decision ids or none>
 - Files/components likely touched:
   - <path or component>
 - Dependencies:
   - <dependency>
-- Tests to add/update:
+- Tests and proof:
   - <test or proof>
 - Implementation steps:
   - <step>
 - Validation commands:
   - <command>
 - Expected observable result: <result>
-- Commit message: `M<milestone-number>: <completed milestone outcome>`
-- Milestone closeout:
-  - validation passed
-  - progress updated
-  - decision log updated if needed
-  - validation notes updated
-  - milestone committed
+- Completion criteria: <stable completion criteria>
+- Required evidence: <stage-owned evidence expected>
+- Review handoff: <review target and scope>
+- Optional commit boundary: `M<milestone-number>: <completed milestone outcome>`
 - Risks:
   - <risk>
 - Rollback/recovery:

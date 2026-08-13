@@ -584,7 +584,7 @@ R7vb. Unresolved named edge-case proof gaps MUST block `branch-ready`.
 
 R7w. These branch-reality and traceability rules supplement the earlier `code-review` independence contract. They MUST NOT remove the first-pass review record, approved review statuses, workflow-managed `review-resolution` handoff for fixable findings, or isolated-review stop behavior defined by the governing workflow artifacts.
 
-R7x. For a milestone-based plan, each implementation milestone MUST have exactly one authoritative `Milestone state` selected from:
+R7x. For a governed milestone-based plan, each implementation milestone MUST have exactly one authoritative state in `change.yaml#workflow_state.planned_work` selected from:
 - `planned`;
 - `implementing`;
 - `review-requested`;
@@ -605,11 +605,27 @@ R7xf. In a milestone-based plan, review-resolution and fix loops MUST stay attac
 
 R7xg. In a milestone-based plan, `code-review` MUST move the reviewed milestone to `resolution-needed` when findings require review-resolution, fixes, owner decision, or re-review. The workflow MUST NOT advance to the next implementation milestone, `ci-maintenance`, final `explain-change`, `verify`, or `pr` while that required milestone closeout remains open.
 
-R7xh. In a milestone-based plan, if the reviewed milestone, remaining in-scope implementation milestones, review status, or required review-resolution state cannot be determined from the active plan and review output, the workflow MUST stop as inconclusive or require a plan update instead of handing off to final closeout.
+R7xh. In a governed milestone-based plan, if the reviewed milestone, remaining in-scope implementation milestones, review status, or required review-resolution state cannot be determined from `change.yaml` and stage-owned review evidence, the workflow MUST stop as inconclusive or require an owner-controlled migration instead of inferring state from the plan body or handing off to final closeout.
 
 R7xi. In a milestone-based plan, milestones MUST NOT be postponed or hidden solely to make final closeout available. If a planned milestone no longer belongs in the current change, the plan MUST be revised before downstream handoff, and final closeout may proceed only after no in-scope implementation milestone remains open or unresolved.
 
 R7xj. A lifecycle-closeout milestone MUST NOT be treated as an unfinished implementation milestone for final closeout readiness decisions. A mixed milestone that still contains implementation work remains an in-scope implementation milestone until that implementation work is closed or the plan is revised.
+
+R7xk. New governed primary-plan authoring MUST move the plan entry to `review-required` without creating `planned_work`.
+
+R7xl. Clean plan review MUST record the exact review identity and reviewed revision before initialization. While `planned_work` is absent, the plan MUST remain `review-required` and the formal result MUST be `initialization-required`.
+
+R7xm. The plan-owned `initialize-approved-plan` operation MUST create missing `planned_work` exactly once from the clean-reviewed ordered milestone definitions and MUST record the review ID, round, record path, reviewed artifact path, and reviewed revision as its initialization basis.
+
+R7xn. Initialization with the identical basis and matching state MUST be an idempotent no-op. Stale review evidence, open review resolution, invalid milestones, or existing mismatched state MUST fail closed without replacement, repair, or downstream routing.
+
+R7xo. After successful initialization, workflow MUST coordinate an identical plan-review settlement retry. Plan-review MUST reuse the durable judgment and only that retry MAY move the exact plan entry from `review-required` to `active`.
+
+R7xp. New and substantively revised plan bodies MUST contain stable execution intent and MUST NOT contain current milestone state, command outcomes, validation progress, blockers, review status, routing state, or closeout progress.
+
+R7xq. Readers MAY accept compatible historical plan structures, but governed current-state decisions MUST use `change.yaml`. Historical plan-body state MUST NOT override, initialize, repair, or be reverse-synchronized from current state.
+
+R7xr. An active historical plan with missing or conflicting authoritative `planned_work` MUST stop and route to an explicit workflow-owned migration or governed replan.
 
 R8. The starter kit MUST treat the following stages as mandatory for every contributed change:
 - implement;

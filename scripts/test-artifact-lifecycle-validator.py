@@ -1191,7 +1191,7 @@ review:
         self.assertTrue(result.blocking_findings)
         self.assertIn("Readiness", messages)
 
-    def test_workflow_state_current_milestone_projection_must_match_owner(self) -> None:
+    def test_workflow_state_ignores_historical_milestone_projection(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-milestone-state-"))
         self.addCleanupTree(fixture_root)
         self.write_workflow_state_fixture(
@@ -1202,10 +1202,9 @@ review:
 
         result, messages = self.validate_workflow_state_fixture(fixture_root)
 
-        self.assertTrue(result.blocking_findings)
-        self.assertIn("Current milestone Milestone state", messages)
+        self.assertFalse(result.blocking_findings, messages)
 
-    def test_workflow_state_missing_current_milestone_projection_fails(self) -> None:
+    def test_workflow_state_does_not_require_plan_body_milestone_projection(self) -> None:
         fixture_root = Path(tempfile.mkdtemp(prefix="workflow-state-missing-milestone-"))
         self.addCleanupTree(fixture_root)
         plan_path, _, _ = self.write_workflow_state_fixture(fixture_root)
@@ -1214,8 +1213,7 @@ review:
 
         result, messages = self.validate_workflow_state_fixture(fixture_root)
 
-        self.assertTrue(result.blocking_findings)
-        self.assertIn("Current milestone section", messages)
+        self.assertFalse(result.blocking_findings, messages)
 
     def test_workflow_state_readiness_rejects_live_stage_restatements(self) -> None:
         cases = {

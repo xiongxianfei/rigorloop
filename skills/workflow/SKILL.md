@@ -147,7 +147,7 @@ Stage-obligation values are `mandatory`, `conditional`, `on-demand`, and `period
 
 ## Universal ownership and safety
 
-The user owns product intent and destructive or external authority. Each authoring stage owns its artifact and matching authoring transition. Review peers own their review evidence and matching settlement. Implementation and evidence stages own only their scoped outputs. Workflow owns routing and later planned-work transitions. Plan owns only the one-time deterministic initialization of missing primary-plan `planned_work`; workflow owns every later `planned_work` transition.
+The user owns product intent and destructive or external authority. Each authoring stage owns its artifact and matching authoring transition. Review peers own their review evidence and matching settlement. Implementation and evidence stages own only their scoped outputs. Workflow owns routing and later planned-work transitions. New primary plans reach review without live work; after clean plan-review evidence, plan owns the one-time initialization of missing `planned_work`, workflow coordinates the identical plan-review settlement retry, and workflow owns every later transition.
 
 Do not update an upstream artifact as workflow bookkeeping. Do not infer completion from file existence. Review readiness is not verification readiness, and verification readiness is not PR readiness.
 

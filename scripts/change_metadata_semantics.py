@@ -379,7 +379,8 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
                 errors.append(f"{base}.authoring_evidence: required repository-relative path")
         elif authoring is not None:
             errors.append(f"{base}.authoring_evidence: allowed only while authoring or review-required")
-        if state in {"accepted", "approved", "active", "revision-required", "blocked", "deprecated"}:
+        pending_clean_plan_review = kind == "plan" and state == "review-required" and review is not None
+        if state in {"accepted", "approved", "active", "revision-required", "blocked", "deprecated"} or pending_clean_plan_review:
             if not _exact_keys(review, f"{base}.review", {"id", "artifact_id", "outcome", "record", "round"}, {"adr_settlement"}, errors):
                 continue
             _closed(review.get("outcome"), f"{base}.review.outcome", REVIEW_OUTCOMES, errors)
@@ -396,7 +397,7 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
                 "inconclusive": "blocked",
             }.get(outcome)
             if outcome == "approved":
-                expected_state = {
+                expected_state = None if pending_clean_plan_review else {
                     "proposal": "accepted",
                     "spec": "approved",
                     "architecture": "approved",
@@ -439,21 +440,77 @@ def validate_stage_owned_lifecycle_metadata(data: Any) -> list[str]:
             if _exact_keys(blocker, "workflow_state.blocker", {"code", "evidence"}, set(), errors):
                 _closed(blocker.get("code"), "workflow_state.blocker.code", BLOCKER_CODES, errors)
                 _evidence_paths(blocker.get("evidence"), "workflow_state.blocker.evidence", errors, nonempty=True)
-        has_primary_plan = "plan" in primary_kinds
-        if has_primary_plan != ("planned_work" in workflow_state):
-            errors.append("workflow_state.planned_work: presence must match primary plan registration")
+        primary_plan = next(
+            (
+                (artifact_id, entry)
+                for artifact_id, entry in states.items()
+                if isinstance(entry, dict)
+                and entry.get("kind") == "plan"
+                and entry.get("role") == "primary"
+            ),
+            None,
+        )
+        has_primary_plan = primary_plan is not None
+        has_planned_work = "planned_work" in workflow_state
+        if not has_primary_plan and has_planned_work:
+            errors.append("workflow_state.planned_work: requires primary plan registration")
+        if primary_plan is not None:
+            _, primary_plan_entry = primary_plan
+            plan_state = primary_plan_entry.get("lifecycle_state")
+            if plan_state in {"authoring", "revision-required", "blocked"} and has_planned_work:
+                errors.append("workflow_state.planned_work: forbidden before clean plan review")
+            elif plan_state == "active" and not has_planned_work:
+                errors.append("workflow_state.planned_work: active primary plan requires initialized state")
+            elif plan_state not in {"authoring", "revision-required", "blocked", "review-required", "active"} and not has_planned_work:
+                errors.append("workflow_state.planned_work: settled primary plan requires initialized state")
+            if plan_state == "review-required" and has_planned_work:
+                review = primary_plan_entry.get("review")
+                planned = workflow_state.get("planned_work")
+                basis = planned.get("initialization_basis") if isinstance(planned, dict) else None
+                if not isinstance(review, dict) or review.get("outcome") != "approved" or not isinstance(basis, dict):
+                    errors.append(
+                        "workflow_state.planned_work: review-required plan needs current clean review and initialization basis"
+                    )
         planned = workflow_state.get("planned_work")
         if isinstance(planned, dict) and _exact_keys(
             planned, "workflow_state.planned_work",
             {"plan_artifact_id", "current_milestone", "milestones",
              "remaining_implementation_milestones", "latest_review",
              "final_closeout"},
-            set(), errors
+            {"initialization_basis"}, errors
         ):
             plan_id = planned.get("plan_artifact_id")
             plan_entry = states.get(plan_id)
             if not isinstance(plan_entry, dict) or plan_entry.get("kind") != "plan" or plan_entry.get("role") != "primary":
                 errors.append("workflow_state.planned_work.plan_artifact_id: must name the primary plan")
+            basis = planned.get("initialization_basis")
+            if basis is not None and _exact_keys(
+                basis,
+                "workflow_state.planned_work.initialization_basis",
+                {"review_id", "review_round", "review_record", "reviewed_artifact_path", "reviewed_revision"},
+                set(),
+                errors,
+            ):
+                if not _nonempty_string(basis.get("review_id")):
+                    errors.append("workflow_state.planned_work.initialization_basis.review_id: expected non-empty string")
+                if _ROUND_RE.fullmatch(str(basis.get("review_round"))) is None:
+                    errors.append("workflow_state.planned_work.initialization_basis.review_round: expected r<n>")
+                if not _repo_path(basis.get("review_record")):
+                    errors.append("workflow_state.planned_work.initialization_basis.review_record: expected normalized repository-relative path")
+                if not _repo_path(basis.get("reviewed_artifact_path")):
+                    errors.append("workflow_state.planned_work.initialization_basis.reviewed_artifact_path: expected normalized repository-relative path")
+                if not _nonempty_string(basis.get("reviewed_revision")):
+                    errors.append("workflow_state.planned_work.initialization_basis.reviewed_revision: expected non-empty string")
+                review = plan_entry.get("review") if isinstance(plan_entry, dict) else None
+                if not isinstance(review, dict) or (
+                    basis.get("review_id") != review.get("id")
+                    or basis.get("review_round") != review.get("round")
+                    or basis.get("review_record") != review.get("record")
+                    or basis.get("reviewed_artifact_path") != plan_entry.get("path")
+                ):
+                    errors.append(
+                        "workflow_state.planned_work.initialization_basis: must match current clean plan review"
+                    )
             milestones = planned.get("milestones")
             if not isinstance(milestones, dict):
                 errors.append("workflow_state.planned_work.milestones: expected object")
