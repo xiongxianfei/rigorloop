@@ -2,15 +2,15 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`
-- Findings resolved: 3
-- Unresolved findings: 3
-- Current result: proposal revision required
+- Findings resolved: 6
+- Unresolved findings: 0
+- Current result: proposal revised; independent rereview required
 
 ## Resolution overview
 
@@ -19,9 +19,9 @@ Review closeout: proposal-review-r2
 | `TSSIM-PR1` | accepted | closed | Authoring now ends at `review-required`; peer review owns activation and workflow owns the later settlement gate. |
 | `TSSIM-PR2` | accepted | closed | Governed creation now has an authoring-entry-first sequence and exact identical-retry contract. |
 | `TSSIM-PR3` | accepted | closed | The skeleton owns headings and insertion positions; smaller assets own repeated body shapes. |
-| `TSSIM-PR4` | needs-decision | open | Proposal author must define the complete governed revision transaction. |
-| `TSSIM-PR5` | needs-decision | open | Proposal author must define bounded stale-attempt closeout and restart. |
-| `TSSIM-PR6` | needs-decision | open | Proposal author must identify existing manual-verification structural owners without adding a new contract. |
+| `TSSIM-PR4` | accepted | closed | Revision now binds prior and new identities, preserves history, stops on active reliance, and requires fresh review. |
+| `TSSIM-PR5` | accepted | closed | Stale creation now uses workflow-routed, test-spec-owned bounded abandonment before a new identity starts. |
+| `TSSIM-PR6` | accepted | closed | Optional manual verification retains its existing distributed owners with no new contract or asset. |
 
 ## Finding details
 
@@ -80,47 +80,47 @@ Validation evidence: `evidence/proposal-revision-r1.md`; revised Structural owne
 #### TSSIM-PR4
 
 Finding ID: TSSIM-PR4
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Close the governed revision transaction and review-staleness model.
-Chosen action: pending proposal revision
+Chosen action: Define revision as a prior-identity-bound authoring transaction that produces a new identity, preserves history, and requires fresh review.
 Rationale: Revision is named but lacks a complete state, authority, identity, retry, and reliance contract.
 Required outcome: Define legal revision states, write sequence, prior/new identities, fresh review, and active-implementation stop behavior.
 Safe resolution path: Adopt the bounded pre-implementation revision transaction recommended by `proposal-review-r2`.
 Validation target: revised revision, ownership, scenarios, risks, and acceptance sections plus independent rereview.
-Validation evidence: pending
+Validation evidence: `evidence/proposal-revision-r2.md`; revised Governed test-spec revision, Expected Behavior Changes, Static contract scenarios, Acceptance criteria, Rollout and Rollback, Risks and Mitigations, and Decision Log.
 
 #### TSSIM-PR5
 
 Finding ID: TSSIM-PR5
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Close changed-basis interrupted-authoring recovery.
-Chosen action: pending proposal revision
+Chosen action: Report `stale-authoring-attempt`; let workflow authorize and route recovery while only `test-spec` abandons its exact incomplete entry with bounded closeout evidence.
 Rationale: An incomplete creation may be neither an identical retry nor a valid revision.
 Required outcome: Define stale result, exact closeout owner and write set, and new-identity restart.
 Safe resolution path: Use workflow-routed, test-spec-owned bounded abandonment under existing stage-owned authority.
 Validation target: revised recovery matrix, ownership, scenarios, risks, rollout, and acceptance sections plus independent rereview.
-Validation evidence: pending
+Validation evidence: `evidence/proposal-revision-r2.md`; revised Stale interrupted authoring, Expected Behavior Changes, Static contract scenarios, Acceptance criteria, Rollout and Rollback, Risks and Mitigations, and Decision Log.
 
 #### TSSIM-PR6
 
 Finding ID: TSSIM-PR6
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Reconcile optional manual verification with existing structural owners.
-Chosen action: pending proposal revision
+Chosen action: Preserve optional manual verification through existing proof, test-case, milestone, and skeleton structures and prohibit a new manual-proof contract or asset in this change.
 Rationale: The proposal must not imply an unowned repeated structure or introduce a new manual-proof contract accidentally.
 Required outcome: Identify current owners and preserve optional Manual QA behavior without a new asset.
 Safe resolution path: Retain the proof reference, proof-obligation row, test-case, milestone row, and skeleton responsibilities already approved.
 Validation target: revised ownership, non-goals, scenarios, risks, and acceptance sections plus independent rereview.
-Validation evidence: pending
+Validation evidence: `evidence/proposal-revision-r2.md`; revised Non-goals, Optional manual-verification ownership, Static contract scenarios, Acceptance criteria, Risks and Mitigations, and Decision Log.

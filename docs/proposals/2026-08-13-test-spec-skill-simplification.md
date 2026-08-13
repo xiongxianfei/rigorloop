@@ -34,7 +34,7 @@ The problem is not that the test-spec contract is too rigorous. Requirement trac
 - Changing the `boundary-first-v1` model, resource bytes, stable IDs, capability activation, or required initial loading profile.
 - Changing test-spec-review authority, workflow stage order, implementation authorization, or review settlement ownership.
 - Replacing Markdown authoring with an executable proof-map engine, schema-driven generator, scheduler, or model-runtime evaluator.
-- Adding a new test-spec asset, permanent simplicity validator, tokenizer dependency, or target-agent journey test.
+- Adding a new test-spec or manual-proof asset, standardizing a new manual-proof record, adding a permanent simplicity validator, adding a tokenizer dependency, or adding a target-agent journey test.
 - Rewriting historical test specs or changing their status merely to adopt the simplified skill.
 
 ## Vision fit
@@ -192,9 +192,74 @@ The retry identity is the tuple of change ID, artifact ID, normalized test-spec 
 | File exists without the matching entry | Stop as an unrelated or ambiguous collision; do not adopt it implicitly. |
 | Entry exists with a different path, artifact ID, evidence path, or input basis | Stop. |
 | Multiple candidate files or entries exist | Stop. |
-| The intended content or governing input basis changed during retry | Stop and begin an explicitly authorized revision instead of reconciling creation. |
+| The intended content or governing input basis changed during retry | Report `stale-authoring-attempt`; stop pending bounded abandonment or recovery. |
 
 The transaction never writes review evidence, review settlement, another artifact entry, `workflow_state`, routing, or automation state.
+
+### Stale interrupted authoring
+
+A creation attempt whose governing input basis changes is neither an identical retry nor an ordinary revision. `test-spec` reports `stale-authoring-attempt` and performs no further creation write.
+
+Workflow may validate the changed basis, confirm that no review or downstream reliance exists, and route an explicit closeout operation. Workflow does not mutate the artifact entry. Under the existing stage-owned lifecycle contract, only `test-spec` may abandon its exact incomplete entry and write the matching stage-owned closeout evidence.
+
+The bounded abandonment write set is:
+
+```text
+the exact incomplete test-spec artifact entry:
+  authoring → abandoned
+
+one test-spec-owned closeout evidence record:
+  exact change ID
+  exact artifact ID and normalized path
+  stale retry identity
+  old and current governing input identities
+  proof that no review or downstream reliance exists
+```
+
+The operation must not delete or overwrite a partial file, modify another artifact entry, rewrite review evidence, mutate `workflow_state`, change routing, or write automation state. The partial file remains visible evidence until a separately governed cleanup or replacement operation owns it.
+
+After exact abandonment, a new `create-primary-test-spec` operation receives a new authoring-evidence path, current governing inputs, and a new retry identity. If review or downstream reliance exists, or the attempt identity is ambiguous, abandonment stops and routes to the governing workflow decision instead of resetting state.
+
+### Governed test-spec revision
+
+`revise-primary-test-spec` is a separate authoring transaction. It is permitted only when one exact entry and file exist, the current content identity and governing inputs are known, a current review finding or authorized upstream input change requires revision, no competing revision is active, and the governing workflow evidence permits authoring.
+
+Use this state model:
+
+| Current condition | Result |
+| --- | --- |
+| `revision-required` after current `test-spec-review` findings | Revision permitted. |
+| `authoring` with the same revision retry identity | Identical retry permitted. |
+| `review-required` with an explicitly authorized governing-input correction before peer settlement | Revision permitted after returning only the matching entry to `authoring`. |
+| `active`, no implementation has relied on the current identity, and workflow explicitly routes reopening | Revision permitted after the matching entry enters `authoring`. |
+| `active` with implementation reliance | Stop; workflow must first route a separately governed reopen, replan, or proof-contract migration. |
+| Missing, stale, ambiguous, or conflicting authorizing evidence | Stop. |
+| Multiple candidate entries, files, reviews, or revision attempts | Stop. |
+
+The revision retry identity contains:
+
+```text
+change ID
+artifact ID
+normalized test-spec path
+prior test-spec content identity
+current governing input identities
+triggering review and finding identity, or authorized upstream-change identity
+revision-authoring evidence path
+```
+
+The revision sequence is:
+
+1. Resolve the exact current entry, file, prior content identity, governing inputs, and authorizing review finding or upstream change.
+2. Confirm that active implementation has not relied on the current identity unless a separately governed reopen already permits revision.
+3. Move only the matching entry to `authoring`, remove its current review mapping as required by the lifecycle contract, and bind the new revision-authoring evidence path.
+4. Preserve prior authoring and review records as historical evidence for the prior content identity.
+5. Write the revised content and compute the new content identity.
+6. Write complete revision-authoring evidence containing the prior identity, new identity, new inputs, and revision authority.
+7. Validate the revised artifact and evidence.
+8. Move only the matching entry to `review-required` and require fresh `test-spec-review` for the new identity.
+
+An identical retry reconciles only the same revision identity and never creates another authoring occurrence. A changed prior identity, new basis, authorizing finding, path, or evidence path stops instead of rebinding the revision attempt. The prior review remains historical evidence for its old identity and cannot approve or authorize implementation against the new identity.
 
 ### Authoring, review settlement, and workflow settlement
 
@@ -265,6 +330,23 @@ Remove repeated example data rows and test-case bodies from the full skeleton. R
 
 Full creation or full rewrite copies the skeleton, expands every applicable insertion using the smaller mapped assets, and removes every insertion marker before output. A bounded revision copies only the affected row or test-case asset unless it changes document-wide structure and therefore requires a full rewrite. The emitted artifact must contain neither named insertion markers nor unfilled placeholders. `SKILL.md` and the references continue to decide applicability, vocabulary meaning, proof adequacy, lifecycle state, and readiness.
 
+### Optional manual-verification ownership
+
+Manual verification remains an exceptional proof mode used only when automation is insufficient. This simplification introduces no new manual-proof record, conditional asset group, or sixth asset.
+
+Existing owners remain:
+
+| Manual-verification structure or rule | Existing owner |
+| --- | --- |
+| `manual` and `hybrid` automation modes, manual-procedure IDs, and evidence requirements | `boundary-first-proof-v1.md` |
+| Mapping a proof obligation to manual-procedure IDs and evidence | The proof-obligation row owned by the proof reference |
+| A test case's `Level`, evidence artifact, and automation location | `test-case.md` |
+| Milestone-level manual-proof IDs | `milestone-proof-row.md` |
+| Optional `Manual QA checklist` section and insertion location | `test-spec-skeleton.md` |
+| Applicability and proof adequacy | Skill and proof procedure, never an asset |
+
+When automation is sufficient, manual-only fields use the existing `none`, ASCII `-`, or `not applicable` sentinel required by their owning structure. An automated proof omits manual procedure IDs as the proof contract requires. Manual and hybrid proof cite current stable procedures and evidence through the existing proof row and test-case structures. Standardizing a separate repeated manual-proof record requires a future approved proposal and contract; it is not part of this simplification.
+
 ### Missing-resource behavior
 
 The two boundary references are required for every test-spec authoring profile. If either is missing, unreadable, escaped, or mixed-version, stop before proof-map authoring. If governed candidate context is true and the governed reference is unavailable, stop before reading or mutating governed state. Missing inapplicable structural assets block only the authoring operation that requires them. The skill must not reconstruct missing procedure or layout from memory.
@@ -275,6 +357,8 @@ The two boundary references are required for every test-spec authoring profile. 
 - Governed authoring additionally loads one reference that validates exact change authority and owns only the permitted artifact-entry transition.
 - New governed test-spec creation no longer depends on a pre-existing test-spec identity; revision still requires an exact current identity.
 - Interrupted governed creation resumes only when its complete retry identity matches; collisions and changed bases fail closed.
+- Changed-basis partial creation reports `stale-authoring-attempt`, uses workflow-routed but test-spec-owned bounded abandonment, and restarts with a new identity.
+- Governed revision preserves the prior identity and evidence, produces a new identity, and requires fresh independent review; active implementation reliance blocks ordinary revision.
 - Test-spec authoring stops at `review-required`, peer review alone may settle the artifact to `active`, and workflow alone owns the later implementation settlement gate.
 - Repeated test-case, coverage, command, milestone, and document layouts come only from their mapped assets.
 - Detailed boundary-first procedure appears only in its existing mapped references, not again in stage-local prose.
@@ -323,6 +407,9 @@ Cover at least:
 - isolated versus workflow-managed handoff and forbidden writes.
 - authoring completion at `review-required`, peer activation at `active`, and workflow settlement without test-spec or review-state mutation;
 - full-skeleton creation, nested row/case expansion, bounded row/case revision, and rejection of emitted insertion markers or placeholders.
+- governed revision from every permitted and forbidden state, prior and new identity binding, review staleness, identical retry, and active-implementation reliance;
+- stale creation basis at every partial state, exact abandonment authority and write set, blocked reliance, and new retry identity after closeout;
+- automated proof with no manual procedure, valid manual and hybrid proof through existing structures, optional Manual QA omission, and rejection of incomplete manual evidence.
 
 Scenario proof is deterministic and fixture-based. It does not execute Codex, Claude Code, opencode, or another target-agent runtime.
 
@@ -373,6 +460,20 @@ Permanent validation should enforce durable structure, vocabularies, resource in
 | `AC-TSSIM-011` | Every semantic rule and literal dependency has one classified disposition. |
 | `AC-TSSIM-012` | No target-agent runtime, permanent simplicity validator, or tokenizer dependency is introduced. |
 | `AC-TSSIM-013` | Canonical, generated, archived, and clean-installed packages retain required resource parity. |
+| `AC-TSSIM-014` | `revise-primary-test-spec` has a closed legal-state, authority, prior/new identity, write, retry, and fresh-review contract. |
+| `AC-TSSIM-015` | Revision preserves prior authoring and review evidence as historical evidence for the old identity. |
+| `AC-TSSIM-016` | A test spec already relied on by active implementation cannot use ordinary revision authority. |
+| `AC-TSSIM-017` | Revision retry binds the prior identity, current inputs, revision authority, and evidence path and fails closed on any change. |
+| `AC-TSSIM-018` | A changed-basis interrupted creation reports `stale-authoring-attempt` and performs no implicit adoption or rewrite. |
+| `AC-TSSIM-019` | Workflow may authorize and route stale-attempt recovery but cannot mutate the test-spec artifact entry. |
+| `AC-TSSIM-020` | Only `test-spec` may abandon its exact incomplete entry with stage-owned closeout evidence and the bounded write set. |
+| `AC-TSSIM-021` | New creation after abandonment uses current inputs, a new evidence path, and a new retry identity. |
+| `AC-TSSIM-022` | Existing proof, test-case, milestone, and skeleton structures remain the explicit owners of optional manual verification. |
+| `AC-TSSIM-023` | Automated proof uses no manual procedure ID; manual and hybrid proof cite the existing required procedure and evidence fields. |
+| `AC-TSSIM-024` | Manual QA remains optional and uses the current `none`, `-`, or `not applicable` conventions when inapplicable. |
+| `AC-TSSIM-025` | No new manual-proof contract, conditional group, or asset is introduced. |
+| `AC-TSSIM-026` | Static scenarios cover revision, stale-attempt recovery, and automated/manual/hybrid proof without target-agent execution. |
+| `AC-TSSIM-027` | All resources affected by these rules retain canonical, generated, archived, and installed parity. |
 
 ## Rollout and Rollback
 
@@ -381,6 +482,8 @@ Implement the canonical package and directly coupled validators or fixtures atom
 Migrate structural assets atomically: update the skeleton insertion markers, repeated assets, resource-map instructions, and directly coupled validators in the same implementation slice. Do not publish a mixed package in which the skeleton still owns example body rows while smaller assets claim exclusive ownership.
 
 Historical test specs remain unchanged. Existing boundary references retain their canonical bytes and current initial-loading classification. The new skill writes the existing test-spec format; this change introduces no document migration.
+
+Revision and stale-attempt recovery preserve prior files and evidence rather than rewriting history. An implementation slice must add the closed revision and abandonment scenarios before relying on the simplified governed reference. No historical artifact is retroactively normalized, and no partial artifact is deleted as part of this content refactor.
 
 Rollback is an atomic revert of `SKILL.md`, the governed reference, directly coupled validator or fixture changes, and change-local evidence, followed by existing package generation and parity validation. No persisted customer data or schema rollback is required.
 
@@ -393,9 +496,12 @@ Rollback is an atomic revert of `SKILL.md`, the governed reference, directly cou
 | Structural assets become policy owners | Limit assets to labels and layout; keep applicability and meaning in procedure. |
 | New governed creation becomes circular | Separate candidate loading from authority validation and creation from revision. |
 | Interrupted creation leaves a file or entry that cannot be classified | Use the authoring-first identity sequence and reconcile only the exact retry tuple. |
+| A changed-basis partial creation becomes stranded | Report `stale-authoring-attempt`; workflow routes and `test-spec` alone closes the exact incomplete entry before a new identity starts. |
+| Revision invalidates proof while implementation is using it | Stop ordinary revision on active reliance and require workflow-routed reopening or migration before authoring. |
 | Test-spec authoring crosses peer or workflow settlement ownership | End authoring at `review-required`; reserve activation for `test-spec-review` and the later workflow-owned gate for validation and routing evidence only. |
 | Loading a reference is mistaken for write authority | State that exact validation occurs after loading and stops before mutation on mismatch. |
 | The skeleton and smaller assets retain duplicate structural owners | Make the skeleton own headings and insertion positions and smaller assets own repeated bodies; validate the composed output. |
+| Manual verification becomes new common-path ceremony | Preserve its current optional distributed representation and add no new contract, group, or asset. |
 | Package splitting merely moves content | Require both loaded profiles to shrink and report total package size separately. |
 | Literal assertions freeze accidental wording | Classify semantic rules and literal consumers in separate inventories. |
 | Missing resources lead to remembered or partial procedure | Make every triggered missing resource a fail-safe stop. |
@@ -419,6 +525,9 @@ None at proposal level. The specification should inventory exact literal consume
 | 2026-08-13 | Separate test-spec authoring, peer activation, and workflow settlement. | The accepted lifecycle contract assigns each operation to a different owner. | Open-ended settlement preparation in the authoring reference. |
 | 2026-08-13 | Use an authoring-entry-first creation transaction with exact retry identity. | It makes partial creation recoverable without adopting unrelated files or entries. | File-first creation and unconditional asymmetry failure. |
 | 2026-08-13 | Make the full skeleton own headings and insertion positions while smaller assets own repeated bodies. | This removes structural duplication and gives creation and bounded revision deterministic composition. | Duplicate example rows or a new combined asset. |
+| 2026-08-13 | Define revision as a prior-identity-bound authoring transaction requiring fresh review. | A substantive proof-map change invalidates the old review and must not change an implementation dependency silently. | High-level revision guidance or review reuse across identities. |
+| 2026-08-13 | Use workflow-routed, test-spec-owned abandonment for changed-basis partial creation. | It recovers stale authoring without letting workflow mutate stage-owned artifact state. | Silent retry rebinding, implicit file adoption, or workflow-owned artifact mutation. |
+| 2026-08-13 | Preserve optional manual verification through existing structures only. | The current approved contract excludes a new manual-proof contract and asset. | A conditional manual-proof group or sixth asset. |
 
 ## Next Artifacts
 

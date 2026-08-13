@@ -29,5 +29,5 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r2.md
 Resolution: review-resolution.md#proposal-review-r2
 Material findings: TSSIM-PR4, TSSIM-PR5, TSSIM-PR6
-Open findings: TSSIM-PR4, TSSIM-PR5, TSSIM-PR6
+Open findings: None
 Recording status: recorded
