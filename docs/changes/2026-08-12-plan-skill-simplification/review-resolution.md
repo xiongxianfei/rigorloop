@@ -8,6 +8,7 @@ Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
+Review closeout: spec-review-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
 - Findings resolved: 9
@@ -29,6 +30,10 @@ Review closeout: proposal-review-r4
 | `PLSIM-PR9` | accepted | closed | Canonical architecture updates and a narrow successor ADR are required in this change. |
 
 ## Finding details
+
+### spec-review-r1
+
+No material findings. The clean review approved `specs/plan-skill-simplification.md` and routed to required architecture work.
 
 ### proposal-review-r4
 

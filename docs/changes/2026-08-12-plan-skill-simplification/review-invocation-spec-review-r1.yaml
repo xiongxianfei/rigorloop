@@ -1,0 +1,47 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/plan-skill-simplification.md
+base_revision: ae33e4bd
+head_revision: ae33e4bd
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-authoring-r1
+reviewer_context_id: root-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-order-change
+  - published-skill-package-boundary
+  - compatibility-migration
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-12-plan-skill-simplification.md
+  - specs/plan-skill-simplification.md
+  - specs/skill-contract.md
+  - specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: docs/proposals/2026-08-12-plan-skill-simplification.md
+    sha256: 2cddac67cfe9e8d1a4022f23be1c70366649639c061d5bd42f8024b77c2981a5
+  - path: specs/plan-skill-simplification.md
+    sha256: 1c32bec89806bd61a64fda753a930f6b12eac4ae2466f12aca692dbb73e73e77
+  - path: specs/skill-contract.md
+    sha256: 43dfde680fddca458d2d18deccba972fb1341f860444940db8347652e2210c56
+  - path: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+    sha256: 46865935c04fa404a38b34c96f7c19f5934a6b9eee672081f22b3cfc2ff64ba4
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - operation and authority closure
+  - evidence-initialization-settlement transaction
+  - identity without hashes
+  - compatibility migration
+  - boundary completeness
+  - deterministic acceptance
