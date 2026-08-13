@@ -21,7 +21,7 @@ The `plan-review` package must reduce the procedural context loaded for portable
 | Validated governed entry | One exact current change and plan entry that passes the governed reference's identity, lifecycle, and operation checks. |
 | Initial review | Semantic plan judgment for an exact reviewable plan tuple when no current clean review exists. |
 | Settlement retry | A later invocation for an exact plan tuple that already has one current clean review; it reuses judgment and never performs semantic rereview. |
-| Plan tuple | The normalized plan path, plan content identity, and reviewed repository revision used to bind judgment. |
+| Plan tuple | Stable artifact identity plus reviewed revision identity: artifact ID, kind `plan`, role `primary`, normalized path, review ID, round, review record path, reviewed artifact path, and reviewed repository revision or commit. |
 | Transaction result | The lifecycle or recording result of an invocation, distinct from semantic review status. |
 | Basis evidence | Authoring, clean review, and plan-owned initialization evidence bound to the reviewed plan transaction. |
 
@@ -105,7 +105,7 @@ R12. A governed candidate MUST load the governed reference but MUST NOT establis
 
 R13. The governed reference MUST classify exactly `validated-governed-plan-entry` or `invalid-governed-candidate`; invalid candidates MUST stop without governed mutation or portable fallback.
 
-R14. Validated governed context MUST resolve one exact current change, lifecycle marker, plan entry, legal plan state, and current plan revision.
+R14. Validated governed context MUST resolve one exact current change, lifecycle marker, plan entry, legal plan state, stable artifact identity, and reviewed revision identity; stable artifact identity MUST be artifact ID, kind `plan`, role `primary`, and normalized path, reviewed revision identity MUST be review ID, round, record path, reviewed artifact path, and reviewed repository revision or commit, and the change MUST NOT add a governed-document hash or `content_identity` field.
 
 R15. Governed initial review MUST additionally require complete current authoring evidence, while retry MUST additionally require one exact current clean review; initialization evidence MUST then be classified as absent, matching, or invalid.
 

@@ -20,18 +20,13 @@ artifact_states:
     kind: spec
     path: specs/plan-review-skill-simplification.md
     role: primary
-    lifecycle_state: approved
-    review:
-      id: spec-review-r1
-      artifact_id: spec
-      outcome: approved
-      record: docs/changes/2026-08-13-plan-review-skill-simplification/reviews/spec-review-r1.md
-      round: r1
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-13-plan-review-skill-simplification/evidence/spec-revision-r1.md
 
 workflow_state:
   lifecycle_state: active
-  current_stage: architecture
-  next_stage: architecture
+  current_stage: spec-review
+  next_stage: spec-review
   blocker: null
   evidence:
     - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/proposal-authoring.md
@@ -46,6 +41,8 @@ workflow_state:
     - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/spec-authoring.md
     - docs/changes/2026-08-13-plan-review-skill-simplification/review-invocation-spec-review-r1.yaml
     - docs/changes/2026-08-13-plan-review-skill-simplification/reviews/spec-review-r1.md
+    - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/architecture-assessment-r1.md
+    - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/spec-revision-r1.md
 
 workflow:
   automation:
@@ -58,7 +55,7 @@ workflow:
       completion:
         rule: first formal test-spec-review result is durably recorded
     status: active
-    current_stage: architecture
+    current_stage: spec-review
     stop_reason: null
     evidence:
       - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
@@ -68,6 +65,8 @@ workflow:
       - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/spec-authoring.md
       - docs/changes/2026-08-13-plan-review-skill-simplification/review-invocation-spec-review-r1.yaml
       - docs/changes/2026-08-13-plan-review-skill-simplification/reviews/spec-review-r1.md
+      - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/architecture-assessment-r1.md
+      - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/spec-revision-r1.md
 
 artifacts:
   proposal: docs/proposals/2026-08-13-plan-review-skill-simplification.md
@@ -102,7 +101,9 @@ changed_files:
   - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/spec-authoring.md
   - docs/changes/2026-08-13-plan-review-skill-simplification/review-invocation-spec-review-r1.yaml
   - docs/changes/2026-08-13-plan-review-skill-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/architecture-assessment-r1.md
+  - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/spec-revision-r1.md
 
 review:
-  status: approved
+  status: review-requested
   unresolved_items: 0
