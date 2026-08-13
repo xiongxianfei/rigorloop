@@ -42,7 +42,7 @@ artifact_states:
     kind: test-spec
     path: specs/test-spec-skill-simplification.test.md
     role: primary
-    lifecycle_state: authoring
+    lifecycle_state: review-required
     authoring_evidence: docs/changes/2026-08-13-test-spec-skill-simplification/evidence/test-spec-revision-r1.md
 
 workflow_state:
@@ -197,4 +197,4 @@ changed_files:
 
 review:
   status: changes-requested
-  unresolved_items: 1
+  unresolved_items: 0

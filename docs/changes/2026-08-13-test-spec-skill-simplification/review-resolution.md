@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -14,8 +14,8 @@ Review closeout: test-spec-review-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`
 - Findings resolved: 7
-- Unresolved findings: 1
-- Current result: test-spec review requested changes; implementation handoff is blocked
+- Unresolved findings: 0
+- Current result: test-spec correction complete; formal rereview is required before implementation handoff
 
 ## Resolution overview
 
@@ -28,7 +28,7 @@ Review closeout: test-spec-review-r1
 | `TSSIM-PR5` | accepted | closed | Stale creation recovery is workflow-routed and test-spec-owned; `TSSIM-PR7` closes its legal same-entry restart mechanism. |
 | `TSSIM-PR6` | accepted | closed | Optional manual verification retains its existing distributed owners with no new contract or asset. |
 | `TSSIM-PR7` | accepted | closed | Stale recovery now restarts the same `authoring` entry without terminal or duplicate-path conflicts. |
-| `TSSIM-TSR1` | accepted | open | Strengthen CMD1 to prove required fields, exact scenarios, invalid fixtures, and unknown-value-first behavior. |
+| `TSSIM-TSR1` | accepted | resolved | CMD1 now proves required fields, exact scenarios, invalid fixtures, and unknown-value-first behavior. |
 
 ## Finding details
 
@@ -38,7 +38,7 @@ Review closeout: test-spec-review-r1
 
 Finding ID: TSSIM-TSR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: test-spec author
 Owning stage: test-spec
 Decision owner: workflow or user
@@ -49,6 +49,7 @@ Rationale: M1 must fail closed on incomplete preservation evidence before canoni
 Required outcome: Make CMD1 execute every fail-closed ledger and scenario property claimed by M1 and T13.
 Safe resolution path: Accept the finding, revise the command and coupled wording, validate the boundary proof map, and obtain a clean test-spec rereview.
 Validation target: CMD1 structure and behavior plus boundary validation and formal test-spec rereview.
+Validation evidence: `evidence/test-spec-revision-r1.md`; revised CMD1 and fixture contract; boundary-first, change-metadata, review-structure, lifecycle, automation, and diff checks passed. Formal rereview remains required before implementation handoff.
 
 
 ### proposal-review-r1
