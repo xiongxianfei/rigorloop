@@ -2,15 +2,16 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
+Review closeout: proposal-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Current result: proposal revised; independent rereview required
+- Unresolved findings: 1
+- Current result: proposal revision required
 
 ## Resolution overview
 
@@ -22,6 +23,7 @@ Review closeout: proposal-review-r2
 | `TSSIM-PR4` | accepted | closed | Revision now binds prior and new identities, preserves history, stops on active reliance, and requires fresh review. |
 | `TSSIM-PR5` | accepted | closed | Stale creation now uses workflow-routed, test-spec-owned bounded abandonment before a new identity starts. |
 | `TSSIM-PR6` | accepted | closed | Optional manual verification retains its existing distributed owners with no new contract or asset. |
+| `TSSIM-PR7` | needs-decision | open | Terminal abandonment cannot support a new primary entry at the canonical test-spec path. |
 
 ## Finding details
 
@@ -124,3 +126,21 @@ Required outcome: Identify current owners and preserve optional Manual QA behavi
 Safe resolution path: Retain the proof reference, proof-obligation row, test-case, milestone row, and skeleton responsibilities already approved.
 Validation target: revised ownership, non-goals, scenarios, risks, and acceptance sections plus independent rereview.
 Validation evidence: `evidence/proposal-revision-r2.md`; revised Non-goals, Optional manual-verification ownership, Static contract scenarios, Acceptance criteria, Risks and Mitigations, and Decision Log.
+
+### proposal-review-r3
+
+#### TSSIM-PR7
+
+Finding ID: TSSIM-PR7
+Disposition: needs-decision
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Close stale-attempt restart under terminal-state, primary-kind, and unique-path constraints.
+Chosen action: pending proposal revision
+Rationale: An abandoned entry is terminal and prevents a replacement primary entry from reusing the canonical path.
+Required outcome: Define a legal same-entry restart or explicitly amend the lifecycle schema.
+Safe resolution path: Keep the exact incomplete entry in `authoring`; under workflow-routed authorization, let `test-spec` bind a new authoring-evidence path and retry identity while preserving artifact ID and canonical path.
+Validation target: revised stale-restart, scenarios, acceptance, risks, rollout, and decision sections plus independent rereview.
+Validation evidence: pending
