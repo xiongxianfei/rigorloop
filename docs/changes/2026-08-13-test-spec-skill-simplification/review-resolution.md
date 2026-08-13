@@ -11,11 +11,12 @@ Review closeout: proposal-review-r4
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
+Review closeout: test-spec-review-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`
-- Findings resolved: 7
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
+- Findings resolved: 8
 - Unresolved findings: 0
-- Current result: test-spec correction complete; formal rereview is required before implementation handoff
+- Current result: test specification approved and active; isolated implementation handoff is allowed but not invoked
 
 ## Resolution overview
 
@@ -31,6 +32,13 @@ Review closeout: test-spec-review-r1
 | `TSSIM-TSR1` | accepted | resolved | CMD1 now proves required fields, exact scenarios, invalid fixtures, and unknown-value-first behavior. |
 
 ## Finding details
+
+### test-spec-review-r2
+
+Review closeout: test-spec-review-r2
+
+No material findings; no resolution entry required. The formal rereview verified `TSSIM-TSR1`, approved the revised proof map, and settled the matching test-spec entry without advancing workflow routing.
+
 
 ### test-spec-review-r1
 
