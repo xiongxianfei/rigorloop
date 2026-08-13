@@ -8,11 +8,12 @@ Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
+Review closeout: spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: proposal approved; ready for focused specification through a separate request or workflow invocation
+- Current result: proposal and specification approved; bounded architecture assessment required before planning
 
 ## Resolution overview
 
@@ -151,3 +152,9 @@ Validation evidence: `evidence/proposal-revision-r3.md`; revised Stale interrupt
 Review closeout: proposal-review-r4
 
 No material findings; no resolution entry required. The same-stage proposal-review rerun approved the revised proposal and closed all findings through `proposal-review-r3`.
+
+### spec-review-r1
+
+Review closeout: spec-review-r1
+
+No material findings; no resolution entry required. The formal review approved the focused package, transaction, boundary, compatibility, and acceptance contract.

@@ -8,6 +8,19 @@ This ledger records formal lifecycle reviews for the test-spec skill simplificat
 
 ### Review entry
 
+Review ID: spec-review-r1
+Stage: spec-review
+Round: r1
+Reviewed artifact: `specs/test-spec-skill-simplification.md` at commit `2862b688`
+Status: approved
+Detailed record: reviews/spec-review-r1.md
+Resolution: review-resolution.md#spec-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: proposal-review-r1
 Stage: proposal-review
 Round: r1
