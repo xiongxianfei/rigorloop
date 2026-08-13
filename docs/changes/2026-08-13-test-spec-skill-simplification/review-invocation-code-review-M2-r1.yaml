@@ -1,0 +1,25 @@
+schema_version: 1
+review_id: code-review-M2-r1
+review_stage: code-review
+review_target: implementation-M2
+base_revision: bad499ac
+head_revision: 4d2b7cc8
+milestone_id: M2
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L0
+author_context_id: root-implement-M2
+reviewer_context_id: root-code-review-M2-r1-context-reset
+context_separation_mechanism: diff-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-contract-change
+  - governed-authoring-transaction
+  - package-resource-addition
+requirement_fidelity:
+  applicability: applicable
+  receipt: pending
+phase_receipts:
+  - risk-map-recorded
+unresolved_findings: []
+forbidden_initial_context_excluded: true
