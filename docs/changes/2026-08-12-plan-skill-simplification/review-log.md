@@ -16,7 +16,7 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r2.md
 Resolution: review-resolution.md#proposal-review-r2
 Material findings: PLSIM-PR4, PLSIM-PR5, PLSIM-PR6
-Open findings: PLSIM-PR4, PLSIM-PR5, PLSIM-PR6
+Open findings: None
 Recording status: recorded
 
 ### Review entry

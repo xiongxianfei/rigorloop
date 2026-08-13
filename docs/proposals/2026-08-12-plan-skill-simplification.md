@@ -16,7 +16,7 @@ The optimization must preserve what makes `plan` valuable: requirement and archi
 
 - Make the portable planning contract materially shorter and easier to scan without weakening milestone quality, validation, recovery, traceability, or handoff safety.
 - Keep `SKILL.md` self-sufficient for invocation classification, upstream readiness, plan design, stable-state boundaries, universal stops, claims, and resource selection.
-- Give governed plan registration, authoring-state mutation, one-time `planned_work` initialization, and workflow-managed procedure one conditional owner.
+- Give governed plan creation or revision, authoring-state mutation, and post-approval one-time `planned_work` initialization one conditional owner.
 - Retain the existing boundary-first reference under its governed activation contract while removing duplicated detailed guidance from the common path.
 - Keep the existing three assets as the sole structural plan owners and remove mutable lifecycle state from copied plan structure through an atomic contract-and-consumer migration.
 - Measure the portable and governed loaded profiles separately from the main file and total package.
@@ -24,7 +24,7 @@ The optimization must preserve what makes `plan` valuable: requirement and archi
 
 ## Non-goals
 
-- Do not change the purpose of execution plans, lifecycle stage order, plan-review authority, implementation authorization, workflow continuation, or final-closeout semantics.
+- Do not change the purpose of execution plans, lifecycle stage order, plan-review authority, implementation authorization, workflow continuation, or final-closeout semantics except for moving the existing one-time `planned_work` initialization from pre-review plan authoring to the approved-plan settlement boundary.
 - Do not let a mapped reference become an independent lifecycle or policy owner.
 - Do not optimize `plan-review`, `test-spec`, `implement`, or another skill in this change except for directly coupled consumers that must migrate away from mutable plan-body state.
 - Do not create a generic planning engine, router, scheduler, state store, new lifecycle schema, fourth asset, or additional output template.
@@ -53,6 +53,8 @@ The historical assets-first plan pilot deliberately prohibited references for th
 
 The current Constitution and `specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md` establish that plan bodies carry stable intent and `change.yaml` owns mutable milestone state. The current `assets/milestone.md`, workflow parsers, lifecycle synchronization code, tests, and fixtures still treat a plan-body `Milestone state` line as a compatibility surface. The proposal therefore includes a bounded atomic migration: remove mutable state and execution-progress checklist fields from the canonical milestone asset, move every live consumer to `change.yaml`, and update incidental fixtures instead of preserving an obsolete second state owner.
 
+The current lifecycle contract initializes `planned_work` before `plan-review`. That ordering is incompatible with immutable live state when review requests milestone changes. This proposal explicitly amends the directly coupled lifecycle, workflow, skill-contract, validation, and fixture clauses so initialization occurs only from a clean review-settled plan identity. It preserves `plan` as the derivation owner and `workflow` as the owner of every later transition.
+
 ## Initial intent preservation
 
 | Initial user goal | Proposal treatment | Where recorded |
@@ -71,7 +73,8 @@ The current Constitution and `specs/stage-owned-lifecycle-artifacts-and-change-l
 | Preserve checked boundary-first loading. | same-slice dependency | Boundary activation and raw-byte parity are compatibility surfaces |
 | Retain exactly three structural assets. | same-slice dependency | Existing assets already provide the correct structural ownership model |
 | Remove mutable milestone state from the milestone asset. | same-slice dependency | Current higher-priority lifecycle ownership forbids a second mutable state owner |
-| Migrate parsers, validators, and fixtures to `change.yaml`. | same-slice dependency | Required for an atomic compatibility-safe asset correction |
+| Migrate parsers, validators, and fixtures to `change.yaml`. | same-slice dependency | Required for an atomic read-old/write-new asset correction |
+| Amend pre-review `planned_work` initialization to post-approval initialization. | same-slice dependency | Prevents plan-review revision from diverging from live milestone state |
 | Add deterministic preservation and package proof. | same-slice dependency | Required for a safe published-package change |
 | Record a bounded architecture assessment. | same-slice dependency | Confirms whether the existing package and lifecycle models remain sufficient |
 | Optimize adjacent skills. | out of scope | Each skill requires its own evidence and ownership decision |
@@ -123,14 +126,32 @@ skills/plan/
 
 ### Invocation classification and resource loading
 
-Use two independent predicates:
+Use two independent context predicates:
 
 | Predicate | Meaning |
 | --- | --- |
-| `governed_change_context` | One exact current change, plan artifact identity, valid `lifecycle_contract: stage-owned-change-local-v1`, settled prerequisites, and plan-authoring authority are resolved. |
+| `governed_change_context` | One exact current change, valid `lifecycle_contract: stage-owned-change-local-v1`, settled prerequisites, plan-authoring authority, and deterministic canonical plan location are resolved. A pre-existing plan identity is not required for creation. |
 | `boundary_first_context` | The existing checked boundary contract or cited approved boundary evidence requires detailed interpretation for the plan. |
 
 Conversational wording, a plan path, or the existence of any `change.yaml` does not establish governed authority. Missing, stale, contradictory, mismatched, or ambiguous identity stops before governed writes. A missing change record routes to `workflow` for creation or migration; `plan` does not invent governed state.
+
+Classify governed plan operation independently with exactly these values:
+
+```text
+create-primary-plan
+revise-primary-plan
+```
+
+| Operation | Plan entry | Canonical plan file | Required identity | Result |
+| --- | --- | --- | --- | --- |
+| `create-primary-plan` | absent | absent | deterministic intended normalized path | May create the candidate plan and matching entry. |
+| `revise-primary-plan` | present | present | current matching artifact identity | May revise under a legal plan-authoring transition. |
+| Conflict | absent | present | none | Stop before write. |
+| Conflict | present | absent | none | Stop before write. |
+| Conflict | present and file present but identities differ | stale or mismatched | Stop before write. |
+| Conflict | multiple primary plan entries or candidates | ambiguous | Stop before write. |
+
+Creation resolves the exact change and intended path, confirms absence of a conflicting file and entry, writes the candidate plan, computes its content identity, and only then finalizes the matching plan entry and authoring transition. Revision requires a current matching entry and file identity before mutation. Interrupted identical creation reconciles idempotently; conflicting path or identity reuse stops.
 
 Use exactly four loaded-resource profiles:
 
@@ -154,7 +175,7 @@ Keep inline:
 - requirement and architecture traceability;
 - plan-body stability, state ownership, artifact placement, and index-link rules;
 - milestone decomposition, independently closeable slices, dependencies, proof timing, validation, risk, rollback, recovery, and lifecycle-closeout milestone kind;
-- the universal rule that `plan` may initialize missing primary-plan `planned_work` exactly once under governed authority and may never replace or update existing `planned_work`;
+- the universal rule that a plan-owned governed initializer may initialize missing primary-plan `planned_work` exactly once from the clean review-settled plan identity and may never replace or update existing `planned_work`;
 - compact automation-aware planning obligations without the state mutation procedure;
 - the checked four-question boundary scan, upstream gap routing, plan-specific boundary mapping, and exact reference triggers;
 - universal stop conditions, claims, readiness-versus-Done distinction, result shape, and `plan-review` handoff.
@@ -166,15 +187,25 @@ Consolidate repeated sections so each rule has one owner. Merge purpose and use 
 `references/governed-plan-authoring.md` loads exactly when `governed_change_context` is true. It owns only governed procedure:
 
 - complete `change.yaml` inspection and exact plan-entry resolution;
-- plan-entry creation and `authoring` to `review-required` transitions;
+- closed `create-primary-plan` and `revise-primary-plan` classification, conflict detection, plan identity computation, plan-entry creation, and `authoring` to `review-required` transitions;
 - authoring-evidence placement and completion fields;
-- one-time deterministic `planned_work` initialization from ordered stable milestone definitions, including required initial values;
+- post-approval one-time deterministic `planned_work` initialization from the approved ordered stable milestone definitions and approving `plan-review` identity, including required initial values;
 - the prohibition on replacing or updating existing `planned_work`;
 - idempotent retry, collision, concurrent-write, illegal-transition, stale-evidence, and failed-validation handling.
 
-The reference grants no authority merely because it is loaded. Manual and workflow-managed plan authoring use the same governed procedure and the same plan-owned write set. Under workflow-managed execution, `plan` may consume current authorization and emit only its ordinary plan artifact, authoring evidence, matching artifact transition, and permitted one-time initialization. It stops after the plan entry is `review-required` and reports `plan-review` as the handoff.
+The reference grants no authority merely because it is loaded. Manual and workflow-managed plan authoring use the same governed procedure and the same plan-owned write set. During authoring, `plan` emits only its plan artifact, authoring evidence, and matching artifact transition. It does not initialize live `planned_work` from an unapproved draft. It stops after the plan entry is `review-required` and reports `plan-review` as the handoff.
 
-`plan-review` alone owns review evidence and settlement. `workflow` alone owns automation packets or receipts, routing, continuation, and every later `planned_work` transition. The reference must not own milestone design, stage order, review settlement, automation evidence, post-review return, later planned-work transitions, workflow continuation, or implementation authorization. Any contradiction with inline universal policy is a package defect and stops dependent work.
+`plan-review` alone owns review evidence and settlement. After a clean review settles the exact plan identity, `workflow` may coordinate a bounded call to the plan-owned initializer before implementation routing. The initializer requires the approved current plan identity, approving review identity, no open plan-review resolution, no existing `planned_work`, ordered unique milestone IDs, valid kinds, and all required stable milestone fields. It derives and writes only the missing initial `planned_work` object. This is a plan-owned derivation operation, not a new lifecycle stage and not review settlement.
+
+Repeating initialization with the identical approved plan and review basis is an idempotent no-op. Existing `planned_work` with a different identity, order, kind, or milestone structure blocks; `plan` never replaces or mutates it. `workflow` alone owns automation packets or receipts, routing, continuation, and every transition after initialization. The reference must not own milestone design, stage order, review settlement, automation evidence, post-review return, later planned-work transitions, workflow continuation, or implementation authorization.
+
+The downstream spec must amend the current pre-review initialization requirements and every directly coupled skill, workflow, validation, and fixture consumer. It must not claim both old initialization timing and the new review-settled baseline are simultaneously normative.
+
+### Plan baseline settlement and replan
+
+A plan remains editable during authoring, plan-review, and review-resolution. Once clean review settlement and one-time initialization bind the plan identity, milestone ID, order, kind, completion criteria, and required evidence form the settled execution baseline.
+
+A later edit that changes any baseline field is a governed replan, not ordinary authoring. The first version stops and routes that change to an explicit workflow-owned replan or lifecycle-state migration contract; it does not mutate, delete, or reconstruct existing `planned_work`. Non-substantive corrections may preserve the baseline only when the governing staleness contract says the approved identity and semantics remain valid.
 
 ### Boundary reference ownership
 
@@ -211,7 +242,26 @@ commit boundary when useful
 
 Remove mutable `Milestone state` and execution-progress closeout checkboxes from the plan asset. Actual command outcomes, validation progress, implementation progress, commit completion, current blockers, current review status, milestone state, and closeout readiness live only in `change.yaml` or stage-owned evidence.
 
-The downstream spec must inventory every literal and parser consumer, classify it as normative, parser/package, incidental test, or obsolete, and migrate live state reads to the owning `change.yaml#workflow_state.planned_work`. Parser or schema consumers migrate atomically; incidental fixtures update instead of preserving obsolete prose. Historical plans may retain embedded state as historical evidence but never as current authority. No compatibility adapter may recreate mutable plan-body state as a second source of truth.
+The downstream spec must inventory every literal and parser consumer, classify it as normative, parser/package, incidental test, obsolete, or historical fixture, and migrate live state reads to the owning `change.yaml#workflow_state.planned_work`. Parser or schema consumers migrate atomically; incidental fixtures update instead of preserving obsolete prose.
+
+### Milestone-format compatibility
+
+The migration is read-old/write-new. `lifecycle_contract: stage-owned-change-local-v1` is the activation marker for current-state authority; this simplification adds no new schema solely to select the format.
+
+| Plan/change condition | Required behavior |
+| --- | --- |
+| New plan under the active lifecycle contract | Write only the new stable-intent milestone structure. |
+| Existing active plan with old embedded state and complete `planned_work` | Read stable intent from the plan, read all current state from `change.yaml`, and ignore embedded state for authority. |
+| Historical terminal plan | Preserve unchanged; embedded state remains historical text. |
+| Portable or non-governed plan | Read as documentation and never infer governed current state. |
+| Active governed plan with old state but missing or incomplete `planned_work` | Stop and route to explicit workflow-owned migration. |
+| Plan milestone IDs or kinds conflict with `planned_work` | Stop. |
+| Reader encounters old or new stable fields | Accept structurally where compatible and apply the authority rules above. |
+| Writer emits or substantially revises a current plan | Emit the new format only. |
+
+Do not synchronize `change.yaml` state back into a plan body. Do not infer, initialize, or repair `change.yaml` from historical plan-body state. Historical embedded state never overrides authoritative `planned_work`, and historical plans are not rewritten merely to adopt the new asset. An active old-format plan without complete authoritative state blocks rather than being guessed into compliance.
+
+Treat `Milestone state` initially as a parser-or-package compatibility dependency. After every live parser and current-state consumer uses `change.yaml`, reclassify remaining occurrences as historical fixtures, incidental tests, or obsolete as supported by evidence. No compatibility adapter may recreate mutable plan-body state as a second source of truth.
 
 ### Semantic preservation and literal compatibility
 
@@ -262,10 +312,12 @@ The completed historical assets-first pilot's 15 percent token target and packag
 ## Expected Behavior Changes
 
 - Ordinary customer-project planning loads a shorter universal planning contract and the applicable structural assets without RigorLoop-specific mutation procedure.
-- Governed planning loads one additional plan-owned procedure only after exact stage authority is established.
+- Governed planning loads one additional plan-owned procedure after exact change authority is established and separately classifies new-plan creation or existing-plan revision.
 - Manual and workflow-managed plan authoring use the same plan-owned writes; `workflow` retains automation and continuation, and `plan-review` retains review settlement.
 - Boundary detail loads only under the existing checked activation contract or when approved boundary evidence requires interpretation.
-- New plan bodies retain stable completion criteria, required evidence, and review handoff but no longer copy mutable milestone state or execution-progress fields; authoritative current state remains in `change.yaml`.
+- Draft and revised plans request plan-review without initializing live `planned_work`; clean settlement enables one idempotent plan-owned initialization from the approved plan identity.
+- New plan bodies retain stable completion criteria, required evidence, and review handoff but no longer copy mutable milestone state or execution-progress fields; old plans remain readable, and authoritative current state remains in `change.yaml`.
+- Post-initialization changes to settled milestone definitions stop and route to governed replan or migration.
 - Existing plan quality, milestone sequencing, validation, rollback, claim, and handoff behavior remains unchanged.
 - A missing required conditional resource stops dependent work instead of triggering remembered or partial procedure.
 
@@ -282,16 +334,16 @@ The owning `change.yaml` for this simplification remains the owner of its archit
 Use three proof classes:
 
 1. Deterministic structural and package proof validates frontmatter, required compact sections, closed vocabularies, resource-map grammar, exact asset count, asset metadata and fingerprints, mapped-resource existence, placeholder absence, canonical/generated/archive/install parity, and fail-closed unknown values.
-2. Static contract fixtures cover all four resource profiles, manual and workflow-managed execution authority, exact governed authority, plan-owned write boundaries, new-plan initialization, existing `planned_work`, ambiguous identity, boundary activation, late triggers, missing resources, stable milestone completion structure, lifecycle-closeout distinction, parser migration, result claims, and handoff behavior.
+2. Static contract fixtures cover all four resource profiles, manual and workflow-managed execution authority, exact governed authority, create versus revise operation, absent/present asymmetry, multiple candidates, identity mismatch, approved-plan initialization, plan-review revision before initialization, identical retry, existing inconsistent `planned_work`, post-initialization replan routing, boundary activation, late triggers, missing resources, stable milestone completion structure, lifecycle-closeout distinction, old/new read compatibility, active legacy missing-state failure, no reverse synchronization, result claims, and handoff behavior.
 3. Independent semantic review checks trigger clarity, source alignment, milestone quality, requirement coverage, sequencing, validation, recovery, lifecycle ownership, stops, claims, output usefulness, and preservation-ledger completeness.
 
 Do not execute Codex, Claude Code, opencode, or another target-agent runtime for implementation, verification, or release acceptance. Do not add prompt journeys, transcript grading, model-selection fixtures, permanent simplicity checks, or a new validator family. Extend existing skill, asset, lifecycle, workflow, package, and adapter checks only where they already own the affected contract.
 
 ## Rollout and Rollback
 
-Roll out the canonical package, direct contract amendments, parser migration, deterministic fixtures, and generated package resources atomically. Validate canonical source first, then generated staging, packed release candidates, and clean installed targets. Mixed resource versions, missing mapped references, stale asset fingerprints, or any remaining live plan-body milestone-state dependency block rollout.
+Roll out the canonical package, pre-review-to-post-approval initialization contract amendments, parser migration, deterministic fixtures, and generated package resources atomically. Validate canonical source first, then generated staging, packed release candidates, and clean installed targets. Mixed resource versions, missing mapped references, stale asset fingerprints, any new writer emitting mutable plan-body state, or any live current-state consumer relying on plan-body `Milestone state` blocks rollout.
 
-Rollback reverts the canonical skill, reference, assets, directly coupled parser changes, fixtures, and generated package state together. Because the change introduces no new persistent format and moves live state reads to an existing authoritative field, no data migration rollback is expected. Historical plans remain readable evidence; they are not rewritten merely to remove old embedded state fields.
+Rollback reverts the canonical skill, reference, assets, initialization-timing contract amendments, directly coupled parser changes, fixtures, and generated package state together. Historical plans remain readable evidence and are not rewritten. Any active governed old-format plan with incomplete authoritative state is an explicit migration case before rollout, not data silently inferred during either rollout or rollback.
 
 ## Risks and Mitigations
 
@@ -299,10 +351,13 @@ Rollback reverts the canonical skill, reference, assets, directly coupled parser
 | --- | --- |
 | Universal plan quality is hidden behind a reference. | Keep milestone design, traceability, validation, recovery, stops, claims, and handoff inline; use the rule ledger and semantic review. |
 | Loading the governed reference is mistaken for write authority. | Require exact identity and lifecycle evidence; state that loading grants no authority; test false and ambiguous cases. |
+| New plan creation requires a nonexistent identity. | Separate governed authority from create/revise operation and compute identity before finalizing the entry. |
 | Plan absorbs automation or plan-review ownership. | Keep execution mode separate from package loading and preserve workflow and plan-review as the exclusive owners of their evidence and continuation. |
-| One-time `planned_work` initialization is weakened or duplicated. | Preserve the universal ownership rule inline, keep the exact procedure in one reference, and add initialization and existing-state fixtures. |
+| One-time `planned_work` initialization is weakened, premature, or duplicated. | Initialize only from clean review-settled identities, preserve plan ownership, make identical retry a no-op, and block existing mismatch. |
+| A post-initialization edit silently changes the execution baseline. | Treat changed milestone definitions as governed replan or migration and prohibit ordinary mutation of existing `planned_work`. |
 | Milestone cleanup removes stable exit criteria. | Retain completion criteria, required evidence, review handoff, and milestone kind while moving only runtime progress and state. |
 | Removing `Milestone state` breaks parsers or old plans. | Inventory every consumer, migrate live reads atomically to `change.yaml`, retain historical-plan readability, and test both current and historical inputs. |
+| Active old-format plans have incomplete authoritative state. | Block and require explicit workflow-owned migration; never infer current state from plan prose. |
 | Content is merely relocated and the common governed profile does not improve. | Require measured reductions for both `PL0` and `PL1`, plus separate total-package reporting. |
 | Variable asset use makes measurements non-repeatable. | Exclude assets from procedural profiles and use one fixed representative structural assembly plus a decision-row delta. |
 | Boundary activation gains a second owner. | Preserve the checked activation contract and make `plan` only a consumer. |
@@ -326,6 +381,10 @@ None. The downstream specification must inventory exact parser consumers and gov
 | 2026-08-13 | Keep automation and post-review continuation outside `plan`. | Execution mode does not change plan-owned writes; workflow and plan-review retain their stage authority. | Plan-owned automation receipts or post-review return |
 | 2026-08-13 | Preserve stable milestone completion fields while removing mutable progress. | Plans need durable exit and proof intent without becoming a second current-state owner. | Removing the entire closeout concept or retaining mutable checkboxes |
 | 2026-08-13 | Separate procedural profile metrics from structural asset metrics. | Exact resource assemblies must be repeatable regardless of milestone or decision count. | Variable applicable-asset totals |
+| 2026-08-13 | Classify governed plan creation separately from revision. | New plan creation needs change authority and an intended path, not a pre-existing plan identity. | One predicate requiring existing identity for every governed operation |
+| 2026-08-13 | Initialize live `planned_work` only from a clean review-settled plan identity. | Review-driven milestone revisions must complete before immutable live state is derived. | Pre-review initialization or implicit reconciliation |
+| 2026-08-13 | Use read-old/write-new milestone compatibility. | New plans must have one state owner while historical evidence remains readable. | Rewrite history, dual current-state authority, or reverse synchronization |
+| 2026-08-13 | Treat post-initialization baseline changes as governed replan. | Ordinary authoring cannot safely mutate settled milestone definitions or existing live state. | Silent replacement or drift |
 
 ## Next Artifacts
 
