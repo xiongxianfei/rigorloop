@@ -10,6 +10,7 @@ Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
 Review closeout: spec-review-r1
 Review closeout: architecture-review-r1
+Review closeout: spec-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
 - Findings resolved: 9
@@ -35,6 +36,10 @@ Review closeout: architecture-review-r1
 ### architecture-review-r1
 
 No material findings. The clean review approved the canonical architecture update and accepted the successor ADR.
+
+### spec-review-r2
+
+No material findings. The clean rereview approved the corrected example ownership metadata without changing the feature contract.
 
 ### spec-review-r1
 
