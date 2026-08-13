@@ -20,7 +20,7 @@ artifact_states:
     kind: spec
     path: specs/test-spec-skill-simplification.md
     role: primary
-    lifecycle_state: authoring
+    lifecycle_state: review-required
     authoring_evidence: docs/changes/2026-08-13-test-spec-skill-simplification/evidence/spec-authoring.md
 
 workflow_state:
