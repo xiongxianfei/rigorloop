@@ -176,3 +176,9 @@ No material findings; no resolution entry required. The milestone review approve
 Review closeout: code-review-M2-r1
 
 No material findings; no resolution entry required. The milestone review approved the simplified package, governed transaction, structural assets, coupled tests, and M2 validation evidence.
+
+### code-review-M3-r1
+
+Review closeout: code-review-M3-r1
+
+No material findings; no resolution entry required. The milestone review approved profile reduction, semantic preservation, boundary proof, and canonical-through-installed package parity.
