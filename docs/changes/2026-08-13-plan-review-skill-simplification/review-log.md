@@ -1,0 +1,20 @@
+# Review Log: Plan-Review Skill Simplification
+
+## Scope
+
+This ledger records formal lifecycle reviews for the plan-review skill simplification change.
+
+## Detailed review entries
+
+### Review entry
+
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: r1
+Reviewed artifact: `docs/proposals/2026-08-13-plan-review-skill-simplification.md` at commit `6305460b`
+Status: changes-requested
+Detailed record: reviews/proposal-review-r1.md
+Resolution: review-resolution.md#proposal-review-r1
+Material findings: PRVSIM-PR1, PRVSIM-PR2, PRVSIM-PR3
+Open findings: PRVSIM-PR1, PRVSIM-PR2, PRVSIM-PR3
+Recording status: recorded
