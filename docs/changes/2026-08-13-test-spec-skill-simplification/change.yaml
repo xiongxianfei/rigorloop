@@ -1,0 +1,48 @@
+change_id: 2026-08-13-test-spec-skill-simplification
+title: Test-Spec Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-13-test-spec-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-13-test-spec-skill-simplification/evidence/proposal-authoring.md
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/proposal-authoring.md
+
+workflow: {}
+
+artifacts:
+  proposal: docs/proposals/2026-08-13-test-spec-skill-simplification.md
+
+requirements:
+  - Reduce portable and governed test-spec procedural context while preserving proof rigor, boundary-first behavior, lifecycle isolation, and handoff authority.
+  - Give universal proof policy, governed authoring procedure, boundary guidance, and structural output one explicit owner each.
+  - Preserve the required initial boundary resources and eliminate duplicated stage-local boundary procedure and asset-owned structures.
+  - Prove semantic preservation, literal compatibility, profile reduction, failure behavior, and package parity without target-agent runtime execution.
+
+tests:
+  - Independent semantic review of the proposal and final skill package.
+  - Deterministic validation of operations, authority, resource profiles, closed vocabularies, assets, stops, and package parity.
+  - Static scenarios covering portable and governed creation and revision, boundary proof, commands, milestones, gaps, missing resources, and forbidden writes.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-13-test-spec-skill-simplification/change.yaml
+  - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-13-test-spec-skill-simplification.md
+
+review:
+  status: review-requested
+  unresolved_items: 0
