@@ -447,35 +447,59 @@ def _selected_fields(path: Path, labels: set[str] | frozenset[str]) -> dict[str,
     }
 
 
-def _milestone_state(path: Path, milestone_id: str) -> str | None:
-    lines = path.read_text(encoding="utf-8").splitlines()
-    header = re.compile(rf"^###\s+{re.escape(milestone_id)}\.\s+")
-    matching_indices = [
-        index for index, line in enumerate(lines) if header.match(line) is not None
-    ]
-    if len(matching_indices) != 1:
-        return None
-    index = matching_indices[0]
-    states: list[str] = []
-    for candidate in lines[index + 1 :]:
-        if candidate.startswith(("### ", "## ")):
-            break
-        match = re.match(
-            r"^-\s+Milestone state:\s*(?P<state>[a-z-]+)\s*$",
-            candidate.strip(),
-        )
-        if match is not None:
-            states.append(match.group("state"))
-    if len(states) != 1:
-        return None
-    handoff, errors = parse_handoff_summary(path.read_text(encoding="utf-8"))
-    if handoff is None or errors:
-        return None
-    if handoff.current_milestone.startswith(f"{milestone_id}.") and (
-        handoff.current_milestone_state != states[0]
-    ):
-        return None
-    return states[0]
+def _milestone_state_from_change_metadata(
+    repository_root: Path,
+    plan_path: Path,
+    milestone_id: str,
+) -> tuple[str | None, bool]:
+    """Read live milestone state from the one change record owning ``plan_path``.
+
+    The Boolean reports whether a unique owning change was found. Historical
+    plan text is deliberately not a fallback for governed current state.
+    """
+
+    try:
+        plan_relative = plan_path.resolve().relative_to(repository_root.resolve()).as_posix()
+    except ValueError:
+        return None, False
+    owners: list[dict[str, Any]] = []
+    parser = _load_metadata_parser()
+    for metadata_path in sorted((repository_root / "docs" / "changes").glob("*/change.yaml")):
+        try:
+            lines = parser.tokenize_yaml(metadata_path.read_text(encoding="utf-8"))
+            if not lines:
+                continue
+            document, index = parser.parse_yaml_block(lines, 0, lines[0].indent)
+        except (OSError, UnicodeError, ValueError):
+            continue
+        if index != len(lines) or not isinstance(document, dict):
+            continue
+        artifacts = document.get("artifact_states")
+        if not isinstance(artifacts, dict):
+            continue
+        if any(
+            isinstance(entry, dict)
+            and entry.get("kind") == "plan"
+            and entry.get("path") == plan_relative
+            for entry in artifacts.values()
+        ):
+            owners.append(document)
+    if len(owners) != 1:
+        return None, False
+    workflow_state = owners[0].get("workflow_state")
+    planned_work = (
+        workflow_state.get("planned_work")
+        if isinstance(workflow_state, dict)
+        else None
+    )
+    milestones = (
+        planned_work.get("milestones")
+        if isinstance(planned_work, dict)
+        else None
+    )
+    milestone = milestones.get(milestone_id) if isinstance(milestones, dict) else None
+    state = milestone.get("state") if isinstance(milestone, dict) else None
+    return (state if isinstance(state, str) else None), True
 
 
 def _review_applicability(
@@ -678,17 +702,16 @@ def _verify_implementation_stage_completion(
         except StateContractError:
             return None, "stage-native-implementation-invalid"
         plan = resolved_evidence["plan-handoff"][1]
-        handoff, errors = parse_handoff_summary(plan.read_text(encoding="utf-8"))
+        milestone_state, has_governed_owner = _milestone_state_from_change_metadata(
+            repository_root, plan, str(milestone_id)
+        )
         if (
             not isinstance(milestone_id, str)
             or validation.get("Stage") != "implement"
             or validation.get("Milestone") != milestone_id
             or validation.get("Result") != "passed"
-            or handoff is None
-            or errors
-            or not handoff.current_milestone.startswith(f"{milestone_id}.")
-            or handoff.current_milestone_state != "review-requested"
-            or _milestone_state(plan, milestone_id) != "review-requested"
+            or not has_governed_owner
+            or milestone_state != "review-requested"
         ):
             return None, "stage-native-implementation-invalid"
         return {
@@ -718,12 +741,16 @@ def _verify_implementation_stage_completion(
             resolution_path=resolution_path,
             repository_root=repository_root,
         )
+        milestone_state, has_governed_owner = _milestone_state_from_change_metadata(
+            repository_root, plan, milestone_id
+        )
         if (
             review.stage != "code-review"
             or review.status not in {"approved", "clean-with-notes"}
             or not reviewed_milestone.startswith(milestone_id)
             or resolution_status not in {"not-required", "closed"}
-            or _milestone_state(plan, milestone_id) != "closed"
+            or not has_governed_owner
+            or milestone_state != "closed"
         ):
             return None, "stage-native-code-review-invalid"
         return {

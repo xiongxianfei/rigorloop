@@ -296,6 +296,47 @@ class WorkflowAutomationEngineTests(unittest.TestCase):
         )
         return WorkflowAutomationStateStore(path)
 
+    def write_plan_state_owner(
+        self,
+        store: WorkflowAutomationStateStore,
+        *,
+        plan_path: str,
+        milestone_id: str,
+        milestone_state: str,
+    ) -> None:
+        metadata = (
+            store.repository_root
+            / "docs/changes/2026-07-20-plan-state/change.yaml"
+        )
+        metadata.parent.mkdir(parents=True, exist_ok=True)
+        metadata.write_text(
+            dump_yaml(
+                {
+                    "change_id": "2026-07-20-plan-state",
+                    "lifecycle_contract": "stage-owned-change-local-v1",
+                    "artifact_states": {
+                        "plan": {
+                            "kind": "plan",
+                            "path": plan_path,
+                            "role": "primary",
+                            "lifecycle_state": "active",
+                        }
+                    },
+                    "workflow_state": {
+                        "planned_work": {
+                            "milestones": {
+                                milestone_id: {
+                                    "kind": "implementation",
+                                    "state": milestone_state,
+                                }
+                            }
+                        }
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+
     def write_verification_readiness_evidence(
         self,
         store: WorkflowAutomationStateStore,
@@ -5806,6 +5847,12 @@ Open findings: None
                     next_stage="code-review M2",
                 ),
             )
+            self.write_plan_state_owner(
+                store,
+                plan_path=plan_relative.as_posix(),
+                milestone_id="M2",
+                milestone_state="review-requested",
+            )
             return StageExecutionResult(
                 (implementation, validation, plan),
                 {
@@ -5974,6 +6021,12 @@ Open findings: None
                     next_stage="implement M3",
                     milestone_two_state="closed",
                 ),
+            )
+            self.write_plan_state_owner(
+                store,
+                plan_path="docs/plans/m5-review-plan.md",
+                milestone_id="M2",
+                milestone_state="closed",
             )
             return StageExecutionResult(
                 (review, review_log, plan),

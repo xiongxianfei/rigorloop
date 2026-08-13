@@ -613,9 +613,9 @@ This alignment requires `test-spec-review` before M1 relies on it.
 - Automation location:
   - Manual review during M1/M2 and final M4 change-local evidence review.
 
-### T24. Workflow handoff and stage-owned authority stay distinct
+### T24. Workflow handoff, reviewed-plan initialization, and stage-owned authority stay distinct
 
-- Covers: `R7c`-`R7w`
+- Covers: `R7c`-`R7xr`
 - Level: manual, integration
 - Fixture/setup:
   - `docs/workflows.md`
@@ -633,6 +633,8 @@ This alignment requires `test-spec-review` before M1 relies on it.
   - Confirm `plan-review` preserves `test-spec` as the immediate next handoff.
   - Confirm `implement`, `code-review`, `verify`, and `pr` each use only their owned readiness language.
   - Confirm branch-scoped clean review or branch-ready claims require tracked governing authority and direct proof for named edge cases.
+  - Confirm new governed plans reach `review-required` without `planned_work`, clean review records `initialization-required`, plan-owned initialization records the review basis, and identical plan-review settlement retry activates the plan without repeating judgment.
+  - Confirm new writers omit mutable plan state, governed readers use `change.yaml`, compatible history remains readable, and incomplete or conflicting active history routes to explicit migration.
 - Expected result:
   - Stage outputs cannot skip required handoffs or claim authority owned by a later stage.
 - Failure proves:
