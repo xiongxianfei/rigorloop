@@ -7,9 +7,9 @@ Closeout status: open
 Review closeout: proposal-review-r3
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
-- Findings resolved: 6
-- Unresolved findings: 3
-- Current result: proposal revision required
+- Findings resolved: 9
+- Unresolved findings: 0
+- Current result: ready for independent proposal rereview
 
 ## Resolution overview
 
@@ -21,9 +21,9 @@ Review closeout: proposal-review-r3
 | `PLSIM-PR4` | accepted | closed | Governed authority and closed create/revise operations are classified independently. |
 | `PLSIM-PR5` | accepted | closed | Plan-owned initialization now binds to clean review-settled plan and review identities. |
 | `PLSIM-PR6` | accepted | closed | Milestone migration is read-old/write-new with change-local state as sole active authority. |
-| `PLSIM-PR7` | needs-decision | open | Post-review initialization requires legal temporary states and settlement retry sequencing. |
-| `PLSIM-PR8` | needs-decision | open | Stable plan identity and reviewed revision identity need one explicit representation. |
-| `PLSIM-PR9` | needs-decision | open | The lifecycle-order change requires architecture and ADR updates. |
+| `PLSIM-PR7` | accepted | closed | Clean review evidence, plan-owned initialization, and identical settlement retry now form one closed transaction. |
+| `PLSIM-PR8` | accepted | closed | Stable artifact metadata and existing review revision evidence define identity without hashes. |
+| `PLSIM-PR9` | accepted | closed | Canonical architecture updates and a narrow successor ADR are required in this change. |
 
 ## Finding details
 
@@ -132,47 +132,47 @@ Validation evidence: `evidence/proposal-revision-r2.md`; revised Asset ownership
 #### PLSIM-PR7
 
 Finding ID: PLSIM-PR7
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Define the evidence-first initialization and settlement transaction.
-Chosen action: pending proposal revision
+Chosen action: Add `initialize-approved-plan`, legal temporary states, clean evidence before initialization, and identical settlement retry without rerunning judgment.
 Rationale: The current primary-plan/planned-work invariant does not permit the proposed intermediate states.
 Required outcome: Close legal combinations, invocation ownership, retry, failure, and routing behavior.
 Safe resolution path: Adopt the two-phase review evidence, plan initialization, and settlement retry model in `proposal-review-r3`.
 Validation target: revised state sequence, schema amendment, direct/workflow-managed behavior, failure, and tests plus independent rereview.
-Validation evidence: pending
+Validation evidence: `evidence/proposal-revision-r3.md`; revised Invocation classification, Governed reference ownership, Architecture Impact, Testing and Verification Strategy, Rollout and Rollback, Risks and Mitigations, and Decision Log sections.
 
 #### PLSIM-PR8
 
 Finding ID: PLSIM-PR8
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Select the stable artifact and reviewed revision identity model.
-Chosen action: pending proposal revision
+Chosen action: Use the stable artifact tuple and durable review revision evidence, with no governed-document hash or `content_identity` field.
 Rationale: The proposal's undefined content identity could silently introduce a rejected hash or schema field.
 Required outcome: Define identity through existing artifact and review evidence or explicitly amend architecture.
 Safe resolution path: Use artifact ID/kind/role/path plus review record and reviewed commit, without a new content hash.
 Validation target: revised creation, revision, initialization, compatibility, and architecture sections plus independent rereview.
-Validation evidence: pending
+Validation evidence: `evidence/proposal-revision-r3.md`; revised Invocation classification, Governed reference ownership, Architecture Impact, Testing and Verification Strategy, Risks and Mitigations, and Decision Log sections.
 
 #### PLSIM-PR9
 
 Finding ID: PLSIM-PR9
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Correct the architecture disposition for the selected lifecycle-order change.
-Chosen action: pending proposal revision
+Chosen action: Require canonical architecture updates and a narrow successor ADR while preserving mutable architecture assessment status and pointers in the owning change record.
 Rationale: Current architecture and ADR text explicitly owns the ordering and no-hash decision being changed or relied upon.
 Required outcome: Require canonical architecture and ADR amendment or successor work.
 Safe resolution path: Replace `architecture-not-required` expectation with architecture-update-required and enumerate affected decision surfaces.
 Validation target: revised Architecture Impact, scope budget, rollout, and decision log plus independent rereview.
-Validation evidence: pending
+Validation evidence: `evidence/proposal-revision-r3.md`; revised Scope Budget, Architecture Impact, Testing and Verification Strategy, Rollout and Rollback, Risks and Mitigations, Next Artifacts, and Decision Log sections.
