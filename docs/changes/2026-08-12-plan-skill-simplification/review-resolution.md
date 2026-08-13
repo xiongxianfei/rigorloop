@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
-Review closeout: proposal-review-r1
+Review closeout: proposal-review-r2
 
-- Reviews covered: `proposal-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
 - Findings resolved: 3
-- Unresolved findings: 0
-- Current result: proposal revised and ready for independent rereview
+- Unresolved findings: 3
+- Current result: proposal revision required
 
 ## Resolution overview
 
@@ -18,6 +18,9 @@ Review closeout: proposal-review-r1
 | `PLSIM-PR1` | accepted | closed | Execution mode is separate from loading; plan owns no review, automation, or continuation evidence. |
 | `PLSIM-PR2` | accepted | closed | Stable completion, evidence, and handoff fields remain while mutable progress moves to change-local state. |
 | `PLSIM-PR3` | accepted | closed | Procedural profiles and structural assets now have separate deterministic measurement assemblies. |
+| `PLSIM-PR4` | needs-decision | open | Governed authority must be separated from new-plan creation and existing-plan revision. |
+| `PLSIM-PR5` | needs-decision | open | Live planned-work initialization must bind to an approved plan identity. |
+| `PLSIM-PR6` | needs-decision | open | Old and new milestone structures need a closed read-old/write-new compatibility contract. |
 
 ## Finding details
 
@@ -70,3 +73,53 @@ Required outcome: Separate reference-loaded context from output-structure resour
 Safe resolution path: Adopt the measurement convention recommended by `proposal-review-r1`.
 Validation target: revised profile, measurement, acceptance, and evidence sections plus independent proposal rereview.
 Validation evidence: `evidence/proposal-revision-r1.md`; revised Invocation classification, Simplification measurement, Testing and Verification Strategy, Risks and Mitigations, and Decision Log sections.
+
+### proposal-review-r2
+
+#### PLSIM-PR4
+
+Finding ID: PLSIM-PR4
+Disposition: needs-decision
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Separate governed change authority from plan artifact existence and operation.
+Chosen action: pending proposal revision
+Rationale: A new governed plan cannot require the identity it is meant to create.
+Required outcome: Close create, revise, asymmetry, mismatch, and ambiguity behavior.
+Safe resolution path: Adopt the operation model in `proposal-review-r2` and validate it through static fixtures.
+Validation target: revised classification, governed procedure, failure, and acceptance sections plus independent rereview.
+Validation evidence: pending
+
+#### PLSIM-PR5
+
+Finding ID: PLSIM-PR5
+Disposition: needs-decision
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Settle when and from which identity live `planned_work` is initialized.
+Chosen action: pending proposal revision
+Rationale: Pre-review initialization and immutable later state conflict with review-driven revisions.
+Required outcome: Bind initialization to approved plan and review evidence and define later replan behavior.
+Safe resolution path: Adopt post-approval initialization and direct contract amendment.
+Validation target: revised lifecycle ownership, initialization, replan, testing, and rollout sections plus independent rereview.
+Validation evidence: pending
+
+#### PLSIM-PR6
+
+Finding ID: PLSIM-PR6
+Disposition: needs-decision
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Define old/new milestone-format activation, precedence, and migration failures.
+Chosen action: pending proposal revision
+Rationale: Current consumers cannot migrate safely without a read-old/write-new boundary.
+Required outcome: Close writer, reader, authority, active legacy, historical, conflict, and reverse-synchronization behavior.
+Safe resolution path: Adopt the compatibility matrix in `proposal-review-r2`.
+Validation target: revised compatibility, parser migration, rollout, rollback, and fixture sections plus independent rereview.
+Validation evidence: pending
