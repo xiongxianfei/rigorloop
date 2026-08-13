@@ -9,11 +9,12 @@ Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
 Review closeout: spec-review-r1
+Review closeout: plan-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: proposal and specification approved; bounded architecture assessment required before planning
+- Current result: plan judgment approved; approved-plan initialization and exact settlement retry required
 
 ## Resolution overview
 
@@ -158,3 +159,9 @@ No material findings; no resolution entry required. The same-stage proposal-revi
 Review closeout: spec-review-r1
 
 No material findings; no resolution entry required. The formal review approved the focused package, transaction, boundary, compatibility, and acceptance contract.
+
+### plan-review-r1
+
+Review closeout: plan-review-r1
+
+No material findings; no resolution entry required. The clean initial review approved the exact plan revision and returned `initialization-required` without activating the plan.
