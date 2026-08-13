@@ -18,7 +18,7 @@ The canonical `plan` package now has a shorter self-contained portable contract,
 
 ## Preservation evidence
 
-The rule-disposition ledger accounts for 15 behavior clusters with one destination each. The literal-compatibility inventory classifies 13 exact dependencies separately from semantic rules. Fourteen static scenarios cover valid profiles, operations, missing resources, state ownership, and unknown ledger values. Unknown dispositions and classifications fail closed in focused tests.
+The rule-disposition ledger accounts for 15 behavior clusters with one destination each. The literal-compatibility inventory classifies 13 exact dependencies separately from semantic rules. Fourteen static scenarios cover valid profiles, operations, missing resources, and state ownership. Change-local invalid fixtures prove unknown vocabulary fails before consistency checks and also reject duplicate IDs, missing fields, and inconsistent destinations.
 
 ## Preliminary profile evidence
 
@@ -27,8 +27,8 @@ Measurements use canonical LF-normalized content and count each unique procedura
 | Profile or package | Baseline words | Current words | Baseline bytes | Current bytes | Result |
 | --- | ---: | ---: | ---: | ---: | --- |
 | `PL0` | 2555 | 1988 | 18680 | 14888 | reduced |
-| `PL1` | 2555 | 2442 | 18680 | 18398 | reduced |
-| Total package | 3775 | 3661 | 27886 | 27619 | reduced |
+| `PL1` | 2555 | 2453 | 18680 | 18483 | reduced |
+| Total package | 3775 | 3670 | 27886 | 27704 | reduced |
 
 The governed profile improvement is deliberately smaller because universal safety and planning quality remain inline. Final M3 evidence will record every profile, file identity, and package-chain result.
 
@@ -38,5 +38,7 @@ The governed profile improvement is deliberately smaller because universal safet
 - `python scripts/test-skill-validator.py` — passed; 317 tests, 16 skipped.
 - `python scripts/test-build-skills.py` — passed; 7 tests.
 - `python scripts/build-skills.py --check` — passed.
+
+The M2 correction restored exact stable-artifact and reviewed-revision identity fields, then reran the same four commands successfully.
 
 No target-agent runtime, tokenizer dependency, or permanent simplicity validator was introduced.

@@ -219,7 +219,7 @@ Validation evidence: `evidence/proposal-revision-r3.md`; revised Scope Budget, A
 
 Finding ID: PLSIM-CR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: implement
 Owning stage: implement
 Decision owner: implement
@@ -229,13 +229,13 @@ Rationale: Governed procedure must remain executable without inferring mandatory
 Required outcome: Exact approved identity fields remain explicit while both loaded profiles stay below baseline.
 Safe resolution path: Amend the reference, measure profiles, rerun CMD6-CMD9, and rereview.
 Validation target: PSIM-R011, PSIM-R012, T7, T8, and profile evidence.
-Validation evidence: pending
+Validation evidence: `skills/plan/references/governed-plan-authoring.md` names both exact approved identity tuples; `evidence/m2-plan-package.md` records reduced PL0 and PL1 profiles; CMD6-CMD9 passed after correction.
 
 #### PLSIM-CR2
 
 Finding ID: PLSIM-CR2
 Disposition: accepted
-Status: open
+Status: closed
 Owner: implement
 Owning stage: implement
 Decision owner: implement
@@ -245,4 +245,4 @@ Rationale: Asserting that two values are outside local sets does not exercise th
 Required outcome: Every named invalid fixture fails for its intended reason and unknown vocabulary is checked before consistency.
 Safe resolution path: Extend the existing focused test without adding a permanent validator family.
 Validation target: T7 and CMD7.
-Validation evidence: pending
+Validation evidence: Five invalid fixtures exercise unknown dispositions, unknown classifications, duplicate IDs, missing fields, and inconsistent destinations through `_validate_ledger`; CMD7 passed with 317 tests and 16 skips.

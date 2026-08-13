@@ -1,0 +1,1 @@
+{"rules":[{"rule_id":"PL-RULE-DESTINATION","behavior":"invalid destination","source_locations":["skills/plan/SKILL.md"],"governing_requirements":["PSIM-R029"],"applicable_profiles":["PL0"],"disposition":"retained-inline","destination":"skills/plan/references/governed-plan-authoring.md#Create-primary-plan","preservation_proof":["T7"]}]}

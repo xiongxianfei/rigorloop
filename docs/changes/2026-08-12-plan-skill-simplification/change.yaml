@@ -75,8 +75,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: review-resolution
+  current_stage: implement
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-08-12-plan-skill-simplification/evidence/proposal-authoring.md
@@ -124,7 +124,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: resolution-needed
+        state: review-requested
       M3:
         kind: implementation
         state: planned
@@ -132,14 +132,14 @@ workflow_state:
       - M2
       - M3
     latest_review:
-      status: changes-requested
+      status: review-requested
       stage: code-review
-      round: r1
-      artifact_id: code-review-m2-r1
+      round: r2
+      artifact_id: code-review-m2-r2
       occurrence: milestone
       milestone_id: M2
       evidence:
-        - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r1.md
+        - docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -160,7 +160,7 @@ workflow:
       completion:
         rule: final verify completes with a recorded readiness result
     status: active
-    current_stage: code-review
+    current_stage: implement
     stop_reason: null
     evidence:
       - docs/changes/2026-08-12-plan-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
@@ -266,7 +266,10 @@ changed_files:
   - scripts/test-skill-validator.py
   - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m2-r1.yaml
   - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r1.md
+  - docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-rule-duplicate-id.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-literal-missing-field.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-rule-destination.yaml
 
 review:
   status: changes-requested
-  unresolved_items: 2
+  unresolved_items: 0
