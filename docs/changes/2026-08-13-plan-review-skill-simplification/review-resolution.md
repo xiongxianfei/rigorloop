@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`
-- Findings resolved: 3
-- Unresolved findings: 3
-- Current result: proposal revision required
+- Findings resolved: 6
+- Unresolved findings: 0
+- Current result: proposal revised; independent rereview required
 
 ## Resolution overview
 
@@ -18,9 +18,9 @@ Review closeout: proposal-review-r2
 | `PRVSIM-PR1` | accepted | closed | Candidate evidence now triggers loading, while the reference validates authority or stops without fallback. |
 | `PRVSIM-PR2` | accepted | closed | Semantic review status and transaction result now use separate closed vocabularies and one complete outcome matrix. |
 | `PRVSIM-PR3` | accepted | closed | Every formal result now includes the mandatory durable-recording structural group. |
-| `PRVSIM-PR4` | needs-decision | open | The reviewed-plan operation state machine requires exhaustive transaction outcomes. |
-| `PRVSIM-PR5` | needs-decision | open | Semantic judgment must be structurally optional when a retry performs no review. |
-| `PRVSIM-PR6` | needs-decision | open | Settlement must retain evidence and converge on one deterministic final state. |
+| `PRVSIM-PR4` | accepted | closed | Complete transaction state now selects initial review or retry and closes every pending, matching, active, stale, contradictory, ambiguous, and non-clean result. |
+| `PRVSIM-PR5` | accepted | closed | Universal operation output is separate from semantic judgment, which appears only when performed or safely reused. |
+| `PRVSIM-PR6` | accepted | closed | Settlement retains all basis evidence and uses one identity-checked, idempotent compare-and-set transition. |
 
 ## Finding details
 
@@ -79,47 +79,47 @@ Validation evidence: `evidence/proposal-revision-r1.md`; revised Structural asse
 #### PRVSIM-PR4
 
 Finding ID: PRVSIM-PR4
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Close the complete reviewed-plan operation state machine.
-Chosen action: Pending proposal revision.
+Chosen action: Select operation from complete transaction state, classify every same-tuple invocation after one exact clean review as retry, and define the complete deterministic matrix.
 Rationale: The current classifier can duplicate semantic review while initialization is pending and does not close contradictory or already-settled states.
 Required outcome: Define deterministic initial-review and settlement-retry selection and every pending, matching, active, stale, contradictory, ambiguous, non-clean, and recording-blocked result.
 Safe resolution path: Adopt the exhaustive state model from `proposal-review-r2`, including retry classification before initialization, idempotent active settlement, and distinct non-clean effects.
 Validation target: revised classification, state matrix, scenarios, acceptance criteria, and independent proposal rereview.
-needs-decision rationale: The proposal author must incorporate the state model before this finding can close.
+Validation evidence: `evidence/proposal-revision-r2.md`; revised Invocation and operation classification, closed matrix, Expected Behavior Changes, Testing and Verification Strategy, Risks and Mitigations, Acceptance Criteria, and Decision Log sections.
 
 #### PRVSIM-PR5
 
 Finding ID: PRVSIM-PR5
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Separate transaction output from semantic-judgment applicability.
-Chosen action: Pending proposal revision.
+Chosen action: Replace the universal status-bearing core with a universal operation group and a conditional performed-or-reused semantic-judgment group.
 Rationale: A retry that performs no semantic review cannot truthfully emit a newly selected review status.
 Required outcome: Make the operation group universal and the judgment group conditional on performed or safely reused judgment.
 Safe resolution path: Adopt the grouped asset contract from `proposal-review-r2`, including judgment omission for unresolved invalid retries.
 Validation target: revised asset model, expected behaviors, scenarios, acceptance criteria, and independent proposal rereview.
-needs-decision rationale: The proposal author must close result applicability before this finding can close.
+Validation evidence: `evidence/proposal-revision-r2.md`; revised Structural assets, Expected Behavior Changes, Testing and Verification Strategy, Acceptance Criteria, and Decision Log sections.
 
 #### PRVSIM-PR6
 
 Finding ID: PRVSIM-PR6
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Select one settlement evidence policy and final state.
-Chosen action: Pending proposal revision.
+Chosen action: Retain authoring, review, and initialization evidence and use one identity-bound compare-and-set settlement sequence.
 Rationale: Optional evidence deletion makes successful settlement and interrupted recovery nondeterministic.
 Required outcome: Retain authoring, review, and initialization evidence and define one identity-checked, idempotent entry transition.
 Safe resolution path: Adopt the retained-evidence sequence from `proposal-review-r2` and prove pre-write failure, completed-write retry, and interrupted reconciliation.
 Validation target: revised governed ownership, recovery, scenarios, acceptance criteria, and independent proposal rereview.
-needs-decision rationale: The proposal author must select the final-state policy before this finding can close.
+Validation evidence: `evidence/proposal-revision-r2.md`; revised Governed reference ownership, Deterministic settlement sequence, Expected Behavior Changes, Testing and Verification Strategy, Risks and Mitigations, Acceptance Criteria, and Decision Log sections.
