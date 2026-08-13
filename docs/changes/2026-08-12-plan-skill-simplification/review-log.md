@@ -8,6 +8,19 @@ This ledger records formal lifecycle reviews for the plan skill simplification c
 
 ### Review entry
 
+Review ID: plan-review-r1
+Stage: plan-review
+Round: r1
+Reviewed artifact: `docs/plans/2026-08-12-plan-skill-simplification.md` at commit `e3326352`
+Status: approved
+Detailed record: reviews/plan-review-r1.md
+Resolution: review-resolution.md#plan-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: spec-review-r2
 Stage: spec-review
 Round: r2
