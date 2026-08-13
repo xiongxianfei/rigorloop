@@ -212,3 +212,37 @@ Required outcome: Require canonical architecture and ADR amendment or successor 
 Safe resolution path: Replace `architecture-not-required` expectation with architecture-update-required and enumerate affected decision surfaces.
 Validation target: revised Architecture Impact, scope budget, rollout, and decision log plus independent rereview.
 Validation evidence: `evidence/proposal-revision-r3.md`; revised Scope Budget, Architecture Impact, Testing and Verification Strategy, Rollout and Rollback, Risks and Mitigations, Next Artifacts, and Decision Log sections.
+
+### code-review-m2-r1
+
+#### PLSIM-CR1
+
+Finding ID: PLSIM-CR1
+Disposition: accepted
+Status: open
+Owner: implement
+Owning stage: implement
+Decision owner: implement
+Decision needed: Restore deterministic identity fields removed by over-compression.
+Chosen action: Name the stable artifact and reviewed revision tuples explicitly in the governed reference.
+Rationale: Governed procedure must remain executable without inferring mandatory identity fields.
+Required outcome: Exact approved identity fields remain explicit while both loaded profiles stay below baseline.
+Safe resolution path: Amend the reference, measure profiles, rerun CMD6-CMD9, and rereview.
+Validation target: PSIM-R011, PSIM-R012, T7, T8, and profile evidence.
+Validation evidence: pending
+
+#### PLSIM-CR2
+
+Finding ID: PLSIM-CR2
+Disposition: accepted
+Status: open
+Owner: implement
+Owning stage: implement
+Decision owner: implement
+Decision needed: Complete the deterministic invalid-ledger proof required by T7.
+Chosen action: Add a change-local validation helper and fixtures for unknown-first, duplicate-ID, missing-field, and inconsistent-destination failures.
+Rationale: Asserting that two values are outside local sets does not exercise the required failure path or validation order.
+Required outcome: Every named invalid fixture fails for its intended reason and unknown vocabulary is checked before consistency.
+Safe resolution path: Extend the existing focused test without adding a permanent validator family.
+Validation target: T7 and CMD7.
+Validation evidence: pending
