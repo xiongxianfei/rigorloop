@@ -9784,6 +9784,28 @@ class PlanSkillSimplificationContractTests(unittest.TestCase):
             ROOT / "docs" / "changes" / "2026-08-12-plan-skill-simplification"
         )
 
+    @staticmethod
+    def _validate_ledger(
+        entries, *, id_field, required_fields, vocabulary_field, allowed_values
+    ):
+        for entry in entries:
+            if entry.get(vocabulary_field) not in allowed_values:
+                raise ValueError(f"unknown {vocabulary_field}")
+        for entry in entries:
+            missing = [field for field in required_fields if field not in entry]
+            if missing:
+                raise ValueError(f"missing fields: {', '.join(missing)}")
+        identifiers = [entry[id_field] for entry in entries]
+        if len(identifiers) != len(set(identifiers)):
+            raise ValueError(f"duplicate {id_field}")
+        for entry in entries:
+            if (
+                vocabulary_field == "disposition"
+                and entry[vocabulary_field] == "retained-inline"
+                and not entry["destination"].startswith("skills/plan/SKILL.md")
+            ):
+                raise ValueError("inconsistent destination")
+
     def test_plan_simplification_package_and_profiles_are_closed(self) -> None:
         self.assertEqual(
             sorted(path.name for path in (self.root / "assets").iterdir()),
@@ -9869,9 +9891,34 @@ class PlanSkillSimplificationContractTests(unittest.TestCase):
         self.assertGreaterEqual(len(rules), 15)
         self.assertGreaterEqual(len(literals), 13)
         self.assertGreaterEqual(len(scenarios), 14)
-        self.assertTrue(all(rule["disposition"] in valid_dispositions for rule in rules))
-        self.assertTrue(
-            all(item["classification"] in valid_classifications for item in literals)
+        self._validate_ledger(
+            rules,
+            id_field="rule_id",
+            required_fields={
+                "rule_id", "behavior", "source_locations", "governing_requirements",
+                "applicable_profiles",
+                "disposition",
+                "destination",
+                "preservation_proof",
+            },
+            vocabulary_field="disposition",
+            allowed_values=valid_dispositions,
+        )
+        self._validate_ledger(
+            literals,
+            id_field="literal_id",
+            required_fields={
+                "literal_id",
+                "literal",
+                "classification",
+                "source_location",
+                "consumers",
+                "required_semantics",
+                "disposition",
+                "replacement",
+            },
+            vocabulary_field="classification",
+            allowed_values=valid_classifications,
         )
         invalid_rule = json.loads(
             (self.change_root / "fixtures" / "invalid-rule-disposition.yaml")
@@ -9881,8 +9928,70 @@ class PlanSkillSimplificationContractTests(unittest.TestCase):
             (self.change_root / "fixtures" / "invalid-literal-classification.yaml")
             .read_text(encoding="utf-8")
         )["literals"][0]
-        self.assertNotIn(invalid_rule["disposition"], valid_dispositions)
-        self.assertNotIn(invalid_literal["classification"], valid_classifications)
+        with self.assertRaisesRegex(ValueError, "unknown disposition"):
+            self._validate_ledger(
+                [invalid_rule],
+                id_field="rule_id",
+                required_fields={"rule_id", "destination"},
+                vocabulary_field="disposition",
+                allowed_values=valid_dispositions,
+            )
+        with self.assertRaisesRegex(ValueError, "unknown classification"):
+            self._validate_ledger(
+                [invalid_literal],
+                id_field="literal_id",
+                required_fields={"literal_id"},
+                vocabulary_field="classification",
+                allowed_values=valid_classifications,
+            )
+        invalid_fixtures = (
+            (
+                "invalid-rule-duplicate-id.yaml",
+                "rules",
+                "rule_id",
+                {"rule_id", "destination"},
+                "disposition",
+                valid_dispositions,
+                "duplicate rule_id",
+            ),
+            (
+                "invalid-literal-missing-field.yaml",
+                "literals",
+                "literal_id",
+                {"literal_id", "required_semantics"},
+                "classification",
+                valid_classifications,
+                "missing fields",
+            ),
+            (
+                "invalid-rule-destination.yaml",
+                "rules",
+                "rule_id",
+                {"rule_id", "destination"},
+                "disposition",
+                valid_dispositions,
+                "inconsistent destination",
+            ),
+        )
+        for (
+            filename,
+            key,
+            id_field,
+            fields,
+            vocabulary_field,
+            allowed,
+            error,
+        ) in invalid_fixtures:
+            entries = json.loads(
+                (self.change_root / "fixtures" / filename).read_text(encoding="utf-8")
+            )[key]
+            with self.subTest(fixture=filename), self.assertRaisesRegex(
+                ValueError, error
+            ):
+                self._validate_ledger(
+                    entries, id_field=id_field, required_fields=fields,
+                    vocabulary_field=vocabulary_field, allowed_values=allowed,
+                )
 
 
 if __name__ == "__main__":
