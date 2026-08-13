@@ -16,6 +16,7 @@ Review closeout: test-spec-review-r1
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
+Review closeout: code-review-m3-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
 - Findings resolved: 11
@@ -39,6 +40,10 @@ Review closeout: code-review-m2-r2
 | `PLSIM-CR2` | accepted | closed | The invalid-ledger proof now covers vocabulary ordering, duplicates, missing fields, and destination consistency. |
 
 ## Finding details
+
+### code-review-m3-r1
+
+No material findings. The clean milestone review approved the profile measurements, semantic preservation evidence, boundary proof, and canonical-through-installed package parity.
 
 ### code-review-m2-r2
 
