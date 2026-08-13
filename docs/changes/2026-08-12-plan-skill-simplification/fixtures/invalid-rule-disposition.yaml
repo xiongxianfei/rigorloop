@@ -1,0 +1,1 @@
+{"rules":[{"rule_id":"PL-RULE-INVALID","behavior":"invalid fixture","source_locations":["skills/plan/SKILL.md"],"governing_requirements":["PSIM-R029"],"applicable_profiles":["PL0"],"disposition":"unknown-disposition","destination":"none","preservation_proof":["T7"]}]}

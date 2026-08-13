@@ -1941,17 +1941,42 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
     def test_stage_owned_valid_record_passes(self) -> None:
         self.assertEqual(validate_stage_owned_lifecycle_metadata(self.valid_record()), [])
 
-    def test_primary_plan_requires_deterministic_initial_planned_work(self) -> None:
+    def test_new_primary_plan_allows_review_required_without_planned_work(self) -> None:
         record = self.valid_record()
         record["artifact_states"]["plan"] = {
             "kind": "plan",
             "path": "docs/plans/example.md",
             "role": "primary",
-            "lifecycle_state": "authoring",
+            "lifecycle_state": "review-required",
             "authoring_evidence": "docs/changes/example/evidence/plan-authoring.md",
+        }
+        self.assertEqual(validate_stage_owned_lifecycle_metadata(record), [])
+
+    def test_reviewed_plan_initialization_requires_matching_review_basis(self) -> None:
+        record = self.valid_record()
+        record["artifact_states"]["plan"] = {
+            "kind": "plan",
+            "path": "docs/plans/example.md",
+            "role": "primary",
+            "lifecycle_state": "review-required",
+            "authoring_evidence": "docs/changes/example/evidence/plan-authoring.md",
+            "review": {
+                "id": "plan-review-r1",
+                "artifact_id": "plan",
+                "outcome": "approved",
+                "record": "docs/changes/example/reviews/plan-review-r1.md",
+                "round": "r1",
+            },
         }
         initial_planned_work = {
             "plan_artifact_id": "plan",
+            "initialization_basis": {
+                "review_id": "plan-review-r1",
+                "review_round": "r1",
+                "review_record": "docs/changes/example/reviews/plan-review-r1.md",
+                "reviewed_artifact_path": "docs/plans/example.md",
+                "reviewed_revision": "abc1234",
+            },
             "current_milestone": "M1",
             "milestones": {
                 "M1": {"kind": "implementation", "state": "planned"},
@@ -1974,14 +1999,41 @@ class StageOwnedLifecycleMetadataTests(unittest.TestCase):
             },
         }
 
+        record["workflow_state"]["planned_work"] = initial_planned_work
+        self.assertEqual(validate_stage_owned_lifecycle_metadata(record), [])
+
+        record["workflow_state"]["planned_work"]["initialization_basis"]["review_id"] = "plan-review-r2"
         errors = validate_stage_owned_lifecycle_metadata(record)
         self.assertIn(
-            "workflow_state.planned_work: presence must match primary plan registration",
+            "workflow_state.planned_work.initialization_basis: must match current clean plan review",
             errors,
         )
 
-        record["workflow_state"]["planned_work"] = initial_planned_work
-        self.assertEqual(validate_stage_owned_lifecycle_metadata(record), [])
+    def test_review_required_plan_rejects_planned_work_without_clean_review(self) -> None:
+        record = self.valid_record()
+        record["artifact_states"]["plan"] = {
+            "kind": "plan",
+            "path": "docs/plans/example.md",
+            "role": "primary",
+            "lifecycle_state": "review-required",
+            "authoring_evidence": "docs/changes/example/evidence/plan-authoring.md",
+        }
+        record["workflow_state"]["planned_work"] = {
+            "plan_artifact_id": "plan",
+            "current_milestone": "M1",
+            "milestones": {"M1": {"kind": "implementation", "state": "planned"}},
+            "remaining_implementation_milestones": ["M1"],
+            "latest_review": {
+                "status": "not-started", "stage": "none", "round": "none",
+                "artifact_id": "none", "occurrence": "none", "milestone_id": "none", "evidence": [],
+            },
+            "final_closeout": {"readiness": "not-ready", "reasons": ["lifecycle-gates-open"], "evidence": []},
+        }
+        errors = validate_stage_owned_lifecycle_metadata(record)
+        self.assertIn(
+            "workflow_state.planned_work: review-required plan needs current clean review and initialization basis",
+            errors,
+        )
 
     def test_unmarked_historical_record_remains_readable(self) -> None:
         self.assertEqual(validate_stage_owned_lifecycle_metadata({"workflow": {"autoprogression": {}}}), [])

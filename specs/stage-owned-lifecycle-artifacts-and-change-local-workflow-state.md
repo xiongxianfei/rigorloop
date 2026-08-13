@@ -8,6 +8,8 @@
 
 `docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml`
 
+boundary_contract: boundary-first-v1
+
 ## Related proposal
 
 - [Stage-Owned Lifecycle Artifacts and Change-Local Workflow State](../docs/proposals/2026-07-28-approved-specification-baselines-and-controlled-amendment-workflow.md)
@@ -354,16 +356,17 @@ SLA-R019c. Authoring completion status MUST be exactly `complete`; absent,
 unknown, or non-complete authoring evidence MUST leave the artifact in
 `authoring`.
 
-SLA-R019d. When `plan` registers a new primary plan and
-`workflow_state.planned_work` is absent, `plan` MUST initialize
-`planned_work` exactly once from the plan's ordered milestone definitions.
+SLA-R019d. When `plan` registers a new primary plan, it MUST leave `workflow_state.planned_work` absent until a clean `plan-review` record exists for the exact current plan revision. After that review, the plan-owned `initialize-approved-plan` operation MUST initialize `planned_work` exactly once from the reviewed ordered milestone definitions.
 Every implementation milestone MUST start as `planned`;
 `current_milestone` MUST name the first implementation milestone;
 `remaining_implementation_milestones` MUST list every implementation
 milestone in plan order; `latest_review` MUST be `not-started`; and
 `final_closeout` MUST be `not-ready`.
-Plan MUST NOT replace or update existing `planned_work`.
-Workflow owns every later `planned_work` transition.
+Plan MUST record the review ID, round, record path, reviewed artifact path, and reviewed repository revision as the initialization basis. Plan MUST NOT replace or update existing `planned_work`. Workflow owns coordination and every later `planned_work` transition.
+
+SLA-R019e. A clean initial `plan-review` MUST write durable review evidence and leave the plan `review-required` while `planned_work` is absent. It MUST report `initialization-required`. After matching initialization, an identical settlement retry MUST reuse the recorded judgment and MAY move only the plan entry to `active`.
+
+SLA-R019f. A primary plan MAY be `authoring`, `revision-required`, `blocked`, or `review-required` without `planned_work`. A `review-required` plan MAY contain matching initialized work only when its current clean review and initialization basis agree. An active primary plan MUST contain initialized work. Every other combination MUST fail closed.
 
 SLA-R020. Except for the one-time initialization in SLA-R019d, an authoring
 skill MUST NOT write a settled lifecycle state, review evidence, another
@@ -402,7 +405,7 @@ review-resolution closed MUST map as follows:
 | `spec-review` | `spec` | `approved` |
 | `architecture-review` | `architecture` | `approved` |
 | `architecture-review` | `adr` | the exact `review.adr_settlement` value |
-| `plan-review` | `plan` | `active` |
+| `plan-review` | `plan` | `active` after matching plan-owned initialization and identical settlement retry |
 | `test-spec-review` | `test-spec` | `active` |
 
 SLA-R025. A review outcome of `changes-requested` MUST map the matching entry to
@@ -445,7 +448,7 @@ SLA-R035. `workflow_state` MUST contain exactly:
 - `next_stage`;
 - `blocker`; and
 - `evidence`; and
-- `planned_work`, present exactly when a primary plan is registered.
+- `planned_work`, absent during primary-plan authoring and initial review and present after reviewed-plan initialization.
 
 SLA-R036. `workflow_state.lifecycle_state` MUST be closed to `active`, `paused`,
 `completed`, and `cancelled`.
@@ -768,8 +771,8 @@ stage ownership.
 
 | Published skill group | Writable outputs | Read-only inputs | Required route-back behavior |
 | --- | --- | --- | --- |
-| `workflow` | routing fields, every `planned_work` transition after initialization, the selected automation target, and transition receipts | governed artifacts, artifact settlement, and stage-owned evidence | Pause and route to the owning stage; never repair content or manufacture settlement. |
-| `plan` | its governed plan, matching authoring evidence, matching `artifact_states` transition, and one-time deterministic `planned_work` initialization | every other governed artifact and state entry plus existing `planned_work` | Initialize once for a new primary plan, request fresh peer review, and never replace or update existing `planned_work`. |
+| `workflow` | routing fields, coordination between clean plan review, initialization, and settlement retry, every `planned_work` transition after initialization, the selected automation target, and transition receipts | governed artifacts, artifact settlement, and stage-owned evidence | Pause and route to the owning stage; never derive plan milestones, repair content, or manufacture settlement. |
+| `plan` | its governed plan, matching authoring evidence, matching `artifact_states` transition, and one-time deterministic initialization from the exact clean-reviewed revision | every other governed artifact and state entry plus existing `planned_work` | Request fresh peer review, initialize only after clean current review, and never replace or update existing `planned_work`. |
 | `proposal`, `spec`, `architecture`, `test-spec` | their own governed artifact, matching authoring evidence, and only their matching `artifact_states` entry for `authoring`, `review-required`, or owned closeout | every other governed artifact and state entry | Record the authoring transition before revision and request fresh peer review after completion. |
 | `proposal-review`, `spec-review`, `architecture-review`, `plan-review`, `test-spec-review` | their own review evidence and only the reviewed artifact's matching settlement transition | the reviewed artifact, every other governed artifact, and `workflow_state` | Record findings or settlement and stop when isolated; never revise reviewed content or advance routing. |
 | `implement` | implementation, tests, and implementation evidence | governed artifacts, artifact settlement, and `workflow_state` | Record an upstream challenge and stop; never update plan or other upstream content. |
@@ -857,16 +860,15 @@ MUST NOT create a boundary, invariant, transition, or outcome.
 
 Boundary model version: boundary-first-v1
 
-Boundary model scope: every requirement defined in this specification,
-`SLA-R001` through `SLA-R077`, including the defined suffixed requirements.
+Boundary model scope: SLA-R001, SLA-R002, SLA-R003, SLA-R004, SLA-R005, SLA-R005a, SLA-R005b, SLA-R006, SLA-R006a, SLA-R006b, SLA-R006c, SLA-R007, SLA-R007a, SLA-R008, SLA-R009, SLA-R009a, SLA-R009b, SLA-R010, SLA-R011, SLA-R012, SLA-R012a, SLA-R012b, SLA-R012c, SLA-R013, SLA-R014, SLA-R015, SLA-R016, SLA-R017, SLA-R018, SLA-R019, SLA-R019a, SLA-R019b, SLA-R019c, SLA-R019d, SLA-R019e, SLA-R019f, SLA-R020, SLA-R021, SLA-R021a, SLA-R021b, SLA-R021c, SLA-R022, SLA-R023, SLA-R024, SLA-R025, SLA-R026, SLA-R027, SLA-R028, SLA-R029, SLA-R030, SLA-R031, SLA-R032, SLA-R033, SLA-R034, SLA-R035, SLA-R036, SLA-R037, SLA-R037a, SLA-R037b, SLA-R037c, SLA-R037d, SLA-R037e, SLA-R037f, SLA-R037g, SLA-R037h, SLA-R037i, SLA-R037j, SLA-R037k, SLA-R037l, SLA-R037la, SLA-R037m, SLA-R037n, SLA-R037o, SLA-R037oa, SLA-R037ob, SLA-R037p, SLA-R038, SLA-R039, SLA-R040, SLA-R041, SLA-R042, SLA-R043, SLA-R044, SLA-R045, SLA-R046, SLA-R047, SLA-R048, SLA-R048a, SLA-R049, SLA-R050, SLA-R050a, SLA-R050b, SLA-R051, SLA-R052, SLA-R053, SLA-R054, SLA-R055, SLA-R056, SLA-R057, SLA-R058, SLA-R059, SLA-R060, SLA-R061, SLA-R062, SLA-R063, SLA-R064, SLA-R064a, SLA-R065, SLA-R066, SLA-R067, SLA-R068, SLA-R069, SLA-R070, SLA-R071, SLA-R072, SLA-R073, SLA-R074, SLA-R074a, SLA-R074b, SLA-R074c, SLA-R074d, SLA-R074e, SLA-R075, SLA-R076, SLA-R077
 
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |
 | input-domain | applicable | SLA-R001, SLA-R005, SLA-R048, SLA-R064a | BND-INPUT-001 | - |
-| state-lifecycle | applicable | SLA-R012a, SLA-R012b, SLA-R035, SLA-R037h, SLA-R037k, SLA-R037oa, SLA-R050, SLA-R057 | BND-STATE-001 | - |
-| identity-authority | applicable | SLA-R019d, SLA-R020, SLA-R023, SLA-R027, SLA-R034, SLA-R039, SLA-R042, SLA-R053, SLA-R054 | BND-AUTH-001 | - |
+| state-lifecycle | applicable | SLA-R012a, SLA-R012b, SLA-R019e, SLA-R019f, SLA-R035, SLA-R037h, SLA-R037k, SLA-R037oa, SLA-R050, SLA-R057 | BND-STATE-001 | - |
+| identity-authority | applicable | SLA-R019d, SLA-R019e, SLA-R019f, SLA-R020, SLA-R023, SLA-R027, SLA-R034, SLA-R039, SLA-R042, SLA-R053, SLA-R054 | BND-AUTH-001 | - |
 | composition-path | applicable | SLA-R028, SLA-R029, SLA-R033, SLA-R044, SLA-R046, SLA-R063, SLA-R064, SLA-R072, SLA-R074b | BND-COMPOSE-001 | - |
-| temporal-retry | applicable | SLA-R019a, SLA-R030, SLA-R031, SLA-R032, SLA-R037la, SLA-R050a, SLA-R057, SLA-R058 | BND-TEMPORAL-001 | - |
+| temporal-retry | applicable | SLA-R019a, SLA-R019d, SLA-R019e, SLA-R030, SLA-R031, SLA-R032, SLA-R037la, SLA-R050a, SLA-R057, SLA-R058 | BND-TEMPORAL-001 | - |
 | failure-recovery | applicable | SLA-R025, SLA-R026, SLA-R043, SLA-R044, SLA-R047, SLA-R060, SLA-R062, SLA-R064 | BND-RECOVERY-001 | - |
 | compatibility-migration | applicable | SLA-R003, SLA-R004, SLA-R065, SLA-R067, SLA-R068, SLA-R074a, SLA-R074c, SLA-R074d, SLA-R074e | BND-COMPAT-001 | - |
 | external-environment | applicable | SLA-R007, SLA-R037c, SLA-R061, SLA-R069, SLA-R071 | BND-ENV-001 | - |
@@ -876,10 +878,10 @@ Boundary model scope: every requirement defined in this specification,
 | Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |
 | --- | --- | --- | --- | --- | --- | --- |
 | BND-INPUT-001 | input-domain | SLA-R001, SLA-R005, SLA-R048, SLA-R064a | exact contract-version marker; valid registry and target command; absent, malformed, additional, unknown, conflicting, or path-escaping input | Reading historical work does not mutate it, resumed nonterminal work uses the current contract, identifiers remain unique, and unknown input never widens authority. | Valid current input proceeds; historical reads remain read-only; every invalid or unmigrated mutation fails before writing. | SLA-R001 |
-| BND-STATE-001 | state-lifecycle | SLA-R012a, SLA-R012b, SLA-R035, SLA-R037h, SLA-R037k, SLA-R037oa, SLA-R050, SLA-R057 | artifact, workflow, milestone, review occurrence, closeout, and automation-run legal transitions; every absent transition is illegal | Authoring is not review-ready, current review matches its occurrence, readiness needs positive evidence, and terminal state does not reopen. | Legal transitions commit; stale, incomplete, illegal, or contradictory state pauses or fails closed. | SLA-R012a |
-| BND-AUTH-001 | identity-authority | SLA-R019d, SLA-R020, SLA-R023, SLA-R027, SLA-R034, SLA-R039, SLA-R042, SLA-R053, SLA-R054 | authoring owner; plan initializer; review peer; workflow router; downstream challenger; automation target | Plan initializes missing planned work once, every later transition keeps its workflow owner, every other actor changes only its owned surface, and the target never expands stage authority. | Owned bounded mutation succeeds; replacement, cross-owner, stale, substituted, or expanded authority pauses or fails. | SLA-R020 |
+| BND-STATE-001 | state-lifecycle | SLA-R012a, SLA-R012b, SLA-R019e, SLA-R019f, SLA-R035, SLA-R037h, SLA-R037k, SLA-R037oa, SLA-R050, SLA-R057 | artifact, reviewed-plan initialization, workflow, milestone, review occurrence, closeout, and automation-run legal transitions; every absent transition is illegal | Authoring is not review-ready, clean plan judgment precedes initialization, current review matches its occurrence, readiness needs positive evidence, and terminal state does not reopen. | Legal transitions commit; stale, incomplete, illegal, or contradictory state pauses or fails closed. | SLA-R012a |
+| BND-AUTH-001 | identity-authority | SLA-R019d, SLA-R019e, SLA-R019f, SLA-R020, SLA-R023, SLA-R027, SLA-R034, SLA-R039, SLA-R042, SLA-R053, SLA-R054 | authoring owner; plan initializer; review peer; workflow coordinator; downstream challenger; automation target | Plan initializes missing planned work only from the exact clean-reviewed revision, plan-review settles only after matching initialization, every later transition keeps its workflow owner, and the target never expands stage authority. | Owned bounded mutation succeeds; replacement, cross-owner, stale, substituted, or expanded authority pauses or fails. | SLA-R020 |
 | BND-COMPOSE-001 | composition-path | SLA-R028, SLA-R029, SLA-R033, SLA-R044, SLA-R046, SLA-R063, SLA-R064, SLA-R072, SLA-R074b | isolated and managed review; owner route-back; rereview; status and off aliases; canonical skills; adapters; reciprocal notices | Review never advances routing, workflow never manufactures settlement, and projected surfaces point to one exact contract. | Isolated review stops; managed routing resumes only after settlement; drift or conflicting authority blocks current-contract use. | SLA-R028 |
-| BND-TEMPORAL-001 | temporal-retry | SLA-R019a, SLA-R030, SLA-R031, SLA-R032, SLA-R037la, SLA-R050a, SLA-R057, SLA-R058 | interrupted authoring or settlement; identical retry; conflicting reuse; milestone advance; terminal automation run; isolated invocation | Partial authoring is not review-ready, review IDs do not change meaning, and occurrence identity does not silently rebind. | Completed evidence reconciles; incomplete or changed evidence pauses; a terminal run needs a new invocation. | SLA-R030 |
+| BND-TEMPORAL-001 | temporal-retry | SLA-R019a, SLA-R019d, SLA-R019e, SLA-R030, SLA-R031, SLA-R032, SLA-R037la, SLA-R050a, SLA-R057, SLA-R058 | interrupted authoring, reviewed-plan initialization, or settlement; identical retry; conflicting reuse; milestone advance; terminal automation run; isolated invocation | Partial authoring is not review-ready, clean review evidence precedes initialization, review IDs do not change meaning, and occurrence identity does not silently rebind. | Completed evidence reconciles; incomplete or changed evidence pauses; a terminal run needs a new invocation. | SLA-R030 |
 | BND-RECOVERY-001 | failure-recovery | SLA-R025, SLA-R026, SLA-R043, SLA-R044, SLA-R047, SLA-R060, SLA-R062, SLA-R064 | revision request; blocked review; upstream defect; validation or verification failure; missing tooling; cancellation; conservative replay | Failure preserves evidence, never grants automatic repair or external action, and returns content changes to the owning stage. | Workflow pauses or cancels durably, routes to the owner when correctable, and resumes only after required settlement. | SLA-R060 |
 | BND-COMPAT-001 | compatibility-migration | SLA-R003, SLA-R004, SLA-R065, SLA-R067, SLA-R068, SLA-R074a, SLA-R074c, SLA-R074d, SLA-R074e | historical read; resumed pre-adoption work; required migration; mixed writable state; rollback; closed replaced subjects; stale dependent proof maps | Historical records are read-only, resumed nonterminal work uses one current writer, every affected source names the same closed subject boundary, and stale proof is not reused. | Historical reads remain valid; resumed work migrates first; missing notices, stale test specs, stale governance, or mixed authority block downstream reliance. | SLA-R065 |
 | BND-ENV-001 | external-environment | SLA-R007, SLA-R037c, SLA-R061, SLA-R069, SLA-R071 | valid repository-relative path; escaping or expanded path; local mutation; external, credential, destructive Git, hosted, hash, interception, or attribution boundary | Automation stays repository-local, external actions remain prohibited, and deterministic validation does not overclaim writer identity. | In-scope local work may proceed; expanded, destructive, external, or unsupported proof requests pause or fail. | SLA-R061 |
@@ -1176,7 +1178,7 @@ through the example.
 | `AC-SLA-002` | Historical changes remain readable without mutation, and resumed work migrates before writing. |
 | `AC-SLA-003` | Governed artifacts contain a stable change-record pointer and no mutable lifecycle or routing state. |
 | `AC-SLA-004` | Unique stable artifact IDs support multiple artifacts of one kind, and all state combinations use closed vocabularies. |
-| `AC-SLA-005` | Authoring marks only its matching artifact `authoring` before mutation and `review-required` only after completion evidence; a new primary plan also initializes deterministic `planned_work` exactly once. |
+| `AC-SLA-005` | Authoring marks only its matching artifact `authoring` before mutation and `review-required` only after completion evidence; a clean current plan review precedes one-time deterministic `planned_work` initialization. |
 | `AC-SLA-006` | Review evidence is durable before settlement. |
 | `AC-SLA-007` | Each review stage settles only its matching artifact state. |
 | `AC-SLA-008` | Independent review settlement leaves `workflow_state` and automation unchanged. |

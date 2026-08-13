@@ -26,17 +26,6 @@ artifact_states:
       outcome: approved
       record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/spec-review-r6.md
       round: r6
-  architecture:
-    kind: architecture
-    path: docs/architecture/system/architecture.md
-    role: primary
-    lifecycle_state: approved
-    review:
-      id: architecture-review-activation-r1
-      artifact_id: architecture
-      outcome: approved
-      record: docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/reviews/architecture-review-activation-r1.md
-      round: r6
   adr:
     kind: adr
     path: docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md

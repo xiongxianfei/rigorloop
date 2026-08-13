@@ -1,0 +1,367 @@
+change_id: 2026-08-12-plan-skill-simplification
+title: Plan Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+evidence_registration_deferrals:
+  - path: docs/changes/2026-08-12-plan-skill-simplification/plan-rule-disposition.yaml
+    owner: repository-maintainer
+    reason: One-change semantic-rule disposition evidence is intentionally not a recurring selector evidence class.
+    validation_impact: Exact approved T7, CMD7, and MP1 proof remains mandatory; no generic selector check is inferred.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/plan-literal-compatibility.yaml
+    owner: repository-maintainer
+    reason: One-change literal-compatibility evidence is intentionally not a recurring selector evidence class.
+    validation_impact: Exact approved T7, CMD7, focused consumer assertions, and MP1 proof remain mandatory.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/fixtures/scenario-contracts.yaml
+    owner: repository-maintainer
+    reason: One-change static acceptance scenarios are intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T7-T9 and CMD7 proof remains mandatory; no target runtime or generic fixture route substitutes for it.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-rule-disposition.yaml
+    owner: repository-maintainer
+    reason: One-change negative rule-disposition fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T7 and CMD7 unknown-first proof remains mandatory.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-literal-classification.yaml
+    owner: repository-maintainer
+    reason: One-change negative literal-classification fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T7 and CMD7 unknown-first proof remains mandatory.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-rule-duplicate-id.yaml
+    owner: repository-maintainer
+    reason: One-change duplicate rule-ID fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T7 and CMD7 duplicate-ID proof remains mandatory.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-literal-missing-field.yaml
+    owner: repository-maintainer
+    reason: One-change missing literal-field fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T7 and CMD7 missing-field proof remains mandatory.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - path: docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-rule-destination.yaml
+    owner: repository-maintainer
+    reason: One-change inconsistent rule-destination fixture is intentionally unsupported as a recurring selector evidence class.
+    validation_impact: Exact approved T7 and CMD7 destination-consistency proof remains mandatory.
+    follow_up: docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-12-plan-skill-simplification.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r4
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-08-12-plan-skill-simplification/reviews/proposal-review-r4.md
+      round: r4
+  spec:
+    kind: spec
+    path: specs/plan-skill-simplification.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r2
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-12-plan-skill-simplification/reviews/spec-review-r2.md
+      round: r2
+  architecture:
+    kind: architecture
+    path: docs/architecture/system/architecture.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: architecture-review-r1
+      artifact_id: architecture
+      outcome: approved
+      record: docs/changes/2026-08-12-plan-skill-simplification/reviews/architecture-review-r1.md
+      round: r1
+  adr-reviewed-plan-initialization:
+    kind: adr
+    path: docs/adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: architecture-review-r1
+      artifact_id: adr-reviewed-plan-initialization
+      outcome: approved
+      record: docs/changes/2026-08-12-plan-skill-simplification/reviews/architecture-review-r1.md
+      round: r1
+      adr_settlement: accepted
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-12-plan-skill-simplification.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r1
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-12-plan-skill-simplification/reviews/plan-review-r1.md
+      round: r1
+  test-spec:
+    kind: test-spec
+    path: specs/plan-skill-simplification.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r1
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-12-plan-skill-simplification/reviews/test-spec-review-r1.md
+      round: r1
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: verify
+  next_stage: pr
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/proposal-authoring.md
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/proposal-review-r1.md
+    - docs/changes/2026-08-12-plan-skill-simplification/review-resolution.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/proposal-revision-r1.md
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/proposal-review-r2.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/proposal-revision-r2.md
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/proposal-review-r3.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/proposal-revision-r3.md
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/proposal-review-r4.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/spec-authoring.md
+    - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-spec-review-r1.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/spec-review-r1.md
+    - docs/changes/2026-08-12-plan-skill-simplification/architecture-assessment.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/architecture-authoring.md
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/architecture-review-r1.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/plan-authoring.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/spec-revision-r2.md
+    - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-spec-review-r2.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/spec-review-r2.md
+    - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-plan-review-r1.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/plan-review-r1.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/test-spec-authoring.md
+    - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-test-spec-review-r1.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/workflow-automation-target-verify.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/m1-reviewed-plan-transaction.md
+    - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m1-r1.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/profile-size-baseline.md
+    - docs/changes/2026-08-12-plan-skill-simplification/plan-rule-disposition.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/plan-literal-compatibility.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/fixtures/scenario-contracts.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+    - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m2-r1.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m2-r2.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r2.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/simplification-measurements.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/semantic-preservation-review.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/m3-package-proof.md
+    - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m3-r1.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m3-r1.md
+    - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r1.md
+    - docs/changes/2026-08-12-plan-skill-simplification/explain-change.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/ci-selector-deferral.md
+    - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-final-r2.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r2.md
+    - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-final-r3.yaml
+    - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r3.md
+    - docs/changes/2026-08-12-plan-skill-simplification/verify-report.md
+  planned_work:
+    plan_artifact_id: plan
+    current_milestone: none
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+    remaining_implementation_milestones: []
+    latest_review:
+      status: approved
+      stage: code-review
+      round: r3
+      artifact_id: code-review-final-r3
+      occurrence: final
+      milestone_id: none
+      evidence:
+        - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r3.md
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - implementation-milestones-open
+        - lifecycle-gates-open
+        - external-completion-event-pending
+      evidence:
+        - docs/changes/2026-08-12-plan-skill-simplification/evidence/plan-authoring.md
+        - docs/changes/2026-08-12-plan-skill-simplification/verify-report.md
+
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: verify
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-13T12:00:00-07:00"
+      completion:
+        rule: final verify completes with a recorded readiness result
+    status: completed
+    current_stage: verify
+    stop_reason: target-reached
+    evidence:
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/spec-authoring.md
+      - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-spec-review-r1.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/reviews/spec-review-r1.md
+      - docs/changes/2026-08-12-plan-skill-simplification/architecture-assessment.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/architecture-authoring.md
+      - docs/changes/2026-08-12-plan-skill-simplification/reviews/architecture-review-r1.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/plan-authoring.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/spec-revision-r2.md
+      - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-spec-review-r2.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/reviews/spec-review-r2.md
+      - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-plan-review-r1.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/reviews/plan-review-r1.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/test-spec-authoring.md
+      - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-test-spec-review-r1.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/workflow-automation-target-verify.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/m1-reviewed-plan-transaction.md
+      - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m1-r1.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m1-r1.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/profile-size-baseline.md
+      - docs/changes/2026-08-12-plan-skill-simplification/plan-rule-disposition.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/plan-literal-compatibility.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/fixtures/scenario-contracts.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+      - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m2-r1.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r1.md
+      - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m2-r2.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r2.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/simplification-measurements.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/semantic-preservation-review.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/m3-package-proof.md
+      - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m3-r1.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m3-r1.md
+      - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-final-r1.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r1.md
+      - docs/changes/2026-08-12-plan-skill-simplification/explain-change.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/ci-selector-deferral.md
+      - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-final-r2.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r2.md
+      - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-final-r3.yaml
+      - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r3.md
+      - docs/changes/2026-08-12-plan-skill-simplification/verify-report.md
+
+artifacts:
+  proposal: docs/proposals/2026-08-12-plan-skill-simplification.md
+  spec: specs/plan-skill-simplification.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md
+  plan: docs/plans/2026-08-12-plan-skill-simplification.md
+  test_spec: specs/plan-skill-simplification.test.md
+
+requirements:
+  - Preserve plan quality, lifecycle ownership, one-time planned-work initialization, boundary-first behavior, and claim limits while reducing portable and governed loaded context.
+  - Give universal planning policy, governed procedure, boundary method, and structural assets one explicit owner each.
+  - Align copied milestone structure and live consumers with change.yaml as the sole mutable milestone-state owner.
+  - Prove semantic preservation, literal compatibility, profile reduction, parser migration, and package parity without target-agent runtime execution.
+
+tests:
+  - Independent semantic review of the proposal and final skill package.
+  - Deterministic validation of closed profiles, authority triggers, mapped resources, asset structure, state ownership, failure behavior, and package parity.
+  - Static migration fixtures proving current state reads use change.yaml while historical plans remain readable evidence.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-12-plan-skill-simplification/change.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-12-plan-skill-simplification.md
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-12-plan-skill-simplification/review-log.md
+  - docs/changes/2026-08-12-plan-skill-simplification/review-resolution.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/proposal-revision-r1.md
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/proposal-revision-r2.md
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/proposal-review-r3.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/proposal-revision-r3.md
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/proposal-review-r4.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+  - specs/plan-skill-simplification.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-12-plan-skill-simplification/architecture-assessment.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/architecture-authoring.md
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/architecture-review-r1.md
+  - docs/plans/2026-08-12-plan-skill-simplification.md
+  - docs/plan.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/plan-authoring.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/spec-revision-r2.md
+  - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-spec-review-r2.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/spec-review-r2.md
+  - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/plan-review-r1.md
+  - specs/plan-skill-simplification.test.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/test-spec-authoring.md
+  - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-test-spec-review-r1.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/workflow-automation-target-verify.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/m1-reviewed-plan-transaction.md
+  - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m1-r1.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m1-r1.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/profile-size-baseline.md
+  - docs/changes/2026-08-12-plan-skill-simplification/plan-rule-disposition.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/plan-literal-compatibility.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/fixtures/scenario-contracts.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-rule-disposition.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-literal-classification.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/m2-plan-package.md
+  - skills/plan/SKILL.md
+  - skills/plan/references/governed-plan-authoring.md
+  - skills/plan/assets/milestone.md
+  - skills/plan-review/SKILL.md
+  - skills/workflow/SKILL.md
+  - scripts/test-skill-validator.py
+  - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m2-r1.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r1.md
+  - docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-rule-duplicate-id.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-literal-missing-field.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/fixtures/invalid-rule-destination.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m2-r2.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m2-r2.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/simplification-measurements.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/semantic-preservation-review.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/m3-package-proof.md
+  - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-m3-r1.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-m3-r1.md
+  - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-final-r1.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r1.md
+  - docs/changes/2026-08-12-plan-skill-simplification/explain-change.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/ci-selector-deferral.md
+  - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-final-r2.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r2.md
+  - docs/changes/2026-07-28-stage-owned-lifecycle-artifacts-and-change-local-workflow-state/change.yaml
+  - docs/changes/2026-08-10-code-review-skill-simplification/change.yaml
+  - docs/changes/2026-08-10-published-skill-first-repository-simplification/change.yaml
+  - docs/changes/2026-08-11-workflow-skill-simplification/change.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-code-review-final-r3.yaml
+  - docs/changes/2026-08-12-plan-skill-simplification/reviews/code-review-final-r3.md
+  - docs/changes/2026-08-12-plan-skill-simplification/verify-report.md
+
+review:
+  status: approved
+  unresolved_items: 0

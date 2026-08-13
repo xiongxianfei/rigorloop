@@ -27,8 +27,11 @@ Treat the plan, upstream artifacts, other artifact entries, milestone state, and
 
 ## Change-record review settlement
 
-Before settlement, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Resolve exactly one plan entry by the artifact ID, `kind`, and normalized `path` named by the review.
-Require `review-required` and complete authoring evidence. Write the durable review record first, then remove `authoring_evidence`, set the exact `review` mapping (`id`, `artifact_id`, `outcome`, `record`, and `round`), and map `approved` to `active`, `changes-requested` to `revision-required`, and `blocked` or `inconclusive` to `blocked`. Preserve every other entry, milestone state, and routing. Retry identical incomplete settlement without rerunning the review; stop on conflicting review-ID reuse, ambiguity, an illegal transition, or failed available change-metadata validation. An independent invocation settles this entry and stops without advancing routing.
+Before settlement, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Resolve exactly one plan entry by artifact ID, `kind`, and normalized `path`. Require `review-required` and complete authoring evidence.
+
+Write the durable review record first. Set the exact review mapping with `id`, `artifact_id`, `outcome`, `record`, and `round`. Map `changes-requested` to `revision-required`, and map `blocked` or `inconclusive` to `blocked`. For a clean review with missing `planned_work`, keep the plan `review-required`, record the clean review mapping, and report `initialization-required`; a direct review stops there. After the plan-owned initializer creates matching state from that exact review basis, an identical workflow-coordinated settlement retry reuses the recorded judgment without semantic rereview, may remove `authoring_evidence`, and maps `approved` to `active` for only the matching plan entry.
+
+Preserve every other entry, milestone state, and routing. Retry identical incomplete settlement without rerunning the review. Stop on stale reviewed revision, conflicting review-ID reuse, mismatched initialization basis, open resolution, ambiguity, illegal transition, or failed available change-metadata validation. Plan-review never initializes `planned_work`; an independent invocation settles the entry and stops without advancing routing.
 
 ## Inputs to read
 

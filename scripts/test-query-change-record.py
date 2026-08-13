@@ -466,6 +466,25 @@ validation_summary:
         ):
             WorkflowAutomationStateStore(path).read()
 
+    def test_workflow_state_slice_exposes_plan_authority_and_initialization_basis(self) -> None:
+        query = _load_query_module()
+        planned_work = {
+            "plan_artifact_id": "plan",
+            "initialization_basis": {"review_id": "plan-review-r1"},
+            "current_milestone": "M1",
+            "milestones": {"M1": {"kind": "implementation", "state": "planned"}},
+            "remaining_implementation_milestones": ["M1"],
+        }
+
+        result = query.workflow_state_slice(
+            {
+                "lifecycle_contract": "stage-owned-change-local-v1",
+                "workflow_state": {"planned_work": planned_work},
+            }
+        )
+
+        self.assertEqual(result["planned_work"], planned_work)
+
     def test_summary_rejects_stage_owned_change_id_directory_mismatch(self) -> None:
         body = self.stage_owned_change_yaml().replace(
             "change_id: 2026-07-29-stage-owned-query",

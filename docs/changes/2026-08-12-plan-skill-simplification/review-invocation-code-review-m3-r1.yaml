@@ -1,0 +1,40 @@
+schema_version: 1
+review_id: code-review-m3-r1
+review_stage: code-review
+review_target: commit 1a8f8755
+base_revision: 45d0056d
+head_revision: 1a8f8755
+native_review_status: clean-with-notes
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-implement-m3
+reviewer_context_id: root-code-review-m3-context-reset
+context_separation_mechanism: diff-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - package-parity-proof
+  - semantic-preservation-proof
+governing_artifacts:
+  - specs/plan-skill-simplification.md
+  - specs/plan-skill-simplification.test.md
+  - docs/plans/2026-08-12-plan-skill-simplification.md
+formal_criteria:
+  - code-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/plan-skill-simplification.md
+    sha256: b4e95d396f1e7e54aa12267e33389700457226487a52ed4cdd1022f391936414
+  - path: specs/plan-skill-simplification.test.md
+    sha256: 004ce59bbe036c559e64eb20437db9e820df21bf06066c43d39e71276730dfed
+  - path: docs/plans/2026-08-12-plan-skill-simplification.md
+    sha256: f40d75327036c5a4ee7fd1940ad62a012ba81084f96780ea7ea6300ef1c8ae45
+  - path: docs/changes/2026-08-12-plan-skill-simplification/evidence/m3-package-proof.md
+    sha256: 479b1f4c747921c139189cb0170a1c69f3e6f19699828608b69c369d213d0c10
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - deterministic profile accounting
+  - semantic preservation
+  - adapter archive and clean-install parity
+  - boundary and lifecycle evidence

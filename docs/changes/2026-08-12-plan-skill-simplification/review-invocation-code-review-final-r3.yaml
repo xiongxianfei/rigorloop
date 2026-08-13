@@ -1,0 +1,36 @@
+schema_version: 1
+review_id: code-review-final-r3
+review_stage: code-review
+review_target: commit 2c0cfec4
+base_revision: 69f13e42
+head_revision: 2c0cfec4
+native_review_status: clean-with-notes
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-ci-maintenance-architecture-ownership
+reviewer_context_id: root-code-review-final-r3-context-reset
+context_separation_mechanism: focused-support-diff-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - canonical-architecture-ownership
+  - historical-change-metadata-normalization
+governing_artifacts:
+  - docs/architecture/system/architecture.md
+  - specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+  - docs/changes/2026-08-12-plan-skill-simplification/change.yaml
+formal_criteria:
+  - code-review-v1
+  - stage-owned-single-artifact-owner
+initial_packet_inventory:
+  - path: docs/changes/2026-08-12-plan-skill-simplification/evidence/ci-selector-deferral.md
+    sha256: 4de9d414c4ab71b5f38b0e7ab749a57fbb192dda1ee2394f1aae0e60bf367d81
+  - path: docs/changes/2026-08-12-plan-skill-simplification/explain-change.md
+    sha256: ba5fa1eab45055d6176ac05ba8052cd4ddc775ad257dd82a65292f329009751a
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - canonical architecture current owner
+  - preservation of historical review evidence
+  - affected change-record validity
+  - lifecycle validation readiness

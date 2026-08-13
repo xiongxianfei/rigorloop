@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: code-review-m1-r1
+review_stage: code-review
+review_target: commit a756dd2a5b981c3ea66ac5a09e1d646eb82a4a7b
+base_revision: 536dcf9478aa6049b12d9d5d010443e16a745c88
+head_revision: a756dd2a5b981c3ea66ac5a09e1d646eb82a4a7b
+native_review_status: clean-with-notes
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-implement-m1
+reviewer_context_id: root-code-review-m1-context-reset
+context_separation_mechanism: diff-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-order-change
+  - current-state-authority-migration
+  - retry-and-recovery-contract
+governing_artifacts:
+  - specs/plan-skill-simplification.md
+  - specs/plan-skill-simplification.test.md
+  - docs/adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md
+  - docs/plans/2026-08-12-plan-skill-simplification.md
+formal_criteria:
+  - code-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/plan-skill-simplification.md
+    sha256: b4e95d396f1e7e54aa12267e33389700457226487a52ed4cdd1022f391936414
+  - path: specs/plan-skill-simplification.test.md
+    sha256: 004ce59bbe036c559e64eb20437db9e820df21bf06066c43d39e71276730dfed
+  - path: docs/plans/2026-08-12-plan-skill-simplification.md
+    sha256: f40d75327036c5a4ee7fd1940ad62a012ba81084f96780ea7ea6300ef1c8ae45
+  - path: docs/changes/2026-08-12-plan-skill-simplification/evidence/m1-reviewed-plan-transaction.md
+    sha256: 1482005ad0f3a309c70e5e5c8ddd0e284dfe3aab99b41a072713071718a76d88
+prompt_template_version: code-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - reviewed-plan initialization ordering
+  - legal and illegal temporary states
+  - live milestone state ownership
+  - read-old/write-new compatibility
+  - bounded query and workflow completion proof

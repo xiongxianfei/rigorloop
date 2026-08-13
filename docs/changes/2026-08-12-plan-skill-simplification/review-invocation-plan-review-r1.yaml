@@ -1,0 +1,50 @@
+schema_version: 1
+review_id: plan-review-r1
+review_stage: plan-review
+review_target: docs/plans/2026-08-12-plan-skill-simplification.md
+base_revision: e332635231567316238b513c1f2514934dc0bfb1
+head_revision: e332635231567316238b513c1f2514934dc0bfb1
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-plan-authoring-r1
+reviewer_context_id: root-plan-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-order-change
+  - published-skill-package-boundary
+  - compatibility-migration
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-12-plan-skill-simplification.md
+  - specs/plan-skill-simplification.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md
+  - docs/plans/2026-08-12-plan-skill-simplification.md
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 5727760223fbeb9a50a8eb7c440820ca3eeaf09a0940f7bae095c7b13309d900
+  - path: docs/proposals/2026-08-12-plan-skill-simplification.md
+    sha256: 2cddac67cfe9e8d1a4022f23be1c70366649639c061d5bd42f8024b77c2981a5
+  - path: specs/plan-skill-simplification.md
+    sha256: b4e95d396f1e7e54aa12267e33389700457226487a52ed4cdd1022f391936414
+  - path: docs/architecture/system/architecture.md
+    sha256: 0db1edc50eab78b3dc9bfe599f4d4feaea3398fba476e66e26dff83f47bb1709
+  - path: docs/adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md
+    sha256: e7768da3d9543d0c1f29ac3109775109bd8b7967d157c426277e662bc5bebb6b
+  - path: docs/plans/2026-08-12-plan-skill-simplification.md
+    sha256: f40d75327036c5a4ee7fd1940ad62a012ba81084f96780ea7ea6300ef1c8ae45
+prompt_template_version: plan-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - lifecycle transaction sequencing and ownership
+  - bootstrap versus target-contract separation
+  - read-old-write-new migration and rollback
+  - universal versus governed package ownership
+  - profile measurement and package parity
+  - boundary and interaction proof timing

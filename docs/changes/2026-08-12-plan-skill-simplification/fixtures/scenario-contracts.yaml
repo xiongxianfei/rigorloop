@@ -1,0 +1,16 @@
+{"scenarios":[
+{"scenario":"portable-plan","required":["PL0","portable quality","no lifecycle mutation"],"forbidden":["governed reference","change.yaml write"]},
+{"scenario":"portable-boundary","required":["PL0B","boundary reference once"],"forbidden":["governed reference","duplicate load"]},
+{"scenario":"governed-create","required":["PL1","create-primary-plan","review-required without planned_work"],"forbidden":["pre-existing identity requirement","review settlement"]},
+{"scenario":"governed-revise","required":["PL1","matching stable identity","review-required"],"forbidden":["planned_work mutation","ambiguous entry"]},
+{"scenario":"governed-initialize","required":["PL1","clean review basis","one-time complete initialization"],"forbidden":["semantic rereview","routing mutation"]},
+{"scenario":"governed-boundary","required":["PL1B","both references once"],"forbidden":["duplicate procedure","authority override"]},
+{"scenario":"stale-review","required":["stop","planned_work absent","review evidence preserved"],"forbidden":["initialization","settlement"]},
+{"scenario":"identical-retry","required":["idempotent no-op","settlement-retry-required"],"forbidden":["duplicate state","semantic rereview"]},
+{"scenario":"mismatched-live-work","required":["stop","migration or replan route"],"forbidden":["replace","repair"]},
+{"scenario":"historical-complete","required":["stable intent from plan","current state from change.yaml"],"forbidden":["plan-body state authority","rewrite history"]},
+{"scenario":"historical-incomplete","required":["explicit migration blocker"],"forbidden":["infer state","reverse synchronization"]},
+{"scenario":"missing-governed-reference","required":["stop before governed mutation","exact missing resource"],"forbidden":["memory reconstruction","partial write"]},
+{"scenario":"stable-intent-asset","required":["completion criteria","required evidence","review handoff"],"forbidden":["Milestone state","validation progress"]},
+{"scenario":"authority-by-prompt","required":["portable or blocked classification"],"forbidden":["governed authority","automation authority"]}
+]}

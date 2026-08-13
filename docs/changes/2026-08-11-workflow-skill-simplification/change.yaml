@@ -52,17 +52,6 @@ artifact_states:
       outcome: approved
       record: docs/changes/2026-08-11-workflow-skill-simplification/reviews/spec-review-r2.md
       round: r2
-  architecture:
-    kind: architecture
-    path: docs/architecture/system/architecture.md
-    role: primary
-    lifecycle_state: approved
-    review:
-      id: architecture-review-r2
-      artifact_id: architecture
-      outcome: approved
-      record: docs/changes/2026-08-11-workflow-skill-simplification/reviews/architecture-review-r2.md
-      round: r2
   plan:
     kind: plan
     path: docs/plans/2026-08-11-workflow-skill-simplification.md
