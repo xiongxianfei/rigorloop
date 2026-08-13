@@ -17,6 +17,7 @@ Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
+Review closeout: code-review-final-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
 - Findings resolved: 11
@@ -40,6 +41,10 @@ Review closeout: code-review-m3-r1
 | `PLSIM-CR2` | accepted | closed | The invalid-ledger proof now covers vocabulary ordering, duplicates, missing fields, and destination consistency. |
 
 ## Finding details
+
+### code-review-final-r1
+
+No material findings. The final holistic review approved the coherent M1-M3 implementation, closed review history, semantic preservation, and complete package proof.
 
 ### code-review-m3-r1
 
