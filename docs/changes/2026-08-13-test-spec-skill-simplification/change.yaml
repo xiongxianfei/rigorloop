@@ -42,13 +42,8 @@ artifact_states:
     kind: test-spec
     path: specs/test-spec-skill-simplification.test.md
     role: primary
-    lifecycle_state: revision-required
-    review:
-      id: test-spec-review-r1
-      artifact_id: test-spec
-      outcome: changes-requested
-      record: docs/changes/2026-08-13-test-spec-skill-simplification/reviews/test-spec-review-r1.md
-      round: r1
+    lifecycle_state: authoring
+    authoring_evidence: docs/changes/2026-08-13-test-spec-skill-simplification/evidence/test-spec-revision-r1.md
 
 workflow_state:
   lifecycle_state: active
@@ -196,6 +191,7 @@ changed_files:
   - specs/test-spec-skill-simplification.test.md
   - docs/changes/2026-08-13-test-spec-skill-simplification/review-invocation-test-spec-review-r1.yaml
   - docs/changes/2026-08-13-test-spec-skill-simplification/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/test-spec-revision-r1.md
   - docs/plans/2026-08-13-test-spec-skill-simplification.md
   - docs/plan.md
 
