@@ -9853,6 +9853,16 @@ class PlanReviewSkillSimplificationContractTests(unittest.TestCase):
         self.assertIn("unknown", combined.lower())
         self.assertIn("fail", combined.lower())
 
+    def test_plan_review_keeps_verify_target_authority_checks_inline(self) -> None:
+        for term in (
+            "final `verify` target",
+            "separated authoring, implementation, and verification authority",
+            "ordered commands",
+            "promotion evidence",
+            "stop before PR",
+        ):
+            self.assertIn(term, self.skill)
+
     def test_plan_review_governed_reference_preserves_transaction_contract(self) -> None:
         reference = (
             self.root / "references" / "governed-plan-review-settlement.md"

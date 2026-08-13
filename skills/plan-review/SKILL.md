@@ -60,7 +60,7 @@ Manual reviews may voluntarily apply the requirement-fidelity gate and record a 
 
 ## Review dimensions
 
-Evaluate alignment, milestones, scope, dependencies, validation, TDD, risk, architecture, operations, recovery, and maintenance. Reject vagueness, coupling, omissions, unsafe rollback, missing proof, or uncloseable sequencing. Do not require implementation, rely on an index, or edit the plan.
+Evaluate alignment, milestones, scope, dependencies, validation, TDD, risk, architecture, operations, recovery, and maintenance. For a final `verify` target, require separated authoring, implementation, and verification authority, ordered commands, promotion evidence, and a stop before PR. Reject vagueness, coupling, omissions, unsafe rollback, missing proof, or uncloseable sequencing. Do not require implementation, rely on an index, or edit the plan.
 
 ## Findings and result meaning
 
