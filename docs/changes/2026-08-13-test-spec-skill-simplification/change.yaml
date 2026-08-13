@@ -86,6 +86,8 @@ workflow_state:
     - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/simplification-measurements.md
     - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/semantic-preservation-review.md
     - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/m3-package-proof.md
+    - docs/changes/2026-08-13-test-spec-skill-simplification/review-invocation-code-review-M3-r1.yaml
+    - docs/changes/2026-08-13-test-spec-skill-simplification/reviews/code-review-M3-r1.md
   planned_work:
     plan_artifact_id: plan
     initialization_basis:
@@ -111,11 +113,11 @@ workflow_state:
       status: approved
       stage: code-review
       round: r1
-      artifact_id: implementation-M2
+      artifact_id: implementation-M3
       occurrence: milestone
-      milestone_id: M2
+      milestone_id: M3
       evidence:
-        - docs/changes/2026-08-13-test-spec-skill-simplification/reviews/code-review-M2-r1.md
+        - docs/changes/2026-08-13-test-spec-skill-simplification/reviews/code-review-M3-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -165,6 +167,8 @@ workflow:
       - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/simplification-measurements.md
       - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/semantic-preservation-review.md
       - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/m3-package-proof.md
+      - docs/changes/2026-08-13-test-spec-skill-simplification/review-invocation-code-review-M3-r1.yaml
+      - docs/changes/2026-08-13-test-spec-skill-simplification/reviews/code-review-M3-r1.md
 
 artifacts:
   proposal: docs/proposals/2026-08-13-test-spec-skill-simplification.md
@@ -237,6 +241,7 @@ changed_files:
   - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/semantic-preservation-review.md
   - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/m3-package-proof.md
   - docs/changes/2026-08-13-test-spec-skill-simplification/review-invocation-code-review-M3-r1.yaml
+  - docs/changes/2026-08-13-test-spec-skill-simplification/reviews/code-review-M3-r1.md
 
 review:
   status: approved
