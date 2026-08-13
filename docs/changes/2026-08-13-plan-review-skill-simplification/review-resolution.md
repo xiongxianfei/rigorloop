@@ -170,3 +170,9 @@ No material findings; no resolution entry required. The formal review approved t
 Review closeout: code-review-M1-r1
 
 No material findings; no resolution entry required. The milestone review approved the preservation inventories, scenario fixtures, and baseline evidence.
+
+### code-review-M2-r1
+
+Review closeout: code-review-M2-r1
+
+No material findings; no resolution entry required. The milestone review approved the simplified package, governed transaction, structural assets, coupled tests, and M2 validation evidence.
