@@ -21,6 +21,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: code-review-M1-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: implementation milestone M1 at commit `acd85574`
+Status: clean-with-notes
+Detailed record: reviews/code-review-M1-r1.md
+Resolution: not required
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: test-spec-review-r1
 Stage: test-spec-review
 Round: r1
