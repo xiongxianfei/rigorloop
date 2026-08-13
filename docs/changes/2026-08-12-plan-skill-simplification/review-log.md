@@ -8,6 +8,19 @@ This ledger records formal lifecycle reviews for the plan skill simplification c
 
 ### Review entry
 
+Review ID: architecture-review-r1
+Stage: architecture-review
+Round: r1
+Reviewed artifact: `docs/architecture/system/architecture.md` and `docs/adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md` at commit `4e0b20f8`
+Status: approved
+Detailed record: reviews/architecture-review-r1.md
+Resolution: review-resolution.md#architecture-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: spec-review-r1
 Stage: spec-review
 Round: r1
