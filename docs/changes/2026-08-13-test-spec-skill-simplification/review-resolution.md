@@ -2,14 +2,15 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
+Review closeout: proposal-review-r2
 
-- Reviews covered: `proposal-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
 - Findings resolved: 3
-- Unresolved findings: 0
-- Current result: proposal revised; independent rereview required
+- Unresolved findings: 3
+- Current result: proposal revision required
 
 ## Resolution overview
 
@@ -18,6 +19,9 @@ Review closeout: proposal-review-r1
 | `TSSIM-PR1` | accepted | closed | Authoring now ends at `review-required`; peer review owns activation and workflow owns the later settlement gate. |
 | `TSSIM-PR2` | accepted | closed | Governed creation now has an authoring-entry-first sequence and exact identical-retry contract. |
 | `TSSIM-PR3` | accepted | closed | The skeleton owns headings and insertion positions; smaller assets own repeated body shapes. |
+| `TSSIM-PR4` | needs-decision | open | Proposal author must define the complete governed revision transaction. |
+| `TSSIM-PR5` | needs-decision | open | Proposal author must define bounded stale-attempt closeout and restart. |
+| `TSSIM-PR6` | needs-decision | open | Proposal author must identify existing manual-verification structural owners without adding a new contract. |
 
 ## Finding details
 
@@ -70,3 +74,53 @@ Required outcome: Define exactly which asset owns section order, headers, repeat
 Safe resolution path: Adopt the header-versus-body ownership split recommended by `proposal-review-r1` and validate no duplicated structural owner remains.
 Validation target: revised structural ownership, scenarios, rollout, and acceptance sections plus independent proposal rereview.
 Validation evidence: `evidence/proposal-revision-r1.md`; revised Structural ownership, Static contract scenarios, Rollout and Rollback, Risks and Mitigations, and Decision Log.
+
+### proposal-review-r2
+
+#### TSSIM-PR4
+
+Finding ID: TSSIM-PR4
+Disposition: needs-decision
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Close the governed revision transaction and review-staleness model.
+Chosen action: pending proposal revision
+Rationale: Revision is named but lacks a complete state, authority, identity, retry, and reliance contract.
+Required outcome: Define legal revision states, write sequence, prior/new identities, fresh review, and active-implementation stop behavior.
+Safe resolution path: Adopt the bounded pre-implementation revision transaction recommended by `proposal-review-r2`.
+Validation target: revised revision, ownership, scenarios, risks, and acceptance sections plus independent rereview.
+Validation evidence: pending
+
+#### TSSIM-PR5
+
+Finding ID: TSSIM-PR5
+Disposition: needs-decision
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Close changed-basis interrupted-authoring recovery.
+Chosen action: pending proposal revision
+Rationale: An incomplete creation may be neither an identical retry nor a valid revision.
+Required outcome: Define stale result, exact closeout owner and write set, and new-identity restart.
+Safe resolution path: Use workflow-routed, test-spec-owned bounded abandonment under existing stage-owned authority.
+Validation target: revised recovery matrix, ownership, scenarios, risks, rollout, and acceptance sections plus independent rereview.
+Validation evidence: pending
+
+#### TSSIM-PR6
+
+Finding ID: TSSIM-PR6
+Disposition: needs-decision
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Reconcile optional manual verification with existing structural owners.
+Chosen action: pending proposal revision
+Rationale: The proposal must not imply an unowned repeated structure or introduce a new manual-proof contract accidentally.
+Required outcome: Identify current owners and preserve optional Manual QA behavior without a new asset.
+Safe resolution path: Retain the proof reference, proof-obligation row, test-case, milestone row, and skeleton responsibilities already approved.
+Validation target: revised ownership, non-goals, scenarios, risks, and acceptance sections plus independent rereview.
+Validation evidence: pending
