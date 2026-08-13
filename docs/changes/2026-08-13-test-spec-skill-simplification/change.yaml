@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: implement
-  next_stage: implement
+  current_stage: code-review
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/proposal-authoring.md
@@ -104,7 +104,7 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: planned
+        state: review-requested
     remaining_implementation_milestones:
       - M3
     latest_review:
@@ -135,7 +135,7 @@ workflow:
       completion:
         rule: first formal verify result is durably recorded
     status: active
-    current_stage: implement
+    current_stage: code-review
     stop_reason: null
     evidence:
       - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
@@ -236,6 +236,7 @@ changed_files:
   - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/simplification-measurements.md
   - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/semantic-preservation-review.md
   - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/m3-package-proof.md
+  - docs/changes/2026-08-13-test-spec-skill-simplification/review-invocation-code-review-M3-r1.yaml
 
 review:
   status: approved
