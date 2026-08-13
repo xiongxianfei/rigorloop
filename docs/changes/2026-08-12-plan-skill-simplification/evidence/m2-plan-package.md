@@ -28,7 +28,7 @@ Measurements use canonical LF-normalized content and count each unique procedura
 | --- | ---: | ---: | ---: | ---: | --- |
 | `PL0` | 2555 | 1988 | 18680 | 14888 | reduced |
 | `PL1` | 2555 | 2453 | 18680 | 18483 | reduced |
-| Total package | 3775 | 3670 | 27886 | 27704 | reduced |
+| Total package | 3775 | 3672 | 27886 | 27704 | reduced |
 
 The governed profile improvement is deliberately smaller because universal safety and planning quality remain inline. Final M3 evidence will record every profile, file identity, and package-chain result.
 
