@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -10,11 +10,12 @@ Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
+Review closeout: test-spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`
 - Findings resolved: 7
-- Unresolved findings: 0
-- Current result: plan judgment approved; approved-plan initialization and exact settlement retry required
+- Unresolved findings: 1
+- Current result: test-spec review requested changes; implementation handoff is blocked
 
 ## Resolution overview
 
@@ -27,8 +28,26 @@ Review closeout: plan-review-r1
 | `TSSIM-PR5` | accepted | closed | Stale creation recovery is workflow-routed and test-spec-owned; `TSSIM-PR7` closes its legal same-entry restart mechanism. |
 | `TSSIM-PR6` | accepted | closed | Optional manual verification retains its existing distributed owners with no new contract or asset. |
 | `TSSIM-PR7` | accepted | closed | Stale recovery now restarts the same `authoring` entry without terminal or duplicate-path conflicts. |
+| `TSSIM-TSR1` | needs-decision | open | CMD1 does not yet prove required fields, exact scenarios, invalid fixtures, or unknown-value-first behavior. |
 
 ## Finding details
+
+### test-spec-review-r1
+
+#### TSSIM-TSR1
+
+Finding ID: TSSIM-TSR1
+Disposition: needs-decision
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Decision owner: workflow or user
+Decision needed: Accept the bounded proof-map correction before implementation.
+Stop state: Implementation remains blocked until this finding receives a final disposition, the proof map is revised, and formal rereview approves it.
+Required outcome: Make CMD1 execute every fail-closed ledger and scenario property claimed by M1 and T13.
+Safe resolution path: Accept the finding, revise the command and coupled wording, validate the boundary proof map, and obtain a clean test-spec rereview.
+Validation target: CMD1 structure and behavior plus boundary validation and formal test-spec rereview.
+
 
 ### proposal-review-r1
 
