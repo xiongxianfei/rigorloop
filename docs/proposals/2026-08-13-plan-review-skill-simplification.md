@@ -147,7 +147,7 @@ validated-governed-plan-entry
 invalid-governed-candidate
 ```
 
-`validated-governed-plan-entry` requires one exact current change, valid lifecycle marker, one matching plan entry, legal plan state, complete authoring evidence for initial review or matching initialization basis for retry, and the current reviewed revision. `invalid-governed-candidate` stops without governed mutation or portable fallback. A request with no governed candidate uses portable formal recording. Late candidate discovery loads and validates the reference before dependent recording-location selection, judgment completion, status, write, or handoff claims.
+`validated-governed-plan-entry` requires one exact current change, valid lifecycle marker, one matching plan entry, legal plan state, and the current plan revision. Initial review additionally requires complete current authoring evidence. Settlement retry additionally requires one exact current clean review for that plan and repository tuple; initialization evidence is then classified as absent, matching, or invalid to select the retry sub-result. `invalid-governed-candidate` stops without governed mutation or portable fallback. A request with no governed candidate uses portable formal recording. Late candidate discovery loads and validates the reference before dependent recording-location selection, judgment completion, status, write, or handoff claims.
 
 Classify governed settlement and execution authority independently:
 
