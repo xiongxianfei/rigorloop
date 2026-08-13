@@ -1,0 +1,1 @@
+{"rule_id":"PRV-RULE-BAD","source_locations":["skills/plan-review/SKILL.md"],"behavior":"invalid fixture","governing_requirements":["R49"],"applicable_profiles":["PRV0-portable"],"disposition":"unknown-disposition","destination":"none","preservation_proof":["T12"]}
