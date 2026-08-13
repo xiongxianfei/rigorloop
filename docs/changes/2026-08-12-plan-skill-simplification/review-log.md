@@ -8,6 +8,19 @@ This ledger records formal lifecycle reviews for the plan skill simplification c
 
 ### Review entry
 
+Review ID: proposal-review-r4
+Stage: proposal-review
+Round: r4
+Reviewed artifact: `docs/proposals/2026-08-12-plan-skill-simplification.md` at commit `996f1517`
+Status: approved
+Detailed record: reviews/proposal-review-r4.md
+Resolution: review-resolution.md#proposal-review-r4
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: proposal-review-r3
 Stage: proposal-review
 Round: r3
@@ -16,7 +29,7 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r3.md
 Resolution: review-resolution.md#proposal-review-r3
 Material findings: PLSIM-PR7, PLSIM-PR8, PLSIM-PR9
-Open findings: PLSIM-PR7, PLSIM-PR8, PLSIM-PR9
+Open findings: None
 Recording status: recorded
 
 ### Review entry

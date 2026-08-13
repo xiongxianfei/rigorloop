@@ -2,14 +2,17 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
+Review closeout: proposal-review-r1
+Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
+Review closeout: proposal-review-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
 - Findings resolved: 9
 - Unresolved findings: 0
-- Current result: ready for independent proposal rereview
+- Current result: proposal approved
 
 ## Resolution overview
 
@@ -26,6 +29,10 @@ Review closeout: proposal-review-r3
 | `PLSIM-PR9` | accepted | closed | Canonical architecture updates and a narrow successor ADR are required in this change. |
 
 ## Finding details
+
+### proposal-review-r4
+
+No material findings. The clean rereview approved the proposal at commit `996f1517` and confirmed closure of `PLSIM-PR7`, `PLSIM-PR8`, and `PLSIM-PR9`.
 
 ### proposal-review-r1
 
