@@ -30,13 +30,15 @@
 
 | Requirement ID | Covered by | Level | Notes |
 | --- | --- | --- | --- |
-| <requirement ID> | <test IDs or manual verification> | <level> | <notes> |
+
+<insert requirement coverage rows>
 
 ## Example coverage map
 
 | Example | Covered by | Notes |
 | --- | --- | --- |
-| <example> | <test IDs or manual verification> | <notes> |
+
+<insert example coverage rows>
 
 ## Edge case coverage
 
@@ -48,7 +50,8 @@
 
 | Command ID | Command | Classification | Owner | Owning milestone | First required milestone | Failure behavior | Zero-test behavior | Evidence artifact | Safe mode / side-effect boundary |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| <command ID> | `<command>` | <classification> | <owner> | <milestone or not applicable> | <milestone, gate, or not applicable> | <failure behavior> | <zero-test behavior or not applicable> | <artifact path> | <safe-mode or side-effect boundary> |
+
+<insert validation command rows, or replace the table with the approved no-command rationale>
 
 ## Milestone proof map
 
@@ -56,11 +59,12 @@
 
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| <milestone> | <test IDs or not applicable> | <manual proof IDs or none> | <command IDs or none> | <artifact paths or not applicable> | <gate or stage> | <notes> |
+
+<insert milestone proof rows, or replace the table with an explicit non-applicability rationale>
 
 ## Test cases
 
-<test case blocks>
+<insert test case blocks>
 
 ## Fixtures and data
 

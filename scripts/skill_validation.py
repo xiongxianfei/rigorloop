@@ -233,6 +233,7 @@ PACKAGED_NON_ASSET_RESOURCE_ALLOWLIST = {
     ("proposal-review", "references/proposal-review-recording-and-settlement.md"),
     ("proposal-review", "references/conditional-proposal-gates.md"),
     ("spec-review", "references/governed-spec-review-settlement.md"),
+    ("test-spec", "references/governed-test-spec-authoring.md"),
     ("test-spec-review", "references/test-spec-review-recording-and-settlement.md"),
 }
 
