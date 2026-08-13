@@ -8,11 +8,12 @@ Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: spec-review-r1
+Review closeout: spec-review-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `spec-review-r2`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Current result: spec-review-r1 approved the specification with no material findings; bounded architecture assessment is next
+- Current result: spec-review-r2 approved the identity-corrected specification with no material findings; bounded architecture reassessment is next
 
 ## Resolution overview
 
@@ -138,3 +139,9 @@ No material findings; no resolution entry required. The same-stage proposal-revi
 Review closeout: spec-review-r1
 
 No material findings; no resolution entry required. The formal spec review approved the requirement and boundary contract for architecture assessment and downstream planning.
+
+### spec-review-r2
+
+Review closeout: spec-review-r2
+
+No material findings; no resolution entry required. The same-stage rerun approved the identity correction and preserved all previously approved behavior.
