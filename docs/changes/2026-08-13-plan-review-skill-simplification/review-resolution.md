@@ -152,3 +152,9 @@ No material findings; no resolution entry required. The same-stage rerun approve
 Review closeout: plan-review-r1
 
 No material findings; no resolution entry required. The semantic plan review approved the exact plan revision and returned `initialization-required` without activating the plan.
+
+### spec-review-r3
+
+Review closeout: spec-review-r3
+
+No material findings; no resolution entry required. The corrected boundary activation and ownership metadata passed formal spec rereview without changing approved behavior.
