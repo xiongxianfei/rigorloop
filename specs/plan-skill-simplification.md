@@ -182,11 +182,11 @@ Boundary model scope: PSIM-R001, PSIM-R002, PSIM-R003, PSIM-R004, PSIM-R005, PSI
 
 | Example ID | Classification | Governing requirement IDs | Boundary IDs | Regression ID | Discovery gap ID |
 | --- | --- | --- | --- | --- | --- |
-| E1 | illustration | PSIM-R001, PSIM-R002, PSIM-R010 | BND-COMPOSE-001 | - | - |
-| E2 | illustration | PSIM-R007, PSIM-R011, PSIM-R013 | BND-INPUT-001, BND-STATE-001, BND-AUTH-001 | - | - |
-| E3 | illustration | PSIM-R013, PSIM-R014, PSIM-R019 | BND-STATE-001, BND-TEMPORAL-001 | - | - |
-| E4 | illustration | PSIM-R015, PSIM-R017, PSIM-R018 | BND-STATE-001, BND-AUTH-001, BND-TEMPORAL-001 | - | - |
-| E5 | illustration | PSIM-R009, PSIM-R020 | BND-AUTH-001, BND-RECOVERY-001 | - | - |
+| E1 | illustration | PSIM-R001, PSIM-R002 | BND-COMPOSE-001 | - | - |
+| E2 | illustration | PSIM-R007 | BND-INPUT-001 | - | - |
+| E3 | illustration | PSIM-R013, PSIM-R014, PSIM-R019 | BND-STATE-001 | - | - |
+| E4 | illustration | PSIM-R015, PSIM-R017, PSIM-R018 | BND-TEMPORAL-001 | - | - |
+| E5 | illustration | PSIM-R009 | BND-AUTH-001, BND-RECOVERY-001 | - | - |
 | E6 | illustration | PSIM-R023, PSIM-R025, PSIM-R027 | BND-COMPAT-001 | - | - |
 
 ## Inputs and outputs
