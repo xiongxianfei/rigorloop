@@ -3,66 +3,68 @@ name: plan-review
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Review a concrete execution plan before implementation. Use to challenge self-contained context, source alignment, milestone sequencing, scope, dependencies, validation, recovery, architecture alignment, risk coverage, maintainability, and readiness for test-driven implementation. Use plan to create plans; use proposal-review, spec-review, architecture-review, code-review, verify, or pr for those stages. Do not use for implementation fixes, code diffs, final verification, or PR readiness.
+  Review an execution plan for alignment, sequencing, scope, dependencies, validation, recovery, risk, and implementation readiness. Use other skills for authoring, implementation, verification, and PRs.
 argument-hint: [plan path or feature name]
 ---
 
 # Execution plan review
 
-You are an independent implementation-planning reviewer.
-
-Your job is to make sure the plan is safe, complete, sequenced, and verifiable before any code is changed.
+Judge whether a plan is safe, complete, sequenced, and verifiable.
 
 ## Workflow role
 
 - role_name: plan-review
 - stage: review
-- upstream: concrete execution plan, upstream artifacts, test-spec when present, and project-local workflow evidence
-- downstream: test-spec, plan revision, or review-resolution when triggered
-- summary: Review the execution plan as a lifecycle gate and record approval, changes requested, blockers, or inconclusive state.
-- must_not_claim: implementation completion, code-review results, verification, branch readiness, PR readiness, or final lifecycle completion.
+- upstream: plan, governing artifacts, and workflow evidence
+- downstream: test-spec, plan revision, review-resolution, or workflow settlement
+- summary: Judge, record, and settle only an exactly validated entry.
+- must_not_claim: implementation, verification, branch or PR readiness, or completion
 
-Write review evidence first, then settle only the matching plan entry in `change.yaml`.
-Treat the plan, upstream artifacts, other artifact entries, milestone state, and routing as read-only.
+Treat reviewed and upstream artifacts, `planned_work`, milestone state, and routing as read-only. Every explicit invocation is formal.
 
-## Change-record review settlement
+## Quick operating guide
 
-Before settlement, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Resolve exactly one plan entry by artifact ID, `kind`, and normalized `path`. Require `review-required` and complete authoring evidence.
+Read governing artifacts, classify authority, judge all dimensions, record, and apply only permitted settlement.
 
-Write the durable review record first. Set the exact review mapping with `id`, `artifact_id`, `outcome`, `record`, and `round`. Map `changes-requested` to `revision-required`, and map `blocked` or `inconclusive` to `blocked`. For a clean review with missing `planned_work`, keep the plan `review-required`, record the clean review mapping, and report `initialization-required`; a direct review stops there. After the plan-owned initializer creates matching state from that exact review basis, an identical workflow-coordinated settlement retry reuses the recorded judgment without semantic rereview, may remove `authoring_evidence`, and maps `approved` to `active` for only the matching plan entry.
+## Invocation and authority
 
-Preserve every other entry, milestone state, and routing. Retry identical incomplete settlement without rerunning the review. Stop on stale reviewed revision, conflicting review-ID reuse, mismatched initialization basis, open resolution, ambiguity, illegal transition, or failed available change-metadata validation. Plan-review never initializes `planned_work`; an independent invocation settles the entry and stops without advancing routing.
+Profiles are `PRV0-portable`, `PRV0B-portable-boundary`, `PRV1-governed`, and `PRV1B-governed-boundary`; load triggered references once. Operation is `initial-review` or `settlement-retry`; settlement is `isolated-recording` or `governed-plan-entry`; execution is `manual` or `workflow-managed`; status is `approved`, `changes-requested`, `blocked`, or `inconclusive`; transaction result is `recorded-isolated`, `initialization-required`, `revision-required`, `blocked`, `settled-active`, or `not-settled`. Unknown values fail closed first.
 
-## Inputs to read
+Explicit change identity, plan metadata, matching workflow evidence, or identical retry establishes only `governed_plan_candidate_context`. The reference validates authority; wording and loading grant none.
 
-Read the concrete plan file first, not just an index. Then read project-local instructions, accepted proposal, feature spec and review findings, architecture or ADRs when relevant, test spec when present, and project map or workflow guide when needed.
+## Inputs and evidence
 
-## Artifact placement
+Read the plan body, not its index. Resolve one target from input, metadata, guidance, then defaults; block ambiguity. Read applicable governing sources. Settlement requires tracked authority; otherwise record `recorded-isolated` and report only a possible next stage.
 
-Use the project workflow guide for artifact locations when placement matters.
+## Evidence collection efficiency
 
-Lookup order:
+Use bounded evidence before broad reads or raw excerpts.
+Use summary and stable-ID first reasoning before broad reads or raw excerpts.
+Prefer check IDs, requirement IDs, test IDs, file paths, counts, line citations, matching line numbers, diffs, and targeted excerpts when inspecting large files, generated output, validation logs, or repeated scans.
+Output caps are safety rails, not evidence-selection strategy.
+Validation summaries must not change selected check coverage, command exit behavior, failure detection, or required validation evidence.
+Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
 
-1. explicit user path or change ID;
-2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
-3. known governing spec or schema constraint when directly relevant;
-4. `docs/workflows.md` artifact-location table;
-5. this skill's portable default path;
-6. block on ambiguity.
+## When full-file read is required
 
-This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
+Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local and present, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+## Review procedure
+
+1. Confirm target, authority, operation, resources, and recording location.
+2. Trace governing sources, boundaries, proof timing, and rollback.
+3. Judge all dimensions and record before settlement.
+4. Apply the authorized transaction; never advance routing.
+
+Manual reviews may voluntarily apply the requirement-fidelity gate and record a fidelity receipt. Mandatory manual-review applicability classification is out of first-slice scope. Direct or review-only requests remain isolated by default.
 
 ## Review dimensions
 
-Evaluate each with `pass`, `concern`, or `block`: self-contained context, source alignment, milestone size, sequencing, scope discipline, validation quality, TDD readiness, risk coverage, architecture alignment, operational readiness, and plan maintainability.
+Evaluate alignment, milestones, scope, dependencies, validation, TDD, risk, architecture, operations, recovery, and maintenance. Reject vagueness, coupling, omissions, unsafe rollback, missing proof, or uncloseable sequencing. Do not require implementation, rely on an index, or edit the plan.
 
-## Material findings
+## Findings and result meaning
 
-For every material finding, include evidence, the required outcome, and a safe resolution path.
-
-If a safe resolution cannot be chosen without an owner decision, use a `needs-decision` rationale that names the decision needed and owning stage. A material finding lacking evidence, required outcome, or safe resolution or `needs-decision` rationale is incomplete.
+A material finding needs evidence, required outcome, and safe resolution or `needs-decision`. Assets own layout. Emit core and recording groups, judgment only when performed or reused, and no inapplicable group or placeholder.
 
 ## Isolation and Recording
 
@@ -105,31 +107,13 @@ For an isolated review with material findings, the final review output must stat
 - whether the record must be created before fixing or reconstructed
 - whether owner decision is needed
 
-## Authoring Profile Review Independence
+## Change-record review settlement
 
-For automated `bounded-review-fix` authoring, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any automation-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
+The governed reference owns transaction procedure; this file grants no mutation by inference.
 
-## Automated Manifest Pilot
+## Review independence and automation
 
-During Phase 1 of independent automated review rollout, workflow-managed automated `plan-review` should at least record a review invocation manifest before automated handoff. This is manifest-only evidence for `plan-review`; it does not yet require the full blind-first automated review protocol unless a later approved slice adopts it.
-
-Direct or review-only `plan-review` requests remain isolated by default.
-
-## Requirement-Fidelity Manual Opt-In
-
-Manual reviews may voluntarily apply the requirement-fidelity gate and record a fidelity receipt.
-
-Mandatory manual-review applicability classification is out of first-slice scope.
-
-Direct or review-only requests remain isolated by default.
-
-## Implementation Profile Readiness
-
-When a plan is intended to support a final `verify` automation target, review that implementation authority is separate from authoring and verification authority, milestones are explicitly ordered, commands are approved, promotion evidence is defined, and execution stops before PR. A clean plan-review does not authorize implementation by itself.
-
-## Resource map
-
-- READ `references/boundary-first-method-v1.md` when cited approved boundary or interaction rows are missing, stale, unknown, ambiguous, conflicting, or insufficient for plan review.
+For automated `bounded-review-fix` authoring, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Direct or review-only `plan-review` requests remain isolated by default. Record the review result before any automation-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review. Approval does not authorize implementation.
 
 ## Boundary-first method
 
@@ -148,64 +132,35 @@ Add a scenario only for a distinct outcome or material authority, trust, state, 
 
 Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
 
-Reject coupled primary boundaries, omitted dependencies, unsafe rollback, and proof sequencing that cannot close independently.
+Reject coupled primary boundaries, omitted dependencies, unsafe rollback, and proof sequencing that cannot close independently. Stop review and request plan revision when a primary trust boundary is coupled to another closeout unit or an applicable boundary lacks independent closure or proof.
 
-Trace every applicable boundary and selected interaction into the plan. Stop review and request plan revision when a primary trust boundary is coupled to another closeout unit, a dependency or affected surface is omitted, rollback is unsafe, or proof timing cannot close the milestone independently.
+## Stops and claims
 
-## Rules
+Stop on ambiguity, stale identity, missing resources, illegal state, failed recording or validation, unresolved decisions, or insufficient evidence.
 
-- Do not rubber-stamp organized-looking plans.
-- Do not review `docs/plan.md` as if it were the plan body.
-- Do not accept vague milestones such as “update backend” or “wire UI.”
-- Do not accept missing validation commands for risky work.
-- Do not require implementation code before approving a plan.
-- Do not edit the plan unless the user explicitly asks.
+Do not claim implementation readiness from review alone, continuation from isolation, or verification, branch, PR, release, or closeout readiness.
 
-## Workflow handoff behavior
+## Handoff
 
-- Direct or review-only `plan-review` requests remain isolated by default.
-- Clean `plan-review` under an authorized `bounded-review-fix` run satisfies the review gate and reports `test-spec` as next; it reaches the run target only when the structured target is `plan-review`.
-- A non-clean review, material finding, open `needs-decision`, recording failure, user pause, or cancellation pauses the unified run instead of revising the plan or starting downstream work.
-- Outside that explicitly armed workflow-managed profile, `plan-review` reports `Immediate next stage` and stops unless the user or workflow requests the next stage.
+Approval reports `test-spec`; `changes-requested` routes to revision and resolution. Other non-clean or recording outcomes stop.
 
-## Evidence collection efficiency
+## Resource map
 
-Use bounded evidence before broad reads or raw excerpts.
-Use summary and stable-ID first reasoning before broad reads or raw excerpts.
-Prefer check IDs, requirement IDs, test IDs, file paths, counts, line citations, matching line numbers, diffs, and targeted excerpts when inspecting large files, generated output, validation logs, or repeated scans.
-Output caps are safety rails, not evidence-selection strategy.
-Validation summaries must not change selected check coverage, command exit behavior, failure detection, or required validation evidence.
-Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
+- READ `references/governed-plan-review-settlement.md` when `governed_plan_candidate_context` is true. Validate before dependent decisions; invalid candidates stop without fallback.
+- READ `references/boundary-first-method-v1.md` when cited approved boundary or interaction rows are missing, stale, unknown, ambiguous, conflicting, or insufficient for plan review.
+- COPY `assets/review-result-skeleton.md` when producing every formal result; omit inapplicable groups and placeholders.
+- COPY `assets/material-finding.md` when recording each material finding; confirm `Finding ID:` before linking it.
 
-## When full-file read is required
-
-Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
+Unavailable, escaped, contradictory, or mixed-version triggered resources stop; untriggered resources do not load.
 
 ## Expected output
 
-Use the `## Output skeleton` shape. Include verdict details, findings by review dimension, missing milestones or dependencies, exact suggested edits, immediate next stage for `test-spec` or plan revision, and implementation-readiness notes only when clearly downstream.
+Copy the result asset and one finding asset per material finding. Include implementation-readiness notes only when clearly downstream.
 
 ## Output skeleton
 
-Fill `<placeholders>` with the actual review result.
-
 ```md
-## Result
-- Skill: plan-review
-- Review status: <approved | changes-requested | blocked | inconclusive>
-- Material findings: <IDs or none>
-- Recording status: <recorded | blocked>
-- Recording blocker: <blocker or none>
-- Review record: <path | blocked>
-- Review log: <path | blocked>
-- Review resolution: <path | not-required | blocked>
-- Open blockers: <blockers or none>
-- Immediate next stage: <test-spec | plan revision | blocked>
-## Findings
-### <Finding ID> - <summary>
-- Severity: <blocker | major | minor>
-- Location: <plan section or artifact>
-- Evidence: <evidence>
-- Required outcome: <required correction>
-- Safe resolution path: <safe fix or needs-decision rationale>
+COPY `assets/review-result-skeleton.md` for the formal result.
+COPY `assets/material-finding.md` once per material finding.
+Fill <applicable result and finding fields>; omit inapplicable groups and unfilled placeholders.
 ```
