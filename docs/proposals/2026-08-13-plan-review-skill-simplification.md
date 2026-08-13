@@ -130,6 +130,23 @@ settlement-retry
 
 `initial-review` performs semantic plan judgment and records a new result. `settlement-retry` is valid only when current same-change evidence identifies a prior clean review, the exact reviewed artifact tuple and repository revision, matching plan-owned initialization basis, and an incomplete settlement for that same review occurrence. It reuses the existing judgment and record without semantic rereview. Unknown, ambiguous, stale, contradictory, or conflicting operation evidence stops before writes.
 
+Classify a load-only predicate before validating settlement authority:
+
+```text
+governed_plan_candidate_context
+```
+
+`governed_plan_candidate_context` is true when an explicit change ID, reviewed-plan metadata, a current workflow-managed plan-review request, or an identical settlement-retry request identifies a governed change candidate. The predicate only selects the governed reference. It does not establish a valid plan entry, legal state, settlement authority, or workflow continuation.
+
+After loading the governed reference, validate exactly one outcome:
+
+```text
+validated-governed-plan-entry
+invalid-governed-candidate
+```
+
+`validated-governed-plan-entry` requires one exact current change, valid lifecycle marker, one matching plan entry, legal plan state, complete authoring evidence for initial review or matching initialization basis for retry, and the current reviewed revision. `invalid-governed-candidate` stops without governed mutation or portable fallback. A request with no governed candidate uses portable formal recording. Late candidate discovery loads and validates the reference before dependent recording-location selection, judgment completion, status, write, or handoff claims.
+
 Classify governed settlement and execution authority independently:
 
 ```text
@@ -142,22 +159,38 @@ execution_mode:
   workflow-managed
 ```
 
-`isolated-recording` writes required formal review evidence but cannot settle a plan entry or report governed next-stage eligibility. `governed-plan-entry` requires one exact current change, valid lifecycle marker, one matching plan entry, legal plan state, complete authoring evidence for initial review or matching initialization basis for retry, and current reviewed revision. `workflow-managed` additionally requires current same-change authorization, but it does not enlarge the plan-review write set. Loading a resource never grants settlement or continuation authority.
+`isolated-recording` writes required formal review evidence but cannot settle a plan entry or report governed next-stage eligibility. `governed-plan-entry` is selected only after the governed reference establishes `validated-governed-plan-entry`. `workflow-managed` additionally requires current same-change authorization, but it does not enlarge the plan-review write set. Loading a resource or detecting a candidate never grants settlement or continuation authority.
+
+Keep semantic review status separate from lifecycle transaction result. Review status remains exactly `approved`, `changes-requested`, `blocked`, or `inconclusive`. Transaction result is exactly `recorded-isolated`, `initialization-required`, `revision-required`, `blocked`, `settled-active`, or `not-settled`.
+
+Use this closed matrix:
+
+| Operation and context | Review status | Recording behavior | Plan entry result | Transaction result | Immediate action or handoff |
+| --- | --- | --- | --- | --- | --- |
+| Portable `initial-review`, clean | `approved` | Create one clean receipt and log entry. | none | `recorded-isolated` | Report `test-spec` only as a possible next stage; no formal eligibility. |
+| Governed `initial-review`, clean, `planned_work` absent | `approved` | Create one clean receipt and review mapping. | remain `review-required` | `initialization-required` | Plan-owned initialization; withhold `test-spec` eligibility. |
+| Governed `initial-review`, material actionable findings | `changes-requested` | Create detailed record, log, and required resolution. | `revision-required` | `revision-required` | Plan revision. |
+| Governed `initial-review`, authority or evidence blocker | `blocked` or `inconclusive` | Record the formal result when possible. | `blocked` when the governing contract permits settlement; otherwise unchanged | `blocked` | Resolve the blocker or obtain owner evidence. |
+| Any `initial-review` with blocked required recording | judgment may be returned | Report paths as blocked and create no settlement. | unchanged | `not-settled` | Repair recording before formal completion. |
+| Matching `settlement-retry` | reuse prior `approved` | Reuse the existing receipt, review mapping, and log entry; create no new review evidence. | `active` | `settled-active` | `test-spec` becomes formally eligible; return control to workflow when managed. |
+| Invalid, stale, ambiguous, or conflicting `settlement-retry` | no new review status | Create no new review evidence. | unchanged | `blocked` | Fresh review or correction by the owning stage. |
+
+A settlement retry never performs semantic rereview, creates another receipt, finding set, resolution entry, or review-log entry, changes the prior review ID or round, initializes or modifies `planned_work`, or advances workflow routing. It may validate and settle only the exact matching plan entry.
 
 ### Loaded-resource profiles
 
 Use four procedural assemblies:
 
-| Profile | Governed settlement | Boundary detail | Loaded procedure |
+| Profile | Governed candidate | Boundary detail | Loaded procedure |
 | --- | ---: | ---: | --- |
 | `PRV0-portable` | no | no | `SKILL.md` |
 | `PRV0B-portable-boundary` | no | yes | `SKILL.md` plus boundary reference |
-| `PRV1-governed` | yes | no | `SKILL.md` plus governed reference |
-| `PRV1B-governed-boundary` | yes | yes | `SKILL.md` plus both references |
+| `PRV1-governed` | yes | no | `SKILL.md` plus governed reference; then validate authority or stop |
+| `PRV1B-governed-boundary` | yes | yes | `SKILL.md` plus both references; then validate authority or stop |
 
 The initial-review and settlement-retry operations may use the same governed resource assembly but have different allowed semantic work and writes. Profiles describe loaded resources; operation, settlement mode, and execution mode describe authority. Assets are copied output resources and are measured separately.
 
-Late discovery of governed or boundary context loads the required reference before dependent interpretation, write, status, or handoff claim. Missing, unreadable, escaped, contradictory, or mixed-version required resources stop dependent work without reconstruction from memory.
+Late discovery of governed-candidate or boundary context loads the required reference before dependent interpretation, recording-location selection, write, status, or handoff claim. A failed governed candidate does not reclassify as portable. Missing, unreadable, escaped, contradictory, or mixed-version required resources stop dependent work without reconstruction from memory.
 
 ### Universal `SKILL.md` ownership
 
@@ -165,7 +198,7 @@ Keep inline:
 
 - purpose, trigger, workflow role, near-miss routing, and customer-project portability;
 - review target, original plan identity, source precedence, and bounded evidence access;
-- exact operation, settlement-mode, and execution-mode classification;
+- exact operation, governed-candidate, settlement-mode, execution-mode, review-status, and transaction-result classification;
 - plan-quality dimensions covering context, source alignment, milestone size, sequencing, scope, dependencies, validation, TDD readiness, recovery, architecture, risk, operations, and maintainability;
 - materiality, severity, review status, and plan readiness meanings;
 - concise formal recording location, clean receipt, detailed finding, review-log, review-resolution, and blocked-recording obligations;
@@ -178,31 +211,33 @@ The universal file remains sufficient to perform and record a portable formal pl
 
 ### Governed reference ownership
 
-`references/governed-plan-review-settlement.md` loads exactly for `governed-plan-entry`. It owns:
+`references/governed-plan-review-settlement.md` loads exactly when `governed_plan_candidate_context` is true. It first validates `validated-governed-plan-entry` or stops as `invalid-governed-candidate`; only the validated result can select `governed-plan-entry`. It owns:
 
-- complete `change.yaml` inspection and exact plan-entry resolution by artifact ID, kind, role, normalized path, review ID, round, record path, reviewed artifact path, and reviewed repository revision;
+- complete `change.yaml` inspection, candidate validation, and exact plan-entry resolution by artifact ID, kind, role, normalized path, review ID, round, record path, reviewed artifact path, and reviewed repository revision;
 - initial-review preconditions, review-first durable evidence, exact review mapping, and legal mapping of non-clean statuses;
 - clean initial review with absent `planned_work`, preservation of `review-required`, and `initialization-required` reporting;
 - settlement-retry preconditions, exact initialization-basis comparison, reuse of prior judgment, optional authoring-evidence removal when governed, and the sole matching `review-required` to `active` settlement write;
 - identical interrupted-write reconciliation, concurrent-write checks, conflicting review-ID reuse, stale revision, open resolution, illegal state, and failed validation handling;
-- workflow-managed review manifest and profile-completion procedure only where current workflow authority already requires it.
+- workflow-managed review manifest and profile-completion procedure only where current workflow authority already requires it;
+- fail-closed diagnostics for missing, invalid, stale, ambiguous, or contradictory candidate evidence without portable fallback.
 
 The reference does not own plan-quality judgment, finding materiality, recording requirements, plan edits, `planned_work` initialization or mutation, workflow routing, automation target state, test-spec authoring, or implementation authorization. `plan` owns one-time initialization, `plan-review` owns judgment and matching settlement, and `workflow` owns coordination and continuation.
 
 ### Structural assets
 
-Add `assets/review-result-skeleton.md` with one universal core group and closed conditional groups:
+Add `assets/review-result-skeleton.md` with one universal core group, one always-applicable formal-recording group, and three conditional groups:
 
 | Group | Applicability | Structural content |
 | --- | --- | --- |
-| Core | every formal review | skill, target, operation, review status, material findings, recording status, blockers, immediate next stage, claim limits |
-| Governed settlement | `governed-plan-entry` | change identity, plan identity, reviewed revision, lifecycle state, initialization result, settlement result, formal eligibility |
+| Core | every formal review | skill, target, operation, review status, material findings, blockers, immediate next stage, claim limits |
+| Durable recording | every formal review | recording status, recording blocker, review record, review log, review resolution, finding-record paths |
+| Governed settlement | `validated-governed-plan-entry` | change identity, plan identity, reviewed revision, lifecycle state, initialization result, transaction result, settlement status, formal eligibility |
 | Boundary review | boundary procedure loaded | active boundary and interaction IDs, boundary outcome, unresolved gap |
 | Workflow-managed | current workflow-managed execution | manifest/profile identity, pause or completion result, workflow handoff |
 
 Add `assets/material-finding.md` with the byte-identical parser-owned review-family field block. The existing review-family validator will be extended to cover `plan-review` rather than creating a new validator family.
 
-Inapplicable groups are omitted. Applicable groups with unavailable required data report an explicit blocked or unknown value and blocker. Unfilled placeholders are forbidden. Assets own labels and layout only; `SKILL.md` and the governed reference own applicability, status meaning, settlement, authority, and handoff.
+The durable-recording group is never omitted because every explicit `plan-review` is formal. Other inapplicable groups are omitted. Applicable groups with unavailable required data report an explicit `blocked` or `unknown` value and the blocker. Unfilled placeholders are forbidden. Assets own labels and layout only; `SKILL.md` and the governed reference own applicability, status meaning, settlement, authority, and handoff.
 
 ### Boundary-first ownership
 
@@ -221,8 +256,10 @@ Create separate change-local inventories for behaviorally significant rules and 
 ## Expected Behavior Changes
 
 - A portable formal plan review performs complete plan-quality judgment and recording without loading exact governed settlement procedure.
+- An explicit governed candidate loads the reference before authority validation; an invalid candidate stops and never falls back to portable review.
 - A governed initial review loads one reference, writes review evidence first, and reports `initialization-required` when live state is absent without activating the plan.
-- A matching settlement retry reuses the original clean judgment and activates only the exact plan entry after matching initialization; it does not rerun semantic review.
+- `approved` remains the semantic review status while `initialization-required` remains a separate transaction result.
+- A matching settlement retry reuses the original clean judgment and recording artifacts and activates only the exact plan entry after matching initialization; it does not rerun semantic review or duplicate review evidence.
 - Direct and isolated review never advances routing, even when formal settlement is permitted.
 - Workflow-managed review records only its current manifest/profile evidence and returns control to workflow; it does not start `test-spec` or implementation.
 - Review results and material findings use the two mapped assets, omitting inapplicable groups and forbidding empty placeholders.
@@ -239,7 +276,7 @@ A bounded assessment is still required after specification review. If current ar
 Use three proof classes:
 
 1. Deterministic structural and package proof for frontmatter, required headings, Resource map verbs, reference and asset existence, path containment, closed vocabularies, placeholder absence, review-family asset parity, generated resources, archives, and clean-installed parity.
-2. Static contract scenarios for portable and governed initial review, clean and non-clean outcomes, blocked recording, absent and matching initialization, identical retry, stale revision, conflicting review ID, boundary loading, isolated execution, workflow-managed execution, missing resources, and forbidden writes.
+2. Static contract scenarios for absent, valid, stale, ambiguous, conflicting, and late-discovered governed candidates; portable and governed initial review; every row in the closed review-status and transaction-result matrix; blocked recording; absent and matching initialization; identical retry; conflicting review ID; boundary loading; isolated execution; workflow-managed execution; missing resources; and forbidden writes.
 3. Independent semantic review of the final package against the rule ledger, literal inventory, governing lifecycle contract, and current skill behavior.
 
 Do not execute Codex, Claude Code, opencode, or another target-agent runtime for acceptance. Do not add prompt journeys, transcript grading, model-version evidence, a permanent token budget, or a new validator family. Words and bytes are required metrics; token estimates are optional only when an existing pinned repository-owned implementation already supports the exact assemblies.
@@ -259,7 +296,9 @@ Rollback restores the previous complete canonical `plan-review` package, validat
 | Universal formal-recording safety moves behind the governed trigger. | Keep recording obligations, location fallback, clean/detailed record distinction, and blocked-recording behavior inline; cover portable formal review directly. |
 | Settlement retry accidentally performs semantic rereview or replaces judgment. | Use a closed operation classification and exact review/plan/revision/initialization identity with static retry and conflict scenarios. |
 | Loading a reference is mistaken for settlement or automation authority. | Classify resource profile, settlement mode, and execution mode independently; require exact current evidence before writes. |
-| Assets become policy owners or introduce incompatible field labels. | Limit assets to closed structural groups, extend the existing review-family validator, and keep parser-owned material fields byte-identical. |
+| Candidate validation becomes circular or an invalid candidate falls back to portable behavior. | Use candidate evidence only to load the reference; validate authority inside it and stop invalid candidates without fallback. |
+| Review status, initialization, and settlement are conflated. | Use separate closed review-status and transaction-result vocabularies with one complete outcome matrix. |
+| Assets omit mandatory recording paths, become policy owners, or introduce incompatible field labels. | Require the durable-recording group for every result, limit assets to closed structural groups, extend the existing review-family validator, and keep parser-owned material fields byte-identical. |
 | Main-file reduction merely relocates content. | Require both portable and governed procedural profiles to shrink and report assets and total package separately. |
 | Boundary-first behavior drifts. | Preserve the existing trigger and reference unchanged unless exact parity metadata requires regeneration; test false, true, late, and missing-resource cases. |
 | Tests freeze accidental prose. | Separate semantic-rule and literal-dependency inventories and classify exact consumers before editing. |
@@ -278,6 +317,9 @@ None. The downstream specification should inventory exact compatibility-sensitiv
 | 2026-08-13 | Add the two standard review-family assets. | Stable output structure should have one owner and not inflate procedural prose. | Keep the inline template or add stage-specific duplicate structures. |
 | 2026-08-13 | Measure portable and governed procedural profiles separately from assets. | Main-file size and total-package size alone do not prove invocation-context improvement. | Fixed percentage or `SKILL.md`-only acceptance. |
 | 2026-08-13 | Expect `architecture-not-required` after bounded assessment. | The package and reviewed-plan transaction already have approved architecture. | Skip assessment or create a new ADR preemptively. |
+| 2026-08-13 | Use candidate-trigger loading followed by reference-owned authority validation. | The resource trigger must not depend on validation owned by the triggered resource. | Validate the complete governed contract inline or fall back after failed validation. |
+| 2026-08-13 | Separate semantic review status from lifecycle transaction result. | `approved`, `initialization-required`, and `settled-active` are different claims with different effects. | Add another review status or infer handoff from approval alone. |
+| 2026-08-13 | Require a durable-recording asset group for every result. | Every explicit plan review is formal and must report recording paths or blocked states. | Keep recording fields inline or omit them from portable results. |
 
 ## Next Artifacts
 
