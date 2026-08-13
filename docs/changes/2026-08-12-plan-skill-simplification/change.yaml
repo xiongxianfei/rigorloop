@@ -61,6 +61,12 @@ artifact_states:
       outcome: approved
       record: docs/changes/2026-08-12-plan-skill-simplification/reviews/plan-review-r1.md
       round: r1
+  test-spec:
+    kind: test-spec
+    path: specs/plan-skill-simplification.test.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-12-plan-skill-simplification/evidence/test-spec-authoring.md
 
 workflow_state:
   lifecycle_state: active
@@ -90,6 +96,7 @@ workflow_state:
     - docs/changes/2026-08-12-plan-skill-simplification/reviews/spec-review-r2.md
     - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-plan-review-r1.yaml
     - docs/changes/2026-08-12-plan-skill-simplification/reviews/plan-review-r1.md
+    - docs/changes/2026-08-12-plan-skill-simplification/evidence/test-spec-authoring.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M1
@@ -151,6 +158,7 @@ workflow:
       - docs/changes/2026-08-12-plan-skill-simplification/reviews/spec-review-r2.md
       - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-plan-review-r1.yaml
       - docs/changes/2026-08-12-plan-skill-simplification/reviews/plan-review-r1.md
+      - docs/changes/2026-08-12-plan-skill-simplification/evidence/test-spec-authoring.md
 
 artifacts:
   proposal: docs/proposals/2026-08-12-plan-skill-simplification.md
@@ -158,6 +166,7 @@ artifacts:
   architecture: docs/architecture/system/architecture.md
   adr: docs/adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md
   plan: docs/plans/2026-08-12-plan-skill-simplification.md
+  test_spec: specs/plan-skill-simplification.test.md
 
 requirements:
   - Preserve plan quality, lifecycle ownership, one-time planned-work initialization, boundary-first behavior, and claim limits while reducing portable and governed loaded context.
@@ -203,6 +212,8 @@ changed_files:
   - docs/changes/2026-08-12-plan-skill-simplification/reviews/spec-review-r2.md
   - docs/changes/2026-08-12-plan-skill-simplification/review-invocation-plan-review-r1.yaml
   - docs/changes/2026-08-12-plan-skill-simplification/reviews/plan-review-r1.md
+  - specs/plan-skill-simplification.test.md
+  - docs/changes/2026-08-12-plan-skill-simplification/evidence/test-spec-authoring.md
 
 review:
   status: approved
