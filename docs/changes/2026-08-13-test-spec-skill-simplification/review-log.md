@@ -27,7 +27,7 @@ Round: r1
 Reviewed artifact: implementation milestone M1 at commit `acd85574`
 Status: clean-with-notes
 Detailed record: reviews/code-review-M1-r1.md
-Resolution: not required
+Resolution: review-resolution.md#code-review-M1-r1
 Material findings: None
 Open findings: None
 Recording status: recorded
