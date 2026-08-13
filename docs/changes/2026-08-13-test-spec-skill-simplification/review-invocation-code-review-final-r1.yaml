@@ -1,0 +1,24 @@
+schema_version: 1
+review_id: code-review-final-r1
+review_stage: code-review
+review_target: plan
+base_revision: 4de1b791
+head_revision: c9949101
+milestone_id: none
+native_review_status: pending
+review_gate_outcome: pending
+independence_level: L0
+author_context_id: root-workflow-test-spec-simplification
+reviewer_context_id: root-code-review-final-r1-context-reset
+context_separation_mechanism: full-diff-and-governing-artifacts-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-contract-change
+  - governed-authoring-transaction
+  - adapter-package-resource-change
+requirement_fidelity:
+  applicability: applicable
+  receipt: pending
+phase_receipts:
+  - risk-map-recorded
+forbidden_initial_context_excluded: true
