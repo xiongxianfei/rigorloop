@@ -4,12 +4,14 @@
 
 Closeout status: closed
 
+Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
+Review closeout: proposal-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Current result: proposal revised; independent rereview required
+- Current result: proposal-review-r3 approved the revised proposal with no material findings; ready for focused specification through a separate invocation
 
 ## Resolution overview
 
@@ -123,3 +125,9 @@ Required outcome: Retain authoring, review, and initialization evidence and defi
 Safe resolution path: Adopt the retained-evidence sequence from `proposal-review-r2` and prove pre-write failure, completed-write retry, and interrupted reconciliation.
 Validation target: revised governed ownership, recovery, scenarios, acceptance criteria, and independent proposal rereview.
 Validation evidence: `evidence/proposal-revision-r2.md`; revised Governed reference ownership, Deterministic settlement sequence, Expected Behavior Changes, Testing and Verification Strategy, Risks and Mitigations, Acceptance Criteria, and Decision Log sections.
+
+### proposal-review-r3
+
+Review closeout: proposal-review-r3
+
+No material findings; no resolution entry required. The same-stage proposal-review rerun approved the revised proposal and closed all findings through `proposal-review-r2`.
