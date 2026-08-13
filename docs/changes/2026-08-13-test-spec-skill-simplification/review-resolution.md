@@ -2,16 +2,16 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
-- Findings resolved: 6
-- Unresolved findings: 1
-- Current result: proposal revision required
+- Findings resolved: 7
+- Unresolved findings: 0
+- Current result: proposal revised; independent rereview required
 
 ## Resolution overview
 
@@ -21,9 +21,9 @@ Review closeout: proposal-review-r3
 | `TSSIM-PR2` | accepted | closed | Governed creation now has an authoring-entry-first sequence and exact identical-retry contract. |
 | `TSSIM-PR3` | accepted | closed | The skeleton owns headings and insertion positions; smaller assets own repeated body shapes. |
 | `TSSIM-PR4` | accepted | closed | Revision now binds prior and new identities, preserves history, stops on active reliance, and requires fresh review. |
-| `TSSIM-PR5` | accepted | closed | Stale creation now uses workflow-routed, test-spec-owned bounded abandonment before a new identity starts. |
+| `TSSIM-PR5` | accepted | closed | Stale creation recovery is workflow-routed and test-spec-owned; `TSSIM-PR7` closes its legal same-entry restart mechanism. |
 | `TSSIM-PR6` | accepted | closed | Optional manual verification retains its existing distributed owners with no new contract or asset. |
-| `TSSIM-PR7` | needs-decision | open | Terminal abandonment cannot support a new primary entry at the canonical test-spec path. |
+| `TSSIM-PR7` | accepted | closed | Stale recovery now restarts the same `authoring` entry without terminal or duplicate-path conflicts. |
 
 ## Finding details
 
@@ -132,15 +132,15 @@ Validation evidence: `evidence/proposal-revision-r2.md`; revised Non-goals, Opti
 #### TSSIM-PR7
 
 Finding ID: TSSIM-PR7
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Close stale-attempt restart under terminal-state, primary-kind, and unique-path constraints.
-Chosen action: pending proposal revision
+Chosen action: Keep the exact entry in `authoring`, replace only its authoring-evidence path, preserve artifact ID and canonical path, and bind a new retry identity under workflow-routed test-spec-owned restart.
 Rationale: An abandoned entry is terminal and prevents a replacement primary entry from reusing the canonical path.
 Required outcome: Define a legal same-entry restart or explicitly amend the lifecycle schema.
 Safe resolution path: Keep the exact incomplete entry in `authoring`; under workflow-routed authorization, let `test-spec` bind a new authoring-evidence path and retry identity while preserving artifact ID and canonical path.
 Validation target: revised stale-restart, scenarios, acceptance, risks, rollout, and decision sections plus independent rereview.
-Validation evidence: pending
+Validation evidence: `evidence/proposal-revision-r3.md`; revised Stale interrupted authoring, Expected Behavior Changes, Static contract scenarios, Acceptance criteria, Rollout and Rollback, Risks and Mitigations, and Decision Log.

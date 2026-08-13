@@ -29,7 +29,7 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r3.md
 Resolution: review-resolution.md#proposal-review-r3
 Material findings: TSSIM-PR7
-Open findings: TSSIM-PR7
+Open findings: None
 Recording status: recorded
 
 ### Review entry
