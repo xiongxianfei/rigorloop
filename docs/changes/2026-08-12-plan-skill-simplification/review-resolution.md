@@ -35,6 +35,10 @@ Review closeout: test-spec-review-r1
 
 ## Finding details
 
+### code-review-m1-r1
+
+No material findings. The clean milestone review approved the evidence-first initialization, state-authority migration, compatibility boundary, and direct deterministic proof.
+
 ### architecture-review-r1
 
 No material findings. The clean review approved the canonical architecture update and accepted the successor ADR.
