@@ -1,0 +1,48 @@
+change_id: 2026-08-13-plan-review-skill-simplification
+title: Plan-Review Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-13-plan-review-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-13-plan-review-skill-simplification/evidence/proposal-authoring.md
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/proposal-authoring.md
+
+workflow: {}
+
+artifacts:
+  proposal: docs/proposals/2026-08-13-plan-review-skill-simplification.md
+
+requirements:
+  - Preserve plan-quality judgment, formal recording, reviewed-plan settlement, boundary-first behavior, isolation, automation limits, and claim boundaries while reducing portable and governed procedural context.
+  - Give universal review policy, governed settlement procedure, boundary method, and structural output one explicit owner each.
+  - Distinguish initial semantic review from identity-matching settlement retry without allowing plan-review to initialize planned work or advance routing.
+  - Prove semantic preservation, literal compatibility, profile reduction, state-transition safety, and package parity without target-agent runtime execution.
+
+tests:
+  - Independent semantic review of the proposal and final skill package.
+  - Deterministic validation of closed operations, authority axes, resource profiles, mapped resources, asset structure, recording, settlement, failure behavior, and package parity.
+  - Static lifecycle scenarios proving initial-review evidence, initialization-required, exact settlement retry, stale and conflicting identity stops, and forbidden writes.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-13-plan-review-skill-simplification/change.yaml
+  - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-13-plan-review-skill-simplification.md
+
+review:
+  status: review-requested
+  unresolved_items: 0

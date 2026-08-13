@@ -1,0 +1,295 @@
+# Plan-Review Skill Simplification
+
+## Owning change record
+
+`docs/changes/2026-08-13-plan-review-skill-simplification/change.yaml`
+
+## Problem
+
+The published `plan-review` skill is rigorous but mixes ordinary plan-quality judgment with exact governed settlement, reviewed-plan initialization handoff, workflow-managed automation, repeated formal-recording structure, and a large inline output template. Its 211-line, 1,877-word `SKILL.md` is smaller than several recently simplified review skills, yet every invocation still loads lifecycle mechanics that only apply when a valid governed plan entry exists.
+
+The recently merged plan-skill simplification makes this boundary more important. `plan-review` now has two distinct governed operations: an initial semantic review that records clean evidence before `planned_work` exists, and an identical settlement retry that reuses the original judgment after matching plan-owned initialization. Keeping both operations embedded in the universal review path increases scan cost and makes it easier to confuse clean judgment, initialization readiness, lifecycle settlement, and workflow continuation.
+
+The skill also maintains its result and material-finding structure inline while other optimized review-family skills use structural assets. That duplicates stable field labels and makes it harder to keep policy ownership separate from output layout. The optimization must preserve plan-quality rigor, every formal-review recording obligation, direct-review isolation, exact identity checks, the reviewed-plan transaction, boundary-first review, automation limits, and truthful handoff claims.
+
+## Goals
+
+- Make ordinary plan review shorter and easier to scan without weakening source alignment, milestone quality, sequencing, validation, recovery, architecture alignment, or maintainability judgment.
+- Keep `SKILL.md` self-sufficient for formal portable review, recording obligations, plan-quality judgment, status selection, material findings, isolation, stops, claims, and resource selection.
+- Give exact governed plan-entry review and settlement procedure one conditional owner.
+- Distinguish initial semantic review from identical settlement retry without allowing the retry to rerun or replace judgment.
+- Add one result asset and one material-finding asset as structural owners while keeping status, applicability, settlement, and handoff policy in procedure.
+- Preserve the existing checked boundary-first reference and compact inline scan.
+- Measure portable and governed procedural profiles separately from structural assets and total package size.
+- Prove semantic preservation, literal compatibility, state-transition safety, and package parity without executing a target-agent runtime or adding permanent simplicity machinery.
+
+## Non-goals
+
+- Do not change what makes an execution plan acceptable, add a new review status, weaken formal-review recording, or authorize implementation from a clean plan review.
+- Do not change the reviewed-plan initialization and settlement transaction approved by the plan-skill simplification; this change packages and clarifies that existing contract.
+- Do not let `plan-review` initialize or modify `planned_work`, advance workflow routing, edit the reviewed plan, or own automation state.
+- Do not optimize `plan`, `test-spec`, `workflow`, or another skill except for directly coupled contract, validator, or package surfaces required by this change.
+- Do not add a generic review engine, scheduler, state store, new lifecycle stage, target-agent journey, transcript grader, tokenizer dependency, prose-quality score, or permanent size gate.
+- Do not add more than one new procedural reference or more than the two review-family structural assets.
+
+## Vision fit
+
+fits the current vision
+
+The change makes plan review easier for humans and agents to inspect while preserving durable evidence, exact lifecycle authority, resumability, and the traceable handoff from plan judgment to test specification.
+
+## Context
+
+The current package contains `SKILL.md` and the shared boundary-first reference:
+
+| Resource | Lines | Words | UTF-8 bytes | Current role |
+| --- | ---: | ---: | ---: | --- |
+| `SKILL.md` | 211 | 1,877 | 13,619 | Universal plan judgment, formal recording, governed settlement, automation, boundary bridge, handoff, and output template |
+| `boundary-first-method-v1.md` | 110 | 857 | 6,346 | Shared detailed boundary vocabulary and review method |
+| Complete package | 321 | 2,734 | 19,965 | Current maintenance and distribution footprint |
+
+Every explicit `plan-review` invocation remains a supported formal review. Portable formal review therefore keeps concise recording obligations inline: select the recording root through the existing formal-review location contract, record a clean receipt or detailed findings, synchronize `review-log.md`, create `review-resolution.md` only when triggered, and report blocked recording when no safe location exists. The optimization does not create a non-formal feedback mode inside `plan-review` and does not hide universal recording safety behind governed settlement.
+
+The merged lifecycle contract already defines the evidence-initialization-settlement transaction. Initial clean review records the exact reviewed revision and leaves the plan `review-required` while `planned_work` is absent. Plan later initializes only missing state from that exact review basis. Workflow then coordinates an identical `plan-review` retry, and only that retry may activate the matching plan entry. This proposal treats that transaction as governing authority rather than reopening it.
+
+The existing review-family assets provide a proven structural pattern, but `plan-review` is not yet included in the validator's first-slice asset family. Adding the two assets therefore requires a bounded extension of existing review-family validation, including byte-identical parser-owned material-finding fields and plan-review-specific result labels. Tests and validators remain contract projections rather than prose-policy owners.
+
+## Initial intent preservation
+
+| Initial user goal | Proposal treatment | Where recorded |
+| --- | --- | --- |
+| Identify the best solution for optimizing `plan-review`. | in scope | Options Considered and Recommended Direction |
+| Create a new branch. | in scope | Change-local authoring evidence |
+| Create a proposal. | in scope | This artifact |
+| Run independent proposal review. | in scope | Next Artifacts and formal review evidence |
+
+## Scope budget
+
+| Work item | Treatment | Reason |
+| --- | --- | --- |
+| Simplify universal plan-quality review. | core to this proposal | Primary user-visible objective |
+| Add one governed review-and-settlement reference. | core to this proposal | Removes exact change-record procedure from portable review |
+| Add result and material-finding assets. | same-slice dependency | Removes duplicated output structure and aligns review-family ownership |
+| Preserve checked boundary-first loading. | same-slice dependency | Boundary activation and package parity are compatibility surfaces |
+| Preserve the reviewed-plan transaction. | same-slice dependency | The new reference must encode the merged lifecycle contract exactly |
+| Extend existing review-family asset validation to `plan-review`. | same-slice dependency | Required to make the two new assets safe and parser-compatible |
+| Add change-local preservation, scenario, and measurement evidence. | same-slice dependency | Required to prove simplification without permanent policy |
+| Optimize adjacent skills or redesign lifecycle automation. | out of scope | Those changes require separate ownership and evidence |
+
+## Options Considered
+
+### Option 0: Keep the package unchanged
+
+This avoids migration work but leaves governed settlement, automation, and output structure in every invocation and keeps `plan-review` inconsistent with optimized review-family packaging.
+
+### Option 1: Editorial consolidation only
+
+This can remove repeated prose and shorten the main file with minimal package change. It cannot keep portable review from loading exact `change.yaml`, initialization-basis, settlement-retry, and automation procedure.
+
+### Option 2: Add structural assets but keep all procedure inline
+
+This gives output fields one owner and reduces template duplication. It leaves the main context dominated by governed state procedure and does not clarify the initial-review versus settlement-retry boundary.
+
+### Option 3: Add one governed procedure reference and two structural assets
+
+This keeps portable formal review, plan judgment, recording safety, and classification inline; moves exact governed mutation and automation procedure behind an evidence-based trigger; retains the existing boundary reference; and adopts the proven review-family asset model. It adds three resources at two real ownership boundaries while avoiding procedure fragmentation.
+
+### Option 4: Split formal recording, governed settlement, automation, and retry into separate references
+
+This could reduce some specialized assemblies further, but every formal review needs recording and every governed retry depends on the same identity and settlement contract. Multiple references would create overlapping triggers and navigation cost disproportionate to the current 1,877-word file.
+
+### Option 5: Replace review prose with a generic executable review engine
+
+This could enforce deterministic state transitions but cannot own semantic plan-quality judgment and would add runtime and policy machinery outside the simplification goal.
+
+## Recommended Direction
+
+Adopt Option 3.
+
+The target package is:
+
+```text
+skills/plan-review/
+├── SKILL.md
+├── assets/
+│   ├── review-result-skeleton.md
+│   └── material-finding.md
+└── references/
+    ├── governed-plan-review-settlement.md
+    └── boundary-first-method-v1.md
+```
+
+### Invocation and operation classification
+
+Every explicit `plan-review` invocation is a formal review. Classify exactly one review operation before side effects:
+
+```text
+initial-review
+settlement-retry
+```
+
+`initial-review` performs semantic plan judgment and records a new result. `settlement-retry` is valid only when current same-change evidence identifies a prior clean review, the exact reviewed artifact tuple and repository revision, matching plan-owned initialization basis, and an incomplete settlement for that same review occurrence. It reuses the existing judgment and record without semantic rereview. Unknown, ambiguous, stale, contradictory, or conflicting operation evidence stops before writes.
+
+Classify governed settlement and execution authority independently:
+
+```text
+settlement_mode:
+  isolated-recording
+  governed-plan-entry
+
+execution_mode:
+  manual
+  workflow-managed
+```
+
+`isolated-recording` writes required formal review evidence but cannot settle a plan entry or report governed next-stage eligibility. `governed-plan-entry` requires one exact current change, valid lifecycle marker, one matching plan entry, legal plan state, complete authoring evidence for initial review or matching initialization basis for retry, and current reviewed revision. `workflow-managed` additionally requires current same-change authorization, but it does not enlarge the plan-review write set. Loading a resource never grants settlement or continuation authority.
+
+### Loaded-resource profiles
+
+Use four procedural assemblies:
+
+| Profile | Governed settlement | Boundary detail | Loaded procedure |
+| --- | ---: | ---: | --- |
+| `PRV0-portable` | no | no | `SKILL.md` |
+| `PRV0B-portable-boundary` | no | yes | `SKILL.md` plus boundary reference |
+| `PRV1-governed` | yes | no | `SKILL.md` plus governed reference |
+| `PRV1B-governed-boundary` | yes | yes | `SKILL.md` plus both references |
+
+The initial-review and settlement-retry operations may use the same governed resource assembly but have different allowed semantic work and writes. Profiles describe loaded resources; operation, settlement mode, and execution mode describe authority. Assets are copied output resources and are measured separately.
+
+Late discovery of governed or boundary context loads the required reference before dependent interpretation, write, status, or handoff claim. Missing, unreadable, escaped, contradictory, or mixed-version required resources stop dependent work without reconstruction from memory.
+
+### Universal `SKILL.md` ownership
+
+Keep inline:
+
+- purpose, trigger, workflow role, near-miss routing, and customer-project portability;
+- review target, original plan identity, source precedence, and bounded evidence access;
+- exact operation, settlement-mode, and execution-mode classification;
+- plan-quality dimensions covering context, source alignment, milestone size, sequencing, scope, dependencies, validation, TDD readiness, recovery, architecture, risk, operations, and maintainability;
+- materiality, severity, review status, and plan readiness meanings;
+- concise formal recording location, clean receipt, detailed finding, review-log, review-resolution, and blocked-recording obligations;
+- the rule that isolation stops continuation but never suppresses required recording;
+- the compact four-question boundary scan and exact reference triggers;
+- universal stops, claims, status-to-handoff behavior, and the distinction between immediate `test-spec` handoff and downstream implementation readiness;
+- the structural-asset applicability rules and concise expected-output instruction.
+
+The universal file remains sufficient to perform and record a portable formal plan review. It does not need exact governed plan-entry mutation procedure.
+
+### Governed reference ownership
+
+`references/governed-plan-review-settlement.md` loads exactly for `governed-plan-entry`. It owns:
+
+- complete `change.yaml` inspection and exact plan-entry resolution by artifact ID, kind, role, normalized path, review ID, round, record path, reviewed artifact path, and reviewed repository revision;
+- initial-review preconditions, review-first durable evidence, exact review mapping, and legal mapping of non-clean statuses;
+- clean initial review with absent `planned_work`, preservation of `review-required`, and `initialization-required` reporting;
+- settlement-retry preconditions, exact initialization-basis comparison, reuse of prior judgment, optional authoring-evidence removal when governed, and the sole matching `review-required` to `active` settlement write;
+- identical interrupted-write reconciliation, concurrent-write checks, conflicting review-ID reuse, stale revision, open resolution, illegal state, and failed validation handling;
+- workflow-managed review manifest and profile-completion procedure only where current workflow authority already requires it.
+
+The reference does not own plan-quality judgment, finding materiality, recording requirements, plan edits, `planned_work` initialization or mutation, workflow routing, automation target state, test-spec authoring, or implementation authorization. `plan` owns one-time initialization, `plan-review` owns judgment and matching settlement, and `workflow` owns coordination and continuation.
+
+### Structural assets
+
+Add `assets/review-result-skeleton.md` with one universal core group and closed conditional groups:
+
+| Group | Applicability | Structural content |
+| --- | --- | --- |
+| Core | every formal review | skill, target, operation, review status, material findings, recording status, blockers, immediate next stage, claim limits |
+| Governed settlement | `governed-plan-entry` | change identity, plan identity, reviewed revision, lifecycle state, initialization result, settlement result, formal eligibility |
+| Boundary review | boundary procedure loaded | active boundary and interaction IDs, boundary outcome, unresolved gap |
+| Workflow-managed | current workflow-managed execution | manifest/profile identity, pause or completion result, workflow handoff |
+
+Add `assets/material-finding.md` with the byte-identical parser-owned review-family field block. The existing review-family validator will be extended to cover `plan-review` rather than creating a new validator family.
+
+Inapplicable groups are omitted. Applicable groups with unavailable required data report an explicit blocked or unknown value and blocker. Unfilled placeholders are forbidden. Assets own labels and layout only; `SKILL.md` and the governed reference own applicability, status meaning, settlement, authority, and handoff.
+
+### Boundary-first ownership
+
+Keep the inline four-question scan and the existing `boundary-first-method-v1.md` activation contract unchanged. Load the boundary reference only when cited approved boundary or interaction rows are missing, stale, unknown, ambiguous, conflicting, or insufficient for plan review. The boundary reference owns detailed plan-boundary analysis; the governed reference owns lifecycle review settlement. Neither reference may override universal rules or duplicate the other's contract.
+
+### Simplification measurement
+
+Use canonical authored files with LF-normalized content. Count Unicode whitespace-separated words and UTF-8 bytes, count each unique procedural resource once, and record file identities and assembly order.
+
+Measure `PRV0`, `PRV0B`, `PRV1`, and `PRV1B` as procedural profiles. Report each asset and total package separately. Also report initial-review and settlement-retry semantic scenarios even when they share a loaded-resource assembly. The primary acceptance surface is both `PRV0` and `PRV1`: each should have fewer words and bytes than its current equivalent. `SKILL.md` reduction alone is insufficient, and no fixed percentage overrides semantic or lifecycle preservation.
+
+### Semantic and literal preservation
+
+Create separate change-local inventories for behaviorally significant rules and exact literal dependencies. Every rule receives one disposition and destination. Every literal consumer is classified as normative contract, parser/package contract, test-only incidental, obsolete, or historical fixture. Preserve real contract literals or migrate every consumer atomically; update incidental tests rather than freezing accidental prose.
+
+## Expected Behavior Changes
+
+- A portable formal plan review performs complete plan-quality judgment and recording without loading exact governed settlement procedure.
+- A governed initial review loads one reference, writes review evidence first, and reports `initialization-required` when live state is absent without activating the plan.
+- A matching settlement retry reuses the original clean judgment and activates only the exact plan entry after matching initialization; it does not rerun semantic review.
+- Direct and isolated review never advances routing, even when formal settlement is permitted.
+- Workflow-managed review records only its current manifest/profile evidence and returns control to workflow; it does not start `test-spec` or implementation.
+- Review results and material findings use the two mapped assets, omitting inapplicable groups and forbidding empty placeholders.
+- Missing triggered resources stop dependent review or settlement safely.
+
+## Architecture Impact
+
+The expected architecture assessment is `architecture-not-required`. The existing architecture already defines published skills as canonical `SKILL.md` plus mapped references and assets, raw-byte resource parity, stage-owned review settlement, the reviewed-plan initialization transaction, and `change.yaml` as mutable lifecycle owner.
+
+A bounded assessment is still required after specification review. If current architecture contains a flat `plan-review` package inventory, update that example or pointer without creating a new design decision. A new ADR is warranted only if specification changes the reviewed-plan transaction, package model, lifecycle ownership, or persistent state. Mutable architecture-assessment status and artifact pointers belong only in this change's `change.yaml`; stable design rationale remains in architecture artifacts.
+
+## Testing and Verification Strategy
+
+Use three proof classes:
+
+1. Deterministic structural and package proof for frontmatter, required headings, Resource map verbs, reference and asset existence, path containment, closed vocabularies, placeholder absence, review-family asset parity, generated resources, archives, and clean-installed parity.
+2. Static contract scenarios for portable and governed initial review, clean and non-clean outcomes, blocked recording, absent and matching initialization, identical retry, stale revision, conflicting review ID, boundary loading, isolated execution, workflow-managed execution, missing resources, and forbidden writes.
+3. Independent semantic review of the final package against the rule ledger, literal inventory, governing lifecycle contract, and current skill behavior.
+
+Do not execute Codex, Claude Code, opencode, or another target-agent runtime for acceptance. Do not add prompt journeys, transcript grading, model-version evidence, a permanent token budget, or a new validator family. Words and bytes are required metrics; token estimates are optional only when an existing pinned repository-owned implementation already supports the exact assemblies.
+
+## Rollout and Rollback
+
+Implement atomically in canonical `skills/`: add the governed reference and two assets, rewrite `SKILL.md`, extend existing review-family validation, update directly coupled contracts and fixtures, regenerate derived packages, and prove canonical-through-installed parity before handoff.
+
+Historical review records and plan artifacts remain unchanged. No data migration is expected because the lifecycle transaction and metadata shape do not change. If implementation discovers that the merged transaction must change, stop and route that decision back to specification and architecture rather than hiding it inside package simplification.
+
+Rollback restores the previous complete canonical `plan-review` package, validator expectations, and any directly coupled contract wording together, then regenerates every derived package. Do not leave a shortened main file without its resources or assets.
+
+## Risks and Mitigations
+
+| Risk | Mitigation |
+| --- | --- |
+| Universal formal-recording safety moves behind the governed trigger. | Keep recording obligations, location fallback, clean/detailed record distinction, and blocked-recording behavior inline; cover portable formal review directly. |
+| Settlement retry accidentally performs semantic rereview or replaces judgment. | Use a closed operation classification and exact review/plan/revision/initialization identity with static retry and conflict scenarios. |
+| Loading a reference is mistaken for settlement or automation authority. | Classify resource profile, settlement mode, and execution mode independently; require exact current evidence before writes. |
+| Assets become policy owners or introduce incompatible field labels. | Limit assets to closed structural groups, extend the existing review-family validator, and keep parser-owned material fields byte-identical. |
+| Main-file reduction merely relocates content. | Require both portable and governed procedural profiles to shrink and report assets and total package separately. |
+| Boundary-first behavior drifts. | Preserve the existing trigger and reference unchanged unless exact parity metadata requires regeneration; test false, true, late, and missing-resource cases. |
+| Tests freeze accidental prose. | Separate semantic-rule and literal-dependency inventories and classify exact consumers before editing. |
+| Package rollout is partial. | Require canonical, generated, archived, and clean-installed resource parity and fail closed on mixed versions. |
+
+## Open Questions
+
+None. The downstream specification should inventory exact compatibility-sensitive literals and existing validator consumers before editing, but the ownership and acceptance decisions are closed here.
+
+## Decision Log
+
+| Date | Decision | Reason | Alternatives rejected |
+| --- | --- | --- | --- |
+| 2026-08-13 | Use one conditional governed review-and-settlement reference. | Exact plan-entry inspection and retry form one authority boundary, while portable recording remains universal. | Inline-only procedure and multiple fragmented references. |
+| 2026-08-13 | Distinguish `initial-review` from `settlement-retry`. | The merged lifecycle transaction requires judgment reuse and exact retry behavior. | Treat every invocation as a fresh semantic review. |
+| 2026-08-13 | Add the two standard review-family assets. | Stable output structure should have one owner and not inflate procedural prose. | Keep the inline template or add stage-specific duplicate structures. |
+| 2026-08-13 | Measure portable and governed procedural profiles separately from assets. | Main-file size and total-package size alone do not prove invocation-context improvement. | Fixed percentage or `SKILL.md`-only acceptance. |
+| 2026-08-13 | Expect `architecture-not-required` after bounded assessment. | The package and reviewed-plan transaction already have approved architecture. | Skip assessment or create a new ADR preemptively. |
+
+## Next Artifacts
+
+- Independent `proposal-review`.
+- Focused feature specification and `spec-review` after proposal acceptance.
+- Bounded architecture assessment recorded in the owning change record.
+- Execution plan, plan review, test specification, and test-spec review before implementation.
+
+## Follow-on Artifacts
+
+None yet
+
+## Readiness
+
+Ready for independent `proposal-review`. This proposal does not claim acceptance, specification readiness, implementation readiness, verification, branch readiness, or PR readiness.
