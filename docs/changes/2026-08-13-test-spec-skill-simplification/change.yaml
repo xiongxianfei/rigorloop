@@ -30,8 +30,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: spec
-  next_stage: spec
+  current_stage: architecture-assessment
+  next_stage: plan
   blocker: null
   evidence:
     - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/proposal-authoring.md
@@ -48,6 +48,7 @@ workflow_state:
     - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/spec-authoring.md
     - docs/changes/2026-08-13-test-spec-skill-simplification/review-invocation-spec-review-r1.yaml
     - docs/changes/2026-08-13-test-spec-skill-simplification/reviews/spec-review-r1.md
+    - docs/changes/2026-08-13-test-spec-skill-simplification/architecture-assessment.md
 
 workflow:
   automation:
@@ -70,6 +71,7 @@ workflow:
       - docs/changes/2026-08-13-test-spec-skill-simplification/evidence/spec-authoring.md
       - docs/changes/2026-08-13-test-spec-skill-simplification/review-invocation-spec-review-r1.yaml
       - docs/changes/2026-08-13-test-spec-skill-simplification/reviews/spec-review-r1.md
+      - docs/changes/2026-08-13-test-spec-skill-simplification/architecture-assessment.md
 
 artifacts:
   proposal: docs/proposals/2026-08-13-test-spec-skill-simplification.md
@@ -106,6 +108,7 @@ changed_files:
   - specs/test-spec-skill-simplification.md
   - docs/changes/2026-08-13-test-spec-skill-simplification/review-invocation-spec-review-r1.yaml
   - docs/changes/2026-08-13-test-spec-skill-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-13-test-spec-skill-simplification/architecture-assessment.md
 
 review:
   status: approved
