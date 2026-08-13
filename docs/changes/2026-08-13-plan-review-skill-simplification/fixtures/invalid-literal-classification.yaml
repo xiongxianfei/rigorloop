@@ -1,0 +1,1 @@
+{"literal_id":"PRV-LIT-BAD","literal":"invalid fixture","source_location":"skills/plan-review/SKILL.md","consumers":["test fixture"],"classification":"unknown-classification","required_semantics":"unknown values fail first","disposition":"reject","replacement":"none"}

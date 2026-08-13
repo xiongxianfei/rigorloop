@@ -1,0 +1,52 @@
+schema_version: 1
+review_id: code-review-M1-r1
+review_stage: code-review
+review_target: implementation-M1
+base_revision: b82f79d8
+head_revision: 5930e55d
+milestone_id: M1
+native_review_status: clean-with-notes
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-implement-M1
+reviewer_context_id: root-code-review-M1-r1-context-reset
+context_separation_mechanism: diff-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-semantic-preservation
+  - closed-vocabulary-evidence
+  - compatibility-inventory
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+clean_sufficiency:
+  target_identity: 5930e55d
+  inspected_authority:
+    - specs/plan-review-skill-simplification.md
+    - docs/plans/2026-08-13-plan-review-skill-simplification.md#M1
+    - specs/plan-review-skill-simplification.test.md
+  risk_classes:
+    - missing-semantic-rule
+    - accidental-literal-policy
+    - incomplete-scenario-set
+    - misleading-baseline
+  adversarial_hypotheses:
+    - a current rule disappeared from the ledger
+    - an incidental test became normative policy
+    - unknown values passed through consistency logic
+    - governed baseline relocation was misreported as deletion
+  direct_proofs:
+    - M1 standard-library evidence proof
+    - full current skill inspection
+    - targeted exact-string consumer search
+  challenged_validation: selected M1 proof checks closed sets, IDs, fields, and exact scenario inventory but does not replace semantic audit
+  confidence: high
+  no_finding_rationale: every significant current rule and compatibility-sensitive literal has one closed treatment, and canonical behavior is unchanged
+forbidden_initial_context_excluded: true

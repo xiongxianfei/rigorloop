@@ -1,0 +1,176 @@
+# Review Log: Plan-Review Skill Simplification
+
+## Scope
+
+This ledger records formal lifecycle reviews for the plan-review skill simplification change.
+
+## Detailed review entries
+
+### Review entry
+
+Review ID: code-review-M1-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: implementation milestone M1 at commit `5930e55d`
+Status: clean-with-notes
+Detailed record: reviews/code-review-M1-r1.md
+Resolution: review-resolution.md#code-review-M1-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-final-r2
+Stage: code-review
+Round: r2
+Reviewed artifact: CI selector deferral at commit `4cbe78d1`
+Status: clean-with-notes
+Detailed record: reviews/code-review-final-r2.md
+Resolution: review-resolution.md#code-review-final-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-final-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: complete change at commit `115945b2`
+Status: clean-with-notes
+Detailed record: reviews/code-review-final-r1.md
+Resolution: review-resolution.md#code-review-final-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-M3-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: implementation milestone M3 at commit `6dd82fa8`
+Status: clean-with-notes
+Detailed record: reviews/code-review-M3-r1.md
+Resolution: review-resolution.md#code-review-M3-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-M2-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: implementation milestone M2 at commit `edcec3f5`
+Status: clean-with-notes
+Detailed record: reviews/code-review-M2-r1.md
+Resolution: review-resolution.md#code-review-M2-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: test-spec-review-r1
+Stage: test-spec-review
+Round: r1
+Reviewed artifact: `specs/plan-review-skill-simplification.test.md` at commit `1f77d4e0`
+Status: approved
+Detailed record: reviews/test-spec-review-r1.md
+Resolution: review-resolution.md#test-spec-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: spec-review-r3
+Stage: spec-review
+Round: r3
+Reviewed artifact: `specs/plan-review-skill-simplification.md` at commit `41a9541f`
+Status: approved
+Detailed record: reviews/spec-review-r3.md
+Resolution: review-resolution.md#spec-review-r3
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: proposal-review-r1
+Stage: proposal-review
+Round: r1
+Reviewed artifact: `docs/proposals/2026-08-13-plan-review-skill-simplification.md` at commit `6305460b`
+Status: changes-requested
+Detailed record: reviews/proposal-review-r1.md
+Resolution: review-resolution.md#proposal-review-r1
+Material findings: PRVSIM-PR1, PRVSIM-PR2, PRVSIM-PR3
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: plan-review-r1
+Stage: plan-review
+Round: r1
+Reviewed artifact: `docs/plans/2026-08-13-plan-review-skill-simplification.md` at commit `717e3a49`
+Status: approved
+Detailed record: reviews/plan-review-r1.md
+Resolution: review-resolution.md#plan-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: spec-review-r2
+Stage: spec-review
+Round: r2
+Reviewed artifact: `specs/plan-review-skill-simplification.md` at commit `24131f65`
+Status: approved
+Detailed record: reviews/spec-review-r2.md
+Resolution: review-resolution.md#spec-review-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: spec-review-r1
+Stage: spec-review
+Round: r1
+Reviewed artifact: `specs/plan-review-skill-simplification.md` at commit `93fea662`
+Status: approved
+Detailed record: reviews/spec-review-r1.md
+Resolution: review-resolution.md#spec-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: proposal-review-r3
+Stage: proposal-review
+Round: r3
+Reviewed artifact: `docs/proposals/2026-08-13-plan-review-skill-simplification.md` at commit `7bf7d48d`
+Status: approved
+Detailed record: reviews/proposal-review-r3.md
+Resolution: review-resolution.md#proposal-review-r3
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: proposal-review-r2
+Stage: proposal-review
+Round: r2
+Reviewed artifact: `docs/proposals/2026-08-13-plan-review-skill-simplification.md` at commit `4c06850c`
+Status: changes-requested
+Detailed record: reviews/proposal-review-r2.md
+Resolution: review-resolution.md#proposal-review-r2
+Material findings: PRVSIM-PR4, PRVSIM-PR5, PRVSIM-PR6
+Open findings: None
+Recording status: recorded

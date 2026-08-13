@@ -1,0 +1,46 @@
+schema_version: 1
+review_id: code-review-final-r2
+review_stage: code-review
+review_target: ci-selector-deferral
+base_revision: 19c25ace
+head_revision: 4cbe78d1
+milestone_id: none
+native_review_status: clean-with-notes
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-ci-maintenance
+reviewer_context_id: root-code-review-final-r2-context-reset
+context_separation_mechanism: focused-diff-and-selector-contract-reset
+risk_tier: standard
+risk_tier_triggers:
+  - verify-selector-registration-debt
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed
+phase_receipts:
+  - risk-map-recorded
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+clean_sufficiency:
+  target_identity: 4cbe78d1
+  inspected_authority:
+    - specs/plan-review-skill-simplification.md#R53
+    - docs/changes/2026-08-13-plan-review-skill-simplification/evidence/ci-selector-deferral.md
+  risk_classes:
+    - overbroad-deferral
+    - hidden-validation-loss
+    - permanent-validator-creep
+  adversarial_hypotheses:
+    - deferrals match paths outside this change
+    - required direct proof is silently waived
+    - selector logic or CI behavior changed
+  direct_proofs:
+    - exact-path deferral inspection
+    - change-metadata validation
+    - PR selector returns zero blockers and five current owner-deferred debts
+  challenged_validation: selector acceptance alone cannot prove the deferral is appropriate, so scope and retained proof were reviewed directly
+  confidence: high
+  no_finding_rationale: all deferrals are exact-path, retain approved proof, and change no CI or validation implementation
+forbidden_initial_context_excluded: true

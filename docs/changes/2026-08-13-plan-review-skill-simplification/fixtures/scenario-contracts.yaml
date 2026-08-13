@@ -1,0 +1,27 @@
+{
+  "scenarios": [
+    {"scenario":"portable-clean","required":["formal judgment","clean receipt","recorded-isolated","no governed eligibility"],"forbidden":["change mutation","workflow continuation"]},
+    {"scenario":"portable-material","required":["detailed finding","durable recording","recorded-isolated"],"forbidden":["governed settlement","automatic correction"]},
+    {"scenario":"blocked-recording","required":["recording blocked","not-settled","smallest corrective action"],"forbidden":["formal completion","entry mutation"]},
+    {"scenario":"governed-candidate-invalid","required":["governed reference loaded","exact blocker","state unchanged"],"forbidden":["portable fallback","authority by loading"]},
+    {"scenario":"governed-initial-clean","required":["one clean review","initialization-required","entry review-required"],"forbidden":["entry active","planned_work mutation"]},
+    {"scenario":"governed-changes-requested","required":["detailed record","resolution","revision-required"],"forbidden":["test-spec eligibility","automatic plan edit"]},
+    {"scenario":"governed-blocked","required":["detailed record","entry blocked","transaction blocked"],"forbidden":["settlement before recording","continuation"]},
+    {"scenario":"governed-inconclusive","required":["record when possible","entry review-required","reason review-inconclusive"],"forbidden":["revision-required","clean eligibility"]},
+    {"scenario":"retry-initialization-absent","required":["reuse exact judgment","initialization-required","no new evidence"],"forbidden":["semantic rereview","duplicate log"]},
+    {"scenario":"retry-matching","required":["exact compare-and-set","settled-active","basis retained"],"forbidden":["other entry mutation","planned_work mutation"]},
+    {"scenario":"retry-already-active","required":["settled-active","state_changed false","no write"],"forbidden":["duplicate receipt","duplicate transition"]},
+    {"scenario":"retry-stale-plan","required":["prior review stale","fresh initial review required"],"forbidden":["judgment reuse","settlement"]},
+    {"scenario":"retry-duplicate-review","required":["ambiguous blocker","state unchanged"],"forbidden":["arbitrary review selection","mutation"]},
+    {"scenario":"retry-mismatched-basis","required":["identity blocker","state unchanged"],"forbidden":["basis repair","settlement"]},
+    {"scenario":"retry-open-resolution","required":["open-resolution blocker","owner route"],"forbidden":["entry activation","resolution rewrite"]},
+    {"scenario":"planned-work-without-clean-review","required":["contradictory-state blocker","state unchanged"],"forbidden":["inferred clean review","settlement"]},
+    {"scenario":"interrupted-settlement","required":["reconcile exact active entry","reuse identities","no duplicates"],"forbidden":["semantic rereview","evidence deletion"]},
+    {"scenario":"boundary-portable","required":["boundary reference loaded once","portable authority unchanged"],"forbidden":["governed reference load","new boundary IDs"]},
+    {"scenario":"boundary-governed","required":["both references loaded once","governed validation"],"forbidden":["reference override","duplicate procedure"]},
+    {"scenario":"missing-resource","required":["dependent work stopped","missing path reported"],"forbidden":["memory reconstruction","partial procedure"]},
+    {"scenario":"asset-judgment-omitted","required":["blocked transaction","exact blocker","no new evidence"],"forbidden":["manufactured review status","unfilled placeholder"]},
+    {"scenario":"workflow-managed","required":["neutral manifest","matching authority","review recorded first"],"forbidden":["hidden author reasoning","automatic downstream without gate"]},
+    {"scenario":"invalid-vocabulary","required":["explicit unknown-value error","failure before consistency"],"forbidden":["fall-through","state mutation"]}
+  ]
+}
