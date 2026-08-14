@@ -22,8 +22,9 @@ argument-hint: [repository, area, orientation question, or refresh scope]
 
 - `create`
 - `refresh`
-- `area`
 - `audit`
+- `repository`
+- `area:<slug>`
 
 ## Map metadata and freshness
 
@@ -69,6 +70,8 @@ Every area map must be registered from the root map.
 
 ## Required output structure
 
+The skeleton is the sole owner of structural labels and ordering.
+
 - Map metadata
 - Purpose and scope
 - System overview
@@ -98,6 +101,6 @@ Every area map must be registered from the root map.
 ```md
 - Skill: project-map
 - Status: <created|updated|audited|blocked>
-- Mode: <create|refresh|area|audit>
-- Map scope: <repository|area:slug>
+- Operation: <create|refresh|audit>
+- Map scope: <repository|area:<slug>>
 ```
