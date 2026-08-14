@@ -1,14 +1,15 @@
 # Review Resolution: Proposal Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
+Review closeout: proposal-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Current result: second revised proposal ready for independent rereview
+- Unresolved findings: 1
+- Current result: recovery ownership revision required before specification
 
 ## Resolution overview
 
@@ -20,6 +21,7 @@ Review closeout: proposal-review-r2
 | `PRSIM-R2-PR1` | accepted | closed | Portable file-based operations are separate from governed entry-based operations. |
 | `PRSIM-R2-PR2` | accepted | closed | Workflow-owned stale-attempt reconciliation is bounded and adds no persistent state. |
 | `PRSIM-R2-PR3` | accepted | closed | Every specialized predicate has an explicit structural destination. |
+| `PRSIM-R3-PR1` | accepted | open | Preserve stage-owned mutation by separating workflow recovery authorization from proposal-owned reset execution. |
 
 ## Finding details
 
@@ -122,3 +124,21 @@ Required outcome: Define each group's destination, structural fields, compositio
 Safe resolution path: Extend the existing skeleton as recommended by `proposal-review-r2`; do not add assets.
 Validation target: revised structural ownership, expected behavior, fixtures, risks, and acceptance criteria plus independent rereview.
 Validation evidence: `evidence/proposal-revision-r2.md`; revised Structural asset, Expected Behavior Changes, Testing and Verification Strategy, Proposal acceptance criteria, Risks and Mitigations, and Decision Log sections.
+
+### proposal-review-r3
+
+#### PRSIM-R3-PR1
+
+Finding ID: PRSIM-R3-PR1
+Disposition: accepted
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Align stale-attempt reset writes with existing stage-owned artifact-state ownership.
+Chosen action: Keep workflow as validation, authorization, and routing owner while proposal executes the bounded reset of its own exact partial state.
+Rationale: Current workflow procedure must preserve `artifact_states` and stage-owned evidence, so direct workflow reset would require architecture and contract changes.
+Required outcome: Define the authorization/reset handshake, bound proposal writes, update architecture rationale and scope, and add acceptance criteria.
+Safe resolution path: Adopt the ownership-preserving split recommended by `proposal-review-r3`.
+Validation target: revised stale recovery, resource ownership, architecture impact, tests, acceptance criteria, risks, scope budget, and decision log plus independent rereview.
+Validation evidence: pending proposal revision.

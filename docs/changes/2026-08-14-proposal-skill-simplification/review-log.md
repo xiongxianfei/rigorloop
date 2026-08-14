@@ -21,6 +21,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: proposal-review-r3
+Stage: proposal-review
+Round: r3
+Reviewed artifact: `docs/proposals/2026-08-14-proposal-skill-simplification.md` at commit `af900af7`
+Status: changes-requested
+Detailed record: reviews/proposal-review-r3.md
+Resolution: review-resolution.md#proposal-review-r3
+Material findings: PRSIM-R3-PR1
+Open findings: PRSIM-R3-PR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: proposal-review-r2
 Stage: proposal-review
 Round: r2
