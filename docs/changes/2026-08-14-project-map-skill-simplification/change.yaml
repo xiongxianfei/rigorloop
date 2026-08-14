@@ -63,8 +63,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: test-spec-review
-  next_stage: test-spec-review
+  current_stage: implement
+  next_stage: implement
   blocker: null
   evidence:
     - docs/changes/2026-08-14-project-map-skill-simplification/evidence/proposal-authoring.md
@@ -95,6 +95,7 @@ workflow_state:
     - docs/changes/2026-08-14-project-map-skill-simplification/evidence/test-spec-revision-r1.md
     - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-test-spec-review-r2.yaml
     - docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-verify.md
   planned_work:
     plan_artifact_id: plan
     initialization_basis:
@@ -137,15 +138,15 @@ workflow:
   automation:
     mechanism: bounded-review-fix
     target:
-      stage: test-spec-review
+      stage: verify
       occurrence:
         kind: singleton
-      bound_at: "2026-08-14T07:54:23-07:00"
+      bound_at: "2026-08-14T08:28:55-07:00"
       completion:
-        rule: first formal test-spec-review result is durably recorded
-    status: completed
-    current_stage: test-spec-review
-    stop_reason: target-reached
+        rule: first formal verify result is durably recorded
+    status: active
+    current_stage: implement
+    stop_reason: null
     evidence:
       - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
       - docs/proposals/2026-08-14-project-map-skill-simplification.md
@@ -167,6 +168,10 @@ workflow:
       - docs/changes/2026-08-14-project-map-skill-simplification/evidence/test-spec-authoring.md
       - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-test-spec-review-r1.yaml
       - docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/test-spec-revision-r1.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-test-spec-review-r2.yaml
+      - docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r2.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-verify.md
 
 artifacts:
   proposal: docs/proposals/2026-08-14-project-map-skill-simplification.md
@@ -223,6 +228,7 @@ changed_files:
   - docs/changes/2026-08-14-project-map-skill-simplification/evidence/test-spec-revision-r1.md
   - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-test-spec-review-r2.yaml
   - docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r2.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-verify.md
 
 review:
   status: approved
