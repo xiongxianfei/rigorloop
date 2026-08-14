@@ -1,0 +1,53 @@
+schema_version: 1
+review_id: code-review-M1-r1
+review_stage: code-review
+review_target: implementation-M1
+base_revision: 30454cec
+head_revision: daaf20fe
+milestone_id: M1
+native_review_status: clean-with-notes
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-implement-M1
+reviewer_context_id: root-code-review-M1-r1-context-reset
+context_separation_mechanism: diff-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-semantic-preservation
+  - closed-vocabulary-evidence
+  - compatibility-inventory
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+clean_sufficiency:
+  target_identity: daaf20fe
+  inspected_authority:
+    - specs/project-map.md
+    - docs/plans/2026-08-14-project-map-skill-simplification.md#M1
+    - specs/project-map.test.md
+  risk_classes:
+    - missing-semantic-rule
+    - accidental-literal-policy
+    - incomplete-scenario-set
+    - misleading-baseline
+  adversarial_hypotheses:
+    - a universal evidence or reliance rule disappeared from the ledger
+    - an incidental exact string became normative policy
+    - unknown values passed before closed-vocabulary failure
+    - the baseline understated either loaded assembly
+  direct_proofs:
+    - exact CMD1 standard-library proof
+    - complete current project-map package inspection
+    - targeted exact-string consumer search
+    - deterministic baseline recomputation
+  challenged_validation: CMD1 proves shape, vocabulary, uniqueness, and fixture loading; reviewer inspection establishes responsibility-level completeness
+  confidence: high
+  no_finding_rationale: every significant current responsibility and compatibility-sensitive literal has one supported treatment and canonical package bytes are unchanged
+forbidden_initial_context_excluded: true

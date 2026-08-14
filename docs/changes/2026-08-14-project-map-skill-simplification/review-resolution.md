@@ -12,8 +12,9 @@ Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
+Review closeout: code-review-M1-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-M1-r1`
 - Findings resolved: 7
 - Unresolved findings: 0
 - Current result: revised test spec approved and active; implementation handoff allowed
@@ -179,3 +180,9 @@ Validation evidence: `evidence/test-spec-revision-r1.md`; revised testing strate
 Review closeout: test-spec-review-r2
 
 No material findings; no resolution entry required. The rereview verified the rejection and closure of `PMAPTSR-PR1`, confirmed that deterministic proof remains complete without manual semantic-review procedures, approved the revised proof map, and settled the matching test-spec artifact.
+
+### code-review-M1-r1
+
+Review closeout: code-review-M1-r1
+
+No material findings; no resolution entry required. M1 preservation inventories, invalid-vocabulary fixtures, scenario contracts, and baseline measurements are clean and the canonical project-map package remains unchanged.
