@@ -9,13 +9,8 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-14-proposal-skill-simplification.md
     role: primary
-    lifecycle_state: revision-required
-    review:
-      id: proposal-review-r3
-      artifact_id: proposal
-      outcome: changes-requested
-      record: docs/changes/2026-08-14-proposal-skill-simplification/reviews/proposal-review-r3.md
-      round: r3
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-14-proposal-skill-simplification/evidence/proposal-revision-r3.md
 
 workflow_state:
   lifecycle_state: active
@@ -61,7 +56,8 @@ changed_files:
   - docs/changes/2026-08-14-proposal-skill-simplification/reviews/proposal-review-r2.md
   - docs/changes/2026-08-14-proposal-skill-simplification/evidence/proposal-revision-r2.md
   - docs/changes/2026-08-14-proposal-skill-simplification/reviews/proposal-review-r3.md
+  - docs/changes/2026-08-14-proposal-skill-simplification/evidence/proposal-revision-r3.md
 
 review:
-  status: changes-requested
-  unresolved_items: 1
+  status: review-requested
+  unresolved_items: 0

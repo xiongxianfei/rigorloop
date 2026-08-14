@@ -1,15 +1,15 @@
 # Review Resolution: Proposal Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
-- Findings resolved: 6
-- Unresolved findings: 1
-- Current result: recovery ownership revision required before specification
+- Findings resolved: 7
+- Unresolved findings: 0
+- Current result: all recorded proposal-review findings resolved; fresh review required
 
 ## Resolution overview
 
@@ -21,7 +21,7 @@ Review closeout: proposal-review-r3
 | `PRSIM-R2-PR1` | accepted | closed | Portable file-based operations are separate from governed entry-based operations. |
 | `PRSIM-R2-PR2` | accepted | closed | Workflow-owned stale-attempt reconciliation is bounded and adds no persistent state. |
 | `PRSIM-R2-PR3` | accepted | closed | Every specialized predicate has an explicit structural destination. |
-| `PRSIM-R3-PR1` | accepted | open | Preserve stage-owned mutation by separating workflow recovery authorization from proposal-owned reset execution. |
+| `PRSIM-R3-PR1` | accepted | closed | Workflow authorizes recovery without mutating proposal state; proposal executes only the exact authorized reset of its own incomplete state. |
 
 ## Finding details
 
@@ -131,7 +131,7 @@ Validation evidence: `evidence/proposal-revision-r2.md`; revised Structural asse
 
 Finding ID: PRSIM-R3-PR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -141,4 +141,4 @@ Rationale: Current workflow procedure must preserve `artifact_states` and stage-
 Required outcome: Define the authorization/reset handshake, bound proposal writes, update architecture rationale and scope, and add acceptance criteria.
 Safe resolution path: Adopt the ownership-preserving split recommended by `proposal-review-r3`.
 Validation target: revised stale recovery, resource ownership, architecture impact, tests, acceptance criteria, risks, scope budget, and decision log plus independent rereview.
-Validation evidence: pending proposal revision.
+Validation evidence: `evidence/proposal-revision-r3.md`; revised Stale governed authoring attempts, Resource ownership, Expected Behavior Changes, Architecture Impact, Testing and Verification Strategy, Proposal acceptance criteria, Risks and Mitigations, Scope budget, and Decision Log sections.
