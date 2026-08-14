@@ -1,0 +1,47 @@
+schema_version: 1
+review_id: plan-review-r1
+review_stage: plan-review
+review_target: docs/plans/2026-08-14-project-map-skill-simplification.md
+base_revision: ffa020b7
+head_revision: ffa020b7
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-plan-authoring-r1
+reviewer_context_id: root-plan-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - published-skill-package-refactor
+  - recoverable-two-artifact-write
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-14-project-map-skill-simplification.md
+  - specs/project-map.md
+  - docs/architecture/system/architecture.md
+  - docs/plans/2026-08-14-project-map-skill-simplification.md
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: docs/proposals/2026-08-14-project-map-skill-simplification.md
+    sha256: ee78814791246d7e5c4e45060209e930d049706ca7c74957233b8175c576e4aa
+  - path: specs/project-map.md
+    sha256: 0ae5fb0c030c31770efed7f8ae711bc6a17063e4514542796690c18f8fc1d954
+  - path: docs/architecture/system/architecture.md
+    sha256: 85a0d3fce36abda32a1ea694241eaf52670310ceeb75c19f5e88d2393e00cad3
+  - path: docs/plans/2026-08-14-project-map-skill-simplification.md
+    sha256: 72fb9928f4e5f45338d04fc0a83180e137171d4ade429bf6b27ccbece95549f6
+  - path: docs/changes/2026-08-14-project-map-skill-simplification/evidence/plan-authoring.md
+    sha256: 54a83f061bb07ab7972703c3bb7f853011fa3f19b03a41d3831b59959a2a0ad6
+prompt_template_version: plan-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - requirement and boundary coverage
+  - milestone independence and proof-first sequencing
+  - operation, assembly, and area-transaction proof
+  - compatibility and package parity
+  - rollback and lifecycle ownership

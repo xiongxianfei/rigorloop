@@ -9,11 +9,12 @@ Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: spec-review-r1
 Review closeout: architecture-review-r1
+Review closeout: plan-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `architecture-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Current result: architecture approved; execution planning required
+- Current result: plan judgment approved; reviewed-plan initialization and settlement retry required
 
 ## Resolution overview
 
@@ -145,3 +146,9 @@ No material findings; no resolution entry required. The specification is approve
 Review closeout: architecture-review-r1
 
 No material findings; no resolution entry required. The canonical architecture update is approved and ready for execution planning.
+
+### plan-review-r1
+
+Review closeout: plan-review-r1
+
+No material findings; no resolution entry required. The plan judgment is approved, but formal plan activation waits for initialization from the exact reviewed basis and an identical settlement retry.
