@@ -1,9 +1,7 @@
 # Plan index
 
-`docs/plan.md` is a navigation index to stable plan bodies and owning change
-records.
-Mutable lifecycle state, current milestones, review state, blockers, and next
-stages live in each plan's owning `change.yaml`.
+`docs/plan.md` is a navigation index to stable plan bodies and owning change records.
+Mutable lifecycle state, current milestones, review state, blockers, and next stages live in each plan's owning `change.yaml`.
 
 <!--
 Index policy:
@@ -29,6 +27,7 @@ Current blockers are not recorded in this index.
 
 | Plan | Owning change record |
 | --- | --- |
+| [Proposal Skill Simplification](plans/2026-08-14-proposal-skill-simplification.md) | [change.yaml](changes/2026-08-14-proposal-skill-simplification/change.yaml) |
 | [Project-Map Skill Simplification](plans/2026-08-14-project-map-skill-simplification.md) | [change.yaml](changes/2026-08-14-project-map-skill-simplification/change.yaml) |
 | [Test-Spec Skill Simplification](plans/2026-08-13-test-spec-skill-simplification.md) | [change.yaml](changes/2026-08-13-test-spec-skill-simplification/change.yaml) |
 | [Plan-Review Skill Simplification](plans/2026-08-13-plan-review-skill-simplification.md) | [change.yaml](changes/2026-08-13-plan-review-skill-simplification/change.yaml) |
