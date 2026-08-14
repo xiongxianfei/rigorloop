@@ -101,22 +101,29 @@ skills/proposal/
 
 Classify two independent contexts before dependent reads or writes.
 
-`governed_proposal_context` is true only when one exact existing governed change has `lifecycle_contract: stage-owned-change-local-v1`, deterministic proposal placement, settled prerequisites, and current proposal-authoring authority. Conversational references to a workflow or change do not establish this context. `proposal` never creates the governed change root; missing root authority routes to `workflow`.
+`governed_proposal_candidate_context` selects the governed reference but grants no mutation authority. It is true only when the invocation supplies one explicit current change ID, a workflow-managed proposal invocation identifies one exact current change, or the proposal artifact already points to one owning change record. Conversational references to a workflow, change, or lifecycle do not establish the candidate.
 
-The specialized predicate set contains `vision_exception_context`, `standing_artifact_context`, and `scope_budget_context`. The first applies when authoring must record a current-vision exception or proposed vision revision. The second applies when the proposal depends on a missing required standing artifact or bootstrap exception. The third applies when broad or multi-workstream scope needs detailed intent and work-item treatment. Predicate classification remains proposal judgment; deterministic validation may check names and recorded shape but must not infer semantic truth from prose.
+After loading, `references/governed-proposal-authoring.md` validates `governed_proposal_authority` from the complete change record, `lifecycle_contract: stage-owned-change-local-v1`, exact proposal entry or deterministic creation path, settled prerequisites, and legal proposal-authoring state. A candidate that fails validation stops before mutation and must not fall back to portable authoring. `proposal` never creates the governed change root; missing root authority routes to `workflow`.
 
-Apply every true specialized predicate. Load the gates reference once for a non-empty set. Late predicate discovery must load the reference before dependent drafting or readiness selection. Unresolved ambiguity that could change safe output stops.
+The specialized predicate set contains four independently applicable values:
+
+- `vision_exception_context` applies when authoring must record a current-vision exception or proposed vision revision.
+- `standing_artifact_context` applies when the proposal depends on a missing required standing artifact or bootstrap exception.
+- `initial_intent_table_context` applies when the initial request has multiple goals, concerns, constraints, or requested outcomes that need explicit treatment mapping.
+- `scope_budget_context` applies when current evidence shows multiple independent work items, multiple lifecycle families, multiple plausible downstream specs or plans, workflow or release or validation policy, generated output or public skill behavior, or a current proposal-review concern about silent narrowing, hidden follow-up work, or multi-workstream ambiguity.
+
+Predicate classification remains proposal judgment; deterministic validation may check names and recorded shape but must not infer semantic truth from prose. Apply every true specialized predicate independently. Load the gates reference once when the set is non-empty. Late predicate discovery must load the reference before dependent drafting or readiness selection. Unresolved ambiguity that could change safe output stops. Omit both intent and scope groups only for a small single-decision proposal with no positive trigger and no silent-narrowing risk.
 
 ### Loaded assemblies
 
-| Assembly | Governed context | Specialized context | Loaded procedure |
+| Assembly | Governed candidate | Specialized context | Loaded procedure |
 | --- | ---: | ---: | --- |
 | `PA0-portable` | no | no | `SKILL.md` plus skeleton when creating |
 | `PA0G-portable-gated` | no | yes | core plus strategic-and-scope reference |
 | `PA1-governed` | yes | no | core plus governed-authoring reference |
 | `PA1G-governed-gated` | yes | yes | core plus both references |
 
-Loaded resources determine available procedure; they do not grant lifecycle authority or make a gate outcome true.
+Loaded resources determine available procedure; they do not grant lifecycle authority or make a gate outcome true. A `PA1` candidate becomes writable only after reference-owned authority validation succeeds.
 
 ### Portable and governed operations
 
@@ -126,14 +133,41 @@ Classify artifact operation independently as `create-primary-proposal` or `revis
 | --- | --- | --- | --- |
 | Create | absent | absent | May create the proposal; governed mode may create only the matching proposal entry after validating authority |
 | Revise | present | present with matching identity | May revise under current portable request or legal governed authoring authority |
+| Matching create retry | matching `authoring` entry | absent | Resume only the identical entry-first creation transaction |
+| Matching incomplete write | matching `authoring` entry | matching proposal file | Validate and complete only the identical transaction |
+| Matching completed retry | matching `review-required` entry | matching complete file and evidence | Idempotent success with no duplicate evidence or transition |
 | Conflict | absent | present | Stop; do not adopt or overwrite |
-| Conflict | present | absent | Stop; do not recreate implicitly |
+| Conflict | unrelated or mismatched entry | absent | Stop; do not recreate implicitly |
 | Conflict | mismatched entry/path/identity | any | Stop |
 | Conflict | multiple primary candidates | any | Stop |
 
 A complete rewrite of an existing proposal is a revision, not creation. Revising a governed accepted or otherwise settled proposal requires an explicit legal reopen or revision state from the workflow contract. The authoring reference may update only the exact proposal entry, preserve historical review records, clear only its current review mapping when authorized, record proposal-authoring evidence, and transition the same entry from `authoring` to `review-required` after complete writes and validation.
 
 Portable authoring writes the proposal artifact only. It does not create or mutate `change.yaml`, review logs, review resolutions, automation records, or workflow routing.
+
+#### Governed creation transaction
+
+Bind the transaction to the change ID, artifact ID, normalized intended path, governing input identities, and authoring-evidence path. Then:
+
+1. Confirm that the proposal entry and target file are absent and that no competing primary proposal exists.
+2. Create only the exact proposal entry in `authoring` with the bound authoring-evidence path.
+3. Write and validate the proposal content.
+4. Compute and record the new proposal content identity in complete authoring evidence.
+5. Transition only the matching entry to `review-required`.
+
+The transition to `review-required` is the transaction commit point. An identical entry-only or entry-plus-file retry may resume from the first incomplete step. A mismatched basis, unrelated file, different path, competing entry, or conflicting write stops without adoption or overwrite.
+
+#### Governed revision transaction
+
+Bind revision to the same creation identity fields plus the prior proposal content identity and the exact reopen, review finding, upstream input change, or legal revision evidence. Then:
+
+1. Validate the existing entry, file, prior identity, and legal revision state.
+2. Preserve historical review and authoring records while setting only the matching entry to `authoring`, clearing only its current review mapping, and recording the new authoring-evidence path.
+3. Write and validate the revised proposal.
+4. Compute the new identity and complete revision-authoring evidence bound to the prior identity and revision basis.
+5. Transition only the matching entry to `review-required` and require fresh proposal review.
+
+The new `review-required` transition is the revision commit point. An identical incomplete retry reconciles only the same prior identity and revision basis. An identical completed retry is a no-op. Changed inputs, stale review or reopen authority, ambiguous attempts, and concurrent competing writes stop rather than silently replacing proposal content.
 
 ### Resource ownership
 
@@ -151,10 +185,10 @@ The references may name each other's concepts but must not duplicate governing p
 
 Extend `proposal-skeleton.md` to contain one core proposal group and two conditional structural groups:
 
-- `Initial intent preservation`, used when a broad or multi-part request requires explicit goal mapping.
+- `Initial intent preservation`, used exactly when `initial_intent_table_context` is true.
 - `Scope budget`, used when `scope_budget_context` is true.
 
-The asset owns the labels, section order, table columns, and placeholders. `SKILL.md` and the gates reference decide applicability and meaning. Inapplicable groups are omitted completely; applicable groups with unresolved required data report an explicit blocker; unfilled placeholders are forbidden.
+The two groups apply independently and may appear alone or together. The asset owns the labels, section order, table columns, and placeholders. `SKILL.md` and the gates reference decide applicability and meaning. Inapplicable groups are omitted completely; applicable groups with unresolved required data report an explicit blocker; unfilled placeholders are forbidden.
 
 The main file retains only a compact semantic obligation summary and the resource-map instruction. It does not duplicate the skeleton's full section inventory or table layouts.
 
@@ -163,7 +197,7 @@ The main file retains only a compact semantic obligation summary and the resourc
 | Situation | Result |
 | --- | --- |
 | Portable ordinary proposal and no conditional reference is required | Continue from `SKILL.md` and the skeleton |
-| Governed context and governed reference missing or unreadable | Stop before lifecycle interpretation or mutation |
+| Governed candidate and governed reference missing or unreadable | Stop before authority validation or mutation |
 | Specialized context and gates reference missing or unreadable | Stop before dependent gate judgment or drafting |
 | Skeleton missing during creation | Stop before writing a partial proposal |
 | Mixed or contradictory resource versions | Stop as a package-integrity blocker |
@@ -193,10 +227,11 @@ Acceptance requires every real loaded assembly to decrease from its baseline or 
 
 - A small portable proposal loads only universal proposal guidance and the skeleton.
 - A portable broad or exception-bearing proposal additionally loads strategic and scope procedure but no governed lifecycle mutation.
-- An ordinary governed proposal additionally loads exact `change.yaml` authoring procedure but no unrelated strategic gate detail.
+- An ordinary governed candidate additionally loads exact `change.yaml` authoring procedure but becomes writable only after reference-owned validation.
 - A governed broad or exception-bearing proposal loads both references once.
 - Existing proposals remain valid and are not rewritten merely because the skeleton changes.
-- Governed proposal creation and revision fail closed on missing roots, illegal state, ambiguous identity, file/entry asymmetry, and concurrent conflicting writes.
+- Governed proposal creation and revision use entry-first, identity-bound transactions that resume identical partial writes, complete idempotently, and fail closed on missing roots, illegal state, ambiguous identity, stale basis, unrelated file/entry asymmetry, and concurrent conflicting writes.
+- Initial-intent and scope-budget groups are selected independently, and the complete current scope-budget trigger set remains supported.
 - Missing required packaged resources stop dependent work instead of triggering remembered reconstruction.
 - Proposal output continues to preserve user intent, meaningful alternatives, decision rationale, risks, rollout, open questions, and truthful readiness for `proposal-review`.
 
@@ -209,11 +244,34 @@ A bounded documentation update is required only if the current canonical archite
 ## Testing and Verification Strategy
 
 - Validate canonical frontmatter, normalized sections, resource-map verbs, paths, containment, resource existence, placeholder rules, and forbidden claims with existing repository-owned validation.
-- Add focused deterministic contract fixtures for all four assemblies, both operations, governed authority failures, specialized predicate combinations, late loading, missing resources, structural-group omission, and forbidden writes or claims.
+- Add focused deterministic contract fixtures for all four assemblies, candidate selection, authoritative validation, both operations, partial-state recovery, governed authority failures, all specialized predicate combinations, late loading, missing resources, structural-group omission, and forbidden writes or claims.
 - Validate rule-disposition and literal-compatibility ledger schemas with change-local fixtures; do not create a permanent prose-policy or simplicity validator family.
 - Prove canonical, generated, archived, release-candidate, and installed resource inventory and raw-byte parity through existing package validation.
 - Measure profile words and bytes using the deterministic convention in this proposal and report total package change separately.
 - Use ordinary proposal review, code review, and eventual human PR review for semantic judgment. Do not add a separate manual semantic-review acceptance artifact or target-agent runtime journey.
+
+## Proposal acceptance criteria
+
+| ID | Criterion |
+| --- | --- |
+| `AC-PRSIM-001` | Governed resource selection uses `governed_proposal_candidate_context`, which is distinct from authoritative validation. |
+| `AC-PRSIM-002` | The governed reference validates the complete change, lifecycle marker, proposal identity, prerequisites, and legal state. |
+| `AC-PRSIM-003` | An invalid governed candidate stops and never falls back to portable authoring. |
+| `AC-PRSIM-004` | Conversational wording alone establishes neither a governed candidate nor governed authority. |
+| `AC-PRSIM-005` | Governed creation uses one identity-bound entry-first transaction with `review-required` as its commit point. |
+| `AC-PRSIM-006` | Governed revision binds the prior content identity and exact legal revision evidence. |
+| `AC-PRSIM-007` | Matching partial transactions resume exactly once and matching completed retries are idempotent. |
+| `AC-PRSIM-008` | Mismatched, stale, ambiguous, unrelated, or competing transaction state stops without adoption or overwrite. |
+| `AC-PRSIM-009` | `initial_intent_table_context` independently selects the initial-intent structural group. |
+| `AC-PRSIM-010` | `scope_budget_context` preserves every current positive trigger. |
+| `AC-PRSIM-011` | Every true specialized predicate is applied and the gates reference loads once for a non-empty set. |
+| `AC-PRSIM-012` | Inapplicable structural groups are omitted and applicable groups never contain unfilled placeholders. |
+| `AC-PRSIM-013` | Every behaviorally significant rule and literal dependency receives one classified disposition. |
+| `AC-PRSIM-014` | Every real loaded assembly decreases or has one independently reviewed semantic-preservation exception. |
+| `AC-PRSIM-015` | Main-file, reference, asset, representative-output, and total-package measurements are reported separately. |
+| `AC-PRSIM-016` | Missing or contradictory required resources stop before dependent work and never trigger reconstructed procedure. |
+| `AC-PRSIM-017` | No target-agent runtime, prose classifier, permanent simplicity validator, or separate manual semantic-review gate is introduced. |
+| `AC-PRSIM-018` | Canonical, generated, archived, release-candidate, and installed resources retain required inventory and raw-byte parity. |
 
 ## Rollout and Rollback
 
@@ -229,7 +287,9 @@ Rollback restores the prior `SKILL.md` and skeleton, removes the two references 
 | --- | --- |
 | Universal proposal quality moves behind a conditional trigger | Use the rule-disposition ledger and require problem, options, rationale, intent, risk, claims, and handoff to remain inline |
 | Governed loading is mistaken for lifecycle authority | Separate resource selection from full reference-owned authority validation and stop on missing or stale evidence |
+| An interrupted entry-first write becomes unrecoverable | Bind transaction identity before writing, enumerate matching partial states, and use one `review-required` commit point |
 | Strategic predicates drift from `proposal-review` | Align predicate vocabulary and boundaries while keeping authoring and review procedures skill-owned |
+| Simplification drops a current scope-budget trigger | Preserve every positive trigger explicitly and map each to deterministic fixtures |
 | The asset becomes a hidden policy owner | Limit it to labels, ordering, table shapes, and placeholders; validate policy-like content boundaries |
 | File splitting reduces `SKILL.md` but not actual loaded profiles | Make all four loaded assemblies primary measurements and report total package size separately |
 | Existing exact-string tests freeze incidental wording | Classify literal dependencies separately and update test-only consumers |
@@ -268,6 +328,9 @@ None at proposal level. The specification may choose exact metadata field names 
 | 2026-08-14 | Separate portable/governed context from create/revise operation | Lifecycle authority and artifact existence are independent facts | Inferring operation from workflow wording |
 | 2026-08-14 | Measure loaded assemblies and total package separately | Relocation improves common-path cost but may increase maintenance footprint | Main-file percentage as the sole success criterion |
 | 2026-08-14 | Exclude target-agent and separate manual semantic-review acceptance | Static package proof and normal review are proportionate for a content refactor | Runtime transcript grading and an additional manual gate |
+| 2026-08-14 | Separate governed candidate selection from authority validation | Resource loading must not require the procedure owned by the resource | Full authority validation in the main file |
+| 2026-08-14 | Use entry-first recoverable create and revise transactions | Durable intent permits exact retry without adopting unrelated files | File-first writes and conflict-only handling of partial state |
+| 2026-08-14 | Preserve four independent specialized predicates | Current scope triggers and conditional structural groups must remain explicit | Broad-scope shorthand that narrows the existing contract |
 
 ## Next Artifacts
 
