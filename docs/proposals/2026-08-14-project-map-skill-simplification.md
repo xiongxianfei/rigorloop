@@ -122,11 +122,11 @@ scope:
   area
 ```
 
-Use six valid profiles:
+Use six base profiles:
 
 | Profile | Operation | Scope | Loaded procedure |
 | --- | --- | --- | --- |
-| `PM0-root-create` | `create` | `repository` | `SKILL.md` plus skeleton when writing |
+| `PM0-root-create` | `create` | `repository` | `SKILL.md` plus skeleton when writing; conditional reference when coordination is discovered |
 | `PM1-root-refresh` | `refresh` | `repository` | `SKILL.md` plus conditional reference |
 | `PM2-root-audit` | `audit` | `repository` | `SKILL.md` plus conditional reference |
 | `PM3-area-create` | `create` | `area` | `SKILL.md`, conditional reference, and skeleton when writing |
@@ -135,15 +135,37 @@ Use six valid profiles:
 
 Audit is read-only unless the user separately requests a correction after the audit result. Loading the reference never grants write, command-execution, network, test, build, downstream, or workflow authority.
 
+Classify one additional evidence-based predicate:
+
+```text
+map_coordination_context:
+  an area scope is requested;
+  or bounded inspection discovers an existing, proposed, missing, or orphaned area map;
+  or the work requires root registration, parent/child identity, overlap ownership, or root/area contradiction handling.
+```
+
+Load the conditional reference for every refresh, every audit, or whenever `map_coordination_context` is true. `PM0-root-create` remains self-sufficient only after bounded inspection finds no coordination evidence. If coordination is discovered later, load and validate the reference before making a dependent judgment or write. Missing, unreadable, ambiguous, contradictory, escaped, or mixed-version required resources stop dependent work.
+
+Use these closed write boundaries:
+
+| Operation | Allowed map writes | Recovery boundary |
+| --- | --- | --- |
+| Root create without coordination | Create or replace only the resolved root map under explicit write authority. | An interrupted retry may reconcile only the same target and evidence basis. |
+| Area create | Create the resolved area map and register that exact identity in the root map. | Treat both writes as one identity-bound transaction; a partial result stops for exact reconciliation rather than leaving an unregistered or wrongly registered area map. |
+| Refresh or requested correction | Update only the explicitly affected root or area maps. | Retry only against matching prior and current evidence identities; conflicts stop. |
+| Audit | None. | Report findings and correction routing without mutation. |
+
 ### Universal ownership in `SKILL.md`
 
-Keep purpose, trigger, workflow role, placement, operation/scope classification, basic freshness meanings, baseline truthfulness, `observed`/`inferred`/`unknown`, source ranking, material-claim citations, configured-versus-executed command meaning, runtime-observation truthfulness, universal map/reliance invariants, stops, claims, resource triggers, and next-stage behavior inline.
+Keep purpose, trigger, workflow role, placement, operation/scope classification, the coordination predicate, basic freshness meanings, complete minimum baseline truthfulness, `observed`/`inferred`/`unknown`, source ranking, material-claim citations, configured-versus-executed command meaning, runtime-observation truthfulness, universal map/reliance invariants, stops, claims, resource triggers, and next-stage behavior inline.
 
 The main file must remain sufficient to create a trustworthy root map with the skeleton and to classify safely when conditional procedure is required.
 
+Minimum baseline truthfulness is universal. When Git is available and inspected evidence includes uncommitted changes, every profile records `<sha>+dirty` and the inspected uncommitted paths. When Git is unavailable, the result records the actual evidence baseline without inventing a commit identity.
+
 ### Conditional-reference ownership
 
-Load `references/map-maintenance-and-area-coordination.md` exactly for every refresh or audit and every area-scoped invocation. It owns the detailed refresh-trigger inventory, affected-section selection, correction notes, audit procedure, root registration, parent/child rules, overlap ownership, contradiction handling, missing-area behavior, dirty-baseline reconciliation, and interrupted or partial maintenance recovery.
+Load `references/map-maintenance-and-area-coordination.md` exactly for every refresh, every audit, and every invocation where `map_coordination_context` is true. It owns the detailed refresh-trigger inventory, affected-section selection, correction notes, audit procedure, root registration, parent/child rules, overlap ownership, contradiction handling, missing-area behavior, comparison of previous and current baselines, changed-path targeting, and interrupted or partial maintenance recovery.
 
 The reference may specialize procedure but may not redefine universal evidence meanings, source ranking, command authority, map statuses, claims, stops, or downstream ownership. A missing, unreadable, escaped, contradictory, or mixed-version required reference stops dependent work rather than causing reconstruction from memory.
 
@@ -157,12 +179,34 @@ Remove the duplicated `Required output structure` inventory and metadata-label i
 
 Merge customer-project orientation, evidence-access efficiency, and full-file escalation into one concise evidence-access contract. Consolidate downstream reliance, follow-up boundary, and next-stage routing without weakening direct-source inspection or the rule that project maps do not own deferred execution. Keep command and runtime truthfulness inline because every map can make test, runtime, or data-flow claims.
 
+### Result compatibility
+
+New invocation results use this closed vocabulary:
+
+```text
+Operation: create | refresh | audit
+Map scope: repository | area:<slug>
+```
+
+New results do not emit the legacy `Mode` field. Existing project-map documents remain unchanged because this is a read-old/write-new invocation-result migration, not a map-content migration.
+
+Map legacy invocations deterministically:
+
+| Legacy mode | New classification |
+| --- | --- |
+| `create` | `create` plus `repository` |
+| `refresh` | `refresh` plus the explicitly resolved repository or area scope |
+| `audit` | `audit` plus the explicitly resolved repository or area scope |
+| `area` | the explicitly requested operation plus `area:<slug>` |
+
+When a legacy `area` invocation or another input does not resolve exactly one operation and target area, stop rather than guessing. Preserve exact literals classified as normative contracts unless their governing contract is amended; migrate parser or package consumers atomically; update test-only incidental assertions; retain old forms only in historical compatibility fixtures that prove existing artifacts remain readable.
+
 ## Expected Behavior Changes
 
-- Root creation loads a shorter common procedure and the existing skeleton.
+- Root creation loads a shorter common procedure and the existing skeleton when bounded inspection finds no map-coordination evidence.
 - Refresh and audit load one conditional reference containing detailed maintenance behavior.
-- Every area-scoped invocation loads that reference for root registration, parent identity, overlap, and contradiction handling.
-- The result reports operation and scope separately instead of using `area` as an overlapping mode.
+- Every area-scoped invocation and every repository invocation that discovers coordination evidence loads that reference before dependent judgment or writes.
+- The result emits `Operation` and `Map scope` separately and does not emit the ambiguous legacy `Mode` field.
 - Audit remains read-only, and map writing remains limited to create or explicitly requested refresh/correction behavior.
 - Required resources fail closed; the common file does not reconstruct maintenance or area procedure.
 - Produced maps preserve the same status values, evidence classes, required substantive sections, citations, command truthfulness, diagrams, risks, unknowns, and downstream reliance behavior.
@@ -174,13 +218,32 @@ A bounded architecture update is required because `docs/architecture/system/arch
 
 No ADR is expected because the change reuses the existing published-skill package, mapped-reference, structural-asset, canonical-source, and adapter-parity architecture. A new ADR is required only if specification discovers an independent policy owner, new runtime, persistence mechanism, package transformation, or lifecycle authority.
 
+## Proposal acceptance criteria
+
+| ID | Criterion |
+| --- | --- |
+| `AC-PMAPSIM-001` | Reference loading uses a positive `map_coordination_context` in addition to operation and scope. |
+| `AC-PMAPSIM-002` | Root creation without coordination evidence remains self-sufficient from `SKILL.md` and the skeleton. |
+| `AC-PMAPSIM-003` | Late discovery of area coordination loads the required reference before dependent judgment or writes. |
+| `AC-PMAPSIM-004` | Root create, area create, refresh, and audit have explicit allowed write sets and recovery behavior. |
+| `AC-PMAPSIM-005` | Every profile can report a dirty inspected baseline truthfully without depending on maintenance procedure. |
+| `AC-PMAPSIM-006` | Maintenance-only baseline comparison and correction remain owned by the conditional reference. |
+| `AC-PMAPSIM-007` | New invocation results use closed `Operation` and `Map scope` fields. |
+| `AC-PMAPSIM-008` | New results do not emit the ambiguous legacy `Mode` field. |
+| `AC-PMAPSIM-009` | Every legacy mode has one deterministic mapping or an explicit ambiguity stop. |
+| `AC-PMAPSIM-010` | Normative and parser-sensitive literal consumers migrate atomically; incidental tests do not own prose. |
+| `AC-PMAPSIM-011` | Existing project-map artifacts remain readable and are not rewritten solely for this migration. |
+| `AC-PMAPSIM-012` | Every loaded profile decreases unless a specific semantic-preservation exception is independently approved. |
+| `AC-PMAPSIM-013` | No target-agent runtime executes during acceptance. |
+| `AC-PMAPSIM-014` | Canonical, generated, archived, and installed resources retain required parity. |
+
 ## Testing and Verification Strategy
 
 Before editing the canonical package, create separate change-local inventories for behaviorally significant rules and exact literal consumers. Closed rule dispositions should include `retained-inline`, `retained-conditional-reference`, `asset-owned`, `removed-duplicate`, and `removed-obsolete-with-approved-contract-change`. Literal dependencies should be classified as `normative-contract`, `parser-or-package-contract`, `test-only-incidental`, `obsolete`, or `historical-fixture`.
 
-Use deterministic static scenarios for all six profiles, false and ambiguous triggers, audit read-only behavior, create/refresh authority, dirty baselines, correction notes, root/area registration, overlaps, contradictions, missing resources, configured/executed commands, current/partial/stale outcomes, asset composition, placeholders, and forbidden downstream claims.
+Use deterministic static scenarios for all six base profiles, absent and late-discovered coordination, false and ambiguous triggers, operation-specific write sets, interrupted area registration, audit read-only behavior, create/refresh authority, clean and dirty baselines in every applicable profile, correction notes, root/area registration, overlaps, contradictions, missing resources, configured/executed commands, current/partial/stale outcomes, result compatibility, asset composition, placeholders, and forbidden downstream claims.
 
-Extend existing project-map and package validators instead of creating a new validator family. Migrate real parser contracts atomically and update incidental tests rather than preserving accidental prose. Preserve the existing representative-output and cold-read evidence where still semantically valid.
+Extend existing project-map and package validators instead of creating a new validator family. Migrate the public result contract from `Mode` to `Operation` and `Map scope`, migrate real parser contracts atomically, and update incidental tests rather than preserving accidental prose. Preserve historical map fixtures and the existing representative-output and cold-read evidence where still semantically valid.
 
 Measure LF-normalized UTF-8 bytes and Unicode whitespace-separated words for `SKILL.md`, each reference and asset, every loaded profile, representative create/refresh assemblies, and the complete package. Report mapped-resource count and duplicate-cluster count separately. Require every real loaded profile to decrease unless an explicit semantic-preservation finding proves a specific exception; do not use a fixed percentage as a semantic gate.
 
@@ -188,7 +251,7 @@ Validate canonical structure, generated skills, adapter archives, clean-installe
 
 ## Rollout and Rollback
 
-Amend the project-map spec and bounded architecture documentation first, then migrate validators, canonical skill, reference, and skeleton atomically. Generate and validate public adapter packages only through existing repository tooling. Existing project-map artifacts remain readable and are not rewritten merely to adopt the package refactor.
+Amend the project-map spec and bounded architecture documentation first, then migrate validators, canonical skill, reference, skeleton, and invocation-result consumers atomically. New results are write-new only; existing project-map artifacts remain readable and are not rewritten merely to adopt the package refactor. Generate and validate public adapter packages only through existing repository tooling.
 
 Rollback restores the prior complete canonical package, coupled validators and fixtures, governing spec text, and bounded architecture text together, then regenerates derived packages through existing tooling. Do not leave a shortened main file installed without its required reference.
 
@@ -198,6 +261,9 @@ Rollback restores the prior complete canonical package, coupled validators and f
 | --- | --- |
 | A universal evidence or freshness rule moves behind conditional loading | Freeze a semantic-rule ledger first and keep meanings, source rank, claims, and stops inline. |
 | The new classification changes behavior unintentionally | Define all six profiles, migration from each old mode, ambiguity stops, and static scenarios in the spec. |
+| Root creation discovers multi-map coordination after initial classification | Use `map_coordination_context`, late-load the reference before dependent behavior, and fail closed when it is unavailable. |
+| Area creation leaves the area and root registration inconsistent | Use one identity-bound two-map transaction with explicit partial-state reconciliation. |
+| Root creation loses dirty-baseline evidence | Keep the complete minimum dirty-baseline reporting rule inline for every profile. |
 | Root and area maps acquire competing owners | Keep one conditional reference with explicit parent, registration, overlap, and contradiction rules. |
 | The skeleton becomes a hidden policy surface | Validate it as structural only and keep applicability and semantics in procedure. |
 | Main-file reduction merely relocates or enlarges content | Report each loaded profile and complete package separately. |
@@ -207,7 +273,7 @@ Rollback restores the prior complete canonical package, coupled validators and f
 
 ## Open Questions
 
-None. The specification should define the exact old-mode-to-new-profile compatibility mapping and enumerate the existing validator literals that are normative versus incidental.
+None. The proposal selects the new result vocabulary and compatibility direction; the specification should enumerate the concrete literal consumers and field-level transaction evidence without changing those decisions.
 
 ## Decision Log
 
@@ -219,6 +285,9 @@ None. The specification should define the exact old-mode-to-new-profile compatib
 | 2026-08-14 | Keep exactly one structural asset. | The existing skeleton already owns the necessary output structure. | Additional result, area-map, or evidence assets. |
 | 2026-08-14 | Require a spec amendment and bounded architecture update. | Current approved sources explicitly own the old modes and policy placement. | Treat the change as prose-only refactoring. |
 | 2026-08-14 | Exclude target-agent acceptance and permanent simplicity gates. | Static contract proof, package parity, and independent semantic review are sufficient and deterministic. | Runtime journeys, transcript grading, and token-budget enforcement. |
+| 2026-08-14 | Load maintenance procedure when map coordination is discovered, including during root creation. | Multi-map behavior must not run without its sole procedural owner. | Profile-only loading that assumes root creation never encounters area maps. |
+| 2026-08-14 | Keep dirty-baseline truthfulness inline. | Every profile must describe inspected uncommitted evidence honestly. | Make baseline truth depend on maintenance-reference loading. |
+| 2026-08-14 | Replace invocation-result `Mode` with `Operation` and `Map scope`. | Separate axes remove the old ambiguity and give new results one closed contract. | Preserve both result shapes indefinitely; let the specification choose later. |
 
 ## Next Artifacts
 
