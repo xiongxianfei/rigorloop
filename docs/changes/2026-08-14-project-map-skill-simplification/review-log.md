@@ -57,3 +57,16 @@ Resolution: review-resolution.md#spec-review-r1
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: architecture-review-r1
+Stage: architecture-review
+Round: r1
+Reviewed artifact: `docs/architecture/system/architecture.md` at commit `4d5d38ef`
+Status: approved
+Detailed record: reviews/architecture-review-r1.md
+Resolution: review-resolution.md#architecture-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded

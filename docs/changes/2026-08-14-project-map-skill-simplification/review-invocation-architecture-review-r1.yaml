@@ -1,0 +1,43 @@
+schema_version: 1
+review_id: architecture-review-r1
+review_stage: architecture-review
+review_target: docs/architecture/system/architecture.md
+base_revision: 4d5d38ef
+head_revision: 4d5d38ef
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-architecture-authoring-r1
+reviewer_context_id: root-architecture-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - canonical-architecture-package-ownership-update
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-14-project-map-skill-simplification.md
+  - specs/project-map.md
+  - docs/architecture/system/architecture.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/architecture-authoring.md
+formal_criteria:
+  - architecture-review-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: docs/proposals/2026-08-14-project-map-skill-simplification.md
+    sha256: ee78814791246d7e5c4e45060209e930d049706ca7c74957233b8175c576e4aa
+  - path: specs/project-map.md
+    sha256: 0ae5fb0c030c31770efed7f8ae711bc6a17063e4514542796690c18f8fc1d954
+  - path: docs/architecture/system/architecture.md
+    sha256: 85a0d3fce36abda32a1ea694241eaf52670310ceeb75c19f5e88d2393e00cad3
+  - path: docs/changes/2026-08-14-project-map-skill-simplification/evidence/architecture-authoring.md
+    sha256: 2c32c6342402b3c75e5d404086678aa7b09d60be42c5ff31a0ca3e7485d398b1
+prompt_template_version: architecture-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - mapped project-map package ownership
+  - operation, scope, and loaded-assembly separation
+  - coordination preflight
+  - area transaction ordering and recovery
+  - no-ADR and no-diagram rationale
