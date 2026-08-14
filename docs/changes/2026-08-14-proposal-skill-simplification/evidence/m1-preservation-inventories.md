@@ -8,7 +8,7 @@
 
 ## Completed scope
 
-M1 records 25 semantic rule clusters, 29 literal dependencies, 25 deterministic scenarios, two unknown-value fixtures, and the pre-refactor profile and package baseline. The semantic ledger assigns every current rule cluster one disposition and destination. The literal ledger separately distinguishes normative and parser/package contracts without freezing incidental prose.
+M1 records 25 semantic rule clusters, 39 exact literal dependencies, 25 deterministic scenarios, two unknown-value fixtures, and the pre-refactor profile and package baseline. The semantic ledger assigns every current rule cluster one disposition and destination. The literal ledger separately distinguishes normative and parser/package contracts without freezing incidental prose.
 
 ## Tests and proof first
 
@@ -28,7 +28,7 @@ The invalid fixtures use unknown disposition and classification values. CMD1 val
 
 ## Validation
 
-- CMD1: passed; `rules=25 literals=29 scenarios=25 unknown_values=rejected-first`.
+- CMD1: passed; `rules=25 literals=39 scenarios=25 unknown_values=rejected-first`.
 - Change metadata validation: passed.
 - Documentation prose validation: passed with no errors or warnings for M1 Markdown evidence.
 - Git diff check: passed.
@@ -36,3 +36,7 @@ The invalid fixtures use unknown disposition and classification values. CMD1 val
 ## Handoff
 
 M1 is implementation-complete evidence only. It is ready for formal milestone code review and does not claim milestone closure, later package behavior, generated-resource currency, verification, branch readiness, or PR readiness.
+
+## Accepted correction PRSIM-M1-CR1
+
+The two composite enum rows were replaced by twelve independently classified exact literal rows. No canonical skill, spec, plan, scenario, baseline, workflow, or package surface changed. CMD1 passed with the corrected count, both composite strings are absent, and the same M1 milestone requires context-reset rereview.
