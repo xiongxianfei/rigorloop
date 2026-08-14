@@ -2,22 +2,22 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 
 - Reviews covered: `proposal-review-r1`
-- Findings resolved: 0
-- Unresolved findings: 3
-- Current result: proposal revision required
+- Findings resolved: 3
+- Unresolved findings: 0
+- Current result: proposal revised; independent rereview required
 
 ## Resolution overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| `PMAPSIM-PR1` | needs-decision | open | Proposal author must close reference loading and write boundaries for discovered map coordination. |
-| `PMAPSIM-PR2` | needs-decision | open | Proposal author must keep universal dirty-baseline truthfulness available to every profile. |
-| `PMAPSIM-PR3` | needs-decision | open | Proposal author must define the new result vocabulary and legacy mode migration. |
+| `PMAPSIM-PR1` | accepted | closed | Reference loading now uses map-coordination evidence and every operation has an explicit write and recovery boundary. |
+| `PMAPSIM-PR2` | accepted | closed | Minimum dirty-baseline truthfulness remains inline while maintenance comparison stays conditional. |
+| `PMAPSIM-PR3` | accepted | closed | New results use exact operation and scope fields with a read-old/write-new compatibility migration. |
 
 ## Finding details
 
@@ -26,48 +26,47 @@ Review closeout: proposal-review-r1
 #### PMAPSIM-PR1
 
 Finding ID: PMAPSIM-PR1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Close reference loading when root creation discovers multi-map coordination and define every operation's allowed write set.
-Chosen action: pending proposal revision
+Chosen action: Add `map_coordination_context`, late reference loading, and closed write and recovery boundaries for root creation, area creation, refresh, and audit.
 Rationale: Root creation can encounter procedure owned only by a reference that its declared profile does not load.
 Required outcome: Add an evidence-based coordination predicate, late-load behavior, explicit write boundaries, and interruption handling.
 Safe resolution path: Adopt `map_coordination_context` and the operation-specific boundaries recommended by `proposal-review-r1`.
 Validation target: revised classification, resource ownership, expected behavior, scenarios, risks, rollout, and acceptance criteria plus independent proposal rereview.
-Validation evidence: pending
+Validation evidence: `evidence/proposal-revision-r1.md`; revised Closed classification model, Conditional-reference ownership, Expected Behavior Changes, Proposal acceptance criteria, Testing and Verification Strategy, Risks and Mitigations, and Decision Log sections.
 
 #### PMAPSIM-PR2
 
 Finding ID: PMAPSIM-PR2
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Separate universal dirty-baseline truthfulness from maintenance-specific comparison.
-Chosen action: pending proposal revision
+Chosen action: Keep the complete minimum dirty-baseline reporting contract inline and reserve prior/current comparison and correction procedure for the conditional reference.
 Rationale: Root creation must describe inspected uncommitted evidence even when the maintenance reference is not loaded.
 Required outcome: Keep the complete minimum baseline-reporting contract inline and move only maintenance comparison to the reference.
 Safe resolution path: Adopt the ownership split recommended by `proposal-review-r1` and prove it for all profiles.
 Validation target: revised ownership, scenarios, rule ledger, risks, and acceptance criteria plus independent proposal rereview.
-Validation evidence: pending
+Validation evidence: `evidence/proposal-revision-r1.md`; revised Universal ownership, Conditional-reference ownership, Proposal acceptance criteria, Testing and Verification Strategy, Risks and Mitigations, and Decision Log sections.
 
 #### PMAPSIM-PR3
 
 Finding ID: PMAPSIM-PR3
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Select the exact operation/scope result contract and compatibility migration.
-Chosen action: pending proposal revision
+Chosen action: Emit `Operation` and `Map scope` for new results, remove legacy `Mode` from new output, and use a deterministic read-old/write-new compatibility mapping.
 Rationale: The current `Mode` literal is a published and validator-consumed contract, while the proposal selects a different classification without closing its emitted shape.
 Required outcome: Define exact new fields, legacy mappings, ambiguity stops, and literal-consumer migration.
 Safe resolution path: Adopt `Operation` and `Map scope` as the write-new result contract and migrate real consumers atomically as recommended by `proposal-review-r1`.
 Validation target: revised expected behavior, compatibility, testing, rollout, and acceptance criteria plus independent proposal rereview.
-Validation evidence: pending
-
+Validation evidence: `evidence/proposal-revision-r1.md`; revised Result compatibility, Expected Behavior Changes, Proposal acceptance criteria, Testing and Verification Strategy, Rollout and Rollback, and Decision Log sections.

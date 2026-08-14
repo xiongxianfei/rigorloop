@@ -16,6 +16,5 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r1.md
 Resolution: review-resolution.md#proposal-review-r1
 Material findings: PMAPSIM-PR1, PMAPSIM-PR2, PMAPSIM-PR3
-Open findings: PMAPSIM-PR1, PMAPSIM-PR2, PMAPSIM-PR3
+Open findings: None
 Recording status: recorded
-
