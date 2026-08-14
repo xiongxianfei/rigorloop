@@ -3856,6 +3856,7 @@ Use the inputs somehow and produce a useful result.
     def test_workflow_refactor_stage_skill_guidance_alignment(self) -> None:
         workflow = (ROOT / "skills" / "workflow" / "SKILL.md").read_text(encoding="utf-8")
         proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal += "\n" + (ROOT / "skills" / "proposal" / "references" / "strategic-and-scope-gates.md").read_text(encoding="utf-8")
         proposal_review = (
             ROOT / "skills" / "proposal-review" / "SKILL.md"
         ).read_text(encoding="utf-8")
@@ -6418,6 +6419,8 @@ and result format.
 
     def test_proposal_scope_preservation_guidance_is_static_validated(self) -> None:
         proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal += "\n" + (ROOT / "skills" / "proposal" / "references" / "strategic-and-scope-gates.md").read_text(encoding="utf-8")
+        proposal += "\n" + (ROOT / "skills" / "proposal" / "assets" / "proposal-skeleton.md").read_text(encoding="utf-8")
         proposal_review = (
             ROOT / "skills" / "proposal-review" / "SKILL.md"
         ).read_text(encoding="utf-8")
@@ -6455,6 +6458,8 @@ and result format.
 
     def test_cost_bounded_rigor_m1_proposal_scope_budget_guidance(self) -> None:
         proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal += "\n" + (ROOT / "skills" / "proposal" / "references" / "strategic-and-scope-gates.md").read_text(encoding="utf-8")
+        proposal += "\n" + (ROOT / "skills" / "proposal" / "assets" / "proposal-skeleton.md").read_text(encoding="utf-8")
 
         required_terms = [
             "## Scope budget for broad proposals",
@@ -6518,6 +6523,7 @@ and result format.
                 self.assertIn(term, evidence)
 
         proposal = (ROOT / "skills" / "proposal" / "SKILL.md").read_text(encoding="utf-8")
+        proposal += "\n" + (ROOT / "skills" / "proposal" / "references" / "strategic-and-scope-gates.md").read_text(encoding="utf-8")
         proposal_review = (
             ROOT / "skills" / "proposal-review" / "SKILL.md"
         ).read_text(encoding="utf-8")
@@ -8098,6 +8104,14 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                     / "plan"
                     / "references"
                     / "governed-plan-authoring.md"
+                ).read_text(encoding="utf-8")
+            if skill_name == "proposal":
+                body += (
+                    ROOT
+                    / "skills"
+                    / "proposal"
+                    / "references"
+                    / "governed-proposal-authoring.md"
                 ).read_text(encoding="utf-8")
             if skill_name == "test-spec":
                 body += (
@@ -10184,6 +10198,76 @@ class PlanSkillSimplificationContractTests(unittest.TestCase):
                     entries, id_field=id_field, required_fields=fields,
                     vocabulary_field=vocabulary_field, allowed_values=allowed,
                 )
+
+
+class ProposalSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "proposal"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        governed_path = self.root / "references" / "governed-proposal-authoring.md"
+        strategic_path = self.root / "references" / "strategic-and-scope-gates.md"
+        self.governed = governed_path.read_text(encoding="utf-8") if governed_path.is_file() else ""
+        self.strategic = strategic_path.read_text(encoding="utf-8") if strategic_path.is_file() else ""
+        self.skeleton = (self.root / "assets" / "proposal-skeleton.md").read_text(encoding="utf-8")
+
+    def test_package_assemblies_and_resource_ownership_are_closed(self) -> None:
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["governed-proposal-authoring.md", "strategic-and-scope-gates.md"])
+        for assembly in ("PA0-portable", "PA0G-portable-gated", "PA1-governed", "PA1G-governed-gated"):
+            self.assertIn(assembly, self.skill)
+        self.assertIn("READ `references/governed-proposal-authoring.md`", self.skill)
+        self.assertIn("READ `references/strategic-and-scope-gates.md`", self.skill)
+        self.assertIn("COPY `assets/proposal-skeleton.md`", self.skill)
+        self.assertIn("must not reconstruct", self.skill.lower())
+
+    def test_portable_and_governed_operation_authority_is_separate(self) -> None:
+        for operation in ("create-primary-proposal", "revise-primary-proposal"):
+            self.assertIn(operation, self.skill)
+            self.assertIn(operation, self.governed)
+        for phrase in (
+            "governed_proposal_candidate_context",
+            "Conversational wording alone does not establish",
+            "does not grant mutation authority",
+            "must not fall back to portable",
+            "Portable authoring writes only the proposal artifact",
+        ):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        for phrase in ("complete `change.yaml`", "review-required", "commit point", "idempotent success", "downstream reliance"):
+            self.assertIn(phrase.lower(), self.governed.lower())
+
+    def test_governed_retry_and_authorized_reset_fail_closed(self) -> None:
+        for phrase in (
+            "authoring-reset-required",
+            "workflow reset authorization",
+            "single-use or idempotently consumable",
+            "new transaction identity",
+            "must not mutate `workflow_state`",
+            "must not delete completed authoring or review evidence",
+        ):
+            self.assertIn(phrase.lower(), self.governed.lower())
+
+    def test_specialized_predicates_and_scope_budget_vocabulary_are_closed(self) -> None:
+        for predicate in ("vision_exception_context", "standing_artifact_context", "initial_intent_table_context", "scope_budget_context"):
+            self.assertIn(predicate, self.skill)
+            self.assertIn(predicate, self.strategic)
+        self.assertIn("semantic proposal judgment", self.skill.lower())
+        self.assertIn("loads exactly once", self.skill.lower())
+        for value in ("in scope", "out of scope", "deferred follow-up", "rejected option", "open question", "core to this proposal", "first-slice candidate", "same-slice dependency", "separate implementation slice", "deferable follow-up", "separate proposal"):
+            self.assertIn(value, self.strategic)
+
+    def test_skeleton_owns_four_independent_conditional_groups(self) -> None:
+        for heading in ("Vision exception or revision", "Standing artifact dependency or bootstrap", "Initial intent preservation", "Scope budget"):
+            self.assertEqual(self.skeleton.count(f"## {heading}"), 1)
+        for placeholder in ("<current vision relationship>", "<required standing artifact>", "<initial user goal>", "<work item>"):
+            self.assertIn(placeholder, self.skeleton)
+        self.assertIn("Inapplicable conditional groups are omitted", self.skill)
+        self.assertIn("Applicable but unresolved groups report an explicit blocker", self.skill)
+
+    def test_references_have_non_overlapping_policy_owners(self) -> None:
+        self.assertIn("governed proposal authoring", self.governed.lower())
+        self.assertIn("strategic and scope gates", self.strategic.lower())
+        self.assertNotIn("scope budget treatment", self.governed.lower())
+        self.assertNotIn("change.yaml", self.strategic)
+        self.assertNotIn("review-required", self.strategic)
 
 
 class TestSpecSkillSimplificationTests(unittest.TestCase):
