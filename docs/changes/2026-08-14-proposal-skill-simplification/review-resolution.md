@@ -5,11 +5,12 @@ Closeout status: closed
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
+Review closeout: proposal-review-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: all recorded proposal-review findings resolved; fresh review required
+- Current result: proposal approved
 
 ## Resolution overview
 
@@ -24,6 +25,10 @@ Review closeout: proposal-review-r3
 | `PRSIM-R3-PR1` | accepted | closed | Workflow authorizes recovery without mutating proposal state; proposal executes only the exact authorized reset of its own incomplete state. |
 
 ## Finding details
+
+### proposal-review-r4
+
+No material findings. The clean rereview approved the proposal at commit `f3313ead` and confirmed closure of `PRSIM-R3-PR1` without changing stage-owned mutation boundaries.
 
 ### proposal-review-r1
 
