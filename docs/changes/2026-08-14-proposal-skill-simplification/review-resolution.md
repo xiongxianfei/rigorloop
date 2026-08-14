@@ -1,6 +1,6 @@
 # Review Resolution: Proposal Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -12,11 +12,12 @@ Review closeout: test-spec-review-r1
 Review closeout: code-review-M1-r1
 Review closeout: code-review-M1-r2
 Review closeout: code-review-M2-r1
+Review closeout: code-review-M2-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`, `code-review-M2-r2`
 - Findings resolved: 8
-- Unresolved findings: 1
-- Current result: M2 code review requires loaded-byte reduction before rereview
+- Unresolved findings: 0
+- Current result: M2 approved after combined-profile byte reduction and context-reset rereview
 
 ### test-spec-review-r1
 
@@ -44,7 +45,7 @@ No material findings. The clean review approved `specs/proposal-skill-simplifica
 | `PRSIM-R2-PR3` | accepted | closed | Every specialized predicate has an explicit structural destination. |
 | `PRSIM-R3-PR1` | accepted | closed | Workflow authorizes recovery without mutating proposal state; proposal executes only the exact authorized reset of its own incomplete state. |
 | `PRSIM-M1-CR1` | accepted | closed | Split two composite enum literal rows into one independently classified row per exact consumed value. |
-| `PRSIM-M2-CR1` | accepted | open | Reduce PA1G below the baseline in both bytes and words without semantic loss. |
+| `PRSIM-M2-CR1` | accepted | closed | Reduced PA1G below both baseline metrics without contract-test regression. |
 
 ## Finding details
 
@@ -56,7 +57,7 @@ Finding ID: PRSIM-M2-CR1
 
 Disposition: accepted
 
-Status: open
+Status: closed
 
 Owner: implement M2
 
@@ -76,7 +77,11 @@ Safe resolution path: Edit only the declared procedural owners and M2 evidence, 
 
 Validation target: PA1G below both baselines with no contract-test regression.
 
-Validation evidence: pending correction and rereview.
+Validation evidence: PA1G is 1,821 words and 14,286 bytes; CMD2-CMD4 pass; `reviews/code-review-m2-r2.md` approved the correction at `1aa58b41`.
+
+### code-review-M2-r2
+
+No material findings. The clean context-reset rereview approved the semantic-preserving compression, closed `PRSIM-M2-CR1`, and closed M2 for M3 handoff.
 
 ### code-review-M1-r1
 
