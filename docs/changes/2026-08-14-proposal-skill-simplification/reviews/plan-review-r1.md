@@ -23,9 +23,9 @@ Status: approved
 - Skill: plan-review
 - Review target: `docs/plans/2026-08-14-proposal-skill-simplification.md` at `0f1a25e8`
 - Operation: initial-review
-- Transaction result: initialization-required
-- Open blockers: none at plan review; reviewed-plan initialization and settlement retry remain required
-- Immediate next stage: test-spec after reviewed-plan initialization and settlement
+- Transaction result: settled-active
+- Open blockers: none
+- Immediate next stage: test-spec
 - Claim limitations: no implementation, test-spec, verification, branch, PR, or closeout readiness is established
 
 ## Semantic judgment
@@ -49,11 +49,11 @@ Status: approved
 
 - Change identity: `2026-08-14-proposal-skill-simplification`
 - Plan-entry identity: `plan` and `docs/plans/2026-08-14-proposal-skill-simplification.md`
-- planned_work basis: absent
+- planned_work basis: initialized from `plan-review-r1` and revision `0f1a25e8`
 - Entry state before: review-required
-- Entry state after: review-required
-- Settlement result: initialization-required
-- Formal test-spec eligibility: pending reviewed-plan initialization and identical settlement retry
+- Entry state after: active
+- Settlement result: settled-active
+- Formal test-spec eligibility: eligible
 
 ## Boundary review
 
@@ -66,7 +66,7 @@ Status: approved
 - Execution mode: workflow-managed
 - Manifest identity: `review-invocation-plan-review-r1.yaml`
 - Automation authority: active and bound to the same change and plan entry
-- Promotion or pause result: initialize the approved plan, then retry settlement without semantic rereview
+- Promotion or pause result: promotion to test-spec permitted after identity-bound initialization and settlement
 
 ## Findings
 
@@ -92,4 +92,4 @@ None.
 
 The plan freezes semantic and compatibility ownership before editing the canonical package, groups all mutually dependent trigger, transaction, and structural changes into one implementation milestone, and separates generated-package proof from canonical mutation. Every applicable boundary and selected interaction has a named milestone, validation surface, dependency, and recovery path. The lifecycle-closeout milestone remains outside implementation work.
 
-The semantic review is approved. The plan remains `review-required` until `plan` initializes `planned_work` from this exact reviewed revision and an identical settlement retry activates the matching entry.
+The semantic review is approved. After `plan` initialized `planned_work` from this exact reviewed revision, the identical settlement retry reused this judgment, changed only the matching plan entry to `active`, and created no duplicate review evidence.

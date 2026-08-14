@@ -12,11 +12,11 @@ Review closeout: plan-review-r1
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: plan approved; reviewed-plan initialization and settlement retry required before test-spec
+- Current result: plan approved and active; test-spec required
 
 ### plan-review-r1
 
-No material findings. The clean review approved `docs/plans/2026-08-14-proposal-skill-simplification.md` at commit `0f1a25e8`; initialization and identical settlement retry remain required before test-spec.
+No material findings. The clean review approved `docs/plans/2026-08-14-proposal-skill-simplification.md` at commit `0f1a25e8`; `planned_work` was initialized from that exact basis, and the identical settlement retry activated the plan without semantic rereview.
 
 ### spec-review-r1
 
