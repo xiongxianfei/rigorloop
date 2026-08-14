@@ -1,12 +1,15 @@
 # Project Map Skill Contract
 
-## Status
+## Owning change record
 
-approved
+`docs/changes/2026-08-14-project-map-skill-simplification/change.yaml`
+
+boundary_contract: boundary-first-v1
 
 ## Related proposal
 
 - [Evidence-Bound and Incremental `project-map` Skill](../docs/proposals/2026-06-23-evidence-bound-incremental-project-map.md)
+- [Project-Map Skill Simplification](../docs/proposals/2026-08-14-project-map-skill-simplification.md)
 
 ## Review evidence
 
@@ -33,6 +36,12 @@ This spec is specific to `project-map` behavior. Generic published-skill metadat
 - `configured command`: A command found in a manifest, workflow, script, or documented configuration.
 - `executed command`: A command actually run during the mapping session with its result recorded.
 - `correction note`: A refresh-result note that records a prior map claim was wrong at its recorded baseline, not merely stale because repository state later changed.
+- `operation`: One of `create`, `refresh`, or `audit`, selected from the requested action and resolved target state.
+- `map scope`: Either `repository` or `area:<slug>`.
+- `map coordination context`: Evidence that area-map discovery, registration, parent/child identity, overlap, contradiction, or missing-area handling applies.
+- `semantic classification`: One of six operation/scope combinations; it describes behavior rather than loaded resources.
+- `procedural assembly`: The resources loaded for an invocation: `PMA0-simple-root-create` or `PMA1-maintenance-or-coordinated`.
+- `area-creation transaction`: The identity-bound creation of one area map followed by its exact root registration, with registration as the commit point.
 - `current-state evidence`: Source, runtime configuration, build/package manifests, schemas, tests, CI workflows, current-state documentation, or generated output with a known canonical source.
 - `intent artifact`: A proposal, spec, architecture plan, ADR, or execution plan that may describe desired or planned behavior but does not prove current implementation.
 
@@ -87,6 +96,50 @@ When the refreshed map corrects the route-flow section
 Then the refresh result includes a correction note naming the affected section, the corrected claim, and the evidence path
 And the map status remains one of `current`, `partial`, or `stale`.
 
+### Example E7: create cannot replace an existing map
+
+Given the resolved repository map already exists
+When the user requests `create`
+Then the operation stops and requires explicit `refresh`
+And a complete rewrite remains a refresh strategy.
+
+### Example E8: audit remains read-only
+
+Given an existing area map is audited and a correctable defect is found
+When the user requests correction after the audit
+Then the audit finishes without mutation
+And correction begins a new refresh operation with current target and evidence resolution.
+
+### Example E9: simple root creation omits conditional procedure safely
+
+Given the root target is absent
+And the bounded coordination preflight finds no configured area locations, area files, registrations, request-supplied coordination, or active-change references
+When the root map is created
+Then assembly `PMA0-simple-root-create` loads `SKILL.md` and the skeleton only.
+
+### Example E10: late coordination discovery changes only the assembly
+
+Given root creation begins as `create + repository`
+When a known area-map location reveals an existing area map
+Then `map_coordination_context` becomes true
+And assembly changes to `PMA1-maintenance-or-coordinated` before dependent judgment or writes
+And operation and scope remain unchanged.
+
+### Example E11: area creation commits through root registration
+
+Given one valid root map exists and the area target and registration are absent
+When area creation writes and validates the area map
+And the root identity remains current
+Then the exact root registration is written last as the commit point
+And both reciprocal identities are validated.
+
+### Example E12: interrupted area creation reconciles exact state only
+
+Given an area file exists without root registration after interruption
+When its root, area, path, parent, baseline, and expected registration identities match the original attempt
+Then retry may validate the area and complete only the registration
+But a mismatched or ambiguous file is not adopted.
+
 ## Requirements
 
 ### Skill role and claim boundaries
@@ -101,19 +154,19 @@ R4. The normalized `project-map` skill MUST include a workflow-role block or the
 
 R5. If the selected workflow-role stage label is not already allowed by the governing skill contract, implementation MUST either reuse an approved equivalent label or amend the governing skill contract before relying on a new label.
 
-### Operating modes and result output
+### Operations, scopes, assemblies, and result output
 
-R6. The skill MUST classify each invocation as `create`, `refresh`, `area`, or `audit` before broad repository reading.
+R6. The skill MUST classify operation as exactly `create`, `refresh`, or `audit` and map scope as exactly `repository` or `area:<slug>` before broad repository reading.
 
-R7. A `create` invocation MUST create a root map or approved area map only when no suitable map exists for the requested scope.
+R7. `create` MUST be permitted only when exactly one resolved target map is absent, and an existing target MUST stop with an explicit `refresh` requirement.
 
-R8. A `refresh` invocation MUST update affected map sections and metadata when relevant repository state has changed.
+R8. `refresh` MUST be permitted only when exactly one target map exists and is resolvable, and an absent target MUST stop and route to `create`.
 
-R9. An `area` invocation MUST create or update an area map only for a durable repository boundary.
+R9. A complete rewrite of an existing map MUST remain a `refresh` strategy and MUST NOT be performed through `create`.
 
-R10. An `audit` invocation MUST report whether a map is current, partial, stale, incomplete, contradictory, or otherwise unsafe to rely on, and MUST NOT rewrite map artifacts unless the user requested edits.
+R10. `audit` MUST always be read-only; an absent target MUST produce a `missing-map` finding, and a later correction request MUST begin a separately classified refresh with current target and evidence resolution.
 
-R11. The skill output MUST include a result block that reports skill, status, mode, map scope, artifacts changed, freshness result, correction note, open blockers, and immediate next stage.
+R11. The skill output MUST include a result block that reports skill, status, `Operation`, `Map scope`, artifacts changed, freshness result, correction note, open blockers, and immediate next stage, and new results MUST NOT emit the legacy `Mode` field.
 
 ### Artifact placement
 
@@ -279,6 +332,136 @@ R83. Behavior-preservation evidence MUST cover the orientation-only role, curren
 
 R84. Cold-read proof MUST include at least a small repository, a monorepo or multi-service fixture, and an intentionally stale map, unless the plan explicitly defers one with rationale accepted before implementation.
 
+### Simplified package and progressive disclosure
+
+R85. The canonical `project-map` package MUST contain `SKILL.md`, `references/map-maintenance-and-area-coordination.md`, and `assets/project-map-skeleton.md`, with no additional result or policy asset introduced by this change.
+
+R86. `SKILL.md` MUST remain self-sufficient for purpose, routing, placement, target resolution, operation and scope classification, coordination preflight, map-status meanings, baseline truthfulness, evidence classes, source ranking, command truthfulness, universal map and reliance invariants, stops, claims, resource triggers, and next-stage behavior.
+
+R87. The conditional reference MUST own detailed refresh-trigger comparison, affected-section selection, correction notes, audit procedure, root registration, parent/child rules, overlap ownership, contradiction and missing-area handling, previous/current baseline comparison, changed-path targeting, and interrupted maintenance or coordination recovery.
+
+R88. The conditional reference MUST NOT redefine universal evidence meanings, source ranking, command authority, map statuses, claim boundaries, stops, downstream ownership, or asset structure.
+
+R89. The skeleton MUST be the sole owner of metadata labels, required section order, root registration table headers, evidence-trail table headers, placeholders, and insertion locations.
+
+R90. `SKILL.md` MUST NOT duplicate the complete required-output or metadata-label inventory owned by the skeleton.
+
+R91. The skeleton MUST remain policy-free and MUST NOT determine evidence adequacy, freshness, operation applicability, coordination context, authority, claims, or handoff.
+
+R92. The `Area maps` section MUST be emitted only for a root map with registered area maps and MUST be omitted for an area map or a root map with no registered areas.
+
+### Coordination preflight and procedural assemblies
+
+R93. Before classifying repository root creation as uncoordinated, the skill MUST inspect project-local workflow guidance for customized paths, the canonical or configured root path, canonical or configured area directories, existing root registrations when present, known area files, request-supplied coordination evidence, and directly referenced project-map paths in active change context when applicable.
+
+R94. The coordination preflight MUST remain bounded to known project-map ownership surfaces and MUST NOT require a broad repository content scan merely to prove absence.
+
+R95. No known coordination evidence MUST select uncoordinated behavior; discovered coordination evidence MUST require the conditional reference; unavailable, conflicting, or ambiguous known surfaces MUST require reference-owned resolution or stop when the reference is unavailable.
+
+R96. `map_coordination_context` MUST be true for every area scope and whenever evidence identifies an existing, proposed, missing, or orphaned area map, root registration, parent/child identity, overlap ownership, or root/area contradiction handling.
+
+R97. The six semantic classifications MUST be the Cartesian set of the three operations and two scope kinds, but procedural loading MUST use only `PMA0-simple-root-create` and `PMA1-maintenance-or-coordinated`.
+
+R98. `PMA0-simple-root-create` MUST apply only to `create + repository + coordination=false` and MUST load `SKILL.md` plus the skeleton when writing.
+
+R99. `PMA1-maintenance-or-coordinated` MUST apply to every refresh, every audit, every area scope, and every root create with coordination and MUST load `SKILL.md` plus the conditional reference and the skeleton when writing.
+
+R100. Late coordination discovery during root creation MUST change the loaded assembly to `PMA1` before dependent judgment or writes without changing operation or scope.
+
+R101. A missing, unreadable, escaped, contradictory, or mixed-version required reference MUST stop dependent work without reconstructing its procedure from memory.
+
+### Area-map creation transaction
+
+R102. Area creation MUST require one existing structurally valid root map and MUST NOT create the root map implicitly.
+
+R103. When the root map is absent, area creation MUST stop, route to repository root creation, and require a new area-creation attempt after the root exists.
+
+R104. An area-creation attempt MUST bind the root path and content identity, area slug and normalized path, area parent/root identity, current evidence baseline, and expected root registration row before writing.
+
+R105. Area creation MUST confirm both the area target and expected registration are absent before its first write.
+
+R106. Area creation MUST prepare and validate complete area content, write the area map first, re-read and revalidate the root identity and relevant registration state, then write the exact root registration last as the transaction commit point.
+
+R107. After commit, area creation MUST validate both artifacts and their reciprocal identity fields.
+
+R108. A retry MAY complete only missing registration when the existing area file and complete original transaction identities match; it MUST NOT adopt a file whose identity or evidence basis differs.
+
+R109. A dangling registration, conflicting path or parent, changed root identity, multiple candidate files or rows, stale basis, or ambiguous state MUST stop without implicit adoption or overwrite.
+
+R110. When both artifacts already match the expected identities, an identical retry MUST return idempotent success without another write.
+
+R111. Audit MAY identify any partial area/root transaction state but MUST remain read-only; repair requires separately resolved refresh or correction authority.
+
+### Compatibility, preservation, and measurement
+
+R112. New invocation results MUST use `Operation: create | refresh | audit` and `Map scope: repository | area:<slug>` and MUST NOT emit legacy `Mode`.
+
+R113. Legacy `create` MUST map to `create + repository`; legacy `refresh` and `audit` MUST use their operation plus one explicitly resolved scope; legacy `area` MUST require one explicitly resolved operation and `area:<slug>` or stop.
+
+R114. Existing project-map artifacts MUST remain readable and MUST NOT be rewritten solely for the result-contract or package migration.
+
+R115. Normative and parser/package literal dependencies MUST be preserved or migrated atomically, test-only incidental assertions MUST be updated instead of owning prose, and historical forms MUST remain only where they prove compatibility.
+
+R116. Acceptance MUST report LF-normalized UTF-8 bytes and Unicode whitespace-separated words for `SKILL.md`, the reference, the asset, `PMA0`, `PMA1`, representative outputs, and the total package, and both procedural assemblies MUST decrease unless an independently approved semantic-preservation exception identifies the exact reason.
+
+R117. Acceptance MUST use deterministic structure, static contract scenarios, semantic review, and canonical/generated/archive/install parity and MUST NOT execute a target-agent runtime or add a permanent tokenizer, prose-quality, or simplicity validator.
+
+## Boundary model
+
+Boundary model version: boundary-first-v1
+Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47, R48, R49, R50, R51, R52, R53, R54, R55, R56, R57, R58, R59, R60, R61, R62, R63, R64, R65, R66, R67, R68, R69, R70, R71, R72, R73, R74, R75, R76, R77, R78, R79, R80, R81, R82, R83, R84, R85, R86, R87, R88, R89, R90, R91, R92, R93, R94, R95, R96, R97, R98, R99, R100, R101, R102, R103, R104, R105, R106, R107, R108, R109, R110, R111, R112, R113, R114, R115, R116, R117
+
+| Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
+| --- | --- | --- | --- | --- |
+| input-domain | applicable | R6, R7, R8, R9, R10, R11, R93, R94, R95, R96, R97, R98, R99, R100, R112, R113 | BND-INPUT-001 | - |
+| state-lifecycle | applicable | R7, R8, R9, R10, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R102, R103, R104, R105, R106, R107, R108, R109, R110, R111 | BND-STATE-001 | - |
+| identity-authority | applicable | R10, R14, R15, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47, R48, R102, R103, R104, R105, R106, R107, R108, R109, R110, R111 | BND-AUTH-001 | - |
+| composition-path | applicable | R49, R50, R51, R52, R53, R54, R55, R56, R57, R58, R59, R60, R61, R62, R63, R64, R65, R85, R86, R87, R88, R89, R90, R91, R92, R93, R94, R95, R96, R97, R98, R99, R100, R101 | BND-COMPOSE-001 | - |
+| temporal-retry | applicable | R100, R104, R105, R106, R107, R108, R109, R110, R111 | BND-TEMPORAL-001 | - |
+| failure-recovery | applicable | R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R57, R95, R101, R108, R109, R110, R111 | BND-RECOVERY-001 | - |
+| compatibility-migration | applicable | R81, R82, R83, R84, R112, R113, R114, R115, R116, R117 | BND-COMPAT-001 | - |
+| external-environment | applicable | R23, R24, R25, R42, R43, R44, R45, R46, R47, R48, R93, R94, R95 | BND-ENV-001 | - |
+
+## Boundary definitions
+
+| Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |
+| --- | --- | --- | --- | --- | --- | --- |
+| BND-INPUT-001 | input-domain | R6, R7, R8, R9, R10, R11, R93, R94, R95, R96, R97, R98, R99, R100, R112, R113 | create/refresh/audit; repository/area; coordination true/false/ambiguous; legacy forms | Exactly one operation, scope, target, and assembly are resolved before dependent work. | Valid inputs classify; missing or ambiguous identity stops; legacy ambiguity stops. | R6 |
+| BND-STATE-001 | state-lifecycle | R7, R8, R9, R10, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R102, R103, R104, R105, R106, R107, R108, R109, R110, R111 | target absent/existing; map current/partial/stale; area transaction absent/partial/committed/conflicting | Create never replaces; refresh requires existing target; audit is read-only; registration is the area commit point. | Create, refresh, finding, idempotent success, or explicit stop. | R7 |
+| BND-AUTH-001 | identity-authority | R10, R14, R15, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47, R48, R102, R103, R104, R105, R106, R107, R108, R109, R110, R111 | observed/inferred/unknown; read-only inspection; explicit map write; command go-ahead; matching or stale identities | Evidence authority stays explicit; loading resources grants no authority; only resolved targets and matching identities may be written. | Supported claim, labeled inference, visible unknown, authorized read/write, or authority blocker. | R30 |
+| BND-COMPOSE-001 | composition-path | R49, R50, R51, R52, R53, R54, R55, R56, R57, R58, R59, R60, R61, R62, R63, R64, R65, R85, R86, R87, R88, R89, R90, R91, R92, R93, R94, R95, R96, R97, R98, R99, R100, R101 | root/area maps; common/reference assembly; skeleton insertion; overlapping maps | Root remains entry point; one policy owner and one structural owner; coordinated paths load the reference. | Simple root create uses PMA0; maintenance or coordination uses PMA1; contradiction blocks clean result. | R85 |
+| BND-TEMPORAL-001 | temporal-retry | R100, R104, R105, R106, R107, R108, R109, R110, R111 | late loading; first attempt; interruption after area write; concurrent root change; identical retry | Operation and scope stay stable; registration commits last; retries bind the original complete identity. | Late load, registration completion, idempotent success, or stop without overwrite. | R106 |
+| BND-RECOVERY-001 | failure-recovery | R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R57, R95, R101, R108, R109, R110, R111 | missing evidence/resource; wrong prior map; orphan file; dangling row; conflict; ambiguity | Unknowns remain visible; procedure is not reconstructed; unrelated state is not adopted. | Partial/stale status, correction note, routed repair, or fail-closed stop. | R101 |
+| BND-COMPAT-001 | compatibility-migration | R81, R82, R83, R84, R112, R113, R114, R115, R116, R117 | old Mode results; new Operation/Map scope results; existing maps; mixed package resources | New output is write-new; historical maps remain readable; canonical and derived packages retain parity. | Deterministic mapping, historical readability, atomic migration, rollback, or stop. | R112 |
+| BND-ENV-001 | external-environment | R23, R24, R25, R42, R43, R44, R45, R46, R47, R48, R93, R94, R95 | Git available/unavailable/dirty; filesystem paths available/ambiguous; network or execution requested | Evidence baseline is truthful; known ownership surfaces are bounded; risky commands need go-ahead. | SHA, SHA+dirty, alternate evidence baseline, configured-only command, executed result, or stop. | R24 |
+
+## Selected interactions
+
+| Interaction ID | Governing requirement IDs | Boundary IDs | Hazard | Required composed outcome |
+| --- | --- | --- | --- | --- |
+| INT-001 | R6, R7, R8, R9, R10, R112, R113 | BND-INPUT-001, BND-STATE-001, BND-COMPAT-001 | A legacy or explicit operation conflicts with current target existence. | Stop without implicit operation conversion; identify create or refresh as the required new operation. |
+| INT-002 | R93, R94, R95, R96, R97, R98, R99, R100, R101 | BND-INPUT-001, BND-COMPOSE-001, BND-RECOVERY-001, BND-ENV-001 | Incomplete or late coordination evidence could omit required procedure. | Check known surfaces, switch to PMA1 before dependent work, or stop when resolution resources are unavailable. |
+| INT-003 | R102, R103, R104, R105, R106, R107, R108, R109, R110, R111 | BND-STATE-001, BND-AUTH-001, BND-TEMPORAL-001, BND-RECOVERY-001 | Area write interruption or concurrent root mutation could create orphaned or incorrect registration state. | Register last only against the unchanged root; reconcile exact matching state and reject every mismatch. |
+| INT-004 | R23, R24, R25, R26, R27, R28, R29, R87, R116 | BND-STATE-001, BND-RECOVERY-001, BND-ENV-001 | A dirty baseline or previously wrong claim could be mistaken for ordinary staleness during refresh. | Report SHA+dirty universally and use reference-owned comparison to emit the correct correction or freshness result. |
+| INT-005 | R85, R86, R87, R88, R89, R90, R91, R101, R112, R113, R114, R115, R116, R117 | BND-COMPOSE-001, BND-COMPAT-001, BND-RECOVERY-001 | New literals or a missing packaged reference could produce mixed contract behavior. | Migrate real consumers atomically, validate parity, and stop rather than combine mixed resources. |
+
+## Example ownership
+
+| Example ID | Classification | Governing requirement IDs | Boundary IDs | Regression ID | Discovery gap ID |
+| --- | --- | --- | --- | --- | --- |
+| E1 | illustration | R58, R61, R62 | BND-COMPOSE-001 | - | - |
+| E2 | illustration | R49, R51, R52, R53 | BND-COMPOSE-001 | - | - |
+| E3 | illustration | R30, R31, R32, R40, R41 | BND-AUTH-001 | - | - |
+| E4 | illustration | R42, R43, R44, R45, R46, R47, R48 | BND-AUTH-001, BND-ENV-001 | - | - |
+| E5 | illustration | R23, R24, R25 | BND-STATE-001, BND-ENV-001 | - | - |
+| E6 | illustration | R26, R27, R28, R29 | BND-STATE-001, BND-RECOVERY-001 | - | - |
+| E7 | illustration | R7, R8, R9 | BND-INPUT-001, BND-STATE-001 | - | - |
+| E8 | illustration | R10, R111 | BND-STATE-001, BND-AUTH-001 | - | - |
+| E9 | illustration | R93, R94, R95 | BND-INPUT-001, BND-COMPOSE-001, BND-ENV-001 | - | - |
+| E10 | illustration | R100 | BND-INPUT-001, BND-COMPOSE-001, BND-TEMPORAL-001 | - | - |
+| E11 | illustration | R104, R105, R106, R107 | BND-STATE-001, BND-AUTH-001, BND-TEMPORAL-001 | - | - |
+| E12 | illustration | R108, R109, R110, R111 | BND-TEMPORAL-001, BND-RECOVERY-001 | - | - |
+
 ## Inputs and outputs
 
 Inputs:
@@ -290,7 +473,7 @@ Inputs:
 Outputs:
 
 - Created, refreshed, or audited project-map artifact.
-- Result block with mode, status, map scope, artifacts changed, freshness result, correction note, blockers, and next stage.
+- Result block with operation, status, map scope, artifacts changed, freshness result, correction note, blockers, and next stage.
 - For formal repository work, validation evidence and change-local artifacts required by the active workflow stage.
 
 ## State and invariants
@@ -302,6 +485,8 @@ Outputs:
 - Area maps provide bounded depth for durable repository boundaries.
 - Unknowns remain visible rather than being silently guessed.
 - The skeleton asset owns output structure, while `SKILL.md` owns evidence, freshness, source-rank, claim-boundary, and handoff policy.
+- Operation selection is bound to target existence, while procedural assembly selection is bound to operation, scope, and coordination evidence.
+- Area creation is committed only by the exact root registration written after a validated area file.
 
 ## Error and boundary behavior
 
@@ -310,6 +495,9 @@ Outputs:
 - If overlapping maps contradict each other, the skill MUST block a clean refresh result and name the contradiction.
 - If a cited path no longer exists, downstream reliance on that claim is unsafe until source inspection or map refresh resolves the gap.
 - If a user requests runtime, network, build, or test execution without sufficient safety context, the skill MUST ask for go-ahead before executing those commands.
+- If create targets an existing map or refresh targets an absent map, the skill MUST stop and identify the required operation without silently reclassifying it.
+- If known coordination surfaces are unavailable, conflicting, or ambiguous, the skill MUST load reference-owned resolution procedure or stop when it is unavailable.
+- If an area transaction observes an orphan, dangling registration, changed root, stale basis, conflict, or ambiguity, it MUST stop without implicit adoption or overwrite.
 
 ## Compatibility and migration
 
@@ -318,6 +506,8 @@ Outputs:
 - The revised skill and skeleton must remain portable to customer projects without requiring RigorLoop repository internals.
 - Generated adapter output must be rebuilt from canonical skill source; generated public adapter skill bodies must not be hand-edited.
 - If `orientation` is not an accepted workflow-role stage value, the implementation must reuse an approved equivalent or amend the governing skill contract before publishing the new role block.
+- New invocation results use `Operation` and `Map scope`; old map artifacts remain readable and are not rewritten solely to adopt the new result contract.
+- Real parser and package consumers of legacy `Mode` migrate atomically, while historical fixtures may retain the old form only to prove compatibility.
 
 ## Observability
 
@@ -343,6 +533,7 @@ No end-user UI is introduced. The map and skeleton are Markdown artifacts. Headi
 - The root map should remain concise and stable across unrelated changes.
 - Area maps should be used to avoid unbounded root-map growth when durable boundaries justify the split.
 - Validation should target stable metadata, headings, resource maps, generated adapter inclusion, and representative outputs rather than broad natural-language scoring.
+- Loaded-context measurement must distinguish semantic classifications from the two procedural assemblies and must report total package size separately.
 
 ## Edge cases
 
@@ -370,6 +561,22 @@ EC11. Required section has no evidence in scope: section says `Not observed in t
 
 EC12. Produced output still contains skeleton placeholders: output is invalid for representative proof.
 
+EC13. Create targets an existing map: stop and require refresh.
+
+EC14. Refresh targets an absent map: stop and route to create.
+
+EC15. Audit targets an absent map: emit `missing-map` without mutation.
+
+EC16. Root creation discovers an area map after initial classification: load PMA1 before dependent work without changing operation or scope.
+
+EC17. Coordination paths are configured but unavailable: require reference-owned resolution or stop.
+
+EC18. Area creation has no root map: stop and route to root creation without implicitly creating it.
+
+EC19. Area file exists without registration after interruption: complete registration only when every bound identity matches.
+
+EC20. Root changes after area-file write: stop without overwriting or adopting the changed root.
+
 ## Non-goals
 
 - Do not turn `project-map` into an architecture-design skill.
@@ -395,7 +602,7 @@ EC12. Produced output still contains skeleton placeholders: output is invalid fo
 | --- | --- |
 | AC-PMAP-001 | `project-map` remains an observation and orientation skill. |
 | AC-PMAP-002 | The skill explicitly prohibits presenting future design as current state. |
-| AC-PMAP-003 | The skill supports `create`, `refresh`, `area`, and `audit` modes. |
+| AC-PMAP-003 | The skill supports three operations and repository or area scope as independent axes. |
 | AC-PMAP-004 | Produced maps include scope, baseline, coverage, last-reviewed date, and known gaps. |
 | AC-PMAP-005 | Dirty Git baselines record `<sha>+dirty` and inspected uncommitted paths. |
 | AC-PMAP-006 | Important current-state claims cite repository paths. |
@@ -415,6 +622,25 @@ EC12. Produced output still contains skeleton placeholders: output is invalid fo
 | AC-PMAP-020 | Generated adapters include the revised skill and skeleton. |
 | AC-PMAP-021 | Representative outputs preserve the existing eleven-section coverage and contain no unfilled placeholders. |
 | AC-PMAP-022 | The first slice validates contract, skeleton, generated adapter inclusion, and a small representative output set without requiring a full fixture suite. |
+| AC-PMAP-023 | Create applies only to absent targets, refresh applies only to existing targets, and full rewrites remain refreshes. |
+| AC-PMAP-024 | Audit is always read-only, including missing-map and post-audit correction paths. |
+| AC-PMAP-025 | New results emit `Operation` and `Map scope` and omit legacy `Mode`. |
+| AC-PMAP-026 | Root creation omits the reference only after the bounded seven-surface coordination preflight. |
+| AC-PMAP-027 | Ambiguous or unavailable known coordination surfaces cannot be treated as no coordination. |
+| AC-PMAP-028 | Six semantic classifications remain separate from PMA0 and PMA1 procedural assemblies. |
+| AC-PMAP-029 | Late coordination discovery loads PMA1 before dependent judgment or writes. |
+| AC-PMAP-030 | Missing or mixed required resources fail closed without remembered reconstruction. |
+| AC-PMAP-031 | The skeleton is the sole structural owner and does not own evidence or lifecycle policy. |
+| AC-PMAP-032 | Area creation requires one existing valid root and never creates it implicitly. |
+| AC-PMAP-033 | Area creation binds complete root, area, path, parent, baseline, and registration identities. |
+| AC-PMAP-034 | Area content is validated before root registration, and registration is the commit point. |
+| AC-PMAP-035 | Exact matching partial area state is recoverable and mismatched, dangling, stale, conflicting, or ambiguous state stops. |
+| AC-PMAP-036 | Existing maps remain readable without automatic rewriting. |
+| AC-PMAP-037 | Legacy result consumers migrate according to their normative, parser, incidental, obsolete, or historical classification. |
+| AC-PMAP-038 | Both PMA0 and PMA1 loaded words and bytes decrease unless an independently approved semantic-preservation exception applies. |
+| AC-PMAP-039 | Common-path and total-package measurements are reported separately. |
+| AC-PMAP-040 | Static proof covers all applicable boundaries and selected interactions without target-agent execution. |
+| AC-PMAP-041 | Canonical, generated, archived, and installed resources retain required parity. |
 
 ## Open questions
 
@@ -423,6 +649,9 @@ None.
 ## Next artifacts
 
 ```text
+spec-review
+architecture assessment
+architecture
 architecture-review
 plan
 plan-review
@@ -441,4 +670,4 @@ pr
 
 ## Readiness
 
-Approved after clean spec-review. Architecture update recorded; ready for `architecture-review`.
+Ready for independent `spec-review`. This revision does not claim spec approval, architecture completion, planning readiness, implementation readiness, verification, branch readiness, or PR readiness.
