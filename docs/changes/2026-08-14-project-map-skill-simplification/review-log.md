@@ -135,3 +135,16 @@ Resolution: review-resolution.md#code-review-M2-r1
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-M3-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: implementation milestone M3 at commit `e5a9ac0c`
+Status: clean-with-notes
+Detailed record: reviews/code-review-m3-r1.md
+Resolution: review-resolution.md#code-review-M3-r1
+Material findings: None
+Open findings: None
+Recording status: recorded

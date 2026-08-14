@@ -14,8 +14,9 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: code-review-M1-r1
 Review closeout: code-review-M2-r1
+Review closeout: code-review-M3-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-M1-r1`, `code-review-M2-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-M1-r1`, `code-review-M2-r1`, `code-review-M3-r1`
 - Findings resolved: 7
 - Unresolved findings: 0
 - Current result: revised test spec approved and active; implementation handoff allowed
@@ -193,3 +194,9 @@ No material findings; no resolution entry required. M1 preservation inventories,
 Review closeout: code-review-M2-r1
 
 No material findings; no resolution entry required. The canonical package split, operation/scope contract, conditional loading, area transaction, validator migration, and M2 deterministic evidence are clean.
+
+### code-review-M3-r1
+
+Review closeout: code-review-M3-r1
+
+No material findings; no resolution entry required. Both procedural assemblies shrink, final ownership evidence is complete, and canonical, generated, archived, and clean-install resources retain parity without target-agent execution.
