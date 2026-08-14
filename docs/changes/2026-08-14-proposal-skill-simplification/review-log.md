@@ -83,3 +83,16 @@ Resolution: review-resolution.md#plan-review-r1
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: test-spec-review-r1
+Stage: test-spec-review
+Round: r1
+Reviewed artifact: `specs/proposal-skill-simplification.test.md` at commit `debc1ef8`
+Status: approved
+Detailed record: reviews/test-spec-review-r1.md
+Resolution: review-resolution.md#test-spec-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
