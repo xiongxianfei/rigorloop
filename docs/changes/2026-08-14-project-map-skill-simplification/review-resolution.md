@@ -4,9 +4,11 @@
 
 Closeout status: closed
 
+Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
+Review closeout: proposal-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
 - Findings resolved: 6
 - Unresolved findings: 0
 - Current result: proposal revised; independent rereview required
@@ -123,3 +125,9 @@ Required outcome: Require an existing root, bind the full transaction basis, wri
 Safe resolution path: Adopt the transaction sequence and recovery matrix recommended by `proposal-review-r2`.
 Validation target: revised write boundaries, testing, rollout, risks, and acceptance criteria plus independent proposal rereview.
 Validation evidence: `evidence/proposal-revision-r2.md`; revised Area-map creation transaction, write boundaries, Expected Behavior Changes, Proposal acceptance criteria, Testing and Verification Strategy, Risks and Mitigations, and Decision Log sections.
+
+### proposal-review-r3
+
+Review closeout: proposal-review-r3
+
+No material findings; no resolution entry required. The same-stage proposal-review rerun approved the revised proposal and closed all findings through `proposal-review-r2`.
