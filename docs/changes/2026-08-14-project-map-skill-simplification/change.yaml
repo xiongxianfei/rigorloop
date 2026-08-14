@@ -63,8 +63,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: implement
-  next_stage: implement
+  current_stage: code-review
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-08-14-project-map-skill-simplification/evidence/proposal-authoring.md
@@ -96,6 +96,7 @@ workflow_state:
     - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-test-spec-review-r2.yaml
     - docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r2.md
     - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-verify.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/m1-preservation-inventories.md
   planned_work:
     plan_artifact_id: plan
     initialization_basis:
@@ -108,7 +109,7 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: planned
+        state: review-requested
       M2:
         kind: implementation
         state: planned
@@ -120,13 +121,14 @@ workflow_state:
       - M2
       - M3
     latest_review:
-      status: not-started
+      status: review-requested
       stage: code-review
       round: none
       artifact_id: plan
-      occurrence: none
+      occurrence: milestone
       milestone_id: M1
-      evidence: []
+      evidence:
+        - docs/changes/2026-08-14-project-map-skill-simplification/evidence/m1-preservation-inventories.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -145,7 +147,7 @@ workflow:
       completion:
         rule: first formal verify result is durably recorded
     status: active
-    current_stage: implement
+    current_stage: code-review
     stop_reason: null
     evidence:
       - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
@@ -172,6 +174,7 @@ workflow:
       - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-test-spec-review-r2.yaml
       - docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r2.md
       - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-verify.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/m1-preservation-inventories.md
 
 artifacts:
   proposal: docs/proposals/2026-08-14-project-map-skill-simplification.md
@@ -229,6 +232,13 @@ changed_files:
   - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-test-spec-review-r2.yaml
   - docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r2.md
   - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-verify.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/project-map-rule-disposition.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/project-map-literal-compatibility.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/fixtures/invalid-rule-disposition.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/fixtures/invalid-literal-classification.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/fixtures/scenario-contracts.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/profile-size-baseline.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/m1-preservation-inventories.md
 
 review:
   status: approved
