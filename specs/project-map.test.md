@@ -22,7 +22,7 @@
 
 ## Testing strategy
 
-Use deterministic contract fixtures for operation and target selection, coordination preflight, resource assembly, universal evidence rules, root/area structure, area transaction recovery, compatibility, and missing resources. Existing validators own permanent skill, boundary, lifecycle, build, and distribution checks. Change-local ledgers and measurements prove semantic disposition and loaded-profile reduction, while MP0 and MP1 provide the semantic judgments deterministic validation cannot make. No target-agent runtime, transcript grading, prompt journey, tokenizer dependency, network service, publication, or release action is part of acceptance.
+Use deterministic contract fixtures for operation and target selection, coordination preflight, resource assembly, universal evidence rules, root/area structure, area transaction recovery, compatibility, and missing resources. Existing validators own permanent skill, boundary, lifecycle, build, and distribution checks. Change-local ledgers, scenarios, representative outputs, and measurements prove rule disposition, observable preservation, and loaded-profile reduction. Ordinary PR review owns final human judgment about clarity and semantic quality; it is not modeled as a manual test procedure or pre-implementation acceptance gate. No target-agent runtime, transcript grading, prompt journey, tokenizer dependency, network service, publication, or release action is part of test acceptance.
 
 ## Requirement coverage map
 
@@ -64,17 +64,17 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | PRF-001 | covered | R6, R7, R8, R9, R10, R11, R93, R94, R95, R96, R97, R98, R99, R100, R112, R113 | BND-INPUT-001 | T1, T2, T3, T12 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
 | PRF-002 | covered | R7, R8, R9, R10, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R102, R103, R104, R105, R106, R107, R108, R109, R110, R111 | BND-STATE-001 | T1, T5, T6, T8, T9, T10, T11 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
-| PRF-003 | covered | R10, R14, R15, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47, R48, R102, R103, R104, R105, R106, R107, R108, R109, R110, R111 | BND-AUTH-001 | T4, T5, T8, T9, T10, T11, T13 | contract | hybrid | CMD1, CMD3 | `evidence/m2-package-implementation.md`; `evidence/semantic-preservation-review.md` | M3 | MP1 | - |
-| PRF-004 | covered | R49, R50, R51, R52, R53, R54, R55, R56, R57, R58, R59, R60, R61, R62, R63, R64, R65, R85, R86, R87, R88, R89, R90, R91, R92, R93, R94, R95, R96, R97, R98, R99, R100, R101 | BND-COMPOSE-001 | T2, T3, T4, T7, T8, T14, T15 | integration | hybrid | CMD2, CMD3, CMD4, CMD5, CMD6, CMD7 | `evidence/m2-package-implementation.md`; `evidence/m3-package-proof.md` | M3 | MP1 | - |
+| PRF-003 | covered | R10, R14, R15, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47, R48, R102, R103, R104, R105, R106, R107, R108, R109, R110, R111 | BND-AUTH-001 | T4, T5, T8, T9, T10, T11, T13 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M3 | - | - |
+| PRF-004 | covered | R49, R50, R51, R52, R53, R54, R55, R56, R57, R58, R59, R60, R61, R62, R63, R64, R65, R85, R86, R87, R88, R89, R90, R91, R92, R93, R94, R95, R96, R97, R98, R99, R100, R101 | BND-COMPOSE-001 | T2, T3, T4, T7, T8, T14, T15 | integration | automated | CMD2, CMD3, CMD4, CMD5, CMD6, CMD7 | `evidence/m2-package-implementation.md`; `evidence/m3-package-proof.md` | M3 | - | - |
 | PRF-005 | covered | R100, R104, R105, R106, R107, R108, R109, R110, R111 | BND-TEMPORAL-001 | T3, T9, T10, T11 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
 | PRF-006 | covered | R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R57, R95, R101, R108, R109, R110, R111 | BND-RECOVERY-001 | T4, T5, T6, T10, T11 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
-| PRF-007 | covered | R81, R82, R83, R84, R112, R113, R114, R115, R116, R117 | BND-COMPAT-001 | T12, T14, T15, T16, T17 | integration | hybrid | CMD1, CMD2, CMD4, CMD5, CMD6, CMD7, CMD8 | `evidence/m1-preservation-inventories.md`; `evidence/m3-package-proof.md` | M3 | MP0, MP1 | - |
+| PRF-007 | covered | R81, R82, R83, R84, R112, R113, R114, R115, R116, R117 | BND-COMPAT-001 | T12, T14, T15, T16, T17 | integration | automated | CMD1, CMD2, CMD4, CMD5, CMD6, CMD7, CMD8 | `evidence/m1-preservation-inventories.md`; `evidence/m3-package-proof.md` | M3 | - | - |
 | PRF-008 | covered | R23, R24, R25, R42, R43, R44, R45, R46, R47, R48, R93, R94, R95 | BND-ENV-001 | T2, T5, T13, T15 | integration | automated | CMD2, CMD3, CMD7 | `evidence/m2-package-implementation.md`; `evidence/m3-package-proof.md` | M3 | - | - |
 | PRF-009 | covered | R6, R7, R8, R9, R10, R112, R113 | INT-001 | T1, T12 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
 | PRF-010 | covered | R93, R94, R95, R96, R97, R98, R99, R100, R101 | INT-002 | T2, T3, T4 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
 | PRF-011 | covered | R102, R103, R104, R105, R106, R107, R108, R109, R110, R111 | INT-003 | T8, T9, T10, T11 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
-| PRF-012 | covered | R23, R24, R25, R26, R27, R28, R29, R87, R116 | INT-004 | T5, T6, T16 | contract | hybrid | CMD1, CMD3 | `evidence/m2-package-implementation.md`; `evidence/simplification-measurements.md` | M3 | MP1 | - |
-| PRF-013 | covered | R85, R86, R87, R88, R89, R90, R91, R101, R112, R113, R114, R115, R116, R117 | INT-005 | T4, T7, T12, T14, T15, T16, T17 | integration | hybrid | CMD1, CMD2, CMD3, CMD4, CMD5, CMD6, CMD7, CMD8 | `evidence/m1-preservation-inventories.md`; `evidence/m3-package-proof.md` | M3 | MP0, MP1 | - |
+| PRF-012 | covered | R23, R24, R25, R26, R27, R28, R29, R87, R116 | INT-004 | T5, T6, T16 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md`; `evidence/simplification-measurements.md` | M3 | - | - |
+| PRF-013 | covered | R85, R86, R87, R88, R89, R90, R91, R101, R112, R113, R114, R115, R116, R117 | INT-005 | T4, T7, T12, T14, T15, T16, T17 | integration | automated | CMD1, CMD2, CMD3, CMD4, CMD5, CMD6, CMD7, CMD8 | `evidence/m1-preservation-inventories.md`; `evidence/m3-package-proof.md` | M3 | - | - |
 
 ## Edge case coverage
 
@@ -112,10 +112,10 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| M1 | T14, T16 | MP0 | CMD1, CMD10 | `evidence/profile-size-baseline.md`; `evidence/m1-preservation-inventories.md` | M1 code-review | Canonical package remains unchanged while ownership and baselines are frozen. |
+| M1 | T14, T16 | none | CMD1, CMD10 | `evidence/profile-size-baseline.md`; `evidence/m1-preservation-inventories.md` | M1 code-review | Canonical package remains unchanged while ownership and baselines are frozen. |
 | M2 | T1-T14 | none | CMD2-CMD6, CMD9-CMD11 | `evidence/m2-package-implementation.md` | M2 code-review | Focused failing assertions precede the atomic canonical package change. |
-| M3 | T12-T17 | MP1 | CMD1-CMD11 | `evidence/simplification-measurements.md`; `evidence/semantic-preservation-review.md`; `evidence/m3-package-proof.md` | M3 code-review and final review | Proves assembly reduction, semantics, boundary coverage, and package parity. |
-| M4 | T17 | MP1 | CMD1-CMD11 | Final review, explanation, and verify evidence | verify | Lifecycle closeout begins only after M1-M3 are closed. |
+| M3 | T12-T17 | none | CMD1-CMD11 | `evidence/simplification-measurements.md`; `evidence/m3-package-proof.md` | M3 code-review and final review | Proves assembly reduction, observable contract preservation, boundary coverage, and package parity. |
+| M4 | T17 | none | CMD1-CMD11 | Final review, explanation, and verify evidence | verify | Lifecycle closeout begins only after M1-M3 are closed. |
 
 ## Test cases
 
@@ -323,8 +323,8 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 - Steps: Measure `SKILL.md`, reference, skeleton, PMA0, PMA1, representative output, duplicate clusters, mapped-resource count, and total package.
 - Expected result: PMA0 and PMA1 words and bytes both decrease unless an independently approved semantic-preservation exception identifies the exact reason; total package change remains separately visible.
 - Failure proves: File splitting is misreported as context reduction.
-- Evidence artifact: `evidence/simplification-measurements.md`; `evidence/semantic-preservation-review.md`
-- Automation location: Change-local measurement plus MP1.
+- Evidence artifact: `evidence/simplification-measurements.md`; `evidence/m3-package-proof.md`
+- Automation location: Change-local deterministic measurement and inventory assertions.
 - Required by milestone: M3
 
 ### T17. Final deterministic acceptance excludes target-agent execution
@@ -333,11 +333,11 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 - Level: smoke
 - Command IDs: CMD1-CMD11
 - Fixture/setup: Completed M1-M3 package and evidence with every applicable boundary and interaction mapped.
-- Steps: Run the command ledger, independent semantic review, review-artifact validation, and final boundary proof.
-- Expected result: Contract, scenarios, packages, parity, preservation, and measurements pass without invoking or grading Codex, Claude Code, opencode, or another target runtime.
+- Steps: Run the command ledger, review-artifact validation, and final boundary proof; leave ordinary human semantic judgment to PR review.
+- Expected result: Contract, scenarios, packages, parity, observable preservation, and measurements pass without invoking or grading Codex, Claude Code, opencode, or another target runtime, while no manual semantic-review procedure becomes an acceptance dependency.
 - Failure proves: Acceptance is incomplete or depends on a nondeterministic system outside the approved proof boundary.
 - Evidence artifact: `evidence/m3-package-proof.md`; final review and verify evidence
-- Automation location: Existing repository validators plus MP1.
+- Automation location: Existing repository validators; later PR review is outside this test procedure.
 - Required by milestone: M3 and M4
 
 ## Fixtures and data
@@ -369,20 +369,13 @@ PMA0 and PMA1 LF-normalized words and UTF-8 bytes are the required portable cont
 
 ## Manual QA checklist
 
-### MP0. Baseline inventory audit
-
-- Procedure: Compare the complete pre-edit `skills/project-map/` package and exact-string consumers against the rule and literal ledgers; sample every duplicate cluster and confirm each scenario has requirement-owned behavior.
-- Evidence: `docs/changes/2026-08-14-project-map-skill-simplification/evidence/m1-preservation-inventories.md`
-
-### MP1. Final semantic preservation review
-
-- Procedure: Read the complete final package, both ledgers, representative outputs, and measurement report; confirm universal rules remain inline, conditional procedure has one owner, the skeleton is policy-free, operation and transaction outcomes match the spec, and no target-agent execution occurred.
-- Evidence: `docs/changes/2026-08-14-project-map-skill-simplification/evidence/semantic-preservation-review.md`
+None. Deterministic proof owns test acceptance; ordinary PR review owns final human judgment and is not represented as a manual QA procedure.
 
 ## What not to test and why
 
 - Do not execute or grade a target-agent runtime; the change is a deterministic content and package refactor.
 - Do not add a permanent tokenizer, prose-quality, project-map artifact, or simplicity validator; change-local evidence and existing owners are sufficient.
+- Do not turn ordinary PR reviewer judgment into a scripted manual acceptance procedure or a pre-implementation gate.
 - Do not require a full natural-language output corpus before concrete drift exists; the approved first slice uses bounded representative outputs.
 - Do not test publication, release, deployment, or network behavior because those systems do not change.
 - Do not rewrite historical project maps or test them as if they were newly emitted results.
