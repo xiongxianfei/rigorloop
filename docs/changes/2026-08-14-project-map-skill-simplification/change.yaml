@@ -27,11 +27,17 @@ artifact_states:
       outcome: approved
       record: docs/changes/2026-08-14-project-map-skill-simplification/reviews/spec-review-r1.md
       round: r1
+  architecture:
+    kind: architecture
+    path: docs/architecture/system/architecture.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-14-project-map-skill-simplification/evidence/architecture-authoring.md
 
 workflow_state:
   lifecycle_state: active
-  current_stage: architecture
-  next_stage: architecture
+  current_stage: architecture-review
+  next_stage: architecture-review
   blocker: null
   evidence:
     - docs/changes/2026-08-14-project-map-skill-simplification/evidence/proposal-authoring.md
@@ -46,6 +52,8 @@ workflow_state:
     - docs/changes/2026-08-14-project-map-skill-simplification/evidence/spec-authoring.md
     - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-spec-review-r1.yaml
     - docs/changes/2026-08-14-project-map-skill-simplification/reviews/spec-review-r1.md
+    - docs/architecture/system/architecture.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/architecture-authoring.md
 
 workflow:
   automation:
@@ -58,7 +66,7 @@ workflow:
       completion:
         rule: first formal test-spec-review result is durably recorded
     status: active
-    current_stage: architecture
+    current_stage: architecture-review
     stop_reason: null
     evidence:
       - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
@@ -68,10 +76,13 @@ workflow:
       - docs/changes/2026-08-14-project-map-skill-simplification/evidence/spec-authoring.md
       - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-spec-review-r1.yaml
       - docs/changes/2026-08-14-project-map-skill-simplification/reviews/spec-review-r1.md
+      - docs/architecture/system/architecture.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/architecture-authoring.md
 
 artifacts:
   proposal: docs/proposals/2026-08-14-project-map-skill-simplification.md
   spec: specs/project-map.md
+  architecture: docs/architecture/system/architecture.md
 
 requirements:
   - Reduce every real project-map loaded profile while preserving current-state evidence, freshness, customer portability, and downstream reliance safety.
@@ -104,6 +115,8 @@ changed_files:
   - docs/changes/2026-08-14-project-map-skill-simplification/evidence/spec-authoring.md
   - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-spec-review-r1.yaml
   - docs/changes/2026-08-14-project-map-skill-simplification/reviews/spec-review-r1.md
+  - docs/architecture/system/architecture.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/architecture-authoring.md
 
 review:
   status: approved
