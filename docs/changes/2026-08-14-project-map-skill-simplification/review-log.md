@@ -18,3 +18,16 @@ Resolution: review-resolution.md#proposal-review-r1
 Material findings: PMAPSIM-PR1, PMAPSIM-PR2, PMAPSIM-PR3
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: proposal-review-r2
+Stage: proposal-review
+Round: r2
+Reviewed artifact: `docs/proposals/2026-08-14-project-map-skill-simplification.md` at commit `3c31023a`
+Status: changes-requested
+Detailed record: reviews/proposal-review-r2.md
+Resolution: review-resolution.md#proposal-review-r2
+Material findings: PMAPSIM-R2-PR1, PMAPSIM-R2-PR2, PMAPSIM-R2-PR3
+Open findings: PMAPSIM-R2-PR1, PMAPSIM-R2-PR2, PMAPSIM-R2-PR3
+Recording status: recorded
