@@ -1,0 +1,49 @@
+change_id: 2026-08-14-project-map-skill-simplification
+title: Project-Map Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-14-project-map-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-14-project-map-skill-simplification/evidence/proposal-authoring.md
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/proposal-authoring.md
+
+workflow: {}
+
+artifacts:
+  proposal: docs/proposals/2026-08-14-project-map-skill-simplification.md
+
+requirements:
+  - Reduce every real project-map loaded profile while preserving current-state evidence, freshness, customer portability, and downstream reliance safety.
+  - Replace overlapping modes with independent operation and scope classifications and one closed profile matrix.
+  - Give universal orientation policy, conditional maintenance and area procedure, and structural output one explicit owner each.
+  - Amend the governing project-map spec and bounded architecture text that currently require the old classification and inline policy placement.
+  - Prove semantic preservation, literal compatibility, profile reduction, resource failure, and package parity without target-agent runtime execution.
+
+tests:
+  - Independent semantic review of the proposal and final project-map package.
+  - Deterministic validation of classifications, profiles, authority, resources, freshness, evidence classes, structure, stops, and package parity.
+  - Static scenarios covering root and area create, refresh, audit, dirty baselines, correction notes, overlaps, contradictions, commands, missing resources, and forbidden claims.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-14-project-map-skill-simplification/change.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-14-project-map-skill-simplification.md
+
+review:
+  status: review-requested
+  unresolved_items: 0
