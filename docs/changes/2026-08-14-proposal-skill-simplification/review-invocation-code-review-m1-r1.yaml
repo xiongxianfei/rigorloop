@@ -1,0 +1,78 @@
+schema_version: 1
+review_id: code-review-M1-r1
+review_stage: code-review
+review_target: implementation-M1
+base_revision: aad470a7
+head_revision: 64fc3022
+milestone_id: M1
+native_review_status: changes-requested
+review_gate_outcome: correction-eligible
+independence_level: L0
+author_context_id: root-implement-M1
+reviewer_context_id: root-code-review-M1-r1-context-reset
+context_separation_mechanism: diff-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-semantic-preservation
+  - closed-vocabulary-evidence
+  - compatibility-inventory
+requirement_fidelity:
+  applicability: applicable
+  receipt: failed-PRSIM-M1-CR1
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings:
+  - PRSIM-M1-CR1
+risk_map:
+  affected_behavior:
+    - semantic-rule preservation evidence
+    - exact literal compatibility classification
+    - unknown-value-first fixture proof
+    - loaded-profile baseline
+  highest_impact_failure_modes:
+    - a behaviorally significant rule receives no destination
+    - an incidental phrase becomes normative policy
+    - a compatibility-sensitive enum value lacks exact treatment
+    - the baseline understates a loaded assembly
+  changed_boundaries:
+    - BND-COMPAT-001
+    - INT-004
+  expected_evidence:
+    - one disposition per semantic rule cluster
+    - one classification per exact compatibility-sensitive literal
+    - unknown-value-first negative fixtures
+    - deterministic baseline recomputation
+  direct_inspection_areas:
+    - current proposal package
+    - exact validator consumers
+    - M1 ledgers and scenarios
+    - baseline identities and arithmetic
+  intentionally_out_of_scope:
+    - canonical proposal package changes
+    - generated adapter changes
+    - M2 and M3 evidence
+  falsifiable_questions:
+    - does every literal field represent an exact source or consumer value
+    - do unknown closed values fail before field consistency
+    - is every current rule cluster assigned once
+    - do baseline totals match canonical files
+forbidden_initial_context_excluded: true
+correction:
+  auto_fix_class: mechanical
+  deterministic_authority: R42 and T16 require one separate classification for each exact consumed literal
+  affected_paths:
+    - docs/changes/2026-08-14-proposal-skill-simplification/proposal-literal-compatibility.yaml
+    - docs/changes/2026-08-14-proposal-skill-simplification/evidence/m1-preservation-inventories.md
+  forbidden_paths:
+    - skills/proposal/
+    - specs/
+    - docs/plans/
+  required_validation:
+    - CMD1
+    - documentation-prose
+    - change-metadata
+    - git-diff-check

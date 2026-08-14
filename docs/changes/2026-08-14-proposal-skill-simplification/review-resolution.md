@@ -1,6 +1,6 @@
 # Review Resolution: Proposal Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -9,11 +9,12 @@ Review closeout: proposal-review-r4
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
+Review closeout: code-review-M1-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`
 - Findings resolved: 7
-- Unresolved findings: 0
-- Current result: test specification approved; implementation handoff allowed but not invoked
+- Unresolved findings: 1
+- Current result: M1 code review requested one mechanically eligible correction before rereview
 
 ### test-spec-review-r1
 
@@ -40,8 +41,39 @@ No material findings. The clean review approved `specs/proposal-skill-simplifica
 | `PRSIM-R2-PR2` | accepted | closed | Workflow-owned stale-attempt reconciliation is bounded and adds no persistent state. |
 | `PRSIM-R2-PR3` | accepted | closed | Every specialized predicate has an explicit structural destination. |
 | `PRSIM-R3-PR1` | accepted | closed | Workflow authorizes recovery without mutating proposal state; proposal executes only the exact authorized reset of its own incomplete state. |
+| `PRSIM-M1-CR1` | accepted | open | Split two composite enum literal rows into one independently classified row per exact consumed value. |
 
 ## Finding details
+
+### code-review-M1-r1
+
+#### PRSIM-M1-CR1
+
+Finding ID: PRSIM-M1-CR1
+
+Disposition: accepted
+
+Status: open
+
+Owner: implement M1
+
+Owning stage: implement
+
+Decision owner: none; deterministic correction
+
+Decision needed: none
+
+Chosen action: Split the composite initial-goal and scope-budget enum rows into twelve exact literal rows and update the evidence count.
+
+Rationale: Exact compatibility dependencies must be independently classified; a comma-joined value that does not occur in the source is not an exact literal.
+
+Required outcome: Every consumed enum value has its own literal ID, exact value, consumer set, classification, semantics, disposition, and replacement field.
+
+Safe resolution path: Apply the reviewer-declared mechanical change only to the literal ledger and M1 evidence, rerun CMD1 and named repository checks, then perform a context-reset rereview.
+
+Validation target: literal count increases from 29 to 39, CMD1 passes, and reviewer confirms the two composite strings are absent.
+
+Validation evidence: pending correction and rereview.
 
 ### proposal-review-r4
 
