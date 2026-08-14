@@ -1,0 +1,47 @@
+schema_version: 1
+review_id: plan-review-r1
+review_stage: plan-review
+review_target: docs/plans/2026-08-14-proposal-skill-simplification.md
+base_revision: 0f1a25e8
+head_revision: 0f1a25e8
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-plan-authoring-r1
+reviewer_context_id: root-plan-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - published-skill-package-refactor
+  - identity-bound-stale-authoring-recovery
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-14-proposal-skill-simplification.md
+  - specs/proposal-skill-simplification.md
+  - docs/changes/2026-08-14-proposal-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-14-proposal-skill-simplification.md
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: docs/proposals/2026-08-14-proposal-skill-simplification.md
+    sha256: 682ab289757440c2211565f72c934f992a9a026f11aaae9b762a24daa8b90cd0
+  - path: specs/proposal-skill-simplification.md
+    sha256: b807971d8565f6adc3796bd1666ea6330d36424a0b818e1f96f10750fa74cd54
+  - path: docs/changes/2026-08-14-proposal-skill-simplification/architecture-assessment.md
+    sha256: 22b5ec140b35b2124a95f48220a0bb0f3632f65fd9343f85c12cedebd1190f2b
+  - path: docs/plans/2026-08-14-proposal-skill-simplification.md
+    sha256: 93fba6e40dd3a45ab2f1ecdf65e1f21ba34b799c64c675e774399224d03088ef
+  - path: docs/changes/2026-08-14-proposal-skill-simplification/evidence/plan-authoring.md
+    sha256: b360635bbdbca2276f633dd15c14ae1a04d1cd62a5790246118b0ed9e1b0e23d
+prompt_template_version: plan-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - requirement, boundary, and interaction coverage
+  - milestone independence and proof-first sequencing
+  - portable and governed operation proof
+  - recovery ownership and structural composition
+  - package parity, rollback, and lifecycle authority

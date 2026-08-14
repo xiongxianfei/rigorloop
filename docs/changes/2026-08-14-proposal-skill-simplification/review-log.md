@@ -70,3 +70,16 @@ Resolution: review-resolution.md#proposal-review-r4
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: plan-review-r1
+Stage: plan-review
+Round: r1
+Reviewed artifact: `docs/plans/2026-08-14-proposal-skill-simplification.md` at commit `0f1a25e8`
+Status: approved
+Detailed record: reviews/plan-review-r1.md
+Resolution: review-resolution.md#plan-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded

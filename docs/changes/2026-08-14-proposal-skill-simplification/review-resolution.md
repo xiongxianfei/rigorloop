@@ -7,11 +7,16 @@ Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
 Review closeout: spec-review-r1
+Review closeout: plan-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: specification approved; architecture assessment required next
+- Current result: plan approved; reviewed-plan initialization and settlement retry required before test-spec
+
+### plan-review-r1
+
+No material findings. The clean review approved `docs/plans/2026-08-14-proposal-skill-simplification.md` at commit `0f1a25e8`; initialization and identical settlement retry remain required before test-spec.
 
 ### spec-review-r1
 
