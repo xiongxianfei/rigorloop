@@ -9,247 +9,118 @@ argument-hint: [feature spec path, plan path, or feature name]
 
 # Test spec authoring
 
-You are designing the proof before implementation.
-
-The test spec defines how the team will know the implementation satisfies the behavioral contract.
+Design proof before implementation.
 
 ## Workflow role
 
 - role_name: test-spec
 - stage: authoring
-- upstream: approved spec, spec-review findings, approved plan, and relevant architecture or ADR records when present
+- upstream: approved spec and review, approved plan, and applicable architecture or ADRs
 - downstream: test-spec-review
-- summary: Design the proof mapping requirements, examples, edge cases, architecture boundaries, and milestones to tests before implementation.
-- must_not_claim: implementation completion, code-review approval, verification, branch readiness, or PR readiness.
+- summary: Map settled requirements and execution intent to concrete proof before implementation.
+- ownership: Author test-spec content and, with exact governed authority, only its authoring evidence and matching artifact-entry transition.
+- must_not_claim: implementation, validation, verification, branch, PR, release, deployment, publication, or peer-review completion
 
-## Change-record authoring transition
+Portable work is isolated. Workflow-managed execution does not enlarge the `test-spec` write set.
 
-For a governed change, read the complete `change.yaml` before writing.
-Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing marker to `workflow` for creation or migration instead of inventing state.
-Resolve exactly one test-spec entry by artifact ID, `kind`, and normalized `path`. For a new test spec, create only that entry with a unique stable ID, `kind: test-spec`, normalized path, and explicit role. Before creating or substantively revising the test spec, set only that entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to the test-spec-authoring record path. After the test spec and authoring record are complete, set the same entry to `review-required`. Preserve every other entry and `workflow_state`. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
+## Quick operating guide
 
-## Stop conditions
+Use this skill to create or revise a proof map from settled requirements and execution intent.
 
-Stop and report the blocker instead of producing a test spec when:
+Read first: the approved spec and review, plan, applicable architecture, project guidance, test conventions, and both initially required boundary references.
 
-- the source spec is unreviewed or unstable, unless the user explicitly requests isolated test-planning output and the limitation is recorded;
-- the relevant spec-review outcome explicitly marked eventual `test-spec` readiness as `not-ready`.
+Produce: traceable cases, coverage and command ledgers, milestone proof timing, explicit gaps, and a `test-spec-review` handoff.
 
-## Inputs to read
+Stop when: required input, identity, proof, authority, resource, or output is unsafe to infer.
 
-Read:
+Do not claim: implementation or downstream readiness.
 
-- approved feature spec;
-- spec-review findings;
-- architecture doc and ADRs when relevant;
-- concrete execution plan;
-- `AGENTS.md` and `CONSTITUTION.md` if present;
-- existing test conventions, fixtures, helpers, and CI commands;
-- related tests for similar behavior.
+Next stage: required `test-spec-review` for formal governed authoring.
 
-## Output path
+## Purpose and use
 
-Prefer:
+Before implementation, create or revise proof from governing artifacts, repository guidance, test conventions, fixtures, commands, and related tests. Resolve placement from explicit path, current metadata, governing contract, project guidance, then the portable default `specs/slug.test.md`; stop on conflict or ambiguity.
 
-```text
-specs/slug.test.md
-```
+## Invocation profiles and authority
 
-## Artifact placement
+| Profile | Trigger | Loaded procedure |
+| --- | --- | --- |
+| `TSA0-portable` | No exact governed candidate | This file and both initial boundary references |
+| `TSA1-governed` | `governed_test_spec_candidate_context` | Portable procedure plus governed authoring reference |
 
-Use the project workflow guide for artifact locations when placement matters.
+The candidate requires exactly one current `stage-owned-change-local-v1` change plausibly needing an operation. Prompt wording grants no authority. Loading does not grant mutation authority.
 
-Lookup order:
+After loading the governed reference, resolve one change, operation, artifact identity or intended identity, normalized path, governing inputs, and current authority. Missing, stale, unknown, ambiguous, conflicting, multiple, or illegal evidence stops; never fall back to portable mutation. The closed operations are `create-primary-test-spec`, `revise-primary-test-spec`, and `restart-stale-authoring`.
 
-1. explicit user path or change ID;
-2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
-3. known governing spec or schema constraint when directly relevant;
-4. project workflow guide artifact-location table, such as the `docs/workflows.md` artifact-location table when present;
-5. this skill's portable default path;
-6. block on ambiguity.
+## Proof-design contract
 
-This discovery order is subordinate to the source-rank rule in the project workflow guide when sources conflict.
+Map every normative requirement, error, compatibility or migration claim, material boundary, feasible example, and regression to proof of its outcome; snapshots, helper-only checks, and unrelated assertions do not count.
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when present in this project, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+Use stable requirement, example, boundary, interaction, proof, test, command, milestone, manual-procedure, gap, and evidence IDs. Map every applicable boundary and selected interaction to proof without inventing contract IDs. Stop test-spec authoring and return to the feature spec when an ID is missing, stale, unknown, renamed, ambiguous, conflicting, escaped, or insufficient; route a proof-only gap to test-spec authoring.
 
-## Resource map
+Cover applicable proof levels, fixtures, mocking, compatibility, observability, security/privacy, performance, and exclusions.
 
-- READ `references/boundary-first-method-v1.md` when a proof map consumes a `boundary-first-v1` feature record.
-- READ `references/boundary-first-proof-v1.md` when authoring proof obligations or selecting proof coverage.
-- COPY `assets/test-spec-skeleton.md` when creating or fully rewriting a test spec.
-  Fill: title, sections, coverage maps, test cases, artifacts, and readiness.
-  Do not emit unfilled placeholders.
-- COPY `assets/test-case.md` when adding each test case.
-  Fill: test ID, title, covers, level, command IDs, setup, steps, expected result, failure proof, evidence artifact, automation location, and required milestone.
-  Do not emit unfilled placeholders.
-- COPY `assets/coverage-map-row.md` when adding requirement or example coverage-map rows.
-  Use the `Requirement coverage row` variant for the requirement coverage map.
-  Use the `Example coverage row` variant for the example coverage map.
-  Fill: fields exactly as shown by the selected variant.
-  Do not add a `Level` column to the example coverage map.
-  Do not emit unfilled placeholders.
-- COPY `assets/validation-command-row.md` when adding each validation-command ledger row.
-  Fill: command ID, command, classification, owner, owning milestone, first required milestone, failure behavior, zero-test behavior, evidence artifact, and safe-mode or side-effect boundary.
-  Do not emit unfilled placeholders.
-- COPY `assets/milestone-proof-row.md` when adding each milestone proof-map row.
-  Fill: milestone, required test IDs, manual proof IDs or none, command IDs or none, evidence artifacts, required-before gate, and notes.
-  Do not emit unfilled placeholders.
+## Validation commands and milestone proof
+
+Give each depended-on command a stable ID and classify it exactly as `existing/configured`, `planned-for-implementation`, `release-owned`, `ci-owned`, `external-owned`, or `not-applicable`; unknown values fail first. Record ownership, timing, failure and zero-test behavior, evidence, and side effects. Do not run commands merely for authoring or infer external-effect authority.
+
+For staged work, map each implementation milestone to test IDs, manual proof IDs or `none`, command IDs or `none`, evidence, and required gate. Do not depend silently on proof owned by a later milestone.
+
+## Optional manual verification
+
+Automation mode is exactly `automated`, `manual`, or `hybrid`. Manual or hybrid proof uses existing proof, case, milestone, optional `Manual QA checklist`, manual procedure, and evidence artifact structures only when automation is insufficient. This creates no new manual-proof contract or conditional group and no sixth asset; missing required evidence is a blocking gap.
+
+## Output content and composition
+
+Copy the skeleton and applicable body assets for full creation; copy only changed structures for revision. The skeleton owns document structure, and smaller assets own repeated bodies. Assets own layout, never policy. Omit inapplicable structures or use the approved sentinel; never emit markers, placeholders, duplicates, or ad hoc replacements. Before real follow-ons exist, use `None yet`.
 
 ## Generated Markdown readability
 
-When this skill creates or updates generated or generator-shaped Markdown:
+Write ordinary prose as normal Markdown paragraphs. Do not split a sentence across physical source lines merely for wrapping or clause separation. Preserve stable IDs and use tables for repeated mappings. Diagrams are optional. Do not require manual-proof contracts from readability guidance.
 
-- Write ordinary prose as normal Markdown paragraphs. Do not split a sentence across physical source lines merely for wrapping or clause separation; multiple sentences may remain in one paragraph.
-- Preserve stable IDs for requirements, findings, commands, milestones, and evidence; use tables for repeated mappings.
-- Keep commands fenced or table-owned when they carry proof.
-- Diagrams are optional. Use them only when they reduce cognitive load and map to real artifacts, stages, components, actors, or states.
-- Do not require manual-proof contracts from this readability guidance alone; use governing project rules when manual proof is otherwise required.
+## Rules and handoff
 
-## Required sections
+- Do not invent behavior, substitute helper proof for an admitted public path, or count proof that misses the asserted outcome.
+- Route untestable requirements to their spec or architecture owner.
+- Authoring ends at `review-required`; only `test-spec-review` may settle the matching artifact to `active` after independent approval.
+- Workflow may validate and route later state but cannot rewrite content or peer-review evidence.
+- Preserve prior authoring and review evidence when revision creates a new identity.
+- Governed authoring hands off to `test-spec-review`; portable authoring remains isolated.
 
-| Section | Requirement |
-| --- | --- |
-| Owning change record | Use the stable change-record path. |
-| Related spec and plan | Include the related spec and plan. |
-| Input artifact identities | Include when implementation or code-review will rely on the test spec. Record input kind, path, artifact ID, and review evidence for each governing input. |
-| Testing strategy | Cover unit, integration, end-to-end, smoke, manual, contract, and migration strategy. |
-| Requirement coverage map | Every requirement ID maps to one or more tests or explicit manual verification. |
-| Example coverage map | Every example maps to a test when feasible. |
-| Edge case coverage | Include edge case coverage. |
-| Validation commands | Required whenever the test spec names, references, or depends on validation commands. If no commands are part of the proof map, say so explicitly with rationale. |
-| Milestone proof map | Required when the approved plan has milestones, staged validation, staged commands, or milestone-specific code-review boundaries. If not applicable, state `Not applicable` or equivalent rationale. |
-| Test cases | Include test cases with stable IDs. |
-| Fixtures and data | Include fixtures and data. |
-| Mocking/stubbing policy | Include mocking/stubbing policy. |
-| Migration or compatibility tests | Include when relevant. |
-| Observability verification | Include when logs, metrics, traces, or audit events are required. |
-| Security/privacy verification | Include when relevant. |
-| Performance checks | Include when relevant. |
-| Manual QA checklist | Include when automation is insufficient. |
-| What not to test | Include what not to test and why. |
-| Uncovered gaps | Include gaps that must return to spec or architecture. |
-| Next artifacts | Include planned next steps while the test spec remains draft or active. |
-| Follow-on artifacts | Include actual downstream artifacts or terminal disposition. If present before any real follow-ons exist, say `None yet`. |
-| Readiness | Include truthful next-stage or active-proof-surface wording. |
+## Stop conditions
 
-## Test case format
+Stop before dependent interpretation or mutation, and before dependent output, when required input or resource is missing, unreadable, escaped, contradictory, mixed-version, stale, ambiguous, conflicting, unknown, or insufficient. Stop when the spec is unstable, spec review records eventual `test-spec` readiness as `not-ready`, an approved ID lacks an owner, governed state or retry identity is illegal, or output would retain placeholders.
 
-Use:
+The common path must not reconstruct missing governed, boundary, or structural procedure from memory. Report the exact blocker and owning action.
 
-```text
-T1. Title
-- Covers: R1, R3, E2
-- Level: <test case level>
-- Command IDs: <command IDs or none>
-- Fixture/setup:
-- Steps:
-- Expected result:
-- Failure proves:
-- Evidence artifact:
-- Automation location:
-- Required by milestone:
-```
+## Claims this skill must not make
 
-If a test case uses or depends on a validation command, reference at least one Command ID from `Validation commands`. Do not rely only on raw command strings.
+Do not claim implementation completion, validation success, code-review approval, verification, branch readiness, PR readiness, release, deployment, publication, or peer-review settlement. Authoring proves only readiness for its owned review gate.
 
-## Validation command ledger
+## Evidence access
 
-Use `Validation commands` whenever the test spec names, references, or depends on validation commands. The section is optional only when no commands are part of the proof map, and then it must state that no validation commands are part of the proof map with rationale.
+Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, file paths, line citations, counts, commands, and targeted excerpts. Expand when evidence is missing, stale, contradictory, or insufficient.
 
-Use stable Command IDs such as `CMD1`, `CMD2`, and `CMD3`. Reference those IDs from test cases, milestone proof-map rows, and evidence notes.
+## When full-file read is required
 
-Command classification is a closed enum:
+Read the full file when the whole file is the review target, bounded searches disagree or produce incomplete evidence, surrounding context can change the conclusion, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
-```text
-existing/configured
-planned-for-implementation
-release-owned
-ci-owned
-external-owned
-not-applicable
-```
+## Resource map
 
-Each validation-command row must record:
+- READ `references/boundary-first-method-v1.md` initially for every `test-spec` invocation.
+- READ `references/boundary-first-proof-v1.md` initially after the method reference for every `test-spec` invocation.
+- READ `references/governed-test-spec-authoring.md` only when `governed_test_spec_candidate_context` is established; validate exact authority before any governed write.
+- COPY `assets/test-spec-skeleton.md` when creating or fully rewriting a test spec. Fill: document headings, table headers, insertion locations, and document-level fields. Do not emit unfilled placeholders.
+- COPY `assets/test-case.md` when adding or revising a test case. Fill: test identity, coverage, level, commands, setup, steps, outcome, failure proof, evidence, location, and milestone. Do not emit unfilled placeholders.
+- COPY `assets/coverage-map-row.md` when adding or revising requirement or example coverage. Fill: the selected row variant. Do not emit unfilled placeholders.
+- COPY `assets/validation-command-row.md` when adding or revising a validation command. Fill: command identity, command, classification, owner, timing, failure, zero-test, evidence, and side-effect fields. Do not emit unfilled placeholders.
+- COPY `assets/milestone-proof-row.md` when adding or revising milestone proof. Fill: milestone, tests, manual proof, commands, evidence, required gate, and notes. Do not emit unfilled placeholders.
 
-- Command ID;
-- command;
-- classification;
-- owner;
-- owning milestone;
-- first required milestone;
-- failure behavior;
-- zero-test behavior;
-- evidence artifact;
-- safe-mode or side-effect boundary.
+Confirm required resources are readable, contained, and from one package version. Stop rather than infer missing procedure or structure.
 
-Command rules:
+## Boundary-first bridge
 
-- Every named, referenced, or depended-on validation command gets a stable Command ID.
-- A planned command must use `planned-for-implementation` and name an owner, owning milestone, and first required milestone.
-- A planned command is not required before its first required milestone.
-- A command expected to run tests must define zero-test behavior.
-- Commands with network, publication, destructive, or external side effects must state the safe-mode or side-effect boundary.
-- Missing required commands block implementation or milestone closeout according to the milestone proof map.
-- During authoring, inspect known manifests and existing scripts when feasible, but do not execute validation commands.
-
-## Milestone proof map
-
-Use `Milestone proof map` when the approved plan has milestones, staged validation, staged commands, or milestone-specific code-review boundaries.
-
-Each implementation milestone must map to test IDs, manual proof IDs or `none`, command IDs or `none`, evidence artifacts, and the gate where proof is required. A milestone may use an explicit not-applicable rationale only when no proof entry applies.
-
-Milestone proof-map rules:
-
-- Identify which proof is required before milestone code-review.
-- Identify proof deferred to later milestones, verify, release-owned evidence, or another explicitly named stage.
-- Do not let a milestone rely on a command whose ownership starts in a later milestone unless the row explicitly marks the command as planned and not yet required.
-
-## Coverage rules
-
-| Coverage target | Rule |
-| --- | --- |
-| `MUST` requirements | Every `MUST` requirement needs coverage. |
-| Error behavior | Every error behavior needs coverage. |
-| Migration or compatibility claims | Every migration or compatibility claim needs coverage or explicit manual verification. |
-| Architectural boundaries that could break wiring | Every architectural boundary that could break wiring needs an integration or contract test. |
-| Bugs | Bugs require a regression test that fails before the fix when feasible. |
-
-Test case level:
-
-```text
-unit
-integration
-e2e
-smoke
-manual
-```
-
-Coverage map level:
-
-```text
-unit
-integration
-e2e
-smoke
-manual
-contract
-migration
-```
-
-## Output skeleton
-
-```md
-# <Test spec title>
-
-COPY `assets/test-spec-skeleton.md` for the full test-spec structure. Use
-`assets/test-case.md`, `assets/coverage-map-row.md`,
-`assets/validation-command-row.md`, and `assets/milestone-proof-row.md`
-for repeated structures.
-```
-
-Required sections are listed above. Do not emit unfilled placeholders.
-
-## Boundary-first method
+Apply the proof reference when a proof map consumes a `boundary-first-v1` feature record.
 
 Run this compact scan before any stage-owned decision that can change observable behavior, and whenever the input cites an active boundary contract or stable boundary, interaction, or proof ID. Do not wait for the user to name the method.
 
@@ -266,39 +137,20 @@ Add a scenario only for a distinct outcome or material authority, trust, state, 
 
 Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
 
-Map every applicable boundary and selected interaction to proof without inventing contract IDs.
+The two initially loaded references own the detailed boundary vocabulary and proof contract. Apply their exact-ID consumption, interaction selection, direct-proof, gap-routing, and scenario-stop rules.
 
-Consume exact IDs from the approved feature boundary record and map each to direct automated, manual, or hybrid proof. Stop test-spec authoring and return to the feature spec when an ID is missing, stale, unknown, renamed, or insufficient to own the required behavior.
+## Output skeleton
 
-## Rules
-
-- Do not invent behavior not specified.
-- Do not mark a requirement covered by a test that does not assert it.
-- Do not rely only on snapshots for behavioral requirements.
-- Do not skip integration tests where the risk is at a boundary.
-- Do not use `reviewed` or long-lived `complete` as durable test-spec states. Move from `draft` to `active` when implementation or review is relying on the test spec, then close out to `archived`, `superseded`, or `abandoned` when it is no longer the active proof-planning surface.
-- Preserve `Next artifacts` as planning history. Use `Follow-on artifacts` for actual downstream artifacts, replacement, or terminal closeout.
-- Do not hide untestable requirements; send them back to `spec-review`.
-- Do not treat downstream implementation readiness as a substitute for approved spec-review findings and concrete plan context.
-- When changed boundaries still require approved architecture or ADR input, return the work to the appropriate upstream gate instead of guessing.
-- Formal workflow-managed test specs route to `test-spec-review` before implementation.
-- Under a unified run with valid implementation authority, the workflow may run deterministic test-spec settlement after authoring. Settlement records coverage, uncovered gaps, validation commands, and input artifact identities; it does not replace required `test-spec-review`.
-- If settlement or `test-spec-review` reveals upstream ambiguity or stale inputs, pause instead of authorizing implementation. The first milestone's code-review rechecks the recorded input artifact identities before accepting the implementation review surface.
-
-## Evidence collection efficiency
-
-Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output. Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
-
-## When full-file read is required
-
-Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
+```md
+COPY `assets/test-spec-skeleton.md` for <full document structure>.
+COPY applicable smaller assets for <repeated bodies>.
+Fill <all applicable fields> and remove insertion markers and placeholders.
+```
 
 ## Expected output
 
-- test spec path;
-- grouped test cases;
-- requirement-to-test coverage map;
-- fixtures and commands;
-- explicit exclusions;
-- uncovered gaps, if any;
-- readiness statement for `test-spec-review`.
+Report the test-spec path, grouped cases, coverage and proof maps, fixtures, commands, milestone proof timing, exclusions, gaps, and truthful `test-spec-review` readiness.
+
+## Outputs
+
+The output is a portable or governed test specification and authoring evidence within the classified authority. It is not peer review or downstream completion evidence.
