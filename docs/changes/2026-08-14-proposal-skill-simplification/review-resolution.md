@@ -1,14 +1,14 @@
 # Review Resolution: Proposal Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`
-- Findings resolved: 3
-- Unresolved findings: 3
-- Current result: second proposal revision required before specification
+- Findings resolved: 6
+- Unresolved findings: 0
+- Current result: second revised proposal ready for independent rereview
 
 ## Resolution overview
 
@@ -17,9 +17,9 @@ Review closeout: proposal-review-r2
 | `PRSIM-PR1` | accepted | closed | Governed candidate selection is separate from reference-owned authority validation. |
 | `PRSIM-PR2` | accepted | closed | Creation and revision now use identity-bound entry-first transactions with deterministic retry behavior. |
 | `PRSIM-PR3` | accepted | closed | The complete specialized-trigger contract and independent conditional-group applicability are explicit. |
-| `PRSIM-R2-PR1` | accepted | open | Separate portable file-based operations from governed entry-based operations. |
-| `PRSIM-R2-PR2` | accepted | open | Add workflow-owned stale-attempt reset and recovery boundaries. |
-| `PRSIM-R2-PR3` | accepted | open | Give every specialized predicate an explicit structural destination. |
+| `PRSIM-R2-PR1` | accepted | closed | Portable file-based operations are separate from governed entry-based operations. |
+| `PRSIM-R2-PR2` | accepted | closed | Workflow-owned stale-attempt reconciliation is bounded and adds no persistent state. |
+| `PRSIM-R2-PR3` | accepted | closed | Every specialized predicate has an explicit structural destination. |
 
 ## Finding details
 
@@ -79,7 +79,7 @@ Validation evidence: `evidence/proposal-revision-r1.md`; revised Invocation pred
 
 Finding ID: PRSIM-R2-PR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -89,13 +89,13 @@ Rationale: Portable revision cannot require a proposal entry that portable autho
 Required outcome: Close file-state behavior for portable create and revise and entry-plus-identity behavior for governed operations.
 Safe resolution path: Adopt the operation split recommended by `proposal-review-r2`.
 Validation target: revised operation classification, expected behavior, fixtures, risks, and acceptance criteria plus independent rereview.
-Validation evidence: pending proposal revision.
+Validation evidence: `evidence/proposal-revision-r2.md`; revised Portable and governed operations, Expected Behavior Changes, Testing and Verification Strategy, Proposal acceptance criteria, Risks and Mitigations, and Decision Log sections.
 
 #### PRSIM-R2-PR2
 
 Finding ID: PRSIM-R2-PR2
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -105,13 +105,13 @@ Rationale: A stale durable `authoring` entry can prevent both retry and a new op
 Required outcome: Define detection, no-mutation behavior, workflow reset prerequisites, bounded write set, and new-attempt identity.
 Safe resolution path: Adopt the recovery ownership recommended by `proposal-review-r2` without adding persistent reset state.
 Validation target: revised transaction recovery, architecture impact, expected behavior, fixtures, risks, and acceptance criteria plus independent rereview.
-Validation evidence: pending proposal revision.
+Validation evidence: `evidence/proposal-revision-r2.md`; revised Stale governed authoring attempts, Architecture Impact, Expected Behavior Changes, Testing and Verification Strategy, Proposal acceptance criteria, Risks and Mitigations, and Decision Log sections.
 
 #### PRSIM-R2-PR3
 
 Finding ID: PRSIM-R2-PR3
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -121,4 +121,4 @@ Rationale: A sole structural owner cannot leave two triggered result shapes ad h
 Required outcome: Define each group's destination, structural fields, composition, omission, and blocked-data behavior.
 Safe resolution path: Extend the existing skeleton as recommended by `proposal-review-r2`; do not add assets.
 Validation target: revised structural ownership, expected behavior, fixtures, risks, and acceptance criteria plus independent rereview.
-Validation evidence: pending proposal revision.
+Validation evidence: `evidence/proposal-revision-r2.md`; revised Structural asset, Expected Behavior Changes, Testing and Verification Strategy, Proposal acceptance criteria, Risks and Mitigations, and Decision Log sections.
