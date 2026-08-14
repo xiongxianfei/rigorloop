@@ -1,0 +1,52 @@
+schema_version: 1
+review_id: test-spec-review-r1
+review_stage: test-spec-review
+review_target: specs/project-map.test.md
+base_revision: 15aeff1e
+head_revision: 15aeff1e
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L0
+author_context_id: root-test-spec-authoring-r1
+reviewer_context_id: root-test-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-refactor
+  - recoverable-two-artifact-write
+  - boundary-first-proof-map
+  - generated-package-parity
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/project-map.md
+  - docs/architecture/system/architecture.md
+  - docs/plans/2026-08-14-project-map-skill-simplification.md
+  - specs/project-map.test.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+  - boundary-first-proof-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: specs/project-map.md
+    sha256: 0ae5fb0c030c31770efed7f8ae711bc6a17063e4514542796690c18f8fc1d954
+  - path: docs/architecture/system/architecture.md
+    sha256: 85a0d3fce36abda32a1ea694241eaf52670310ceeb75c19f5e88d2393e00cad3
+  - path: docs/plans/2026-08-14-project-map-skill-simplification.md
+    sha256: 72fb9928f4e5f45338d04fc0a83180e137171d4ade429bf6b27ccbece95549f6
+  - path: specs/project-map.test.md
+    sha256: 6d9de320e227a098e456d1b3b8331ccd3b3cc1c3c602f24e6fdf8786a27b0178
+  - path: docs/changes/2026-08-14-project-map-skill-simplification/evidence/test-spec-authoring.md
+    sha256: 80399ca255386f162e3466e18f582b6a65051d376a12aebbf0abd90d0cb9f5bd
+prompt_template_version: test-spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - requirement, example, boundary, and interaction traceability
+  - operation and target-state proof
+  - coordination preflight and procedural assembly proof
+  - area transaction recovery and audit isolation
+  - command executability and milestone proof timing
+  - semantic-preservation procedure and package parity
+  - no target-agent runtime acceptance

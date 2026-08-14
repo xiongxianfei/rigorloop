@@ -83,3 +83,16 @@ Resolution: review-resolution.md#plan-review-r1
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: test-spec-review-r1
+Stage: test-spec-review
+Round: r1
+Reviewed artifact: `specs/project-map.test.md` at commit `15aeff1e`
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r1.md
+Resolution: review-resolution.md#test-spec-review-r1
+Material findings: PMAPTSR-PR1
+Open findings: PMAPTSR-PR1
+Recording status: recorded

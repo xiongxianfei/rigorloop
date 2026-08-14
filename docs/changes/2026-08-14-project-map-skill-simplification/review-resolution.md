@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -11,10 +11,10 @@ Review closeout: spec-review-r1
 Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Current result: plan approved and active; test-spec revision required
+- Unresolved findings: 1
+- Current result: test-spec review changes requested; `PMAPTSR-PR1` remains open
 
 ## Resolution overview
 
@@ -26,6 +26,7 @@ Review closeout: plan-review-r1
 | `PMAPSIM-R2-PR1` | accepted | closed | Operations now depend on resolved target state, and audit correction begins a new refresh. |
 | `PMAPSIM-R2-PR2` | accepted | closed | A bounded seven-surface preflight selects between two explicit procedural assemblies. |
 | `PMAPSIM-R2-PR3` | accepted | closed | Area creation now requires a valid root and uses one root-registration-last recoverable transaction. |
+| `PMAPTSR-PR1` | accepted | open | The two required manual semantic checks need complete executable procedure contracts before implementation handoff. |
 
 ## Finding details
 
@@ -152,3 +153,21 @@ No material findings; no resolution entry required. The canonical architecture u
 Review closeout: plan-review-r1
 
 No material findings; no resolution entry required. The plan judgment was approved, `planned_work` was initialized from the exact reviewed basis, and the identical settlement retry activated the matching plan entry without semantic rereview.
+
+### test-spec-review-r1
+
+#### PMAPTSR-PR1
+
+Finding ID: PMAPTSR-PR1
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Decision owner: test-spec author
+Decision needed: Complete the required manual procedure contracts or replace affected hybrid proof with genuinely deterministic automated proof.
+Chosen action: Add automation rationale, environment, exact steps, evidence artifact, pass condition, failure condition, and owning stage to MP0 and MP1 while keeping every proof and milestone link aligned.
+Rationale: A stable identifier and evidence path do not make manual proof executable or establish how an independent reviewer determines success and failure.
+Required outcome: Every cited manual procedure records all required execution and verdict fields without weakening semantic-preservation coverage.
+Safe resolution path: Revise MP0 and MP1, validate the boundary proof map, record revision evidence, and submit the exact revised test-spec identity for independent rereview.
+Validation target: Revised manual QA procedures, proof-map references, milestone proof mappings, boundary validation, and independent test-spec rereview.
+Validation evidence: pending.
