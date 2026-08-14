@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`
-- Findings resolved: 3
-- Unresolved findings: 3
-- Current result: proposal revision required
+- Findings resolved: 6
+- Unresolved findings: 0
+- Current result: proposal revised; independent rereview required
 
 ## Resolution overview
 
@@ -18,9 +18,9 @@ Review closeout: proposal-review-r2
 | `PMAPSIM-PR1` | accepted | closed | Reference loading now uses map-coordination evidence and every operation has an explicit write and recovery boundary. |
 | `PMAPSIM-PR2` | accepted | closed | Minimum dirty-baseline truthfulness remains inline while maintenance comparison stays conditional. |
 | `PMAPSIM-PR3` | accepted | closed | New results use exact operation and scope fields with a read-old/write-new compatibility migration. |
-| `PMAPSIM-R2-PR1` | needs-decision | open | Proposal author must bind operations to resolved target state and isolate audit correction. |
-| `PMAPSIM-R2-PR2` | needs-decision | open | Proposal author must define the coordination preflight and actual procedural assemblies. |
-| `PMAPSIM-R2-PR3` | needs-decision | open | Proposal author must close area-creation prerequisites, commit ordering, and recovery. |
+| `PMAPSIM-R2-PR1` | accepted | closed | Operations now depend on resolved target state, and audit correction begins a new refresh. |
+| `PMAPSIM-R2-PR2` | accepted | closed | A bounded seven-surface preflight selects between two explicit procedural assemblies. |
+| `PMAPSIM-R2-PR3` | accepted | closed | Area creation now requires a valid root and uses one root-registration-last recoverable transaction. |
 
 ## Finding details
 
@@ -79,47 +79,47 @@ Validation evidence: `evidence/proposal-revision-r1.md`; revised Result compatib
 #### PMAPSIM-PR1
 
 Finding ID: PMAPSIM-PR1
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Bind each operation to resolved target existence and keep audit permanently read-only.
-Chosen action: pending proposal revision
+Chosen action: Permit create only for absent targets, require refresh for existing targets and full rewrites, and make post-audit correction a separately resolved refresh.
 Rationale: Create can currently replace an existing map and bypass maintenance procedure, while audit correction is not reclassified.
 Required outcome: Define a closed operation and target-state matrix and a separate refresh after audit findings.
 Safe resolution path: Adopt the operation semantics recommended by `proposal-review-r2`.
 Validation target: revised classification, write boundaries, expected behavior, scenarios, risks, and acceptance criteria plus independent proposal rereview.
-Validation evidence: pending
+Validation evidence: `evidence/proposal-revision-r2.md`; revised Operation selection, write boundaries, Expected Behavior Changes, Proposal acceptance criteria, Testing and Verification Strategy, Risks and Mitigations, and Decision Log sections.
 
 #### PMAPSIM-PR2
 
 Finding ID: PMAPSIM-PR2
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Define the minimum evidence for no coordination and distinguish semantic profiles from loaded assemblies.
-Chosen action: pending proposal revision
+Chosen action: Add the seven known coordination surfaces and distinguish six semantic classifications from `PMA0` and `PMA1` procedural assemblies.
 Rationale: A false-negative preflight can omit known area maps, while the same semantic profile currently represents two resource packages.
 Required outcome: Close the bounded coordination preflight, ambiguity behavior, and measured assembly model.
 Safe resolution path: Adopt the ownership-surface preflight and PMA0/PMA1 assembly split recommended by `proposal-review-r2`.
 Validation target: revised classification, loading, measurement, scenarios, risks, and acceptance criteria plus independent proposal rereview.
-Validation evidence: pending
+Validation evidence: `evidence/proposal-revision-r2.md`; revised classification, coordination preflight, assembly, measurement, acceptance, scenario, risk, and decision sections.
 
 #### PMAPSIM-PR3
 
 Finding ID: PMAPSIM-PR3
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
 Decision needed: Select one complete area-creation transaction and recovery model.
-Chosen action: pending proposal revision
+Chosen action: Require an existing valid root, bind the complete transaction basis, write registration last, and classify every partial state.
 Rationale: Identity binding without prerequisites, order, commit point, or partial-state outcomes is not executable or safely retryable.
 Required outcome: Require an existing root, bind the full transaction basis, write registration last, and classify every partial state.
 Safe resolution path: Adopt the transaction sequence and recovery matrix recommended by `proposal-review-r2`.
 Validation target: revised write boundaries, testing, rollout, risks, and acceptance criteria plus independent proposal rereview.
-Validation evidence: pending
+Validation evidence: `evidence/proposal-revision-r2.md`; revised Area-map creation transaction, write boundaries, Expected Behavior Changes, Proposal acceptance criteria, Testing and Verification Strategy, Risks and Mitigations, and Decision Log sections.

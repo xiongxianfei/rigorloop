@@ -122,7 +122,23 @@ scope:
   area
 ```
 
-Use six base profiles:
+### Operation selection
+
+Resolve exactly one target identity and its current existence before selecting an operation. Use this closed matrix:
+
+| Requested operation | Resolved target state | Result |
+| --- | --- | --- |
+| `create` | Target map absent | Create permitted. |
+| `create` | Target map exists | Stop and require explicit `refresh`. |
+| `refresh` | Target map exists and is resolvable | Refresh permitted, including a complete rewrite strategy. |
+| `refresh` | Target map absent | Stop and route to `create`. |
+| `audit` | Target map exists | Perform a read-only audit. |
+| `audit` | Target map absent | Emit a read-only `missing-map` finding and suggest `create`. |
+| Any operation | Target identity missing, ambiguous, or conflicting | Stop without implicit reclassification. |
+
+An existing map is never replaced through `create`. A full regeneration of an existing map remains a `refresh`. Audit never acquires write authority: a correction requested after an audit begins a new refresh operation that resolves the target and current evidence again.
+
+Use six semantic operation/scope classifications:
 
 | Profile | Operation | Scope | Loaded procedure |
 | --- | --- | --- | --- |
@@ -133,7 +149,7 @@ Use six base profiles:
 | `PM4-area-refresh` | `refresh` | `area` | `SKILL.md` plus conditional reference |
 | `PM5-area-audit` | `audit` | `area` | `SKILL.md` plus conditional reference |
 
-Audit is read-only unless the user separately requests a correction after the audit result. Loading the reference never grants write, command-execution, network, test, build, downstream, or workflow authority.
+Audit is always read-only. Loading the reference never grants write, command-execution, network, test, build, downstream, or workflow authority.
 
 Classify one additional evidence-based predicate:
 
@@ -144,16 +160,64 @@ map_coordination_context:
   or the work requires root registration, parent/child identity, overlap ownership, or root/area contradiction handling.
 ```
 
-Load the conditional reference for every refresh, every audit, or whenever `map_coordination_context` is true. `PM0-root-create` remains self-sufficient only after bounded inspection finds no coordination evidence. If coordination is discovered later, load and validate the reference before making a dependent judgment or write. Missing, unreadable, ambiguous, contradictory, escaped, or mixed-version required resources stop dependent work.
+Before concluding that repository root creation has no coordination context, perform a bounded coordination preflight over only these known ownership surfaces:
+
+1. project-local workflow guidance for customized project-map paths;
+2. the canonical or configured root-map path;
+3. the canonical or configured area-map directories;
+4. existing root registration rows when a root map is present;
+5. existing area-map files in the known area-map locations;
+6. request-supplied area, proposed-area, parent/child, registration, or overlap evidence;
+7. directly referenced project-map paths in the active change context when applicable.
+
+Do not broad-scan repository content merely to prove coordination absence. No known evidence means the reference is not required; found evidence requires it; unavailable, conflicting, or ambiguous known surfaces require the reference for resolution or stop when it is unavailable.
+
+Operation/scope classification and loaded-resource assembly are separate. Use two primary procedural assemblies:
+
+| Assembly | Conditions | Loaded procedure |
+| --- | --- | --- |
+| `PMA0-simple-root-create` | `create + repository + coordination=false` | `SKILL.md`; skeleton when writing |
+| `PMA1-maintenance-or-coordinated` | Every refresh, every audit, every area scope, or root create with coordination | `SKILL.md` plus conditional reference; skeleton when writing |
+
+Load the conditional reference for every refresh, every audit, or whenever `map_coordination_context` is true. If root creation discovers coordination after entering `PMA0`, change only the loaded assembly to `PMA1` before dependent judgment or writes; operation and scope remain unchanged. Missing, unreadable, ambiguous, contradictory, escaped, or mixed-version required resources stop dependent work.
 
 Use these closed write boundaries:
 
 | Operation | Allowed map writes | Recovery boundary |
 | --- | --- | --- |
-| Root create without coordination | Create or replace only the resolved root map under explicit write authority. | An interrupted retry may reconcile only the same target and evidence basis. |
+| Root create without coordination | Create only the resolved absent root map under explicit write authority. | An interrupted retry may reconcile only the same target and evidence basis. An existing target routes to refresh. |
 | Area create | Create the resolved area map and register that exact identity in the root map. | Treat both writes as one identity-bound transaction; a partial result stops for exact reconciliation rather than leaving an unregistered or wrongly registered area map. |
-| Refresh or requested correction | Update only the explicitly affected root or area maps. | Retry only against matching prior and current evidence identities; conflicts stop. |
+| Refresh or requested correction | Update only an existing, explicitly affected root or area map. | Retry only against matching prior and current evidence identities; conflicts stop. |
 | Audit | None. | Report findings and correction routing without mutation. |
+
+### Area-map creation transaction
+
+Area creation requires one existing, structurally valid root map and never creates the root map implicitly. When the root is absent, stop, route to repository root creation, and retry area creation only after the root exists.
+
+Bind one attempt to the root map path and content identity, area slug and normalized area path, area parent/root identity, current evidence baseline, and expected root registration row. Use this sequence:
+
+1. Resolve and validate the root identity and current registration table.
+2. Confirm both the area target and expected registration are absent.
+3. Prepare and validate complete area-map content without publishing a registration.
+4. Write the area map.
+5. Re-read the root map and confirm its identity and relevant registration state have not changed.
+6. Add the exact area registration to the root map.
+7. Validate both artifacts and their reciprocal identity fields.
+8. Treat the successful root-registration write as the transaction commit point.
+
+Use this recovery matrix:
+
+| Observed state | Result |
+| --- | --- |
+| Area file exists, registration is absent, and complete transaction identities match | Revalidate the area file and complete only the registration. |
+| Area file exists, registration is absent, but identity or evidence basis differs | Stop and do not adopt the file. |
+| Registration exists but the area file is absent | Stop as a dangling registration and require exact corrective action. |
+| Registration points to another path or parent | Stop as a conflict. |
+| Root identity or relevant registration state changed after the area write | Stop without overwriting the changed root. |
+| Both artifacts match the expected identities | Return idempotent success without another write. |
+| Multiple candidate area files or registration rows exist | Stop as ambiguous. |
+
+Audit may identify any partial state but remains read-only. A refresh or correction may repair it only under separately resolved authority and current evidence.
 
 ### Universal ownership in `SKILL.md`
 
@@ -203,9 +267,11 @@ When a legacy `area` invocation or another input does not resolve exactly one op
 
 ## Expected Behavior Changes
 
-- Root creation loads a shorter common procedure and the existing skeleton when bounded inspection finds no map-coordination evidence.
+- Root creation is valid only for an absent target and loads a shorter common procedure plus the existing skeleton when the bounded coordination preflight finds no coordination evidence.
 - Refresh and audit load one conditional reference containing detailed maintenance behavior.
 - Every area-scoped invocation and every repository invocation that discovers coordination evidence loads that reference before dependent judgment or writes.
+- A full rewrite of an existing map remains a refresh, and post-audit correction begins a new refresh rather than mutating the audit operation.
+- Area creation requires an existing valid root and commits only when the exact root registration is written after the area map.
 - The result emits `Operation` and `Map scope` separately and does not emit the ambiguous legacy `Mode` field.
 - Audit remains read-only, and map writing remains limited to create or explicitly requested refresh/correction behavior.
 - Required resources fail closed; the common file does not reconstruct maintenance or area procedure.
@@ -236,16 +302,30 @@ No ADR is expected because the change reuses the existing published-skill packag
 | `AC-PMAPSIM-012` | Every loaded profile decreases unless a specific semantic-preservation exception is independently approved. |
 | `AC-PMAPSIM-013` | No target-agent runtime executes during acceptance. |
 | `AC-PMAPSIM-014` | Canonical, generated, archived, and installed resources retain required parity. |
+| `AC-PMAPSIM-015` | `create` is valid only when the resolved target map is absent. |
+| `AC-PMAPSIM-016` | Existing targets require `refresh`, including complete rewrites. |
+| `AC-PMAPSIM-017` | Audit never acquires write authority during the same operation. |
+| `AC-PMAPSIM-018` | Auditing an absent target produces a read-only `missing-map` finding. |
+| `AC-PMAPSIM-019` | A bounded coordination preflight defines the evidence required to omit the conditional reference. |
+| `AC-PMAPSIM-020` | Unavailable, conflicting, or ambiguous known coordination surfaces cannot be treated as no coordination. |
+| `AC-PMAPSIM-021` | Semantic operation/scope classifications and loaded-resource assemblies are represented separately. |
+| `AC-PMAPSIM-022` | Coordinated root creation is measured as `PMA1-maintenance-or-coordinated`. |
+| `AC-PMAPSIM-023` | Area creation requires one existing structurally valid root map. |
+| `AC-PMAPSIM-024` | Area creation binds exact root, area, path, parent, registration, and evidence identities. |
+| `AC-PMAPSIM-025` | Root registration is the final commit write for area creation. |
+| `AC-PMAPSIM-026` | Every area/root partial state has one idempotent recovery or stop result. |
+| `AC-PMAPSIM-027` | Orphaned, dangling, stale, conflicting, or ambiguous area state is never adopted implicitly. |
+| `AC-PMAPSIM-028` | A post-audit correction resolves a new refresh operation and current evidence. |
 
 ## Testing and Verification Strategy
 
 Before editing the canonical package, create separate change-local inventories for behaviorally significant rules and exact literal consumers. Closed rule dispositions should include `retained-inline`, `retained-conditional-reference`, `asset-owned`, `removed-duplicate`, and `removed-obsolete-with-approved-contract-change`. Literal dependencies should be classified as `normative-contract`, `parser-or-package-contract`, `test-only-incidental`, `obsolete`, or `historical-fixture`.
 
-Use deterministic static scenarios for all six base profiles, absent and late-discovered coordination, false and ambiguous triggers, operation-specific write sets, interrupted area registration, audit read-only behavior, create/refresh authority, clean and dirty baselines in every applicable profile, correction notes, root/area registration, overlaps, contradictions, missing resources, configured/executed commands, current/partial/stale outcomes, result compatibility, asset composition, placeholders, and forbidden downstream claims.
+Use deterministic static scenarios for all six semantic classifications and both procedural assemblies; present, absent, ambiguous, and conflicting targets; complete and unavailable coordination preflight surfaces; late-discovered coordination; operation-specific write sets; every area-transaction interruption state; audit read-only and post-audit refresh behavior; clean and dirty baselines in every applicable assembly; correction notes; overlaps; contradictions; missing resources; configured/executed commands; current/partial/stale outcomes; result compatibility; asset composition; placeholders; and forbidden downstream claims.
 
 Extend existing project-map and package validators instead of creating a new validator family. Migrate the public result contract from `Mode` to `Operation` and `Map scope`, migrate real parser contracts atomically, and update incidental tests rather than preserving accidental prose. Preserve historical map fixtures and the existing representative-output and cold-read evidence where still semantically valid.
 
-Measure LF-normalized UTF-8 bytes and Unicode whitespace-separated words for `SKILL.md`, each reference and asset, every loaded profile, representative create/refresh assemblies, and the complete package. Report mapped-resource count and duplicate-cluster count separately. Require every real loaded profile to decrease unless an explicit semantic-preservation finding proves a specific exception; do not use a fixed percentage as a semantic gate.
+Measure LF-normalized UTF-8 bytes and Unicode whitespace-separated words for `SKILL.md`, each reference and asset, `PMA0-simple-root-create`, `PMA1-maintenance-or-coordinated`, representative written outputs, and the complete package. Report the six semantic classifications separately from loaded-resource totals, along with mapped-resource count and duplicate-cluster count. Require both procedural assemblies to decrease unless an explicit semantic-preservation finding proves a specific exception; do not use a fixed percentage as a semantic gate.
 
 Validate canonical structure, generated skills, adapter archives, clean-installed resources, sentence readability, change metadata, formal review artifacts, and the complete repository-owned PR gate. Do not execute Codex, Claude Code, OpenCode, or another target-agent runtime for acceptance.
 
@@ -263,6 +343,9 @@ Rollback restores the prior complete canonical package, coupled validators and f
 | The new classification changes behavior unintentionally | Define all six profiles, migration from each old mode, ambiguity stops, and static scenarios in the spec. |
 | Root creation discovers multi-map coordination after initial classification | Use `map_coordination_context`, late-load the reference before dependent behavior, and fail closed when it is unavailable. |
 | Area creation leaves the area and root registration inconsistent | Use one identity-bound two-map transaction with explicit partial-state reconciliation. |
+| Create bypasses refresh-specific evidence by replacing an existing map | Bind operations to target existence and classify complete rewrites as refresh. |
+| Coordination absence is inferred from an incomplete scan | Check the seven known ownership surfaces and fail closed on unavailable or ambiguous evidence. |
+| The root changes after an area file is written | Re-read its identity before registration and stop without overwriting concurrent changes. |
 | Root creation loses dirty-baseline evidence | Keep the complete minimum dirty-baseline reporting rule inline for every profile. |
 | Root and area maps acquire competing owners | Keep one conditional reference with explicit parent, registration, overlap, and contradiction rules. |
 | The skeleton becomes a hidden policy surface | Validate it as structural only and keep applicability and semantics in procedure. |
@@ -288,6 +371,9 @@ None. The proposal selects the new result vocabulary and compatibility direction
 | 2026-08-14 | Load maintenance procedure when map coordination is discovered, including during root creation. | Multi-map behavior must not run without its sole procedural owner. | Profile-only loading that assumes root creation never encounters area maps. |
 | 2026-08-14 | Keep dirty-baseline truthfulness inline. | Every profile must describe inspected uncommitted evidence honestly. | Make baseline truth depend on maintenance-reference loading. |
 | 2026-08-14 | Replace invocation-result `Mode` with `Operation` and `Map scope`. | Separate axes remove the old ambiguity and give new results one closed contract. | Preserve both result shapes indefinitely; let the specification choose later. |
+| 2026-08-14 | Bind operations to target existence and keep audit read-only. | Creation, maintenance, and diagnosis need non-overlapping authority and evidence behavior. | Allow create to replace maps; mutate from an audit. |
+| 2026-08-14 | Distinguish six semantic classifications from two procedural assemblies. | Operation and scope describe behavior, while coordination evidence determines loaded context. | Treat one profile name as two different package assemblies. |
+| 2026-08-14 | Require root-registration-last area creation. | Publishing the pointer last gives the two-file transaction one clear commit point and recoverable matching partial state. | Implicitly create a root; register before the area exists; adopt orphan state. |
 
 ## Next Artifacts
 
