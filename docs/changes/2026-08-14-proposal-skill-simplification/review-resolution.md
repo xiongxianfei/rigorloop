@@ -13,11 +13,16 @@ Review closeout: code-review-M1-r1
 Review closeout: code-review-M1-r2
 Review closeout: code-review-M2-r1
 Review closeout: code-review-M2-r2
+Review closeout: code-review-M3-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`, `code-review-M2-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`, `code-review-M2-r2`, `code-review-M3-r1`
 - Findings resolved: 8
 - Unresolved findings: 0
-- Current result: M2 approved after combined-profile byte reduction and context-reset rereview
+- Current result: M1-M3 closed; final holistic code review required
+
+### code-review-M3-r1
+
+No material findings. The clean-with-notes review approved deterministic measurement, semantic and literal preservation, and complete adapter parity, closing all implementation milestones.
 
 ### test-spec-review-r1
 
