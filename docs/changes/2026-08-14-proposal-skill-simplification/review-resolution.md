@@ -14,11 +14,16 @@ Review closeout: code-review-M1-r2
 Review closeout: code-review-M2-r1
 Review closeout: code-review-M2-r2
 Review closeout: code-review-M3-r1
+Review closeout: code-review-final-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`, `code-review-M2-r2`, `code-review-M3-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`, `code-review-M2-r2`, `code-review-M3-r1`, `code-review-final-r1`
 - Findings resolved: 8
 - Unresolved findings: 0
-- Current result: M1-M3 closed; final holistic code review required
+- Current result: final holistic code review approved; explanation and verify remain
+
+### code-review-final-r1
+
+No material findings. The final holistic review approved the complete branch diff and cross-milestone interactions for explanation and verification.
 
 ### code-review-M3-r1
 
