@@ -142,7 +142,7 @@ Existing skill validators own canonical structure, resource mapping, closed voca
   - review the final package against both M1 ledgers and all 49 requirements
 - Validation commands:
   - `python scripts/test-adapter-distribution.py`
-  - temporary `build-adapters.py` plus `validate-adapters.py --clean-install-smoke --skill proposal`
+  - `python -c 'exec("""import subprocess, sys, tempfile\nversion = "v0.4.0"\nwith tempfile.TemporaryDirectory(prefix="rigorloop-adapters-") as output:\n    subprocess.run([sys.executable, "scripts/build-adapters.py", "--version", version, "--output-dir", output], check=True)\n    subprocess.run([sys.executable, "scripts/validate-adapters.py", "--version", version, "--adapter-root", output, "--clean-install-smoke", "--skill", "proposal"], check=True)""")'`
   - `python scripts/validate-skills.py skills/proposal/SKILL.md`
   - `python scripts/test-skill-validator.py`
   - `python scripts/validate-boundary-first.py --check --path specs/proposal-skill-simplification.md`
