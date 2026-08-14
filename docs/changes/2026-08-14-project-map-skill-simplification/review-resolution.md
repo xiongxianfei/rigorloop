@@ -10,11 +10,13 @@ Review closeout: proposal-review-r3
 Review closeout: spec-review-r1
 Review closeout: architecture-review-r1
 Review closeout: plan-review-r1
+Review closeout: test-spec-review-r1
+Review closeout: test-spec-review-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: test spec revised; independent rereview required
+- Current result: revised test spec approved and active; implementation handoff allowed
 
 ## Resolution overview
 
@@ -171,3 +173,9 @@ Required outcome: No proof or milestone row depends on MP0 or MP1, deterministic
 Safe resolution path: Remove the manual procedures and their hybrid mappings, validate the resulting proof map, and submit the exact revised test-spec identity for independent rereview.
 Validation target: Deterministic proof mappings, milestone proof mappings, boundary validation, and independent test-spec rereview.
 Validation evidence: `evidence/test-spec-revision-r1.md`; revised testing strategy, proof map, milestone proof map, T16, T17, Manual QA checklist, and exclusions.
+
+### test-spec-review-r2
+
+Review closeout: test-spec-review-r2
+
+No material findings; no resolution entry required. The rereview verified the rejection and closure of `PMAPTSR-PR1`, confirmed that deterministic proof remains complete without manual semantic-review procedures, approved the revised proof map, and settled the matching test-spec artifact.
