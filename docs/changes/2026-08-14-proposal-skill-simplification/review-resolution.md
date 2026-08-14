@@ -6,11 +6,16 @@ Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
+Review closeout: spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: proposal approved
+- Current result: specification approved; architecture assessment required next
+
+### spec-review-r1
+
+No material findings. The clean review approved `specs/proposal-skill-simplification.md` at commit `494d1811` and permitted workflow-owned architecture assessment.
 
 ## Resolution overview
 

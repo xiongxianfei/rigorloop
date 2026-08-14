@@ -20,8 +20,13 @@ artifact_states:
     kind: spec
     path: specs/proposal-skill-simplification.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-14-proposal-skill-simplification/evidence/spec-authoring.md
+    lifecycle_state: approved
+    review:
+      id: spec-review-r1
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-14-proposal-skill-simplification/reviews/spec-review-r1.md
+      round: r1
 
 workflow_state:
   lifecycle_state: active
@@ -92,6 +97,8 @@ changed_files:
   - docs/changes/2026-08-14-proposal-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
   - specs/proposal-skill-simplification.md
   - docs/changes/2026-08-14-proposal-skill-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-14-proposal-skill-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-14-proposal-skill-simplification/reviews/spec-review-r1.md
 
 review:
   status: approved
