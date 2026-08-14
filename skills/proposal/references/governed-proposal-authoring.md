@@ -8,11 +8,11 @@ Validate the complete `change.yaml`, exact change, `lifecycle_contract: stage-ow
 
 ## Change-record authoring transition
 
-For governed work, read the complete `change.yaml` before writing and require `lifecycle_contract: stage-owned-change-local-v1`. Resolve the proposal entry by artifact ID, `kind`, and normalized `path`; for valid creation, create only that entry with a unique stable ID and `kind: proposal`. Set only the matching entry to `authoring`, remove any prior `review` only when revision authority permits it, bind `authoring_evidence`, and commit only at `review-required`. Preserve every other entry and stop on failed available change-metadata validation.
+For governed work, read the complete `change.yaml` before writing and require `lifecycle_contract: stage-owned-change-local-v1`. Resolve by artifact ID, `kind`, and normalized `path`; create only that entry with a unique stable ID and `kind: proposal`. Set it to `authoring`, remove any prior `review` only with revision authority, bind `authoring_evidence`, and commit at `review-required`. Preserve every other entry and stop on failed available change-metadata validation.
 
 ## Operation identity
 
-`create-primary-proposal` binds change, artifact, normalized path, inputs, evidence path, and transaction identity. `revise-primary-proposal` also binds prior content and exact finding, upstream change, reopen, or revision authority. Mismatch, ambiguity, stale authority, or competing writes stop without adoption.
+`create-primary-proposal` binds change, artifact, path, inputs, evidence, and transaction. `revise-primary-proposal` also binds prior content and exact revision authority. Mismatch, ambiguity, staleness, or concurrency stops without adoption.
 
 ## Creation transaction
 
@@ -20,7 +20,7 @@ Creation requires absent entry and file. Create the matching `authoring` entry, 
 
 ## Revision transaction
 
-Revision requires matching entry/file identity and current authority. Downstream reliance requires workflow impact handling and explicit reopen. Preserve history, clear only the authorized current review mapping, record new content and evidence, and return only the matching entry to `review-required` for fresh review.
+Revision requires matching identity and authority. Downstream reliance requires workflow impact handling and reopen. Preserve history, clear only the authorized review mapping, record new content/evidence, and return the entry to `review-required`.
 
 ## Retry and concurrency
 
@@ -28,10 +28,10 @@ An identical interruption resumes at the first incomplete step; exact completion
 
 ## Stale-authoring reset
 
-Changed partial `authoring` returns `authoring-reset-required` without mutation. Workflow validates identity and no reliance, authorizes reset, and routes recovery without mutating proposal-owned state.
+Changed partial `authoring` returns `authoring-reset-required`. Workflow proves identity and no reliance, authorizes reset, and routes without mutating proposal state.
 
-Workflow reset authorization identifies the change, artifact, transaction, path, evidence, allowed surfaces, and authorization identity. It is current, identity-bound, single-use or idempotently consumable, and invalidated by identity, reliance, or write changes.
+Workflow reset authorization identifies change, artifact, transaction, path, evidence, allowed surfaces, and authority. It is identity-bound, single-use or idempotently consumable, and invalidated by reliance or write changes.
 
-With exact authorization, reset only the matching incomplete entry and proposal-authored evidence. It must not mutate `workflow_state` or other surfaces and must not delete completed authoring or review evidence. Exact replay is idempotent; unsafe state stops. A later operation uses a new transaction identity, evidence path, and basis.
+With exact authorization, reset only the matching incomplete entry/evidence. It must not mutate `workflow_state` or other surfaces and must not delete completed authoring or review evidence. Replay is idempotent; unsafe state stops. Later work uses a new transaction identity.
 
 This handshake adds no lifecycle state, persistence mechanism, evidence type, or write owner. If safe recovery requires workflow to mutate proposal-owned state or any broader contract, stop and route to architecture and workflow-contract revision.
