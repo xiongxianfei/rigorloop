@@ -107,5 +107,18 @@ Status: changes-requested
 Detailed record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-M1-r1
 Material findings: PRSIM-M1-CR1
-Open findings: PRSIM-M1-CR1
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-M1-r2
+Stage: code-review
+Round: r2
+Reviewed artifact: implementation milestone M1 correction at commit `55f8df38`
+Status: approved
+Detailed record: reviews/code-review-m1-r2.md
+Resolution: review-resolution.md#code-review-M1-r2
+Material findings: None
+Open findings: None
 Recording status: recorded

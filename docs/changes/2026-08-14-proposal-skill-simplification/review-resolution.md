@@ -1,6 +1,6 @@
 # Review Resolution: Proposal Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -10,11 +10,12 @@ Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: code-review-M1-r1
+Review closeout: code-review-M1-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`
-- Findings resolved: 7
-- Unresolved findings: 1
-- Current result: M1 code review requested one mechanically eligible correction before rereview
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`
+- Findings resolved: 8
+- Unresolved findings: 0
+- Current result: M1 preservation evidence approved after exact-literal correction and context-reset rereview
 
 ### test-spec-review-r1
 
@@ -41,7 +42,7 @@ No material findings. The clean review approved `specs/proposal-skill-simplifica
 | `PRSIM-R2-PR2` | accepted | closed | Workflow-owned stale-attempt reconciliation is bounded and adds no persistent state. |
 | `PRSIM-R2-PR3` | accepted | closed | Every specialized predicate has an explicit structural destination. |
 | `PRSIM-R3-PR1` | accepted | closed | Workflow authorizes recovery without mutating proposal state; proposal executes only the exact authorized reset of its own incomplete state. |
-| `PRSIM-M1-CR1` | accepted | open | Split two composite enum literal rows into one independently classified row per exact consumed value. |
+| `PRSIM-M1-CR1` | accepted | closed | Split two composite enum literal rows into one independently classified row per exact consumed value. |
 
 ## Finding details
 
@@ -53,7 +54,7 @@ Finding ID: PRSIM-M1-CR1
 
 Disposition: accepted
 
-Status: open
+Status: closed
 
 Owner: implement M1
 
@@ -73,7 +74,11 @@ Safe resolution path: Apply the reviewer-declared mechanical change only to the 
 
 Validation target: literal count increases from 29 to 39, CMD1 passes, and reviewer confirms the two composite strings are absent.
 
-Validation evidence: pending correction and rereview.
+Validation evidence: `proposal-literal-compatibility.yaml` contains 39 exact rows; CMD1 passed; both composite strings are absent; `reviews/code-review-m1-r2.md` approved the correction at `55f8df38`.
+
+### code-review-M1-r2
+
+No material findings. The clean context-reset rereview approved the exact-literal correction, closed `PRSIM-M1-CR1`, and closed M1 for handoff to M2.
 
 ### proposal-review-r4
 

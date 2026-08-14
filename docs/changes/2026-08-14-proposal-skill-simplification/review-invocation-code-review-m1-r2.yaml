@@ -1,0 +1,54 @@
+schema_version: 1
+review_id: code-review-M1-r2
+review_stage: code-review
+review_target: implementation-M1
+base_revision: 64fc3022
+head_revision: 55f8df38
+milestone_id: M1
+native_review_status: clean
+review_gate_outcome: pass
+independence_level: L0
+author_context_id: root-implement-M1-correction
+reviewer_context_id: root-code-review-M1-r2-context-reset
+context_separation_mechanism: correction-diff-and-finding-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-semantic-preservation
+  - closed-vocabulary-evidence
+  - compatibility-inventory
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed-R42-T16
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+risk_map:
+  affected_behavior:
+    - exact literal compatibility classification
+    - M1 preservation evidence count
+  highest_impact_failure_modes:
+    - an enum value remains grouped rather than independently classified
+    - the evidence count disagrees with the literal ledger
+  changed_boundaries:
+    - BND-COMPAT-001
+    - INT-004
+  expected_evidence:
+    - twelve exact replacement rows
+    - both composite strings absent
+    - CMD1 passes with 39 literals
+  direct_inspection_areas:
+    - corrected literal ledger rows
+    - M1 evidence count and correction note
+  intentionally_out_of_scope:
+    - canonical proposal package changes
+    - generated adapter changes
+    - M2 and M3 evidence
+  falsifiable_questions:
+    - does each consumed enum value have one exact row
+    - are the obsolete composite strings absent
+    - does CMD1 validate the corrected ledger
+forbidden_initial_context_excluded: true
