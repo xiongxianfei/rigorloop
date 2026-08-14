@@ -1,6 +1,6 @@
 # Review Resolution: Proposal Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -11,11 +11,12 @@ Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: code-review-M1-r1
 Review closeout: code-review-M1-r2
+Review closeout: code-review-M2-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`
 - Findings resolved: 8
-- Unresolved findings: 0
-- Current result: M1 preservation evidence approved after exact-literal correction and context-reset rereview
+- Unresolved findings: 1
+- Current result: M2 code review requires loaded-byte reduction before rereview
 
 ### test-spec-review-r1
 
@@ -43,8 +44,39 @@ No material findings. The clean review approved `specs/proposal-skill-simplifica
 | `PRSIM-R2-PR3` | accepted | closed | Every specialized predicate has an explicit structural destination. |
 | `PRSIM-R3-PR1` | accepted | closed | Workflow authorizes recovery without mutating proposal state; proposal executes only the exact authorized reset of its own incomplete state. |
 | `PRSIM-M1-CR1` | accepted | closed | Split two composite enum literal rows into one independently classified row per exact consumed value. |
+| `PRSIM-M2-CR1` | accepted | open | Reduce PA1G below the baseline in both bytes and words without semantic loss. |
 
 ## Finding details
+
+### code-review-M2-r1
+
+#### PRSIM-M2-CR1
+
+Finding ID: PRSIM-M2-CR1
+
+Disposition: accepted
+
+Status: open
+
+Owner: implement M2
+
+Owning stage: implement
+
+Decision owner: none; deterministic correction
+
+Decision needed: none
+
+Chosen action: Compress repeated wording in the three procedural owners while preserving every ledgered rule and exact literal, then report both profile metrics.
+
+Rationale: PA1G is smaller in words but larger in UTF-8 bytes, so R47 is not satisfied.
+
+Required outcome: Every real assembly is below 2,122 words and 14,796 bytes; focused and broad validators remain green.
+
+Safe resolution path: Edit only the declared procedural owners and M2 evidence, rerun CMD2-CMD4 and measurement, then perform context-reset rereview.
+
+Validation target: PA1G below both baselines with no contract-test regression.
+
+Validation evidence: pending correction and rereview.
 
 ### code-review-M1-r1
 

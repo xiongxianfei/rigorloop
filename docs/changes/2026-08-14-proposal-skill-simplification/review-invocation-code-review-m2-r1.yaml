@@ -1,0 +1,80 @@
+schema_version: 1
+review_id: code-review-M2-r1
+review_stage: code-review
+review_target: implementation-M2
+base_revision: fc7ec210
+head_revision: b08bea8b
+milestone_id: M2
+native_review_status: changes-requested
+review_gate_outcome: correction-eligible
+independence_level: L0
+author_context_id: root-implement-M2
+reviewer_context_id: root-code-review-M2-r1-context-reset
+context_separation_mechanism: diff-contract-and-measurement-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-contract
+  - packaged-resource-ownership
+  - loaded-profile-reduction
+requirement_fidelity:
+  applicability: applicable
+  receipt: failed-R47-byte-reduction
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings:
+  - PRSIM-M2-CR1
+risk_map:
+  affected_behavior:
+    - universal proposal judgment
+    - governed proposal authoring
+    - strategic proposal gates
+    - conditional output composition
+    - package validation
+  highest_impact_failure_modes:
+    - extraction increases the most expensive loaded context
+    - compression drops a universal or conditional rule
+    - validator migration permits an unapproved package shape
+  changed_boundaries:
+    - BND-COMPOSE-001
+    - BND-COMPAT-001
+    - INT-004
+  expected_evidence:
+    - every real profile decreases in words and bytes
+    - focused and full validator suites pass
+    - ledgers preserve one owner per rule
+  direct_inspection_areas:
+    - SKILL.md and both references
+    - proposal skeleton conditional groups
+    - validator allowlist and migrated consumers
+    - M2 profile arithmetic
+  intentionally_out_of_scope:
+    - adapter parity proof owned by M3
+    - final holistic review
+  falsifiable_questions:
+    - is PA1G below 2122 words and 14796 bytes
+    - do focused and broad validators still pass
+    - does each extracted rule retain one owner
+forbidden_initial_context_excluded: true
+correction:
+  auto_fix_class: mechanical
+  deterministic_authority: R47 requires every real loaded assembly to decrease from baseline in the primary word and byte metrics
+  affected_paths:
+    - skills/proposal/SKILL.md
+    - skills/proposal/references/governed-proposal-authoring.md
+    - skills/proposal/references/strategic-and-scope-gates.md
+    - docs/changes/2026-08-14-proposal-skill-simplification/evidence/m2-package-implementation.md
+  forbidden_paths:
+    - specs/
+    - docs/plans/
+    - skills/proposal/assets/
+    - scripts/
+  required_validation:
+    - CMD2
+    - CMD3
+    - CMD4
+    - byte-and-word-profile-remeasurement
+    - git-diff-check
