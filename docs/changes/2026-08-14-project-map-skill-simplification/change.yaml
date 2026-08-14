@@ -1,0 +1,290 @@
+change_id: 2026-08-14-project-map-skill-simplification
+title: Project-Map Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-14-project-map-skill-simplification.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r3
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-08-14-project-map-skill-simplification/reviews/proposal-review-r3.md
+      round: r3
+  spec:
+    kind: spec
+    path: specs/project-map.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r1
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-14-project-map-skill-simplification/reviews/spec-review-r1.md
+      round: r1
+  architecture:
+    kind: architecture
+    path: docs/architecture/system/architecture.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: architecture-review-r1
+      artifact_id: architecture
+      outcome: approved
+      record: docs/changes/2026-08-14-project-map-skill-simplification/reviews/architecture-review-r1.md
+      round: r1
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-14-project-map-skill-simplification.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r1
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-14-project-map-skill-simplification/reviews/plan-review-r1.md
+      round: r1
+  test-spec:
+    kind: test-spec
+    path: specs/project-map.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r2
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r2.md
+      round: r2
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: verify
+  next_stage: pr
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/proposal-authoring.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/reviews/proposal-review-r1.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/review-resolution.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/proposal-revision-r1.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/reviews/proposal-review-r2.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/proposal-revision-r2.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/reviews/proposal-review-r3.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+    - specs/project-map.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/spec-authoring.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-spec-review-r1.yaml
+    - docs/changes/2026-08-14-project-map-skill-simplification/reviews/spec-review-r1.md
+    - docs/architecture/system/architecture.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/architecture-authoring.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-architecture-review-r1.yaml
+    - docs/changes/2026-08-14-project-map-skill-simplification/reviews/architecture-review-r1.md
+    - docs/plans/2026-08-14-project-map-skill-simplification.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/plan-authoring.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-plan-review-r1.yaml
+    - docs/changes/2026-08-14-project-map-skill-simplification/reviews/plan-review-r1.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/plan-initialization.md
+    - specs/project-map.test.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/test-spec-authoring.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-test-spec-review-r1.yaml
+    - docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/test-spec-revision-r1.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-test-spec-review-r2.yaml
+    - docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-verify.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/m1-preservation-inventories.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-code-review-m1-r1.yaml
+    - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/m2-package-implementation.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-code-review-m2-r1.yaml
+    - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/simplification-measurements.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/evidence/m3-package-proof.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-code-review-m3-r1.yaml
+    - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-m3-r1.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-final-r1.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/explain-change.md
+    - docs/changes/2026-08-14-project-map-skill-simplification/verify-report.md
+  planned_work:
+    plan_artifact_id: plan
+    initialization_basis:
+      review_id: plan-review-r1
+      review_round: r1
+      review_record: docs/changes/2026-08-14-project-map-skill-simplification/reviews/plan-review-r1.md
+      reviewed_artifact_path: docs/plans/2026-08-14-project-map-skill-simplification.md
+      reviewed_revision: ffa020b7
+    current_milestone: none
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+    remaining_implementation_milestones: []
+    latest_review:
+      status: approved
+      stage: code-review
+      round: r1
+      artifact_id: plan
+      occurrence: final
+      milestone_id: none
+      evidence:
+        - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-code-review-final-r1.yaml
+        - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-final-r1.md
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - external-completion-event-pending
+      evidence:
+        - docs/changes/2026-08-14-project-map-skill-simplification/evidence/plan-initialization.md
+        - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-m3-r1.md
+        - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-final-r1.md
+        - docs/changes/2026-08-14-project-map-skill-simplification/verify-report.md
+
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: verify
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-14T08:28:55-07:00"
+      completion:
+        rule: first formal verify result is durably recorded
+    status: completed
+    current_stage: verify
+    stop_reason: target-reached
+    evidence:
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+      - docs/proposals/2026-08-14-project-map-skill-simplification.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/reviews/proposal-review-r3.md
+      - specs/project-map.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/spec-authoring.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-spec-review-r1.yaml
+      - docs/changes/2026-08-14-project-map-skill-simplification/reviews/spec-review-r1.md
+      - docs/architecture/system/architecture.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/architecture-authoring.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-architecture-review-r1.yaml
+      - docs/changes/2026-08-14-project-map-skill-simplification/reviews/architecture-review-r1.md
+      - docs/plans/2026-08-14-project-map-skill-simplification.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/plan-authoring.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-plan-review-r1.yaml
+      - docs/changes/2026-08-14-project-map-skill-simplification/reviews/plan-review-r1.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/plan-initialization.md
+      - specs/project-map.test.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/test-spec-authoring.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-test-spec-review-r1.yaml
+      - docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/test-spec-revision-r1.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-test-spec-review-r2.yaml
+      - docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r2.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-verify.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/m1-preservation-inventories.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-code-review-m1-r1.yaml
+      - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-m1-r1.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/m2-package-implementation.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-code-review-m2-r1.yaml
+      - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-m2-r1.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/simplification-measurements.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/evidence/m3-package-proof.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-code-review-m3-r1.yaml
+      - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-m3-r1.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-code-review-final-r1.yaml
+      - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-final-r1.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/explain-change.md
+      - docs/changes/2026-08-14-project-map-skill-simplification/verify-report.md
+
+artifacts:
+  proposal: docs/proposals/2026-08-14-project-map-skill-simplification.md
+  spec: specs/project-map.md
+  architecture: docs/architecture/system/architecture.md
+  plan: docs/plans/2026-08-14-project-map-skill-simplification.md
+  test_spec: specs/project-map.test.md
+
+requirements:
+  - Reduce every real project-map loaded profile while preserving current-state evidence, freshness, customer portability, and downstream reliance safety.
+  - Replace overlapping modes with independent operation and scope classifications and one closed profile matrix.
+  - Give universal orientation policy, conditional maintenance and area procedure, and structural output one explicit owner each.
+  - Bind create, refresh, and audit to target state and make coordinated area creation identity-bound, recoverable, and root-registration-last.
+  - Amend the governing project-map spec and bounded architecture text that currently require the old classification and inline policy placement.
+  - Prove semantic preservation, literal compatibility, profile reduction, resource failure, and package parity without target-agent runtime execution.
+
+tests:
+  - Independent semantic review of the proposal and final project-map package.
+  - Deterministic validation of classifications, procedural assemblies, authority, resources, freshness, evidence classes, structure, stops, and package parity.
+  - Static scenarios covering target-state operation selection, coordination preflight, root and area create, refresh, audit, dirty baselines, area transaction recovery, correction notes, overlaps, contradictions, commands, missing resources, and forbidden claims.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-14-project-map-skill-simplification/change.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-14-project-map-skill-simplification.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/review-log.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/review-resolution.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/proposal-revision-r1.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/proposal-revision-r2.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/reviews/proposal-review-r3.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+  - specs/project-map.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/reviews/spec-review-r1.md
+  - docs/architecture/system/architecture.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/architecture-authoring.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-architecture-review-r1.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/reviews/architecture-review-r1.md
+  - docs/plan.md
+  - docs/plans/2026-08-14-project-map-skill-simplification.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/plan-authoring.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/reviews/plan-review-r1.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/plan-initialization.md
+  - specs/project-map.test.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/test-spec-authoring.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-test-spec-review-r1.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/test-spec-revision-r1.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-test-spec-review-r2.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/reviews/test-spec-review-r2.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-verify.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/project-map-rule-disposition.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/project-map-literal-compatibility.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/fixtures/invalid-rule-disposition.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/fixtures/invalid-literal-classification.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/fixtures/scenario-contracts.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/profile-size-baseline.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/m1-preservation-inventories.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-code-review-m1-r1.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-m1-r1.md
+  - skills/project-map/SKILL.md
+  - skills/project-map/references/map-maintenance-and-area-coordination.md
+  - scripts/skill_validation.py
+  - scripts/test-skill-validator.py
+  - tests/fixtures/skills/project-map-contract/valid/SKILL.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/m2-package-implementation.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-code-review-m2-r1.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-m2-r1.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/simplification-measurements.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/evidence/m3-package-proof.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-code-review-m3-r1.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-m3-r1.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/review-invocation-code-review-final-r1.yaml
+  - docs/changes/2026-08-14-project-map-skill-simplification/reviews/code-review-final-r1.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/explain-change.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/verify-report.md
+
+review:
+  status: approved
+  unresolved_items: 0

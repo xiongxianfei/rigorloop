@@ -8,9 +8,7 @@ argument-hint: [repository, area, orientation question, or refresh scope]
 
 # Project map
 
-Build, refresh, or audit an evidence-bound map of the repository as it exists today.
-
-Core invariant: a project map is trustworthy only when it says what it covers, what repository state it describes, which claims are observed, which are inferred, and what remains unknown.
+Build, refresh, or audit an evidence-bound map of the repository as it exists today. A trustworthy map states its scope and baseline, distinguishes observed facts from inference, exposes unknowns, and never presents intended behavior as current fact.
 
 ## Workflow role
 
@@ -21,94 +19,65 @@ Core invariant: a project map is trustworthy only when it says what it covers, w
 - summary: Create, refresh, or audit a current-state repository map with cited evidence, bounded inference, known gaps, and downstream orientation.
 - must_not_claim: future architecture approval, implementation readiness, review approval, validation success, branch readiness, PR readiness, or final lifecycle closeout
 
-`support` is used because `skill-readability-v1` has no `orientation` stage; it is the closest approved workflow-role stage for this living-reference skill.
+`support` is the approved workflow-role stage for this living-reference skill.
 
 ## Quick operating guide
 
-Use this skill to: create, refresh, or audit a root or area project map that orients future work.
-
-Read first:
-
-- the user's requested repository, area, refresh, or audit scope;
-- any existing root or area project map in scope;
-- project-local guidance when present and relevant;
-- source, runtime configuration, manifests, schemas, tests, CI, deployment, infrastructure, and generated output needed for material claims.
-
-Produce:
-
-- a project-map artifact or audit result;
-- cited evidence for material current-state claims;
-- visible labels for inference and unknowns;
-- freshness metadata, known gaps, correction notes when needed, and a next-stage recommendation.
+Resolve one target, operation, and scope; run the coordination preflight; inspect enough current evidence; then create, refresh, or audit. Use the skeleton for writes and report freshness, limits, blockers, and one next stage.
 
 For blocked cases, use `Stop conditions`. For claim boundaries, use `must_not_claim` in `Workflow role`.
 
-Next stage:
-
-- `explore`, `proposal`, `architecture`, `workflow`, or `none`.
-
 ## Resource map
 
-- COPY `assets/project-map-skeleton.md` when creating a new root or area project map.
-  Fill: metadata fields, applicable sections, evidence paths, known gaps, correction notes, evidence-trail entries, and area registration fields.
-  Do not emit unfilled placeholders.
+- READ `references/map-maintenance-and-area-coordination.md` for every refresh, every audit, every area scope, and every repository create with coordination evidence. Late coordination discovery changes the loaded assembly to `PMA1-maintenance-or-coordinated`; load this reference before dependent judgment or writes without changing operation or scope.
+- COPY `assets/project-map-skeleton.md` when creating or refreshing a root or area project map. Fill: metadata fields, applicable sections, evidence paths, known gaps, evidence-trail entries, and applicable area registration rows. Do not emit unfilled placeholders.
 
-The skeleton's structural sections must match `Required output structure`.
+If a required reference is missing, unreadable, escaped from the package, contradictory, or mixed-version, stop before dependent interpretation or mutation. The skill must not reconstruct conditional procedure from memory. An untriggered reference is not required.
 
 ## Customer-project orientation
 
-Public skills operate in customer-project mode by default.
+Public skills operate in customer-project mode by default. Treat `AGENTS.md`, `CONSTITUTION.md`, `docs/`, and `specs/` as optional project-local orientation inputs whose absence is normal. Do not search for RigorLoop originals in customer projects. Use `docs/workflows.md` and other project-local guidance when relevant, portable defaults when safe, and block on ambiguity.
 
-`project-map` reads project-local repository artifacts for orientation. Treat `AGENTS.md`, `CONSTITUTION.md`, `docs/`, and `specs/` as optional project-local orientation inputs whose absence is normal. Do not search for RigorLoop originals in customer projects.
+## Invocation classification
 
-Use `docs/workflows.md` and other project-local guidance when present and relevant. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists.
+Classify operation as exactly `create`, `refresh`, or `audit`, and classify map scope as exactly `repository` or `area:<slug>` before broad repository reading.
 
-## Operating modes
+Resolve the target through this order: explicit user path; current metadata or active workflow context; the `docs/workflows.md` artifact map; portable default; then stop. Defaults are `docs/project-map.md` and `docs/project-map/<area>.md`. `project-map` owns content; workflow guidance owns placement policy.
 
-Classify the invocation before broad repository reading.
+Apply these target-state rules without implicit reclassification:
 
-- `create`: use when no suitable map exists for the requested scope; create a root map or approved area map.
-- `refresh`: use when a map exists but relevant repository state changed; update affected sections and metadata.
-- `area`: use when the requested scope is a durable subsystem, package group, service, application, data platform, infrastructure subsystem, ownership area, or domain.
-- `audit`: use when the user asks whether a map is current, partial, stale, incomplete, contradictory, or safe to rely on; report drift and do not rewrite artifacts unless requested.
+- `create` applies only when the resolved target is absent; an existing target stops with an explicit `refresh` requirement.
+- `refresh` applies only when the resolved target exists; an absent target stops and routes to `create`.
+- A complete rewrite of an existing map is a refresh strategy, never `create`.
+- `audit` is always read-only; an absent target produces a `missing-map` finding.
+- A correction requested after audit begins a new refresh operation with current target and evidence resolution.
 
-State the selected mode in the result.
+Legacy `create` maps to `create + repository`; legacy `refresh` and `audit` require one scope; legacy `area` requires one operation and `area:<slug>` or stops. New results use `Operation` and `Map scope`, never legacy `Mode`.
 
-## Artifact placement
+## Coordination preflight
 
-Use project-local workflow guidance when present.
+Before treating repository creation as uncoordinated, inspect only these known ownership surfaces:
 
-Lookup order:
+- project-local workflow guidance for customized paths;
+- the canonical or configured root-map path;
+- the canonical or configured area-map directory;
+- existing root registration rows when a root map exists;
+- known area-map files in configured locations;
+- request-supplied coordination evidence, including proposed areas, parents, overlaps, or missing maps;
+- directly referenced project-map paths in the active change context when applicable.
 
-1. explicit user path;
-2. current artifact metadata or active workflow context;
-3. `docs/workflows.md` project-local artifact map when present;
-4. portable default;
-5. block on unresolved ambiguity.
+The preflight must not broadly scan the repository merely to prove absence. No known evidence selects uncoordinated behavior. Existing, proposed, missing, or orphaned areas, registrations, parent/child identities, overlaps, or contradictions set `map_coordination_context` true. Unavailable, conflicting, or ambiguous surfaces require reference-owned resolution or stop.
 
-Portable defaults:
+The procedural assemblies are:
 
-```text
-docs/project-map.md
-docs/project-map/<area>.md
-```
+- `PMA0-simple-root-create`: `create + repository + coordination=false`; load this file and copy the skeleton when writing.
+- `PMA1-maintenance-or-coordinated`: every refresh, every audit, every area scope, and repository create with coordination; load this file plus the conditional reference and copy the skeleton when writing.
 
-`project-map` owns map content. Workflow guidance owns project-local placement policy.
+Operation and scope form six semantic combinations; assembly selection is separate.
 
 ## Map metadata and freshness
 
-Every root or area map begins with `Map metadata` and records:
-
-- Map status
-- Scope
-- Baseline
-- Last reviewed
-- Coverage
-- Exclusions
-- Parent map
-- Known gaps
-
-Status meanings:
+Every map begins with `Map metadata` and records Map status, Scope, Baseline, Last reviewed, Coverage, Exclusions, Parent map, and Known gaps. Copy labels and order from the skeleton.
 
 | Status | Meaning |
 | --- | --- |
@@ -116,28 +85,7 @@ Status meanings:
 | `partial` | Scope is intentionally bounded or important evidence was unavailable. |
 | `stale` | A cited or relied-on surface is known to have materially changed. |
 
-A map must not claim `current` merely because the skill produced or refreshed a document.
-
-When Git is available, record the baseline commit SHA or ref and the last-reviewed date. If inspected files include uncommitted changes, record `<sha>+dirty` and list the inspected uncommitted paths. When Git is unavailable, record the last-reviewed date plus a clear evidence baseline such as inspected archive, workspace, or supplied path set.
-
-Refresh affected maps when changes modify:
-
-- top-level or package boundaries;
-- runtime entry points;
-- public module interfaces;
-- service-to-service calls;
-- storage models, schemas, or migrations;
-- build or package manifests;
-- test layout or commands;
-- CI, release, deployment, or infrastructure configuration;
-- generated-source ownership;
-- ownership boundaries;
-- external integrations;
-- files cited by the map in a way that changes the map conclusion.
-
-Unrelated repository changes do not automatically make every map stale.
-
-If a refresh discovers that a previous map claim was wrong at its recorded baseline, include a correction note in the result. Name the affected section, corrected claim, and evidence path. Do not introduce a fourth map status.
+A write does not justify `current`. With Git, record the commit SHA or ref and review date; for inspected uncommitted changes use `<sha>+dirty` and list their paths. Without Git, record the date and inspected archive, workspace, or supplied-path baseline.
 
 ## Evidence and confidence
 
@@ -147,105 +95,41 @@ Use these evidence classes:
 - inferred: a reasonable conclusion not directly declared by inspected source-of-truth evidence;
 - unknown: a conclusion the inspected evidence cannot safely support.
 
-Observed claims cite inspected repository paths. Inferences are visibly labeled as inference. Unknowns go under `Open questions` rather than being guessed.
+Observed material claims cite inspected paths. Label inference and place unknowns under `Open questions`; names alone are insufficient when content could change the conclusion.
 
-Material current-state claims cite at least one repository path. Directory names alone are not sufficient evidence for a material claim when file content could change the conclusion.
+Material claim example: "`src/server.ts` registers routes from `src/routes/index.ts`" guides entry-point selection and needs path evidence. Incidental statement example: "This map covers the repository root" needs none.
 
-Material claim example: "`src/server.ts` creates the HTTP server and registers routes from `src/routes/index.ts`" is material because a downstream agent could use it to choose an entry point, trust a runtime boundary, or select source files for change placement.
+Call a pattern an observed repository-wide rule only when explicit policy or multiple examples establish it; one example is an observed instance.
 
-Material claim example: "`packages/domain/` has no imports from delivery packages in the inspected files `packages/domain/order.ts` and `packages/api/routes.ts`" is material because it supports a boundary or architecture-rule conclusion.
+Prefer current-state evidence in this order: executable source and runtime configuration; manifests and schemas; tests and CI; current documentation; generated output with a known source; names alone.
 
-Incidental statement example: "This map covers the repository root" is incidental and does not need a path citation because it does not justify a code, boundary, test, runtime, data-flow, or downstream reliance decision.
-
-Present an observed architecture rule only when an explicit project rule states it or multiple independent examples consistently demonstrate it. A single example is an observed instance, not a repository-wide rule.
-
-For current-state claims, prefer evidence in this order:
-
-1. executable source and runtime configuration;
-2. build/package manifests and schemas;
-3. tests and CI workflows;
-4. explicit current-state project documentation;
-5. generated output with a known canonical source;
-6. directory and file names alone.
-
-Proposals, specs, architecture plans, ADRs, and execution plans describe intent. They do not prove that intended behavior exists in current implementation. When intent artifacts conflict with implementation, describe implementation as current state, cite the intent artifact only as planned or expected state, and record the discrepancy as a risk or open question.
+Intent artifacts do not prove implementation. When they conflict, describe implementation as current, label intent as planned or expected, and record the discrepancy.
 
 ## Commands and runtime evidence
 
-Distinguish configured commands from executed commands.
+Distinguish a configured command from an executed command run this session. Never claim execution or success without it; record each executed command and exit code.
 
-- configured command: found in a manifest, workflow, script, or documented configuration;
-- executed command: actually run during the mapping session.
-
-Do not state that a configured command works, passes, or was executed unless it was actually run. Record every executed command with its exit code in the map's evidence trail or equivalent evidence section.
-
-Read-only inspection commands such as `git log`, `ls`, test discovery commands, `--dry-run`, and `--help` may be run when useful for orientation. Commands that mutate state, hit the network, or run an actual test or build suite require user go-ahead before execution.
-
-For runtime flow and data flow, state whether the flow was statically traced, demonstrated by tests, observed through execution, or partially inferred. Do not imply runtime observation when only static source inspection occurred.
+Read-only inspection may be used for orientation. Mutation, network, test, or build execution requires user go-ahead. State whether flow was statically traced, test-demonstrated, execution-observed, or inferred; static inspection is not runtime observation.
 
 ## Root and area maps
 
-When any area map exists, the root map remains the repository-level entry point.
-
-The root map includes repository-wide overview, major boundaries, major entry points, shared test and CI surfaces, external boundaries, links to area maps, and a scope/freshness summary for each area map.
-
-Every area map is linked from the root map. Use this stable Markdown registration table:
-
-| Area | Map | Scope | Baseline | Freshness | Known gaps |
-| --- | --- | --- | --- | --- | --- |
-
-An area map names its parent map. Use area maps only for durable repository boundaries, not merely because one current feature touches a directory. Do not create an area map until the root-map section for that area would exceed roughly one screen of content, unless the area has its own deploy, release, ownership, package, domain, or data lifecycle.
-
-When two maps overlap, each map names the overlap, one map owns the detailed description, and the other links rather than duplicates. Contradictions between overlapping maps block a clean refresh result.
-
-If a refresh finds that a root registration table links to a missing area-map file, mark the refresh result `blocked` unless the user requested an audit. In audit mode, report the root map as `partial` with the missing area map as a known gap.
+The root remains the entry point and summarizes major boundaries, entry points, shared tests and CI, external boundaries, and registered areas. Every area names and links its parent. Create areas only for durable boundaries, roughly screen-length root sections, or distinct deploy, release, ownership, package, domain, or data lifecycles. Detailed coordination belongs to the reference.
 
 ## Required output structure
 
-Root and area maps include these structural sections:
+Copy the skeleton as the sole owner of metadata labels, section order, root registration headers, evidence-trail headers, placeholders, and insertion locations. The `Area maps` section applies only to a root with registered areas and is omitted from area maps and uncoordinated roots.
 
-- Map metadata
-- Purpose and scope
-- System overview
-- Repository layout
-- Runtime flow
-- Data flow
-- External boundaries
-- Test map
-- CI and release map
-- Architecture rules observed
-- Risk areas
-- Open questions
-
-Root maps should include `Area maps` when area maps exist.
-
-A required section with no applicable observed content says `Not observed in the mapped scope.` and includes a short rationale.
+A section without observed content says `Not observed in the mapped scope.` with a rationale. Emit no unfilled placeholders.
 
 ## Diagrams
 
-Use Mermaid only when it clarifies runtime flow, data flow, module or service boundaries, deployment boundaries, or external integrations.
-
-Every node corresponds to an observed repository component or an explicitly marked external actor. Cite supporting files for material nodes or edges. Label inferred edges as inferred.
-
-Do not include decorative layers or present planned components as deployed. Keep detailed area diagrams in the owning area map rather than the root map.
+Use Mermaid only to clarify flows or boundaries. Tie nodes to observed components or marked external actors, cite material nodes and edges, label inference, and never present planned components as deployed.
 
 ## Downstream reliance and handoff
 
-Downstream skills may use a current map to locate likely modules and entry points, find tests and CI, identify known boundaries, decide which source files need direct inspection, and recognize known gaps.
+Downstream skills may use a current map for orientation. They must inspect source directly when it is stale or partial, scope is unreviewed, evidence conflicts, exact architecture or security behavior matters, paths disappeared, or a relied-on claim is inferred or unknown.
 
-Downstream skills must inspect source directly when the relevant map is stale or partial, the change crosses an unreviewed area, map evidence conflicts with current code, architecture or security decisions depend on exact behavior, cited paths no longer exist, or the relevant claim is inferred or unknown.
-
-Recommend the next stage from:
-
-| Finding | Next stage |
-| --- | --- |
-| Problem or options are unclear | `explore` |
-| A direction decision is needed | `proposal` |
-| Current boundaries are clear enough for future design | `architecture` |
-| Workflow placement or routing is unclear | `workflow` |
-| No downstream action requested | `none` |
-
-Do not automatically start a downstream stage during an isolated invocation.
+Recommend `explore` for uncertainty, `proposal` for direction, `architecture` for future design, `workflow` for routing, or `none`. Isolated invocation never starts it automatically.
 
 ## Follow-up boundary
 
@@ -253,43 +137,29 @@ Do not automatically start a downstream stage during an isolated invocation.
 
 It does not own deferred execution or act as a backlog.
 
-It may record unclear ownership, fragile coupling, missing tests, undocumented boundaries, stale documentation, or unverified runtime assumptions as orientation evidence. When a risk needs action, route it through the appropriate owner surface:
-
-- `proposal`
-- `plan`
-- `learn`
-- review resolution
-- release evidence
-- `docs/follow-ups.md` or another project-local follow-up artifact according to workflow guidance
+When a risk needs action, route it through the appropriate owner surface: proposal, plan, learn, review resolution, release evidence, or `docs/follow-ups.md` or another project-local follow-up artifact according to workflow guidance.
 
 ## Stop conditions
 
-Stop and report a blocked result when:
-
-- artifact placement remains ambiguous after the lookup order;
-- evidence is insufficient for the requested freshness claim;
-- overlapping maps contradict each other;
-- a cited path no longer exists and the relevant claim cannot be refreshed;
-- the user requests mutating, network, build, or test execution without go-ahead;
-- the requested work would turn the map into future design, backlog, implementation planning, review approval, verification, branch readiness, PR readiness, or final lifecycle closeout.
+Stop when target or placement is ambiguous, operation conflicts with target state, evidence cannot support freshness, resources or coordination fail, cited evidence disappeared, a command lacks authority, or work would become future design, backlog, planning, review, verification, branch/PR readiness, or lifecycle closeout.
 
 ## Evidence collection efficiency
 
-Use bounded evidence plus summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, test IDs, file paths, counts, line citations, path inventories, matching line numbers, targeted excerpts, file counts, and validation summaries before broad scans. Read exact ranges after locating relevant lines, then expand only when narrower evidence is insufficient.
+Use bounded evidence plus summary and stable-ID first reasoning before broad reads. Prefer check IDs, requirement IDs, file paths, counts, line citations, targeted excerpts, and validation summaries.
 
-Do not read every repository file. Read enough source, configuration, schemas, tests, CI, and current-state documentation to support the mapped scope and the material claims you write.
+Do not read every repository file.
 
 ## When full-file read is required
 
-Read the full file when the whole file is the review target or map target, relevant sections cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree, bounded evidence is contradictory or incomplete, or a behavior-changing edit depends on the whole source-of-truth artifact.
+Read the full file when the whole file is the review target or map target, bounded searches disagree, relevant sections cannot be isolated safely, surrounding context changes the conclusion, evidence is contradictory or incomplete, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Output skeleton
 
 ```md
 - Skill: project-map
 - Status: <created | updated | audited | blocked>
-- Mode: <create | refresh | area | audit>
-- Map scope: <repository | area:slug>
+- Operation: <create | refresh | audit>
+- Map scope: <repository | area:<slug>>
 - Artifacts changed: <paths or none>
 - Freshness result: <current | partial | stale>
 - Correction note: <note or none>
@@ -299,6 +169,4 @@ Read the full file when the whole file is the review target or map target, relev
 
 ## Expected output
 
-Start with the `Output skeleton` result block. Then include the created, refreshed, or audited map path; concise repository orientation; evidence classes; cited material claims; freshness metadata; risks and open questions; and the immediate next stage.
-
-The `Output skeleton` result block reports on the skill invocation. The artifact's `Map metadata` block lives inside the project map and describes the map artifact itself.
+Start with the result block, then give the path, orientation or findings, evidence limits, freshness, risks, questions, and next stage. The result describes the invocation; `Map metadata` describes the artifact.
