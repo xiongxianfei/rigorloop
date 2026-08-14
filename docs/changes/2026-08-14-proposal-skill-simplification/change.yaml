@@ -16,6 +16,12 @@ artifact_states:
       outcome: approved
       record: docs/changes/2026-08-14-proposal-skill-simplification/reviews/proposal-review-r4.md
       round: r4
+  spec:
+    kind: spec
+    path: specs/proposal-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-14-proposal-skill-simplification/evidence/spec-authoring.md
 
 workflow_state:
   lifecycle_state: active
@@ -54,6 +60,7 @@ workflow:
 
 artifacts:
   proposal: docs/proposals/2026-08-14-proposal-skill-simplification.md
+  spec: specs/proposal-skill-simplification.md
 
 requirements:
   - Reduce every real proposal-authoring loaded assembly while preserving decision quality, intent, standing gates, customer portability, lifecycle authority, and proposal-review handoff.
@@ -83,6 +90,8 @@ changed_files:
   - docs/changes/2026-08-14-proposal-skill-simplification/evidence/proposal-revision-r3.md
   - docs/changes/2026-08-14-proposal-skill-simplification/reviews/proposal-review-r4.md
   - docs/changes/2026-08-14-proposal-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+  - specs/proposal-skill-simplification.md
+  - docs/changes/2026-08-14-proposal-skill-simplification/evidence/spec-authoring.md
 
 review:
   status: approved
