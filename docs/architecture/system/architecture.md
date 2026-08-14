@@ -2,7 +2,7 @@
 
 ## Owning change record
 
-`docs/changes/2026-08-12-plan-skill-simplification/change.yaml`
+`docs/changes/2026-08-14-project-map-skill-simplification/change.yaml`
 
 ## Related artifacts
 
@@ -99,6 +99,10 @@
 - Evidence-Bound and Incremental `project-map` proposal-review: `docs/changes/2026-06-23-evidence-bound-incremental-project-map/reviews/proposal-review-r1.md`
 - Evidence-Bound and Incremental `project-map` spec-review: `docs/changes/2026-06-23-evidence-bound-incremental-project-map/reviews/spec-review-r1.md`
 - Evidence-Bound and Incremental `project-map` change metadata: `docs/changes/2026-06-23-evidence-bound-incremental-project-map/change.yaml`
+- Project-Map Skill Simplification proposal: `docs/proposals/2026-08-14-project-map-skill-simplification.md`
+- Project-Map Skill Simplification spec amendment: `specs/project-map.md`
+- Project-Map Skill Simplification spec-review: `docs/changes/2026-08-14-project-map-skill-simplification/reviews/spec-review-r1.md`
+- Project-Map Skill Simplification change metadata: `docs/changes/2026-08-14-project-map-skill-simplification/change.yaml`
 - Workflow-State Projection and Pre-Transition Synchronization Gate proposal: `docs/proposals/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate.md`
 - Workflow-State Projection and Pre-Transition Synchronization Gate spec amendment: `specs/single-source-of-workflow-state.md`
 - Workflow-State Projection and Pre-Transition Synchronization Gate spec-review: `docs/changes/2026-06-23-workflow-state-projection-and-pre-transition-synchronization-gate/reviews/spec-review-r2.md`
@@ -284,6 +288,8 @@ The goals are:
 - Project maps record their own baseline, coverage, exclusions, known gaps, status, and parent-map relationship. Dirty Git baselines use `<sha>+dirty` and list inspected uncommitted paths.
 - Material current-state claims in project maps cite repository paths, inferences are labeled, unknowns are recorded as open questions, configured commands are distinct from executed commands, and executed commands include exit codes.
 - The `project-map` skeleton is a packaged skill-local asset at `skills/project-map/assets/project-map-skeleton.md`, declared with `COPY` in the skill `Resource map`, carried through generated adapter output, and validated by the existing published skill resource-integrity path.
+- The `project-map` package uses independent `create`, `refresh`, or `audit` operation and repository or area scope axes. Universal evidence and target-state classification remain in `SKILL.md`; `references/map-maintenance-and-area-coordination.md` owns refresh, audit, root/area coordination, and recoverable multi-map procedure; the skeleton owns structure only.
+- Simple uncoordinated root creation may omit the conditional reference only after the bounded known-surface coordination preflight. Every maintenance operation, audit, area scope, or coordinated root creation loads the conditional reference before dependent judgment or writes, and a missing required resource stops rather than triggering remembered reconstruction.
 - Existing project maps are not automatically migrated by this change; they satisfy the revised contract only when intentionally refreshed or recreated.
 - First-slice proxy behavior uses Node built-in env-proxy support only when the runtime supports and enables it. Programmatic Undici proxy dispatcher support is out of scope until a later approved change.
 - Public npm publication of `@xiongxianfei/rigorloop@0.1.4` is allowed only through the approved npm publication slice: package-content allowlist, lifecycle-script and dependency policy, exactly one publication mode, publication evidence, packed-package smoke, and real Codex adapter install proof.
@@ -429,6 +435,18 @@ It is separate from `Architecture`: project maps describe observed repository re
 | Generated runtime state and adapters | Derived local Codex runtime state and public adapter packages for supported agent tools; local runtime state and public adapter packages are generated from canonical sources and are not authored sources | Ignored local files under `.codex/skills/`, tracked adapter support metadata under `dist/adapters/`, generated temporary or release-output package directories, and release asset archives |
 | Release evidence | Durable release profiles, generated release-prep surfaces, authored release contract, release notes narrative, standing process evidence, timing evidence, adapter artifact metadata, package publication evidence, public closeout evidence, registry verification, checksums, emergency deferrals, and maintainer smoke evidence | Markdown/YAML under `docs/releases/profiles/`, `docs/releases/v<version>.md`, `docs/releases/<version>/`, and `docs/reports/adapter-artifacts/releases/` |
 | Legacy architecture archive | Historical architecture records retained after accepted current content is merged here | Archived Markdown under `docs/architecture/*.md` |
+
+### Level 2 White-Box: Project-Map Skill Package
+
+The published `project-map` capability is one governed package with three bounded parts:
+
+- canonical `SKILL.md` owns purpose, routing, placement, target resolution, operation and scope classification, the bounded coordination preflight, evidence and freshness meanings, source rank, command truthfulness, universal map and reliance invariants, stops, claims, resource triggers, and next-stage behavior;
+- `references/map-maintenance-and-area-coordination.md` owns detailed refresh comparison, affected-section selection, correction notes, audit, root registration, parent/child and overlap procedure, changed-path targeting, and interrupted maintenance or coordination recovery; and
+- `assets/project-map-skeleton.md` owns metadata labels, required section order, root-registration and evidence-trail table shapes, placeholders, and insertion locations without owning evidence adequacy or policy.
+
+Operation and scope are semantic classifications; loaded assembly is separate. `PMA0-simple-root-create` applies only to an absent repository target after the bounded coordination preflight finds no known coordination evidence. `PMA1-maintenance-or-coordinated` applies to every refresh, audit, area scope, and coordinated root creation. Late coordination discovery changes the assembly before dependent work without changing operation or scope.
+
+Area creation is a recoverable two-artifact transaction against one existing valid root map. The attempt binds the root identity, area identity and normalized path, parent identity, evidence baseline, and expected registration. It validates and writes the area file first, revalidates the root, and writes the root registration last as the commit point. Retry completes only an exact matching missing registration; dangling, stale, conflicting, changed-root, or ambiguous state stops without implicit adoption.
 
 ### Level 2 White-Box: Progressive Boundary Guidance
 
@@ -878,18 +896,22 @@ Legal temporary states are limited to authoring/revision/blocked without `planne
 
 ### Project-map authoring and refresh flow
 
-1. The `project-map` skill classifies the invocation as `create`, `refresh`, `area`, or `audit` before broad repository reading.
-2. The skill resolves artifact placement from explicit user path, existing artifact metadata or active workflow context, project workflow guidance, and then portable defaults.
-3. For create or refresh, the map records metadata before the substantive sections: status, scope, baseline, last-reviewed date, coverage, exclusions, parent map, and known gaps.
-4. When Git is available and inspected files include uncommitted changes, the baseline records `<sha>+dirty` and the inspected uncommitted paths so later readers can reconstruct what evidence was actually mapped.
-5. The map writes current-state claims from source-ranked evidence. Material claims cite repository paths, inferences are labeled, and unknowns move to `Open questions` instead of being guessed.
-6. Runtime and data-flow statements name their evidence mode: statically traced, demonstrated by tests, observed through execution, or partially inferred.
-7. Configured commands and executed commands remain separate. Executed commands include exit codes; mutation, network, build, and test-suite commands require user go-ahead before execution.
-8. Area maps are created only for durable repository boundaries and only when the root-map section would otherwise exceed roughly a screen of content, unless the area has its own deploy, release, ownership, package, domain, or data lifecycle.
-9. When an area map exists, the root map remains the entry point and registers the area map in the stable area-map table. Overlap names one map as detail owner and makes the other link rather than duplicate.
-10. If a refresh discovers a previous map claim was wrong at its recorded baseline, the result includes a correction note. Map status remains `current`, `partial`, or `stale`.
-11. Risks and open questions remain orientation evidence. Any action routes through proposal, plan, learn, review resolution, release evidence, or other workflow-owned follow-up surfaces.
-12. Downstream stages may use current maps for orientation, but inspect source directly when the relevant map is stale, partial, conflicting, missing cited paths, inferred, unknown, security-sensitive, or exact-behavior critical.
+1. The `project-map` skill resolves exactly one operation (`create`, `refresh`, or `audit`) and one scope (`repository` or `area:<slug>`) before broad repository reading.
+2. The skill resolves the exact target and current existence state. Create requires absence, refresh requires an existing target, and audit remains read-only whether the target exists or produces `missing-map`; no operation silently converts into another.
+3. The skill resolves artifact placement from explicit user path, existing artifact metadata or active workflow context, project workflow guidance, and then portable defaults.
+4. Before omitting conditional procedure for root creation, the skill checks the seven known coordination surfaces. It selects PMA0 only when no known coordination evidence exists; otherwise it loads PMA1 or stops if the required reference cannot be used.
+5. For create or refresh, the map records metadata before the substantive sections: status, scope, baseline, last-reviewed date, coverage, exclusions, parent map, and known gaps.
+6. When Git is available and inspected files include uncommitted changes, the baseline records `<sha>+dirty` and the inspected uncommitted paths so later readers can reconstruct what evidence was actually mapped.
+7. The map writes current-state claims from source-ranked evidence. Material claims cite repository paths, inferences are labeled, and unknowns move to `Open questions` instead of being guessed.
+8. Runtime and data-flow statements name their evidence mode: statically traced, demonstrated by tests, observed through execution, or partially inferred.
+9. Configured commands and executed commands remain separate. Executed commands include exit codes; mutation, network, build, and test-suite commands require user go-ahead before execution.
+10. Area maps are created only for durable repository boundaries and only when the root-map section would otherwise exceed roughly a screen of content, unless the area has its own deploy, release, ownership, package, domain, or data lifecycle.
+11. Area creation requires an existing valid root and binds the complete root, area, parent, baseline, and registration identity before writing. It validates and writes the area file first, revalidates the root, and writes root registration last as the commit point.
+12. An identical retry may complete only a missing registration for the exact matching area and transaction basis. Orphaned, dangling, stale, changed-root, conflicting, or ambiguous state stops without implicit adoption or overwrite.
+13. When an area map exists, the root map remains the entry point. Overlap names one map as detail owner and makes the other link rather than duplicate.
+14. If a refresh discovers a previous map claim was wrong at its recorded baseline, the result includes a correction note. Map status remains `current`, `partial`, or `stale`.
+15. Risks and open questions remain orientation evidence. Any action routes through proposal, plan, learn, review resolution, release evidence, or other workflow-owned follow-up surfaces.
+16. Downstream stages may use current maps for orientation, but inspect source directly when the relevant map is stale, partial, conflicting, missing cited paths, inferred, unknown, security-sensitive, or exact-behavior critical.
 
 ### Validation idempotency cache-hit flow
 
@@ -1300,7 +1322,7 @@ Map trust is evidence-bound. Every map records freshness metadata, baseline, cov
 
 Correction notes preserve downstream safety when a refresh finds the earlier map was wrong at its recorded baseline rather than merely stale. A correction note is result evidence, not a fourth map status.
 
-The project-map skeleton owns reusable output structure only. Evidence ranking, inference policy, refresh triggers, future-design prohibitions, handoff rules, and claim boundaries stay in `SKILL.md` so the packaged asset cannot become a hidden policy surface.
+The project-map skeleton owns reusable output structure only. Evidence ranking, inference policy, target-state classification, future-design prohibitions, handoff rules, and claim boundaries stay in `SKILL.md`; detailed refresh-trigger comparison, audit, and root/area coordination procedure stay in the mapped conditional reference. Neither packaged resource becomes an independent policy owner.
 
 ### Change-record catalog model
 
@@ -1552,6 +1574,8 @@ No additional ADR is required for script output optimization because it refines 
 
 No additional ADR is required for the evidence-bound `project-map` update because it applies existing published skill resource-integrity, generated-output, and living-reference workflow decisions to one skill and one packaged skeleton asset. The durable current behavior is carried by `specs/project-map.md` and this canonical package.
 
+No additional ADR is required for project-map skill simplification because it applies the existing mapped-resource package and progressive-disclosure architecture to the current project-map capability. It changes no runtime, persistence owner, deployment topology, generated-output model, or independently governed policy surface; the amended `specs/project-map.md` and this canonical update carry the clarified operation, assembly, and transaction boundaries.
+
 No additional ADR is required for workflow skill simplification because it applies the existing mapped-resource skill-package model to the current workflow component without changing the durable package model, `change.yaml` persistence, lifecycle ownership, runtime boundary, or deployment topology. The approved behavior is carried by `specs/workflow-skill-simplification.md` and this canonical package update.
 
 ADR `docs/adr/ADR-20260729-stage-owned-change-local-lifecycle-state.md` is
@@ -1757,6 +1781,8 @@ decisions from ADR-20260728 and ADR-20260729.
 | Shared method content could absorb stage policy | The method source has a closed content boundary; skill and workflow review reject stage-specific routing, authority, approval, or readiness semantics in the reference. |
 | Project maps could be mistaken for source-of-truth behavior contracts | The `project-map` contract makes maps living references only, requires source-ranked evidence for material current-state claims, and forces direct source inspection when map evidence is stale, partial, inferred, unknown, conflicting, security-sensitive, or exact-behavior critical. |
 | Area maps could fragment repository orientation | The root map remains the required entry point whenever area maps exist, area maps require durable boundaries and root registration, and overlap names one detail owner rather than duplicating descriptions. |
+| Conditional project-map loading could omit known coordination | A bounded seven-surface preflight selects PMA0 only when no known coordination evidence exists; ambiguity loads reference-owned resolution or stops before dependent work. |
+| Interrupted area creation could leave an orphan or overwrite a changed root | Area content is written first, registration is the commit point, the root is revalidated before commit, and retry adopts only exact matching transaction state. |
 | Project-map validation could overfit natural language | The first slice validates contract structure, skeleton presence, resource-map mapping, generated adapter inclusion, and small representative outputs; a dedicated artifact validator stays deferred until repeated produced-map drift appears. |
 
 ## Glossary
@@ -1894,7 +1920,7 @@ decisions from ADR-20260728 and ADR-20260729.
 
 ## Next artifacts
 
-- Architecture-review for the workflow skill package-composition update.
+- Architecture-review for the project-map skill package-composition and area-transaction update.
 
 ## Follow-on artifacts
 
@@ -1964,8 +1990,8 @@ decisions from ADR-20260728 and ADR-20260729.
 
 ## Readiness
 
-The workflow skill package-composition update is authored under `specs/workflow-skill-simplification.md` and is ready for architecture review.
-No diagram or ADR changes are required because container boundaries, persistence, deployment topology, and durable package decisions remain unchanged.
+The project-map skill package-composition and area-transaction update is authored under `specs/project-map.md` and is ready for architecture review.
+No diagram or ADR changes are required because container boundaries, persistence, deployment topology, and durable package decisions remain unchanged; the update uses the existing mapped-resource package model and records the bounded two-artifact write inside the existing project-map container.
 Planning must wait for matching architecture-review settlement.
 
 The published-skill-first validation architecture is authored under its approved feature specification.

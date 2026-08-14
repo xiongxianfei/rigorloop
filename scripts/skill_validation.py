@@ -390,7 +390,7 @@ PLAN_ASSET_SECTIONS_PATTERN = re.compile(
     re.IGNORECASE,
 )
 PROJECT_MAP_SKELETON = "assets/project-map-skeleton.md"
-PROJECT_MAP_REQUIRED_MODES = ("create", "refresh", "area", "audit")
+PROJECT_MAP_REQUIRED_OPERATIONS = ("create", "refresh", "audit")
 PROJECT_MAP_REQUIRED_METADATA_FIELDS = (
     "Map status",
     "Scope",
@@ -2362,12 +2362,7 @@ def validate_project_map_contract_fixture(
     *,
     diagnostic_subject: str = "contract fixture",
 ) -> list[str]:
-    """Validate controlled project-map contract fixtures without canonical opt-in.
-
-    M1 uses this helper only from fixture tests. M2 can connect the same checks,
-    or a stricter successor, to canonical `project-map` enforcement after the
-    canonical skill and skeleton asset are updated together.
-    """
+    """Validate controlled and canonical project-map contract surfaces."""
 
     errors: list[str] = []
 
@@ -2388,9 +2383,12 @@ def validate_project_map_contract_fixture(
                 f"{path}: project-map workflow role missing required field '{field}'"
             )
 
-    for mode in PROJECT_MAP_REQUIRED_MODES:
-        if f"`{mode}`" not in body and f"- {mode}" not in body:
-            errors.append(f"{path}: project-map contract missing operating mode '{mode}'")
+    for operation in PROJECT_MAP_REQUIRED_OPERATIONS:
+        if f"`{operation}`" not in body and f"- {operation}" not in body:
+            errors.append(f"{path}: project-map contract missing operation '{operation}'")
+    for scope in ("repository", "area:<slug>"):
+        if f"`{scope}`" not in body:
+            errors.append(f"{path}: project-map contract missing map scope '{scope}'")
 
     metadata_section = _extract_markdown_section(body, "Map metadata and freshness")
     if metadata_section is None:
@@ -2422,21 +2420,20 @@ def validate_project_map_contract_fixture(
     if root_area_section is None:
         errors.append(f"{path}: project-map contract missing Root and area maps section")
         root_area_section = ""
-    for column in PROJECT_MAP_AREA_REGISTRATION_COLUMNS:
-        if column not in root_area_section:
-            errors.append(
-                f"{path}: project-map area registration table missing column '{column}'"
-            )
-
     structure_section = _extract_markdown_section(body, "Required output structure")
     if structure_section is None:
         errors.append(f"{path}: project-map contract missing Required output structure section")
         structure_section = ""
-    for heading in PROJECT_MAP_REQUIRED_OUTPUT_SECTIONS:
-        if heading not in structure_section:
-            errors.append(
-                f"{path}: project-map contract missing required output heading '{heading}'"
-            )
+    if "sole owner" not in structure_section.lower():
+        errors.append(f"{path}: project-map contract must identify the skeleton as structural owner")
+
+    output_skeleton = _extract_markdown_section(body, "Output skeleton") or ""
+    if "- Operation:" not in output_skeleton:
+        errors.append(f"{path}: project-map result must emit Operation")
+    if "- Map scope:" not in output_skeleton:
+        errors.append(f"{path}: project-map result must emit Map scope")
+    if "- Mode:" in output_skeleton:
+        errors.append(f"{path}: project-map result must not emit legacy Mode")
 
     resource_map = _extract_markdown_section(body, "Resource map")
     if resource_map is None:
