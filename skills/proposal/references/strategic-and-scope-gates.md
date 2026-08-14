@@ -12,7 +12,7 @@ For conflict, revision, or exception, record the vision relationship, unsupporte
 
 ## Standing artifact gate
 
-Use `standing_artifact_context` when a substantive proposal depends on missing `VISION.md` or a governance/source-of-truth proposal depends on missing `CONSTITUTION.md`. A substantive proposal is any proposal that chooses product direction, user-facing behavior, workflow policy, architecture direction, compatibility policy, release policy, or contributor-visible contract. `VISION.md` absence blocks the first substantive proposal unless it is bootstrap work to create project vision. `CONSTITUTION.md` absence blocks governance adoption, workflow-governance changes, and source-of-truth changes unless the proposal is bootstrap work to create or migrate the constitution. Bootstrap proposals must identify the bootstrap exception in `Vision fit`.
+Use `standing_artifact_context` for missing `VISION.md` on substantive work or missing `CONSTITUTION.md` on governance/source-of-truth work. A substantive proposal is any proposal that chooses product direction, user-facing behavior, workflow policy, architecture direction, compatibility policy, release policy, or contributor-visible contract. `VISION.md` absence blocks the first substantive proposal except vision bootstrap. `CONSTITUTION.md` absence blocks governance adoption except constitution bootstrap. Bootstrap proposals must identify the bootstrap exception in `Vision fit`.
 
 Record the artifact, status, dependency, route, blocker, and owner.
 

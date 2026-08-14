@@ -2,7 +2,7 @@
 
 ## Scope completed
 
-M2 replaces the monolithic proposal procedure with a 1,260-word universal `SKILL.md`, a 430-word governed-authoring reference, a 372-word strategic-gates reference, and one 325-word structural skeleton. It also extends the existing validator allowlist for the two approved packaged references, migrates directly coupled static assertions to the correct resource owners, and adds six focused proposal-simplification tests.
+M2 replaces the monolithic proposal procedure with a compact universal `SKILL.md`, two conditional references, and one structural skeleton. It also extends the validator allowlist for the approved resources, migrates coupled assertions to their owners, and adds six focused tests.
 
 ## Tests first
 
@@ -21,7 +21,11 @@ M2 replaces the monolithic proposal procedure with a 1,260-word universal `SKILL
 
 ## Loaded-profile check
 
-The pre-refactor baseline was 2,122 words and 14,796 UTF-8 bytes for every assembly. Current procedural totals are `PA0` 1,260 words, `PA0G` 1,632 words, `PA1` 1,690 words, and `PA1G` 2,062 words. Every real assembly is smaller; final LF-normalized identities and byte/word measurements remain owned by M3.
+The pre-refactor baseline was 2,122 words and 14,796 UTF-8 bytes for every assembly. The first implementation reduced every word total but left PA1G at 15,913 bytes; code review recorded `PRSIM-M2-CR1`. Corrected procedural totals are PA0 1,092 words/8,435 bytes, PA0G 1,440/11,253, PA1 1,473/11,468, and PA1G 1,821/14,286. Every assembly is below both baselines. Exact LF-normalized identities remain owned by M3.
+
+## Accepted correction PRSIM-M2-CR1
+
+Repeated summaries were tightened only in the three procedural owners. No rule, literal, asset group, validator behavior, operation, authority boundary, failure result, or handoff changed. CMD2-CMD4 pass after the correction, and the context-reset rereview must confirm the final byte and word totals.
 
 ## Validation
 
