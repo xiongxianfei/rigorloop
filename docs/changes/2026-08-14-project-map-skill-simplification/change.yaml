@@ -42,8 +42,7 @@ artifact_states:
     kind: plan
     path: docs/plans/2026-08-14-project-map-skill-simplification.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-14-project-map-skill-simplification/evidence/plan-authoring.md
+    lifecycle_state: active
     review:
       id: plan-review-r1
       artifact_id: plan
@@ -53,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: plan-review
-  next_stage: plan-review
+  current_stage: test-spec
+  next_stage: test-spec
   blocker: null
   evidence:
     - docs/changes/2026-08-14-project-map-skill-simplification/evidence/proposal-authoring.md
@@ -127,7 +126,7 @@ workflow:
       completion:
         rule: first formal test-spec-review result is durably recorded
     status: active
-    current_stage: plan-review
+    current_stage: test-spec
     stop_reason: null
     evidence:
       - docs/changes/2026-08-14-project-map-skill-simplification/evidence/workflow-automation-target-test-spec-review.md

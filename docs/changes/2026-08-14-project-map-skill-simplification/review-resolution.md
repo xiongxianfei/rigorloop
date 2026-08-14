@@ -14,7 +14,7 @@ Review closeout: plan-review-r1
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `architecture-review-r1`, `plan-review-r1`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Current result: plan judgment approved; reviewed-plan initialization and settlement retry required
+- Current result: plan approved and active; test-spec revision required
 
 ## Resolution overview
 
@@ -151,4 +151,4 @@ No material findings; no resolution entry required. The canonical architecture u
 
 Review closeout: plan-review-r1
 
-No material findings; no resolution entry required. The plan judgment is approved, but formal plan activation waits for initialization from the exact reviewed basis and an identical settlement retry.
+No material findings; no resolution entry required. The plan judgment was approved, `planned_work` was initialized from the exact reviewed basis, and the identical settlement retry activated the matching plan entry without semantic rereview.
