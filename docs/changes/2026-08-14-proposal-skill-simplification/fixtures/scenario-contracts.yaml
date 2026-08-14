@@ -1,0 +1,29 @@
+{
+  "scenarios": [
+    {"scenario":"SCN-PA0-CREATE","requirements":["R8","R14","R15"],"boundaries":["BND-INPUT-001"],"expected":"Absent portable target creates only proposal output using common procedure."},
+    {"scenario":"SCN-PA0-REVISE","requirements":["R14","R15"],"boundaries":["BND-INPUT-001"],"expected":"Existing portable target revises without lifecycle entry mutation."},
+    {"scenario":"SCN-PA0-INVALID-TARGET","requirements":["R14"],"boundaries":["BND-INPUT-001"],"expected":"Conflicting or unresolved portable target stops."},
+    {"scenario":"SCN-PA1-CANDIDATE-NO-AUTHORITY","requirements":["R9","R10","R11","R12"],"boundaries":["BND-INPUT-001","BND-AUTH-001"],"expected":"Governed reference loads and full authority failure stops without portable fallback."},
+    {"scenario":"SCN-PA1-CREATE-COMMIT","requirements":["R16","R17","R18"],"boundaries":["BND-STATE-001","BND-AUTH-001"],"expected":"Exact creation commits at review-required after content identity and evidence."},
+    {"scenario":"SCN-PA1-REVISE-COMMIT","requirements":["R19","R20"],"boundaries":["BND-STATE-001","BND-AUTH-001"],"expected":"Authorized revision preserves history, creates a new identity, and requires fresh review."},
+    {"scenario":"SCN-PA1-DOWNSTREAM-RELIANCE","requirements":["R21"],"boundaries":["BND-STATE-001","BND-AUTH-001"],"expected":"Revision stops until workflow impact handling and reopen authority exist."},
+    {"scenario":"SCN-IDENTICAL-PARTIAL-RETRY","requirements":["R22","R23"],"boundaries":["BND-TEMPORAL-001","BND-RECOVERY-001"],"expected":"Exact retry resumes from the first incomplete step."},
+    {"scenario":"SCN-IDENTICAL-COMPLETED-RETRY","requirements":["R22"],"boundaries":["BND-TEMPORAL-001"],"expected":"Exact completed retry is idempotent."},
+    {"scenario":"SCN-MISMATCHED-RETRY","requirements":["R23"],"boundaries":["BND-TEMPORAL-001","BND-RECOVERY-001"],"expected":"Stale, conflicting, ambiguous, or concurrent retry stops without adoption."},
+    {"scenario":"SCN-STALE-AUTHORING-DETECTED","requirements":["R24","R25"],"boundaries":["BND-STATE-002","BND-RECOVERY-001"],"expected":"Changed basis returns authoring-reset-required without mutation."},
+    {"scenario":"SCN-WORKFLOW-RESET-AUTHORIZATION","requirements":["R25","R26","R27"],"boundaries":["BND-AUTH-002"],"expected":"Workflow validates identity and no reliance and authorizes only exact proposal-owned reset surfaces."},
+    {"scenario":"SCN-PROPOSAL-RESET-CONSUME","requirements":["R28","R29","R31"],"boundaries":["BND-AUTH-002","BND-RECOVERY-001"],"expected":"Proposal resets exact incomplete entry and evidence then starts any new operation with a new identity."},
+    {"scenario":"SCN-RESET-CHANGED-EVIDENCE","requirements":["R27","R30"],"boundaries":["BND-AUTH-002","BND-TEMPORAL-001"],"expected":"Changed identity, reliance, or competing state invalidates authorization and stops."},
+    {"scenario":"SCN-RESET-IDEMPOTENT","requirements":["R27","R30"],"boundaries":["BND-STATE-002","BND-TEMPORAL-001"],"expected":"Exact already-completed reset returns idempotent success."},
+    {"scenario":"SCN-RECOVERY-OWNER-EXPANSION","requirements":["R32"],"boundaries":["BND-RECOVERY-001"],"expected":"Any new state, persistence, evidence type, or workflow mutation of proposal state routes upstream."},
+    {"scenario":"SCN-GATES-SINGLETON","requirements":["R33","R35"],"boundaries":["BND-INPUT-002","BND-COMPOSE-001"],"expected":"Any non-empty predicate set loads the strategic reference exactly once."},
+    {"scenario":"SCN-GATES-ALL-GROUPS","requirements":["R33","R35","R38","R40"],"boundaries":["BND-INPUT-002","BND-COMPOSE-002"],"expected":"All four true predicates emit all four complete independent groups."},
+    {"scenario":"SCN-GATES-LATE-DISCOVERY","requirements":["R35","R36"],"boundaries":["BND-INPUT-002","BND-TEMPORAL-001"],"expected":"Late predicates load once and compose before readiness selection."},
+    {"scenario":"SCN-GATES-UNRESOLVED","requirements":["R36","R40"],"boundaries":["BND-COMPOSE-002"],"expected":"Applicable unresolved group remains visible with an explicit blocker and no placeholder."},
+    {"scenario":"SCN-UNKNOWN-CLOSED-VALUE","requirements":["R33","R44"],"boundaries":["BND-INPUT-002","BND-COMPAT-001"],"expected":"Unknown value fails explicitly before consistency checks."},
+    {"scenario":"SCN-REQUIRED-RESOURCE-FAILURE","requirements":["R4"],"boundaries":["BND-COMPOSE-001","BND-RECOVERY-002","BND-ENV-001"],"expected":"Missing, unreadable, escaped, contradictory, stale, or mixed required resource stops dependent work."},
+    {"scenario":"SCN-PACKAGE-PARITY","requirements":["R48"],"boundaries":["BND-COMPAT-001","BND-ENV-001"],"expected":"Canonical through installed packages retain exact resource paths and bytes."},
+    {"scenario":"SCN-PROFILE-MEASUREMENT","requirements":["R45","R46","R47"],"boundaries":["BND-COMPAT-001"],"expected":"Every real loaded assembly and total package are measured separately with deterministic normalization."},
+    {"scenario":"SCN-ACCEPTANCE-BOUNDARY","requirements":["R49"],"boundaries":["BND-ENV-001"],"expected":"Acceptance uses repository-owned deterministic proof and ordinary review without target-agent or extra manual gates."}
+  ]
+}
