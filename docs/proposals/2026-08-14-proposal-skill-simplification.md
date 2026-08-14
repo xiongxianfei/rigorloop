@@ -184,33 +184,48 @@ The new `review-required` transition is the revision commit point. An identical 
 
 #### Stale governed authoring attempts
 
-An interrupted authoring attempt whose normalized path, governing inputs, prior identity, or authorization basis has changed is not an identical retry. `proposal` returns transaction result `authoring-reset-required`, reports the exact stale attempt and mismatch, and performs no adoption, overwrite, reset, abandonment, evidence deletion, or new transaction.
+An interrupted authoring attempt whose normalized path, governing inputs, prior identity, or authorization basis has changed is not an identical retry. `proposal` returns transaction result `authoring-reset-required`, reports the exact stale attempt and mismatch, and performs no adoption, overwrite, reset, abandonment, evidence deletion, or new transaction until current workflow authorization exists.
 
-Workflow owns reset or abandonment through its existing lifecycle reconciliation authority. It may change only the exact proposal entry and its incomplete authoring evidence after proving:
+Workflow owns recovery validation, the no-reliance decision, reset authorization, and routing. It writes only workflow-owned authorization or transition evidence and does not mutate the proposal entry, proposal-authored evidence, another artifact entry, or other stage-owned state. Before authorizing recovery, workflow proves:
 
 - the exact change, artifact, path, transaction, and evidence identities;
 - the entry remains in `authoring`;
 - no formal proposal review relies on the partial identity;
 - no downstream spec, architecture record, plan, implementation, or other artifact relies on it;
 - no competing authoring or revision transaction exists;
-- the bounded write set cannot affect another artifact entry, review record, automation record, or workflow state outside the required reconciliation.
+- the authorized write set is limited to the exact incomplete proposal entry and its incomplete proposal-authored evidence.
 
-After reconciliation, a new proposal operation receives a new transaction identity and evidence path and binds the current governing inputs. `authoring-reset-required` is a transaction and routing result, not a new lifecycle state or persistent reset record.
+Workflow authorization identifies the change ID, artifact ID, stale transaction identity, normalized path, authoring-evidence identity, allowed reset surfaces, and current authorization identity. The exact field names belong in the focused contract, but the authorization must be current, identity-bound, single-use or idempotently consumable, and invalid after any relevant identity, reliance, or competing-write change.
+
+After loading and validating that authorization, the governed proposal-authoring reference may reset only its own exact incomplete `authoring` entry and incomplete proposal-authored evidence. It preserves every review record, completed authoring record, other artifact entry, workflow field, automation record, and downstream artifact. It validates the resulting change record before reporting reset completion. A matching already-completed reset is idempotent; a stale, mismatched, ambiguous, relied-upon, or competing state stops without mutation.
+
+Only after reset completion may a new proposal operation receive a new transaction identity and evidence path and bind the current governing inputs. `authoring-reset-required` is a transaction and routing result, not a new lifecycle state or persistent reset record.
 
 | Partial state | Basis current | Basis stale |
 | --- | --- | --- |
-| Matching entry only | Resume identical operation | Return `authoring-reset-required`; workflow reset required |
-| Matching entry plus partial file | Validate and resume identical operation | Stop without adoption; workflow reset required |
-| Matching file plus incomplete evidence | Complete only when every identity matches | Stop; workflow reconciliation required |
+| Matching entry only | Resume identical operation | Return `authoring-reset-required`; workflow authorization and proposal-owned reset required |
+| Matching entry plus partial file | Validate and resume identical operation | Stop without adoption; workflow authorization and proposal-owned reset required |
+| Matching file plus incomplete evidence | Complete only when every identity matches | Stop; workflow authorization and proposal-owned reconciliation required |
 | Complete `review-required` state | Idempotent success | Use explicit revision or reopen flow |
 | Unrelated file, entry, or attempt | Stop | Stop |
+
+The recovery handshake has one closed outcome matrix:
+
+| Authorization and proposal state | Result |
+| --- | --- |
+| Current authorization and exact incomplete state match | Proposal performs only the authorized reset and validates the result |
+| Exact authorized reset already completed | Idempotent reset success with no duplicate write or evidence |
+| Authorization is stale, consumed for another identity, or mismatched | Stop without mutation |
+| Review or downstream reliance now exists | Stop and return to workflow for a new decision |
+| Competing write or ambiguous state exists | Stop without mutation |
 
 ### Resource ownership
 
 | Content | Owner |
 | --- | --- |
 | Purpose, proposal judgment, evidence precedence, option quality, ordinary vision fit, universal intent preservation, risks, stops, claims, and handoff | `SKILL.md` |
-| Governed authority validation, create/revise transaction, proposal-entry mutation, authoring evidence, retries, concurrent writes, and legal authoring transition | `references/governed-proposal-authoring.md` |
+| Governed authority validation, create/revise transaction, proposal-entry mutation, authoring evidence, retries, authorized stale-attempt reset, concurrent writes, and legal authoring transition | `references/governed-proposal-authoring.md` |
+| Stale-attempt validation, no-reliance proof, reset authorization, and recovery routing without proposal-state mutation | Existing workflow authority and workflow-owned evidence |
 | Vision exceptions, missing-standing-artifact bootstrap procedure, detailed broad-request intent classification, scope-budget classification, and follow-up routing | `references/strategic-and-scope-gates.md` |
 | Proposal headings, ordering, tables, conditional structural groups, and placeholders | `assets/proposal-skeleton.md` |
 | Status meaning, applicability, lifecycle authority, readiness, and handoff | `SKILL.md` and applicable reference, never the asset |
@@ -274,7 +289,7 @@ Acceptance requires every real loaded assembly to decrease from its baseline or 
 - Portable create and revise depend only on exact path and file state; governed operations additionally depend on lifecycle entry, identity, and authority.
 - Existing proposals remain valid and are not rewritten merely because the skeleton changes.
 - Governed proposal creation and revision use entry-first, identity-bound transactions that resume identical partial writes, complete idempotently, and fail closed on missing roots, illegal state, ambiguous identity, stale basis, unrelated file/entry asymmetry, and concurrent conflicting writes.
-- A changed-basis interrupted attempt returns `authoring-reset-required`; proposal performs no reset, and workflow may reconcile only the exact unrelied-upon partial transaction.
+- A changed-basis interrupted attempt returns `authoring-reset-required`; workflow validates and authorizes recovery without mutating proposal-owned state, and proposal performs only the exact authorized reset of its own incomplete state.
 - Initial-intent and scope-budget groups are selected independently, and the complete current scope-budget trigger set remains supported.
 - Vision-exception and standing-artifact predicates also select explicit independently composable groups in the same skeleton.
 - Missing required packaged resources stop dependent work instead of triggering remembered reconstruction.
@@ -282,14 +297,14 @@ Acceptance requires every real loaded assembly to decrease from its baseline or 
 
 ## Architecture Impact
 
-The expected architecture assessment is `architecture-not-required`. The change uses the existing published-skill model of one canonical `SKILL.md` plus mapped references and assets, keeps `skills/` as the only authored source, preserves generated raw-byte parity, and introduces no runtime, persistence, schema, lifecycle owner, dependency, or transformation. `authoring-reset-required` is not persisted as a new lifecycle state, and exact reset or abandonment reuses workflow-owned reconciliation.
+The expected architecture assessment is `architecture-not-required`. The change uses the existing published-skill model of one canonical `SKILL.md` plus mapped references and assets, keeps `skills/` as the only authored source, preserves generated raw-byte parity, and introduces no runtime, persistence, schema, lifecycle owner, dependency, or transformation. `authoring-reset-required` is not persisted as a new lifecycle state. Workflow uses its existing routing and transition-evidence authority to validate and authorize recovery, while proposal retains its constitutional ownership of proposal-entry and proposal-authored-evidence mutation.
 
-A bounded documentation update is required only if the current canonical architecture contains a flat `proposal` package inventory or an example that says `proposal` has no references. A new ADR is required if specification work discovers that no existing workflow reconciliation authority can perform the bounded reset without adding a lifecycle state, persistence record, package model, independent policy owner, runtime, or lifecycle write owner.
+A bounded documentation update is required only if the current canonical architecture contains a flat `proposal` package inventory or an example that says `proposal` has no references. Direct workflow mutation of proposal-owned `artifact_states` or proposal-authored evidence is explicitly out of scope and would require a separate architecture and workflow-contract change. A new ADR is also required if specification work discovers that the authorization handshake needs a new lifecycle state, persistence mechanism, package model, independent policy owner, runtime, or lifecycle write owner.
 
 ## Testing and Verification Strategy
 
 - Validate canonical frontmatter, normalized sections, resource-map verbs, paths, containment, resource existence, placeholder rules, and forbidden claims with existing repository-owned validation.
-- Add focused deterministic contract fixtures for all four assemblies, portable and governed operation matrices, candidate selection, authoritative validation, both governed transactions, current and stale partial-state recovery, workflow reset prerequisites, downstream reliance, all specialized predicate and structural-group combinations, late loading, missing resources, structural-group omission, and forbidden writes or claims.
+- Add focused deterministic contract fixtures for all four assemblies, portable and governed operation matrices, candidate selection, authoritative validation, both governed transactions, current and stale partial-state recovery, workflow authorization prerequisites, proposal-owned reset bounds, idempotent reset consumption, downstream reliance, all specialized predicate and structural-group combinations, late loading, missing resources, structural-group omission, and forbidden writes or claims.
 - Validate rule-disposition and literal-compatibility ledger schemas with change-local fixtures; do not create a permanent prose-policy or simplicity validator family.
 - Prove canonical, generated, archived, release-candidate, and installed resource inventory and raw-byte parity through existing package validation.
 - Measure profile words and bytes using the deterministic convention in this proposal and report total package change separately.
@@ -322,15 +337,20 @@ A bounded documentation update is required only if the current canonical archite
 | `AC-PRSIM-021` | Governed operation classification additionally uses proposal entry, content identity, transaction basis, and authority. |
 | `AC-PRSIM-022` | A governed candidate that fails validation never falls back to portable revision. |
 | `AC-PRSIM-023` | A changed-basis interrupted authoring attempt returns `authoring-reset-required`. |
-| `AC-PRSIM-024` | Proposal cannot reset, abandon, adopt, overwrite, or silently replace a stale governed attempt. |
-| `AC-PRSIM-025` | Workflow reconciliation is bounded to one exact incomplete transaction and proves no review or downstream reliance. |
+| `AC-PRSIM-024` | Proposal cannot reset, abandon, adopt, overwrite, or silently replace a stale governed attempt without current exact workflow authorization. |
+| `AC-PRSIM-025` | Workflow validates no review or downstream reliance and authorizes one exact recovery without mutating proposal-owned entry or evidence. |
 | `AC-PRSIM-026` | A new operation after reset receives a new transaction identity, evidence path, and current governing basis. |
 | `AC-PRSIM-027` | Every specialized predicate has one explicit structural destination in the existing skeleton. |
 | `AC-PRSIM-028` | Vision-exception and standing-artifact groups compose independently with intent and scope groups. |
 | `AC-PRSIM-029` | An applicable unresolved group reports an explicit blocker instead of being omitted. |
 | `AC-PRSIM-030` | Revision of a downstream-relied-upon proposal requires workflow-owned reopening and impact handling. |
-| `AC-PRSIM-031` | `authoring-reset-required` introduces no new persisted lifecycle state, record, or write owner. |
-| `AC-PRSIM-032` | Architecture work becomes required if existing workflow reconciliation cannot support the bounded reset. |
+| `AC-PRSIM-031` | `authoring-reset-required` introduces no new lifecycle state, persistence mechanism, evidence type, or write owner. |
+| `AC-PRSIM-032` | Architecture work becomes required if the recovery handshake needs new persistence, state, runtime, or ownership. |
+| `AC-PRSIM-033` | Workflow owns stale-attempt validation, no-reliance proof, reset authorization, and routing but does not mutate proposal-owned entry or evidence. |
+| `AC-PRSIM-034` | Proposal may execute only the exact authorized reset of its own incomplete `authoring` entry and proposal-authored evidence. |
+| `AC-PRSIM-035` | Reset authorization is identity-bound, current, single-use or idempotently consumed, and cannot affect another artifact or transaction. |
+| `AC-PRSIM-036` | A new proposal operation starts only after the bounded reset validates and receives a new transaction identity. |
+| `AC-PRSIM-037` | Direct workflow mutation of proposal-owned state requires separate architecture and workflow-contract changes before implementation. |
 
 ## Rollout and Rollback
 
@@ -347,7 +367,9 @@ Rollback restores the prior `SKILL.md` and skeleton, removes the two references 
 | Universal proposal quality moves behind a conditional trigger | Use the rule-disposition ledger and require problem, options, rationale, intent, risk, claims, and handoff to remain inline |
 | Governed loading is mistaken for lifecycle authority | Separate resource selection from full reference-owned authority validation and stop on missing or stale evidence |
 | An interrupted entry-first write becomes unrecoverable | Bind transaction identity before writing, enumerate matching partial states, and use one `review-required` commit point |
-| A stale transaction permanently occupies the proposal identity | Return `authoring-reset-required` and use bounded workflow-owned reconciliation only after proving no review or downstream reliance |
+| A stale transaction permanently occupies the proposal identity | Return `authoring-reset-required`; workflow proves no reliance and authorizes recovery, then proposal resets only its exact incomplete state |
+| Recovery authorization is reused after state changes | Bind authorization to the complete stale transaction and evidence identities, invalidate it on relevant changes, and make identical completed consumption idempotent |
+| Workflow authorization is mistaken for proposal-state write authority | Require workflow to preserve proposal-owned state and make the governed proposal reference the only reset writer |
 | Strategic predicates drift from `proposal-review` | Align predicate vocabulary and boundaries while keeping authoring and review procedures skill-owned |
 | Simplification drops a current scope-budget trigger | Preserve every positive trigger explicitly and map each to deterministic fixtures |
 | The asset becomes a hidden policy owner | Limit it to labels, ordering, table shapes, and placeholders; validate policy-like content boundaries |
@@ -369,6 +391,7 @@ Rollback restores the prior `SKILL.md` and skeleton, removes the two references 
 | Add preservation ledgers and deterministic fixtures | same-slice dependency | Required proof of semantic and literal preservation |
 | Update validator resource registration and focused contract checks | same-slice dependency | Required for new mapped resources and structural ownership |
 | Amend a focused proposal-skill contract | first-slice candidate | Observable public skill behavior requires a reviewed contract before implementation |
+| Specify the workflow-authorization and proposal-reset handshake | same-slice dependency | Required to recover stale attempts without changing stage-owned write boundaries |
 | Perform bounded architecture assessment | first-slice candidate | Confirms whether current package documentation already covers the change |
 | Update canonical architecture package | separate implementation slice | Required only if the bounded assessment finds a stale flat-package inventory |
 | Optimize `proposal-review` again | out of scope | Its package has already been simplified and remains a compatibility peer only |
@@ -393,7 +416,7 @@ None at proposal level. The specification may choose exact metadata field names 
 | 2026-08-14 | Use entry-first recoverable create and revise transactions | Durable intent permits exact retry without adopting unrelated files | File-first writes and conflict-only handling of partial state |
 | 2026-08-14 | Preserve four independent specialized predicates | Current scope triggers and conditional structural groups must remain explicit | Broad-scope shorthand that narrows the existing contract |
 | 2026-08-14 | Separate portable file operations from governed lifecycle operations | Portable authoring does not own or require a proposal entry | One shared entry-based operation matrix |
-| 2026-08-14 | Route stale authoring reconciliation to workflow | Proposal must not broaden its write authority, and no new lifecycle state is needed | Proposal-owned reset and permanently blocked partial state |
+| 2026-08-14 | Split stale-attempt recovery between workflow authorization and proposal-owned reset execution | Workflow owns routing and no-reliance decisions, while proposal retains constitutional ownership of proposal entry and authoring evidence | Direct workflow mutation, unbounded proposal reset, and permanently blocked partial state |
 | 2026-08-14 | Give all four specialized predicates skeleton groups | One structural owner requires every triggered durable shape to be explicit | Ad hoc headings and additional narrow assets |
 
 ## Next Artifacts
