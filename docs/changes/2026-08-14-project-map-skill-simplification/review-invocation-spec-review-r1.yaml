@@ -1,0 +1,47 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/project-map.md
+base_revision: 45c71958
+head_revision: 45c71958
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-authoring-r1
+reviewer_context_id: root-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - recoverable-two-artifact-write
+  - compatibility-sensitive-validation
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-14-project-map-skill-simplification.md
+  - specs/project-map.md
+  - specs/skill-contract.md
+  - specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: docs/proposals/2026-08-14-project-map-skill-simplification.md
+    sha256: ee78814791246d7e5c4e45060209e930d049706ca7c74957233b8175c576e4aa
+  - path: specs/project-map.md
+    sha256: 0ae5fb0c030c31770efed7f8ae711bc6a17063e4514542796690c18f8fc1d954
+  - path: specs/skill-contract.md
+    sha256: 43dfde680fddca458d2d18deccba972fb1341f860444940db8347652e2210c56
+  - path: specs/stage-owned-lifecycle-artifacts-and-change-local-workflow-state.md
+    sha256: e774cd55d710767e780188682cfd3ab5fc0afd0f37218fe83fc9875e20f4c21b
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - operation and target-state semantics
+  - coordination preflight and package ownership
+  - area creation transaction and retry recovery
+  - result and literal compatibility
+  - boundary completeness
+  - deterministic acceptance

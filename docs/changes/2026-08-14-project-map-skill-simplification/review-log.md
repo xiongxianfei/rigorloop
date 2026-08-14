@@ -44,3 +44,16 @@ Resolution: review-resolution.md#proposal-review-r3
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: spec-review-r1
+Stage: spec-review
+Round: r1
+Reviewed artifact: `specs/project-map.md` at commit `45c71958`
+Status: approved
+Detailed record: reviews/spec-review-r1.md
+Resolution: review-resolution.md#spec-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
