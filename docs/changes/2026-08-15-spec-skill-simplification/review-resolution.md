@@ -1,11 +1,11 @@
 # Review Resolution: Spec Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`
-- Findings resolved: 2
-- Unresolved findings: 3
-- Current result: proposal-review R2 requires revision before specification
+- Findings resolved: 5
+- Unresolved findings: 0
+- Current result: round-2 findings resolved; revised proposal ready for independent rereview
 
 ## Resolution overview
 
@@ -13,9 +13,9 @@ Closeout status: open
 | --- | --- | --- | --- |
 | `SPSIM-PR1` | accepted | closed | Replaced workflow reset authorization with a bounded spec-owned same-entry restart contract. |
 | `SPSIM-PR2` | accepted | closed | Added one conditional skeleton insertion point and a closed boundary-block applicability contract. |
-| `SPSIM-R2-PR1` | accepted | open | Add tri-state governed-signal classification with no invalid-signal portable fallback. |
-| `SPSIM-R2-PR2` | accepted | open | Require explicit restart authority and deterministic preservation of matching nonempty partial content. |
-| `SPSIM-R2-PR3` | accepted | open | Close boundary-block transition, removal, malformed-state, and grandfathered-adoption behavior. |
+| `SPSIM-R2-PR1` | accepted | closed | Added tri-state governed-signal classification with no invalid-signal portable fallback. |
+| `SPSIM-R2-PR2` | accepted | closed | Required explicit restart authority and deterministic preservation of matching nonempty partial content. |
+| `SPSIM-R2-PR3` | accepted | closed | Closed boundary-block transition, removal, malformed-state, and grandfathered-adoption behavior. |
 
 ## Finding details
 
@@ -63,7 +63,7 @@ Review closeout: proposal-review-r2
 
 Finding ID: SPSIM-R2-PR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -73,13 +73,13 @@ Rationale: Any structured ownership indicator is an attempted governed claim eve
 Required outcome: Classify absent, single-candidate, and invalid-or-ambiguous signal states and require all present identities to resolve to the same change.
 Safe resolution path: Adopt the round-2 tri-state classifier and explicit no-fallback rules.
 Validation target: revised classification, profile table, failure behavior, scenarios, risks, and acceptance criteria plus rereview.
-Validation evidence: pending proposal revision.
+Validation evidence: `evidence/proposal-revision-r2.md`; revised sections `Invocation profiles and resource loading`, `Ownership model`, `Required-resource failure behavior`, `Validation and acceptance boundary`, `Proposal acceptance criteria`, `Expected Behavior Changes`, `Testing and Verification Strategy`, and `Risks and Mitigations`.
 
 #### SPSIM-R2-PR2
 
 Finding ID: SPSIM-R2-PR2
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -89,13 +89,13 @@ Rationale: Detection alone cannot authorize destructive replacement, and subject
 Required outcome: Define restart authority, evidence fields, partial-content states, write set, stops, and final `authoring` state.
 Safe resolution path: Adopt the round-2 restart authorization and content-disposition matrices using existing authoring evidence.
 Validation target: revised recovery, ownership, architecture, scenarios, risks, and acceptance criteria plus rereview.
-Validation evidence: pending proposal revision.
+Validation evidence: `evidence/proposal-revision-r2.md`; revised sections `Same-entry stale-authoring restart`, `Ownership model`, `Validation and acceptance boundary`, `Proposal acceptance criteria`, `Architecture assessment`, `Architecture Impact`, `Testing and Verification Strategy`, `Risks and Mitigations`, and `Open Questions`.
 
 #### SPSIM-R2-PR3
 
 Finding ID: SPSIM-R2-PR3
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -105,4 +105,4 @@ Rationale: Resource loading, current block state, applicability, revision class,
 Required outcome: Define one result for every state combination and fail closed on partial, duplicated, misplaced, or unresolved structure.
 Safe resolution path: Adopt the round-2 transition and grandfathered-adoption matrix while retaining current structural owners.
 Validation target: revised composition, compatibility, scenarios, risks, and acceptance criteria plus rereview.
-Validation evidence: pending proposal revision.
+Validation evidence: `evidence/proposal-revision-r2.md`; revised sections `Structural composition and boundary-block applicability`, `Validation and acceptance boundary`, `Proposal acceptance criteria`, `Expected Behavior Changes`, `Testing and Verification Strategy`, and `Risks and Mitigations`.
