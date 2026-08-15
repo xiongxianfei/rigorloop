@@ -63,7 +63,7 @@ Recording status: recorded
 Review ID: code-review-M2-r2
 Stage: code-review
 Round: r2
-Reviewed artifact: M2 correction at commit `793d3acd`
+Reviewed artifact: implementation milestone M2 correction at commit `793d3acd`
 Status: clean-with-notes
 Detailed record: reviews/code-review-m2-r2.md
 Resolution: review-resolution.md#code-review-M2-r2

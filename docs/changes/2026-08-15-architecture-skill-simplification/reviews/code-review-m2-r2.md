@@ -8,7 +8,7 @@ Round: r2
 
 Reviewer: Codex independent code-review context
 
-Target: M2 correction diff `76660908..793d3acd`
+Target: implementation milestone M2 correction diff `76660908..793d3acd`
 
 Reviewed milestone: M2
 

@@ -210,6 +210,8 @@ Safe resolution path: Apply the bounded correction and complete context-reset re
 Validation target: governed reference, focused transaction assertions, M2 evidence, and package validation.
 Validation evidence: corrected governed reference and focused assertions at `793d3acd`; CMD3-CMD6 passed; `reviews/code-review-m2-r2.md` approved the correction.
 
+Review closeout: code-review-M2-r1
+
 ### code-review-M2-r2
 
 Review closeout: code-review-M2-r2
