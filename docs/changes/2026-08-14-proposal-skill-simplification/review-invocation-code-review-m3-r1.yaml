@@ -1,0 +1,57 @@
+schema_version: 1
+review_id: code-review-M3-r1
+review_stage: code-review
+review_target: implementation-M3
+base_revision: 664f874b
+head_revision: d691f624
+milestone_id: M3
+native_review_status: clean-with-notes
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-implement-M3
+reviewer_context_id: root-code-review-M3-r1-context-reset
+context_separation_mechanism: diff-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - release-archive-parity
+  - clean-install-parity
+  - semantic-preservation-ledger
+  - loaded-profile-measurement
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+clean_sufficiency:
+  target_identity: d691f624
+  inspected_authority:
+    - specs/proposal-skill-simplification.md
+    - docs/plans/2026-08-14-proposal-skill-simplification.md#M3
+    - specs/proposal-skill-simplification.test.md
+  risk_classes:
+    - misleading-profile-reduction
+    - stale-rule-or-literal-destination
+    - generated-resource-omission
+    - archive-install-byte-drift
+    - unapproved-runtime-acceptance
+  adversarial_hypotheses:
+    - common file shrinks while a real loaded assembly grows
+    - total package growth is hidden
+    - a supported adapter omits a reference
+    - installed bytes differ from canonical
+    - acceptance adds a target runtime or separate semantic gate
+  direct_proofs:
+    - LF-normalized resource identities and four profile totals
+    - complete 25-rule and 39-literal audit
+    - full adapter-distribution suite
+    - selected proposal archive and clean-install validation
+    - complete CMD1-CMD11 ledger
+  challenged_validation: measurements separate loaded context, copied structure, and total package while adapter validation selects proposal across every supported target and install surface
+  confidence: high
+  no_finding_rationale: every loaded assembly shrinks in bytes and words, total package growth is explicit, every rule and literal retains one treatment, and generated archive and installed resources match canonical bytes
+forbidden_initial_context_excluded: true

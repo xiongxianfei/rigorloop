@@ -1,0 +1,57 @@
+schema_version: 1
+review_id: code-review-M2-r2
+review_stage: code-review
+review_target: implementation-M2
+base_revision: b08bea8b
+head_revision: 1aa58b41
+milestone_id: M2
+native_review_status: clean
+review_gate_outcome: pass
+independence_level: L0
+author_context_id: root-implement-M2-correction
+reviewer_context_id: root-code-review-M2-r2-context-reset
+context_separation_mechanism: correction-diff-contract-and-measurement-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-contract
+  - semantic-preserving-compression
+  - loaded-profile-reduction
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed-R47-word-and-byte-reduction
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+risk_map:
+  affected_behavior:
+    - universal proposal judgment
+    - governed proposal authoring
+    - strategic proposal gates
+  highest_impact_failure_modes:
+    - byte reduction remains above baseline
+    - compression removes a tested contract
+    - evidence reports incorrect arithmetic
+  changed_boundaries:
+    - BND-COMPOSE-001
+    - BND-COMPAT-001
+    - INT-004
+  expected_evidence:
+    - PA1G below both baseline metrics
+    - focused and full validators pass
+    - corrected evidence reports exact totals
+  direct_inspection_areas:
+    - correction diff in three procedure files
+    - focused and broad contract results
+    - profile arithmetic
+  intentionally_out_of_scope:
+    - M3 adapter parity proof
+    - final holistic review
+  falsifiable_questions:
+    - is PA1G 1821 words and 14286 bytes
+    - do all existing contract tests pass
+    - is policy ownership unchanged
+forbidden_initial_context_excluded: true

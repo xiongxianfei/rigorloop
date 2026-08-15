@@ -1,0 +1,58 @@
+schema_version: 1
+review_id: test-spec-review-r1
+review_stage: test-spec-review
+review_target: specs/proposal-skill-simplification.test.md
+base_revision: debc1ef8
+head_revision: debc1ef8
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-test-spec-authoring-r1
+reviewer_context_id: root-test-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - identity-bound-governed-authoring
+  - workflow-authorized-proposal-reset
+  - boundary-first-proof-map
+  - published-skill-package-parity
+  - fail-closed-vocabulary-migration
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/proposal-skill-simplification.md
+  - docs/changes/2026-08-14-proposal-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-14-proposal-skill-simplification.md
+  - specs/proposal-skill-simplification.test.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+  - boundary-first-proof-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: specs/proposal-skill-simplification.md
+    sha256: b807971d8565f6adc3796bd1666ea6330d36424a0b818e1f96f10750fa74cd54
+  - path: docs/changes/2026-08-14-proposal-skill-simplification/architecture-assessment.md
+    sha256: 22b5ec140b35b2124a95f48220a0bb0f3632f65fd9343f85c12cedebd1190f2b
+  - path: docs/plans/2026-08-14-proposal-skill-simplification.md
+    sha256: 93fba6e40dd3a45ab2f1ecdf65e1f21ba34b799c64c675e774399224d03088ef
+  - path: specs/proposal-skill-simplification.test.md
+    sha256: 10b0e7926339e02f2bcc7868e4fb2d5d82094da98b139637d43d5a5186b7d35e
+  - path: docs/changes/2026-08-14-proposal-skill-simplification/evidence/test-spec-authoring.md
+    sha256: 13c1ed22f4ea9a305bbce5170b1ec3190d79bbde710a6957eec195ea6499623f
+  - path: docs/changes/2026-08-14-proposal-skill-simplification/reviews/spec-review-r1.md
+    sha256: 8eb8d771feca2b8a47f1396a79cd0df9ed3174e04c26545b6a5dcdc72ae07d8d
+  - path: docs/changes/2026-08-14-proposal-skill-simplification/reviews/plan-review-r1.md
+    sha256: c059087a51766c6d1f86716e5265eeadefb7b826b2a2d2e1141dfa5bc5c69252
+prompt_template_version: test-spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - complete R1-R49 and acceptance-criterion traceability
+  - direct proof for all boundaries and interactions
+  - portable and governed operations, retries, and authority stops
+  - stale-reset handshake, idempotency, and forbidden writes
+  - strategic predicate and structural-group composition
+  - measurement, compatibility, and package parity
+  - milestone timing and validation-command ownership
+  - no target-agent runtime or extra manual semantic-review gate
