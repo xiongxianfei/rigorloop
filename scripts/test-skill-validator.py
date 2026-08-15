@@ -10334,6 +10334,44 @@ class SpecSkillSimplificationTests(unittest.TestCase):
             self.assertIn(claim.lower(), self.skill.lower())
 
 
+class ArchitectureSkillSimplificationLedgerTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.change = ROOT / "docs" / "changes" / "2026-08-15-architecture-skill-simplification"
+
+    def load(self, name: str) -> dict:
+        return json.loads((self.change / name).read_text(encoding="utf-8"))
+
+    def test_rule_owners_are_closed_before_consistency(self) -> None:
+        allowed = {"inline", "method-reference", "governed-reference", "asset", "literal-style", "change-evidence", "existing-validator"}
+        rules = self.load("architecture-rule-disposition.yaml")["rules"]
+        invalid = self.load("fixtures/invalid-rule-owner.yaml")["rules"]
+        self.assertTrue(rules)
+        self.assertTrue(all(row["owner"] in allowed for row in rules))
+        self.assertTrue(any(row["owner"] not in allowed for row in invalid))
+        self.assertEqual(len({row["rule_id"] for row in rules}), len(rules))
+
+    def test_literal_classifications_are_closed_before_consistency(self) -> None:
+        allowed = {"normative-contract", "parser-or-package-contract", "test-only-incidental", "historical-fixture", "obsolete"}
+        literals = self.load("architecture-literal-compatibility.yaml")["literals"]
+        invalid = self.load("fixtures/invalid-literal-classification.yaml")["literals"]
+        self.assertTrue(literals)
+        self.assertTrue(all(row["classification"] in allowed for row in literals))
+        self.assertTrue(any(row["classification"] not in allowed for row in invalid))
+        self.assertEqual(len({row["literal_id"] for row in literals}), len(literals))
+
+    def test_assets_and_scenarios_have_one_identity(self) -> None:
+        assets = self.load("architecture-asset-disposition.yaml")["assets"]
+        scenarios = self.load("fixtures/scenario-contracts.yaml")["scenarios"]
+        self.assertEqual({row["asset"].split("#")[0] for row in assets}, {"architecture-skeleton.md", "adr-skeleton.md", "diagram-styles.mmd"})
+        self.assertEqual(len({row["id"] for row in scenarios}), len(scenarios))
+        self.assertGreaterEqual(len(scenarios), 18)
+
+    def test_baseline_records_all_required_surfaces(self) -> None:
+        baseline = (self.change / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
+        for value in ("AA0", "AA1", "AA2", "13105", "1765", "17893", "2400", "Total canonical package"):
+            self.assertIn(value.lower(), baseline.lower())
+
+
 class TestSpecSkillSimplificationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.root = ROOT / "skills" / "test-spec"
