@@ -22,9 +22,9 @@ The problem is not that the specification contract is too rigorous. Observable b
 
 - Reduce the procedural context loaded for portable and governed spec authoring without weakening behavioral-contract quality or lifecycle safety.
 - Keep a self-sufficient universal `SKILL.md` for evidence use, observable behavior, requirements, examples, failure behavior, compatibility, quality dimensions, stops, claims, and `spec-review` handoff.
-- Move only governed upstream settlement, artifact creation and revision, authoring evidence, retries, recovery, and the matching `authoring → review-required` transition into one conditionally loaded reference.
+- Move only governed upstream settlement, artifact creation and revision, authoring evidence, retries, same-entry stale-authoring restart, and the matching `authoring → review-required` transition into one conditionally loaded reference.
 - Preserve the existing contract that `spec` initially loads both boundary-first references for every invocation; remove duplicated inline boundary procedure instead of changing that loading policy.
-- Keep the existing skeleton as the owner of ordinary spec headings, ordering, and placeholders while retaining the boundary feature reference as the owner of the formal boundary-record block.
+- Keep the existing skeleton as the owner of ordinary spec headings, ordering, placeholders, and one conditional boundary-block insertion point while retaining the boundary feature reference as the owner of the formal boundary-record block.
 - Preserve customer-project portability and allow portable authoring from an accepted direction, behavior request, issue, exploration, or research without requiring a RigorLoop change record.
 - Measure real loaded profiles and total package size separately so relocated content is not presented as deletion.
 
@@ -199,15 +199,29 @@ Revision additionally binds the prior spec identity and exact reopen, review fin
 
 An identical interruption resumes from the first incomplete step. Exact completed retry is idempotent. Changed path, input basis, prior identity, authority, or concurrent state is not an identical retry and stops without adoption.
 
-### Stale governed authoring attempts
+### Same-entry stale-authoring restart
 
-An interrupted operation whose path, governing inputs, prior identity, or authorization basis changes returns `authoring-reset-required`. The `spec` skill reports the exact stale attempt and performs no adoption, overwrite, reset, abandonment, evidence deletion, or new operation until current workflow authorization exists.
+An interrupted operation whose governing input basis changes returns `stale-authoring-attempt`. This is a transaction result, not a new persisted lifecycle state, and it grants no authority to adopt, overwrite, rebind, or restart the attempt automatically.
 
-Workflow owns stale-attempt validation, the no-reliance decision, reset authorization, and routing. It identifies the exact change, artifact, transaction, path, authoring evidence, allowed surfaces, and current authority without mutating spec-owned state.
+Workflow may detect, classify, and route the stale attempt, but it does not authorize restart through a new persisted mechanism and does not mutate spec-owned artifact state. The governed spec reference owns `restart-stale-authoring` as a bounded recovery of the same spec entry.
 
-With exact current authorization, the governed spec reference may reset only its matching incomplete `authoring` entry and incomplete spec-authored evidence. It preserves completed authoring evidence, reviews, other entries, `workflow_state`, automation, and downstream artifacts. A matching completed reset is idempotent; stale, mismatched, relied-upon, ambiguous, or competing state stops.
+Restart is valid only when the exact entry remains in `authoring`; its artifact ID, kind, role, and normalized path still match; the old and new governing input identities are known; no formal review or downstream artifact relies on the incomplete identity; no competing attempt exists; and the disposition of any partial spec content is known. Any relied-upon, ambiguous, mismatched, competing, or illegally settled state stops.
 
-This handshake adds no lifecycle state, persistence mechanism, evidence type, or write owner. If safe recovery requires workflow to mutate spec-owned state or a broader contract, stop and route to architecture and workflow-contract revision.
+The restart binds the old retry identity, new governing input identities, a new retry identity, and a new authoring-evidence path. It may replace only the incomplete spec bytes and the same entry's `authoring_evidence`; it preserves the entry ID, kind, role, path, and `authoring` state and leaves every other artifact entry, review, workflow state, automation record, and downstream artifact unchanged.
+
+Before replacing partial content, preserve the bytes at a distinct evidence path when they are required to explain the interrupted attempt, or record why the incomplete output has no durable evidentiary value. Restart never deletes completed authoring evidence or review evidence. After restart, the entry remains `authoring`, and the normal governed authoring transaction must complete it to `review-required`.
+
+| Observed state | Result |
+| --- | --- |
+| Same transaction identity and unchanged basis | Resume the identical attempt |
+| Same incomplete entry, changed basis, and every restart prerequisite satisfied | Restart the same entry with new retry and evidence identities |
+| Formal review or downstream reliance exists | Stop and route to workflow-owned reopen and impact handling |
+| Entry is not `authoring` | Stop |
+| Artifact identity, role, kind, or path differs | Stop |
+| Competing or ambiguous attempt exists | Stop |
+| Matching operation already completed at `review-required` | Return idempotent success without restart |
+
+This recovery introduces no new lifecycle state, persistent authorization, evidence type, or write owner. If implementation discovers that safe recovery requires cross-stage mutation or broader cleanup, stop and require architecture and workflow-contract revision rather than expanding the simplification implicitly.
 
 ### Upstream settlement ownership
 
@@ -222,10 +236,11 @@ When no governed proposal applies, an explicit user-selected direction, issue, e
 | Content | Owner |
 | --- | --- |
 | Purpose, evidence use, observable behavior, requirements, examples, quality dimensions, errors, compatibility, stops, claims, and `spec-review` handoff | `SKILL.md` |
-| Governed authority, proposal settlement, create/revise transaction, entry mutation, authoring evidence, retry, authorized stale reset, concurrency, and legal state transition | `references/governed-spec-authoring.md` |
+| Governed authority, proposal settlement, create/revise transaction, entry mutation, authoring evidence, retry, same-entry stale restart, concurrency, and legal state transition | `references/governed-spec-authoring.md` |
 | Shared boundary vocabulary, dimensions, identifiers, interactions, examples, stop rule, and structural-validation limits | Existing boundary-first method reference |
 | Formal feature boundary-record headings, tables, and owner-scoped semantic procedure | Existing boundary-first feature-authoring reference |
-| Ordinary spec headings, ordering, and placeholders | `assets/spec-skeleton.md` |
+| Ordinary spec headings, ordering, placeholders, and the conditional boundary-block insertion position | `assets/spec-skeleton.md` |
+| Stale-attempt detection and routing without spec-state mutation | `workflow` |
 | Status meaning, section adequacy, lifecycle authority, and handoff | `SKILL.md` and applicable reference, never the asset |
 
 The main file retains the compact four-question scan, spec-owned applicability and upstream-gap routing, and requirement-owned behavior rule. It removes detailed boundary dimensions, interaction procedure, capability-state restatement, and record layout already owned by the two initially loaded references.
@@ -233,6 +248,30 @@ The main file retains the compact four-question scan, spec-owned applicability a
 The main file also stops reproducing the complete ordinary section table and output skeleton. It names the skeleton as the ordinary layout owner and retains compact semantic adequacy rules for requirements, examples, failure behavior, compatibility, observability, security/privacy, accessibility/UX, performance, edge cases, non-goals, acceptance criteria, open questions, artifact history, and readiness.
 
 The skeleton does not absorb boundary tables, lifecycle policy, section applicability, or adequacy rules. The feature-authoring reference remains the single owner of its formal boundary block. A contradiction among the main file, references, and asset is a package defect and stops dependent work.
+
+### Structural composition and boundary-block applicability
+
+The skeleton contains one conditional insertion point immediately after `## Error and boundary behavior` and before `## Compatibility and migration`. The skeleton owns only that position; the feature-authoring reference owns the four contiguous formal boundary-record headings, their tables, and their owner-scoped semantic procedure.
+
+```text
+## Boundary model
+## Boundary definitions
+## Selected interactions
+## Example ownership
+```
+
+Initial loading of the feature-authoring reference does not imply that the formal boundary block must be emitted. Applicability is resolved independently from the current artifact and boundary contract.
+
+| Authoring condition | Boundary-block result |
+| --- | --- |
+| New behavior-changing spec under the active boundary contract | Emit the complete formal boundary block at the insertion point |
+| Substantive revision of a grandfathered spec that now adopts the boundary contract | Emit the complete formal boundary block at the insertion point |
+| Revision of a spec that already contains the formal boundary block | Preserve and update the complete block in place |
+| Formatting-only or otherwise non-substantive revision of a grandfathered spec | Omit the block when absent; preserve it unchanged when already present |
+| Non-behavioral artifact or no active boundary identity | Omit the block |
+| Applicability or required boundary data cannot be resolved | Stop before writing or emit an explicit blocker in a review-only result |
+
+An inapplicable block is omitted completely. An applicable block must be complete and contiguous; it cannot be replaced by placeholders or duplicated elsewhere in the skeleton or `SKILL.md`.
 
 ### Required-resource failure behavior
 
@@ -272,17 +311,34 @@ Use deterministic proof for:
 
 - exact resource inventory, mapping verbs, paths, required initial boundary resources, and package parity;
 - portable and governed profile assembly;
-- create, revise, retry, reset authorization, conflicts, missing resources, and forbidden writes;
+- create, revise, identical retry, same-entry stale restart, conflicts, missing resources, and forbidden writes;
 - semantic-rule and literal-classification closed vocabularies, including unknown-value rejection before consistency checks;
-- ordinary skeleton ownership, boundary-record ownership, resource failure, stops, claims, and handoff;
+- ordinary skeleton ownership, the exact conditional insertion point, boundary-block applicability and omission, boundary-record ownership, resource failure, stops, claims, and handoff;
 - generated, archived, release-candidate, and clean-installed resource path and raw-byte parity;
 - words, bytes, content identities, and total package accounting.
 
 Do not execute or grade Codex, Claude Code, opencode, or another target-agent runtime. Do not add transcript grading, a prose classifier, a permanent simplicity validator, a tokenizer dependency, or a separate manual semantic-review acceptance stage. Ordinary formal proposal review, spec review, code review, and PR review remain the semantic judgment surfaces already owned by the lifecycle.
 
+### Proposal acceptance criteria
+
+| ID | Criterion |
+| --- | --- |
+| `AC-SPSIM-001` | Stale governed authoring produces the transaction result `stale-authoring-attempt` without adding a lifecycle state. |
+| `AC-SPSIM-002` | `restart-stale-authoring` is owned by the governed spec procedure and applies only to the same incomplete spec entry. |
+| `AC-SPSIM-003` | Restart requires exact artifact, path, old basis, new basis, retry, evidence, no-reliance, and no-competition proof. |
+| `AC-SPSIM-004` | Restart may change only incomplete spec bytes and the matching entry's authoring-evidence pointer. |
+| `AC-SPSIM-005` | Workflow detects and routes stale attempts but gains no new spec-state mutation or persisted authorization owner. |
+| `AC-SPSIM-006` | Unsafe, relied-upon, mismatched, settled, or ambiguous stale attempts stop without adoption or overwrite. |
+| `AC-SPSIM-007` | The skeleton provides exactly one conditional boundary-block insertion point after error behavior and before compatibility. |
+| `AC-SPSIM-008` | The feature-authoring reference remains the sole owner of the four contiguous formal boundary-record headings and tables. |
+| `AC-SPSIM-009` | Boundary-reference loading and formal boundary-block emission are classified independently. |
+| `AC-SPSIM-010` | Every authoring condition in the applicability matrix has one emit, preserve, omit, or stop result. |
+| `AC-SPSIM-011` | Applicable boundary blocks are complete and contiguous; inapplicable blocks and unfilled placeholders are omitted. |
+| `AC-SPSIM-012` | Both procedural profiles decrease while semantic preservation, package parity, and the no-target-runtime boundary remain intact. |
+
 ### Architecture assessment
 
-The expected result is `architecture-not-required` when the bounded assessment confirms that the existing architecture already defines a published skill as canonical `SKILL.md` plus mapped references and assets, preserves canonical/generated/archive/install parity, and supports stage-owned artifact mutation through conditional package procedure.
+The expected result is `architecture-not-required` when the bounded assessment confirms that the existing architecture already defines a published skill as canonical `SKILL.md` plus mapped references and assets, preserves canonical/generated/archive/install parity, and supports spec-owned same-entry recovery through the existing artifact entry and authoring-evidence fields.
 
 A documentation-only architecture correction is appropriate if an inventory depicts `skills/spec/` as permanently limited to its current resources. A new ADR is required only if implementation introduces a new runtime, persistent state, lifecycle owner, package model, independent policy owner, or recovery mechanism. None is selected here.
 
@@ -292,18 +348,19 @@ A documentation-only architecture correction is appropriate if an inventory depi
 - Governed spec authoring loads one explicit reference and must validate exact authority before any mutation.
 - Every invocation continues initially loading both approved boundary-first references.
 - The common file no longer repeats detailed boundary procedure or the complete ordinary section inventory.
-- The ordinary skeleton and feature-boundary reference retain non-overlapping structural ownership.
+- The ordinary skeleton supplies one conditional composition point while the feature-boundary reference remains the sole owner of the complete formal boundary block.
+- A changed-basis incomplete governed attempt may restart only through the spec-owned same-entry recovery contract; workflow routes but gains no new write authority.
 - Missing required resources fail closed rather than being reconstructed from memory.
 - Every real procedural profile and the main file become measurably smaller while total package changes remain visible.
 
 ## Architecture Impact
 
-Likely `architecture-not-required` after bounded assessment. The change uses the existing packaged-skill, stage-owned lifecycle, boundary-first, and generated-resource parity models. It introduces no runtime, service, dependency, schema, persistence owner, lifecycle state, or deployment change.
+Likely `architecture-not-required` after bounded assessment. The change uses the existing packaged-skill, stage-owned lifecycle, boundary-first, generated-resource parity, and spec-owned artifact-entry models. Same-entry restart reuses the existing `authoring` state and authoring-evidence surface and introduces no runtime, service, dependency, schema, persistent authorization, lifecycle state, or deployment change.
 
 ## Testing and Verification Strategy
 
 - Inventory every behaviorally significant rule and exact literal consumer before editing.
-- Add deterministic fixtures for both profiles, create/revise state matrices, retry and reset cases, missing resources, structural ownership, unknown closed values, and forbidden claims.
+- Add deterministic fixtures for both profiles, create/revise state matrices, identical retry and same-entry restart cases, boundary-block applicability and composition, missing resources, structural ownership, unknown closed values, and forbidden claims.
 - Run focused spec-skill validation, the broad skill-validator suite, generated-skill drift checks, boundary validation, adapter distribution validation, and clean-install checks for Codex, Claude Code, and opencode.
 - Measure loaded words and bytes for both profiles plus each resource, the skeleton, representative output, and total package.
 - Use ordinary lifecycle reviews for semantic judgment; do not introduce a separate scripted or manual semantic-review acceptance gate.
@@ -321,15 +378,15 @@ Rollback removes the new governed reference, restores governed procedure to the 
 | Governed procedure is removed from the common file but not loaded when needed | Use an evidence-based candidate predicate, deterministic profile fixtures, and missing-resource stops. |
 | Portable authoring becomes dependent on RigorLoop lifecycle metadata | Keep portable operations and upstream authority explicit and test the absence of lifecycle writes. |
 | Boundary-first loading or semantics drift during simplification | Preserve both resources and the approved initial-loading profile; validate paths, bytes, and semantic ownership. |
-| Section labels move but adequacy rules disappear | Maintain separate rule and literal ledgers and test the skeleton/reference ownership split. |
+| Section labels move but adequacy rules disappear | Maintain separate rule and literal ledgers and test the skeleton/reference ownership split, exact insertion point, and applicability matrix. |
 | New governed reference merely relocates prose without reducing real context | Require both `SA0` and `SA1` words and bytes to decrease and report total package separately. |
-| Retry or reset procedure broadens lifecycle authority | Bind every operation to exact identities, preserve unrelated state, and require workflow authorization without workflow mutation of spec-owned state. |
+| Same-entry restart overwrites useful partial evidence or broadens spec authority | Require exact old and new identities, bounded writes, explicit partial-content disposition, no reliance, and unchanged entry ownership. |
 | Exact headings or phrases are parser-sensitive | Classify every literal consumer and migrate real parser contracts atomically. |
 | Package growth is hidden behind main-file reduction | Report main file, profiles, references, skeleton, representative output, and complete package separately. |
 
 ## Open Questions
 
-None at proposal level. The specification must name exact metadata fields and permitted reset writes after inspecting current schema and consumers, without changing the selected ownership or persistence model.
+None at proposal level. The specification must name exact metadata fields, partial-content evidence rules, and permitted same-entry restart writes after inspecting current schema and consumers, without changing the selected ownership or persistence model.
 
 ## Decision Log
 
@@ -339,6 +396,8 @@ None at proposal level. The specification must name exact metadata fields and pe
 - 2026-08-15: Kept ordinary spec layout in the skeleton and formal boundary-record layout in the existing feature-authoring reference.
 - 2026-08-15: Made portable and governed loaded-profile reduction the primary success surface rather than main-file reduction alone.
 - 2026-08-15: Excluded target-agent runtime acceptance and a separate manual semantic-review gate.
+- 2026-08-15: Replaced the unsupported workflow reset-authorization handshake with a bounded spec-owned same-entry stale-authoring restart.
+- 2026-08-15: Added one conditional skeleton insertion point and a closed applicability matrix for the formal boundary-record block.
 
 ## Next Artifacts
 
