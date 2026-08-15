@@ -1,11 +1,11 @@
 # Review Resolution: Spec Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`
-- Findings resolved: 5
-- Unresolved findings: 2
-- Current result: code-review M2 R1 requested two accepted implementation corrections
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`, `code-review-M2-r2`
+- Findings resolved: 7
+- Unresolved findings: 0
+- Current result: code-review M2 R2 closed both accepted corrections and approved M3 continuation
 
 ## Resolution overview
 
@@ -17,8 +17,8 @@ Closeout status: open
 | `SPSIM-R2-PR2` | accepted | closed | Required explicit restart authority and deterministic preservation of matching nonempty partial content. |
 | `SPSIM-R2-PR3` | accepted | closed | Closed boundary-block transition, removal, malformed-state, and grandfathered-adoption behavior. |
 | `SPSIM-M1-CR1` | accepted | closed | Completed one-owner semantic destinations and exact skeleton-heading classifications. |
-| `SPSIM-M2-CR1` | accepted | open | Make every governed transaction identity and preservation boundary explicit. |
-| `SPSIM-M2-CR2` | accepted | open | Restore the incomplete retained-inline semantic rules compactly. |
+| `SPSIM-M2-CR1` | accepted | closed | Made every governed transaction identity and preservation boundary explicit. |
+| `SPSIM-M2-CR2` | accepted | closed | Restored the incomplete retained-inline semantic rules compactly. |
 
 ## Finding details
 
@@ -168,7 +168,7 @@ Review closeout: code-review-M2-r1
 
 Finding ID: SPSIM-M2-CR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: implementation author
 Owning stage: implement M2
 Decision owner: none
@@ -178,13 +178,13 @@ Rationale: Generic phrases do not form a deterministic identity-bound transactio
 Required outcome: Complete explicit governed semantics while both loaded profiles remain below baseline.
 Safe resolution path: Change only the governed reference, focused tests, and M2 evidence, rerun M2 validation, and return for rereview.
 Validation target: focused and broad skill tests, canonical validation, build checks, profile measurement, and diff checking.
-Validation evidence: pending M2 correction and code-review M2 R2.
+Validation evidence: corrected governed reference and focused assertions; M2 validation passed; `reviews/code-review-m2-r2.md`.
 
 #### SPSIM-M2-CR2
 
 Finding ID: SPSIM-M2-CR2
 Disposition: accepted
-Status: open
+Status: closed
 Owner: implementation author
 Owning stage: implement M2
 Decision owner: none
@@ -194,4 +194,10 @@ Rationale: Simplification may relocate or deduplicate behavior but cannot silent
 Required outcome: Every affected retained-inline rule is directly recoverable from `SKILL.md` without restoring duplicated sections.
 Safe resolution path: Change only `SKILL.md`, focused tests, and M2 evidence, rerun M2 validation, and return for rereview.
 Validation target: focused and broad skill tests, readability validation, profile measurement, and rule-ledger inspection.
-Validation evidence: pending M2 correction and code-review M2 R2.
+Validation evidence: corrected `SKILL.md` and focused assertions; profile evidence and M2 validation passed; `reviews/code-review-m2-r2.md`.
+
+### code-review-M2-r2
+
+Review closeout: code-review-M2-r2
+
+No material findings; no resolution entry required. The context-reset rereview confirmed both accepted corrections, closed M2, and established M3 implementation eligibility.

@@ -120,5 +120,18 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-M2-r1
 Material findings: SPSIM-M2-CR1, SPSIM-M2-CR2
-Open findings: SPSIM-M2-CR1, SPSIM-M2-CR2
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-M2-r2
+Stage: code-review
+Round: r2
+Reviewed artifact: implementation milestone M2 correction at commit `791565c3`
+Status: clean-with-notes
+Detailed record: reviews/code-review-m2-r2.md
+Resolution: review-resolution.md#code-review-M2-r2
+Material findings: None
+Open findings: None
 Recording status: recorded
