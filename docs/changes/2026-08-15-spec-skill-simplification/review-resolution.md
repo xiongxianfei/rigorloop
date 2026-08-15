@@ -2,10 +2,10 @@
 
 Closeout status: closed
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`, `code-review-M2-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`, `code-review-M2-r2`, `code-review-M3-r1`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: code-review M2 R2 closed both accepted corrections and approved M3 continuation
+- Current result: code-review M3 R1 closed all implementation milestones and approved final holistic review
 
 ## Resolution overview
 
@@ -201,3 +201,9 @@ Validation evidence: corrected `SKILL.md` and focused assertions; profile eviden
 Review closeout: code-review-M2-r2
 
 No material findings; no resolution entry required. The context-reset rereview confirmed both accepted corrections, closed M2, and established M3 implementation eligibility.
+
+### code-review-M3-r1
+
+Review closeout: code-review-M3-r1
+
+No material findings; no resolution entry required. The review confirmed measurements, preservation, and package parity, closed M3, and established final holistic review eligibility.
