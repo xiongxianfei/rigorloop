@@ -1,0 +1,49 @@
+change_id: 2026-08-15-architecture-skill-simplification
+title: Architecture Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-15-architecture-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-15-architecture-skill-simplification/evidence/proposal-authoring.md
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/proposal-authoring.md
+
+workflow: {}
+
+artifacts:
+  proposal: docs/proposals/2026-08-15-architecture-skill-simplification.md
+
+requirements:
+  - Reduce architecture-assessment, portable-authoring, and governed-authoring loaded context while preserving architecture applicability, C4, arc42, ADR, lifecycle, review, and handoff behavior.
+  - Keep universal assessment and safety inline, add one conditional package-method reference and one governed-authoring reference, and preserve exactly the three existing structural assets.
+  - Separate architecture action, target operation, governed signal, and execution authority with fail-closed classification and deterministic multi-artifact recovery.
+  - Preserve every behaviorally significant rule and classify exact literal dependencies separately from semantic rules.
+  - Prove canonical-through-installed package parity and real profile reduction without target-agent runtime execution, prose classification, or a separate manual semantic-review acceptance gate.
+
+tests:
+  - Formal independent proposal review of value, scope, assessment ownership, reference boundaries, artifact transactions, recovery, measurement, and readiness.
+  - Deterministic validation of resource mappings, action and target operations, governed authority, assessment isolation, missing resources, stops, claims, and package parity.
+  - Static scenarios covering assessment, portable and governed authoring, canonical and ADR operations, combined actions, identical retry, partial writes, concurrency, and forbidden mutation.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-15-architecture-skill-simplification/change.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-15-architecture-skill-simplification.md
+
+review:
+  status: review-requested
+  unresolved_items: 0
