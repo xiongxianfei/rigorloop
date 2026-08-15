@@ -185,3 +185,9 @@ Validation evidence: `evidence/test-spec-revision-r1.md`; corrected CMD1 ledger 
 Review closeout: test-spec-review-r2
 
 No material findings; no resolution entry required. The independent formal rereview approved the corrected proof map, closed ARSIM-TSR1 and ARSIM-TSR2, and established implementation handoff eligibility without starting implementation.
+
+### code-review-M1-r1
+
+Review closeout: code-review-M1-r1
+
+No material findings; no resolution entry required. The independent milestone review accepted the preservation inventories, focused closed-vocabulary tests, scenarios, and measurement baseline and closed M1 without claiming later package behavior.
