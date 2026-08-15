@@ -21,6 +21,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: code-review-final-r2
+Stage: code-review
+Round: r2
+Reviewed artifact: lifecycle evidence correction at revision `b388cf4f`
+Status: clean-with-notes
+Detailed record: reviews/code-review-final-r2.md
+Resolution: review-resolution.md#code-review-final-r2
+Material findings: None
+Open findings: None
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-final-r1
 Stage: code-review
 Round: r1

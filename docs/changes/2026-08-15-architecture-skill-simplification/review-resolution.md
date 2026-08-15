@@ -229,3 +229,9 @@ No material findings; no resolution entry required. The independent milestone re
 Review closeout: code-review-final-r1
 
 No material findings; no resolution entry required. The final holistic review approved the complete cross-milestone diff and established explanation eligibility without claiming verification or PR readiness.
+
+### code-review-final-r2
+
+Review closeout: code-review-final-r2
+
+No material findings; no resolution entry required. The final rereview approved the bounded M2 closeout-linkage correction and restored formal verification eligibility.
