@@ -231,6 +231,23 @@ The governed reference owns detailed procedure for:
 
 It must preserve every unrelated artifact entry and all workflow, automation, plan, and review state. It may not settle architecture review or advance workflow.
 
+### Assessment basis for authoring
+
+Every architecture authoring action requires a current `architecture-required` judgment. Workflow-managed authoring must bind one current architecture-assessment receipt whose exact specification and approving spec-review identities match the authoring manifest, with no later contradictory assessment and no unresolved `architecture-ambiguous` pause.
+
+The workflow-managed assessment basis contains:
+
+```text
+assessment receipt identity
+applicability: required
+exact governing spec identity
+current approving spec-review identity
+```
+
+Portable authoring does not require a RigorLoop assessment receipt, but it performs the same current inline applicability judgment before selecting `canonical-update`, `adr-only`, or `canonical-update-with-adr`. A portable judgment of `not-required`, `ambiguous`, or blocked by unresolved proposal or specification direction stops before mutation.
+
+An assessment becomes stale when any decision-bearing basis changes, including the governing spec identity, approving spec-review identity, accepted proposal or durable decision basis, architecture-relevant requirements, or architecture-applicability evidence. Missing, stale, contradictory, `not-required`, or ambiguous assessment evidence cannot authorize artifact writes.
+
 ### Target manifest and transaction model
 
 Canonical architecture and each ADR are distinct targets. Every authoring action binds one ordered target manifest before writes. A combined `canonical-update-with-adr` action resolves one canonical-package target and one or more exact ADR targets rather than treating the batch as one artifact identity.
@@ -246,25 +263,49 @@ prior content identity or absent
 intended content identity when known
 governing input identities
 authoring-evidence path when governed
+assessment receipt identity when workflow-managed
+exact governing spec identity
+current approving spec-review identity
+dependency target IDs
+commit group
+independently valid after commit: true or false
 ```
 
 Target operations are exactly `create`, `revise`, `supersede`, and `deprecate`. `create` requires the exact target to be absent, while the other operations require the exact current target and identity. An existing canonical package or ADR cannot be replaced through `create`; a complete rewrite is still a revision. `supersede` and `deprecate` apply only to ADR targets under current durable-decision authority. Ambiguous targets, unsafe paths, duplicate candidates, or file/entry conflicts stop.
 
 Governed creation additionally requires an absent matching entry and file. Governed revision requires one matching entry, file, current identity, and legal authoring or reopen authority. Downstream-reliant architecture or ADR content requires workflow-owned impact handling before revision authority is granted.
 
-For a canonical package, the transaction identity includes the architecture artifact ID, canonical Markdown path, exact set of intended diagram paths, governing spec identity, authoring-evidence path, and baseline content identities. Each ADR transaction additionally binds its ADR ID, path, prior identity when revising, and create/revise/supersede/deprecate authority.
+For a canonical package, the transaction identity includes the architecture artifact ID, canonical Markdown path, exact set of intended diagram paths, assessment basis, governing spec identity, authoring-evidence path, and baseline content identities. Each ADR transaction additionally binds its ADR ID, path, prior identity when revising, and create/revise/supersede/deprecate authority.
+
+Dependency edges prevent a target from committing before its required dependencies are complete and validated. Targets that cannot leave a safe intermediate repository state independently share one commit group. The manifest's order remains deterministic, but order does not substitute for explicit dependencies or intermediate-validity proof.
 
 ### Multi-file writes, retries, and recovery
 
-Prepare and validate intended Markdown and diagram content before changing governed settlement state. Write only the identified package files, record complete authoring evidence, re-read the change record, and transition only the matching artifact entry to `review-required` after the target is complete.
+Governed authoring uses the existing authoring-evidence surface as a prepared write-ahead record. The complete ordered manifest is durable before the first architecture, diagram, or ADR file mutation. The first version uses evidence dispositions `prepared`, `partial-blocked`, `complete`, and `abandoned`; these describe the existing authoring transaction evidence and do not add lifecycle states or a new state owner.
 
-For a combined canonical and ADR action, each target has its own authoring evidence and lifecycle entry. The skill may prepare the bounded batch together, but it validates and commits each target independently. A failure must not mark an incomplete target `review-required` or roll back a different target that already committed safely.
+The write sequence is:
 
-Batch results are exactly `complete`, `partial-blocked`, and `blocked-before-write`. `complete` requires every required manifest target to be complete and, for governed work, `review-required`. `partial-blocked` reports each committed and incomplete target and blocks combined architecture-review handoff. `blocked-before-write` reports the blocker and performs no target write.
+1. Resolve the current required assessment, authority, targets, paths, operations, dependencies, commit groups, and baseline identities.
+2. Prepare and validate all intended target content and compute every intended file identity.
+3. Write a `prepared` authoring-evidence record containing the complete ordered manifest, assessment basis, dependencies, baselines, intended identities, and commit points.
+4. Re-read the assessment, authority, and baseline identities; stop without target mutation if any changed.
+5. Write only target files represented by the persisted manifest and record per-target progress on the same evidence surface.
+6. Transition only completed governed entries to `review-required` after their commit-group and intermediate-validity checks pass.
+7. Finalize the authoring evidence as `complete`, or record the exact safe partial result as `partial-blocked`.
+
+An interruption before prepared evidence creates no target write. An interruption after a partial write reconciles only files, identities, and dependencies recorded in the prepared manifest. A file absent from that manifest is never adopted.
+
+For a combined canonical and ADR action, each target has its own lifecycle entry and target progress inside the shared prepared authoring evidence. A target may commit independently only when the manifest proves that the resulting intermediate repository state is structurally and semantically valid without incomplete targets. Targets that cannot be independently valid commit through one group; failure must not mark an incomplete group member `review-required`.
+
+Within the canonical architecture target, prepare all Markdown and diagram files together, write and validate subordinate diagram sources first, and write the canonical architecture Markdown last as the target commit point. The canonical Markdown must not expose links to incomplete diagrams or ADR dependencies.
+
+ADR supersession uses this order: create and validate the replacement ADR; update predecessor ADR status and its superseded-by link; update canonical architecture references; then hand the complete target group to architecture-review. Authoring records the proposed supersession but does not approve it; architecture-review remains the settlement owner.
+
+Batch results are exactly `complete`, `partial-blocked`, and `blocked-before-write`. `complete` requires every required manifest target to be complete and, for governed work, `review-required`. `partial-blocked` preserves only completed targets that remain independently valid, reports every committed and incomplete target, and blocks combined architecture-review handoff. `blocked-before-write` reports the blocker and performs no target write.
 
 An identical retry resumes from the first incomplete target or file and never duplicates evidence, ADRs, diagrams, entries, or transitions. It requires the exact ordered manifest, inputs, paths, identities, and authority. Adding, removing, reordering, or changing a target creates a new operation and cannot be adopted as an identical retry.
 
-Partial state is recoverable only when every existing file and entry matches the recorded transaction identity and baseline. An unregistered diagram, unrelated ADR, dangling artifact entry, changed canonical package, or ambiguous partial batch stops for explicit reconciliation. The proposal does not authorize destructive deletion of unknown or conflicting files.
+Partial state is recoverable only when every existing file and entry matches the persisted transaction identity, baseline, dependency graph, and intended identity. A completed dependency may remain only when it is independently valid as an unreferenced artifact; a target that cannot be independently valid must not commit outside its group. An unregistered diagram, unrelated ADR, dangling artifact entry, changed dependency, changed canonical package, or ambiguous partial batch stops for explicit reconciliation. The proposal does not authorize destructive deletion of unknown or conflicting files.
 
 Architecture-review handoff is eligible only after the entire required manifest reaches `complete`. The handoff names the exact target set so architecture-review can review the canonical update, related diagrams, and ADRs as one bounded change surface without treating them as one artifact identity.
 
@@ -365,6 +406,20 @@ Token estimates are optional and may be reported only when an existing repositor
 | `AC-ARSIM-012` | Missing triggered references or assets stop before dependent judgment or writes. |
 | `AC-ARSIM-013` | Canonical, generated, archived, release-candidate, and installed resources retain required inventory and raw-byte parity. |
 | `AC-ARSIM-014` | No target-agent runtime, transcript grader, prose classifier, separate manual semantic-review gate, tokenizer dependency, or permanent simplicity validator is introduced. |
+| `AC-ARSIM-015` | Every workflow-managed authoring manifest binds one current `architecture-required` assessment receipt. |
+| `AC-ARSIM-016` | Assessment, specification, and approving spec-review identities match the authoring manifest. |
+| `AC-ARSIM-017` | Missing, stale, contradictory, `not-required`, or ambiguous assessment evidence blocks authoring. |
+| `AC-ARSIM-018` | Portable authoring performs a current applicability judgment before mutation. |
+| `AC-ARSIM-019` | A changed decision-bearing basis makes prior assessment evidence stale. |
+| `AC-ARSIM-020` | The complete ordered manifest and every intended file identity are durably recorded before the first target-file mutation. |
+| `AC-ARSIM-021` | An interruption before prepared evidence causes no target write, while a later interruption reconciles only recorded manifest files. |
+| `AC-ARSIM-022` | A file not represented by the persisted manifest is never adopted. |
+| `AC-ARSIM-023` | Combined manifests record dependency edges, commit groups, and intermediate-validity decisions. |
+| `AC-ARSIM-024` | A target commits independently only when the resulting partial repository state is valid. |
+| `AC-ARSIM-025` | Canonical architecture Markdown cannot reference incomplete diagrams or ADR dependencies. |
+| `AC-ARSIM-026` | ADR supersession writes use deterministic dependency order and remain subject to architecture-review approval. |
+| `AC-ARSIM-027` | `partial-blocked` preserves only independently valid completed targets. |
+| `AC-ARSIM-028` | Architecture assessment changes to `architecture-required` if existing evidence cannot support prepared recovery and dependency-aware progress without new architecture. |
 
 ## Expected Behavior Changes
 
@@ -375,22 +430,25 @@ Token estimates are optional and may be reported only when an existing repositor
 - C4, arc42, diagram, ADR, assessment, review, and handoff semantics remain unchanged.
 - Invalid or ambiguous governed signals fail closed rather than falling back to portable authoring.
 - Canonical packages, diagrams, and ADRs receive per-target operations, an ordered manifest, exact retry boundaries, closed batch results, and partial-state reporting.
+- Workflow-managed authoring binds the current required assessment, exact spec identity, and approving spec-review identity; portable authoring performs the same current applicability judgment inline.
+- Governed authoring persists the complete prepared manifest before mutation and records target progress on the existing authoring-evidence surface.
+- Combined targets use explicit dependency edges, commit groups, and intermediate-validity checks; canonical Markdown is written after its diagram and ADR dependencies.
 - Existing assets remain the only copied structural resources; policy-bearing skeleton text moves to the method reference under an explicit disposition ledger.
 
 ## Architecture Impact
 
-The expected assessment is `architecture-not-required` because the change applies the existing published-skill package model, accepted architecture method, resource-integrity contract, assessment evidence, authoring evidence, and stage-owned lifecycle model. The target manifest lives in existing authoring evidence and adds no runtime, service, dependency, schema, persistent authority, state owner, or new architecture method.
+The expected assessment is `architecture-not-required` because the change applies the existing published-skill package model, accepted architecture method, resource-integrity contract, assessment evidence, authoring evidence, and stage-owned lifecycle model. That result is conditional on the existing authoring-evidence model supporting a durable prepared manifest, per-target progress, dependency edges, and commit groups without a new schema, persistent authority, or write owner.
 
 A bounded architecture documentation update is required only if the current canonical package, ADR inventory, or diagram depicts `skills/architecture/` as permanently flat, assigns detailed method policy to assets, or omits packaged references as a supported skill resource. A new ADR is not expected.
 
-If specification discovers that combined canonical/ADR recovery requires a new persisted transaction record, lifecycle state, or write owner, the architecture assessment must change to `architecture-required` before planning.
+If specification discovers that prepared recovery or dependency-aware combined commits require a new persisted transaction record, schema, lifecycle state, or write owner, the architecture assessment must change to `architecture-required` before planning. Recovery must not be weakened merely to preserve the expected no-architecture result.
 
 ## Testing and Verification Strategy
 
 Use deterministic static proof and existing package validators.
 
 - Build rule and literal inventories before editing, with invalid unknown-value fixtures that fail closed before consistency checks.
-- Add static scenarios for isolated and workflow-managed assessment, required/not-required completion receipts, ambiguous pause, direct explicit-path recording, action and signal combinations, canonical-only, ADR-only, mixed-operation combined manifests, identical retry, changed manifest, each batch result, concurrency, stale basis, missing resources, unsafe paths, and forbidden writes or claims.
+- Add static scenarios for isolated and workflow-managed assessment, required/not-required completion receipts, ambiguous pause, direct explicit-path recording, current and stale assessment bases, portable applicability, action and signal combinations, canonical-only, ADR-only, mixed-operation combined manifests, durable pre-write preparation, interruption before and after preparation, identical retry, changed manifest, dependencies, commit groups, canonical commit order, ADR supersession order, each batch result, concurrency, stale basis, missing resources, unsafe paths, and forbidden writes or claims.
 - Validate the canonical skill and exact resource map, including required `READ` and `COPY` verbs, containment, presence, and duplicate ownership.
 - Validate an asset-content disposition for every current non-heading instruction and prove that method semantics have one loaded owner.
 - Prove the three procedural assemblies and assets with deterministic word/byte accounting.
@@ -416,6 +474,9 @@ Rollback restores the previous `SKILL.md`, removes both new references, restores
 | The method reference becomes an independent policy owner | State that it specializes detailed procedure and cannot override universal applicability, lifecycle, or review contracts. |
 | Assets retain or accumulate hidden method policy | Classify every current instruction and move normative method rules to the reference while retaining only structure, neutral prompts, and literal styles. |
 | Combined canonical and ADR work leaves inconsistent partial state | Bind one ordered per-target manifest, use closed batch results, and require complete manifest settlement before review handoff. |
+| Authoring proceeds from stale applicability evidence | Bind workflow-managed manifests to the current required assessment, spec, and approving review identities, and repeat current applicability judgment for portable work. |
+| An interruption leaves files that cannot be distinguished from unrelated content | Persist the complete manifest and intended identities before mutation and reconcile only recorded targets. |
+| Independent commits expose broken diagram, ADR, or supersession relationships | Record dependencies and commit groups, write subordinate files before canonical Markdown, and preserve only independently valid targets. |
 | Assessment wording diverges from workflow evidence | Separate judgment, route result, and persisted completion fields; keep ambiguity as a pause rather than a completed receipt. |
 | Invalid governed metadata falls through to portable mutation | Use tri-state governed signals and stop on every malformed, stale, conflicting, or ambiguous signal. |
 | Additional resources increase total package size | Measure all profiles and total package separately; require every real profile to shrink and justify total growth. |
@@ -438,6 +499,9 @@ None at proposal level. Exact evidence field names, scenario fixture encoding, m
 | 2026-08-15 | Resolve `ARSIM-PR1` with separate assessment mode, judgment, route, and existing persistence behavior. | Assessment ambiguity is a workflow pause, and direct assessment must not mutate another stage implicitly. | One overloaded outcome value or a new persisted assessment schema. |
 | 2026-08-15 | Resolve `ARSIM-PR2` with an ordered per-target manifest and complete-manifest review handoff. | Combined architecture and ADR work can mix target operations without requiring atomic rollback or new lifecycle state. | One invocation-wide operation or independent review handoff from a partial batch. |
 | 2026-08-15 | Resolve `ARSIM-PR3` with an asset-content disposition. | Current skeleton prose includes method semantics that need one normative owner. | Keeping duplicated policy or adding another asset. |
+| 2026-08-15 | Resolve `ARSIM-PR4` by binding authoring to one current required assessment basis. | Applicability must remain current across spec and review revisions rather than being implied by generic authoring authority. | Unbound later authoring or a new authorization subsystem. |
+| 2026-08-15 | Resolve `ARSIM-PR5` with a durable prepared manifest on the existing authoring-evidence surface. | Exact interruption recovery requires the manifest and intended identities before the first target write. | In-memory retry identity or weakened recovery claims. |
+| 2026-08-15 | Resolve `ARSIM-PR6` with dependency edges, commit groups, and deterministic commit points. | Partial completion is safe only when each preserved target is independently valid. | Universal atomic rollback or unsafe independent commits. |
 
 ## Next Artifacts
 
@@ -452,4 +516,4 @@ None yet
 
 ## Readiness
 
-Revised after `proposal-review-r1` and ready for independent proposal rereview. This proposal does not claim proposal approval, specification readiness, architecture-assessment completion, implementation readiness, verification, branch readiness, or PR readiness.
+Revised after `proposal-review-r2` and ready for independent proposal rereview. This proposal does not claim proposal approval, specification readiness, architecture-assessment completion, implementation readiness, verification, branch readiness, or PR readiness.

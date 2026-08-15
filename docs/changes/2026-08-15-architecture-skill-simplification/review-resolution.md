@@ -1,13 +1,13 @@
 # Review Resolution: Architecture Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`
-- Findings resolved: 3
-- Unresolved findings: 3
-- Current result: proposal revision required for ARSIM-PR4 through ARSIM-PR6
+- Findings resolved: 6
+- Unresolved findings: 0
+- Current result: revised proposal ready for independent rereview
 
 ## Resolution overview
 
@@ -16,9 +16,9 @@ Review closeout: proposal-review-r2
 | `ARSIM-PR1` | accepted | closed | Separated assessment mode, judgment, route result, current completion fields, ambiguity pause, and direct recording. |
 | `ARSIM-PR2` | accepted | closed | Added an ordered per-target manifest, mixed operations, closed batch results, and complete-manifest handoff. |
 | `ARSIM-PR3` | accepted | closed | Classified current asset instructions and assigned method semantics to one reference owner. |
-| `ARSIM-PR4` | accepted | open | Bind authoring to one current architecture-required assessment and exact decision basis. |
-| `ARSIM-PR5` | accepted | open | Persist the complete prepared target manifest before file mutation. |
-| `ARSIM-PR6` | accepted | open | Add dependency-aware commit order, groups, and intermediate-validity rules. |
+| `ARSIM-PR4` | accepted | closed | Bound authoring to one current architecture-required assessment and exact decision basis. |
+| `ARSIM-PR5` | accepted | closed | Persisted the complete prepared target manifest before file mutation. |
+| `ARSIM-PR6` | accepted | closed | Added dependency-aware commit order, groups, and intermediate-validity rules. |
 
 ## Finding details
 
@@ -78,7 +78,7 @@ Validation evidence: `evidence/proposal-revision-r1.md`; revised sections `Asset
 
 Finding ID: ARSIM-PR4
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -88,13 +88,13 @@ Rationale: Generic authoring authority cannot substitute for the current applica
 Required outcome: Block missing, stale, contradictory, not-required, or ambiguous assessment evidence before authoring.
 Safe resolution path: Reuse current assessment evidence and record its identity in existing authoring evidence.
 Validation target: revised assessment basis, manifest, staleness scenarios, and acceptance criteria plus independent rereview.
-Validation evidence: pending proposal revision r2.
+Validation evidence: `evidence/proposal-revision-r2.md`; revised sections `Assessment basis for authoring`, `Target manifest and transaction model`, `Proposal acceptance criteria`, `Architecture Impact`, and `Testing and Verification Strategy`.
 
 #### ARSIM-PR5
 
 Finding ID: ARSIM-PR5
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -104,13 +104,13 @@ Rationale: An in-memory manifest cannot distinguish valid partial state from unr
 Required outcome: Define the prepared write-ahead sequence and conditional architecture consequence if existing evidence cannot support it.
 Safe resolution path: Reuse existing authoring evidence when capable; otherwise require architecture work rather than weakening recovery.
 Validation target: revised transaction sequence, recovery scenarios, architecture impact, and acceptance criteria plus independent rereview.
-Validation evidence: pending proposal revision r2.
+Validation evidence: `evidence/proposal-revision-r2.md`; revised sections `Multi-file writes, retries, and recovery`, `Proposal acceptance criteria`, `Architecture Impact`, and `Testing and Verification Strategy`.
 
 #### ARSIM-PR6
 
 Finding ID: ARSIM-PR6
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -120,4 +120,4 @@ Rationale: Ordered targets alone do not prevent broken links or premature supers
 Required outcome: Commit only when dependencies are complete and preserve only independently valid targets after failure.
 Safe resolution path: Keep the procedure in governed authoring and architecture-review as the approval owner.
 Validation target: revised manifest, commit sequencing, partial-state matrix, static scenarios, and acceptance criteria plus independent rereview.
-Validation evidence: pending proposal revision r2.
+Validation evidence: `evidence/proposal-revision-r2.md`; revised sections `Target manifest and transaction model`, `Multi-file writes, retries, and recovery`, `Proposal acceptance criteria`, and `Risks and Mitigations`.

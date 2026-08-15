@@ -29,5 +29,5 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r2.md
 Resolution: review-resolution.md#proposal-review-r2
 Material findings: ARSIM-PR4, ARSIM-PR5, ARSIM-PR6
-Open findings: ARSIM-PR4, ARSIM-PR5, ARSIM-PR6
+Open findings: None
 Recording status: recorded
