@@ -1,11 +1,11 @@
 # Review Resolution: Spec Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`
 - Findings resolved: 5
-- Unresolved findings: 0
-- Current result: code-review M1 R2 closed the accepted correction and approved M1 continuation
+- Unresolved findings: 2
+- Current result: code-review M2 R1 requested two accepted implementation corrections
 
 ## Resolution overview
 
@@ -17,6 +17,8 @@ Closeout status: closed
 | `SPSIM-R2-PR2` | accepted | closed | Required explicit restart authority and deterministic preservation of matching nonempty partial content. |
 | `SPSIM-R2-PR3` | accepted | closed | Closed boundary-block transition, removal, malformed-state, and grandfathered-adoption behavior. |
 | `SPSIM-M1-CR1` | accepted | closed | Completed one-owner semantic destinations and exact skeleton-heading classifications. |
+| `SPSIM-M2-CR1` | accepted | open | Make every governed transaction identity and preservation boundary explicit. |
+| `SPSIM-M2-CR2` | accepted | open | Restore the incomplete retained-inline semantic rules compactly. |
 
 ## Finding details
 
@@ -157,3 +159,39 @@ Validation evidence: `evidence/m1-preservation-inventories.md`; corrected ledger
 Review closeout: code-review-M1-r2
 
 No material findings; no resolution entry required. The context-reset rereview confirmed the accepted correction, closed M1, and established M2 implementation eligibility.
+
+### code-review-M2-r1
+
+Review closeout: code-review-M2-r1
+
+#### SPSIM-M2-CR1
+
+Finding ID: SPSIM-M2-CR1
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: implement M2
+Decision owner: none
+Decision needed: none; R21-R42 define the required correction.
+Chosen action: Expand the governed reference and focused assertions to name every mandatory identity, prerequisite, evidence field, preservation rule, and stop boundary.
+Rationale: Generic phrases do not form a deterministic identity-bound transaction contract.
+Required outcome: Complete explicit governed semantics while both loaded profiles remain below baseline.
+Safe resolution path: Change only the governed reference, focused tests, and M2 evidence, rerun M2 validation, and return for rereview.
+Validation target: focused and broad skill tests, canonical validation, build checks, profile measurement, and diff checking.
+Validation evidence: pending M2 correction and code-review M2 R2.
+
+#### SPSIM-M2-CR2
+
+Finding ID: SPSIM-M2-CR2
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: implement M2
+Decision owner: none
+Decision needed: none; the M1 rule ledger defines the missing inline semantics.
+Chosen action: Restore complete proposal settlement, unrelated-target, normative scope, and superseded-replacement rules in compact common-path prose.
+Rationale: Simplification may relocate or deduplicate behavior but cannot silently delete retained universal rules.
+Required outcome: Every affected retained-inline rule is directly recoverable from `SKILL.md` without restoring duplicated sections.
+Safe resolution path: Change only `SKILL.md`, focused tests, and M2 evidence, rerun M2 validation, and return for rereview.
+Validation target: focused and broad skill tests, readability validation, profile measurement, and rule-ledger inspection.
+Validation evidence: pending M2 correction and code-review M2 R2.

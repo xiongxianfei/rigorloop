@@ -109,3 +109,16 @@ Resolution: review-resolution.md#code-review-M1-r2
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-M2-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: implementation milestone M2 at commit `89efb1f3`
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-M2-r1
+Material findings: SPSIM-M2-CR1, SPSIM-M2-CR2
+Open findings: SPSIM-M2-CR1, SPSIM-M2-CR2
+Recording status: recorded

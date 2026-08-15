@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: code-review
+  current_stage: implement
+  next_stage: implement
   blocker: null
   evidence:
     - docs/changes/2026-08-15-spec-skill-simplification/evidence/proposal-authoring.md
@@ -82,6 +82,8 @@ workflow_state:
     - docs/changes/2026-08-15-spec-skill-simplification/evidence/workflow-automation-target-verify.md
     - docs/changes/2026-08-15-spec-skill-simplification/evidence/m1-preservation-inventories.md
     - docs/changes/2026-08-15-spec-skill-simplification/evidence/m2-package-implementation.md
+    - docs/changes/2026-08-15-spec-skill-simplification/review-invocation-code-review-m2-r1.yaml
+    - docs/changes/2026-08-15-spec-skill-simplification/reviews/code-review-m2-r1.md
   planned_work:
     plan_artifact_id: plan
     initialization_basis:
@@ -97,7 +99,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: review-requested
+        state: resolution-needed
       M3:
         kind: implementation
         state: planned
@@ -105,15 +107,15 @@ workflow_state:
       - M2
       - M3
     latest_review:
-      status: approved
+      status: changes-requested
       stage: code-review
-      round: r2
-      artifact_id: implementation-M1
+      round: r1
+      artifact_id: implementation-M2
       occurrence: milestone
-      milestone_id: M1
+      milestone_id: M2
       evidence:
-        - docs/changes/2026-08-15-spec-skill-simplification/review-invocation-code-review-m1-r2.yaml
-        - docs/changes/2026-08-15-spec-skill-simplification/reviews/code-review-m1-r2.md
+        - docs/changes/2026-08-15-spec-skill-simplification/review-invocation-code-review-m2-r1.yaml
+        - docs/changes/2026-08-15-spec-skill-simplification/reviews/code-review-m2-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -138,7 +140,7 @@ workflow:
       completion:
         rule: first formal verify result is durably recorded
     status: active
-    current_stage: code-review
+    current_stage: implement
     stop_reason: null
     evidence:
       - docs/changes/2026-08-15-spec-skill-simplification/evidence/workflow-automation-target-verify.md
@@ -161,6 +163,9 @@ workflow:
       - docs/changes/2026-08-15-spec-skill-simplification/reviews/test-spec-review-r1.md
       - docs/changes/2026-08-15-spec-skill-simplification/evidence/m1-preservation-inventories.md
       - docs/changes/2026-08-15-spec-skill-simplification/evidence/m2-package-implementation.md
+      - docs/changes/2026-08-15-spec-skill-simplification/review-invocation-code-review-m2-r1.yaml
+      - docs/changes/2026-08-15-spec-skill-simplification/reviews/code-review-m2-r1.md
+      - docs/changes/2026-08-15-spec-skill-simplification/review-resolution.md
 
 artifacts:
   proposal: docs/proposals/2026-08-15-spec-skill-simplification.md
@@ -216,7 +221,9 @@ changed_files:
   - scripts/test-skill-validator.py
   - scripts/skill_validation.py
   - docs/changes/2026-08-15-spec-skill-simplification/evidence/m2-package-implementation.md
+  - docs/changes/2026-08-15-spec-skill-simplification/review-invocation-code-review-m2-r1.yaml
+  - docs/changes/2026-08-15-spec-skill-simplification/reviews/code-review-m2-r1.md
 
 review:
-  status: approved
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 2
