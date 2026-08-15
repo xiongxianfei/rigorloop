@@ -42,8 +42,13 @@ artifact_states:
     kind: test-spec
     path: specs/architecture-skill-simplification.test.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-15-architecture-skill-simplification/evidence/test-spec-revision-r1.md
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r2
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-15-architecture-skill-simplification/reviews/test-spec-review-r2.md
+      round: r2
 
 workflow_state:
   lifecycle_state: active
@@ -200,5 +205,5 @@ changed_files:
   - docs/changes/2026-08-15-architecture-skill-simplification/reviews/test-spec-review-r1.md
 
 review:
-  status: changes-requested
-  unresolved_items: 2
+  status: approved
+  unresolved_items: 0

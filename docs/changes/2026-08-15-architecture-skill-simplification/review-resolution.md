@@ -1,16 +1,17 @@
 # Review Resolution: Architecture Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r3
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: test-spec-review-r1
+Review closeout: test-spec-review-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`
-- Findings resolved: 6
-- Unresolved findings: 2
-- Current result: test-spec-review R1 requested changes before implementation handoff
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
+- Findings resolved: 8
+- Unresolved findings: 0
+- Current result: test-spec-review R2 approved the corrected proof map for implementation handoff
 
 ## Resolution overview
 
@@ -22,8 +23,8 @@ Review closeout: test-spec-review-r1
 | `ARSIM-PR4` | accepted | closed | Bound authoring to one current architecture-required assessment and exact decision basis. |
 | `ARSIM-PR5` | accepted | closed | Persisted the complete prepared target manifest before file mutation. |
 | `ARSIM-PR6` | accepted | closed | Added dependency-aware commit order, groups, and intermediate-validity rules. |
-| `ARSIM-TSR1` | accepted | open | Add explicit AC1-AC10 traceability to stable proof cases and commands. |
-| `ARSIM-TSR2` | accepted | open | Replace the nonexistent CMD1 module invocation with an executable repository-owned command. |
+| `ARSIM-TSR1` | accepted | closed | Added explicit AC1-AC10 traceability to stable proof cases, commands, and milestones. |
+| `ARSIM-TSR2` | accepted | closed | Replaced the nonexistent module invocation with the existing repository runner and a planned M1 ledger class. |
 
 ## Finding details
 
@@ -151,7 +152,7 @@ No material findings; no resolution entry required. The formal plan review appro
 
 Finding ID: ARSIM-TSR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: test-spec author
 Owning stage: test-spec
 Decision owner: none
@@ -161,13 +162,13 @@ Rationale: Requirement coverage alone does not satisfy the formal review contrac
 Required outcome: Every acceptance criterion maps to direct proof and can be audited from the feature spec through the test spec.
 Safe resolution path: Revise only the proof map and its authoring evidence, run structural validation, and submit the committed revision for independent test-spec rereview.
 Validation target: AC1-AC10 mapping, boundary validation, documentation prose validation, and change metadata validation.
-Validation evidence: pending test-spec revision and rereview.
+Validation evidence: `evidence/test-spec-revision-r1.md`; acceptance criterion coverage map; `reviews/test-spec-review-r2.md`; boundary, prose, metadata, and review validation passed.
 
 #### ARSIM-TSR2
 
 Finding ID: ARSIM-TSR2
 Disposition: accepted
-Status: open
+Status: closed
 Owner: test-spec author
 Owning stage: test-spec
 Decision owner: none
@@ -177,4 +178,10 @@ Rationale: A planned class can be added to the existing runner, but it cannot ma
 Required outcome: Every command identity resolves to a valid current or explicitly planned repository surface and remains aligned with the approved plan.
 Safe resolution path: Revise only the proof map and its authoring evidence, confirm command resolution, and submit the committed revision for independent test-spec rereview.
 Validation target: command path resolution, plan alignment, documentation prose validation, and change metadata validation.
-Validation evidence: pending test-spec revision and rereview.
+Validation evidence: `evidence/test-spec-revision-r1.md`; corrected CMD1 ledger entry; repository runner help resolution; `reviews/test-spec-review-r2.md`; metadata and review validation passed.
+
+### test-spec-review-r2
+
+Review closeout: test-spec-review-r2
+
+No material findings; no resolution entry required. The independent formal rereview approved the corrected proof map, closed ARSIM-TSR1 and ARSIM-TSR2, and established implementation handoff eligibility without starting implementation.
