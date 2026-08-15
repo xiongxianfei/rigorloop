@@ -10412,12 +10412,12 @@ class ArchitectureSkillSimplificationTests(unittest.TestCase):
             self.assertIn(phrase.lower(), self.governed.lower())
 
     def test_prepared_manifest_precedes_bounded_writes(self) -> None:
-        for phrase in ("Before the first target-file mutation", "durably record one ordered manifest", "intended file identities", "dependency edges", "commit groups", "After recording `prepared`", "Any drift stops before mutation"):
+        for phrase in ("Before the first target-file mutation", "durably record one ordered manifest", "target kind", "prior identity or absence", "governed evidence path", "dependency target IDs", "commit group", "independently-valid-after-commit", "commit point", "After recording `prepared`", "Any drift stops before mutation"):
             self.assertIn(phrase.lower(), self.governed.lower())
         self.assertLess(self.governed.index("Before the first target-file mutation"), self.governed.index("Before a target write"))
 
     def test_dependency_order_retry_and_settlement_are_closed(self) -> None:
-        for phrase in ("independently structurally and semantically valid", "subordinate sources before canonical Markdown", "replacement, then update predecessor status", "partial-blocked", "blocked-before-write", "An identical retry", "unrecorded file", "without adoption or overwrite"):
+        for phrase in ("not lifecycle states or independent authorization", "independently structurally and semantically valid", "subordinate sources before canonical Markdown", "replacement, then update predecessor status", "reports every completed and incomplete target", "performs no target-file mutation", "An identical retry", "creates a new operation", "unrecorded file", "without adoption or overwrite"):
             self.assertIn(phrase.lower(), self.governed.lower())
         self.assertIn("architecture-review approves", self.governed)
 
