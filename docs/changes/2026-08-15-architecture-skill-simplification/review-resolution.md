@@ -2,12 +2,14 @@
 
 Closeout status: closed
 
+Review closeout: proposal-review-r3
+Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Current result: revised proposal ready for independent rereview
+- Current result: proposal-review R3 approved the revised proposal with no material findings
 
 ## Resolution overview
 
@@ -121,3 +123,9 @@ Required outcome: Commit only when dependencies are complete and preserve only i
 Safe resolution path: Keep the procedure in governed authoring and architecture-review as the approval owner.
 Validation target: revised manifest, commit sequencing, partial-state matrix, static scenarios, and acceptance criteria plus independent rereview.
 Validation evidence: `evidence/proposal-revision-r2.md`; revised sections `Target manifest and transaction model`, `Multi-file writes, retries, and recovery`, `Proposal acceptance criteria`, and `Risks and Mitigations`.
+
+### proposal-review-r3
+
+Review closeout: proposal-review-r3
+
+No material findings; no resolution entry required. The same-stage proposal-review rerun approved the revised proposal and confirmed that all findings through `proposal-review-r2` are closed.
