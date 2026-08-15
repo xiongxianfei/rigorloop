@@ -10,9 +10,9 @@ Bind each target's artifact ID, kind, role, normalized path, and operation. Crea
 
 ## Prepared manifest
 
-Before the first target-file mutation, validate content and durably record one ordered manifest in existing authoring evidence. Bind transaction, change, assessment, inputs, baseline, targets, operations, current and intended file identities, paths, dependency edges, commit groups, independent-validity result, transition, and evidence path.
+Before the first target-file mutation, validate content and durably record one ordered manifest in existing authoring evidence. For each distinct canonical or ADR target, bind transaction and change IDs, target kind, artifact ID, normalized path, operation, prior identity or absence, intended identity, governing inputs, governed evidence path, dependency target IDs, commit group, independently-valid-after-commit result, commit point, and entry transition.
 
-Evidence state is `prepared`, `partial-blocked`, `complete`, or `abandoned`; batch result is `complete`, `partial-blocked`, or `blocked-before-write`. If existing evidence cannot represent manifest, progress, dependencies, and groups without new schema, authority, persistence, or owner, stop and return `architecture-required` rather than weaken recovery.
+Evidence state is `prepared`, `partial-blocked`, `complete`, or `abandoned`; these are evidence dispositions, not lifecycle states or independent authorization. Batch result is `complete`, `partial-blocked`, or `blocked-before-write`. If existing evidence cannot represent manifest, progress, dependencies, and groups without new schema, authority, persistence, or owner, stop and return `architecture-required` rather than weaken recovery.
 
 After recording `prepared`, re-read authority, assessment, inputs, target entries, and file baselines. Any drift stops before mutation.
 
@@ -24,11 +24,13 @@ Write diagrams and subordinate sources before canonical Markdown, the target com
 
 Before a target write, set only its entry to `authoring`, clear its authorized review, and point `authoring_evidence` to this transaction. Record progress there; complete content and evidence move only that entry to `review-required`.
 
-All targets yield `complete`. Failure preserves independently valid targets as `partial-blocked`; otherwise retain prepared evidence as `blocked-before-write`. Canonical Markdown never references incomplete dependencies.
+All targets yield `complete`. Failure preserves only proven independently valid targets as `partial-blocked` and reports every completed and incomplete target. `blocked-before-write` performs no target-file mutation. Canonical Markdown never references incomplete dependencies.
 
 ## Retry and recovery
 
 An identical retry requires the same transaction, assessment, inputs, manifest, paths, operations, baselines, identities, dependencies, groups, and authority. Resume once, reconcile only listed files, and avoid duplicate evidence or transitions.
+
+Adding, removing, reordering, or changing any target or dependency creates a new operation, never an identical retry.
 
 An unrecorded file, changed basis, conflicting or ambiguous entry, dependency drift, unrelated content, unsafe partial group, or concurrent write stops without adoption or overwrite. Interrupted completed targets remain only when the manifest proves independent validity; otherwise route exact reconciliation to the governing owner.
 

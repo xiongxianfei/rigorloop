@@ -38,3 +38,7 @@ Using canonical LF-normalized authored files, `AA0` is 772 words and 6345 bytes,
 ## Handoff
 
 M2 is ready for independent milestone code review. This evidence does not claim M2 closure, generated-package parity, final semantic preservation, verification, branch readiness, or PR readiness.
+
+## Review correction
+
+`ARSIM-M2-CR1` restored every enumerated target identity, commit point, evidence-disposition boundary, partial-result report, zero-target-write result, and changed-manifest new-operation rule. The correction remains inside the existing package and authoring-evidence model.
