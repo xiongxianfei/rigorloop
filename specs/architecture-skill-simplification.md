@@ -260,7 +260,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | E5 | regression | R26 | BND-STATE-001, BND-RECOVERY-001 | ARSIM-PR5 | - |
 | E6 | illustration | R29, R40, R42 | BND-TEMPORAL-001, BND-RECOVERY-001 | - | - |
 | E7 | regression | R31, R33, R34 | BND-COMPOSE-001, BND-RECOVERY-001 | ARSIM-PR6 | - |
-| E8 | regression | R32, R37, R38 | BND-STATE-001, BND-RECOVERY-001 | ARSIM-PR6 | - |
+| E8 | regression | R37, R38 | BND-STATE-001, BND-RECOVERY-001 | ARSIM-PR6 | - |
 | E9 | illustration | R35 | BND-COMPOSE-001 | - | - |
 | E10 | illustration | R7 | BND-COMPOSE-001, BND-ENV-001 | - | - |
 
