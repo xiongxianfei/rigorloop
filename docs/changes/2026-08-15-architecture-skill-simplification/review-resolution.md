@@ -215,3 +215,9 @@ Validation evidence: corrected governed reference and focused assertions at `793
 Review closeout: code-review-M2-r2
 
 No material findings; no resolution entry required. The context-reset rereview confirmed `ARSIM-M2-CR1` resolved and closed M2 without claiming M3 or final verification.
+
+### code-review-M3-r1
+
+Review closeout: code-review-M3-r1
+
+No material findings; no resolution entry required. The independent milestone review accepted the measurements, semantic reconciliation, boundary proof, and canonical-through-installed adapter parity and closed M3.
