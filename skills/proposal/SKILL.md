@@ -9,7 +9,7 @@ argument-hint: [feature idea, selected option, problem statement, or issue numbe
 
 # Change proposal
 
-You turn exploration into a reviewable direction. A proposal answers why this change, why now, and why this approach. It does not define every requirement or implementation task.
+Turn a problem or selected direction into a reviewable decision: why this change, why now, and why this approach, without requirements or implementation tasks.
 
 ## Workflow role
 
@@ -20,24 +20,11 @@ You turn exploration into a reviewable direction. A proposal answers why this ch
 - summary: Author the proposal artifact recording problem, options, recommendation, scope, risks, and readiness.
 - must_not_claim: proposal-review approval, spec readiness, implementation readiness, verification, branch readiness, or PR readiness.
 
-## Change-record authoring transition
-
-For a governed change, read the complete `change.yaml` before writing.
-Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing marker to `workflow` for creation or migration instead of inventing state.
-Resolve exactly one proposal entry by artifact ID, `kind`, and normalized `path`; for a new proposal, create only that entry with a unique stable ID, `kind: proposal`, normalized path, and explicit role. Before creating or substantively revising the proposal, set only that entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to the proposal-authoring record path. After the proposal and authoring record are complete, set the same entry to `review-required`.
-Preserve every other entry and `workflow_state`. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
-
 ## Project-local evidence
 
-Public skills operate in customer-project mode by default.
-
-Use project-local artifacts when present: `AGENTS.md`, `CONSTITUTION.md`, `VISION.md`, `docs/project-map.md`, `docs/workflows.md`, local specs or ADRs, related proposals, code, issues, incidents, and user feedback.
-
-Workflow-wide rule: do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects; use portable defaults where safe; block on ambiguity.
+Public skills use customer-project mode by default and project-local artifacts when present, including `docs/workflows.md` for local routing or placement. Do not require RigorLoop repository-internal artifacts in customer projects; use portable defaults or block on ambiguity.
 
 ## Evidence access
-
-Read standing operating instructions when present, then use the smallest sufficient evidence set.
 
 Default evidence:
 
@@ -57,210 +44,61 @@ Conditional evidence:
 
 Bounded discovery is not evidence expansion. Record a compact reason only when reading substantive evidence outside the default and triggered conditional set.
 
-## Artifact placement
+## Artifact placement and operation
 
-Prefer:
+Prefer `docs/proposals/YYYY-MM-DD-slug.md`; honor project-local placement and never overwrite an older initiative. Resolve one exact target from input, current metadata, governing contract, guidance, or default; stop on ambiguity.
 
-```text
-docs/proposals/YYYY-MM-DD-slug.md
-```
+Operations are exactly `create-primary-proposal` and `revise-primary-proposal`. Portable create requires absence; revise requires the exact existing target. Portable authoring writes only the proposal artifact, never lifecycle, review, automation, or routing state.
 
-Do not overwrite an older proposal for a new initiative.
+## Invocation classification
 
-Use the project workflow guide for artifact locations when placement matters.
+`governed_proposal_candidate_context` requires an explicit change ID, workflow-managed exact change, or valid structured owning-change pointer. Conversational wording alone does not establish it. Loading does not grant mutation authority; failure must not fall back to portable authoring.
 
-Lookup order:
+Specialized predicates are exactly `vision_exception_context`, `standing_artifact_context`, `initial_intent_table_context`, and `scope_budget_context`. Truth is semantic proposal judgment. Predicates apply independently; a non-empty set loads exactly once. Resolve material ambiguity before drafting or readiness.
 
-1. explicit user path or change ID;
-2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
-3. known governing spec or schema constraint when directly relevant;
-4. `docs/workflows.md` artifact-location table when that project-local file is present;
-5. this skill's portable default path;
-6. block on ambiguity.
-
-This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
-
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+The four loaded assemblies are `PA0-portable`, `PA0G-portable-gated`, `PA1-governed`, and `PA1G-governed-gated`.
 
 ## Resource map
 
-- COPY `assets/proposal-skeleton.md` when creating a new proposal artifact.
-  Fill: required proposal sections, plus `Initial intent preservation` and `Scope budget` when this skill's trigger rules apply.
+- READ `references/governed-proposal-authoring.md` when `governed_proposal_candidate_context` is true. Validate authority before governed work.
+- READ `references/strategic-and-scope-gates.md` when any specialized predicate is true. Apply all true predicates once.
+- COPY `assets/proposal-skeleton.md` when creating a proposal.
+  Fields: universal proposal sections and every applicable conditional group.
   Do not emit unfilled placeholders.
 
-## Generated Markdown readability
+Missing, unreadable, escaped, contradictory, stale, or mixed-version required resources stop dependent work; must not reconstruct them. Untriggered resources do not block.
 
-When this skill creates or updates generated or generator-shaped Markdown:
+## Proposal contract
 
-- Write ordinary prose as normal Markdown paragraphs. Do not split a sentence across physical source lines merely for wrapping or clause separation; multiple sentences may remain in one paragraph.
-- Preserve stable IDs for requirements, findings, commands, milestones, and evidence; use tables for repeated mappings.
-- Keep commands fenced or table-owned when they carry proof.
-- Diagrams are optional. Use them only when they reduce cognitive load and map to real artifacts, stages, components, actors, or states.
-- Do not require manual-proof contracts from this readability guidance alone; use governing project rules when manual proof is otherwise required.
+Cover problem, goals, non-goals, context, three options or linked exploration, recommendation, behavior, architecture, testing, rollout/rollback, risks, questions, decisions, artifacts, and readiness. Preserve `Next artifacts` as history; use `Follow-on artifacts` for results and `None yet` before any exist.
 
-## Required proposal sections
-
-| Section | Purpose |
-|---|---|
-| Owning change record | Stable pointer to the change-local lifecycle state. |
-| Problem | User or system problem being solved. |
-| Goals | Outcomes the change should produce. |
-| Non-goals | Explicitly out-of-scope work. |
-| Vision fit | Relationship to root `VISION.md` when that project-local file exists. |
-| Context | Relevant product, architecture, workflow, repository, or operational background. |
-| Options considered | At least three options, or a link to exploration that contains them. |
-| Recommended direction | Selected approach and rationale. |
-| Expected behavior changes | High-level observable behavior, not detailed requirements. |
-| Architecture impact | Expected components, boundaries, and data flow touched. |
-| Testing and verification strategy | Likely levels of test coverage and proof. |
-| Rollout and rollback | Migration, flags, compatibility, fallback, or recovery. |
-| Risks and mitigations | Product, technical, operational, security, and performance risks. |
-| Open questions | What must be resolved before spec or architecture. |
-| Decision log | Date, decision, reason, and alternatives rejected. |
-| Next artifacts | Planned spec, architecture, plan, test-spec, or follow-up work while active. |
-| Follow-on artifacts | Actual downstream artifacts or terminal disposition after settlement or closeout. |
-| Readiness | Truthful next-stage status. |
-
-If `Follow-on artifacts` appears before real follow-ons exist, write `None yet`.
+Frame the problem independently, compare tradeoffs, protect scope and intent, state value, and make risks actionable. Do not write milestones, invent `MUST` rules, hide tradeoffs, or claim acceptance without authority.
 
 ## Vision fit
 
-Include `Vision fit` in new or substantively revised proposals after the vision spec is adopted.
+Include `Vision fit` in new or substantively revised proposals after vision adoption; Legacy proposals need it when revised. Its first non-empty line is `fits the current vision`, `may conflict with the current vision`, `proposes a vision revision`, or `no vision exists yet`.
 
-Legacy proposals that predate the vision contract do not require retroactive edits unless they are substantively revised.
-
-Closed enum: Vision fit
-
-```text
-fits the current vision
-may conflict with the current vision
-proposes a vision revision
-no vision exists yet
-```
-
-Use the exact value as the first non-empty line of the section.
-
-When root `VISION.md` does not exist, proposals must use the exact `Vision fit` value `no vision exists yet`.
-
-If root `VISION.md` exists, choose one of the current-vision outcomes and do not use `no vision exists yet`.
-
-Retired root `vision.md` must not prevent `no vision exists yet` when root `VISION.md` is absent.
-
-A short explanatory paragraph may follow the Vision fit value.
-A proposal must not silently redefine project vision outside the `Vision fit` section and normal proposal rationale.
-
-## Standing artifact gates
-
-| Gate | Rule |
-|---|---|
-| Substantive proposal | A substantive proposal is any proposal that chooses product direction, user-facing behavior, workflow policy, architecture direction, compatibility policy, release policy, or contributor-visible contract. |
-| Vision gate | `VISION.md` absence blocks the first substantive proposal unless the proposal is bootstrap work to create project vision. |
-| Constitution gate | `CONSTITUTION.md` absence blocks governance adoption, workflow-governance changes, and source-of-truth changes unless the proposal is bootstrap work to create or migrate the constitution. |
-| Bootstrap exception | Bootstrap proposals must identify the bootstrap exception in `Vision fit`; otherwise stop before drafting the substantive proposal. |
+When root `VISION.md` does not exist, proposals must use the exact `Vision fit` value `no vision exists yet`. If root `VISION.md` exists, choose one of the current-vision outcomes. Retired root `vision.md` must not prevent `no vision exists yet`. A proposal must not silently redefine project vision.
 
 ## Scope preservation
 
-Before drafting or materially revising a proposal, extract the user's initial goals, concerns, constraints, and requested outcomes.
+Before drafting or materially revising a proposal, extract the user's initial goals, concerns, constraints, and requested outcomes. Every initial user goal must be visible in the proposal as one `initial goal treatment` enum value. Do not silently drop a user goal when narrowing a proposal. If a proposal intentionally narrows the user's request, record the narrowing.
 
-Closed enum: initial goal treatment
+Use `initial_intent_table_context` for broad or multi-part requests. Use `scope_budget_context` for multiple work items/families/artifacts, policy, generated output, public skill behavior, or review concern about narrowing, hidden follow-up, or multi-workstream ambiguity. Scope-budget applicability is proposal/proposal-review judgment in this first slice, not mechanical validator inference. Small single-decision proposals may omit the scope budget.
 
-```text
-in scope
-out of scope
-deferred follow-up
-rejected option
-open question
-```
+## Structural groups
 
-Every initial user goal must be visible in the proposal as one `initial goal treatment` enum value.
+The skeleton owns structure only; procedure owns meaning and applicability. Inapplicable conditional groups are omitted. Applicable but unresolved groups report an explicit blocker. Never emit an unfilled placeholder.
 
-Do not silently drop a user goal when narrowing a proposal.
+## Generated Markdown readability
 
-If a proposal intentionally narrows the user's request, record the narrowing in `Non-goals`, `Options considered`, `Decision log`, `Next artifacts`, `Follow-on artifacts`, or `Open questions`.
+Write ordinary prose as normal Markdown paragraphs. Do not split a sentence across physical source lines. Preserve stable IDs and tables. Diagrams are optional. Do not require manual-proof contracts from this readability guidance alone.
 
-For broad or multi-part requests, include:
-
-```md
-## Initial intent preservation
-
-| Initial user goal | Proposal treatment | Where recorded |
-|---|---|---|
-| <goal> | <one initial goal treatment value> | <section> |
-```
-
-## Scope budget for broad proposals
-
-Use a scope budget when the proposal is broad or multi-workstream.
-Scope-budget applicability is proposal/proposal-review judgment in this first slice, not mechanical validator inference.
-
-| Trigger | Meaning |
-|---|---|
-| Multiple work items | the user request contains two or more independent work items. |
-| Multiple lifecycle families | the change touches more than one lifecycle family. |
-| Multiple downstream artifacts | the change could reasonably require more than one spec or implementation plan. |
-| Policy or generated output | The proposal includes release policy, workflow policy, generated output, public skill behavior, or validation policy. |
-| Review concern | `proposal-review` identifies silent narrowing, hidden follow-up risk, or multi-workstream scope. |
-
-Closed enum: scope budget treatment
-
-```text
-core to this proposal
-first-slice candidate
-same-slice dependency
-separate implementation slice
-deferable follow-up
-separate proposal
-out of scope
-```
-
-When triggered, add:
-
-```md
-## Scope budget
-
-| Work item | Treatment | Reason |
-|---|---|---|
-| <work item> | <one scope budget treatment value> | <why> |
-```
-
-Use the `scope budget treatment` enum above for allowed treatment values.
-
-Small single-decision proposals may omit the scope budget.
-
-Route deferred work through the follow-up ownership model rather than chat-only notes or `project-map` ownership. Preserve this boundary: workflow routes, `project-map` orients when present, action-owning artifacts track current work, and unowned cross-change follow-ups use the follow-up ownership surface.
+## Source, claims, and handoff
 
 Use authored skill sources for skill truth. Do not search generated adapter output for authored skill truth. Do not add generated public adapter skill bodies back to tracked source.
 
-## Decision quality checklist
-
-| Check | Pass condition |
-|---|---|
-| Problem framing | The problem is not just a solution in disguise. |
-| Alternatives | The recommended option is compared against alternatives. |
-| Scope | Non-goals protect the scope. |
-| Initial intent | Each initial user goal is classified and traceable when the request is broad or multi-part. |
-| User value | User value is explicit. |
-| Vision fit | `Vision fit` is present and consistent with root `VISION.md` when required. |
-| Architecture | Architecture impact is acknowledged. |
-| Verification | Testing and verification are plausible. |
-| Risks | Risks are specific enough to act on. |
-| Open questions | Open questions do not block writing a spec. |
-
-## Rules
-
-- Skill-local rule: do not write implementation milestones in a proposal.
-- Skill-local rule: do not use normative `MUST` requirements unless quoting a known constraint.
-- Skill-local rule: do not hide major tradeoffs or skip rejected alternatives.
-- Skill-local rule: do not claim a proposal is accepted unless the user or project process accepts it.
-- Workflow-wide rule: do not treat `under review` as a durable relied-on state once downstream work is using the proposal. Normalize accepted proposals to `accepted`.
-- Workflow-wide rule: preserve `Next artifacts` as planning history. Use `Follow-on artifacts` or equivalent closeout text for actual downstream artifacts or final disposition.
-- Workflow-wide rule: if a proposal is superseded, identify the replacement with `superseded_by` or equivalent labeled text.
-
-## Workflow handoff behavior
-
-- In a workflow-managed flow, successful `proposal` completion hands off to `proposal-review` when that review is the next mandatory or triggered downstream stage.
-- If open questions or direction gaps still block review, stop and report the blocker instead of implying that `proposal-review` can proceed.
-- This v1 contract does not imply `proposal-review -> spec`; review-to-next-authoring transitions remain outside the autoprogression boundary unless a later approved change adds them.
+Workflow-managed completion hands off to `proposal-review` when it is the next mandatory or triggered downstream stage; direction gaps stop. Approval belongs to review. Do not claim later-stage, branch, PR, release, deployment, or publication readiness.
 
 ## Evidence collection efficiency
 
@@ -279,11 +117,10 @@ Read the full file when the whole file is the review target, context can change 
 
 ```md
 COPY `assets/proposal-skeleton.md` for <proposal path>.
-Fill every section named in Required proposal sections.
-Add Initial intent preservation or Scope budget when their triggers apply.
-Do not emit unfilled placeholders.
+Fill every universal section and each applicable conditional group.
+Omit inapplicable groups and do not emit unfilled placeholders.
 ```
 
 ## Expected output
 
-Use `assets/proposal-skeleton.md` to include the proposal path, recommendation, rationale, risks, open questions, and readiness for `proposal-review` or blocker state.
+Return path, operation, assembly, recommendation, rationale, risks, blockers, and review readiness or stop.
