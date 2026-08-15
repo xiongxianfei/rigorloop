@@ -3,90 +3,102 @@ name: spec
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Write or amend a contract-level feature spec before architecture, planning, test planning, or implementation. Use when accepted direction or requested behavior must become requirements for observable behavior, APIs, UI, config, data contracts, errors, compatibility, security, privacy, accessibility, performance, or safety-sensitive logic. Use spec-review to review a spec; use proposal, architecture, plan, test-spec, implement, verify, or pr for those stages.
+  Author observable feature contracts before design or implementation; spec-review approves.
 argument-hint: [proposal path, feature name, behavior request, or issue number]
 ---
 
 # Feature spec authoring
 
-You are writing the behavioral contract for the change.
-
-The spec defines **what the system must do** and **how the behavior will be observed**. It should avoid unnecessary internal implementation detail.
-
 ## Workflow role
 
 - role_name: spec
 - stage: authoring
-- upstream: accepted proposal, approved direction, behavior request, issue, exploration, or research
+- upstream: accepted proposal or approved direction
 - downstream: spec-review
-- summary: Author or amend the feature spec recording observable behavior, requirements, examples, edge cases, acceptance criteria, and readiness.
+- summary: Author the contract.
+- ownership: Write the spec and authorized governed evidence/transition.
 - must_not_claim: spec-review approval, architecture readiness, plan readiness, implementation readiness, verification, branch readiness, or PR readiness.
+
+Portable work is isolated. Workflow-managed execution does not enlarge the `spec` write set.
+
+## Purpose and evidence
+
+Resolve placement from identity, metadata, contracts, guidance, then defaults. A relied-on proposal requires accepted settlement, no open finding or later contradictory review, and required closed resolution; treat upstream as read-only.
 
 ## Project-local evidence
 
-Public skills operate in customer-project mode by default.
+Public skills use customer-project mode by default and project-local artifacts when present, including `docs/workflows.md` for local routing or placement. Do not require RigorLoop repository-internal artifacts in customer projects; use portable defaults or block on ambiguity.
 
-Use project-local artifacts when present and relevant: `AGENTS.md`, `CONSTITUTION.md`, accepted proposals, issues, exploration or research, `docs/project-map.md`, `docs/workflows.md`, related local specs, architecture records, ADRs, interfaces, schemas, APIs, UI flows, config, and data contracts.
+## Invocation profiles and governed signals
 
-Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists.
+Classify every invocation before mutation.
 
-## Inputs to read
+| Profile | Signal classification | Loaded procedure |
+| --- | --- | --- |
+| `SA0-portable` | `no-governed-signal` | Core plus both boundary references |
+| `SA1-governed` | `single-governed-candidate` | SA0 plus governed reference |
 
-Read the smallest relevant set from project-local instructions, accepted proposal or issue, exploration or research, project map, related specs, architecture docs or ADRs, and existing interfaces, schemas, APIs, UI flows, config, or data contracts.
+Signals are `no-governed-signal`, `single-governed-candidate`, and `invalid-or-ambiguous-governed-signal`. Explicit change ID, workflow-managed identity, or structured owning-change field counts even when malformed; conversational references do not.
 
-A concrete execution plan is not required before writing the spec. In this workflow, the spec normally comes before the execution plan.
+`no-governed-signal` is the only classification that permits portable authoring. `single-governed-candidate` requires safe, agreeing signals. Malformed, stale, duplicated, escaped, unsafe, missing-root, mismatched, or conflicting signals stop as invalid; governed failure must not fall back to portable authoring.
 
-## Upstream settlement check
+Loading selects procedure, not authority; validate before writing.
 
-Before relying on a proposal, read its matching `change.yaml` artifact entry and formal review evidence.
-Require an `accepted` settlement, no later contradictory review, no open findings, and closed review resolution when required.
+## Operations and portable authority
 
-Treat the proposal and its lifecycle state as read-only.
-Do not normalize status in the proposal or settle its change-local entry.
-If settlement is missing or contradictory, record the blocker and route to `proposal-review`.
+Operations are `create-primary-spec` and `revise-primary-spec`. Portable create needs an absent target and revise an existing exact target; conflict stops. Never overwrite an unrelated spec. Portable authoring writes only the spec artifact, never lifecycle, review, routing, or automation state.
 
-## Change-record authoring transition
+## Contract quality
 
-For a governed change, read the complete `change.yaml` before writing.
-Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing marker to `workflow` for creation or migration instead of inventing state.
-Resolve exactly one spec entry by artifact ID, `kind`, and normalized `path`.
-For a new spec, create only that entry with a unique stable ID, `kind: spec`, normalized path, and explicit role. Before creating or substantively revising the spec, set only that entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to the spec-authoring record path. After the spec and authoring record are complete, set the same entry to `review-required`.
-Preserve every other entry and `workflow_state`. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
+Cover inputs, outputs, state, errors, compatibility, observability, security/privacy, accessibility, performance, and edges with normative, testable requirements; examples never own behavior and the spec must not invent excluded scope. Explain inapplicability. Preserve `Next artifacts`; use `Follow-on artifacts` for outcomes and `None yet` before any exist. A superseded spec identifies its replacement.
 
-## Output path
+## Formal boundary composition
 
-Prefer:
+Both boundary references load initially; loading and formal-block emission are independent. The feature reference owns the block; the skeleton owns its position.
 
-```text
-specs/slug.md
-```
+Block state is `absent`, `present-complete`, `present-incomplete`, `present-duplicated`, or `present-misplaced`; anchors are `unique-ordered`, `missing`, `duplicated`, or `misordered`. Adoption needs unique anchors or an authorized full rewrite; otherwise stop.
 
-Do not overwrite unrelated specs. If changing an existing behavior, update the existing spec and preserve history through changelog notes when useful.
+A complete block preserves IDs and is never removed implicitly. Removal needs approved deactivation/supersession and impact traceability. Malformed or unresolved structure stops. Spec-review retains final authority over grandfathered substantive-revision classification.
 
-## Artifact placement
+## Generated Markdown readability
 
-Use the project workflow guide for artifact locations when placement matters.
+Write normal Markdown paragraphs. Do not split a sentence across physical source lines merely for wrapping or clause separation. Preserve stable IDs; use tables for repeated mappings. Diagrams are optional. Do not require manual-proof contracts from readability guidance.
 
-Lookup order:
+## Rules and handoff
 
-1. explicit user path or change ID;
-2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
-3. known governing spec or schema constraint when directly relevant;
-4. `docs/workflows.md` artifact-location table;
-5. this skill's portable default path;
-6. block on ambiguity.
+Only governed authority may end at `review-required`; `spec-review` settles it. Never change other artifact or stage state. Governed work hands off; portable stays isolated; unclear behavior routes upstream.
 
-This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
+## Stop conditions
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index when project-local, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+Stop on missing, unreadable, escaped, contradictory, stale, mixed-version, ambiguous, conflicting, unknown, or insufficient evidence/resources; illegal state; unsafe recovery; unowned behavior; malformed structure; or placeholders.
+
+The common path must not reconstruct missing procedure. Report blocker and owner.
+
+## Claims this skill must not make
+
+Never claim spec-review approval; architecture, plan, implementation, branch, or PR readiness; validation, verification, release, deployment, publication, or settlement.
+
+## Evidence collection efficiency
+
+Use bounded evidence before broad reads or raw excerpts.
+Use summary and stable-ID first reasoning before broad reads or raw excerpts.
+Prefer check IDs, requirement IDs, test IDs, file paths, counts, line citations, matching line numbers, diffs, and targeted excerpts when inspecting large files, generated output, validation logs, or repeated scans.
+Output caps are safety rails, not evidence-selection strategy.
+Validation summaries must not change selected check coverage, command exit behavior, failure detection, or required validation evidence.
+Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
+
+## When full-file read is required
+
+Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Resource map
 
-- READ `references/boundary-first-method-v1.md` when a behavior contract is governed by `boundary-first-v1`.
-- READ `references/boundary-first-feature-authoring-v1.md` when authoring or revising the formal feature boundary record.
-- COPY `assets/spec-skeleton.md` when creating or fully rewriting a feature spec.
-  Fill: spec title, required-section structures, examples, requirements, acceptance criteria, next artifacts, follow-on artifacts, and readiness.
-  Do not emit unfilled placeholders.
+- READ `references/boundary-first-method-v1.md` initially for every `spec` invocation.
+- READ `references/boundary-first-feature-authoring-v1.md` initially after the method reference for every `spec` invocation.
+- READ `references/governed-spec-authoring.md` only for `single-governed-candidate`; validate exact authority before any governed write.
+- COPY `assets/spec-skeleton.md` when creating or fully rewriting. Fill: applicable fields and sections. Do not emit unfilled placeholders or insertion markers.
+
+Require readable, contained, same-version resources; never infer missing procedure or structure.
 
 ## Boundary-first method
 
@@ -105,114 +117,19 @@ Add a scenario only for a distinct outcome or material authority, trust, state, 
 
 Capability state controls formal adoption: `pending` never claims active adoption; after activation, new behavior-changing specs adopt automatically, grandfathered non-substantive revisions remain valid, and `spec-review` must block an undecidable substantive-revision classification. Explain concisely when a formal record is created or an upstream gap blocks progress; do not request redundant consent for contract-required adoption. Structural validation cannot author, repair, or approve semantic content.
 
-Author the normative applicability, boundary, interaction, and example-ownership record.
-
-Use the shared reference for the closed record shape while keeping feature behavior and stage policy in the spec. Stop spec authoring and route the gap upstream when the governing requirements cannot own an applicable boundary, an example would be the only source of behavior, or applicability cannot be decided safely.
-
-## Generated Markdown readability
-
-When this skill creates or updates generated or generator-shaped Markdown:
-
-- Write ordinary prose as normal Markdown paragraphs. Do not split a sentence across physical source lines merely for wrapping or clause separation; multiple sentences may remain in one paragraph.
-- Preserve stable IDs for requirements, findings, commands, milestones, and evidence; use tables for repeated mappings.
-- Keep commands fenced or table-owned when they carry proof.
-- Diagrams are optional. Use them only when they reduce cognitive load and map to real artifacts, stages, components, actors, or states.
-- Do not require manual-proof contracts from this readability guidance alone; use governing project rules when manual proof is otherwise required.
-
-## Required sections
-
-Include these sections:
-
-| Section | Requirement |
-| --- | --- |
-| Owning change record | Required stable pointer for governed work. |
-| Related proposal | Required section. |
-| Goal and context | Required section. |
-| Glossary | Required section. |
-| Examples first | Required section. |
-| Requirements | Required section. |
-| Inputs and outputs | Required section. |
-| State and invariants | Required section. |
-| Error and boundary behavior | Required section. |
-| Compatibility and migration | Required section. |
-| Observability | Required section. |
-| Security and privacy | Required section. |
-| Accessibility and UX | Required section. |
-| Performance expectations | Required section. |
-| Edge cases | Required section. |
-| Non-goals | Required section. |
-| Acceptance criteria | Required section. |
-| Open questions | Required section. |
-| Next artifacts | Required section. |
-| Follow-on artifacts | Required section. |
-| Readiness | Required section. |
-
-Use `None`, `not applicable`, or a short rationale for sections that do not apply. `Follow-on artifacts`, when present before real follow-ons exist, says `None yet`.
-
-## Requirement format
-
-Use stable, testable requirement IDs:
-
-```text
-R1. The system MUST ...
-R2. The API MUST NOT ...
-R3. The UI SHOULD ... because ...
-```
-
-Every `MUST` must be testable or explicitly justified as manually verifiable.
-
-## Example format
-
-Prefer concrete examples:
-
-```text
-Example E1: valid input creates a record
-Given ...
-When ...
-Then ...
-```
-
-## Rules
-
-- Do not bury requirements in prose.
-- Do not use vague words such as “fast,” “intuitive,” or “robust” without measurable criteria.
-- Do not specify internal class names, functions, or file paths unless they are externally observable contracts.
-- Do not skip failure behavior.
-- Do not skip compatibility expectations.
-- Do not invent requirements that the proposal excludes.
-- Do not write review settlement into the spec.
-  The matching `spec-review` records settlement in `change.yaml`.
-- Preserve `Next artifacts` as planning history. Use `Follow-on artifacts` for actual downstream artifacts, replacement, or terminal closeout.
-- If a spec is superseded, identify the replacement with `superseded_by` or equivalent labeled text.
-- If the behavior is too unclear to specify, return to `explore`, `research`, or `proposal`.
-
-## Workflow handoff behavior
-
-In a workflow-managed flow, successful `spec` completion hands off to `spec-review` when that review is next. If blockers prevent review-quality contract writing, stop and report them. This v1 contract does not imply `spec-review -> architecture` or `spec-review -> test-spec`; review-to-next-authoring transitions remain out of scope unless later approved.
-
-Only an explicitly authorized workflow-managed `bounded-review-fix` run can continue after the matching `spec-review`, and that continuation depends on a clean recorded review, recorded architecture assessment, a current authoring capability, and no stop condition.
-
-## Evidence collection efficiency
-
-Use bounded evidence before broad reads or raw excerpts.
-Use summary and stable-ID first reasoning before broad reads or raw excerpts.
-Prefer check IDs, requirement IDs, test IDs, file paths, counts, line citations, matching line numbers, diffs, and targeted excerpts when inspecting large files, generated output, validation logs, or repeated scans.
-Output caps are safety rails, not evidence-selection strategy.
-Validation summaries must not change selected check coverage, command exit behavior, failure detection, or required validation evidence.
-Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
-
-## When full-file read is required
-
-Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
+Author the normative applicability, boundary, interaction, and example-ownership record. Stop spec authoring and route the gap upstream when governing requirements cannot own an applicable boundary, an example would be the only source of behavior, or applicability is unsafe to decide. The two initially loaded references own detailed vocabulary, record shape, semantic procedure, and structural-validation limits.
 
 ## Output skeleton
 
 ```md
 COPY `assets/spec-skeleton.md` for <spec path>.
-Fill every section named in Required sections.
-Do not emit unfilled placeholders.
+Fill every required and applicable section and remove the conditional insertion marker and all placeholders.
 ```
 
 ## Expected output
 
-Use the `## Output skeleton` guidance and `assets/spec-skeleton.md` structure. Include the spec path, examples first, requirement IDs, edge cases, non-goals, acceptance criteria, ambiguities, and readiness for `spec-review` or blocker state.
+Report path, requirements, boundaries, blockers, and readiness.
+
+## Outputs
+
+Output is the spec and evidence, not review or downstream completion.
