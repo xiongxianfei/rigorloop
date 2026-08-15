@@ -1,15 +1,16 @@
 # Review Resolution: Architecture Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r3
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
+Review closeout: test-spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Current result: proposal-review R3 approved the revised proposal with no material findings
+- Unresolved findings: 2
+- Current result: test-spec-review R1 requested changes before implementation handoff
 
 ## Resolution overview
 
@@ -21,6 +22,8 @@ Review closeout: proposal-review-r2
 | `ARSIM-PR4` | accepted | closed | Bound authoring to one current architecture-required assessment and exact decision basis. |
 | `ARSIM-PR5` | accepted | closed | Persisted the complete prepared target manifest before file mutation. |
 | `ARSIM-PR6` | accepted | closed | Added dependency-aware commit order, groups, and intermediate-validity rules. |
+| `ARSIM-TSR1` | accepted | open | Add explicit AC1-AC10 traceability to stable proof cases and commands. |
+| `ARSIM-TSR2` | accepted | open | Replace the nonexistent CMD1 module invocation with an executable repository-owned command. |
 
 ## Finding details
 
@@ -141,3 +144,37 @@ No material findings; no resolution entry required. The formal spec review appro
 Review closeout: plan-review-r1
 
 No material findings; no resolution entry required. The formal plan review approved the stable plan and requires identity-bound initialization and settlement retry before test-spec eligibility.
+
+### test-spec-review-r1
+
+#### ARSIM-TSR1
+
+Finding ID: ARSIM-TSR1
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Decision owner: none
+Decision needed: none; AC1 through AC10 already define the required traceability targets.
+Chosen action: Add exact acceptance-criterion mappings to stable cases and commands without changing normative behavior.
+Rationale: Requirement coverage alone does not satisfy the formal review contract's separate acceptance-criterion traceability obligation.
+Required outcome: Every acceptance criterion maps to direct proof and can be audited from the feature spec through the test spec.
+Safe resolution path: Revise only the proof map and its authoring evidence, run structural validation, and submit the committed revision for independent test-spec rereview.
+Validation target: AC1-AC10 mapping, boundary validation, documentation prose validation, and change metadata validation.
+Validation evidence: pending test-spec revision and rereview.
+
+#### ARSIM-TSR2
+
+Finding ID: ARSIM-TSR2
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Decision owner: none
+Decision needed: none; the approved plan and repository runner establish the safe command family.
+Chosen action: Replace or consolidate CMD1 with an executable repository-owned focused or change-local validation command while preserving M1 timing and zero-test failure.
+Rationale: A planned class can be added to the existing runner, but it cannot make the nonexistent underscored module importable without an unplanned runner change.
+Required outcome: Every command identity resolves to a valid current or explicitly planned repository surface and remains aligned with the approved plan.
+Safe resolution path: Revise only the proof map and its authoring evidence, confirm command resolution, and submit the committed revision for independent test-spec rereview.
+Validation target: command path resolution, plan alignment, documentation prose validation, and change metadata validation.
+Validation evidence: pending test-spec revision and rereview.

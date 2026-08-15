@@ -70,3 +70,16 @@ Resolution: review-resolution.md#proposal-review-r3
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: test-spec-review-r1
+Stage: test-spec-review
+Round: r1
+Reviewed artifact: `specs/architecture-skill-simplification.test.md` at commit `9be51238`
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r1.md
+Resolution: review-resolution.md#test-spec-review-r1
+Material findings: ARSIM-TSR1, ARSIM-TSR2
+Open findings: ARSIM-TSR1, ARSIM-TSR2
+Recording status: recorded
