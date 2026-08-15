@@ -1,0 +1,49 @@
+change_id: 2026-08-15-spec-skill-simplification
+title: Spec Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-15-spec-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-15-spec-skill-simplification/evidence/proposal-authoring.md
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-15-spec-skill-simplification/evidence/proposal-authoring.md
+
+workflow: {}
+
+artifacts:
+  proposal: docs/proposals/2026-08-15-spec-skill-simplification.md
+
+requirements:
+  - Reduce portable and governed spec-authoring loaded context while preserving contract quality, boundary-first adoption, customer portability, lifecycle authority, and spec-review handoff.
+  - Add one governed spec-authoring reference while preserving both existing boundary-first references and their required initial loading.
+  - Define closed portable and governed operations, retry and recovery behavior, structural ownership, missing-resource failure, and one-owner boundaries.
+  - Preserve every behaviorally significant rule and classify exact literal dependencies separately from semantic rules.
+  - Prove package integrity and profile reduction without target-agent runtime execution, prose classification, or a separate manual semantic-review acceptance gate.
+
+tests:
+  - Formal independent proposal review of direction, scope, boundary compatibility, authority, ownership, recovery, measurement, and readiness.
+  - Deterministic validation of resource mappings, create and revise operations, authority failures, section ownership, stops, claims, and package parity.
+  - Static scenarios covering portable and governed authoring, identical retry, stale recovery, initial boundary resources, missing resources, conflicting identity, forbidden writes, and forbidden claims.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-15-spec-skill-simplification/change.yaml
+  - docs/changes/2026-08-15-spec-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-15-spec-skill-simplification.md
+
+review:
+  status: review-requested
+  unresolved_items: 0
