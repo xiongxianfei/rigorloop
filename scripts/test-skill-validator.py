@@ -10307,8 +10307,12 @@ class SpecSkillSimplificationTests(unittest.TestCase):
     def test_governed_transactions_restart_and_write_boundaries_are_complete(self) -> None:
         for value in ("create-primary-spec", "revise-primary-spec", "restart-stale-authoring", "stale-authoring-attempt", "review-required"):
             self.assertIn(value, self.governed)
-        for phrase in ("complete current `change.yaml`", "commit point", "idempotent success", "explicit current user instruction", "same-change workflow handoff", "byte-for-byte", "zero-byte", "must not change `workflow_state`", "leaves the entry in `authoring`"):
+        for phrase in ("complete current `change.yaml`", "change ID", "artifact ID", "artifact kind", "artifact role", "governing input identities", "retry identity", "complete spec", "content identity", "commit point", "idempotent success", "explicit current user instruction", "same-change workflow handoff", "request identity", "old retry identity", "new retry identity", "byte-for-byte", "zero-byte", "same canonical spec file", "completed authoring and review evidence", "must not change `workflow_state`", "leaves the entry in `authoring`"):
             self.assertIn(phrase.lower(), self.governed.lower())
+
+    def test_universal_semantic_preservation_is_explicit(self) -> None:
+        for phrase in ("later contradictory review", "Never overwrite an unrelated spec", "normative", "must not invent excluded scope", "superseded spec identifies its replacement"):
+            self.assertIn(phrase.lower(), self.skill.lower())
 
     def test_formal_boundary_structure_and_transition_contract_is_closed(self) -> None:
         marker = "<!-- INSERT formal boundary block here when applicable. -->"

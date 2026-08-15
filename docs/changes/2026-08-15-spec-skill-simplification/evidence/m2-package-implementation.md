@@ -31,10 +31,10 @@ Counts use canonical LF-normalized authored resources, Unicode whitespace-separa
 
 | Profile | Baseline words | Current words | Baseline bytes | Current bytes | Result |
 | --- | ---: | ---: | ---: | ---: | --- |
-| `SA0-portable` | 3020 | 2453 | 21523 | 18312 | decreased |
-| `SA1-governed` | 3020 | 2862 | 21523 | 21515 | decreased |
+| `SA0-portable` | 3020 | 2405 | 21523 | 17962 | decreased |
+| `SA1-governed` | 3020 | 2849 | 21523 | 21489 | decreased |
 
-The complete authored package is 3080 words and 23140 bytes versus the 3229-word and 23087-byte baseline. The 53-byte package increase is the visible cost of adding one explicit governed resource while both real procedural profiles decrease. M3 owns final identity, parity, and measurement proof.
+The complete authored package is 3067 words and 23114 bytes versus the 3229-word and 23087-byte baseline. The 27-byte package increase is the visible cost of adding one explicit governed resource while both real procedural profiles decrease. M3 owns final identity, parity, and measurement proof.
 
 ## Validation
 
@@ -49,3 +49,7 @@ The complete authored package is 3080 words and 23140 bytes versus the 3229-word
 ## Handoff
 
 M2 is implementation-complete evidence only. It routes to formal milestone code review and does not claim milestone closure, final package parity, verification, branch readiness, or PR readiness.
+
+## Accepted review corrections
+
+`SPSIM-M2-CR1` expanded the governed reference to state every mandatory authority basis, transaction identity, content identity, retry result, restart evidence field, partial-content disposition, preservation rule, write boundary, and architecture stop from R21-R42. `SPSIM-M2-CR2` restored complete proposal-settlement, unrelated-target, normative scope, and superseded-replacement semantics in the universal path. Focused assertions now protect those semantic groups, and both loaded profiles remain below baseline.

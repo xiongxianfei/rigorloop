@@ -1,28 +1,32 @@
 # Governed spec authoring
 
-Load only for `single-governed-candidate`. The parent owns universal policy; this reference owns governed transactions.
+Load for `single-governed-candidate`; the parent owns universal policy and this reference governed transactions.
 
 ## Authority and writes
 
-Read the complete current `change.yaml`. Require `lifecycle_contract: stage-owned-change-local-v1`; resolve operation, artifact ID, normalized canonical path, inputs, authoring-evidence path, and authority; validate proposal settlement. Conflict stops without portable fallback.
+Read the complete current `change.yaml`. Require `lifecycle_contract: stage-owned-change-local-v1`, exact entry/path, settled inputs, accepted proposal when applicable, and legal state. Bind change ID, artifact ID, normalized canonical path, governing input identities, authoring-evidence path, retry identity, and operation before writing; conflict stops without portable fallback.
 
-Write only the spec, evidence, and matching entry transition; it must not change `workflow_state`, routing, automation, peer review, other entries, or downstream state.
+Write only spec, evidence, and matching transition; must not change `workflow_state`, routing, automation, review, other entries, or downstream state.
 
 ## Create-primary-spec
 
-`create-primary-spec` requires an absent entry and file, deterministic path, no competing primary, and bound identities. Create the `authoring` entry, write and identify valid content, record evidence, then move only that entry to `review-required` as the commit point. Matching completion returns idempotent success without duplication.
+`create-primary-spec` requires absent entry/file and no competing primary. Create only the matching `authoring` entry; validate the complete spec; record content identity and evidence; move it to `review-required` as the commit point.
 
 ## Revise-primary-spec
 
-`revise-primary-spec` requires prior identity and exact reopen, finding, upstream-change, or revision authority. Preserve history; clear only the authorized review mapping, record new identity and evidence, and return to `review-required` for fresh `spec-review`. Downstream reliance requires workflow impact handling; stale, mismatched, lossy, competing, or ambiguous state stops.
+`revise-primary-spec` binds prior content identity and exact reopen, finding, upstream-change, or revision authority. Preserve historical authoring and review evidence; clear only authorized review; record new identity/evidence; return only the matching entry to `review-required` for fresh `spec-review`. Downstream reliance first requires workflow impact, staleness handling, and legal reopen.
 
 ## Identical retry and stale detection
 
-Retry identity binds change, artifact, path, inputs, evidence, and prior revision identity. Identical interruption resumes and identical completion is idempotent success; changed, unrelated, stale, ambiguous, or concurrent state stops without adoption. Changed basis reports `stale-authoring-attempt` and writes nothing; detection grants no restart authority.
+Identical interruption resumes at the first incomplete step; matching `review-required` completion is idempotent success without duplicate evidence or transition. Mismatched basis, unrelated asymmetry, path, stale authority, ambiguity, multiple primaries, or concurrency stops without adoption or overwrite.
+
+Changed basis reports `stale-authoring-attempt` without overwrite, rebinding, evidence-pointer update, or new operation; detection grants no restart authority.
 
 ## Restart-stale-authoring
 
-`restart-stale-authoring` applies to the same incomplete `authoring` entry and requires an explicit current user instruction or same-change workflow handoff naming the attempt and new basis. Require the exact entry, both bases, no reliance or competition, and attributable content; record authority, old/new identities and inputs, and content state.
+`restart-stale-authoring` applies to the same incomplete `authoring` entry under an explicit current user instruction or same-change workflow handoff naming the attempt and new basis. Validate artifact kind, artifact role, normalized path, old retry identity/inputs, new inputs, current authority, no review, reliance, or competition, and attributable content.
+
+Evidence records authority source/request identity, old retry identity and governing input identities, new retry identity and governing input identities, and content state/identity.
 
 | Partial content | Required disposition |
 | --- | --- |
@@ -31,8 +35,10 @@ Retry identity binds change, artifact, path, inputs, evidence, and prior revisio
 | Matching nonempty file | Preserve exact bytes and hash at a distinct change-local evidence path before replacement. |
 | Unknown, unrelated, competing, or unpreservable file | Stop unchanged. |
 
-The snapshot is byte-for-byte evidence. Restart writes only the canonical spec, new evidence, matching `authoring_evidence` pointer, and required snapshot. It preserves identity, history, and state; it must not change `workflow_state`, routing, automation, review mappings, other entries, or downstream artifacts. Restart leaves the entry in `authoring`; ordinary authoring commits `review-required`. New schema, state, authority, cross-stage mutation, or owner requires architecture and workflow-contract revision.
+The snapshot is byte-for-byte evidence. Restart writes only the same canonical spec file, new evidence, matching `authoring_evidence` pointer, and required snapshot. Preserve entry ID, artifact kind, artifact role, path, completed authoring and review evidence, and `authoring` state; do not change review mappings, other entries, or downstream artifacts. Restart leaves the entry in `authoring`; ordinary authoring commits `review-required`.
+
+New schema, state, persistent authority, cross-stage mutation, or owner requires architecture and workflow-contract revision.
 
 ## Result and handoff
 
-Completed work ends at `review-required` and hands off to `spec-review`; report identity, recovery, validation, and blockers.
+Completion ends at `review-required`; hand off to `spec-review` with identity, recovery, and blockers.
