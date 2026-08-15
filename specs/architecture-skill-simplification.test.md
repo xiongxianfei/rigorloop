@@ -37,6 +37,21 @@ Use deterministic contract fixtures for package loading, classification, assessm
 | R49-R51 | T13 | integration | Deterministic measurement and reduction of all real loaded assemblies. |
 | R52-R54 | T12, T14 | integration | Package parity, deterministic acceptance, and architecture escalation boundary. |
 
+## Acceptance criterion coverage map
+
+| Acceptance criterion | Covered by | Command IDs | Required milestone | Notes |
+| --- | --- | --- | --- | --- |
+| AC1 | T1-T14 | CMD1-CMD10 | M1-M3 | Every R1-R54 requirement maps through the requirement table, exact proof obligations, and stable test cases. |
+| AC2 | T13 | CMD1 | M3 | AA0, AA1, and AA2 words and bytes must decrease while total package size remains visible. |
+| AC3 | T3-T5, T11 | CMD1, CMD3 | M2 | Assessment, action, governed-signal, operation, evidence, and batch vocabularies reject unknown, stale, malformed, and conflicting values. |
+| AC4 | T5-T7 | CMD3, CMD9 | M2 | Workflow-managed authoring binds current assessment, spec, and spec-review identities before mutation. |
+| AC5 | T6-T7 | CMD3 | M2 | The complete manifest and every intended identity are durable before target mutation. |
+| AC6 | T8-T10 | CMD3 | M2 | Dependencies, commit groups, commit points, ADR supersession, partial results, and retries have direct proof. |
+| AC7 | T11 | CMD1, CMD3 | M1-M2 | Semantic rules, compatibility-sensitive literals, and asset instructions receive one closed owner and disposition. |
+| AC8 | T2, T12 | CMD2-CMD7 | M2-M3 | Missing or invalid required resources stop dependent work and fail package parity. |
+| AC9 | T12 | CMD4-CMD7 | M3 | Canonical, generated, archived, release-candidate, and installed resources retain raw-byte parity. |
+| AC10 | T14 | CMD1-CMD10 | M3 | Deterministic repository proof excludes target-agent execution and a separate manual semantic-review gate. |
+
 ## Example coverage map
 
 | Example | Covered by | Notes |
@@ -91,7 +106,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 | Command ID | Command | Classification | Owner | Owning milestone | First required milestone | Failure behavior | Zero-test behavior | Evidence artifact | Safe mode / side-effect boundary |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CMD1 | `python -m unittest scripts.test_skill_validator.ArchitectureSkillSimplificationTests` | planned-for-implementation | M1/M2 implementation | M1 | M1 | Stop the milestone and retain the failing fixture. | A zero-test result fails. | `evidence/m1-preservation-inventories.md`; `evidence/m2-package-implementation.md` | Repository-local deterministic fixtures only. |
+| CMD1 | `python scripts/test-skill-validator.py ArchitectureSkillSimplificationLedgerTests` | planned-for-implementation | M1 implementation | M1 | M1 | Stop M1 and retain the failing ledger, vocabulary, scenario, or measurement fixture. | A missing class or zero-test result fails. | `evidence/m1-preservation-inventories.md`; `evidence/profile-size-baseline.md` | Existing repository runner with deterministic change-local fixtures only. |
 | CMD2 | `python scripts/validate-skills.py skills/architecture/SKILL.md` | existing/configured | repository skill validation | M2 | M2 | Stop on structural, mapping, path, or resource failure. | Not applicable. | `evidence/m2-package-implementation.md` | Reads canonical skill package only. |
 | CMD3 | `python scripts/test-skill-validator.py ArchitectureSkillSimplificationTests` | planned-for-implementation | M2 implementation | M2 | M2 | Stop on any focused contract regression. | A zero-test result fails. | `evidence/m2-package-implementation.md` | Repository-local deterministic tests only. |
 | CMD4 | `python scripts/test-skill-validator.py` | existing/configured | repository skill validation | M2 | M2 | Stop on any skill-contract regression. | A zero-test result fails. | `evidence/m2-package-implementation.md` | Repository-local tests only. |
