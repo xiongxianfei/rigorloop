@@ -1,0 +1,56 @@
+schema_version: 1
+review_id: code-review-M3-r1
+review_stage: code-review
+review_target: implementation-M3
+base_revision: 6a1b5ae6
+head_revision: b159e1d9
+milestone_id: M3
+native_review_status: clean-with-notes
+review_gate_outcome: pass
+independence_level: L0
+author_context_id: root-implement-M3
+reviewer_context_id: root-code-review-M3-r1-context-reset
+context_separation_mechanism: committed-diff-and-governing-artifact-reread
+risk_tier: elevated
+risk_tier_triggers:
+  - package-parity-proof
+  - semantic-preservation-evidence
+  - profile-measurement
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed-R57-R67-T15-T17
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+risk_map:
+  affected_behavior:
+    - simplification acceptance accounting
+    - canonical through installed package parity
+  highest_impact_failure_modes:
+    - measurements use inconsistent assemblies
+    - generic adapter tests do not select spec
+    - a semantic or literal row lacks a final owner
+  changed_boundaries:
+    - BND-COMPOSE-001
+    - BND-COMPAT-001
+    - BND-ENV-001
+  expected_evidence:
+    - deterministic hashes words and bytes
+    - direct spec clean-install validation
+    - all rule and literal rows reconciled
+    - total package growth reported separately
+  direct_inspection_areas:
+    - measurement arithmetic and identities
+    - semantic and literal reconciliation
+    - CMD7 and CMD8 outputs
+  intentionally_out_of_scope:
+    - target-agent runtime evaluation
+    - final holistic review and verification
+  falsifiable_questions:
+    - do both procedural profiles decrease
+    - do all supported adapters preserve selected spec resources
+forbidden_initial_context_excluded: true

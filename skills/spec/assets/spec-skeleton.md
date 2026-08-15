@@ -45,6 +45,8 @@ Then <observable outcome>
 
 <errors, permissions, empty states, partial failures>
 
+<!-- INSERT formal boundary block here when applicable. -->
+
 ## Compatibility and migration
 
 <old clients, old data, rollout, rollback>

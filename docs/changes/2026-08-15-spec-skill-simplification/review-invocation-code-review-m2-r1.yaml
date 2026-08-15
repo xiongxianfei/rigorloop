@@ -1,0 +1,55 @@
+schema_version: 1
+review_id: code-review-M2-r1
+review_stage: code-review
+review_target: implementation-M2
+base_revision: 40f6539b
+head_revision: 89efb1f3
+milestone_id: M2
+native_review_status: changes-requested
+review_gate_outcome: fail
+independence_level: L0
+author_context_id: root-implement-M2
+reviewer_context_id: root-code-review-M2-r1-context-reset
+context_separation_mechanism: committed-diff-and-governing-artifact-reread
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-contract
+  - governed-lifecycle-write-boundary
+  - semantic-rule-relocation
+requirement_fidelity:
+  applicability: applicable
+  receipt: failed-R2-R6-R21-R40
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: true
+unresolved_findings:
+  - SPSIM-M2-CR1
+  - SPSIM-M2-CR2
+risk_map:
+  affected_behavior:
+    - governed spec creation revision retry and restart
+    - universal spec quality and artifact-history policy
+  highest_impact_failure_modes:
+    - a governed transaction proceeds without every required bound identity
+    - a compact universal contract silently drops behavior from the M1 ledger
+  changed_boundaries:
+    - BND-AUTH-001
+    - BND-RECOVERY-001
+    - BND-COMPAT-001
+  expected_evidence:
+    - every R21-R42 identity write and stop rule remains explicit
+    - every retained-inline M1 rule has complete semantic coverage
+  direct_inspection_areas:
+    - governed reference authority and transaction clauses
+    - universal contract quality and artifact-history clauses
+    - focused validator assertions
+  intentionally_out_of_scope:
+    - M3 adapter parity evidence
+    - final verification and PR readiness
+  falsifiable_questions:
+    - can a reviewer recover every mandatory governed identity and write boundary from the reference
+    - can every retained-inline M1 rule be located without inference
+forbidden_initial_context_excluded: true

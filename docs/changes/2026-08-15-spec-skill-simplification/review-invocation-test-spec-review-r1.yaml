@@ -1,0 +1,58 @@
+schema_version: 1
+review_id: test-spec-review-r1
+review_stage: test-spec-review
+review_target: specs/spec-skill-simplification.test.md
+base_revision: 8b69c83c
+head_revision: 8b69c83c
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-test-spec-authoring-r1
+reviewer_context_id: root-test-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - tri-state-governed-signal-classification
+  - identity-bound-stale-authoring-restart
+  - boundary-first-proof-map
+  - published-skill-package-parity
+  - fail-closed-vocabulary-migration
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/spec-skill-simplification.md
+  - docs/changes/2026-08-15-spec-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-15-spec-skill-simplification.md
+  - specs/spec-skill-simplification.test.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+  - boundary-first-proof-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: specs/spec-skill-simplification.md
+    sha256: b571940a15c2dead65bd5629f59556d29c7d8c3994f68d07b8646289cb76e531
+  - path: docs/changes/2026-08-15-spec-skill-simplification/architecture-assessment.md
+    sha256: 64c5ae7807623ca1788ece33f84e993c3cddc8c611967b6b57401e277d785c67
+  - path: docs/plans/2026-08-15-spec-skill-simplification.md
+    sha256: 305d093139c559b7d66237a6245dd24166ca1b575060ef6225d47a0c47ccb9c6
+  - path: specs/spec-skill-simplification.test.md
+    sha256: a44084c9944ab06856822a4caf1ff2c0109a45496bd9feaa18bc06c23c9babdb
+  - path: docs/changes/2026-08-15-spec-skill-simplification/evidence/test-spec-authoring.md
+    sha256: 0e72df10e37428ba827a3d207e40322a7a380c9dac38b12818575c03736ed1c4
+  - path: docs/changes/2026-08-15-spec-skill-simplification/reviews/spec-review-r1.md
+    sha256: 05b1b66ae6c00e3d9fe973e910b666ff382481195f00767c1346d306e8877da2
+  - path: docs/changes/2026-08-15-spec-skill-simplification/reviews/plan-review-r1.md
+    sha256: 4065b6abbc3a610475e0bd68a7e6a3fc263521cb91f1c0f8d14a5da3052ab975
+prompt_template_version: test-spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - complete R1-R67 and acceptance-criterion traceability
+  - direct proof for all boundaries and interactions
+  - tri-state signals, portable and governed operations, retries, and authority stops
+  - explicit stale restart, partial-content preservation, and forbidden writes
+  - formal boundary-block transitions and grandfathered adoption
+  - measurement, compatibility, and package parity
+  - milestone timing and validation-command ownership
+  - no target-agent runtime or extra manual semantic-review gate

@@ -1,0 +1,57 @@
+schema_version: 1
+review_id: code-review-M2-r2
+review_stage: code-review
+review_target: implementation-M2
+base_revision: 8c68530a
+head_revision: 791565c3
+milestone_id: M2
+native_review_status: clean-with-notes
+review_gate_outcome: pass
+independence_level: L0
+author_context_id: root-implement-M2-correction
+reviewer_context_id: root-code-review-M2-r2-context-reset
+context_separation_mechanism: correction-diff-and-finding-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-contract
+  - governed-lifecycle-write-boundary
+  - semantic-rule-relocation
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed-R2-R6-R21-R40
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-findings-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+risk_map:
+  affected_behavior:
+    - governed transaction specificity
+    - universal semantic preservation
+  highest_impact_failure_modes:
+    - correction remains generic rather than executable
+    - restored rules cause either loaded profile to grow above baseline
+  changed_boundaries:
+    - BND-AUTH-001
+    - BND-RECOVERY-001
+    - BND-COMPAT-001
+  expected_evidence:
+    - explicit R21-R42 transaction groups
+    - explicit retained-inline rules
+    - focused and broad validation
+    - both profiles below baseline
+  direct_inspection_areas:
+    - corrected governed reference
+    - corrected common-path clauses
+    - added semantic assertions
+    - updated profile evidence
+  intentionally_out_of_scope:
+    - M3 adapter parity evidence
+    - final verification and PR readiness
+  falsifiable_questions:
+    - are both M2 findings fully resolved
+    - do both profiles still decrease
+forbidden_initial_context_excluded: true

@@ -1,0 +1,58 @@
+schema_version: 1
+review_id: code-review-M1-r2
+review_stage: code-review
+review_target: implementation-M1
+base_revision: d8fa87cc
+head_revision: 26ff6be3
+milestone_id: M1
+native_review_status: clean-with-notes
+review_gate_outcome: pass
+independence_level: L0
+author_context_id: root-implement-M1-correction
+reviewer_context_id: root-code-review-M1-r2-context-reset
+context_separation_mechanism: correction-diff-and-finding-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-semantic-preservation
+  - closed-vocabulary-evidence
+  - compatibility-inventory
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed-R57-R59-T16
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-finding-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+risk_map:
+  affected_behavior:
+    - semantic owner classification
+    - exact skeleton-heading compatibility classification
+  highest_impact_failure_modes:
+    - a semantic cluster retains multiple owners
+    - a structural heading remains unclassified
+    - correction changes canonical package behavior
+  changed_boundaries:
+    - BND-COMPAT-001
+    - INT-004
+  expected_evidence:
+    - one inline loading rule
+    - separate boundary-procedure rows
+    - fifty independently classified literals
+    - unchanged canonical spec package
+  direct_inspection_areas:
+    - corrected semantic row
+    - added literal rows
+    - M1 evidence count and correction note
+  intentionally_out_of_scope:
+    - canonical spec package changes
+    - generated adapter changes
+    - M2 and M3 evidence
+  falsifiable_questions:
+    - does every semantic row now have one destination
+    - does every skeleton heading have one exact row
+    - does CMD1 pass with the corrected inventories
+forbidden_initial_context_excluded: true
