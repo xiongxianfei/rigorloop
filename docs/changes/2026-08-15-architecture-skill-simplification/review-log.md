@@ -21,6 +21,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: code-review-M2-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: implementation milestone M2 at commit `76660908`
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-M2-r1
+Material findings: ARSIM-M2-CR1
+Open findings: ARSIM-M2-CR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: plan-review-r1
 Stage: plan-review
 Round: r1

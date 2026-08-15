@@ -1,0 +1,76 @@
+schema_version: 1
+review_id: code-review-M2-r1
+review_stage: code-review
+review_target: implementation-M2
+base_revision: 1c2dbe7a
+head_revision: 76660908
+milestone_id: M2
+native_review_status: changes-requested
+review_gate_outcome: correction-eligible
+independence_level: L0
+author_context_id: root-implement-M2
+reviewer_context_id: root-code-review-M2-r1-context-reset
+context_separation_mechanism: committed-diff-and-requirement-first-reread
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-transaction-contract
+  - crash-recovery-semantics
+  - published-skill-package
+requirement_fidelity:
+  applicability: applicable
+  receipt: failed-ARSIM-M2-CR1
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings:
+  - ARSIM-M2-CR1
+risk_map:
+  affected_behavior:
+    - assessment routing and governed authority
+    - prepared transaction identity
+    - dependency-safe commits and recovery
+    - asset policy ownership
+  highest_impact_failure_modes:
+    - compressed manifest omits a required identity
+    - a partial result is mistaken for safe completion
+    - changed retry state is rebound silently
+  changed_boundaries:
+    - BND-AUTH-001
+    - BND-TEMPORAL-001
+    - BND-RECOVERY-001
+  expected_evidence:
+    - complete R21-R42 property projection
+    - target-file mutation bounded by prepared evidence
+    - exact retry and new-operation distinction
+  direct_inspection_areas:
+    - governed authoring reference
+    - focused transaction assertions
+    - M2 evidence
+  intentionally_out_of_scope:
+    - generated adapter parity
+    - M3 measurements
+    - final verification
+  falsifiable_questions:
+    - does the manifest name every required property
+    - does blocked-before-write mutate no target
+    - does any changed manifest become a new operation
+forbidden_initial_context_excluded: true
+correction:
+  auto_fix_class: mechanical
+  deterministic_authority: R21, R26-R27, and R38-R42 enumerate the omitted properties and outcomes.
+  affected_paths:
+    - skills/architecture/references/governed-architecture-authoring.md
+    - scripts/test-skill-validator.py
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/m2-package-implementation.md
+  forbidden_paths:
+    - specs/
+    - docs/plans/
+    - skills/architecture/SKILL.md
+  required_validation:
+    - CMD3
+    - CMD4
+    - CMD5
+    - CMD6

@@ -191,3 +191,21 @@ No material findings; no resolution entry required. The independent formal rerev
 Review closeout: code-review-M1-r1
 
 No material findings; no resolution entry required. The independent milestone review accepted the preservation inventories, focused closed-vocabulary tests, scenarios, and measurement baseline and closed M1 without claiming later package behavior.
+
+### code-review-M2-r1
+
+#### ARSIM-M2-CR1
+
+Finding ID: ARSIM-M2-CR1
+Disposition: accepted
+Status: open
+Owner: architecture package implementer
+Owning stage: implement
+Decision owner: none
+Decision needed: none; R21, R26-R27, and R38-R42 enumerate the missing contract properties.
+Chosen action: Restore the exact prepared-manifest, evidence-state, batch-result, and changed-operation semantics in the governed reference and focused proof.
+Rationale: Concision cannot omit identity and recovery properties needed for crash-safe governed writes.
+Required outcome: The governed package states every required property and passes CMD3-CMD6.
+Safe resolution path: Apply the bounded correction and complete context-reset rereview.
+Validation target: governed reference, focused transaction assertions, M2 evidence, and package validation.
+Validation evidence: pending correction and rereview.
