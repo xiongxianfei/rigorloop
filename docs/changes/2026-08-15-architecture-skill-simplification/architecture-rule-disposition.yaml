@@ -1,0 +1,24 @@
+{
+  "rules": [
+    {"rule_id":"ARULE-001","owner":"inline","destination":"skills/architecture/SKILL.md#Purpose and workflow role","requirements":["R1","R2"],"proof":["T1"]},
+    {"rule_id":"ARULE-002","owner":"inline","destination":"skills/architecture/SKILL.md#Evidence and upstream settlement","requirements":["R2"],"proof":["T1"]},
+    {"rule_id":"ARULE-003","owner":"inline","destination":"skills/architecture/SKILL.md#Applicability and routing","requirements":["R8","R9","R16","R20"],"proof":["T3","T5"]},
+    {"rule_id":"ARULE-004","owner":"inline","destination":"skills/architecture/SKILL.md#Governed signals","requirements":["R10","R11","R12","R13"],"proof":["T4"]},
+    {"rule_id":"ARULE-005","owner":"method-reference","destination":"skills/architecture/references/architecture-package-method.md#Architecture method","requirements":["R3"],"proof":["T1"]},
+    {"rule_id":"ARULE-006","owner":"method-reference","destination":"skills/architecture/references/architecture-package-method.md#C4 and arc42","requirements":["R3"],"proof":["T1"]},
+    {"rule_id":"ARULE-007","owner":"method-reference","destination":"skills/architecture/references/architecture-package-method.md#ADRs","requirements":["R3","R35","R36"],"proof":["T8"]},
+    {"rule_id":"ARULE-008","owner":"governed-reference","destination":"skills/architecture/references/governed-architecture-authoring.md#Authority","requirements":["R4","R5","R17","R18","R19"],"proof":["T5"]},
+    {"rule_id":"ARULE-009","owner":"governed-reference","destination":"skills/architecture/references/governed-architecture-authoring.md#Prepared manifest","requirements":["R21","R22","R23","R24","R25","R26","R27","R28"],"proof":["T6"]},
+    {"rule_id":"ARULE-010","owner":"governed-reference","destination":"skills/architecture/references/governed-architecture-authoring.md#Writes and settlement","requirements":["R29","R30"],"proof":["T7"]},
+    {"rule_id":"ARULE-011","owner":"governed-reference","destination":"skills/architecture/references/governed-architecture-authoring.md#Dependencies and commit groups","requirements":["R31","R32","R33","R34","R35"],"proof":["T8"]},
+    {"rule_id":"ARULE-012","owner":"governed-reference","destination":"skills/architecture/references/governed-architecture-authoring.md#Batch results","requirements":["R37","R38","R39"],"proof":["T9"]},
+    {"rule_id":"ARULE-013","owner":"governed-reference","destination":"skills/architecture/references/governed-architecture-authoring.md#Retry and recovery","requirements":["R40","R41","R42"],"proof":["T10"]},
+    {"rule_id":"ARULE-014","owner":"asset","destination":"skills/architecture/assets/architecture-skeleton.md","requirements":["R43","R44","R45"],"proof":["T11"]},
+    {"rule_id":"ARULE-015","owner":"asset","destination":"skills/architecture/assets/adr-skeleton.md","requirements":["R43","R44","R45"],"proof":["T11"]},
+    {"rule_id":"ARULE-016","owner":"literal-style","destination":"skills/architecture/assets/diagram-styles.mmd","requirements":["R43","R44","R45"],"proof":["T11"]},
+    {"rule_id":"ARULE-017","owner":"inline","destination":"skills/architecture/SKILL.md#Stops and claims","requirements":["R2","R7"],"proof":["T2"]},
+    {"rule_id":"ARULE-018","owner":"inline","destination":"skills/architecture/SKILL.md#Resource map","requirements":["R1","R3","R4","R6","R7"],"proof":["T1","T2"]},
+    {"rule_id":"ARULE-019","owner":"change-evidence","destination":"docs/changes/2026-08-15-architecture-skill-simplification/evidence/simplification-measurements.md","requirements":["R49","R50","R51"],"proof":["T13"]},
+    {"rule_id":"ARULE-020","owner":"existing-validator","destination":"scripts/test-adapter-distribution.py","requirements":["R52","R53"],"proof":["T12","T14"]}
+  ]
+}

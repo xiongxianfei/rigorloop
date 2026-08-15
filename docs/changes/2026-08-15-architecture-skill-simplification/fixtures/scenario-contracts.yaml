@@ -1,0 +1,22 @@
+{
+  "scenarios": [
+    {"id":"ASC-001","requirements":["R8","R13"],"expected":"assessment-only loads AA0"},
+    {"id":"ASC-002","requirements":["R20"],"expected":"portable authoring requires current inline applicability"},
+    {"id":"ASC-003","requirements":["R10","R11","R12"],"expected":"invalid governed signals stop without fallback"},
+    {"id":"ASC-004","requirements":["R17","R18","R19"],"expected":"stale assessment basis blocks authoring"},
+    {"id":"ASC-005","requirements":["R25","R26"],"expected":"prepared manifest precedes writes"},
+    {"id":"ASC-006","requirements":["R28","R29"],"expected":"changed baseline blocks mutation"},
+    {"id":"ASC-007","requirements":["R31","R32"],"expected":"dependencies and groups gate commits"},
+    {"id":"ASC-008","requirements":["R33","R34"],"expected":"canonical markdown commits after diagrams and ADRs"},
+    {"id":"ASC-009","requirements":["R35","R36"],"expected":"ADR supersession is authored but not approved"},
+    {"id":"ASC-010","requirements":["R37","R38","R39"],"expected":"batch outcomes preserve only independent targets"},
+    {"id":"ASC-011","requirements":["R40","R41","R42"],"expected":"exact retry resumes and changed operation stops"},
+    {"id":"ASC-012","requirements":["R7"],"expected":"missing resources stop without reconstruction"},
+    {"id":"ASC-013","requirements":["R43","R44","R45"],"expected":"assets remain structural"},
+    {"id":"ASC-014","requirements":["R48"],"expected":"unknown vocabulary fails first"},
+    {"id":"ASC-015","requirements":["R49","R50","R51"],"expected":"all profiles and total package are measured separately"},
+    {"id":"ASC-016","requirements":["R52"],"expected":"canonical through installed bytes match"},
+    {"id":"ASC-017","requirements":["R53"],"expected":"acceptance uses no target-agent runtime"},
+    {"id":"ASC-018","requirements":["R54"],"expected":"new schema or owner requires architecture"}
+  ]
+}
