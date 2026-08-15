@@ -8113,6 +8113,14 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                     / "references"
                     / "governed-proposal-authoring.md"
                 ).read_text(encoding="utf-8")
+            if skill_name == "spec":
+                body += (
+                    ROOT
+                    / "skills"
+                    / "spec"
+                    / "references"
+                    / "governed-spec-authoring.md"
+                ).read_text(encoding="utf-8")
             if skill_name == "test-spec":
                 body += (
                     ROOT
@@ -8123,17 +8131,17 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                 ).read_text(encoding="utf-8")
             normalized = " ".join(body.split())
             with self.subTest(skill=skill_name):
-                if skill_name == "test-spec":
-                    self.assertIn("# Governed test-spec authoring", normalized)
+                if skill_name in {"spec", "test-spec"}:
+                    self.assertIn(f"# Governed {skill_name} authoring", normalized)
                     for phrase in (
                         "Read the complete current `change.yaml`",
                         "`lifecycle_contract: stage-owned-change-local-v1`",
-                        "stable artifact ID",
+                        "artifact ID",
                         "normalized canonical path",
                         "`authoring`",
                         "authoring-evidence path",
                         "`review-required`",
-                        "must not mutate `workflow_state`",
+                        "must not change `workflow_state`" if skill_name == "spec" else "must not mutate `workflow_state`",
                     ):
                         self.assertIn(" ".join(phrase.split()), normalized)
                     continue
@@ -9476,8 +9484,8 @@ class BoundaryFirstLifecycleSkillTests(unittest.TestCase):
             skill_root = ROOT / "skills" / skill_name
             body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
             entry = (
-                "- READ `references/boundary-first-method-v1.md` initially for every `test-spec` invocation."
-                if skill_name == "test-spec"
+                f"- READ `references/boundary-first-method-v1.md` initially for every `{skill_name}` invocation."
+                if skill_name in {"spec", "test-spec"}
                 else "- READ `references/boundary-first-method-v1.md` when " + load_condition
             )
             with self.subTest(skill=skill_name):
@@ -10268,6 +10276,58 @@ class ProposalSkillSimplificationTests(unittest.TestCase):
         self.assertNotIn("scope budget treatment", self.governed.lower())
         self.assertNotIn("change.yaml", self.strategic)
         self.assertNotIn("review-required", self.strategic)
+
+
+class SpecSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "spec"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        governed_path = self.root / "references" / "governed-spec-authoring.md"
+        self.governed = governed_path.read_text(encoding="utf-8") if governed_path.is_file() else ""
+        self.method = (self.root / "references" / "boundary-first-method-v1.md").read_text(encoding="utf-8")
+        self.feature = (self.root / "references" / "boundary-first-feature-authoring-v1.md").read_text(encoding="utf-8")
+        self.skeleton = (self.root / "assets" / "spec-skeleton.md").read_text(encoding="utf-8")
+
+    def test_package_profiles_and_initial_boundary_loading_are_closed(self) -> None:
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["boundary-first-feature-authoring-v1.md", "boundary-first-method-v1.md", "governed-spec-authoring.md"])
+        for profile in ("SA0-portable", "SA1-governed"):
+            self.assertIn(profile, self.skill)
+        self.assertIn("READ `references/boundary-first-method-v1.md` initially", self.skill)
+        self.assertIn("READ `references/boundary-first-feature-authoring-v1.md` initially", self.skill)
+        self.assertIn("READ `references/governed-spec-authoring.md` only", self.skill)
+        self.assertIn("COPY `assets/spec-skeleton.md`", self.skill)
+
+    def test_governed_signal_and_portable_operation_contract_is_closed(self) -> None:
+        for value in ("no-governed-signal", "single-governed-candidate", "invalid-or-ambiguous-governed-signal", "create-primary-spec", "revise-primary-spec"):
+            self.assertIn(value, self.skill)
+        for phrase in ("structured owning-change field", "Conversational references", "only classification that permits portable authoring", "must not fall back to portable", "writes only the spec artifact"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        self.assertNotIn("change.yaml", self.method)
+
+    def test_governed_transactions_restart_and_write_boundaries_are_complete(self) -> None:
+        for value in ("create-primary-spec", "revise-primary-spec", "restart-stale-authoring", "stale-authoring-attempt", "review-required"):
+            self.assertIn(value, self.governed)
+        for phrase in ("complete current `change.yaml`", "commit point", "idempotent success", "explicit current user instruction", "same-change workflow handoff", "byte-for-byte", "zero-byte", "must not change `workflow_state`", "leaves the entry in `authoring`"):
+            self.assertIn(phrase.lower(), self.governed.lower())
+
+    def test_formal_boundary_structure_and_transition_contract_is_closed(self) -> None:
+        marker = "<!-- INSERT formal boundary block here when applicable. -->"
+        self.assertEqual(self.skeleton.count(marker), 1)
+        self.assertLess(self.skeleton.index("## Error and boundary behavior"), self.skeleton.index(marker))
+        self.assertLess(self.skeleton.index(marker), self.skeleton.index("## Compatibility and migration"))
+        headings = ("## Boundary model", "## Boundary definitions", "## Selected interactions", "## Example ownership")
+        positions = [self.feature.index(heading) for heading in headings]
+        self.assertEqual(positions, sorted(positions))
+        for value in ("absent", "present-complete", "present-incomplete", "present-duplicated", "present-misplaced", "unique-ordered", "missing", "duplicated", "misordered"):
+            self.assertIn(value, self.skill)
+        for phrase in ("loading and formal-block emission are independent", "never removed implicitly", "authorized full rewrite", "spec-review retains final authority"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+
+    def test_required_resources_and_claims_fail_closed(self) -> None:
+        for phrase in ("missing", "unreadable", "escaped", "contradictory", "stale", "mixed-version", "must not reconstruct"):
+            self.assertIn(phrase, self.skill.lower())
+        for claim in ("spec-review approval", "architecture readiness", "implementation readiness", "verification", "branch readiness", "PR readiness"):
+            self.assertIn(claim.lower(), self.skill.lower())
 
 
 class TestSpecSkillSimplificationTests(unittest.TestCase):
