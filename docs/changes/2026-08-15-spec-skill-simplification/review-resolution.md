@@ -1,11 +1,11 @@
 # Review Resolution: Spec Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`
 - Findings resolved: 5
-- Unresolved findings: 1
-- Current result: code-review M1 R1 requested one mechanical correction
+- Unresolved findings: 0
+- Current result: code-review M1 R2 closed the accepted correction and approved M1 continuation
 
 ## Resolution overview
 
@@ -16,7 +16,7 @@ Closeout status: open
 | `SPSIM-R2-PR1` | accepted | closed | Added tri-state governed-signal classification with no invalid-signal portable fallback. |
 | `SPSIM-R2-PR2` | accepted | closed | Required explicit restart authority and deterministic preservation of matching nonempty partial content. |
 | `SPSIM-R2-PR3` | accepted | closed | Closed boundary-block transition, removal, malformed-state, and grandfathered-adoption behavior. |
-| `SPSIM-M1-CR1` | accepted | open | Complete one-owner semantic destinations and exact skeleton-heading classifications. |
+| `SPSIM-M1-CR1` | accepted | closed | Completed one-owner semantic destinations and exact skeleton-heading classifications. |
 
 ## Finding details
 
@@ -140,7 +140,7 @@ Review closeout: code-review-M1-r1
 
 Finding ID: SPSIM-M1-CR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: implementation author
 Owning stage: implement M1
 Decision owner: none
@@ -150,4 +150,10 @@ Rationale: The inventories must be exhaustive and independently reviewable befor
 Required outcome: One destination per semantic rule cluster and one classification per exact consumed skeleton heading.
 Safe resolution path: Apply the reviewer-declared mechanical correction only to the three affected M1 evidence files, rerun named validation, and return M1 for rereview.
 Validation target: CMD1, documentation prose validation, change metadata validation, and `git diff --check`.
-Validation evidence: pending correction and rereview.
+Validation evidence: `evidence/m1-preservation-inventories.md`; corrected ledgers; CMD1 passed with 28 rules, 50 literals, and 34 scenarios; `reviews/code-review-m1-r2.md`.
+
+### code-review-M1-r2
+
+Review closeout: code-review-M1-r2
+
+No material findings; no resolution entry required. The context-reset rereview confirmed the accepted correction, closed M1, and established M2 implementation eligibility.
