@@ -2,10 +2,10 @@
 
 Closeout status: closed
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`, `code-review-M2-r2`, `code-review-M3-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`, `code-review-M2-r2`, `code-review-M3-r1`, `code-review-final-r1`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: code-review M3 R1 closed all implementation milestones and approved final holistic review
+- Current result: final holistic code-review R1 is clean and approved explanation
 
 ## Resolution overview
 
@@ -207,3 +207,9 @@ No material findings; no resolution entry required. The context-reset rereview c
 Review closeout: code-review-M3-r1
 
 No material findings; no resolution entry required. The review confirmed measurements, preservation, and package parity, closed M3, and established final holistic review eligibility.
+
+### code-review-final-r1
+
+Review closeout: code-review-final-r1
+
+No material findings; no resolution entry required. The final holistic review reconciled the complete branch, all milestones, corrections, requirements, tests, package proof, and lifecycle evidence and established explanation eligibility.
