@@ -1,13 +1,11 @@
 # Review Resolution: Spec Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
-Review closeout: proposal-review-r1
-
-- Reviews covered: `proposal-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
 - Findings resolved: 2
-- Unresolved findings: 0
-- Current result: revised proposal ready for independent rereview
+- Unresolved findings: 3
+- Current result: proposal-review R2 requires revision before specification
 
 ## Resolution overview
 
@@ -15,10 +13,15 @@ Review closeout: proposal-review-r1
 | --- | --- | --- | --- |
 | `SPSIM-PR1` | accepted | closed | Replaced workflow reset authorization with a bounded spec-owned same-entry restart contract. |
 | `SPSIM-PR2` | accepted | closed | Added one conditional skeleton insertion point and a closed boundary-block applicability contract. |
+| `SPSIM-R2-PR1` | accepted | open | Add tri-state governed-signal classification with no invalid-signal portable fallback. |
+| `SPSIM-R2-PR2` | accepted | open | Require explicit restart authority and deterministic preservation of matching nonempty partial content. |
+| `SPSIM-R2-PR3` | accepted | open | Close boundary-block transition, removal, malformed-state, and grandfathered-adoption behavior. |
 
 ## Finding details
 
 ### proposal-review-r1
+
+Review closeout: proposal-review-r1
 
 #### SPSIM-PR1
 
@@ -51,3 +54,55 @@ Required outcome: Define exact insertion location, applicability, omission, unre
 Safe resolution path: Adopt the conditional insertion point and applicability matrix recommended by `proposal-review-r1`.
 Validation target: revised structural ownership, behavior, missing-resource rules, scenarios, risks, and acceptance criteria plus independent rereview.
 Validation evidence: `evidence/proposal-revision-r1.md`; revised sections `Structural composition and boundary-block applicability`, `Ownership model`, `Validation and acceptance boundary`, `Proposal acceptance criteria`, `Expected Behavior Changes`, `Testing and Verification Strategy`, and `Risks and Mitigations`.
+
+### proposal-review-r2
+
+Review closeout: proposal-review-r2
+
+#### SPSIM-R2-PR1
+
+Finding ID: SPSIM-R2-PR1
+Disposition: accepted
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Prevent malformed, duplicated, stale, escaped, missing-root, or conflicting governed indicators from falling through to portable authoring.
+Chosen action: Add a closed tri-state governed-signal classifier and permit portable authoring only for `no-governed-signal`.
+Rationale: Any structured ownership indicator is an attempted governed claim even when invalid and must fail closed.
+Required outcome: Classify absent, single-candidate, and invalid-or-ambiguous signal states and require all present identities to resolve to the same change.
+Safe resolution path: Adopt the round-2 tri-state classifier and explicit no-fallback rules.
+Validation target: revised classification, profile table, failure behavior, scenarios, risks, and acceptance criteria plus rereview.
+Validation evidence: pending proposal revision.
+
+#### SPSIM-R2-PR2
+
+Finding ID: SPSIM-R2-PR2
+Disposition: accepted
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Separate stale detection from authorized restart and make partial-content handling deterministic.
+Chosen action: Require an explicit user request or same-change workflow handoff and preserve every matching nonempty partial file byte-for-byte before replacement.
+Rationale: Detection alone cannot authorize destructive replacement, and subjective evidentiary-value judgments cannot protect user-authored bytes consistently.
+Required outcome: Define restart authority, evidence fields, partial-content states, write set, stops, and final `authoring` state.
+Safe resolution path: Adopt the round-2 restart authorization and content-disposition matrices using existing authoring evidence.
+Validation target: revised recovery, ownership, architecture, scenarios, risks, and acceptance criteria plus rereview.
+Validation evidence: pending proposal revision.
+
+#### SPSIM-R2-PR3
+
+Finding ID: SPSIM-R2-PR3
+Disposition: accepted
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Make boundary-block presence, applicability, removal, malformed structure, and grandfathered structural adoption exhaustive.
+Chosen action: Add closed block-state and anchor-state values, preserve complete blocks absent explicit deactivation, and require valid anchors or an authorized full rewrite for adoption.
+Rationale: Resource loading, current block state, applicability, revision class, and structural anchors are independent inputs and cannot be collapsed into overlapping rows.
+Required outcome: Define one result for every state combination and fail closed on partial, duplicated, misplaced, or unresolved structure.
+Safe resolution path: Adopt the round-2 transition and grandfathered-adoption matrix while retaining current structural owners.
+Validation target: revised composition, compatibility, scenarios, risks, and acceptance criteria plus rereview.
+Validation evidence: pending proposal revision.
