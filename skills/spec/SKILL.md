@@ -3,29 +3,27 @@ name: spec
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Write or amend an observable feature contract before design or implementation. Use spec-review for approval.
+  Author observable feature contracts before design or implementation; spec-review approves.
 argument-hint: [proposal path, feature name, behavior request, or issue number]
 ---
 
 # Feature spec authoring
 
-Write the observable contract without internals.
-
 ## Workflow role
 
 - role_name: spec
 - stage: authoring
-- upstream: accepted proposal or approved behavior direction
+- upstream: accepted proposal or approved direction
 - downstream: spec-review
-- summary: Author observable requirements and acceptance.
-- ownership: Write the spec and, with governed authority, its evidence and matching entry transition.
+- summary: Author the contract.
+- ownership: Write the spec and authorized governed evidence/transition.
 - must_not_claim: spec-review approval, architecture readiness, plan readiness, implementation readiness, verification, branch readiness, or PR readiness.
 
-Portable authoring is isolated. Workflow-managed execution does not enlarge the `spec` write set.
+Portable work is isolated. Workflow-managed execution does not enlarge the `spec` write set.
 
 ## Purpose and evidence
 
-Resolve placement from explicit identity, metadata, contracts, workflow guidance, then the portable default; stop on conflict. A relied-on proposal requires accepted settlement and closed findings; upstream state is read-only.
+Resolve placement from identity, metadata, contracts, guidance, then defaults. A relied-on proposal requires accepted settlement, no open finding or later contradictory review, and required closed resolution; treat upstream as read-only.
 
 ## Project-local evidence
 
@@ -37,48 +35,48 @@ Classify every invocation before mutation.
 
 | Profile | Signal classification | Loaded procedure |
 | --- | --- | --- |
-| `SA0-portable` | `no-governed-signal` | This file plus both initial boundary references |
-| `SA1-governed` | `single-governed-candidate` | Portable procedure plus governed authoring reference |
+| `SA0-portable` | `no-governed-signal` | Core plus both boundary references |
+| `SA1-governed` | `single-governed-candidate` | SA0 plus governed reference |
 
-Signals are exactly `no-governed-signal`, `single-governed-candidate`, and `invalid-or-ambiguous-governed-signal`. An explicit change ID, workflow-managed identity, or structured owning-change field is a signal even when malformed; conversational references are not.
+Signals are `no-governed-signal`, `single-governed-candidate`, and `invalid-or-ambiguous-governed-signal`. Explicit change ID, workflow-managed identity, or structured owning-change field counts even when malformed; conversational references do not.
 
-`no-governed-signal` is the only classification that permits portable authoring. `single-governed-candidate` requires safe, agreeing signals. Malformed, stale, duplicated, escaped, unsafe, missing-root, mismatched, or conflicting signals stop as `invalid-or-ambiguous-governed-signal`; governed failure must not fall back to portable authoring.
+`no-governed-signal` is the only classification that permits portable authoring. `single-governed-candidate` requires safe, agreeing signals. Malformed, stale, duplicated, escaped, unsafe, missing-root, mismatched, or conflicting signals stop as invalid; governed failure must not fall back to portable authoring.
 
-Loading selects procedure, not mutation authority; the reference validates authority before writing.
+Loading selects procedure, not authority; validate before writing.
 
 ## Operations and portable authority
 
-Operations are `create-primary-spec` and `revise-primary-spec`. Portable create requires an absent target and revise an existing exact target; conflict stops. Portable authoring writes only the spec artifact, never lifecycle, review, routing, or automation state.
+Operations are `create-primary-spec` and `revise-primary-spec`. Portable create needs an absent target and revise an existing exact target; conflict stops. Never overwrite an unrelated spec. Portable authoring writes only the spec artifact, never lifecycle, review, routing, or automation state.
 
 ## Contract quality
 
-Cover inputs, outputs, state, errors, compatibility, observability, security/privacy, accessibility, performance, and edges with stable testable requirements; examples never own behavior. Explain inapplicability. Preserve `Next artifacts`; use `Follow-on artifacts` for outcomes and `None yet` before any exist.
+Cover inputs, outputs, state, errors, compatibility, observability, security/privacy, accessibility, performance, and edges with normative, testable requirements; examples never own behavior and the spec must not invent excluded scope. Explain inapplicability. Preserve `Next artifacts`; use `Follow-on artifacts` for outcomes and `None yet` before any exist. A superseded spec identifies its replacement.
 
 ## Formal boundary composition
 
-Both boundary references load initially; loading and formal-block emission are independent. The feature reference owns the block and the skeleton its position.
+Both boundary references load initially; loading and formal-block emission are independent. The feature reference owns the block; the skeleton owns its position.
 
-Block state is `absent`, `present-complete`, `present-incomplete`, `present-duplicated`, or `present-misplaced`; anchors are `unique-ordered`, `missing`, `duplicated`, or `misordered`. Required absent structure needs unique anchors; otherwise adoption needs an authorized full rewrite or stops.
+Block state is `absent`, `present-complete`, `present-incomplete`, `present-duplicated`, or `present-misplaced`; anchors are `unique-ordered`, `missing`, `duplicated`, or `misordered`. Adoption needs unique anchors or an authorized full rewrite; otherwise stop.
 
-A complete block preserves IDs and is never removed implicitly. Removal requires approved deactivation or supersession with impact traceability. Malformed or unresolved structure stops. Spec-review retains final authority over grandfathered substantive-revision classification.
+A complete block preserves IDs and is never removed implicitly. Removal needs approved deactivation/supersession and impact traceability. Malformed or unresolved structure stops. Spec-review retains final authority over grandfathered substantive-revision classification.
 
 ## Generated Markdown readability
 
-Write ordinary prose as normal Markdown paragraphs. Do not split a sentence across physical source lines merely for wrapping or clause separation. Preserve stable IDs and use tables for repeated mappings. Diagrams are optional and should reduce real cognitive load. Do not require manual-proof contracts from readability guidance.
+Write normal Markdown paragraphs. Do not split a sentence across physical source lines merely for wrapping or clause separation. Preserve stable IDs; use tables for repeated mappings. Diagrams are optional. Do not require manual-proof contracts from readability guidance.
 
 ## Rules and handoff
 
-Only governed authority may end at `review-required`; `spec-review` settles it. Never change other artifact, workflow, routing, automation, or review state. Governed work hands off; portable work stays isolated; unclear behavior routes upstream.
+Only governed authority may end at `review-required`; `spec-review` settles it. Never change other artifact or stage state. Governed work hands off; portable stays isolated; unclear behavior routes upstream.
 
 ## Stop conditions
 
 Stop on missing, unreadable, escaped, contradictory, stale, mixed-version, ambiguous, conflicting, unknown, or insufficient evidence/resources; illegal state; unsafe recovery; unowned behavior; malformed structure; or placeholders.
 
-The common path must not reconstruct missing procedure from memory. Report the blocker and owner.
+The common path must not reconstruct missing procedure. Report blocker and owner.
 
 ## Claims this skill must not make
 
-Do not claim spec-review approval; architecture, plan, implementation, branch, or PR readiness; validation; verification; release; deployment; publication; or settlement.
+Never claim spec-review approval; architecture, plan, implementation, branch, or PR readiness; validation, verification, release, deployment, publication, or settlement.
 
 ## Evidence collection efficiency
 
@@ -100,7 +98,7 @@ Read the full file when the whole file is the review target, the relevant sectio
 - READ `references/governed-spec-authoring.md` only for `single-governed-candidate`; validate exact authority before any governed write.
 - COPY `assets/spec-skeleton.md` when creating or fully rewriting. Fill: applicable fields and sections. Do not emit unfilled placeholders or insertion markers.
 
-Confirm required resources are readable, contained, and from one package version. Stop rather than infer missing procedure or structure.
+Require readable, contained, same-version resources; never infer missing procedure or structure.
 
 ## Boundary-first method
 
@@ -130,8 +128,8 @@ Fill every required and applicable section and remove the conditional insertion 
 
 ## Expected output
 
-Report path, contract, requirements, boundaries, blockers, and review readiness.
+Report path, requirements, boundaries, blockers, and readiness.
 
 ## Outputs
 
-Output is the spec and authorized authoring evidence, not review or downstream completion.
+Output is the spec and evidence, not review or downstream completion.
