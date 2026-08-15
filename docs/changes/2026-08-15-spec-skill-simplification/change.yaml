@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: code-review
+  current_stage: review-resolution
+  next_stage: implement
   blocker: null
   evidence:
     - docs/changes/2026-08-15-spec-skill-simplification/evidence/proposal-authoring.md
@@ -105,13 +105,15 @@ workflow_state:
       - M2
       - M3
     latest_review:
-      status: not-started
-      stage: none
-      round: none
-      artifact_id: none
-      occurrence: none
-      milestone_id: none
-      evidence: []
+      status: changes-requested
+      stage: code-review
+      round: r1
+      artifact_id: implementation-M1
+      occurrence: milestone
+      milestone_id: M1
+      evidence:
+        - docs/changes/2026-08-15-spec-skill-simplification/review-invocation-code-review-m1-r1.yaml
+        - docs/changes/2026-08-15-spec-skill-simplification/reviews/code-review-m1-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -136,7 +138,7 @@ workflow:
       completion:
         rule: first formal verify result is durably recorded
     status: active
-    current_stage: code-review
+    current_stage: review-resolution
     stop_reason: null
     evidence:
       - docs/changes/2026-08-15-spec-skill-simplification/evidence/workflow-automation-target-verify.md
@@ -209,5 +211,5 @@ changed_files:
   - docs/changes/2026-08-15-spec-skill-simplification/evidence/workflow-automation-target-verify.md
 
 review:
-  status: approved
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 1

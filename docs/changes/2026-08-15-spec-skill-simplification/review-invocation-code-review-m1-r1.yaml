@@ -1,0 +1,79 @@
+schema_version: 1
+review_id: code-review-M1-r1
+review_stage: code-review
+review_target: implementation-M1
+base_revision: 88455f4e
+head_revision: d8fa87cc
+milestone_id: M1
+native_review_status: changes-requested
+review_gate_outcome: correction-eligible
+independence_level: L0
+author_context_id: root-implement-M1
+reviewer_context_id: root-code-review-M1-r1-context-reset
+context_separation_mechanism: diff-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-semantic-preservation
+  - closed-vocabulary-evidence
+  - compatibility-inventory
+requirement_fidelity:
+  applicability: applicable
+  receipt: failed-SPSIM-M1-CR1
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings:
+  - SPSIM-M1-CR1
+risk_map:
+  affected_behavior:
+    - semantic-rule ownership evidence
+    - exact literal compatibility classification
+    - unknown-value-first proof
+    - loaded-profile baseline
+  highest_impact_failure_modes:
+    - a current behavior has more than one destination
+    - a parser-sensitive heading receives no exact treatment
+    - a closed value bypasses unknown-value validation
+    - the baseline understates a loaded assembly
+  changed_boundaries:
+    - BND-COMPAT-001
+    - INT-004
+  expected_evidence:
+    - one disposition and destination per semantic rule cluster
+    - one classification per exact compatibility-sensitive literal
+    - unknown-value-first negative fixtures
+    - deterministic baseline identities and arithmetic
+  direct_inspection_areas:
+    - current spec package
+    - exact validator and fixture consumers
+    - M1 ledgers and scenarios
+    - baseline resource identities
+  intentionally_out_of_scope:
+    - canonical spec package changes
+    - generated adapter changes
+    - M2 and M3 evidence
+  falsifiable_questions:
+    - does every exact skeleton heading have one treatment
+    - does each semantic row resolve to one owner
+    - do unknown closed values fail first
+    - do baseline totals match canonical files
+forbidden_initial_context_excluded: true
+correction:
+  auto_fix_class: mechanical
+  deterministic_authority: R57 and R59 require one destination per rule cluster and one separate treatment for every exact consumed heading.
+  affected_paths:
+    - docs/changes/2026-08-15-spec-skill-simplification/spec-rule-disposition.yaml
+    - docs/changes/2026-08-15-spec-skill-simplification/spec-literal-compatibility.yaml
+    - docs/changes/2026-08-15-spec-skill-simplification/evidence/m1-preservation-inventories.md
+  forbidden_paths:
+    - skills/spec/
+    - specs/
+    - docs/plans/
+  required_validation:
+    - CMD1
+    - documentation-prose
+    - change-metadata
+    - git-diff-check
