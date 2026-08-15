@@ -135,3 +135,9 @@ No material findings; no resolution entry required. The same-stage proposal-revi
 Review closeout: spec-review-r1
 
 No material findings; no resolution entry required. The formal spec review approved the contract and routed the change to bounded architecture assessment.
+
+### plan-review-r1
+
+Review closeout: plan-review-r1
+
+No material findings; no resolution entry required. The formal plan review approved the stable plan and requires identity-bound initialization and settlement retry before test-spec eligibility.
