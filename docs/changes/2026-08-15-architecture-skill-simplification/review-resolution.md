@@ -198,7 +198,7 @@ No material findings; no resolution entry required. The independent milestone re
 
 Finding ID: ARSIM-M2-CR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: architecture package implementer
 Owning stage: implement
 Decision owner: none
@@ -208,4 +208,10 @@ Rationale: Concision cannot omit identity and recovery properties needed for cra
 Required outcome: The governed package states every required property and passes CMD3-CMD6.
 Safe resolution path: Apply the bounded correction and complete context-reset rereview.
 Validation target: governed reference, focused transaction assertions, M2 evidence, and package validation.
-Validation evidence: pending correction and rereview.
+Validation evidence: corrected governed reference and focused assertions at `793d3acd`; CMD3-CMD6 passed; `reviews/code-review-m2-r2.md` approved the correction.
+
+### code-review-M2-r2
+
+Review closeout: code-review-M2-r2
+
+No material findings; no resolution entry required. The context-reset rereview confirmed `ARSIM-M2-CR1` resolved and closed M2 without claiming M3 or final verification.
