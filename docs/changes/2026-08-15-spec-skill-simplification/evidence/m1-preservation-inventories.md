@@ -8,7 +8,7 @@
 
 ## Completed scope
 
-M1 records 28 semantic rule clusters, 32 exact literal dependencies, 34 deterministic scenarios, two unknown-value fixtures, and the pre-refactor profile and package baseline. The semantic ledger assigns every current or approved replacement rule cluster one disposition and destination. The literal ledger separately distinguishes normative, parser/package, incidental, historical, and obsolete contracts without freezing ordinary prose.
+M1 records 28 semantic rule clusters, 50 exact literal dependencies, 34 deterministic scenarios, two unknown-value fixtures, and the pre-refactor profile and package baseline. The semantic ledger assigns every current or approved replacement rule cluster one disposition and destination. The literal ledger separately distinguishes normative, parser/package, incidental, historical, and obsolete contracts without freezing ordinary prose.
 
 ## Tests and proof first
 
@@ -29,7 +29,7 @@ The invalid fixtures use unknown disposition and classification values. CMD1 val
 
 ## Validation
 
-- CMD1: passed with `rules=28 literals=32 scenarios=34 unknown_values=rejected-first`.
+- CMD1: passed after correction with `rules=28 literals=50 scenarios=34 unknown_values=rejected-first`.
 - `python scripts/validate-change-metadata.py docs/changes/2026-08-15-spec-skill-simplification/change.yaml`: passed.
 - `python scripts/test-skill-validator.py MarkdownReadabilityGuidanceTests`: passed four tests.
 - `python scripts/validate-documentation-prose.py --mode audit --path docs/changes/2026-08-15-spec-skill-simplification/evidence/profile-size-baseline.md --path docs/changes/2026-08-15-spec-skill-simplification/evidence/m1-preservation-inventories.md`: passed with no errors or warnings.
@@ -38,3 +38,7 @@ The invalid fixtures use unknown disposition and classification values. CMD1 val
 ## Handoff
 
 M1 is implementation-complete evidence only. It now routes to formal milestone code review and does not claim milestone closure, later package behavior, generated-resource currency, verification, branch readiness, or PR readiness.
+
+## Accepted correction SPSIM-M1-CR1
+
+The initial-loading rule now has one inline owner, while the compact method and feature-record procedures retain separate reference-owned rows. Every exact universal skeleton heading now has an independent literal classification. No canonical skill, boundary reference, skeleton, spec, plan, workflow contract, validator, or package surface changed.
