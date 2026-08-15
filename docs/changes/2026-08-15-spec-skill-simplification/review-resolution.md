@@ -2,10 +2,10 @@
 
 Closeout status: closed
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
 - Findings resolved: 5
 - Unresolved findings: 0
-- Current result: round-2 findings resolved; revised proposal ready for independent rereview
+- Current result: proposal-review R3 approved the revised proposal with no material findings
 
 ## Resolution overview
 
@@ -106,3 +106,9 @@ Required outcome: Define one result for every state combination and fail closed 
 Safe resolution path: Adopt the round-2 transition and grandfathered-adoption matrix while retaining current structural owners.
 Validation target: revised composition, compatibility, scenarios, risks, and acceptance criteria plus rereview.
 Validation evidence: `evidence/proposal-revision-r2.md`; revised sections `Structural composition and boundary-block applicability`, `Validation and acceptance boundary`, `Proposal acceptance criteria`, `Expected Behavior Changes`, `Testing and Verification Strategy`, and `Risks and Mitigations`.
+
+### proposal-review-r3
+
+Review closeout: proposal-review-r3
+
+No material findings; no resolution entry required. The same-stage proposal-review rerun approved the revised proposal and confirmed that all findings through `proposal-review-r2` are closed.
