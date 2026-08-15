@@ -44,3 +44,16 @@ Resolution: review-resolution.md#proposal-review-r3
 Material findings: None
 Open findings: None
 Recording status: recorded
+
+### Review entry
+
+Review ID: spec-review-r1
+Stage: spec-review
+Round: r1
+Reviewed artifact: `specs/spec-skill-simplification.md` at commit `04bd4b92`
+Status: approved
+Detailed record: reviews/spec-review-r1.md
+Resolution: review-resolution.md#spec-review-r1
+Material findings: None
+Open findings: None
+Recording status: recorded
