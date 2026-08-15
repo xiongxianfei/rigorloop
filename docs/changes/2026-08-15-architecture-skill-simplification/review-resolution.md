@@ -129,3 +129,9 @@ Validation evidence: `evidence/proposal-revision-r2.md`; revised sections `Targe
 Review closeout: proposal-review-r3
 
 No material findings; no resolution entry required. The same-stage proposal-review rerun approved the revised proposal and confirmed that all findings through `proposal-review-r2` are closed.
+
+### spec-review-r1
+
+Review closeout: spec-review-r1
+
+No material findings; no resolution entry required. The formal spec review approved the contract and routed the change to bounded architecture assessment.
