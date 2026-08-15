@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: plan-review-r1
+review_stage: plan-review
+review_target: docs/plans/2026-08-15-spec-skill-simplification.md
+base_revision: 933c90f4
+head_revision: 933c90f4
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-plan-authoring-r1
+reviewer_context_id: root-plan-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - published-skill-package-refactor
+  - identity-bound-stale-authoring-recovery
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-15-spec-skill-simplification.md
+  - specs/spec-skill-simplification.md
+  - docs/changes/2026-08-15-spec-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-15-spec-skill-simplification.md
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: docs/proposals/2026-08-15-spec-skill-simplification.md
+    sha256: fb21b399858fb0a41fde16e119d729f712767c32ec43f75b347b66497d259e1c
+  - path: specs/spec-skill-simplification.md
+    sha256: b571940a15c2dead65bd5629f59556d29c7d8c3994f68d07b8646289cb76e531
+  - path: docs/changes/2026-08-15-spec-skill-simplification/architecture-assessment.md
+    sha256: 64c5ae7807623ca1788ece33f84e993c3cddc8c611967b6b57401e277d785c67
+  - path: docs/plans/2026-08-15-spec-skill-simplification.md
+    sha256: 305d093139c559b7d66237a6245dd24166ca1b575060ef6225d47a0c47ccb9c6
+prompt_template_version: plan-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - requirement, boundary, and interaction coverage
+  - milestone independence and proof-first sequencing
+  - portable and governed operation proof
+  - restart authority, content preservation, and structural composition
+  - package parity, rollback, and lifecycle authority
