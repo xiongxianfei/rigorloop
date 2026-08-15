@@ -221,3 +221,9 @@ No material findings; no resolution entry required. The context-reset rereview c
 Review closeout: code-review-M3-r1
 
 No material findings; no resolution entry required. The independent milestone review accepted the measurements, semantic reconciliation, boundary proof, and canonical-through-installed adapter parity and closed M3.
+
+### code-review-final-r1
+
+Review closeout: code-review-final-r1
+
+No material findings; no resolution entry required. The final holistic review approved the complete cross-milestone diff and established explanation eligibility without claiming verification or PR readiness.

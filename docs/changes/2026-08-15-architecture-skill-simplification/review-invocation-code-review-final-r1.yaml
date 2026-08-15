@@ -1,0 +1,66 @@
+schema_version: 1
+review_id: code-review-final-r1
+review_stage: code-review
+review_target: implementation-final
+base_revision: dcf357ce
+head_revision: 0cc97b50
+milestone_id: none
+native_review_status: clean-with-notes
+review_gate_outcome: pass
+independence_level: L0
+author_context_id: root-workflow-implementation
+reviewer_context_id: root-code-review-final-r1-context-reset
+context_separation_mechanism: complete-branch-diff-and-governing-artifact-reread
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-contract
+  - lifecycle-transaction-semantics
+  - adapter-package-parity
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed-R1-R54-AC1-AC10
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-finding-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+risk_map:
+  affected_behavior:
+    - architecture assessment and package loading
+    - portable and governed authoring
+    - prepared multi-target recovery
+    - asset composition and adapter distribution
+  highest_impact_failure_modes:
+    - universal safety is hidden behind a trigger
+    - governed recovery omits an identity
+    - derived packages drift from canonical
+    - lifecycle evidence contradicts implementation
+  changed_boundaries:
+    - BND-INPUT-001
+    - BND-STATE-001
+    - BND-AUTH-001
+    - BND-COMPOSE-001
+    - BND-TEMPORAL-001
+    - BND-RECOVERY-001
+    - BND-COMPAT-001
+    - BND-ENV-001
+  expected_evidence:
+    - complete R1-R54 projection
+    - closed milestone reviews and resolution
+    - passing deterministic validation and parity
+    - honest measurements and scope
+  direct_inspection_areas:
+    - complete branch diff
+    - canonical package and tests
+    - change-local review and lifecycle evidence
+  intentionally_out_of_scope:
+    - target-agent runtime
+    - PR creation
+  falsifiable_questions:
+    - does every assembly preserve its authority boundary
+    - are all review findings closed
+    - is every claimed validation current
+forbidden_initial_context_excluded: true
