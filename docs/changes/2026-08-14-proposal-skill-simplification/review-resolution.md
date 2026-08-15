@@ -17,9 +17,9 @@ Review closeout: code-review-M3-r1
 Review closeout: code-review-final-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `code-review-M1-r1`, `code-review-M1-r2`, `code-review-M2-r1`, `code-review-M2-r2`, `code-review-M3-r1`, `code-review-final-r1`
-- Findings resolved: 8
+- Findings resolved: 9
 - Unresolved findings: 0
-- Current result: final holistic code review approved; explanation and verify remain
+- Current result: final holistic code review, explanation, and verification are complete; the branch is ready for PR handoff
 
 ### code-review-final-r1
 
