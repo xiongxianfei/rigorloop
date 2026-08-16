@@ -145,6 +145,6 @@ Reviewed artifact: holistic branch range `origin/main...0a261046`
 Status: changes-requested
 Detailed record: reviews/code-review-final-r1.md
 Resolution: review-resolution.md#code-review-final-r1
-Material findings: ARRCODE-F1
-Open findings: ARRCODE-F1
+Material findings: ARRCODE-F1, ARRCODE-F2
+Open findings: ARRCODE-F2
 Recording status: recorded

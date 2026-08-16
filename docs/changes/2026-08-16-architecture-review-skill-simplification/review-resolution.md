@@ -162,12 +162,22 @@ Validation evidence: `docs/changes/2026-08-16-architecture-review-skill-simplifi
 ### test-spec-review-r2
 
 No material findings. The clean rereview confirms that ARRTSR-PR1 is closed and that the complete proof map is adequate for implementation handoff.
-# code-review-final-r1
+### code-review-final-r1
 
-- Review ID: code-review-final-r1
-- Finding ID: ARRCODE-F1
-- Disposition: accepted
-- Rationale: The branch-wide diff checker identifies eight exact extra EOF blank lines; removing only those lines is safe, mechanical, and required for final validation.
-- Required change: Normalize the eight named files, rerun diff and prose checks, and complete a holistic rereview.
-- Validation evidence: pending implementation and rereview
-- Closeout status: open
+Finding ID: ARRCODE-F1
+Disposition: accepted
+Owner: implementation author
+Owning stage: review-resolution
+Chosen action: Remove only the extra EOF blank lines from the affected evidence and review files.
+Rationale: The branch-wide diff checker identifies eight original extra EOF blank lines, and the review record introduced two more with the same formatting shape.
+Validation target: Branch-wide diff and Markdown readability checks pass before holistic rereview.
+Validation evidence: `git diff --check` passes for the working tree; `python scripts/test-skill-validator.py MarkdownReadabilityGuidanceTests` passes all four tests.
+
+Finding ID: ARRCODE-F2
+Disposition: accepted
+Owner: implementation author
+Owning stage: review-resolution
+Chosen action: Add the missing formal-review identity fields and normalize this resolution section to the existing review-artifact contract without changing any review judgment.
+Rationale: Closeout validation must recognize every durable code-review occurrence and its resolution before final verification can rely on that evidence.
+Validation target: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-16-architecture-review-skill-simplification` passes after a clean holistic rereview.
+Validation evidence: pending recording repair and rereview.
