@@ -1,8 +1,9 @@
 # Review Resolution: PR Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
+Review closeout: proposal-review-r2
 
 ## Resolution overview
 
@@ -11,9 +12,9 @@ Review closeout: proposal-review-r1
 | `PRSIM-PR1` | accepted | closed | The verified subject and handoff revision are separate, with one closed verify-owned evidence tail. |
 | `PRSIM-PR2` | accepted | closed | Reuse is non-mutating and refresh requires explicit field or full-replacement authority. |
 | `PRSIM-PR3` | accepted | closed | Remote branches use fail-closed states and PR state is reread after push. |
-| `PRSIM-PR4` | accepted | open | Close submission-intent side effects and existing PR-state transition authority. |
-| `PRSIM-PR5` | accepted | open | Bind readiness to an exact verified base/head pair and directional branch relations. |
-| `PRSIM-PR6` | accepted | open | Remove unmanaged Markdown section refresh from the first version. |
+| `PRSIM-PR4` | accepted | closed | `prepare-only` is read-only and creation intent is separate from existing PR-state authority. |
+| `PRSIM-PR5` | accepted | closed | Readiness binds an exact verified base/head pair and directional branch relations. |
+| `PRSIM-PR6` | accepted | closed | First-version refresh is limited to title or authorized whole-body replacement. |
 
 ## Finding details
 
@@ -41,7 +42,7 @@ Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/p
 
 Finding ID: PRSIM-PR4
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -51,13 +52,13 @@ Rationale: Creation intent does not imply permission to push, refresh, publish a
 Required outcome: Define push, creation, refresh, and state-transition behavior for every submission intent and existing state.
 Safe resolution path: Add independent state-transition authority, a closed side-effect matrix, separate requested and actual result fields, scenarios, and acceptance criteria.
 Validation target: revised proposal and independent proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r2.md`; independent rereview remains pending.
 
 #### PRSIM-PR5
 
 Finding ID: PRSIM-PR5
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -67,13 +68,13 @@ Rationale: An unchanged head does not preserve readiness when the effective PR b
 Required outcome: Define the verified base/head tuple, base staleness behavior, directional branch relations, and external-success versus readiness results.
 Safe resolution path: Amend the operation identity, sequence, branch-state matrix, scenarios, risks, and acceptance criteria.
 Validation target: revised proposal and independent proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r2.md`; independent rereview remains pending.
 
 #### PRSIM-PR6
 
 Finding ID: PRSIM-PR6
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -83,7 +84,7 @@ Rationale: Section mutation without markers, provenance, and a code-fence-aware 
 Required outcome: Remove section refresh, preserve existing body bytes by default, and route managed-section behavior to a separate approved contract.
 Safe resolution path: Amend refresh authority, the operation matrix, architecture boundary, scenarios, risks, and acceptance criteria.
 Validation target: revised proposal and independent proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r2.md`; independent rereview remains pending.
 
 #### PRSIM-PR2
 
