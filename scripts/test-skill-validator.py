@@ -9925,6 +9925,18 @@ class PRSkillSimplificationTests(unittest.TestCase):
         ):
             self.assertIn(phrase.lower(), self.skill.lower())
 
+    def test_review_resolution_summary_contract_is_preserved(self) -> None:
+        for phrase in (
+            "counts by disposition",
+            "review-resolution.md",
+            "needs-decision",
+            "do not duplicate every detailed finding",
+            "stage-owned non-approval outcome",
+            "`review-resolution.md` alone is not a silent substitute",
+            "no-material detailed records need `review-log.md` but not an empty `review-resolution.md`",
+        ):
+            self.assertIn(phrase, self.skill)
+
     def test_portable_and_governed_profiles_both_decrease(self) -> None:
         skill_bytes = self.skill.encode("utf-8")
         reference_bytes = self.reference.encode("utf-8")

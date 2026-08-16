@@ -87,7 +87,7 @@ Report requested intent, operation, actual external mutation, actual PR state, r
 
 ## Review closeout
 
-Inspect `review-log.md`. `Closeout status: open`, `needs-decision`, or open findings block handoff; `Closeout status: closed` requires final dispositions and evidence. A stage-owned non-approval outcome requires a same-stage later review round or explicit reviewer or owner closeout; `review-resolution.md` alone is not a silent substitute. For no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
+Inspect `review-log.md`. `Closeout status: open`, `needs-decision`, or open findings block; `Closeout status: closed` requires final dispositions and evidence. Summarize `review-resolution.md` as counts by disposition and do not duplicate every detailed finding. A stage-owned non-approval outcome requires a same-stage later review round or explicit reviewer or owner closeout; `review-resolution.md` alone is not a silent substitute; no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
 
 Treat the plan and upstream artifacts as read-only.
 
