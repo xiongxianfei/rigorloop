@@ -1,0 +1,24 @@
+{
+  "rules": [
+    {"rule_id":"ARRULE-001","owner":"inline","destination":"skills/architecture-review/SKILL.md#Purpose and workflow role","requirements":["R1","R2"],"proof":["T1"]},
+    {"rule_id":"ARRULE-002","owner":"inline","destination":"skills/architecture-review/SKILL.md#Evidence and target resolution","requirements":["R2"],"proof":["T1"]},
+    {"rule_id":"ARRULE-003","owner":"inline","destination":"skills/architecture-review/SKILL.md#Review surfaces","requirements":["R11","R16"],"proof":["T4"]},
+    {"rule_id":"ARRULE-004","owner":"inline","destination":"skills/architecture-review/SKILL.md#Judgment and status","requirements":["R28","R47","R48"],"proof":["T8"]},
+    {"rule_id":"ARRULE-005","owner":"inline","destination":"skills/architecture-review/SKILL.md#Recording classification","requirements":["R12","R13","R14","R15","R17","R18","R19"],"proof":["T4","T5"]},
+    {"rule_id":"ARRULE-006","owner":"shared-literal","destination":"skills/architecture-review/SKILL.md#Isolation and Recording","requirements":["R8","R9","R10"],"proof":["T3"]},
+    {"rule_id":"ARRULE-007","owner":"method-reference","destination":"skills/architecture-review/references/architecture-package-review.md#C4 and arc42 review","requirements":["R3"],"proof":["T2"]},
+    {"rule_id":"ARRULE-008","owner":"method-reference","destination":"skills/architecture-review/references/architecture-package-review.md#ADR and package quality","requirements":["R3","R22"],"proof":["T2","T6"]},
+    {"rule_id":"ARRULE-009","owner":"recording-reference","destination":"skills/architecture-review/references/architecture-review-recording-and-settlement.md#Recording","requirements":["R4","R17","R18"],"proof":["T5"]},
+    {"rule_id":"ARRULE-010","owner":"recording-reference","destination":"skills/architecture-review/references/architecture-review-recording-and-settlement.md#Review identity","requirements":["R20","R21","R22","R23","R24","R25","R26","R27"],"proof":["T6","T7"]},
+    {"rule_id":"ARRULE-011","owner":"recording-reference","destination":"skills/architecture-review/references/architecture-review-recording-and-settlement.md#Target disposition","requirements":["R29","R30","R31","R32","R33","R34","R35","R36"],"proof":["T8","T9"]},
+    {"rule_id":"ARRULE-012","owner":"recording-reference","destination":"skills/architecture-review/references/architecture-review-recording-and-settlement.md#Prepared settlement","requirements":["R37","R38","R39","R40","R41","R42"],"proof":["T10"]},
+    {"rule_id":"ARRULE-013","owner":"recording-reference","destination":"skills/architecture-review/references/architecture-review-recording-and-settlement.md#Retry and recovery","requirements":["R43","R44","R45","R46"],"proof":["T11"]},
+    {"rule_id":"ARRULE-014","owner":"recording-reference","destination":"skills/architecture-review/references/architecture-review-recording-and-settlement.md#Workflow-managed automation","requirements":["R4","R19"],"proof":["T4","T5"]},
+    {"rule_id":"ARRULE-015","owner":"inline","destination":"skills/architecture-review/SKILL.md#Compact result","requirements":["R49"],"proof":["T8"]},
+    {"rule_id":"ARRULE-016","owner":"inline","destination":"skills/architecture-review/SKILL.md#Stops and claims","requirements":["R2","R5","R7"],"proof":["T1","T2"]},
+    {"rule_id":"ARRULE-017","owner":"inline","destination":"skills/architecture-review/SKILL.md#Resource map","requirements":["R1","R3","R4","R6","R7"],"proof":["T1","T2"]},
+    {"rule_id":"ARRULE-018","owner":"change-evidence","destination":"docs/changes/2026-08-16-architecture-review-skill-simplification/evidence/simplification-measurements.md","requirements":["R53","R54"],"proof":["T13"]},
+    {"rule_id":"ARRULE-019","owner":"existing-validator","destination":"scripts/test-adapter-distribution.py","requirements":["R55"],"proof":["T12"]},
+    {"rule_id":"ARRULE-020","owner":"existing-validator","destination":"scripts/test-skill-validator.py","requirements":["R50","R51","R52","R56","R57","R58"],"proof":["T3","T10","T13","T14"]}
+  ]
+}

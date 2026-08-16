@@ -10334,6 +10334,47 @@ class SpecSkillSimplificationTests(unittest.TestCase):
             self.assertIn(claim.lower(), self.skill.lower())
 
 
+class ArchitectureReviewSkillSimplificationLedgerTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.change = ROOT / "docs" / "changes" / "2026-08-16-architecture-review-skill-simplification"
+
+    def load(self, name: str) -> dict:
+        return json.loads((self.change / name).read_text(encoding="utf-8"))
+
+    def test_rule_owners_are_closed_before_consistency(self) -> None:
+        allowed = {"inline", "method-reference", "recording-reference", "shared-literal", "change-evidence", "existing-validator"}
+        rules = self.load("architecture-review-rule-disposition.yaml")["rules"]
+        invalid = self.load("fixtures/invalid-rule-owner.yaml")["rules"]
+        self.assertTrue(rules)
+        self.assertTrue(all(row["owner"] in allowed for row in rules))
+        self.assertTrue(any(row["owner"] not in allowed for row in invalid))
+        self.assertEqual(len({row["rule_id"] for row in rules}), len(rules))
+
+    def test_literal_classifications_are_closed_before_consistency(self) -> None:
+        allowed = {"normative-contract", "normative-cross-skill-literal", "parser-or-package-contract", "test-only-incidental", "historical-fixture", "obsolete"}
+        literals = self.load("architecture-review-literal-compatibility.yaml")["literals"]
+        invalid = self.load("fixtures/invalid-literal-classification.yaml")["literals"]
+        self.assertTrue(literals)
+        self.assertTrue(all(row["classification"] in allowed for row in literals))
+        self.assertTrue(any(row["classification"] not in allowed for row in invalid))
+        self.assertEqual(len({row["literal_id"] for row in literals}), len(literals))
+
+    def test_scenarios_and_review_manifest_have_closed_identity(self) -> None:
+        scenarios = self.load("fixtures/scenario-contracts.yaml")["scenarios"]
+        manifest = self.load("fixtures/formal-review-manifest-capability.yaml")["settlement_manifest"]
+        self.assertEqual(len({row["id"] for row in scenarios}), len(scenarios))
+        self.assertGreaterEqual(len(scenarios), 22)
+        self.assertEqual(manifest["state"], "prepared")
+        self.assertTrue(manifest["review_subject_identity"])
+        self.assertTrue(manifest["governing_basis_identity"])
+        self.assertTrue(all({"pre_state", "disposition", "expected_post_state", "settlement_status"} <= set(row) for row in manifest["targets"]))
+
+    def test_baseline_records_all_required_surfaces(self) -> None:
+        baseline = (self.change / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
+        for value in ("ARR0", "ARR0M", "ARR1", "ARR1M", "15982", "2192", "Total canonical package"):
+            self.assertIn(value.lower(), baseline.lower())
+
+
 class ArchitectureSkillSimplificationLedgerTests(unittest.TestCase):
     def setUp(self) -> None:
         self.change = ROOT / "docs" / "changes" / "2026-08-15-architecture-skill-simplification"

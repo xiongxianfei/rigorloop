@@ -1,0 +1,14 @@
+{
+  "settlement_manifest": {
+    "manifest_id": "architecture-review-settlement-001",
+    "state": "prepared",
+    "review_id": "architecture-review-r1",
+    "review_round": "r1",
+    "review_subject_identity": "sha256:subject",
+    "governing_basis_identity": "sha256:basis",
+    "targets": [
+      {"artifact_id":"architecture-system","kind":"architecture","path":"docs/architecture/system/architecture.md","content_identity":"sha256:architecture","authoring_evidence_identity":"sha256:authoring","pre_state":"review-required","disposition":"approved","expected_post_state":"approved","settlement_status":"pending"},
+      {"artifact_id":"adr-example","kind":"adr","path":"docs/adr/ADR-example.md","content_identity":"sha256:adr","authoring_evidence_identity":"sha256:adr-authoring","pre_state":"review-required","disposition":"accepted","expected_post_state":"accepted","settlement_status":"pending"}
+    ]
+  }
+}
