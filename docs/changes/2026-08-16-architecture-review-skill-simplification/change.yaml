@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: code-review
+  current_stage: review-resolution
+  next_stage: review-resolution
   blocker: null
   evidence:
     - docs/changes/2026-08-16-architecture-review-skill-simplification/evidence/proposal-authoring.md
@@ -93,6 +93,8 @@ workflow_state:
     - docs/changes/2026-08-16-architecture-review-skill-simplification/evidence/simplification-measurements.md
     - docs/changes/2026-08-16-architecture-review-skill-simplification/review-invocation-code-review-m3-r1.yaml
     - docs/changes/2026-08-16-architecture-review-skill-simplification/reviews/code-review-m3-r1.md
+    - docs/changes/2026-08-16-architecture-review-skill-simplification/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-16-architecture-review-skill-simplification/reviews/code-review-final-r1.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -114,22 +116,23 @@ workflow_state:
         state: closed
     remaining_implementation_milestones: []
     latest_review:
-      status: approved
+      status: changes-requested
       stage: code-review
       round: r1
       artifact_id: plan
-      occurrence: milestone
-      milestone_id: M3
+      occurrence: final
+      milestone_id: none
       evidence:
-        - docs/changes/2026-08-16-architecture-review-skill-simplification/reviews/code-review-m3-r1.md
+        - docs/changes/2026-08-16-architecture-review-skill-simplification/reviews/code-review-final-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
-        - lifecycle-gates-open
+        - review-findings-open
       evidence:
         - docs/changes/2026-08-16-architecture-review-skill-simplification/reviews/plan-review-r1.md
         - docs/changes/2026-08-16-architecture-review-skill-simplification/evidence/plan-initialization.md
         - docs/changes/2026-08-16-architecture-review-skill-simplification/reviews/code-review-m3-r1.md
+        - docs/changes/2026-08-16-architecture-review-skill-simplification/reviews/code-review-final-r1.md
 
 workflow:
   automation:
@@ -142,7 +145,7 @@ workflow:
       completion:
         rule: first final verify result is durably recorded
     status: active
-    current_stage: code-review
+    current_stage: review-resolution
     stop_reason: null
     evidence:
       - docs/changes/2026-08-16-architecture-review-skill-simplification/evidence/workflow-automation-target-verify.md
@@ -202,5 +205,5 @@ changed_files:
   - docs/changes/2026-08-16-architecture-review-skill-simplification/evidence/workflow-automation-target-verify.md
 
 review:
-  status: approved
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 1
