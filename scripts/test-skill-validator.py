@@ -3513,43 +3513,39 @@ Use the inputs somehow and produce a useful result.
                 self.assertNotIn(term, body)
 
     def test_architecture_review_skill_preserves_simple_finding_and_material_contract(self) -> None:
-        body = (ROOT / "skills" / "architecture-review" / "SKILL.md").read_text(encoding="utf-8")
+        root = ROOT / "skills" / "architecture-review"
+        body = (root / "SKILL.md").read_text(encoding="utf-8")
+        package = body + (root / "references" / "architecture-package-review.md").read_text(encoding="utf-8")
         required_terms = [
-            "## Review Surface",
-            "Classify the review surface before reviewing:",
+            "## Review surface",
+            "Select exactly one surface before judgment:",
             "`canonical-architecture-update`",
             "`ADR`",
             "`no-architecture-impact-rationale`",
             "`proposal-or-spec-gap`",
-            "Review the changed canonical architecture sections, diagrams, and ADR links directly.",
-            "Do not require a change-local architecture delta for a canonical architecture update.",
-            "Review the ADR for context, decision, alternatives, consequences, and compatibility with the canonical architecture.",
-            "Check whether the no-architecture-impact rationale is credible.",
-            "If the design direction is unresolved, return a finding that routes back to `proposal` or proposal revision.",
-            "If behavior is unsettled, route to `spec` or spec revision.",
-            "Do not use architecture-review to settle product direction.",
-            "embedded or duplicated diagram source",
-            "generic non-C4 flowchart",
-            "wrong C4 level",
-            "missing C4 role classes",
-            "missing technology labels where relevant",
-            "unlabeled relationships",
-            "flat Building Block View",
-            "duplicated ADR rationale",
-            "weak quality-scenario content",
-            "Deployment View repeats source layout",
-            "Finding:",
-            "Location:",
-            "Severity:",
-            "Recommendation:",
+            "exact changed canonical Markdown",
+            "related ADRs",
+            "Read the exact target",
+            "test whether the exact assessment rationale remains credible",
+            "route it to its owning proposal or specification stage",
+            "C4 role classes",
+            "relationships are labeled",
+            "Building Block View",
+            "Quality scenarios",
+            "Deployment content",
+            "Finding",
+            "Location",
+            "Severity",
+            "Recommendation",
             "`blocker`, `material`, or `minor`",
-            "Do not require mandatory C4-level classification",
-            "does not replace the repository-wide material-finding contract",
-            "evidence, required outcome, and a safe resolution path or `needs-decision` rationale",
+            "stable Finding ID",
+            "Evidence",
+            "Required outcome",
+            "Safe resolution path",
         ]
         for term in required_terms:
             with self.subTest(term=term):
-                self.assertIn(term, body)
+                self.assertIn(term, package)
 
         forbidden_terms = [
             "Change-local delta:",
@@ -5385,6 +5381,8 @@ Use the inputs somehow and produce a useful result.
                 path = ROOT / "skills" / skill_name / "references" / "proposal-review-recording-and-settlement.md"
             elif skill_name == "spec-review":
                 path = ROOT / "skills" / skill_name / "references" / "governed-spec-review-settlement.md"
+            elif skill_name == "architecture-review":
+                path = ROOT / "skills" / skill_name / "references" / "architecture-review-recording-and-settlement.md"
             body = path.read_text(encoding="utf-8")
             for term in required_terms:
                 with self.subTest(skill=skill_name, term=term):
@@ -8029,7 +8027,7 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
     REVIEW_SETTLEMENT_PHRASES = {
         "proposal-review": "settle only the matching proposal entry",
         "spec-review": "settle only the matching spec entry",
-        "architecture-review": "settle only the matching architecture entry",
+        "architecture-review": "Settle only the matching architecture entry",
         "plan-review": "settle only the matching plan entry",
         "test-spec-review": "settle only the matching test-spec entry",
     }
@@ -8046,7 +8044,7 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
     def review_contract_body(skill_name: str) -> str:
         skill_root = ROOT / "skills" / skill_name
         body = (skill_root / "SKILL.md").read_text(encoding="utf-8")
-        if skill_name in {"proposal-review", "spec-review", "plan-review", "test-spec-review"}:
+        if skill_name in {"proposal-review", "spec-review", "architecture-review", "plan-review", "test-spec-review"}:
             reference_name = (
                 "proposal-review-recording-and-settlement.md"
                 if skill_name == "proposal-review"
@@ -8054,9 +8052,13 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                     "governed-spec-review-settlement.md"
                     if skill_name == "spec-review"
                     else (
-                        "governed-plan-review-settlement.md"
-                        if skill_name == "plan-review"
-                        else "test-spec-review-recording-and-settlement.md"
+                        "architecture-review-recording-and-settlement.md"
+                        if skill_name == "architecture-review"
+                        else (
+                            "governed-plan-review-settlement.md"
+                            if skill_name == "plan-review"
+                            else "test-spec-review-recording-and-settlement.md"
+                        )
                     )
                 )
             )
@@ -8190,6 +8192,21 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
             body = self.review_contract_body(skill_name)
             normalized = " ".join(body.split())
             with self.subTest(skill=skill_name):
+                if skill_name == "architecture-review":
+                    self.assertIn("## Prepared settlement manifest", normalized)
+                    self.assertIn("canonical architecture target becomes `approved`", normalized)
+                    for phrase in (
+                        "complete change record",
+                        "review-required",
+                        "authoring-evidence identity",
+                        "complete prepared settlement manifest",
+                        "before the first target transition",
+                        "compare-and-set",
+                        "only pending matching writes",
+                        "does not advance routing",
+                    ):
+                        self.assertIn(" ".join(phrase.split()), normalized)
+                    continue
                 expected_heading = {
                     "proposal-review": "## Formal lifecycle settlement",
                     "test-spec-review": "## Formal-only settlement",
@@ -10373,6 +10390,67 @@ class ArchitectureReviewSkillSimplificationLedgerTests(unittest.TestCase):
         baseline = (self.change / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
         for value in ("ARR0", "ARR0M", "ARR1", "ARR1M", "15982", "2192", "Total canonical package"):
             self.assertIn(value.lower(), baseline.lower())
+
+
+class ArchitectureReviewSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "architecture-review"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        self.method = (self.root / "references" / "architecture-package-review.md").read_text(encoding="utf-8")
+        self.recording = (self.root / "references" / "architecture-review-recording-and-settlement.md").read_text(encoding="utf-8")
+
+    def test_package_assemblies_and_resource_triggers_are_exact(self) -> None:
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["architecture-package-review.md", "architecture-review-recording-and-settlement.md"])
+        self.assertFalse((self.root / "assets").exists())
+        for value in ("ARR0-core", "ARR0M-method", "ARR1-recorded", "ARR1M-recorded-method"):
+            self.assertIn(value, self.skill)
+        self.assertIn("READ `references/architecture-package-review.md`", self.skill)
+        self.assertIn("READ `references/architecture-review-recording-and-settlement.md`", self.skill)
+        self.assertIn("at most once", self.skill)
+
+    def test_shared_recording_block_is_exact_and_not_repeated(self) -> None:
+        shared = (ROOT / "templates" / "shared" / "review-isolation-and-recording.md").read_text(encoding="utf-8").strip()
+        start = self.skill.index("## Isolation and Recording")
+        end = self.skill.find("\n## ", start + 3)
+        actual = self.skill[start:] if end < 0 else self.skill[start:end]
+        self.assertEqual(actual.strip(), shared)
+        self.assertEqual(self.skill.count("## Isolation and Recording"), 1)
+        self.assertNotIn("Isolation governs handoff", self.recording)
+
+    def test_surfaces_authority_vocabularies_and_combinations_are_closed(self) -> None:
+        for value in ("canonical-architecture-update", "ADR", "no-architecture-impact-rationale", "proposal-or-spec-gap", "none/none/manual", "advisory-durable/none/manual", "formal-lifecycle/none/manual", "formal-lifecycle/exact-target-set/manual", "formal-lifecycle/none/workflow-managed-automated", "formal-lifecycle/exact-target-set/workflow-managed-automated"):
+            self.assertIn(value, self.skill)
+        for phrase in ("Every unlisted, unknown, missing, mixed, or contradictory combination", "before durable writes", "workflow-managed automated execution returns control to workflow"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+
+    def test_review_subject_basis_and_record_only_surfaces_are_exact(self) -> None:
+        combined = self.skill + self.recording
+        for phrase in ("review_subject", "governing_basis", "settlement_targets", "governing specification", "approving spec-review", "architecture-assessment receipt", "architecture-method contract", "repository revision"):
+            self.assertIn(phrase.lower(), combined.lower())
+        for surface in ("no-impact", "proposal/spec-gap"):
+            self.assertIn(surface, self.recording.lower())
+        self.assertIn("empty settlement-target set", self.recording.lower())
+        self.assertIn("identity-free formal", self.recording.lower())
+
+    def test_target_dispositions_do_not_create_partial_approval(self) -> None:
+        for phrase in ("intended `accepted` or `active`", "missing or ambiguous intended ADR state", "only targets named by material findings", "unaffected targets remain `review-required`", "review-occurrence", "target-set", "target:<artifact-id>", "inconclusive", "no partial approval"):
+            self.assertIn(phrase.lower(), self.recording.lower())
+
+    def test_prepared_manifest_precedes_exact_retry_and_concurrency(self) -> None:
+        for phrase in ("before the first target transition", "prepared settlement manifest", "pre-state", "disposition", "expected post-state", "settlement progress", "partial-retry-required", "only pending matching writes", "no duplicate review", "concurrent", "without adoption"):
+            self.assertIn(phrase.lower(), self.recording.lower())
+        self.assertLess(self.recording.lower().index("before the first target transition"), self.recording.lower().index("compare-and-set"))
+
+    def test_method_reference_owns_architecture_package_judgment(self) -> None:
+        for phrase in ("C4", "arc42", "diagram", "canonical architecture", "ADR quality", "package consistency", "quality scenario", "Deployment View"):
+            self.assertIn(phrase.lower(), self.method.lower())
+        self.assertNotIn("prepared settlement manifest", self.method.lower())
+
+    def test_missing_resources_and_claim_boundaries_fail_closed(self) -> None:
+        for phrase in ("missing, unreadable, escaped, contradictory, stale, or mixed-version", "must not reconstruct", "stop before dependent"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        for claim in ("workflow continuation", "plan readiness", "implementation readiness", "verification", "branch readiness", "PR readiness"):
+            self.assertIn(claim.lower(), self.skill.lower())
 
 
 class ArchitectureSkillSimplificationLedgerTests(unittest.TestCase):
