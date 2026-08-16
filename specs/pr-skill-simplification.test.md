@@ -99,6 +99,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 | Command ID | Command | Classification | Owner | Owning milestone | First required milestone | Failure behavior | Zero-test behavior | Evidence artifact | Safe mode / side-effect boundary |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| C0 | `python docs/changes/2026-08-16-pr-skill-simplification/fixtures/validate-pr-simplification.py` | planned-for-implementation | M1 | M1 | M1 | Stop M1 and correct an incomplete ledger, unknown vocabulary, invalid scenario, or nondeterministic baseline. | The command must execute every declared fixture family; an empty family is failure. | `docs/changes/2026-08-16-pr-skill-simplification/evidence/m1-preservation-inventories.md` | Python standard library and change-local files only; canonical skills and external systems are read-only. |
 | C1 | `python scripts/test-skill-validator.py PRSkillSimplificationTests` | planned-for-implementation | M2 | M2 | M2 | Stop M2 and correct focused contract or fixture failure. | Zero selected tests is failure. | `docs/changes/2026-08-16-pr-skill-simplification/evidence/m2-package-implementation.md` | Local deterministic fixtures only; no remote or PR mutation. |
 | C2 | `python scripts/validate-skills.py skills/pr/SKILL.md skills/verify/SKILL.md` | existing/configured | skill validator | M2 | M2 | Stop on invalid structure, resources, claims, or portability. | Not applicable. | M2 and M3 evidence | Reads canonical skill packages only. |
 | C3 | `python scripts/test-skill-validator.py` | existing/configured | skill validator suite | M2 | M2 | Stop on any skill-contract regression. | Zero tests is failure. | M2 and M3 evidence | Repository-local tests; no external mutation. |
@@ -113,7 +114,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| M1 | T-PR-018 | none | C8 and M1 standard-library ledger command | `evidence/m1-preservation-inventories.md`, `evidence/profile-size-baseline.md` | M1 code review | Canonical skill packages remain unchanged. |
+| M1 | T-PR-018 | none | C0, C8 | `evidence/m1-preservation-inventories.md`, `evidence/profile-size-baseline.md` | M1 code review | Canonical skill packages remain unchanged. |
 | M2 | T-PR-001-T-PR-017, T-PR-020 | none | C1, C2, C3, C4, C5, C8 | `evidence/m2-package-implementation.md` | M2 code review | Producer and consumer contract changes land atomically. |
 | M3 | T-PR-018-T-PR-020 | none | C2, C3, C4, C5, C6, C7, C8 | measurements, semantic preservation, and `evidence/m3-package-proof.md` | M3 code review | Proves real profile reduction and package parity. |
 | M4 | T-PR-001-T-PR-020 | none | C1-C9 | final review, explanation, and verify report | PR handoff | Lifecycle closeout only; no implementation scope. |
@@ -345,13 +346,13 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 - Covers: R42-R45, AC-PRSIM-017, AC-PRSIM-018
 - Level: contract
-- Command IDs: C1
+- Command IDs: C0, C1
 - Fixture/setup: M1 ledgers, baseline and final canonical resources, duplicate clusters, and unknown-value fixture
 - Steps: validate closed dispositions, deterministic LF/word/byte assembly, PR0/PR1 reduction, and separate total package report
 - Expected result: every item has one owner, unknown values fail first, both profiles shrink, and package growth is explicit
 - Failure proves: semantic loss or cosmetic simplification is hidden
 - Evidence artifact: `evidence/simplification-measurements.md`, `evidence/semantic-preservation-review.md`
-- Automation location: M1 standard-library command and `PRSkillSimplificationTests`
+- Automation location: `docs/changes/2026-08-16-pr-skill-simplification/fixtures/validate-pr-simplification.py` and `PRSkillSimplificationTests`
 - Required by milestone: M1 and M3
 
 ### T-PR-019. Canonical-through-installed parity
