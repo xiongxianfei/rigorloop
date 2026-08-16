@@ -162,3 +162,12 @@ Validation evidence: `docs/changes/2026-08-16-architecture-review-skill-simplifi
 ### test-spec-review-r2
 
 No material findings. The clean rereview confirms that ARRTSR-PR1 is closed and that the complete proof map is adequate for implementation handoff.
+# code-review-final-r1
+
+- Review ID: code-review-final-r1
+- Finding ID: ARRCODE-F1
+- Disposition: accepted
+- Rationale: The branch-wide diff checker identifies eight exact extra EOF blank lines; removing only those lines is safe, mechanical, and required for final validation.
+- Required change: Normalize the eight named files, rerun diff and prose checks, and complete a holistic rereview.
+- Validation evidence: pending implementation and rereview
+- Closeout status: open

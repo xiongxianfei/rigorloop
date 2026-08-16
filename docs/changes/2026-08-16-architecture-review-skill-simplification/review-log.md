@@ -135,3 +135,16 @@ Resolution: not-required
 Material findings: none
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-final-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: holistic branch range `origin/main...0a261046`
+Status: changes-requested
+Detailed record: reviews/code-review-final-r1.md
+Resolution: review-resolution.md#code-review-final-r1
+Material findings: ARRCODE-F1
+Open findings: ARRCODE-F1
+Recording status: recorded
