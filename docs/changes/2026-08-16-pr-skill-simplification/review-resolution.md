@@ -1,16 +1,17 @@
 # Review Resolution: PR Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
+Review closeout: spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`
 - Findings resolved: 7
-- Unresolved findings: 0
-- Current result: proposal approved for focused specification and bounded architecture assessment
+- Unresolved findings: 1
+- Current result: spec revision required before architecture assessment
 
 ## Resolution overview
 
@@ -23,6 +24,7 @@ Review closeout: proposal-review-r4
 | `PRSIM-PR5` | accepted | closed | Readiness binds an exact verified base/head pair and directional branch relations. |
 | `PRSIM-PR6` | accepted | closed | First-version refresh is limited to title or authorized whole-body replacement. |
 | `PRSIM-PR7` | accepted | closed | `verify` owns the normalized basis through its existing result/report contract and same-slice compatibility proof. |
+| `PRSSIM-SR1` | accepted | open | Correct E2 so every cited boundary governs every cited requirement. |
 
 ## Finding details
 
@@ -147,3 +149,21 @@ Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/p
 ### proposal-review-r4
 
 No material findings. The approving clean rereview confirms that the normalized verify-basis amendment closes `PRSIM-PR7` within the existing evidence owner and that all prior external-action findings remain resolved.
+
+### spec-review-r1
+
+#### PRSSIM-SR1
+
+Finding ID: PRSSIM-SR1
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec
+Decision owner: none; correction is mechanical
+Decision needed: Remove the boundary citation that does not govern all requirements in E2.
+Chosen action: Cite only `BND-STATE-001` for E2.
+Rationale: E2 concerns existing-PR lifecycle behavior; its requirements do not need the external-environment boundary citation.
+Required outcome: Boundary validation reports no example-owner mismatch.
+Safe resolution path: Apply the one-row correction, run the boundary validator, and rereview the complete spec.
+Validation target: revised spec and independent `spec-review-r2`.
+Validation evidence: pending

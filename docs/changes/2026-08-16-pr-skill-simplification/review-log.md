@@ -21,6 +21,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: spec-review-r1
+Stage: spec-review
+Round: r1
+Reviewed artifact: `specs/pr-skill-simplification.md` at commit `9cee7a1d`
+Status: changes-requested
+Detailed record: reviews/spec-review-r1.md
+Resolution: review-resolution.md#spec-review-r1
+Material findings: PRSSIM-SR1
+Open findings: PRSSIM-SR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: proposal-review-r2
 Stage: proposal-review
 Round: r2
