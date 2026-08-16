@@ -29,7 +29,7 @@ Status: changes-requested
 Detailed record: reviews/test-spec-review-r1.md
 Resolution: review-resolution.md#test-spec-review-r1
 Material findings: ARRTSR-PR1
-Open findings: ARRTSR-PR1
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -80,6 +80,19 @@ Reviewed artifact: `docs/plans/2026-08-16-architecture-review-skill-simplificati
 Status: approved
 Detailed record: reviews/plan-review-r1.md
 Resolution: review-resolution.md#plan-review-r1
+Material findings: none
+Open findings: none
+Recording status: recorded
+
+### Review entry
+
+Review ID: test-spec-review-r2
+Stage: test-spec-review
+Round: r2
+Reviewed artifact: `specs/architecture-review-skill-simplification.test.md` at commit `7c61eedc`
+Status: approved
+Detailed record: reviews/test-spec-review-r2.md
+Resolution: review-resolution.md#test-spec-review-r2
 Material findings: none
 Open findings: none
 Recording status: recorded

@@ -1,6 +1,6 @@
 # Review Resolution: Architecture Review Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -8,11 +8,12 @@ Review closeout: proposal-review-r3
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
+Review closeout: test-spec-review-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`
-- Findings resolved: 6
-- Unresolved findings: 1
-- Current result: test-spec review changes requested; implementation handoff is blocked pending disposition, revision, and rereview
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
+- Findings resolved: 7
+- Unresolved findings: 0
+- Current result: test-spec approved for implementation handoff; direct review remains isolated and did not advance workflow routing
 
 ## Resolution overview
 
@@ -24,6 +25,7 @@ Review closeout: test-spec-review-r1
 | `ARRSIM-R2-PR1` | accepted | closed | Separated review subject, governing basis, and settlement targets for every surface. |
 | `ARRSIM-R2-PR2` | accepted | closed | Kept one overall status while limiting target mutation to evidence-scoped dispositions. |
 | `ARRSIM-R2-PR3` | accepted | closed | Persisted a prepared settlement manifest and exact per-target progress before writes. |
+| `ARRTSR-PR1` | accepted | closed | Added exact canonical and ADR success states plus atomic missing and ambiguous ADR-intent failure proof. |
 
 ## Finding details
 
@@ -145,7 +147,7 @@ No material findings. The approving clean review confirms that the milestones ar
 
 Finding ID: ARRTSR-PR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: test-spec author
 Owning stage: test-spec
 Decision owner: workflow-managed review-resolution
@@ -155,4 +157,8 @@ Rationale: The first formal test-spec review found that generic approved settlem
 Required outcome: Add deterministic valid and invalid intended-state cases or record a justified disposition that preserves the governing contract.
 Safe resolution path: Resolve this finding, revise the test spec when accepted, rerun boundary validation, and obtain a fresh independent test-spec review.
 Validation target: revised proof mappings and approving test-spec rereview.
-Validation evidence: `docs/changes/2026-08-16-architecture-review-skill-simplification/evidence/test-spec-revision-r1.md`; approving rereview pending
+Validation evidence: `docs/changes/2026-08-16-architecture-review-skill-simplification/evidence/test-spec-revision-r1.md` and approving `docs/changes/2026-08-16-architecture-review-skill-simplification/reviews/test-spec-review-r2.md`
+
+### test-spec-review-r2
+
+No material findings. The clean rereview confirms that ARRTSR-PR1 is closed and that the complete proof map is adequate for implementation handoff.
