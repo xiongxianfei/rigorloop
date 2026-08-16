@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: code-review
+  current_stage: implement
+  next_stage: implement
   blocker: null
   evidence:
     - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-authoring.md
@@ -88,9 +88,10 @@ workflow_state:
     - docs/changes/2026-08-16-pr-skill-simplification/reviews/test-spec-review-r2.md
     - docs/changes/2026-08-16-pr-skill-simplification/evidence/workflow-automation-target-verify.md
     - docs/changes/2026-08-16-pr-skill-simplification/evidence/m1-preservation-inventories.md
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m1-r1.md
   planned_work:
     plan_artifact_id: plan
-    current_milestone: M1
+    current_milestone: M2
     initialization_basis:
       review_id: plan-review-r1
       review_round: r1
@@ -100,25 +101,25 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: review-requested
+        state: closed
       M2:
         kind: implementation
-        state: planned
+        state: implementing
       M3:
         kind: implementation
         state: planned
     remaining_implementation_milestones:
-      - M1
       - M2
       - M3
     latest_review:
-      status: review-requested
+      status: approved
       stage: code-review
-      round: none
+      round: r1
       artifact_id: plan
       occurrence: milestone
       milestone_id: M1
-      evidence: []
+      evidence:
+        - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m1-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -140,13 +141,14 @@ workflow:
       completion:
         rule: first final verify result is durably recorded
     status: active
-    current_stage: code-review
+    current_stage: implement
     stop_reason: null
     evidence:
       - docs/changes/2026-08-16-pr-skill-simplification/evidence/workflow-automation-target-verify.md
       - specs/pr-skill-simplification.test.md
       - docs/changes/2026-08-16-pr-skill-simplification/reviews/test-spec-review-r2.md
       - docs/changes/2026-08-16-pr-skill-simplification/evidence/m1-preservation-inventories.md
+      - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m1-r1.md
 
 artifacts:
   proposal: docs/proposals/2026-08-16-pr-skill-simplification.md
@@ -213,6 +215,8 @@ changed_files:
   - docs/changes/2026-08-16-pr-skill-simplification/fixtures/validate-pr-simplification.py
   - docs/changes/2026-08-16-pr-skill-simplification/evidence/profile-size-baseline.md
   - docs/changes/2026-08-16-pr-skill-simplification/evidence/m1-preservation-inventories.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-m1-r1.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m1-r1.md
 
 review:
   status: approved

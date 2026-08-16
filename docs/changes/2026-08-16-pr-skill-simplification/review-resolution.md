@@ -202,3 +202,7 @@ Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/t
 ### test-spec-review-r2
 
 No material findings. The approving rereview confirms that `TSPRSIM-TSR1` is closed and the proof map is implementation-handoff ready.
+
+### code-review-m1-r1
+
+No material findings. The clean milestone review closes M1 and authorizes workflow routing to M2; no finding disposition is required.
