@@ -31,4 +31,3 @@ For replacement or supersession, verify predecessor and replacement links, statu
 Challenge silent failure, hidden coupling, irreversible migration, old-client and old-data compatibility, trust boundaries, operational ownership, bad integration assumptions, and decisions that would be unrecoverable without an ADR. Confirm links resolve and that canonical Markdown does not reference missing diagrams or ADRs.
 
 Record findings against exact paths, sections, lines, diagram names, or ADR IDs. Do not restate universal status, recording, settlement, or handoff policy here.
-
