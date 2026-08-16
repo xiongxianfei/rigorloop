@@ -1,0 +1,49 @@
+change_id: 2026-08-16-learn-skill-simplification
+title: Learn Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-16-learn-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-authoring.md
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-authoring.md
+
+workflow: {}
+
+artifacts:
+  proposal: docs/proposals/2026-08-16-learn-skill-simplification.md
+
+requirements:
+  - Reduce pre-session and real-session loaded context while preserving learn evidence quality, confirmation, recording, routing, and claim boundaries.
+  - Keep universal trigger, evidence, confirmation, ownership, sensitive-data, stop, claim, and resource-selection behavior inline and add one conditional session-method reference.
+  - Separate learn-owned session and topic writes from route-only derivative work owned by proposals, specs, ADRs, workflow, skills, plans, issues, or other authoritative surfaces.
+  - Preserve the existing learn namespace, no-template direction, and periodic non-default lifecycle role.
+  - Prove semantic and literal preservation, real LR0 and LR1 profile reduction, and canonical-through-installed parity without target-agent runtime acceptance.
+
+tests:
+  - Independent proposal review of value, package boundaries, operations, ownership, confirmation, measurement, compatibility, and spec readiness.
+  - Deterministic scenarios covering trigger closeout, real sessions, empty outcomes, confirmation, derivative routing, sensitive evidence, missing resources, and forbidden mutation.
+  - Static package, selector, build, adapter, and lifecycle validation without a target-agent runtime or separate manual semantic-review acceptance gate.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-16-learn-skill-simplification/change.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-16-learn-skill-simplification.md
+
+review:
+  status: review-requested
+  unresolved_items: 0
