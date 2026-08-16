@@ -50,13 +50,13 @@ Status: changes-requested
 
 ## Finding PRSSIM-SR1
 
-- Finding ID: PRSSIM-SR1
-- Severity: major
-- Location: `specs/pr-skill-simplification.md`, Example ownership row E2
-- Evidence: E2 cites `R15, R20` and both `BND-STATE-001` and `BND-ENV-001`, but `BND-ENV-001` does not govern R15. The active validator reports `BFR-EXAMPLE-OWNER-MISMATCH`.
-- Required outcome: Make every E2 requirement governed by every boundary it cites without changing the example's normative behavior.
-- Safe resolution path: Remove the unnecessary external-environment citation from E2, rerun structural validation, and perform independent rereview.
-- needs-decision rationale: none
+Finding ID: PRSSIM-SR1
+Severity: major
+Location: `specs/pr-skill-simplification.md`, Example ownership row E2
+Evidence: E2 cites `R15, R20` and both `BND-STATE-001` and `BND-ENV-001`, but `BND-ENV-001` does not govern R15. The active validator reports `BFR-EXAMPLE-OWNER-MISMATCH`.
+Required outcome: Make every E2 requirement governed by every boundary it cites without changing the example's normative behavior.
+Safe resolution path: Remove the unnecessary external-environment citation from E2, rerun structural validation, and perform independent rereview.
+needs-decision rationale: none
 
 ## Review dimensions
 

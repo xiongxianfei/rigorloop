@@ -7,6 +7,12 @@ Reviewer: Codex independent test-spec-review context reset to proof map and gove
 Target: `specs/pr-skill-simplification.test.md`
 Reviewed artifact: commit `f15da7e7`, sha256 `523f3cda6d236e1d2e9a0a708f97e73919d7679186e740dece42122c7db772d4`
 Review date: 2026-08-16
+Status: changes-requested
+Review status: changes-requested
+Material findings: TSPRSIM-TSR1
+Recording status: recorded
+Immediate next stage: test-spec revision
+Implementation handoff: not-allowed
 
 ## Result
 
@@ -27,13 +33,13 @@ Review date: 2026-08-16
 
 ## Finding TSPRSIM-TSR1
 
-- Finding ID: TSPRSIM-TSR1
-- Severity: major
-- Location: `specs/pr-skill-simplification.test.md`, Validation commands, M1 milestone row, and T-PR-018
-- Evidence: M1 requires a “standard-library ledger and fixture command,” but the validation-command ledger defines no command ID or exact command for it. The milestone row and T-PR-018 therefore depend on prose rather than an executable, owned validation contract.
-- Required outcome: Add one exact planned-for-implementation command for M1 ledger, fixture, unknown-value, and baseline validation and reference its command ID from T-PR-018 and the M1 milestone proof row.
-- Safe resolution path: Add a change-local standard-library validator command with closed failure and zero-test behavior, update the two mappings, rerun boundary validation, and independently rereview the complete proof map.
-- needs-decision rationale: none
+Finding ID: TSPRSIM-TSR1
+Severity: major
+Location: `specs/pr-skill-simplification.test.md`, Validation commands, M1 milestone row, and T-PR-018
+Evidence: M1 requires a “standard-library ledger and fixture command,” but the validation-command ledger defines no command ID or exact command for it. The milestone row and T-PR-018 therefore depend on prose rather than an executable, owned validation contract.
+Required outcome: Add one exact planned-for-implementation command for M1 ledger, fixture, unknown-value, and baseline validation and reference its command ID from T-PR-018 and the M1 milestone proof row.
+Safe resolution path: Add a change-local standard-library validator command with closed failure and zero-test behavior, update the two mappings, rerun boundary validation, and independently rereview the complete proof map.
+needs-decision rationale: none
 
 ## Review assessment
 
