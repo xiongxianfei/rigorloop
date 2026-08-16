@@ -39,6 +39,8 @@ Return `not-ready` when any required class is missing, stale, conflicting, faili
 
 Return `branch-ready` only when every applicable prerequisite and evidence class passes for the exact target. Otherwise return `not-ready`; do not use a partial or “mostly ready” final verdict.
 
+Before returning `branch-ready`, record the normalized `verification_basis` owned by `SKILL.md` in the applicable result or verify-report surface. Bind it to the exact evidence target and current base/head relationship. Historical prose or command output that lacks the complete normalized basis remains useful context but cannot establish current branch readiness.
+
 In `isolated` mode, report the assessment and stop. Do not write workflow state or invoke `pr`.
 
 In `governed-final` mode, write only verify-owned evidence required by the existing project contract, then return the verdict to `workflow`. A clean result names `pr` as the next stage but does not prepare, open, or authorize it.
