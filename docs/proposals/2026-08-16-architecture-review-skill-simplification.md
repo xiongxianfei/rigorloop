@@ -22,6 +22,9 @@ The May architecture-surface simplification already settled which surfaces archi
 - Preserve the accepted review surfaces: `canonical-architecture-update`, `ADR`, `no-architecture-impact-rationale`, and `proposal-or-spec-gap`.
 - Keep resource loading, semantic judgment, durable recording, lifecycle settlement, and automation authority as separate decisions.
 - Preserve exact multi-target identity when one review covers a canonical architecture package and related ADRs.
+- Bind every formal judgment to one exact review subject and complete governing basis independently from any settlement targets.
+- Use finding-scoped and blocker-scoped target dispositions without introducing partial semantic approval.
+- Persist a prepared settlement manifest before any target-state mutation and make partial physical recovery identity-bound.
 - Prove semantic preservation, literal compatibility, real loaded-profile reduction, and canonical-through-installed package parity deterministically.
 
 ## Non-goals
@@ -113,6 +116,21 @@ Keep these rules inline:
 
 The main file must remain capable of rejecting ambiguous targets, spec conflicts, unsupported no-impact claims, incomplete findings, unavailable required procedure, unsafe writes, and overbroad claims before any optional resource is trusted.
 
+### Shared recording compatibility
+
+The exact `## Isolation and Recording` subsection remains inline in `SKILL.md` and byte-identical to the shared formal-review recording block. Its compatibility classification is closed:
+
+| Property | Value |
+| --- | --- |
+| Classification | `normative-cross-skill-literal` |
+| Normative owner | `specs/formal-review-recording.md` |
+| Projection source | `templates/shared/review-isolation-and-recording.md` |
+| Treatment | Preserve exactly |
+
+The recording reference owns only architecture-review-specific placement, synchronization, settlement, retry, and automation procedure outside that shared block. It must not restate, paraphrase, or become a second owner of the shared isolation and recording contract.
+
+Before editing, the literal inventory must capture the exact shared bytes and every consuming review skill. Any future change to the block requires one atomic amendment to the governing specification, projection template, all consuming review skills, and their validators; this simplification does not make such an amendment.
+
 ### `architecture-package-review.md` ownership
 
 Load this reference when the review surface is `canonical-architecture-update` or `ADR`, including a canonical update whose reviewed target set contains related ADRs.
@@ -144,7 +162,7 @@ The reference owns:
 - identical retry, review-ID reuse, partial settlement, concurrency, and failed-validation behavior;
 - workflow-managed automated review independence, packets, receipts, correction limits, and return to workflow.
 
-Loading this reference grants no settlement, automation, correction, or continuation authority. The main file owns whether durable recording is required, while this reference owns how the valid recording mode is executed.
+Loading this reference grants no settlement, automation, correction, or continuation authority. The main file owns whether durable recording is required, while this reference owns how the selected valid authority combination is executed. It must consume the inline shared isolation and recording contract without duplicating it.
 
 ### Independent classification axes
 
@@ -162,23 +180,49 @@ recording_mode:
   advisory-durable
   formal-lifecycle
 
-settlement_mode:
-  isolated
-  governed
+artifact_settlement:
+  none
+  exact-target-set
 
-automation_mode:
+execution_mode:
   manual
   workflow-managed-automated
 ```
 
-`recording_mode: none` is valid only for non-formal review-like feedback that requests no durable status or evidence and produces no material or non-approval result. An explicit `architecture-review` request that asks for formal review status or lifecycle evidence is formal. `workflow-managed-automated` is valid only with `formal-lifecycle` and `governed` authority.
+`recording_mode: none` is valid only for non-formal review-like feedback that requests no durable status or evidence and produces no material or non-approval result. An explicit `architecture-review` request that asks for formal review status or lifecycle evidence is formal.
+
+The first version permits only these combinations:
+
+| Recording mode | Artifact settlement | Execution mode | Required behavior and handoff |
+| --- | --- | --- | --- |
+| `none` | `none` | `manual` | Return chat or result output only; perform no durable write or downstream continuation. |
+| `advisory-durable` | `none` | `manual` | Write only to an explicitly authorized standalone review-evidence location; perform no lifecycle mutation or downstream continuation. |
+| `formal-lifecycle` | `none` | `manual` | Write formal review evidence and required review-log or review-resolution evidence; settle no artifact and remain isolated. |
+| `formal-lifecycle` | `exact-target-set` | `manual` | Write formal review evidence and settle only the validated exact target set; remain isolated and report the possible next stage without invoking it. |
+| `formal-lifecycle` | `none` | `workflow-managed-automated` | Write formal review and automation evidence, settle no artifact, and return the blocked or record-only result to `workflow`. |
+| `formal-lifecycle` | `exact-target-set` | `workflow-managed-automated` | Write formal review and automation evidence, settle only the validated exact target set, and return control to `workflow`. |
+
+Every unlisted combination is invalid and stops before recording, settlement, automation evidence, or handoff. In particular, automation never runs with `none` or `advisory-durable`, and artifact settlement never runs without `formal-lifecycle` recording.
+
+`advisory-durable` requires an explicit valid user-provided evidence path or a project-local standalone advisory location authorized by workflow guidance. When neither location resolves safely, return the complete judgment and findings with `recording_status: blocked`; do not create a governed change root, formal review log, review resolution, lifecycle entry, or continuation authority.
+
+The permitted side effects are also closed:
+
+| Authority combination | Standalone evidence | Formal record and log | Review resolution when triggered | Exact artifact transition | Automation packet or receipt | Workflow routing |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| None/manual | no | no | no | no | no | no |
+| Advisory/manual | yes | no | no | no | no | no |
+| Formal record-only/manual | no | yes | yes | no | no | no |
+| Formal target-set/manual | no | yes | yes | yes | no | no |
+| Formal record-only/automated | no | yes | yes | no | yes | no |
+| Formal target-set/automated | no | yes | yes | yes | yes | no |
 
 Resource loading and authority remain separate:
 
 ```text
 loaded resources determine available procedure
-recording and settlement modes determine permitted writes
-automation mode determines permitted automated branches
+recording mode and artifact settlement determine permitted writes
+execution mode determines permitted automated branches and return behavior
 ```
 
 Unknown, mixed, contradictory, or unresolved classifications stop before dependent judgment or writes.
@@ -194,30 +238,46 @@ Use these assemblies:
 | `ARR1-recorded` | no | yes | core plus recording-and-settlement reference |
 | `ARR1M-recorded-method` | yes | yes | core plus both references |
 
-The primary real profiles are isolated formal no-impact review, isolated formal canonical or ADR review, governed formal no-impact review, and governed formal canonical or ADR review. Informal feedback may be measured but must not be used as the sole simplification success surface.
+The primary procedural acceptance surfaces are `ARR1-recorded` and `ARR1M-recorded-method`, because every formal review loads the recording reference and canonical or ADR review also loads the method reference. Manual and workflow-managed automated executions may share a loaded assembly, but their distinct authority and handoff semantics require separate static fixtures. Informal feedback may be measured but must not be used as the sole simplification success surface.
 
 Late discovery of package-method or durable-recording context must load the required reference before dependent judgment, recording, status, or settlement. Each reference loads at most once.
 
-### Exact target and review-occurrence identity
+### Review subject, governing basis, and settlement targets
 
-Every formal review occurrence binds:
+Every formal review occurrence binds three separate identities:
 
 ```text
-review ID and round
-repository revision
-primary review surface
-ordered target IDs
-target kinds and normalized paths
-target content identities
-authoring-evidence identities when governed
-review record and log paths
+review subject:
+  primary review surface
+  stable subject ID and kind
+  ordered source paths and content identities
+
+governing basis:
+  governing specification path and identity
+  approving spec-review identity
+  architecture-assessment receipt identity when applicable
+  accepted proposal or decision basis when relevant
+  architecture-method contract path and identity
+  repository revision
+
+settlement targets:
+  ordered artifact IDs
+  target kinds and normalized paths
+  target content identities
+  authoring-evidence identities
 ```
 
-A canonical package target may include its architecture Markdown and linked diagram sources as one package identity. Related ADRs remain distinct lifecycle targets in the ordered set. A standalone ADR review uses the `ADR` surface. A canonical update with related ADRs uses `canonical-architecture-update` as the primary surface and includes each ADR as an exact target.
+The review occurrence also binds its review ID, round, review record, and review-log path. A canonical package subject includes its architecture Markdown, linked diagram sources, related ADRs, and governing basis. Related ADRs remain distinct optional settlement targets. A standalone ADR subject includes the exact ADR, its current canonical architecture linkage, and governing basis. A canonical update with related ADRs uses `canonical-architecture-update` as the primary surface and includes every reviewed source in one ordered subject identity.
 
-The first version retains one semantic review status for the exact occurrence and target set. It does not introduce partial semantic approval. A finding against any required target prevents the complete target set from receiving an approved occurrence.
+No-impact rationale binds the exact architecture-assessment receipt and exact proposal or specification basis used by the rationale. Proposal/spec-gap review binds the exact proposal or specification identities and the architecture question or conflict being reviewed. These record-only surfaces have an exact review subject but an empty settlement-target set. A direct formal record-only review whose stable subject identity cannot be resolved reports blocked recording or remains advisory; it must not create an identity-free formal occurrence.
 
-No-impact rationale and proposal/spec-gap review are record-only surfaces unless an existing governed artifact entry explicitly represents the reviewed rationale. They must not invent an architecture or ADR lifecycle target merely to settle a review.
+The first version retains one semantic review status for the exact review subject. It does not introduce partial semantic approval. A finding against any required source or settlement target prevents the complete subject from receiving an approved occurrence.
+
+No-impact rationale and proposal/spec-gap review are always review-evidence-only in the first version. They never settle an architecture or ADR entry, and they must not invent a rationale artifact, artifact kind, lifecycle entry, schema, or settlement target. Workflow remains the owner of architecture assessment and routing decisions derived from those results.
+
+Artifact settlement is available only for an exact target set of canonical architecture packages and ADRs whose governed entries already exist at `review-required`. Every target must match its artifact ID, normalized path, current content identity, authoring-evidence identity, reviewed repository revision, target kind, and governing basis. A missing, stale, ambiguous, conflicting, or differently ordered target blocks the complete settlement attempt.
+
+A prior judgment may be reused only when the review subject identity, complete governing-basis identity, ordered settlement-target identity, review status, review ID, and round all match. A changed specification, approving spec review, assessment receipt, accepted decision basis, architecture-method contract, repository revision, or target identity requires a new review occurrence even when architecture file bytes are unchanged.
 
 ### Judgment, recording, and settlement results
 
@@ -244,9 +304,58 @@ settlement_result:
   blocked
 ```
 
-An approved judgment with blocked recording does not complete formal review. A valid identical retry may finish recording or settlement using one exact prior judgment without rerunning semantic review or creating duplicate records. A retry must stop if revision, target set, identity, authority, status, or review ID changed.
+An approved judgment with blocked recording does not complete formal review. A valid identical retry may finish recording or settlement using one exact prior judgment without rerunning semantic review or creating duplicate records. A retry must stop if the subject, governing basis, repository revision, target set, identity, authority, status, review ID, or round changed.
 
-For governed multi-target settlement, write the durable review record first and settle only the exact ordered target set. An interruption may leave an identity-proven partial settlement that an identical retry completes, but the invocation cannot claim settled review until every required target reaches the prescribed state. Unrelated artifact entries, milestone state, and workflow routing remain unchanged.
+For governed multi-target settlement, write the durable review record, findings, review log, and required review resolution first. Then persist the complete prepared settlement manifest before mutating any target. Settle only the exact ordered target set. An interruption may leave an identity-proven partial settlement that an identical retry completes, but the invocation cannot claim settled review until the manifest is complete. Unrelated artifact entries, milestone state, and workflow routing remain unchanged.
+
+Architecture-review retains one semantic status for the complete ordered subject. Target settlement is finding-scoped and blocker-scoped. Every material finding identifies its affected target IDs, and every blocking result uses exactly one scope: `review-occurrence`, `target-set`, or `target:<artifact-id>`.
+
+Use this deterministic target-disposition mapping:
+
+| Overall review status | Target scope | Required target result |
+| --- | --- | --- |
+| `approved` | Every required target | Transition canonical architecture to `approved`; transition each ADR to the intended `accepted` or `active` state recorded by current authoring evidence. Missing or ambiguous intended state blocks the complete settlement. |
+| `changes-requested` | Targets named by material findings | Transition affected targets to `revision-required`; leave every unaffected target at `review-required`. |
+| `blocked` | Target-scoped blockers | Transition only named blocked targets to `blocked`; leave unaffected targets at `review-required`. |
+| `blocked` | Target-set blocker | Transition every target to `blocked` only when the evidence establishes a genuinely target-set-wide blocker. |
+| `blocked` | Review-occurrence blocker | Perform no target settlement. |
+| `inconclusive` | Default | Perform no target settlement and leave every target at `review-required`. |
+| Any recording or authority failure | Any | Perform no target settlement. |
+
+An overall status other than `approved` grants no target approval and no downstream architecture-review eligibility. Leaving an unaffected target at `review-required` is not partial approval; the target remains unsettled and participates in the complete rereview.
+
+### Prepared settlement manifest
+
+The complete settlement manifest is durable on the existing formal-review evidence surface before any canonical architecture or ADR entry is transitioned. It binds:
+
+```text
+manifest ID and state
+review ID and round
+review subject identity
+governing-basis identity
+ordered settlement-target identity
+per target:
+  artifact ID, kind, path, and content identity
+  authoring-evidence identity
+  validated pre-state
+  finding or blocker disposition
+  expected post-state
+  settlement progress
+```
+
+Manifest states are `prepared`, `partial`, `complete`, or `blocked`. The write protocol is closed:
+
+1. Complete semantic judgment.
+2. Write the exact review record and findings.
+3. Synchronize the review log and required review resolution.
+4. Persist the complete `prepared` settlement manifest.
+5. Re-read `change.yaml`, authority, governing basis, and all target identities.
+6. Compare-and-set targets in manifest order.
+7. Record or verify each target's completion against the same manifest.
+8. Finalize the manifest as `complete`.
+9. Report `settled`.
+
+A physical interruption after some exact target writes produces only `partial-retry-required`, never partial semantic approval or downstream eligibility. Retry reuses the same review ID, round, semantic judgment, subject identity, governing-basis identity, manifest identity, ordered targets, target identities, authoring-evidence identities, pre-states, dispositions, and expected post-states. It completes only pending matching writes and stops on any changed identity, state, order, basis, authority, or concurrency evidence. A changed subject, basis, target set, or manifest requires a new review occurrence rather than retry adoption.
 
 ### Resource failure behavior
 
@@ -260,23 +369,61 @@ Retain the current compact result fields and simple finding shape inline. The re
 
 For a retry that performs no new semantic review, report the safely reused review ID and status separately from the retry transaction result. Do not manufacture a new review round or status.
 
+## Proposal Acceptance Criteria
+
+| ID | Criterion |
+| --- | --- |
+| `AC-ARRSIM-001` | The exact shared `## Isolation and Recording` block remains inline and byte-identical to its normative projection. |
+| `AC-ARRSIM-002` | The recording reference owns only architecture-review-specific mechanics outside the shared block. |
+| `AC-ARRSIM-003` | Recording mode, artifact settlement, and execution mode have one exhaustive valid-combination matrix. |
+| `AC-ARRSIM-004` | Every valid combination has explicit write, settlement, automation-evidence, isolation, and handoff behavior. |
+| `AC-ARRSIM-005` | Every unlisted or contradictory authority combination stops before side effects. |
+| `AC-ARRSIM-006` | No-impact rationale and proposal/spec-gap reviews always remain review-evidence-only. |
+| `AC-ARRSIM-007` | Governed settlement requires exact existing canonical architecture or ADR entries and matching authoring evidence. |
+| `AC-ARRSIM-008` | Canonical architecture and ADR target dispositions are deterministic and evidence-scoped for every review status. |
+| `AC-ARRSIM-009` | Interrupted physical settlement supports only exact `partial-retry-required` reconciliation and never partial semantic approval. |
+| `AC-ARRSIM-010` | The `ARR1-recorded` and `ARR1M-recorded-method` loaded words and UTF-8 bytes decrease from their baselines without semantic loss. |
+| `AC-ARRSIM-011` | Acceptance uses deterministic repository proof and ordinary PR review, with no target-agent runtime or separate manual semantic gate. |
+| `AC-ARRSIM-012` | Canonical, generated, archived, release-candidate, and installed resources retain required parity. |
+| `AC-ARRSIM-013` | Review subject, governing basis, and settlement targets are represented separately. |
+| `AC-ARRSIM-014` | Every formal review binds one exact governing specification and architecture-method basis. |
+| `AC-ARRSIM-015` | No-impact and proposal/spec-gap surfaces bind exact review subjects but have no settlement targets. |
+| `AC-ARRSIM-016` | A changed specification, spec review, assessment receipt, decision basis, method identity, or repository revision invalidates judgment reuse. |
+| `AC-ARRSIM-017` | One overall semantic status remains authoritative for the complete review subject. |
+| `AC-ARRSIM-018` | A non-approved review never approves an individual target or grants downstream eligibility. |
+| `AC-ARRSIM-019` | `changes-requested` transitions only finding-affected targets to `revision-required`. |
+| `AC-ARRSIM-020` | `inconclusive` performs no target settlement by default. |
+| `AC-ARRSIM-021` | Every blocker records `review-occurrence`, `target-set`, or exact target scope. |
+| `AC-ARRSIM-022` | A complete prepared settlement manifest is durable before target writes. |
+| `AC-ARRSIM-023` | The manifest records pre-state, disposition, expected post-state, and per-target progress. |
+| `AC-ARRSIM-024` | Partial retry reuses the exact subject, basis, manifest, review ID, and round. |
+| `AC-ARRSIM-025` | Changed or concurrent target state blocks retry rather than being adopted. |
+| `AC-ARRSIM-026` | Architecture becomes required when existing formal-review evidence cannot support the prepared-manifest contract. |
+| `AC-ARRSIM-027` | Advisory durable recording without an authorized location reports blocked and creates no governed state. |
+| `AC-ARRSIM-028` | No target-agent runtime executes during acceptance. |
+
 ## Expected Behavior Changes
 
 - No-impact and upstream-gap review no longer load the detailed canonical package and ADR checklist.
 - Canonical and ADR review load one reviewer-focused method reference rather than keeping the complete checklist inline.
 - Durable recording and lifecycle settlement load one independent procedure and do not become implied by package-method loading.
 - Combined canonical-plus-ADR reviews bind one exact ordered target set and cannot settle unrelated or ambiguous targets.
+- Every formal judgment binds an exact subject and governing basis even when it has no settlement targets.
+- No-impact rationale and proposal/spec-gap reviews never settle lifecycle artifacts.
+- Manual and workflow-managed automated executions use the same closed authority matrix but retain different isolation and return behavior.
+- Non-approved reviews mutate only targets supported by finding-scoped or blocker-scoped evidence; `inconclusive` leaves targets unsettled by default.
+- Multi-target settlement persists a prepared manifest before writes and records per-target progress for exact recovery.
 - Identical recording or settlement retries reuse one exact judgment without duplicate semantic review evidence.
 - Missing triggered procedure fails closed at the dependent claim boundary.
 - Review surfaces, statuses, severity, material-finding obligations, lifecycle ownership, and workflow handoff remain behaviorally unchanged.
 
 ## Architecture Impact
 
-The expected bounded assessment is `architecture-not-required`. The design uses the existing published-skill package model, existing formal-review evidence, existing artifact entries, and existing review settlement ownership. It adds no service, runtime router, persistence mechanism, schema, lifecycle state, dependency, or independent policy owner.
+The expected bounded assessment is provisionally `architecture-not-required`. The design uses the existing published-skill package model, existing formal-review evidence, existing artifact entries, existing authoring evidence for the intended ADR accepted state, and existing review settlement ownership. It adds no rationale artifact, service, runtime router, persistence mechanism, lifecycle state, dependency, or independent policy owner.
 
 A documentation-only architecture update is appropriate only if the current architecture package inventory depicts `architecture-review` as permanently flat or lists an exact resource inventory that becomes stale.
 
-Architecture becomes required if the specification discovers that exact multi-target retry requires a new persisted transaction record, review schema, lifecycle state, or write owner. The implementation must not weaken recovery merely to preserve the expected no-architecture result.
+The bounded assessment must confirm that current formal-review evidence can represent the complete governing basis, target dispositions, expected states, and per-target settlement progress before retaining `architecture-not-required`. Architecture becomes required if exact multi-target retry needs a new persisted transaction record, review schema, lifecycle state, or write owner. The implementation must not weaken recovery merely to preserve the expected no-architecture result.
 
 ## Testing and Verification Strategy
 
@@ -293,13 +440,16 @@ Add deterministic static scenarios for:
 - each of the four review surfaces;
 - all four loaded assemblies;
 - combined canonical and ADR targets;
-- exact target identity, stale revision, ambiguous target, and conflicting authoring evidence;
-- isolated versus governed recording and settlement;
+- exact subject identity, complete governing basis, record-only subject identity, stale decision input, ambiguous target, and conflicting authoring evidence;
+- every valid recording, artifact-settlement, and execution combination plus representative invalid combinations;
+- isolated manual versus workflow-managed automated return behavior and forbidden workflow routing;
 - clean, material, blocked, and inconclusive outcomes;
-- no-impact credibility and upstream proposal/spec routing;
-- identical retry, partial settlement, review-ID collision, and concurrent change;
+- no-impact credibility and upstream proposal/spec routing with no artifact settlement;
+- finding-scoped and blocker-scoped canonical architecture and ADR dispositions for every review status, including unaffected targets and missing or ambiguous intended ADR state;
+- prepared manifest durability before writes, per-target completion, identical retry, exact partial settlement, changed-basis or changed-target rejection, review-ID collision, and concurrent change;
 - missing triggered and untriggered references;
 - forbidden edits to reviewed artifacts, unrelated entries, milestone state, or routing;
+- byte-identical shared recording-block projection and absence of a duplicate reference-owned copy;
 - absence of duplicate policy ownership and unfilled result fields.
 
 Validate canonical `skills/architecture-review/` resources, generated packages, release archives, release candidates, and clean-installed Codex, Claude, and opencode resources through existing repository scripts. Do not hand-edit derived output.
@@ -322,8 +472,13 @@ Rollback restores the prior canonical skill package and directly coupled tests o
 
 - Risk: Moving detailed checks behind a reference could let a canonical or ADR review proceed without the full method. Mitigation: use a closed positive trigger, late-discovery loading, missing-resource failure, and static profile scenarios.
 - Risk: The recording reference could become a second owner of review status or materiality. Mitigation: keep judgment, trigger classification, statuses, and claim boundaries inline and assign only recording mechanics and settlement to the reference.
+- Risk: Extracting recording procedure could alter the normative cross-skill isolation and recording literal. Mitigation: preserve the shared block byte-identically inline, classify it explicitly, and validate it against the shared projection.
 - Risk: A shorter common file could omit no-impact or proposal/spec-gap safety. Mitigation: keep the compact impact scan and upstream routing inline and prove both as core-only scenarios.
-- Risk: Combined target settlement could widen architecture-review authority. Mitigation: bind one ordered exact target set, retain one occurrence status, forbid partial semantic approval, and preserve every unrelated state surface.
+- Risk: Authority modes could combine into an unintended write path. Mitigation: permit only the six enumerated combinations, define their side effects, and stop every unlisted combination.
+- Risk: Combined target settlement could widen architecture-review authority. Mitigation: make rationale and gap surfaces unconditionally record-only, bind one ordered exact canonical/ADR target set, apply deterministic evidence-scoped dispositions, forbid partial semantic approval, and preserve every unrelated state surface.
+- Risk: A prior judgment could be reused after its specification, assessment, or architecture-method basis changes. Mitigation: bind one complete governing-basis identity and require a new review occurrence on any decision-bearing change.
+- Risk: One overall non-approval status could over-mutate unaffected targets. Mitigation: keep one semantic status while using finding-scoped and blocker-scoped dispositions, leaving unsupported targets at `review-required`.
+- Risk: Interrupted settlement could reconstruct intended writes from mutable current state. Mitigation: persist the full prepared manifest and per-target progress before mutation and reconcile only its exact identity.
 - Risk: The main file shrinks while real formal review profiles do not improve. Mitigation: make loaded formal profiles the primary measurement surfaces and report total package accounting separately.
 - Risk: Reviewer method drifts from architecture authoring method. Mitigation: keep the approved architecture package specification normative and make the reference reviewer-specific rather than a copied authoring guide.
 - Risk: Tests freeze incidental prose. Mitigation: separate semantic-rule and literal-compatibility inventories and update incidental snapshots instead of turning them into policy.
@@ -342,6 +497,12 @@ None at proposal level. Exact field names, parser-sensitive literals, baseline i
 | 2026-08-16 | Keep one semantic status for one exact ordered target set in the first version. | This preserves current occurrence semantics while making multi-target identity and retry explicit. | Partial semantic approval or independent per-target review occurrences. |
 | 2026-08-16 | Add no structural asset in the first version. | The existing result and finding shapes are compact and do not justify another package surface. | New result and finding assets without demonstrated duplication value. |
 | 2026-08-16 | Use deterministic proof and ordinary PR review without target-agent or separate manual semantic acceptance. | The change is a content and ownership refactor, and human PR review already owns final semantic judgment. | Runtime journeys, transcript graders, prose classifiers, or a new manual gate. |
+| 2026-08-16 | Preserve the shared isolation and recording block byte-identically inline. | The block is a normative cross-skill literal, while only architecture-review-specific procedure belongs in the new recording reference. | Moving or paraphrasing the shared block in the reference. |
+| 2026-08-16 | Permit only six explicit recording, settlement, and execution combinations. | An exhaustive authority matrix prevents loading a procedure from being mistaken for write, automation, or continuation authority. | Independent axes without valid-combination and side-effect closure. |
+| 2026-08-16 | Make no-impact and proposal/spec-gap surfaces unconditionally record-only and settle only exact canonical architecture or ADR entries. | No approved rationale artifact lifecycle exists, and exact existing targets provide the narrowest safe settlement boundary. | Inventing rationale entries, implicit settlement, or partial semantic approval. |
+| 2026-08-16 | Separate review subject, governing basis, and settlement targets. | Record-only surfaces still need durable identity, while changed decision-bearing inputs must invalidate judgment reuse independently from artifact bytes. | Treating settlement targets as the entire review identity. |
+| 2026-08-16 | Keep one overall status but use finding-scoped and blocker-scoped target dispositions. | This avoids unsupported mutation of unaffected targets without introducing partial semantic approval. | Applying every non-approval result to every target or introducing per-target approval. |
+| 2026-08-16 | Persist a prepared settlement manifest before target writes. | Exact crash recovery requires durable pre-state, intended post-state, disposition, and progress for every target. | Reconstructing retry intent from overall status and current mutable state. |
 
 ## Next Artifacts
 
@@ -356,7 +517,7 @@ None yet
 
 ## Readiness
 
-Ready for independent proposal review. This proposal does not claim acceptance, specification readiness, architecture settlement, implementation readiness, verification, or PR readiness.
+Revised for independent proposal rereview. This proposal does not claim acceptance, specification readiness, architecture settlement, implementation readiness, verification, or PR readiness.
 
 ## Initial intent preservation
 
