@@ -53,7 +53,7 @@ artifact_states:
 workflow_state:
   lifecycle_state: active
   current_stage: verify
-  next_stage: verify
+  next_stage: pr
   blocker: null
   evidence:
     - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-authoring.md
@@ -109,7 +109,7 @@ workflow_state:
     - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r3.md
   planned_work:
     plan_artifact_id: plan
-    current_milestone: M4
+    current_milestone: none
     initialization_basis:
       review_id: plan-review-r1
       review_round: r1
@@ -128,7 +128,7 @@ workflow_state:
         state: closed
       M4:
         kind: lifecycle-closeout
-        state: implementing
+        state: closed
     remaining_implementation_milestones: []
     latest_review:
       status: approved
@@ -142,11 +142,13 @@ workflow_state:
     final_closeout:
       readiness: not-ready
       reasons:
-        - lifecycle-gates-open
-        - verify-pending
+        - external-completion-event-pending
       evidence:
         - docs/changes/2026-08-16-pr-skill-simplification/reviews/plan-review-r1.md
         - docs/changes/2026-08-16-pr-skill-simplification/evidence/plan-initialization.md
+        - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r3.md
+        - docs/changes/2026-08-16-pr-skill-simplification/explain-change.md
+        - docs/changes/2026-08-16-pr-skill-simplification/verify-report.md
 
 workflow:
   automation:
@@ -158,9 +160,9 @@ workflow:
       bound_at: "2026-08-16T11:10:09-07:00"
       completion:
         rule: first final verify result is durably recorded
-    status: paused
+    status: completed
     current_stage: verify
-    stop_reason: verify-failed
+    stop_reason: target-reached
     evidence:
       - docs/changes/2026-08-16-pr-skill-simplification/evidence/workflow-automation-target-verify.md
       - specs/pr-skill-simplification.test.md
@@ -177,6 +179,10 @@ workflow:
       - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r1.md
       - docs/changes/2026-08-16-pr-skill-simplification/explain-change.md
       - docs/changes/2026-08-16-pr-skill-simplification/verify-report.md
+      - docs/changes/2026-08-16-pr-skill-simplification/evidence/verify-r1-correction.md
+      - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r2.md
+      - docs/changes/2026-08-16-pr-skill-simplification/evidence/verify-r2-correction.md
+      - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r3.md
 
 artifacts:
   proposal: docs/proposals/2026-08-16-pr-skill-simplification.md

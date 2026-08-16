@@ -1,41 +1,39 @@
 # Verify Report: PR Skill Simplification
 
-Verification ID: verify-r1
+Verification ID: verify-r2
 Stage: verify
 Verifier: Codex verify
 Verification date: 2026-08-16
-Status: not-ready
+Status: branch-ready
 PR readiness: not claimed
 
 ## Result
 
 - Skill: verify
-- Status: failed
-- Artifacts changed: this verify-owned report and matching workflow failure state
-- Open blockers: PR review-resolution summary compatibility phrase is missing from `skills/pr/SKILL.md`
-- Next stage: implementation correction, final rereview, updated explanation, then fresh verify
-- Validation: C0-C8 passed; C9 failed one governance review-evidence regression
-- Readiness: not-ready
-- Hosted CI: not observed for this head
+- Status: passed
+- Artifacts changed: this report and workflow-owned closeout state
+- Open blockers: none for branch readiness
+- Next stage: `pr`, not invoked
+- Validation: C0-C9 passed after two recorded correction loops
+- Readiness: branch-ready
+- Hosted CI: configured but not observed for this head
 
 ## Scope and verdict
 
-This workflow-final verification assessed branch
-`proposal/pr-skill-simplification` against `origin/main` for the governed change
-`2026-08-16-pr-skill-simplification`. It covered the accepted proposal,
-approved specification, architecture assessment, active plan, approved test
-specification, closed implementation milestones, final clean code review,
-closed material-finding resolution, current explanation, canonical package,
-generated/package parity, and repository PR-mode CI.
+Final verification assessed branch `proposal/pr-skill-simplification` against
+`origin/main` for governed change `2026-08-16-pr-skill-simplification`. It
+covered the accepted proposal, approved specification, bounded architecture
+assessment, active plan, approved test specification, closed implementation
+milestones, three clean final rereviews, closed material-finding resolution,
+current explanation, canonical packages, generated and adapter parity, and the
+repository PR-mode gate.
 
-Verdict: `not-ready`.
+Verdict: `branch-ready`.
 
-The broad PR gate found that the simplified PR skill no longer contains the
-compatibility-sensitive phrase `counts by disposition`, which
-`test_review_stage_skills_align_with_review_resolution_contract` requires for
-the shared review-resolution summary contract. This is a current implementation
-regression, not an infrastructure or hosted-CI failure. The owning correction
-stage is implementation, followed by complete rereview and a fresh verify.
+The PR skill contract, verify-owned basis, lifecycle evidence, tests, package
+resources, measurements, and local CI agree. This does not claim PR opening,
+hosted CI success, release readiness, publication, merge readiness, or final
+lifecycle completion after an external event.
 
 ## Verification basis
 
@@ -47,25 +45,26 @@ verification_basis:
   base_revision: 9e62f8bd28e23aebe09e2e40d3d02c21636e194f
   merge_base_revision: 9e62f8bd28e23aebe09e2e40d3d02c21636e194f
   head_branch: proposal/pr-skill-simplification
-  verified_subject_revision: 4f4b0add3bfa8926ebffb5e493767b64bec08ca7
+  verified_subject_revision: cd0f04f1a1aa838739ac77aaf0dba5b59bce6691
 ```
 
-The basis identifies the failed verification subject. It does not establish
-`branch-ready`.
+The verify-owned report and matching closeout-state commit form the permitted
+evidence tail after this immutable subject revision.
 
 ## Verification dimensions
 
 | Dimension | Result | Evidence |
 | --- | --- | --- |
-| Requirements and proof map | pass | C0, C1, C7, approved spec and test spec. |
-| Focused skill contract | pass | 12 `PRSkillSimplificationTests`. |
-| Broad skill behavior | pass | 385 tests passed, 16 documented skips. |
-| Canonical and generated package | pass | C2, seven build tests, and generated-output check. |
-| Adapter/archive/install parity | pass | 150 adapter distribution tests. |
-| Lifecycle metadata | pass | C8 before final verify recording. |
-| Review closeout compatibility | block | C9 failed the shared review-stage contract because `counts by disposition` is absent from the changed PR skill. |
+| Requirements and proof map | pass | C0, C1, C7, and the approved spec and test spec agree. |
+| Focused PR contract | pass | All 13 `PRSkillSimplificationTests`, including the review-summary regression test. |
+| Broad skill behavior | pass | 386 tests passed with 16 documented skips. |
+| Canonical and generated package | pass | C2, seven build tests, and generated-output drift checks. |
+| Adapter/archive/install parity | pass | All 150 adapter-distribution tests. |
+| Review and lifecycle evidence | pass | The review-artifact suite passes, PR-scope lifecycle validation resolves all review and finding IDs, and C8 validates current metadata. |
+| Semantic and literal preservation | pass | C0 validates 24 rules, 30 literals, seven basis fields, 18 scenarios, and two profiles. |
+| Simplification | pass | PR0 and PR1 remain smaller than the flat baseline in both words and UTF-8 bytes. |
+| Branch handoff | pass | C9 reports 26 passing direct product and governance gates. |
 | Hosted CI | concern | Not observed; no hosted-CI claim is made. |
-| Branch readiness | block | One required PR-mode governance gate failed. |
 
 ## Validation evidence
 
@@ -73,30 +72,63 @@ All commands ran locally from the repository root on 2026-08-16.
 
 | Command | Result |
 | --- | --- |
-| C0 `python docs/changes/2026-08-16-pr-skill-simplification/fixtures/validate-pr-simplification.py` | pass; 24 rules, 25 literals, seven basis fields, 18 scenarios, two profiles |
-| C1 `python scripts/test-skill-validator.py PRSkillSimplificationTests` | pass; 12 tests |
+| C0 `python docs/changes/2026-08-16-pr-skill-simplification/fixtures/validate-pr-simplification.py` | pass; 24 rules, 30 literals, seven basis fields, 18 scenarios, two profiles |
+| C1 `python scripts/test-skill-validator.py PRSkillSimplificationTests` | pass; 13 tests |
 | C2 `python scripts/validate-skills.py skills/pr/SKILL.md skills/verify/SKILL.md` | pass |
-| C3 `python scripts/test-skill-validator.py` | pass; 385 tests, 16 skipped |
+| C3 `python scripts/test-skill-validator.py` | pass; 386 tests, 16 skipped |
 | C4 `python scripts/test-build-skills.py` | pass; seven tests |
 | C5 `python scripts/build-skills.py --check` | pass |
-| C6 `python scripts/test-adapter-distribution.py` | pass; 150 tests in 355.709 seconds |
+| C6 `python scripts/test-adapter-distribution.py` | pass; 150 tests in 377.364 seconds |
 | C7 `python scripts/validate-boundary-first.py --check --path specs/pr-skill-simplification.md` | pass |
-| C8 change-metadata validation | pass before final verify recording |
-| C9 `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` | fail; governance review-evidence gate, one failing test |
-| Diagnostic `python scripts/test-review-artifact-validator.py` | fail; 102 passed and one failed, exact missing phrase identified |
+| C8 `python scripts/validate-change-metadata.py docs/changes/2026-08-16-pr-skill-simplification/change.yaml` | pass before final recording |
+| C9 `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` | pass; direct gate graph reports 26 checks passed |
+| Diagnostic `python scripts/test-review-artifact-validator.py` | pass; 103 tests |
+| Focused lifecycle `python scripts/validate-artifact-lifecycle.py --mode pr-ci --base origin/main --head HEAD` | pass; three PR-scope artifact files validated, with baseline warnings only |
 
-The adapter suite's recorded-source and incomplete-release diagnostics are
-expected negative fixtures inside a passing suite. No live PR, external
-mutation, target-agent runtime, publication, release action, or hosted-CI pass
-was used or claimed.
+C0-C7 ran against the corrected implementation subject. Later commits changed
+only reviewed lifecycle evidence and explanation; C8, focused lifecycle
+validation, and C9 ran after those evidence corrections. The adapter suite's
+recorded-source and incomplete-release diagnostics are expected negative
+fixtures inside a passing suite.
 
-## Blocker and safe next action
+No live PR, external mutation, target-agent runtime, publication, release
+action, or hosted-CI pass was used or claimed.
 
-Owner: implementation.
+## Prior failed occurrences
 
-Restore the shared review-resolution summary contract in the canonical PR
-skill, add or update focused compatibility proof if needed, run the affected
-targeted and broad checks, obtain a new final code-review occurrence, refresh
-the explanation for the corrected diff, and invoke final verify again. The
-armed workflow automation is paused and does not apply this repair
-automatically.
+- Verify R1 found the omitted `counts by disposition` contract. The correction
+  restored five adjacent shared review-summary literals, added focused proof,
+  refreshed the ownership ledger, and passed final rereview R2.
+- The first C9 attempt in this verify cycle then found three historical review
+  records that were not discoverable under the current parser structure. Their
+  existing facts were normalized without semantic changes, focused lifecycle
+  validation passed, and final rereview R3 approved the correction.
+
+The failure evidence remains in `evidence/verify-r1-correction.md` and
+`evidence/verify-r2-correction.md`; it is not represented as a passing result.
+
+## Measurements
+
+| Profile | Before words | Final words | Before bytes | Final bytes |
+| --- | ---: | ---: | ---: | ---: |
+| PR0 portable | 1,678 | 1,373 | 11,375 | 10,389 |
+| PR1 governed | 1,678 | 1,494 | 11,375 | 11,303 |
+
+The complete package is larger because it now includes reusable structure and
+conditional procedure. That growth is reported separately and does not negate
+the measured reduction of both real procedural profiles.
+
+## Residual risk
+
+- Semantic compression can omit shared cross-skill literals unless focused
+  compatibility tests and the literal ledger remain current.
+- Generated, archived, and installed packages add parity surfaces that still
+  require the existing build and adapter checks.
+- Hosted CI is unobserved and belongs to the later PR/CI surface.
+- Ordinary PR review remains the human review surface after opening.
+
+## Readiness
+
+Verdict: `branch-ready`.
+
+The normal next stage is `pr`, but it was not invoked by this refinement turn.
