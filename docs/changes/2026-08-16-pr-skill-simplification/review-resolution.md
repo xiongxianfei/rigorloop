@@ -1,6 +1,6 @@
 # Review Resolution: PR Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -15,6 +15,7 @@ Review closeout: proposal-review-r2
 | `PRSIM-PR4` | accepted | closed | `prepare-only` is read-only and creation intent is separate from existing PR-state authority. |
 | `PRSIM-PR5` | accepted | closed | Readiness binds an exact verified base/head pair and directional branch relations. |
 | `PRSIM-PR6` | accepted | closed | First-version refresh is limited to title or authorized whole-body replacement. |
+| `PRSIM-PR7` | accepted | open | Give the exact verified base/head basis an existing durable evidence owner and same-slice scope. |
 
 ## Finding details
 
@@ -28,13 +29,45 @@ Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
-Decision needed: Reconcile exact verified revision binding with the required durable final-verification evidence commit.
-Chosen action: Represent the verified subject and final handoff revisions separately and permit only a closed verify-owned evidence tail.
-Rationale: Final verification must be recorded durably without making its own valid evidence commit appear unverified.
-Required outcome: Define the allowed tail, identities, invalidating changes, tail validation, and final remote and PR head binding.
-Safe resolution path: Amend the proposal's sequence, result model, scenarios, risks, and acceptance criteria, then obtain independent rereview.
-Validation target: revised proposal and approving proposal rereview.
-Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r1.md`; independent rereview remains pending.
+Decision needed: Reconcile exact verified revision binding with durable final-verification recording.
+Chosen action: Represent the verified subject and handoff revisions separately and permit only one closed verify-owned evidence tail.
+Rationale: Final verification must be recorded without making its own evidence commit appear unverified.
+Required outcome: Define allowed tail identities, invalidating changes, validation, and final remote and PR head binding.
+Safe resolution path: Amend the sequence, result model, scenarios, risks, and acceptance criteria.
+Validation target: revised proposal and independent rereview.
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r1.md` and subsequent `proposal-review-r2`.
+
+#### PRSIM-PR2
+
+Finding ID: PRSIM-PR2
+Disposition: accepted
+Status: closed
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Close authority and ownership semantics for modifying an existing PR title or body.
+Chosen action: Make reuse non-mutating, require explicit refresh authority, and fail closed on unknown content ownership.
+Rationale: Matching PR identity does not grant permission to overwrite externally edited context.
+Required outcome: Define refresh authority, content comparison, draft preservation, and forbidden replacement behavior.
+Safe resolution path: Amend operations, authority, scenarios, risks, and acceptance without hidden markers.
+Validation target: revised proposal and independent rereview.
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r1.md` and subsequent `proposal-review-r2`.
+
+#### PRSIM-PR3
+
+Finding ID: PRSIM-PR3
+Disposition: accepted
+Status: closed
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Close remote branch divergence, race, and duplicate-PR behavior.
+Chosen action: Add remote-branch states, prohibit force operations, and reread matching PR state after push.
+Rationale: Pre-push PR state may be stale, and divergence must not trigger destructive push behavior.
+Required outcome: Define branch states, permitted push, post-push reclassification, concurrency, and stops.
+Safe resolution path: Amend sequence, matrices, retry scenarios, risks, and acceptance criteria.
+Validation target: revised proposal and independent rereview.
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r1.md` and subsequent `proposal-review-r2`.
 
 ### proposal-review-r2
 
@@ -46,13 +79,13 @@ Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
-Decision needed: Close the cross-product of submission intent, external mutation, and existing PR draft/open state.
-Chosen action: Make `prepare-only` externally read-only and separate creation intent from explicit existing-PR state-transition authority.
-Rationale: Creation intent does not imply permission to push, refresh, publish a draft, or convert an open PR.
-Required outcome: Define push, creation, refresh, and state-transition behavior for every submission intent and existing state.
-Safe resolution path: Add independent state-transition authority, a closed side-effect matrix, separate requested and actual result fields, scenarios, and acceptance criteria.
-Validation target: revised proposal and independent proposal rereview.
-Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r2.md`; independent rereview remains pending.
+Decision needed: Close submission intent, external mutation, and existing PR-state behavior.
+Chosen action: Make `prepare-only` read-only and separate creation intent from explicit existing PR-state authority.
+Rationale: Creation intent does not imply push, refresh, publication, or draft-conversion permission.
+Required outcome: Define every intent's push, creation, refresh, and state-transition behavior.
+Safe resolution path: Add authority axes, side-effect matrix, result fields, scenarios, and acceptance criteria.
+Validation target: revised proposal and independent rereview.
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r2.md` and subsequent `proposal-review-r3`.
 
 #### PRSIM-PR5
 
@@ -62,13 +95,13 @@ Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
-Decision needed: Bind verification to the exact base as well as the head and eliminate directional ambiguity in remote branch state.
-Chosen action: Record the verified base or merge-base identity, recheck it before mutation and after read-back, and use directional ancestry names.
+Decision needed: Bind verification to the exact base and eliminate directional branch-state ambiguity.
+Chosen action: Record the verified base or merge base, recheck it, and use directional ancestry names.
 Rationale: An unchanged head does not preserve readiness when the effective PR base changes.
-Required outcome: Define the verified base/head tuple, base staleness behavior, directional branch relations, and external-success versus readiness results.
-Safe resolution path: Amend the operation identity, sequence, branch-state matrix, scenarios, risks, and acceptance criteria.
-Validation target: revised proposal and independent proposal rereview.
-Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r2.md`; independent rereview remains pending.
+Required outcome: Define the verified tuple, staleness, directional relations, and external-success versus readiness results.
+Safe resolution path: Amend identity, sequence, states, scenarios, risks, and acceptance criteria.
+Validation target: revised proposal and independent rereview.
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r2.md` and subsequent `proposal-review-r3`.
 
 #### PRSIM-PR6
 
@@ -78,42 +111,28 @@ Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
-Decision needed: Remove unsafe section-level body rewriting or define a complete ownership and parser contract.
-Chosen action: Limit first-version refresh to closed host-native scalar fields and explicitly authorized whole-body replacement.
-Rationale: Section mutation without markers, provenance, and a code-fence-aware parser cannot preserve user-authored bytes reliably.
-Required outcome: Remove section refresh, preserve existing body bytes by default, and route managed-section behavior to a separate approved contract.
-Safe resolution path: Amend refresh authority, the operation matrix, architecture boundary, scenarios, risks, and acceptance criteria.
+Decision needed: Remove unsafe section-level body rewriting or define a complete ownership contract.
+Chosen action: Limit refresh to title or explicitly authorized whole-body replacement.
+Rationale: Unmanaged section mutation cannot preserve user-authored bytes reliably.
+Required outcome: Remove section refresh, preserve body bytes by default, and defer managed sections.
+Safe resolution path: Amend refresh authority, operations, architecture, scenarios, risks, and acceptance criteria.
+Validation target: revised proposal and independent rereview.
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r2.md` and subsequent `proposal-review-r3`.
+
+### proposal-review-r3
+
+#### PRSIM-PR7
+
+Finding ID: PRSIM-PR7
+Disposition: accepted
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Close where the exact verified repository, remote, base, merge-base, head, and subject identities are durably authored.
+Chosen action: Amend the existing verify evidence contract in the same slice without changing verify ownership of `branch-ready`.
+Rationale: Current verify skill text and historical reports do not guarantee one normalized exact base identity that `pr` can safely consume.
+Required outcome: Put the verify-evidence amendment in scope, name verify as owner, define legacy compatibility, and stop readiness on missing or ambiguous basis.
+Safe resolution path: Update scope, architecture, rollout, preservation inventories, scenarios, and acceptance before rereview.
 Validation target: revised proposal and independent proposal rereview.
-Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r2.md`; independent rereview remains pending.
-
-#### PRSIM-PR2
-
-Finding ID: PRSIM-PR2
-Disposition: accepted
-Status: closed
-Owner: proposal author
-Owning stage: proposal
-Decision owner: proposal author
-Decision needed: Close authority and ownership semantics for modifying an existing PR title or body.
-Chosen action: Make reuse non-mutating, require explicit current refresh authority, and fail closed on unknown or mixed content ownership.
-Rationale: Matching PR identity does not itself grant permission to overwrite externally edited reviewer context.
-Required outcome: Define refresh authority, content comparison, draft preservation, mixed ownership, and forbidden replacement behavior.
-Safe resolution path: Amend the operation matrix, authority rules, scenarios, risks, and acceptance criteria without adding a hidden marker system.
-Validation target: revised proposal and approving proposal rereview.
-Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r1.md`; independent rereview remains pending.
-
-#### PRSIM-PR3
-
-Finding ID: PRSIM-PR3
-Disposition: accepted
-Status: closed
-Owner: proposal author
-Owning stage: proposal
-Decision owner: proposal author
-Decision needed: Close remote branch divergence, race, and duplicate-PR behavior.
-Chosen action: Add a remote-branch state vocabulary, prohibit force operations, and reread matching PR state after push.
-Rationale: A pre-push PR snapshot is stale by the time external mutation begins, and divergence must not be resolved by destructive push behavior.
-Required outcome: Define every remote branch state, permitted push, post-push reclassification, concurrent creation reconciliation, and stop result.
-Safe resolution path: Amend the sequence, state matrices, retry scenarios, risks, and acceptance criteria, then obtain independent rereview.
-Validation target: revised proposal and approving proposal rereview.
-Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r1.md`; independent rereview remains pending.
+Validation evidence: pending proposal revision and rereview.
