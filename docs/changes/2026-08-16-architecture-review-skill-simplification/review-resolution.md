@@ -11,7 +11,7 @@ Review closeout: plan-review-r1
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Current result: plan approved; initialization and identical settlement retry remain required before test-spec authoring
+- Current result: plan approved, initialized, and activated by identical settlement retry; test-spec authoring is next
 
 ## Resolution overview
 
