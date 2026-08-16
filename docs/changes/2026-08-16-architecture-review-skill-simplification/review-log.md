@@ -96,3 +96,16 @@ Resolution: review-resolution.md#test-spec-review-r2
 Material findings: none
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: milestone M1 range `2a5c295d..132fe5a9`
+Status: clean-with-notes
+Detailed record: reviews/code-review-m1-r1.md
+Resolution: not-required
+Material findings: none
+Open findings: none
+Recording status: recorded
