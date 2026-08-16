@@ -8,6 +8,19 @@ This ledger records formal lifecycle reviews for the PR skill simplification cha
 
 ### Review entry
 
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: milestone M2 commit `9cd2f225`
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: PRSIM-CR1
+Open findings: PRSIM-CR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m1-r1
 Stage: code-review
 Round: r1

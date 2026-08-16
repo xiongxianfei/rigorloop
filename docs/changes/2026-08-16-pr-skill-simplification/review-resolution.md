@@ -206,3 +206,21 @@ No material findings. The approving rereview confirms that `TSPRSIM-TSR1` is clo
 ### code-review-m1-r1
 
 No material findings. The clean milestone review closes M1 and authorizes workflow routing to M2; no finding disposition is required.
+
+### code-review-m2-r1
+
+#### PRSIM-CR1
+
+Finding ID: PRSIM-CR1
+Disposition: accepted
+Status: open
+Owner: implementation
+Owning stage: implement
+Decision owner: none; the approved spec requires strict word and byte reduction
+Decision needed: none
+Chosen action: Compact the universal and governed PR procedure, add direct PR0/PR1 measurement assertions, and rereview M2.
+Rationale: Navigation-only extraction does not satisfy the real loaded-profile requirement.
+Required outcome: Both PR0 and PR1 are strictly below 1,678 words and 11,375 bytes without semantic loss.
+Safe resolution path: Apply the reviewer-declared bounded correction to the two PR procedure files and focused test class, run M2 validation, and record `code-review-m2-r2`.
+Validation target: corrected M2 package and focused size assertions.
+Validation evidence: pending correction and rereview.
