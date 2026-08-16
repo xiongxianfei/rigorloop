@@ -23,9 +23,20 @@ The first version preserves existing PR body bytes unless an explicit whole-body
 Observed on 2026-08-16:
 
 - `python scripts/validate-skills.py skills/pr/SKILL.md skills/verify/SKILL.md` — passed for both explicit targets.
-- `python scripts/test-skill-validator.py PRSkillSimplificationTests` — 11 passed.
+- `python scripts/test-skill-validator.py PRSkillSimplificationTests` — 12 passed after adding direct profile assertions.
 - `python scripts/test-skill-validator.py` — 384 passed, 16 skipped.
 - `python scripts/test-build-skills.py` — seven passed.
 - `python scripts/build-skills.py --check` — passed using temporary generated output.
 
 These are local deterministic checks. No live PR, remote mutation, hosted-CI claim, or target-agent runtime was used.
+
+## Review correction
+
+`code-review-m2-r1` recorded `PRSIM-CR1`: the first implementation reduced words but increased loaded bytes. The declared-safe correction compacted only the universal and governed PR procedure and added strict baseline assertions. Final M2 measurements are:
+
+| Profile | Words | UTF-8 bytes | Baseline result |
+| --- | ---: | ---: | --- |
+| PR0 portable | 1,362 | 10,298 | lower in both dimensions |
+| PR1 governed | 1,483 | 11,212 | lower in both dimensions |
+
+The broad skill and build suites passed again after correction.

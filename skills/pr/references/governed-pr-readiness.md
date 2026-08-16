@@ -1,11 +1,11 @@
 # Governed PR readiness
 
-Load only for a validated governed candidate. This reference owns read-only, bounded readiness aggregation; `SKILL.md` owns external actions, status, stops, claims, and results.
+Load for a governed candidate. This read-only reference owns bounded readiness aggregation; `SKILL.md` owns actions and results.
 
-Confirm the change pack matches the invocation, branch, verification basis, and artifact pointers. Missing, stale, conflicting, escaped, or ambiguous authority stops without portable fallback.
+Confirm the change pack matches invocation, branch, verify basis, and pointers. Invalid authority stops without portable fallback.
 
-Inspect applicable current evidence for the stable plan, implementation milestones, review resolution and `review-log.md`, explain-change rationale, verify and state-sync results, release-sensitive or migration impact, security, generated output, manual proof, and real external completion dependencies. Use bounded views first; expand only for conflict, unsupported shape, or forensic reconstruction. Presence is not proof of currency or success.
+Inspect current plan and milestone state, review resolution and log, explain-change, verify and state-sync, release-sensitive and migration impact, security, generated output, manual proof, and external completion. Expand bounded views only for conflict or unsupported shape. Presence is not proof.
 
-Return evidence identities, blockers and owners, and governed body data. Open, stale, failing, missing, or mismatched evidence blocks handoff.
+Return evidence identities, blockers and owners, and governed body data. Missing, stale, open, failing, or mismatched evidence blocks.
 
-This reference must not mutate lifecycle, plan, review, workflow, automation, release, publication, remote Git, or hosted PR state. It grants no push, refresh, state transition, or continuation authority.
+This reference must not mutate lifecycle, plan, review, workflow, automation, release, publication, Git, or PR state. It grants no push, refresh, state transition, or continuation authority.
