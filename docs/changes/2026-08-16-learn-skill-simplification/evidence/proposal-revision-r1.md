@@ -1,0 +1,22 @@
+# Proposal Revision Evidence: Learn Skill Simplification
+
+- Operation: `revise-primary-proposal`
+- Change ID: `2026-08-16-learn-skill-simplification`
+- Artifact ID: `proposal`
+- Canonical path: `docs/proposals/2026-08-16-learn-skill-simplification.md`
+- Prior reviewed revision: `93958552`
+- Prior content identity: `sha256:2d64930de36b48a9fc805b262d945adf0b6da1661caacccef6fb02368fdb648a`
+- Revised content identity: `sha256:2a32670b7b4c304e4625352b58855c05f0c10be95d44fcdcbde9acf4fa13f4e1`
+- Revision authority: user request to refine the proposal after formal `proposal-review-r1`
+- Loaded assembly: `PA1G-governed-gated`
+- Active specialized predicates: `initial_intent_table_context`, `scope_budget_context`
+- Finding disposition: `LRNSIM-PR1` accepted and implemented by making learn's pre-session assessment read-only and assigning durable closeout to the trigger-owning stage.
+- Finding disposition: `LRNSIM-PR2` accepted and implemented by separating session recording from pending, completed, and blocked owner-action settlement.
+- Finding disposition: `LRNSIM-PR3` accepted and implemented with exact session-attempt identity plus closed create, resume, collision, and concurrent-edit behavior.
+- Scope preservation: the selected compact skill, one session-method reference, three-surface learn model, confirmation requirement, no-template direction, and no-runtime acceptance boundary remain unchanged.
+- Validation: `git diff --check` passed.
+- Validation: `python scripts/validate-change-metadata.py docs/changes/2026-08-16-learn-skill-simplification/change.yaml` passed.
+- Validation: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-16-learn-skill-simplification` passed.
+- Validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-16-learn-skill-simplification` passed.
+- Authoring result: proposal revised, material findings closed in `review-resolution.md`, and proposal returned to `review-required`.
+- Downstream authority: independent proposal rereview only; specification, architecture, planning, implementation, verification, and PR readiness remain unauthorized.

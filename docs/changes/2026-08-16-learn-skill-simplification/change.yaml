@@ -9,23 +9,19 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-16-learn-skill-simplification.md
     role: primary
-    lifecycle_state: revision-required
-    review:
-      id: proposal-review-r1
-      artifact_id: proposal
-      outcome: changes-requested
-      record: docs/changes/2026-08-16-learn-skill-simplification/reviews/proposal-review-r1.md
-      round: r1
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-revision-r1.md
 
 workflow_state:
   lifecycle_state: active
-  current_stage: proposal
-  next_stage: proposal
+  current_stage: proposal-review
+  next_stage: proposal-review
   blocker: null
   evidence:
     - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-authoring.md
     - docs/changes/2026-08-16-learn-skill-simplification/reviews/proposal-review-r1.md
     - docs/changes/2026-08-16-learn-skill-simplification/review-resolution.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-revision-r1.md
 
 workflow: {}
 
@@ -35,13 +31,14 @@ artifacts:
 requirements:
   - Reduce pre-session and real-session loaded context while preserving learn evidence quality, confirmation, recording, routing, and claim boundaries.
   - Keep universal trigger, evidence, confirmation, ownership, sensitive-data, stop, claim, and resource-selection behavior inline and add one conditional session-method reference.
-  - Separate learn-owned session and topic writes from route-only derivative work owned by proposals, specs, ADRs, workflow, skills, plans, issues, or other authoritative surfaces.
+  - Separate learn-owned session and topic writes from owner-bound derivative work and keep pre-session trigger assessment read-only.
+  - Bind session creation and retry to an exact trigger, scope, canonical path, and evidence basis without adopting unrelated or competing content.
   - Preserve the existing learn namespace, no-template direction, and periodic non-default lifecycle role.
   - Prove semantic and literal preservation, real LR0 and LR1 profile reduction, and canonical-through-installed parity without target-agent runtime acceptance.
 
 tests:
   - Independent proposal review of value, package boundaries, operations, ownership, confirmation, measurement, compatibility, and spec readiness.
-  - Deterministic scenarios covering trigger closeout, real sessions, empty outcomes, confirmation, derivative routing, sensitive evidence, missing resources, and forbidden mutation.
+  - Deterministic scenarios covering read-only trigger assessment, owner-recorded closeout, session identity and retry, empty outcomes, confirmation, derivative settlement, sensitive evidence, missing resources, and forbidden mutation.
   - Static package, selector, build, adapter, and lifecycle validation without a target-agent runtime or separate manual semantic-review acceptance gate.
 
 validation: []
@@ -53,7 +50,8 @@ changed_files:
   - docs/changes/2026-08-16-learn-skill-simplification/reviews/proposal-review-r1.md
   - docs/changes/2026-08-16-learn-skill-simplification/review-log.md
   - docs/changes/2026-08-16-learn-skill-simplification/review-resolution.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-revision-r1.md
 
 review:
-  status: changes-requested
-  unresolved_items: 3
+  status: review-requested
+  unresolved_items: 0
