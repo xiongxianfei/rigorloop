@@ -44,3 +44,16 @@ Resolution: review-resolution.md#proposal-review-r3
 Material findings: PRSIM-PR7
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: proposal-review-r4
+Stage: proposal-review
+Round: r4
+Reviewed artifact: `docs/proposals/2026-08-16-pr-skill-simplification.md` at commit `1a606db0`
+Status: approved
+Detailed record: reviews/proposal-review-r4.md
+Resolution: review-resolution.md#proposal-review-r4
+Material findings: none
+Open findings: none
+Recording status: recorded

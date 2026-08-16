@@ -5,6 +5,12 @@ Closeout status: closed
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
+Review closeout: proposal-review-r4
+
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
+- Findings resolved: 7
+- Unresolved findings: 0
+- Current result: proposal approved for focused specification and bounded architecture assessment
 
 ## Resolution overview
 
@@ -137,3 +143,7 @@ Required outcome: Put the verify-evidence amendment in scope, name verify as own
 Safe resolution path: Update scope, architecture, rollout, preservation inventories, scenarios, and acceptance before rereview.
 Validation target: revised proposal and independent proposal rereview.
 Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r3.md`; independent rereview remains pending.
+
+### proposal-review-r4
+
+No material findings. The approving clean rereview confirms that the normalized verify-basis amendment closes `PRSIM-PR7` within the existing evidence owner and that all prior external-action findings remain resolved.
