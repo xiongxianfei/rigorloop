@@ -1,0 +1,30 @@
+{
+  "schema": "pr-literal-compatibility-v1",
+  "literals": [
+    {"id":"PRL-001","literal":"branch-ready","classification":"normative-contract","disposition":"preserve"},
+    {"id":"PRL-002","literal":"pr-body-ready","classification":"normative-contract","disposition":"preserve"},
+    {"id":"PRL-003","literal":"pr-open-ready","classification":"normative-contract","disposition":"preserve"},
+    {"id":"PRL-004","literal":"open","classification":"normative-contract","disposition":"preserve"},
+    {"id":"PRL-005","literal":"draft","classification":"normative-contract","disposition":"preserve"},
+    {"id":"PRL-006","literal":"prepare-only","classification":"normative-contract","disposition":"add"},
+    {"id":"PRL-007","literal":"remote-ancestor-of-local","classification":"normative-contract","disposition":"add"},
+    {"id":"PRL-008","literal":"local-ancestor-of-remote","classification":"normative-contract","disposition":"add"},
+    {"id":"PRL-009","literal":"passed","classification":"normative-contract","disposition":"preserve"},
+    {"id":"PRL-010","literal":"failed","classification":"normative-contract","disposition":"preserve"},
+    {"id":"PRL-011","literal":"pending","classification":"normative-contract","disposition":"preserve"},
+    {"id":"PRL-012","literal":"unavailable","classification":"normative-contract","disposition":"preserve"},
+    {"id":"PRL-013","literal":"unobserved","classification":"normative-contract","disposition":"add"},
+    {"id":"PRL-014","literal":"not-applicable","classification":"normative-contract","disposition":"add"},
+    {"id":"PRL-015","literal":"## Summary","classification":"structural-contract","disposition":"move-asset"},
+    {"id":"PRL-016","literal":"## Why","classification":"structural-contract","disposition":"move-asset"},
+    {"id":"PRL-017","literal":"## What changed","classification":"structural-contract","disposition":"move-asset"},
+    {"id":"PRL-018","literal":"## Tests and verification","classification":"structural-contract","disposition":"move-asset"},
+    {"id":"PRL-019","literal":"## Risks and rollback","classification":"structural-contract","disposition":"move-asset"},
+    {"id":"PRL-020","literal":"## Reviewer notes","classification":"structural-contract","disposition":"move-asset"},
+    {"id":"PRL-021","literal":"## Follow-ups","classification":"structural-contract","disposition":"move-asset"},
+    {"id":"PRL-022","literal":"## Spec / plan / architecture","classification":"structural-contract","disposition":"move-asset"},
+    {"id":"PRL-023","literal":"## Requirement coverage","classification":"structural-contract","disposition":"move-asset"},
+    {"id":"PRL-024","literal":"## Review resolution summary","classification":"structural-contract","disposition":"move-asset"},
+    {"id":"PRL-025","literal":"Expected output","classification":"test-consumed","disposition":"preserve-inline"}
+  ]
+}
