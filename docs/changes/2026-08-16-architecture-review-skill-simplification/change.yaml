@@ -1,0 +1,49 @@
+change_id: 2026-08-16-architecture-review-skill-simplification
+title: Architecture Review Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-16-architecture-review-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-16-architecture-review-skill-simplification/evidence/proposal-authoring.md
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-16-architecture-review-skill-simplification/evidence/proposal-authoring.md
+
+workflow: {}
+
+artifacts:
+  proposal: docs/proposals/2026-08-16-architecture-review-skill-simplification.md
+
+requirements:
+  - Reduce architecture-review loaded context while preserving architecture judgment, review recording, lifecycle settlement, independence, and handoff behavior.
+  - Keep universal review safety inline, add one conditional architecture-package review reference and one conditional recording-and-settlement reference, and add no runtime engine or new lifecycle owner.
+  - Separate review surface, recording requirement, settlement authority, and automation mode with fail-closed classification and exact multi-target identity.
+  - Preserve every behaviorally significant rule and classify exact literal dependencies separately from semantic rules.
+  - Prove canonical-through-installed package parity and real profile reduction without target-agent runtime execution, prose classification, or a separate manual semantic-review acceptance gate.
+
+tests:
+  - Formal independent proposal review of value, scope, method ownership, recording authority, multi-target settlement, measurement, and readiness.
+  - Deterministic validation of resource mappings, review surfaces, modes, exact targets, missing resources, stops, claims, and package parity.
+  - Static scenarios covering no-impact, upstream gaps, canonical packages, ADRs, combined targets, isolated recording, governed settlement, retry, concurrency, and forbidden mutation.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-16-architecture-review-skill-simplification/change.yaml
+  - docs/changes/2026-08-16-architecture-review-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-16-architecture-review-skill-simplification.md
+
+review:
+  status: review-requested
+  unresolved_items: 0
