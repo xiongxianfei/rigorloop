@@ -1,0 +1,23 @@
+# Proposal Revision Evidence: PR Skill Simplification Round Three
+
+- Operation: `revise-primary-proposal`
+- Change ID: `2026-08-16-pr-skill-simplification`
+- Artifact ID: `proposal`
+- Canonical path: `docs/proposals/2026-08-16-pr-skill-simplification.md`
+- Prior reviewed revision: `56dbbcfa`
+- Prior content identity: `sha256:5d584a76f68df4098f923ba62d7a87d6db0ce485d8734866a0b70578f15eecd6`
+- Revised content identity: `sha256:5631c5aa54e7d9d8ac3e3bad95b701abba9de89c3320551a9109f1c1f75a3a59`
+- Revision authority: user request to refine `PRSIM-PR7` and perform proposal rereview
+- Loaded assembly: `PA1G-governed-gated`
+- Active specialized predicates: `initial_intent_table_context`, `scope_budget_context`
+- Finding disposition: `PRSIM-PR7` accepted and implemented by assigning the normalized immutable verification basis to the existing verify result/report owner and adding its contract, compatibility, fixture, rollout, architecture, and package work as same-slice dependencies.
+- Compatibility: incomplete historical, prose-only, command-only, unresolved, stale, or ambiguous evidence permits preparation but blocks opening and routes to fresh verification.
+- Scope preservation: the `pr` package direction, `verify` ownership of `branch-ready`, external-action safety, static acceptance boundary, and no-new-artifact architecture remain unchanged.
+- Validation: `git diff --check` passed.
+- Validation: change metadata validation passed.
+- Validation: review-artifact structure and closeout validation passed for three reviews and seven findings.
+- Validation: canonical proposal-skill integrity passed.
+- Validation: all four Markdown readability guidance tests passed.
+- Validation: documentation prose enforcement passed for the proposal and revision evidence.
+- Authoring result: proposal revised, round-three finding resolved, and the proposal returned to `review-required`.
+- Downstream authority: independent proposal rereview only; no specification, architecture, planning, implementation, verification, or PR readiness claim.

@@ -1,9 +1,10 @@
 # Review Resolution: PR Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
+Review closeout: proposal-review-r3
 
 ## Resolution overview
 
@@ -15,7 +16,7 @@ Review closeout: proposal-review-r2
 | `PRSIM-PR4` | accepted | closed | `prepare-only` is read-only and creation intent is separate from existing PR-state authority. |
 | `PRSIM-PR5` | accepted | closed | Readiness binds an exact verified base/head pair and directional branch relations. |
 | `PRSIM-PR6` | accepted | closed | First-version refresh is limited to title or authorized whole-body replacement. |
-| `PRSIM-PR7` | accepted | open | Give the exact verified base/head basis an existing durable evidence owner and same-slice scope. |
+| `PRSIM-PR7` | accepted | closed | `verify` owns the normalized basis through its existing result/report contract and same-slice compatibility proof. |
 
 ## Finding details
 
@@ -125,7 +126,7 @@ Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/p
 
 Finding ID: PRSIM-PR7
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -135,4 +136,4 @@ Rationale: Current verify skill text and historical reports do not guarantee one
 Required outcome: Put the verify-evidence amendment in scope, name verify as owner, define legacy compatibility, and stop readiness on missing or ambiguous basis.
 Safe resolution path: Update scope, architecture, rollout, preservation inventories, scenarios, and acceptance before rereview.
 Validation target: revised proposal and independent proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r3.md`; independent rereview remains pending.
