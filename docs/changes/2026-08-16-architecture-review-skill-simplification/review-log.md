@@ -21,6 +21,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: spec-review-r1
+Stage: spec-review
+Round: r1
+Reviewed artifact: `specs/architecture-review-skill-simplification.md` at commit `f6c36c22`
+Status: approved
+Detailed record: reviews/spec-review-r1.md
+Resolution: review-resolution.md#spec-review-r1
+Material findings: none
+Open findings: none
+Recording status: recorded
+
+### Review entry
+
 Review ID: proposal-review-r2
 Stage: proposal-review
 Round: r2

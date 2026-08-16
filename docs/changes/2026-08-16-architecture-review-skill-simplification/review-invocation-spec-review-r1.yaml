@@ -1,0 +1,55 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/architecture-review-skill-simplification.md
+base_revision: f6c36c22
+head_revision: f6c36c22
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-authoring-r1
+reviewer_context_id: root-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - formal-review-settlement-protocol
+  - compatibility-sensitive-validation
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-16-architecture-review-skill-simplification.md
+  - specs/architecture-review-skill-simplification.md
+  - specs/skill-contract.md
+  - specs/formal-review-recording.md
+  - specs/architecture-package-method.md
+  - specs/rigorloop-workflow.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: docs/proposals/2026-08-16-architecture-review-skill-simplification.md
+    sha256: 2e2e1a457e1691784667f065e1202fbfd3d6eb51f9d7ef3c1bea2bca529b16cf
+  - path: specs/architecture-review-skill-simplification.md
+    sha256: 4a199a52ab2347ca4db98616cb46bd384d25c804aaca28139fef56abb972f578
+  - path: specs/skill-contract.md
+    sha256: 43dfde680fddca458d2d18deccba972fb1341f860444940db8347652e2210c56
+  - path: specs/formal-review-recording.md
+    sha256: 276a087b22d9e1a5dd9e7ccb395f825ee890f35dfacc1b401f622125ab05d8cf
+  - path: specs/architecture-package-method.md
+    sha256: 78a8c2da2f40412cfe0e4bf23a5c80d85ce4da53261d52527252fb4a96239582
+  - path: specs/rigorloop-workflow.md
+    sha256: 121f61d1f88791c8355aedfb61a737a4fcb549e9e592e3e86cfd69e2c7f77e66
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - package and conditional-resource ownership
+  - shared recording compatibility
+  - authority combinations and isolation
+  - review-subject and governing-basis identity
+  - evidence-scoped target disposition
+  - prepared settlement and exact retry
+  - boundary completeness
+  - measurement and package parity
