@@ -119,6 +119,20 @@ When this skill creates or updates generated or generator-shaped Markdown:
 
 Produce the classified outcome, exact target and execution mode, verdict, traceability, commands and results, CI status or gap, drift, blockers, claim limits, and permitted next stage.
 
+For `branch-readiness` and `workflow-final-verification`, emit one normalized `verification_basis` in the portable result or governed verify report. It contains immutable resolved values for:
+
+```yaml
+repository_identity: <exact repository identity>
+remote_identity: <exact remote identity>
+base_branch: <resolved branch>
+base_revision: <immutable revision>
+merge_base_revision: <immutable revision>
+head_branch: <resolved branch>
+verified_subject_revision: <immutable revision>
+```
+
+Do not substitute commands, unresolved names, or prose for these fields. Missing or ambiguous values block `branch-ready`.
+
 ## Handoff
 
 - Normal next stage: return a clean governed-final result to `workflow` for handoff to `pr`.

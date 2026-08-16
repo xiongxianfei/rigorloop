@@ -1,0 +1,14 @@
+{
+  "schema": "verify-basis-disposition-v1",
+  "fields": [
+    {"id":"VB-001","field":"repository_identity","owner":"verify","consumer":"pr","legacy":"not-normalized","disposition":"required"},
+    {"id":"VB-002","field":"remote_identity","owner":"verify","consumer":"pr","legacy":"not-normalized","disposition":"required"},
+    {"id":"VB-003","field":"base_branch","owner":"verify","consumer":"pr","legacy":"prose-or-command","disposition":"required"},
+    {"id":"VB-004","field":"base_revision","owner":"verify","consumer":"pr","legacy":"not-normalized","disposition":"required"},
+    {"id":"VB-005","field":"merge_base_revision","owner":"verify","consumer":"pr","legacy":"not-normalized","disposition":"required"},
+    {"id":"VB-006","field":"head_branch","owner":"verify","consumer":"pr","legacy":"prose-or-command","disposition":"required"},
+    {"id":"VB-007","field":"verified_subject_revision","owner":"verify","consumer":"pr","legacy":"inconsistent","disposition":"required"}
+  ],
+  "legacy_result":"preparation-only",
+  "normalized_result":"opening-eligible-after-revalidation"
+}

@@ -1,0 +1,24 @@
+# Proposal Revision Evidence: PR Skill Simplification Round Two
+
+- Operation: `revise-primary-proposal`
+- Change ID: `2026-08-16-pr-skill-simplification`
+- Artifact ID: `proposal`
+- Canonical path: `docs/proposals/2026-08-16-pr-skill-simplification.md`
+- Prior reviewed revision: `4742134e`
+- Prior content identity: `sha256:4bf80c6078bf2b6ab889fb7329f00ea4594a29e8e92a85a95909bb255ced8262`
+- Revised content identity: `sha256:5d584a76f68df4098f923ba62d7a87d6db0ce485d8734866a0b70578f15eecd6`
+- Revision authority: user request for proposal refinement followed by proposal rereview after recorded `proposal-review-r2`
+- Loaded assembly: `PA1G-governed-gated`
+- Active specialized predicates: `initial_intent_table_context`, `scope_budget_context`
+- Finding disposition: `PRSIM-PR4` accepted and implemented with a zero-write `prepare-only` path, an intent side-effect matrix, and separate explicit existing PR-state authority.
+- Finding disposition: `PRSIM-PR5` accepted and implemented with exact verified base/head identities, directional ancestry states, repeated base checks, and separation of external success from readiness.
+- Finding disposition: `PRSIM-PR6` accepted and implemented by removing Markdown section refresh and permitting only title refresh or explicitly authorized whole-body replacement.
+- Scope preservation: the one-reference and one-asset package, universal safety boundary, lifecycle read-only behavior, hosted-CI truthfulness, and static acceptance boundary remain unchanged.
+- Validation: `git diff --check` passed.
+- Validation: change metadata validation passed.
+- Validation: review-artifact structure and closeout validation passed for two reviews and six findings.
+- Validation: canonical proposal-skill integrity passed.
+- Validation: all four Markdown readability guidance tests passed.
+- Validation: documentation prose enforcement passed for the proposal and revision evidence.
+- Authoring result: proposal revised, round-two findings resolved, and the proposal returned to `review-required`.
+- Downstream authority: independent proposal rereview only; no specification, architecture, planning, implementation, verification, or PR readiness claim.

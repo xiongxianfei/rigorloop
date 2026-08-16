@@ -1,0 +1,49 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/pr-skill-simplification.md
+base_revision: 9cee7a1d
+head_revision: 9cee7a1d
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L0
+author_context_id: root-spec-authoring-r1
+reviewer_context_id: root-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - external-pr-mutation-contract
+  - compatibility-sensitive-verification-basis
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-16-pr-skill-simplification.md
+  - specs/pr-skill-simplification.md
+  - specs/skill-contract.md
+  - specs/formal-review-recording.md
+  - specs/rigorloop-workflow.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: docs/proposals/2026-08-16-pr-skill-simplification.md
+    sha256: 5631c5aa54e7d9d8ac3e3bad95b701abba9de89c3320551a9109f1c1f75a3a59
+  - path: specs/pr-skill-simplification.md
+    sha256: 1ccdba8eb67ec43caabebba9fb85744491dabdecbc4c73e6b30a3d606c98570f
+  - path: specs/skill-contract.md
+    sha256: 43dfde680fddca458d2d18deccba972fb1341f860444940db8347652e2210c56
+  - path: specs/formal-review-recording.md
+    sha256: 276a087b22d9e1a5dd9e7ccb395f825ee890f35dfacc1b401f622125ab05d8cf
+  - path: specs/rigorloop-workflow.md
+    sha256: 121f61d1f88791c8355aedfb61a737a4fcb549e9e592e3e86cfd69e2c7f77e66
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - normative package and authority contract
+  - exact verify basis and evidence-tail compatibility
+  - external-state timing, retry, and read-back
+  - boundary-record ownership and structure
+  - measurement and package parity

@@ -1,0 +1,284 @@
+change_id: 2026-08-16-pr-skill-simplification
+title: PR Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-16-pr-skill-simplification.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r4
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-08-16-pr-skill-simplification/reviews/proposal-review-r4.md
+      round: r4
+  spec:
+    kind: spec
+    path: specs/pr-skill-simplification.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r2
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-16-pr-skill-simplification/reviews/spec-review-r2.md
+      round: r2
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-16-pr-skill-simplification.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r1
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-16-pr-skill-simplification/reviews/plan-review-r1.md
+      round: r1
+  test-spec:
+    kind: test-spec
+    path: specs/pr-skill-simplification.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r2
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-16-pr-skill-simplification/reviews/test-spec-review-r2.md
+      round: r2
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: verify
+  next_stage: pr
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-authoring.md
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/proposal-review-r1.md
+    - docs/changes/2026-08-16-pr-skill-simplification/review-resolution.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r1.md
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/proposal-review-r2.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r2.md
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/proposal-review-r3.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r3.md
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/proposal-review-r4.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+    - specs/pr-skill-simplification.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/spec-authoring.md
+    - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-spec-review-r1.yaml
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/spec-review-r1.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/spec-revision-r1.md
+    - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-spec-review-r2.yaml
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/spec-review-r2.md
+    - docs/changes/2026-08-16-pr-skill-simplification/architecture-assessment.md
+    - docs/plans/2026-08-16-pr-skill-simplification.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/plan-authoring.md
+    - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-plan-review-r1.yaml
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/plan-review-r1.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/plan-initialization.md
+    - specs/pr-skill-simplification.test.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/test-spec-authoring.md
+    - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-test-spec-review-r1.yaml
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/test-spec-revision-r1.md
+    - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-test-spec-review-r2.yaml
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/workflow-automation-target-verify.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/m1-preservation-inventories.md
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/m2-package-implementation.md
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m2-r2.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/simplification-measurements.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/semantic-preservation-review.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/m3-package-proof.md
+    - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-m3-r1.yaml
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m3-r1.md
+    - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r1.md
+    - docs/changes/2026-08-16-pr-skill-simplification/explain-change.md
+    - docs/changes/2026-08-16-pr-skill-simplification/verify-report.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/verify-r1-correction.md
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/verify-r2-correction.md
+    - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-final-r2.yaml
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r2.md
+    - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-final-r3.yaml
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r3.md
+  planned_work:
+    plan_artifact_id: plan
+    current_milestone: none
+    initialization_basis:
+      review_id: plan-review-r1
+      review_round: r1
+      review_record: docs/changes/2026-08-16-pr-skill-simplification/reviews/plan-review-r1.md
+      reviewed_artifact_path: docs/plans/2026-08-16-pr-skill-simplification.md
+      reviewed_revision: fad07bc8
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+      M4:
+        kind: lifecycle-closeout
+        state: closed
+    remaining_implementation_milestones: []
+    latest_review:
+      status: approved
+      stage: code-review
+      round: r3
+      artifact_id: plan
+      occurrence: final
+      milestone_id: none
+      evidence:
+        - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r3.md
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - external-completion-event-pending
+      evidence:
+        - docs/changes/2026-08-16-pr-skill-simplification/reviews/plan-review-r1.md
+        - docs/changes/2026-08-16-pr-skill-simplification/evidence/plan-initialization.md
+        - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r3.md
+        - docs/changes/2026-08-16-pr-skill-simplification/explain-change.md
+        - docs/changes/2026-08-16-pr-skill-simplification/verify-report.md
+
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: verify
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-16T11:10:09-07:00"
+      completion:
+        rule: first final verify result is durably recorded
+    status: completed
+    current_stage: verify
+    stop_reason: target-reached
+    evidence:
+      - docs/changes/2026-08-16-pr-skill-simplification/evidence/workflow-automation-target-verify.md
+      - specs/pr-skill-simplification.test.md
+      - docs/changes/2026-08-16-pr-skill-simplification/reviews/test-spec-review-r2.md
+      - docs/changes/2026-08-16-pr-skill-simplification/evidence/m1-preservation-inventories.md
+      - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m1-r1.md
+      - docs/changes/2026-08-16-pr-skill-simplification/evidence/m2-package-implementation.md
+      - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m2-r1.md
+      - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m2-r2.md
+      - docs/changes/2026-08-16-pr-skill-simplification/evidence/simplification-measurements.md
+      - docs/changes/2026-08-16-pr-skill-simplification/evidence/semantic-preservation-review.md
+      - docs/changes/2026-08-16-pr-skill-simplification/evidence/m3-package-proof.md
+      - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m3-r1.md
+      - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r1.md
+      - docs/changes/2026-08-16-pr-skill-simplification/explain-change.md
+      - docs/changes/2026-08-16-pr-skill-simplification/verify-report.md
+      - docs/changes/2026-08-16-pr-skill-simplification/evidence/verify-r1-correction.md
+      - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r2.md
+      - docs/changes/2026-08-16-pr-skill-simplification/evidence/verify-r2-correction.md
+      - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r3.md
+
+artifacts:
+  proposal: docs/proposals/2026-08-16-pr-skill-simplification.md
+  spec: specs/pr-skill-simplification.md
+  plan: docs/plans/2026-08-16-pr-skill-simplification.md
+  test_spec: specs/pr-skill-simplification.test.md
+
+requirements:
+  - Reduce portable and governed PR loaded context while preserving evidence truthfulness, submission safety, external-action authority, and claim ownership.
+  - Keep universal target, verify, remote, CI, operation, push, read-back, stop, and claim behavior inline; add one governed-readiness reference and one structural PR-body asset.
+  - Bind verification, local head, pushed remote head, and PR head exactly and reconcile existing PRs idempotently without duplicate creation or implicit draft publication.
+  - Keep verify as the branch-ready and normalized base/head evidence owner; treat its result/report amendment and compatibility proof as a directly coupled same-slice dependency.
+  - Preserve every behaviorally significant rule and exact literal dependency with change-local ownership and compatibility evidence.
+  - Prove real profile reduction and canonical-through-installed parity without live acceptance PR creation or target-agent runtime execution.
+
+tests:
+  - Independent proposal review of value, package boundaries, target and remote state, CI truthfulness, governed authority, idempotency, measurement, and readiness.
+  - Deterministic validation of resource mappings, classifications, operations, remote states, CI states, body groups, missing resources, stops, claims, and forbidden mutation.
+  - Static scenarios covering portable and governed PRs, absent and existing PRs, drafts, stale verification, push and read-back failure, retries, CI states, and package parity.
+  - Static verification-basis scenarios covering normalized portable and governed evidence, immutable identities, legacy reports, missing or ambiguous basis, and fresh-verify routing.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-16-pr-skill-simplification/change.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-16-pr-skill-simplification.md
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-log.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-resolution.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r1.md
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r2.md
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/proposal-review-r3.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r3.md
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/proposal-review-r4.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+  - specs/pr-skill-simplification.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/spec-revision-r1.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-spec-review-r2.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/spec-review-r2.md
+  - docs/changes/2026-08-16-pr-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-16-pr-skill-simplification.md
+  - docs/plan.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/plan-authoring.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/plan-review-r1.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/plan-initialization.md
+  - specs/pr-skill-simplification.test.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/test-spec-authoring.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-test-spec-review-r1.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/test-spec-revision-r1.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-test-spec-review-r2.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/test-spec-review-r2.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/workflow-automation-target-verify.md
+  - docs/changes/2026-08-16-pr-skill-simplification/pr-rule-disposition.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/pr-literal-compatibility.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/verify-basis-disposition.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/fixtures/pr-simplification-scenarios.json
+  - docs/changes/2026-08-16-pr-skill-simplification/fixtures/validate-pr-simplification.py
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/profile-size-baseline.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/m1-preservation-inventories.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-m1-r1.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m1-r1.md
+  - skills/pr/SKILL.md
+  - skills/pr/references/governed-pr-readiness.md
+  - skills/pr/assets/pr-body-skeleton.md
+  - skills/verify/SKILL.md
+  - skills/verify/references/branch-readiness-verification.md
+  - scripts/test-skill-validator.py
+  - scripts/validate-skills.py
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/m2-package-implementation.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-m2-r1.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m2-r1.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-m2-r2.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m2-r2.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/simplification-measurements.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/semantic-preservation-review.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/m3-package-proof.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-m3-r1.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m3-r1.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-final-r1.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r1.md
+  - docs/changes/2026-08-16-pr-skill-simplification/explain-change.md
+  - docs/changes/2026-08-16-pr-skill-simplification/verify-report.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/verify-r1-correction.md
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/verify-r2-correction.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-final-r2.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r2.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-final-r3.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-final-r3.md
+
+review:
+  status: approved
+  unresolved_items: 0

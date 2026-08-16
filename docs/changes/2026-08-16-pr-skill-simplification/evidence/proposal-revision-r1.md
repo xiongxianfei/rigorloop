@@ -1,0 +1,25 @@
+# Proposal Revision Evidence: PR Skill Simplification
+
+- Operation: `revise-primary-proposal`
+- Change ID: `2026-08-16-pr-skill-simplification`
+- Artifact ID: `proposal`
+- Canonical path: `docs/proposals/2026-08-16-pr-skill-simplification.md`
+- Prior reviewed revision: `06662261`
+- Prior content identity: `sha256:aeabe6196a5af24cb470ea1469c4069f0794bc8fd852939b73eeb5006f9d2beb`
+- Revised content identity: `sha256:4bf80c6078bf2b6ab889fb7329f00ea4594a29e8e92a85a95909bb255ced8262`
+- Revision authority: user request to refine the proposal after formal `proposal-review-r1`
+- Loaded assembly: `PA1G-governed-gated`
+- Active specialized predicates: `initial_intent_table_context`, `scope_budget_context`
+- Finding disposition: `PRSIM-PR1` accepted and implemented by separating the verified subject from one closed verify-owned evidence-tail handoff revision.
+- Finding disposition: `PRSIM-PR2` accepted and implemented by making reuse non-mutating and requiring explicit field or full-replacement refresh authority.
+- Finding disposition: `PRSIM-PR3` accepted and implemented with a closed remote-branch state vocabulary, forbidden force operations, and post-push PR-state reconciliation.
+- Scope preservation: the selected one-reference and one-asset package, portable behavior, lifecycle read-only boundary, hosted-CI claims, and no-runtime acceptance boundary remain unchanged.
+- Validation: `git diff --check` passed.
+- Validation: `python scripts/validate-change-metadata.py docs/changes/2026-08-16-pr-skill-simplification/change.yaml` passed.
+- Validation: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-16-pr-skill-simplification` passed.
+- Validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-16-pr-skill-simplification` passed.
+- Validation: `python scripts/validate-skills.py skills/proposal` passed.
+- Validation: `python scripts/test-skill-validator.py MarkdownReadabilityGuidanceTests` passed all four tests.
+- Validation: documentation prose enforcement passed for the revised proposal and revision evidence.
+- Authoring result: proposal revised, material findings closed in review-resolution, and the proposal returned to `review-required`.
+- Downstream authority: independent proposal rereview only; specification, architecture, planning, implementation, verification, and PR readiness remain unauthorized.

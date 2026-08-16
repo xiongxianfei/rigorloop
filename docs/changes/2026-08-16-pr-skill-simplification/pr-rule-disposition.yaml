@@ -1,0 +1,29 @@
+{
+  "schema": "pr-rule-disposition-v1",
+  "rules": [
+    {"id":"PRR-001","cluster":"purpose-and-evidence","before":"skills/pr/SKILL.md","disposition":"preserve-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-002","cluster":"submission-intent","before":"skills/pr/SKILL.md","disposition":"clarify-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-003","cluster":"prepare-only-side-effects","before":"implicit","disposition":"add-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-004","cluster":"governed-signal-classification","before":"skills/pr/SKILL.md","disposition":"clarify-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-005","cluster":"governed-readiness-aggregation","before":"skills/pr/SKILL.md","disposition":"move-reference","after":"skills/pr/references/governed-pr-readiness.md"},
+    {"id":"PRR-006","cluster":"verification-basis-production","before":"skills/verify/SKILL.md","disposition":"clarify-verify","after":"skills/verify/SKILL.md and its final-readiness reference"},
+    {"id":"PRR-007","cluster":"verification-basis-consumption","before":"skills/pr/SKILL.md","disposition":"clarify-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-008","cluster":"working-tree-and-diff-safety","before":"skills/pr/SKILL.md","disposition":"preserve-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-009","cluster":"evidence-tail","before":"implicit","disposition":"add-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-010","cluster":"remote-branch-relation","before":"skills/pr/SKILL.md","disposition":"clarify-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-011","cluster":"remote-pr-state","before":"skills/pr/SKILL.md","disposition":"clarify-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-012","cluster":"refresh-authority","before":"implicit","disposition":"add-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-013","cluster":"existing-pr-state-authority","before":"implicit","disposition":"add-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-014","cluster":"body-refresh-unit","before":"section-shaped prose","disposition":"replace-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-015","cluster":"hosted-ci-truthfulness","before":"skills/pr/SKILL.md","disposition":"preserve-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-016","cluster":"external-operation-order","before":"skills/pr/SKILL.md","disposition":"clarify-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-017","cluster":"retry-and-concurrency","before":"skills/pr/SKILL.md","disposition":"clarify-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-018","cluster":"read-back-and-url","before":"skills/pr/SKILL.md","disposition":"preserve-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-019","cluster":"external-success-versus-readiness","before":"implicit","disposition":"add-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-020","cluster":"pr-body-structure","before":"skills/pr/SKILL.md","disposition":"move-asset","after":"skills/pr/assets/pr-body-skeleton.md"},
+    {"id":"PRR-021","cluster":"stops-and-claims","before":"skills/pr/SKILL.md","disposition":"preserve-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-022","cluster":"lifecycle-write-boundary","before":"skills/pr/SKILL.md","disposition":"preserve-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-023","cluster":"result-contract","before":"skills/pr/SKILL.md","disposition":"clarify-inline","after":"skills/pr/SKILL.md"},
+    {"id":"PRR-024","cluster":"package-resource-failure","before":"implicit","disposition":"add-inline","after":"skills/pr/SKILL.md"}
+  ]
+}

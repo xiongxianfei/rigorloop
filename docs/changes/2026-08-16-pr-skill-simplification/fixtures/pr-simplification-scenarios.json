@@ -1,0 +1,33 @@
+{
+  "schema":"pr-simplification-scenarios-v1",
+  "vocabularies": {
+    "governed_signal":{"allowed":["no-governed-signal","single-governed-candidate","invalid-or-ambiguous-governed-signal"],"invalid":["unknown_value"]},
+    "intent":{"allowed":["open","draft","prepare-only"],"invalid":["unknown_value"]},
+    "refresh":{"allowed":["none","explicit-title-refresh","explicit-full-replacement","workflow-title-refresh"],"invalid":["unknown_value"]},
+    "state_transition":{"allowed":["none","publish-existing-draft","convert-existing-open-to-draft"],"invalid":["unknown_value"]},
+    "branch":{"allowed":["absent","same","remote-ancestor-of-local","local-ancestor-of-remote","diverged","ambiguous"],"invalid":["unknown_value"]},
+    "pr":{"allowed":["absent","open","draft","closed","merged","ambiguous"],"invalid":["unknown_value"]},
+    "operation":{"allowed":["opened","draft-opened","updated","reused","prepared-not-opened","blocked"],"invalid":["unknown_value"]},
+    "ci":{"allowed":["passed","failed","pending","unavailable","unobserved","not-applicable"],"invalid":["unknown_value"]}
+  },
+  "scenarios": [
+    {"id":"PRS-001","family":"intent","case":"prepare-only","result":"prepared-not-opened","writes":[]},
+    {"id":"PRS-002","family":"authority","case":"open-existing-draft-no-transition","result":"reused","writes":[]},
+    {"id":"PRS-003","family":"authority","case":"draft-existing-open-no-transition","result":"reused","writes":[]},
+    {"id":"PRS-004","family":"refresh","case":"whole-body-authorized","result":"updated","writes":["body"]},
+    {"id":"PRS-005","family":"refresh","case":"section-refresh-requested","result":"blocked","writes":[]},
+    {"id":"PRS-006","family":"branch","case":"remote-ancestor-of-local","result":"opened","writes":["push","pr"]},
+    {"id":"PRS-007","family":"branch","case":"local-ancestor-of-remote","result":"blocked","writes":[]},
+    {"id":"PRS-008","family":"pr-state","case":"multiple-matches","result":"blocked","writes":[]},
+    {"id":"PRS-009","family":"ci","case":"pending-under-post-open-policy","result":"opened","writes":["pr"]},
+    {"id":"PRS-010","family":"basis","case":"legacy-prose-only","result":"prepared-not-opened","writes":[]},
+    {"id":"PRS-011","family":"evidence-tail","case":"one-direct-verify-owned-commit","result":"opened","writes":["push","pr"]},
+    {"id":"PRS-012","family":"evidence-tail","case":"unrelated-tail-change","result":"blocked","writes":[]},
+    {"id":"PRS-013","family":"reread","case":"base-changed-before-push","result":"blocked","writes":[]},
+    {"id":"PRS-014","family":"concurrency","case":"pr-created-after-push","result":"reused","writes":["push"]},
+    {"id":"PRS-015","family":"partial-success","case":"push-succeeds-create-fails","result":"blocked","writes":["push"]},
+    {"id":"PRS-016","family":"read-back","case":"base-changes-after-create","result":"opened","writes":["pr"],"pr_open_ready":false},
+    {"id":"PRS-017","family":"resource","case":"required-reference-missing","result":"blocked","writes":[]},
+    {"id":"PRS-018","family":"resource","case":"body-asset-missing","result":"blocked","writes":[]}
+  ]
+}
