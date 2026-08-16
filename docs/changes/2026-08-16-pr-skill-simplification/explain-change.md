@@ -45,6 +45,11 @@ base-revision staleness, or safe body refresh.
   restored all five adjacent shared phrases inline, added a failing-first
   regression test, refreshed the affected evidence, and received a clean R2
   final rereview.
+- The next PR-mode CI attempt passed that contract but found three historical
+  review records whose facts were not discoverable under the current parser
+  shape. The correction added current receipt headers and normalized two
+  finding blocks without changing any judgment, disposition, or settlement;
+  focused lifecycle validation and final code review R3 are clean.
 
 ## Diff rationale by area
 
@@ -88,6 +93,7 @@ cause an unnecessary external side effect, so it is intentionally excluded.
 | `python scripts/test-adapter-distribution.py` | 150 passed |
 | boundary-first validation for the feature spec | passed |
 | change-metadata validation | passed through the latest reviewed lifecycle transition |
+| PR-scope artifact lifecycle validation after historical-record normalization | passed; three change-local artifact files validated, with repository baseline warnings only |
 
 Final `verify`, repository CI orchestration, hosted CI, `branch-ready`, and PR
 readiness are not claimed here.
@@ -100,8 +106,9 @@ accepted, or left as `needs-decision`, and `review-log.md` has no open findings.
 The implementation-specific `PRSIM-CR1` correction reduced both actual loaded
 profiles and passed an independent rereview. The verify-R1 compatibility
 correction restored the complete shared review-summary contract and passed
-`code-review-final-r2`. M1-M3 and the corrected complete branch each have a
-clean recorded code review.
+`code-review-final-r2`. The subsequent evidence-only receipt normalization
+passed `code-review-final-r3`. M1-M3 and the corrected complete branch each
+have a clean recorded code review.
 
 ## Alternatives rejected
 

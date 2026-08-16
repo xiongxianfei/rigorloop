@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: explain-change
-  next_stage: explain-change
+  current_stage: verify
+  next_stage: verify
   blocker: null
   evidence:
     - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-authoring.md
