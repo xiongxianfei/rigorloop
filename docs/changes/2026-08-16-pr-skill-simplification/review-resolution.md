@@ -213,7 +213,7 @@ No material findings. The clean milestone review closes M1 and authorizes workfl
 
 Finding ID: PRSIM-CR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: implementation
 Owning stage: implement
 Decision owner: none; the approved spec requires strict word and byte reduction
@@ -223,4 +223,8 @@ Rationale: Navigation-only extraction does not satisfy the real loaded-profile r
 Required outcome: Both PR0 and PR1 are strictly below 1,678 words and 11,375 bytes without semantic loss.
 Safe resolution path: Apply the reviewer-declared bounded correction to the two PR procedure files and focused test class, run M2 validation, and record `code-review-m2-r2`.
 Validation target: corrected M2 package and focused size assertions.
-Validation evidence: pending correction and rereview.
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/m2-package-implementation.md` and approving `code-review-m2-r2`.
+
+### code-review-m2-r2
+
+No material findings. The rereview confirms `PRSIM-CR1` is resolved and closes M2.
