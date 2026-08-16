@@ -1,6 +1,6 @@
 # Review Resolution: PR Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -12,9 +12,9 @@ Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `plan-review-r1`, `test-spec-review-r1`
-- Findings resolved: 8
-- Unresolved findings: 1
-- Current result: test-spec revision required before implementation handoff
+- Findings resolved: 9
+- Unresolved findings: 0
+- Current result: test spec revised; independent rereview required
 
 ## Resolution overview
 
@@ -28,7 +28,7 @@ Review closeout: test-spec-review-r1
 | `PRSIM-PR6` | accepted | closed | First-version refresh is limited to title or authorized whole-body replacement. |
 | `PRSIM-PR7` | accepted | closed | `verify` owns the normalized basis through its existing result/report contract and same-slice compatibility proof. |
 | `PRSSIM-SR1` | accepted | closed | E2 now cites only `BND-STATE-001`, which governs both R15 and R20. |
-| `TSPRSIM-TSR1` | accepted | open | Add and map one exact M1 preservation validation command. |
+| `TSPRSIM-TSR1` | accepted | closed | C0 now owns the exact M1 preservation validation command and is mapped from T-PR-018 and M1. |
 
 ## Finding details
 
@@ -186,7 +186,7 @@ No material findings. The plan is approved, initialized from its exact reviewed 
 
 Finding ID: TSPRSIM-TSR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: test-spec author
 Owning stage: test-spec
 Decision owner: none; correction is mechanical
@@ -196,4 +196,4 @@ Rationale: Every depended-on validation command must have a stable ID, exact inv
 Required outcome: M1 and T-PR-018 reference the same closed command ledger entry.
 Safe resolution path: Amend the command ledger and mappings, rerun boundary validation, and rereview.
 Validation target: revised test spec and independent `test-spec-review-r2`.
-Validation evidence: pending
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/test-spec-revision-r1.md`; independent rereview remains pending.

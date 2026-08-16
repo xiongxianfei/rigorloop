@@ -29,7 +29,7 @@ Status: changes-requested
 Detailed record: reviews/test-spec-review-r1.md
 Resolution: review-resolution.md#test-spec-review-r1
 Material findings: TSPRSIM-TSR1
-Open findings: TSPRSIM-TSR1
+Open findings: none
 Recording status: recorded
 
 ### Review entry
