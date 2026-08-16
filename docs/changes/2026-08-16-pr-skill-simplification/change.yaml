@@ -9,19 +9,25 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-16-pr-skill-simplification.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r1.md
+    lifecycle_state: revision-required
+    review:
+      id: proposal-review-r2
+      artifact_id: proposal
+      outcome: changes-requested
+      record: docs/changes/2026-08-16-pr-skill-simplification/reviews/proposal-review-r2.md
+      round: r2
 
 workflow_state:
   lifecycle_state: active
-  current_stage: proposal-review
-  next_stage: proposal-review
+  current_stage: proposal
+  next_stage: proposal
   blocker: null
   evidence:
     - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-authoring.md
     - docs/changes/2026-08-16-pr-skill-simplification/reviews/proposal-review-r1.md
     - docs/changes/2026-08-16-pr-skill-simplification/review-resolution.md
     - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r1.md
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/proposal-review-r2.md
 
 workflow: {}
 
@@ -50,7 +56,8 @@ changed_files:
   - docs/changes/2026-08-16-pr-skill-simplification/review-log.md
   - docs/changes/2026-08-16-pr-skill-simplification/review-resolution.md
   - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-revision-r1.md
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/proposal-review-r2.md
 
 review:
-  status: review-requested
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 3
