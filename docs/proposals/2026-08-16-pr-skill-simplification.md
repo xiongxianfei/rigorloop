@@ -17,6 +17,7 @@ The flat shape also leaves several execution outcomes implicit. It does not clos
 - Move governed lifecycle aggregation into one conditional reference with no lifecycle mutation, settlement, or routing authority.
 - Move repeated PR-body headings, ordering, and placeholders into one structural asset without moving readiness or claim policy into the asset.
 - Make prepare, create, explicitly authorized host-field or whole-body refresh, reuse, state transition, and retry behavior deterministic for the exact repository, verified base/head pair, handoff revision, remote branch, and PR identity.
+- Extend the existing `verify` result and governed verify-report evidence with one normalized verification-basis block that `pr` consumes without taking ownership of `branch-ready`.
 - Preserve portable customer-project behavior and canonical-through-installed package integrity.
 - Prove simplification with change-local semantic and literal inventories, static scenarios, real loaded-profile measurements, and repository-owned validation.
 
@@ -30,7 +31,8 @@ The flat shape also leaves several execution outcomes implicit. It does not clos
 - Do not execute Codex, Claude Code, opencode, or another target-agent runtime as acceptance proof.
 - Do not redesign the GitHub, GitLab, or other host APIs used by available tooling.
 - Do not add Markdown section mutation, managed-body markers, content-provenance parsing, or a PR-body ownership protocol.
-- Do not optimize unrelated skills or generated adapter implementation in this change.
+- Do not otherwise optimize or restructure `verify`; only its directly coupled result/report contract, fixtures, and package projections needed for exact PR base/head binding are in scope.
+- Do not optimize unrelated skills or hand-edit generated adapter implementation in this change.
 
 ## Vision fit
 
@@ -43,6 +45,8 @@ The change strengthens the traceable idea-to-PR chain while reducing ceremony on
 `pr` is the terminal submit/open stage of the normal workflow. A direct invocation still opens a PR when readiness passes, but it has no downstream stage. The current contract already distinguishes local validation from hosted CI, requires actual-diff evidence, and prohibits lifecycle settlement. This proposal preserves those boundaries and reorganizes procedure around evidence-based activation.
 
 The existing published-skill package architecture supports canonical `SKILL.md`, mapped `references/`, mapped `assets/`, generated archives, release-candidate packages, and clean-installed parity. The proposal uses that model without adding runtime or persistence architecture.
+
+Current verify evidence does not guarantee one normalized exact PR basis. Historical reports variously cite branch names, commands, merge bases, stacked bases, or prose. The new PR rule therefore requires a directly coupled amendment to the existing verify-owned result and report contract; `pr` must not reconstruct a past verification basis from those incidental forms.
 
 ## Options Considered
 
@@ -100,6 +104,35 @@ Keep these obligations inline for every invocation:
 - universal stops, no-lifecycle-mutation boundary, output result, and no downstream continuation.
 
 The universal file must not embed the complete PR-body section layout or detailed RigorLoop change-pack closeout procedure.
+
+### Existing verify-evidence contract amendment
+
+`verify` remains the sole owner of `branch-ready`. This slice amends its existing branch-readiness and workflow-final-verification result contract to emit one normalized verification basis:
+
+```yaml
+verification_basis:
+  repository_identity: <canonical repository identity>
+  remote_identity: <canonical remote identity>
+  base_branch: <exact base branch>
+  base_revision: <resolved base commit identity>
+  merge_base_revision: <resolved merge-base identity>
+  head_branch: <exact head branch>
+  verified_subject_revision: <resolved verified subject identity>
+```
+
+The basis is part of the current `verify` invocation result in portable use and the existing `verify-report.md` in governed or explicitly durable use. It creates no new artifact, lifecycle state, persistence mechanism, schema owner, or routing authority. `verify` resolves every branch name to an immutable identity before reporting `branch-ready`; `pr` only consumes and revalidates the recorded tuple.
+
+The directly coupled same-slice surfaces are the `verify` output contract, its existing branch-readiness reference when needed, the workflow or skill contract that defines the result, deterministic fixtures, semantic and literal preservation ledgers, and generated package projections. The amendment must not move PR opening, body preparation, hosted-CI interpretation, or `pr-open-ready` into `verify`.
+
+Compatibility is fail-closed:
+
+| Verification evidence | PR behavior |
+| --- | --- |
+| Complete current normalized basis | Continue to current remote revalidation. |
+| Missing, stale, prose-only, command-only, unresolved-name, conflicting, or ambiguous basis | Permit truthful `prepare-only` content construction; block `open`, `draft`, and `pr-open-ready`; route to fresh branch-readiness or final verification. |
+| Complete basis whose repository, remote, base, merge base, head, or subject differs | Block opening and route to fresh verification or the repository's approved base-update procedure. |
+
+`pr` must not infer the verified basis from a command containing `--base`, an unresolved branch name, current Git state, arbitrary prose, or historical report conventions. Fresh verification is the compatibility path for old evidence.
 
 ### `governed-pr-readiness.md` ownership
 
@@ -360,7 +393,7 @@ A missing, unreadable, escaped, contradictory, stale, transformed, or mixed-vers
 
 ## Architecture Impact
 
-A bounded architecture assessment is required because the change introduces mapped skill resources and clarifies an external-operation transaction. The expected result is `architecture-not-required` when current architecture already supports packaged references and assets and the operation uses existing Git and host tooling without a new persistent record, service, schema, state owner, or provider abstraction.
+A bounded architecture assessment is required because the change introduces mapped skill resources and clarifies an external-operation transaction. The expected result is `architecture-not-required` when current architecture already supports packaged references and assets, the normalized tuple fits the existing verify result and verify-report evidence surfaces, and the operation uses existing Git and host tooling without a new persistent record, service, schema, state owner, or provider abstraction.
 
 Architecture becomes required if specification or implementation needs a new durable PR transaction artifact, provider-neutral runtime layer, lifecycle mutation owner, remote-state schema, cross-process recovery service, managed-section parser, body-ownership protocol, or new base/head evidence owner.
 
@@ -372,6 +405,7 @@ Before editing canonical skill content, create:
 
 - a semantic-rule disposition ledger with one owner and disposition for every current behaviorally significant rule and duplicate cluster;
 - a literal-compatibility ledger for headings, readiness labels, status values, resource paths, output fields, and exact phrases consumed by tests or packages;
+- a directly coupled verify-evidence ledger classifying current branch, base, merge-base, repository, remote, and subject representations and their migration to the normalized basis;
 - deterministic baseline measurements for `SKILL.md`, each planned reference or asset, portable and governed procedural profiles, representative body composition, and total package;
 - static scenario fixtures for every operation, remote state, submission intent, CI state, resource failure, retry, and forbidden mutation.
 
@@ -382,6 +416,8 @@ Prove at least:
 - exact `READ` and `COPY` mappings, path containment, triggers, and one-load behavior;
 - tri-state governed-signal classification and no invalid-signal portable fallback;
 - exact verified-subject, handoff, remote-head, and PR-head binding;
+- normalized portable verify-result and governed verify-report basis emission under the existing `verify` owner;
+- complete, missing, stale, prose-only, command-only, unresolved-name, conflicting, and ambiguous verification-basis compatibility behavior;
 - same-revision and one-commit verify-owned evidence-tail binding, including every forbidden post-verify path and field class;
 - absent, same, remote-ancestor-of-local, local-ancestor-of-remote, diverged, and ambiguous remote-branch behavior;
 - absent, open, draft, closed, merged, and ambiguous remote-PR behavior;
@@ -432,6 +468,11 @@ Acceptance uses repository-owned static tests, fixtures, package validation, ada
 | `AC-PRSIM-028` | Section-level mutation requires a separate approved managed-content contract. |
 | `AC-PRSIM-029` | External-operation success and readiness success remain separate when base or PR state changes concurrently. |
 | `AC-PRSIM-030` | Static fixtures prove the complete intent, base/head, branch-relation, refresh, and retry matrices without a live acceptance PR. |
+| `AC-PRSIM-031` | `verify` remains the sole owner of `branch-ready` and emits the normalized verification basis through its existing result or report surface. |
+| `AC-PRSIM-032` | The normalized basis records immutable repository, remote, base, merge-base, head, and verified-subject identities. |
+| `AC-PRSIM-033` | `pr` never reconstructs the verified basis from command text, unresolved names, current Git state, arbitrary prose, or historical report conventions. |
+| `AC-PRSIM-034` | Legacy, portable, missing, stale, or ambiguous evidence without a complete exact basis permits preparation but blocks opening and `pr-open-ready`. |
+| `AC-PRSIM-035` | Directly coupled verify-contract and fixture changes preserve ownership and canonical-through-installed package parity. |
 
 ### Measurement
 
@@ -458,9 +499,9 @@ Acceptance requires both PR0 and PR1 procedural profiles to decrease from the cu
 
 ## Rollout and Rollback
 
-Implement the package atomically in canonical `skills/pr/` source, update directly coupled validator and fixture consumers, regenerate only through existing repository tooling, and prove archive and clean-install parity before PR handoff.
+Implement the `pr` package atomically in canonical `skills/pr/` source. In the same slice, amend only the existing verify result/report contract and directly coupled `skills/verify/` reference or output wording, workflow or skill contract, fixtures, and package projections required for the normalized basis. Update directly coupled validator and fixture consumers, regenerate only through existing repository tooling, and prove archive and clean-install parity before PR handoff.
 
-Rollback restores the prior flat `SKILL.md`, removes the reference and asset, updates focused assertions, and regenerates every derived package atomically. Keep only validator improvements that remain correct for the restored flat package.
+Rollback restores the prior flat `pr` skill, removes its reference and asset, restores the prior verify result/report wording and focused fixtures, and regenerates every derived package atomically. Keep only validator improvements that remain correct for the restored contracts.
 
 ## Risks and Mitigations
 
@@ -471,6 +512,8 @@ Rollback restores the prior flat `SKILL.md`, removes the reference and asset, up
 | `prepare-only` or creation intent mutates existing external state unexpectedly | A supposedly bounded operation pushes or changes a review surface | Make `prepare-only` zero-write and separate submission intent, refresh authority, and existing state-transition authority. |
 | Durable verify recording makes its own valid result appear stale | Governed PR handoff becomes impossible or broad post-verify changes become accepted | Separate verified subject and handoff revisions; permit exactly one direct-child verify-owned evidence commit with closed paths and fields; reject every broader change. |
 | Remote base advances after verification | The effective review and integration surface differs from validated evidence | Bind the exact base/head pair, reread the base before mutation and after read-back, and separate external success from readiness. |
+| `pr` infers a basis that current verify evidence never recorded | Stale or historically formatted evidence is presented as exact | Make `verify` the normalized basis owner, include its directly coupled amendment in scope, reject inference, and route incomplete legacy evidence to fresh verification. |
+| The normalized tuple becomes a new persistence or ownership system | Simplification expands into architecture work | Use only existing verify result and verify-report surfaces; require architecture reassessment if they cannot carry the tuple safely. |
 | Remote branch changed after local verification | A push overwrites or obscures another actor's work | Use closed remote-branch states, allow only absent creation or verified normal fast-forward, and prohibit every force, delete, or overwrite operation. |
 | A matching PR appears after preflight | Duplicate PR creation or stale mutation occurs | Reread matching PR state after push and reclassify create, reuse, or refresh immediately before mutation. |
 | Section refresh overwrites reviewer-authored Markdown | User context is lost through ambiguous heading parsing | Do not parse or mutate sections; preserve the body or replace it wholly only under explicit authority. |
@@ -493,6 +536,8 @@ None at proposal level. Exact evidence field names, fixture encoding, focused te
 - Make `prepare-only` externally read-only and separate creation intent from existing PR state-transition authority.
 - Reuse an adequate matching PR without mutation; refresh only the title or whole body under corresponding explicit authority.
 - Bind verification to the exact base/head pair and use directional remote-branch ancestry states.
+- Keep `verify` as the existing normalized verification-basis owner and include only its directly coupled result/report contract and fixtures in this slice.
+- Treat incomplete legacy or portable verification evidence as preparation-only and require fresh verification before opening.
 - Reconcile base, branch, and PR state after push without force operations to prevent stale readiness and duplicates.
 - Defer Markdown section mutation to a separate managed-content and architecture decision.
 - Preserve draft status unless explicit authority changes it.
@@ -513,7 +558,7 @@ None yet
 
 ## Readiness
 
-Ready for independent proposal rereview after resolving `PRSIM-PR4`, `PRSIM-PR5`, and `PRSIM-PR6`. Specification remains unauthorized until proposal-review approval.
+Ready for independent proposal rereview after resolving `PRSIM-PR7`. Specification remains unauthorized until proposal-review approval.
 
 ## Initial intent preservation
 
@@ -532,6 +577,8 @@ Ready for independent proposal rereview after resolving `PRSIM-PR4`, `PRSIM-PR5`
 | Governed PR-readiness reference | core to this proposal | It provides the only independent procedural activation boundary. |
 | PR-body structural asset | core to this proposal | Repeated output layout requires one non-policy owner. |
 | Exact verified-revision and remote operation model | same-slice dependency | Simplification cannot preserve safe external action while leaving these outcomes implicit. |
+| Existing verify result/report basis amendment | same-slice dependency | Exact PR base/head binding requires the current `verify` owner to emit immutable repository, remote, base, merge-base, head, and subject identities. |
+| Verify compatibility fixtures and package projections | same-slice dependency | Legacy and portable evidence must fail closed without changing `branch-ready` ownership or inventing a new artifact. |
 | Hosted-CI vocabulary and claims | same-slice dependency | Current truthfulness and post-open CI behavior are compatibility-sensitive. |
 | Rule, literal, profile, scenario, and package-parity proof | same-slice dependency | Public skill behavior and generated resources require deterministic preservation evidence. |
 | Provider-specific PR engine or new CLI | out of scope | Existing host tooling remains the external-operation mechanism. |
