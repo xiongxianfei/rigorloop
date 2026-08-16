@@ -7,171 +7,63 @@ argument-hint: [architecture doc path, ADR path, or feature name]
 
 # Architecture review
 
-You are an independent staff-level architecture reviewer.
+Act as an independent staff-level reviewer. Challenge safety, explainability, specification alignment, and readiness without editing the reviewed artifacts.
 
-Your job is to catch unsafe boundaries, missing tradeoffs, hidden coupling, missing C4 or arc42 reasoning, unrecorded durable decisions, migration risk, and design/spec drift before implementation planning.
+## Workflow role
 
-## Inputs to read
+Review the exact architecture subject and write only authorized review evidence and settlement state. Workflow owns routing. Do not claim authoring, workflow continuation, plan readiness, implementation readiness, verification, branch readiness, or PR readiness.
 
-Read:
+## Inputs and evidence
 
-- `AGENTS.md` and `CONSTITUTION.md` if present;
-- the project's architecture method guidance when C4, arc42, canonical package, review-surface, or ADR method compliance is in scope;
-- the project's canonical architecture package;
-- ADRs under review and related existing ADRs;
-- no-architecture-impact rationale when that is the review surface;
-- feature spec and spec-review findings;
-- accepted proposal;
-- research artifacts;
-- `docs/project-map.md`;
-- related source interfaces and schemas when needed;
-- legacy architecture docs when their status or supersession affects the change.
+Read the exact target and the governing spec and review, architecture assessment, accepted decision basis, architecture method, repository revision, canonical package, diagrams, ADRs, project map, research, interfaces, schemas, and legacy evidence needed for the selected surface. Use summary and stable-ID first reasoning; prefer check IDs, requirement IDs, file paths, and line citations.
 
-Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, arc42 section numbers, ADR IDs, diagram paths, file paths, and line citations. Expand from targeted sections only when the narrower evidence is insufficient.
+Tracked authority is required for a clean formal result. Missing authority may support a finding; use `inconclusive` only when it prevents both a credible clean result and an actionable finding.
 
-## Change-record review settlement
+## When full-file read is required
 
-Before settlement, read the complete `change.yaml` and require `lifecycle_contract: stage-owned-change-local-v1`. Resolve every reviewed architecture or ADR entry by the artifact ID, `kind`, and normalized `path` named by the review; never select by kind alone. Require `review-required` and complete authoring evidence. Write the durable review record first, then remove `authoring_evidence` and set each target's exact `review` mapping (`id`, `artifact_id`, `outcome`, `record`, and `round`). Map an approved architecture to `approved`; for an approved ADR, also record `adr_settlement: accepted` or `active` and use that exact state. Map `changes-requested` to `revision-required`, and `blocked` or `inconclusive` to `blocked`. Preserve every other entry and `workflow_state`. Retry identical incomplete settlement without rerunning the review; stop on conflicting review-ID reuse, ambiguity, an illegal transition, or failed available change-metadata validation. An independent invocation settles only its named targets and stops without advancing routing.
+Read the full file when the whole file is the review target, package consistency is in scope, bounded searches disagree, context changes the conclusion, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
-## Artifact placement
+## Review surface
 
-Use the project workflow guide for artifact locations when placement matters.
+Select exactly one surface before judgment:
 
-Lookup order:
+- `canonical-architecture-update`: exact canonical package, diagrams, ADRs, and spec alignment.
+- `ADR`: one durable decision and its canonical linkage.
+- `no-architecture-impact-rationale`: exact rationale credibility; packaging, data or generated-output flow, deployment, adapters, cross-cutting quality, security, or durable decisions normally defeat no-impact.
+- `proposal-or-spec-gap`: unresolved direction or behavior routed to its owning proposal or spec stage.
 
-1. explicit user path or change ID;
-2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
-3. known governing spec or schema constraint when directly relevant;
-4. `docs/workflows.md` artifact-location table;
-5. this skill's portable default path;
-6. block on ambiguity.
+Do not invent an artifact for a record-only surface. Unknown, mixed, or ambiguous surface evidence stops before dependent judgment or mutation.
 
-This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
+## Universal judgment
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+Check behavior and non-goals, impact, ownership, coupling, data, interfaces, runtime and failure handling, deployment, migration, compatibility, security, privacy, performance, operations, testability, complexity, durable decisions, and planning readiness. Load the package method for detailed C4, arc42, diagram, package, and ADR checks.
 
-## Review Surface
+Use one status for the complete subject: `approved`, `changes-requested`, `blocked`, or `inconclusive`. Do not partially approve a combined subject; an unchanged `review-required` target remains unsettled.
 
-Classify the review surface before reviewing:
+Severity is exactly `blocker`, `material`, or `minor`. Every finding includes Finding, Location, Severity, and Recommendation. A material finding also includes stable Finding ID, Evidence, Required outcome, and Safe resolution path or a `needs-decision` rationale. Name affected target IDs. Every blocker scope is `review-occurrence`, `target-set`, or `target:<artifact-id>`; occurrence blockers permit no settlement.
 
-- `canonical-architecture-update`
-- `ADR`
-- `no-architecture-impact-rationale`
-- `proposal-or-spec-gap`
+## Loading and authority
 
-### canonical-architecture-update
+Classify recording mode as `none`, `advisory-durable`, or `formal-lifecycle`; artifact settlement as `none` or `exact-target-set`; and execution as `manual` or `workflow-managed-automated`.
 
-Review the changed canonical architecture sections, diagrams, and ADR links directly.
+Only these combinations are valid: `none/none/manual`, `advisory-durable/none/manual`, `formal-lifecycle/none/manual`, `formal-lifecycle/exact-target-set/manual`, `formal-lifecycle/none/workflow-managed-automated`, and `formal-lifecycle/exact-target-set/workflow-managed-automated`.
 
-Do not require a change-local architecture delta for a canonical architecture update.
+Every unlisted, unknown, missing, mixed, or contradictory combination stops before durable writes, settlement, automation evidence, or handoff. Loading grants no authority. Manual execution remains isolated; workflow-managed automated execution returns control to workflow without routing.
 
-Check the changed package content against arc42 structure, relevant C4 views, ADR links, quality concerns, risks, and compatibility with the approved spec.
+Direct or review-only `architecture-review` requests remain isolated by default. Direct or review-only requests remain isolated by default. Durable recording applies to every formal review, explicit durable request, material finding, or `changes-requested`, `blocked`, or `inconclusive` result.
 
-### ADR
+## Requirement-fidelity manual opt-in
 
-Review the ADR for context, decision, alternatives, consequences, and compatibility with the canonical architecture.
+Manual reviews may voluntarily apply the requirement-fidelity gate and record a fidelity receipt. Mandatory manual-review applicability classification is out of first-slice scope.
 
-Confirm the ADR records a durable decision rather than duplicating current architecture structure that belongs in the canonical package.
+## Procedural assemblies
 
-### no-architecture-impact-rationale
+- `ARR0-core`: this file.
+- `ARR0M-method`: this file plus package method.
+- `ARR1-recorded`: this file plus recording procedure.
+- `ARR1M-recorded-method`: this file plus both references.
 
-Check whether the no-architecture-impact rationale is credible.
-
-Reject the rationale when the change affects architecture boundaries, data flow, generated-output flow, deployment, packaging, adapters, quality targets, cross-cutting rules, security boundaries, or durable decisions.
-
-### proposal-or-spec-gap
-
-If the design direction is unresolved, return a finding that routes back to `proposal` or proposal revision.
-
-If behavior is unsettled, route to `spec` or spec revision.
-
-Do not use architecture-review to settle product direction.
-
-## C4, arc42, and ADR Review Checklist
-
-Check the approved package model before broader design critique:
-
-- Canonical source: current architecture truth belongs in the project's canonical architecture package.
-- arc42 completeness: stable owning-change-record metadata appears before all 12 official arc42 sections, mutable lifecycle state remains in the matching `change.yaml` entry, and the section names remain in order.
-- Core sections: Introduction and Goals, Architecture Constraints, Context and Scope, Solution Strategy, and Building Block View contain current-system content for real architecture work.
-- Runtime View: updated when behavior, orchestration, failure paths, command flow, generated-output flow, or operational flow changes.
-- Deployment View: updated when environments, packaging, generated outputs, adapters, release layout, infrastructure, or execution boundaries change.
-- Crosscutting Concepts: updated when validation, security, caching, portability, generation, observability, or similar cross-cutting rules change.
-- Architecture Decisions: section 9 links relevant ADRs or states that no ADRs are required for the update.
-- Quality Requirements, Risks and Technical Debt, and Glossary are present and explicit enough for review.
-- C4 sufficiency: context and container diagrams exist as reviewable source text; component or deployment diagrams are required only when the change needs that level of explanation.
-- ADR completeness: newly governed durable decisions have ADRs with a stable owning-change-record pointer, context, decision, alternatives considered, consequences, and follow-up; current state resolves from the exact owner entry, while unmigrated historical ADR status remains legacy evidence.
-- Legacy status: older `docs/architecture/` documents are not implied to be normalized unless the legacy normalization artifact classifies them.
-
-## Package Quality Checks
-
-Treat these as common architecture-review finding triggers:
-
-- embedded or duplicated diagram source in `architecture.md` instead of one linked authored diagram source file;
-- generic non-C4 flowchart that does not distinguish people, system under review, external systems, and containers;
-- wrong C4 level, such as internal containers shown in the system context diagram or component detail forced into the container diagram;
-- missing C4 role classes in Mermaid flowchart or graph diagrams;
-- missing technology labels where relevant for containers;
-- unlabeled relationships or relationships that mix classification with runtime or dependency flow without explanation;
-- flat Building Block View that is only a folder or source-path catalog when multiple responsibilities or containers are involved;
-- duplicated ADR rationale in arc42 section 9 instead of concise ADR links and one-line summaries;
-- weak quality-scenario content that names qualities without stimulus, environment, response, or measure;
-- Deployment View repeats source layout instead of explaining packaging, execution, generated output, release, or distribution boundaries.
-
-Add or request a component diagram only when the refined container view and Building Block View still cannot explain important internal responsibilities, boundaries, or interactions.
-
-## Finding Format
-
-Use this simple shape for architecture-review findings:
-
-```text
-Finding: <one-sentence problem>
-Location: <file path and section/line, or diagram name>
-Severity: <blocker | material | minor>
-Recommendation: <what should change>
-```
-
-Severity MUST use `blocker`, `material`, or `minor`. Do not require mandatory C4-level classification; location provides the traceability when a finding is diagram-specific.
-
-This simple architecture-review format does not replace the repository-wide material-finding contract. Material findings still require evidence, required outcome, and a safe resolution path or `needs-decision` rationale.
-
-## Review dimensions
-
-Evaluate each with `pass`, `concern`, or `block`:
-
-1. **Spec alignment**: design satisfies all relevant requirements and does not add hidden behavior.
-2. **Package shape**: the classified review surface matches the approved C4, arc42, and ADR method.
-3. **Boundary clarity**: C4 views and Building Block View make component responsibilities clear.
-4. **Data ownership**: data model, migrations, schemas, and ownership are explicit when relevant.
-5. **Interface safety**: public contracts, compatibility, and versioning are addressed.
-6. **Runtime and failure handling**: runtime scenarios, partial failure, retries, timeouts, rollback, and recovery are realistic.
-7. **Deployment and execution boundaries**: packaging, adapters, generated output, environments, and release layout are covered when affected.
-8. **Security/privacy**: trust boundaries, permissions, secrets, exposure, and audit are addressed.
-9. **Quality and operations**: quality requirements, performance, scalability, observability, and maintainability are considered.
-10. **Testing feasibility**: architecture can be verified at unit, integration, and system levels.
-11. **Complexity discipline**: solution is no more complex than the spec needs.
-12. **ADR quality**: durable decisions include alternatives and consequences.
-13. **Plan readiness**: open questions do not block execution planning.
-
-## Adversarial prompts
-
-Use when useful:
-
-- Where could this design fail silently?
-- Which component now knows too much?
-- Which arc42 section would a maintainer need but not find?
-- Is the chosen C4 level enough to see the affected boundary?
-- What migration step is irreversible?
-- What old client or old data shape breaks?
-- What test would expose a bad integration assumption?
-- What would be simpler if the requirement changed next month?
-- Which decision will be impossible to recover six months from now without an ADR?
-
-## Material findings
-
-For every material finding, include evidence, the required outcome, and a safe resolution path.
-
-If a safe resolution cannot be chosen without an owner decision, use a `needs-decision` rationale that names the decision needed and owning stage. A material finding lacking evidence, required outcome, or safe resolution or `needs-decision` rationale is incomplete.
+Load each trigger at most once. A missing, unreadable, escaped, contradictory, stale, or mixed-version resource must stop before dependent judgment, recording, settlement, automation, or claim. The skill must not reconstruct missing procedure from memory.
 
 ## Isolation and Recording
 
@@ -214,67 +106,15 @@ For an isolated review with material findings, the final review output must stat
 - whether the record must be created before fixing or reconstructed
 - whether owner decision is needed
 
-## Authoring Profile Review Independence
+## Stops and claims
 
-For automated `bounded-review-fix` authoring, reset review context to the tracked artifact, governing sources, formal review criteria, and relevant recorded findings before reviewing. Record the review result before any automation-driven downstream action. Do not rely on hidden authoring reasoning from the preceding stage. Do not edit the reviewed artifact during review.
+Stop on ambiguous target or revision, conflicting authority, unsettled upstream direction, unsafe placement, failed required resources, or invalid identity, authority, lifecycle state, or retry basis. Preserve supported findings when recording is blocked. Approval covers only the exact subject; independent review stops after recording and separately authorized settlement.
 
-## Rules
+## Resource map
 
-- Do not require a perfect design; require a safe and explainable one.
-- Do not approve a design that contradicts the spec.
-- Do not ignore operational failure modes.
-- Do not let diagrams substitute for decisions.
-- Do not let ADRs substitute for current structure.
-- Do not require component, code-level, or deployment diagrams unless the change needs them.
-- Do not require architecture updates for leaf changes with no architecture impact.
-- Do not edit the architecture doc unless the user explicitly asks.
-- When the review outcome is approval, write the review evidence first and then settle only the matching architecture entry in `change.yaml`.
-  Do not edit the architecture artifact, other artifact entries, milestone state, or routing.
-- When spec-review or architecture-review identifies required changes, the artifact must not remain in `approved` state until the required changes are resolved and re-reviewed.
-
-## Requirement-Fidelity Manual Opt-In
-
-Manual reviews may voluntarily apply the requirement-fidelity gate and record a fidelity receipt.
-
-Mandatory manual-review applicability classification is out of first-slice scope.
-
-Direct or review-only requests remain isolated by default.
-
-## Workflow handoff behavior
-
-- Direct or review-only `architecture-review` requests remain isolated by default.
-- In v1, `architecture-review` does not auto-continue into `plan` by default; it reports approval, required revisions, or blockers and stops there unless the user explicitly requests a later stage.
-- Only an explicitly authorized workflow-managed `bounded-review-fix` run may continue from review into the next authoring stage. A clean recorded architecture-review may route to `plan` when no stop condition remains.
-- Keep review-to-next-authoring transitions out of scope in this skill's wording.
-
-## When full-file read is required
-
-Read the full file when the whole file is the review target, when checking all 12 arc42 headings or lifecycle metadata, when an ADR supersession or legacy lifecycle status affects the verdict, when the relevant section cannot be isolated safely, when surrounding context can change the conclusion, when bounded searches disagree, or when a behavior-changing edit depends on the whole source-of-truth artifact.
+- READ `references/architecture-package-review.md` for `canonical-architecture-update` and `ADR` before method judgment.
+- READ `references/architecture-review-recording-and-settlement.md` exactly when durable recording is required, before recording or settlement.
 
 ## Expected output
 
-Start with:
-
-```md
-## Result
-
-- Review surface: canonical-architecture-update | ADR | no-architecture-impact-rationale | proposal-or-spec-gap
-- Review status: approved | changes-requested | blocked | inconclusive
-- Material findings:
-- Recording status:
-- Recording blocker:
-- Review record:
-- Review log:
-- Review resolution: <path | not-required | blocked>
-- Open blockers:
-- Required canonical updates:
-- Required ADR updates:
-- Next stage:
-```
-
-Then include:
-
-- findings by review dimension with evidence, required outcome, and safe resolution;
-- missing C4 views, arc42 sections, legacy status, ADRs, or design decisions;
-- exact suggested changes;
-- readiness statement for `plan`, isolated stop, or blocker state.
+Report Review surface, Review status, Recording status, Recording blocker, Review record, Review log, Review resolution, review subject, governing basis, targets and dispositions, settlement, findings, blockers, required updates, next stage, and claim limitations. Omit inapplicable fields; mark applicable unresolved fields blocked.

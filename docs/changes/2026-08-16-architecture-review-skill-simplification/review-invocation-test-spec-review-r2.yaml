@@ -1,0 +1,51 @@
+schema_version: 1
+review_id: test-spec-review-r2
+review_stage: test-spec-review
+review_target: specs/architecture-review-skill-simplification.test.md
+base_revision: 7c61eedc
+head_revision: 7c61eedc
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-test-spec-revision-r1
+reviewer_context_id: root-test-spec-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-refactor
+  - multi-target-lifecycle-settlement
+  - boundary-first-proof-map
+  - generated-package-parity
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/architecture-review-skill-simplification.md
+  - docs/changes/2026-08-16-architecture-review-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-16-architecture-review-skill-simplification.md
+  - specs/architecture-review-skill-simplification.test.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+  - boundary-first-proof-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: specs/architecture-review-skill-simplification.md
+    sha256: 4a199a52ab2347ca4db98616cb46bd384d25c804aaca28139fef56abb972f578
+  - path: docs/changes/2026-08-16-architecture-review-skill-simplification/architecture-assessment.md
+    sha256: 0676b9b1ae87644a35d88da184799e01fbb538692bd97039f21c16a78449d3be
+  - path: docs/plans/2026-08-16-architecture-review-skill-simplification.md
+    sha256: 5b969dcd7fcfe9fb05ab3f90e0bcd7d002ed625adbc6ebc509f03bec4ab7358d
+  - path: specs/architecture-review-skill-simplification.test.md
+    sha256: b73a29e1a959b8705135770a94aa50e1218e83b6ee613f19778062d1fdc64aeb
+  - path: docs/changes/2026-08-16-architecture-review-skill-simplification/evidence/test-spec-revision-r1.md
+    sha256: 6977b54387658e2de50a099c1a875192992e7b23f47739f6e72e4210a6324fdb
+prompt_template_version: test-spec-review-v1
+manifest_owner: direct-formal-review
+forbidden_initial_context_excluded: true
+review_focus:
+  - ARRTSR-PR1 resolution and R30 direct proof
+  - requirement, acceptance-criterion, example, boundary, and interaction traceability
+  - exact subject, governing-basis, and authority proof
+  - finding-scoped target disposition and prepared retry proof
+  - command executability and milestone timing
+  - package parity and no target-agent runtime acceptance

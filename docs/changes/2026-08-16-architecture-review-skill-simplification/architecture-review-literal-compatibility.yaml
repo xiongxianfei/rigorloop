@@ -1,0 +1,24 @@
+{
+  "literals": [
+    {"literal_id":"ARLIT-001","literal":"name: architecture-review","classification":"parser-or-package-contract","disposition":"preserve-exact"},
+    {"literal_id":"ARLIT-002","literal":"## Isolation and Recording","classification":"normative-cross-skill-literal","disposition":"preserve-byte-identical"},
+    {"literal_id":"ARLIT-003","literal":"templates/shared/review-isolation-and-recording.md","classification":"parser-or-package-contract","disposition":"preserve-projection-parity"},
+    {"literal_id":"ARLIT-004","literal":"canonical-architecture-update","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ARLIT-005","literal":"ADR","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ARLIT-006","literal":"no-architecture-impact-rationale","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ARLIT-007","literal":"proposal-or-spec-gap","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ARLIT-008","literal":"approved","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ARLIT-009","literal":"changes-requested","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ARLIT-010","literal":"blocked","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ARLIT-011","literal":"inconclusive","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ARLIT-012","literal":"blocker | material | minor","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ARLIT-013","literal":"ARR0-core","classification":"normative-contract","disposition":"introduce-exact"},
+    {"literal_id":"ARLIT-014","literal":"ARR0M-method","classification":"normative-contract","disposition":"introduce-exact"},
+    {"literal_id":"ARLIT-015","literal":"ARR1-recorded","classification":"normative-contract","disposition":"introduce-exact"},
+    {"literal_id":"ARLIT-016","literal":"ARR1M-recorded-method","classification":"normative-contract","disposition":"introduce-exact"},
+    {"literal_id":"ARLIT-017","literal":"READ `references/architecture-package-review.md`","classification":"parser-or-package-contract","disposition":"introduce-exact"},
+    {"literal_id":"ARLIT-018","literal":"READ `references/architecture-review-recording-and-settlement.md`","classification":"parser-or-package-contract","disposition":"introduce-exact"},
+    {"literal_id":"ARLIT-019","literal":"Finding ID:","classification":"parser-or-package-contract","disposition":"preserve-exact"},
+    {"literal_id":"ARLIT-020","literal":"Review status:","classification":"parser-or-package-contract","disposition":"preserve-exact"}
+  ]
+}

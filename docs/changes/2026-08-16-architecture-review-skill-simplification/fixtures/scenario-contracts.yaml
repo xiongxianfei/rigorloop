@@ -1,0 +1,30 @@
+{
+  "scenarios": [
+    {"id":"ARRSC-001","requirements":["R1","R2","R16"],"expected":"ARR0 keeps universal judgment self-sufficient"},
+    {"id":"ARRSC-002","requirements":["R3","R6","R16"],"expected":"canonical and ADR surfaces load method once"},
+    {"id":"ARRSC-003","requirements":["R4","R6","R16"],"expected":"durable recording loads settlement once"},
+    {"id":"ARRSC-004","requirements":["R7"],"expected":"missing resource stops without reconstruction"},
+    {"id":"ARRSC-005","requirements":["R8","R9","R10"],"expected":"shared recording bytes remain exact"},
+    {"id":"ARRSC-006","requirements":["R11","R12","R13","R14"],"expected":"valid combinations route and unknown combinations fail first"},
+    {"id":"ARRSC-007","requirements":["R15","R17","R18","R19"],"expected":"advisory recording is isolated and unsafe location blocks"},
+    {"id":"ARRSC-008","requirements":["R20","R22"],"expected":"canonical package subject binds exact files"},
+    {"id":"ARRSC-009","requirements":["R20","R22"],"expected":"ADR subject binds exact ADR and canonical linkage"},
+    {"id":"ARRSC-010","requirements":["R20","R23","R24"],"expected":"no-impact subject has no settlement targets"},
+    {"id":"ARRSC-011","requirements":["R20","R23","R24"],"expected":"proposal or spec gap has no settlement targets"},
+    {"id":"ARRSC-012","requirements":["R25"],"expected":"identity-free formal recording blocks"},
+    {"id":"ARRSC-013","requirements":["R26","R27"],"expected":"changed basis requires a new occurrence"},
+    {"id":"ARRSC-014","requirements":["R28","R30"],"expected":"approval maps canonical and ADR states exactly"},
+    {"id":"ARRSC-015","requirements":["R30"],"expected":"missing ADR intended state blocks all targets"},
+    {"id":"ARRSC-016","requirements":["R31","R35"],"expected":"changes requested affects only named targets"},
+    {"id":"ARRSC-017","requirements":["R32","R34"],"expected":"blocker scope limits target mutation"},
+    {"id":"ARRSC-018","requirements":["R33"],"expected":"inconclusive leaves targets review required"},
+    {"id":"ARRSC-019","requirements":["R37","R38","R39","R40"],"expected":"prepared manifest is durable before writes"},
+    {"id":"ARRSC-020","requirements":["R41","R42","R43","R44"],"expected":"partial retry completes only pending exact writes"},
+    {"id":"ARRSC-021","requirements":["R45","R46"],"expected":"concurrency drift blocks without unrelated mutation"},
+    {"id":"ARRSC-022","requirements":["R47","R48","R49"],"expected":"findings and compact result retain required fields"},
+    {"id":"ARRSC-023","requirements":["R50","R51","R52"],"expected":"ledgers classify rules and literals and reject unknown values"},
+    {"id":"ARRSC-024","requirements":["R53","R54"],"expected":"all profiles and total package are measured separately"},
+    {"id":"ARRSC-025","requirements":["R55","R57"],"expected":"canonical through installed resources remain portable and byte exact"},
+    {"id":"ARRSC-026","requirements":["R56","R58"],"expected":"deterministic acceptance excludes runtime and escalates new persistence"}
+  ]
+}
