@@ -808,6 +808,19 @@ Use the inputs somehow and produce a useful result.
         self.assertIn(f"{missing}: target does not exist", result.stderr)
         self.assertNotIn("Traceback", result.stderr)
 
+    def test_gate_a_accepts_multiple_explicit_targets(self) -> None:
+        targets = [ROOT / "skills" / "pr" / "SKILL.md", ROOT / "skills" / "verify" / "SKILL.md"]
+        result = subprocess.run(
+            [sys.executable, str(VALIDATOR), *(str(target) for target in targets)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        for target in targets:
+            self.assertIn(str(target), result.stdout)
+
     def test_code_review_owns_published_skill_semantic_checklist(self) -> None:
         body = (ROOT / "skills" / "code-review" / "SKILL.md").read_text(
             encoding="utf-8"
@@ -9783,6 +9796,158 @@ class VerifySkillSimplificationContractTests(unittest.TestCase):
             "untriggered reference does not load",
         ):
             self.assertIn(phrase, self.skill)
+
+
+class PRSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "pr"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        self.reference = (self.root / "references" / "governed-pr-readiness.md").read_text(encoding="utf-8")
+        self.asset = (self.root / "assets" / "pr-body-skeleton.md").read_text(encoding="utf-8")
+        self.verify_skill = (ROOT / "skills" / "verify" / "SKILL.md").read_text(encoding="utf-8")
+        self.verify_reference = (ROOT / "skills" / "verify" / "references" / "branch-readiness-verification.md").read_text(encoding="utf-8")
+
+    def test_package_inventory_and_resource_map_are_exact(self) -> None:
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["governed-pr-readiness.md"])
+        self.assertEqual(sorted(path.name for path in (self.root / "assets").iterdir()), ["pr-body-skeleton.md"])
+        self.assertIn("READ `references/governed-pr-readiness.md`", self.skill)
+        self.assertIn("COPY `assets/pr-body-skeleton.md`", self.skill)
+        for profile in ("PR0-portable", "PR1-governed"):
+            self.assertIn(profile, self.skill)
+
+    def test_closed_vocabularies_reject_unknown_values_first(self) -> None:
+        vocabularies = {
+            "governed signal": ("no-governed-signal", "single-governed-candidate", "invalid-or-ambiguous-governed-signal"),
+            "submission intent": ("open", "draft", "prepare-only"),
+            "refresh authority": ("none", "explicit-title-refresh", "explicit-full-replacement", "workflow-title-refresh"),
+            "state-transition authority": ("none", "publish-existing-draft", "convert-existing-open-to-draft"),
+            "branch relation": ("absent", "same", "remote-ancestor-of-local", "local-ancestor-of-remote", "diverged", "ambiguous"),
+            "PR state": ("absent", "open", "draft", "closed", "merged", "ambiguous"),
+            "operation result": ("opened", "draft-opened", "updated", "reused", "prepared-not-opened", "blocked"),
+            "hosted-CI state": ("passed", "failed", "pending", "unavailable", "unobserved", "not-applicable"),
+        }
+        for name, allowed in vocabularies.items():
+            with self.subTest(vocabulary=name):
+                self.assertIn(name, self.skill)
+                self.assertTrue(all(value in self.skill for value in allowed))
+        self.assertIn("Unknown values fail before consistency checks", self.skill)
+
+    def test_prepare_only_and_independent_authorities_have_closed_side_effects(self) -> None:
+        for phrase in (
+            "performs no push, PR creation, refresh, publication, draft conversion, or other external mutation",
+            "Submission intent does not grant refresh or PR-state transition authority",
+            "Default `open` preserves an existing draft",
+            "Explicit `draft` preserves an existing open PR",
+            "requested intent, actual operation, blocker, and actual mutation",
+        ):
+            self.assertIn(phrase, self.skill)
+
+    def test_refresh_preserves_body_without_section_parser(self) -> None:
+        for phrase in (
+            "title replacement or explicitly authorized whole-body replacement",
+            "must not parse or mutate Markdown sections",
+            "body bytes remain unchanged",
+            "hidden managed markers",
+        ):
+            self.assertIn(phrase.lower(), self.skill.lower())
+
+    def test_directional_git_and_pr_state_are_fail_closed(self) -> None:
+        for phrase in (
+            "strict ancestor of the local handoff revision",
+            "remote contains work absent locally",
+            "must not force-push",
+            "Closed, merged, multiple, mismatched, or ambiguous",
+            "never create a duplicate matching PR",
+        ):
+            self.assertIn(phrase.lower(), self.skill.lower())
+
+    def test_verify_owns_normalized_basis_and_legacy_is_preparation_only(self) -> None:
+        combined = self.verify_skill + self.verify_reference
+        for field in (
+            "repository_identity", "remote_identity", "base_branch", "base_revision",
+            "merge_base_revision", "head_branch", "verified_subject_revision",
+        ):
+            self.assertIn(field, combined)
+            self.assertIn(field, self.skill)
+        self.assertIn("verification_basis", combined)
+        self.assertIn("Legacy, prose-only, command-only", self.skill)
+        self.assertIn("preparation", self.skill)
+
+    def test_evidence_tail_external_sequence_and_readback_are_exact(self) -> None:
+        for phrase in (
+            "exactly one direct-child verify-owned evidence commit",
+            "Immediately before push",
+            "After push and before PR mutation",
+            "Immediately before PR mutation",
+            "After creation, reuse, refresh, or transition",
+            "successful external write truthfully",
+            "pr-open-ready: false",
+        ):
+            self.assertIn(phrase.lower(), self.skill.lower())
+
+    def test_hosted_ci_result_and_claim_contracts_are_explicit(self) -> None:
+        for phrase in (
+            "current hosted evidence for the exact handoff revision at the PR head",
+            "must never be described as passed",
+            "requested intent", "actual external mutation", "actual PR state",
+            "hosted-CI state", "claim limitations",
+        ):
+            self.assertIn(phrase.lower(), self.skill.lower())
+
+    def test_governed_reference_is_bounded_and_read_only(self) -> None:
+        for phrase in (
+            "change pack", "plan", "review resolution", "explain-change", "verify",
+            "state-sync", "release-sensitive", "migration", "external completion",
+            "read-only", "must not mutate",
+        ):
+            self.assertIn(phrase.lower(), self.reference.lower())
+        self.assertNotIn("force-push", self.reference.lower())
+
+    def test_body_asset_owns_structure_not_policy(self) -> None:
+        for heading in (
+            "## Summary", "## Why", "## What changed", "## Tests and verification",
+            "## Risks and rollback", "## Reviewer notes", "## Follow-ups",
+        ):
+            self.assertEqual(self.asset.count(heading), 1)
+        for heading in ("## Spec / plan / architecture", "## Requirement coverage", "## Review resolution summary", "## Lifecycle and verification evidence", "## Migration", "## Security and privacy", "## Release or operational impact"):
+            self.assertEqual(self.asset.count(heading), 1)
+        for forbidden in ("only when", "pr-open-ready", "branch-ready", "force-push"):
+            self.assertNotIn(forbidden, self.asset.lower())
+
+    def test_required_resources_and_lifecycle_claims_fail_closed(self) -> None:
+        for phrase in (
+            "missing, unreadable, escaped, stale, transformed, or mixed-version",
+            "stop before governed readiness judgment",
+            "stop before body generation and external mutation",
+            "must not reconstruct",
+            "must not mutate `change.yaml`",
+            "no downstream continuation",
+        ):
+            self.assertIn(phrase.lower(), self.skill.lower())
+
+    def test_review_resolution_summary_contract_is_preserved(self) -> None:
+        for phrase in (
+            "counts by disposition",
+            "review-resolution.md",
+            "needs-decision",
+            "do not duplicate every detailed finding",
+            "stage-owned non-approval outcome",
+            "`review-resolution.md` alone is not a silent substitute",
+            "no-material detailed records need `review-log.md` but not an empty `review-resolution.md`",
+        ):
+            self.assertIn(phrase, self.skill)
+
+    def test_portable_and_governed_profiles_both_decrease(self) -> None:
+        skill_bytes = self.skill.encode("utf-8")
+        reference_bytes = self.reference.encode("utf-8")
+        profiles = {
+            "PR0-portable": skill_bytes,
+            "PR1-governed": skill_bytes + reference_bytes,
+        }
+        for name, assembled in profiles.items():
+            with self.subTest(profile=name):
+                self.assertLess(len(assembled), 11375)
+                self.assertLess(len(assembled.decode("utf-8").split()), 1678)
 
 
 class TestSpecReviewSkillSimplificationContractTests(unittest.TestCase):
