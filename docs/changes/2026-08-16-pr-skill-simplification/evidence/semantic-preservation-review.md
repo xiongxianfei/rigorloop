@@ -14,7 +14,8 @@ significant rule was dropped or assigned two loaded owners.
   `references/governed-pr-readiness.md`; repeated body layout has one owner in
   `assets/pr-body-skeleton.md`; normalized verification-basis production
   remains owned by `verify`.
-- `pr-literal-compatibility.yaml` contains 25 classified literal dependencies.
+- `pr-literal-compatibility.yaml` contains 30 classified literal dependencies,
+  including five shared review-closeout phrases recovered after `verify-r1`.
   Normative and parser/package literals are preserved or migrated with their
   consumers; incidental assertions do not become prose-policy owners.
 - `verify-basis-disposition.yaml` contains all seven normalized immutable
@@ -28,7 +29,7 @@ The change-local validator rejects unknown rule, literal, basis, scenario, and
 profile vocabulary before consistency checks. Its final run reported:
 
 ```text
-validated 24 rules, 25 literals, 7 basis fields, 18 scenarios, and 2 final profiles
+validated 24 rules, 30 literals, 7 basis fields, 18 scenarios, and 2 final profiles
 ```
 
 ## Contract reconciliation

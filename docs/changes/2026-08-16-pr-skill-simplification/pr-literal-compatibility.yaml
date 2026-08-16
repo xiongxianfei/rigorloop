@@ -25,6 +25,11 @@
     {"id":"PRL-022","literal":"## Spec / plan / architecture","classification":"structural-contract","disposition":"move-asset"},
     {"id":"PRL-023","literal":"## Requirement coverage","classification":"structural-contract","disposition":"move-asset"},
     {"id":"PRL-024","literal":"## Review resolution summary","classification":"structural-contract","disposition":"move-asset"},
-    {"id":"PRL-025","literal":"Expected output","classification":"test-consumed","disposition":"preserve-inline"}
+    {"id":"PRL-025","literal":"Expected output","classification":"test-consumed","disposition":"preserve-inline"},
+    {"id":"PRL-026","literal":"counts by disposition","classification":"normative-contract","disposition":"preserve"},
+    {"id":"PRL-027","literal":"do not duplicate every detailed finding","classification":"normative-contract","disposition":"preserve"},
+    {"id":"PRL-028","literal":"stage-owned non-approval outcome","classification":"normative-contract","disposition":"preserve"},
+    {"id":"PRL-029","literal":"review-resolution.md alone is not a silent substitute","classification":"normative-contract","disposition":"preserve"},
+    {"id":"PRL-030","literal":"no-material detailed records need review-log.md but not an empty review-resolution.md","classification":"normative-contract","disposition":"preserve"}
   ]
 }

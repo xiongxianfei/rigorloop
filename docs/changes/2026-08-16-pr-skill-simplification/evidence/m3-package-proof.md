@@ -14,7 +14,7 @@
 
 | Command | Result |
 | --- | --- |
-| `python docs/changes/2026-08-16-pr-skill-simplification/fixtures/validate-pr-simplification.py` | passed; 24 rules, 25 literals, seven basis fields, 18 scenarios, and two final profiles |
+| `python docs/changes/2026-08-16-pr-skill-simplification/fixtures/validate-pr-simplification.py` | passed; 24 rules, 30 literals, seven basis fields, 18 scenarios, and two final profiles after the verify-r1 correction |
 | `python scripts/validate-skills.py skills/pr/SKILL.md skills/verify/SKILL.md` | passed for both explicit canonical targets |
 | `python scripts/test-skill-validator.py` | 385 passed, 16 skipped |
 | `python scripts/test-build-skills.py` | seven passed |
