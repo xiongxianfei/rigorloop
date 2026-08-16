@@ -21,6 +21,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: test-spec-review-r1
+Stage: test-spec-review
+Round: r1
+Reviewed artifact: `specs/pr-skill-simplification.test.md` at commit `f15da7e7`
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r1.md
+Resolution: review-resolution.md#test-spec-review-r1
+Material findings: TSPRSIM-TSR1
+Open findings: TSPRSIM-TSR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: plan-review-r1
 Stage: plan-review
 Round: r1

@@ -1,6 +1,6 @@
 # Review Resolution: PR Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -9,11 +9,12 @@ Review closeout: proposal-review-r4
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: plan-review-r1
+Review closeout: test-spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `plan-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `plan-review-r1`, `test-spec-review-r1`
 - Findings resolved: 8
-- Unresolved findings: 0
-- Current result: specification approved for bounded architecture assessment
+- Unresolved findings: 1
+- Current result: test-spec revision required before implementation handoff
 
 ## Resolution overview
 
@@ -27,6 +28,7 @@ Review closeout: plan-review-r1
 | `PRSIM-PR6` | accepted | closed | First-version refresh is limited to title or authorized whole-body replacement. |
 | `PRSIM-PR7` | accepted | closed | `verify` owns the normalized basis through its existing result/report contract and same-slice compatibility proof. |
 | `PRSSIM-SR1` | accepted | closed | E2 now cites only `BND-STATE-001`, which governs both R15 and R20. |
+| `TSPRSIM-TSR1` | accepted | open | Add and map one exact M1 preservation validation command. |
 
 ## Finding details
 
@@ -177,3 +179,21 @@ No material findings. The approving rereview confirms that `PRSSIM-SR1` is close
 ### plan-review-r1
 
 No material findings. The plan is approved, initialized from its exact reviewed identity, and activated by identical settlement retry without a second semantic review.
+
+### test-spec-review-r1
+
+#### TSPRSIM-TSR1
+
+Finding ID: TSPRSIM-TSR1
+Disposition: accepted
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Decision owner: none; correction is mechanical
+Decision needed: Bind M1 preservation proof to an exact executable command.
+Chosen action: Add one change-local standard-library validation command and map T-PR-018 and M1 to it.
+Rationale: Every depended-on validation command must have a stable ID, exact invocation, ownership, timing, failure behavior, and evidence surface.
+Required outcome: M1 and T-PR-018 reference the same closed command ledger entry.
+Safe resolution path: Amend the command ledger and mappings, rerun boundary validation, and rereview.
+Validation target: revised test spec and independent `test-spec-review-r2`.
+Validation evidence: pending
