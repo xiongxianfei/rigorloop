@@ -10,11 +10,12 @@ Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
+Review closeout: test-spec-review-r2
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `plan-review-r1`, `test-spec-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 9
 - Unresolved findings: 0
-- Current result: test spec revised; independent rereview required
+- Current result: test specification approved for implementation handoff
 
 ## Resolution overview
 
@@ -196,4 +197,8 @@ Rationale: Every depended-on validation command must have a stable ID, exact inv
 Required outcome: M1 and T-PR-018 reference the same closed command ledger entry.
 Safe resolution path: Amend the command ledger and mappings, rerun boundary validation, and rereview.
 Validation target: revised test spec and independent `test-spec-review-r2`.
-Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/test-spec-revision-r1.md`; independent rereview remains pending.
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/test-spec-revision-r1.md` and approving `test-spec-review-r2`.
+
+### test-spec-review-r2
+
+No material findings. The approving rereview confirms that `TSPRSIM-TSR1` is closed and the proof map is implementation-handoff ready.

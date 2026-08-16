@@ -21,6 +21,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: test-spec-review-r2
+Stage: test-spec-review
+Round: r2
+Reviewed artifact: `specs/pr-skill-simplification.test.md` at commit `57b3b634`
+Status: approved
+Detailed record: reviews/test-spec-review-r2.md
+Resolution: review-resolution.md#test-spec-review-r2
+Material findings: none
+Open findings: none
+Recording status: recorded
+
+### Review entry
+
 Review ID: test-spec-review-r1
 Stage: test-spec-review
 Round: r1
