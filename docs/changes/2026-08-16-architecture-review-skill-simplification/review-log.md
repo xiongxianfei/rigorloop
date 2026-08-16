@@ -122,3 +122,16 @@ Resolution: not-required
 Material findings: none
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m3-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: milestone M3 range `d2dceb72..5974e679`
+Status: clean-with-notes
+Detailed record: reviews/code-review-m3-r1.md
+Resolution: not-required
+Material findings: none
+Open findings: none
+Recording status: recorded

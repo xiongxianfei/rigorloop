@@ -1,0 +1,24 @@
+review_id: code-review-m3-r1
+stage: code-review
+round: r1
+reviewed_milestone: M3
+reviewed_range:
+  base: d2dceb72
+  head: 5974e679
+reviewer: Codex independent code-review context
+authority:
+  spec: specs/architecture-review-skill-simplification.md
+  plan: docs/plans/2026-08-16-architecture-review-skill-simplification.md
+  test_spec: specs/architecture-review-skill-simplification.test.md
+validation_evidence:
+  - python scripts/test-skill-validator.py ArchitectureReviewSkillSimplificationTests
+  - python scripts/test-skill-validator.py
+  - python scripts/test-build-skills.py
+  - python scripts/build-skills.py --check
+  - python scripts/test-adapter-distribution.py
+  - python scripts/validate-skills.py skills/architecture-review/SKILL.md
+  - python scripts/validate-boundary-first.py --check --path specs/architecture-review-skill-simplification.md
+automation:
+  mode: workflow-managed
+  target_stage: verify
+
