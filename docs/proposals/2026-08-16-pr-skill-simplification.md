@@ -13,10 +13,10 @@ The flat shape also leaves several execution outcomes implicit. It does not clos
 ## Goals
 
 - Reduce the universal and governed procedural context loaded by `pr` while preserving evidence truthfulness, branch and remote safety, submission behavior, and claim ownership.
-- Keep universal target resolution, exact verified-revision binding, working-tree and push safety, remote PR classification, submission authority, hosted-CI truthfulness, stops, claims, and concise result behavior inline.
+- Keep universal target resolution, exact verified-subject and handoff-revision binding, working-tree and push safety, remote branch and PR classification, submission authority, hosted-CI truthfulness, stops, claims, and concise result behavior inline.
 - Move governed lifecycle aggregation into one conditional reference with no lifecycle mutation, settlement, or routing authority.
 - Move repeated PR-body headings, ordering, and placeholders into one structural asset without moving readiness or claim policy into the asset.
-- Make create, refresh, reuse, and retry behavior deterministic and idempotent for the exact repository, head, base, and remote PR identity.
+- Make create, explicitly authorized refresh, reuse, and retry behavior deterministic and idempotent for the exact repository, verified subject, handoff revision, head, base, remote branch, and PR identity.
 - Preserve portable customer-project behavior and canonical-through-installed package integrity.
 - Prove simplification with change-local semantic and literal inventories, static scenarios, real loaded-profile measurements, and repository-owned validation.
 
@@ -59,7 +59,7 @@ An asset-only change would establish structural ownership but would not remove g
 
 ### Option 3: Add one governed-readiness reference and one PR-body asset
 
-This option keeps universal submission safety inline, moves governed lifecycle aggregation behind one real trigger, and gives repeated body layout one structural owner. It also closes remote-state, exact-head, retry, and hosted-CI behavior in the universal contract.
+This option keeps universal submission safety inline, moves governed lifecycle aggregation behind one real trigger, and gives repeated body layout one structural owner. It also closes remote-branch state, remote-PR state, verified-subject and handoff binding, refresh authority, retry, and hosted-CI behavior in the universal contract.
 
 ### Option 4: Split references by lifecycle, CI, provider, remote operation, and release behavior
 
@@ -89,10 +89,10 @@ skills/pr/
 Keep these obligations inline for every invocation:
 
 - purpose, submit/open default, explicit draft or prepare-only exceptions, and external-action authority;
-- exact repository, remote, head, base, local commit, pushed commit, and matching PR resolution;
-- current `verify` evidence and exact verified-revision binding;
+- exact repository, remote, head, base, verified subject, optional verify-owned evidence tail, handoff revision, pushed commit, and matching PR resolution;
+- current `verify` evidence and exact verified-subject binding without invalidation by its own closed durable-recording commit;
 - actual diff, working-tree, commit-scope, secrets, generated-output, migration, and reviewer-context checks;
-- remote PR-state classification and idempotent operation selection;
+- remote branch-state and PR-state classification, explicit refresh authority, and idempotent operation selection;
 - hosted-CI state meanings and claim limitations;
 - concise title and PR-body adequacy rules;
 - push-before-open sequence, remote reread, create or refresh result, and read-back confirmation;
@@ -102,7 +102,7 @@ The universal file must not embed the complete PR-body section layout or detaile
 
 ### `governed-pr-readiness.md` ownership
 
-Load the reference only after one exact governed change candidate resolves from an explicit change ID, workflow-managed same-change authority, a current verify report, or a structured owning-change pointer. Any governed signal counts even when malformed. Classification is exactly:
+Load the reference only after one exact governed change candidate resolves from an explicit change ID, workflow-managed same-change authority, a current verify report containing a structured owning-change identity, or another structured owning-change pointer. Any governed signal counts even when malformed. Classification is exactly:
 
 ```text
 no-governed-signal
@@ -173,7 +173,31 @@ prepare-only
 
 `open` is the default for an explicit `pr` invocation. `draft` or `prepare-only` requires an explicit user instruction, a repository contract, or a blocker or tooling limitation that prevents opening; a limitation is reported as an outcome and never silently reframed as successful opening.
 
-Resolve one remote state for the exact repository, head, base, and host:
+Resolve refresh authority independently:
+
+```text
+none
+explicit-field-refresh
+explicit-full-replacement
+workflow-field-refresh
+```
+
+`explicit-field-refresh` and `explicit-full-replacement` require a current user instruction naming the existing PR and permitted replacement scope. `workflow-field-refresh` requires same-change workflow authority naming refresh and the exact fields or sections it may replace. Ordinary `pr` invocation, matching PR identity, stale generated content, or loaded governed procedure does not itself authorize replacement. Unknown, conflicting, or ambiguous refresh authority stops before content mutation.
+
+Resolve one remote branch state for the exact repository, remote, and head branch:
+
+```text
+absent
+same
+fast-forwardable
+ahead
+diverged
+ambiguous
+```
+
+`absent` permits creation of the remote branch. `same` requires no push. `fast-forwardable` permits only a normal non-force push after the expected remote baseline is revalidated. `ahead`, `diverged`, and `ambiguous` stop. The skill never force-pushes, deletes, rewrites, or implicitly replaces a remote branch.
+
+Resolve one remote PR state for the exact repository, head, base, and host:
 
 ```text
 absent
@@ -184,18 +208,22 @@ merged
 ambiguous
 ```
 
-Use this closed operation matrix:
+Use this closed PR operation matrix after safe remote-head confirmation and a fresh matching-PR read:
 
-| Remote state | Operation and result |
-| --- | --- |
-| `absent` | `create-primary-pr`; push the exact verified head, create once, read back identity, and report `opened` or `draft-opened`. |
-| `open` | `refresh-primary-pr`; preserve PR identity, update stale title or body from current evidence, or return idempotent `reused` when current. |
-| `draft` | `refresh-primary-pr`; preserve draft status unless explicit authority publishes it, update stale title or body, or return `reused`. |
-| `closed` | Stop; require an explicit reopen or new-branch decision. |
-| `merged` | Stop; do not treat merge as lifecycle completion or create another PR implicitly. |
-| `ambiguous` | Stop before push or PR mutation. |
+| Remote PR state | Content and authority state | Operation and result |
+| --- | --- | --- |
+| `absent` | intended content complete | `create-primary-pr`; create once, read back identity, and report `opened` or `draft-opened`. |
+| `open` or `draft` | current title and body already adequate | `reuse-existing-pr`; preserve PR identity and state, perform no content mutation, and report `reused`. |
+| `open` or `draft` | exact permitted fields differ and current refresh authority covers them | `refresh-primary-pr`; reread current content, replace only the authorized fields or sections, preserve every other byte and PR identity, and report `updated` after read-back. |
+| `open` or `draft` | full content differs and explicit full-replacement authority is current | `refresh-primary-pr`; replace the authorized title or body, preserve PR identity, and report `updated` after read-back. |
+| `open` or `draft` | stale content but refresh authority is absent, insufficient, conflicting, or ambiguous | Stop; report the exact authority or ownership blocker without mutation. |
+| `closed` | any | Stop; require an explicit reopen or new-branch decision. |
+| `merged` | any | Stop; do not treat merge as lifecycle completion or create another PR implicitly. |
+| `ambiguous` | any | Stop before push or PR mutation. |
 
-Multiple matching PRs, mismatched base, mismatched repository, unsafe branch, unavailable remote identity, or conflicting host evidence are `ambiguous`. Retry reuses the same remote PR identity and must never create a duplicate for the same head/base operation.
+Draft state is preserved unless separate explicit authority publishes it. The refresh model introduces no hidden markers or managed-section protocol. Current content that cannot be separated safely into authorized and preserved regions blocks field refresh; full replacement requires explicit full-replacement authority.
+
+Multiple matching PRs, mismatched base, mismatched repository, unsafe branch, unavailable remote identity, or conflicting host evidence are `ambiguous`. If another actor creates the exact matching PR after preflight, the mandatory post-push reread selects `reuse-existing-pr` or an authorized refresh rather than duplicate creation. Retry reuses the same remote PR identity and must never create a duplicate for the same head/base operation.
 
 ### Exact verified-revision sequence
 
@@ -208,7 +236,9 @@ base branch and base revision
 head branch
 local head revision
 verify report identity
-verified head revision
+verified subject revision
+verify-owned evidence-tail identity or none
+handoff revision
 intended title and body identity
 matching PR identity when present
 ```
@@ -216,14 +246,19 @@ matching PR identity when present
 Require this sequence:
 
 1. Resolve the current local target, working tree, governing evidence, and intended PR content.
-2. Require the verify report's exact head to match the local head; any later decision-bearing commit makes verification stale.
-3. Resolve the current remote and matching PR state without mutation.
-4. Push the exact local head when needed.
-5. Re-read the remote head and require it to match the verified local head.
-6. Create, refresh, or reuse exactly one matching PR.
-7. Read back the PR URL, number, state, head, base, title, and body identity before claiming success.
+2. Resolve the verify report's exact `verified_subject_revision` and require it to be an ancestor of or equal to the local handoff revision.
+3. When the local head differs, require exactly one direct-child verify-owned evidence commit. Its diff may contain only the final verify report and the matching owning change record or explicitly required verify-owned state-sync evidence. The change-record diff may update only final verification evidence and verify-owned readiness or routing fields. Any product, test, specification, architecture, plan, dependency, configuration, generated-output, unrelated documentation, or other lifecycle-owner change makes verification stale.
+4. Validate the allowed tail paths, parent relationship, content identities, and change-record field boundary. The local head becomes the exact `handoff_revision`; no in-memory or self-referential handoff hash is required inside its own commit.
+5. Resolve the remote branch and matching PR states without mutation. Stop early for closed, merged, unsafe, divergent, ahead, or ambiguous state.
+6. Create an absent remote branch or normally fast-forward the expected remote baseline to the exact handoff revision. Never use a force, delete, overwrite, or implicit branch-replacement operation.
+7. Re-read the remote branch and require its head to equal the local handoff revision.
+8. Re-read the matching PR state, head, base, title, body, and draft status immediately before PR mutation. Reclassify the operation when concurrent state changed; never use the stale pre-push PR classification.
+9. Create, reuse, or explicitly refresh exactly one matching PR.
+10. Read back the PR URL, number, state, head, base, title, and body identity before claiming success. Require the PR head to equal the handoff revision.
 
 Failure before confirmed read-back reports the exact operation failure and must not claim that a PR opened or updated. A retry reconciles the remote state rather than blindly repeating create.
+
+The allowed verify-owned evidence tail is a narrow compatibility rule for durable final-verification recording, not general post-verify mutability. If the repository's verification contract requires more than one post-validation commit or broader paths, the proposal must return to review rather than silently broadening the exception.
 
 ### Hosted-CI semantics
 
@@ -238,7 +273,7 @@ unobserved
 not-applicable
 ```
 
-`passed` requires current hosted evidence for the exact PR head. `failed` blocks a clean handoff when the failing check is required and routes to the owning correction or CI stage. `pending` permits initial opening only when current repository and verify evidence permit CI to begin after opening, and the PR body must say pending. `unavailable` and `unobserved` may permit opening only when hosted CI is not a pre-open prerequisite; neither may be described as passed. `not-applicable` requires current evidence that no hosted check applies.
+`passed` requires current hosted evidence for the exact handoff revision at the PR head. `failed` blocks a clean handoff when the failing check is required and routes to the owning correction or CI stage. `pending` permits initial opening only when current repository and verify evidence permit CI to begin after opening, and the PR body must say pending. `unavailable` and `unobserved` may permit opening only when hosted CI is not a pre-open prerequisite; neither may be described as passed. `not-applicable` requires current evidence that no hosted check applies.
 
 An already-open PR with a current required failure remains externally open, but `pr` performs no content mutation under a clean-ready claim and reports the existing URL plus the blocker. Opening authority does not convert failing CI into readiness.
 
@@ -273,8 +308,9 @@ A missing, unreadable, escaped, contradictory, stale, transformed, or mixed-vers
 - Portable PR invocations no longer load detailed RigorLoop change-pack and lifecycle-closeout procedure.
 - Governed invocations load one reference after a tri-state governed-signal classification and remain unable to mutate lifecycle state.
 - PR bodies use one structural owner with closed optional groups instead of an inline full template.
-- Existing open and draft PRs are reconciled idempotently rather than risking duplicate creation.
-- Local verified head, pushed remote head, and PR head must match before success is claimed.
+- Existing open and draft PRs are reused without mutation when adequate and refreshed only under explicit field or full-replacement authority.
+- The verified subject may differ from the handoff revision only by one validated verify-owned durable-evidence commit; the pushed remote head and PR head must equal the handoff revision.
+- Remote branches are created or normally fast-forwarded only from safe states, and matching PR state is reread after push to reconcile concurrent creation.
 - Hosted CI states become closed, current-head-bound, and truthfully reported.
 - Missing required resources and ambiguous remote or governed state fail closed.
 
@@ -301,9 +337,12 @@ Prove at least:
 
 - exact `READ` and `COPY` mappings, path containment, triggers, and one-load behavior;
 - tri-state governed-signal classification and no invalid-signal portable fallback;
-- exact verified local, remote, and PR head binding;
-- absent, open, draft, closed, merged, and ambiguous remote behavior;
-- idempotent create, refresh, reuse, interrupted read-back, and duplicate prevention;
+- exact verified-subject, handoff, remote-head, and PR-head binding;
+- same-revision and one-commit verify-owned evidence-tail binding, including every forbidden post-verify path and field class;
+- absent, same, fast-forwardable, ahead, diverged, and ambiguous remote-branch behavior;
+- absent, open, draft, closed, merged, and ambiguous remote-PR behavior;
+- idempotent create and reuse, explicitly authorized field or full refresh, insufficient refresh authority, mixed content ownership, interrupted read-back, concurrent creation, and duplicate prevention;
+- force-push, remote deletion, remote overwrite, and implicit draft publication rejection;
 - all hosted-CI states and their claim boundaries;
 - body core, governed, and impact group applicability, omission, and blocked data;
 - no lifecycle, plan, review, workflow, merge, release, or publication mutation;
@@ -311,6 +350,26 @@ Prove at least:
 - unknown closed-vocabulary values fail before consistency checks.
 
 Acceptance uses repository-owned static tests, fixtures, package validation, adapter distribution proof, and ordinary proposal, spec, code, verification, and PR review. It does not open a live acceptance PR, invoke a target-agent runtime, grade transcripts, add a prose classifier, or add a permanent tokenizer or simplicity validator.
+
+### Acceptance criteria
+
+| ID | Criterion |
+| --- | --- |
+| `AC-PRSIM-001` | Verification binds one exact verified subject revision separately from the handoff revision. |
+| `AC-PRSIM-002` | The handoff revision may differ only by one direct-child verify-owned evidence commit with closed paths and fields. |
+| `AC-PRSIM-003` | Any decision-bearing, unrelated, broader, or multi-commit post-verify change invalidates PR readiness. |
+| `AC-PRSIM-004` | The local handoff revision, pushed remote head, and PR head are identical before success is claimed. |
+| `AC-PRSIM-005` | An adequate existing matching PR is reused without content mutation. |
+| `AC-PRSIM-006` | Title, body, or section refresh requires explicit current authority covering the exact replacement scope. |
+| `AC-PRSIM-007` | Unknown, mixed, conflicting, or indivisible existing content blocks field refresh unless full replacement is explicitly authorized. |
+| `AC-PRSIM-008` | Draft publication requires separate explicit authority. |
+| `AC-PRSIM-009` | Remote branch state uses the closed absent, same, fast-forwardable, ahead, diverged, and ambiguous vocabulary. |
+| `AC-PRSIM-010` | The skill never force-pushes, deletes, overwrites, or implicitly replaces a remote branch. |
+| `AC-PRSIM-011` | Matching PR state is reread after push and immediately before PR mutation. |
+| `AC-PRSIM-012` | A concurrently created matching PR is reconciled and reused or explicitly refreshed rather than duplicated. |
+| `AC-PRSIM-013` | Portable and governed procedural profiles both decrease from the flat baseline. |
+| `AC-PRSIM-014` | Canonical, generated, archived, release-candidate, and installed resources retain required parity. |
+| `AC-PRSIM-015` | Acceptance opens no live test PR and executes no target-agent runtime. |
 
 ### Measurement
 
@@ -346,8 +405,10 @@ Rollback restores the prior flat `SKILL.md`, removes the reference and asset, up
 | Risk | Impact | Mitigation |
 | --- | --- | --- |
 | Universal submission safety moves behind the governed trigger | Portable PRs may open unsafely | Keep exact target, verify, remote, CI, operation, push, read-back, stops, and claims inline; prove missing-reference independence for portable paths. |
-| Existing-PR refresh mutates user-authored PR text unexpectedly | Reviewer context may be overwritten | Bind refresh to one exact matching PR, compare intended and current content, preserve draft status, and require current `pr` authority; stop on ambiguity or unrelated content ownership. |
-| A commit after verify is pushed and opened | PR is not covered by branch-ready evidence | Bind verify, local, remote, and PR head identities and stop on any mismatch. |
+| Existing-PR refresh mutates user-authored PR text unexpectedly | Reviewer context may be overwritten | Reuse adequate PRs without mutation; require explicit field or full-replacement authority; preserve draft status and stop on unknown, mixed, or indivisible content. |
+| Durable verify recording makes its own valid result appear stale | Governed PR handoff becomes impossible or broad post-verify changes become accepted | Separate verified subject and handoff revisions; permit exactly one direct-child verify-owned evidence commit with closed paths and fields; reject every broader change. |
+| Remote branch changed after local verification | A push overwrites or obscures another actor's work | Use closed remote-branch states, allow only absent creation or verified normal fast-forward, and prohibit every force, delete, or overwrite operation. |
+| A matching PR appears after preflight | Duplicate PR creation or stale mutation occurs | Reread matching PR state after push and reclassify create, reuse, or refresh immediately before mutation. |
 | Pending or unobserved hosted CI is presented as passed | Reviewers receive a false readiness claim | Use the closed CI vocabulary and exact-head evidence rules. |
 | Governed detection misses malformed change evidence | Lifecycle-owned work falls through to portable behavior | Treat every structured signal as a signal and use tri-state fail-closed classification. |
 | Asset gains policy ownership | Body layout silently controls readiness | Restrict the asset to labels, order, placeholders, and table shapes; test applicability from procedure. |
@@ -361,9 +422,11 @@ None at proposal level. Exact evidence field names, fixture encoding, focused te
 ## Decision Log
 
 - Select one governed-readiness reference and one PR-body skeleton.
-- Keep remote operation, exact revision binding, hosted-CI meanings, opening authority, stops, and claims inline.
+- Keep remote operation, verified-subject and handoff binding, hosted-CI meanings, opening authority, stops, and claims inline.
 - Use tri-state governed-signal classification with no invalid-signal portable fallback.
-- Reconcile one matching open or draft PR idempotently; never create duplicates or publish drafts implicitly.
+- Permit one direct-child verify-owned durable-evidence commit after the verified subject and reject every broader post-verify change.
+- Reuse an adequate matching PR without mutation; refresh only exact fields or full content under corresponding explicit authority.
+- Reconcile remote branch state without force operations and reread matching PR state after push to prevent duplicates.
 - Preserve draft status unless explicit authority changes it.
 - Keep hosted CI pending permissible only under current repository and verify evidence and never call it passed.
 - Add no provider engine, persistent PR transaction record, lifecycle state, or mutation owner.
@@ -382,7 +445,7 @@ None yet
 
 ## Readiness
 
-Ready for independent proposal review. Specification is not authorized until proposal-review approval and material finding resolution, when applicable.
+Ready for independent proposal rereview after resolving `PRSIM-PR1`, `PRSIM-PR2`, and `PRSIM-PR3`. Specification remains unauthorized until proposal-review approval.
 
 ## Initial intent preservation
 
