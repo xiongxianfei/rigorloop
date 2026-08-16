@@ -1,0 +1,49 @@
+change_id: 2026-08-16-pr-skill-simplification
+title: PR Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-16-pr-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-authoring.md
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: proposal-review
+  next_stage: proposal-review
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-authoring.md
+
+workflow: {}
+
+artifacts:
+  proposal: docs/proposals/2026-08-16-pr-skill-simplification.md
+
+requirements:
+  - Reduce portable and governed PR loaded context while preserving evidence truthfulness, submission safety, external-action authority, and claim ownership.
+  - Keep universal target, verify, remote, CI, operation, push, read-back, stop, and claim behavior inline; add one governed-readiness reference and one structural PR-body asset.
+  - Bind verification, local head, pushed remote head, and PR head exactly and reconcile existing PRs idempotently without duplicate creation or implicit draft publication.
+  - Preserve every behaviorally significant rule and exact literal dependency with change-local ownership and compatibility evidence.
+  - Prove real profile reduction and canonical-through-installed parity without live acceptance PR creation or target-agent runtime execution.
+
+tests:
+  - Independent proposal review of value, package boundaries, target and remote state, CI truthfulness, governed authority, idempotency, measurement, and readiness.
+  - Deterministic validation of resource mappings, classifications, operations, remote states, CI states, body groups, missing resources, stops, claims, and forbidden mutation.
+  - Static scenarios covering portable and governed PRs, absent and existing PRs, drafts, stale verification, push and read-back failure, retries, CI states, and package parity.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-16-pr-skill-simplification/change.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-16-pr-skill-simplification.md
+
+review:
+  status: review-requested
+  unresolved_items: 0
