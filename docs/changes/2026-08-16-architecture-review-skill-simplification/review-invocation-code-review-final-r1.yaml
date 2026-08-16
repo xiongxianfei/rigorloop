@@ -13,4 +13,3 @@ authority:
 automation:
   mode: workflow-managed
   target_stage: verify
-

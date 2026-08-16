@@ -35,23 +35,23 @@ Recording status: recorded
 
 ## Finding ARRCODE-F1
 
-- Finding ID: ARRCODE-F1
-- Severity: minor
-- Location: eight new M1-M3 review and evidence files reported by `git diff --check origin/main...HEAD`
-- Evidence: Branch-wide diff validation reports `new blank line at EOF` for `semantic-preservation-review.md`, `simplification-measurements.md`, the three milestone code-review invocation files, and the three milestone code-review records.
-- Required outcome: Remove only the trailing blank lines and make branch-wide `git diff --check` pass without changing content semantics.
-- Safe resolution path: Normalize the eight exact files with a minimal patch, rerun diff and prose validation, and rereview the complete branch.
-- needs-decision rationale: none
+Finding ID: ARRCODE-F1
+Severity: minor
+Location: eight new M1-M3 review and evidence files reported by `git diff --check origin/main...HEAD`
+Evidence: Branch-wide diff validation reports `new blank line at EOF` for `semantic-preservation-review.md`, `simplification-measurements.md`, the three milestone code-review invocation files, and the three milestone code-review records.
+Required outcome: Remove only the trailing blank lines and make branch-wide `git diff --check` pass without changing content semantics.
+Safe resolution path: Normalize the eight exact files with a minimal patch, rerun diff and prose validation, and rereview the complete branch.
+needs-decision rationale: none
 
 ## Finding ARRCODE-F2
 
-- Finding ID: ARRCODE-F2
-- Severity: minor
-- Location: the M1-M3 code-review records and final holistic review recording structure
-- Evidence: Closeout-mode review-artifact validation cannot recognize the four code-review records because required `Target` and `Reviewed artifact` fields are absent; the final resolution section also uses a non-contract heading and incomplete resolution fields.
-- Required outcome: Add only the missing formal-review fields, normalize the final resolution entry to the existing contract, and make closeout-mode review-artifact validation pass after rereview.
-- Safe resolution path: Preserve every judgment and finding, add the deterministic metadata already present elsewhere in each record, use the required `### <review-id>` resolution heading, and validate the complete change root.
-- needs-decision rationale: none
+Finding ID: ARRCODE-F2
+Severity: minor
+Location: the M1-M3 code-review records and final holistic review recording structure
+Evidence: Closeout-mode review-artifact validation cannot recognize the four code-review records because required `Target` and `Reviewed artifact` fields are absent; the final resolution section also uses a non-contract heading and incomplete resolution fields.
+Required outcome: Add only the missing formal-review fields, normalize the final resolution entry to the existing contract, and make closeout-mode review-artifact validation pass after rereview.
+Safe resolution path: Preserve every judgment and finding, add the deterministic metadata already present elsewhere in each record, use the required `### <review-id>` resolution heading, and validate the complete change root.
+needs-decision rationale: none
 
 ## Review dimensions
 

@@ -4,8 +4,10 @@ Review ID: code-review-m3-r1
 Stage: code-review
 Round: r1
 Reviewer: Codex independent code-review context
+Target: implementation milestone M3 range `d2dceb72..5974e679`
 Reviewed milestone: M3
 Reviewed range: `d2dceb72..5974e679`
+Reviewed artifact: commit `5974e679`
 Review date: 2026-08-16
 Status: clean-with-notes
 Material findings: none
@@ -62,4 +64,3 @@ The evidence ties every semantic cluster and exact literal to one owner, preserv
 ## Claim limitations
 
 This review closes M3 and the implementation milestones. It does not replace the required final holistic code review, explanation, final verification, or PR gate.
-

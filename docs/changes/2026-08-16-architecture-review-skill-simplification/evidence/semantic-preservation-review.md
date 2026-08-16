@@ -24,4 +24,3 @@ Flat-file assertions that previously owned incidental architecture method or set
 - Identical retry completes only pending matching writes and creates no duplicate review evidence.
 - Advisory recording, manual isolation, workflow routing ownership, reviewer independence, and claim limits remain intact.
 - No target-agent runtime, transcript grader, prose classifier, tokenizer dependency, or extra manual semantic-review gate was introduced.
-

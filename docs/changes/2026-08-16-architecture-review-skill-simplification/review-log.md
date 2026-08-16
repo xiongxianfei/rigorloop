@@ -105,7 +105,7 @@ Round: r1
 Reviewed artifact: milestone M1 range `2a5c295d..132fe5a9`
 Status: clean-with-notes
 Detailed record: reviews/code-review-m1-r1.md
-Resolution: not-required
+Resolution: review-resolution.md#code-review-m1-r1
 Material findings: none
 Open findings: none
 Recording status: recorded
@@ -118,7 +118,7 @@ Round: r1
 Reviewed artifact: milestone M2 range `a9351f08..b40eeccf`
 Status: clean-with-notes
 Detailed record: reviews/code-review-m2-r1.md
-Resolution: not-required
+Resolution: review-resolution.md#code-review-m2-r1
 Material findings: none
 Open findings: none
 Recording status: recorded
@@ -131,7 +131,7 @@ Round: r1
 Reviewed artifact: milestone M3 range `d2dceb72..5974e679`
 Status: clean-with-notes
 Detailed record: reviews/code-review-m3-r1.md
-Resolution: not-required
+Resolution: review-resolution.md#code-review-m3-r1
 Material findings: none
 Open findings: none
 Recording status: recorded

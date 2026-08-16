@@ -1,6 +1,6 @@
 # Review Resolution: Architecture Review Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -9,6 +9,9 @@ Review closeout: spec-review-r1
 Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
+Review closeout: code-review-m1-r1
+Review closeout: code-review-m2-r1
+Review closeout: code-review-m3-r1
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 7
@@ -162,6 +165,19 @@ Validation evidence: `docs/changes/2026-08-16-architecture-review-skill-simplifi
 ### test-spec-review-r2
 
 No material findings. The clean rereview confirms that ARRTSR-PR1 is closed and that the complete proof map is adequate for implementation handoff.
+
+### code-review-m1-r1
+
+No material findings. The clean milestone review closes M1 preservation inventories and baseline proof only.
+
+### code-review-m2-r1
+
+No material findings. The clean milestone review closes M2 package extraction and focused contract proof only.
+
+### code-review-m3-r1
+
+No material findings. The clean milestone review closes M3 profile reduction, parity, and semantic-preservation proof.
+
 ### code-review-final-r1
 
 Finding ID: ARRCODE-F1

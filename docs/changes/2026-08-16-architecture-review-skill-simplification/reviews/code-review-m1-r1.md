@@ -4,8 +4,10 @@ Review ID: code-review-m1-r1
 Stage: code-review
 Round: r1
 Reviewer: Codex independent code-review context
+Target: implementation milestone M1 range `2a5c295d..132fe5a9`
 Reviewed milestone: M1
 Reviewed range: `2a5c295d..132fe5a9`
+Reviewed artifact: commit `132fe5a9`
 Review date: 2026-08-16
 Status: clean-with-notes
 Material findings: none
@@ -58,4 +60,3 @@ The M1 evidence accounts for each planned preservation surface before canonical 
 ## Claim limitations
 
 This review closes M1 only. It does not approve M2 or M3, claim package simplification, establish derived-package parity, or claim verification or PR readiness.
-

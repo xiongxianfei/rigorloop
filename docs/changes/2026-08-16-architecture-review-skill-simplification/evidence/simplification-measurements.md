@@ -24,4 +24,3 @@ Both required formal profiles decrease in words and bytes. ARR1 decreases 16.7 p
 | Total canonical package | 15,895 | 1,996 | `cdaf9bbc212bee39073c27de0b595574c44401e3f18cd938f32abf3c21b942fd` |
 
 The total canonical package decreases by 87 bytes and 196 words. No relocation is presented as deletion; each resource and the full loaded assemblies remain visible.
-

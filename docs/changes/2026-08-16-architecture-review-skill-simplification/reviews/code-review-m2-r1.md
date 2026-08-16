@@ -4,8 +4,10 @@ Review ID: code-review-m2-r1
 Stage: code-review
 Round: r1
 Reviewer: Codex independent code-review context
+Target: implementation milestone M2 range `a9351f08..b40eeccf`
 Reviewed milestone: M2
 Reviewed range: `a9351f08..b40eeccf`
+Reviewed artifact: commit `b40eeccf`
 Review date: 2026-08-16
 Status: clean-with-notes
 Material findings: none
@@ -62,4 +64,3 @@ The refactor materially reduces the universal file while preserving architecture
 ## Claim limitations
 
 This review closes M2 only. M3 still owns loaded-profile measurements, semantic and literal final disposition, and canonical-through-installed parity; verification and PR readiness are not claimed.
-

@@ -21,4 +21,3 @@ validation_evidence:
 automation:
   mode: workflow-managed
   target_stage: verify
-
