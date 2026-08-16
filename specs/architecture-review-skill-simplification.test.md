@@ -31,7 +31,7 @@ Use deterministic contract fixtures for package loading, surface and authority c
 | R1-R10 | T1-T3, T12 | contract | Package inventory, universal ownership, exact mappings, missing resources, and shared-block parity. |
 | R11-R19 | T4-T5 | contract | Closed surfaces, modes, valid authority combinations, durable-recording triggers, advisory isolation, and execution boundaries. |
 | R20-R27 | T6-T7 | contract | Exact review subject, governing basis, optional target set, record-only identity, reuse, and staleness. |
-| R28-R36 | T8-T9 | contract | One overall status, scoped findings and blockers, exact target dispositions, no partial approval, and settlement authority. |
+| R28-R36 | T8-T9 | contract | One overall status, per-kind approved destinations, invalid ADR-intent stops, scoped findings and blockers, exact target dispositions, no partial approval, and settlement authority. |
 | R37-R46 | T10-T11 | contract | Evidence-before-settlement, prepared manifests, per-target progress, exact retry, concurrency, and bounded writes. |
 | R47-R52 | T3, T8, T13 | contract | Finding fields, compact results, semantic and literal ledgers, and unknown-value-first validation. |
 | R53-R58 | T12-T14 | integration | Deterministic measurement, primary-profile reduction, package parity, portable text, runtime exclusion, and architecture fallback. |
@@ -103,6 +103,8 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | EC6: manifest is prepared before any target transition | T10-T11 | Exact retry revalidates the same intent and begins only pending writes. |
 | EC7: one target already matches expected post-state and progress | T11 | Verify it without duplicating settlement evidence. |
 | EC8: target state changes independently after preparation | T11 | Block retry without adoption or unrelated mutation. |
+| EC9: authoring evidence records ADR intent as `accepted` or `active` | T8 | Set each ADR to its exact recorded state while canonical architecture becomes `approved`. |
+| EC10: intended ADR state is missing or ambiguous | T8 | Block the complete settlement, leave every target unchanged at `review-required`, and grant no downstream eligibility. |
 | Unknown closed-vocabulary value | T4, T8, T10, T13 | Reject it before any consistency check. |
 | Required resource is missing, escaped, transformed, or mixed-version | T2, T12 | Stop dependent work and fail package parity. |
 
@@ -224,15 +226,15 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 - Automation location: Identity and staleness fixtures.
 - Required by milestone: M2
 
-### T8. Non-approved findings mutate only affected targets
+### T8. Settlement status and findings mutate only supported targets
 
-- Covers: R28-R32, R34-R36, R47-R49; E5; EC3; BND-INPUT-001, BND-STATE-001, BND-AUTH-001; INT-003
+- Covers: R28-R32, R34-R36, R47-R49; E5; EC3, EC9-EC10; BND-INPUT-001, BND-STATE-001, BND-AUTH-001; INT-003
 - Level: contract
 - Command IDs: CMD1, CMD3, CMD9
-- Fixture/setup: Combined targets with approved, one-target changes-requested, target-scoped blocked, target-set blocked, and review-occurrence blocked outcomes.
-- Steps: Apply semantic status, findings, blocker scopes, and target dispositions.
-- Expected result: Approval settles all exact targets, changes-requested affects only named targets, scoped blockers affect only supported targets, occurrence blockers settle none, and non-approval grants no eligibility.
-- Failure proves: One overall status over-mutates targets or creates partial approval.
+- Fixture/setup: Combined subjects containing canonical architecture and ADR targets whose current authoring evidence records `accepted`, records `active`, omits intended ADR state, or provides ambiguous intended ADR state, plus one-target changes-requested, target-scoped blocked, target-set blocked, and review-occurrence blocked outcomes.
+- Steps: Derive and apply the expected post-state for every exact target, then exercise each finding and blocker scope.
+- Expected result: Approved canonical architecture becomes `approved`; ADRs become exactly `accepted` or `active` according to current authoring evidence; missing or ambiguous intended ADR state blocks the complete settlement, leaves every target unchanged at `review-required`, and grants no downstream eligibility; changes-requested affects only named targets; scoped blockers affect only supported targets; occurrence blockers settle none; and every non-approved result grants no eligibility.
+- Failure proves: Approval invents or ignores an ADR destination, invalid ADR intent permits partial mutation, or one overall non-approval status over-mutates targets or creates partial approval.
 - Evidence artifact: `evidence/m2-package-implementation.md`
 - Automation location: Finding, blocker, and lifecycle fixtures.
 - Required by milestone: M2

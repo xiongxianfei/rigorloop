@@ -144,15 +144,15 @@ No material findings. The approving clean review confirms that the milestones ar
 #### ARRTSR-PR1
 
 Finding ID: ARRTSR-PR1
-Disposition: needs-decision
+Disposition: accepted
 Status: open
 Owner: test-spec author
 Owning stage: test-spec
 Decision owner: workflow-managed review-resolution
 Decision needed: Accept, reject, defer, or otherwise settle the required direct proof for R30's ADR intended-state branches.
-Chosen action: pending
+Chosen action: Expand T8 with exact canonical and ADR destination cases, add missing and ambiguous ADR-intent stops, and add explicit edge mappings without introducing a new command or test framework.
 Rationale: The first formal test-spec review found that generic approved settlement does not directly prove the two valid ADR post-states or the mandatory complete stop for missing or ambiguous intent.
 Required outcome: Add deterministic valid and invalid intended-state cases or record a justified disposition that preserves the governing contract.
 Safe resolution path: Resolve this finding, revise the test spec when accepted, rerun boundary validation, and obtain a fresh independent test-spec review.
 Validation target: revised proof mappings and approving test-spec rereview.
-Validation evidence: pending
+Validation evidence: `docs/changes/2026-08-16-architecture-review-skill-simplification/evidence/test-spec-revision-r1.md`; approving rereview pending
