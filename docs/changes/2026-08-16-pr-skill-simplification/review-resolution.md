@@ -17,8 +17,9 @@ Review closeout: code-review-m2-r2
 Review closeout: code-review-m3-r1
 Review closeout: code-review-final-r1
 Review closeout: code-review-final-r2
+Review closeout: code-review-final-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-final-r1`, `code-review-final-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`, `code-review-final-r1`, `code-review-final-r2`, `code-review-final-r3`
 - Findings resolved: 10
 - Unresolved findings: 0
 - Current result: corrected final rereview clean; explanation and fresh final verification required
@@ -252,3 +253,9 @@ closed review history; it may proceed to explanation and final verification.
 No material findings. The rereview confirms the verify-r1 compatibility
 regression is fixed with focused and broad proof while both loaded profiles
 remain below baseline.
+
+### code-review-final-r3
+
+No material findings. The rereview confirms the historical review-record
+normalization preserves every prior judgment while satisfying the current
+parser-owned receipt and finding structure.
