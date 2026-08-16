@@ -57,3 +57,16 @@ Resolution: review-resolution.md#proposal-review-r3
 Material findings: none
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: plan-review-r1
+Stage: plan-review
+Round: r1
+Reviewed artifact: `docs/plans/2026-08-16-architecture-review-skill-simplification.md` at commit `fdaed65e`
+Status: approved
+Detailed record: reviews/plan-review-r1.md
+Resolution: review-resolution.md#plan-review-r1
+Material findings: none
+Open findings: none
+Recording status: recorded
