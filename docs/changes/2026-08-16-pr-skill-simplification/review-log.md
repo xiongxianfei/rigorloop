@@ -29,7 +29,7 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r1.md
 Resolution: review-resolution.md#spec-review-r1
 Material findings: PRSSIM-SR1
-Open findings: PRSSIM-SR1
+Open findings: none
 Recording status: recorded
 
 ### Review entry

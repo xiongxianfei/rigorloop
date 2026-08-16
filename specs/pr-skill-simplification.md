@@ -235,7 +235,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | Example ID | Classification | Governing requirement IDs | Boundary IDs | Regression ID | Discovery gap ID |
 | --- | --- | --- | --- | --- | --- |
 | E1 | regression | R9 | BND-STATE-001 | PRSIM-PR4 | - |
-| E2 | illustration | R15, R20 | BND-STATE-001, BND-ENV-001 | - | - |
+| E2 | illustration | R15, R20 | BND-STATE-001 | - | - |
 | E3 | regression | R12, R13 | BND-AUTH-001 | PRSIM-PR4 | - |
 | E4 | regression | R16, R17, R18 | BND-STATE-001, BND-ENV-001 | PRSIM-PR5 | - |
 | E5 | regression | R32, R33, R35, R36, R38 | BND-TEMPORAL-001, BND-RECOVERY-001 | PRSIM-PR5 | - |
