@@ -3523,13 +3523,13 @@ Use the inputs somehow and produce a useful result.
             "`ADR`",
             "`no-architecture-impact-rationale`",
             "`proposal-or-spec-gap`",
-            "exact changed canonical Markdown",
+            "exact changed canonical architecture Markdown",
             "related ADRs",
             "Read the exact target",
-            "test whether the exact assessment rationale remains credible",
-            "route it to its owning proposal or specification stage",
+            "exact rationale credibility",
+            "routed to its owning proposal or spec stage",
             "C4 role classes",
-            "relationships are labeled",
+            "labeled relationships",
             "Building Block View",
             "Quality scenarios",
             "Deployment content",
@@ -8196,14 +8196,14 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                     self.assertIn("## Prepared settlement manifest", normalized)
                     self.assertIn("canonical architecture target becomes `approved`", normalized)
                     for phrase in (
-                        "complete change record",
+                        "complete `change.yaml`",
                         "review-required",
                         "authoring-evidence identity",
                         "complete prepared settlement manifest",
                         "before the first target transition",
                         "compare-and-set",
                         "only pending matching writes",
-                        "does not advance routing",
+                        "without advancing routing",
                     ):
                         self.assertIn(" ".join(phrase.split()), normalized)
                     continue
@@ -10451,6 +10451,17 @@ class ArchitectureReviewSkillSimplificationTests(unittest.TestCase):
             self.assertIn(phrase.lower(), self.skill.lower())
         for claim in ("workflow continuation", "plan readiness", "implementation readiness", "verification", "branch readiness", "PR readiness"):
             self.assertIn(claim.lower(), self.skill.lower())
+
+    def test_real_formal_profiles_decrease_from_flat_baseline(self) -> None:
+        baseline_bytes = 15982
+        baseline_words = 2192
+        skill = self.skill.encode("utf-8")
+        method = self.method.encode("utf-8")
+        recording = self.recording.encode("utf-8")
+        for name, assembled in {"ARR1": skill + recording, "ARR1M": skill + method + recording}.items():
+            with self.subTest(profile=name):
+                self.assertLess(len(assembled), baseline_bytes)
+                self.assertLess(len(assembled.decode("utf-8").split()), baseline_words)
 
 
 class ArchitectureSkillSimplificationLedgerTests(unittest.TestCase):
