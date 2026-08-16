@@ -8,8 +8,9 @@ Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
+Review closeout: plan-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `plan-review-r1`
 - Findings resolved: 8
 - Unresolved findings: 0
 - Current result: specification approved for bounded architecture assessment
@@ -167,8 +168,12 @@ Rationale: E2 concerns existing-PR lifecycle behavior; its requirements do not n
 Required outcome: Boundary validation reports no example-owner mismatch.
 Safe resolution path: Apply the one-row correction, run the boundary validator, and rereview the complete spec.
 Validation target: revised spec and independent `spec-review-r2`.
-Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/spec-revision-r1.md`; independent rereview remains pending.
+Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/spec-revision-r1.md` and approving `spec-review-r2`.
 
 ### spec-review-r2
 
 No material findings. The approving rereview confirms that `PRSSIM-SR1` is closed and the full contract is ready for bounded architecture assessment.
+
+### plan-review-r1
+
+No material findings. The plan is approved, initialized from its exact reviewed identity, and activated by identical settlement retry without a second semantic review.
