@@ -1,233 +1,102 @@
 ---
 name: architecture
+version: "1.0.0"
+schema-version: skill-readability-v1
 description: >
-  Create or update the technical architecture/design artifact after the spec is stable and before execution planning. Use when a change touches multiple components, data flow, persistence, APIs, deployment, performance, security, or long-lived design decisions.
+  Create or update technical architecture after the spec is stable and before execution planning.
 argument-hint: [feature spec path, proposal path, architecture question, or change name]
 ---
 
-# Architecture Package Authoring
+# Architecture assessment and authoring
 
-You are making the technical design visible before implementation.
+## Workflow role
 
-The architecture artifact explains how the repository or system is shaped to satisfy the spec. It should expose structure, runtime flow, deployment impact, cross-cutting rules, quality concerns, risks, and durable decisions without becoming an execution task list.
+- role_name: architecture
+- stage: authoring
+- upstream: approved spec and current spec review
+- downstream: architecture-review
+- summary: Assess architecture impact and author the smallest justified package.
+- ownership: Architecture artifacts and authorized architecture authoring evidence only.
+- must_not_claim: architecture-review approval, plan readiness, implementation readiness, verification, branch readiness, release readiness, or PR readiness.
 
-## Inputs to read
+Portable work is isolated. Workflow-managed execution does not enlarge the architecture write set.
 
-Read, if present:
+## Evidence and upstream settlement
 
-- `AGENTS.md`
-- `CONSTITUTION.md`
-- accepted proposal
-- approved feature spec and spec-review findings
-- the project's architecture method guidance when package shape is in scope
-- the project's canonical architecture package
-- related project ADRs
-- research artifacts and `docs/project-map.md`
-- existing source interfaces, schemas, APIs, modules, CI, deployment config
+Read current guidance, proposal, approved spec/review, canonical architecture, relevant ADRs, project map, and affected system surfaces. Rank governing artifacts above history and inference; upstream artifacts and state are read-only.
 
-## Upstream settlement check
+Require an approved current spec without later contradiction or open resolution. Route unsettled direction to `proposal`, unclear behavior to `spec`, and missing settlement to `spec-review`.
 
-Before relying on a spec, read its matching `change.yaml` artifact entry and formal review evidence.
-Require an `approved` settlement, no later contradictory review, no open findings, and closed review resolution when required.
+## Classification and loaded assemblies
 
-Treat the spec and its lifecycle state as read-only.
-Do not normalize status in the spec or settle its change-local entry.
-If settlement is missing or contradictory, record the blocker and route to `spec-review`.
+Classify before mutation. Assessment mode is `isolated` or `workflow-managed`; applicability judgment is `required`, `not-required`, or `ambiguous`; route result is `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`; authoring action is `assessment-only`, `canonical-update`, `adr-only`, `canonical-update-with-adr`, or `blocked`.
 
-## Change-record authoring transition
+| Assembly | Use | Loaded procedure |
+| --- | --- | --- |
+| `AA0-assessment` | assessment only | `SKILL.md` |
+| `AA1-portable-authoring` | portable architecture authoring | AA0 plus package method |
+| `AA2-governed-authoring` | governed authoring | AA1 plus governed authoring |
 
-For a governed change, read the complete `change.yaml` before writing.
-Require `lifecycle_contract: stage-owned-change-local-v1`; route a missing marker to `workflow` for creation or migration instead of inventing state.
-Resolve each architecture or ADR target by its exact artifact ID, `kind`, and normalized `path`; never select by kind alone. For a new target, create only that entry with a unique stable ID, the exact architecture or ADR kind, normalized path, and explicit role. Before creating or substantively revising one target, set only its entry to `authoring`, remove any prior `review`, and set `authoring_evidence` to its architecture-authoring record path. After that artifact and authoring record are complete, set the same entry to `review-required`. Preserve every other entry and `workflow_state`. Stop on an ambiguous entry, illegal transition, or failed available change-metadata validation.
+Loading selects procedure, not authority.
 
-## Architecture Surface Decision
+## Applicability and routing
 
-Choose the smallest valid architecture action.
+Use architecture for cross-component structure, data flow, persistence, APIs, deployment, packaging, adapters, security, quality targets, cross-cutting rules, or durable decisions. Use the smallest surface: canonical truth, ADR decision history, or both.
 
-1. **No architecture impact**
+For a leaf change without those effects, return `architecture-not-required` with rationale and write no artifact. Unresolved applicability returns `architecture-ambiguous` and blocks. Never create temporary architecture to resolve product or behavioral uncertainty.
 
-   Record a short no-architecture-impact rationale in the plan, spec, change metadata, or PR evidence.
+Portable authoring repeats current applicability, writes only resolved architecture or ADR files, and never writes lifecycle, review, routing, or automation state.
 
-2. **Direction unclear**
+Workflow-managed assessment records `Stage: architecture-assessment`, `Applicability: required | not-required`, and exact `Spec identity`; ambiguity pauses without completion. Isolated assessment writes only to an explicit valid user-provided evidence path.
 
-   Stop and route to `proposal` or proposal revision.
+## Governed signals and targets
 
-   Do not create temporary architecture documents to resolve direction uncertainty.
+Governed signals are `no-governed-signal`, `single-governed-candidate`, or `invalid-or-ambiguous-governed-signal`. Any explicit change ID, workflow identity, owning-change field, or governed entry counts even when malformed. Only no signal permits portable authoring; invalid, stale, conflicting, duplicated, escaped, unsafe, or ambiguous signals stop without portable fallback.
 
-3. **Spec unclear**
+Target operations are `create`, `revise`, `supersede`, and `deprecate`. Canonical architecture and each ADR are distinct manifest targets. Never rewrite accepted history as though a prior decision never existed.
 
-   Stop and route to `spec` or spec revision.
+## Universal write and handoff boundaries
 
-4. **Clear architecture update**
+Author only accepted design required by the spec. Exclude milestones, secrets, review settlement, unsupported claims, and mutable state. Preserve history and identify replacement or supersession.
 
-   Update the project's canonical architecture package directly.
+Governed authoring ends each completed target at `review-required` and hands off to `architecture-review`. It never approves ADRs, settles supersession, or advances workflow. Report partial targets and blockers.
 
-5. **Durable decision**
+## Stop conditions and claims
 
-   Create or update an ADR when the change introduces or revises a long-lived architecture decision.
+Stop on missing or unreadable required resources, unresolved placement, invalid signals, stale basis, illegal state, ambiguity, conflicts, changed baseline, unsafe dependencies, unrecorded files, concurrency, incomplete recovery, or placeholders. The common path must not reconstruct missing procedure.
 
-Use the project's canonical architecture package.
-
-Common default paths are:
-
-- `docs/architecture/system/architecture.md`
-- `docs/architecture/system/diagrams/`
-- `docs/adr/`
-
-If the project uses different architecture paths, follow the project's configured paths.
-
-## Artifact placement
-
-Use the project workflow guide for artifact locations when placement matters.
-
-Lookup order:
-
-1. explicit user path or change ID;
-2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
-3. known governing spec or schema constraint when directly relevant;
-4. `docs/workflows.md` artifact-location table;
-5. this skill's portable default path;
-6. block on ambiguity.
-
-This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
-
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+Never claim architecture-review approval, ADR settlement, plan or implementation readiness, validation, verification, branch readiness, release, deployment, publication, or PR readiness.
 
 ## Resource map
 
-- COPY `assets/architecture-skeleton.md` when creating a new canonical architecture package or replacing an incomplete package scaffold. Fill all required sections. Do not emit unfilled placeholders.
+- READ `references/architecture-package-method.md` for `AA1-portable-authoring` and `AA2-governed-authoring` before package judgment or writes.
+- READ `references/governed-architecture-authoring.md` only for `AA2-governed-authoring`; validate exact authority before governed reads or writes.
+- COPY `assets/architecture-skeleton.md` when creating or fully rewriting canonical architecture. Fill applicable sections and remove placeholders.
+- COPY `assets/adr-skeleton.md` when creating a new ADR. Fill every applicable field.
+- COPY `assets/diagram-styles.mmd` when Mermaid flowchart or graph diagrams need the standard role styles.
 
-- COPY `assets/adr-skeleton.md` when recording a material architecture decision.
-  Fill the change-record pointer, decision, context, consequences, alternatives considered, and follow-up.
+Require readable, contained, same-version resources. Missing triggered resources stop dependent work; untriggered references do not block assessment.
 
-- COPY `assets/diagram-styles.mmd` when Mermaid flowchart or graph diagrams need copied role styles for people, systems, external systems, and containers.
+## Evidence collection efficiency
 
-Full worked examples, if needed, belong outside this skill body, for example in `skills/architecture/references/architecture-example.md`.
-
-## When to Use / When Not to Use
-
-Use the approved C4, arc42, and ADR method when architecture work is required.
-
-Use architecture work when the change affects multiple components, data flow, generated-output flow, deployment, packaging, adapters, quality targets, cross-cutting rules, security boundaries, or durable decisions.
-
-Do not create or update architecture artifacts for leaf changes that do not affect architecture boundaries, data flow, generated-output flow, deployment, packaging, adapters, quality targets, cross-cutting rules, or durable decisions. Record a no-architecture-impact rationale in the plan, test spec, change metadata, or PR evidence instead.
-
-Do not put unaccepted design truth into architecture. If product direction or design choice is unresolved, route it through proposal. If behavior is unclear, route it through spec. Architecture can mention tradeoffs, but it does not own unresolved option selection.
-
-Existing change-local architecture evidence can remain valid history. New change-local architecture evidence is exceptional or legacy closeout evidence, not the normal architecture authoring surface and not a competing canonical source.
-
-## arc42 Sections
-
-The canonical `architecture.md` uses a stable owning-change-record pointer before all 12 official arc42 sections. Mutable lifecycle state belongs only to the matching `change.yaml` artifact entry. Keep sections concise; use `Not applicable` only with a short rationale. Do not remove or rename official arc42 sections to make the document lighter.
-
-Use the architecture skeleton for section structure. In the skill output, name only the sections changed or explicitly unaffected with rationale.
-
-Update section 6 when behavior, orchestration, failure paths, command flow, generated-output flow, or operational flow changes. Update section 7 when environments, packaging, generated outputs, adapters, release layout, infrastructure, or execution boundaries change. Update section 8 when validation, security, caching, portability, generation, observability, or other cross-cutting rules change. Section 9 is always present and either links ADRs or states that no ADRs are required for the update.
-
-## C4 Guidance
-
-Default required C4 diagrams for the canonical package:
-
-- C4 system context diagram
-- C4 container diagram
-
-Use separate Mermaid `.mmd` source files for default diagrams and link them from `architecture.md` with relative Markdown links. Do not embed package diagrams in Markdown. For Mermaid flowchart or graph diagrams, copy `assets/diagram-styles.mmd` or an explicitly equivalent copied block so people, systems, external systems, and containers are distinguishable.
-
-Add a component diagram only when container-level structure is not enough to explain changed responsibilities, internal boundaries, or interactions. Add a deployment diagram only when infrastructure, runtime environment, packaging, adapter distribution, or deployment mapping needs visual explanation beyond arc42 section 7.
-
-Update the lowest affected C4 level first, then propagate upward only when the higher-level view actually changes. Do not make generated images, screenshots, or external diagram links the only source of truth.
-
-Minimal context snippet:
-
-```mermaid
-C4Context
-  Person(contributor, "Contributor or agent")
-  System(repo, "Project repository")
-  Rel(contributor, repo, "Authors and reviews architecture artifacts")
-```
-
-Minimal container snippet:
-
-```mermaid
-C4Container
-  Person(contributor, "Contributor or agent")
-  System_Boundary(repo, "Project repository") {
-    Container(skills, "Canonical skills", "Markdown", "Authoring source")
-    Container(templates, "Architecture templates", "Markdown/Mermaid", "Scaffolds architecture packages")
-  }
-  Rel(contributor, skills, "Updates")
-  Rel(skills, templates, "References")
-```
-
-Keep diagrams small and accurate. Prefer multiple focused diagrams over one unreadable diagram.
-
-## ADR Triggers
-
-Create an ADR when the change introduces or revises a durable architecture decision, including:
-
-- system boundary changes
-- adapter generation or packaging rules
-- validation architecture
-- cache or indexing strategy
-- portability constraints
-- release architecture
-- major workflow architecture decisions
-
-Use the ADR skeleton and store real ADRs under `docs/adr/`.
-Each ADR includes a title, owning change-record pointer, context, decision, alternatives considered, consequences, and follow-up.
-
-Accepted or active ADRs are decision history. Later changes should supersede or deprecate an old ADR with a new ADR or explicit lifecycle update rather than rewriting the old decision as if it had always been different.
-
-## Authoring Rules
-
-- Update only the arc42 sections and C4 views the change actually affects.
-- Put accepted durable architecture truth in the canonical package before an architecture-significant change is complete.
-- Keep legacy `docs/architecture/` documents as legacy or historical context until the legacy normalization artifact classifies them.
-- Do not write an execution milestone list here; use `plan` after design review.
-- Do not hide tradeoffs.
-- Do not introduce architecture that the spec does not require.
-- Do not change behavior in the architecture doc without updating the spec.
-- Do not claim compatibility, rollback, or performance safety without explaining the mechanism.
-- Do not write review settlement into the architecture artifact.
-  The matching `architecture-review` records settlement in `change.yaml`.
-- Preserve `Next artifacts` as planning history. Use `Follow-on artifacts` for actual downstream artifacts, replacement, or terminal closeout.
-- If an architecture document is superseded, identify the replacement with `superseded_by` or equivalent labeled text.
-- Do not include secrets, credentials, private keys, tokens, or machine-local debug-only data.
-
-## Evidence Collection Efficiency
-
-Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, section numbers, ADR IDs, diagram paths, file paths, and line citations. Read exact sections first, then expand only when the narrower evidence cannot answer the architecture question.
-
-## Workflow handoff behavior
-
-- In a workflow-managed flow, successful `architecture` completion hands off to `architecture-review` when that review is the next mandatory or triggered downstream stage.
-- If the design still has open questions that block safe review, stop and report the blocker instead of implying `architecture-review` can proceed.
-- Only an explicitly authorized workflow-managed `bounded-review-fix` run can continue after the matching `architecture-review`, and that continuation depends on a clean recorded review, a current authoring capability, and no stop condition.
-- This v1 contract does not otherwise imply `architecture-review -> plan`; other review-to-next-authoring transitions remain outside the autoprogression boundary unless a later approved change adds them.
+Use summary and stable-ID first reasoning. Prefer check IDs, requirement IDs, file paths, line citations, diffs, and targeted excerpts.
 
 ## When full-file read is required
 
-Read the full file when creating or replacing the canonical architecture package, when the whole file is the review target, when checking all 12 arc42 headings or lifecycle metadata, when a canonical update may affect multiple sections, when superseding or deprecating an ADR, when legacy status affects the conclusion, when the relevant section cannot be isolated safely, when bounded searches disagree, or when a behavior-changing edit depends on the whole source-of-truth artifact.
+Read fully when the whole file is the review target, bounded searches disagree, isolation is unsafe, or a behavior-changing edit depends on the whole source-of-truth artifact.
+
+## Output skeleton
+
+```md
+COPY `<applicable mapped asset>` to `<resolved target>` and replace every placeholder.
+```
+
+Use mapped assets only for applicable authoring output; assessment-only results use the compact result below.
 
 ## Expected output
 
-Start with:
+Return a concise result without unfilled placeholders.
 
-```md
 ## Result
 
-- Architecture surface: no-impact-rationale | canonical-update | ADR | blocked
-- Canonical architecture changed:
-- Diagrams changed:
-- ADRs created or updated:
-- Direction/spec blockers:
-- Next stage:
-```
-
-Then include:
-
-- changed arc42 sections and C4 diagram paths;
-- requirement-to-architecture mapping;
-- ADR paths for durable decisions, or a clear no-ADR-required rationale;
-- alternatives, consequences, risks, quality concerns, deployment impact, and security/privacy notes where relevant;
-- readiness statement for `architecture-review` or blocker state.
+Report assessment mode, applicability judgment, route, action, assembly, targets, changed sections or ADRs, blockers, recording state, claim limitations, and next stage.

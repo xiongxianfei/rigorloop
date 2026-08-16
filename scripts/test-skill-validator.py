@@ -3470,39 +3470,31 @@ Use the inputs somehow and produce a useful result.
 
     def test_architecture_skill_defines_concise_c4_arc42_adr_output_shape(self) -> None:
         body = (ROOT / "skills" / "architecture" / "SKILL.md").read_text(encoding="utf-8")
+        method = (ROOT / "skills" / "architecture" / "references" / "architecture-package-method.md").read_text(encoding="utf-8")
+        package = body + "\n" + method
         required_terms = [
-            "## When to Use / When Not to Use",
-            "## Architecture Surface Decision",
-            "Choose the smallest valid architecture action.",
-            "No architecture impact",
-            "Direction unclear",
-            "Spec unclear",
-            "Clear architecture update",
-            "Durable decision",
-            "Do not create temporary architecture documents to resolve direction uncertainty.",
-            "Use the project's canonical architecture package.",
-            "Common default paths are:",
+            "## Applicability and routing",
+            "Use the smallest surface",
+            "architecture-not-required",
+            "architecture-ambiguous",
+            "Never create temporary architecture",
+            "Update the canonical package directly",
             "`docs/architecture/system/architecture.md`",
-            "`docs/architecture/system/diagrams/`",
+            "`diagrams/`",
             "`docs/adr/`",
-            "If the project uses different architecture paths, follow the project's configured paths.",
-            "C4 system context diagram",
-            "C4 container diagram",
+            "system context",
+            "container views",
             "## Resource map",
             "COPY `assets/architecture-skeleton.md`",
             "COPY `assets/adr-skeleton.md`",
             "COPY `assets/diagram-styles.mmd`",
-            "Use the architecture skeleton for section structure.",
-            "```mermaid\nC4Context",
-            "```mermaid\nC4Container",
-            "## ADR Triggers",
-            "skills/architecture/references/architecture-example.md",
-            "- Architecture surface: no-impact-rationale | canonical-update | ADR | blocked",
-            "- Direction/spec blockers:",
+            "Use `architecture-skeleton.md`",
+            "## ADRs",
+            "architecture-review",
         ]
         for term in required_terms:
             with self.subTest(term=term):
-                self.assertIn(term, body)
+                self.assertIn(term, package)
 
         forbidden_terms = [
             "`docs/changes/<change-id>/architecture.md`",
@@ -8129,19 +8121,27 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                     / "references"
                     / "governed-test-spec-authoring.md"
                 ).read_text(encoding="utf-8")
+            if skill_name == "architecture":
+                body += (
+                    ROOT
+                    / "skills"
+                    / "architecture"
+                    / "references"
+                    / "governed-architecture-authoring.md"
+                ).read_text(encoding="utf-8")
             normalized = " ".join(body.split())
             with self.subTest(skill=skill_name):
-                if skill_name in {"spec", "test-spec"}:
+                if skill_name in {"spec", "test-spec", "architecture"}:
                     self.assertIn(f"# Governed {skill_name} authoring", normalized)
                     for phrase in (
                         "Read the complete current `change.yaml`",
                         "`lifecycle_contract: stage-owned-change-local-v1`",
                         "artifact ID",
-                        "normalized canonical path",
+                        "normalized canonical path" if skill_name != "architecture" else "normalized path",
                         "`authoring`",
-                        "authoring-evidence path",
+                        "authoring-evidence path" if skill_name != "architecture" else "authoring evidence",
                         "`review-required`",
-                        "must not change `workflow_state`" if skill_name == "spec" else "must not mutate `workflow_state`",
+                        "must not change `workflow_state`" if skill_name == "spec" else ("must not mutate `workflow_state`" if skill_name == "test-spec" else "Never select by kind alone or change another entry, `workflow_state`"),
                     ):
                         self.assertIn(" ".join(phrase.split()), normalized)
                     continue
@@ -10331,6 +10331,111 @@ class SpecSkillSimplificationTests(unittest.TestCase):
         for phrase in ("missing", "unreadable", "escaped", "contradictory", "stale", "mixed-version", "must not reconstruct"):
             self.assertIn(phrase, self.skill.lower())
         for claim in ("spec-review approval", "architecture readiness", "implementation readiness", "verification", "branch readiness", "PR readiness"):
+            self.assertIn(claim.lower(), self.skill.lower())
+
+
+class ArchitectureSkillSimplificationLedgerTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.change = ROOT / "docs" / "changes" / "2026-08-15-architecture-skill-simplification"
+
+    def load(self, name: str) -> dict:
+        return json.loads((self.change / name).read_text(encoding="utf-8"))
+
+    def test_rule_owners_are_closed_before_consistency(self) -> None:
+        allowed = {"inline", "method-reference", "governed-reference", "asset", "literal-style", "change-evidence", "existing-validator"}
+        rules = self.load("architecture-rule-disposition.yaml")["rules"]
+        invalid = self.load("fixtures/invalid-rule-owner.yaml")["rules"]
+        self.assertTrue(rules)
+        self.assertTrue(all(row["owner"] in allowed for row in rules))
+        self.assertTrue(any(row["owner"] not in allowed for row in invalid))
+        self.assertEqual(len({row["rule_id"] for row in rules}), len(rules))
+
+    def test_literal_classifications_are_closed_before_consistency(self) -> None:
+        allowed = {"normative-contract", "parser-or-package-contract", "test-only-incidental", "historical-fixture", "obsolete"}
+        literals = self.load("architecture-literal-compatibility.yaml")["literals"]
+        invalid = self.load("fixtures/invalid-literal-classification.yaml")["literals"]
+        self.assertTrue(literals)
+        self.assertTrue(all(row["classification"] in allowed for row in literals))
+        self.assertTrue(any(row["classification"] not in allowed for row in invalid))
+        self.assertEqual(len({row["literal_id"] for row in literals}), len(literals))
+
+    def test_assets_and_scenarios_have_one_identity(self) -> None:
+        assets = self.load("architecture-asset-disposition.yaml")["assets"]
+        scenarios = self.load("fixtures/scenario-contracts.yaml")["scenarios"]
+        self.assertEqual({row["asset"].split("#")[0] for row in assets}, {"architecture-skeleton.md", "adr-skeleton.md", "diagram-styles.mmd"})
+        self.assertEqual(len({row["id"] for row in scenarios}), len(scenarios))
+        self.assertGreaterEqual(len(scenarios), 18)
+
+    def test_baseline_records_all_required_surfaces(self) -> None:
+        baseline = (self.change / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
+        for value in ("AA0", "AA1", "AA2", "13105", "1765", "17893", "2400", "Total canonical package"):
+            self.assertIn(value.lower(), baseline.lower())
+
+
+class ArchitectureSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "architecture"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        self.method = (self.root / "references" / "architecture-package-method.md").read_text(encoding="utf-8")
+        self.governed = (self.root / "references" / "governed-architecture-authoring.md").read_text(encoding="utf-8")
+
+    def test_package_profiles_and_resource_triggers_are_exact(self) -> None:
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["architecture-package-method.md", "governed-architecture-authoring.md"])
+        self.assertEqual(sorted(path.name for path in (self.root / "assets").iterdir()), ["adr-skeleton.md", "architecture-skeleton.md", "diagram-styles.mmd"])
+        for value in ("AA0-assessment", "AA1-portable-authoring", "AA2-governed-authoring"):
+            self.assertIn(value, self.skill)
+        self.assertIn("READ `references/architecture-package-method.md` for `AA1-portable-authoring` and `AA2-governed-authoring`", self.skill)
+        self.assertIn("READ `references/governed-architecture-authoring.md` only for `AA2-governed-authoring`", self.skill)
+
+    def test_unknown_value_regression_rejects_every_closed_vocabulary_first(self) -> None:
+        vocabularies = {
+            "assessment_mode": {"isolated", "workflow-managed"},
+            "judgment": {"required", "not-required", "ambiguous"},
+            "route": {"architecture-required", "architecture-not-required", "architecture-ambiguous"},
+            "action": {"assessment-only", "canonical-update", "adr-only", "canonical-update-with-adr", "blocked"},
+            "signal": {"no-governed-signal", "single-governed-candidate", "invalid-or-ambiguous-governed-signal"},
+            "operation": {"create", "revise", "supersede", "deprecate"},
+            "evidence_state": {"prepared", "partial-blocked", "complete", "abandoned"},
+            "batch_result": {"complete", "partial-blocked", "blocked-before-write"},
+        }
+        package = self.skill + self.governed
+        for name, allowed in vocabularies.items():
+            with self.subTest(vocabulary=name):
+                self.assertTrue(all(value in package for value in allowed))
+                unknown_value = "not_in_vocabulary"
+                self.assertNotIn(unknown_value, allowed)
+
+    def test_assessment_and_governed_signals_fail_closed(self) -> None:
+        for phrase in ("Stage: architecture-assessment", "Applicability: required | not-required", "explicit valid user-provided evidence path", "Any explicit change ID", "without portable fallback"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        for phrase in ("one current `architecture-required` assessment receipt", "exact spec identity", "approving spec-review identity", "missing, stale, contradictory"):
+            self.assertIn(phrase.lower(), self.governed.lower())
+
+    def test_prepared_manifest_precedes_bounded_writes(self) -> None:
+        for phrase in ("Before the first target-file mutation", "durably record one ordered manifest", "target kind", "prior identity or absence", "governed evidence path", "dependency target IDs", "commit group", "independently-valid-after-commit", "commit point", "After recording `prepared`", "Any drift stops before mutation"):
+            self.assertIn(phrase.lower(), self.governed.lower())
+        self.assertLess(self.governed.index("Before the first target-file mutation"), self.governed.index("Before a target write"))
+
+    def test_dependency_order_retry_and_settlement_are_closed(self) -> None:
+        for phrase in ("not lifecycle states or independent authorization", "independently structurally and semantically valid", "subordinate sources before canonical Markdown", "replacement, then update predecessor status", "reports every completed and incomplete target", "performs no target-file mutation", "An identical retry", "creates a new operation", "unrecorded file", "without adoption or overwrite"):
+            self.assertIn(phrase.lower(), self.governed.lower())
+        self.assertIn("architecture-review approves", self.governed)
+
+    def test_assets_are_structural_and_method_policy_has_one_owner(self) -> None:
+        skeleton = (self.root / "assets" / "architecture-skeleton.md").read_text(encoding="utf-8")
+        adr = (self.root / "assets" / "adr-skeleton.md").read_text(encoding="utf-8")
+        styles = (self.root / "assets" / "diagram-styles.mmd").read_text(encoding="utf-8")
+        for heading in ("## Introduction and Goals", "## Architecture Constraints", "## Context and Scope", "## Runtime View", "## Deployment View", "## Crosscutting Concepts", "## Architecture Decisions", "## Quality Requirements", "## Risks and Technical Debt", "## Glossary"):
+            self.assertEqual(skeleton.count(heading), 1)
+        self.assertIn("## Alternatives considered", adr)
+        self.assertEqual(styles.count("classDef"), 4)
+        self.assertNotIn("only when", skeleton.lower())
+        self.assertIn("## arc42 method", self.method)
+
+    def test_required_resources_and_claims_fail_closed(self) -> None:
+        for phrase in ("missing or unreadable required resources", "must not reconstruct", "unfilled placeholders"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        for claim in ("architecture-review approval", "plan or implementation readiness", "verification", "branch readiness", "PR readiness"):
             self.assertIn(claim.lower(), self.skill.lower())
 
 
