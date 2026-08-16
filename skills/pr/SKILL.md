@@ -7,212 +7,119 @@ argument-hint: [branch, feature name, plan path, or PR request]
 
 # Pull request preparation
 
-You are preparing the change for human review.
-
-The PR body should be grounded in the actual diff and verification evidence, not chat memory.
-
-In this repository, `pr` is a submit/open stage when readiness passes. Do not treat it as draft-only preparation unless a blocker, tool limitation, or explicit user instruction prevents opening the PR.
-
 ## Purpose
 
-Prepare and, when readiness passes, open a pull request grounded in the actual diff, verification evidence, lifecycle artifacts, risks, and reviewer needs.
-
-## Project-local evidence
-
-Public skills operate in customer-project mode by default.
-
-Use project-local artifacts when present and relevant, including actual diff, git status, proposals, specs, test specs, architecture records, ADRs, plans, validation notes, explain-change artifacts, review-resolution evidence, verification reports, CI status, `AGENTS.md`, `CONSTITUTION.md`, `docs/workflows.md`, and change-local artifacts.
-
-Do not require RigorLoop repository-internal specs, docs, reports, follow-up files, or governance files in customer projects. Use portable defaults where safe, and block on ambiguity when no safe local guidance or default exists. Do not claim validation, branch readiness, PR body readiness, or PR open readiness without owning evidence.
+Prepare and, when readiness passes, open one pull request grounded in the actual diff and current evidence. `verify` owns `branch-ready`; this skill owns `pr-body-ready` and `pr-open-ready` and has no downstream continuation.
 
 ## When to use
 
-Use this skill after `verify` has established branch readiness, or when the user directly invokes `pr` and the branch is ready or nearly ready for review.
+Use after `verify` establishes branch readiness, or for a nearly ready direct PR request.
 
 ## When not to use
 
-Do not use this skill to claim implementation, review, verification, tests, or CI passed without owning evidence; do not use it to bypass unresolved blockers or create PR text from memory.
+Do not implement, review, verify, settle lifecycle state, merge, release, or fabricate evidence.
+
+## Project-local evidence
+
+Public skills operate in customer-project mode by default. Use project-local artifacts when present, including `docs/workflows.md`. Do not require RigorLoop repository-internal specs, docs, reports, or governance files. Use portable defaults where safe and block on ambiguity.
 
 ## Inputs to read
 
-Read:
+Resolve the repository, remote, base and head, verification evidence, handoff revision, working tree, diff, and matching PR. Read applicable evidence; never summarize from memory.
 
-- actual diff and git status;
-- proposal;
-- feature spec;
-- test spec;
-- architecture doc and ADRs when relevant;
-- concrete plan and validation notes;
-- explain-change artifact if present;
-- `review-resolution.md` when material review findings exist;
-- verification report;
-- CI status when available;
-- `AGENTS.md` and `CONSTITUTION.md` if relevant.
+Classify a governed signal before readiness work:
 
-## Readiness checks
+- `no-governed-signal`: no explicit change ID, workflow-managed change identity, structured owning-change field, or active governed pointer exists;
+- `single-governed-candidate`: exactly one signal resolves safely;
+- `invalid-or-ambiguous-governed-signal`: a signal is malformed, stale, conflicting, duplicated, unsafe, escaped, or ambiguous.
 
-Before drafting or opening a PR, check:
+Any explicit or structured signal counts even when invalid. Only `no-governed-signal` uses `PR0-portable`. A single candidate uses `PR1-governed` and loads the governed reference; invalid or ambiguous signals stop without portable fallback. Loading never grants mutation authority.
 
-1. working tree status;
-2. branch and base branch;
-3. commits are present and scoped;
-4. tests and validation commands passed or gaps are documented;
-5. CI status is known when available;
-6. for planned initiatives, lifecycle closeout is already reflected in both `docs/plan.md` and the plan body before the PR opens for review when final state is known; if completion depends on a true downstream completion event, the plan remains `Active` and names it; merge itself is not that event;
-7. for ordinary non-trivial work, the required docs-changes artifacts exist, including `docs/changes/<change-id>/change.yaml` plus durable reasoning, defaulting to `docs/changes/<change-id>/explain-change.md` unless an approved equivalent surface applies;
-8. material review findings are closed in `review-resolution.md`, with no `needs-decision` dispositions and no `review-log.md` open findings remaining;
-8a. `Closeout status: open` blocks PR handoff, and `Closeout status: closed` requires final dispositions for all material findings; 8b. a stage-owned non-approval outcome that blocks downstream progress or requires revision has a same-stage later review round or explicit reviewer or owner closeout naming the original Review ID; `review-resolution.md` alone is not a silent substitute; 8c. for no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`;
-9. artifacts are updated;
-10. no secrets, credentials, local paths, or debug-only changes are included;
-11. generated files and migrations are intentional;
-12. reviewers have enough context.
+## Closed classifications
 
-Apply the same readiness checks for workflow-managed and direct-`pr` invocation. Direct `pr` remains isolated only in the sense that no downstream stage follows `pr`; it still opens the PR when readiness passes.
+Classify each independent axis exactly. Unknown values fail before consistency checks.
 
-`verify` owns `branch-ready`. This stage owns `pr-body-ready` and `pr-open-ready`.
+- submission intent: `open`, `draft`, `prepare-only`;
+- refresh authority: `none`, `explicit-title-refresh`, `explicit-full-replacement`, `workflow-title-refresh`;
+- state-transition authority: `none`, `publish-existing-draft`, `convert-existing-open-to-draft`;
+- branch relation: `absent`, `same`, `remote-ancestor-of-local`, `local-ancestor-of-remote`, `diverged`, `ambiguous`;
+- PR state: `absent`, `open`, `draft`, `closed`, `merged`, `ambiguous`;
+- operation result: `opened`, `draft-opened`, `updated`, `reused`, `prepared-not-opened`, `blocked`;
+- hosted-CI state: `passed`, `failed`, `pending`, `unavailable`, `unobserved`, `not-applicable`.
 
-PR handoff is scoped evidence and must not own artifact settlement, milestone state, or routing.
-Summarize planned-initiative state from `change.yaml` and treat the plan and upstream artifacts as read-only.
-PR handoff is blocked when the latest verify evidence does not include a passing state-sync gate for touched, referenced, active, and blocked workflow-state artifacts.
+Explicit `pr` defaults to `open`; `draft` and `prepare-only` require explicit current authority. `prepare-only` permits bounded inspection and content construction but performs no push, PR creation, refresh, publication, draft conversion, or other external mutation. It returns `prepared-not-opened` and `actual_external_mutation: none`. A blocker never silently converts requested `open` or `draft` into successful preparation; report requested intent, actual operation, blocker, and actual mutation separately.
 
-## Artifact placement
+Submission intent does not grant refresh or PR-state transition authority. Default `open` preserves an existing draft. Explicit `draft` preserves an existing open PR. Publishing or converting an existing PR requires the matching separate authority for that exact PR.
 
-Use the project workflow guide for artifact locations when placement matters.
+## Verification and local safety
 
-Lookup order:
+Consume one verify-owned `verification_basis` containing immutable `repository_identity`, `remote_identity`, `base_branch`, `base_revision`, `merge_base_revision`, `head_branch`, and `verified_subject_revision`. Revalidate it; do not reconstruct it from commands, unresolved names, current Git state, arbitrary prose, or historical conventions. Legacy, prose-only, command-only, missing, stale, unresolved, conflicting, or ambiguous evidence may support truthful preparation, but blocks `open`, `draft`, and `pr-open-ready` and routes to fresh verification.
 
-1. explicit user path or change ID;
-2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
-3. known governing spec or schema constraint when directly relevant;
-4. `docs/workflows.md` artifact-location table;
-5. this skill's portable default path;
-6. block on ambiguity.
+The verified subject equals the handoff revision unless exactly one direct-child verify-owned evidence commit intervenes. It may change only final verify evidence and matching verify-owned change-record or state-sync fields. Any other-owner, product, test, governing artifact, dependency, configuration, generated, multi-commit, or non-direct-child change invalidates opening readiness.
 
-This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
+Before mutation, require scoped commits, an acceptable tree and diff, no secret or debug-only inclusion, intentional generated files and migrations, and every operation identity.
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+## Remote safety and PR selection
 
-## Change-record bounded reads
+`remote-ancestor-of-local` means the remote head is a strict ancestor of the local handoff revision and permits only a normal fast-forward push after baseline reread. `local-ancestor-of-remote` means remote contains work absent locally and blocks. `absent` may create the branch, `same` performs no push, and `diverged` or `ambiguous` stops. The skill must not force-push, delete, overwrite, rewrite, or implicitly replace a remote branch.
 
-For planned change records, summarize current workflow state from `change.yaml`.
-When the project provides query helpers, use them as bounded views of the change record, not as another state owner.
+Resolve PR state for the exact repository, host, head, and base. An absent PR may be created once. Adequate open or draft PRs are reused without mutation. Closed, merged, multiple, mismatched, or ambiguous PR state stops without reopening or duplicate creation. Retry must reconcile observed state and never create a duplicate matching PR.
 
-Escalate from bounded helper output to full `change.yaml` when PR handoff depends on forensic reconstruction, unsupported-shape diagnostics, disputed evidence, migration compatibility, or whole-record review.
-Do not treat the PR body as an authoritative state owner.
+Refresh supports title replacement or explicitly authorized whole-body replacement. It must not parse or mutate Markdown sections, add hidden managed markers, or infer body ownership. Existing body bytes remain unchanged without current full-replacement authority.
+
+## Hosted CI
+
+`passed` requires current hosted evidence for the exact handoff revision at the PR head. Route required `failed` checks to their owner. `pending`, `unavailable`, and `unobserved` must never be described as passed; they permit initial opening only when current policy allows post-open CI. `not-applicable` requires current evidence. Local validation is not hosted CI.
+
+## External operation
+
+1. Resolve all local identities, evidence, content, states, and independent authorities.
+2. Immediately before push, require the current remote base to equal the verified base and the observed remote-head baseline to match its classified relation.
+3. Push only when the intent and relation permit it.
+4. After push and before PR mutation, reread remote head, remote base, and matching PR state; require head equal to handoff and base equal to verified base.
+5. Immediately before PR mutation, reread exact PR identity, head, base, title, body identity, and draft state; reclassify any concurrent change.
+6. Create, reuse, refresh, or transition only within current independent authority.
+7. After creation, reuse, refresh, or transition, read back URL, number, state, head, base branch, current base identity, title, and body identity.
+
+Report a successful external write truthfully after later identity drift, but set `pr-open-ready: false` and require fresh verification or the approved base-update route. External success and readiness are separate.
+
+## Body, result, and claims
+
+Compose from the body asset. Include its core group; include governed and impact groups when applicable. Procedure owns applicability and adequacy. Unresolved required data blocks, and no placeholder may remain.
 
 ## Outputs
 
-Produce a PR readiness check, title, body, reviewer notes, risks, follow-ups, and the opened PR URL when the repository/tooling permits opening the PR.
+Every result reports requested intent, actual operation, actual external mutation or none, actual PR state or none, `pr-body-ready`, `pr-open-ready`, hosted-CI state, blockers, claim limitations, and the exact URL only after read-back.
+
+## Review closeout
+
+Inspect `review-log.md`. `Closeout status: open`, `needs-decision`, or open findings block handoff; `Closeout status: closed` requires final dispositions and evidence. A stage-owned non-approval outcome requires a same-stage later review round or explicit reviewer or owner closeout; `review-resolution.md` alone is not a silent substitute. For no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
+
+Treat the plan and upstream artifacts as read-only.
 
 ## Handoff
 
-- Normal next stage: open the PR when `branch-ready`, `pr-body-ready`, and `pr-open-ready` pass.
-- Conditional next stages: return to `explain-change`, `verify`, review-resolution, implementation, or artifact updates when readiness blockers remain; stop when tooling or permissions prevent opening.
-- For full stage order and downstream-blocking semantics, route through the `workflow` skill.
-
-## Claims this skill must not make
-
-Do not claim:
-
-- implementation passed, review passed, verification passed, or tests passed unless the statement links to owning evidence;
-- CI passed unless the hosted or local CI evidence was actually observed and named;
-- branch-ready without citing `verify` evidence;
-- derived artifacts are current unless validation evidence proves it.
-
-Use owning evidence when summarizing implementation passed, review passed, verification passed, or tests passed.
-
-## Progress, readiness, closeout, and Done
-
-- Progress means work that has happened so far.
-- Readiness means the next stage that can happen.
-- Closeout means the current artifact or stage satisfied its checklist.
-- Done means final lifecycle state after required gates are complete.
-- Readiness is not Done. PR body/open readiness is not proof that earlier stages passed unless linked to evidence.
-
-## PR body structure
-
-Use this template:
-
-```markdown
-## Summary
-- ...
-
-## Why
-- ...
-
-## Spec / plan / architecture
-- Proposal: ...
-- Spec: ...
-- Test spec: ...
-- Architecture / ADRs: ...
-- Plan: ...
-
-## What changed
-- ...
-
-## Tests and verification
-- [x] `command` — result
-- [ ] CI — pending / not available / passed
-
-## Requirement coverage
-- R1 → T1, T2 → files/evidence
-- R2 → T3 → files/evidence
-
-## Review resolution summary
-- Accepted: <count>
-- Rejected: <count>
-- Deferred: <count>
-- Partially accepted: <count>
-- Needs decision: <count, must be 0 before PR handoff>
-- Review-resolution: `docs/changes/<change-id>/review-resolution.md`
-
-## Risks and rollback
-- ...
-
-## Reviewer notes
-- ...
-
-## Follow-ups
-- ...
-```
-
-## Title guidance
-
-Use a concise title:
-
-```text
-<type>: <user-visible outcome>
-```
-
-Examples:
-
-- `feat: add resumable import validation`
-- `fix: preserve filters after dashboard refresh`
-- `refactor: isolate billing provider adapter`
-
-## Rules
-
-- Do not open or claim to open a PR unless the tool/action actually did it.
-- Do not say CI passed unless it passed.
-- Do not omit failed or unrun validation.
-- Do not treat a missing required docs-changes baseline pack as a warning-only condition for ordinary non-trivial work; it is a readiness blocker.
-- Do not proceed to PR with `needs-decision`, `Closeout status: open`, stale `review-log.md` open findings, or missing review-resolution closeout evidence for material findings.
-- Keep PR review-resolution details to counts by disposition from the scan-first summary or overview and a link to `review-resolution.md`; do not duplicate every detailed finding and suggestion.
-- Do not defer blocked or superseded lifecycle closeout until PR, merge, or retrospective work.
-- Do not summarize from memory when a diff is available.
-- Do not bury known risks.
-- Do not include massive internal detail that obscures review.
-- Do not stop at a chat-only readiness summary when the user asked for `pr`; if `branch-ready`, `pr-body-ready`, and `pr-open-ready` checks pass, open it unless a blocker or tool limitation prevents that action.
+- Normal next stage: open or reuse the PR when all three readiness gates pass.
+- Conditional next stages: return through workflow to fresh verify, review resolution, implementation, or an owning artifact stage; stop on external or authority blockers.
 
 ## Stop conditions
 
-Stop before opening or claiming a PR when:
+Stop on unresolved target or authority, stale verification, unsafe branch relation, ambiguous PR state, unrelated changes, missing required evidence or resources, open review closeout, failed required validation, or unconfirmed external read-back.
 
-- `verify` has not established branch readiness;
-- required review-resolution, lifecycle closeout, derived-artifact refresh, validation, CI, or docs-change evidence is missing or failing;
-- the working tree or commits include unrelated or unreviewed changes;
-- the PR body would need to cite evidence that does not exist;
-- tooling, permissions, remote state, or explicit user instructions prevent opening.
+## Claims this skill must not make
+
+Do not claim implementation passed, review passed, tests passed, verification passed, CI passed, generated currency, branch readiness, or lifecycle completion without current owning evidence. This skill must not mutate `change.yaml`, workflow routing, artifact settlement, plan state, review state, merge state, release state, or publication state.
+
+Progress means work that has happened so far. Readiness means the next stage that can happen. Closeout means the current artifact or stage satisfied its checklist. Done means final lifecycle state after required gates are complete. Readiness is not Done.
+
+## Required-resource safety
+
+A missing, unreadable, escaped, stale, transformed, or mixed-version governed reference must stop before governed readiness judgment. A missing or invalid body asset must stop before body generation and external mutation. The skill must not reconstruct, recall, or partially invent required resource content.
+
+## Resource map
+
+- READ `references/governed-pr-readiness.md` once for `PR1-governed` after candidate classification and before governed judgment.
+- COPY `assets/pr-body-skeleton.md` once when body applicability is known and before any external mutation.
 
 ## Evidence collection efficiency
 
@@ -235,18 +142,10 @@ Start with:
 ## Result
 
 - Skill: pr
-- Status:
-- Artifacts changed:
-- Open blockers:
-- Next stage:
-- Readiness:
+- Status: <completed | blocked>
+- Artifacts changed: <external PR or none>
+- Open blockers: <blockers or none>
+- Next stage: <human review | owning stage | none>
 ```
 
-Then include:
-
-- readiness check results;
-- PR title;
-- PR body;
-- opened PR URL or blockers if not ready;
-- explicit validation and CI status;
-- recommended reviewers or review focus when useful.
+Then provide the operation result, readiness booleans, hosted-CI state, actual mutation, actual PR state, URL or limitation, readiness checks, title, composed body, risks, reviewer focus, and exact observed validation and CI evidence.

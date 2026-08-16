@@ -18,10 +18,10 @@ def build_parser() -> argparse.ArgumentParser:
         description="Validate skill structure for canonical or fixture skill trees."
     )
     parser.add_argument(
-        "target",
-        nargs="?",
-        default=str(CANONICAL_SKILLS_DIR),
-        help="Path to a skill tree or a single SKILL.md file. Defaults to canonical skills/.",
+        "targets",
+        nargs="*",
+        default=[str(CANONICAL_SKILLS_DIR)],
+        help="Paths to skill trees or SKILL.md files. Defaults to canonical skills/.",
     )
     return parser
 
@@ -37,8 +37,11 @@ def print_result(result: ValidationResult, target: Path) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    target = Path(args.target)
-    return print_result(validate_skill_tree(target), target)
+    status = 0
+    for raw_target in args.targets:
+        target = Path(raw_target)
+        status = max(status, print_result(validate_skill_tree(target), target))
+    return status
 
 
 if __name__ == "__main__":
