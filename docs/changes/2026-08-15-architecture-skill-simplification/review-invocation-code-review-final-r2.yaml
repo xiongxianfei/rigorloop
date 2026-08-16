@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: code-review-final-r2
+review_stage: code-review
+review_target: implementation-final
+base_revision: 03e609fd
+head_revision: b388cf4f
+milestone_id: none
+native_review_status: clean-with-notes
+review_gate_outcome: pass
+independence_level: L0
+author_context_id: root-lifecycle-evidence-correction
+reviewer_context_id: root-code-review-final-r2-context-reset
+context_separation_mechanism: correction-diff-and-closeout-contract-reread
+risk_tier: standard
+risk_tier_triggers:
+  - review-closeout-evidence
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed-review-closeout-linkage
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+risk_map:
+  affected_behavior:
+    - formal review closeout linkage
+  highest_impact_failure_modes:
+    - blocking review remains structurally open
+  changed_boundaries:
+    - review-closeout
+  expected_evidence:
+    - explicit original review closeout
+    - passing closeout validator
+  direct_inspection_areas:
+    - review log
+    - review resolution
+    - M2 rereview target identity
+  intentionally_out_of_scope:
+    - canonical implementation unchanged
+  falsifiable_questions:
+    - does closeout mode pair M2 R1 with its resolved rereview
+forbidden_initial_context_excluded: true

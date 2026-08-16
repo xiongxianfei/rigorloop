@@ -1,0 +1,24 @@
+{
+  "literals": [
+    {"literal_id":"ALIT-001","literal":"name: architecture","classification":"parser-or-package-contract","disposition":"preserve-exact"},
+    {"literal_id":"ALIT-002","literal":"schema-version: skill-readability-v1","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ALIT-003","literal":"role_name: architecture","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ALIT-004","literal":"stage: architecture","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ALIT-005","literal":"Resource map","classification":"parser-or-package-contract","disposition":"preserve-exact"},
+    {"literal_id":"ALIT-006","literal":"READ `references/architecture-package-method.md`","classification":"parser-or-package-contract","disposition":"introduce-exact"},
+    {"literal_id":"ALIT-007","literal":"READ `references/governed-architecture-authoring.md`","classification":"parser-or-package-contract","disposition":"introduce-exact"},
+    {"literal_id":"ALIT-008","literal":"COPY `assets/architecture-skeleton.md`","classification":"parser-or-package-contract","disposition":"preserve-exact"},
+    {"literal_id":"ALIT-009","literal":"COPY `assets/adr-skeleton.md`","classification":"parser-or-package-contract","disposition":"preserve-exact"},
+    {"literal_id":"ALIT-010","literal":"COPY `assets/diagram-styles.mmd`","classification":"parser-or-package-contract","disposition":"preserve-exact"},
+    {"literal_id":"ALIT-011","literal":"AA0-assessment","classification":"normative-contract","disposition":"introduce-exact"},
+    {"literal_id":"ALIT-012","literal":"AA1-portable-authoring","classification":"normative-contract","disposition":"introduce-exact"},
+    {"literal_id":"ALIT-013","literal":"AA2-governed-authoring","classification":"normative-contract","disposition":"introduce-exact"},
+    {"literal_id":"ALIT-014","literal":"architecture-required","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ALIT-015","literal":"architecture-not-required","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ALIT-016","literal":"architecture-ambiguous","classification":"normative-contract","disposition":"preserve-exact"},
+    {"literal_id":"ALIT-017","literal":"prepared","classification":"normative-contract","disposition":"introduce-exact"},
+    {"literal_id":"ALIT-018","literal":"partial-blocked","classification":"normative-contract","disposition":"introduce-exact"},
+    {"literal_id":"ALIT-019","literal":"complete","classification":"normative-contract","disposition":"introduce-exact"},
+    {"literal_id":"ALIT-020","literal":"blocked-before-write","classification":"normative-contract","disposition":"introduce-exact"}
+  ]
+}

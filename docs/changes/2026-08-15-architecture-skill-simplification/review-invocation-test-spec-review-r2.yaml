@@ -1,0 +1,57 @@
+schema_version: 1
+review_id: test-spec-review-r2
+review_stage: test-spec-review
+review_target: specs/architecture-skill-simplification.test.md
+base_revision: 18d07715
+head_revision: 18d07715
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-test-spec-revision-r1
+reviewer_context_id: root-test-spec-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - prepared-multi-target-recovery
+  - dependency-aware-commit-groups
+  - boundary-first-proof-map
+  - published-skill-package-parity
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/architecture-skill-simplification.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-15-architecture-skill-simplification.md
+  - specs/architecture-skill-simplification.test.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+  - boundary-first-proof-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: specs/architecture-skill-simplification.md
+    sha256: 4325ef95349e53edd2074b4d6bb5cc1b62dd1430a95de3c0da95a052ff3882fb
+  - path: docs/changes/2026-08-15-architecture-skill-simplification/architecture-assessment.md
+    sha256: ee215ed89b022ed69e37995d0a30bfd07d6d0fecf4a1a1c98698f3a1184618a5
+  - path: docs/plans/2026-08-15-architecture-skill-simplification.md
+    sha256: 43174ec1b9e42e62ea172d22c7a92aa610d63f03017bf66c9f092b4ead5c1dba
+  - path: specs/architecture-skill-simplification.test.md
+    sha256: 414570565734eb0433eef28833f8518adfb47e8b2edfd0b8e49b8d5062b48fe6
+  - path: docs/changes/2026-08-15-architecture-skill-simplification/evidence/test-spec-revision-r1.md
+    sha256: 586e84a5928fb065be87da13391184b587e51715913a654422ce13f4869cebbd
+  - path: docs/changes/2026-08-15-architecture-skill-simplification/reviews/spec-review-r1.md
+    sha256: add702d78b737f0497df6b3a56c31de9a4584d658ac80e588059c97ab2f996bf
+  - path: docs/changes/2026-08-15-architecture-skill-simplification/reviews/plan-review-r1.md
+    sha256: f5163e7fffa37688c3bffa594c44d55c99e1c9fa6133065640bff94088caf282
+  - path: docs/changes/2026-08-15-architecture-skill-simplification/reviews/test-spec-review-r1.md
+    sha256: b538ce171ce6770b7ce5f2b4d184392311b157979ebe24bde78c0baa1069ae72
+prompt_template_version: test-spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - complete R1-R54 and AC1-AC10 traceability
+  - direct proof for all boundaries and selected interactions
+  - assessment basis, prepared manifests, dependencies, commit groups, and retries
+  - executable command paths, ownership, milestone timing, and zero-test behavior
+  - closure of ARSIM-TSR1 and ARSIM-TSR2 without contract expansion
+  - no target-agent runtime or extra manual semantic-review gate

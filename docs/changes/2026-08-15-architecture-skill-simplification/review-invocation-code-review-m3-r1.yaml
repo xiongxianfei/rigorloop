@@ -1,0 +1,55 @@
+schema_version: 1
+review_id: code-review-M3-r1
+review_stage: code-review
+review_target: implementation-M3
+base_revision: d166f386
+head_revision: 90db1f65
+milestone_id: M3
+native_review_status: clean-with-notes
+review_gate_outcome: pass
+independence_level: L0
+author_context_id: root-implement-M3
+reviewer_context_id: root-code-review-M3-r1-context-reset
+context_separation_mechanism: committed-evidence-and-source-recomputation
+risk_tier: elevated
+risk_tier_triggers:
+  - package-parity-proof
+  - semantic-preservation-evidence
+  - profile-measurement
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed-R43-R54-T11-T14
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+risk_map:
+  affected_behavior:
+    - simplification measurement
+    - package parity
+    - semantic reconciliation
+  highest_impact_failure_modes:
+    - arithmetic uses inconsistent assemblies
+    - a derived adapter omits a reference
+    - evidence hides total package growth
+  changed_boundaries:
+    - BND-COMPAT-001
+    - BND-ENV-001
+  expected_evidence:
+    - canonical hashes and arithmetic
+    - adapter archive and install parity
+    - complete rule and literal reconciliation
+  direct_inspection_areas:
+    - profile totals
+    - adapter suite result
+    - semantic preservation report
+  intentionally_out_of_scope:
+    - target-agent runtime
+    - final holistic review and verify
+  falsifiable_questions:
+    - do all three assemblies decrease
+    - does every supported adapter preserve both references and three assets
+forbidden_initial_context_excluded: true

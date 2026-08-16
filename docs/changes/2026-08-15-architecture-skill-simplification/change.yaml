@@ -1,0 +1,284 @@
+change_id: 2026-08-15-architecture-skill-simplification
+title: Architecture Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-15-architecture-skill-simplification.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r3
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-08-15-architecture-skill-simplification/reviews/proposal-review-r3.md
+      round: r3
+  spec:
+    kind: spec
+    path: specs/architecture-skill-simplification.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r1
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-15-architecture-skill-simplification/reviews/spec-review-r1.md
+      round: r1
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-15-architecture-skill-simplification.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r1
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-15-architecture-skill-simplification/reviews/plan-review-r1.md
+      round: r1
+  test-spec:
+    kind: test-spec
+    path: specs/architecture-skill-simplification.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r2
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-15-architecture-skill-simplification/reviews/test-spec-review-r2.md
+      round: r2
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: verify
+  next_stage: pr
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/proposal-authoring.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/reviews/proposal-review-r1.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/review-resolution.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/proposal-revision-r1.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/reviews/proposal-review-r2.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/proposal-revision-r2.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/reviews/proposal-review-r3.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+    - specs/architecture-skill-simplification.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/spec-authoring.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-spec-review-r1.yaml
+    - docs/changes/2026-08-15-architecture-skill-simplification/reviews/spec-review-r1.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/architecture-assessment.md
+    - docs/plans/2026-08-15-architecture-skill-simplification.md
+    - docs/plan.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/plan-authoring.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-plan-review-r1.yaml
+    - docs/changes/2026-08-15-architecture-skill-simplification/reviews/plan-review-r1.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/plan-initialization.md
+    - specs/architecture-skill-simplification.test.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/test-spec-authoring.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-test-spec-review-r1.yaml
+    - docs/changes/2026-08-15-architecture-skill-simplification/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/test-spec-revision-r1.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-test-spec-review-r2.yaml
+    - docs/changes/2026-08-15-architecture-skill-simplification/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/workflow-automation-target-verify.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/architecture-rule-disposition.yaml
+    - docs/changes/2026-08-15-architecture-skill-simplification/architecture-literal-compatibility.yaml
+    - docs/changes/2026-08-15-architecture-skill-simplification/architecture-asset-disposition.yaml
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/profile-size-baseline.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/m1-preservation-inventories.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-m1-r1.yaml
+    - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/m2-package-implementation.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-m2-r1.yaml
+    - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-m2-r2.yaml
+    - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-m2-r2.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/simplification-measurements.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/semantic-preservation-review.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/evidence/m3-package-proof.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-m3-r1.yaml
+    - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-m3-r1.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-final-r1.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/explain-change.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-final-r2.yaml
+    - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-final-r2.md
+    - docs/changes/2026-08-15-architecture-skill-simplification/verify-report.md
+  planned_work:
+    plan_artifact_id: plan
+    initialization_basis:
+      review_id: plan-review-r1
+      review_round: r1
+      review_record: docs/changes/2026-08-15-architecture-skill-simplification/reviews/plan-review-r1.md
+      reviewed_artifact_path: docs/plans/2026-08-15-architecture-skill-simplification.md
+      reviewed_revision: 0145d6b9
+    current_milestone: none
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+    remaining_implementation_milestones: []
+    latest_review:
+      status: approved
+      stage: code-review
+      round: r2
+      artifact_id: plan
+      occurrence: final
+      milestone_id: none
+      evidence:
+        - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-final-r2.yaml
+        - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-final-r2.md
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - external-completion-event-pending
+      evidence:
+        - docs/changes/2026-08-15-architecture-skill-simplification/reviews/plan-review-r1.md
+        - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-m3-r1.md
+        - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-final-r2.md
+        - docs/changes/2026-08-15-architecture-skill-simplification/explain-change.md
+        - docs/changes/2026-08-15-architecture-skill-simplification/verify-report.md
+        - docs/changes/2026-08-15-architecture-skill-simplification/evidence/plan-initialization.md
+
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: verify
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-15T15:49:36-07:00"
+      completion:
+        rule: first formal verify result is durably recorded
+    status: completed
+    current_stage: verify
+    stop_reason: target-reached
+    evidence:
+      - docs/changes/2026-08-15-architecture-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+      - docs/proposals/2026-08-15-architecture-skill-simplification.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/reviews/proposal-review-r3.md
+      - specs/architecture-skill-simplification.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/evidence/spec-authoring.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-spec-review-r1.yaml
+      - docs/changes/2026-08-15-architecture-skill-simplification/reviews/spec-review-r1.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/architecture-assessment.md
+      - docs/plans/2026-08-15-architecture-skill-simplification.md
+      - docs/plan.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/evidence/plan-authoring.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-plan-review-r1.yaml
+      - docs/changes/2026-08-15-architecture-skill-simplification/reviews/plan-review-r1.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/evidence/plan-initialization.md
+      - specs/architecture-skill-simplification.test.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/evidence/test-spec-authoring.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-test-spec-review-r1.yaml
+      - docs/changes/2026-08-15-architecture-skill-simplification/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/evidence/test-spec-revision-r1.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-test-spec-review-r2.yaml
+      - docs/changes/2026-08-15-architecture-skill-simplification/reviews/test-spec-review-r2.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/evidence/workflow-automation-target-verify.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/evidence/m1-preservation-inventories.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-m1-r1.yaml
+      - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-m1-r1.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/evidence/m2-package-implementation.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-m2-r2.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/evidence/m3-package-proof.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-m3-r1.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-final-r1.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/explain-change.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-final-r2.md
+      - docs/changes/2026-08-15-architecture-skill-simplification/verify-report.md
+
+artifacts:
+  proposal: docs/proposals/2026-08-15-architecture-skill-simplification.md
+  spec: specs/architecture-skill-simplification.md
+  plan: docs/plans/2026-08-15-architecture-skill-simplification.md
+  test_spec: specs/architecture-skill-simplification.test.md
+
+requirements:
+  - Reduce architecture-assessment, portable-authoring, and governed-authoring loaded context while preserving architecture applicability, C4, arc42, ADR, lifecycle, review, and handoff behavior.
+  - Keep universal assessment and safety inline, add one conditional package-method reference and one governed-authoring reference, and preserve exactly the three existing structural assets.
+  - Separate architecture action, target operation, governed signal, and execution authority with fail-closed classification, current assessment binding, a durable prepared manifest, and dependency-aware multi-artifact recovery.
+  - Preserve every behaviorally significant rule and classify exact literal dependencies separately from semantic rules.
+  - Prove canonical-through-installed package parity and real profile reduction without target-agent runtime execution, prose classification, or a separate manual semantic-review acceptance gate.
+
+tests:
+  - Formal independent proposal review of value, scope, assessment ownership, reference boundaries, artifact transactions, recovery, measurement, and readiness.
+  - Deterministic validation of resource mappings, action and target operations, governed authority, assessment isolation, missing resources, stops, claims, and package parity.
+  - Static scenarios covering assessment, portable and governed authoring, canonical and ADR operations, combined actions, identical retry, partial writes, concurrency, and forbidden mutation.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-15-architecture-skill-simplification/change.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-15-architecture-skill-simplification.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/review-log.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/review-resolution.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/proposal-revision-r1.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/proposal-revision-r2.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/reviews/proposal-review-r3.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+  - specs/architecture-skill-simplification.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-15-architecture-skill-simplification.md
+  - docs/plan.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/plan-authoring.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/reviews/plan-review-r1.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/plan-initialization.md
+  - specs/architecture-skill-simplification.test.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/test-spec-authoring.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-test-spec-review-r1.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/test-spec-revision-r1.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-test-spec-review-r2.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/reviews/test-spec-review-r2.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/workflow-automation-target-verify.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/architecture-rule-disposition.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/architecture-literal-compatibility.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/architecture-asset-disposition.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/fixtures/scenario-contracts.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/fixtures/invalid-rule-owner.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/fixtures/invalid-literal-classification.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/profile-size-baseline.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/m1-preservation-inventories.md
+  - scripts/test-skill-validator.py
+  - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-m1-r1.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-m1-r1.md
+  - skills/architecture/SKILL.md
+  - skills/architecture/references/architecture-package-method.md
+  - skills/architecture/references/governed-architecture-authoring.md
+  - skills/architecture/assets/architecture-skeleton.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/m2-package-implementation.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-m2-r1.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-m2-r1.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-m2-r2.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-m2-r2.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/simplification-measurements.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/semantic-preservation-review.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/evidence/m3-package-proof.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-m3-r1.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-m3-r1.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-final-r1.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-final-r1.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/explain-change.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/review-invocation-code-review-final-r2.yaml
+  - docs/changes/2026-08-15-architecture-skill-simplification/reviews/code-review-final-r2.md
+  - docs/changes/2026-08-15-architecture-skill-simplification/verify-report.md
+
+review:
+  status: approved
+  unresolved_items: 0

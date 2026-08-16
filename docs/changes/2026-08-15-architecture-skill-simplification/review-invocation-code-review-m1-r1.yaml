@@ -1,0 +1,62 @@
+schema_version: 1
+review_id: code-review-M1-r1
+review_stage: code-review
+review_target: implementation-M1
+base_revision: 56664a41
+head_revision: 9ceb637f
+milestone_id: M1
+native_review_status: clean-with-notes
+review_gate_outcome: pass
+independence_level: L0
+author_context_id: root-implement-M1
+reviewer_context_id: root-code-review-M1-r1-context-reset
+context_separation_mechanism: committed-diff-and-governing-artifact-reread
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-semantic-preservation
+  - compatibility-inventory
+  - measurement-baseline
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed-R43-R51-T11-T13
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+risk_map:
+  affected_behavior:
+    - semantic-rule ownership evidence
+    - exact literal compatibility classification
+    - asset instruction disposition
+    - loaded-profile baseline
+  highest_impact_failure_modes:
+    - a behavior has no single destination
+    - a compatibility-sensitive literal lacks treatment
+    - an asset instruction lacks one disposition
+    - the baseline understates a loaded assembly
+  changed_boundaries:
+    - BND-COMPAT-001
+    - INT-004
+  expected_evidence:
+    - one owner and destination per semantic rule cluster
+    - one classification per compatibility-sensitive literal
+    - one treatment for every current asset instruction
+    - deterministic resource identities and arithmetic
+  direct_inspection_areas:
+    - M1 ledgers and invalid fixtures
+    - scenario coverage
+    - baseline identities and totals
+    - focused validator tests
+  intentionally_out_of_scope:
+    - canonical architecture package changes
+    - generated adapter changes
+    - M2 and M3 evidence
+  falsifiable_questions:
+    - does every semantic row resolve to one owner
+    - do unknown closed values fail before consistency checks
+    - are all three assets covered
+    - do baseline totals match canonical files
+forbidden_initial_context_excluded: true

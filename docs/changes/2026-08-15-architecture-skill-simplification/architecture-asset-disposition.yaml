@@ -1,0 +1,8 @@
+{
+  "assets": [
+    {"asset":"architecture-skeleton.md","disposition":"structural","owner":"headings, ordering, tables, links, and neutral placeholders"},
+    {"asset":"adr-skeleton.md","disposition":"structural","owner":"ADR headings, status, decision, consequences, and links"},
+    {"asset":"diagram-styles.mmd","disposition":"literal-style","owner":"copied Mermaid style literals"},
+    {"asset":"architecture-skeleton.md#method-prompts","disposition":"method-owned","owner":"references/architecture-package-method.md"}
+  ]
+}

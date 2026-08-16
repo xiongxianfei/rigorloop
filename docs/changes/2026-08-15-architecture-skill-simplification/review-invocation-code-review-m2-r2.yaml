@@ -1,0 +1,52 @@
+schema_version: 1
+review_id: code-review-M2-r2
+review_stage: code-review
+review_target: implementation-M2
+base_revision: 76660908
+head_revision: 793d3acd
+milestone_id: M2
+native_review_status: clean-with-notes
+review_gate_outcome: pass
+independence_level: L0
+author_context_id: root-correction-M2
+reviewer_context_id: root-code-review-M2-r2-context-reset
+context_separation_mechanism: correction-diff-and-requirement-first-reread
+risk_tier: elevated
+risk_tier_triggers:
+  - lifecycle-transaction-contract
+  - crash-recovery-semantics
+requirement_fidelity:
+  applicability: applicable
+  receipt: passed-R21-R42-T6-T10
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-finding-released
+  - verdict-recorded
+second_review_required: false
+unresolved_findings: []
+risk_map:
+  affected_behavior:
+    - prepared manifest property completeness
+    - batch and retry outcomes
+  highest_impact_failure_modes:
+    - omitted identity prevents exact recovery
+    - partial state is exposed or misreported
+  changed_boundaries:
+    - BND-TEMPORAL-001
+    - BND-RECOVERY-001
+  expected_evidence:
+    - complete property projection
+    - focused and broad validation
+  direct_inspection_areas:
+    - correction diff
+    - governed reference
+    - focused assertions
+  intentionally_out_of_scope:
+    - M3 package parity
+    - final verification
+  falsifiable_questions:
+    - is every omitted property restored
+    - does changed retry identity create a new operation
+forbidden_initial_context_excluded: true
