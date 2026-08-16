@@ -1,33 +1,25 @@
 # Architecture package review method
 
-Use this reviewer-focused method only after the universal skill selects `canonical-architecture-update` or `ADR`. It specializes the approved architecture method; it does not decide applicability, semantic status, materiality, recording, settlement, or routing.
+Use after the universal skill selects `canonical-architecture-update` or `ADR`. This method does not decide applicability, status, materiality, recording, settlement, or routing.
 
-## Canonical package
+## Canonical package and arc42
 
-Review the exact changed canonical Markdown, linked diagram sources, related ADRs, and governing specification as one package. Confirm current architecture truth has one canonical owner and that legacy documents are not implied to be normalized without explicit evidence.
+Review the exact changed canonical architecture Markdown, linked diagram sources, related ADRs, governing specification, and legacy status as one package. Confirm current architecture truth has one canonical owner.
 
-Check arc42 completeness and coherence across all 12 official sections. Require useful current content in Introduction and Goals, Architecture Constraints, Context and Scope, Solution Strategy, and Building Block View. Review Runtime View for orchestration, failure, retry, command, and generated-output flows; Deployment View for environments, packaging, adapters, distribution, and release boundaries; Crosscutting Concepts for validation, security, caching, portability, generation, and observability; Architecture Decisions for concise ADR links; Quality Requirements for measurable quality scenarios; Risks and Technical Debt for material residual risk; and Glossary for ambiguous domain terms.
+Check all 12 official arc42 sections for coherent current content. Pay particular attention to goals and constraints; context, solution strategy, and building blocks; Runtime View failure and recovery flows; Deployment View packaging, adapters, distribution, and environments; Crosscutting Concepts such as validation, security, portability, and observability; concise Architecture Decisions links; measurable Quality Requirements; material risks and debt; and ambiguous glossary terms.
 
 ## C4 and diagrams
 
-Require reviewable source text for context and container views when those levels explain the change. Add component or deployment views only when important internal responsibilities or execution boundaries remain unclear.
-
-Check that context diagrams distinguish people, the system under review, and external systems; container diagrams show relevant technologies and responsibilities; relationships are labeled; and the chosen C4 level does not mix container, component, runtime, or dependency semantics without explanation. For Mermaid flowcharts or graphs, require the project’s applicable C4 role classes. Keep one authored diagram source rather than embedding or duplicating it in canonical Markdown.
+Require reviewable context and container sources when those levels explain the change; require component or deployment views only when important responsibilities remain unclear. Check that people, the system, external systems, containers, technologies, responsibilities, and labeled relationships appear at the correct C4 level. Applicable Mermaid diagrams retain the project’s C4 role classes and one authored source rather than embedded or duplicated source.
 
 ## Building blocks and quality
 
-Reject a Building Block View that is only a folder catalog when multiple responsibilities or containers are involved. Test whether ownership, interfaces, data boundaries, failure modes, migrations, compatibility, security, observability, performance, scalability, and recovery are explicit enough to plan and verify.
-
-Quality scenarios should identify stimulus, environment, response, and measure. Deployment content should explain real packaging and execution boundaries rather than repeat source layout. Diagrams support decisions; they do not substitute for them.
+Reject a Building Block View that is only a folder catalog for multi-responsibility architecture. Check ownership, interfaces, data boundaries, failures, migration, compatibility, security, operability, performance, and recovery. Quality scenarios identify stimulus, environment, response, and measure. Deployment content explains execution rather than repeating source layout.
 
 ## ADR quality
 
-For each ADR, review stable ownership, context, the decision, materially different alternatives, consequences, compatibility with canonical architecture, and follow-up. Confirm the ADR records a durable decision rather than duplicating current structure that belongs in the canonical package.
+Review ADR ownership, context, decision, materially different alternatives, consequences, canonical compatibility, and follow-up. The ADR records a durable decision rather than duplicating current structure. For replacement or supersession, verify predecessor and replacement links, status intent, and canonical references; review approves the exact intended `accepted` or `active` state.
 
-For replacement or supersession, verify predecessor and replacement links, status intent, and canonical references are coherent. Architecture authoring may propose ADR status changes, but architecture review owns approval of the exact intended `accepted` or `active` settlement state.
+## Package consistency
 
-## Package consistency and failure prompts
-
-Challenge silent failure, hidden coupling, irreversible migration, old-client and old-data compatibility, trust boundaries, operational ownership, bad integration assumptions, and decisions that would be unrecoverable without an ADR. Confirm links resolve and that canonical Markdown does not reference missing diagrams or ADRs.
-
-Record findings against exact paths, sections, lines, diagram names, or ADR IDs. Do not restate universal status, recording, settlement, or handoff policy here.
+Challenge silent failure, hidden coupling, irreversible migration, compatibility, trust boundaries, ownership, and bad integration assumptions. Confirm links resolve and canonical Markdown references no missing diagram or ADR. Record findings against exact paths, sections, lines, diagrams, or ADR IDs.
