@@ -1,17 +1,18 @@
 # Review Resolution: Architecture Review Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
+Review closeout: test-spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Current result: plan approved, initialized, and activated by identical settlement retry; test-spec authoring is next
+- Unresolved findings: 1
+- Current result: test-spec review changes requested; implementation handoff is blocked pending disposition, revision, and rereview
 
 ## Resolution overview
 
@@ -137,3 +138,21 @@ No material findings. The approving clean review confirms that all 58 requiremen
 ### plan-review-r1
 
 No material findings. The approving clean review confirms that the milestones are traceable, independently closeable, validation-owned, and ready for exact plan initialization and settlement retry.
+
+### test-spec-review-r1
+
+#### ARRTSR-PR1
+
+Finding ID: ARRTSR-PR1
+Disposition: needs-decision
+Status: open
+Owner: test-spec author
+Owning stage: test-spec
+Decision owner: workflow-managed review-resolution
+Decision needed: Accept, reject, defer, or otherwise settle the required direct proof for R30's ADR intended-state branches.
+Chosen action: pending
+Rationale: The first formal test-spec review found that generic approved settlement does not directly prove the two valid ADR post-states or the mandatory complete stop for missing or ambiguous intent.
+Required outcome: Add deterministic valid and invalid intended-state cases or record a justified disposition that preserves the governing contract.
+Safe resolution path: Resolve this finding, revise the test spec when accepted, rerun boundary validation, and obtain a fresh independent test-spec review.
+Validation target: revised proof mappings and approving test-spec rereview.
+Validation evidence: pending

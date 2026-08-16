@@ -21,6 +21,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: test-spec-review-r1
+Stage: test-spec-review
+Round: r1
+Reviewed artifact: `specs/architecture-review-skill-simplification.test.md` at commit `b560ae0e`
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r1.md
+Resolution: review-resolution.md#test-spec-review-r1
+Material findings: ARRTSR-PR1
+Open findings: ARRTSR-PR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: spec-review-r1
 Stage: spec-review
 Round: r1
