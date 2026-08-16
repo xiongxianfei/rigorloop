@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Validate change-local PR simplification ledgers and deterministic baseline."""
 
-import hashlib
 import json
 from pathlib import Path
 
@@ -53,9 +52,16 @@ assert required_families <= {row["family"] for row in scenarios}
 allowed_results = set(fixture["vocabularies"]["operation"]["allowed"])
 assert all(row["result"] in allowed_results for row in scenarios)
 
-skill = (ROOT / "skills/pr/SKILL.md").read_bytes().replace(b"\r\n", b"\n")
-assert len(skill) == 11375, f"PR baseline bytes changed: {len(skill)}"
-assert len(skill.decode("utf-8").split()) == 1678, "PR baseline words changed"
-assert hashlib.sha256(skill).hexdigest() == "c122a3bca9c59c19075464b9bda1d69f3dc1f51e13b40724deb684c6912cd407"
+baseline = (CHANGE / "evidence/profile-size-baseline.md").read_text(encoding="utf-8")
+for value in ("1,678", "11,375", "c122a3bca9c59c19075464b9bda1d69f3dc1f51e13b40724deb684c6912cd407"):
+    assert value in baseline, f"missing baseline value: {value}"
 
-print(f"validated {len(rules)} rules, {len(literals)} literals, {len(basis)} basis fields, and {len(scenarios)} scenarios")
+skill = (ROOT / "skills/pr/SKILL.md").read_bytes().replace(b"\r\n", b"\n")
+reference = (ROOT / "skills/pr/references/governed-pr-readiness.md").read_bytes().replace(b"\r\n", b"\n")
+asset = ROOT / "skills/pr/assets/pr-body-skeleton.md"
+assert asset.is_file(), "missing PR body asset"
+for name, assembled in {"PR0": skill, "PR1": skill + reference}.items():
+    assert len(assembled) < 11375, f"{name} baseline bytes did not decrease"
+    assert len(assembled.decode("utf-8").split()) < 1678, f"{name} baseline words did not decrease"
+
+print(f"validated {len(rules)} rules, {len(literals)} literals, {len(basis)} basis fields, {len(scenarios)} scenarios, and 2 final profiles")
