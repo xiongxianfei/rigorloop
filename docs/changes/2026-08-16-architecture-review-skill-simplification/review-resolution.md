@@ -1,6 +1,6 @@
 # Review Resolution: Architecture Review Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -12,6 +12,8 @@ Review closeout: test-spec-review-r2
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m3-r1
+Review closeout: code-review-final-r1
+Review closeout: code-review-final-r2
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
 - Findings resolved: 7
@@ -196,4 +198,8 @@ Owning stage: review-resolution
 Chosen action: Add the missing formal-review identity fields and normalize this resolution section to the existing review-artifact contract without changing any review judgment.
 Rationale: Closeout validation must recognize every durable code-review occurrence and its resolution before final verification can rely on that evidence.
 Validation target: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-16-architecture-review-skill-simplification` passes after a clean holistic rereview.
-Validation evidence: pending recording repair and rereview.
+Validation evidence: Structure validation passes after the recording repair, and `code-review-final-r2` provides the required clean same-stage rereview.
+
+### code-review-final-r2
+
+No material findings. The clean holistic rereview confirms that ARRCODE-F1 and ARRCODE-F2 are resolved and that the complete branch is ready for explanation and final verification.
