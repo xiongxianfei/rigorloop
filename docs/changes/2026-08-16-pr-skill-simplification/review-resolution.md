@@ -11,11 +11,15 @@ Review closeout: spec-review-r2
 Review closeout: plan-review-r1
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
+Review closeout: code-review-m1-r1
+Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
+Review closeout: code-review-m3-r1
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`
-- Findings resolved: 9
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `spec-review-r1`, `spec-review-r2`, `plan-review-r1`, `test-spec-review-r1`, `test-spec-review-r2`, `code-review-m1-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m3-r1`
+- Findings resolved: 10
 - Unresolved findings: 0
-- Current result: test specification approved for implementation handoff
+- Current result: all implementation milestones closed; final holistic review required
 
 ## Resolution overview
 
@@ -228,3 +232,9 @@ Validation evidence: `docs/changes/2026-08-16-pr-skill-simplification/evidence/m
 ### code-review-m2-r2
 
 No material findings. The rereview confirms `PRSIM-CR1` is resolved and closes M2.
+
+### code-review-m3-r1
+
+No material findings. The clean review confirms that both real profiles shrink,
+all frozen semantics have one disposition, and canonical-through-installed
+package proof closes M3.

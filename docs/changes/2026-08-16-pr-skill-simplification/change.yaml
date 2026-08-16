@@ -95,9 +95,11 @@ workflow_state:
     - docs/changes/2026-08-16-pr-skill-simplification/evidence/simplification-measurements.md
     - docs/changes/2026-08-16-pr-skill-simplification/evidence/semantic-preservation-review.md
     - docs/changes/2026-08-16-pr-skill-simplification/evidence/m3-package-proof.md
+    - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-m3-r1.yaml
+    - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m3-r1.md
   planned_work:
     plan_artifact_id: plan
-    current_milestone: M3
+    current_milestone: M4
     initialization_basis:
       review_id: plan-review-r1
       review_round: r1
@@ -113,23 +115,25 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: review-requested
-    remaining_implementation_milestones:
-      - M3
+        state: closed
+      M4:
+        kind: lifecycle-closeout
+        state: implementing
+    remaining_implementation_milestones: []
     latest_review:
-      status: review-requested
+      status: approved
       stage: code-review
-      round: null
+      round: r1
       artifact_id: plan
       occurrence: milestone
       milestone_id: M3
       evidence:
-        - docs/changes/2026-08-16-pr-skill-simplification/evidence/m3-package-proof.md
+        - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m3-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
-        - implementation-milestones-open
-        - milestone-review-pending
+        - lifecycle-gates-open
+        - explain-change-pending
         - verify-pending
       evidence:
         - docs/changes/2026-08-16-pr-skill-simplification/reviews/plan-review-r1.md
@@ -160,6 +164,7 @@ workflow:
       - docs/changes/2026-08-16-pr-skill-simplification/evidence/simplification-measurements.md
       - docs/changes/2026-08-16-pr-skill-simplification/evidence/semantic-preservation-review.md
       - docs/changes/2026-08-16-pr-skill-simplification/evidence/m3-package-proof.md
+      - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m3-r1.md
 
 artifacts:
   proposal: docs/proposals/2026-08-16-pr-skill-simplification.md
@@ -243,6 +248,8 @@ changed_files:
   - docs/changes/2026-08-16-pr-skill-simplification/evidence/simplification-measurements.md
   - docs/changes/2026-08-16-pr-skill-simplification/evidence/semantic-preservation-review.md
   - docs/changes/2026-08-16-pr-skill-simplification/evidence/m3-package-proof.md
+  - docs/changes/2026-08-16-pr-skill-simplification/review-invocation-code-review-m3-r1.yaml
+  - docs/changes/2026-08-16-pr-skill-simplification/reviews/code-review-m3-r1.md
 
 review:
   status: approved
