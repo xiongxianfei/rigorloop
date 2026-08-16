@@ -9,11 +9,11 @@ argument-hint: [branch, feature name, plan path, or PR request]
 
 ## Purpose
 
-Prepare and, when readiness passes, open one pull request grounded in the actual diff and current evidence. `verify` owns `branch-ready`; this skill owns `pr-body-ready` and `pr-open-ready` and has no downstream continuation.
+Open one evidence-grounded pull request when ready. `verify` owns `branch-ready`; this skill owns `pr-body-ready` and `pr-open-ready` and has no downstream continuation.
 
 ## When to use
 
-Use after `verify` establishes branch readiness, or for a nearly ready direct PR request.
+Use after `verify`, or for a nearly ready direct PR request.
 
 ## When not to use
 
@@ -25,15 +25,9 @@ Public skills operate in customer-project mode by default. Use project-local art
 
 ## Inputs to read
 
-Resolve the repository, remote, base and head, verification evidence, handoff revision, working tree, diff, and matching PR. Read applicable evidence; never summarize from memory.
+Resolve repository, remote, branches, verification evidence, handoff, tree, diff, and matching PR. Never summarize from memory.
 
-Classify a governed signal before readiness work:
-
-- `no-governed-signal`: no explicit change ID, workflow-managed change identity, structured owning-change field, or active governed pointer exists;
-- `single-governed-candidate`: exactly one signal resolves safely;
-- `invalid-or-ambiguous-governed-signal`: a signal is malformed, stale, conflicting, duplicated, unsafe, escaped, or ambiguous.
-
-Any explicit or structured signal counts even when invalid. Only `no-governed-signal` uses `PR0-portable`. A single candidate uses `PR1-governed` and loads the governed reference; invalid or ambiguous signals stop without portable fallback. Loading never grants mutation authority.
+An explicit change ID, workflow change identity, owning-change field, or governed pointer is a signal even when invalid. governed signal: `no-governed-signal`, `single-governed-candidate`, or `invalid-or-ambiguous-governed-signal`. Only the first uses `PR0-portable`; the second loads `PR1-governed`; malformed, stale, conflicting, duplicated, unsafe, escaped, or ambiguous signals stop without portable fallback. Loading grants no authority.
 
 ## Closed classifications
 
@@ -47,29 +41,29 @@ Classify each independent axis exactly. Unknown values fail before consistency c
 - operation result: `opened`, `draft-opened`, `updated`, `reused`, `prepared-not-opened`, `blocked`;
 - hosted-CI state: `passed`, `failed`, `pending`, `unavailable`, `unobserved`, `not-applicable`.
 
-Explicit `pr` defaults to `open`; `draft` and `prepare-only` require explicit current authority. `prepare-only` permits bounded inspection and content construction but performs no push, PR creation, refresh, publication, draft conversion, or other external mutation. It returns `prepared-not-opened` and `actual_external_mutation: none`. A blocker never silently converts requested `open` or `draft` into successful preparation; report requested intent, actual operation, blocker, and actual mutation separately.
+Explicit `pr` defaults to `open`; the other intents require current authority. `prepare-only` performs no push, PR creation, refresh, publication, draft conversion, or other external mutation and returns `prepared-not-opened` with `actual_external_mutation: none`. A blocker does not reclassify intent; report requested intent, actual operation, blocker, and actual mutation.
 
-Submission intent does not grant refresh or PR-state transition authority. Default `open` preserves an existing draft. Explicit `draft` preserves an existing open PR. Publishing or converting an existing PR requires the matching separate authority for that exact PR.
+Submission intent does not grant refresh or PR-state transition authority. Default `open` preserves an existing draft. Explicit `draft` preserves an existing open PR. Publishing or conversion needs matching authority.
 
 ## Verification and local safety
 
-Consume one verify-owned `verification_basis` containing immutable `repository_identity`, `remote_identity`, `base_branch`, `base_revision`, `merge_base_revision`, `head_branch`, and `verified_subject_revision`. Revalidate it; do not reconstruct it from commands, unresolved names, current Git state, arbitrary prose, or historical conventions. Legacy, prose-only, command-only, missing, stale, unresolved, conflicting, or ambiguous evidence may support truthful preparation, but blocks `open`, `draft`, and `pr-open-ready` and routes to fresh verification.
+Consume and revalidate verify-owned `verification_basis`: immutable `repository_identity`, `remote_identity`, `base_branch`, `base_revision`, `merge_base_revision`, `head_branch`, and `verified_subject_revision`. Do not reconstruct it from commands, names, Git state, or prose. Legacy, prose-only, command-only, missing, stale, unresolved, conflicting, or ambiguous evidence supports preparation only; it blocks opening and routes to verify.
 
-The verified subject equals the handoff revision unless exactly one direct-child verify-owned evidence commit intervenes. It may change only final verify evidence and matching verify-owned change-record or state-sync fields. Any other-owner, product, test, governing artifact, dependency, configuration, generated, multi-commit, or non-direct-child change invalidates opening readiness.
+Subject equals handoff unless exactly one direct-child verify-owned evidence commit changes only final verify evidence and matching verify-owned change-record or state-sync fields. Any other change invalidates opening readiness.
 
-Before mutation, require scoped commits, an acceptable tree and diff, no secret or debug-only inclusion, intentional generated files and migrations, and every operation identity.
+Before mutation, require scoped commits, safe tree and diff, no secrets or debug residue, intentional generated files and migrations, and every operation identity.
 
 ## Remote safety and PR selection
 
-`remote-ancestor-of-local` means the remote head is a strict ancestor of the local handoff revision and permits only a normal fast-forward push after baseline reread. `local-ancestor-of-remote` means remote contains work absent locally and blocks. `absent` may create the branch, `same` performs no push, and `diverged` or `ambiguous` stops. The skill must not force-push, delete, overwrite, rewrite, or implicitly replace a remote branch.
+`remote-ancestor-of-local` means remote is a strict ancestor of the local handoff revision and permits normal fast-forward push after reread. `local-ancestor-of-remote` means remote contains work absent locally and blocks. `absent` may create; `same` does not push; `diverged` or `ambiguous` stops. The skill must not force-push, delete, overwrite, rewrite, or replace remote.
 
-Resolve PR state for the exact repository, host, head, and base. An absent PR may be created once. Adequate open or draft PRs are reused without mutation. Closed, merged, multiple, mismatched, or ambiguous PR state stops without reopening or duplicate creation. Retry must reconcile observed state and never create a duplicate matching PR.
+Resolve PR state for exact repository, host, head, and base. Create absent once; reuse adequate open or draft unchanged. Closed, merged, multiple, mismatched, or ambiguous state stops. Retry reconciles state and must never create a duplicate matching PR.
 
-Refresh supports title replacement or explicitly authorized whole-body replacement. It must not parse or mutate Markdown sections, add hidden managed markers, or infer body ownership. Existing body bytes remain unchanged without current full-replacement authority.
+Refresh supports title replacement or explicitly authorized whole-body replacement. It must not parse or mutate Markdown sections, add hidden managed markers, or infer ownership. Existing body bytes remain unchanged without full-replacement authority.
 
 ## Hosted CI
 
-`passed` requires current hosted evidence for the exact handoff revision at the PR head. Route required `failed` checks to their owner. `pending`, `unavailable`, and `unobserved` must never be described as passed; they permit initial opening only when current policy allows post-open CI. `not-applicable` requires current evidence. Local validation is not hosted CI.
+`passed` requires current hosted evidence for the exact handoff revision at the PR head. Route `failed` to its owner. `pending`, `unavailable`, and `unobserved` must never be described as passed and open only under current policy. `not-applicable` needs evidence. Local validation is not hosted CI.
 
 ## External operation
 
@@ -85,11 +79,11 @@ Report a successful external write truthfully after later identity drift, but se
 
 ## Body, result, and claims
 
-Compose from the body asset. Include its core group; include governed and impact groups when applicable. Procedure owns applicability and adequacy. Unresolved required data blocks, and no placeholder may remain.
+Compose the asset's core plus applicable governed and impact groups. Procedure owns applicability and adequacy; unresolved data or placeholders block.
 
 ## Outputs
 
-Every result reports requested intent, actual operation, actual external mutation or none, actual PR state or none, `pr-body-ready`, `pr-open-ready`, hosted-CI state, blockers, claim limitations, and the exact URL only after read-back.
+Report requested intent, operation, actual external mutation, actual PR state, readiness booleans, hosted-CI state, blockers, claim limitations, and post-read-back URL.
 
 ## Review closeout
 

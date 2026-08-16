@@ -9925,6 +9925,18 @@ class PRSkillSimplificationTests(unittest.TestCase):
         ):
             self.assertIn(phrase.lower(), self.skill.lower())
 
+    def test_portable_and_governed_profiles_both_decrease(self) -> None:
+        skill_bytes = self.skill.encode("utf-8")
+        reference_bytes = self.reference.encode("utf-8")
+        profiles = {
+            "PR0-portable": skill_bytes,
+            "PR1-governed": skill_bytes + reference_bytes,
+        }
+        for name, assembled in profiles.items():
+            with self.subTest(profile=name):
+                self.assertLess(len(assembled), 11375)
+                self.assertLess(len(assembled.decode("utf-8").split()), 1678)
+
 
 class TestSpecReviewSkillSimplificationContractTests(unittest.TestCase):
     def setUp(self) -> None:
