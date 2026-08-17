@@ -21,6 +21,7 @@ The focused scenarios prove:
 - independent strategic and README resource selection;
 - universal authority and claim boundaries remaining inline;
 - pre-resolved skip, late resource loading, source-first writes, complete read-back, exact retry, and fail-closed resource handling;
+- durable governed manifest preparation before the first target write and complete zero-write skip identity and claim evidence;
 - structural assets containing no lifecycle or adequacy policy;
 - compatibility-sensitive existing vision contract phrases remaining available across the loaded package.
 
@@ -31,10 +32,10 @@ No runtime router, synchronization script, parsed transaction schema, lifecycle 
 | Resource | Words | Bytes |
 | --- | ---: | ---: |
 | Flat baseline `SKILL.md` | 2,268 | 15,845 |
-| Compact `SKILL.md` | 1,258 | 9,893 |
+| Compact `SKILL.md` | 1,255 | 9,888 |
 | Strategic reference | 492 | 3,659 |
 | README reference | 303 | 2,131 |
-| Largest loaded procedural assembly | 2,053 | 15,683 |
+| Largest loaded procedural assembly | 2,050 | 15,678 |
 
 Every loaded procedural assembly is smaller than the flat baseline in both normalized words and raw bytes. Asset and total-package measurements remain M3 evidence because assets are copied structure rather than loaded procedure.
 

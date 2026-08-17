@@ -31,7 +31,7 @@ Review closeout: spec-review-r1
 
 Finding ID: VIS-M2-CR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: M2 implementation
 Owning stage: implement
 Decision owner: workflow-managed implementation
@@ -41,7 +41,7 @@ Rationale: These are universal transaction and result-safety rules and cannot de
 Required outcome: The shipped contract and focused tests directly prove R46, R52, and R54 while every loaded procedural profile remains below baseline.
 Safe resolution path: Correct M2, rerun C1-C5 and metadata validation, then conduct a fresh M2 code review.
 Validation target: canonical vision skill, focused validator, package build checks, and updated M2 evidence.
-Validation evidence: pending.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-review-resolution-r1.md`; independent M2 rereview remains pending.
 
 ### spec-review-r1
 
