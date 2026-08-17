@@ -13,9 +13,9 @@
 
 ## Closed inventories
 
-The rule ledger assigns 28 behavior clusters to the universal skill, the conditional session reference, destination owners, change-local evidence, or existing validation. The literal ledger classifies 24 compatibility-sensitive operations, paths, phase names, classifications, route values, and resource verbs. Unknown rule owners, literal classes, operations, classifications, confirmation values, completion kinds, and settlements have explicit failing fixtures.
+The rule ledger assigns 28 behavior clusters to the universal skill, the conditional session reference, destination owners, change-local evidence, or existing validation. The literal ledger classifies 24 compatibility-sensitive operations, paths, phase names, classifications, route values, and resource verbs. Unknown rule owners, rule dispositions, literal classes, literal dispositions, operations, classifications, confirmation values, completion kinds, and settlements have explicit failing fixtures.
 
-The caller inventory finds two supported operation surfaces and no assessment-only caller. Six legacy artifact-model surfaces retain mandatory owner-produced results while replacing direct learn destination writes with a stable route and exact backlink. Twenty-eight deterministic scenarios cover operation, trigger closeout, unique paths, interruption, retry, evidence, confirmation, topics, stable routes, owner results, history, resources, authority, compact results, and architecture escalation.
+The caller inventory binds both supported operations and repository trigger guidance to exact current paths and identifying phrases and finds no assessment-only caller. Six legacy artifact-model surfaces retain mandatory owner-produced results while replacing direct learn destination writes with a stable route and exact backlink. Twenty-eight deterministic scenarios cover operation, trigger closeout, unique paths, interruption, retry, evidence, confirmation, topics, stable routes, owner results, history, resources, authority, compact results, and architecture escalation.
 
 ## R46 architecture gate
 

@@ -10525,20 +10525,28 @@ class LearnSkillSimplificationLedgerTests(unittest.TestCase):
 
     def test_rule_owners_are_closed_before_consistency(self) -> None:
         allowed = {"inline", "session-reference", "destination-owner", "change-evidence", "existing-validator"}
+        dispositions = {"preserve", "clarify", "add", "move", "replace-writer"}
         rules = self.load("learn-rule-disposition.yaml")["rules"]
         invalid = self.load("fixtures/invalid-rule-owner.yaml")["rules"]
+        invalid_disposition = self.load("fixtures/invalid-rule-disposition.yaml")["rules"]
         self.assertTrue(rules)
         self.assertTrue(all(row["owner"] in allowed for row in rules))
+        self.assertTrue(all(row["disposition"] in dispositions for row in rules))
         self.assertTrue(any(row["owner"] not in allowed for row in invalid))
+        self.assertTrue(any(row["disposition"] not in dispositions for row in invalid_disposition))
         self.assertEqual(len({row["rule_id"] for row in rules}), len(rules))
 
     def test_literal_classifications_are_closed_before_consistency(self) -> None:
         allowed = {"normative-contract", "parser-or-package-contract", "test-only-incidental", "historical-fixture", "obsolete"}
+        dispositions = {"preserve", "add", "move-reference", "forbid", "replace-writer"}
         literals = self.load("learn-literal-compatibility.yaml")["literals"]
         invalid = self.load("fixtures/invalid-literal-classification.yaml")["literals"]
+        invalid_disposition = self.load("fixtures/invalid-literal-disposition.yaml")["literals"]
         self.assertTrue(literals)
         self.assertTrue(all(row["classification"] in allowed for row in literals))
+        self.assertTrue(all(row["disposition"] in dispositions for row in literals))
         self.assertTrue(any(row["classification"] not in allowed for row in invalid))
+        self.assertTrue(any(row["disposition"] not in dispositions for row in invalid_disposition))
         self.assertEqual(len({row["literal_id"] for row in literals}), len(literals))
 
     def test_callers_legacy_dispositions_and_scenarios_are_complete(self) -> None:
@@ -10546,6 +10554,10 @@ class LearnSkillSimplificationLedgerTests(unittest.TestCase):
         callers = fixture["callers"]
         self.assertEqual({row["operation"] for row in callers}, {"run-learn-session", "record-learn-route-result"})
         self.assertFalse(any("assess" in row["operation"] for row in callers))
+        for caller in callers:
+            source = ROOT / caller["source_path"]
+            self.assertTrue(source.is_file(), caller["source_path"])
+            self.assertIn(caller["source_phrase"], source.read_text(encoding="utf-8"))
         self.assertEqual(len(fixture["legacy_dispositions"]), 6)
         self.assertTrue(all(row["writer"] == "destination-owner" for row in fixture["legacy_dispositions"]))
         scenarios = fixture["scenarios"]

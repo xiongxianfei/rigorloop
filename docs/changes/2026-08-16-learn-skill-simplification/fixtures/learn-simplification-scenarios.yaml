@@ -7,10 +7,10 @@
     "settlement":{"allowed":["pending-owner-action","complete","blocked"],"invalid":["not_in_vocabulary"]}
   },
   "callers": [
-    {"id":"CALLER-001","surface":"direct explicit learn invocation","operation":"run-learn-session"},
-    {"id":"CALLER-002","surface":"exact existing route result request","operation":"record-learn-route-result"},
-    {"id":"CALLER-003","surface":"workflow cadence trigger","operation":"run-learn-session"},
-    {"id":"CALLER-004","surface":"incident or review trigger","operation":"run-learn-session"}
+    {"id":"CALLER-001","surface":"direct explicit learn invocation","operation":"run-learn-session","source_path":"specs/learn-skill-simplification.md","source_phrase":"`run-learn-session`"},
+    {"id":"CALLER-002","surface":"exact existing route result request","operation":"record-learn-route-result","source_path":"specs/learn-skill-simplification.md","source_phrase":"`record-learn-route-result`"},
+    {"id":"CALLER-003","surface":"repository trigger contract","operation":"run-learn-session","source_path":"AGENTS.md","source_phrase":"`learn` is periodic or explicitly invoked"},
+    {"id":"CALLER-004","surface":"workflow session trigger","operation":"run-learn-session","source_path":"docs/workflows.md","source_phrase":"When a learn session reaches Frame"}
   ],
   "legacy_dispositions": [
     {"surface":"learn-artifact-model R21-R24","writer":"destination-owner","learn_result":"route-and-backlink"},
