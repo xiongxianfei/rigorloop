@@ -10516,6 +10516,64 @@ class SpecSkillSimplificationTests(unittest.TestCase):
             self.assertIn(claim.lower(), self.skill.lower())
 
 
+class LearnSkillSimplificationLedgerTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.change = ROOT / "docs" / "changes" / "2026-08-16-learn-skill-simplification"
+
+    def load(self, name: str) -> dict:
+        return json.loads((self.change / name).read_text(encoding="utf-8"))
+
+    def test_rule_owners_are_closed_before_consistency(self) -> None:
+        allowed = {"inline", "session-reference", "destination-owner", "change-evidence", "existing-validator"}
+        rules = self.load("learn-rule-disposition.yaml")["rules"]
+        invalid = self.load("fixtures/invalid-rule-owner.yaml")["rules"]
+        self.assertTrue(rules)
+        self.assertTrue(all(row["owner"] in allowed for row in rules))
+        self.assertTrue(any(row["owner"] not in allowed for row in invalid))
+        self.assertEqual(len({row["rule_id"] for row in rules}), len(rules))
+
+    def test_literal_classifications_are_closed_before_consistency(self) -> None:
+        allowed = {"normative-contract", "parser-or-package-contract", "test-only-incidental", "historical-fixture", "obsolete"}
+        literals = self.load("learn-literal-compatibility.yaml")["literals"]
+        invalid = self.load("fixtures/invalid-literal-classification.yaml")["literals"]
+        self.assertTrue(literals)
+        self.assertTrue(all(row["classification"] in allowed for row in literals))
+        self.assertTrue(any(row["classification"] not in allowed for row in invalid))
+        self.assertEqual(len({row["literal_id"] for row in literals}), len(literals))
+
+    def test_callers_legacy_dispositions_and_scenarios_are_complete(self) -> None:
+        fixture = self.load("fixtures/learn-simplification-scenarios.yaml")
+        callers = fixture["callers"]
+        self.assertEqual({row["operation"] for row in callers}, {"run-learn-session", "record-learn-route-result"})
+        self.assertFalse(any("assess" in row["operation"] for row in callers))
+        self.assertEqual(len(fixture["legacy_dispositions"]), 6)
+        self.assertTrue(all(row["writer"] == "destination-owner" for row in fixture["legacy_dispositions"]))
+        scenarios = fixture["scenarios"]
+        self.assertEqual(len({row["id"] for row in scenarios}), len(scenarios))
+        self.assertGreaterEqual(len(scenarios), 28)
+        required = {"operation", "trigger-owner", "path", "interruption", "retry", "evidence", "confirmation", "topic", "route", "result", "compatibility", "resource", "authority", "result-shape", "architecture"}
+        self.assertTrue(required <= {row["family"] for row in scenarios})
+
+    def test_every_closed_vocabulary_has_an_unknown_value_fixture(self) -> None:
+        vocabularies = self.load("fixtures/learn-simplification-scenarios.yaml")["vocabularies"]
+        self.assertEqual(set(vocabularies), {"operation", "classification", "confirmation", "completion_kind", "settlement"})
+        for name, vocabulary in vocabularies.items():
+            with self.subTest(vocabulary=name):
+                self.assertTrue(vocabulary["allowed"])
+                self.assertIn("not_in_vocabulary", vocabulary["invalid"])
+                self.assertFalse(set(vocabulary["allowed"]) & set(vocabulary["invalid"]))
+
+    def test_baseline_and_architecture_gate_are_exact(self) -> None:
+        baseline = (self.change / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
+        for value in ("LR0", "LR1", "1,712", "12,375", "ce64e3aa8d13dee458b7491078050feab86e0b0f1f36d452eec1497561184b0f", "Total canonical learn package"):
+            self.assertIn(value.lower(), baseline.lower())
+        triggers = self.load("fixtures/learn-simplification-scenarios.yaml")["architecture_triggers"]
+        self.assertEqual(set(triggers), {"transaction-grade phase recovery", "new persistent route or session schema owner", "polling or coordination service", "external integration", "new cross-owner mutation authority"})
+        skill = (ROOT / "skills" / "learn" / "SKILL.md").read_bytes().replace(b"\r\n", b"\n")
+        self.assertEqual(len(skill), 12375)
+        self.assertEqual(len(skill.decode("utf-8").split()), 1712)
+
+
 class ArchitectureReviewSkillSimplificationLedgerTests(unittest.TestCase):
     def setUp(self) -> None:
         self.change = ROOT / "docs" / "changes" / "2026-08-16-architecture-review-skill-simplification"
