@@ -10568,7 +10568,7 @@ class VisionSkillProgressiveDisclosureLedgerTests(unittest.TestCase):
         self.assertEqual({row["assembly"] for row in profiles}, set(fixture["vocabularies"]["assembly"]["allowed"]))
         self.assertEqual(sum(row["primary"] for row in profiles), 3)
         self.assertEqual(len({row["id"] for row in fixture["scenarios"]}), len(fixture["scenarios"]))
-        required = {"operation", "state", "assembly", "authority", "marker", "positioning", "asset", "manifest", "ordering", "retry", "resource", "compatibility", "measurement", "architecture"}
+        required = {"operation", "state", "assembly", "authority", "marker", "positioning", "asset", "manifest", "ordering", "retry", "resource", "compatibility", "measurement", "architecture", "retired-path", "write-boundary"}
         self.assertTrue(required <= {row["family"] for row in fixture["scenarios"]})
         self.assertEqual(set(fixture["architecture_triggers"]), {"new persisted multi-file transaction schema", "new classification-state owner", "executable README synchronizer", "new generated-content owner", "independent policy owner"})
 
