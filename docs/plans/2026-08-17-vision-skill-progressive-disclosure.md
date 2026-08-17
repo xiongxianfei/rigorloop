@@ -61,7 +61,7 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
   - serialize deterministic scenarios and negative unknown-value fixtures
   - record the flat baseline and six expected loaded-profile formulas
 - Validation commands:
-  - run the M1 standard-library ledger and fixture command defined by the test spec
+  - `python scripts/test-skill-validator.py VisionSkillProgressiveDisclosureLedgerTests`
   - `python scripts/validate-change-metadata.py docs/changes/2026-08-17-vision-skill-progressive-disclosure/change.yaml`
 - Expected observable result: every current rule, literal, scenario, and measurement input has one closed treatment before canonical skill prose moves.
 - Completion criteria: ledgers and fixtures validate, unknown values fail first, and the canonical vision package remains unchanged.
@@ -103,7 +103,7 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
   - migrate true literal consumers atomically
 - Validation commands:
   - `python scripts/validate-skills.py skills/vision/SKILL.md`
-  - run the focused `VisionSkillProgressiveDisclosureTests` class defined by the test spec
+  - `python scripts/test-skill-validator.py VisionSkillProgressiveDisclosureTests`
   - `python scripts/test-skill-validator.py`
   - `python scripts/test-build-skills.py`
   - `python scripts/build-skills.py --check`
