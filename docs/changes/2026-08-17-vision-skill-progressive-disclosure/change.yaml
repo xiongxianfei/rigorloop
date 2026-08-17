@@ -9,18 +9,13 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
     role: primary
-    lifecycle_state: revision-required
-    review:
-      id: proposal-review-r4
-      artifact_id: proposal
-      outcome: changes-requested
-      record: docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r4.md
-      round: r4
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r4.md
 
 workflow_state:
   lifecycle_state: active
-  current_stage: proposal
-  next_stage: proposal
+  current_stage: proposal-review
+  next_stage: proposal-review
   blocker: null
   evidence:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
@@ -32,6 +27,7 @@ workflow_state:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r3.md
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r3.md
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r4.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r4.md
 
 workflow: {}
 
@@ -68,7 +64,8 @@ changed_files:
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r3.md
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r3.md
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r4.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r4.md
 
 review:
-  status: changes-requested
-  unresolved_items: 1
+  status: review-requested
+  unresolved_items: 0

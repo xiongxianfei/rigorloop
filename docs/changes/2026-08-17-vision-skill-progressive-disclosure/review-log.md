@@ -55,5 +55,5 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r4.md
 Resolution: review-resolution.md#proposal-review-r4
 Material findings: VISSIM-R4-PR1
-Open findings: VISSIM-R4-PR1
+Open findings: none
 Recording status: recorded

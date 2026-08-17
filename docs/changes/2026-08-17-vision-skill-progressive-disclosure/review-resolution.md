@@ -1,10 +1,11 @@
 # Review Resolution: Vision Skill Progressive Disclosure
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
+Review closeout: proposal-review-r4
 
 ## Resolution overview
 
@@ -18,7 +19,7 @@ Review closeout: proposal-review-r3
 | `VISSIM-R2-PR3` | accepted | closed | Positioning and README actions now have exhaustive matrices and exact identity-bound authority. |
 | `VISSIM-R3-PR1` | accepted | closed | README authority now binds and survives only the exact manifest prior-to-intended transition. |
 | `VISSIM-R3-PR2` | accepted | closed | `VA0S` and independent structural-asset predicates close every remaining combination. |
-| `VISSIM-R4-PR1` | accepted | open | Reconcile pre-resolved skip evidence, reference loading, and zero-write manifests. |
+| `VISSIM-R4-PR1` | accepted | closed | Pre-resolved skip now uses whole-file identity and an uninspected-marker value, while late skip retains README procedure and every skip settles through a manifest. |
 
 ## Finding details
 
@@ -82,7 +83,7 @@ Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosur
 
 Finding ID: VISSIM-R4-PR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -92,7 +93,7 @@ Rationale: A resource may be omitted only when no evidence required by the selec
 Required outcome: Update applicability, action authority, manifest scope, loaded assemblies, results, scenarios, and acceptance criteria.
 Safe resolution path: Revise the proposal and perform an approving rereview.
 Validation target: revised proposal and approving proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r4.md`; independent rereview remains pending.
 
 #### VISSIM-R3-PR2
 
