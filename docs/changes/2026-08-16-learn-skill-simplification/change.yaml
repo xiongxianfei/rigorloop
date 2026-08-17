@@ -104,6 +104,7 @@ changed_files:
   - docs/changes/2026-08-16-learn-skill-simplification/evidence/spec-revision-r1.md
   - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-spec-review-r2.yaml
   - docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r2.md
+  - docs/changes/2026-08-16-learn-skill-simplification/architecture-assessment.md
 
 review:
   status: approved
