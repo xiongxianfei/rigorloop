@@ -25,8 +25,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: spec
-  next_stage: spec
+  current_stage: spec-review
+  next_stage: spec-review
   blocker: null
   evidence:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
@@ -45,6 +45,7 @@ workflow_state:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r1.yaml
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r1.md
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-revision-r1.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r2.yaml
 
 workflow:
   automation:
@@ -57,7 +58,7 @@ workflow:
       completion:
         rule: first formal test-spec-review result is durably recorded
     status: active
-    current_stage: spec
+    current_stage: spec-review
     stop_reason: null
     evidence:
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
@@ -68,6 +69,7 @@ workflow:
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r1.yaml
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r1.md
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-revision-r1.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r2.yaml
 
 artifacts:
   proposal: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
@@ -111,6 +113,7 @@ changed_files:
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r1.yaml
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r1.md
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-revision-r1.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r2.yaml
 
 review:
   status: review-requested
