@@ -8,7 +8,7 @@ Resolve the trigger, trigger type, normalized scope, initial evidence-basis iden
 
 For a new session, choose the base slug when absent. On collision, choose the lowest available suffix (`-2`, `-3`, and so on), then recheck absence immediately before creation. A new attempt never adopts an occupied path.
 
-The first creation must contain complete `Frame` content. Do not create an empty transaction shell. If an existing record is partial, malformed, or lacks a complete Frame, `learn` must not resume, repair, adopt, or overwrite it. Stop and preserve it. A later attempt uses a new unique path.
+The first creation must record session identity, trigger, scope, evidence-basis identity, and complete `Frame` content. If an existing record is partial, malformed, or lacks a complete Frame, `learn` must not resume, repair, adopt, or overwrite it. Preserve it; use a new unique path.
 
 When the same complete session identity, trigger, scope, and evidence basis already exists, return idempotent success. If the basis changed, start a new session at a new unique path and link the earlier session when useful; do not reinterpret it as an identical retry.
 
@@ -18,7 +18,7 @@ Record the trigger and trigger type, scope, evidence in scope, explicit exclusio
 
 ## Observe
 
-Inspect bounded evidence for patterns, surprises, drift, and gaps. Every observation is evidence-bound. Check relevant prior sessions, topic guidance, action-owning artifacts, ADRs, proposals, plans, and workflow material before proposing duplicate guidance. Record an explicit no-observation result when none exists.
+Keep recorded evidence, bounded inference, unknowns, and sensitive or excluded evidence distinct. Bind every observation to evidence, check relevant prior learning and authoritative artifacts for duplicates, and record when none exists.
 
 For incident response, inspect the incident, affected contracts, reviews, verification, and postmortem actions while minimizing sensitive detail. For explicit invocation, inspect named artifacts and those directly implied by the stated pattern.
 
@@ -45,11 +45,11 @@ Contributor confirmation uses `pending`, `confirmed`, or `rejected`. Persist can
 - `artifact-update`, `decision`, `direction`, or `process-follow-up`: create an owner-bound route; do not mutate the destination. `direction` normally routes to proposal work. A process follow-up routes to an issue, a current change-local follow-up, or a proposal—not `docs/roadmap.md` and not a plan edit.
 - `no-durable-lesson`: record its rationale and whether a follow-up was scheduled.
 
-Assign stable route IDs in encounter order as `ROUTE-NNN`. Each route records classification, destination kind and path or external identity, owning skill or process, requested action, evidence-basis identity, and settlement. Use only `pending-owner-action`, `complete`, or `blocked`.
+Assign stable route IDs in encounter order as `ROUTE-NNN`. Each route records source observation, confirmed classification, requested action, destination kind and exact path or external identity, owning skill or process, evidence-basis identity, required completion kind, settlement, optional owner-result identity, and optional blocker. The completion kind is fixed when the route is created. Use only `pending-owner-action`, `complete`, or `blocked`.
 
 A route is `complete` only when an exact owner-result identity exists. Completion kind is `authoritative-artifact` or `durable-scheduled-follow-up`; scheduling counts only when the route contract permits it. Otherwise retain `pending-owner-action` or record an evidenced blocker. The session method must not poll and must not mutate the destination.
 
-Apply learn-owned topic effects idempotently and link them from the session. Record routes before claiming session completion. A complete session may still contain pending routes; derive the aggregate route result as `not-required` when none exist, `blocked` when any route is blocked, `complete` when all are complete, and otherwise `pending-owner-action`.
+Apply the identical topic effect idempotently; conflicting or ambiguous topic content stops without overwrite. Link effects and routes before session completion. Derive aggregate route result as `not-required` with none, `blocked` with any blocker, `complete` when all complete, otherwise `pending-owner-action`.
 
 ## Session completion
 

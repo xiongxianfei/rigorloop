@@ -10608,15 +10608,23 @@ class LearnSkillSimplificationTests(unittest.TestCase):
         self.assertNotIn("assess-learn-trigger` operation", self.skill)
         for phrase in ("unknown, missing, combined, or ambiguous", "contributor confirmation", "destination mutation", "workflow continuation", "missing, unreadable, escaped, stale, contradictory, or mixed-version", "must not reconstruct"):
             self.assertIn(phrase.lower(), self.skill.lower())
+        for phrase in ("unless the request explicitly identifies", "before session creation"):
+            self.assertIn(phrase.lower(), self.skill.lower())
 
     def test_session_paths_interruption_and_confirmation_fail_closed(self) -> None:
         for phrase in ("lowest available suffix", "recheck absence", "complete `Frame`", "must not resume, repair, adopt, or overwrite", "same complete session", "new unique path", "pending", "confirmed", "rejected"):
             self.assertIn(phrase.lower(), self.package.lower())
+        for phrase in ("session identity", "evidence-basis identity", "recorded evidence", "bounded inference", "unknowns", "sensitive or excluded evidence", "conflicting or ambiguous topic content"):
+            self.assertIn(phrase.lower(), self.method.lower())
 
     def test_routes_and_result_recording_have_narrow_ownership(self) -> None:
         for value in ("ROUTE-NNN", "pending-owner-action", "complete", "blocked", "authoritative-artifact", "durable-scheduled-follow-up"):
             self.assertIn(value, self.package)
         for phrase in ("only the matching route", "exact owner-result identity", "idempotent success", "must not poll", "must not mutate the destination", "historical sessions"):
+            self.assertIn(phrase.lower(), self.package.lower())
+        for field in ("source observation", "confirmed classification", "requested action", "destination kind", "owning skill or process", "evidence-basis identity", "required completion kind", "settlement", "optional owner-result identity", "optional blocker"):
+            self.assertIn(field.lower(), self.method.lower())
+        for phrase in ("fixed when the route is created", "must match the route's immutable required completion kind"):
             self.assertIn(phrase.lower(), self.package.lower())
 
     def test_compact_result_and_claim_limits_are_complete(self) -> None:

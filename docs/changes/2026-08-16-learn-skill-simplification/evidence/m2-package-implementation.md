@@ -35,6 +35,16 @@ Passed:
 
 The broader adapter-distribution command was also started for package parity; its final result is recorded in M3 distribution evidence rather than claimed here.
 
+## Code-review correction
+
+Code review R1 identified three semantic gaps that the initial phrase-level tests missed. The declared-safe correction now:
+
+- selects route-result recording for an exact direct result request and stops missing-resource cases before session creation;
+- requires the first session write to include identity, trigger, scope, basis, and complete Frame while preserving observation/evidence distinctions and fail-closed topic conflicts;
+- records every required route field, fixes completion kind at creation, and validates the supplied owner-result kind against it.
+
+Focused assertions were added before these corrections and failed all three affected test groups. They pass after correction.
+
 ## Result
 
 M2 satisfies its focused completion criteria and is ready for independent code review. No destination lifecycle state, destination artifact, workflow routing state, or external system was mutated by the new learn operations.
