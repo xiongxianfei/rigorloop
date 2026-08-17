@@ -31,8 +31,7 @@ artifact_states:
     kind: plan
     path: docs/plans/2026-08-17-learn-skill-simplification.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-revision-r1.md
+    lifecycle_state: active
     review:
       id: plan-review-r2
       artifact_id: plan
@@ -69,6 +68,8 @@ workflow_state:
     - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-revision-r1.md
     - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-plan-review-r2.yaml
     - docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r2.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-initialization.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-settlement-retry.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M1
@@ -173,6 +174,7 @@ changed_files:
   - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-plan-review-r2.yaml
   - docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r2.md
   - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-initialization.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-settlement-retry.md
 
 review:
   status: approved
