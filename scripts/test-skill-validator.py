@@ -4345,6 +4345,9 @@ Use the inputs somehow and produce a useful result.
 
     def test_learn_skill_final_artifact_model_and_bounded_process(self) -> None:
         skill_body = (ROOT / "skills" / "learn" / "SKILL.md").read_text(encoding="utf-8")
+        method_path = ROOT / "skills" / "learn" / "references" / "session-method.md"
+        method_body = method_path.read_text(encoding="utf-8") if method_path.exists() else ""
+        combined_body = skill_body + "\n" + method_body
         readme_path = ROOT / "docs" / "learn" / "README.md"
         self.assertTrue(readme_path.exists(), "docs/learn/README.md must exist as the learn namespace index")
         readme_body = readme_path.read_text(encoding="utf-8")
@@ -4401,7 +4404,7 @@ Use the inputs somehow and produce a useful result.
         ]
         for term in required_skill_terms:
             with self.subTest(file="learn skill", term=term):
-                self.assertIn(term, skill_body)
+                self.assertIn(term, combined_body)
 
         required_readme_terms = [
             "docs/learn/",
@@ -10514,6 +10517,130 @@ class SpecSkillSimplificationTests(unittest.TestCase):
             self.assertIn(phrase, self.skill.lower())
         for claim in ("spec-review approval", "architecture readiness", "implementation readiness", "verification", "branch readiness", "PR readiness"):
             self.assertIn(claim.lower(), self.skill.lower())
+
+
+class LearnSkillSimplificationLedgerTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.change = ROOT / "docs" / "changes" / "2026-08-16-learn-skill-simplification"
+
+    def load(self, name: str) -> dict:
+        return json.loads((self.change / name).read_text(encoding="utf-8"))
+
+    def test_rule_owners_are_closed_before_consistency(self) -> None:
+        allowed = {"inline", "session-reference", "destination-owner", "change-evidence", "existing-validator"}
+        dispositions = {"preserve", "clarify", "add", "move", "replace-writer"}
+        rules = self.load("learn-rule-disposition.yaml")["rules"]
+        invalid = self.load("fixtures/invalid-rule-owner.yaml")["rules"]
+        invalid_disposition = self.load("fixtures/invalid-rule-disposition.yaml")["rules"]
+        self.assertTrue(rules)
+        self.assertTrue(all(row["owner"] in allowed for row in rules))
+        self.assertTrue(all(row["disposition"] in dispositions for row in rules))
+        self.assertTrue(any(row["owner"] not in allowed for row in invalid))
+        self.assertTrue(any(row["disposition"] not in dispositions for row in invalid_disposition))
+        self.assertEqual(len({row["rule_id"] for row in rules}), len(rules))
+
+    def test_literal_classifications_are_closed_before_consistency(self) -> None:
+        allowed = {"normative-contract", "parser-or-package-contract", "test-only-incidental", "historical-fixture", "obsolete"}
+        dispositions = {"preserve", "add", "move-reference", "forbid", "replace-writer"}
+        literals = self.load("learn-literal-compatibility.yaml")["literals"]
+        invalid = self.load("fixtures/invalid-literal-classification.yaml")["literals"]
+        invalid_disposition = self.load("fixtures/invalid-literal-disposition.yaml")["literals"]
+        self.assertTrue(literals)
+        self.assertTrue(all(row["classification"] in allowed for row in literals))
+        self.assertTrue(all(row["disposition"] in dispositions for row in literals))
+        self.assertTrue(any(row["classification"] not in allowed for row in invalid))
+        self.assertTrue(any(row["disposition"] not in dispositions for row in invalid_disposition))
+        self.assertEqual(len({row["literal_id"] for row in literals}), len(literals))
+
+    def test_callers_legacy_dispositions_and_scenarios_are_complete(self) -> None:
+        fixture = self.load("fixtures/learn-simplification-scenarios.yaml")
+        callers = fixture["callers"]
+        self.assertEqual({row["operation"] for row in callers}, {"run-learn-session", "record-learn-route-result"})
+        self.assertFalse(any("assess" in row["operation"] for row in callers))
+        for caller in callers:
+            source = ROOT / caller["source_path"]
+            self.assertTrue(source.is_file(), caller["source_path"])
+            self.assertIn(caller["source_phrase"], source.read_text(encoding="utf-8"))
+        self.assertEqual(len(fixture["legacy_dispositions"]), 6)
+        self.assertTrue(all(row["writer"] == "destination-owner" for row in fixture["legacy_dispositions"]))
+        scenarios = fixture["scenarios"]
+        self.assertEqual(len({row["id"] for row in scenarios}), len(scenarios))
+        self.assertGreaterEqual(len(scenarios), 28)
+        required = {"operation", "trigger-owner", "path", "interruption", "retry", "evidence", "confirmation", "topic", "route", "result", "compatibility", "resource", "authority", "result-shape", "architecture"}
+        self.assertTrue(required <= {row["family"] for row in scenarios})
+
+    def test_every_closed_vocabulary_has_an_unknown_value_fixture(self) -> None:
+        vocabularies = self.load("fixtures/learn-simplification-scenarios.yaml")["vocabularies"]
+        self.assertEqual(set(vocabularies), {"operation", "classification", "confirmation", "completion_kind", "settlement"})
+        for name, vocabulary in vocabularies.items():
+            with self.subTest(vocabulary=name):
+                self.assertTrue(vocabulary["allowed"])
+                self.assertIn("not_in_vocabulary", vocabulary["invalid"])
+                self.assertFalse(set(vocabulary["allowed"]) & set(vocabulary["invalid"]))
+
+    def test_baseline_and_architecture_gate_are_exact(self) -> None:
+        baseline = (self.change / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
+        for value in ("LR0", "LR1", "1,712", "12,375", "ce64e3aa8d13dee458b7491078050feab86e0b0f1f36d452eec1497561184b0f", "Total canonical learn package"):
+            self.assertIn(value.lower(), baseline.lower())
+        triggers = self.load("fixtures/learn-simplification-scenarios.yaml")["architecture_triggers"]
+        self.assertEqual(set(triggers), {"transaction-grade phase recovery", "new persistent route or session schema owner", "polling or coordination service", "external integration", "new cross-owner mutation authority"})
+
+
+class LearnSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "learn"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        self.method = (self.root / "references" / "session-method.md").read_text(encoding="utf-8")
+        self.package = self.skill + "\n" + self.method
+
+    def test_package_profiles_and_resource_trigger_are_exact(self) -> None:
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["session-method.md"])
+        self.assertFalse((self.root / "assets").exists())
+        self.assertIn("LR0-route-result", self.skill)
+        self.assertIn("LR1-session", self.skill)
+        self.assertIn("READ `references/session-method.md`", self.skill)
+        self.assertIn("exactly for `run-learn-session`", self.skill)
+        self.assertIn("at most once", self.skill)
+
+    def test_operations_authority_and_resource_failures_are_closed(self) -> None:
+        for value in ("run-learn-session", "record-learn-route-result"):
+            self.assertIn(value, self.skill)
+        self.assertNotIn("assess-learn-trigger` operation", self.skill)
+        for phrase in ("unknown, missing, combined, or ambiguous", "contributor confirmation", "destination mutation", "workflow continuation", "missing, unreadable, escaped, stale, contradictory, or mixed-version", "must not reconstruct"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        for phrase in ("unless the request explicitly identifies", "before session creation"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        self.assertNotIn("$learn", self.skill)
+
+    def test_session_paths_interruption_and_confirmation_fail_closed(self) -> None:
+        for phrase in ("lowest available suffix", "recheck absence", "complete `Frame`", "must not resume, repair, adopt, or overwrite", "same complete session", "new unique path", "pending", "confirmed", "rejected"):
+            self.assertIn(phrase.lower(), self.package.lower())
+        for phrase in ("session identity", "evidence-basis identity", "recorded evidence", "bounded inference", "unknowns", "sensitive or excluded evidence", "conflicting or ambiguous topic content"):
+            self.assertIn(phrase.lower(), self.method.lower())
+
+    def test_routes_and_result_recording_have_narrow_ownership(self) -> None:
+        for value in ("ROUTE-NNN", "pending-owner-action", "complete", "blocked", "authoritative-artifact", "durable-scheduled-follow-up"):
+            self.assertIn(value, self.package)
+        for phrase in ("only the matching route", "exact owner-result identity", "idempotent success", "must not poll", "must not mutate the destination", "historical sessions"):
+            self.assertIn(phrase.lower(), self.package.lower())
+        for field in ("source observation", "confirmed classification", "requested action", "destination kind", "owning skill or process", "evidence-basis identity", "required completion kind", "settlement", "optional owner-result identity", "optional blocker"):
+            self.assertIn(field.lower(), self.method.lower())
+        for phrase in ("fixed when the route is created", "must match the route's immutable required completion kind"):
+            self.assertIn(phrase.lower(), self.package.lower())
+
+    def test_compact_result_and_claim_limits_are_complete(self) -> None:
+        for phrase in ("operation", "session identity and path", "trigger and scope", "confirmation result", "session recording result", "topic effects", "route IDs and settlements", "owner-result identities", "blockers", "next owner or handoff", "claim limitations"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        for claim in ("destination approval", "implementation", "release", "workflow completion", "verification", "branch readiness", "PR readiness"):
+            self.assertIn(claim.lower(), self.skill.lower())
+
+    def test_real_profiles_decrease_from_flat_baseline(self) -> None:
+        skill = self.skill.encode("utf-8")
+        method = self.method.encode("utf-8")
+        for name, assembled in {"LR0": skill, "LR1": skill + method}.items():
+            with self.subTest(profile=name):
+                self.assertLess(len(assembled), 12375)
+                self.assertLess(len(assembled.decode("utf-8").split()), 1712)
 
 
 class ArchitectureReviewSkillSimplificationLedgerTests(unittest.TestCase):

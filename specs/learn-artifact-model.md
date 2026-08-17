@@ -10,7 +10,7 @@
 
 ## Goal and context
 
-This spec defines the contributor-visible artifact model and routing behavior for the `learn` skill. It replaces the temporary learn-recording surfaces currently described in the workflow contract with a single `docs/learn/` namespace, an evidence-bound session process, contributor-confirmed classification, curated topic guidance, and action routing into the authoritative artifact that owns the resulting change.
+This spec defines the contributor-visible artifact model and routing behavior for the `learn` skill. It replaces the temporary learn-recording surfaces currently described in the workflow contract with a single `docs/learn/` namespace, an evidence-bound session process, contributor-confirmed classification, curated topic guidance, and stable routes to the owner of each resulting change.
 
 ## Glossary
 
@@ -21,6 +21,7 @@ This spec defines the contributor-visible artifact model and routing behavior fo
 - observation: evidence-bound context surfaced during a learn session that does not yet justify durable guidance or action.
 - primary classification: exactly one required classification assigned to each observation.
 - secondary route: an optional derivative action or destination that follows from the primary classification without changing it.
+- owner-bound route: a stable learn-session record that identifies the destination, owning skill or process, requested action, evidence basis, and settlement without granting `learn` authority to mutate that destination.
 - action-owning artifact: the authoritative artifact that must change when a lesson changes behavior, workflow, validation, architecture, skill behavior, examples, or decisions.
 - contributor confirmation: a recorded confirmation or adjustment by the contributor or maintainer before candidate classifications are routed into topic files or action-owning artifacts.
 - no-learn rationale: the recorded reason a triggered learn session did not produce durable lessons.
@@ -37,7 +38,7 @@ When the contributor confirms the final primary classification as `durable-lesso
 And confirms `process-follow-up` as a secondary route
 Then the session record is written under `docs/learn/sessions/YYYY-MM-DD-<slug>.md`
 And the relevant `docs/learn/topics/<topic>.md` entry links back to the session
-And the follow-up is routed to a linked issue, active plan, or proposal instead of `docs/roadmap.md`.
+And an owner-bound route identifies a linked issue, current change-local follow-up, or proposal instead of `docs/roadmap.md`.
 
 ### Example E2: maintainer-requested single event produces no durable lesson
 
@@ -51,8 +52,9 @@ And no topic file or action-owning artifact is updated.
 
 Given a learn session finds repeated evidence that the `verify` checklist misses a required workflow gate
 When the contributor confirms the final primary classification as `artifact-update`
-Then the affected authoritative `verify` skill or workflow artifact is updated
-And the learn session links to that update
+Then the affected authoritative `verify` skill or workflow owner receives a stable route
+And that owner updates the artifact under its own contract
+And the learn session records the exact owner-result identity
 And any topic entry summarizes the lesson without becoming the source of truth for the checklist behavior.
 
 ### Example E4: no confirmation means no routing
@@ -104,7 +106,7 @@ R6. The first implementation MUST NOT pre-create empty topic files or a fixed to
 
 R7. A topic file MUST be created only when at least one confirmed durable lesson justifies that topic.
 
-R8. The session record MUST be the primary output of a learn session and MUST link to all derivative topic files, action-owning artifact updates, ADRs, proposals, issues, active-plan follow-ups, or no-learn rationales that result from the session.
+R8. The session record MUST be the primary output of a learn session and MUST link to all derivative topic files, owner-bound routes, owner-produced artifact updates, ADRs, proposals, issues, durable follow-ups, or no-learn rationales that result from the session.
 
 R9. A session record MUST identify the trigger, trigger type, scope, evidence in scope, explicit exclusions, prior learnings reviewed, observations, classification decisions, secondary routes, routing results, and no-learn rationale when applicable.
 
@@ -132,13 +134,13 @@ R19. The `Route` phase MUST route `observation` items to the session record only
 
 R20. The `Route` phase MUST route `durable-lesson` items to the relevant topic file with a date, short lesson, source-session link, primary classification, and secondary routes when present.
 
-R21. The `Route` phase MUST route `artifact-update` items to the affected authoritative artifact and link the update from the session record.
+R21. The `Route` phase MUST create an owner-bound route for each `artifact-update` item. The destination owner MUST update the affected authoritative artifact under its own contract, and `learn` MUST record the exact owner-result identity without mutating the destination.
 
-R22. The `Route` phase MUST route `decision` items to the relevant ADR or decision artifact and link that artifact from the session record and any relevant topic entry.
+R22. The `Route` phase MUST create an owner-bound route for each `decision` item to the relevant ADR or decision owner. That owner MUST create or update the decision artifact under its own contract, after which `learn` MAY record its exact identity in the session record and relevant topic entry.
 
-R23. The `Route` phase MUST route `direction` items to a proposal or trackable follow-up and MUST NOT encode the direction as policy in a topic file.
+R23. The `Route` phase MUST create an owner-bound route for each `direction` item to proposal work or an explicitly permitted durable follow-up and MUST NOT encode the direction as policy in a topic file or create the proposal directly.
 
-R24. The `Route` phase MUST route `process-follow-up` items to a linked issue when an issue tracker is available, to the active plan when one owns the work, or to a proposal when no tracker or active plan exists.
+R24. The `Route` phase MUST create an owner-bound route for each `process-follow-up` item to a linked issue when an issue tracker is available, to a current change-local follow-up when one owns the work, or to proposal work otherwise. `learn` MUST NOT edit a plan or external tracker without separate current authority under the destination owner's contract.
 
 R25. The `Route` phase MUST route `no-durable-lesson` items to the session record with a no-learn rationale and whether any follow-up was scheduled.
 
@@ -158,7 +160,7 @@ R31. Topic files MUST be curated guidance, not authoritative workflow, product, 
 
 R32. Topic files MUST NOT override `CONSTITUTION.md`, approved specs, accepted ADRs, approved architecture docs, workflow docs, skill files, accepted proposals, active plans, or affected action-owning artifacts.
 
-R33. When a lesson changes behavior, workflow, architecture, validation, skill behavior, examples, or decisions, the affected authoritative artifact MUST be updated; a topic file MAY link to that update but MUST NOT be the source of truth.
+R33. When a lesson changes behavior, workflow, architecture, validation, skill behavior, examples, or decisions, the affected authoritative artifact MUST be updated by its owning skill or process. `learn` MUST record the owner-bound route and MAY later record the exact owner-result identity; a topic file MAY link to that result but MUST NOT be the source of truth.
 
 R34. Topic entries MAY be added, revised, superseded, absorbed into an authoritative artifact, or removed as obsolete.
 
@@ -199,8 +201,8 @@ R47. Changes to canonical `skills/learn/SKILL.md` MUST be propagated to generate
 - outputs:
   - session record under `docs/learn/sessions/YYYY-MM-DD-<slug>.md` when a learn invocation reaches `Frame`;
   - topic file entries under `docs/learn/topics/<topic>.md` only when durable topic guidance is confirmed;
-  - updated action-owning artifacts when lessons change authoritative behavior or contracts;
-  - ADRs, proposals, issues, or active-plan follow-ups when routing requires them;
+  - stable owner-bound routes when lessons require authoritative behavior or contract changes;
+  - exact owner-result identities for completed ADRs, proposals, issues, authoritative artifacts, or durable scheduled follow-ups;
   - no-learn rationale when no durable lesson is captured.
 
 ## State and invariants
@@ -208,7 +210,8 @@ R47. Changes to canonical `skills/learn/SKILL.md` MUST be propagated to generate
 - `learn` remains retrospective and does not own `docs/plan.md`, plan-body lifecycle state, review-resolution closeout, verification readiness, PR readiness, or CI status.
 - Session records are the historical thread for learn sessions.
 - Topic files are the curated discovery layer for durable lessons.
-- Action-owning artifacts remain the source of truth for behavior and contract changes.
+- Action-owning artifacts remain the source of truth for behavior and contract changes, and their owning skills or processes remain their writers.
+- `learn` writes session records and confirmed topic guidance only; owner-bound routes do not grant destination mutation authority.
 - One record type has one canonical surface after adoption: session records under `docs/learn/sessions/`, topic guidance under `docs/learn/topics/`, and actions in the artifact or tracker that owns them.
 - A learn trigger establishes that a session may run; evidence determines what the session captures.
 - Chat-only notes are not sufficient for tracked learn outputs, follow-ups, or no-learn rationales when the workflow requires a contributor-visible record.
@@ -221,7 +224,8 @@ R47. Changes to canonical `skills/learn/SKILL.md` MUST be propagated to generate
 - no durable lesson: the session record records a no-learn rationale and whether any follow-up was scheduled.
 - pre-session closeout: a triggering review-visible surface may record a scheduled follow-up, deferral, or no-learn rationale only when `learn` does not actually run as a session.
 - no contributor confirmation: candidate classifications may remain in the session, but routing stops for those observations.
-- no issue tracker and no active plan: a process follow-up is opened as a proposal rather than added to `docs/roadmap.md`.
+- pending owner action: the session may complete with the route at `pending-owner-action`; later reconciliation updates only that matching route after resolving an exact owner-result identity.
+- no issue tracker or current change-local owner: a process follow-up routes to the proposal owner rather than being added to `docs/roadmap.md`.
 - conflicting authority: if a topic entry conflicts with a higher-priority authoritative artifact, the higher-priority artifact governs and the topic entry is revised, removed, or absorbed with traceability.
 - insufficient evidence: the observation remains `observation` or `no-durable-lesson`; the skill does not manufacture durable guidance.
 - private incident details: the session records only the minimum contributor-visible evidence needed and omits secrets or sensitive details.
@@ -269,7 +273,7 @@ R47. Changes to canonical `skills/learn/SKILL.md` MUST be propagated to generate
 2. A repeated finding already has a topic entry and an updated authoritative artifact; the session links the existing lesson and does not duplicate it.
 3. One observation suggests a durable lesson and a future process follow-up; the session records primary classification `durable-lesson` and secondary route `process-follow-up`.
 4. A topic entry becomes obsolete after an approved spec absorbs the guidance; curation removes or revises the entry with traceability.
-5. A process follow-up has no issue tracker and no active plan owner; the follow-up becomes a proposal.
+5. A process follow-up has no issue tracker or current change-local owner; an owner-bound route requests proposal work.
 6. A session cannot obtain contributor confirmation; it records candidates and stops before routing.
 7. A topic file starts to contradict a higher-priority spec or ADR; the topic file is corrected or removed and links the governing artifact.
 8. A small explicit invocation names one artifact; the skill reads only the relevant evidence needed for classification and routing.
@@ -294,8 +298,8 @@ R47. Changes to canonical `skills/learn/SKILL.md` MUST be propagated to generate
 - A reviewer can identify the canonical learn session path and topic path without seeing `docs/learnings/**` as an allowed sibling surface.
 - A reviewer can trace every routed observation from evidence to proposed primary classification, final primary classification, secondary routes, confirmer, rationale, and derivative artifacts.
 - A maintainer-requested session with only one isolated event can close with `no-durable-lesson`.
-- A learn-triggered behavior change updates the authoritative artifact that owns the behavior instead of relying on a topic entry as policy.
-- A process follow-up without an issue tracker or active plan becomes a proposal rather than a roadmap entry.
+- A learn-triggered behavior change is routed to the owner that updates the authoritative artifact, and `learn` records the exact result instead of relying on topic policy.
+- A process follow-up without an issue tracker or current change-local owner routes to proposal work rather than a roadmap entry.
 - Topic entry removal or absorption preserves traceability through a session link, authoritative-artifact link, topic-file rationale, or explain-change rationale.
 - A small explicit learn invocation can complete without full-reading every governance artifact.
 - Selector-selected validation treats `docs/learn/sessions/**` and `docs/learn/topics/**` as known learn artifact paths.

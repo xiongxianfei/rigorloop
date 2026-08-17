@@ -1,0 +1,33 @@
+{
+  "schema": "learn-rule-disposition-v1",
+  "rules": [
+    {"rule_id":"LRN-RULE-001","cluster":"purpose-and-trigger","owner":"inline","disposition":"preserve"},
+    {"rule_id":"LRN-RULE-002","cluster":"operation-classification","owner":"inline","disposition":"clarify"},
+    {"rule_id":"LRN-RULE-003","cluster":"trigger-owner-closeout","owner":"inline","disposition":"clarify"},
+    {"rule_id":"LRN-RULE-004","cluster":"evidence-threshold","owner":"inline","disposition":"preserve"},
+    {"rule_id":"LRN-RULE-005","cluster":"single-event-boundary","owner":"inline","disposition":"preserve"},
+    {"rule_id":"LRN-RULE-006","cluster":"contributor-confirmation","owner":"inline","disposition":"preserve"},
+    {"rule_id":"LRN-RULE-007","cluster":"sensitive-data","owner":"inline","disposition":"preserve"},
+    {"rule_id":"LRN-RULE-008","cluster":"write-ownership","owner":"inline","disposition":"clarify"},
+    {"rule_id":"LRN-RULE-009","cluster":"session-path","owner":"inline","disposition":"clarify"},
+    {"rule_id":"LRN-RULE-010","cluster":"resource-selection","owner":"inline","disposition":"add"},
+    {"rule_id":"LRN-RULE-011","cluster":"missing-resource","owner":"inline","disposition":"add"},
+    {"rule_id":"LRN-RULE-012","cluster":"stops-and-claims","owner":"inline","disposition":"preserve"},
+    {"rule_id":"LRN-RULE-013","cluster":"frame-method","owner":"session-reference","disposition":"move"},
+    {"rule_id":"LRN-RULE-014","cluster":"observe-method","owner":"session-reference","disposition":"move"},
+    {"rule_id":"LRN-RULE-015","cluster":"classify-method","owner":"session-reference","disposition":"move"},
+    {"rule_id":"LRN-RULE-016","cluster":"route-method","owner":"session-reference","disposition":"move"},
+    {"rule_id":"LRN-RULE-017","cluster":"topic-curation","owner":"session-reference","disposition":"move"},
+    {"rule_id":"LRN-RULE-018","cluster":"incident-evidence","owner":"session-reference","disposition":"move"},
+    {"rule_id":"LRN-RULE-019","cluster":"cadence-evidence","owner":"session-reference","disposition":"move"},
+    {"rule_id":"LRN-RULE-020","cluster":"session-identity-and-collision","owner":"session-reference","disposition":"clarify"},
+    {"rule_id":"LRN-RULE-021","cluster":"partial-session-failure","owner":"session-reference","disposition":"clarify"},
+    {"rule_id":"LRN-RULE-022","cluster":"stable-route-record","owner":"session-reference","disposition":"add"},
+    {"rule_id":"LRN-RULE-023","cluster":"route-result-backlink","owner":"inline","disposition":"add"},
+    {"rule_id":"LRN-RULE-024","cluster":"compact-result","owner":"inline","disposition":"clarify"},
+    {"rule_id":"LRN-RULE-025","cluster":"historical-compatibility","owner":"inline","disposition":"preserve"},
+    {"rule_id":"LRN-RULE-026","cluster":"legacy-destination-writers","owner":"destination-owner","disposition":"replace-writer"},
+    {"rule_id":"LRN-RULE-027","cluster":"measurement-and-parity","owner":"change-evidence","disposition":"add"},
+    {"rule_id":"LRN-RULE-028","cluster":"closed-vocabulary-validation","owner":"existing-validator","disposition":"add"}
+  ]
+}

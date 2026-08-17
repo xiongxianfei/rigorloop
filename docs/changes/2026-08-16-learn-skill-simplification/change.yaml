@@ -1,0 +1,277 @@
+change_id: 2026-08-16-learn-skill-simplification
+title: Learn Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-16-learn-skill-simplification.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r3
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-08-16-learn-skill-simplification/reviews/proposal-review-r3.md
+      round: r3
+  spec:
+    kind: spec
+    path: specs/learn-skill-simplification.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r2
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r2.md
+      round: r2
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-17-learn-skill-simplification.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r2
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r2.md
+      round: r2
+  test-spec:
+    kind: test-spec
+    path: specs/learn-skill-simplification.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r2
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-16-learn-skill-simplification/reviews/test-spec-review-r2.md
+      round: r2
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: verify
+  next_stage: pr
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-authoring.md
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/proposal-review-r1.md
+    - docs/changes/2026-08-16-learn-skill-simplification/review-resolution.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-revision-r1.md
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/proposal-review-r2.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-revision-r2.md
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/proposal-review-r3.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+    - specs/learn-skill-simplification.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/spec-authoring.md
+    - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-spec-review-r1.yaml
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r1.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/spec-revision-r1.md
+    - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-spec-review-r2.yaml
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r2.md
+    - docs/changes/2026-08-16-learn-skill-simplification/architecture-assessment.md
+    - docs/plans/2026-08-17-learn-skill-simplification.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-authoring.md
+    - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-plan-review-r1.yaml
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r1.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-revision-r1.md
+    - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-plan-review-r2.yaml
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r2.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-initialization.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-settlement-retry.md
+    - specs/learn-skill-simplification.test.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/test-spec-authoring.md
+    - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-test-spec-review-r1.yaml
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/test-spec-revision-r1.md
+    - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-test-spec-review-r2.yaml
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/workflow-automation-target-verify.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/m1-preservation-inventories.md
+    - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-code-review-m1-r1.yaml
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-code-review-m1-r2.yaml
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m1-r2.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/m2-package-implementation.md
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m2-r2.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/simplification-measurements.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/semantic-preservation-review.md
+    - docs/changes/2026-08-16-learn-skill-simplification/evidence/m3-package-proof.md
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m3-r1.md
+    - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-final-r1.md
+    - docs/changes/2026-08-16-learn-skill-simplification/explain-change.md
+    - docs/changes/2026-08-16-learn-skill-simplification/verify-report.md
+  planned_work:
+    plan_artifact_id: plan
+    current_milestone: none
+    initialization_basis:
+      review_id: plan-review-r2
+      review_round: r2
+      review_record: docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r2.md
+      reviewed_artifact_path: docs/plans/2026-08-17-learn-skill-simplification.md
+      reviewed_revision: f8b54c63
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+    remaining_implementation_milestones: []
+    latest_review:
+      status: approved
+      stage: code-review
+      round: r1
+      artifact_id: plan
+      occurrence: final
+      milestone_id: none
+      evidence:
+        - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-final-r1.md
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - external-completion-event-pending
+      evidence:
+        - docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r2.md
+        - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-initialization.md
+        - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m3-r1.md
+        - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-final-r1.md
+        - docs/changes/2026-08-16-learn-skill-simplification/explain-change.md
+        - docs/changes/2026-08-16-learn-skill-simplification/verify-report.md
+
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: verify
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-17T01:35:45-07:00"
+      completion:
+        rule: first final verify result is durably recorded
+    status: completed
+    current_stage: verify
+    stop_reason: target-reached
+    evidence:
+      - docs/changes/2026-08-16-learn-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+      - specs/learn-skill-simplification.test.md
+      - docs/changes/2026-08-16-learn-skill-simplification/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-16-learn-skill-simplification/reviews/test-spec-review-r2.md
+      - docs/changes/2026-08-16-learn-skill-simplification/evidence/workflow-automation-target-verify.md
+      - docs/changes/2026-08-16-learn-skill-simplification/evidence/m1-preservation-inventories.md
+      - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m1-r1.md
+      - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m1-r2.md
+      - docs/changes/2026-08-16-learn-skill-simplification/evidence/m2-package-implementation.md
+      - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m2-r1.md
+      - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m2-r2.md
+      - docs/changes/2026-08-16-learn-skill-simplification/evidence/simplification-measurements.md
+      - docs/changes/2026-08-16-learn-skill-simplification/evidence/semantic-preservation-review.md
+      - docs/changes/2026-08-16-learn-skill-simplification/evidence/m3-package-proof.md
+      - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m3-r1.md
+      - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-final-r1.md
+      - docs/changes/2026-08-16-learn-skill-simplification/explain-change.md
+      - docs/changes/2026-08-16-learn-skill-simplification/verify-report.md
+
+artifacts:
+  proposal: docs/proposals/2026-08-16-learn-skill-simplification.md
+  spec: specs/learn-skill-simplification.md
+  plan: docs/plans/2026-08-17-learn-skill-simplification.md
+  test_spec: specs/learn-skill-simplification.test.md
+
+requirements:
+  - Reduce the actual learn-session loaded context while preserving learn evidence quality, confirmation, recording, routing, and claim boundaries.
+  - Keep universal trigger, evidence, confirmation, ownership, sensitive-data, stop, claim, and resource-selection behavior inline and add one conditional session-method reference.
+  - Separate learn-owned session, topic, and exact route-backlink writes from owner-bound derivative work; expose no unobserved trigger-assessment operation.
+  - Use deterministic unique session paths and fail closed on partial, ambiguous, or competing content without transaction-grade phase recovery.
+  - Preserve the existing learn namespace, no-template direction, and periodic non-default lifecycle role.
+  - Prove semantic and literal preservation, real LR0 and LR1 profile reduction, and canonical-through-installed parity without target-agent runtime acceptance.
+
+tests:
+  - Independent proposal review of value, package boundaries, operations, ownership, confirmation, measurement, compatibility, and spec readiness.
+  - Deterministic scenarios covering trigger-owner closeout, unique session paths, fail-closed interruption, empty outcomes, confirmation, per-route settlement and backlinks, sensitive evidence, missing resources, and forbidden mutation.
+  - Static package, selector, build, adapter, and lifecycle validation without a target-agent runtime or separate manual semantic-review acceptance gate.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-16-learn-skill-simplification/change.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-16-learn-skill-simplification.md
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-log.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-resolution.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-revision-r1.md
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-revision-r2.md
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/proposal-review-r3.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+  - specs/learn-skill-simplification.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/spec-revision-r1.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-spec-review-r2.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r2.md
+  - docs/changes/2026-08-16-learn-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-17-learn-skill-simplification.md
+  - docs/plan.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-authoring.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r1.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-revision-r1.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-plan-review-r2.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r2.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-initialization.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-settlement-retry.md
+  - specs/learn-skill-simplification.test.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/test-spec-authoring.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-test-spec-review-r1.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/test-spec-revision-r1.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-test-spec-review-r2.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/test-spec-review-r2.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/workflow-automation-target-verify.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/m1-preservation-inventories.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/profile-size-baseline.md
+  - docs/changes/2026-08-16-learn-skill-simplification/learn-rule-disposition.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/learn-literal-compatibility.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/fixtures/invalid-rule-owner.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/fixtures/invalid-literal-classification.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/fixtures/invalid-rule-disposition.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/fixtures/invalid-literal-disposition.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/fixtures/learn-simplification-scenarios.yaml
+  - scripts/test-skill-validator.py
+  - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-code-review-m1-r1.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m1-r1.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-code-review-m1-r2.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m1-r2.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/m2-package-implementation.md
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m2-r1.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-code-review-final-r1.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-final-r1.md
+  - docs/changes/2026-08-16-learn-skill-simplification/explain-change.md
+  - docs/changes/2026-08-16-learn-skill-simplification/verify-report.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-code-review-m2-r2.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m2-r2.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/simplification-measurements.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/semantic-preservation-review.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/m3-package-proof.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-code-review-m3-r1.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m3-r1.md
+  - skills/learn/SKILL.md
+  - skills/learn/references/session-method.md
+  - specs/learn-artifact-model.md
+  - specs/learn-artifact-model.test.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-code-review-m2-r1.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m2-r1.md
+
+review:
+  status: approved
+  unresolved_items: 0

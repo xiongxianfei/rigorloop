@@ -1,0 +1,29 @@
+{
+  "schema": "learn-literal-compatibility-v1",
+  "literals": [
+    {"literal_id":"LRN-LIT-001","literal":"run-learn-session","classification":"normative-contract","disposition":"preserve"},
+    {"literal_id":"LRN-LIT-002","literal":"record-learn-route-result","classification":"normative-contract","disposition":"add"},
+    {"literal_id":"LRN-LIT-003","literal":"docs/learn/sessions/YYYY-MM-DD-<slug>.md","classification":"parser-or-package-contract","disposition":"preserve"},
+    {"literal_id":"LRN-LIT-004","literal":"docs/learn/topics/<topic>.md","classification":"parser-or-package-contract","disposition":"preserve"},
+    {"literal_id":"LRN-LIT-005","literal":"Frame","classification":"normative-contract","disposition":"move-reference"},
+    {"literal_id":"LRN-LIT-006","literal":"Observe","classification":"normative-contract","disposition":"move-reference"},
+    {"literal_id":"LRN-LIT-007","literal":"Classify","classification":"normative-contract","disposition":"move-reference"},
+    {"literal_id":"LRN-LIT-008","literal":"Route","classification":"normative-contract","disposition":"move-reference"},
+    {"literal_id":"LRN-LIT-009","literal":"observation","classification":"normative-contract","disposition":"preserve"},
+    {"literal_id":"LRN-LIT-010","literal":"durable-lesson","classification":"normative-contract","disposition":"preserve"},
+    {"literal_id":"LRN-LIT-011","literal":"artifact-update","classification":"normative-contract","disposition":"preserve"},
+    {"literal_id":"LRN-LIT-012","literal":"decision","classification":"normative-contract","disposition":"preserve"},
+    {"literal_id":"LRN-LIT-013","literal":"direction","classification":"normative-contract","disposition":"preserve"},
+    {"literal_id":"LRN-LIT-014","literal":"process-follow-up","classification":"normative-contract","disposition":"preserve"},
+    {"literal_id":"LRN-LIT-015","literal":"no-durable-lesson","classification":"normative-contract","disposition":"preserve"},
+    {"literal_id":"LRN-LIT-016","literal":"ROUTE-NNN","classification":"normative-contract","disposition":"add"},
+    {"literal_id":"LRN-LIT-017","literal":"pending-owner-action","classification":"normative-contract","disposition":"add"},
+    {"literal_id":"LRN-LIT-018","literal":"complete","classification":"normative-contract","disposition":"add"},
+    {"literal_id":"LRN-LIT-019","literal":"blocked","classification":"normative-contract","disposition":"add"},
+    {"literal_id":"LRN-LIT-020","literal":"authoritative-artifact","classification":"normative-contract","disposition":"add"},
+    {"literal_id":"LRN-LIT-021","literal":"durable-scheduled-follow-up","classification":"normative-contract","disposition":"add"},
+    {"literal_id":"LRN-LIT-022","literal":"READ `references/session-method.md`","classification":"parser-or-package-contract","disposition":"add"},
+    {"literal_id":"LRN-LIT-023","literal":"assess-learn-trigger","classification":"obsolete","disposition":"forbid"},
+    {"literal_id":"LRN-LIT-024","literal":"artifact-update: update the affected authoritative artifact","classification":"obsolete","disposition":"replace-writer"}
+  ]
+}
