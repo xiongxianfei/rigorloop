@@ -31,6 +31,9 @@ Recording status: recorded
 
 ### VIS-FINAL-CR1 — Major: review-resolution summary is stale after M2 rereview
 
+Finding ID: VIS-FINAL-CR1
+Severity: major
+Location: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-resolution.md`
 Evidence: the resolution overview omits `VIS-M2-CR1`, while its detail says independent M2 rereview remains pending even though `code-review-m2-r2` approved the correction. `explain-change` is required to summarize material findings from the durable overview and cannot safely treat this stale state as closed.
 
 Required outcome: add `VIS-M2-CR1` to the overview, bind its validation to the approving M2 rereview, and keep closeout closed only after the summary, detail, and review log agree.

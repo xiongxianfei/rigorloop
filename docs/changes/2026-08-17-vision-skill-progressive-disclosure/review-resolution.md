@@ -7,6 +7,8 @@ Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
 Review closeout: spec-review-r1
+Review closeout: code-review-m2-r1
+Review closeout: code-review-final-r2
 
 ## Resolution overview
 
@@ -43,7 +45,7 @@ Rationale: Explanation and verification must consume one internally consistent d
 Required outcome: Overview, finding detail, review log, and lifecycle state agree with no open findings.
 Safe resolution path: Correct the bounded review-resolution fields, validate, and run a new final holistic rereview.
 Validation target: review-resolution summary/detail, review log, and change metadata.
-Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/final-review-resolution-r2.md`; final holistic rereview remains pending.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/final-review-resolution-r2.md`; approved by `code-review-final-r3`.
 
 ### code-review-m2-r1
 

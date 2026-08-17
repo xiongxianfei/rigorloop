@@ -41,6 +41,9 @@ The highest-impact M2 risks were moving universal authority behind conditional p
 
 ### VIS-M2-CR1 — Major: the governed prepared-manifest and zero-write settlement contract is incomplete
 
+Finding ID: VIS-M2-CR1
+Severity: major
+Location: `skills/vision/SKILL.md`, `scripts/test-skill-validator.py`, and `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-package-implementation.md`
 Evidence: `skills/vision/SKILL.md:77-81` requires resolving a manifest before writes, but does not require governed work to persist the complete manifest in authorized change-local authoring evidence before the first target write as required by R54. The same passage does not state the R46 requirement that zero-write sync skip records equal prior and intended identities for the unchanged canonical vision target, or the complete R52 truth condition of no changed files and no synchronization claim. The focused tests assert general preparation and retry phrases but do not reject these omissions.
 
 Impact: an interrupted governed multi-file operation could lack the durable basis needed for exact retry, while a zero-write skip could claim completion without the complete identity and result evidence required by the approved contract. The implementation evidence currently overstates this behavior as proved.
