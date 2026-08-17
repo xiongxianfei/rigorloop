@@ -53,7 +53,7 @@ artifact_states:
 workflow_state:
   lifecycle_state: active
   current_stage: test-spec-review
-  next_stage: test-spec-review
+  next_stage: implement
   blocker: null
   evidence:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
@@ -132,9 +132,9 @@ workflow:
       bound_at: "2026-08-17T00:00:00-07:00"
       completion:
         rule: first formal test-spec-review result is durably recorded
-    status: active
+    status: completed
     current_stage: test-spec-review
-    stop_reason: null
+    stop_reason: target-reached
     evidence:
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
       - docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
