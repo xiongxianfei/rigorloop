@@ -1,6 +1,6 @@
 # Review Resolution: Learn Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -9,6 +9,8 @@ Review closeout: spec-review-r1
 Review closeout: spec-review-r2
 Review closeout: plan-review-r1
 Review closeout: plan-review-r2
+Review closeout: test-spec-review-r1
+Review closeout: test-spec-review-r2
 
 ## Resolution overview
 
@@ -24,8 +26,8 @@ Review closeout: plan-review-r2
 | `LRNSIM-SR2` | accepted | closed | Both real loaded profiles must decrease in words and bytes. |
 | `LRNSIM-SR3` | accepted | closed | Every route records one immutable completion kind validated during result recording. |
 | `LRNSIM-PLR1` | accepted | closed | M1 owns architecture-trigger inspection and stops before canonical mutation when triggered. |
-| `LRNSIM-TSR1` | accepted | open | M1 now owns only CMD1-runnable inventory, baseline, scenario, and R46 gate proof; M2 owns package behavior. |
-| `LRNSIM-TSR2` | accepted | open | T15 directly proves the complete compact result for both operations and representative idempotent and blocked outcomes. |
+| `LRNSIM-TSR1` | accepted | closed | M1 now owns only CMD1-runnable inventory, baseline, scenario, and R46 gate proof; M2 owns package behavior. |
+| `LRNSIM-TSR2` | accepted | closed | T15 directly proves the complete compact result for both operations and representative idempotent and blocked outcomes. |
 
 ## Finding details
 
@@ -215,7 +217,7 @@ No material findings. The clean rereview confirms that LRNSIM-PLR1 is closed and
 
 Finding ID: LRNSIM-TSR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: test-spec author
 Owning stage: review-resolution
 Decision owner: workflow-managed review-resolution
@@ -225,13 +227,13 @@ Rationale: The first formal review found that M1 names cases whose only behavior
 Required outcome: Give every M1 obligation an M1-runnable case and command, and assign package behavior to M2 without weakening R46.
 Safe resolution path: Resolve this finding, revise the test spec when accepted, rerun boundary validation, and obtain fresh independent test-spec review.
 Validation target: corrected milestone, command, and PRF mappings.
-Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidence/test-spec-revision-r1.md`; approving rereview pending.
+Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidence/test-spec-revision-r1.md` and approving `docs/changes/2026-08-16-learn-skill-simplification/reviews/test-spec-review-r2.md`.
 
 #### LRNSIM-TSR2
 
 Finding ID: LRNSIM-TSR2
 Disposition: accepted
-Status: open
+Status: closed
 Owner: test-spec author
 Owning stage: review-resolution
 Decision owner: workflow-managed review-resolution
@@ -241,4 +243,8 @@ Rationale: Coverage tables alone do not prove the complete observable result con
 Required outcome: Add one direct deterministic result-shape case and update requirement, acceptance, proof, command, and milestone mappings.
 Safe resolution path: Resolve this finding, revise the test spec when accepted, rerun boundary validation, and obtain fresh independent test-spec review.
 Validation target: direct R37 assertions for both operations and representative blocked or idempotent outcomes.
-Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidence/test-spec-revision-r1.md`; approving rereview pending.
+Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidence/test-spec-revision-r1.md` and approving `docs/changes/2026-08-16-learn-skill-simplification/reviews/test-spec-review-r2.md`.
+
+### test-spec-review-r2
+
+No material findings. The approving rereview confirms that LRNSIM-TSR1 and LRNSIM-TSR2 are closed and the proof map is ready for implementation routing.

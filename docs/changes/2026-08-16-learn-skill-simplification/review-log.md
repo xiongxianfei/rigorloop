@@ -8,6 +8,19 @@ This ledger records formal lifecycle reviews for the learn skill simplification 
 
 ### Review entry
 
+Review ID: test-spec-review-r2
+Stage: test-spec-review
+Round: r2
+Reviewed artifact: `specs/learn-skill-simplification.test.md` at commit `755c864f`
+Status: approved
+Detailed record: reviews/test-spec-review-r2.md
+Resolution: review-resolution.md#test-spec-review-r2
+Material findings: none
+Open findings: none
+Recording status: recorded
+
+### Review entry
+
 Review ID: test-spec-review-r1
 Stage: test-spec-review
 Round: r1
@@ -16,7 +29,7 @@ Status: changes-requested
 Detailed record: reviews/test-spec-review-r1.md
 Resolution: review-resolution.md#test-spec-review-r1
 Material findings: LRNSIM-TSR1, LRNSIM-TSR2
-Open findings: LRNSIM-TSR1, LRNSIM-TSR2
+Open findings: none
 Recording status: recorded
 
 ### Review entry
