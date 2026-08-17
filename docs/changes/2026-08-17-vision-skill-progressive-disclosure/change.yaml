@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: implement
-  next_stage: implement
+  current_stage: code-review
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
@@ -87,6 +87,7 @@ workflow_state:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m1-preservation-inventories.md
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m1-r1.yaml
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-package-implementation.md
   planned_work:
     plan_artifact_id: plan
     initialization_basis:
@@ -102,7 +103,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: planned
+        state: review-requested
       M3:
         kind: implementation
         state: planned
@@ -138,7 +139,7 @@ workflow:
       completion:
         rule: first final verify result is durably recorded
     status: active
-    current_stage: implement
+    current_stage: code-review
     stop_reason: null
     evidence:
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
@@ -165,6 +166,7 @@ workflow:
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m1-preservation-inventories.md
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m1-r1.yaml
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m1-r1.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-package-implementation.md
 
 artifacts:
   proposal: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
@@ -236,6 +238,12 @@ changed_files:
   - scripts/test-skill-validator.py
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m1-r1.yaml
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m1-r1.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-package-implementation.md
+  - skills/vision/SKILL.md
+  - skills/vision/references/strategic-vision-authoring.md
+  - skills/vision/references/readme-vision-sync.md
+  - skills/vision/assets/vision-skeleton.md
+  - skills/vision/assets/strategic-positioning-skeleton.md
 
 review:
   status: approved
