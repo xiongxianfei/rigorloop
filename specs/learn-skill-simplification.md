@@ -143,7 +143,9 @@ R24. Repeating the same topic effect for the same session and content identity M
 
 R25. Every owner-bound derivative route in a new session MUST have one stable session-local ID `ROUTE-NNN`, assigned in ascending order from `ROUTE-001` without duplication, renumbering, or reuse.
 
-R26. Every route MUST record its source observation, confirmed classification and requested action, exact destination kind and path or external identity, owning skill or process, evidence-basis identity, settlement value, optional owner-result identity, and optional blocker.
+R26. Every route MUST record its source observation, confirmed classification and requested action, exact destination kind and path or external identity, owning skill or process, evidence-basis identity, required completion kind, settlement value, optional owner-result identity, and optional blocker.
+
+R26a. Required completion kind MUST be exactly `authoritative-artifact` or `durable-scheduled-follow-up`, MUST be fixed when the confirmed route is created, and MUST NOT be inferred or changed during result recording.
 
 R27. Route settlement MUST be exactly `pending-owner-action`, `complete`, or `blocked`; unknown values MUST fail closed before consistency checks.
 
@@ -153,13 +155,13 @@ R29. `complete` MUST mean only that learn recorded one exact qualifying owner-re
 
 R30. `blocked` MUST record a concrete route-specific blocker and MUST NOT silently convert the route to a different classification, owner, destination, or requested action.
 
-R31. `record-learn-route-result` MUST require one exact current session path and identity, one stable route ID, one matching destination owner and route basis, and one exact owner-result identity produced under the destination owner's authority.
+R31. `record-learn-route-result` MUST require one exact current session path and identity, one stable route ID, one matching destination owner and route basis, one owner-result kind, and one exact owner-result identity produced under the destination owner's authority.
 
 R32. Result recording MUST update only the matching route's owner-result backlink, settlement value, and route-specific blocker field when applicable; it MUST NOT create a session, repeat classification, change confirmation, update topic guidance, discover or poll owner work, mutate the destination, change workflow state, or create another route.
 
 R33. A matching existing backlink MUST return idempotent success; a changed session identity, route identity, route basis, destination, owner, or existing different owner-result identity MUST stop without adoption or replacement.
 
-R34. A durable scheduled follow-up MAY qualify as an owner result only when the route explicitly permits that completion kind and the exact follow-up identity is supplied; a chat-only recommendation or unowned note MUST NOT qualify.
+R34. An owner result MUST match the route's immutable required completion kind. A durable scheduled follow-up MAY qualify only for `durable-scheduled-follow-up` and only when its exact identity is supplied; an `authoritative-artifact` route requires the exact owner-produced artifact identity. A chat-only recommendation or unowned note MUST NOT qualify either kind.
 
 R35. Same-turn owner execution MUST finish and record the learn classification, invoke the destination owner under its own contract and review gates, and then use `record-learn-route-result`; learn MUST NOT perform the destination mutation itself.
 
@@ -187,6 +189,8 @@ R45. Published skill text MUST remain project-portable and MUST keep repository-
 
 R46. The bounded architecture assessment MUST return `architecture-required` if safe implementation requires transaction-grade phase recovery, a new persistent route or session schema owner, a polling or coordination service, an external integration, or a new cross-owner mutation authority.
 
+R47. The exact cross-spec disposition table in `Compatibility and migration` MUST govern new sessions prospectively, MUST preserve the legacy obligation to produce owner-bound authoritative outcomes, and MUST remove any interpretation that contributor confirmation or the learn Route phase directly grants destination mutation authority.
+
 ## Inputs and outputs
 
 Inputs are the accepted proposal and review, current `learn` skill, approved learn artifact model, workflow and skill-package contracts, current session and topic artifacts, repository trigger callers, package consumers, validators, and fixtures.
@@ -212,30 +216,30 @@ Every unknown vocabulary, ambiguous operation, unsafe path, unresolved trigger o
 ## Boundary model
 
 Boundary model version: boundary-first-v1
-Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46
+Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R26a, R27, R28, R29, R30, R31, R32, R33, R34, R35, R36, R37, R38, R39, R40, R41, R42, R43, R44, R45, R46, R47
 
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |
-| input-domain | applicable | R7, R8, R11, R21, R22, R25, R27, R31, R34 | BND-INPUT-001 | - |
+| input-domain | applicable | R7, R8, R11, R21, R22, R25, R26a, R27, R31, R34 | BND-INPUT-001 | - |
 | state-lifecycle | applicable | R9, R10, R14, R15, R16, R17, R18, R21, R23, R24, R27, R28, R29, R30, R32, R33, R36 | BND-STATE-001 | - |
-| identity-authority | applicable | R8, R9, R10, R11, R18, R20, R21, R23, R25, R26, R31, R32, R33, R34, R35 | BND-AUTH-001 | - |
+| identity-authority | applicable | R8, R9, R10, R11, R18, R20, R21, R23, R25, R26, R26a, R31, R32, R33, R34, R35, R47 | BND-AUTH-001 | - |
 | composition-path | applicable | R1, R2, R3, R4, R5, R6, R12, R13, R23, R36, R37, R38, R39, R43, R45 | BND-COMPOSE-001 | - |
 | temporal-retry | applicable | R12, R13, R16, R17, R18, R24, R25, R32, R33, R36 | BND-TEMPORAL-001 | - |
 | failure-recovery | applicable | R6, R13, R15, R16, R17, R21, R24, R30, R32, R33, R46 | BND-RECOVERY-001 | - |
-| compatibility-migration | applicable | R36, R38, R39, R40, R41, R42, R43, R45 | BND-COMPAT-001 | - |
+| compatibility-migration | applicable | R36, R38, R39, R40, R41, R42, R43, R45, R47 | BND-COMPAT-001 | - |
 | external-environment | applicable | R6, R11, R12, R13, R19, R23, R31, R34, R43, R44 | BND-ENV-001 | - |
 
 ## Boundary definitions
 
 | Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |
 | --- | --- | --- | --- | --- | --- | --- |
-| BND-INPUT-001 | input-domain | R7, R8, R11, R21, R22, R25, R27, R31, R34 | two operations, current trigger types, confirmation values, classification outcomes, route IDs, settlement values, and completion kinds | unknown or mixed values fail before consistency checks | one valid operation proceeds; invalid input stops | R7 |
+| BND-INPUT-001 | input-domain | R7, R8, R11, R21, R22, R25, R26a, R27, R31, R34 | two operations, current trigger types, confirmation values, classification outcomes, route IDs, required completion kinds, owner-result kinds, and settlement values | unknown, mixed, or mismatched values fail before consistency checks | one valid operation proceeds; invalid input stops | R7 |
 | BND-STATE-001 | state-lifecycle | R9, R10, R14, R15, R16, R17, R18, R21, R23, R24, R27, R28, R29, R30, R32, R33, R36 | no session, framed session, completed session, pending confirmation, topic effect, pending route, complete backlink, blocked route, or historical session | recorded state never grants destination authority or rewrites historical evidence | bounded learn-owned state advances or remains unchanged with a blocker | R32 |
-| BND-AUTH-001 | identity-authority | R8, R9, R10, R11, R18, R20, R21, R23, R25, R26, R31, R32, R33, R34, R35 | trigger owner, contributor, learn-owned session/topic, destination owner, exact owner result, and workflow router | confirmation and route recording never broaden mutation authority | exact authority permits its own write; absent or stale authority stops | R20 |
+| BND-AUTH-001 | identity-authority | R8, R9, R10, R11, R18, R20, R21, R23, R25, R26, R26a, R31, R32, R33, R34, R35, R47 | trigger owner, contributor, learn-owned session/topic, destination owner, exact owner result, legacy direct-write wording, and workflow router | confirmation, legacy routing language, and route recording never broaden mutation authority | exact authority permits its own write; absent, stale, or conflicting authority stops | R20 |
 | BND-COMPOSE-001 | composition-path | R1, R2, R3, R4, R5, R6, R12, R13, R23, R36, R37, R38, R39, R43, R45 | universal skill, one reference, session namespace, topic namespace, historical artifacts, and derived packages | one owner per rule, safe contained paths, and byte parity remain mandatory | valid composition loads and writes safely; drift or escape blocks | R1 |
 | BND-TEMPORAL-001 | temporal-retry | R12, R13, R16, R17, R18, R24, R25, R32, R33, R36 | first creation, same-day collision, complete rerun, partial prior file, same backlink, conflicting backlink, or changed basis | no automatic partial resume, identity reuse, duplicate effect, or backlink replacement | unique creation or exact idempotent no-op succeeds; unsafe retry stops | R16 |
 | BND-RECOVERY-001 | failure-recovery | R6, R13, R15, R16, R17, R21, R24, R30, R32, R33, R46 | failure before Frame, durable incomplete outcome after Frame, complete session, missing method, conflicting topic, or unsafe backlink | recovery never reconstructs missing method or adopts ambiguous bytes | durable bounded outcome is preserved; unsupported recovery blocks | R16 |
-| BND-COMPAT-001 | compatibility-migration | R36, R38, R39, R40, R41, R42, R43, R45 | new route-aware session, historical session, normative rule, parser-sensitive literal, incidental prose, canonical source, or derived resource | prospective structure does not rewrite history and packaging remains exact | classified atomic migration passes or blocks | R36 |
+| BND-COMPAT-001 | compatibility-migration | R36, R38, R39, R40, R41, R42, R43, R45, R47 | new route-aware session, historical session, legacy direct-write clause, amended owner-bound clause, normative rule, parser-sensitive literal, incidental prose, canonical source, or derived resource | prospective structure does not rewrite history, conflicting legacy clauses have exact dispositions, and packaging remains exact | classified atomic migration passes or blocks | R36 |
 | BND-ENV-001 | external-environment | R6, R11, R12, R13, R19, R23, R31, R34, R43, R44 | available local evidence, sensitive evidence, unavailable resource, filesystem collision, owner-produced destination, package build, or clean install | claims match available evidence and no external mutation is inferred | repository-owned proof succeeds or dependent operation blocks | R44 |
 
 ## Selected interactions
@@ -244,7 +248,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | --- | --- | --- | --- | --- |
 | INT-001 | R8, R9, R10, R11 | BND-INPUT-001, BND-AUTH-001 | an ordinary question or owner closeout manufactures a formal learn assessment or session | only explicit session or exact result-recording requests select learn operations |
 | INT-002 | R12, R13, R14, R16, R18 | BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001 | a same-day collision or partial file is overwritten or silently resumed | deterministic absent path selection creates new content; ambiguous prior bytes remain untouched |
-| INT-003 | R20, R21, R23, R25, R26, R31, R32, R35 | BND-STATE-001, BND-AUTH-001 | contributor confirmation or same-turn convenience grants cross-owner mutation | learn records classification and routes; the destination owner performs its own authorized work |
+| INT-003 | R20, R21, R23, R25, R26, R26a, R31, R32, R34, R35, R47 | BND-STATE-001, BND-AUTH-001, BND-INPUT-001 | contributor confirmation, legacy wording, or same-turn convenience grants cross-owner mutation or accepts the wrong completion kind | learn records classification and routes; the destination owner performs its own authorized work and result recording validates the immutable completion kind |
 | INT-004 | R27, R28, R29, R31, R32, R33, R36 | BND-STATE-001, BND-TEMPORAL-001, BND-COMPAT-001 | route completion overclaims destination state or rewrites historical sessions | only exact prospective route backlinks become complete and their claim remains narrow |
 | INT-005 | R3, R5, R6, R38, R39, R42, R43, R45 | BND-COMPOSE-001, BND-COMPAT-001, BND-ENV-001 | procedure relocation hides semantic loss or produces package drift | rule and literal ledgers, real-profile reduction, and package parity remain mandatory |
 
@@ -269,6 +273,24 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 The migration is prospective. New learn sessions use stable route IDs and the bounded route-result operation. Historical sessions and topic files remain readable and unchanged; their absent route IDs are not inferred. The canonical skill, new reference, focused learn contract, directly coupled callers, validators, fixtures, and package metadata migrate atomically. Rollback restores the previous flat skill and coupled expectations and removes the new reference without rewriting historical sessions.
 
+### Exact cross-spec dispositions
+
+For sessions created under this specification, the following table is the closed amendment to `specs/learn-artifact-model.md`.
+
+| Legacy surface | Disposition | Prospective meaning |
+| --- | --- | --- |
+| R21 `artifact-update` route | amended | Learn records an exact `authoritative-artifact` route; the affected artifact owner performs the update, and learn may later record its exact identity. |
+| R22 `decision` route | amended | Learn records an exact `authoritative-artifact` route to the ADR or decision owner; learn does not author or approve that decision without separately invoking the owning skill. |
+| R23 `direction` route | amended | Learn records an exact owner-bound proposal or durable follow-up route; any proposal or follow-up is created by its owner under current authority. |
+| R24 `process-follow-up` route | amended | Learn records an exact route whose required completion kind is selected at confirmation; the issue, plan, or proposal owner creates the result. |
+| R33 authoritative behavior-change obligation | retained with writer clarification | The authoritative artifact update remains mandatory when behavior changes, but learn satisfies only classification, routing, and backlink ownership; the destination owner satisfies mutation and review. |
+| Example E3 | amended | The resulting authoritative artifact is updated through its owning skill or stage, then linked from the learn session. |
+| Inputs and outputs: updated action-owning artifacts, ADRs, proposals, issues, or active-plan follow-ups | amended | These are owner-produced derivative results, not direct learn-owned outputs; learn's output is the exact route and later backlink. |
+| State invariant: action-owning artifacts remain the source of truth | retained | Destination artifacts remain authoritative and topic guidance remains subordinate. |
+| Acceptance: behavior change updates the authoritative artifact | retained with writer clarification | Proof must show the owner-produced update and the learn backlink without granting learn direct mutation authority. |
+
+No legacy wording may be read as contributor-confirmation authority for cross-owner writes. Implementation must align the older contract and matching proof map with these dispositions in the same reviewed slice rather than leaving two active writer rules.
+
 ## Observability
 
 The change is observable through operation results, session paths and identities, confirmation status, topic-effect identities, per-route settlement and backlinks, blockers, semantic and literal ledgers, loaded-profile measurements, deterministic scenarios, lifecycle validation, and canonical-through-installed package parity. Reports distinguish configured commands from executed commands and relocated procedure from removed behavior.
@@ -283,7 +305,7 @@ Not applicable to end-user interface accessibility. Published Markdown must rema
 
 ## Performance expectations
 
-`LR1-session` must use fewer LF-normalized UTF-8 bytes and Unicode whitespace-separated words than its 1,712-word and 12,375-byte baseline. `LR0-route-result`, both resources, and total package size are reported separately. No runtime latency, polling, or service-level contract is introduced.
+`LR0-route-result` and `LR1-session` must each use fewer LF-normalized UTF-8 bytes and Unicode whitespace-separated words than the shared 1,712-word and 12,375-byte flat baseline. Both resources and total package size are reported separately. No runtime latency, polling, or service-level contract is introduced.
 
 ## Edge cases
 
@@ -307,6 +329,8 @@ EC9. The reference exists in canonical source but is absent from one packaged ad
 
 EC10. Total package size increases while `LR1-session` decreases: the increase is reported and does not substitute for the required real-profile reduction.
 
+EC11. A route requires `authoritative-artifact` but receives a scheduled-follow-up identity: result recording stops and the route remains pending.
+
 ## Non-goals
 
 - Redesigning the accepted four-phase learning method, learn artifact model, trigger cadence, or confirmation policy.
@@ -329,7 +353,7 @@ EC10. Total package size increases while `LR1-session` decreases: the increase i
 | AC7 | Route completion records only an exact owner result and makes no destination approval, implementation, release, or workflow claim. |
 | AC8 | Historical sessions remain readable and unchanged and are not implicit route-result targets. |
 | AC9 | Semantic and literal ledgers give every current rule and compatibility dependency one disposition. |
-| AC10 | `LR1-session` decreases in words and bytes while `LR0-route-result`, resources, and total package remain visible. |
+| AC10 | Both `LR0-route-result` and `LR1-session` decrease in words and bytes while resources and total package remain visible. |
 | AC11 | Canonical-through-installed resource inventories and raw bytes match. |
 | AC12 | Acceptance executes no target-agent runtime and introduces no separate manual semantic-review gate. |
 | AC13 | Architecture assessment returns `architecture-required` if implementation needs persistent phase recovery, polling, external integration, or new cross-owner authority. |
