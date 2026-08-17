@@ -4,8 +4,8 @@ review_stage: spec-review
 review_target: specs/vision-skill-progressive-disclosure.md
 base_revision: 1931c7b4
 head_revision: 1931c7b4
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: approved
+review_gate_outcome: approved
 independence_level: L0
 author_context_id: root-spec-correction-r1
 reviewer_context_id: root-spec-review-r2-context-reset
