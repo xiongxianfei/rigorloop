@@ -25,8 +25,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: spec
-  next_stage: spec
+  current_stage: spec-review
+  next_stage: spec-review
   blocker: null
   evidence:
     - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-authoring.md
@@ -54,7 +54,7 @@ workflow:
       completion:
         rule: first formal test-spec-review result is durably recorded
     status: active
-    current_stage: spec
+    current_stage: spec-review
     stop_reason: null
     evidence:
       - docs/changes/2026-08-16-learn-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
