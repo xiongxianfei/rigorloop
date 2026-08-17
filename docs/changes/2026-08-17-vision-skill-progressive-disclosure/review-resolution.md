@@ -1,11 +1,12 @@
 # Review Resolution: Vision Skill Progressive Disclosure
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
+Review closeout: spec-review-r1
 
 ## Resolution overview
 
@@ -20,7 +21,7 @@ Review closeout: proposal-review-r4
 | `VISSIM-R3-PR1` | accepted | closed | README authority now binds and survives only the exact manifest prior-to-intended transition. |
 | `VISSIM-R3-PR2` | accepted | closed | `VA0S` and independent structural-asset predicates close every remaining combination. |
 | `VISSIM-R4-PR1` | accepted | closed | Pre-resolved skip now uses whole-file identity and an uninspected-marker value, while late skip retains README procedure and every skip settles through a manifest. |
-| `VISSIM-SR1` | accepted | open | Permit the exact manifest-bound README prior-to-intended transition while rejecting every unexpected identity. |
+| `VISSIM-SR1` | accepted | closed | Both exact manifest-bound prior-to-intended transitions preserve authority; every unexpected canonical or README identity invalidates it. |
 
 ## Finding details
 
@@ -30,7 +31,7 @@ Review closeout: proposal-review-r4
 
 Finding ID: VISSIM-SR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: spec author
 Owning stage: spec
 Decision owner: spec author
@@ -40,7 +41,7 @@ Rationale: The intended derived write must not invalidate the authority that per
 Required outcome: Revise R25-R27, affected boundary wording, acceptance proof intent, and authoring evidence.
 Safe resolution path: Apply the bounded contract correction and perform a fresh independent spec-review.
 Validation target: revised spec, boundary structure, lifecycle metadata, and approving rereview.
-Validation evidence: pending spec revision and rereview.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-revision-r1.md`; independent rereview remains pending.
 
 ### proposal-review-r1
 

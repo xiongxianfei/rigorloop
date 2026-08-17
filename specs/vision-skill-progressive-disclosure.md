@@ -127,11 +127,11 @@ R23. Missing, malformed, nested, duplicate, or ambiguous markers MUST NOT imply 
 
 R24. Silence, conversational omission, remembered approval, historical authority, or malformed marker state MUST NOT establish insertion or skip authority.
 
-R25. Every insertion or skip MUST bind one governing requirement or exact current owner instruction, operation, operation-manifest identity, prior and intended canonical vision identities, current README identity, marker-evidence state, and authorized action.
+R25. Every insertion or skip MUST bind one governing requirement or exact current owner instruction, operation, operation-manifest identity, prior and intended canonical vision identities, prior and intended README identities, marker-evidence state, and authorized action.
 
-R26. An exact planned prior-to-intended canonical transition MUST preserve the bound README action; any other canonical identity, README identity, action, manifest, or authority change MUST invalidate it.
+R26. The exact manifest-bound prior-to-intended transitions for canonical vision and README MUST preserve the bound README action; any canonical or README identity outside those planned transitions, or any action, manifest, or authority change, MUST invalidate it.
 
-R27. A marker change MUST invalidate any action whose authority used inspected marker evidence; a pre-resolved skip MUST instead be invalidated by any whole-file README identity change.
+R27. A marker change MUST invalidate any action whose authority used inspected marker evidence; a pre-resolved skip MUST instead be invalidated by any README identity outside its unchanged prior-equals-intended transition.
 
 ### Secondary artifacts and structural assets
 
@@ -260,7 +260,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | --- | --- | --- | --- | --- | --- | --- |
 | BND-INPUT-001 | input-domain | R8, R9, R10, R11, R28, R40, R51 | three operations, three significance values, two context axes, secondary actions, six assemblies, and three results | unknown vocabulary fails before consistency checks | one valid classification proceeds; invalid input blocks | R8 |
 | BND-STATE-001 | state-lifecycle | R12, R13, R14, R15, R16, R17, R18, R19, R20, R21, R22, R30, R31, R32, R33, R43, R47, R48, R49, R50, R51, R52, R53, R54 | absent or existing canonical state; editorial, substantive, sync, prepared, writing, skipped, partial, complete, and blocked states | classification and manifest preparation precede dependent writes or settlement | valid work completes or exact partial state is reported; unsafe state blocks | R43 |
-| BND-AUTH-001 | identity-authority | R5, R12, R13, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R30, R32, R33, R43, R44, R45, R46, R47, R49, R54 | establishment, revision, insertion, pre-resolved skip, late skip, stale, absent, malformed, or conflicting authority | resource loading and marker state never manufacture authority | exact current authority permits bounded action; other states stop | R25 |
+| BND-AUTH-001 | identity-authority | R5, R12, R13, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R30, R32, R33, R43, R44, R45, R46, R47, R49, R54 | establishment, revision, insertion, pre-resolved skip, late skip, exact planned identity transitions, stale, absent, malformed, or conflicting authority | resource loading and marker state never manufacture authority; only manifest-bound prior-to-intended transitions preserve action authority | exact current authority permits bounded action; identities outside the planned transitions stop | R25 |
 | BND-COMPOSE-001 | composition-path | R1, R2, R3, R4, R5, R6, R7, R10, R15, R16, R17, R34, R35, R36, R37, R38, R39, R40, R41, R42 | universal file, strategic reference, README reference, two assets, primary and secondary assemblies | each rule and structure has one owner and late evidence loads required resources | exact assembly proceeds; missing, mixed, or under-loaded composition stops | R40 |
 | BND-TEMPORAL-001 | temporal-retry | R25, R26, R27, R43, R44, R45, R46, R47, R48, R49, R50, R51, R52, R53, R54, R55, R56, R57 | first attempt, planned canonical transition, zero-write skip, interruption, exact retry, changed basis, lost manifest, and concurrent write | source-first order and retry identity never silently rebind | exact work settles once; changed or unavailable evidence stops | R55 |
 | BND-RECOVERY-001 | failure-recovery | R7, R11, R17, R23, R32, R47, R49, R51, R52, R53, R54, R55, R56, R57, R66 | blocked before write, safe partial, unsafe partial, exact retry, lost portable context, or insufficient governed evidence model | partial state is never completion and unrelated state is never adopted | exact pending work may resume; unsafe state or missing architecture support blocks | R53 |
@@ -273,7 +273,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | --- | --- | --- | --- | --- |
 | INT-001 | R10, R15, R16, R17, R40 | BND-INPUT-001, BND-COMPOSE-001 | an apparently editorial path discovers strategic impact after selecting a smaller assembly | strategic procedure loads and assembly reclassifies before judgment or mutation |
 | INT-002 | R20, R21, R22, R23, R25, R27, R40, R45, R46, R52 | BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001 | a no-reference skip depends on hidden marker parsing or lacks settlement identity | only pre-resolved authority uses an `S` assembly, whole-file identity and uninspected marker state settle the zero-write result |
-| INT-003 | R25, R26, R43, R47, R48, R49, R50, R53, R54, R55, R56 | BND-STATE-001, BND-AUTH-001, BND-TEMPORAL-001, BND-RECOVERY-001 | canonical vision changes invalidate or race supporting and derived writes | one manifest binds the planned transition, source-first writes revalidate identities, and exact retry adopts no unrelated state |
+| INT-003 | R25, R26, R43, R47, R48, R49, R50, R53, R54, R55, R56 | BND-STATE-001, BND-AUTH-001, BND-TEMPORAL-001, BND-RECOVERY-001 | canonical or README changes invalidate or race supporting and derived writes | one manifest binds both planned prior-to-intended transitions, source-first writes revalidate identities, and exact retry adopts no unrelated state |
 | INT-004 | R34, R35, R36, R37, R38, R39, R58, R59, R61, R62, R63, R64 | BND-COMPOSE-001, BND-COMPAT-001, BND-ENV-001 | prose relocation hides behavior loss, historical rewrites, or derived-package drift | separate ledgers, independent asset selection, real-profile measurement, and byte parity prove migration |
 
 ## Example ownership

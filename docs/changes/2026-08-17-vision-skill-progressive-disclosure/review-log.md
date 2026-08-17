@@ -22,7 +22,7 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r1.md
 Resolution: review-resolution.md#spec-review-r1
 Material findings: VISSIM-SR1
-Open findings: VISSIM-SR1
+Open findings: none
 Recording status: recorded
 
 ### Review entry
