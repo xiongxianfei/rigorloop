@@ -15,7 +15,7 @@
 
 The rule ledger assigns 32 behavior clusters to the universal skill, strategic reference, README reference, two structural assets, change-local evidence, or existing validation. The literal ledger classifies 32 compatibility-sensitive paths, markers, operations, classifications, assemblies, actions, results, verbs, headings, and obsolete phrases. Unknown rule owners, rule dispositions, literal classes, literal dispositions, and every one of the 11 new or changed closed vocabularies have explicit failing fixtures.
 
-The fixture defines all six loaded assemblies as three primary and three secondary skip profiles. Thirty-four deterministic scenarios cover operations, state routing, assembly selection, late strategic loading, authority, markers, positioning, independent assets, manifests, source-first ordering, retry, resource loss, compatibility, measurement, and architecture escalation.
+The fixture defines all six loaded assemblies as three primary and three secondary skip profiles. Thirty-six deterministic scenarios cover operations, state routing, assembly selection, late strategic loading, authority, markers, positioning, independent assets, manifests, source-first ordering, retry, resource loss, retired lowercase-path handling, forbidden project-artifact writes, compatibility, measurement, and architecture escalation.
 
 ## Architecture gate
 

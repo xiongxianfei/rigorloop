@@ -61,6 +61,8 @@
     {"id":"SCN-031","family":"compatibility","outcome":"package-parity"},
     {"id":"SCN-032","family":"measurement","outcome":"six-profiles"},
     {"id":"SCN-033","family":"architecture","outcome":"no-trigger"},
-    {"id":"SCN-034","family":"architecture","outcome":"trigger-reassess"}
+    {"id":"SCN-034","family":"architecture","outcome":"trigger-reassess"},
+    {"id":"SCN-035","family":"retired-path","outcome":"lowercase-vision-stopped"},
+    {"id":"SCN-036","family":"write-boundary","outcome":"project-vision-artifacts-unchanged"}
   ]
 }
