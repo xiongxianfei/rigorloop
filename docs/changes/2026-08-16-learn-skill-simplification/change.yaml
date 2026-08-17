@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: explain-change
-  next_stage: explain-change
+  current_stage: verify
+  next_stage: verify
   blocker: null
   evidence:
     - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-authoring.md
@@ -103,6 +103,7 @@ workflow_state:
     - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m3-r1.md
     - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-code-review-final-r1.yaml
     - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-final-r1.md
+    - docs/changes/2026-08-16-learn-skill-simplification/explain-change.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -136,7 +137,6 @@ workflow_state:
       readiness: not-ready
       reasons:
         - lifecycle-gates-open
-        - explain-change-pending
         - verify-pending
       evidence:
         - docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r2.md
@@ -153,7 +153,7 @@ workflow:
       completion:
         rule: first final verify result is durably recorded
     status: active
-    current_stage: explain-change
+    current_stage: verify
     stop_reason: null
     evidence:
       - docs/changes/2026-08-16-learn-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
@@ -172,6 +172,7 @@ workflow:
       - docs/changes/2026-08-16-learn-skill-simplification/evidence/m3-package-proof.md
       - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m3-r1.md
       - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-final-r1.md
+      - docs/changes/2026-08-16-learn-skill-simplification/explain-change.md
 
 artifacts:
   proposal: docs/proposals/2026-08-16-learn-skill-simplification.md
@@ -250,6 +251,7 @@ changed_files:
   - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m2-r1.md
   - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-code-review-final-r1.yaml
   - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-final-r1.md
+  - docs/changes/2026-08-16-learn-skill-simplification/explain-change.md
   - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-code-review-m2-r2.yaml
   - docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m2-r2.md
   - docs/changes/2026-08-16-learn-skill-simplification/evidence/simplification-measurements.md
