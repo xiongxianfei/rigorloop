@@ -1,6 +1,6 @@
 # Review Resolution: Vision Skill Progressive Disclosure
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -20,8 +20,27 @@ Review closeout: proposal-review-r4
 | `VISSIM-R3-PR1` | accepted | closed | README authority now binds and survives only the exact manifest prior-to-intended transition. |
 | `VISSIM-R3-PR2` | accepted | closed | `VA0S` and independent structural-asset predicates close every remaining combination. |
 | `VISSIM-R4-PR1` | accepted | closed | Pre-resolved skip now uses whole-file identity and an uninspected-marker value, while late skip retains README procedure and every skip settles through a manifest. |
+| `VISSIM-SR1` | accepted | open | Permit the exact manifest-bound README prior-to-intended transition while rejecting every unexpected identity. |
 
 ## Finding details
+
+### spec-review-r1
+
+#### VISSIM-SR1
+
+Finding ID: VISSIM-SR1
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec
+Decision owner: spec author
+Decision needed: Remove ambiguity between authorized README synchronization and identity invalidation.
+Chosen action: Bind README action authority to both prior and intended README identities and preserve only that exact manifest transition.
+Rationale: The intended derived write must not invalidate the authority that permits it, while unexpected divergence must still fail closed.
+Required outcome: Revise R25-R27, affected boundary wording, acceptance proof intent, and authoring evidence.
+Safe resolution path: Apply the bounded contract correction and perform a fresh independent spec-review.
+Validation target: revised spec, boundary structure, lifecycle metadata, and approving rereview.
+Validation evidence: pending spec revision and rereview.
 
 ### proposal-review-r1
 

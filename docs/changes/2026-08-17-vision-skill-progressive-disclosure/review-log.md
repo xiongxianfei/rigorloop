@@ -14,6 +14,19 @@ This ledger records formal lifecycle reviews for the vision skill progressive-di
 
 ### Review entry
 
+Review ID: spec-review-r1
+Stage: spec-review
+Round: r1
+Reviewed artifact: `specs/vision-skill-progressive-disclosure.md` at commit `07a7145d`
+Status: changes-requested
+Detailed record: reviews/spec-review-r1.md
+Resolution: review-resolution.md#spec-review-r1
+Material findings: VISSIM-SR1
+Open findings: VISSIM-SR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: proposal-review-r1
 Stage: proposal-review
 Round: r1
