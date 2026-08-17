@@ -20,8 +20,13 @@ artifact_states:
     kind: spec
     path: specs/learn-skill-simplification.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-16-learn-skill-simplification/evidence/spec-authoring.md
+    lifecycle_state: revision-required
+    review:
+      id: spec-review-r1
+      artifact_id: spec
+      outcome: changes-requested
+      record: docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r1.md
+      round: r1
 
 workflow_state:
   lifecycle_state: active
@@ -39,6 +44,8 @@ workflow_state:
     - docs/changes/2026-08-16-learn-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
     - specs/learn-skill-simplification.md
     - docs/changes/2026-08-16-learn-skill-simplification/evidence/spec-authoring.md
+    - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-spec-review-r1.yaml
+    - docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r1.md
 
 workflow:
   automation:
@@ -89,7 +96,9 @@ changed_files:
   - docs/changes/2026-08-16-learn-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
   - specs/learn-skill-simplification.md
   - docs/changes/2026-08-16-learn-skill-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r1.md
 
 review:
-  status: approved
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 3

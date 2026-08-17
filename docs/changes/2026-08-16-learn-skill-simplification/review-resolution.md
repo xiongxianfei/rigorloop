@@ -1,6 +1,6 @@
 # Review Resolution: Learn Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -16,6 +16,9 @@ Review closeout: proposal-review-r3
 | `LRNSIM-PR4` | accepted | closed | Inventory found no assessment-only caller, so the operation and artificial profile were removed. |
 | `LRNSIM-PR5` | accepted | closed | Unsupported exact phase resume was replaced with deterministic paths and fail-closed interruption. |
 | `LRNSIM-PR6` | accepted | closed | Narrow per-route owner-result backlink recording preserves traceability without a reconciliation engine. |
+| `LRNSIM-SR1` | accepted | open | Add exact cross-spec dispositions for legacy direct-write clauses and preserve destination-owner authority. |
+| `LRNSIM-SR2` | accepted | open | Require strict reduction for both real loaded profiles. |
+| `LRNSIM-SR3` | accepted | open | Add one closed route completion-kind discriminator and validate owner results against it. |
 
 ## Finding details
 
@@ -122,3 +125,53 @@ Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidenc
 ### proposal-review-r3
 
 No material findings. The approving rereview confirms that the proposal removes the artificial assessment operation, uses fail-closed interruption without transaction-grade state, and preserves derivative traceability through bounded route-result backlinks.
+
+### spec-review-r1
+
+#### LRNSIM-SR1
+
+Finding ID: LRNSIM-SR1
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec
+Decision owner: workflow-managed review-resolution
+Decision needed: Establish exact precedence between the focused amendment and legacy learn routing clauses.
+Chosen action: Add a cross-spec disposition table that preserves required owner-produced outcomes while removing implied direct mutation authority from learn.
+Rationale: The current two approved contracts otherwise identify different writers for the same authoritative destination.
+Required outcome: Dispose every conflicting requirement and affected example, output, invariant, and acceptance surface.
+Safe resolution path: Revise the spec, record revision evidence, and obtain approving spec rereview.
+Validation target: exact cross-spec alignment and deterministic contract proof.
+Validation evidence: pending spec revision and rereview.
+
+#### LRNSIM-SR2
+
+Finding ID: LRNSIM-SR2
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec
+Decision owner: workflow-managed review-resolution
+Decision needed: Preserve the accepted measurement threshold for every real loaded profile.
+Chosen action: Require strict word and byte reduction for LR0 and LR1 against the flat baseline.
+Rationale: Reporting LR0 without a reduction requirement weakens the accepted proposal.
+Required outcome: Align R42, performance expectations, and AC10.
+Safe resolution path: Revise the spec, record revision evidence, and obtain approving spec rereview.
+Validation target: deterministic profile accounting and test-spec mapping.
+Validation evidence: pending spec revision and rereview.
+
+#### LRNSIM-SR3
+
+Finding ID: LRNSIM-SR3
+Disposition: accepted
+Status: open
+Owner: spec author
+Owning stage: spec
+Decision owner: workflow-managed review-resolution
+Decision needed: Make scheduled-follow-up route completion deterministically testable.
+Chosen action: Give each route one immutable required completion kind and validate supplied owner-result kind against it.
+Rationale: Route-result recording cannot infer whether scheduling satisfies an arbitrary route.
+Required outcome: Extend the route record, result inputs, boundary model, and examples without adding coordination machinery.
+Safe resolution path: Revise the spec, record revision evidence, and obtain approving spec rereview.
+Validation target: valid and mismatched completion-kind scenarios.
+Validation evidence: pending spec revision and rereview.
