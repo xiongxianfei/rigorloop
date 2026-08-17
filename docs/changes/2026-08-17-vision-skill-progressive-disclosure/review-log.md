@@ -14,6 +14,7 @@ This ledger records formal lifecycle reviews for the vision skill progressive-di
 | `test-spec-review-r1` | `test-spec-review` | `r1` | `specs/vision-skill-progressive-disclosure.test.md` at commit `dd266d6d` | `reviews/test-spec-review-r1.md` | `approved` | 0 | `recorded` |
 | `code-review-m1-r1` | `code-review` | `r1` | milestone M1 range `f6b12019..381ce5cc` | `reviews/code-review-m1-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m2-r2` | `code-review` | `r2` | milestone M2 range `f89b954a..c1e194f2` | `reviews/code-review-m2-r2.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-m3-r1` | `code-review` | `r1` | milestone M3 range `fefa134e..d9336f4b` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 
