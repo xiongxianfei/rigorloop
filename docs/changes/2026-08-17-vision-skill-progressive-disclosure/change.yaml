@@ -52,7 +52,7 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: review-resolution
+  current_stage: implement
   next_stage: implement
   blocker: null
   evidence:
@@ -105,7 +105,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: resolution-needed
+        state: implementing
       M3:
         kind: implementation
         state: planned
@@ -141,7 +141,7 @@ workflow:
       completion:
         rule: first final verify result is durably recorded
     status: active
-    current_stage: review-resolution
+    current_stage: implement
     stop_reason: null
     evidence:
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
