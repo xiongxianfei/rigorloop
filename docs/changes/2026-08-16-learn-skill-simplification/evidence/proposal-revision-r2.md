@@ -1,0 +1,23 @@
+# Proposal Revision Evidence: Learn Skill Simplification
+
+- Operation: `revise-primary-proposal`
+- Change ID: `2026-08-16-learn-skill-simplification`
+- Artifact ID: `proposal`
+- Canonical path: `docs/proposals/2026-08-16-learn-skill-simplification.md`
+- Prior reviewed revision: `24cdadda`
+- Prior content identity: `sha256:2a32670b7b4c304e4625352b58855c05f0c10be95d44fcdcbde9acf4fa13f4e1`
+- Revised content identity: `sha256:7af0b279aa04cbd196d46a4153d1964dc4594c72d83ec59e5bd7b4777b79dfbf`
+- Revision authority: user request to refine the proposal after the contributor-supplied proposal rereview
+- Loaded assembly: `PA1G-governed-gated`
+- Active specialized predicates: `initial_intent_table_context`, `scope_budget_context`
+- Finding disposition: `LRNSIM-PR4` accepted and implemented by completing a bounded inventory, finding no assessment-only caller, and removing `assess-learn-trigger` and its artificial profile.
+- Finding disposition: `LRNSIM-PR5` accepted and implemented by removing automatic arbitrary-interruption resume and selecting deterministic unique paths plus fail-closed partial-state handling.
+- Finding disposition: `LRNSIM-PR6` accepted and implemented with stable per-route records and a narrow `record-learn-route-result` operation that writes only the exact learn-owned backlink and status.
+- Learn-session influence: `docs/learn/sessions/2026-08-16-learn-skill-simplification-review.md` supported the bounded first-version choice and separation of transaction-grade recovery from package simplification.
+- Scope preservation: the compact universal skill, one session-method reference, three-surface learn model, contributor confirmation, no-template direction, and no-runtime acceptance boundary remain unchanged.
+- Validation: `git diff --check` passed.
+- Validation: `python scripts/validate-change-metadata.py docs/changes/2026-08-16-learn-skill-simplification/change.yaml` passed.
+- Validation: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-16-learn-skill-simplification` passed.
+- Validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-16-learn-skill-simplification` passed.
+- Authoring result: proposal revised, `LRNSIM-PR4` through `LRNSIM-PR6` closed in `review-resolution.md`, and proposal returned to `review-required`.
+- Downstream authority: independent proposal rereview only; specification, architecture, planning, implementation, verification, and PR readiness remain unauthorized.

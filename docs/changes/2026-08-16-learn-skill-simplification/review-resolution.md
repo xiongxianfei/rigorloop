@@ -1,8 +1,9 @@
 # Review Resolution: Learn Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
+Review closeout: proposal-review-r2
 
 ## Resolution overview
 
@@ -11,9 +12,9 @@ Review closeout: proposal-review-r1
 | `LRNSIM-PR1` | accepted | closed | Learn's pre-session assessment is read-only and closeout mutation remains with the trigger-owning stage. |
 | `LRNSIM-PR2` | accepted | closed | Mandatory authoritative updates use explicit owner-action settlement states. |
 | `LRNSIM-PR3` | accepted | closed | Session creation, resume, collision, and retry are identity-bound. |
-| `LRNSIM-PR4` | accepted | open | Inventory actual callers and remove trigger assessment when no caller exists. |
-| `LRNSIM-PR5` | accepted | open | Replace unsupported exact phase resume with bounded fail-closed interruption behavior. |
-| `LRNSIM-PR6` | accepted | open | Add narrow per-route owner-result link recording without a reconciliation engine. |
+| `LRNSIM-PR4` | accepted | closed | Inventory found no assessment-only caller, so the operation and artificial profile were removed. |
+| `LRNSIM-PR5` | accepted | closed | Unsupported exact phase resume was replaced with deterministic paths and fail-closed interruption. |
+| `LRNSIM-PR6` | accepted | closed | Narrow per-route owner-result backlink recording preserves traceability without a reconciliation engine. |
 
 ## Finding details
 
@@ -41,7 +42,7 @@ Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidenc
 
 Finding ID: LRNSIM-PR4
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -51,13 +52,13 @@ Rationale: A public operation and measured profile must be justified by observed
 Required outcome: Record the inventory result and align operations, measurements, scenarios, and acceptance.
 Safe resolution path: Revise the proposal and obtain independent rereview.
 Validation target: revised proposal and approving proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-revision-r2.md`; independent rereview remains pending.
 
 #### LRNSIM-PR5
 
 Finding ID: LRNSIM-PR5
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -67,13 +68,13 @@ Rationale: Exact phase and effect recovery is not required to simplify the packa
 Required outcome: Remove automatic resume claims and define partial-record handling without inference or overwrite.
 Safe resolution path: Revise the proposal and obtain independent rereview.
 Validation target: revised proposal and approving proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-revision-r2.md`; independent rereview remains pending.
 
 #### LRNSIM-PR6
 
 Finding ID: LRNSIM-PR6
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -83,7 +84,7 @@ Rationale: R8 traceability needs a later backlink, while polling, aggregate sett
 Required outcome: Define stable route identity, exact input, bounded write set, and idempotent link recording.
 Safe resolution path: Revise the proposal and obtain independent rereview.
 Validation target: revised proposal and approving proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-revision-r2.md`; independent rereview remains pending.
 
 #### LRNSIM-PR2
 

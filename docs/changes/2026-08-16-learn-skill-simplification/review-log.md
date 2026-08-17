@@ -16,7 +16,7 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r2.md
 Resolution: review-resolution.md#proposal-review-r2
 Material findings: LRNSIM-PR4, LRNSIM-PR5, LRNSIM-PR6
-Open findings: LRNSIM-PR4, LRNSIM-PR5, LRNSIM-PR6
+Open findings: none
 Recording status: recorded
 
 ### Review entry
