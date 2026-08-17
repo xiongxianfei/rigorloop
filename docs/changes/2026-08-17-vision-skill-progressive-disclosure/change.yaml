@@ -31,8 +31,7 @@ artifact_states:
     kind: plan
     path: docs/plans/2026-08-17-vision-skill-progressive-disclosure.md
     role: primary
-    lifecycle_state: review-required
-    authoring_evidence: docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/plan-authoring.md
+    lifecycle_state: active
     review:
       id: plan-review-r1
       artifact_id: plan
