@@ -1,12 +1,14 @@
 # Review Resolution: Learn Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: spec-review-r1
 Review closeout: spec-review-r2
+Review closeout: plan-review-r1
+Review closeout: plan-review-r2
 
 ## Resolution overview
 
@@ -21,7 +23,7 @@ Review closeout: spec-review-r2
 | `LRNSIM-SR1` | accepted | closed | Exact cross-spec dispositions preserve required outcomes while assigning mutation to destination owners. |
 | `LRNSIM-SR2` | accepted | closed | Both real loaded profiles must decrease in words and bytes. |
 | `LRNSIM-SR3` | accepted | closed | Every route records one immutable completion kind validated during result recording. |
-| `LRNSIM-PLR1` | accepted | open | Map the architecture reassessment trigger to M1 with an explicit stop and recovery route. |
+| `LRNSIM-PLR1` | accepted | closed | M1 owns architecture-trigger inspection and stops before canonical mutation when triggered. |
 
 ## Finding details
 
@@ -189,7 +191,7 @@ No material findings. The clean rereview confirms that LRNSIM-SR1 through LRNSIM
 
 Finding ID: LRNSIM-PLR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: plan author
 Owning stage: plan
 Decision owner: workflow-managed review-resolution
@@ -199,4 +201,8 @@ Rationale: A lifecycle-closeout catch-all is too late to protect M2 from impleme
 Required outcome: Update requirement traceability, M1 proof and steps, completion criteria, dependencies, risk, and recovery.
 Safe resolution path: Revise the plan and obtain approving plan rereview before initialization.
 Validation target: exact R46 traceability and independently closeable architecture stop.
-Validation evidence: pending plan revision and rereview.
+Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-revision-r1.md` and approving `docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r2.md`.
+
+### plan-review-r2
+
+No material findings. The clean rereview confirms that LRNSIM-PLR1 is closed and the plan may proceed to exact initialization and settlement retry.
