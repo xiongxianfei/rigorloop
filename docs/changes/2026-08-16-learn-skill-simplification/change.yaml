@@ -53,8 +53,11 @@ artifact_states:
 workflow_state:
   lifecycle_state: active
   current_stage: test-spec-review
-  next_stage: test-spec-review
-  blocker: null
+  next_stage: review-resolution
+  blocker:
+    code: review-findings-open
+    evidence:
+      - docs/changes/2026-08-16-learn-skill-simplification/reviews/test-spec-review-r1.md
   evidence:
     - docs/changes/2026-08-16-learn-skill-simplification/evidence/proposal-authoring.md
     - docs/changes/2026-08-16-learn-skill-simplification/reviews/proposal-review-r1.md
@@ -134,11 +137,13 @@ workflow:
       bound_at: "2026-08-17T00:07:41-07:00"
       completion:
         rule: first formal test-spec-review result is durably recorded
-    status: active
+    status: completed
     current_stage: test-spec-review
-    stop_reason: null
+    stop_reason: target-reached
     evidence:
       - docs/changes/2026-08-16-learn-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+      - specs/learn-skill-simplification.test.md
+      - docs/changes/2026-08-16-learn-skill-simplification/reviews/test-spec-review-r1.md
 
 artifacts:
   proposal: docs/proposals/2026-08-16-learn-skill-simplification.md
