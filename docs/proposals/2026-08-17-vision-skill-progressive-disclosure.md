@@ -144,9 +144,10 @@ README synchronization remains part of establishment and vision revision by defa
 | `revise-vision` with exact current skip authority resolved before marker-dependent judgment | Leave README unchanged and report `skipped` | not required |
 | `revise-vision` with exact current insertion authority | Insert one block at the deterministic location and synchronize it | required |
 | `revise-vision` with missing, malformed, nested, duplicate, or ambiguous markers and no exact insertion or skip authority | Stop before any vision or README write | required |
-| `sync-readme` | Leave `VISION.md` unchanged and synchronize through the approved marker rules | required |
+| `sync-readme` with normal synchronization | Leave `VISION.md` unchanged and synchronize through the approved marker rules | required |
+| `sync-readme` with exact current skip authority resolved before marker inspection | Leave both files unchanged and report `skipped` | not required |
 
-Missing or malformed markers never imply skip authority. If skip authority is not already exact and current, load the README reference before marker-dependent judgment or any vision write. This preserves the active contract's fail-closed update behavior and makes each primary assembly deterministic.
+Missing or malformed markers never imply skip authority. A pre-resolved skip exists only when one exact current owner instruction authorizes the skip before README marker inspection. It binds the complete current README content identity and uses the closed marker value `not-evaluated-under-exact-skip`; it neither parses nor claims that the marker block is valid. If skip authority is not already exact and current, load the README reference before marker-dependent judgment or any vision write. A skip selected only after that reference loads remains in the corresponding `VA0`, `VA1`, or `VA2` sync assembly even when the final `readme_action` is `skip`. This preserves the active contract's fail-closed behavior without misreporting loaded procedure.
 
 ### Classify secondary-artifact actions independently
 
@@ -192,7 +193,7 @@ The strategic reference determines positioning meaning and adequacy. The main fi
 | Explicit sync with exact current skip instruction | `skip` | current owner instruction under R45; no file mutation and report README skipped |
 | Missing or invalid markers without exact current handling | `blocked` | R45 fail-closed behavior |
 
-Every insertion or skip binds the governing requirement ID or exact current owner instruction, mutation operation, manifest identity, prior and intended `VISION.md` identities, current README identity, observed marker state, and authorized action. For `sync-readme`, prior and intended vision identities are identical. The exact planned transition from the recorded prior vision identity to the recorded intended identity preserves authority; any other vision identity invalidates it. A change to the README, markers, operation, action, manifest, or authority basis also invalidates the decision. Silence, conversational omission, malformed markers, remembered approval, or historical authority never implies insertion or skip.
+Every insertion or skip binds the governing requirement ID or exact current owner instruction, mutation operation, manifest identity, prior and intended `VISION.md` identities, current README identity, marker-evidence state, and authorized action. For ordinary synchronization, insertion, or a marker-dependent late skip, marker-evidence state is the exact observed state produced through the README reference. For a pre-resolved skip, marker-evidence state is `not-evaluated-under-exact-skip`; the operation binds the whole README identity without parsing or making a semantic marker claim. For `sync-readme`, prior and intended vision identities are identical. The exact planned transition from the recorded prior vision identity to the recorded intended identity preserves authority; any other vision identity invalidates it. A change to the README, operation, action, manifest, or authority basis invalidates every decision; a marker change additionally invalidates any action whose evidence includes inspected marker state. Silence, conversational omission, malformed markers, remembered approval, or historical authority never implies insertion or skip.
 
 ### Keep universal obligations inline
 
@@ -268,11 +269,11 @@ positioning_skeleton_context:
 | `VA2-strategic-sync` | `establish-vision` or substantive revision with synchronization | `SKILL.md` + strategic reference + README reference | vision skeleton for creation/full rewrite; positioning skeleton when rationale creation/full rewrite applies |
 | `VA2S-strategic-skip` | substantive revision with exact pre-resolved README skip authority | `SKILL.md` + strategic reference | vision skeleton for full rewrite; positioning skeleton when rationale creation/full rewrite applies |
 
-`VA0`, `VA1`, and `VA2` are the three primary real assemblies. `VA0S`, `VA1S`, and `VA2S` are supported secondary authority variants and must not replace normal synchronization profiles in acceptance measurements. `VA0S` performs no file mutation and reports `VISION.md` unchanged plus README front-matter skipped. Initial establishment always uses `VA2-strategic-sync`. Late evidence loads every newly required resource before dependent judgment or write; previously gathered evidence may be retained, but the smaller profile cannot authorize mutation after its trigger becomes stale.
+`VA0`, `VA1`, and `VA2` are the three primary real assemblies. `VA0S`, `VA1S`, and `VA2S` are supported only when skip authority is exact before marker inspection and must not replace normal synchronization profiles in acceptance measurements. `VA0S` performs no file mutation and reports `VISION.md` unchanged plus README front-matter skipped. Initial establishment always uses `VA2-strategic-sync`. When marker inspection or README-reference procedure contributes to the decision, the invocation keeps the corresponding non-`S` assembly even if the final action is skip. Late evidence loads every newly required resource before dependent judgment or write; previously gathered evidence may be retained, but the smaller profile cannot authorize mutation after its trigger becomes stale.
 
 ### Use one bounded multi-artifact update protocol
 
-Every mutating invocation resolves one exact target manifest before the first write. Each included target records path, role, action, prior identity or confirmed absence, and intended identity. Targets not applicable to the classified operation are omitted rather than represented as implicit no-ops.
+Every mutation-capable or skip-settled invocation resolves one exact operation manifest before the first write or final skip result. Each included target records path, role, action, prior identity or confirmed absence, intended identity, and applicable evidence state. Targets not applicable to the classified operation are omitted rather than represented as implicit no-ops. An explicitly skipped README is included because its unchanged identity is part of the settled result, not because a write is planned.
 
 ```yaml
 vision_update:
@@ -298,20 +299,42 @@ vision_update:
       intended_identity: sha256:<new>
 ```
 
+A pre-resolved zero-write `sync-readme` skip uses the same manifest contract:
+
+```yaml
+vision_update:
+  operation: sync-readme
+  revision_significance: not-applicable
+  positioning_action: unchanged
+  readme_action: skip
+  targets:
+    - path: VISION.md
+      role: canonical
+      action: unchanged
+      prior_identity: sha256:<vision>
+      intended_identity: sha256:<vision>
+    - path: README.md
+      role: derived
+      action: skip
+      prior_identity: sha256:<readme>
+      intended_identity: sha256:<readme>
+      marker_state: not-evaluated-under-exact-skip
+```
+
 Before mutation:
 
 1. Resolve operation, significance, secondary actions, paths, authority, and current identities.
 2. Prepare all intended content in memory or safely isolated temporary files.
-3. Validate word limits, structural completeness, positioning applicability, README markers, skip/insertion authority including prior and intended vision identities, privacy, research provenance, and intended identities.
+3. Validate word limits, structural completeness, positioning applicability, README markers when inspected, skip/insertion authority including prior and intended vision identities, privacy, research provenance, and intended identities. A pre-resolved skip validates whole-file README identity and exact authority but performs no marker parsing.
 4. Re-read every target identity and stop if any baseline changed.
 
 Write in source-first order:
 
 1. Atomically replace canonical `VISION.md`.
 2. Atomically create or update strategic-positioning rationale when applicable.
-3. Before README mutation or skip settlement, require `VISION.md` to match the manifest's intended identity, README to match its recorded prior identity, marker state and authority to remain current, and the manifest to remain unchanged.
+3. Before README mutation or skip settlement, require `VISION.md` to match the manifest's intended identity, README to match its recorded prior identity, applicable marker evidence and authority to remain current, and the manifest to remain unchanged. For a pre-resolved skip, applicable marker evidence is only the closed uninspected value; no marker-validity assertion is introduced during revalidation.
 4. Atomically update derived README content last, or record the exact authorized skip without file mutation.
-5. Read back every required target and compare it with the manifest.
+5. Read back every required target, including unchanged or skipped targets, and compare it with the manifest.
 
 Use closed operation results:
 
@@ -321,7 +344,7 @@ partial-retry-required
 blocked-before-write
 ```
 
-`complete` requires every required target to match its intended identity. `blocked-before-write` performs no target mutation. `partial-retry-required` reports the exact committed targets, pending targets, current identities, manifest identity, and required retry action; it never claims the vision package is synchronized.
+`complete` requires every required target to match its intended identity. A zero-write skip may return `complete` only with `files_changed: none`, `VISION.md: unchanged`, and `README front-matter: skipped`; it must not claim synchronization or marker validity. `blocked-before-write` performs no target mutation. `partial-retry-required` reports the exact committed targets, pending targets, current identities, manifest identity, and required retry action; it never claims the vision package is synchronized.
 
 For governed work, persist the complete manifest in the existing change-local authoring evidence before the first target write when that approved evidence surface supports the fields. An exact retry may finish only pending targets when the operation and manifest are unchanged, committed files retain intended identities, pending files retain their expected prior or safe partial identities, and authority remains current.
 
@@ -356,6 +379,7 @@ Use deterministic scenarios for:
 
 - all three operation/state matrix rows and ambiguous intent;
 - all six loaded assemblies and late editorial-to-strategic reclassification;
+- pre-resolved skips with uninspected markers versus marker-dependent late skips that retain the loaded README assembly;
 - editorial, substantive nonmaterial, and material repositioning classification;
 - every `positioning_action` and `readme_action` row, authority source, identity invalidation, and blocked result;
 - manifest-bound README authority across the exact prior-to-intended vision transition and every unexpected divergence;
@@ -363,7 +387,7 @@ Use deterministic scenarios for:
 - strategic rationale create, update, unchanged, conflict, and causal-link gates;
 - standard and methodology-oriented vision structure plus all ten strategic-positioning headings and authority statement;
 - independent vision and positioning asset selection for sync and skip profiles;
-- README valid, missing, malformed, nested, duplicate, explicit insertion, skip, unchanged, and outside-byte preservation cases;
+- README valid, missing, malformed, nested, duplicate, explicit insertion, pre-resolved skip, late skip, unchanged, and outside-byte preservation cases;
 - retired lowercase root path behavior;
 - missing, invalid, and late-loaded resources;
 - manifest preparation, baseline change before write, each interruption point, committed/pending reporting, exact retry, lost portable manifest, and concurrent edit;
@@ -398,8 +422,8 @@ The downstream contract and proof map must preserve these acceptance decisions:
 | `AC-VISSIM-016` | Every supported resource combination has one named assembly. |
 | `AC-VISSIM-017` | A substantive revision with exact skip authority uses `VA2S-strategic-skip`. |
 | `AC-VISSIM-018` | Late strategic discovery loads the strategic reference before final classification or mutation. |
-| `AC-VISSIM-019` | Every mutating invocation resolves one exact target manifest before writing. |
-| `AC-VISSIM-020` | Marker, authority, content, path, and identity checks complete before the first target write. |
+| `AC-VISSIM-019` | Every mutation-capable or skip-settled invocation resolves one exact operation manifest before writing or reporting settlement. |
+| `AC-VISSIM-020` | Applicable marker evidence, authority, content, path, and identity checks complete before the first target write or skip settlement. |
 | `AC-VISSIM-021` | Canonical vision writes precede rationale and README-derived writes. |
 | `AC-VISSIM-022` | Partial operations report committed and pending targets and never claim completion. |
 | `AC-VISSIM-023` | Exact retry adopts no unrelated, stale, ambiguous, or concurrently changed file. |
@@ -412,6 +436,10 @@ The downstream contract and proof map must preserve these acceptance decisions:
 | `AC-VISSIM-030` | The exact planned prior-to-intended vision transition preserves authority, while every unexpected divergence invalidates it. |
 | `AC-VISSIM-031` | Explicit `sync-readme` skip uses `VA0S-readme-skip`, changes no files, and reports truthful unchanged/skipped results. |
 | `AC-VISSIM-032` | Vision and positioning skeleton applicability is classified independently from procedural references and README action. |
+| `AC-VISSIM-033` | A pre-resolved skip binds exact current owner authority and the whole README identity without loading marker procedure or claiming marker validity. |
+| `AC-VISSIM-034` | Pre-resolved skip manifests use the closed marker value `not-evaluated-under-exact-skip` and equal prior and intended README identities. |
+| `AC-VISSIM-035` | A skip selected after README procedure loads retains the corresponding non-`S` assembly. |
+| `AC-VISSIM-036` | A zero-write skip reports no changed files, unchanged canonical vision, skipped README front-matter, and no synchronization claim. |
 
 ## Rollout and Rollback
 
@@ -439,6 +467,7 @@ Rollback restores the prior flat `SKILL.md`, removes the mapped references and b
 | Partial multi-file work is mistaken for completion. | Require one manifest, source-first order, complete read-back, and a distinct `partial-retry-required` result. |
 | A retry overwrites unrelated or concurrent edits. | Resume only the exact retained or governed manifest with matching target identities; otherwise stop. |
 | The planned canonical transition invalidates its own README authority. | Bind authority to both manifest identities and revalidate the exact intended transition before README action. |
+| A no-reference skip silently depends on marker parsing or has no manifest identity. | Permit `S` assemblies only for exact pre-resolved authority, bind the whole README identity with an uninspected-marker value, and settle every skip through an operation manifest. |
 | README skip suppresses a required full-rewrite asset. | Select vision and positioning skeletons independently from README and strategic procedure predicates. |
 | Positioning changes are inferred solely from substantive/editorial labels. | Classify `positioning_action` independently using R73-R79 and current authority. |
 | Either skeleton becomes a second vision specification. | Limit both to labels, ordering, insertion points, authority-statement location, and placeholders; reject applicability or adequacy policy in assets. |
@@ -468,6 +497,7 @@ None at proposal level. Exact schema field names, fixture representation, and va
 | 2026-08-17 | Bind README authority to the exact manifest transition. | The intended canonical write must preserve its own authorized secondary action while unexpected changes fail closed. | Prior-only binding; authority that survives unrelated divergence. |
 | 2026-08-17 | Represent explicit sync skip as `VA0S`. | R45 permits skip during synchronization, and the no-write result remains a real supported invocation. | Hide sync skip in editorial profile; treat skip as an error. |
 | 2026-08-17 | Select structural assets independently. | README skip and procedural loading do not determine whether a vision or rationale full rewrite needs its skeleton. | Encode asset usage incompletely in assembly names. |
+| 2026-08-17 | Distinguish pre-resolved skip from marker-dependent late skip. | Only the former can omit README procedure; every skip still needs an identity-bound operation manifest and truthful zero-write result. | Parse markers without the reference; report every final skip as an `S` assembly; omit manifests for no-write results. |
 | 2026-08-17 | Measure real loaded assemblies and total package separately. | Main-file shrinkage is not simplification when conditional paths load equal or greater procedure. | Main-file-only metric; fixed percentage target; tokenizer dependency. |
 | 2026-08-17 | Exclude target-agent and separate prose-grading acceptance. | Static contract, package, and lifecycle proof is proportionate for a content/package refactor. | Runtime journeys, transcript grading, permanent simplicity validator. |
 
@@ -508,6 +538,7 @@ Ready for independent proposal review. It does not claim proposal acceptance, sp
 | Exhaustive resource and secondary-action classifiers | core to this proposal | Every valid strategic/README combination and write action needs deterministic procedure and authority. |
 | Multi-artifact target manifest and fail-closed recovery | core to this proposal | Establishment and material repositioning can touch canonical, rationale, and derived surfaces in one invocation. |
 | Manifest-bound authority and independent asset selection | core to this proposal | Planned identity transitions and full-rewrite structure must remain valid across every sync/skip combination. |
+| Pre-resolved and late README skip settlement | core to this proposal | Reference loading, marker evidence, zero-write manifests, and result claims must agree. |
 | Focused active-contract and proof-map amendment | same-slice dependency | Progressive disclosure and structural ownership must be normative before implementation. |
 | Existing validator and fixture migration | same-slice dependency | Current tests bind exact behavior to the flat file. |
 | Generated, archive, release-candidate, and installed parity | same-slice dependency | Published skill resources must ship together. |
