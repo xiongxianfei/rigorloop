@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: code-review
+  current_stage: implement
+  next_stage: implement
   blocker: null
   evidence:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
@@ -106,7 +106,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: review-requested
+        state: implementing
       M3:
         kind: implementation
         state: planned
@@ -142,7 +142,7 @@ workflow:
       completion:
         rule: first final verify result is durably recorded
     status: active
-    current_stage: code-review
+    current_stage: implement
     stop_reason: null
     evidence:
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
