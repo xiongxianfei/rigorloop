@@ -189,9 +189,10 @@ The strategic reference determines positioning meaning and adequacy. The main fi
 | Revision or explicit sync with one valid block | `synchronize-existing` | current operation plus R44 |
 | Revision with no block and exact current insertion instruction | `insert-and-synchronize` | current owner instruction under R45-R46 |
 | Revision with exact current skip instruction | `skip` | current owner instruction under R45 |
+| Explicit sync with exact current skip instruction | `skip` | current owner instruction under R45; no file mutation and report README skipped |
 | Missing or invalid markers without exact current handling | `blocked` | R45 fail-closed behavior |
 
-Every insertion or skip binds the governing requirement ID or exact current owner instruction, mutation operation, current `VISION.md` identity, current README identity, observed marker state, and authorized action. A change to the vision, README, markers, operation, or authority basis invalidates the decision. Silence, conversational omission, malformed markers, remembered approval, or historical authority never implies insertion or skip.
+Every insertion or skip binds the governing requirement ID or exact current owner instruction, mutation operation, manifest identity, prior and intended `VISION.md` identities, current README identity, observed marker state, and authorized action. For `sync-readme`, prior and intended vision identities are identical. The exact planned transition from the recorded prior vision identity to the recorded intended identity preserves authority; any other vision identity invalidates it. A change to the README, markers, operation, action, manifest, or authority basis also invalidates the decision. Silence, conversational omission, malformed markers, remembered approval, or historical authority never implies insertion or skip.
 
 ### Keep universal obligations inline
 
@@ -242,17 +243,32 @@ Use the skeleton for initial creation and an explicitly authorized full-document
 
 Use the positioning skeleton for initial establishment, material repositioning, or an explicitly authorized full rationale rewrite. Narrow updates preserve the existing rationale structure. The strategic reference owns applicability, field meaning, evidence quality, conflict behavior, and the decision to copy or update the asset.
 
+Select structural assets independently from procedural references:
+
+```text
+vision_skeleton_context:
+  not-required
+  create-or-full-rewrite
+
+positioning_skeleton_context:
+  not-required
+  create-or-full-rewrite
+```
+
+`vision_skeleton_context` is `create-or-full-rewrite` for initial establishment or an explicitly authorized full `VISION.md` rewrite. `positioning_skeleton_context` is `create-or-full-rewrite` when `positioning_action` is `create` or `full-rewrite`. README synchronization or skip never suppresses an otherwise applicable structural asset.
+
 ### Define actual loaded assemblies
 
 | Assembly | Trigger | Loaded procedure | Structural asset |
 | --- | --- | --- | --- |
 | `VA0-readme-sync` | `sync-readme` | `SKILL.md` + README reference | none |
+| `VA0S-readme-skip` | `sync-readme` with exact pre-resolved skip authority | `SKILL.md` | none |
 | `VA1-editorial-sync` | confirmed editorial `revise-vision` with normal synchronization | `SKILL.md` + README reference | none |
 | `VA1S-editorial-skip` | confirmed editorial revision with exact pre-resolved skip authority | `SKILL.md` | none |
 | `VA2-strategic-sync` | `establish-vision` or substantive revision with synchronization | `SKILL.md` + strategic reference + README reference | vision skeleton for creation/full rewrite; positioning skeleton when rationale creation/full rewrite applies |
-| `VA2S-strategic-skip` | substantive revision with exact pre-resolved README skip authority | `SKILL.md` + strategic reference | positioning skeleton only when rationale creation/full rewrite applies |
+| `VA2S-strategic-skip` | substantive revision with exact pre-resolved README skip authority | `SKILL.md` + strategic reference | vision skeleton for full rewrite; positioning skeleton when rationale creation/full rewrite applies |
 
-`VA0`, `VA1`, and `VA2` are the three primary real assemblies. `VA1S` and `VA2S` are supported secondary authority variants and must not replace normal synchronization profiles in acceptance measurements. Initial establishment always uses `VA2-strategic-sync`. Late evidence loads every newly required resource before dependent judgment or write; previously gathered evidence may be retained, but the smaller profile cannot authorize mutation after its trigger becomes stale.
+`VA0`, `VA1`, and `VA2` are the three primary real assemblies. `VA0S`, `VA1S`, and `VA2S` are supported secondary authority variants and must not replace normal synchronization profiles in acceptance measurements. `VA0S` performs no file mutation and reports `VISION.md` unchanged plus README front-matter skipped. Initial establishment always uses `VA2-strategic-sync`. Late evidence loads every newly required resource before dependent judgment or write; previously gathered evidence may be retained, but the smaller profile cannot authorize mutation after its trigger becomes stale.
 
 ### Use one bounded multi-artifact update protocol
 
@@ -286,15 +302,16 @@ Before mutation:
 
 1. Resolve operation, significance, secondary actions, paths, authority, and current identities.
 2. Prepare all intended content in memory or safely isolated temporary files.
-3. Validate word limits, structural completeness, positioning applicability, README markers, skip/insertion authority, privacy, research provenance, and intended identities.
+3. Validate word limits, structural completeness, positioning applicability, README markers, skip/insertion authority including prior and intended vision identities, privacy, research provenance, and intended identities.
 4. Re-read every target identity and stop if any baseline changed.
 
 Write in source-first order:
 
 1. Atomically replace canonical `VISION.md`.
 2. Atomically create or update strategic-positioning rationale when applicable.
-3. Atomically update derived README content last.
-4. Read back every required target and compare it with the manifest.
+3. Before README mutation or skip settlement, require `VISION.md` to match the manifest's intended identity, README to match its recorded prior identity, marker state and authority to remain current, and the manifest to remain unchanged.
+4. Atomically update derived README content last, or record the exact authorized skip without file mutation.
+5. Read back every required target and compare it with the manifest.
 
 Use closed operation results:
 
@@ -313,11 +330,12 @@ Portable work adds no new tracked transaction artifact. It may resume within the
 ## Expected Behavior Changes
 
 - README-only synchronization loads exact marker procedure but not product positioning or drafting fixtures.
+- An explicit README-sync skip uses `VA0S`, changes no files, and reports both canonical vision unchanged and README skipped.
 - A normal editorial update loads universal revision safety and README synchronization, while an explicitly skipped variant stays compact and reports the skip truthfully.
 - Establishment and substantive revision retain complete strategic judgment through the conditional reference, including the `VA2S` path when README skip authority is exact.
 - Positioning and README actions are decided independently from public revision significance.
 - Multi-artifact writes validate one manifest, commit canonical vision before supporting and derived surfaces, and report partial state without claiming completion.
-- Initial creation and authorized full rewrites use the applicable vision and positioning skeletons; narrow edits preserve existing document structure.
+- Initial creation and authorized full rewrites use independently selected vision and positioning skeletons even when README synchronization is skipped; narrow edits preserve existing document structure.
 - Existing user intent, output vocabulary, word limits, rationale ownership, README markers, canonical path, and historical compatibility remain unchanged.
 - Current validators may inspect the assembled package rather than require every normative literal to remain in `SKILL.md`.
 
@@ -337,12 +355,14 @@ Before refactoring, create two change-local inventories:
 Use deterministic scenarios for:
 
 - all three operation/state matrix rows and ambiguous intent;
-- all five loaded assemblies and late editorial-to-strategic reclassification;
+- all six loaded assemblies and late editorial-to-strategic reclassification;
 - editorial, substantive nonmaterial, and material repositioning classification;
 - every `positioning_action` and `readme_action` row, authority source, identity invalidation, and blocked result;
+- manifest-bound README authority across the exact prior-to-intended vision transition and every unexpected divergence;
 - first establishment, narrow revision, and authorized full rewrite;
 - strategic rationale create, update, unchanged, conflict, and causal-link gates;
 - standard and methodology-oriented vision structure plus all ten strategic-positioning headings and authority statement;
+- independent vision and positioning asset selection for sync and skip profiles;
 - README valid, missing, malformed, nested, duplicate, explicit insertion, skip, unchanged, and outside-byte preservation cases;
 - retired lowercase root path behavior;
 - missing, invalid, and late-loaded resources;
@@ -350,9 +370,9 @@ Use deterministic scenarios for:
 - sensitive inputs, research provenance, word caps, and truthful result fields;
 - canonical, generated, archived, release-candidate, and clean-installed resource parity.
 
-Measure normalized-LF Unicode whitespace-separated words and UTF-8 bytes for primary assemblies `VA0`, `VA1`, and `VA2` and secondary variants `VA1S` and `VA2S`. Count each unique loaded procedural resource once in `SKILL.md`, strategic-reference, README-reference order. Exclude copied assets from procedural totals and report both skeletons separately. Record file paths and content identities. Report total package words and bytes separately so moving prose into resources is not presented as deletion.
+Measure normalized-LF Unicode whitespace-separated words and UTF-8 bytes for primary assemblies `VA0`, `VA1`, and `VA2` and secondary variants `VA0S`, `VA1S`, and `VA2S`. Count each unique loaded procedural resource once in `SKILL.md`, strategic-reference, README-reference order. Exclude copied assets from procedural totals and report both skeletons separately. Record file paths and content identities. Report total package words and bytes separately so moving prose into resources is not presented as deletion.
 
-Each primary procedural assembly must decrease from the current flat baseline of 2,268 words and 15,845 bytes. `VA1S` and `VA2S` must also be reported but cannot substitute for `VA1` or `VA2`. The complete package may grow when structure and conditional procedure become explicit; that growth remains visible and is acceptable only when every real loaded path shrinks and ownership becomes clearer.
+Each primary procedural assembly must decrease from the current flat baseline of 2,268 words and 15,845 bytes. `VA0S`, `VA1S`, and `VA2S` must also be reported but cannot substitute for `VA0`, `VA1`, or `VA2`. The complete package may grow when structure and conditional procedure become explicit; that growth remains visible and is acceptable only when every real loaded path shrinks and ownership becomes clearer.
 
 Use existing skill validation, selector tests, build checks, adapter tests, lifecycle checks, and package parity. Update existing validators and fixtures rather than adding a permanent simplicity validator or new validator family. Do not execute Codex, Claude Code, opencode, or another target-agent runtime as acceptance, and do not add a separate manual prose-grading gate.
 
@@ -388,6 +408,10 @@ The downstream contract and proof map must preserve these acceptance decisions:
 | `AC-VISSIM-026` | Silence, malformed markers, remembered approval, and historical authority never imply skip or insertion. |
 | `AC-VISSIM-027` | Historical vision and rationale documents are not rewritten merely to adopt the new skeletons. |
 | `AC-VISSIM-028` | Architecture becomes required if safe recovery needs a new persistent transaction or authority owner. |
+| `AC-VISSIM-029` | README authority binds the manifest plus prior and intended vision identities. |
+| `AC-VISSIM-030` | The exact planned prior-to-intended vision transition preserves authority, while every unexpected divergence invalidates it. |
+| `AC-VISSIM-031` | Explicit `sync-readme` skip uses `VA0S-readme-skip`, changes no files, and reports truthful unchanged/skipped results. |
+| `AC-VISSIM-032` | Vision and positioning skeleton applicability is classified independently from procedural references and README action. |
 
 ## Rollout and Rollback
 
@@ -414,6 +438,8 @@ Rollback restores the prior flat `SKILL.md`, removes the mapped references and b
 | A substantive skip path is omitted from proof or package accounting. | Treat strategic and README contexts independently and measure `VA2S` explicitly. |
 | Partial multi-file work is mistaken for completion. | Require one manifest, source-first order, complete read-back, and a distinct `partial-retry-required` result. |
 | A retry overwrites unrelated or concurrent edits. | Resume only the exact retained or governed manifest with matching target identities; otherwise stop. |
+| The planned canonical transition invalidates its own README authority. | Bind authority to both manifest identities and revalidate the exact intended transition before README action. |
+| README skip suppresses a required full-rewrite asset. | Select vision and positioning skeletons independently from README and strategic procedure predicates. |
 | Positioning changes are inferred solely from substantive/editorial labels. | Classify `positioning_action` independently using R73-R79 and current authority. |
 | Either skeleton becomes a second vision specification. | Limit both to labels, ordering, insertion points, authority-statement location, and placeholders; reject applicability or adequacy policy in assets. |
 | Existing tests freeze obsolete file placement. | Classify literal consumers and update test-only assertions to inspect the assembled owning package. |
@@ -439,6 +465,9 @@ None at proposal level. Exact schema field names, fixture representation, and va
 | 2026-08-17 | Use a source-first target manifest for multi-file writes. | Canonical vision must settle before supporting rationale and derived README, and partial work must be recoverable or fail closed. | Unordered writes; silent partial completion; destructive rollback. |
 | 2026-08-17 | Keep portable recovery fail-closed without new persistence. | The simplification should not create a transaction subsystem; lost or ambiguous manifests require owner-directed recovery. | New portable transaction artifact; implicit adoption. |
 | 2026-08-17 | Classify positioning and README actions independently. | Revision significance does not exhaust secondary-artifact applicability or authority. | Infer all secondary writes from editorial/substantive alone. |
+| 2026-08-17 | Bind README authority to the exact manifest transition. | The intended canonical write must preserve its own authorized secondary action while unexpected changes fail closed. | Prior-only binding; authority that survives unrelated divergence. |
+| 2026-08-17 | Represent explicit sync skip as `VA0S`. | R45 permits skip during synchronization, and the no-write result remains a real supported invocation. | Hide sync skip in editorial profile; treat skip as an error. |
+| 2026-08-17 | Select structural assets independently. | README skip and procedural loading do not determine whether a vision or rationale full rewrite needs its skeleton. | Encode asset usage incompletely in assembly names. |
 | 2026-08-17 | Measure real loaded assemblies and total package separately. | Main-file shrinkage is not simplification when conditional paths load equal or greater procedure. | Main-file-only metric; fixed percentage target; tokenizer dependency. |
 | 2026-08-17 | Exclude target-agent and separate prose-grading acceptance. | Static contract, package, and lifecycle proof is proportionate for a content/package refactor. | Runtime journeys, transcript grading, permanent simplicity validator. |
 
@@ -478,6 +507,7 @@ Ready for independent proposal review. It does not claim proposal acceptance, sp
 | Strategic-positioning structural skeleton | core to this proposal | It owns the required ten-field rationale shape. |
 | Exhaustive resource and secondary-action classifiers | core to this proposal | Every valid strategic/README combination and write action needs deterministic procedure and authority. |
 | Multi-artifact target manifest and fail-closed recovery | core to this proposal | Establishment and material repositioning can touch canonical, rationale, and derived surfaces in one invocation. |
+| Manifest-bound authority and independent asset selection | core to this proposal | Planned identity transitions and full-rewrite structure must remain valid across every sync/skip combination. |
 | Focused active-contract and proof-map amendment | same-slice dependency | Progressive disclosure and structural ownership must be normative before implementation. |
 | Existing validator and fixture migration | same-slice dependency | Current tests bind exact behavior to the flat file. |
 | Generated, archive, release-candidate, and installed parity | same-slice dependency | Published skill resources must ship together. |
