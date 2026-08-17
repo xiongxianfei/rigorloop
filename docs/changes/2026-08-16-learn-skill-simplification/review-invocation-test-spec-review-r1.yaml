@@ -1,0 +1,47 @@
+schema_version: 1
+review_id: test-spec-review-r1
+review_stage: test-spec-review
+review_target: specs/learn-skill-simplification.test.md
+base_revision: 8b844688
+head_revision: 8b844688
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L0
+author_context_id: root-test-spec-authoring-r1
+reviewer_context_id: root-test-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - cross-spec-authority-alignment
+  - compatibility-sensitive-packaging
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/learn-skill-simplification.md
+  - docs/changes/2026-08-16-learn-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-17-learn-skill-simplification.md
+  - specs/learn-skill-simplification.test.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: specs/learn-skill-simplification.md
+    sha256: a7c71210ad45ab2b48daad06b5af0567046551f0f13e56a8cb8168c4d09016db
+  - path: docs/changes/2026-08-16-learn-skill-simplification/architecture-assessment.md
+    sha256: fb813b9ee28bfb7f1b33bd876a57284081de4f692634ff1978e31d20ac8c5cb6
+  - path: docs/plans/2026-08-17-learn-skill-simplification.md
+    sha256: 2160a999dfbdbef4cb2535c9efb961301b088c96beb737b6ef082831de7f0f6d
+  - path: specs/learn-skill-simplification.test.md
+    sha256: 046e20536ac6358854ccd962fba165a12d838d9498ac0bf608253eb77b452bb3
+prompt_template_version: test-spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - requirement and acceptance traceability
+  - boundary and interaction direct proof
+  - milestone proof timing and command feasibility
+  - stable route and completion-kind negative coverage
+  - historical compatibility and package parity
+  - implementation handoff readiness

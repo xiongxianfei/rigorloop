@@ -1,6 +1,6 @@
 # Review Resolution: Learn Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -24,6 +24,8 @@ Review closeout: plan-review-r2
 | `LRNSIM-SR2` | accepted | closed | Both real loaded profiles must decrease in words and bytes. |
 | `LRNSIM-SR3` | accepted | closed | Every route records one immutable completion kind validated during result recording. |
 | `LRNSIM-PLR1` | accepted | closed | M1 owns architecture-trigger inspection and stops before canonical mutation when triggered. |
+| `LRNSIM-TSR1` | needs-decision | open | Separate M1 inventory and architecture-trigger proof from M2 package-behavior proof. |
+| `LRNSIM-TSR2` | needs-decision | open | Add direct compact-result proof for both operations and representative non-success outcomes. |
 
 ## Finding details
 
@@ -206,3 +208,37 @@ Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidenc
 ### plan-review-r2
 
 No material findings. The clean rereview confirms that LRNSIM-PLR1 is closed and the plan may proceed to exact initialization and settlement retry.
+
+### test-spec-review-r1
+
+#### LRNSIM-TSR1
+
+Finding ID: LRNSIM-TSR1
+Disposition: needs-decision
+Status: open
+Owner: test-spec author
+Owning stage: review-resolution
+Decision owner: workflow-managed review-resolution
+Decision needed: Accept, reject, defer, or otherwise settle the required M1/M2 proof separation and R46 proof timing.
+Chosen action: pending disposition
+Rationale: The first formal review found that M1 names cases whose only behavior command is planned for M2, while the architecture stop must close before M2.
+Required outcome: Give every M1 obligation an M1-runnable case and command, and assign package behavior to M2 without weakening R46.
+Safe resolution path: Resolve this finding, revise the test spec when accepted, rerun boundary validation, and obtain fresh independent test-spec review.
+Validation target: corrected milestone, command, and PRF mappings.
+Validation evidence: pending disposition and revision.
+
+#### LRNSIM-TSR2
+
+Finding ID: LRNSIM-TSR2
+Disposition: needs-decision
+Status: open
+Owner: test-spec author
+Owning stage: review-resolution
+Decision owner: workflow-managed review-resolution
+Decision needed: Accept, reject, defer, or otherwise settle the missing direct R37 compact-result proof.
+Chosen action: pending disposition
+Rationale: Coverage tables alone do not prove the complete observable result contract for either operation or non-success paths.
+Required outcome: Add one direct deterministic result-shape case and update requirement, acceptance, proof, command, and milestone mappings.
+Safe resolution path: Resolve this finding, revise the test spec when accepted, rerun boundary validation, and obtain fresh independent test-spec review.
+Validation target: direct R37 assertions for both operations and representative blocked or idempotent outcomes.
+Validation evidence: pending disposition and revision.
