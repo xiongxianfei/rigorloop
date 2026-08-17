@@ -6,6 +6,8 @@ The vision skill now loads only the procedure needed for a particular invocation
 
 Every supported procedural assembly is smaller than the former 2,268-word / 15,845-byte flat skill. The complete package is 2,243 words / 17,176 bytes because it now includes two explicit structural assets; that 8.4% byte growth is recorded rather than presented as deletion.
 
+Final verify R1 subsequently exposed a durable-review formatting defect rather than a vision-package defect: two material findings were present only as Markdown headings, while the repository parser requires explicit `Finding ID:` fields. The bounded correction made both records discoverable, added explicit closeout links to their existing approving rereviews, and reconciled one stale evidence sentence without changing either judgment or the shipped skill package.
+
 ## Problem
 
 The former single 2,268-word skill mixed universal authority, strategic positioning, full vision drafting, README marker mechanics, output structure, and recovery. README-only synchronization and narrow editorial revision therefore loaded substantial irrelevant strategic procedure, while repeated artifact structure had no distinct owner. The goal was to reduce real loaded context without weakening source precedence, marker safety, strategic quality, recovery, or claims.
@@ -30,6 +32,7 @@ The former single 2,268-word skill mixed universal authority, strategic position
 | M1 ledgers and fixtures | Recorded 32 semantic rules, 32 compatibility literals, unknown-value failures, scenarios, and the exact flat baseline. | Semantic meaning and exact consumed strings need separate pre-edit evidence. | R58-R60 | C0; M1 review |
 | M2/M3 evidence | Recorded implementation, review correction, measurements, preservation, hashes, boundary proof, and package-chain results. | Relocation must be reviewable and total package cost must remain visible. | R43-R66 | C1-C8; M2/M3 reviews |
 | Proposal, spec, plan, test spec, change record, reviews | Captured the accepted decision and stage-owned lifecycle from proposal through final review. | The change is non-trivial and governed; durable rationale and state must match the implementation. | workflow contract | metadata validation and final review R3 |
+| Verify R1 correction records | Added parser-owned finding fields, explicit blocking-review closeouts, correction evidence, and final rereview R4. | PR-mode lifecycle validation must discover every durable finding and its settlement without changing historical semantics. | formal review recording contract | structure and closeout validation; PR-scope lifecycle validation; final review R4 |
 
 ## Tests added or changed
 
@@ -49,12 +52,15 @@ The former single 2,268-word skill mixed universal authority, strategic position
 | `python scripts/test-adapter-distribution.py` | pass; 150 tests |
 | `python scripts/validate-boundary-first.py --check --path specs/vision-skill-progressive-disclosure.md` | pass |
 | `python scripts/validate-change-metadata.py docs/changes/2026-08-17-vision-skill-progressive-disclosure/change.yaml` | pass |
+| `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-17-vision-skill-progressive-disclosure` | pass after verify R1 correction; 17 reviews, 12 findings, 17 log entries, 12 resolution entries |
+| `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-17-vision-skill-progressive-disclosure` | pass after verify R1 correction; all 12 findings closed |
+| `python scripts/validate-artifact-lifecycle.py --mode pr-ci --base origin/main --head HEAD` | pass after verify R1 correction; three PR-scope artifact files validated with baseline warnings only |
 
-Final PR-mode CI and branch readiness are not claimed here; they remain owned by `verify`.
+Verify R1 ran the complete C0-C9 ledger but C9 failed on the now-corrected finding-discovery defect. That failed occurrence remains recorded in `verify-report.md`. A new final PR-mode CI run and branch-readiness judgment are still required and remain owned by `verify`.
 
 ## Review resolution summary
 
-The durable [review resolution](review-resolution.md) contains 12 material findings: 12 accepted, 0 rejected, 0 deferred, 0 partially accepted, and 0 `needs-decision`; all are closed. Implementation review `VIS-M2-CR1` restored durable governed manifest preparation, architecture fallback, and complete zero-write settlement. Final review `VIS-FINAL-CR1` reconciled the overview and approving rereview evidence before this explanation was authored. Final holistic rereview R3 is clean.
+The durable [review resolution](review-resolution.md) contains 12 material findings: 12 accepted, 0 rejected, 0 deferred, 0 partially accepted, and 0 `needs-decision`; all are closed. Implementation review `VIS-M2-CR1` restored durable governed manifest preparation, architecture fallback, and complete zero-write settlement. Final review `VIS-FINAL-CR1` reconciled the overview and approving rereview evidence. Verify R1 then exposed their missing parser-owned identity fields; the bounded recording correction preserved both findings and final holistic rereview R4 approved the resulting full branch.
 
 ## Alternatives rejected
 
@@ -72,8 +78,9 @@ The change does not alter project vision content, README front-matter, canonical
 - The VA2 byte margin is intentionally small: 15,735 versus 15,845. Focused measurement tests must remain active so future universal growth is visible.
 - Total package bytes increased because structure is explicit. Future optimization should not collapse assets back into procedural prose merely to improve total size.
 - Package changes must continue through the existing build/archive/install parity checks.
-- No follow-up is required for implementation; final verification remains pending.
+- The shared code-review material-finding asset still uses bulleted field labels while the current parser recognizes unbulleted field lines. That cross-package mismatch should be handled as a separate scoped bugfix rather than expanding this vision change.
+- No follow-up is required for the vision implementation; a new final verification occurrence remains pending.
 
 ## Verify readiness
 
-All implementation milestones and review resolutions are closed, final holistic review R3 is clean, and the explanation is current. The change is ready to enter `verify`, without yet claiming verification, CI, branch, or PR readiness.
+All implementation milestones and review resolutions are closed, final holistic rereview R4 is clean, the verify R1 recording correction passes focused lifecycle validation, and this explanation is current. The change is ready for a new `verify` invocation. Verify R1 remains a failed historical occurrence, so verification, CI, branch, and PR readiness are not claimed here.

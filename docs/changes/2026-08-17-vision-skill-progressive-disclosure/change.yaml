@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: explain-change
-  next_stage: explain-change
+  current_stage: verify
+  next_stage: verify
   blocker: null
   evidence:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
@@ -142,7 +142,7 @@ workflow_state:
     final_closeout:
       readiness: not-ready
       reasons:
-        - explain-change-pending
+        - verify-pending
       evidence:
         - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/plan-review-r1.md
         - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/plan-initialization.md
