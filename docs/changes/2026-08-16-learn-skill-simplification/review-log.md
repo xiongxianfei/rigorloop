@@ -8,6 +8,19 @@ This ledger records formal lifecycle reviews for the learn skill simplification 
 
 ### Review entry
 
+Review ID: code-review-m2-r2
+Stage: code-review
+Round: r2
+Reviewed artifact: M2 correction range `4447a78f..701c62fa`
+Status: clean-with-notes
+Detailed record: reviews/code-review-m2-r2.md
+Resolution: review-resolution.md#code-review-m2-r2
+Material findings: none
+Open findings: none
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m2-r1
 Stage: code-review
 Round: r1
@@ -16,7 +29,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-m2-r1
 Material findings: LRNSIM-CR-M2-R1-F1, LRNSIM-CR-M2-R1-F2, LRNSIM-CR-M2-R1-F3
-Open findings: LRNSIM-CR-M2-R1-F1, LRNSIM-CR-M2-R1-F2, LRNSIM-CR-M2-R1-F3
+Open findings: none
 Recording status: recorded
 
 ### Review entry

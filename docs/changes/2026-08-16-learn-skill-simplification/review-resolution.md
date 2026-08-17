@@ -1,6 +1,6 @@
 # Review Resolution: Learn Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -13,6 +13,8 @@ Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
 Review closeout: code-review-m1-r1
 Review closeout: code-review-m1-r2
+Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
 ## Resolution overview
 
@@ -31,9 +33,9 @@ Review closeout: code-review-m1-r2
 | `LRNSIM-TSR1` | accepted | closed | M1 now owns only CMD1-runnable inventory, baseline, scenario, and R46 gate proof; M2 owns package behavior. |
 | `LRNSIM-TSR2` | accepted | closed | T15 directly proves the complete compact result for both operations and representative idempotent and blocked outcomes. |
 | `LRNSIM-CR-M1-R1-F1` | accepted | closed | Bind callers to current repository evidence and validate both disposition vocabularies before consistency checks. |
-| `LRNSIM-CR-M2-R1-F1` | accepted | open | Align direct route-result invocation and missing-resource pre-creation behavior with R6-R8. |
-| `LRNSIM-CR-M2-R1-F2` | accepted | open | Close first-write, evidence-distinction, and topic-effect retry semantics. |
-| `LRNSIM-CR-M2-R1-F3` | accepted | open | Record the complete route schema and validate immutable completion-kind matching. |
+| `LRNSIM-CR-M2-R1-F1` | accepted | closed | Align direct route-result invocation and missing-resource pre-creation behavior with R6-R8. |
+| `LRNSIM-CR-M2-R1-F2` | accepted | closed | Close first-write, evidence-distinction, and topic-effect retry semantics. |
+| `LRNSIM-CR-M2-R1-F3` | accepted | closed | Record the complete route schema and validate immutable completion-kind matching. |
 
 ## Finding details
 
@@ -43,7 +45,7 @@ Review closeout: code-review-m1-r2
 
 Finding ID: LRNSIM-CR-M2-R1-F1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: M2 implementation
 Owning stage: implement
 Decision owner: workflow-managed automated correction
@@ -53,13 +55,13 @@ Rationale: operation selection and pre-creation safety cannot be inferred from a
 Required outcome: exact route-result exception and pre-session-write resource stop.
 Safe resolution path: amend root wording and focused assertions, then rereview.
 Validation target: CMD2-CMD4 and M2 code rereview.
-Validation evidence: pending correction.
+Validation evidence: `skills/learn/SKILL.md`, focused assertions, and approving `reviews/code-review-m2-r2.md`.
 
 #### LRNSIM-CR-M2-R1-F2
 
 Finding ID: LRNSIM-CR-M2-R1-F2
 Disposition: accepted
-Status: open
+Status: closed
 Owner: M2 implementation
 Owning stage: implement
 Decision owner: workflow-managed automated correction
@@ -69,13 +71,13 @@ Rationale: phase headings alone do not prove the required durable and fail-close
 Required outcome: reference wording and direct tests cover all three contracts.
 Safe resolution path: bounded reference and validator correction, then rereview.
 Validation target: CMD3-CMD4 and M2 code rereview.
-Validation evidence: pending correction.
+Validation evidence: `skills/learn/references/session-method.md`, focused assertions, and approving `reviews/code-review-m2-r2.md`.
 
 #### LRNSIM-CR-M2-R1-F3
 
 Finding ID: LRNSIM-CR-M2-R1-F3
 Disposition: accepted
-Status: open
+Status: closed
 Owner: M2 implementation
 Owning stage: implement
 Decision owner: workflow-managed automated correction
@@ -85,7 +87,11 @@ Rationale: stable route IDs are insufficient without complete immutable interpre
 Required outcome: complete route fields, immutability, exact kind matching, and negative proof.
 Safe resolution path: amend root/reference and focused assertions, then rereview.
 Validation target: CMD3-CMD4 and M2 code rereview.
-Validation evidence: pending correction.
+Validation evidence: the complete route schema and kind-matching assertions plus approving `reviews/code-review-m2-r2.md`.
+
+### code-review-m2-r2
+
+No material findings. The rereview confirms all M2 R1 findings are resolved and the milestone is closed.
 
 ### proposal-review-r1
 
