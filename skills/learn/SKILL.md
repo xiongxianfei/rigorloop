@@ -1,147 +1,65 @@
 ---
 name: learn
 description: >
-  Capture durable lessons after implementation, review, verification, or incidents. Use when the workflow revealed recurring mistakes, spec gaps, architecture discoveries, testing improvements, CI gaps, or process changes that should guide future agents.
-argument-hint: [feature name, completed plan, incident, review findings, or retrospective]
+  Capture durable lessons after implementation, review, verification, or incidents. Use when recurring mistakes, systemic gaps, or explicit retrospective work should guide future contributors.
+argument-hint: [trigger, scope, session, or route result]
 ---
 
 # Learning and retrospective capture
 
-You are running a learn session only when learning is periodic or explicitly invoked by cadence, incident response, contributor observation, repeated review findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem action, explicit maintainer request, or another stated trigger.
-
-`learn` is periodic or explicitly invoked. It is not the default final stage for every change, and it blocks downstream only when a higher-priority artifact explicitly makes it blocking. When a trigger occurs, capture the lesson immediately, create a scheduled follow-up, or record an explicit no-learn rationale in the appropriate surface.
-
-Do not fabricate lessons. The trigger decides whether a session may run; evidence decides what the session captures. A single event remains `observation` or `no-durable-lesson` unless the evidence shows a reusable pattern or systemic gap. Maintainer request, incident response, contributor observation, cadence, and explicit invocation do not lower the evidence standard for durable guidance.
-
-Maintainer-driven rule adoption without accumulated evidence is not durable learn capture. If a maintainer proposes or requests a new rule, but the learn session lacks accumulated evidence such as repeated review findings, repeated incidents, failed smoke patterns, recurring validation gaps, or prior session evidence, classify the observation as `direction`, not `durable-lesson`, and route it to proposal work. The proposal may later produce an ADR, workflow spec update, skill change, or other authoritative artifact if accepted. Do not add the rule directly to `docs/learn/topics/<topic>.md` as durable guidance unless there is accumulated evidence or an accepted authoritative artifact to cite.
-
 ## Purpose
 
-Capture evidence-bound observations and contributor-confirmed durable lessons without turning learn records into workflow policy, lifecycle closeout, or PR readiness proof.
+Record evidence-bound learning without becoming a policy, lifecycle, or destination owner.
 
 ## When to use
 
-Use this skill only when learning is periodic or explicitly triggered by cadence, incident response, contributor observation, repeated findings, failed smoke, accepted postmortem action, maintainer request, or another stated trigger.
+`learn` is periodic or explicitly invoked for repeated review findings, blocker or major workflow-process findings, failed release or adapter smoke, accepted postmortem action, explicit maintainer request, incident response, contributor observation, cadence, or another stated trigger. capture the lesson immediately, create a scheduled follow-up, or record an explicit no-learn rationale. It blocks downstream only when a higher-priority artifact explicitly makes it blocking.
 
 ## When not to use
 
-Do not use this skill as the default final stage for every change, to invent a lesson from weak evidence, to create new workflow policy by itself, or to bypass proposal, spec, ADR, workflow, or skill updates when behavior should change.
-
-## Outputs
-
-Produce a learn session record after Frame, topic updates only for contributor-confirmed durable lessons, and links to action-owning artifact updates or follow-ups when routing produces them.
-
-## Handoff
-
-- Normal next stage: none by default; record the session outcome or no-learn rationale and stop.
-- Conditional next stages: route confirmed `artifact-update`, `decision`, `direction`, or `process-follow-up` to the owning proposal, ADR, spec, workflow, skill, issue, or other authoritative artifact without editing it.
-- For full stage order and downstream-blocking semantics, route through the `workflow` skill.
-
-## Claims this skill must not make
-
-Do not claim:
-
-- new workflow policy is authoritative unless the lesson is routed to and accepted in an authoritative artifact;
-- plan closeout, review-resolution closeout, verification readiness, branch readiness, PR readiness, CI status, or derived-artifact currency;
-- a single observation is a durable lesson without reusable pattern, systemic gap evidence, contributor confirmation, or accepted authoritative artifact support.
-
-## Output Surfaces
-
-When a learn invocation reaches the Frame phase, create or update a tracked session record at `docs/learn/sessions/YYYY-MM-DD-<slug>.md`. This applies even when the session is empty or produces `no-durable-lesson`.
-
-Use `docs/learn/topics/<topic>.md` only when contributor-confirmed durable guidance justifies a topic entry. Do not pre-create empty topic files, a fixed topic taxonomy, session templates, or topic templates.
-
-The session record is the primary output.
-It links to every derivative topic entry, owner-routed artifact update, ADR, proposal, issue, change-local follow-up, scheduled follow-up, or explicit no-learn rationale produced by the session.
-
-The boundary is simple: topic files are curated guidance, not policy. They must not override `CONSTITUTION.md`, approved specs, accepted ADRs, approved architecture docs, workflow docs, skill files, accepted proposals, active plans, or action-owning artifacts. If a lesson changes behavior, workflow, architecture, validation, skill behavior, examples, or decisions, update the action-owning artifact and link that update from the session record.
-
-Pre-session trigger closeout is different from a learn session; pre-session trigger closeout may record a scheduled follow-up, deferral, or explicit no-learn rationale only when `learn` does not actually run as a session. Use a contributor-visible tracked or review-visible surface.
+Do not run it by default, manufacture patterns, or bypass a destination owner.
 
 ## Inputs to read
 
-Start from bounded evidence:
+Read the trigger, named artifacts, relevant prior learning, and the smallest decision-bearing evidence.
 
-1. trigger statement and named artifacts;
-2. relevant `docs/learn/README.md`, prior session records, and topic files when present and relevant;
-3. compact summaries, headings, stable IDs, and exact sections first for governance, workflow, spec, plan, ADR, review, verify, incident, commit, derived-artifact, or validation evidence;
-4. full-file reads only when narrower evidence is insufficient for classification or routing.
+## Outputs
 
-For periodic learn sessions, inspect changes in the selected time window when relevant, including proposals, plans, change packs, ADRs, recent commits to canonical surfaces, and derived-artifact or validation records.
+Produce a session record after Frame, justified topic guidance, owner-bound routes, and reconciled owner-result identities. Pre-session closeout remains in a contributor-visible tracked or review-visible surface owned by the trigger source.
 
-For incident sessions, inspect the incident report, related artifacts, affected specs or plans, review or verify findings, and relevant postmortem action records when present. Summarize sensitive evidence; do not commit secrets, credentials, tokens, private keys, private incident data, or unnecessary machine-local details.
+## Handoff
 
-For explicit invocations, inspect artifacts named by the user and artifacts implied by the stated pattern.
+- Normal next stage: none; record the session or route result and stop.
+- Conditional next stages: send owner-bound work to the applicable skill or process; use `workflow` for governed routing.
 
-## Four Phases
+## Operations and profiles
 
-Run every learn session in this order: Frame, Observe, Classify, Route.
+Select exactly one operation:
 
-### Frame
+- `run-learn-session` (`LR1-session`): record a triggered session, topic effects, and owner-bound routes.
+- `record-learn-route-result` (`LR0-route-result`): reconcile one route with an exact owner result.
 
-Establish and record:
+An explicit direct `$learn` invocation selects `run-learn-session`. Pre-session trigger assessment and pre-session trigger closeout belong to the trigger owner, which records deferral, follow-up, or no-learn rationale.
 
-- trigger and trigger type;
-- scope;
-- evidence in scope;
-- explicit exclusions;
-- prior learnings reviewed;
-- session record path under `docs/learn/sessions/YYYY-MM-DD-<slug>.md`.
+An unknown, missing, combined, or ambiguous operation stops before writes. Operation selection does not grant contributor confirmation, destination mutation, workflow continuation, or external-system authority.
 
-For periodic learn sessions, also record time window start, time window end, and window basis.
+For `run-learn-session`, READ `references/session-method.md` exactly for `run-learn-session`, at most once. If it is missing, unreadable, escaped, stale, contradictory, or mixed-version, stop dependent work and must not reconstruct it. `record-learn-route-result` does not load it.
 
-### Observe
+## Resource map
 
-Examine the evidence for patterns, surprises, drift, and gaps. Every observation must be evidence-bound.
+- READ `references/session-method.md` exactly for `run-learn-session`, at most once. It owns phases, collision handling, topic effects, and routes.
 
-Before proposing durable guidance, check whether the lesson is already captured in a prior session, topic entry, action-owning artifact, ADR, proposal, active plan, or workflow artifact. If no observations are found, record that explicit no-observation result in the session record.
+Untriggered resources do not block `LR0-route-result`.
 
-### Classify
+## Evidence and classification safety
 
-Each observation has exactly one primary classification:
+The trigger permits a session; evidence controls capture. A single event remains `observation` or `no-durable-lesson` without a reusable pattern or systemic gap. Trigger type does not lower this standard.
 
-- `observation`
-- `durable-lesson`
-- `artifact-update`
-- `decision`
-- `direction`
-- `process-follow-up`
-- `no-durable-lesson`
+Maintainer-driven rule adoption without accumulated evidence is not durable capture. Without repeated review findings, repeated incidents, failed smoke patterns, recurring validation gaps, or prior session evidence, classify the item as `direction`, not `durable-lesson`, and route it to proposal work. That proposal may later produce an ADR or another accepted authoritative artifact.
 
-An observation may also have secondary routes. Secondary routes are derivative actions or destinations and do not become additional primary classifications.
+Contributor confirmation settles classification only, not destination mutation. Candidate classifications may be recorded; effects require confirmation.
 
-Record classification decisions with observation ID, proposed primary classification, final primary classification, secondary routes, confirmed-by, and rationale.
-
-Contributor confirmation is required before routing. If confirmation is unavailable, record candidate classifications in the session record and stop before updating topic files, ADRs, proposals, follow-ups, or action-owning artifacts.
-
-### Route
-
-Route only contributor-confirmed final classifications:
-
-- `observation`: keep in the session record only.
-- `durable-lesson`: add or update the relevant topic file with date, short lesson, source-session link, primary classification, and secondary routes when present.
-- `artifact-update`: update the affected authoritative artifact and link that update from the session record.
-- `decision`: create or update the relevant ADR or decision artifact, then link it from the session record and any relevant topic entry.
-- `direction`: open a proposal or trackable follow-up; do not encode direction as topic-file policy.
-- `process-follow-up`: link an issue when an issue tracker exists, record a change-local follow-up for current work, or open a proposal for new direction.
-  Do not edit a plan or use `docs/roadmap.md` as the fallback.
-- `no-durable-lesson`: record the no-learn rationale and whether any follow-up was scheduled in the session record.
-
-## Topic Curation
-
-Topic entries may be added, revised, superseded, removed, or absorbed into an authoritative artifact. When you remove, revise, or absorb an entry, preserve traceability through a session link, authoritative-artifact link, topic-file rationale, or explain-change rationale.
-
-Topic files exist for discovery. Keep them concise and curated; do not let them become policy, workflow contracts, architecture decisions, validation contracts, or skill contracts.
-
-## Stop conditions
-
-Stop before routing or topic updates when:
-
-- the trigger is absent or cannot be stated;
-- evidence does not support a durable lesson;
-- contributor confirmation is unavailable for final classification;
-- the observation requires policy, workflow, architecture, spec, ADR, or skill behavior changes that need an owning artifact;
-- sensitive incident details, secrets, credentials, or private data cannot be summarized safely.
+Start from the trigger statement and named artifacts and exact sections first; use full-file reads only when narrower evidence is insufficient. Periodic learn sessions record time window start, time window end, and window basis. Never commit secrets or sensitive details.
 
 ## Evidence collection efficiency
 
@@ -156,20 +74,29 @@ Read exact ranges after locating relevant lines, then expand only when the narro
 
 Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
-## Rules
+## Surfaces and ownership
 
-- Do not manufacture observations to justify a session.
-- Do not capture durable lessons from isolated single events without reusable pattern or systemic gap evidence.
-- Do not repeat already-captured lessons.
-- Do not make final classification decisions unilaterally.
-- Do not route without contributor confirmation.
-- Do not bypass downstream review for derivative ADRs, proposals, specs, architecture docs, workflow changes, or skill behavior changes.
-- Do not use `learn` as the authoritative owner of plan index state, plan-body lifecycle state, review-resolution closeout, verification readiness, PR readiness, or CI status.
-- If nothing durable was learned, record the empty outcome honestly in the session record once Frame has occurred.
+After the Frame phase begins, the primary output is `docs/learn/sessions/YYYY-MM-DD-<slug>.md`. Confirmed guidance may update `docs/learn/topics/<topic>.md`; create no templates, empty topics, or fixed taxonomy.
+
+topic files are curated guidance and must not override `CONSTITUTION.md`, approved specs, accepted ADRs, architecture, workflow docs, skills, proposals, active plans, or an action-owning artifact. Preserve traceability when topic entries are revised, superseded, absorbed, or removed.
+
+Behavior-changing work belongs to its action-owning artifact. `learn` records routes and owner-result identities; it cannot mutate destinations, bypass reviews, poll, or treat chat as completion. Historical sessions remain readable without implicit migration.
+
+## Route-result recording
+
+`record-learn-route-result` requires exact session identity and path, stable route ID, destination owner, evidence basis, owner-result identity, and session-write authority. Missing, stale, conflicting, duplicated, or ambiguous identity stops.
+
+Update only the matching route. Record `complete` with `authoritative-artifact` or `durable-scheduled-follow-up`, or `blocked` with evidence. Do not change classification, confirmation, topics, other routes, or destinations. The same result is idempotent success; a different one requires fresh reconciliation.
+
+## Stop conditions
+
+Stop when trigger, scope, evidence, identity, path, confirmation, owner, authority, or required resource is insufficient; when a session collision or interrupted record cannot be classified safely; or when sensitive evidence cannot be summarized. Do not manufacture observations or repeat captured lessons.
+
+## Claims this skill must not make
+
+Do not claim new workflow policy or any authoritative artifact is accepted merely because learning was recorded. This skill does not prove destination approval, implementation, release, workflow completion, verification, branch readiness, PR readiness, CI status, or lifecycle closeout. Route through `workflow` when another governed stage is required.
 
 ## Expected output
-
-Start with:
 
 ```md
 ## Result
@@ -179,18 +106,6 @@ Start with:
 - Artifacts changed:
 - Open blockers:
 - Next stage:
-- Session path:
-- Lessons captured:
-- Follow-ups:
 ```
 
-Then include:
-
-- session record path and status;
-- trigger, scope, evidence reviewed, and exclusions;
-- observations found, or explicit no-observation result;
-- classification decisions and contributor confirmation status;
-- routing results and derivative artifact links;
-- no-learn rationale when no durable lesson was captured;
-- follow-ups created, scheduled, or explicitly not needed;
-- validation commands run when this skill changed.
+Also report operation; session identity and path; trigger and scope; confirmation result; session recording result; topic effects; route IDs and settlements; owner-result identities; next owner or handoff; claim limitations; and validation commands actually run when files changed.
