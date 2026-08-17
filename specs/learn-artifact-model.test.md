@@ -57,7 +57,7 @@ This alignment requires `test-spec-review` before M1 relies on it.
 | --- | --- | --- |
 | `E1` | `T5`, `T6` | Durable lesson plus `process-follow-up` secondary route goes to topic guidance and tracked follow-up, not roadmap |
 | `E2` | `T7` | Maintainer-requested single event closes with `no-durable-lesson` and no derivative updates |
-| `E3` | `T5`, `T8` | Behavior-changing lesson updates authoritative artifact and keeps topic guidance non-authoritative |
+| `E3` | `T5`, `T8` | Behavior-changing lesson routes to the authoritative owner, records the owner result, and keeps topic guidance non-authoritative |
 | `E4` | `T4` | Candidate classifications without confirmation do not route |
 | `E5` | `T8` | Absorbed or removed topic entries preserve traceability |
 | `E6` | `T9` | Explicit invocation reads targeted evidence rather than full governance files by default |
@@ -69,7 +69,7 @@ This alignment requires `test-spec-review` before M1 relies on it.
 - Repeated finding already captured in a topic file or authoritative artifact: `T3`, `T8`
 - One observation with one primary classification and one or more secondary routes: `T4`, `T5`
 - Obsolete topic entry absorbed into an approved spec or other authoritative artifact: `T8`
-- Process follow-up with no issue tracker and no active plan owner: `T6`
+- Process follow-up with no issue tracker and no current change-local owner: `T6`
 - Missing contributor confirmation: `T4`
 - Topic file conflicts with higher-priority spec, ADR, workflow doc, skill file, proposal, plan, or action-owning artifact: `T8`
 - Small explicit invocation that names one artifact: `T9`
@@ -188,10 +188,10 @@ This alignment requires `test-spec-review` before M1 relies on it.
 - Steps:
   - Confirm `observation` routes to the session record only.
   - Confirm `durable-lesson` routes to a topic file with date, short lesson, source-session link, primary classification, and secondary routes when present.
-  - Confirm `artifact-update` routes to the affected authoritative artifact and links back from the session record.
-  - Confirm `decision` routes to ADR or another decision artifact and links from the session record and relevant topic entry.
-  - Confirm `direction` routes to a proposal or trackable follow-up and is not encoded as topic-file policy.
-  - Confirm behavior-changing lessons update the action-owning artifact rather than relying on the topic file as source of truth.
+  - Confirm `artifact-update` creates a stable owner-bound route and that only the destination owner updates the authoritative artifact.
+  - Confirm `decision` routes to the ADR or decision owner and records the exact owner-result identity after that owner acts.
+  - Confirm `direction` routes to proposal work or an explicitly permitted durable follow-up and is not encoded as topic-file policy.
+  - Confirm behavior-changing lessons are implemented by the action-owning skill or process rather than directly by `learn` or through topic policy.
 - Expected result:
   - Each classification has one clear route and topic files cannot become policy by accident.
 - Failure proves:
@@ -209,7 +209,8 @@ This alignment requires `test-spec-review` before M1 relies on it.
   - `AGENTS.md`
   - `specs/rigorloop-workflow.md`
 - Steps:
-  - Confirm `process-follow-up` routes to a linked issue when available, an active plan when one owns the work, or a proposal when no tracker or active plan exists.
+  - Confirm `process-follow-up` creates an owner-bound route to a linked issue when available, a current change-local follow-up when one owns the work, or proposal work otherwise.
+  - Confirm `learn` does not edit a plan or external tracker without separate authority under the destination owner's contract.
   - Confirm `docs/roadmap.md` is not presented as the fallback for learn follow-ups.
   - Confirm `no-durable-lesson` routes to the session record with no-learn rationale and whether follow-up was scheduled.
   - Confirm review-visible no-record surfaces are allowed only for pre-session trigger closeout when `learn` does not actually run as a session.
@@ -456,7 +457,7 @@ This alignment requires `test-spec-review` before M1 relies on it.
 ## What not to test
 
 - Do not test runtime application behavior; none is introduced.
-- Do not test issue tracker integration; the spec only defines routing when a tracker exists and fallback to active plan or proposal.
+- Do not test issue tracker integration; the spec defines owner-bound routing, not direct tracker mutation.
 - Do not add snapshot-only tests for contributor-facing prose.
 - Do not test a fixed session or topic template because templates are explicitly deferred.
 - Do not test migration of historical notes into `docs/learn/`; migration is out of scope.
