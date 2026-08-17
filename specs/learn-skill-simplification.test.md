@@ -34,14 +34,17 @@ Use deterministic contract fixtures for package loading, operation classificatio
 | R19-R24 | T4-T6 | contract | Evidence truth, confirmation boundary, classifications, topic ownership, and idempotent topic effects. |
 | R25-R26, R26a, R27-R30 | T7 | contract | Stable route IDs, complete fields, immutable completion kinds, closed settlements, and route meanings. |
 | R31-R35 | T8-T9 | contract | Exact owner-result input, bounded write set, idempotency, completion-kind validation, and same-turn destination ownership. |
-| R36-R40, R47 | T9-T11 | contract | Prospective compatibility, compact result, semantic and literal ledgers, unknown-value-first validation, and exact legacy dispositions. |
-| R41-R46 | T11-T14 | integration | Measurement, both-profile reduction, package parity, deterministic acceptance, portability, and architecture escalation. |
+| R36 | T10 | contract | Prospective compatibility preserves historical sessions without implicit migration. |
+| R37 | T15 | contract | The complete compact result is asserted for both operations and representative idempotent and blocked outcomes. |
+| R38-R40, R47 | T9, T11 | contract | Semantic and literal ledgers, unknown-value-first validation, and exact legacy dispositions. |
+| R41-R45 | T12-T14 | integration | Measurement, both-profile reduction, package parity, deterministic acceptance, and portability. |
+| R46 | T16 | contract | M1 detects every architecture trigger and stops before canonical mutation. |
 
 ## Acceptance criterion coverage map
 
 | Acceptance criterion | Covered by | Command IDs | Required milestone | Notes |
 | --- | --- | --- | --- | --- |
-| AC1 | T1-T14 | CMD1-CMD10 | M1-M3 | Every R1-R47 clause maps to stable cases and exact proof obligations. |
+| AC1 | T1-T16 | CMD1-CMD10 | M1-M3 | Every R1-R47 clause maps to stable cases and exact proof obligations. |
 | AC2 | T1, T13 | CMD2-CMD7 | M2-M3 | One universal skill, one mapped reference, and no asset, template, or script. |
 | AC3 | T2 | CMD1, CMD3 | M2 | Direct sessions and exact result recording are the only operations; trigger assessment is absent. |
 | AC4 | T3 | CMD1, CMD3 | M2 | Collision, interruption, changed basis, complete rerun, and concurrency have one result. |
@@ -52,8 +55,8 @@ Use deterministic contract fixtures for package loading, operation classificatio
 | AC9 | T11 | CMD1, CMD3 | M1-M3 | Semantic and literal ledgers close every current rule and compatibility dependency. |
 | AC10 | T12 | CMD1 | M3 | LR0 and LR1 both shrink while resource and total-package sizes remain visible. |
 | AC11 | T13 | CMD2, CMD4-CMD7 | M3 | Canonical, generated, archived, release-candidate, and installed resources retain raw-byte parity. |
-| AC12 | T14 | CMD1-CMD11 | M3 | Acceptance is deterministic and excludes target-agent execution and a separate manual semantic gate. |
-| AC13 | T14 | CMD1, CMD3, CMD9 | M1 | Any persistent recovery, polling, integration, or new ownership need returns to architecture. |
+| AC12 | T14 | CMD2, CMD4-CMD11 | M3 | Acceptance is deterministic and excludes target-agent execution and a separate manual semantic gate. |
+| AC13 | T16 | CMD1, CMD9 | M1 | Any persistent recovery, polling, integration, or new ownership need returns to architecture before M2. |
 
 ## Example coverage map
 
@@ -82,9 +85,9 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | PRF-001 | covered | R7, R8, R11, R21, R22, R25, R26a, R27, R31, R34 | BND-INPUT-001 | T2-T3, T5, T7-T8 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
 | PRF-002 | covered | R9, R10, R14, R15, R16, R17, R18, R21, R23, R24, R27, R28, R29, R30, R32, R33, R36 | BND-STATE-001 | T2-T10 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
 | PRF-003 | covered | R8, R9, R10, R11, R18, R20, R21, R23, R25, R26, R26a, R31, R32, R33, R34, R35, R47 | BND-AUTH-001 | T2-T9, T11 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
-| PRF-004 | covered | R1, R2, R3, R4, R5, R6, R12, R13, R23, R36, R37, R38, R39, R43, R45 | BND-COMPOSE-001 | T1, T3, T6, T10-T13 | integration | automated | CMD1-CMD8 | `evidence/m2-package-implementation.md`; `evidence/m3-package-proof.md` | M3 | - | - |
+| PRF-004 | covered | R1, R2, R3, R4, R5, R6, R12, R13, R23, R36, R37, R38, R39, R43, R45 | BND-COMPOSE-001 | T1, T3, T6, T10-T13, T15 | integration | automated | CMD1-CMD8 | `evidence/m2-package-implementation.md`; `evidence/m3-package-proof.md` | M3 | - | - |
 | PRF-005 | covered | R12, R13, R16, R17, R18, R24, R25, R32, R33, R36 | BND-TEMPORAL-001 | T3, T6-T8, T10 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
-| PRF-006 | covered | R6, R13, R15, R16, R17, R21, R24, R30, R32, R33, R46 | BND-RECOVERY-001 | T1, T3, T5-T8, T14 | contract | automated | CMD1-CMD3, CMD9 | `evidence/m1-preservation-inventories.md`; `evidence/m2-package-implementation.md` | M2 | - | - |
+| PRF-006 | covered | R6, R13, R15, R16, R17, R21, R24, R30, R32, R33 | BND-RECOVERY-001 | T1, T3, T5-T8 | contract | automated | CMD1-CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
 | PRF-007 | covered | R36, R38, R39, R40, R41, R42, R43, R45, R47 | BND-COMPAT-001 | T9-T13 | integration | automated | CMD1-CMD8 | `evidence/m1-preservation-inventories.md`; `evidence/m3-package-proof.md` | M3 | - | - |
 | PRF-008 | covered | R6, R11, R12, R13, R19, R23, R31, R34, R43, R44 | BND-ENV-001 | T1, T3-T4, T6, T8, T13-T14 | integration | automated | CMD2, CMD4-CMD9 | `evidence/m3-package-proof.md` | M3 | - | - |
 | PRF-009 | covered | R8, R9, R10, R11 | INT-001 | T2 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
@@ -92,6 +95,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | PRF-011 | covered | R20, R21, R23, R25, R26, R26a, R31, R32, R34, R35, R47 | INT-003 | T5, T7-T9 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
 | PRF-012 | covered | R27, R28, R29, R31, R32, R33, R36 | INT-004 | T7-T10 | contract | automated | CMD1, CMD3 | `evidence/m2-package-implementation.md` | M2 | - | - |
 | PRF-013 | covered | R3, R5, R6, R38, R39, R42, R43, R45 | INT-005 | T1, T11-T13 | integration | automated | CMD1-CMD8 | `evidence/m3-package-proof.md` | M3 | - | - |
+| PRF-014 | covered | R46 | BND-RECOVERY-001 | T16 | contract | automated | CMD1, CMD9 | `evidence/m1-preservation-inventories.md` | M1 | - | - |
 
 ## Edge case coverage
 
@@ -131,8 +135,8 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 | Milestone | Required test IDs | Manual proof IDs | Command IDs | Evidence artifacts | Required before | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| M1 | T2-T3, T7-T12, T14 | none | CMD1, CMD9 | `evidence/m1-preservation-inventories.md`; `evidence/profile-size-baseline.md` | M1 code review | Freeze rules, literals, callers, legacy dispositions, scenarios, architecture triggers, and measurements before canonical edits. |
-| M2 | T1-T11, T14 | none | CMD1-CMD6, CMD9 | `evidence/m2-package-implementation.md` | M2 code review | Prove package loading, session behavior, confirmation, topics, stable routes, exact backlinks, ownership, and historical compatibility. |
+| M1 | T11-T12, T16 | none | CMD1, CMD9 | `evidence/m1-preservation-inventories.md`; `evidence/profile-size-baseline.md` | M1 code review | Freeze rules, literals, callers, legacy dispositions, scenarios, architecture triggers, and measurements before canonical edits. Every M1 case is runnable through CMD1. |
+| M2 | T1-T10, T15 | none | CMD1-CMD6, CMD9 | `evidence/m2-package-implementation.md` | M2 code review | Prove package loading, session behavior, confirmation, topics, stable routes, exact backlinks, ownership, historical compatibility, and compact results. |
 | M3 | T11-T14 | none | CMD2, CMD4-CMD10 | `evidence/simplification-measurements.md`; `evidence/semantic-preservation-review.md`; `evidence/m3-package-proof.md` | M3 code review and final closeout | Prove both-profile reduction, boundary proof, lifecycle validity, and package parity. |
 | M4 | T14 | none | CMD1-CMD11 | final review, explanation, and verify evidence | PR handoff | Run holistic deterministic closeout after implementation milestones and resolution are closed. |
 
@@ -253,7 +257,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 - Failure proves: The amendment leaves two writers or weakens required authoritative updates.
 - Evidence artifact: `evidence/m1-preservation-inventories.md`; `evidence/m2-package-implementation.md`
 - Automation location: Cross-spec disposition and owner-bound fixtures.
-- Required by milestone: M1 and M2
+- Required by milestone: M2
 
 ### T10. Historical sessions remain readable and unchanged
 
@@ -272,7 +276,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 - Covers: R38-R40, R47; BND-AUTH-001, BND-COMPOSE-001, BND-COMPAT-001; INT-005
 - Level: contract
-- Command IDs: CMD1, CMD3
+- Command IDs: CMD1
 - Fixture/setup: Current skill, contract, caller, parser, package, and test consumers plus valid and unknown ledger classifications.
 - Steps: Validate one owner and disposition for every semantic rule, duplicate cluster, sensitive literal, and legacy writer surface.
 - Expected result: No current rule or literal is missing or duplicated, incidental prose is not frozen, legacy conflict has exact disposition, and unknown ledger values fail first.
@@ -307,18 +311,44 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 - Automation location: Existing skill, build, and adapter distribution tests.
 - Required by milestone: M3
 
-### T14. Acceptance boundaries and architecture triggers remain closed
+### T14. Acceptance and portability boundaries remain closed
 
-- Covers: R44-R46; AC12-AC13; BND-RECOVERY-001, BND-ENV-001
+- Covers: R44-R45; AC12; BND-ENV-001
 - Level: contract
-- Command IDs: CMD1, CMD3, CMD9-CMD11
-- Fixture/setup: Planned deterministic command ledger, forbidden runtime and external operations, and requirements for persistent recovery, registry, polling, integration, new schema owner, or direct destination writes.
-- Steps: Inspect command ownership and classify each implementation discovery against R46.
-- Expected result: Acceptance uses only repository-owned deterministic proof; no target runtime or live external mutation runs; every architecture trigger stops before M2 and returns to architecture assessment.
-- Failure proves: The content refactor silently adds runtime evaluation or architecture-bearing state.
-- Evidence artifact: `evidence/m1-preservation-inventories.md`; `evidence/m3-package-proof.md`
-- Automation location: Command-ledger and architecture-trigger fixtures.
-- Required by milestone: M1 and M3
+- Command IDs: CMD2, CMD4-CMD11
+- Fixture/setup: Planned deterministic command ledger, forbidden runtime and external operations, and published skill text with repository-maintainer mechanics placed in contributor or governing surfaces.
+- Steps: Inspect command ownership, acceptance exclusions, and the canonical and packaged skill text.
+- Expected result: Acceptance uses only repository-owned deterministic proof; no target runtime or live external mutation runs; published procedure remains project-portable and excludes maintainer-only packaging mechanics.
+- Failure proves: The content refactor silently adds runtime evaluation or leaks repository-maintainer procedure into shipped skill text.
+- Evidence artifact: `evidence/m3-package-proof.md`
+- Automation location: Command-ledger, portability, and package fixtures.
+- Required by milestone: M3
+
+### T15. Compact results distinguish every required field and outcome
+
+- Covers: R37; AC1; BND-COMPOSE-001
+- Level: contract
+- Command IDs: CMD3
+- Fixture/setup: Successful `run-learn-session` with topic and routes, a no-lesson session, successful `record-learn-route-result`, identical route-result replay, and blocked identity or completion-kind mismatch.
+- Steps: Produce the compact result for each fixture and inspect operation, session identity and path, trigger and scope, confirmation, session recording, topic effects, route IDs and settlements, owner-result identities, blockers, next owner or handoff, and claim limitations.
+- Expected result: Every required R37 concept is distinguishable in every result; applicable values are exact, inapplicable values are unambiguously omitted or represented as not applicable according to one fixture contract, idempotent replay is distinguishable from a new write, blocked outcomes identify the exact blocker, and claim limits never imply destination approval, workflow completion, implementation, or correctness.
+- Failure proves: A caller cannot reliably interpret the operation outcome or the result overclaims downstream state.
+- Evidence artifact: `evidence/m2-package-implementation.md`
+- Automation location: Focused compact-result contract fixtures.
+- Required by milestone: M2
+
+### T16. M1 closes the architecture trigger before canonical mutation
+
+- Covers: R46; AC13; BND-RECOVERY-001
+- Level: contract
+- Command IDs: CMD1, CMD9
+- Fixture/setup: M1 caller, scenario, ledger, and baseline inventories plus variants requiring transaction-grade phase recovery, a new persistent route or session schema owner, polling or coordination, external integration, or new cross-owner mutation authority.
+- Steps: Run the M1 ledger fixture against the no-trigger baseline and each architecture-trigger variant before any canonical learn-package edit.
+- Expected result: The baseline records an exact no-trigger result; every listed R46 condition fails the M1 gate and routes to architecture assessment; the canonical learn package remains unchanged in both paths.
+- Failure proves: M2 could begin while an architecture-bearing recovery, persistence, integration, or authority requirement is unresolved.
+- Evidence artifact: `evidence/m1-preservation-inventories.md`
+- Automation location: M1 ledger and architecture-trigger fixtures.
+- Required by milestone: M1
 
 ## Fixtures and data
 
@@ -339,7 +369,7 @@ T9 proves exact legacy writer dispositions and preserved authoritative outcomes.
 
 ## Observability verification
 
-T2-T12 inspect operation, session identity and path, trigger and scope, confirmation, session result, topic effects, route IDs, completion kinds, settlements, owner-result identities, blockers, handoff owner, claim limits, measurements, and ledgers. Configured commands and executed commands remain distinguishable in evidence.
+T2-T16 inspect operation, session identity and path, trigger and scope, confirmation, session result, topic effects, route IDs, completion kinds, settlements, owner-result identities, blockers, handoff owner, claim limits, measurements, ledgers, and architecture triggers. Configured commands and executed commands remain distinguishable in evidence.
 
 ## Security/privacy verification
 
