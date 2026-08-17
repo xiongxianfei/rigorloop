@@ -39,11 +39,11 @@ Select exactly one operation:
 - `run-learn-session` (`LR1-session`): record a triggered session, topic effects, and owner-bound routes.
 - `record-learn-route-result` (`LR0-route-result`): reconcile one route with an exact owner result.
 
-An explicit direct `$learn` invocation selects `run-learn-session`. Pre-session trigger assessment and pre-session trigger closeout belong to the trigger owner, which records deferral, follow-up, or no-learn rationale.
+An explicit direct `$learn` invocation selects `run-learn-session` unless the request explicitly identifies one current session, one stable route ID, and one owner result for `record-learn-route-result`. Pre-session trigger assessment and pre-session trigger closeout belong to the trigger owner.
 
 An unknown, missing, combined, or ambiguous operation stops before writes. Operation selection does not grant contributor confirmation, destination mutation, workflow continuation, or external-system authority.
 
-For `run-learn-session`, READ `references/session-method.md` exactly for `run-learn-session`, at most once. If it is missing, unreadable, escaped, stale, contradictory, or mixed-version, stop dependent work and must not reconstruct it. `record-learn-route-result` does not load it.
+For `run-learn-session`, READ `references/session-method.md` exactly for `run-learn-session`, at most once. If it is missing, unreadable, escaped, stale, contradictory, or mixed-version, stop before session creation or dependent judgment and must not reconstruct it. `record-learn-route-result` does not load it.
 
 ## Resource map
 
@@ -84,7 +84,7 @@ Behavior-changing work belongs to its action-owning artifact. `learn` records ro
 
 ## Route-result recording
 
-`record-learn-route-result` requires exact session identity and path, stable route ID, destination owner, evidence basis, owner-result identity, and session-write authority. Missing, stale, conflicting, duplicated, or ambiguous identity stops.
+`record-learn-route-result` requires exact session identity and path, route ID, destination owner and basis, owner-result kind and identity, and session-write authority. The result kind must match the route's immutable required completion kind. Missing, stale, conflicting, duplicated, ambiguous, or mismatched input stops.
 
 Update only the matching route. Record `complete` with `authoritative-artifact` or `durable-scheduled-follow-up`, or `blocked` with evidence. Do not change classification, confirmation, topics, other routes, or destinations. The same result is idempotent success; a different one requires fresh reconciliation.
 
