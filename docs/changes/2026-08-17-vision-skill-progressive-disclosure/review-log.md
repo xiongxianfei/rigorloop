@@ -29,5 +29,5 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r2.md
 Resolution: review-resolution.md#proposal-review-r2
 Material findings: VISSIM-R2-PR1, VISSIM-R2-PR2, VISSIM-R2-PR3
-Open findings: VISSIM-R2-PR1, VISSIM-R2-PR2, VISSIM-R2-PR3
+Open findings: none
 Recording status: reconstructed from user-supplied review

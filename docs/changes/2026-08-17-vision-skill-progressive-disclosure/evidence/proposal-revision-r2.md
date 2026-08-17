@@ -1,0 +1,23 @@
+# Proposal Revision Evidence: Vision Skill Progressive Disclosure
+
+- Operation: `revise-primary-proposal`
+- Change ID: `2026-08-17-vision-skill-progressive-disclosure`
+- Artifact ID: `proposal`
+- Canonical path: `docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md`
+- Prior reviewed revision: `6dae29ea`
+- Prior content identity: `sha256:fa54dc15d38170137b799a18d6aa0061540380332628c55400369ada3a65425f`
+- Revised content identity: `sha256:528e496b452854148fb54d4a63189fc5db5445bd9c8b813d5ec5117b60f19061`
+- Revision authority: user request to refine the proposal after supplied formal proposal review
+- Loaded assembly: `PA1G-governed-gated`
+- Active specialized predicates: `initial_intent_table_context`, `scope_budget_context`
+- Finding disposition: `VISSIM-R2-PR1` accepted and implemented with exactly three mutation operations, independent strategic/README predicates, five exhaustive assemblies, and late-classification behavior.
+- Finding disposition: `VISSIM-R2-PR2` accepted and implemented with one target manifest, pre-write validation, canonical-rationale-README ordering, complete read-back, partial reporting, and identity-bound retry or fail-closed recovery.
+- Finding disposition: `VISSIM-R2-PR3` accepted and implemented with independent positioning and README action vocabularies, exhaustive matrices, exact active-contract authority sources, identity binding, and staleness rules.
+- Scope preservation: the two-reference/two-asset package, state-based intent, current vision behavior, README synchronization default, no-script direction, and no-runtime acceptance remain unchanged.
+- Validation: `git diff --check` passed.
+- Validation: `python scripts/validate-change-metadata.py docs/changes/2026-08-17-vision-skill-progressive-disclosure/change.yaml` passed.
+- Validation: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-17-vision-skill-progressive-disclosure` passed.
+- Validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-17-vision-skill-progressive-disclosure` passed.
+- Validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed for the proposal, change record, review ledger, resolution, and revision evidence.
+- Authoring result: proposal revised, round-2 material findings closed, and proposal returned to `review-required`.
+- Downstream authority: independent proposal rereview only; specification, architecture, planning, implementation, verification, and PR readiness remain unauthorized.

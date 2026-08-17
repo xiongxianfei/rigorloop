@@ -1,8 +1,9 @@
 # Review Resolution: Vision Skill Progressive Disclosure
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
+Review closeout: proposal-review-r2
 
 ## Resolution overview
 
@@ -11,9 +12,9 @@ Review closeout: proposal-review-r1
 | `VISSIM-PR1` | accepted | closed | The unsupported formal assessment operation and measurement profile were removed. |
 | `VISSIM-PR2` | accepted | closed | Establishment and revision now bind deterministically to README synchronization or exact skip authority. |
 | `VISSIM-PR3` | accepted | closed | A second structural asset owns the ten-field strategic-positioning rationale shape. |
-| `VISSIM-R2-PR1` | accepted | open | Close the three-operation model and exhaustive independent loaded assemblies. |
-| `VISSIM-R2-PR2` | accepted | open | Add bounded source-first multi-artifact completion and exact retry behavior. |
-| `VISSIM-R2-PR3` | accepted | open | Close positioning and README actions plus exact authority binding. |
+| `VISSIM-R2-PR1` | accepted | closed | Exactly three operations now map through independent predicates to five exhaustive loaded assemblies. |
+| `VISSIM-R2-PR2` | accepted | closed | Multi-artifact writes now use bounded source-first completion and exact retry or fail-closed recovery. |
+| `VISSIM-R2-PR3` | accepted | closed | Positioning and README actions now have exhaustive matrices and exact identity-bound authority. |
 
 ## Finding details
 
@@ -41,7 +42,7 @@ Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosur
 
 Finding ID: VISSIM-R2-PR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -51,13 +52,13 @@ Rationale: A substantive revision with exact skip authority is valid and must no
 Required outcome: Close resource selection, late classification, assemblies, scenarios, measurement, and acceptance criteria.
 Safe resolution path: Revise the proposal and perform an approving rereview.
 Validation target: revised proposal and approving proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r2.md`; independent rereview remains pending.
 
 #### VISSIM-R2-PR2
 
 Finding ID: VISSIM-R2-PR2
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -67,13 +68,13 @@ Rationale: Establishment and material repositioning can otherwise leave related 
 Required outcome: Define target selection, checks, writes, results, retry prerequisites, and architecture boundary.
 Safe resolution path: Revise the proposal and perform an approving rereview.
 Validation target: revised proposal and approving proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r2.md`; independent rereview remains pending.
 
 #### VISSIM-R2-PR3
 
 Finding ID: VISSIM-R2-PR3
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -83,7 +84,7 @@ Rationale: Revision significance alone does not decide every rationale action, a
 Required outcome: Close action classification, authority binding, blocked states, late changes, scenarios, and acceptance criteria.
 Safe resolution path: Revise the proposal and perform an approving rereview.
 Validation target: revised proposal and approving proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r2.md`; independent rereview remains pending.
 
 #### VISSIM-PR2
 
