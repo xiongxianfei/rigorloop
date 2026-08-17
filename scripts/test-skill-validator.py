@@ -10610,6 +10610,7 @@ class LearnSkillSimplificationTests(unittest.TestCase):
             self.assertIn(phrase.lower(), self.skill.lower())
         for phrase in ("unless the request explicitly identifies", "before session creation"):
             self.assertIn(phrase.lower(), self.skill.lower())
+        self.assertNotIn("$learn", self.skill)
 
     def test_session_paths_interruption_and_confirmation_fail_closed(self) -> None:
         for phrase in ("lowest available suffix", "recheck absence", "complete `Frame`", "must not resume, repair, adopt, or overwrite", "same complete session", "new unique path", "pending", "confirmed", "rejected"):
