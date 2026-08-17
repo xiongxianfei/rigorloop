@@ -1,0 +1,60 @@
+{
+  "vocabularies": {
+    "operation":{"allowed":["run-learn-session","record-learn-route-result"],"invalid":["not_in_vocabulary"]},
+    "classification":{"allowed":["observation","durable-lesson","artifact-update","decision","direction","process-follow-up","no-durable-lesson"],"invalid":["not_in_vocabulary"]},
+    "confirmation":{"allowed":["pending","confirmed","rejected"],"invalid":["not_in_vocabulary"]},
+    "completion_kind":{"allowed":["authoritative-artifact","durable-scheduled-follow-up"],"invalid":["not_in_vocabulary"]},
+    "settlement":{"allowed":["pending-owner-action","complete","blocked"],"invalid":["not_in_vocabulary"]}
+  },
+  "callers": [
+    {"id":"CALLER-001","surface":"direct explicit learn invocation","operation":"run-learn-session"},
+    {"id":"CALLER-002","surface":"exact existing route result request","operation":"record-learn-route-result"},
+    {"id":"CALLER-003","surface":"workflow cadence trigger","operation":"run-learn-session"},
+    {"id":"CALLER-004","surface":"incident or review trigger","operation":"run-learn-session"}
+  ],
+  "legacy_dispositions": [
+    {"surface":"learn-artifact-model R21-R24","writer":"destination-owner","learn_result":"route-and-backlink"},
+    {"surface":"learn-artifact-model R33","writer":"destination-owner","learn_result":"route-and-backlink"},
+    {"surface":"learn-artifact-model Example E3","writer":"destination-owner","learn_result":"route-and-backlink"},
+    {"surface":"learn-artifact-model outputs","writer":"destination-owner","learn_result":"route-and-backlink"},
+    {"surface":"learn-artifact-model invariant","writer":"destination-owner","learn_result":"route-and-backlink"},
+    {"surface":"learn-artifact-model acceptance","writer":"destination-owner","learn_result":"route-and-backlink"}
+  ],
+  "architecture_triggers": [
+    "transaction-grade phase recovery",
+    "new persistent route or session schema owner",
+    "polling or coordination service",
+    "external integration",
+    "new cross-owner mutation authority"
+  ],
+  "scenarios": [
+    {"id":"SCN-001","family":"operation","outcome":"session"},
+    {"id":"SCN-002","family":"operation","outcome":"route-result"},
+    {"id":"SCN-003","family":"operation","outcome":"unknown-blocked"},
+    {"id":"SCN-004","family":"trigger-owner","outcome":"no-learn-closeout"},
+    {"id":"SCN-005","family":"path","outcome":"base-created"},
+    {"id":"SCN-006","family":"path","outcome":"lowest-suffix"},
+    {"id":"SCN-007","family":"path","outcome":"concurrent-stop"},
+    {"id":"SCN-008","family":"interruption","outcome":"partial-not-resumed"},
+    {"id":"SCN-009","family":"retry","outcome":"complete-idempotent"},
+    {"id":"SCN-010","family":"retry","outcome":"changed-basis-new-path"},
+    {"id":"SCN-011","family":"evidence","outcome":"no-observation-recorded"},
+    {"id":"SCN-012","family":"confirmation","outcome":"pending-no-effect"},
+    {"id":"SCN-013","family":"confirmation","outcome":"rejected-no-effect"},
+    {"id":"SCN-014","family":"topic","outcome":"idempotent"},
+    {"id":"SCN-015","family":"topic","outcome":"conflict-blocked"},
+    {"id":"SCN-016","family":"route","outcome":"stable-ids"},
+    {"id":"SCN-017","family":"route","outcome":"two-independent-routes"},
+    {"id":"SCN-018","family":"result","outcome":"artifact-complete"},
+    {"id":"SCN-019","family":"result","outcome":"follow-up-complete"},
+    {"id":"SCN-020","family":"result","outcome":"kind-mismatch-blocked"},
+    {"id":"SCN-021","family":"result","outcome":"identical-idempotent"},
+    {"id":"SCN-022","family":"result","outcome":"conflicting-backlink-blocked"},
+    {"id":"SCN-023","family":"compatibility","outcome":"historical-unchanged"},
+    {"id":"SCN-024","family":"resource","outcome":"missing-reference-stop"},
+    {"id":"SCN-025","family":"authority","outcome":"destination-owner-only"},
+    {"id":"SCN-026","family":"result-shape","outcome":"complete-compact-result"},
+    {"id":"SCN-027","family":"architecture","outcome":"no-trigger"},
+    {"id":"SCN-028","family":"architecture","outcome":"trigger-stop-before-m2"}
+  ]
+}
