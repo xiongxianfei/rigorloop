@@ -34,7 +34,7 @@ The approved focused spec amends legacy direct-write wording: learn records conf
 
 | Requirement and boundary scope | Owning milestone or evidence |
 | --- | --- |
-| R36-R45, R47; BND-COMPAT-001, BND-ENV-001; INT-005 | M1 semantic and literal ledgers, legacy disposition inventory, deterministic scenarios, and profile baselines |
+| R36-R47; BND-COMPAT-001, BND-ENV-001; INT-005 | M1 semantic and literal ledgers, legacy disposition inventory, architecture-trigger inspection, deterministic scenarios, and profile baselines |
 | R1-R35, R47; BND-INPUT-001, BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001; INT-001-INT-004 | M2 focused learn-contract alignment, canonical package split, stable routes, and bounded result recording |
 | R37-R45; BND-COMPOSE-001, BND-COMPAT-001, BND-ENV-001; INT-005 | M3 both-profile reduction, semantic preservation, boundary proof, and canonical-through-installed parity |
 
@@ -44,7 +44,7 @@ The approved focused spec amends legacy direct-write wording: learn records conf
 
 - Milestone kind: implementation
 - Goal: Account for every behaviorally significant learn rule, compatibility-sensitive literal, legacy cross-spec disposition, route scenario, and real loaded profile before moving procedure.
-- Requirements: R36-R45, R47; BND-COMPAT-001; BND-ENV-001; INT-005.
+- Requirements: R36-R47; BND-COMPAT-001; BND-ENV-001; INT-005.
 - Architecture decisions: none; architecture assessment is `architecture-not-required` because existing Markdown sessions can carry stable routes without new persistence ownership.
 - Files/components likely touched:
   - `docs/changes/2026-08-16-learn-skill-simplification/learn-rule-disposition.yaml`
@@ -57,26 +57,29 @@ The approved focused spec amends legacy direct-write wording: learn records conf
 - Tests and proof:
   - rule and literal vocabularies reject unknown values before consistency checks
   - exact dispositions cover legacy R21-R24, R33, Example E3, affected output and acceptance surfaces, and every current direct-write phrase
+  - the inventory proves whether persistent phase or effect state, polling, external integration, a new state owner, or cross-owner mutation is required and records the no-trigger result before M2
   - scenarios cover both operations, trigger-owner closeout, same-day collisions, partial files, complete reruns, confirmation, topic effects, stable routes, completion-kind mismatch, exact backlinks, historical sessions, missing resources, and forbidden writes
   - LF-normalized baseline words and UTF-8 bytes are recorded for LR0, LR1, each resource, and total package
 - Implementation steps:
   - inventory universal, session-method, topic, route, result-recording, stop, claim, and exact-literal ownership with one disposition per item
   - inventory every current caller and contract surface affected by removal of trigger assessment or direct learn destination writes
+  - compare the required session, topic, route, retry, and owner-result behavior with R46's reassessment triggers before authorizing canonical mutation
   - serialize deterministic positive and negative scenarios, including unknown operation, settlement, completion-kind, and classification values
   - record canonical input identities and deterministic profile assemblies
 - Validation commands:
   - run the M1 standard-library ledger and fixture command defined by the test spec
   - `python scripts/validate-change-metadata.py docs/changes/2026-08-16-learn-skill-simplification/change.yaml`
 - Expected observable result: every current rule, literal, caller, scenario, and measurement surface has one closed treatment before canonical procedure moves.
-- Completion criteria: ledgers and fixtures validate, unknown values fail first, cross-spec dispositions are complete, baselines are reproducible, and the canonical learn package remains unchanged.
+- Completion criteria: ledgers and fixtures validate, unknown values fail first, cross-spec dispositions are complete, baselines are reproducible, no R46 architecture trigger is present, and the canonical learn package remains unchanged.
 - Required evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidence/m1-preservation-inventories.md`
 - Review handoff: independent `code-review` of M1 evidence.
 - Optional commit boundary: `M1: freeze learn simplification ownership`
 - Risks:
   - legacy routing prose may encode direct mutation in examples or outputs outside numbered requirements
   - literal fixtures may accidentally freeze incidental wording
+  - implementation evidence may reveal persistent recovery or coordination needs excluded by the assessment
 - Rollback/recovery:
-  - revert M1 evidence only; canonical package remains unchanged and any unresolved authority conflict returns to `spec`
+  - revert M1 evidence only; canonical package remains unchanged, any unresolved authority conflict returns to `spec`, and any R46 trigger stops the plan and returns to architecture assessment before M2
 
 ### M2. Align the learn contract and split the canonical package
 
@@ -92,7 +95,7 @@ The approved focused spec amends legacy direct-write wording: learn records conf
   - `scripts/test-skill-validator.py`
   - directly coupled workflow guidance or caller assertions identified by M1
 - Dependencies:
-  - M1 and its code review are closed
+  - M1 and its code review are closed with an explicit no-R46-trigger result
 - Tests and proof:
   - exact LR0 and LR1 resource loading, one-time reference loading, and missing-resource stops
   - explicit direct invocation, no public assessment operation, trigger-owner pre-session closeout, and unknown-operation failure
