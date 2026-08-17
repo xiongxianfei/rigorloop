@@ -1,10 +1,12 @@
 # Review Resolution: Learn Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
+Review closeout: spec-review-r1
+Review closeout: spec-review-r2
 
 ## Resolution overview
 
@@ -16,9 +18,9 @@ Review closeout: proposal-review-r3
 | `LRNSIM-PR4` | accepted | closed | Inventory found no assessment-only caller, so the operation and artificial profile were removed. |
 | `LRNSIM-PR5` | accepted | closed | Unsupported exact phase resume was replaced with deterministic paths and fail-closed interruption. |
 | `LRNSIM-PR6` | accepted | closed | Narrow per-route owner-result backlink recording preserves traceability without a reconciliation engine. |
-| `LRNSIM-SR1` | accepted | open | Add exact cross-spec dispositions for legacy direct-write clauses and preserve destination-owner authority. |
-| `LRNSIM-SR2` | accepted | open | Require strict reduction for both real loaded profiles. |
-| `LRNSIM-SR3` | accepted | open | Add one closed route completion-kind discriminator and validate owner results against it. |
+| `LRNSIM-SR1` | accepted | closed | Exact cross-spec dispositions preserve required outcomes while assigning mutation to destination owners. |
+| `LRNSIM-SR2` | accepted | closed | Both real loaded profiles must decrease in words and bytes. |
+| `LRNSIM-SR3` | accepted | closed | Every route records one immutable completion kind validated during result recording. |
 
 ## Finding details
 
@@ -132,7 +134,7 @@ No material findings. The approving rereview confirms that the proposal removes 
 
 Finding ID: LRNSIM-SR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: spec author
 Owning stage: spec
 Decision owner: workflow-managed review-resolution
@@ -142,13 +144,13 @@ Rationale: The current two approved contracts otherwise identify different write
 Required outcome: Dispose every conflicting requirement and affected example, output, invariant, and acceptance surface.
 Safe resolution path: Revise the spec, record revision evidence, and obtain approving spec rereview.
 Validation target: exact cross-spec alignment and deterministic contract proof.
-Validation evidence: pending spec revision and rereview.
+Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidence/spec-revision-r1.md` and approving `docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r2.md`.
 
 #### LRNSIM-SR2
 
 Finding ID: LRNSIM-SR2
 Disposition: accepted
-Status: open
+Status: closed
 Owner: spec author
 Owning stage: spec
 Decision owner: workflow-managed review-resolution
@@ -158,13 +160,13 @@ Rationale: Reporting LR0 without a reduction requirement weakens the accepted pr
 Required outcome: Align R42, performance expectations, and AC10.
 Safe resolution path: Revise the spec, record revision evidence, and obtain approving spec rereview.
 Validation target: deterministic profile accounting and test-spec mapping.
-Validation evidence: pending spec revision and rereview.
+Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidence/spec-revision-r1.md` and approving `docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r2.md`.
 
 #### LRNSIM-SR3
 
 Finding ID: LRNSIM-SR3
 Disposition: accepted
-Status: open
+Status: closed
 Owner: spec author
 Owning stage: spec
 Decision owner: workflow-managed review-resolution
@@ -174,4 +176,8 @@ Rationale: Route-result recording cannot infer whether scheduling satisfies an a
 Required outcome: Extend the route record, result inputs, boundary model, and examples without adding coordination machinery.
 Safe resolution path: Revise the spec, record revision evidence, and obtain approving spec rereview.
 Validation target: valid and mismatched completion-kind scenarios.
-Validation evidence: pending spec revision and rereview.
+Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidence/spec-revision-r1.md` and approving `docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r2.md`.
+
+### spec-review-r2
+
+No material findings. The clean rereview confirms that LRNSIM-SR1 through LRNSIM-SR3 are closed and the contract is ready for bounded architecture assessment.

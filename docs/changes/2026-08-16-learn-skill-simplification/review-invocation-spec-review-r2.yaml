@@ -1,0 +1,49 @@
+schema_version: 1
+review_id: spec-review-r2
+review_stage: spec-review
+review_target: specs/learn-skill-simplification.md
+base_revision: 8a9c39c9
+head_revision: 8a9c39c9
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-revision-r1
+reviewer_context_id: root-spec-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - cross-spec-authority-amendment
+  - compatibility-sensitive-validation
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-16-learn-skill-simplification.md
+  - specs/learn-skill-simplification.md
+  - specs/learn-artifact-model.md
+  - specs/skill-contract.md
+  - specs/rigorloop-workflow.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: docs/proposals/2026-08-16-learn-skill-simplification.md
+    sha256: 7af0b279aa04cbd196d46a4153d1964dc4594c72d83ec59e5bd7b4777b79dfbf
+  - path: specs/learn-skill-simplification.md
+    sha256: a7c71210ad45ab2b48daad06b5af0567046551f0f13e56a8cb8168c4d09016db
+  - path: specs/learn-artifact-model.md
+    sha256: 9cb85e37da0569473dfeeb08384f522aabee4ebcaa70afe2bacffafb8899c363
+  - path: specs/skill-contract.md
+    sha256: 43dfde680fddca458d2d18deccba972fb1341f860444940db8347652e2210c56
+  - path: specs/rigorloop-workflow.md
+    sha256: 121f61d1f88791c8355aedfb61a737a4fcb549e9e592e3e86cfd69e2c7f77e66
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - LRNSIM-SR1 exact cross-spec precedence
+  - LRNSIM-SR2 complete loaded-profile acceptance
+  - LRNSIM-SR3 route completion-kind ownership
+  - operation and package ownership
+  - compatibility and boundary completeness
