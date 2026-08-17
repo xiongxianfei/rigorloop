@@ -6,19 +6,19 @@
 
 ## Problem
 
-The published `vision` skill preserves the approved project-vision contract, but its single 2,268-word, 15,845-byte `SKILL.md` loads every concern on every invocation. A read-only vision assessment, a marker-bounded README synchronization, and a typo correction all load the complete strategic-positioning method, product-category fixtures, drafting heuristics, full vision structure, and initial-creation placement procedure.
+The published `vision` skill preserves the approved project-vision contract, but its single 2,268-word, 15,845-byte `SKILL.md` loads every concern on every invocation. A marker-bounded README synchronization and a typo correction both load the complete strategic-positioning method, product-category fixtures, drafting heuristics, full vision structure, and initial-creation placement procedure.
 
-The flat package also makes structural and procedural ownership difficult to see. The required `VISION.md` section sequence is embedded beside applicability policy; README marker parsing and insertion mechanics are embedded beside universal write authority; and strategic analysis is interleaved with ordinary state classification. Current validators consequently assert many exact phrases directly in `SKILL.md`, even when the behavior could remain normative in a mapped reference or structural asset.
+The flat package also makes structural and procedural ownership difficult to see. The required `VISION.md` section sequence and ten-field `docs/vision/strategic-positioning.md` shape are embedded beside applicability policy; README marker parsing and insertion mechanics are embedded beside universal write authority; and strategic analysis is interleaved with ordinary state classification. Current validators consequently assert many exact phrases directly in `SKILL.md`, even when the behavior could remain normative in a mapped reference or structural asset.
 
 The accepted behavior is not the problem. Root `VISION.md`, state-based behavior, substantive versus editorial revision, strategic-positioning rationale, word limits, README marker safety, retired lowercase-path handling, privacy, research, and output truthfulness must remain intact. The problem is that every path pays for every procedure and repeated structure has no structural owner.
 
 ## Goals
 
-- Reduce loaded procedure for vision assessment, README synchronization, editorial revision, and strategic authoring without weakening the approved contract.
+- Reduce loaded procedure for the three supported invocation surfaces: README synchronization, editorial revision, and strategic authoring.
 - Keep source precedence, repository-state and operation classification, write authority, substantive/editorial classification, canonical paths, privacy, research, stops, claims, resource triggers, and result obligations in a compact universal `SKILL.md`.
 - Move detailed strategic-positioning, drafting, content-quality, and full-authoring procedure into one conditional strategic-authoring reference.
 - Move exact README marker validation, deterministic insertion, bounded replacement, and idempotence procedure into one conditional README-synchronization reference.
-- Make one copied `VISION.md` skeleton the structural owner of standard headings, section order, optional insertion points, and placeholders without making it a policy owner.
+- Give root `VISION.md` and `docs/vision/strategic-positioning.md` separate copied structural skeletons without making either asset a policy owner.
 - Preserve ordinary state-based user intent rather than reintroducing public `create`, `revise`, or `mirror` modes.
 - Measure actual loaded assemblies and total package size separately.
 - Prove semantic and compatibility-literal preservation across canonical, generated, archived, release-candidate, and installed packages.
@@ -56,15 +56,15 @@ This has no migration risk and keeps current validators unchanged. It retains th
 
 ### Option 2: Compress only `SKILL.md`
 
-Editorial compression could reduce total package size. It would still require simple assessment and README synchronization to load strategic fixtures and full drafting method, and aggressive compression would make safety and applicability rules harder to review.
+Editorial compression could reduce total package size. It would still require README synchronization and narrow editorial revision to load strategic fixtures and full drafting method, and aggressive compression would make safety and applicability rules harder to review.
 
 ### Option 3: Add one catch-all reference
 
-A compact main file plus one reference would create a disclosure boundary, but README synchronization and strategic authoring are independent. A README-only invocation would still load product-category analysis, and an assessment that later needs only marker handling would acquire unrelated authoring procedure.
+A compact main file plus one reference would create a disclosure boundary, but README synchronization and strategic authoring are independent. A README-only invocation would still load product-category analysis, while strategic authoring would load exact marker procedure even when an authorized skip had already been resolved.
 
-### Option 4: Use two conditional references and one structural asset
+### Option 4: Use two conditional references and two structural assets
 
-Keep universal classification and safety inline. Put strategic vision authoring in one reference, README synchronization in another, and stable document structure in one copied skeleton. This follows two real procedural activation boundaries and gives repeated structure one non-normative owner.
+Keep universal classification and safety inline. Put strategic vision authoring in one reference, README synchronization in another, and the two stable artifact shapes in separate copied skeletons. This follows two real procedural activation boundaries and gives each repeated structure one non-normative owner.
 
 ### Option 5: Split every concern or add executable machinery
 
@@ -79,6 +79,7 @@ compact universal skills/vision/SKILL.md
 + references/strategic-vision-authoring.md
 + references/readme-vision-sync.md
 + assets/vision-skeleton.md
++ assets/strategic-positioning-skeleton.md
 + no scripts
 ```
 
@@ -87,13 +88,12 @@ compact universal skills/vision/SKILL.md
 Use these internal operation values:
 
 ```text
-assess-vision
 establish-vision
 revise-vision
 sync-readme
 ```
 
-These values describe behavior and loaded resources; they are not user-facing modes. Legacy words remain ordinary intent hints and are never required or reported as modes.
+These values describe behavior and loaded resources; they are not user-facing modes. Legacy words remain ordinary intent hints and are never required or reported as modes. The current repository has no formal caller or approved contract for `assess-vision`, so the first version does not invent or measure that operation. Ordinary read-only questions may be answered without entering the vision mutation operation model.
 
 For `revise-vision`, classify revision significance separately:
 
@@ -109,8 +109,6 @@ The focused specification may select exact labels, but it must retain the approv
 
 | Requested behavior | Canonical state | Result |
 | --- | --- | --- |
-| Assess current vision | `VISION.md` present | Read-only assessment; no vision or README write |
-| Assess current vision | `VISION.md` absent | Report no canonical vision; no implicit establishment |
 | Establish vision | `VISION.md` absent and intent explicit | Strategic authoring, skeleton composition, rationale creation, and README synchronization permitted |
 | Establish vision | `VISION.md` present | Stop; require explicit revision intent |
 | Revise vision | `VISION.md` present and exact update intent clear | Classify revision; apply the narrowest authorized edit |
@@ -120,6 +118,21 @@ The focused specification may select exact labels, but it must retain the approv
 | Any write | Intent, path, authority, markers, or classification ambiguous | Stop before mutation |
 
 An editorial revision loads no strategic reference unless the proposed edit reveals a strategic inconsistency or cannot safely be classified as editorial. A substantive revision loads the strategic reference before final classification. Only initial establishment or material repositioning writes `docs/vision/strategic-positioning.md`; the approved exceptions for changed assumptions or discovered conflict remain intact.
+
+### Close README synchronization applicability
+
+README synchronization remains part of establishment and vision revision by default. It is not a separately optional afterthought merely because its procedure moves to a reference.
+
+| Vision operation | README authority and result | README reference |
+| --- | --- | --- |
+| `establish-vision` | Synchronize README; automatic marker insertion is permitted by the approved initial-establishment rule | required |
+| `revise-vision` with one valid marker pair | Synchronize the derived front-matter | required |
+| `revise-vision` with exact current skip authority resolved before marker-dependent judgment | Leave README unchanged and report `skipped` | not required |
+| `revise-vision` with exact current insertion authority | Insert one block at the deterministic location and synchronize it | required |
+| `revise-vision` with missing, malformed, nested, duplicate, or ambiguous markers and no exact insertion or skip authority | Stop before any vision or README write | required |
+| `sync-readme` | Leave `VISION.md` unchanged and synchronize through the approved marker rules | required |
+
+Missing or malformed markers never imply skip authority. If skip authority is not already exact and current, load the README reference before marker-dependent judgment or any vision write. This preserves the active contract's fail-closed update behavior and makes each primary assembly deterministic.
 
 ### Keep universal obligations inline
 
@@ -160,30 +173,33 @@ It remains subordinate to the active spec and `SKILL.md`. It does not decide wri
 
 It does not authorize establishment, revision, marker insertion, or skipping. Those decisions remain inline.
 
-### Make the asset structural only
+### Make both assets structural only
 
 `assets/vision-skeleton.md` owns the standard headings, their order, the optional methodology insertion point, the optional `Open questions` insertion point, and fillable placeholders. It contains no policy about when a section applies, what evidence is adequate, who may edit, word limits, README behavior, or strategic quality.
 
 Use the skeleton for initial creation and an explicitly authorized full-document rewrite. Narrow revision edits the existing document in place and does not force historical documents through the current skeleton. The strategic reference decides whether the optional methodology section is applicable before copying; unresolved applicability becomes an open question rather than invented content.
 
+`assets/strategic-positioning-skeleton.md` owns the ten compact positioning headings, their order, the location of the statement that `VISION.md` remains canonical, and fillable placeholders. It contains no rules for when positioning is required, what evidence satisfies a field, conflict settlement, revision authority, or whether the rationale is adequate.
+
+Use the positioning skeleton for initial establishment, material repositioning, or an explicitly authorized full rationale rewrite. Narrow updates preserve the existing rationale structure. The strategic reference owns applicability, field meaning, evidence quality, conflict behavior, and the decision to copy or update the asset.
+
 ### Define actual loaded assemblies
 
 | Assembly | Trigger | Loaded procedure | Structural asset |
 | --- | --- | --- | --- |
-| `VA0-assessment` | `assess-vision` | `SKILL.md` | none |
-| `VA1-readme-sync` | `sync-readme` | `SKILL.md` + README reference | none |
-| `VA2-editorial-revision` | confirmed editorial `revise-vision` | `SKILL.md`; README reference only when sync is requested or required by the authorized operation | none |
-| `VA3-strategic-authoring` | `establish-vision` or substantive revision | `SKILL.md` + strategic reference; README reference when synchronization is in scope | skeleton only for creation or full rewrite |
+| `VA0-readme-sync` | `sync-readme` | `SKILL.md` + README reference | none |
+| `VA1-editorial-revision` | confirmed editorial `revise-vision` with normal synchronization | `SKILL.md` + README reference | none |
+| `VA2-strategic-authoring` | `establish-vision` or substantive revision with normal synchronization | `SKILL.md` + strategic reference + README reference | vision skeleton for creation/full rewrite; positioning skeleton when rationale creation/full rewrite applies |
+| `VA1S-editorial-skip` | confirmed editorial revision with exact pre-resolved skip authority | `SKILL.md` | none |
 
-Late evidence that changes classification loads the newly required resource before dependent judgment or write. It does not silently change user intent or expand write authority.
+`VA0` through `VA2` are the three primary real assemblies. `VA1S` is a secondary authority variant and must not replace normal revision-with-sync in acceptance measurements. Late evidence that changes classification loads the newly required resource before dependent judgment or write. It does not silently change user intent or expand write authority.
 
 ## Expected Behavior Changes
 
-- Read-only assessment no longer loads strategic drafting or README mutation procedure.
 - README-only synchronization loads exact marker procedure but not product positioning or drafting fixtures.
-- A confirmed editorial update loads universal revision safety and only the additional procedure actually required.
+- A normal editorial update loads universal revision safety and README synchronization, while an explicitly skipped variant stays compact and reports the skip truthfully.
 - Establishment and substantive revision retain complete strategic judgment through the conditional reference.
-- Initial creation and authorized full rewrites use a single structural skeleton; narrow edits preserve existing document structure.
+- Initial creation and authorized full rewrites use the applicable vision and positioning skeletons; narrow edits preserve existing document structure.
 - Existing user intent, output vocabulary, word limits, rationale ownership, README markers, canonical path, and historical compatibility remain unchanged.
 - Current validators may inspect the assembled package rather than require every normative literal to remain in `SKILL.md`.
 
@@ -191,7 +207,7 @@ Late evidence that changes classification loads the newly required resource befo
 
 Perform a bounded architecture assessment and expect `architecture-not-required`. The proposal uses the existing published-skill package, resource-map, asset-copy, generated-output, archive, and installation model. It introduces no service, runtime, persistence mechanism, schema, lifecycle state, external system, or new authority owner.
 
-A documentation-only architecture correction is required if current architecture inventory depicts `vision` as permanently flat. Architecture becomes required only if implementation discovers that conditional resources or structural assets need a new loader, persistent classification state, generated-content owner, or executable README synchronization mechanism.
+A documentation-only architecture correction is required if current architecture inventory depicts `vision` as permanently flat. Architecture becomes required only if implementation discovers that conditional resources or either structural asset need a new loader, persistent classification state, generated-content owner, or executable README synchronization mechanism.
 
 ## Testing and Verification Strategy
 
@@ -202,22 +218,39 @@ Before refactoring, create two change-local inventories:
 
 Use deterministic scenarios for:
 
-- all operation/state matrix rows and ambiguous intent;
+- all three operation/state matrix rows and ambiguous intent;
 - editorial, substantive nonmaterial, and material repositioning classification;
 - first establishment, narrow revision, and authorized full rewrite;
 - strategic rationale create, update, unchanged, conflict, and causal-link gates;
-- standard and methodology-oriented structure;
+- standard and methodology-oriented vision structure plus all ten strategic-positioning headings and authority statement;
 - README valid, missing, malformed, nested, duplicate, explicit insertion, skip, unchanged, and outside-byte preservation cases;
 - retired lowercase root path behavior;
 - missing, invalid, and late-loaded resources;
 - sensitive inputs, research provenance, word caps, and truthful result fields;
 - canonical, generated, archived, release-candidate, and clean-installed resource parity.
 
-Measure normalized-LF Unicode whitespace-separated words and UTF-8 bytes for `VA0` through `VA3`. Count each unique loaded procedural resource once in `SKILL.md`, strategic-reference, README-reference order. Exclude copied assets from procedural totals and report the skeleton separately. Record file paths and content identities. Report total package words and bytes separately so moving prose into resources is not presented as deletion.
+Measure normalized-LF Unicode whitespace-separated words and UTF-8 bytes for primary assemblies `VA0` through `VA2` and secondary variant `VA1S`. Count each unique loaded procedural resource once in `SKILL.md`, strategic-reference, README-reference order. Exclude copied assets from procedural totals and report both skeletons separately. Record file paths and content identities. Report total package words and bytes separately so moving prose into resources is not presented as deletion.
 
-Each primary procedural assembly must decrease from the current flat baseline of 2,268 words and 15,845 bytes. The complete package may grow when structure and conditional procedure become explicit; that growth remains visible and is acceptable only when every real loaded path shrinks and ownership becomes clearer.
+Each primary procedural assembly must decrease from the current flat baseline of 2,268 words and 15,845 bytes. `VA1S` must also be reported but cannot substitute for `VA1`. The complete package may grow when structure and conditional procedure become explicit; that growth remains visible and is acceptable only when every real loaded path shrinks and ownership becomes clearer.
 
 Use existing skill validation, selector tests, build checks, adapter tests, lifecycle checks, and package parity. Update existing validators and fixtures rather than adding a permanent simplicity validator or new validator family. Do not execute Codex, Claude Code, opencode, or another target-agent runtime as acceptance, and do not add a separate manual prose-grading gate.
+
+The downstream contract and proof map must preserve these acceptance decisions:
+
+| ID | Criterion |
+| --- | --- |
+| `AC-VISSIM-001` | Every measured procedural profile corresponds to a current supported invocation surface. |
+| `AC-VISSIM-002` | No formal `assess-vision` operation or measurement profile is introduced without a later evidence-backed contract. |
+| `AC-VISSIM-003` | Establishment always applies the approved README synchronization behavior. |
+| `AC-VISSIM-004` | Revision loads README procedure unless exact current skip authority was resolved before marker-dependent judgment. |
+| `AC-VISSIM-005` | Missing, malformed, nested, duplicate, or ambiguous markers never imply skip authority. |
+| `AC-VISSIM-006` | Revision-with-sync is represented as the primary editorial loaded assembly. |
+| `AC-VISSIM-007` | Root vision and strategic-positioning rationale have separate explicit structural owners. |
+| `AC-VISSIM-008` | Both assets own labels, ordering, insertion locations, and placeholders only. |
+| `AC-VISSIM-009` | Strategic and README applicability, evidence adequacy, and write authority remain procedural. |
+| `AC-VISSIM-010` | Both structural assets are reported separately from procedural loaded-context totals. |
+| `AC-VISSIM-011` | Canonical, generated, archived, release-candidate, and installed resources retain required parity. |
+| `AC-VISSIM-012` | No target-agent runtime or separate prose-grading system is used for acceptance. |
 
 ## Rollout and Rollback
 
@@ -225,14 +258,14 @@ Roll out after an approving proposal review, focused contract amendment, bounded
 
 1. Freeze baselines, rule ownership, literal consumers, and package inventory.
 2. Amend the active vision contract only where resource loading, structural ownership, or internal classification must become explicit.
-3. Add the two mapped references and one asset; compact the canonical skill.
+3. Add the two mapped references and two structural assets; compact the canonical skill.
 4. Update directly coupled validators, fixtures, selector expectations, and package manifests atomically.
 5. Rebuild supported generated and release-candidate outputs through repository-owned generators.
 6. Prove every loaded assembly reduction and canonical-through-installed parity.
 
 Existing `VISION.md`, strategic-positioning rationale, README front-matter, and historical artifacts remain unchanged. No data migration or reverse synchronization is required.
 
-Rollback restores the prior flat `SKILL.md`, removes the mapped references and skeleton, restores the prior package inventory and validator expectations from the same reviewed revision, rebuilds generated outputs, and reruns package validation. It does not restore lowercase-path behavior, public modes, or superseded word limits.
+Rollback restores the prior flat `SKILL.md`, removes the mapped references and both skeletons, restores the prior package inventory and validator expectations from the same reviewed revision, rebuilds generated outputs, and reruns package validation. It does not restore lowercase-path behavior, public modes, or superseded word limits.
 
 ## Risks and Mitigations
 
@@ -241,11 +274,11 @@ Rollback restores the prior flat `SKILL.md`, removes the mapped references and s
 | Universal write or privacy safety moves behind a conditional trigger. | Freeze rule ownership first and keep authority, canonical paths, privacy, research, stops, claims, and triggers inline. |
 | Editorial changes bypass strategic inconsistencies. | Load the strategic reference whenever evidence prevents confident editorial classification or reveals changed assumptions or conflict. |
 | README reference is mistaken for marker-insertion authority. | Keep authorization inline; the reference owns mechanics only. |
-| The skeleton becomes a second vision specification. | Limit it to labels, ordering, insertion points, and placeholders; reject applicability or adequacy policy in the asset. |
+| Either skeleton becomes a second vision specification. | Limit both to labels, ordering, insertion points, authority-statement location, and placeholders; reject applicability or adequacy policy in assets. |
 | Existing tests freeze obsolete file placement. | Classify literal consumers and update test-only assertions to inspect the assembled owning package. |
-| Total package grows while main-file shrinkage is overstated. | Measure every real procedural assembly, the asset, references, and total package separately. |
+| Total package grows while main-file shrinkage is overstated. | Measure every real procedural assembly, both assets, references, and total package separately. |
 | Generated and installed packages mix resource versions. | Require canonical-through-installed identities and missing-resource failure scenarios. |
-| Historical documents are rewritten to match the new skeleton. | Apply the skeleton prospectively to creation or explicit full rewrite only. |
+| Historical documents are rewritten to match new skeletons. | Apply each skeleton prospectively to creation or explicit full rewrite only. |
 
 ## Open Questions
 
@@ -257,8 +290,10 @@ None at proposal level. Exact schema field names, fixture representation, and va
 | --- | --- | --- | --- |
 | 2026-08-17 | Preserve the active consolidated vision contract. | The accepted state-based, strategic-positioning, marker, and safety behavior remains useful; loading and ownership are the problem. | Redesign vision behavior; restore older migration rules. |
 | 2026-08-17 | Use two conditional references. | Strategic authoring and README synchronization activate independently and have distinct failure boundaries. | Flat file, inline compression, catch-all reference, fragmented references. |
-| 2026-08-17 | Use one structural skeleton prospectively. | Stable heading order is repeated output structure, while narrow historical edits should remain bounded. | No structural owner; policy-heavy template; mandatory historical rewrite. |
-| 2026-08-17 | Separate operation from revision significance. | Assessment, establishment, revision, and sync decide behavior; editorial versus substantive decides deeper procedure and evidence. | Public modes; one overloaded state value. |
+| 2026-08-17 | Use separate vision and strategic-positioning skeletons prospectively. | Both authored artifacts have stable required shapes, while narrow historical edits should remain bounded. | Missing rationale owner; policy-heavy template; mandatory historical rewrite. |
+| 2026-08-17 | Separate operation from revision significance. | Establishment, revision, and sync decide behavior; editorial versus substantive decides deeper procedure and evidence. | Public modes; one overloaded state value. |
+| 2026-08-17 | Do not add formal `assess-vision` in the first version. | No current approved caller or result contract supports it, so it would be an artificial acceptance surface. | Measure an invented compact profile. |
+| 2026-08-17 | Preserve README synchronization as the revision default. | README is a derived vision surface; only exact current skip authority may omit its procedure and write. | Request-dependent or implicit synchronization; malformed markers as skip. |
 | 2026-08-17 | Measure real loaded assemblies and total package separately. | Main-file shrinkage is not simplification when conditional paths load equal or greater procedure. | Main-file-only metric; fixed percentage target; tokenizer dependency. |
 | 2026-08-17 | Exclude target-agent and separate prose-grading acceptance. | Static contract, package, and lifecycle proof is proportionate for a content/package refactor. | Runtime journeys, transcript grading, permanent simplicity validator. |
 
@@ -294,7 +329,8 @@ Ready for independent proposal review. It does not claim proposal acceptance, sp
 | Compact universal vision contract | core to this proposal | It is the common-path simplification surface. |
 | Strategic-authoring reference | core to this proposal | It isolates the deep positioning and drafting method. |
 | README-synchronization reference | core to this proposal | It isolates exact marker and bounded-replacement mechanics. |
-| Vision structural skeleton | core to this proposal | It gives stable repeated output shape one structural owner. |
+| Vision structural skeleton | core to this proposal | It owns the canonical vision document shape. |
+| Strategic-positioning structural skeleton | core to this proposal | It owns the required ten-field rationale shape. |
 | Focused active-contract and proof-map amendment | same-slice dependency | Progressive disclosure and structural ownership must be normative before implementation. |
 | Existing validator and fixture migration | same-slice dependency | Current tests bind exact behavior to the flat file. |
 | Generated, archive, release-candidate, and installed parity | same-slice dependency | Published skill resources must ship together. |

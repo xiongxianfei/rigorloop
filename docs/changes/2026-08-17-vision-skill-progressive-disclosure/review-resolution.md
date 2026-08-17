@@ -1,14 +1,16 @@
 # Review Resolution: Vision Skill Progressive Disclosure
 
-Closeout status: open
+Closeout status: closed
+
+Review closeout: proposal-review-r1
 
 ## Resolution overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
-| `VISSIM-PR1` | accepted | open | Retain only evidence-backed invocation profiles and remove formal assessment if no current caller exists. |
-| `VISSIM-PR2` | accepted | open | Bind establishment and revision deterministically to README synchronization or explicit skip authority. |
-| `VISSIM-PR3` | accepted | open | Add a structural owner for the ten-field strategic-positioning rationale. |
+| `VISSIM-PR1` | accepted | closed | The unsupported formal assessment operation and measurement profile were removed. |
+| `VISSIM-PR2` | accepted | closed | Establishment and revision now bind deterministically to README synchronization or exact skip authority. |
+| `VISSIM-PR3` | accepted | closed | A second structural asset owns the ten-field strategic-positioning rationale shape. |
 
 ## Finding details
 
@@ -18,7 +20,7 @@ Closeout status: open
 
 Finding ID: VISSIM-PR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -28,13 +30,13 @@ Rationale: Acceptance should measure real user or repository paths rather than a
 Required outcome: Close the operation vocabulary, actual assemblies, result contract, measurement, scenarios, and acceptance criteria.
 Safe resolution path: Revise the proposal and perform an approving rereview.
 Validation target: revised proposal and approving proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r1.md`; independent rereview remains pending.
 
 #### VISSIM-PR2
 
 Finding ID: VISSIM-PR2
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -44,13 +46,13 @@ Rationale: README is a derived surface whose approved update behavior must not v
 Required outcome: Add the closed matrix, resource trigger, profile measurement, failure behavior, and scenarios.
 Safe resolution path: Revise the proposal and perform an approving rereview.
 Validation target: revised proposal and approving proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r1.md`; independent rereview remains pending.
 
 #### VISSIM-PR3
 
 Finding ID: VISSIM-PR3
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -60,4 +62,4 @@ Rationale: Both authored vision artifacts need explicit structure-versus-policy 
 Required outcome: Update the package model, ownership table, asset usage, measurement, rollout, risks, and proof cases.
 Safe resolution path: Revise the proposal and perform an approving rereview.
 Validation target: revised proposal and approving proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r1.md`; independent rereview remains pending.

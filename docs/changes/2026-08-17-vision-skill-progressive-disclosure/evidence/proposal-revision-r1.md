@@ -1,0 +1,23 @@
+# Proposal Revision Evidence: Vision Skill Progressive Disclosure
+
+- Operation: `revise-primary-proposal`
+- Change ID: `2026-08-17-vision-skill-progressive-disclosure`
+- Artifact ID: `proposal`
+- Canonical path: `docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md`
+- Prior reviewed revision: `610765e0`
+- Prior content identity: `sha256:231096c6d13fa6ef03b302c07cbbc88cd1fa7a683e5aaf5b2321cb1f68c77912`
+- Revised content identity: `sha256:fa54dc15d38170137b799a18d6aa0061540380332628c55400369ada3a65425f`
+- Revision authority: user request to refine the proposal after formal `proposal-review-r1`
+- Loaded assembly: `PA1G-governed-gated`
+- Active specialized predicates: `initial_intent_table_context`, `scope_budget_context`
+- Finding disposition: `VISSIM-PR1` accepted and implemented by removing the unsupported formal assessment operation and measuring only the three approved invocation surfaces.
+- Finding disposition: `VISSIM-PR2` accepted and implemented with a closed README applicability matrix, synchronization-by-default revision behavior, exact skip authority, and deterministic primary assemblies.
+- Finding disposition: `VISSIM-PR3` accepted and implemented by adding a second structural asset for the ten-field strategic-positioning rationale.
+- Scope preservation: two conditional procedural references, universal inline safety, state-based user intent, current active vision behavior, no-script direction, and no-runtime acceptance remain unchanged.
+- Validation: `git diff --check` passed.
+- Validation: `python scripts/validate-change-metadata.py docs/changes/2026-08-17-vision-skill-progressive-disclosure/change.yaml` passed.
+- Validation: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-17-vision-skill-progressive-disclosure` passed.
+- Validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-17-vision-skill-progressive-disclosure` passed.
+- Validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed for the proposal, change record, review ledger, resolution, and revision evidence.
+- Authoring result: proposal revised, material findings closed in `review-resolution.md`, and proposal returned to `review-required`.
+- Downstream authority: independent proposal rereview only; specification, architecture, planning, implementation, verification, and PR readiness remain unauthorized.

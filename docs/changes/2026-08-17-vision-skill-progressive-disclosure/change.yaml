@@ -9,23 +9,19 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
     role: primary
-    lifecycle_state: revision-required
-    review:
-      id: proposal-review-r1
-      artifact_id: proposal
-      outcome: changes-requested
-      record: docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r1.md
-      round: r1
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r1.md
 
 workflow_state:
   lifecycle_state: active
-  current_stage: proposal
-  next_stage: proposal
+  current_stage: proposal-review
+  next_stage: proposal-review
   blocker: null
   evidence:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r1.md
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-resolution.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r1.md
 
 workflow: {}
 
@@ -33,15 +29,16 @@ artifacts:
   proposal: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
 
 requirements:
-  - Reduce the actual loaded procedure for vision assessment, README synchronization, editorial revision, and strategic authoring while preserving the approved vision contract.
+  - Reduce the actual loaded procedure for README synchronization, editorial revision, and strategic authoring while preserving the approved vision contract and avoiding an unsupported formal assessment profile.
   - Keep universal authority, state classification, canonical-path, revision-classification, safety, stop, claim, and resource-selection behavior inline.
-  - Use one strategic-authoring reference, one README-synchronization reference, and one structural vision skeleton under the existing published-skill package model.
+  - Use one strategic-authoring reference, one README-synchronization reference, one vision skeleton, and one strategic-positioning skeleton under the existing published-skill package model.
+  - Preserve README synchronization as the establishment and revision default, with omission allowed only under exact current skip authority.
   - Preserve root VISION.md authority, strategic-positioning rationale, README marker safety, state-based behavior, word limits, and substantive change-local linkage.
   - Prove semantic and literal preservation, real procedural-profile reduction, and canonical-through-installed parity without target-agent runtime acceptance.
 
 tests:
   - Independent proposal review of value, package boundaries, operation closure, structural ownership, compatibility, measurement, and spec readiness.
-  - Deterministic scenarios covering absent and existing vision state, assessment, editorial and substantive revision, strategic positioning, README synchronization, marker failures, retired lowercase path handling, and missing resources.
+  - Deterministic scenarios covering absent and existing vision state, editorial and substantive revision, strategic positioning structure, README synchronization and explicit skip, marker failures, retired lowercase path handling, and missing resources.
   - Static skill, package, adapter, selector, lifecycle, and compatibility validation without a target-agent runtime or separate prose-grading system.
 
 validation: []
@@ -53,7 +50,8 @@ changed_files:
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r1.md
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-log.md
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-resolution.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r1.md
 
 review:
-  status: changes-requested
-  unresolved_items: 3
+  status: review-requested
+  unresolved_items: 0
