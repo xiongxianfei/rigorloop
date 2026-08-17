@@ -38,6 +38,12 @@ artifact_states:
       outcome: approved
       record: docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/plan-review-r1.md
       round: r1
+  test-spec:
+    kind: test-spec
+    path: specs/vision-skill-progressive-disclosure.test.md
+    role: primary
+    lifecycle_state: authoring
+    authoring_evidence: docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/test-spec-authoring.md
 
 workflow_state:
   lifecycle_state: active
@@ -142,6 +148,7 @@ artifacts:
   proposal: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
   spec: specs/vision-skill-progressive-disclosure.md
   plan: docs/plans/2026-08-17-vision-skill-progressive-disclosure.md
+  test_spec: specs/vision-skill-progressive-disclosure.test.md
 
 requirements:
   - Reduce the actual loaded procedure for README synchronization, editorial revision, and strategic authoring while preserving the approved vision contract and avoiding an unsupported formal assessment profile.
