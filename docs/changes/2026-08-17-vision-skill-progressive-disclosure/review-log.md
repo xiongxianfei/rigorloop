@@ -31,3 +31,16 @@ Resolution: review-resolution.md#proposal-review-r2
 Material findings: VISSIM-R2-PR1, VISSIM-R2-PR2, VISSIM-R2-PR3
 Open findings: none
 Recording status: reconstructed from user-supplied review
+
+### Review entry
+
+Review ID: proposal-review-r3
+Stage: proposal-review
+Round: r3
+Reviewed artifact: `docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md` at commit `15dbbce5`
+Status: changes-requested
+Detailed record: reviews/proposal-review-r3.md
+Resolution: review-resolution.md#proposal-review-r3
+Material findings: VISSIM-R3-PR1, VISSIM-R3-PR2
+Open findings: VISSIM-R3-PR1, VISSIM-R3-PR2
+Recording status: recorded
