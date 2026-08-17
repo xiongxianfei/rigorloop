@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: implement
-  next_stage: implement
+  current_stage: code-review
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
@@ -93,6 +93,9 @@ workflow_state:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-review-resolution-r1.md
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m2-r2.yaml
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m2-r2.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/simplification-measurements.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/semantic-preservation-review.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m3-package-proof.md
   planned_work:
     plan_artifact_id: plan
     initialization_basis:
@@ -111,7 +114,7 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: implementing
+        state: review-requested
     remaining_implementation_milestones:
       - M3
     latest_review:
@@ -144,7 +147,7 @@ workflow:
       completion:
         rule: first final verify result is durably recorded
     status: active
-    current_stage: implement
+    current_stage: code-review
     stop_reason: null
     evidence:
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
@@ -177,6 +180,9 @@ workflow:
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-review-resolution-r1.md
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m2-r2.yaml
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m2-r2.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/simplification-measurements.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/semantic-preservation-review.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m3-package-proof.md
 
 artifacts:
   proposal: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
@@ -259,6 +265,9 @@ changed_files:
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-review-resolution-r1.md
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m2-r2.yaml
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m2-r2.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/simplification-measurements.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/semantic-preservation-review.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m3-package-proof.md
 
 review:
   status: approved
