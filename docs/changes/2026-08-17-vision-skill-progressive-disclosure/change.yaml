@@ -30,8 +30,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: spec-review
-  next_stage: spec-review
+  current_stage: plan
+  next_stage: plan
   blocker: null
   evidence:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
@@ -52,6 +52,7 @@ workflow_state:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-revision-r1.md
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r2.yaml
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r2.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/architecture-assessment.md
 
 workflow:
   automation:
@@ -64,7 +65,7 @@ workflow:
       completion:
         rule: first formal test-spec-review result is durably recorded
     status: active
-    current_stage: spec-review
+    current_stage: plan
     stop_reason: null
     evidence:
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
@@ -77,6 +78,7 @@ workflow:
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-revision-r1.md
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r2.yaml
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r2.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/architecture-assessment.md
 
 artifacts:
   proposal: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
@@ -122,6 +124,7 @@ changed_files:
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-revision-r1.md
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r2.yaml
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r2.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/architecture-assessment.md
 
 review:
   status: approved
