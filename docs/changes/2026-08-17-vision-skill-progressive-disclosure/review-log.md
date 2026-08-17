@@ -18,6 +18,19 @@ This ledger records formal lifecycle reviews for the vision skill progressive-di
 
 ### Review entry
 
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: milestone M2 range `f89b954a..4a362d1d`
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: VIS-M2-CR1
+Open findings: VIS-M2-CR1
+Recording status: recorded
+
+### Review entry
+
 Review ID: spec-review-r1
 Stage: spec-review
 Round: r1

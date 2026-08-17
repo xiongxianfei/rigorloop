@@ -25,6 +25,24 @@ Review closeout: spec-review-r1
 
 ## Finding details
 
+### code-review-m2-r1
+
+#### VIS-M2-CR1
+
+Finding ID: VIS-M2-CR1
+Disposition: accepted
+Status: open
+Owner: M2 implementation
+Owning stage: implement
+Decision owner: workflow-managed implementation
+Decision needed: Restore the approved governed preparation and zero-write settlement obligations without losing profile reduction.
+Chosen action: Add compact inline clauses for durable governed manifest evidence, equal canonical identities, zero changed files, and prohibited synchronization or marker-validity claims; add focused regression assertions.
+Rationale: These are universal transaction and result-safety rules and cannot depend on a conditional resource or reviewer inference.
+Required outcome: The shipped contract and focused tests directly prove R46, R52, and R54 while every loaded procedural profile remains below baseline.
+Safe resolution path: Correct M2, rerun C1-C5 and metadata validation, then conduct a fresh M2 code review.
+Validation target: canonical vision skill, focused validator, package build checks, and updated M2 evidence.
+Validation evidence: pending.
+
 ### spec-review-r1
 
 #### VISSIM-SR1
