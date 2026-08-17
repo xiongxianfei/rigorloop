@@ -27,6 +27,12 @@ artifact_states:
       outcome: approved
       record: docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r2.md
       round: r2
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-17-learn-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-authoring.md
 
 workflow_state:
   lifecycle_state: active
@@ -70,6 +76,7 @@ workflow:
 artifacts:
   proposal: docs/proposals/2026-08-16-learn-skill-simplification.md
   spec: specs/learn-skill-simplification.md
+  plan: docs/plans/2026-08-17-learn-skill-simplification.md
 
 requirements:
   - Reduce the actual learn-session loaded context while preserving learn evidence quality, confirmation, recording, routing, and claim boundaries.
@@ -106,6 +113,9 @@ changed_files:
   - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-spec-review-r2.yaml
   - docs/changes/2026-08-16-learn-skill-simplification/reviews/spec-review-r2.md
   - docs/changes/2026-08-16-learn-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-17-learn-skill-simplification.md
+  - docs/plan.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-authoring.md
 
 review:
   status: approved
