@@ -1,9 +1,10 @@
 # Review Resolution: Vision Skill Progressive Disclosure
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
+Review closeout: proposal-review-r3
 
 ## Resolution overview
 
@@ -15,8 +16,8 @@ Review closeout: proposal-review-r2
 | `VISSIM-R2-PR1` | accepted | closed | Exactly three operations now map through independent predicates to five exhaustive loaded assemblies. |
 | `VISSIM-R2-PR2` | accepted | closed | Multi-artifact writes now use bounded source-first completion and exact retry or fail-closed recovery. |
 | `VISSIM-R2-PR3` | accepted | closed | Positioning and README actions now have exhaustive matrices and exact identity-bound authority. |
-| `VISSIM-R3-PR1` | accepted | open | Bind README authority to the exact prior-to-intended vision transition in the manifest. |
-| `VISSIM-R3-PR2` | accepted | open | Add sync skip and exhaustive structural-asset selection. |
+| `VISSIM-R3-PR1` | accepted | closed | README authority now binds and survives only the exact manifest prior-to-intended transition. |
+| `VISSIM-R3-PR2` | accepted | closed | `VA0S` and independent structural-asset predicates close every remaining combination. |
 
 ## Finding details
 
@@ -62,7 +63,7 @@ Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosur
 
 Finding ID: VISSIM-R3-PR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -72,13 +73,13 @@ Rationale: The planned canonical write must not make its own authorized secondar
 Required outcome: Update authority binding, pre-write validation, pre-README revalidation, scenarios, and acceptance criteria.
 Safe resolution path: Revise the proposal and perform an approving rereview.
 Validation target: revised proposal and approving proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r3.md`; independent rereview remains pending.
 
 #### VISSIM-R3-PR2
 
 Finding ID: VISSIM-R3-PR2
 Disposition: accepted
-Status: open
+Status: closed
 Owner: proposal author
 Owning stage: proposal
 Decision owner: proposal author
@@ -88,7 +89,7 @@ Rationale: R45 permits explicit sync skip, and README skip does not remove a ful
 Required outcome: Update action matrix, assemblies, measurement, scenarios, assets, and acceptance criteria.
 Safe resolution path: Revise the proposal and perform an approving rereview.
 Validation target: revised proposal and approving proposal rereview.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r3.md`; independent rereview remains pending.
 
 #### VISSIM-R2-PR2
 

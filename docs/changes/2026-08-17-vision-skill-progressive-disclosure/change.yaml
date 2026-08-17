@@ -9,18 +9,13 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
     role: primary
-    lifecycle_state: revision-required
-    review:
-      id: proposal-review-r3
-      artifact_id: proposal
-      outcome: changes-requested
-      record: docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r3.md
-      round: r3
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r3.md
 
 workflow_state:
   lifecycle_state: active
-  current_stage: proposal
-  next_stage: proposal
+  current_stage: proposal-review
+  next_stage: proposal-review
   blocker: null
   evidence:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
@@ -30,6 +25,7 @@ workflow_state:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r2.md
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r2.md
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r3.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r3.md
 
 workflow: {}
 
@@ -41,13 +37,14 @@ requirements:
   - Keep universal authority, state classification, canonical-path, revision-classification, safety, stop, claim, and resource-selection behavior inline.
   - Use one strategic-authoring reference, one README-synchronization reference, one vision skeleton, and one strategic-positioning skeleton under the existing published-skill package model.
   - Preserve README synchronization as the establishment and revision default, with omission allowed only under exact current identity-bound skip authority and every strategic/README combination represented explicitly.
-  - Classify positioning and README actions independently and use one source-first target manifest with fail-closed partial recovery for multi-artifact writes.
+  - Classify positioning, README, and structural-asset actions independently and use one source-first target manifest with fail-closed partial recovery for multi-artifact writes.
+  - Bind README insertion or skip authority to the exact manifest and prior-to-intended vision transition, including the explicit sync-skip path.
   - Preserve root VISION.md authority, strategic-positioning rationale, README marker safety, state-based behavior, word limits, and substantive change-local linkage.
   - Prove semantic and literal preservation, real procedural-profile reduction, and canonical-through-installed parity without target-agent runtime acceptance.
 
 tests:
   - Independent proposal review of value, package boundaries, operation closure, structural ownership, compatibility, measurement, and spec readiness.
-  - Deterministic scenarios covering all five loaded assemblies, absent and existing vision state, editorial and substantive revision, positioning actions, README actions and authority, target manifests, partial retry, marker failures, retired lowercase path handling, and missing resources.
+  - Deterministic scenarios covering all six loaded assemblies, independent asset selection, absent and existing vision state, editorial and substantive revision, positioning actions, manifest-bound README authority, target transitions, partial retry, marker failures, retired lowercase path handling, and missing resources.
   - Static skill, package, adapter, selector, lifecycle, and compatibility validation without a target-agent runtime or separate prose-grading system.
 
 validation: []
@@ -63,7 +60,8 @@ changed_files:
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r2.md
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r2.md
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r3.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r3.md
 
 review:
-  status: changes-requested
-  unresolved_items: 2
+  status: review-requested
+  unresolved_items: 0

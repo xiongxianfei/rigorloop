@@ -42,5 +42,5 @@ Status: changes-requested
 Detailed record: reviews/proposal-review-r3.md
 Resolution: review-resolution.md#proposal-review-r3
 Material findings: VISSIM-R3-PR1, VISSIM-R3-PR2
-Open findings: VISSIM-R3-PR1, VISSIM-R3-PR2
+Open findings: none
 Recording status: recorded
