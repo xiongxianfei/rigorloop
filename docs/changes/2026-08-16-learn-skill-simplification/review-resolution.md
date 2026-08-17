@@ -1,6 +1,6 @@
 # Review Resolution: Learn Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -21,6 +21,7 @@ Review closeout: spec-review-r2
 | `LRNSIM-SR1` | accepted | closed | Exact cross-spec dispositions preserve required outcomes while assigning mutation to destination owners. |
 | `LRNSIM-SR2` | accepted | closed | Both real loaded profiles must decrease in words and bytes. |
 | `LRNSIM-SR3` | accepted | closed | Every route records one immutable completion kind validated during result recording. |
+| `LRNSIM-PLR1` | accepted | open | Map the architecture reassessment trigger to M1 with an explicit stop and recovery route. |
 
 ## Finding details
 
@@ -181,3 +182,21 @@ Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidenc
 ### spec-review-r2
 
 No material findings. The clean rereview confirms that LRNSIM-SR1 through LRNSIM-SR3 are closed and the contract is ready for bounded architecture assessment.
+
+### plan-review-r1
+
+#### LRNSIM-PLR1
+
+Finding ID: LRNSIM-PLR1
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan
+Decision owner: workflow-managed review-resolution
+Decision needed: Give the conditional architecture escalation one implementation-milestone owner.
+Chosen action: Map R46 to M1, require explicit trigger inspection before canonical mutation, and stop back to architecture assessment when triggered.
+Rationale: A lifecycle-closeout catch-all is too late to protect M2 from implementing an architecture-bearing recovery or ownership mechanism.
+Required outcome: Update requirement traceability, M1 proof and steps, completion criteria, dependencies, risk, and recovery.
+Safe resolution path: Revise the plan and obtain approving plan rereview before initialization.
+Validation target: exact R46 traceability and independently closeable architecture stop.
+Validation evidence: pending plan revision and rereview.
