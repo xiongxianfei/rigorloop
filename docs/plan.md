@@ -27,6 +27,7 @@ Current blockers are not recorded in this index.
 
 | Plan | Owning change record |
 | --- | --- |
+| [Vision Skill Progressive Disclosure](plans/2026-08-17-vision-skill-progressive-disclosure.md) | [change.yaml](changes/2026-08-17-vision-skill-progressive-disclosure/change.yaml) |
 | [Learn Skill Simplification](plans/2026-08-17-learn-skill-simplification.md) | [change.yaml](changes/2026-08-16-learn-skill-simplification/change.yaml) |
 | [PR Skill Simplification](plans/2026-08-16-pr-skill-simplification.md) | [change.yaml](changes/2026-08-16-pr-skill-simplification/change.yaml) |
 | [Architecture-Review Skill Simplification](plans/2026-08-16-architecture-review-skill-simplification.md) | [change.yaml](changes/2026-08-16-architecture-review-skill-simplification/change.yaml) |
