@@ -69,6 +69,44 @@ workflow_state:
     - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-revision-r1.md
     - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-plan-review-r2.yaml
     - docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r2.md
+  planned_work:
+    plan_artifact_id: plan
+    current_milestone: M1
+    initialization_basis:
+      review_id: plan-review-r2
+      review_round: r2
+      review_record: docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r2.md
+      reviewed_artifact_path: docs/plans/2026-08-17-learn-skill-simplification.md
+      reviewed_revision: f8b54c63
+    milestones:
+      M1:
+        kind: implementation
+        state: planned
+      M2:
+        kind: implementation
+        state: planned
+      M3:
+        kind: implementation
+        state: planned
+    remaining_implementation_milestones:
+      - M1
+      - M2
+      - M3
+    latest_review:
+      status: not-started
+      stage: code-review
+      round: none
+      artifact_id: plan
+      occurrence: milestone
+      milestone_id: M1
+      evidence: []
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - implementation-milestones-open
+      evidence:
+        - docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r2.md
+        - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-initialization.md
 
 workflow:
   automation:
@@ -134,6 +172,7 @@ changed_files:
   - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-revision-r1.md
   - docs/changes/2026-08-16-learn-skill-simplification/review-invocation-plan-review-r2.yaml
   - docs/changes/2026-08-16-learn-skill-simplification/reviews/plan-review-r2.md
+  - docs/changes/2026-08-16-learn-skill-simplification/evidence/plan-initialization.md
 
 review:
   status: approved
