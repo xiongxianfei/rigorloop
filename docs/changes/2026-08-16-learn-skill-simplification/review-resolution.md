@@ -1,6 +1,6 @@
 # Review Resolution: Learn Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -31,8 +31,61 @@ Review closeout: code-review-m1-r2
 | `LRNSIM-TSR1` | accepted | closed | M1 now owns only CMD1-runnable inventory, baseline, scenario, and R46 gate proof; M2 owns package behavior. |
 | `LRNSIM-TSR2` | accepted | closed | T15 directly proves the complete compact result for both operations and representative idempotent and blocked outcomes. |
 | `LRNSIM-CR-M1-R1-F1` | accepted | closed | Bind callers to current repository evidence and validate both disposition vocabularies before consistency checks. |
+| `LRNSIM-CR-M2-R1-F1` | accepted | open | Align direct route-result invocation and missing-resource pre-creation behavior with R6-R8. |
+| `LRNSIM-CR-M2-R1-F2` | accepted | open | Close first-write, evidence-distinction, and topic-effect retry semantics. |
+| `LRNSIM-CR-M2-R1-F3` | accepted | open | Record the complete route schema and validate immutable completion-kind matching. |
 
 ## Finding details
+
+### code-review-m2-r1
+
+#### LRNSIM-CR-M2-R1-F1
+
+Finding ID: LRNSIM-CR-M2-R1-F1
+Disposition: accepted
+Status: open
+Owner: M2 implementation
+Owning stage: implement
+Decision owner: workflow-managed automated correction
+Decision needed: none; R6-R8 are explicit.
+Chosen action: narrow direct invocation and resource-failure wording to the exact approved contract.
+Rationale: operation selection and pre-creation safety cannot be inferred from adjacent prose.
+Required outcome: exact route-result exception and pre-session-write resource stop.
+Safe resolution path: amend root wording and focused assertions, then rereview.
+Validation target: CMD2-CMD4 and M2 code rereview.
+Validation evidence: pending correction.
+
+#### LRNSIM-CR-M2-R1-F2
+
+Finding ID: LRNSIM-CR-M2-R1-F2
+Disposition: accepted
+Status: open
+Owner: M2 implementation
+Owning stage: implement
+Decision owner: workflow-managed automated correction
+Decision needed: none; R14, R19, and R24 are explicit.
+Chosen action: state the complete first write, evidence distinctions, and topic retry/conflict rules.
+Rationale: phase headings alone do not prove the required durable and fail-closed behavior.
+Required outcome: reference wording and direct tests cover all three contracts.
+Safe resolution path: bounded reference and validator correction, then rereview.
+Validation target: CMD3-CMD4 and M2 code rereview.
+Validation evidence: pending correction.
+
+#### LRNSIM-CR-M2-R1-F3
+
+Finding ID: LRNSIM-CR-M2-R1-F3
+Disposition: accepted
+Status: open
+Owner: M2 implementation
+Owning stage: implement
+Decision owner: workflow-managed automated correction
+Decision needed: none; R26, R26a, and R34 are explicit.
+Chosen action: make route rows complete and validate the fixed completion kind during result recording.
+Rationale: stable route IDs are insufficient without complete immutable interpretation fields.
+Required outcome: complete route fields, immutability, exact kind matching, and negative proof.
+Safe resolution path: amend root/reference and focused assertions, then rereview.
+Validation target: CMD3-CMD4 and M2 code rereview.
+Validation evidence: pending correction.
 
 ### proposal-review-r1
 
