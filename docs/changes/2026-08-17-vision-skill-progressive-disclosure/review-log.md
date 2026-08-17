@@ -10,6 +10,7 @@ This ledger records formal lifecycle reviews for the vision skill progressive-di
 | --- | --- | --- | --- | --- | --- | ---: | --- |
 | `proposal-review-r5` | `proposal-review` | `r5` | `docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md` at commit `7870d946` | `reviews/proposal-review-r5.md` | `approved` | 0 | `recorded` |
 | `spec-review-r2` | `spec-review` | `r2` | `specs/vision-skill-progressive-disclosure.md` at commit `1931c7b4` | `reviews/spec-review-r2.md` | `approved` | 0 | `recorded` |
+| `plan-review-r1` | `plan-review` | `r1` | `docs/plans/2026-08-17-vision-skill-progressive-disclosure.md` at commit `e1b2372a` | `reviews/plan-review-r1.md` | `approved` | 0 | `recorded` |
 
 ## Detailed review entries
 

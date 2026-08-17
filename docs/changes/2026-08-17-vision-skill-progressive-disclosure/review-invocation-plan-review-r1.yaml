@@ -4,8 +4,8 @@ review_stage: plan-review
 review_target: docs/plans/2026-08-17-vision-skill-progressive-disclosure.md
 base_revision: e1b2372a
 head_revision: e1b2372a
-native_review_status: pending
-review_gate_outcome: pending
+native_review_status: approved
+review_gate_outcome: approved
 independence_level: L0
 author_context_id: root-plan-authoring-r1
 reviewer_context_id: root-plan-review-r1-context-reset
