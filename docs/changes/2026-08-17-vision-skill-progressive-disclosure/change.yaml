@@ -9,15 +9,16 @@ artifact_states:
     kind: proposal
     path: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
     role: primary
-    lifecycle_state: authoring
+    lifecycle_state: review-required
     authoring_evidence: docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
 
 workflow_state:
   lifecycle_state: active
-  current_stage: proposal
+  current_stage: proposal-review
   next_stage: proposal-review
   blocker: null
-  evidence: []
+  evidence:
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
 
 workflow: {}
 
@@ -40,7 +41,9 @@ validation: []
 
 changed_files:
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/change.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
 
 review:
-  status: pending
+  status: review-requested
   unresolved_items: 0
