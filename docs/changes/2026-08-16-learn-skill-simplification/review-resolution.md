@@ -1,6 +1,6 @@
 # Review Resolution: Learn Skill Simplification
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -11,6 +11,8 @@ Review closeout: plan-review-r1
 Review closeout: plan-review-r2
 Review closeout: test-spec-review-r1
 Review closeout: test-spec-review-r2
+Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
 ## Resolution overview
 
@@ -28,7 +30,7 @@ Review closeout: test-spec-review-r2
 | `LRNSIM-PLR1` | accepted | closed | M1 owns architecture-trigger inspection and stops before canonical mutation when triggered. |
 | `LRNSIM-TSR1` | accepted | closed | M1 now owns only CMD1-runnable inventory, baseline, scenario, and R46 gate proof; M2 owns package behavior. |
 | `LRNSIM-TSR2` | accepted | closed | T15 directly proves the complete compact result for both operations and representative idempotent and blocked outcomes. |
-| `LRNSIM-CR-M1-R1-F1` | accepted | open | Bind callers to current repository evidence and validate both disposition vocabularies before consistency checks. |
+| `LRNSIM-CR-M1-R1-F1` | accepted | closed | Bind callers to current repository evidence and validate both disposition vocabularies before consistency checks. |
 
 ## Finding details
 
@@ -256,7 +258,7 @@ No material findings. The approving rereview confirms that LRNSIM-TSR1 and LRNSI
 
 Finding ID: LRNSIM-CR-M1-R1-F1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: implementation author
 Owning stage: implement M1
 Decision owner: workflow-managed review-resolution
@@ -266,4 +268,8 @@ Rationale: M1 must prove every caller and ledger treatment before M2 can mutate 
 Required outcome: Validate exact caller paths and phrases plus closed rule and literal disposition vocabularies.
 Safe resolution path: Correct only the declared M1 evidence and validator paths, rerun CMD1 and lifecycle checks, and obtain M1 rereview.
 Validation target: direct caller existence and phrase checks; unknown rule and literal dispositions rejected first.
-Validation evidence: pending correction and rereview.
+Validation evidence: corrected M1 fixtures and validator at `ce3e46d7`; approving `docs/changes/2026-08-16-learn-skill-simplification/reviews/code-review-m1-r2.md`.
+
+### code-review-m1-r2
+
+No material findings. The rereview confirms that `LRNSIM-CR-M1-R1-F1` is closed and M1 may advance to M2.
