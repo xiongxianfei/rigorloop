@@ -19,8 +19,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: proposal-review
-  next_stage: proposal-review
+  current_stage: spec
+  next_stage: spec
   blocker: null
   evidence:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
@@ -34,8 +34,25 @@ workflow_state:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r4.md
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r4.md
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r5.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
 
-workflow: {}
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: test-spec-review
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-17T00:00:00-07:00"
+      completion:
+        rule: first formal test-spec-review result is durably recorded
+    status: active
+    current_stage: spec
+    stop_reason: null
+    evidence:
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
+      - docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r5.md
 
 artifacts:
   proposal: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
@@ -72,6 +89,7 @@ changed_files:
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r4.md
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r4.md
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r5.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
 
 review:
   status: approved
