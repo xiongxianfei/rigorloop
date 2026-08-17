@@ -17,6 +17,7 @@ This ledger records formal lifecycle reviews for the vision skill progressive-di
 | `code-review-m3-r1` | `code-review` | `r1` | milestone M3 range `fefa134e..d9336f4b` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r1` | `code-review` | `r1` | full branch range `d524035d..ab235991` | `reviews/code-review-final-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r3` | `code-review` | `r3` | full branch range `d524035d..64c78797` | `reviews/code-review-final-r3.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-final-r4` | `code-review` | `r4` | full branch range `d524035d..69de6d05` | `reviews/code-review-final-r4.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 
