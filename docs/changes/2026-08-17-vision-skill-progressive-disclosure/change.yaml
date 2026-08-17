@@ -52,8 +52,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: review-resolution
-  next_stage: review-resolution
+  current_stage: code-review
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
@@ -102,6 +102,7 @@ workflow_state:
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r1.md
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r2.yaml
     - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r2.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/final-review-resolution-r2.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -155,7 +156,7 @@ workflow:
       completion:
         rule: first final verify result is durably recorded
     status: active
-    current_stage: review-resolution
+    current_stage: code-review
     stop_reason: null
     evidence:
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
@@ -197,6 +198,7 @@ workflow:
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r1.md
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r2.yaml
       - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r2.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/final-review-resolution-r2.md
 
 artifacts:
   proposal: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
@@ -288,7 +290,8 @@ changed_files:
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r1.md
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r2.yaml
   - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r2.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/final-review-resolution-r2.md
 
 review:
   status: changes-requested
-  unresolved_items: 1
+  unresolved_items: 0

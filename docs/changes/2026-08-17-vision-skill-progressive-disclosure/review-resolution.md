@@ -1,6 +1,6 @@
 # Review Resolution: Vision Skill Progressive Disclosure
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -22,6 +22,8 @@ Review closeout: spec-review-r1
 | `VISSIM-R3-PR2` | accepted | closed | `VA0S` and independent structural-asset predicates close every remaining combination. |
 | `VISSIM-R4-PR1` | accepted | closed | Pre-resolved skip now uses whole-file identity and an uninspected-marker value, while late skip retains README procedure and every skip settles through a manifest. |
 | `VISSIM-SR1` | accepted | closed | Both exact manifest-bound prior-to-intended transitions preserve authority; every unexpected canonical or README identity invalidates it. |
+| `VIS-M2-CR1` | accepted | closed | Governed manifest preparation, architecture fallback, and zero-write settlement truth are explicit and regression-tested. |
+| `VIS-FINAL-CR1` | accepted | closed | The resolution overview and M2 rereview evidence now agree with the detailed record and review log. |
 
 ## Finding details
 
@@ -31,7 +33,7 @@ Review closeout: spec-review-r1
 
 Finding ID: VIS-FINAL-CR1
 Disposition: accepted
-Status: open
+Status: closed
 Owner: review-resolution
 Owning stage: review-resolution
 Decision owner: workflow-managed review resolution
@@ -41,7 +43,7 @@ Rationale: Explanation and verification must consume one internally consistent d
 Required outcome: Overview, finding detail, review log, and lifecycle state agree with no open findings.
 Safe resolution path: Correct the bounded review-resolution fields, validate, and run a new final holistic rereview.
 Validation target: review-resolution summary/detail, review log, and change metadata.
-Validation evidence: pending.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/final-review-resolution-r2.md`; final holistic rereview remains pending.
 
 ### code-review-m2-r1
 
@@ -59,7 +61,7 @@ Rationale: These are universal transaction and result-safety rules and cannot de
 Required outcome: The shipped contract and focused tests directly prove R46, R52, and R54 while every loaded procedural profile remains below baseline.
 Safe resolution path: Correct M2, rerun C1-C5 and metadata validation, then conduct a fresh M2 code review.
 Validation target: canonical vision skill, focused validator, package build checks, and updated M2 evidence.
-Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-review-resolution-r1.md`; independent M2 rereview remains pending.
+Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-review-resolution-r1.md`; approved by `code-review-m2-r2`.
 
 ### spec-review-r1
 

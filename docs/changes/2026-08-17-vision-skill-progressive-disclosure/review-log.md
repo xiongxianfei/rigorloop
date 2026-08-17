@@ -29,7 +29,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-final-r2.md
 Resolution: review-resolution.md#code-review-final-r2
 Material findings: VIS-FINAL-CR1
-Open findings: VIS-FINAL-CR1
+Open findings: none
 Recording status: recorded
 
 ### Review entry
