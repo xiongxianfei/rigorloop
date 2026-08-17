@@ -1,6 +1,6 @@
 # Review Resolution: Vision Skill Progressive Disclosure
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -24,6 +24,24 @@ Review closeout: spec-review-r1
 | `VISSIM-SR1` | accepted | closed | Both exact manifest-bound prior-to-intended transitions preserve authority; every unexpected canonical or README identity invalidates it. |
 
 ## Finding details
+
+### code-review-final-r2
+
+#### VIS-FINAL-CR1
+
+Finding ID: VIS-FINAL-CR1
+Disposition: accepted
+Status: open
+Owner: review-resolution
+Owning stage: review-resolution
+Decision owner: workflow-managed review resolution
+Decision needed: Reconcile the material-finding overview and M2 rereview status before explanation.
+Chosen action: Add the missing M2 finding summary and replace the stale pending-rereview statement with the approving review identity.
+Rationale: Explanation and verification must consume one internally consistent durable review closeout.
+Required outcome: Overview, finding detail, review log, and lifecycle state agree with no open findings.
+Safe resolution path: Correct the bounded review-resolution fields, validate, and run a new final holistic rereview.
+Validation target: review-resolution summary/detail, review log, and change metadata.
+Validation evidence: pending.
 
 ### code-review-m2-r1
 
