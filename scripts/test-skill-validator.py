@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import re
 import shutil
 import subprocess
@@ -10517,6 +10518,67 @@ class SpecSkillSimplificationTests(unittest.TestCase):
             self.assertIn(phrase, self.skill.lower())
         for claim in ("spec-review approval", "architecture readiness", "implementation readiness", "verification", "branch readiness", "PR readiness"):
             self.assertIn(claim.lower(), self.skill.lower())
+
+
+class VisionSkillProgressiveDisclosureLedgerTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.change = ROOT / "docs" / "changes" / "2026-08-17-vision-skill-progressive-disclosure"
+
+    def load(self, name: str) -> dict:
+        return json.loads((self.change / name).read_text(encoding="utf-8"))
+
+    def test_rule_owners_are_closed_before_consistency(self) -> None:
+        allowed = {"inline", "strategic-reference", "readme-reference", "vision-asset", "positioning-asset", "change-evidence", "existing-validator"}
+        dispositions = {"preserve", "clarify", "add", "move"}
+        rules = self.load("vision-rule-disposition.yaml")["rules"]
+        invalid = self.load("fixtures/invalid-rule-owner.yaml")["rules"]
+        invalid_disposition = self.load("fixtures/invalid-rule-disposition.yaml")["rules"]
+        self.assertTrue(rules)
+        self.assertTrue(all(row["owner"] in allowed for row in rules))
+        self.assertTrue(all(row["disposition"] in dispositions for row in rules))
+        self.assertTrue(any(row["owner"] not in allowed for row in invalid))
+        self.assertTrue(any(row["disposition"] not in dispositions for row in invalid_disposition))
+        self.assertEqual(len({row["rule_id"] for row in rules}), len(rules))
+
+    def test_literal_classifications_are_closed_before_consistency(self) -> None:
+        allowed = {"normative-contract", "parser-or-package-contract", "test-only-incidental", "historical-fixture", "obsolete"}
+        dispositions = {"preserve", "add", "move-reference", "move-asset", "forbid"}
+        literals = self.load("vision-literal-compatibility.yaml")["literals"]
+        invalid = self.load("fixtures/invalid-literal-classification.yaml")["literals"]
+        invalid_disposition = self.load("fixtures/invalid-literal-disposition.yaml")["literals"]
+        self.assertTrue(literals)
+        self.assertTrue(all(row["classification"] in allowed for row in literals))
+        self.assertTrue(all(row["disposition"] in dispositions for row in literals))
+        self.assertTrue(any(row["classification"] not in allowed for row in invalid))
+        self.assertTrue(any(row["disposition"] not in dispositions for row in invalid_disposition))
+        self.assertEqual(len({row["literal_id"] for row in literals}), len(literals))
+
+    def test_vocabularies_have_unknown_value_fixtures(self) -> None:
+        vocabularies = self.load("fixtures/vision-simplification-scenarios.yaml")["vocabularies"]
+        self.assertEqual(set(vocabularies), {"operation", "significance", "strategic_context", "readme_context", "positioning_action", "readme_action", "vision_asset_context", "positioning_asset_context", "assembly", "marker_state", "result"})
+        for name, vocabulary in vocabularies.items():
+            with self.subTest(vocabulary=name):
+                self.assertTrue(vocabulary["allowed"])
+                self.assertIn("not_in_vocabulary", vocabulary["invalid"])
+                self.assertFalse(set(vocabulary["allowed"]) & set(vocabulary["invalid"]))
+
+    def test_assemblies_scenarios_and_architecture_gate_are_complete(self) -> None:
+        fixture = self.load("fixtures/vision-simplification-scenarios.yaml")
+        profiles = fixture["assembly_profiles"]
+        self.assertEqual({row["assembly"] for row in profiles}, set(fixture["vocabularies"]["assembly"]["allowed"]))
+        self.assertEqual(sum(row["primary"] for row in profiles), 3)
+        self.assertEqual(len({row["id"] for row in fixture["scenarios"]}), len(fixture["scenarios"]))
+        required = {"operation", "state", "assembly", "authority", "marker", "positioning", "asset", "manifest", "ordering", "retry", "resource", "compatibility", "measurement", "architecture"}
+        self.assertTrue(required <= {row["family"] for row in fixture["scenarios"]})
+        self.assertEqual(set(fixture["architecture_triggers"]), {"new persisted multi-file transaction schema", "new classification-state owner", "executable README synchronizer", "new generated-content owner", "independent policy owner"})
+
+    def test_baseline_is_exact_and_canonical_package_is_still_flat(self) -> None:
+        baseline = (self.change / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
+        for value in ("VA0", "VA0S", "VA1", "VA1S", "VA2", "VA2S", "2,268", "15,845", "627a26b862d04acb001470ba0ef64138071a80e8dd67b2eccf47a41770dcb229", "Total canonical vision package"):
+            self.assertIn(value.lower(), baseline.lower())
+        package = ROOT / "skills" / "vision"
+        self.assertEqual([path.relative_to(package).as_posix() for path in package.rglob("*") if path.is_file()], ["SKILL.md"])
+        self.assertEqual(hashlib.sha256((package / "SKILL.md").read_bytes()).hexdigest(), "627a26b862d04acb001470ba0ef64138071a80e8dd67b2eccf47a41770dcb229")
 
 
 class LearnSkillSimplificationLedgerTests(unittest.TestCase):
