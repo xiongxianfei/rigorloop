@@ -1,6 +1,6 @@
 # Review Resolution: Vision Skill Progressive Disclosure
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -18,6 +18,7 @@ Review closeout: proposal-review-r3
 | `VISSIM-R2-PR3` | accepted | closed | Positioning and README actions now have exhaustive matrices and exact identity-bound authority. |
 | `VISSIM-R3-PR1` | accepted | closed | README authority now binds and survives only the exact manifest prior-to-intended transition. |
 | `VISSIM-R3-PR2` | accepted | closed | `VA0S` and independent structural-asset predicates close every remaining combination. |
+| `VISSIM-R4-PR1` | accepted | open | Reconcile pre-resolved skip evidence, reference loading, and zero-write manifests. |
 
 ## Finding details
 
@@ -74,6 +75,24 @@ Required outcome: Update authority binding, pre-write validation, pre-README rev
 Safe resolution path: Revise the proposal and perform an approving rereview.
 Validation target: revised proposal and approving proposal rereview.
 Validation evidence: `docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r3.md`; independent rereview remains pending.
+
+### proposal-review-r4
+
+#### VISSIM-R4-PR1
+
+Finding ID: VISSIM-R4-PR1
+Disposition: accepted
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Decision owner: proposal author
+Decision needed: Make exact pre-resolved skip evidence complete without loading the README reference.
+Chosen action: Extend operation manifests to skip settlement, use a closed uninspected-marker value for pre-resolved skip, and retain loaded assemblies for marker-dependent late skip.
+Rationale: A resource may be omitted only when no evidence required by the selected action depends on that resource.
+Required outcome: Update applicability, action authority, manifest scope, loaded assemblies, results, scenarios, and acceptance criteria.
+Safe resolution path: Revise the proposal and perform an approving rereview.
+Validation target: revised proposal and approving proposal rereview.
+Validation evidence: pending proposal revision and rereview.
 
 #### VISSIM-R3-PR2
 
