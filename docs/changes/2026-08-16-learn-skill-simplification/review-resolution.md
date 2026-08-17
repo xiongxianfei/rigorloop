@@ -1,6 +1,6 @@
 # Review Resolution: Learn Skill Simplification
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -28,6 +28,7 @@ Review closeout: test-spec-review-r2
 | `LRNSIM-PLR1` | accepted | closed | M1 owns architecture-trigger inspection and stops before canonical mutation when triggered. |
 | `LRNSIM-TSR1` | accepted | closed | M1 now owns only CMD1-runnable inventory, baseline, scenario, and R46 gate proof; M2 owns package behavior. |
 | `LRNSIM-TSR2` | accepted | closed | T15 directly proves the complete compact result for both operations and representative idempotent and blocked outcomes. |
+| `LRNSIM-CR-M1-R1-F1` | accepted | open | Bind callers to current repository evidence and validate both disposition vocabularies before consistency checks. |
 
 ## Finding details
 
@@ -248,3 +249,21 @@ Validation evidence: `docs/changes/2026-08-16-learn-skill-simplification/evidenc
 ### test-spec-review-r2
 
 No material findings. The approving rereview confirms that LRNSIM-TSR1 and LRNSIM-TSR2 are closed and the proof map is ready for implementation routing.
+
+### code-review-m1-r1
+
+#### LRNSIM-CR-M1-R1-F1
+
+Finding ID: LRNSIM-CR-M1-R1-F1
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: implement M1
+Decision owner: workflow-managed review-resolution
+Decision needed: Close M1 caller and disposition validation without changing canonical learn behavior.
+Chosen action: Apply the reviewer-declared safe recipe to add repository-bound caller evidence and unknown-disposition regression coverage.
+Rationale: M1 must prove every caller and ledger treatment before M2 can mutate the canonical package.
+Required outcome: Validate exact caller paths and phrases plus closed rule and literal disposition vocabularies.
+Safe resolution path: Correct only the declared M1 evidence and validator paths, rerun CMD1 and lifecycle checks, and obtain M1 rereview.
+Validation target: direct caller existence and phrase checks; unknown rule and literal dispositions rejected first.
+Validation evidence: pending correction and rereview.
