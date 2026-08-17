@@ -3,7 +3,7 @@ name: vision
 version: "1.0.0"
 schema-version: skill-readability-v1
 description: >
-  Produce or update the project vision and matching README front-matter. Use at project genesis, or when accumulated proposals reveal that the current vision no longer reflects what the project is becoming. This skill is upstream of the per-change workflow and is not a normal lifecycle stage.
+  Produce or update the project vision and matching README front-matter at project genesis or when current vision no longer reflects the project. This skill is upstream of the per-change workflow.
 argument-hint: [project idea, update vision, or sync README]
 ---
 
@@ -23,13 +23,13 @@ Define project identity, audience, commitments, refusals, and falsifiability—n
 
 ## Workflow Fit
 
-This skill is upstream of the normal per-change workflow and does not hand off automatically. Use it at project genesis or for a surfaced vision-level conflict.
+This upstream skill does not hand off automatically. Use it at project genesis or for a surfaced vision-level conflict.
 
 ## Inputs To Read
 
 Start with compact project inputs: `CONSTITUTION.md`, `AGENTS.md`, root `VISION.md`, README content between `<!-- vision:start -->` and `<!-- vision:end -->`, relevant proposals, and useful project-map evidence. Retired root `vision.md` is an ordinary file only when explicitly requested.
 
-Use summary and stable-ID first reasoning with check IDs, requirement IDs, proposal IDs, section names, file paths, counts, and line citations. Expand only when compact evidence is missing, conflicting, or insufficient.
+Use summary and stable-ID first reasoning with check IDs, requirement IDs, proposal IDs, section names, file paths, counts, and line citations. Expand only for insufficient or conflicting evidence.
 
 ## Edit Authorization
 
@@ -74,11 +74,11 @@ Both asset contexts are exactly `not-required|create-or-full-rewrite`. Copy the 
 
 ## Operation manifest and recovery
 
-Before any write or final skip, resolve one exact operation manifest. Each target records path, role, action, prior identity or absence, intended identity, and evidence state. Skipped README uses equal prior and intended identities. Zero-write sync skip also records unchanged canonical vision and `marker_state: not-evaluated-under-exact-skip`; it neither parses nor claims markers.
+Before any write or final skip, resolve one exact operation manifest. Each target records path, role, action, prior identity or absence, intended identity, and evidence state. Governed work persists the complete manifest in authorized change-local authoring evidence before its first target write when that evidence model supports the contract. Zero-write sync skip records unchanged canonical vision and skipped README targets with equal prior and intended identities, plus `marker_state: not-evaluated-under-exact-skip`.
 
 Validate operation, significance, actions, paths, authority, content, privacy, provenance, baselines, intended identities, and marker evidence, then reread targets. Write source-first: canonical `VISION.md`, positioning rationale, derived README. Immediately before README action, revalidate canonical and README identities, inspected markers, authority, and manifest. Completion requires read-back of every required target.
 
-Result is exactly `complete`, `partial-retry-required`, or `blocked-before-write`. Blocked mutates nothing. Partial results name committed and pending targets, identities, manifest, and retry without claiming synchronization. Exact retry binds the same operation, manifest, targets, inputs, identities, actions, and authority, completing matching pending work only. Never adopt or overwrite unrelated, stale, ambiguous, lost, or concurrent state. Portable cross-session recovery stops without its manifest.
+Result is exactly `complete`, `partial-retry-required`, or `blocked-before-write`. Blocked mutates nothing. Zero-write skip has no changed files and claims neither synchronization nor marker validity. Partial results name committed and pending targets, identities, manifest, and retry without claiming synchronization. Exact retry binds the same operation, manifest, targets, inputs, identities, actions, and authority, completing matching pending work only. Never adopt or overwrite unrelated, stale, ambiguous, lost, or concurrent state. Portable cross-session recovery stops without its manifest.
 
 ## Security And Research Boundaries
 
@@ -86,7 +86,7 @@ Vision and generated README text must not include secrets, credentials, private 
 
 ## Stop conditions and claims
 
-Stop before dependent judgment, output, or mutation for unclear intent, invalid state, unresolved authority, malformed markers without handling authority, unsafe content, missing identities, partial-state conflict, or a missing, unreadable, escaped, stale, contradictory, or mixed-version required resource. Do not reconstruct procedure or structure from memory.
+Stop before dependent work for unclear intent, invalid state, unresolved authority, unsafe content, missing identities, partial conflict, or a missing, unreadable, escaped, stale, contradictory, or mixed-version required resource. Do not reconstruct procedure or structure from memory.
 
 Do not claim review approval, downstream readiness, implementation, validation, verification, branch readiness, PR readiness, publication, release, or deployment. This skill never opens a PR, pushes, or starts another lifecycle stage.
 
