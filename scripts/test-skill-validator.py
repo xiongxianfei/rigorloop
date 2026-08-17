@@ -10640,7 +10640,7 @@ class VisionSkillProgressiveDisclosureTests(unittest.TestCase):
                 self.assertNotIn(forbidden, asset.lower())
 
     def test_skip_manifest_write_order_retry_and_resource_failures_are_closed(self) -> None:
-        for phrase in ("not-evaluated-under-exact-skip", "equal prior and intended identities", "authorized change-local authoring evidence before its first target write", "zero-write skip has no changed files", "claims neither synchronization nor marker validity", "write source-first", "immediately before README", "read-back of every required", "committed and pending targets", "portable cross-session recovery", "missing, unreadable, escaped, stale, contradictory, or mixed-version", "do not reconstruct"):
+        for phrase in ("not-evaluated-under-exact-skip", "equal prior and intended identities", "authorized change-local authoring evidence before its first target write", "otherwise stop and require architecture before planning", "zero-write skip has no changed files", "claims neither synchronization nor marker validity", "write source-first", "immediately before README", "read-back of every required", "committed and pending targets", "portable cross-session recovery", "missing, unreadable, escaped, stale, contradictory, or mixed-version", "do not reconstruct"):
             self.assertIn(phrase.lower(), self.skill.lower())
         for claim in ("review approval", "implementation", "validation", "verification", "branch readiness", "PR readiness", "release", "deployment"):
             self.assertIn(claim.lower(), self.skill.lower())

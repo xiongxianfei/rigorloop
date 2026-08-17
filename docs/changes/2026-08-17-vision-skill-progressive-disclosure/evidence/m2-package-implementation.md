@@ -32,10 +32,10 @@ No runtime router, synchronization script, parsed transaction schema, lifecycle 
 | Resource | Words | Bytes |
 | --- | ---: | ---: |
 | Flat baseline `SKILL.md` | 2,268 | 15,845 |
-| Compact `SKILL.md` | 1,255 | 9,888 |
+| Compact `SKILL.md` | 1,262 | 9,945 |
 | Strategic reference | 492 | 3,659 |
 | README reference | 303 | 2,131 |
-| Largest loaded procedural assembly | 2,050 | 15,678 |
+| Largest loaded procedural assembly | 2,057 | 15,735 |
 
 Every loaded procedural assembly is smaller than the flat baseline in both normalized words and raw bytes. Asset and total-package measurements remain M3 evidence because assets are copied structure rather than loaded procedure.
 

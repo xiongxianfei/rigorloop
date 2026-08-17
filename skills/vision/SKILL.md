@@ -74,7 +74,7 @@ Both asset contexts are exactly `not-required|create-or-full-rewrite`. Copy the 
 
 ## Operation manifest and recovery
 
-Before any write or final skip, resolve one exact operation manifest. Each target records path, role, action, prior identity or absence, intended identity, and evidence state. Governed work persists the complete manifest in authorized change-local authoring evidence before its first target write when that evidence model supports the contract. Zero-write sync skip records unchanged canonical vision and skipped README targets with equal prior and intended identities, plus `marker_state: not-evaluated-under-exact-skip`.
+Before any write or final skip, resolve one exact operation manifest. Each target records path, role, action, prior identity or absence, intended identity, and evidence state. Governed work persists the complete manifest in authorized change-local authoring evidence before its first target write when that evidence model supports the contract; otherwise stop and require architecture before planning. Zero-write sync skip records unchanged canonical vision and skipped README targets with equal prior and intended identities, plus `marker_state: not-evaluated-under-exact-skip`.
 
 Validate operation, significance, actions, paths, authority, content, privacy, provenance, baselines, intended identities, and marker evidence, then reread targets. Write source-first: canonical `VISION.md`, positioning rationale, derived README. Immediately before README action, revalidate canonical and README identities, inspected markers, authority, and manifest. Completion requires read-back of every required target.
 
