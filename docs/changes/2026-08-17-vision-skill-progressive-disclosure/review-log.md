@@ -4,6 +4,12 @@
 
 This ledger records formal lifecycle reviews for the vision skill progressive-disclosure change.
 
+## Clean review receipts
+
+| Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
+| --- | --- | --- | --- | --- | --- | ---: | --- |
+| `proposal-review-r5` | `proposal-review` | `r5` | `docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md` at commit `7870d946` | `reviews/proposal-review-r5.md` | `approved` | 0 | `recorded` |
+
 ## Detailed review entries
 
 ### Review entry
