@@ -39,7 +39,7 @@ Select exactly one operation:
 - `run-learn-session` (`LR1-session`): record a triggered session, topic effects, and owner-bound routes.
 - `record-learn-route-result` (`LR0-route-result`): reconcile one route with an exact owner result.
 
-An explicit direct `$learn` invocation selects `run-learn-session` unless the request explicitly identifies one current session, one stable route ID, and one owner result for `record-learn-route-result`. Pre-session trigger assessment and pre-session trigger closeout belong to the trigger owner.
+An explicit direct invocation of this skill selects `run-learn-session` unless the request explicitly identifies one current session, one stable route ID, and one owner result for `record-learn-route-result`. Pre-session trigger assessment and pre-session trigger closeout belong to the trigger owner.
 
 An unknown, missing, combined, or ambiguous operation stops before writes. Operation selection does not grant contributor confirmation, destination mutation, workflow continuation, or external-system authority.
 
