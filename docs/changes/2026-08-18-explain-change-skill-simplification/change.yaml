@@ -64,12 +64,9 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: verify
-  next_stage: none
-  blocker:
-    code: validation-failed
-    evidence:
-      - docs/changes/2026-08-18-explain-change-skill-simplification/verify-report.md
+  current_stage: explain-change
+  next_stage: verify
+  blocker: null
   evidence:
     - docs/proposals/2026-08-18-explain-change-skill-simplification.md
     - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/reviews/proposal-review-r3.md
@@ -130,6 +127,8 @@ workflow_state:
     - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r2.md
     - docs/changes/2026-08-18-explain-change-skill-simplification/explain-change.md
     - docs/changes/2026-08-18-explain-change-skill-simplification/verify-report.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-final-r3.yaml
+    - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r3.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -156,15 +155,16 @@ workflow_state:
     latest_review:
       status: approved
       stage: code-review
-      round: final-r2
+      round: final-r3
       artifact_id: plan
       occurrence: final
       milestone_id: none
       evidence:
-        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r2.md
+        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r3.md
     final_closeout:
       readiness: not-ready
       reasons:
+        - explain-change-pending
         - verify-pending
         - pr-handoff-pending
       evidence:
@@ -181,9 +181,9 @@ workflow:
       bound_at: "2026-08-18T14:00:00-07:00"
       completion:
         rule: verify records one final result for the current handoff revision
-    status: paused
-    current_stage: verify
-    stop_reason: verification-failed
+    status: active
+    current_stage: explain-change
+    stop_reason: null
     evidence:
       - docs/proposals/2026-08-18-explain-change-skill-simplification.md
       - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/reviews/proposal-review-r3.md
@@ -244,6 +244,8 @@ workflow:
       - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r2.md
       - docs/changes/2026-08-18-explain-change-skill-simplification/explain-change.md
       - docs/changes/2026-08-18-explain-change-skill-simplification/verify-report.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-final-r3.yaml
+      - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r3.md
 
 artifacts:
   spec: specs/explain-change-skill-simplification.md
@@ -336,3 +338,5 @@ changed_files:
   - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r2.md
   - docs/changes/2026-08-18-explain-change-skill-simplification/explain-change.md
   - docs/changes/2026-08-18-explain-change-skill-simplification/verify-report.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-final-r3.yaml
+  - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r3.md
