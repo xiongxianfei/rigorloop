@@ -10815,6 +10815,12 @@ class ExplainChangeSkillSimplificationTests(unittest.TestCase):
         self.assertTrue(reference)
         self.assertTrue(skeleton)
 
+    def test_review_resolution_summary_preserves_cross_skill_literals(self) -> None:
+        skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        for phrase in ("review-resolution.md", "concise", "duplicate transcript"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, skill)
+
     def test_signal_action_resource_and_write_contracts_fail_closed(self) -> None:
         package = "\n".join(
             path.read_text(encoding="utf-8")
