@@ -64,8 +64,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: review-resolution
-  next_stage: code-review
+  current_stage: code-review
+  next_stage: final-holistic-code-review
   blocker: null
   evidence:
     - docs/proposals/2026-08-18-explain-change-skill-simplification.md
@@ -121,9 +121,11 @@ workflow_state:
     - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/m4-ordered-evidence-tail.md
     - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m4-r1.yaml
     - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m4-r1.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m4-r2.yaml
+    - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m4-r2.md
   planned_work:
     plan_artifact_id: plan
-    current_milestone: M4
+    current_milestone: none
     initialization_basis:
       review_id: plan-review-r2
       review_round: r2
@@ -142,23 +144,21 @@ workflow_state:
         state: closed
       M4:
         kind: implementation
-        state: resolution-needed
-    remaining_implementation_milestones:
-      - M4
+        state: closed
+    remaining_implementation_milestones: []
     latest_review:
-      status: changes-requested
+      status: approved
       stage: code-review
-      round: r1
+      round: r2
       artifact_id: plan
       occurrence: milestone
       milestone_id: M4
       evidence:
-        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m4-r1.md
+        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m4-r2.md
     final_closeout:
       readiness: not-ready
       reasons:
-        - implementation-milestones-open
-        - milestone-review-pending
+        - lifecycle-gates-open
         - explain-change-pending
         - verify-pending
         - pr-handoff-pending
@@ -177,7 +177,7 @@ workflow:
       completion:
         rule: verify records one final result for the current handoff revision
     status: active
-    current_stage: review-resolution
+    current_stage: code-review
     stop_reason: null
     evidence:
       - docs/proposals/2026-08-18-explain-change-skill-simplification.md
@@ -233,6 +233,8 @@ workflow:
       - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/m4-ordered-evidence-tail.md
       - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m4-r1.yaml
       - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m4-r1.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m4-r2.yaml
+      - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m4-r2.md
 
 artifacts:
   spec: specs/explain-change-skill-simplification.md
@@ -253,8 +255,8 @@ tests:
   - Static semantic, literal, package, generated-output, adapter, and measurement proof without target-agent runtime execution.
 
 review:
-  status: changes-requested
-  unresolved_items: 2
+  status: approved
+  unresolved_items: 0
 
 validation: []
 
