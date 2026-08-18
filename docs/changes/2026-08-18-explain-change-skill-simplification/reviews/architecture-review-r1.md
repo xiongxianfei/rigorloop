@@ -5,6 +5,8 @@ Stage: architecture-review
 Round: r1
 Reviewer: Codex independent architecture-review context
 Review surface: canonical-architecture-update
+Target: `docs/architecture/system/architecture.md` and `docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md`
+Reviewed artifact: canonical architecture package at commit `deb347cb`
 Reviewed repository revision: `deb347cb63e7b1cd7a84073e57f4a5f430eb0277`
 Review date: 2026-08-18
 Recording status: recorded
@@ -57,13 +59,13 @@ The design closes the contradiction that triggered `EXCSIM-CR2`. It preserves th
 ## Prepared settlement manifest
 
 Manifest ID: `architecture-review-r1-settlement`
-Manifest state: `prepared`
+Manifest state: `complete`
 Review subject identity: `sha256:8b367791fb90aacd81005c761cc252bcb982e2ef7d48fef436d93c197a254abe+sha256:d7b1fb1da32f22b28e9fd302e3a0881574563445a2e96c02cb00b4c97a1b76ea`
 Governing basis identity: `architecture-assessment-r2/spec-review-r2/spec-sha256:826cbf5c07be5dab2c4e4f2e4631799ba2caac6f46a4570fc78b7b0c3f4f3e15`
 
 | Order | Target | Kind | Path | Content identity | Authoring evidence | Pre-state | Disposition | Expected post-state | Progress |
 | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | `adr-ordered-tail` | ADR | `docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md` | `sha256:d7b1fb1da32f22b28e9fd302e3a0881574563445a2e96c02cb00b4c97a1b76ea` | `architecture-authoring-r1` | `review-required` | approved | `accepted` | pending |
-| 2 | `architecture-system` | canonical architecture | `docs/architecture/system/architecture.md` | `sha256:8b367791fb90aacd81005c761cc252bcb982e2ef7d48fef436d93c197a254abe` | `architecture-authoring-r1` | `review-required` | approved | `approved` | pending |
+| 1 | `adr-ordered-tail` | ADR | `docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md` | `sha256:d7b1fb1da32f22b28e9fd302e3a0881574563445a2e96c02cb00b4c97a1b76ea` | `architecture-authoring-r1` | `review-required` | approved | `accepted` | complete |
+| 2 | `architecture-system` | canonical architecture | `docs/architecture/system/architecture.md` | `sha256:8b367791fb90aacd81005c761cc252bcb982e2ef7d48fef436d93c197a254abe` | `architecture-authoring-r1` | `review-required` | approved | `approved` | complete |
 
-No architecture approval or workflow routing is claimed until this exact manifest is settled.
+Settlement result: `settled`. Both exact targets matched their prepared identities and pre-states; no unrelated artifact entry was changed.
