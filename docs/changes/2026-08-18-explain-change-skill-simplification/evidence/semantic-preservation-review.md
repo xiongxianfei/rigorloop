@@ -15,7 +15,7 @@ No rule was silently deleted, duplicated as an independent owner, or moved behin
 
 ## Literal disposition
 
-All 15 literal IDs have one final treatment. Canonical explanation and legacy portable paths remain available; review-resolution and readiness literals retain their cross-skill meanings; `Workflow handback` replaces misleading package-local readiness wording; EC0 through EC3 remain validator-consumed names. Existing readability, evidence-scan, closeout, and upstream-read-only consumers remain satisfied.
+All 15 literal IDs have one final treatment. Canonical explanation and legacy portable paths remain available; the root skill preserves the concise `review-resolution.md` summary and no-transcript-duplication contract while the governed reference owns closeout procedure; `Workflow handback` replaces misleading package-local readiness wording; EC0 through EC3 remain validator-consumed names. Existing readability, evidence-scan, closeout, and upstream-read-only consumers remain satisfied.
 
 ## Boundary and architecture
 

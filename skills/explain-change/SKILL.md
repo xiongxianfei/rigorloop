@@ -50,13 +50,13 @@ Resolve action, target, prior identity, reviewed basis, and content; validate an
 
 ## Content and claims
 
-Trace decisions to changes and tests. Include pre-verify evidence, alternatives, scope, risks, and disposition counts with a resolution link.
+Trace decisions/tests, proof, options, scope, risks. For material findings, link `review-resolution.md` with concise counts; no duplicate transcript detail.
 
-Never claim final verify, branch readiness, `pr-body-ready`, `pr-open-ready`, hosted-CI completion, release, deployment, lifecycle completion, artifact settlement, milestone state, routing, or external mutation. Only workflow decides whether verify is next.
+Never claim final verify, branch readiness, `pr-body-ready`, `pr-open-ready`, hosted-CI completion, release, deployment, lifecycle completion, artifact settlement, milestone state, routing, or external mutation. Workflow decides whether verify is next.
 
 ## Stop conditions
 
-Stop on ambiguous diff, target, authority, identity, signal, resource, open finding, unsafe content, or failed read-back. Name the blocker and owner.
+Stop on ambiguous diff, target, authority, identity, signal, resource, open finding, unsafe content, or failed read-back. Name blocker and owner.
 
 ## Evidence collection efficiency
 
