@@ -9,44 +9,14 @@ artifact_states:
     kind: spec
     path: specs/explain-change-skill-simplification.md
     role: primary
-    lifecycle_state: approved
-    review:
-      id: spec-review-r1
-      artifact_id: spec
-      outcome: approved
-      record: docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r1.md
-      round: r1
-  plan:
-    kind: plan
-    path: docs/plans/2026-08-18-explain-change-skill-simplification.md
-    role: primary
-    lifecycle_state: active
-    review:
-      id: plan-review-r1
-      artifact_id: plan
-      outcome: approved
-      record: docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r1.md
-      round: r1
-  test-spec:
-    kind: test-spec
-    path: specs/explain-change-skill-simplification.test.md
-    role: primary
-    lifecycle_state: active
-    review:
-      id: test-spec-review-r2
-      artifact_id: test-spec
-      outcome: approved
-      record: docs/changes/2026-08-18-explain-change-skill-simplification/reviews/test-spec-review-r2.md
-      round: r2
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-18-explain-change-skill-simplification/evidence/spec-revision-r1.md
 
 workflow_state:
-  lifecycle_state: paused
-  current_stage: final-holistic-code-review
+  lifecycle_state: active
+  current_stage: spec
   next_stage: spec
-  blocker:
-    code: owner-decision
-    evidence:
-      - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r1.md
+  blocker: null
   evidence:
     - docs/proposals/2026-08-18-explain-change-skill-simplification.md
     - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/reviews/proposal-review-r3.md
@@ -82,45 +52,7 @@ workflow_state:
     - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m3-r1.md
     - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-final-r1.yaml
     - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r1.md
-  planned_work:
-    plan_artifact_id: plan
-    current_milestone: none
-    initialization_basis:
-      review_id: plan-review-r1
-      review_round: r1
-      review_record: docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r1.md
-      reviewed_artifact_path: docs/plans/2026-08-18-explain-change-skill-simplification.md
-      reviewed_revision: 11179cb7
-    milestones:
-      M1:
-        kind: implementation
-        state: closed
-      M2:
-        kind: implementation
-        state: closed
-      M3:
-        kind: implementation
-        state: closed
-    remaining_implementation_milestones: []
-    latest_review:
-      status: blocked
-      stage: code-review
-      round: final-r1
-      artifact_id: plan
-      occurrence: final
-      milestone_id: none
-      evidence:
-        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r1.md
-    final_closeout:
-      readiness: not-ready
-      reasons:
-        - review-findings-open
-        - explain-change-pending
-        - verify-pending
-        - pr-handoff-pending
-      evidence:
-        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r1.md
-        - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-initialization.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/spec-revision-r1.md
 
 workflow:
   automation:
@@ -132,9 +64,9 @@ workflow:
       bound_at: "2026-08-18T14:00:00-07:00"
       completion:
         rule: verify records one final result for the current handoff revision
-    status: paused
-    current_stage: final-holistic-code-review
-    stop_reason: EXCSIM-CR2 owner decision required
+    status: active
+    current_stage: spec
+    stop_reason: null
     evidence:
       - docs/proposals/2026-08-18-explain-change-skill-simplification.md
       - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/reviews/proposal-review-r3.md
@@ -170,11 +102,10 @@ workflow:
       - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m3-r1.md
       - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-final-r1.yaml
       - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r1.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/spec-revision-r1.md
 
 artifacts:
   spec: specs/explain-change-skill-simplification.md
-  plan: docs/plans/2026-08-18-explain-change-skill-simplification.md
-  test_spec: specs/explain-change-skill-simplification.test.md
 
 requirements:
   - Reduce loaded procedure for all four explain-change assemblies while preserving actual-diff grounding, evidence truthfulness, scope, validation gaps, stops, claims, and resource safety.
@@ -221,3 +152,4 @@ changed_files:
   - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-test-spec-review-r2.yaml
   - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/test-spec-review-r2.md
   - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/workflow-automation-target-verify.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/spec-revision-r1.md
