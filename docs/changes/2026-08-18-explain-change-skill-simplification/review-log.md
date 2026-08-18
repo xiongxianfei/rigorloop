@@ -13,6 +13,7 @@ This ledger records formal lifecycle reviews for the governed explain-change ski
 | `test-spec-review-r2` | `test-spec-review` | `r2` | `specs/explain-change-skill-simplification.test.md` at `sha256:d1bcde9a4e040ed489b3d9abbfcb15117a76ef0ccfa632963b3a1534d3b3df8b` | `reviews/test-spec-review-r2.md` | `approved` | 0 | `recorded` |
 | `code-review-m1-r1` | `code-review` | `r1` | milestone M1 range `fb8bdcdc..168a130c` | `reviews/code-review-m1-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m2-r2` | `code-review` | `r2` | milestone M2 range `f9b5f8e1..185be18c` | `reviews/code-review-m2-r2.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-m3-r1` | `code-review` | `r1` | milestone M3 range `d0edf0b1..359827be` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 
