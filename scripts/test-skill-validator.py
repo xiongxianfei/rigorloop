@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import re
 import shutil
 import subprocess
@@ -3573,7 +3574,10 @@ Use the inputs somehow and produce a useful result.
                 self.assertNotIn(term, body)
 
     def test_vision_skill_defines_state_based_boundaries_and_readme_marker_contract(self) -> None:
-        body = (ROOT / "skills" / "vision" / "SKILL.md").read_text(encoding="utf-8")
+        root = ROOT / "skills" / "vision"
+        body = (root / "SKILL.md").read_text(encoding="utf-8")
+        body += "\n" + (root / "references" / "strategic-vision-authoring.md").read_text(encoding="utf-8")
+        body += "\n" + (root / "references" / "readme-vision-sync.md").read_text(encoding="utf-8")
         required_terms = [
             "name: vision",
             "project vision and matching README front-matter",
@@ -3634,7 +3638,9 @@ Use the inputs somehow and produce a useful result.
                 self.assertNotIn(term, body)
 
     def test_vision_skill_quality_refinement_contract(self) -> None:
-        body = (ROOT / "skills" / "vision" / "SKILL.md").read_text(encoding="utf-8")
+        root = ROOT / "skills" / "vision"
+        body = (root / "SKILL.md").read_text(encoding="utf-8")
+        body += "\n" + (root / "references" / "strategic-vision-authoring.md").read_text(encoding="utf-8")
         required_terms = [
             "## Drafting Heuristics",
             "alternative class or specific tool",
@@ -3671,20 +3677,22 @@ Use the inputs somehow and produce a useful result.
                 self.assertNotIn(term, body)
 
     def test_vision_skill_quality_refinement_structure(self) -> None:
-        body = (ROOT / "skills" / "vision" / "SKILL.md").read_text(encoding="utf-8")
+        root = ROOT / "skills" / "vision"
+        body = (root / "SKILL.md").read_text(encoding="utf-8")
+        strategic = (root / "references" / "strategic-vision-authoring.md").read_text(encoding="utf-8")
+        readme = (root / "references" / "readme-vision-sync.md").read_text(encoding="utf-8")
 
         workflow_index = body.index("## Workflow Fit")
         inputs_index = body.index("## Inputs To Read")
         state_index = body.index("## State-Based Behavior")
-        vision_content_index = body.index("## Vision Content")
-        drafting_index = body.index("## Drafting Heuristics")
-        readme_index = body.index("## README Front-Matter")
+        resource_index = body.index("## Resource classification")
 
         self.assertLess(workflow_index, inputs_index)
         self.assertLess(inputs_index, state_index)
-        self.assertLess(state_index, vision_content_index)
-        self.assertLess(vision_content_index, drafting_index)
-        self.assertLess(drafting_index, readme_index)
+        self.assertLess(state_index, resource_index)
+        self.assertLess(strategic.index("## Strategic Positioning"), strategic.index("## Vision Content"))
+        self.assertLess(strategic.index("## Vision Content"), strategic.index("## Drafting Heuristics"))
+        self.assertIn("## README Front-Matter", readme)
 
         self.assertNotIn("| Mode |", body)
         self.assertNotIn("| `create` |", body)
@@ -3692,7 +3700,9 @@ Use the inputs somehow and produce a useful result.
         self.assertNotIn("| `mirror` |", body)
 
     def test_vision_skill_strategic_positioning_contract(self) -> None:
-        body = (ROOT / "skills" / "vision" / "SKILL.md").read_text(encoding="utf-8")
+        root = ROOT / "skills" / "vision"
+        body = (root / "SKILL.md").read_text(encoding="utf-8")
+        body += "\n" + (root / "references" / "strategic-vision-authoring.md").read_text(encoding="utf-8")
         required_terms = [
             "## Strategic Positioning",
             "project category",
@@ -10517,6 +10527,137 @@ class SpecSkillSimplificationTests(unittest.TestCase):
             self.assertIn(phrase, self.skill.lower())
         for claim in ("spec-review approval", "architecture readiness", "implementation readiness", "verification", "branch readiness", "PR readiness"):
             self.assertIn(claim.lower(), self.skill.lower())
+
+
+class VisionSkillProgressiveDisclosureLedgerTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.change = ROOT / "docs" / "changes" / "2026-08-17-vision-skill-progressive-disclosure"
+
+    def load(self, name: str) -> dict:
+        return json.loads((self.change / name).read_text(encoding="utf-8"))
+
+    def test_rule_owners_are_closed_before_consistency(self) -> None:
+        allowed = {"inline", "strategic-reference", "readme-reference", "vision-asset", "positioning-asset", "change-evidence", "existing-validator"}
+        dispositions = {"preserve", "clarify", "add", "move"}
+        rules = self.load("vision-rule-disposition.yaml")["rules"]
+        invalid = self.load("fixtures/invalid-rule-owner.yaml")["rules"]
+        invalid_disposition = self.load("fixtures/invalid-rule-disposition.yaml")["rules"]
+        self.assertTrue(rules)
+        self.assertTrue(all(row["owner"] in allowed for row in rules))
+        self.assertTrue(all(row["disposition"] in dispositions for row in rules))
+        self.assertTrue(any(row["owner"] not in allowed for row in invalid))
+        self.assertTrue(any(row["disposition"] not in dispositions for row in invalid_disposition))
+        self.assertEqual(len({row["rule_id"] for row in rules}), len(rules))
+
+    def test_literal_classifications_are_closed_before_consistency(self) -> None:
+        allowed = {"normative-contract", "parser-or-package-contract", "test-only-incidental", "historical-fixture", "obsolete"}
+        dispositions = {"preserve", "add", "move-reference", "move-asset", "forbid"}
+        literals = self.load("vision-literal-compatibility.yaml")["literals"]
+        invalid = self.load("fixtures/invalid-literal-classification.yaml")["literals"]
+        invalid_disposition = self.load("fixtures/invalid-literal-disposition.yaml")["literals"]
+        self.assertTrue(literals)
+        self.assertTrue(all(row["classification"] in allowed for row in literals))
+        self.assertTrue(all(row["disposition"] in dispositions for row in literals))
+        self.assertTrue(any(row["classification"] not in allowed for row in invalid))
+        self.assertTrue(any(row["disposition"] not in dispositions for row in invalid_disposition))
+        self.assertEqual(len({row["literal_id"] for row in literals}), len(literals))
+
+    def test_vocabularies_have_unknown_value_fixtures(self) -> None:
+        vocabularies = self.load("fixtures/vision-simplification-scenarios.yaml")["vocabularies"]
+        self.assertEqual(set(vocabularies), {"operation", "significance", "strategic_context", "readme_context", "positioning_action", "readme_action", "vision_asset_context", "positioning_asset_context", "assembly", "marker_state", "result"})
+        for name, vocabulary in vocabularies.items():
+            with self.subTest(vocabulary=name):
+                self.assertTrue(vocabulary["allowed"])
+                self.assertIn("not_in_vocabulary", vocabulary["invalid"])
+                self.assertFalse(set(vocabulary["allowed"]) & set(vocabulary["invalid"]))
+
+    def test_assemblies_scenarios_and_architecture_gate_are_complete(self) -> None:
+        fixture = self.load("fixtures/vision-simplification-scenarios.yaml")
+        profiles = fixture["assembly_profiles"]
+        self.assertEqual({row["assembly"] for row in profiles}, set(fixture["vocabularies"]["assembly"]["allowed"]))
+        self.assertEqual(sum(row["primary"] for row in profiles), 3)
+        self.assertEqual(len({row["id"] for row in fixture["scenarios"]}), len(fixture["scenarios"]))
+        required = {"operation", "state", "assembly", "authority", "marker", "positioning", "asset", "manifest", "ordering", "retry", "resource", "compatibility", "measurement", "architecture", "retired-path", "write-boundary"}
+        self.assertTrue(required <= {row["family"] for row in fixture["scenarios"]})
+        self.assertEqual(set(fixture["architecture_triggers"]), {"new persisted multi-file transaction schema", "new classification-state owner", "executable README synchronizer", "new generated-content owner", "independent policy owner"})
+
+    def test_baseline_is_exact_and_pre_split_identity_is_preserved(self) -> None:
+        baseline = (self.change / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
+        for value in ("VA0", "VA0S", "VA1", "VA1S", "VA2", "VA2S", "2,268", "15,845", "627a26b862d04acb001470ba0ef64138071a80e8dd67b2eccf47a41770dcb229", "Total canonical vision package"):
+            self.assertIn(value.lower(), baseline.lower())
+        package = ROOT / "skills" / "vision"
+        paths = sorted(path.relative_to(package).as_posix() for path in package.rglob("*") if path.is_file())
+        if paths == ["SKILL.md"]:
+            self.assertEqual(hashlib.sha256((package / "SKILL.md").read_bytes()).hexdigest(), "627a26b862d04acb001470ba0ef64138071a80e8dd67b2eccf47a41770dcb229")
+        else:
+            self.assertEqual(paths, ["SKILL.md", "assets/strategic-positioning-skeleton.md", "assets/vision-skeleton.md", "references/readme-vision-sync.md", "references/strategic-vision-authoring.md"])
+
+
+class VisionSkillProgressiveDisclosureTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "skills" / "vision"
+        self.skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        self.strategic = (self.root / "references" / "strategic-vision-authoring.md").read_text(encoding="utf-8")
+        self.readme = (self.root / "references" / "readme-vision-sync.md").read_text(encoding="utf-8")
+        self.vision_asset = (self.root / "assets" / "vision-skeleton.md").read_text(encoding="utf-8")
+        self.positioning_asset = (self.root / "assets" / "strategic-positioning-skeleton.md").read_text(encoding="utf-8")
+        self.package = "\n".join((self.skill, self.strategic, self.readme))
+
+    def test_package_inventory_resource_verbs_and_six_assemblies_are_exact(self) -> None:
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["readme-vision-sync.md", "strategic-vision-authoring.md"])
+        self.assertEqual(sorted(path.name for path in (self.root / "assets").iterdir()), ["strategic-positioning-skeleton.md", "vision-skeleton.md"])
+        self.assertFalse(any(path.suffix == ".py" for path in self.root.rglob("*")))
+        for mapping in ("READ `references/strategic-vision-authoring.md`", "READ `references/readme-vision-sync.md`", "COPY `assets/vision-skeleton.md`", "COPY `assets/strategic-positioning-skeleton.md`"):
+            self.assertIn(mapping, self.skill)
+        rows = [line for line in self.skill.splitlines() if line.startswith("| `VA")]
+        for assembly in ("VA0-readme-sync", "VA0S-readme-skip", "VA1-editorial-sync", "VA1S-editorial-skip", "VA2-strategic-sync", "VA2S-strategic-skip"):
+            self.assertEqual(sum(assembly in row for row in rows), 1)
+
+    def test_universal_operations_actions_authority_and_claims_remain_inline(self) -> None:
+        for value in ("establish-vision", "revise-vision", "sync-readme", "editorial", "substantive-nonmaterial", "material-repositioning", "synchronize-existing", "insert-and-synchronize", "full-rewrite", "partial-retry-required", "blocked-before-write"):
+            self.assertIn(value, self.skill)
+        for phrase in ("`CONSTITUTION.md` outranks `VISION.md`", "`VISION.md` is canonical", "only supported project-vision artifact", "loading a reference or copying an asset never grants", "privacy", "stop before", "do not claim", "does not hand off automatically"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        self.assertNotIn("## Modes", self.skill)
+
+    def test_references_have_distinct_procedure_and_no_authority_grant(self) -> None:
+        for phrase in ("project category", "primary user", "primary pain", "primary promise", "core mechanism", "alternatives", "tradeoff", "compatibility surfaces", "refusals", "falsifiability", "MUST NOT exceed 900 words", "methodology-as-product"):
+            self.assertIn(phrase.lower(), self.strategic.lower())
+        for phrase in ("<!-- vision:start -->", "<!-- vision:end -->", "first H1 block", "preserve every byte outside", "derived", "idempot"):
+            self.assertIn(phrase.lower(), self.readme.lower())
+        for reference in (self.strategic, self.readme):
+            self.assertIn("parent skill owns", reference.lower())
+            self.assertNotIn("grants authority", reference.lower())
+
+    def test_assets_are_structural_complete_and_policy_free(self) -> None:
+        for heading in ("## Pitch", "## What makes this different", "## Who it is for", "## Who it is not for", "## What it commits to", "## What it refuses to be", "## What would prove this wrong"):
+            self.assertIn(heading, self.vision_asset)
+        for heading in ("## Project category", "## Primary user", "## Primary pain", "## Primary promise", "## Core mechanism", "## Alternatives", "## Tradeoff", "## Compatibility surfaces", "## Refusals", "## Falsifiability"):
+            self.assertIn(heading, self.positioning_asset)
+        self.assertIn("does not independently override it", self.positioning_asset)
+        for asset in (self.vision_asset, self.positioning_asset):
+            for forbidden in ("authority is", "lifecycle", "review status", "marker parsing", "word limit"):
+                self.assertNotIn(forbidden, asset.lower())
+
+    def test_skip_manifest_write_order_retry_and_resource_failures_are_closed(self) -> None:
+        for phrase in ("not-evaluated-under-exact-skip", "equal prior and intended identities", "authorized change-local authoring evidence before its first target write", "otherwise stop and require architecture before planning", "zero-write skip has no changed files", "claims neither synchronization nor marker validity", "write source-first", "immediately before README", "read-back of every required", "committed and pending targets", "portable cross-session recovery", "missing, unreadable, escaped, stale, contradictory, or mixed-version", "do not reconstruct"):
+            self.assertIn(phrase.lower(), self.skill.lower())
+        for claim in ("review approval", "implementation", "validation", "verification", "branch readiness", "PR readiness", "release", "deployment"):
+            self.assertIn(claim.lower(), self.skill.lower())
+
+    def test_every_loaded_procedural_profile_decreases(self) -> None:
+        resources = {
+            "VA0": self.skill + self.readme,
+            "VA0S": self.skill,
+            "VA1": self.skill + self.readme,
+            "VA1S": self.skill,
+            "VA2": self.skill + self.strategic + self.readme,
+            "VA2S": self.skill + self.strategic,
+        }
+        for name, assembled in resources.items():
+            with self.subTest(profile=name):
+                self.assertLess(len(assembled.encode("utf-8")), 15845)
+                self.assertLess(len(assembled.split()), 2268)
 
 
 class LearnSkillSimplificationLedgerTests(unittest.TestCase):
