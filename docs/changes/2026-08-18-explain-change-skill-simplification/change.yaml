@@ -50,11 +50,17 @@ artifact_states:
       outcome: approved
       record: docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r2.md
       round: r2
+  test-spec:
+    kind: test-spec
+    path: specs/explain-change-skill-simplification.test.md
+    role: primary
+    lifecycle_state: authoring
+    authoring_evidence: docs/changes/2026-08-18-explain-change-skill-simplification/evidence/planned-work-and-test-spec-migration-r1.md
 
 workflow_state:
   lifecycle_state: active
-  current_stage: architecture-review
-  next_stage: plan
+  current_stage: plan-review
+  next_stage: test-spec
   blocker: null
   evidence:
     - docs/proposals/2026-08-18-explain-change-skill-simplification.md
@@ -103,9 +109,10 @@ workflow_state:
     - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r2.md
     - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-initialization-r2.md
     - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-settlement-retry-r2.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/planned-work-and-test-spec-migration-r1.md
   planned_work:
     plan_artifact_id: plan
-    current_milestone: M1
+    current_milestone: M4
     initialization_basis:
       review_id: plan-review-r2
       review_round: r2
@@ -115,29 +122,27 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: planned
+        state: closed
       M2:
         kind: implementation
-        state: planned
+        state: closed
       M3:
         kind: implementation
-        state: planned
+        state: closed
       M4:
         kind: implementation
         state: planned
     remaining_implementation_milestones:
-      - M1
-      - M2
-      - M3
       - M4
     latest_review:
-      status: not-started
+      status: approved
       stage: code-review
-      round: none
+      round: r1
       artifact_id: plan
-      occurrence: none
-      milestone_id: none
-      evidence: []
+      occurrence: milestone
+      milestone_id: M3
+      evidence:
+        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m3-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -161,7 +166,7 @@ workflow:
       completion:
         rule: verify records one final result for the current handoff revision
     status: active
-    current_stage: plan
+    current_stage: test-spec
     stop_reason: null
     evidence:
       - docs/proposals/2026-08-18-explain-change-skill-simplification.md
@@ -210,6 +215,7 @@ workflow:
       - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r2.md
       - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-initialization-r2.md
       - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-settlement-retry-r2.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/planned-work-and-test-spec-migration-r1.md
 
 artifacts:
   spec: specs/explain-change-skill-simplification.md
@@ -275,3 +281,4 @@ changed_files:
   - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r2.md
   - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-initialization-r2.md
   - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-settlement-retry-r2.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/planned-work-and-test-spec-migration-r1.md
