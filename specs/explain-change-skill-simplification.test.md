@@ -8,19 +8,21 @@
 
 - Spec: `specs/explain-change-skill-simplification.md`
 - Plan: `docs/plans/2026-08-18-explain-change-skill-simplification.md`
-- Architecture/ADRs: architecture not required; assessment at `docs/changes/2026-08-18-explain-change-skill-simplification/architecture-assessment.md`
+- Architecture: `docs/architecture/system/architecture.md`
+- ADR: `docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md`
 
 ## Input artifact identities
 
 | Input | Path | Artifact ID | Review evidence |
 | --- | --- | --- | --- |
-| Feature spec | `specs/explain-change-skill-simplification.md` | `spec` | `spec-review-r1` at `docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r1.md` |
-| Plan | `docs/plans/2026-08-18-explain-change-skill-simplification.md` | `plan` | `plan-review-r1` at `docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r1.md` |
-| Architecture assessment | `docs/changes/2026-08-18-explain-change-skill-simplification/architecture-assessment.md` | not applicable | `architecture-not-required` |
+| Feature spec | `specs/explain-change-skill-simplification.md` | `spec` | `spec-review-r2` at `docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r2.md` |
+| Plan | `docs/plans/2026-08-18-explain-change-skill-simplification.md` | `plan` | `plan-review-r2` at `docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r2.md` |
+| Canonical architecture | `docs/architecture/system/architecture.md` | `architecture-system` | `architecture-review-r1` |
+| Ordered evidence-tail ADR | `docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md` | `adr-ordered-tail` | `architecture-review-r1` |
 
 ## Testing strategy
 
-Use deterministic standard-library fixtures and repository-owned validators. Focused contract tests establish classification, resource loading, mutation boundaries, identity semantics, and negative claims before canonical package edits. Existing workflow tests prove final-review and evidence-tail compatibility. Existing build and adapter suites prove generated, archived, release-candidate, and clean-installed resource integrity. Static measurement proves every real loaded assembly decreases without treating relocation as deletion.
+Use deterministic standard-library fixtures and repository-owned validators. Focused contract tests establish classification, resource loading, mutation boundaries, identity semantics, and negative claims before canonical package edits. Workflow code-state tests prove exact ancestry and path-and-field ownership, and one real temporary Git repository proves the complete `S -> R -> E -> verify` path. Existing build and adapter suites prove generated, archived, release-candidate, and clean-installed resource integrity. Static measurement proves every real loaded assembly decreases without treating relocation as deletion.
 
 No target-agent runtime, network service, credentials, live PR, transcript grading, or manual semantic-review acceptance stage is used.
 
@@ -51,12 +53,12 @@ No target-agent runtime, network service, credentials, live PR, transcript gradi
 | R21 | T08, T18 | contract | No prepared transaction or new owner. |
 | R22 | T09 | contract | Complete reviewed-change basis. |
 | R23 | T09, T10 | integration | Reviewed diff excludes evidence tail. |
-| R24 | T09 | contract | Recording identity separate; no self-reference. |
-| R25 | T09, T17 | integration | Workflow/verify read-only derivation. |
-| R26 | T10 | integration | Exact direct-child explanation-only tail. |
-| R27 | T11 | integration | Forbidden tail contents. |
-| R28 | T11 | integration | Broader tail stales review. |
-| R29 | T10, T11 | integration | Later verify evidence alone is non-staling. |
+| R24 | T09, T19 | integration, end-to-end | Four distinct revision roles without self-reference. |
+| R25 | T09, T17, T19 | integration, end-to-end | Git-derived recording identities and stage-owned writes. |
+| R26 | T10, T19 | integration, end-to-end | Exact non-merge direct-child `S -> R -> E`. |
+| R27 | T10, T11, T19 | integration, end-to-end | Closed path-and-field sets for R and E. |
+| R28 | T10, T11, T19 | integration, end-to-end | Exact partial retry; every broader or reordered tail stales review. |
+| R29 | T10, T19 | integration, end-to-end | Later verify evidence alone is non-staling. |
 | R30 | T09, T12 | contract | Required governed metadata. |
 | R31 | T12 | integration | Review closeout and concise summary. |
 | R32 | T13 | contract | Closed Workflow handback fields. |
@@ -70,20 +72,20 @@ No target-agent runtime, network service, credentials, live PR, transcript gradi
 | R40 | T15 | contract | Every assembly strictly decreases. |
 | R41 | T16 | integration | Canonical-through-installed parity. |
 | R42 | T17 | contract | Published-text portability. |
-| R43 | T01-T18 | contract, integration | Deterministic acceptance only. |
+| R43 | T01-T19 | contract, integration, end-to-end | Deterministic acceptance only. |
 | R44 | T18 | contract | Architecture reassessment trigger. |
 
 ## Acceptance criterion coverage map
 
 | Acceptance criterion | Covered by | Command IDs | First required milestone | Notes |
 | --- | --- | --- | --- | --- |
-| AC1 | T01, T02, T03, T04, T05, T06, T07, T08, T09, T10, T11, T12, T13, T14, T15, T16, T17, T18 | CMD-01, CMD-02, CMD-03, CMD-04, CMD-05, CMD-06, CMD-07, CMD-08, CMD-09, CMD-10 | M1 | Requirement proof starts with the M1 inventory and closes across M2 behavior and M3 package proof. |
+| AC1 | T01-T19 | CMD-01-CMD-12 | M1 | Requirement proof starts with M1 inventory, closes package behavior in M2-M3, and closes the amended evidence-tail contract in M4. |
 | AC2 | T01, T05, T16 | CMD-01, CMD-02, CMD-05, CMD-06, CMD-07, CMD-08 | M2 | Canonical inventory proves one root, one governed reference, one skeleton, and no script; M3 proves packaged parity. |
 | AC3 | T03, T05 | CMD-01 | M2 | Closed signal classification and all four governance/output assemblies are exercised directly. |
 | AC4 | T04, T07, T08 | CMD-01 | M2 | Target-state selection, refresh authority, skeleton composition, and atomic replacement are composed in one proof slice. |
 | AC5 | T08 | CMD-01 | M2 | Concurrency, uncertain replacement, read-back failure, and fresh retry each have a fail-closed outcome. |
-| AC6 | T09, T10 | CMD-03, CMD-04 | M2 | Reviewed subject, content, recording, handoff, and permitted-tail identities remain distinct. |
-| AC7 | T10, T11 | CMD-03, CMD-04 | M2 | The one allowed direct-child tail and every broader or forbidden tail receive opposite deterministic outcomes. |
+| AC6 | T09, T10, T19 | CMD-03, CMD-04, CMD-12 | M4 | Reviewed subject, final-review recording, explanation recording, and handoff identities remain distinct without self-reference. |
+| AC7 | T10, T11, T19 | CMD-03, CMD-04, CMD-12 | M4 | Exact `S -> R -> E`, closed path-and-field sets, partial retry, and every broader or reordered tail receive opposite deterministic outcomes. |
 | AC8 | T13, T17 | CMD-01, CMD-03, CMD-04, CMD-05 | M2 | Handback fields expose explanation-owned state while forbidden readiness and routing claims fail. |
 | AC9 | T07 | CMD-01 | M2 | Untouched historical artifacts remain byte-identical and an authorized refresh adopts the current skeleton. |
 | AC10 | T14 | CMD-01 | M1 | Complete semantic and literal ledgers require one closed disposition and owner for every current item. |
@@ -101,8 +103,9 @@ No target-agent runtime, network service, credentials, live PR, transcript gradi
 | E2 | T05, T08, T09, T12, T13 | Governed durable path loads EC3 and completes its owned work. |
 | E3 | T03 | Malformed signals stop before fallback. |
 | E4 | T04, T07, T08 | Explicit refresh uses whole-file skeleton composition. |
-| E5 | T09, T10 | Direct-child explanation tail preserves reviewed subject. |
-| E6 | T11 | Broader post-review changes stale review reuse. |
+| E5 | T09, T10, T19 | Ordered final-review and explanation commits preserve the reviewed subject. |
+| E6 | T11, T19 | Broader post-review paths or fields stale review reuse. |
+| E7 | T10, T11, T19 | One exact `S -> R` interruption may resume with E; intervening or reordered commits may not. |
 
 ## Proof map
 
@@ -112,16 +115,16 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | Proof obligation ID | Coverage state | Governing requirement IDs | Boundary or interaction IDs | Test case IDs | Proof level | Automation mode | Command IDs | Evidence artifact | Required milestone | Manual procedure IDs | Uncovered gap ID |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | PRF-001 | covered | R6, R7, R9, R10, R11, R12, R13, R32, R37 | BND-INPUT-001 | T03, T04, T13, T14 | contract | automated | CMD-01 | M1/M2 evidence | M2 | - | - |
-| PRF-002 | covered | R10, R11, R12, R18, R20, R22, R23, R24, R26, R28, R29, R30, R31 | BND-STATE-001 | T04, T07, T08, T09, T10, T11, T12 | integration | automated | CMD-01, CMD-03, CMD-04 | M2 evidence | M2 | - | - |
-| PRF-003 | covered | R7, R8, R10, R11, R13, R22, R25, R26, R27, R28, R31, R35 | BND-AUTH-001 | T03, T04, T09, T10, T11, T12, T13, T17 | contract | automated | CMD-01, CMD-03, CMD-04 | M2 evidence | M2 | - | - |
+| PRF-002 | covered | R10, R11, R12, R18, R20, R22, R23, R24, R26, R28, R29, R30, R31 | BND-STATE-001 | T04, T07, T08, T09, T10, T11, T12, T19 | end-to-end | automated | CMD-01, CMD-03, CMD-04, CMD-12 | M2/M4 evidence | M4 | - | - |
+| PRF-003 | covered | R7, R8, R10, R11, R13, R22, R25, R26, R27, R28, R31, R35 | BND-AUTH-001 | T03, T04, T09, T10, T11, T12, T13, T17, T19 | end-to-end | automated | CMD-01, CMD-03, CMD-04, CMD-12 | M2/M4 evidence | M4 | - | - |
 | PRF-004 | covered | R1, R2, R3, R4, R5, R14, R15, R16, R17, R32, R33, R41, R42 | BND-COMPOSE-001 | T01, T02, T05, T06, T07, T13, T16, T17 | integration | automated | CMD-01, CMD-02, CMD-06, CMD-07, CMD-08 | M2/M3 evidence | M3 | - | - |
-| PRF-005 | covered | R11, R15, R19, R20, R23, R24, R26, R28, R29 | BND-TEMPORAL-001 | T04, T05, T08, T09, T10, T11 | integration | automated | CMD-01, CMD-03, CMD-04 | M2 evidence | M2 | - | - |
-| PRF-006 | covered | R16, R19, R20, R21, R28, R31, R44 | BND-RECOVERY-001 | T06, T08, T11, T12, T18 | contract | automated | CMD-01, CMD-03, CMD-04 | M1/M2 evidence | M2 | - | - |
+| PRF-005 | covered | R11, R15, R19, R20, R23, R24, R26, R27, R28, R29 | BND-TEMPORAL-001 | T04, T05, T08, T09, T10, T11, T19 | end-to-end | automated | CMD-01, CMD-03, CMD-04, CMD-12 | M2/M4 evidence | M4 | - | - |
+| PRF-006 | covered | R16, R19, R20, R21, R28, R31, R44 | BND-RECOVERY-001 | T06, T08, T10, T11, T12, T18, T19 | integration | automated | CMD-01, CMD-03, CMD-04, CMD-12 | M1/M2/M4 evidence | M4 | - | - |
 | PRF-007 | covered | R17, R18, R32, R34, R36, R37, R38, R39, R40, R41, R42 | BND-COMPAT-001 | T07, T13, T14, T15, T16, T17 | integration | automated | CMD-01, CMD-05, CMD-06, CMD-07, CMD-08 | M3 evidence | M3 | - | - |
-| PRF-008 | covered | R13, R16, R19, R20, R25, R26, R41, R43 | BND-ENV-001 | T06, T08, T09, T10, T11, T16, T17 | integration | automated | CMD-01, CMD-03, CMD-04, CMD-08 | M2/M3 evidence | M3 | - | - |
+| PRF-008 | covered | R13, R16, R19, R20, R25, R26, R41, R43 | BND-ENV-001 | T06, T08, T09, T10, T11, T16, T17, T19 | end-to-end | automated | CMD-01, CMD-03, CMD-04, CMD-08, CMD-12 | M2/M3/M4 evidence | M4 | - | - |
 | PRF-009 | covered | R6, R7, R8, R13, R14, R15 | INT-001 | T03, T05 | contract | automated | CMD-01 | M2 evidence | M2 | - | - |
 | PRF-010 | covered | R10, R11, R12, R17, R19, R20 | INT-002 | T04, T07, T08 | integration | automated | CMD-01 | M2 evidence | M2 | - | - |
-| PRF-011 | covered | R22, R23, R24, R26, R27, R28, R29 | INT-003 | T09, T10, T11 | integration | automated | CMD-03, CMD-04 | M2 evidence | M2 | - | - |
+| PRF-011 | covered | R22, R23, R24, R25, R26, R27, R28, R29 | INT-003 | T09, T10, T11, T19 | end-to-end | automated | CMD-03, CMD-04, CMD-12 | M4 evidence | M4 | - | - |
 | PRF-012 | covered | R30, R32, R33, R34, R35 | INT-004 | T12, T13, T17 | contract | automated | CMD-01, CMD-03, CMD-04 | M2 evidence | M2 | - | - |
 | PRF-013 | covered | R2, R4, R5, R14, R16, R36, R38, R39, R40, R41 | INT-005 | T01, T02, T05, T06, T07, T14, T15, T16 | integration | automated | CMD-01, CMD-02, CMD-05, CMD-06, CMD-07, CMD-08, CMD-09 | M3 evidence | M3 | - | - |
 
@@ -135,10 +138,11 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | EC4 | T05 | Late governed discovery loads reference before output. |
 | EC5 | T06 | Missing skeleton blocks durable action. |
 | EC6 | T08 | Read-back mismatch prevents completion. |
-| EC7 | T10 | Later verify evidence does not stale current basis. |
-| EC8 | T11 | Tail containing change metadata is rejected. |
+| EC7 | T10, T19 | Later verify evidence does not stale the closed pre-verify tail. |
+| EC8 | T11 | An unlisted `change.yaml` field in R or E is rejected even though the path is allowed. |
 | EC9 | T07 | Historical layout is untouched until full refresh. |
 | EC10 | T15 | Any non-decreasing assembly fails acceptance. |
+| EC11 | T10, T19 | Exact `S -> R` may resume with E without rewriting R. |
 
 ## Validation commands
 
@@ -155,6 +159,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | CMD-09 | `python scripts/validate-boundary-first.py --check --path specs/explain-change-skill-simplification.md` | existing/configured | implement | M3 | M3 | stop milestone | not applicable | M3 package proof | read-only contract validation |
 | CMD-10 | `python scripts/validate-change-metadata.py docs/changes/2026-08-18-explain-change-skill-simplification/change.yaml` | existing/configured | workflow | all | before every promotion | stop promotion | not applicable | change-local lifecycle evidence | read-only validation |
 | CMD-11 | `python scripts/validate-documentation-prose.py --mode audit --path specs/explain-change-skill-simplification.md --path specs/explain-change-skill-simplification.test.md --path docs/plans/2026-08-18-explain-change-skill-simplification.md` | existing/configured | implement | M3 | M3 | stop milestone | not applicable | M3 package proof | read-only prose audit |
+| CMD-12 | `python scripts/test-workflow-code-state.py` | existing/configured | implement | M4 | M4 | stop milestone | zero tests fail | M4 ordered-tail evidence | temporary Git repositories and read-only repository inspection |
 
 ## Milestone proof map
 
@@ -163,7 +168,8 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | M1 | T14, T15, T18 | none | CMD-01, CMD-10 | M1 preservation inventories and profile baseline | M1 code review | Canonical package remains unchanged. |
 | M2 | T01-T13, T17 | none | CMD-01-CMD-07, CMD-10 | M2 package implementation evidence | M2 code review | Direct behavior and compatibility proof precede settlement. |
 | M3 | T14-T16 | none | CMD-01, CMD-02, CMD-05-CMD-11 | measurements, semantic preservation, and package proof | M3 code review | All-profile and package-chain gates close together. |
-| M4 | T01-T18 | none | CMD-01-CMD-11 | final review, explanation, and verify evidence | final verify | Lifecycle closeout adds no implementation scope. |
+| M4 | T09-T11, T19 | none | CMD-01, CMD-03, CMD-04, CMD-05, CMD-07, CMD-10, CMD-12 | M4 ordered evidence-tail implementation evidence | M4 code review | Direct proof covers identities, fields, ancestry, partial retry, stale cases, and the public workflow path. |
+| M5 | T01-T19 | none | CMD-01-CMD-12 | final review at S, review evidence at R, explanation and handback at E, and later verify evidence | final verify | Lifecycle closeout applies the implemented protocol and adds no implementation scope. |
 
 ## Test cases
 
@@ -275,40 +281,40 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 - Covers: R22-R25, R30; PRF-002, PRF-003, PRF-005, PRF-011
 - Level: integration
-- Command IDs: CMD-03, CMD-04
-- Fixture/setup: approved final review, exact base/subject, explanation path, and workflow handoff
-- Steps: resolve metadata and compare reviewed, content, recording, and handoff identities
-- Expected result: complete non-self-referential basis with reviewed diff ending at subject
+- Command IDs: CMD-03, CMD-04, CMD-12
+- Fixture/setup: approved final review, exact base and subject S, final-review revision R, explanation revision E, explanation path, and workflow handoff
+- Steps: resolve metadata and compare reviewed-subject, final-review-recording, explanation-recording, handoff, content, and governing-basis identities
+- Expected result: complete non-self-referential four-part basis with the reviewed diff ending at S and handoff equal to E
 - Failure proves: identity conflation or stale evidence acceptance
-- Evidence artifact: M2 package evidence
-- Automation location: workflow automation tests
-- Required by milestone: M2
+- Evidence artifact: M4 ordered-tail evidence
+- Automation location: workflow code-state and automation tests
+- Required by milestone: M4
 
-### T10. Permitted explanation evidence tail
+### T10. Permitted ordered evidence tail and partial retry
 
 - Covers: R23, R26, R29; E5, EC7; PRF-002, PRF-003, PRF-005, PRF-008, PRF-011
 - Level: integration
-- Command IDs: CMD-03, CMD-04
-- Fixture/setup: subject revision, one direct-child explanation-only commit, and later verify evidence
-- Steps: validate ancestry, changed paths, content role, and cutoff
-- Expected result: final review remains reusable and later verify evidence is not retroactively claimed
+- Command IDs: CMD-03, CMD-04, CMD-12
+- Fixture/setup: exact direct-child S, R, and E commits; exact `S -> R` interrupted state; and later verify evidence
+- Steps: validate non-merge ancestry, R and E path-and-field manifests, unchanged governing basis, E handoff identity, exact partial retry, and the pre-verify cutoff
+- Expected result: `S -> R -> E` preserves final-review reuse; exact `S -> R` may create only E without repeating R; later verify evidence is not retroactively claimed
 - Failure proves: self-staleness or cutoff confusion
-- Evidence artifact: M2 package evidence
-- Automation location: workflow automation tests
-- Required by milestone: M2
+- Evidence artifact: M4 ordered-tail evidence
+- Automation location: workflow code-state and automation tests
+- Required by milestone: M4
 
-### T11. Forbidden or broader evidence tails
+### T11. Forbidden, reordered, or broader evidence tails
 
 - Covers: R27-R29; E6, EC8; PRF-002, PRF-003, PRF-005, PRF-006, PRF-008, PRF-011
 - Level: integration
-- Command IDs: CMD-03, CMD-04
-- Fixture/setup: product-code, test, spec, plan, generated, change-record, multi-commit, non-child, and changed-basis tails
-- Steps: validate each tail against the closed contract
-- Expected result: every broader tail stales final-review reuse
+- Command IDs: CMD-03, CMD-04, CMD-12
+- Fixture/setup: forbidden product and documentation paths; allowed shared paths with unknown or sibling fields; reversed R/E order; merge, intervening, additional, non-child, changed-basis, and recorded/Git identity mismatch tails
+- Steps: validate each revision's ancestry, exact path set, semantic field set, stage order, and recorded identity against Git
+- Expected result: every unknown, broader, reordered, merged, intervening, or mismatched tail stales final-review reuse
 - Failure proves: stale or unrelated changes bypass final review
-- Evidence artifact: M2 package evidence
-- Automation location: workflow automation tests
-- Required by milestone: M2
+- Evidence artifact: M4 ordered-tail evidence
+- Automation location: workflow code-state and automation tests
+- Required by milestone: M4
 
 ### T12. Governed review closeout and metadata
 
@@ -394,18 +400,31 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 - Level: contract
 - Command IDs: CMD-01, CMD-10
 - Fixture/setup: implementation inventory with and without new persistence, schema, lifecycle, routing, cross-stage, parser, or generator needs
-- Steps: classify architecture applicability before M2 mutation
-- Expected result: existing model proceeds; any new owner blocks and routes to architecture
+- Steps: classify architecture applicability before M4 mutation against accepted ADR-20260818
+- Expected result: the accepted Git-derived model proceeds; any additional persistence, schema, lifecycle state, write owner, or broader transaction blocks and routes to architecture
 - Failure proves: architecture scope is silently expanded
-- Evidence artifact: M1 preservation inventories
+- Evidence artifact: M4 ordered-tail evidence and architecture basis
 - Automation location: focused scenario fixture
-- Required by milestone: M1
+- Required by milestone: M4
+
+### T19. Real Git S-to-R-to-E-to-verify journey
+
+- Covers: R23-R29; E5-E7; EC7, EC8, EC11; PRF-002, PRF-003, PRF-005, PRF-006, PRF-008, PRF-011
+- Level: end-to-end
+- Command IDs: CMD-12, CMD-04
+- Fixture/setup: a temporary Git repository with minimal governed change metadata, reviewed implementation subject S, formal final-review files and settlement fields for R, explanation and handback fields for E, and a later verify-owned evidence commit
+- Steps: create and commit S; create only allowed review files and fields and commit R; exercise exact `S -> R` retry classification; create only allowed explanation and handback files and fields and commit E; resolve code state and invoke the verify-facing workflow predicate; add verify-owned evidence after E and re-evaluate the recorded pre-verify basis
+- Expected result: Git-derived identities equal the committed S, R, and E revisions; E is handoff; the reviewed diff remains base-to-S; exact path-and-field manifests pass; verify accepts the closed tail; later verify evidence does not retroactively enter or stale it
+- Failure proves: helper-only proof, synthetic identity proof, self-reference, stage-order, semantic-diff, recovery, or verify-integration defect
+- Evidence artifact: `docs/changes/2026-08-18-explain-change-skill-simplification/evidence/m4-ordered-evidence-tail.md`
+- Automation location: `scripts/test-workflow-code-state.py` using a temporary repository and the public code-state/workflow entry points
+- Required by milestone: M4
 
 ## Fixtures and data
 
 - `docs/changes/2026-08-18-explain-change-skill-simplification/fixtures/explain-change-simplification-scenarios.yaml` owns deterministic classification, action, assembly, target, resource, write, tail, handback, and architecture-trigger cases.
 - Rule and literal disposition YAML files own closed preservation inventories.
-- Existing temporary-repository workflow fixtures own Git ancestry and changed-path cases.
+- `scripts/test-workflow-code-state.py` owns the real temporary-repository S/R/E ancestry, semantic shared-file diff, retry, and later verify-evidence journey.
 - Existing build and adapter fixtures own generated, archive, release-candidate, and install trees.
 
 Fixtures use fixed identities, paths, and content. They do not use wall-clock time, network, credentials, shared mutable state, or random ordering.
@@ -420,11 +439,11 @@ T07 proves prospective skeleton adoption without bulk migration. T09-T13 preserv
 
 ## Observability verification
 
-T03-T13 assert exact classifications, actions, assemblies, blockers, identities, cutoffs, and handback fields. T15 and T16 produce reproducible measurements and parity diagnostics naming the failed assembly, resource, or package surface.
+T03-T13 and T19 assert exact classifications, actions, assemblies, blockers, identities, field ownership, cutoffs, and handback fields. T15 and T16 produce reproducible measurements and parity diagnostics naming the failed assembly, resource, or package surface.
 
 ## Security/privacy verification
 
-T03, T04, T06, T11, T13, and T17 cover escaped paths, invalid authority, missing resources, unrelated tail content, readiness overclaims, secrets, personal data, and machine-local leakage. No external mutation is authorized.
+T03, T04, T06, T11, T13, T17, and T19 cover escaped paths, invalid authority, missing resources, unrelated paths and fields, readiness overclaims, secrets, personal data, and machine-local leakage. No external mutation is authorized.
 
 ## Performance checks
 
@@ -439,7 +458,7 @@ Not applicable. All acceptance obligations are deterministically inspectable thr
 - Do not execute Codex, Claude Code, opencode, or another target-agent runtime; the contract is static package ownership and authority behavior.
 - Do not grade explanation prose or transcripts; ordinary code, verification, and PR review own semantic judgment.
 - Do not open a live PR, contact hosted CI, or use credentials; no acceptance outcome depends on external mutation.
-- Do not test section-level refresh, managed regions, historical-layout parsing, transaction manifests, or new identity services because the approved spec excludes them.
+- Do not test section-level refresh, managed regions, historical-layout parsing, a new persistent transaction service, or a new identity service because the approved spec excludes them. The existing Git-derived R/E manifest validation remains in scope.
 - Do not rewrite historical explanation artifacts merely to exercise the skeleton.
 
 ## Uncovered gaps
