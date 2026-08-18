@@ -1,0 +1,29 @@
+review_id: code-review-final-r2
+stage: code-review
+round: final-r2
+reviewed_scope: final-holistic
+reviewed_commit: 2817aab0e75cc339138009c574581bf3e22f919f
+base_commit: 11179cb7f91a4a149bd763bae6a3dfbbadb3f60f
+reviewer: Codex independent code-review context
+authority:
+  spec: specs/explain-change-skill-simplification.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md
+  plan: docs/plans/2026-08-18-explain-change-skill-simplification.md
+  test_spec: specs/explain-change-skill-simplification.test.md
+reviewed_milestones:
+  - M1
+  - M2
+  - M3
+  - M4
+automation:
+  mode: workflow-managed
+  target_stage: verify
+  context_separation: final-holistic-diff-first-review
+phase_receipts:
+  - complete-diff-read
+  - cross-milestone-interactions-reviewed
+  - governing-artifacts-reviewed
+  - review-resolution-closed
+  - validation-selection-reviewed
+  - verdict-recorded
