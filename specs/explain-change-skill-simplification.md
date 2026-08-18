@@ -20,7 +20,7 @@ The shipped package becomes one compact universal `SKILL.md`, one conditionally 
 
 - `governed signal`: an explicit change ID, workflow-managed change identity, structured change-local target, or structured owning-change field that may require governed procedure.
 - `reviewed subject`: the exact repository revision and base-to-subject diff covered by final holistic code review.
-- `explanation evidence tail`: the permitted direct-child commit that records only the durable explanation after the reviewed subject.
+- `ordered stage-evidence tail`: the two direct-child commits after the reviewed subject that durably record final-review evidence first and the explanation plus workflow handback second.
 - `loaded assembly`: the unique set of package resources required by one invocation.
 - `Workflow handback`: neutral explain-change-owned state returned to workflow without a readiness conclusion.
 
@@ -46,15 +46,20 @@ Given an exact existing portable explanation target and a current explicit user 
 When refresh runs
 Then the complete artifact is recomposed from the current skeleton and atomically replaces the exact target after identity revalidation.
 
-Example E5: closed post-review evidence tail
-Given final code review covers revision `S` and one direct-child commit changes only the governed explanation artifact
+Example E5: closed ordered stage-evidence tail
+Given final code review covers revision `S`, direct-child revision `R` records only final-review-owned evidence and matching workflow transition fields, and direct-child revision `E` records only the governed explanation plus matching workflow handback fields
 When verify later checks the handoff
-Then the reviewed subject remains `S`, the explanation commit is treated as the closed evidence tail, and the final reviewed diff does not include that tail.
+Then the reviewed subject remains `S`, `S -> R -> E` is treated as the closed ordered stage-evidence tail, `E` is the handoff revision, and the final reviewed diff excludes both evidence commits.
 
 Example E6: broader post-review change
-Given final code review covers revision `S` and a later commit changes product code or another stage's evidence
+Given final code review covers revision `S` and a later commit changes product code, changes a forbidden field, reverses the evidence order, introduces a merge, or adds an unexplained commit
 When governed explanation completion or verify evaluates the basis
 Then final-review reuse is stale and a fresh final review is required.
+
+Example E7: interrupted ordered evidence recording
+Given final-review revision `R` is durably recorded as the direct child of reviewed subject `S` and the explanation revision is not yet present
+When the identical governed flow resumes
+Then it may create only the exact explanation-and-handback direct child `E`; any changed basis or intervening revision blocks reuse.
 
 ## Requirements
 
@@ -104,17 +109,17 @@ R22. A governed reviewed-change basis MUST identify the change, repository, base
 
 R23. The final reviewed diff MUST mean the base revision to the reviewed-subject revision and MUST exclude the explanation artifact's recording commit and later verify-owned evidence.
 
-R24. Explanation recording MUST represent the explanation path and content identity separately from the Git-derived recording revision and handoff revision; the artifact MUST NOT require a self-referential commit hash.
+R24. Governed completion MUST represent the reviewed-subject revision, final-review-recording revision, explanation-recording revision, and handoff revision as distinct identities; the explanation artifact MUST record its path, content identity, and reviewed basis without requiring any self-referential commit hash.
 
-R25. Existing workflow or verify evidence MAY resolve recording and handoff revisions after commit, but this MUST NOT grant `explain-change` authority to mutate workflow or verify evidence.
+R25. Git MUST derive recording and handoff revision identities after their commits exist. Existing workflow or verify evidence MAY consume those derived identities, but `explain-change` MUST write only its exact artifact and MUST NOT acquire authority to mutate review, workflow, or verify evidence.
 
-R26. The handoff revision MUST equal the reviewed-subject revision or contain exactly one direct-child explain-change-owned evidence commit whose changed content is limited to the exact explanation artifact, unless an already-approved repository contract provides an equivalent closed tail.
+R26. A workflow-managed governed completion MUST use the exact linear revision sequence `S -> R -> E`: `S` is the reviewed-subject revision, `R` is one direct-child final-review-recording revision, `E` is one direct-child explanation-and-handback revision, and `E` is the handoff revision. Neither `R` nor `E` may be a merge, and no intervening or additional pre-verify revision is permitted.
 
-R27. The permitted evidence-tail commit MUST NOT contain product code, tests, specifications, architecture, plans, dependencies, configuration, generated output, unrelated documentation, change-record mutation, or another stage's evidence or state.
+R27. Revision `R` MUST change only the exact final-review record, review invocation, review log, review-resolution content when required, and the closed workflow-owned transition fields required to record that review. Revision `E` MUST change only the exact explanation artifact and the closed workflow-owned handback fields required to record its path, content identity, evidence pointer, current stage, next stage, blockers, and handoff. Validation MUST enforce both path and field ownership for shared files such as `change.yaml`; path allowlisting alone is insufficient. Neither revision may change product code, tests, specifications, architecture, plans, dependencies, configuration, generated output, unrelated documentation, another artifact's lifecycle state, another stage's evidence, or any unlisted field.
 
-R28. A broader change, multiple unexplained post-review commits, a non-direct-child tail, or changed governing identity MUST stale final-review reuse and require a fresh final holistic review.
+R28. A broader change, forbidden path or field, reversed stage order, merge, non-direct-child relationship, intervening or additional pre-verify commit, changed governing identity, or mismatch between recorded and Git-derived identities MUST stale final-review reuse and require a fresh final holistic review. When only `S -> R` exists and all identities remain current, an identical retry MAY create `E`; it MUST NOT repeat or rewrite `R`.
 
-R29. Later verify-owned evidence alone MUST NOT stale the explanation when the reviewed subject, governing basis, explanation content, and recorded pre-verify validation cutoff remain unchanged.
+R29. Later verify-owned evidence after handoff revision `E` MUST NOT stale the explanation when `S -> R -> E`, the governing basis, explanation content, and recorded pre-verify validation cutoff remain unchanged. Verify MUST evaluate the reviewed subject plus the closed ordered tail and MUST NOT include its own later evidence in that pre-verify tail.
 
 R30. A governed durable artifact MUST record `Stage: explain-change`, `Status: current`, the final reviewed diff identity, final review identity, and every other decision-bearing identity required for staleness checks.
 
@@ -156,7 +161,7 @@ Outputs are the simplified canonical package, focused contract and proof-map upd
 
 - `skills/` remains the only authored skill source.
 - Governance and durability remain independent axes.
-- The reviewed subject does not change when its explanation evidence is recorded.
+- The reviewed subject does not change when final-review evidence, the explanation, or workflow handback is recorded.
 - `explain-change` writes only its exact explanation artifact.
 - Final code review, workflow routing, verify, and PR retain their current authority.
 - Historical artifacts remain historical unless explicitly refreshed.
@@ -174,26 +179,26 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | Dimension ID | Applicability | Governing requirement IDs | Boundary IDs | Non-applicability rationale |
 | --- | --- | --- | --- | --- |
 | input-domain | applicable | R6, R7, R9, R10, R11, R12, R13, R32, R37 | BND-INPUT-001 | - |
-| state-lifecycle | applicable | R10, R11, R12, R18, R20, R22, R23, R24, R26, R28, R29, R30, R31 | BND-STATE-001 | - |
+| state-lifecycle | applicable | R10, R11, R12, R18, R20, R22, R23, R24, R26, R27, R28, R29, R30, R31 | BND-STATE-001 | - |
 | identity-authority | applicable | R7, R8, R10, R11, R13, R22, R25, R26, R27, R28, R31, R35 | BND-AUTH-001 | - |
 | composition-path | applicable | R1, R2, R3, R4, R5, R14, R15, R16, R17, R32, R33, R41, R42 | BND-COMPOSE-001 | - |
-| temporal-retry | applicable | R11, R15, R19, R20, R23, R24, R26, R28, R29 | BND-TEMPORAL-001 | - |
+| temporal-retry | applicable | R11, R15, R19, R20, R23, R24, R26, R27, R28, R29 | BND-TEMPORAL-001 | - |
 | failure-recovery | applicable | R16, R19, R20, R21, R28, R31, R44 | BND-RECOVERY-001 | - |
 | compatibility-migration | applicable | R17, R18, R32, R34, R36, R37, R38, R39, R40, R41, R42 | BND-COMPAT-001 | - |
-| external-environment | applicable | R13, R16, R19, R20, R25, R26, R41, R43 | BND-ENV-001 | - |
+| external-environment | applicable | R13, R16, R19, R20, R25, R26, R27, R41, R43 | BND-ENV-001 | - |
 
 ## Boundary definitions
 
 | Boundary ID | Dimension ID | Governing requirement IDs | Partitions or transitions | Invariants | Outcomes | Owner requirement ID |
 | --- | --- | --- | --- | --- | --- | --- |
 | BND-INPUT-001 | input-domain | R6, R7, R9, R10, R11, R12, R13, R32, R37 | three signal classes, three output actions, target absent/existing/ambiguous, refresh authority present/absent, handback values, and unknown values | exactly one closed value applies and unknowns fail before consistency checks | one valid operation proceeds or classification stops | R6 |
-| BND-STATE-001 | state-lifecycle | R10, R11, R12, R18, R20, R22, R23, R24, R26, R28, R29, R30, R31 | target absent/existing, reviewed subject current/stale, no tail/closed tail/broader tail, review resolution closed/open, and artifact current/blocked | explanation recording never redefines the reviewed subject or settles another stage | current output or exact stale/blocked result | R23 |
-| BND-AUTH-001 | identity-authority | R7, R8, R10, R11, R13, R22, R25, R26, R27, R28, R31, R35 | portable request, governed candidate, user refresh, stale-artifact route, final review, workflow handback, verify evidence, and forbidden cross-stage writes | loading, target existence, and handback never broaden authority | exact owner writes its surface or operation stops | R11 |
+| BND-STATE-001 | state-lifecycle | R10, R11, R12, R18, R20, R22, R23, R24, R26, R27, R28, R29, R30, R31 | target absent/existing, reviewed subject current/stale, no tail/review-only partial tail/complete ordered tail/broader tail, review resolution closed/open, and artifact current/blocked | later stage evidence never redefines the reviewed subject or settles another stage | current output, identical completion of `S -> R -> E`, or exact stale/blocked result | R23 |
+| BND-AUTH-001 | identity-authority | R7, R8, R10, R11, R13, R22, R25, R26, R27, R28, R31, R35 | portable request, governed candidate, user refresh, stale-artifact route, final review recording, explanation write, workflow handback, verify evidence, and forbidden cross-stage writes | loading, commit composition, target existence, and handback never broaden any stage's write authority | each owner contributes only its closed paths and fields or the operation stops | R11 |
 | BND-COMPOSE-001 | composition-path | R1, R2, R3, R4, R5, R14, R15, R16, R17, R32, R33, R41, R42 | four assemblies, universal root, conditional reference, copied skeleton, inline result, durable artifact, and packaged copies | each rule and structure has one owner and required resources are exact | correct assembly loads or dependent work blocks | R14 |
-| BND-TEMPORAL-001 | temporal-retry | R11, R15, R19, R20, R23, R24, R26, R28, R29 | initial write, exact refresh, concurrent change, atomic failure, fresh retry, reviewed subject, direct-child tail, and later verify evidence | current identities are reread and no uncertain output is adopted | atomic completion, fresh retry, or stale/blocked result | R19 |
+| BND-TEMPORAL-001 | temporal-retry | R11, R15, R19, R20, R23, R24, R26, R27, R28, R29 | initial write, exact refresh, concurrent change, atomic failure, fresh retry, `S -> R -> E`, review-only interruption, and later verify evidence | current identities and strict ancestry are reread and no uncertain or reordered output is adopted | atomic file completion, exact stage-tail continuation, fresh retry, or stale/blocked result | R19 |
 | BND-RECOVERY-001 | failure-recovery | R16, R19, R20, R21, R28, R31, R44 | missing resource, pre-write failure, uncertain replacement, unrelated partial bytes, open review, and new persistence need | recovery reconstructs neither missing procedure nor unknown content | unchanged stop, fresh operation, or architecture escalation | R20 |
 | BND-COMPAT-001 | compatibility-migration | R17, R18, R32, R34, R36, R37, R38, R39, R40, R41, R42 | flat package, split package, historical artifact, refreshed artifact, old readiness label, new handback label, semantic rule, consumed literal, and package forms | history is not bulk rewritten and semantic/literal ownership and parity remain explicit | prospective migration passes atomically or blocks | R36 |
-| BND-ENV-001 | external-environment | R13, R16, R19, R20, R25, R26, R41, R43 | portable project, governed repository, filesystem atomic capability, Git revision graph, generated adapters, clean install, and unavailable environment | claims match inspected local evidence and no external system is mutated | local deterministic proof succeeds or dependent action blocks | R43 |
+| BND-ENV-001 | external-environment | R13, R16, R19, R20, R25, R26, R27, R41, R43 | portable project, governed repository, filesystem atomic capability, Git revision graph, path-and-field diff inspection, generated adapters, clean install, and unavailable environment | claims match inspected local evidence and no external system is mutated | local deterministic proof succeeds or dependent action blocks | R43 |
 
 ## Selected interactions
 
@@ -201,7 +206,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | --- | --- | --- | --- | --- |
 | INT-001 | R6, R7, R8, R13, R14, R15 | BND-INPUT-001, BND-AUTH-001, BND-COMPOSE-001 | malformed governed evidence falls through to portable output or late discovery uses an underloaded assembly | invalid signals stop; valid late signals load the governed procedure before interpretation |
 | INT-002 | R10, R11, R12, R17, R19, R20 | BND-INPUT-001, BND-TEMPORAL-001, BND-RECOVERY-001 | create replaces an existing artifact or refresh overwrites concurrent or uncertain content | exact authority and identities precede one current-skeleton atomic replacement; uncertainty blocks |
-| INT-003 | R22, R23, R24, R26, R27, R28, R29 | BND-STATE-001, BND-AUTH-001, BND-TEMPORAL-001 | writing the explanation makes its own final review stale or a broader tail reuses stale review | base-to-subject review identity remains fixed; only one explanation-only direct child is tolerated |
+| INT-003 | R22, R23, R24, R25, R26, R27, R28, R29 | BND-STATE-001, BND-AUTH-001, BND-TEMPORAL-001 | durable final-review recording and later explanation recording become circular, self-stale, reordered, or broad enough to conceal implementation drift | the reviewed subject remains fixed; only exact linear `S -> R -> E` with closed path-and-field ownership is reusable |
 | INT-004 | R30, R32, R33, R34, R35 | BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001 | a structural handback field claims routing or readiness | handback exposes only explanation-owned facts and names workflow as decision owner |
 | INT-005 | R2, R4, R5, R14, R16, R36, R38, R39, R40, R41 | BND-COMPOSE-001, BND-COMPAT-001, BND-ENV-001 | relocation hides semantic loss, grows a real assembly, or ships drifted resources | ledgers, every-assembly gates, and package parity all pass |
 
@@ -213,8 +218,9 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | E2 | illustration | R14, R32 | BND-COMPOSE-001 | - | - |
 | E3 | regression | R7 | BND-INPUT-001, BND-AUTH-001 | EXCSIM-PR1 | - |
 | E4 | regression | R11 | BND-INPUT-001, BND-TEMPORAL-001 | EXCSIM-PR4 | - |
-| E5 | regression | R23, R24, R26, R29 | BND-STATE-001, BND-TEMPORAL-001 | EXCSIM-PR5 | - |
+| E5 | regression | R26, R27 | BND-STATE-001, BND-AUTH-001, BND-TEMPORAL-001 | EXCSIM-CR2 | - |
 | E6 | regression | R28 | BND-AUTH-001, BND-TEMPORAL-001 | EXCSIM-PR5 | - |
+| E7 | regression | R26, R28 | BND-STATE-001, BND-TEMPORAL-001 | EXCSIM-CR2 | - |
 
 ## Compatibility and migration
 
@@ -254,7 +260,7 @@ EC6. Atomic replacement succeeds but read-back differs: completion is not claime
 
 EC7. The reviewed subject is unchanged but verify later records evidence: the explanation remains current for its pre-verify cutoff.
 
-EC8. A direct-child tail changes the explanation and `change.yaml`: the tail is broader than this first-version contract and final-review reuse blocks.
+EC8. Revision `E` changes the explanation and an authorized workflow-handback field in `change.yaml`: field-scoped validation permits those exact changes, while any unlisted `change.yaml` field blocks final-review reuse.
 
 EC9. A historical explanation uses a different heading order: it remains unchanged until an authorized refresh, which then uses the current skeleton.
 
@@ -265,7 +271,7 @@ EC10. `EC0` shrinks but `EC3` grows beyond baseline: acceptance fails.
 - Changing lifecycle order, final-review authority, review-resolution semantics, verification ownership, PR ownership, or trivial/non-trivial classification.
 - Adding section-level refresh, managed Markdown ownership, historical-layout parsing, or bulk historical migration.
 - Adding executable generation, semantic grading, target-agent benchmarking, a tokenizer dependency, or a new transaction/evidence service.
-- Creating a new lifecycle state, routing owner, cross-stage write authority, or persistence schema.
+- Creating a new lifecycle state, routing owner, cross-stage write authority, or persistence schema; the ordered tail composes existing owners without transferring their authority.
 - Optimizing another skill except directly coupled contracts, validators, fixtures, package mappings, and generated outputs.
 
 ## Acceptance criteria
@@ -277,8 +283,8 @@ EC10. `EC0` shrinks but `EC3` grows beyond baseline: acceptance fails.
 | AC3 | Every governance/output combination selects exactly one of four assemblies and invalid signals never fall through. |
 | AC4 | Create and refresh use exact target-state and authority rules and every durable action uses current-skeleton whole-file composition. |
 | AC5 | Atomic replacement, concurrency, uncertain output, and fresh retry have fail-closed deterministic outcomes. |
-| AC6 | The reviewed subject, explanation content, recording revision, handoff revision, and evidence tail remain distinct and traceable. |
-| AC7 | Only one explanation-only direct-child tail preserves final-review reuse; every broader tail stales it. |
+| AC6 | The reviewed subject, final-review recording, explanation recording, handoff revision, and ordered stage-evidence tail remain distinct and traceable without self-reference. |
+| AC7 | Only exact linear `S -> R -> E` with closed path-and-field ownership preserves final-review reuse; every broader, reordered, merged, intervening, or unknown tail stales it. |
 | AC8 | `Workflow handback` reports only explanation-owned facts and no readiness claim. |
 | AC9 | Historical explanations are not bulk migrated, while genuine refreshes adopt the current skeleton. |
 | AC10 | Semantic and literal ledgers cover every current rule and consumed literal. |
