@@ -2,22 +2,23 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: test-spec-review-r1
 Review closeout: code-review-m2-r1
+Review closeout: code-review-m2-r2
 
-- Reviews covered: `test-spec-review-r1`, `code-review-m2-r1`
-- Findings resolved: 1
-- Unresolved findings: 1
-- Current result: M2 correction is required before milestone closeout.
+- Reviews covered: `test-spec-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`
+- Findings resolved: 2
+- Unresolved findings: 0
+- Current result: EXCSIM-CR1 is corrected and M2 rereview is clean.
 
 ## Resolution overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
 | EXCSIM-TSR1 | accepted | resolved | Added direct AC1-through-AC15 mappings to existing test cases, commands, and first proof milestones; validation passed. |
-| EXCSIM-CR1 | accepted | open | Narrow verification's post-review allowance to the exact explanation artifact and add direct regression proof. |
+| EXCSIM-CR1 | accepted | resolved | Verification now permits only the exact explanation artifact in the one-commit post-review tail. |
 
 ### test-spec-review-r1
 
@@ -40,7 +41,7 @@ Rationale: Acceptance-criterion traceability is mandatory and is not implied by 
 
 Finding ID: EXCSIM-CR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation
 Owning stage: implement
 Decision owner: none; R26-R27 are explicit
@@ -50,4 +51,8 @@ Rationale: Commit-count validation is insufficient when the one allowed commit c
 Required outcome: The direct-child tail can change only the exact explanation artifact.
 Safe resolution path: Apply the reviewer-declared bounded correction to `scripts/workflow_automation.py` and its focused test, rerun M2 validation, and record code-review-m2-r2.
 Validation target: corrected M2 workflow integration.
-Validation evidence: pending correction and rereview.
+Validation evidence: corrected commit `185be18c`; `evidence/m2-package-implementation.md`; `reviews/code-review-m2-r2.md`.
+
+### code-review-m2-r2
+
+No material findings. The rereview confirms EXCSIM-CR1 is resolved and closes M2.

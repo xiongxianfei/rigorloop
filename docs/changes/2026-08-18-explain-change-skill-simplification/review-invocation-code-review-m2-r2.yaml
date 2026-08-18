@@ -1,0 +1,26 @@
+review_id: code-review-m2-r2
+stage: code-review
+round: r2
+reviewed_milestone: M2
+reviewed_range:
+  base: f9b5f8e1
+  head: 185be18c
+reviewer: Codex context-reset code-review
+authority:
+  spec: specs/explain-change-skill-simplification.md
+  plan: docs/plans/2026-08-18-explain-change-skill-simplification.md
+  test_spec: specs/explain-change-skill-simplification.test.md
+automation:
+  mode: workflow-managed-rereview
+  target_stage: verify
+  prior_finding: EXCSIM-CR1
+  prior_finding_classification: resolved
+  context_separation: context-reset diff-first rereview
+  risk_map_recorded_before_evidence_menu: true
+  requirement_fidelity: applicable
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-finding-released
+  - verdict-recorded

@@ -33,4 +33,6 @@ All four real loaded profiles strictly decrease in words and bytes. M3 retains t
 - `python scripts/test-build-skills.py` — passed, 7 tests.
 - `python scripts/build-skills.py --check` — passed.
 
+The EXCSIM-CR1 correction reran the focused repository-backed readiness test, all 14 Git code-state tests, all 76 workflow-automation tests, all 418 skill-validator tests, all 7 build tests, and check-mode generation; all passed.
+
 No target-agent runtime, prose grader, new parser, new lifecycle state, or new persistence owner was introduced.

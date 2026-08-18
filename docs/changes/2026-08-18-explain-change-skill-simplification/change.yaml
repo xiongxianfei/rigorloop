@@ -41,7 +41,7 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: review-resolution
+  current_stage: implement
   next_stage: code-review
   blocker: null
   evidence:
@@ -73,9 +73,11 @@ workflow_state:
     - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m1-r1.md
     - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m2-r1.yaml
     - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m2-r2.yaml
+    - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m2-r2.md
   planned_work:
     plan_artifact_id: plan
-    current_milestone: M2
+    current_milestone: M3
     initialization_basis:
       review_id: plan-review-r1
       review_round: r1
@@ -88,22 +90,21 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: resolution-needed
+        state: closed
       M3:
         kind: implementation
-        state: planned
+        state: implementing
     remaining_implementation_milestones:
-      - M2
       - M3
     latest_review:
-      status: changes-requested
+      status: approved
       stage: code-review
-      round: r1
+      round: r2
       artifact_id: plan
       occurrence: milestone
       milestone_id: M2
       evidence:
-        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m2-r1.md
+        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m2-r2.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -127,7 +128,7 @@ workflow:
       completion:
         rule: verify records one final result for the current handoff revision
     status: active
-    current_stage: review-resolution
+    current_stage: implement
     stop_reason: null
     evidence:
       - docs/proposals/2026-08-18-explain-change-skill-simplification.md
@@ -158,6 +159,8 @@ workflow:
       - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m1-r1.md
       - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m2-r1.yaml
       - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m2-r1.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m2-r2.yaml
+      - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m2-r2.md
 
 artifacts:
   spec: specs/explain-change-skill-simplification.md
@@ -178,8 +181,8 @@ tests:
   - Static semantic, literal, package, generated-output, adapter, and measurement proof without target-agent runtime execution.
 
 review:
-  status: changes-requested
-  unresolved_items: 1
+  status: pending
+  unresolved_items: 0
 
 validation: []
 

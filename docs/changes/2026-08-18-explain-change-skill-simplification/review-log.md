@@ -12,6 +12,7 @@ This ledger records formal lifecycle reviews for the governed explain-change ski
 | `plan-review-r1` | `plan-review` | `r1` | `docs/plans/2026-08-18-explain-change-skill-simplification.md` at `sha256:2023c011d122c9891a642cbbd5447656ebc5df660ec1d77d1abd07b42b311a2d` | `reviews/plan-review-r1.md` | `approved` | 0 | `recorded` |
 | `test-spec-review-r2` | `test-spec-review` | `r2` | `specs/explain-change-skill-simplification.test.md` at `sha256:d1bcde9a4e040ed489b3d9abbfcb15117a76ef0ccfa632963b3a1534d3b3df8b` | `reviews/test-spec-review-r2.md` | `approved` | 0 | `recorded` |
 | `code-review-m1-r1` | `code-review` | `r1` | milestone M1 range `fb8bdcdc..168a130c` | `reviews/code-review-m1-r1.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-m2-r2` | `code-review` | `r2` | milestone M2 range `f9b5f8e1..185be18c` | `reviews/code-review-m2-r2.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 
@@ -25,7 +26,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r1.md
 Resolution: review-resolution.md#code-review-m2-r1
 Material findings: EXCSIM-CR1
-Open findings: EXCSIM-CR1
+Open findings: none
 Recording status: recorded
 
 ### Review entry
