@@ -9,4 +9,3 @@
 - Milestones: M1-M3 implementation; M4 lifecycle-closeout
 - Authoring result: complete plan and navigation link written; matching plan entry transitioned to `review-required`; `planned_work` remains absent
 - Downstream authority: independent `plan-review` only
-

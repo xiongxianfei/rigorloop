@@ -10,4 +10,3 @@
 - Current implementation milestone: M1
 - Lifecycle-closeout milestone: M4 remains stable plan intent and is not an implementation milestone
 - Settlement result: `settlement-retry-required`
-

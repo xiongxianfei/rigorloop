@@ -7,4 +7,3 @@
 - Entry transition: `review-required` to `active`
 - Transaction result: `settled-active`
 - Next eligible stage: `test-spec`
-
