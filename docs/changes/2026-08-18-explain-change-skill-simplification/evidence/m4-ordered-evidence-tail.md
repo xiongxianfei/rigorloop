@@ -9,7 +9,7 @@ Status: review-requested
 - Canonical code-state resolution derives the reviewed subject `S`, final-review recording revision `R`, explanation recording revision `E`, and handoff revision without placing `R` or `E` in the reviewed product-code identity.
 - The pre-verify tail accepts exact linear non-merge `S -> R -> E`; exact `S -> R` remains the only recoverable partial state.
 - `R` and `E` use separate exact path manifests and semantic `change.yaml` field allowlists. Shared evidence and changed-file lists preserve their prior sequence and may append only exact stage-owned paths; unknown fields, deletion, replacement, reordering, duplication, and sibling-owned entries fail closed.
-- Verification readiness requires a complete ordered tail. At most one later verify-owned commit must match its exact path set and semantic shared-metadata rules; it leaves the reviewed product identity and handoff revision unchanged.
+- Verification readiness requires a complete ordered tail. At most one later verify-owned commit must contain exactly canonical `verify-report.md` and the matching `change.yaml`, under semantic shared-metadata rules; it leaves the reviewed product identity and handoff revision unchanged.
 - Published explain-change guidance and deterministic scenarios now describe the ordered tail and its ownership boundaries.
 
 ## Test-first evidence
@@ -41,6 +41,6 @@ The largest loaded assembly remains below the frozen flat baseline:
 
 ## Review correction
 
-`EXCSIM-CR3` identified that prefix ownership alone admitted destructive or unrelated shared-list changes. The correction adds append-only exact-entry validation for `workflow_state.evidence`, `workflow.automation.evidence`, and `changed_files`; narrows the later evidence tail to at most one exact verify-owned commit; and validates its shared `change.yaml` fields. A real-Git regression now proves that dropping prior review evidence in `E` is rejected.
+`EXCSIM-CR3` identified that prefix ownership alone admitted destructive or unrelated shared-list changes. The correction adds append-only exact-entry validation for `workflow_state.evidence`, `workflow.automation.evidence`, and `changed_files`; narrows the later evidence tail to at most one commit with canonical verify-owned paths rather than caller-supplied exemptions; and validates its shared `change.yaml` fields. A real-Git regression now proves that dropping prior review evidence in `E` is rejected.
 
 No new persistence surface, lifecycle state, runtime service, or write owner was introduced.
