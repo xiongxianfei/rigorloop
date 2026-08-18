@@ -8,8 +8,8 @@ Status: review-requested
 
 - Canonical code-state resolution derives the reviewed subject `S`, final-review recording revision `R`, explanation recording revision `E`, and handoff revision without placing `R` or `E` in the reviewed product-code identity.
 - The pre-verify tail accepts exact linear non-merge `S -> R -> E`; exact `S -> R` remains the only recoverable partial state.
-- `R` and `E` use separate exact path manifests and semantic `change.yaml` field allowlists. Unknown or sibling-owned fields fail closed.
-- Verification readiness requires a complete ordered tail. Later explicitly bounded verify-owned evidence leaves the reviewed product identity and handoff revision unchanged.
+- `R` and `E` use separate exact path manifests and semantic `change.yaml` field allowlists. Shared evidence and changed-file lists preserve their prior sequence and may append only exact stage-owned paths; unknown fields, deletion, replacement, reordering, duplication, and sibling-owned entries fail closed.
+- Verification readiness requires a complete ordered tail. At most one later verify-owned commit must match its exact path set and semantic shared-metadata rules; it leaves the reviewed product identity and handoff revision unchanged.
 - Published explain-change guidance and deterministic scenarios now describe the ordered tail and its ownership boundaries.
 
 ## Test-first evidence
@@ -18,7 +18,7 @@ The focused code-state tests were changed before production code. Their initial 
 
 ## Validation
 
-- `python scripts/test-workflow-code-state.py` — passed, 17 tests.
+- `python scripts/test-workflow-code-state.py` — passed, 18 tests.
 - `python scripts/test-workflow-automation.py` — passed, 76 tests.
 - Focused `ExplainChangeSkillSimplificationTests` loaded from `scripts/test-skill-validator.py` — passed, 10 tests.
 - `python scripts/test-skill-validator.py` — passed, 418 tests with 16 documented skips.
@@ -38,5 +38,9 @@ The largest loaded assembly remains below the frozen flat baseline:
 | Assembly | Words | UTF-8 bytes | Frozen baseline words | Frozen baseline bytes |
 | --- | ---: | ---: | ---: | ---: |
 | `EC3` | 1,038 | 8,212 | 1,175 | 8,224 |
+
+## Review correction
+
+`EXCSIM-CR3` identified that prefix ownership alone admitted destructive or unrelated shared-list changes. The correction adds append-only exact-entry validation for `workflow_state.evidence`, `workflow.automation.evidence`, and `changed_files`; narrows the later evidence tail to at most one exact verify-owned commit; and validates its shared `change.yaml` fields. A real-Git regression now proves that dropping prior review evidence in `E` is rejected.
 
 No new persistence surface, lifecycle state, runtime service, or write owner was introduced.

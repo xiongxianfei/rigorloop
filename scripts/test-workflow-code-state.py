@@ -363,6 +363,43 @@ class GitCodeStateProviderTests(unittest.TestCase):
         with self.assertRaisesRegex(CodeStateError, "unowned change metadata field"):
             GitCodeStateProvider(anchor=anchor).snapshot(root)
 
+    def test_snapshot_rejects_destructive_explanation_evidence_list(self) -> None:
+        root, _base = self.make_repository()
+        self.write(root, "scripts/modified.py", "value = 2\n")
+        reviewed = self.commit(root, "reviewed")
+        change_root = "docs/changes/2026-07-20-example"
+        review_path = f"{change_root}/reviews/code-review-final-r1.md"
+        invocation_path = (
+            f"{change_root}/review-invocation-code-review-final-r1.yaml"
+        )
+        self.write(root, review_path, "Review ID: code-review-final-r1\n")
+        self.write(root, invocation_path, "review_id: code-review-final-r1\n")
+        self.write(root, f"{change_root}/review-log.md", "Status: approved\n")
+        self.write_change_state(
+            root,
+            stage="final-holistic-code-review",
+            evidence=(review_path, invocation_path),
+        )
+        self.commit(root, "final review evidence")
+        explanation_path = f"{change_root}/explain-change.md"
+        self.write(root, explanation_path, "Stage: explain-change\n")
+        self.write_change_state(
+            root,
+            stage="explain-change",
+            evidence=(explanation_path,),
+        )
+        self.commit(root, "destructive explanation evidence")
+        anchor = GitCodeStateAnchorResolver().resolve(
+            root,
+            change_id="2026-07-20-example",
+            reviewed_revision=reviewed,
+            final_review_id="code-review-final-r1",
+            lifecycle_evidence_paths=frozenset({explanation_path}),
+        )
+
+        with self.assertRaisesRegex(CodeStateError, "preserve its prior sequence"):
+            GitCodeStateProvider(anchor=anchor).snapshot(root)
+
     def test_snapshot_rejects_reversed_explanation_and_review_order(self) -> None:
         root, _base = self.make_repository()
         self.write(root, "scripts/modified.py", "value = 2\n")
