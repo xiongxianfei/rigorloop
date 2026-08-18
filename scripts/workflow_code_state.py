@@ -11,6 +11,8 @@ from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Protocol
 
+from artifact_lifecycle_validation import _parse_change_yaml_text
+
 
 class CodeStateError(ValueError):
     """Raised when canonical code state cannot be established safely."""
@@ -38,6 +40,10 @@ class CanonicalCodeState:
     base_revision: str
     reviewed_revision: str
     entries: tuple[CodeStateEntry, ...]
+    final_review_recording_revision: str | None = None
+    explanation_recording_revision: str | None = None
+    handoff_revision: str | None = None
+    tail_state: str = "reviewed-subject"
 
     @property
     def paths(self) -> tuple[str, ...]:
@@ -88,6 +94,7 @@ class CodeStateAnchor:
     reviewed_revision: str
     final_review_id: str
     lifecycle_evidence_paths: tuple[str, ...]
+    post_handoff_evidence_paths: tuple[str, ...] = ()
 
     @property
     def identity(self) -> str:
@@ -116,6 +123,38 @@ class GitCodeStateProvider:
         "docs/plans/",
     )
     _POST_REVIEW_EVIDENCE_PATHS = frozenset({"docs/plan.md"})
+    _REVIEW_CHANGE_FIELD_PREFIXES = (
+        ("workflow_state", "lifecycle_state"),
+        ("workflow_state", "current_stage"),
+        ("workflow_state", "next_stage"),
+        ("workflow_state", "blocker"),
+        ("workflow_state", "evidence"),
+        ("workflow_state", "planned_work", "current_milestone"),
+        ("workflow_state", "planned_work", "milestones"),
+        ("workflow_state", "planned_work", "remaining_implementation_milestones"),
+        ("workflow_state", "planned_work", "latest_review"),
+        ("workflow_state", "planned_work", "final_closeout"),
+        ("workflow", "automation", "status"),
+        ("workflow", "automation", "current_stage"),
+        ("workflow", "automation", "stop_reason"),
+        ("workflow", "automation", "evidence"),
+        ("review",),
+        ("changed_files",),
+    )
+    _EXPLANATION_CHANGE_FIELD_PREFIXES = (
+        ("workflow_state", "lifecycle_state"),
+        ("workflow_state", "current_stage"),
+        ("workflow_state", "next_stage"),
+        ("workflow_state", "blocker"),
+        ("workflow_state", "evidence"),
+        ("workflow_state", "planned_work", "final_closeout"),
+        ("workflow", "automation", "status"),
+        ("workflow", "automation", "current_stage"),
+        ("workflow", "automation", "stop_reason"),
+        ("workflow", "automation", "evidence"),
+        ("artifacts", "explain_change"),
+        ("changed_files",),
+    )
 
     def __init__(
         self,
@@ -127,6 +166,9 @@ class GitCodeStateProvider:
         self._anchor = anchor
         self._allowed_post_review_paths = frozenset(
             anchor.lifecycle_evidence_paths
+        )
+        self._allowed_post_handoff_paths = frozenset(
+            anchor.post_handoff_evidence_paths
         )
 
     @staticmethod
@@ -205,6 +247,128 @@ class GitCodeStateProvider:
     ) -> str:
         blob = self._git(root, "show", f"{revision}:{path}")
         return "sha256:" + hashlib.sha256(blob).hexdigest()
+
+    def _blob_text(self, root: Path, revision: str, path: str) -> str:
+        try:
+            return self._git(root, "show", f"{revision}:{path}").decode("utf-8")
+        except UnicodeError as error:
+            raise CodeStateError(
+                f"cannot decode lifecycle evidence path: {path}"
+            ) from error
+
+    @staticmethod
+    def _changed_fields(
+        older: object,
+        newer: object,
+        prefix: tuple[str, ...] = (),
+    ) -> frozenset[tuple[str, ...]]:
+        if isinstance(older, dict) and isinstance(newer, dict):
+            changed: set[tuple[str, ...]] = set()
+            for key in set(older) | set(newer):
+                key_text = str(key)
+                if key not in older or key not in newer:
+                    changed.add((*prefix, key_text))
+                    continue
+                changed.update(
+                    GitCodeStateProvider._changed_fields(
+                        older[key], newer[key], (*prefix, key_text)
+                    )
+                )
+            return frozenset(changed)
+        if older != newer:
+            return frozenset({prefix})
+        return frozenset()
+
+    def _validate_change_metadata_fields(
+        self,
+        root: Path,
+        older: str,
+        newer: str,
+        *,
+        stage: str,
+        change_path: str,
+    ) -> None:
+        try:
+            before = _parse_change_yaml_text(
+                self._blob_text(root, older, change_path)
+            )
+            after = _parse_change_yaml_text(
+                self._blob_text(root, newer, change_path)
+            )
+        except Exception as error:
+            raise CodeStateError(
+                "cannot parse change metadata for stage-evidence validation"
+            ) from error
+        prefixes = (
+            self._REVIEW_CHANGE_FIELD_PREFIXES
+            if stage == "final-review"
+            else self._EXPLANATION_CHANGE_FIELD_PREFIXES
+        )
+        changed = self._changed_fields(before, after)
+        unowned = sorted(
+            ".".join(path)
+            for path in changed
+            if not any(path[: len(prefix)] == prefix for prefix in prefixes)
+        )
+        if unowned:
+            raise CodeStateError(
+                f"unowned change metadata field in {stage} revision: {unowned}"
+            )
+
+    def _validate_stage_commit(
+        self,
+        root: Path,
+        older: str,
+        newer: str,
+        *,
+        stage: str,
+    ) -> None:
+        change_root = f"docs/changes/{self._anchor.change_id}"
+        change_path = f"{change_root}/change.yaml"
+        paths = self._changed_paths(root, older, newer)
+        if stage == "final-review":
+            required = frozenset(
+                {
+                    f"{change_root}/reviews/{self._anchor.final_review_id}.md",
+                    f"{change_root}/review-invocation-{self._anchor.final_review_id}.yaml",
+                    f"{change_root}/review-log.md",
+                    change_path,
+                }
+            )
+            allowed = required | frozenset(
+                {f"{change_root}/review-resolution.md"}
+            )
+            label = "final-review recording paths"
+        else:
+            required = self._allowed_post_review_paths | frozenset({change_path})
+            allowed = required
+            label = "explanation recording paths"
+        if not required.issubset(paths) or not paths.issubset(allowed):
+            raise CodeStateError(
+                f"{label} are invalid: {sorted(paths)}"
+            )
+        self._validate_change_metadata_fields(
+            root, older, newer, stage=stage, change_path=change_path
+        )
+
+    def _linear_tail(self, root: Path, reviewed: str, head: str) -> tuple[str, ...]:
+        if head == reviewed:
+            return ()
+        output = self._git(
+            root, "rev-list", "--reverse", f"{reviewed}..{head}"
+        ).decode("ascii").splitlines()
+        commits = tuple(item.strip() for item in output if item.strip())
+        previous = reviewed
+        for commit in commits:
+            parent_line = self._git(
+                root, "rev-list", "--parents", "-n", "1", commit
+            ).decode("ascii").strip().split()
+            if len(parent_line) != 2 or parent_line[1] != previous:
+                raise CodeStateError(
+                    "post-review evidence tail must be linear non-merge direct children"
+                )
+            previous = commit
+        return commits
 
     def _entries(
         self, root: Path, base: str, reviewed: str
@@ -318,25 +482,39 @@ class GitCodeStateProvider:
                 "reviewed revision is not an ancestor of HEAD"
             ) from error
 
-        if head != reviewed:
-            parent_line = self._git(
-                root, "rev-list", "--parents", "-n", "1", head
-            ).decode("ascii").strip().split()
-            if len(parent_line) != 2 or parent_line[1] != reviewed:
-                raise CodeStateError(
-                    "post-review evidence tail must be one direct-child commit"
-                )
-
-        post_review = self._changed_paths(root, reviewed, head)
-        unexpected_committed = post_review - self._allowed_post_review_paths
-        if unexpected_committed:
+        tail = self._linear_tail(root, reviewed, head)
+        if len(tail) > 2 and not self._allowed_post_handoff_paths:
             raise CodeStateError(
-                "canonical code state is stale because HEAD differs after "
-                f"review: {sorted(unexpected_committed)}"
+                "post-review evidence tail contains additional pre-verify commits"
             )
-        unexpected_worktree = (
-            self._worktree_paths(root) - self._allowed_post_review_paths
-        )
+        final_review_recording = tail[0] if tail else None
+        explanation_recording = tail[1] if len(tail) >= 2 else None
+        if final_review_recording is not None:
+            self._validate_stage_commit(
+                root,
+                reviewed,
+                final_review_recording,
+                stage="final-review",
+            )
+        if explanation_recording is not None:
+            self._validate_stage_commit(
+                root,
+                final_review_recording,
+                explanation_recording,
+                stage="explanation",
+            )
+        previous = explanation_recording
+        for commit in tail[2:]:
+            assert previous is not None
+            paths = self._changed_paths(root, previous, commit)
+            if not paths or not paths.issubset(self._allowed_post_handoff_paths):
+                raise CodeStateError(
+                    "post-handoff evidence revision contains unowned paths: "
+                    f"{sorted(paths)}"
+                )
+            previous = commit
+
+        unexpected_worktree = self._worktree_paths(root)
         if unexpected_worktree:
             raise CodeStateError(
                 "canonical code state is stale because worktree differs "
@@ -348,6 +526,16 @@ class GitCodeStateProvider:
             base_revision=base,
             reviewed_revision=reviewed,
             entries=self._entries(root, base, reviewed),
+            final_review_recording_revision=final_review_recording,
+            explanation_recording_revision=explanation_recording,
+            handoff_revision=explanation_recording,
+            tail_state=(
+                "complete"
+                if explanation_recording is not None
+                else "review-recorded"
+                if final_review_recording is not None
+                else "reviewed-subject"
+            ),
         )
 
 
@@ -402,6 +590,7 @@ class GitCodeStateAnchorResolver:
         reviewed_revision: str,
         final_review_id: str,
         lifecycle_evidence_paths: frozenset[str],
+        post_handoff_evidence_paths: frozenset[str] = frozenset(),
     ) -> CodeStateAnchor:
         root = repository_root.resolve()
         if not all(
@@ -445,6 +634,21 @@ class GitCodeStateAnchorResolver:
                     f"{relative_path}"
                 )
             allowed_paths.add(relative_path)
+        allowed_post_handoff_paths: set[str] = set()
+        for path in post_handoff_evidence_paths:
+            relative_path = GitCodeStateProvider._validate_relative_path(path)
+            if (
+                relative_path
+                not in GitCodeStateProvider._POST_REVIEW_EVIDENCE_PATHS
+                and not relative_path.startswith(
+                    GitCodeStateProvider._POST_REVIEW_EVIDENCE_PREFIXES
+                )
+            ):
+                raise CodeStateError(
+                    "post-handoff exemption is not a lifecycle evidence path: "
+                    f"{relative_path}"
+                )
+            allowed_post_handoff_paths.add(relative_path)
         return CodeStateAnchor(
             change_id=change_id,
             target_ref=target_ref,
@@ -453,6 +657,9 @@ class GitCodeStateAnchorResolver:
             reviewed_revision=reviewed,
             final_review_id=final_review_id,
             lifecycle_evidence_paths=tuple(sorted(allowed_paths)),
+            post_handoff_evidence_paths=tuple(
+                sorted(allowed_post_handoff_paths)
+            ),
         )
 
 
@@ -463,6 +670,7 @@ def resolve_canonical_code_state(
     reviewed_revision: str,
     final_review_id: str,
     lifecycle_evidence_paths: frozenset[str],
+    post_handoff_evidence_paths: frozenset[str] = frozenset(),
     test_provider: CodeStateProvider | None = None,
 ) -> CanonicalCodeState:
     """Resolve Git state internally; allow injection only outside Git."""
@@ -503,6 +711,7 @@ def resolve_canonical_code_state(
             reviewed_revision=reviewed_revision,
             final_review_id=final_review_id,
             lifecycle_evidence_paths=lifecycle_evidence_paths,
+            post_handoff_evidence_paths=post_handoff_evidence_paths,
         )
         return GitCodeStateProvider(anchor=anchor).snapshot(root)
     diagnostic = git_probe.stderr.decode("utf-8", errors="replace").lower()

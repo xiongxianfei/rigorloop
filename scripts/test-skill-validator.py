@@ -10832,10 +10832,12 @@ class ExplainChangeSkillSimplificationTests(unittest.TestCase):
 
     def test_governed_basis_tail_closeout_and_handback_are_complete(self) -> None:
         reference = (self.root / "references" / "governed-workflow-explanation.md").read_text(encoding="utf-8")
-        for phrase in ("base revision", "reviewed-subject revision", "base-to-subject diff identity", "final holistic code-review ID", "validation-evidence cutoff", "recording revision", "handoff revision", "one direct-child", "explain-change-owned evidence commit"):
+        for phrase in ("base revision", "reviewed-subject revision", "base-to-subject diff identity", "final holistic code-review ID", "validation-evidence cutoff", "final-review-recording revision", "explanation-recording revision", "handoff revision", "S -> R -> E", "exact `S -> R`"):
             self.assertIn(phrase.lower(), reference.lower())
-        for forbidden_tail in ("product code", "tests", "specifications", "architecture", "plans", "dependencies", "configuration", "generated output", "unrelated documentation", "change-record mutation"):
-            self.assertIn(forbidden_tail, reference)
+        for forbidden_tail in ("product code", "tests", "specifications", "architecture", "plans", "dependencies", "configuration", "generated output", "unrelated documentation", "another stage's evidence"):
+            self.assertIn(forbidden_tail, reference.lower())
+        for field_rule in ("final-review-owned `change.yaml` fields", "explain-change-owned workflow-handback fields", "unknown or sibling-owned shared-metadata field"):
+            self.assertIn(field_rule, reference)
         for phrase in ("Closeout status: open", "needs-decision", "final disposition", "Workflow handback", "Next-stage decision owner", "workflow"):
             self.assertIn(phrase, reference)
         for claim in ("verify-ready", "verification-passed", "branch-ready", "pr-body-ready", "pr-open-ready", "release-ready", "lifecycle-complete"):
