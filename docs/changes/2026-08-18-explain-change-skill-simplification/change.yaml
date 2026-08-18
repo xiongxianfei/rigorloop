@@ -64,9 +64,12 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: explain-change
-  next_stage: verify
-  blocker: null
+  current_stage: verify
+  next_stage: none
+  blocker:
+    code: validation-failed
+    evidence:
+      - docs/changes/2026-08-18-explain-change-skill-simplification/verify-report.md
   evidence:
     - docs/proposals/2026-08-18-explain-change-skill-simplification.md
     - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/reviews/proposal-review-r3.md
@@ -180,9 +183,9 @@ workflow:
       bound_at: "2026-08-18T14:00:00-07:00"
       completion:
         rule: verify records one final result for the current handoff revision
-    status: active
+    status: paused
     current_stage: verify
-    stop_reason: null
+    stop_reason: verification-failed
     evidence:
       - docs/proposals/2026-08-18-explain-change-skill-simplification.md
       - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/reviews/proposal-review-r3.md
@@ -270,16 +273,30 @@ review:
   unresolved_items: 0
 
 validation:
-  - command: python scripts/test-workflow-code-state.py
-    result: pass_18_tests
-  - command: python scripts/test-workflow-automation.py
-    result: pass_76_tests
+  - command: python scripts/test-skill-validator.py ExplainChangeSkillSimplificationTests
+    result: pass_11_tests
   - command: python scripts/validate-skills.py skills/explain-change/SKILL.md
     result: pass
+  - command: python scripts/test-workflow-automation-state.py
+    result: pass_65_tests
+  - command: python scripts/test-workflow-automation.py
+    result: pass_76_tests
+  - command: python scripts/test-skill-validator.py
+    result: pass_419_tests_16_skips
+  - command: python scripts/test-build-skills.py
+    result: pass_7_tests
   - command: python scripts/build-skills.py --check
     result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_150_tests
+  - command: python scripts/validate-boundary-first.py --check --path specs/explain-change-skill-simplification.md
+    result: pass
+  - command: python scripts/validate-documentation-prose.py --mode audit --path specs/explain-change-skill-simplification.md --path specs/explain-change-skill-simplification.test.md --path docs/plans/2026-08-18-explain-change-skill-simplification.md
+    result: pass
+  - command: python scripts/test-workflow-code-state.py
+    result: pass_18_tests
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-18-explain-change-skill-simplification
-    result: pass_16_reviews_4_findings_closed
+    result: pass_17_reviews_4_findings_closed
   - command: python scripts/validate-change-metadata.py docs/changes/2026-08-18-explain-change-skill-simplification/change.yaml
     result: pass_before_verify_result_recording
   - command: git diff --check origin/main...HEAD
@@ -287,7 +304,7 @@ validation:
   - command: git merge-tree --write-tree origin/main HEAD
     result: pass_no_conflicts
   - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
-    result: fail_review_evidence_regression_1_of_103_tests
+    result: fail_pr_lifecycle_scope_2_blockers
 
 changed_files:
   - docs/proposals/2026-08-18-explain-change-skill-simplification.md
