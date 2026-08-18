@@ -132,10 +132,20 @@ workflow_state:
       - M4
     latest_review:
       status: not-started
+      stage: code-review
+      round: none
+      artifact_id: plan
+      occurrence: none
+      milestone_id: none
+      evidence: []
     final_closeout:
       readiness: not-ready
       reasons:
         - implementation-milestones-open
+        - milestone-review-pending
+        - explain-change-pending
+        - verify-pending
+        - pr-handoff-pending
       evidence:
         - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r2.md
         - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-initialization-r2.md
