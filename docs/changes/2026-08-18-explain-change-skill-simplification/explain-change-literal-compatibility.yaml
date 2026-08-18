@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "allowed_classifications": ["normative-contract", "cross-skill-contract", "parser-or-validator-consumed", "structural-label", "incidental-prose", "obsolete"],
+  "allowed_treatments": ["preserve", "relocate", "replace-atomically", "remove"],
+  "invalid_examples": {
+    "classification": "not_in_vocabulary",
+    "treatment": "not_in_vocabulary"
+  },
+  "literals": [
+    {"literal_id": "EXC-LIT-001", "value": "docs/changes/<change-id>/explain-change.md", "classification": "cross-skill-contract", "treatment": "preserve", "consumers": ["docs/workflows.md", "skills/workflow/SKILL.md", "skills/implement/SKILL.md", "skills/verify/references/branch-readiness-verification.md"]},
+    {"literal_id": "EXC-LIT-002", "value": "docs/explain/YYYY-MM-DD-slug.md", "classification": "normative-contract", "treatment": "preserve", "consumers": ["skills/explain-change/SKILL.md"]},
+    {"literal_id": "EXC-LIT-003", "value": "review-resolution.md", "classification": "cross-skill-contract", "treatment": "relocate", "consumers": ["docs/workflows.md", "skills/code-review/SKILL.md", "skills/verify/SKILL.md", "skills/pr/SKILL.md"]},
+    {"literal_id": "EXC-LIT-004", "value": "final reviewed diff", "classification": "cross-skill-contract", "treatment": "replace-atomically", "consumers": ["skills/verify/references/branch-readiness-verification.md", "skills/code-review/references/workflow-managed-automated-review.md", "scripts/test-skill-validator.py"]},
+    {"literal_id": "EXC-LIT-005", "value": "final holistic code review", "classification": "cross-skill-contract", "treatment": "preserve", "consumers": ["skills/code-review/references/workflow-managed-automated-review.md", "scripts/workflow_automation_policy.py"]},
+    {"literal_id": "EXC-LIT-006", "value": "Validation evidence available before final verify", "classification": "structural-label", "treatment": "preserve", "consumers": ["skills/explain-change/SKILL.md"]},
+    {"literal_id": "EXC-LIT-007", "value": "Workflow handback", "classification": "structural-label", "treatment": "replace-atomically", "consumers": ["skills/explain-change/SKILL.md", "scripts/test-skill-validator.py"]},
+    {"literal_id": "EXC-LIT-008", "value": "Verify readiness", "classification": "obsolete", "treatment": "remove", "consumers": ["skills/explain-change package only"]},
+    {"literal_id": "EXC-LIT-009", "value": "branch-ready", "classification": "cross-skill-contract", "treatment": "preserve", "consumers": ["docs/workflows.md", "skills/verify/SKILL.md", "skills/pr/SKILL.md"]},
+    {"literal_id": "EXC-LIT-010", "value": "pr-body-ready", "classification": "cross-skill-contract", "treatment": "preserve", "consumers": ["docs/workflows.md", "skills/verify/SKILL.md", "skills/pr/SKILL.md"]},
+    {"literal_id": "EXC-LIT-011", "value": "pr-open-ready", "classification": "cross-skill-contract", "treatment": "preserve", "consumers": ["docs/workflows.md", "skills/verify/SKILL.md", "skills/pr/SKILL.md"]},
+    {"literal_id": "EXC-LIT-012", "value": "EC0-portable-inline", "classification": "parser-or-validator-consumed", "treatment": "preserve", "consumers": ["scripts/test-skill-validator.py"]},
+    {"literal_id": "EXC-LIT-013", "value": "EC1-portable-durable", "classification": "parser-or-validator-consumed", "treatment": "preserve", "consumers": ["scripts/test-skill-validator.py"]},
+    {"literal_id": "EXC-LIT-014", "value": "EC2-governed-inline", "classification": "parser-or-validator-consumed", "treatment": "preserve", "consumers": ["scripts/test-skill-validator.py"]},
+    {"literal_id": "EXC-LIT-015", "value": "EC3-governed-durable", "classification": "parser-or-validator-consumed", "treatment": "preserve", "consumers": ["scripts/test-skill-validator.py"]}
+  ]
+}

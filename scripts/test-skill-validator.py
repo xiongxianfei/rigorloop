@@ -10727,6 +10727,73 @@ class LearnSkillSimplificationLedgerTests(unittest.TestCase):
         self.assertEqual(set(triggers), {"transaction-grade phase recovery", "new persistent route or session schema owner", "polling or coordination service", "external integration", "new cross-owner mutation authority"})
 
 
+class ExplainChangeSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.change = ROOT / "docs" / "changes" / "2026-08-18-explain-change-skill-simplification"
+
+    def load(self, relative: str) -> dict:
+        return json.loads((self.change / relative).read_text(encoding="utf-8"))
+
+    def test_rule_dispositions_use_closed_vocabularies(self) -> None:
+        ledger = self.load("explain-change-rule-disposition.yaml")
+        treatments = set(ledger["allowed_treatments"])
+        owners = set(ledger["allowed_owners"])
+        rules = ledger["rules"]
+        self.assertTrue(rules)
+        self.assertEqual(len({row["rule_id"] for row in rules}), len(rules))
+        self.assertTrue(all(row["treatment"] in treatments for row in rules))
+        self.assertTrue(all(row["owner"] in owners for row in rules))
+        self.assertNotIn(ledger["invalid_examples"]["treatment"], treatments)
+        self.assertNotIn(ledger["invalid_examples"]["owner"], owners)
+
+    def test_literal_dispositions_and_consumers_are_closed(self) -> None:
+        ledger = self.load("explain-change-literal-compatibility.yaml")
+        classifications = set(ledger["allowed_classifications"])
+        treatments = set(ledger["allowed_treatments"])
+        literals = ledger["literals"]
+        self.assertTrue(literals)
+        self.assertEqual(len({row["literal_id"] for row in literals}), len(literals))
+        self.assertTrue(all(row["classification"] in classifications for row in literals))
+        self.assertTrue(all(row["treatment"] in treatments for row in literals))
+        self.assertTrue(all(row["consumers"] for row in literals))
+        self.assertNotIn(ledger["invalid_examples"]["classification"], classifications)
+        self.assertNotIn(ledger["invalid_examples"]["treatment"], treatments)
+
+    def test_scenarios_cover_closed_classification_and_failure_families(self) -> None:
+        fixture = self.load("fixtures/explain-change-simplification-scenarios.yaml")
+        scenarios = fixture["scenarios"]
+        self.assertEqual(len({row["id"] for row in scenarios}), len(scenarios))
+        self.assertGreaterEqual(len(scenarios), 24)
+        required_families = {"classification", "assembly", "target", "authority", "resource", "write", "tail", "handback", "history", "measurement"}
+        self.assertTrue(required_families <= {row["family"] for row in scenarios})
+        for name, vocabulary in fixture["vocabularies"].items():
+            with self.subTest(vocabulary=name):
+                self.assertTrue(vocabulary["allowed"])
+                self.assertIn("not_in_vocabulary", vocabulary["invalid"])
+                self.assertFalse(set(vocabulary["allowed"]) & set(vocabulary["invalid"]))
+        assemblies = fixture["vocabularies"]["assembly"]["allowed"]
+        self.assertEqual(assemblies, ["EC0-portable-inline", "EC1-portable-durable", "EC2-governed-inline", "EC3-governed-durable"])
+
+    def test_frozen_baseline_matches_the_unchanged_canonical_skill(self) -> None:
+        skill = (ROOT / "skills" / "explain-change" / "SKILL.md").read_bytes()
+        normalized = skill.replace(b"\r\n", b"\n")
+        self.assertEqual(len(normalized), 8224)
+        self.assertEqual(len(normalized.decode("utf-8").split()), 1175)
+        self.assertEqual(hashlib.sha256(normalized).hexdigest(), "8a26dde3b27ec13717cf385948a50b78a37d89c72536d260077416b9caccf95b")
+        baseline = (self.change / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
+        for value in ("EC0", "EC1", "EC2", "EC3", "1,175", "8,224", "8a26dde3b27ec13717cf385948a50b78a37d89c72536d260077416b9caccf95b", "total canonical package"):
+            self.assertIn(value.lower(), baseline.lower())
+
+    def test_architecture_trigger_inventory_is_explicit(self) -> None:
+        fixture = self.load("fixtures/explain-change-simplification-scenarios.yaml")
+        self.assertEqual(len(fixture["architecture_triggers"]), 6)
+        self.assertIn("new persistent identity model", fixture["architecture_triggers"])
+        self.assertIn("single-file atomic replacement", fixture["architecture_non_triggers"])
+        evidence = (self.change / "evidence" / "m1-preservation-inventories.md").read_text(encoding="utf-8")
+        self.assertIn("architecture-not-required", evidence)
+        self.assertIn("stops M2", evidence)
+
+
 class LearnSkillSimplificationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.root = ROOT / "skills" / "learn"

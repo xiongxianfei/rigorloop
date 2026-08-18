@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "vocabularies": {
+    "governed_signal": {"allowed": ["no-governed-signal", "single-governed-candidate", "invalid-or-ambiguous-governed-signal"], "invalid": ["not_in_vocabulary"]},
+    "output_action": {"allowed": ["inline-explanation", "create-durable-explanation", "refresh-durable-explanation"], "invalid": ["not_in_vocabulary"]},
+    "assembly": {"allowed": ["EC0-portable-inline", "EC1-portable-durable", "EC2-governed-inline", "EC3-governed-durable"], "invalid": ["not_in_vocabulary"]},
+    "write_result": {"allowed": ["inline-complete", "durable-complete", "blocked-before-write", "fresh-retry-required"], "invalid": ["not_in_vocabulary"]}
+  },
+  "scenarios": [
+    {"id": "EXC-SC-001", "family": "classification", "signal": "no-governed-signal", "action": "inline-explanation", "assembly": "EC0-portable-inline", "result": "inline-complete"},
+    {"id": "EXC-SC-002", "family": "classification", "signal": "single-governed-candidate", "action": "inline-explanation", "assembly": "EC2-governed-inline", "result": "inline-complete"},
+    {"id": "EXC-SC-003", "family": "classification", "signal": "invalid-or-ambiguous-governed-signal", "action": null, "assembly": null, "result": "blocked-before-write"},
+    {"id": "EXC-SC-004", "family": "assembly", "signal": "no-governed-signal", "action": "create-durable-explanation", "assembly": "EC1-portable-durable", "result": "durable-complete"},
+    {"id": "EXC-SC-005", "family": "assembly", "signal": "single-governed-candidate", "action": "create-durable-explanation", "assembly": "EC3-governed-durable", "result": "durable-complete"},
+    {"id": "EXC-SC-006", "family": "target", "target_state": "present", "requested_action": "create-durable-explanation", "result": "blocked-before-write"},
+    {"id": "EXC-SC-007", "family": "target", "target_state": "absent", "requested_action": "refresh-durable-explanation", "result": "blocked-before-write"},
+    {"id": "EXC-SC-008", "family": "authority", "target_state": "present", "refresh_authority": "absent", "result": "blocked-before-write"},
+    {"id": "EXC-SC-009", "family": "authority", "target_state": "present", "refresh_authority": "explicit-current", "result": "durable-complete"},
+    {"id": "EXC-SC-010", "family": "resource", "required_resource": "governed-reference", "resource_state": "missing", "result": "blocked-before-write"},
+    {"id": "EXC-SC-011", "family": "resource", "required_resource": "skeleton", "resource_state": "unreadable", "result": "blocked-before-write"},
+    {"id": "EXC-SC-012", "family": "write", "write_state": "identity-changed-before-replacement", "result": "fresh-retry-required"},
+    {"id": "EXC-SC-013", "family": "write", "write_state": "atomic-replacement-uncertain", "result": "fresh-retry-required"},
+    {"id": "EXC-SC-014", "family": "write", "write_state": "read-back-mismatch", "result": "fresh-retry-required"},
+    {"id": "EXC-SC-015", "family": "tail", "tail": "none", "governed_completion": "permitted"},
+    {"id": "EXC-SC-016", "family": "tail", "tail": "one-direct-child-explain-change-owned-evidence-commit", "governed_completion": "permitted"},
+    {"id": "EXC-SC-017", "family": "tail", "tail": "product-code", "governed_completion": "blocked"},
+    {"id": "EXC-SC-018", "family": "tail", "tail": "multiple-unexplained-commits", "governed_completion": "blocked"},
+    {"id": "EXC-SC-019", "family": "handback", "claim": "explanation-current", "owner": "explain-change", "permitted": true},
+    {"id": "EXC-SC-020", "family": "handback", "claim": "verify-ready", "owner": "explain-change", "permitted": false},
+    {"id": "EXC-SC-021", "family": "history", "target_state": "historical-untouched", "expected": "byte-identical"},
+    {"id": "EXC-SC-022", "family": "history", "target_state": "historical-authorized-refresh", "expected": "current-skeleton-whole-file"},
+    {"id": "EXC-SC-023", "family": "measurement", "variant": "equal-to-baseline", "expected": "fail"},
+    {"id": "EXC-SC-024", "family": "measurement", "variant": "larger-than-baseline", "expected": "fail"}
+  ],
+  "architecture_triggers": [
+    "new persistent identity model",
+    "new transaction or recovery surface",
+    "new schema or lifecycle state",
+    "new routing or cross-stage write owner",
+    "managed Markdown parser",
+    "runtime generator"
+  ],
+  "architecture_non_triggers": [
+    "one packaged governed reference",
+    "one copied structural skeleton",
+    "existing change-local evidence fields",
+    "single-file atomic replacement"
+  ]
+}
