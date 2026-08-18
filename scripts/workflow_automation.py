@@ -528,6 +528,9 @@ def resolve_verification_readiness(
                 "Status",
                 "Final diff identity",
                 "Final review identity",
+                "Reviewed subject revision",
+                "Explanation basis",
+                "Validation-evidence cutoff",
             },
         )
     except StateContractError as error:
@@ -541,6 +544,8 @@ def resolve_verification_readiness(
         != final_code_identity
         or explanation.get("Final review identity")
         != identities["final_code_review_identity"]
+        or explanation.get("Reviewed subject revision")
+        != canonical.reviewed_revision
     ):
         raise AutomationContractError("verification basis explanation is not current")
     for name, expected_stage, expected_status in (
