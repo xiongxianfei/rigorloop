@@ -2,16 +2,17 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: test-spec-review-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
+Review closeout: code-review-final-r1
 
-- Reviews covered: `test-spec-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`
+- Reviews covered: `test-spec-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-final-r1`
 - Findings resolved: 2
-- Unresolved findings: 0
-- Current result: EXCSIM-CR1 is corrected and M2 rereview is clean.
+- Unresolved findings: 1
+- Current result: Final closeout is blocked on the reviewed-subject and durable stage-evidence sequence.
 
 ## Resolution overview
 
@@ -19,6 +20,7 @@ Review closeout: code-review-m2-r2
 | --- | --- | --- | --- |
 | EXCSIM-TSR1 | accepted | resolved | Added direct AC1-through-AC15 mappings to existing test cases, commands, and first proof milestones; validation passed. |
 | EXCSIM-CR1 | accepted | resolved | Verification now permits only the exact explanation artifact in the one-commit post-review tail. |
+| EXCSIM-CR2 | needs-decision | open | The one-commit explanation-only tail cannot also preserve mandatory final-review evidence. |
 
 ### test-spec-review-r1
 
@@ -56,3 +58,21 @@ Validation evidence: corrected commit `185be18c`; `evidence/m2-package-implement
 ### code-review-m2-r2
 
 No material findings. The rereview confirms EXCSIM-CR1 is resolved and closes M2.
+
+### code-review-final-r1
+
+#### EXCSIM-CR2
+
+Finding ID: EXCSIM-CR2
+Disposition: needs-decision
+Status: open
+Owner: spec and architecture
+Owning stage: spec
+Decision owner: spec author with bounded architecture assessment
+Decision needed: Select a non-circular durable revision sequence for reviewed subject, final-review recording, explanation recording, workflow state, and verify handoff.
+Chosen action: pending owner decision
+Rationale: The approved explanation-only direct-child tail cannot contain or follow mandatory final-review evidence without violating R26-R27.
+Required outcome: One explicit ordered identity model that preserves durable stage evidence and excludes implementation drift.
+Safe resolution path: Revise R24-R29, reassess architecture under R44, update workflow code-state and proof fixtures, then rereview the complete change.
+Validation target: real final-review-to-explain-change-to-verify repository sequence.
+Validation evidence: pending decision and implementation.

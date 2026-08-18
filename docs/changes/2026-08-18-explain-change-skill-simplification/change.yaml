@@ -40,10 +40,13 @@ artifact_states:
       round: r2
 
 workflow_state:
-  lifecycle_state: active
+  lifecycle_state: paused
   current_stage: final-holistic-code-review
-  next_stage: explain-change
-  blocker: null
+  next_stage: spec
+  blocker:
+    code: owner-decision
+    evidence:
+      - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r1.md
   evidence:
     - docs/proposals/2026-08-18-explain-change-skill-simplification.md
     - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/reviews/proposal-review-r3.md
@@ -77,6 +80,8 @@ workflow_state:
     - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m2-r2.md
     - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m3-r1.yaml
     - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m3-r1.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r1.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -98,17 +103,18 @@ workflow_state:
         state: closed
     remaining_implementation_milestones: []
     latest_review:
-      status: approved
+      status: blocked
       stage: code-review
-      round: r1
+      round: final-r1
       artifact_id: plan
-      occurrence: milestone
-      milestone_id: M3
+      occurrence: final
+      milestone_id: none
       evidence:
-        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m3-r1.md
+        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
+        - review-findings-open
         - explain-change-pending
         - verify-pending
         - pr-handoff-pending
@@ -126,9 +132,9 @@ workflow:
       bound_at: "2026-08-18T14:00:00-07:00"
       completion:
         rule: verify records one final result for the current handoff revision
-    status: active
+    status: paused
     current_stage: final-holistic-code-review
-    stop_reason: null
+    stop_reason: EXCSIM-CR2 owner decision required
     evidence:
       - docs/proposals/2026-08-18-explain-change-skill-simplification.md
       - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/reviews/proposal-review-r3.md
@@ -162,6 +168,8 @@ workflow:
       - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m2-r2.md
       - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m3-r1.yaml
       - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m3-r1.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-final-r1.yaml
+      - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r1.md
 
 artifacts:
   spec: specs/explain-change-skill-simplification.md
@@ -182,8 +190,8 @@ tests:
   - Static semantic, literal, package, generated-output, adapter, and measurement proof without target-agent runtime execution.
 
 review:
-  status: pending
-  unresolved_items: 0
+  status: blocked
+  unresolved_items: 1
 
 validation: []
 

@@ -1,0 +1,24 @@
+review_id: code-review-final-r1
+stage: code-review
+round: final-r1
+reviewed_milestone: final
+reviewed_range:
+  base: fb8bdcdc
+  head: 7ec84dc2
+reviewer: Codex independent final holistic review
+authority:
+  proposal: docs/proposals/2026-08-18-explain-change-skill-simplification.md
+  spec: specs/explain-change-skill-simplification.md
+  plan: docs/plans/2026-08-18-explain-change-skill-simplification.md
+  test_spec: specs/explain-change-skill-simplification.test.md
+automation:
+  mode: workflow-managed-final
+  target_stage: verify
+  context_separation: fresh-assumption complete-diff review
+  risk_map_recorded_before_evidence_menu: true
+  requirement_fidelity: applicable
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded

@@ -19,6 +19,19 @@ This ledger records formal lifecycle reviews for the governed explain-change ski
 
 ### Review entry
 
+Review ID: code-review-final-r1
+Stage: code-review
+Round: final R1
+Reviewed artifact: complete range `fb8bdcdc..7ec84dc2`
+Status: blocked
+Detailed record: reviews/code-review-final-r1.md
+Resolution: review-resolution.md#code-review-final-r1
+Material findings: EXCSIM-CR2
+Open findings: EXCSIM-CR2
+Recording status: recorded
+
+### Review entry
+
 Review ID: code-review-m2-r1
 Stage: code-review
 Round: r1
