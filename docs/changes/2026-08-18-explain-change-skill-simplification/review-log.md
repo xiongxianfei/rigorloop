@@ -18,6 +18,7 @@ This ledger records formal lifecycle reviews for the governed explain-change ski
 | `code-review-m1-r1` | `code-review` | `r1` | milestone M1 range `fb8bdcdc..168a130c` | `reviews/code-review-m1-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m2-r2` | `code-review` | `r2` | milestone M2 range `f9b5f8e1..185be18c` | `reviews/code-review-m2-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m3-r1` | `code-review` | `r1` | milestone M3 range `d0edf0b1..359827be` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-m4-r2` | `code-review` | `r2` | M4 corrections `155a5fff`, `031953ae` | `reviews/code-review-m4-r2.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 
@@ -31,7 +32,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m4-r1.md
 Resolution: review-resolution.md#code-review-m4-r1
 Material findings: EXCSIM-CR3
-Open findings: EXCSIM-CR3
+Open findings: none
 Recording status: recorded
 
 ### Review entry
@@ -44,7 +45,7 @@ Status: blocked
 Detailed record: reviews/code-review-final-r1.md
 Resolution: review-resolution.md#code-review-final-r1
 Material findings: EXCSIM-CR2
-Open findings: EXCSIM-CR2
+Open findings: none
 Recording status: recorded
 
 ### Review entry

@@ -2,18 +2,19 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: test-spec-review-r1
 Review closeout: code-review-m2-r1
 Review closeout: code-review-m2-r2
 Review closeout: code-review-final-r1
 Review closeout: code-review-m4-r1
+Review closeout: code-review-m4-r2
 
-- Reviews covered: `test-spec-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-final-r1`, `code-review-m4-r1`
-- Findings resolved: 2
-- Unresolved findings: 2
-- Current result: M4 requires a bounded shared-list ownership correction before rereview and final closeout.
+- Reviews covered: `test-spec-review-r1`, `code-review-m2-r1`, `code-review-m2-r2`, `code-review-final-r1`, `code-review-m4-r1`, `code-review-m4-r2`
+- Findings resolved: 4
+- Unresolved findings: 0
+- Current result: The ordered `S -> R -> E` decision and stage-owned metadata validation are implemented and cleanly rereviewed.
 
 ## Resolution overview
 
@@ -21,8 +22,8 @@ Review closeout: code-review-m4-r1
 | --- | --- | --- | --- |
 | EXCSIM-TSR1 | accepted | resolved | Added direct AC1-through-AC15 mappings to existing test cases, commands, and first proof milestones; validation passed. |
 | EXCSIM-CR1 | accepted | resolved | Verification now permits only the exact explanation artifact in the one-commit post-review tail. |
-| EXCSIM-CR2 | needs-decision | open | The one-commit explanation-only tail cannot also preserve mandatory final-review evidence. |
-| EXCSIM-CR3 | accepted | open | Enforce append-only, exact stage-owned shared-list deltas and verify-owned post-handoff evidence. |
+| EXCSIM-CR2 | accepted | resolved | Approved spec and ADR replace the impossible one-commit tail with exact `S -> R -> E`. |
+| EXCSIM-CR3 | accepted | resolved | Shared-list deltas are append-only and later evidence uses canonical verify-owned paths. |
 
 ### test-spec-review-r1
 
@@ -66,18 +67,18 @@ No material findings. The rereview confirms EXCSIM-CR1 is resolved and closes M2
 #### EXCSIM-CR2
 
 Finding ID: EXCSIM-CR2
-Disposition: needs-decision
-Status: open
-Owner: spec and architecture
-Owning stage: spec
-Decision owner: spec author with bounded architecture assessment
-Decision needed: Select a non-circular durable revision sequence for reviewed subject, final-review recording, explanation recording, workflow state, and verify handoff.
-Chosen action: pending owner decision
+Disposition: accepted
+Status: resolved
+Owner: spec, architecture, and implementation
+Owning stage: spec and architecture, implemented by M4
+Decision owner: none; approved spec-review-r2 and architecture-review-r1 settled the model
+Decision needed: none
+Chosen action: Use exact linear `S -> R -> E`, derive `R` and `E` from Git, and keep the reviewed product identity base-to-`S`.
 Rationale: The approved explanation-only direct-child tail cannot contain or follow mandatory final-review evidence without violating R26-R27.
 Required outcome: One explicit ordered identity model that preserves durable stage evidence and excludes implementation drift.
 Safe resolution path: Revise R24-R29, reassess architecture under R44, update workflow code-state and proof fixtures, then rereview the complete change.
 Validation target: real final-review-to-explain-change-to-verify repository sequence.
-Validation evidence: pending decision and implementation.
+Validation evidence: `spec-review-r2`; `architecture-review-r1`; commits `970ef3ed`, `155a5fff`, and `031953ae`; `reviews/code-review-m4-r2.md`.
 
 ### code-review-m4-r1
 
@@ -85,7 +86,7 @@ Validation evidence: pending decision and implementation.
 
 Finding ID: EXCSIM-CR3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: implementation
 Owning stage: implement
 Decision owner: none; R27-R29 are explicit
@@ -95,4 +96,8 @@ Rationale: Prefix ownership of a list does not prove ownership of each list muta
 Required outcome: Every shared-list change preserves the prior sequence and adds only exact stage-owned entries; later evidence is accepted only through the closed verify-owned manifest.
 Safe resolution path: Correct `scripts/workflow_code_state.py` and its focused tests, rerun M4 validation, and record code-review-m4-r2.
 Validation target: corrected M4 semantic shared-file validation.
-Validation evidence: pending correction and rereview.
+Validation evidence: commits `155a5fff` and `031953ae`; `evidence/m4-ordered-evidence-tail.md`; `reviews/code-review-m4-r2.md`.
+
+### code-review-m4-r2
+
+No material findings. The rereview resolves EXCSIM-CR3, confirms the approved EXCSIM-CR2 decision is implemented, and closes M4 review.
