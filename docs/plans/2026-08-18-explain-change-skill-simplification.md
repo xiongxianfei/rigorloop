@@ -14,18 +14,20 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
 
 - Proposal: `docs/proposals/2026-08-18-explain-change-skill-simplification.md`
 - Spec: `specs/explain-change-skill-simplification.md`
-- Architecture: not required; recorded in `docs/changes/2026-08-18-explain-change-skill-simplification/architecture-assessment.md`
-- Test spec: pending at `specs/explain-change-skill-simplification.test.md`
+- Architecture: `docs/architecture/system/architecture.md`
+- ADR: `docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md`
+- Architecture review: `docs/changes/2026-08-18-explain-change-skill-simplification/reviews/architecture-review-r1.md`
+- Test spec: `specs/explain-change-skill-simplification.test.md`, pending revision for the ordered evidence tail
 
 ## Context and orientation
 
 `skills/explain-change/` is the only authored package source. The current flat `SKILL.md` mixes universal explanation quality, governed final-review and review-resolution procedure, and durable Markdown structure. The change adds `references/governed-workflow-explanation.md` and `assets/explain-change-skeleton.md`, keeps four real assemblies, and changes no workflow order or stage owner.
 
-The existing workflow automation reads `Final diff identity` and `Final review identity`; implementation must preserve those consumed literals while clarifying that the reviewed diff ends at the final-reviewed subject and that one direct-child explanation-only commit is an allowed evidence tail. Existing build and adapter tooling owns generated-resource parity.
+The package simplification and its first three implementation milestones are complete, but final review found that one explanation-only direct-child commit cannot also preserve durable final-review evidence. The approved amendment and ADR replace that incomplete model with exact non-merge direct-child revisions `S -> R -> E`: reviewed subject, final-review recording, and explanation plus workflow handback. Existing build and adapter tooling continues to own generated-resource parity.
 
 ## Non-goals
 
-- Change final review, review-resolution, workflow, verify, PR, or lifecycle-state ownership.
+- Change final review, review-resolution, workflow, verify, PR, or lifecycle-state ownership; the new revisions compose existing owners only.
 - Add section-level refresh, managed Markdown regions, historical-layout parsing, partial-write transactions, a new identity service, or change-record writes by `explain-change`.
 - Add scripts, executable generation, model-runtime grading, tokenizer dependencies, or target-agent acceptance.
 - Bulk-migrate historical explanations or optimize another skill beyond directly coupled compatibility surfaces.
@@ -35,8 +37,10 @@ The existing workflow automation reads `Final diff identity` and `Final review i
 | Requirement and boundary scope | Owning milestone or evidence |
 | --- | --- |
 | R36-R44; BND-COMPAT-001, BND-ENV-001; INT-005 | M1 rule/literal ledgers, architecture-trigger check, deterministic scenarios, and baselines |
-| R1-R35; BND-INPUT-001, BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001, BND-TEMPORAL-001, BND-RECOVERY-001; INT-001-INT-004 | M2 focused contract alignment, canonical package split, whole-file refresh, reviewed-subject identity, and handback |
+| R1-R23, R30-R35; BND-INPUT-001, BND-STATE-001, BND-AUTH-001, BND-COMPOSE-001; INT-001, INT-002, INT-004 | M2 focused contract alignment, canonical package split, whole-file refresh, and handback |
 | R36-R43; BND-COMPOSE-001, BND-COMPAT-001, BND-ENV-001; INT-005 | M3 semantic preservation, four-profile reduction, boundary proof, and canonical-through-installed parity |
+| R24-R29; BND-TEMPORAL-001, BND-RECOVERY-001; INT-003 | M4 four-part code-state identity, exact `S -> R -> E` ownership validation, retry, and end-to-end Git proof |
+| R1-R44 | M5 final review, ordered evidence commits, explanation, and verify closeout |
 
 ## Milestones
 
@@ -45,7 +49,7 @@ The existing workflow automation reads `Final diff identity` and `Final review i
 - Milestone kind: implementation
 - Goal: Account for every behaviorally significant rule, consumed literal, boundary scenario, and real loaded assembly before canonical procedure moves.
 - Requirements: R36-R44; BND-COMPAT-001; BND-ENV-001; INT-005.
-- Architecture decisions: none; recorded assessment is `architecture-not-required` unless a new identity or recovery owner is discovered.
+- Architecture decisions: none for the preservation inventory; its identity inventory later exposed the gap now resolved by ADR-20260818 and M4.
 - Files/components likely touched:
   - `docs/changes/2026-08-18-explain-change-skill-simplification/explain-change-rule-disposition.yaml`
   - `docs/changes/2026-08-18-explain-change-skill-simplification/explain-change-literal-compatibility.yaml`
@@ -83,8 +87,8 @@ The existing workflow automation reads `Final diff identity` and `Final review i
 ### M2. Align the contract and split the canonical package
 
 - Milestone kind: implementation
-- Goal: Shorten the universal skill, add the governed reference and skeleton, and implement closed action, refresh, reviewed-subject, and handback behavior.
-- Requirements: R1-R35; BND-INPUT-001; BND-STATE-001; BND-AUTH-001; BND-COMPOSE-001; BND-TEMPORAL-001; BND-RECOVERY-001; INT-001-INT-004.
+- Goal: Shorten the universal skill, add the governed reference and skeleton, and implement closed action, refresh, and handback behavior. M4 supersedes the incomplete evidence-tail portion discovered at final review.
+- Requirements: R1-R23, R30-R35; BND-INPUT-001; BND-STATE-001; BND-AUTH-001; BND-COMPOSE-001; INT-001; INT-002; INT-004.
 - Architecture decisions: existing published-skill resource and stage-owned evidence architecture; no ADR.
 - Files/components likely touched:
   - `skills/explain-change/SKILL.md`
@@ -101,7 +105,6 @@ The existing workflow automation reads `Final diff identity` and `Final review i
 - Tests and proof:
   - tri-state governed signals, three actions, four assemblies, late loading, and missing-resource stops
   - create/refresh state and authority matrices, current-skeleton composition, atomic replacement, concurrency, uncertain read-back, and fresh retry
-  - exact base-to-reviewed-subject identity, one explanation-only direct child, broader-tail staleness, and later verify evidence
   - governed closeout, concise review-resolution summary, explanation metadata, and neutral `Workflow handback`
   - forbidden lifecycle, readiness, external, and cross-stage mutations
 - Implementation steps:
@@ -109,7 +112,6 @@ The existing workflow automation reads `Final diff identity` and `Final review i
   - keep universal truthfulness, diff, privacy, stops, claims, and resource selection inline
   - move only governed eligibility, placement, final-review and review-closeout interpretation, basis, staleness, and handback procedure into the reference
   - copy complete durable structure into the skeleton and use it for every create and refresh
-  - align current workflow consumers with reviewed-subject and closed-tail semantics without adding persistence or write authority
   - update only directly coupled active consumers identified by M1
 - Validation commands:
   - `python scripts/validate-skills.py skills/explain-change/SKILL.md`
@@ -171,20 +173,74 @@ The existing workflow automation reads `Final diff identity` and `Final review i
 - Rollback/recovery:
   - restore the prior package, regenerate derived output, and discard temporary trees
 
-### M4. Close implementation lifecycle evidence
+### M4. Implement and prove the ordered final-review evidence tail
+
+- Milestone kind: implementation
+- Goal: Replace the impossible one-commit final-review reuse rule with the approved four-part identity model and exact `S -> R -> E` validation.
+- Requirements: R24-R29; BND-TEMPORAL-001; BND-RECOVERY-001; INT-003.
+- Architecture decisions: ADR-20260818 ordered final-review stage-evidence tail.
+- Files/components likely touched:
+  - `scripts/workflow_code_state.py`
+  - `scripts/workflow_automation.py`
+  - `scripts/test-workflow-code-state.py`
+  - `scripts/test-workflow-automation.py`
+  - `scripts/test-skill-validator.py`
+  - `skills/explain-change/SKILL.md`
+  - `skills/explain-change/references/governed-workflow-explanation.md`
+  - directly coupled fixture, rule-ledger, literal-ledger, workflow, and verification wording
+- Dependencies:
+  - approved spec revision and accepted ADR-20260818
+  - approved architecture-review-r1
+  - revised test specification and approving test-spec review
+- Tests and proof:
+  - code-state resolution exposes reviewed subject `S`, final-review recording `R`, explanation recording `E`, and handoff revision `E` without self-referential tracked hashes
+  - exact non-merge direct-child ancestry and the allowed `S -> R` retry state pass
+  - reordered, merged, intervening, unrelated-path, unknown-field, changed-basis, and recorded/Git identity mismatch cases fail closed
+  - semantic diff validation admits only the closed final-review fields in `R` and handback fields in `E` for shared `change.yaml`
+  - one real temporary Git repository proves `S -> R -> E -> verify` and the later verify-owned evidence boundary
+- Implementation steps:
+  - add failing focused unit and temporary-repository tests before implementation changes
+  - extend the code-state anchor and workflow integration to the four revision roles
+  - add path-and-field manifests for `R` and `E`, including safe YAML semantic comparison for `change.yaml`
+  - replace the obsolete one-direct-child wording in the published explain-change package and coupled fixtures while preserving existing result labels
+  - update the preservation ledgers and evidence only for the amended contract
+  - run focused validation before broad workflow and package checks
+- Validation commands:
+  - `python scripts/test-workflow-code-state.py`
+  - `python scripts/test-workflow-automation.py`
+  - `python scripts/test-skill-validator.py ExplainChangeSkillSimplificationTests`
+  - `python scripts/validate-skills.py skills/explain-change/SKILL.md`
+  - `python scripts/test-skill-validator.py`
+  - `python scripts/build-skills.py --check`
+- Expected observable result: workflow and verify distinguish `S`, `R`, and `E`, reuse final review only for the exact closed tail, and recover only from exact `S -> R` without accepting unrelated lifecycle edits.
+- Completion criteria: focused and broad tests pass, the real Git scenario proves the complete sequence, every negative tail and field case fails closed, published guidance matches the approved model, and no new persistence or write owner appears.
+- Required evidence: `docs/changes/2026-08-18-explain-change-skill-simplification/evidence/m4-ordered-evidence-tail.md`
+- Review handoff: independent `code-review` of M4 code-state, semantic-diff, workflow-integration, published-guidance, and end-to-end proof changes.
+- Optional commit boundary: `M4: implement ordered final-review evidence tail`
+- Risks:
+  - YAML field comparison may accidentally admit unrelated nested changes
+  - tests may prove synthetic hashes without exercising real Git ancestry
+  - old one-commit wording may survive in a fixture or generated consumer
+- Rollback/recovery:
+  - revert M4 as one unit to the blocked pre-closeout state; do not restore the obsolete one-commit readiness claim or proceed to verify
+
+### M5. Close implementation lifecycle evidence
 
 - Milestone kind: lifecycle-closeout
 - Goal: Obtain final holistic review, close findings, explain the change, verify branch readiness, and prepare PR handoff after implementation milestones close.
 - Requirements: R1-R44.
-- Architecture decisions: none.
+- Architecture decisions: ADR-20260818.
 - Files/components likely touched:
   - final review records, `explain-change.md`, and `verify-report.md` under the owning change root
 - Dependencies:
-  - M1-M3 and required review resolution are closed
+  - M1-M4 and required review resolution are closed
 - Tests and proof:
   - final holistic diff review and the complete approved test-spec command ledger
 - Implementation steps:
-  - run final holistic `code-review`, resolve and rereview findings, record rationale, and run final `verify`
+  - commit the final reviewed subject as `S`
+  - run final holistic `code-review` and record its exact evidence and settlement in direct-child `R`
+  - create or refresh the explanation and record workflow handback in direct-child `E`
+  - run final `verify` against the exact ordered tail and record later verify-owned evidence separately
 - Validation commands:
   - use the complete approved test-spec commands
   - `bash scripts/ci.sh --mode pr --base origin/main --head HEAD`
@@ -203,18 +259,19 @@ The existing workflow automation reads `Final diff identity` and `Final review i
 - M1 focused skill-validator proof owns closed ledgers, static scenarios, unknown-value-first behavior, architecture triggers, and baselines.
 - M2 focused and broad skill/workflow validation owns classification, resource selection, whole-file refresh, evidence tails, handback, and forbidden writes.
 - M3 adapter, build, boundary, and measurement proof owns generated-resource parity and semantic preservation.
+- M4 focused code-state, workflow, skill, semantic-diff, and real-Git proof owns the ordered evidence-tail behavior.
 - Change metadata, formal reviews, code review, verify, and PR review own lifecycle and human judgment.
 
 ## Risks and recovery
 
 - Risk: extraction hides universal truthfulness. Recovery: block M2 on M1 ownership and EC0 proof.
-- Risk: evidence-tail clarification weakens final review. Recovery: accept only one direct-child explanation-only commit and negative-test every broader tail.
+- Risk: evidence-tail composition weakens final review. Recovery: accept only exact `S -> R -> E`, validate shared state by field, and negative-test every broader or reordered tail.
 - Risk: relocation appears as deletion. Recovery: report all assemblies, individual resources, duplicate ownership, and total package.
 - Risk: a new identity owner is needed. Recovery: stop and return to architecture before canonical mutation.
 
 ## Dependencies
 
-- Approved spec, clean spec review, recorded `architecture-not-required` assessment, and the accepted portable proposal direction.
+- Approved spec revision, clean spec review, accepted canonical architecture and ADR-20260818, and the accepted portable proposal direction.
 - Existing published-skill resource, stage-owned lifecycle, workflow automation, final-review, verify, and adapter-package contracts.
 - Existing skill validation, package generation, archive validation, release-candidate validation, and clean-install owners.
 - Approved test specification and test-spec review before implementation.
@@ -227,9 +284,9 @@ The existing workflow automation reads `Final diff identity` and `Final review i
 | 2026-08-18 | Preserve existing evidence labels while clarifying their identity semantics. | This avoids a new persistence owner and maintains active consumers. | New transaction schema; self-referential commit metadata. |
 | 2026-08-18 | Make every durable refresh a current-skeleton whole-file replacement. | One structural rule closes loading, authority, and recovery without a Markdown ownership parser. | Section updates; historical-layout preservation. |
 | 2026-08-18 | Measure every assembly and total package separately. | Root-only reduction cannot prove user value. | EC0-only or workflow-only measurement. |
+| 2026-08-18 | Add one implementation milestone for exact `S -> R -> E` evidence-tail support before lifecycle closeout. | The approved amendment changes code-state identity, semantic diff validation, recovery, published guidance, and end-to-end proof; hiding it in closeout would make it unreviewable. | Patch during verify; fold behavior into lifecycle closeout; reopen completed M1-M3. |
 
 ## Readiness
 
 - See the owning change record for current workflow state.
 - Readiness is not Done; plan review, test-spec authoring and review, implementation and code review, explanation, verification, and PR handoff remain.
-
