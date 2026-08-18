@@ -16,6 +16,18 @@ artifact_states:
       outcome: approved
       record: docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r2.md
       round: r2
+  architecture-system:
+    kind: architecture
+    path: docs/architecture/system/architecture.md
+    role: primary
+    lifecycle_state: authoring
+    authoring_evidence: docs/changes/2026-08-18-explain-change-skill-simplification/evidence/architecture-authoring-r1.md
+  adr-ordered-tail:
+    kind: adr
+    path: docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md
+    role: primary
+    lifecycle_state: authoring
+    authoring_evidence: docs/changes/2026-08-18-explain-change-skill-simplification/evidence/architecture-authoring-r1.md
 
 workflow_state:
   lifecycle_state: active
@@ -115,6 +127,8 @@ workflow:
 
 artifacts:
   spec: specs/explain-change-skill-simplification.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md
 
 requirements:
   - Reduce loaded procedure for all four explain-change assemblies while preserving actual-diff grounding, evidence truthfulness, scope, validation gaps, stops, claims, and resource safety.
@@ -164,3 +178,6 @@ changed_files:
   - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/spec-revision-r1.md
   - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-spec-review-r2.yaml
   - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r2.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/architecture-authoring-r1.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md
