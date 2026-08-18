@@ -1,0 +1,50 @@
+schema_version: 1
+review_id: test-spec-review-r1
+review_stage: test-spec-review
+review_target: specs/vision-skill-progressive-disclosure.test.md
+base_revision: dd266d6d
+head_revision: dd266d6d
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-test-spec-authoring-r1
+reviewer_context_id: root-test-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - identity-bound-multi-file-recovery
+  - generated-package-parity
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/vision-skill-progressive-disclosure.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r2.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/architecture-assessment.md
+  - docs/plans/2026-08-17-vision-skill-progressive-disclosure.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/plan-review-r1.md
+  - specs/vision-skill-progressive-disclosure.test.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+  - boundary-first-proof-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: specs/vision-skill-progressive-disclosure.md
+    sha256: 75838eb48ce591e9f4c5a6ade209b6e99f0ff5fa1f66f451c4a7ce70ba2abe08
+  - path: docs/changes/2026-08-17-vision-skill-progressive-disclosure/architecture-assessment.md
+    sha256: a9a156f9b19ef098dd6779fb71666f34babfc1103ff1c7786232853bad296691
+  - path: docs/plans/2026-08-17-vision-skill-progressive-disclosure.md
+    sha256: 2e77376d327ae3bcdb581f5a6d63c6acaecba9be326146bb7828832e55f10997
+  - path: specs/vision-skill-progressive-disclosure.test.md
+    sha256: bf819480b651dde0d1d5189f56628094392b8a8b34fbecefdcdaab6645bd12e1
+prompt_template_version: test-spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - requirement, acceptance, example, and edge-case traceability
+  - direct boundary and interaction proof
+  - command ownership and milestone proof timing
+  - manifest, skip, retry, and concurrency coverage
+  - compatibility, measurement, and package parity
+  - deterministic implementation handoff readiness

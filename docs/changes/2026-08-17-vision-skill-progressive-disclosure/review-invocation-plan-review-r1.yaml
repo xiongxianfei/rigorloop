@@ -1,0 +1,34 @@
+schema_version: 1
+review_id: plan-review-r1
+review_stage: plan-review
+review_target: docs/plans/2026-08-17-vision-skill-progressive-disclosure.md
+base_revision: e1b2372a
+head_revision: e1b2372a
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-plan-authoring-r1
+reviewer_context_id: root-plan-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - identity-bound-multi-file-recovery
+  - generated-package-parity
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/vision-skill-progressive-disclosure.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/architecture-assessment.md
+  - docs/plans/2026-08-17-vision-skill-progressive-disclosure.md
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+prompt_template_version: plan-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - requirement and boundary traceability
+  - milestone independence and sequencing
+  - skip and multi-file recovery safety
+  - exact validation commands and proof timing
+  - rollback and package parity

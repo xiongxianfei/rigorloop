@@ -1,0 +1,22 @@
+# Proposal Revision Evidence: Vision Skill Progressive Disclosure
+
+- Operation: `revise-primary-proposal`
+- Change ID: `2026-08-17-vision-skill-progressive-disclosure`
+- Artifact ID: `proposal`
+- Canonical path: `docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md`
+- Prior reviewed revision: `15dbbce5`
+- Prior content identity: `sha256:528e496b452854148fb54d4a63189fc5db5445bd9c8b813d5ec5117b60f19061`
+- Revised content identity: `sha256:08a2539a9ca86b79a8b7e1a4b072319d304b367d406e16e634eb46d8b10e9baf`
+- Revision authority: user request to refine the proposal after formal `proposal-review-r3`
+- Loaded assembly: `PA1G-governed-gated`
+- Active specialized predicates: `initial_intent_table_context`, `scope_budget_context`
+- Finding disposition: `VISSIM-R3-PR1` accepted and implemented by binding README authority to the manifest, prior and intended vision identities, README identity, marker state, operation, action, and current authority source while preserving only the exact planned transition.
+- Finding disposition: `VISSIM-R3-PR2` accepted and implemented with `VA0S-readme-skip` plus independent vision and positioning skeleton predicates that remain applicable under `VA2S`.
+- Scope preservation: the two-reference/two-asset package, three mutation operations, state-based intent, README synchronization default, no-script direction, and no-runtime acceptance remain unchanged.
+- Validation: `git diff --check` passed.
+- Validation: `python scripts/validate-change-metadata.py docs/changes/2026-08-17-vision-skill-progressive-disclosure/change.yaml` passed.
+- Validation: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-17-vision-skill-progressive-disclosure` passed.
+- Validation: `python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-17-vision-skill-progressive-disclosure` passed.
+- Validation: `python scripts/validate-artifact-lifecycle.py --mode explicit-paths ...` passed for the proposal, change record, review ledger, resolution, and revision evidence.
+- Authoring result: proposal revised, round-3 material findings closed, and proposal returned to `review-required`.
+- Downstream authority: independent proposal rereview only; specification, architecture, planning, implementation, verification, and PR readiness remain unauthorized.

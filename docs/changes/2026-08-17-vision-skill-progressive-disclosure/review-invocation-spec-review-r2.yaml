@@ -1,0 +1,40 @@
+schema_version: 1
+review_id: spec-review-r2
+review_stage: spec-review
+review_target: specs/vision-skill-progressive-disclosure.md
+base_revision: 1931c7b4
+head_revision: 1931c7b4
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-correction-r1
+reviewer_context_id: root-spec-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - multi-file-recovery-contract
+  - compatibility-sensitive-validation
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
+  - specs/vision-skill-progressive-disclosure.md
+  - specs/vision-skill.md
+  - specs/skill-contract.md
+  - specs/rigorloop-workflow.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: specs/vision-skill-progressive-disclosure.md
+    sha256: 75838eb48ce591e9f4c5a6ade209b6e99f0ff5fa1f66f451c4a7ce70ba2abe08
+  - path: docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-revision-r1.md
+    sha256: 587a1e4a067a61e4dd46e667dc42bc2ff5bad1ad0cf4e7743abfda02f89aefd6
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - full requirement and boundary contract
+  - VISSIM-SR1 exact transition resolution
+  - testability and compatibility
+  - architecture and proof-map routing

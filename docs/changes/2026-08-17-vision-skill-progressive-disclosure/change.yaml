@@ -1,0 +1,319 @@
+change_id: 2026-08-17-vision-skill-progressive-disclosure
+title: Vision Skill Progressive Disclosure
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r5
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r5.md
+      round: r5
+  spec:
+    kind: spec
+    path: specs/vision-skill-progressive-disclosure.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r2
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r2.md
+      round: r2
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-17-vision-skill-progressive-disclosure.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r1
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/plan-review-r1.md
+      round: r1
+  test-spec:
+    kind: test-spec
+    path: specs/vision-skill-progressive-disclosure.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r1
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/test-spec-review-r1.md
+      round: r1
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: verify
+  next_stage: pr
+  blocker: null
+  evidence:
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r1.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-resolution.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r1.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r2.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r2.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r3.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r3.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r4.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r4.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r5.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-authoring.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r1.yaml
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r1.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-revision-r1.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r2.yaml
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r2.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/architecture-assessment.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/plan-authoring.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-plan-review-r1.yaml
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/plan-review-r1.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/plan-initialization.md
+    - specs/vision-skill-progressive-disclosure.test.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/test-spec-authoring.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-test-spec-review-r1.yaml
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-verify.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m1-preservation-inventories.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m1-r1.yaml
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-package-implementation.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m2-r1.yaml
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-review-resolution-r1.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m2-r2.yaml
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m2-r2.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/simplification-measurements.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/semantic-preservation-review.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m3-package-proof.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m3-r1.yaml
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m3-r1.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r1.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r2.yaml
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r2.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/final-review-resolution-r2.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r3.yaml
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r3.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/explain-change.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/verify-report.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/verify-r1-correction.md
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r4.yaml
+    - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r4.md
+  planned_work:
+    plan_artifact_id: plan
+    current_milestone: none
+    initialization_basis:
+      review_id: plan-review-r1
+      review_round: r1
+      review_record: docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/plan-review-r1.md
+      reviewed_artifact_path: docs/plans/2026-08-17-vision-skill-progressive-disclosure.md
+      reviewed_revision: e1b2372a
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+    remaining_implementation_milestones: []
+    latest_review:
+      status: approved
+      stage: code-review
+      round: r4
+      artifact_id: plan
+      occurrence: final
+      milestone_id: none
+      evidence:
+        - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r4.md
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - external-completion-event-pending
+      evidence:
+        - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/plan-review-r1.md
+        - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/plan-initialization.md
+        - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m1-r1.md
+        - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m2-r2.md
+        - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m3-r1.md
+        - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r1.md
+        - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r3.md
+        - docs/changes/2026-08-17-vision-skill-progressive-disclosure/explain-change.md
+        - docs/changes/2026-08-17-vision-skill-progressive-disclosure/verify-report.md
+        - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/verify-r1-correction.md
+        - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r4.md
+
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: verify
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-17T01:00:00-07:00"
+      completion:
+        rule: first final verify result is durably recorded
+    status: completed
+    current_stage: verify
+    stop_reason: target-reached
+    evidence:
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
+      - docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r5.md
+      - specs/vision-skill-progressive-disclosure.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-authoring.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r1.yaml
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r1.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-revision-r1.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r2.yaml
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r2.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/architecture-assessment.md
+      - docs/plans/2026-08-17-vision-skill-progressive-disclosure.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/plan-authoring.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-plan-review-r1.yaml
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/plan-review-r1.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/plan-initialization.md
+      - specs/vision-skill-progressive-disclosure.test.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/test-spec-authoring.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-test-spec-review-r1.yaml
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-verify.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m1-preservation-inventories.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m1-r1.yaml
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m1-r1.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-package-implementation.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m2-r1.yaml
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m2-r1.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-review-resolution-r1.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m2-r2.yaml
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m2-r2.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/simplification-measurements.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/semantic-preservation-review.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m3-package-proof.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m3-r1.yaml
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m3-r1.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r1.yaml
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r1.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r2.yaml
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r2.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/final-review-resolution-r2.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r3.yaml
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r3.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/explain-change.md
+      - docs/changes/2026-08-17-vision-skill-progressive-disclosure/verify-report.md
+
+artifacts:
+  proposal: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
+  spec: specs/vision-skill-progressive-disclosure.md
+  plan: docs/plans/2026-08-17-vision-skill-progressive-disclosure.md
+  test_spec: specs/vision-skill-progressive-disclosure.test.md
+
+requirements:
+  - Reduce the actual loaded procedure for README synchronization, editorial revision, and strategic authoring while preserving the approved vision contract and avoiding an unsupported formal assessment profile.
+  - Keep universal authority, state classification, canonical-path, revision-classification, safety, stop, claim, and resource-selection behavior inline.
+  - Use one strategic-authoring reference, one README-synchronization reference, one vision skeleton, and one strategic-positioning skeleton under the existing published-skill package model.
+  - Preserve README synchronization as the establishment and revision default, with omission allowed only under exact current identity-bound skip authority and every strategic/README combination represented explicitly.
+  - Classify positioning, README, and structural-asset actions independently and use one source-first target manifest with fail-closed partial recovery for multi-artifact writes.
+  - Bind README insertion or skip authority to the exact manifest and prior-to-intended vision transition, including the explicit sync-skip path.
+  - Preserve root VISION.md authority, strategic-positioning rationale, README marker safety, state-based behavior, word limits, and substantive change-local linkage.
+  - Prove semantic and literal preservation, real procedural-profile reduction, and canonical-through-installed parity without target-agent runtime acceptance.
+
+tests:
+  - Independent proposal review of value, package boundaries, operation closure, structural ownership, compatibility, measurement, and spec readiness.
+  - Deterministic scenarios covering all six loaded assemblies, independent asset selection, absent and existing vision state, editorial and substantive revision, positioning actions, manifest-bound README authority, target transitions, partial retry, marker failures, retired lowercase path handling, and missing resources.
+  - Static skill, package, adapter, selector, lifecycle, and compatibility validation without a target-agent runtime or separate prose-grading system.
+
+validation: []
+
+changed_files:
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/change.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-authoring.md
+  - docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-log.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-resolution.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r1.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r2.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r3.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r3.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r4.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/proposal-revision-r4.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/proposal-review-r5.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-test-spec-review.md
+  - specs/vision-skill-progressive-disclosure.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-authoring.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r1.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/spec-revision-r1.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-spec-review-r2.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/spec-review-r2.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/architecture-assessment.md
+  - docs/plans/2026-08-17-vision-skill-progressive-disclosure.md
+  - docs/plan.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/plan-authoring.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/plan-review-r1.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/plan-initialization.md
+  - specs/vision-skill-progressive-disclosure.test.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/test-spec-authoring.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-test-spec-review-r1.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/workflow-automation-target-verify.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/vision-rule-disposition.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/vision-literal-compatibility.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/fixtures/invalid-rule-owner.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/fixtures/invalid-rule-disposition.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/fixtures/invalid-literal-classification.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/fixtures/invalid-literal-disposition.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/fixtures/vision-simplification-scenarios.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/profile-size-baseline.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m1-preservation-inventories.md
+  - scripts/test-skill-validator.py
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m1-r1.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m1-r1.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-package-implementation.md
+  - skills/vision/SKILL.md
+  - skills/vision/references/strategic-vision-authoring.md
+  - skills/vision/references/readme-vision-sync.md
+  - skills/vision/assets/vision-skeleton.md
+  - skills/vision/assets/strategic-positioning-skeleton.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m2-r1.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m2-r1.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m2-review-resolution-r1.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m2-r2.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m2-r2.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/simplification-measurements.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/semantic-preservation-review.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/m3-package-proof.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-m3-r1.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-m3-r1.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r1.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r1.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r2.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r2.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/final-review-resolution-r2.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r3.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r3.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/explain-change.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/verify-report.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/verify-r1-correction.md
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/review-invocation-code-review-final-r4.yaml
+  - docs/changes/2026-08-17-vision-skill-progressive-disclosure/reviews/code-review-final-r4.md
+
+review:
+  status: approved
+  unresolved_items: 0

@@ -1,0 +1,30 @@
+review_id: code-review-final-r4
+stage: code-review
+round: r4
+reviewed_milestone: none
+reviewed_range:
+  base: d524035d
+  head: 69de6d05
+reviewer: Codex independent code-review context
+authority:
+  proposal: docs/proposals/2026-08-17-vision-skill-progressive-disclosure.md
+  spec: specs/vision-skill-progressive-disclosure.md
+  plan: docs/plans/2026-08-17-vision-skill-progressive-disclosure.md
+  test_spec: specs/vision-skill-progressive-disclosure.test.md
+prior_verification:
+  id: verify-r1
+  status: not-ready
+  record: docs/changes/2026-08-17-vision-skill-progressive-disclosure/verify-report.md
+correction:
+  evidence: docs/changes/2026-08-17-vision-skill-progressive-disclosure/evidence/verify-r1-correction.md
+  commit: 69de6d05
+automation:
+  mode: completed-target-correction
+  target_stage: verify
+  context_separation: fresh-assumption full-branch rereview
+  requirement_fidelity: applicable
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded
