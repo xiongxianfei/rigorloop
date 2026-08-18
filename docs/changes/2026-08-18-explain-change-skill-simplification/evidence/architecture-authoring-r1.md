@@ -10,6 +10,7 @@ Spec identity: `sha256:826cbf5c07be5dab2c4e4f2e4631799ba2caac6f46a4570fc78b7b0c3
 Approving spec review: `spec-review-r2`
 Approving spec-review identity: `sha256:9b5f0f8e44f1e1cdc2cabefe35d69b4c1f751a101bfdbb2f0efeb19db0411be3`
 Evidence state: complete
+Intended ADR settlement state: `accepted`
 
 ## Ordered targets
 
