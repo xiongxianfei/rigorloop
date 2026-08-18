@@ -64,9 +64,12 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: verify
-  blocker: null
+  current_stage: verify
+  next_stage: none
+  blocker:
+    code: validation-failed
+    evidence:
+      - docs/changes/2026-08-18-explain-change-skill-simplification/verify-report.md
   evidence:
     - docs/proposals/2026-08-18-explain-change-skill-simplification.md
     - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/reviews/proposal-review-r3.md
@@ -126,6 +129,7 @@ workflow_state:
     - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-final-r2.yaml
     - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r2.md
     - docs/changes/2026-08-18-explain-change-skill-simplification/explain-change.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/verify-report.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -177,9 +181,9 @@ workflow:
       bound_at: "2026-08-18T14:00:00-07:00"
       completion:
         rule: verify records one final result for the current handoff revision
-    status: active
+    status: paused
     current_stage: verify
-    stop_reason: null
+    stop_reason: verification-failed
     evidence:
       - docs/proposals/2026-08-18-explain-change-skill-simplification.md
       - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/reviews/proposal-review-r3.md
@@ -239,6 +243,7 @@ workflow:
       - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-final-r2.yaml
       - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r2.md
       - docs/changes/2026-08-18-explain-change-skill-simplification/explain-change.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/verify-report.md
 
 artifacts:
   spec: specs/explain-change-skill-simplification.md
@@ -263,7 +268,25 @@ review:
   status: approved
   unresolved_items: 0
 
-validation: []
+validation:
+  - command: python scripts/test-workflow-code-state.py
+    result: pass_18_tests
+  - command: python scripts/test-workflow-automation.py
+    result: pass_76_tests
+  - command: python scripts/validate-skills.py skills/explain-change/SKILL.md
+    result: pass
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-18-explain-change-skill-simplification
+    result: pass_16_reviews_4_findings_closed
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-08-18-explain-change-skill-simplification/change.yaml
+    result: pass_before_verify_result_recording
+  - command: git diff --check origin/main...HEAD
+    result: pass
+  - command: git merge-tree --write-tree origin/main HEAD
+    result: pass_no_conflicts
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: fail_review_evidence_regression_1_of_103_tests
 
 changed_files:
   - docs/proposals/2026-08-18-explain-change-skill-simplification.md
@@ -312,3 +335,4 @@ changed_files:
   - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-final-r2.yaml
   - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-final-r2.md
   - docs/changes/2026-08-18-explain-change-skill-simplification/explain-change.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/verify-report.md
