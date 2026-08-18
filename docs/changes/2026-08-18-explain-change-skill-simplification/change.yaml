@@ -19,8 +19,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: architecture-assessment
-  next_stage: architecture-assessment
+  current_stage: architecture
+  next_stage: architecture
   blocker: null
   evidence:
     - docs/proposals/2026-08-18-explain-change-skill-simplification.md
@@ -72,7 +72,7 @@ workflow:
       completion:
         rule: verify records one final result for the current handoff revision
     status: active
-    current_stage: architecture-assessment
+    current_stage: architecture
     stop_reason: null
     evidence:
       - docs/proposals/2026-08-18-explain-change-skill-simplification.md

@@ -1,49 +1,62 @@
-# Architecture Assessment: Explain-Change Skill Simplification
+# Architecture Assessment: Explain-Change Skill Simplification R2
 
 Stage: architecture-assessment
+Assessment receipt ID: architecture-assessment-r2
 Assessment mode: workflow-managed
-Applicability: not-required
-Route: architecture-not-required
+Applicability: required
+Route: architecture-required
 Action: assessment-only
 Assembly: AA0-assessment
 Spec: `specs/explain-change-skill-simplification.md`
-Spec identity: `sha256:4bb07c3be46d22e97ef1ffb874d83421e5311c3ed8621149c36b6e58fa99b5f8`
-Approving spec review: `spec-review-r1`
+Spec identity: `sha256:826cbf5c07be5dab2c4e4f2e4631799ba2caac6f46a4570fc78b7b0c3f4f3e15`
+Approving spec review: `spec-review-r2`
+Spec review identity: `docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r2.md`
 Assessment date: 2026-08-18
 
 ## Rationale
 
-The approved specification uses architecture already owned by the repository:
+The revised specification changes the durable integration contract among final holistic code review, explain-change, workflow routing, and verify. It introduces an exact Git revision sequence:
 
-- the published-skill package model already supports one canonical `SKILL.md`, conditional references, copied assets, generated packages, archives, release candidates, and installed-resource parity;
-- final holistic code review already owns the reviewed implementation subject, while explain-change and verify already consume exact final-diff and final-review identities;
-- the reviewed-subject clarification retains the existing `Final diff identity` and `Final review identity` evidence surface and derives the closed explanation-only tail from the Git revision graph rather than adding a new persistent identity owner;
-- the durable artifact remains one Markdown file written by its current owner through an atomic replacement, with no cross-file transaction or recovery service;
-- the change adds no runtime router, dependency, API, external integration, deployment topology, lifecycle state, provider abstraction, or cross-stage write authority.
+```text
+S: reviewed subject
+-> R: final-review recording and workflow transition
+-> E: explanation recording and workflow handback
+-> verify
+```
 
-The specification intentionally excludes managed Markdown regions, section parsing, resumable partial writes, a transaction manifest, and change-record mutation by `explain-change`. Therefore no canonical architecture update, ADR, architecture artifact entry, or architecture review is required.
+The repository already owns every persistence surface and stage authority involved, but the ordered composition is new. Safe implementation requires the canonical architecture to define:
+
+- the four distinct revision identities;
+- the strict direct-child, non-merge ordering;
+- path-and-field ownership for commits that include shared `change.yaml` state;
+- identical recovery from the `S -> R` partial state;
+- final-review staleness for broader, reordered, merged, or intervening revisions; and
+- verify consumption of the closed pre-verify tail without treating verify's own later evidence as part of it.
+
+These are cross-component, compatibility-sensitive, long-lived workflow decisions. They extend the current Git code-state anchor and stage-owned lifecycle architecture rather than adding a service, database, external control plane, lifecycle state, or new write owner.
 
 ## Architecture trigger scan
 
 | Trigger | Result | Evidence |
 | --- | --- | --- |
-| New component or service boundary | no | Existing skill, workflow, validator, fixture, and package surfaces only. |
-| New persistence or schema owner | no | Existing explanation metadata and Git-derived revision evidence carry the clarified identities. |
-| New cross-stage write authority | no | `explain-change` continues to write only its artifact. |
-| New package transformation | no | Existing mapped reference/asset packaging is reused. |
-| New recovery or transaction mechanism | no | Single-file atomic replacement and fresh retry are sufficient. |
-| Managed Markdown ownership/parser | no | Explicitly excluded from the first version. |
+| Cross-component runtime or workflow boundary | yes | Final review, workflow, explain-change, Git code-state resolution, and verify must agree on one ordered protocol. |
+| New durable identity model | yes | `reviewed_subject_revision`, `final_review_recording_revision`, `explanation_recording_revision`, and `handoff_revision` are distinct. |
+| New shared-state validation rule | yes | `change.yaml` requires field-level ownership checks rather than path-only allowance. |
+| New recovery behavior | yes | `S -> R` may resume only by creating exact direct-child `E`; every competing state fails closed. |
+| New persistence or schema owner | no | Existing Git revisions, review evidence, explanation artifact, and change record remain the only surfaces. |
+| New cross-stage write authority | no | Existing stage owners retain their current writes; the protocol composes them without transferring authority. |
+| New service, dependency, or external integration | no | Repository-local Git and existing Python validation remain sufficient. |
 
-## Reassessment triggers
+## Required architecture surface
 
-Reassess as `architecture-required` if implementation requires a new persisted reviewed-subject/evidence-tail model, transaction record, machine-readable schema owner, lifecycle state, routing owner, cross-stage mutation, executable explanation generator, managed-region parser, or recovery service.
+Update the canonical runtime and cross-cutting validation description and add one ADR for the ordered final-review evidence tail. No C4 container or component diagram changes are required because no component boundary is added; the existing workflow automation and validation components retain ownership.
 
 ## Result
 
-- Targets: none
-- Architecture artifacts changed: none
-- ADRs changed: none
+- Targets: canonical architecture and one new ADR
+- Architecture artifacts changed: pending architecture authoring
+- ADRs changed: pending new ordered-stage-evidence-tail ADR
 - Recording status: recorded
 - Blockers: none
-- Claim limitations: this assessment does not approve the plan, test specification, implementation, verification, branch readiness, or PR readiness
-- Next stage: plan
+- Claim limitations: this assessment does not approve architecture, plan, test-spec, implementation, verification, branch readiness, or PR readiness
+- Next stage: architecture
