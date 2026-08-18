@@ -1,0 +1,51 @@
+schema_version: 1
+review_id: test-spec-review-r2
+review_stage: test-spec-review
+review_target: specs/explain-change-skill-simplification.test.md
+base_revision: 11179cb7
+head_revision: 11179cb7
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-test-spec-revision-r1
+reviewer_context_id: root-test-spec-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - reviewed-subject-and-evidence-tail-identity
+  - canonical-through-installed-package-parity
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/explain-change-skill-simplification.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-18-explain-change-skill-simplification.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r1.md
+  - specs/explain-change-skill-simplification.test.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/review-resolution.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+  - boundary-first-proof-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: specs/explain-change-skill-simplification.md
+    sha256: 4bb07c3be46d22e97ef1ffb874d83421e5311c3ed8621149c36b6e58fa99b5f8
+  - path: docs/changes/2026-08-18-explain-change-skill-simplification/architecture-assessment.md
+    sha256: 0d1baa41662952b7316ac5361d7acd32240a4948349ee0e57291b2ef0135c0f5
+  - path: docs/plans/2026-08-18-explain-change-skill-simplification.md
+    sha256: 2023c011d122c9891a642cbbd5447656ebc5df660ec1d77d1abd07b42b311a2d
+  - path: specs/explain-change-skill-simplification.test.md
+    sha256: d1bcde9a4e040ed489b3d9abbfcb15117a76ef0ccfa632963b3a1534d3b3df8b
+prompt_template_version: test-spec-review-v1
+manifest_owner: test-spec-review
+forbidden_initial_context_excluded: true
+review_focus:
+  - direct AC1-through-AC15 traceability
+  - requirement, example, edge-case, boundary, and interaction coverage
+  - command ownership and milestone proof timing
+  - target-state, refresh, retry, identity, and evidence-tail coverage
+  - deterministic fixtures, compatibility, measurement, and package parity
+  - correction closeout and implementation handoff readiness

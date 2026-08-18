@@ -1,0 +1,203 @@
+change_id: 2026-08-18-explain-change-skill-simplification
+title: Explain-Change Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  spec:
+    kind: spec
+    path: specs/explain-change-skill-simplification.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r1
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r1.md
+      round: r1
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-18-explain-change-skill-simplification.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r1
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r1.md
+      round: r1
+  test-spec:
+    kind: test-spec
+    path: specs/explain-change-skill-simplification.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r2
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-18-explain-change-skill-simplification/reviews/test-spec-review-r2.md
+      round: r2
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: implement
+  next_stage: code-review
+  blocker: null
+  evidence:
+    - docs/proposals/2026-08-18-explain-change-skill-simplification.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/reviews/proposal-review-r3.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/review-resolution.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+    - specs/explain-change-skill-simplification.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/spec-authoring.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-spec-review-r1.yaml
+    - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r1.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/architecture-assessment.md
+    - docs/plans/2026-08-18-explain-change-skill-simplification.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-authoring.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-plan-review-r1.yaml
+    - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r1.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-initialization.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-settlement-retry.md
+    - specs/explain-change-skill-simplification.test.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/test-spec-authoring.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-test-spec-review-r1.yaml
+    - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/review-resolution.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/test-spec-revision-r1.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-test-spec-review-r2.yaml
+    - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/workflow-automation-target-verify.md
+  planned_work:
+    plan_artifact_id: plan
+    current_milestone: M1
+    initialization_basis:
+      review_id: plan-review-r1
+      review_round: r1
+      review_record: docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r1.md
+      reviewed_artifact_path: docs/plans/2026-08-18-explain-change-skill-simplification.md
+      reviewed_revision: 11179cb7
+    milestones:
+      M1:
+        kind: implementation
+        state: implementing
+      M2:
+        kind: implementation
+        state: planned
+      M3:
+        kind: implementation
+        state: planned
+    remaining_implementation_milestones:
+      - M1
+      - M2
+      - M3
+    latest_review:
+      status: not-started
+      stage: code-review
+      round: none
+      artifact_id: plan
+      occurrence: none
+      milestone_id: none
+      evidence: []
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - implementation-milestones-open
+        - milestone-review-pending
+        - explain-change-pending
+        - verify-pending
+        - pr-handoff-pending
+      evidence:
+        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r1.md
+        - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-initialization.md
+
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: verify
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-18T14:00:00-07:00"
+      completion:
+        rule: verify records one final result for the current handoff revision
+    status: active
+    current_stage: implement
+    stop_reason: null
+    evidence:
+      - docs/proposals/2026-08-18-explain-change-skill-simplification.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/reviews/proposal-review-r3.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/review-resolution.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+      - specs/explain-change-skill-simplification.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/spec-authoring.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-spec-review-r1.yaml
+      - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r1.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/architecture-assessment.md
+      - docs/plans/2026-08-18-explain-change-skill-simplification.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-authoring.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-plan-review-r1.yaml
+      - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r1.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-initialization.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-settlement-retry.md
+      - specs/explain-change-skill-simplification.test.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/test-spec-authoring.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-test-spec-review-r1.yaml
+      - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/review-resolution.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/test-spec-revision-r1.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-test-spec-review-r2.yaml
+      - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/test-spec-review-r2.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/workflow-automation-target-verify.md
+
+artifacts:
+  spec: specs/explain-change-skill-simplification.md
+  plan: docs/plans/2026-08-18-explain-change-skill-simplification.md
+  test_spec: specs/explain-change-skill-simplification.test.md
+
+requirements:
+  - Reduce loaded procedure for all four explain-change assemblies while preserving actual-diff grounding, evidence truthfulness, scope, validation gaps, stops, claims, and resource safety.
+  - Use one governed-workflow reference and one structural explanation skeleton without scripts, runtime generation, or prose grading.
+  - Separate portable and governed context, inline and durable output, create and refresh authority, and reviewed-subject identity from the closed explanation evidence tail.
+  - Require current-skeleton whole-file composition for every durable create or refresh and one atomic replacement with fail-closed uncertainty handling.
+  - Replace verification-readiness language with an explain-change-owned workflow handback that leaves routing and readiness with their owning stages.
+  - Preserve semantic and literal compatibility, all-profile word and byte reduction, and canonical-through-installed package parity.
+
+tests:
+  - Independent specification, plan, and test-spec review before implementation.
+  - Deterministic scenarios for governed-signal classification, output actions, resource assemblies, refresh authority, atomic replacement, evidence-tail identity, handback claims, and missing resources.
+  - Static semantic, literal, package, generated-output, adapter, and measurement proof without target-agent runtime execution.
+
+review:
+  status: pending
+  unresolved_items: 0
+
+validation: []
+
+changed_files:
+  - docs/proposals/2026-08-18-explain-change-skill-simplification.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/change.yaml
+  - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+  - specs/explain-change-skill-simplification.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/review-log.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-18-explain-change-skill-simplification.md
+  - docs/plan.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-authoring.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r1.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-initialization.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-settlement-retry.md
+  - specs/explain-change-skill-simplification.test.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/test-spec-authoring.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-test-spec-review-r1.yaml
+  - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/review-resolution.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/test-spec-revision-r1.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-test-spec-review-r2.yaml
+  - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/test-spec-review-r2.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/workflow-automation-target-verify.md
