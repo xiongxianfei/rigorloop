@@ -94,7 +94,6 @@ class CodeStateAnchor:
     reviewed_revision: str
     final_review_id: str
     lifecycle_evidence_paths: tuple[str, ...]
-    post_handoff_evidence_paths: tuple[str, ...] = ()
 
     @property
     def identity(self) -> str:
@@ -187,8 +186,12 @@ class GitCodeStateProvider:
         self._allowed_post_review_paths = frozenset(
             anchor.lifecycle_evidence_paths
         )
+        change_root = f"docs/changes/{anchor.change_id}"
         self._allowed_post_handoff_paths = frozenset(
-            anchor.post_handoff_evidence_paths
+            {
+                f"{change_root}/change.yaml",
+                f"{change_root}/verify-report.md",
+            }
         )
 
     @staticmethod
@@ -568,9 +571,7 @@ class GitCodeStateProvider:
             ) from error
 
         tail = self._linear_tail(root, reviewed, head)
-        if len(tail) > 3 or (
-            len(tail) > 2 and not self._allowed_post_handoff_paths
-        ):
+        if len(tail) > 3:
             raise CodeStateError(
                 "post-review evidence tail contains additional pre-verify commits"
             )
@@ -689,7 +690,6 @@ class GitCodeStateAnchorResolver:
         reviewed_revision: str,
         final_review_id: str,
         lifecycle_evidence_paths: frozenset[str],
-        post_handoff_evidence_paths: frozenset[str] = frozenset(),
     ) -> CodeStateAnchor:
         root = repository_root.resolve()
         if not all(
@@ -733,21 +733,6 @@ class GitCodeStateAnchorResolver:
                     f"{relative_path}"
                 )
             allowed_paths.add(relative_path)
-        allowed_post_handoff_paths: set[str] = set()
-        for path in post_handoff_evidence_paths:
-            relative_path = GitCodeStateProvider._validate_relative_path(path)
-            if (
-                relative_path
-                not in GitCodeStateProvider._POST_REVIEW_EVIDENCE_PATHS
-                and not relative_path.startswith(
-                    GitCodeStateProvider._POST_REVIEW_EVIDENCE_PREFIXES
-                )
-            ):
-                raise CodeStateError(
-                    "post-handoff exemption is not a lifecycle evidence path: "
-                    f"{relative_path}"
-                )
-            allowed_post_handoff_paths.add(relative_path)
         return CodeStateAnchor(
             change_id=change_id,
             target_ref=target_ref,
@@ -756,9 +741,6 @@ class GitCodeStateAnchorResolver:
             reviewed_revision=reviewed,
             final_review_id=final_review_id,
             lifecycle_evidence_paths=tuple(sorted(allowed_paths)),
-            post_handoff_evidence_paths=tuple(
-                sorted(allowed_post_handoff_paths)
-            ),
         )
 
 
@@ -769,7 +751,6 @@ def resolve_canonical_code_state(
     reviewed_revision: str,
     final_review_id: str,
     lifecycle_evidence_paths: frozenset[str],
-    post_handoff_evidence_paths: frozenset[str] = frozenset(),
     test_provider: CodeStateProvider | None = None,
 ) -> CanonicalCodeState:
     """Resolve Git state internally; allow injection only outside Git."""
@@ -810,7 +791,6 @@ def resolve_canonical_code_state(
             reviewed_revision=reviewed_revision,
             final_review_id=final_review_id,
             lifecycle_evidence_paths=lifecycle_evidence_paths,
-            post_handoff_evidence_paths=post_handoff_evidence_paths,
         )
         return GitCodeStateProvider(anchor=anchor).snapshot(root)
     diagnostic = git_probe.stderr.decode("utf-8", errors="replace").lower()

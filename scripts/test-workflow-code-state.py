@@ -233,10 +233,7 @@ class GitCodeStateProviderTests(unittest.TestCase):
         self.assertEqual(snapshot.tail_state, "complete")
         require_complete_ordered_evidence_tail(snapshot)
 
-        verify_path = (
-            "docs/changes/2026-07-20-example/evidence/verify-report.md"
-        )
-        change_path = "docs/changes/2026-07-20-example/change.yaml"
+        verify_path = "docs/changes/2026-07-20-example/verify-report.md"
         self.write(root, verify_path, "Stage: verify\nStatus: passed\n")
         self.write_change_state(
             root,
@@ -250,9 +247,6 @@ class GitCodeStateProviderTests(unittest.TestCase):
             reviewed_revision=reviewed,
             final_review_id="code-review-final-r1",
             lifecycle_evidence_paths=frozenset({evidence_path}),
-            post_handoff_evidence_paths=frozenset(
-                {verify_path, change_path}
-            ),
         )
 
         post_verify = GitCodeStateProvider(
