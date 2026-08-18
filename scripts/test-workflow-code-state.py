@@ -137,6 +137,46 @@ class GitCodeStateProviderTests(unittest.TestCase):
         with self.assertRaisesRegex(CodeStateError, "HEAD differs"):
             self.provider(root, reviewed).snapshot(root)
 
+    def test_snapshot_accepts_one_direct_child_evidence_commit(self) -> None:
+        root, _base = self.make_repository()
+        self.write(root, "scripts/modified.py", "value = 2\n")
+        reviewed = self.commit(root, "reviewed")
+        evidence_path = "docs/changes/2026-07-20-example/explain-change.md"
+        self.write(root, evidence_path, "Stage: explain-change\nStatus: current\n")
+        self.commit(root, "explain-change evidence")
+        anchor = GitCodeStateAnchorResolver().resolve(
+            root,
+            change_id="2026-07-20-example",
+            reviewed_revision=reviewed,
+            final_review_id="code-review-final-r1",
+            lifecycle_evidence_paths=frozenset({evidence_path}),
+        )
+
+        snapshot = GitCodeStateProvider(anchor=anchor).snapshot(root)
+
+        self.assertEqual(snapshot.reviewed_revision, reviewed)
+
+    def test_snapshot_rejects_multiple_post_review_evidence_commits(self) -> None:
+        root, _base = self.make_repository()
+        self.write(root, "scripts/modified.py", "value = 2\n")
+        reviewed = self.commit(root, "reviewed")
+        first = "docs/changes/2026-07-20-example/explain-change.md"
+        second = "docs/changes/2026-07-20-example/extra-evidence.md"
+        self.write(root, first, "Stage: explain-change\nStatus: current\n")
+        self.commit(root, "first evidence")
+        self.write(root, second, "extra\n")
+        self.commit(root, "second evidence")
+        anchor = GitCodeStateAnchorResolver().resolve(
+            root,
+            change_id="2026-07-20-example",
+            reviewed_revision=reviewed,
+            final_review_id="code-review-final-r1",
+            lifecycle_evidence_paths=frozenset({first, second}),
+        )
+
+        with self.assertRaisesRegex(CodeStateError, "one direct-child"):
+            GitCodeStateProvider(anchor=anchor).snapshot(root)
+
     def test_resolver_rejects_code_path_post_review_exemptions(self) -> None:
         root, _base = self.make_repository()
         reviewed = self.git(root, "rev-parse", "HEAD")

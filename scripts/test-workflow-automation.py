@@ -411,7 +411,10 @@ Open findings: None
             "docs/changes/2026-07-20-example/explain-change.md",
             "Stage: explain-change\nStatus: current\n"
             f"Final diff identity: {code_state.identity}\n"
-            f"Final review identity: {review_identity}\n",
+            f"Final review identity: {review_identity}\n"
+            f"Reviewed subject revision: {code_state.reviewed_revision}\n"
+            "Explanation basis: sha256:explanation-basis\n"
+            "Validation-evidence cutoff: sha256:validation-cutoff\n",
         )
         promotion_path, promotion_identity = artifact(
             "docs/changes/2026-07-20-example/promotion-evidence.md",
@@ -5526,7 +5529,10 @@ Open findings: None
             "docs/changes/2026-07-20-example/explain-change.md",
             "Stage: explain-change\nStatus: current\n"
             f"Final diff identity: {final_code_identity}\n"
-            f"Final review identity: {review_identity}\n",
+            f"Final review identity: {review_identity}\n"
+            f"Reviewed subject revision: {final_code_state.reviewed_revision}\n"
+            "Explanation basis: sha256:explanation-basis\n"
+            "Validation-evidence cutoff: sha256:validation-cutoff\n",
         )
         promotion_path, promotion_identity = artifact(
             "docs/changes/2026-07-20-example/promotion-evidence.md",
@@ -5571,6 +5577,30 @@ Open findings: None
         )
         self.assertTrue(readiness.final_review_clean)
         self.assertTrue(readiness.explanation_current)
+
+        explanation_file = root / explanation_path
+        original_explanation = explanation_file.read_text(encoding="utf-8")
+        explanation_file.write_text(
+            original_explanation.replace(
+                f"Reviewed subject revision: {final_code_state.reviewed_revision}",
+                "Reviewed subject revision: stale-reviewed-subject",
+            ),
+            encoding="utf-8",
+        )
+        stale_subject_basis = dict(basis)
+        stale_subject_basis["explanation_inputs_identity"] = (
+            "sha256:" + hashlib.sha256(explanation_file.read_bytes()).hexdigest()
+        )
+        with self.assertRaisesRegex(
+            AutomationContractError, "explanation is not current"
+        ):
+            resolve_verification_readiness(
+                repository_root=root,
+                basis=stale_subject_basis,
+                basis_paths=paths,
+                code_state_provider=code_state_provider,
+            )
+        explanation_file.write_text(original_explanation, encoding="utf-8")
 
         branch_file = root / branch_path
         original_branch = branch_file.read_text(encoding="utf-8")
@@ -5639,11 +5669,13 @@ Open findings: None
             "sha256:" + hashlib.sha256(review_file.read_bytes()).hexdigest()
         )
         semantic_basis["final_code_review_identity"] = semantic_review_identity
-        explanation_file = root / explanation_path
         explanation_file.write_text(
             "Stage: explain-change\nStatus: current\n"
             f"Final diff identity: {final_code_identity}\n"
-            f"Final review identity: {semantic_review_identity}\n",
+            f"Final review identity: {semantic_review_identity}\n"
+            f"Reviewed subject revision: {final_code_state.reviewed_revision}\n"
+            "Explanation basis: sha256:explanation-basis\n"
+            "Validation-evidence cutoff: sha256:validation-cutoff\n",
             encoding="utf-8",
         )
         semantic_basis["explanation_inputs_identity"] = (
@@ -6381,7 +6413,10 @@ Open findings: None
             "docs/changes/2026-07-20-example/explain-change.md",
             "Stage: explain-change\nStatus: current\n"
             f"Final diff identity: {final_code_identity}\n"
-            f"Final review identity: {final_review.identity}\n",
+            f"Final review identity: {final_review.identity}\n"
+            f"Reviewed subject revision: {final_code_state.reviewed_revision}\n"
+            "Explanation basis: sha256:explanation-basis\n"
+            "Validation-evidence cutoff: sha256:validation-cutoff\n",
         )
         promotion = write_evidence(
             "docs/changes/2026-07-20-example/promotion.md",

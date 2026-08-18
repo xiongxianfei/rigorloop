@@ -1,158 +1,76 @@
 ---
 name: explain-change
 description: >
-  Explain why the agent made each meaningful change by linking the actual diff to the problem, proposal, requirements, architecture decisions, plan milestones, tests, review outcomes, and available validation evidence. Use after implementation and review-resolution, before final verify and PR, or whenever the user asks why code changed.
-argument-hint: [branch, diff, feature name, plan path, or question]
+  Trace meaningful changes from the actual diff to decisions, requirements, tests, reviews, and validation. Use after implementation or for a change-rationale question.
+argument-hint: [branch, diff, change ID, artifact path, or question]
 ---
 
 # Change rationale explanation
 
-You are making the implementation understandable.
+## Purpose
 
-This skill exists because users should never have to reverse-engineer why an agent changed code.
+Explain the implementation without overstating evidence or owning another stage.
 
-## Inputs to read
+## When to use
 
-Read:
+Use after review closeout or for a direct rationale request. Direct requests remain isolated.
 
-- actual diff or changed files;
-- proposal;
-- feature spec;
-- test spec;
-- architecture doc and ADRs;
-- concrete plan and validation notes;
-- code-review findings and prior verification evidence when it exists;
-- `review-resolution.md` when material review findings exist;
-- test and CI output;
-- `AGENTS.md` and `CONSTITUTION.md` if relevant.
+## Inputs and evidence
 
-## Output path
+Resolve the actual diff first. Read the smallest decision-bearing proposal, spec, test spec, design, plan, review, tests, and validation evidence. Distinguish observed, inferred, and unknown facts. Flag unrelated changes, non-goals, risks, sensitive data, and evidence gaps; never explain from memory.
 
-Prefer:
+Resolve paths from the request, active metadata, project guidance, then the portable default. Portable durable output requires one exact path and never creates governed state.
 
-```text
-docs/changes/<change-id>/explain-change.md
-```
-
-For new ordinary non-trivial work, use `docs/changes/<change-id>/explain-change.md` unless an approved equivalent durable reasoning surface already applies under the workflow contract.
-
-Use:
-
-```text
-docs/explain/YYYY-MM-DD-slug.md
-```
-
-only when the governing workflow contract explicitly allows that top-level explain artifact class for the change.
-
-For isolated manual skill invocations that are not used to claim complete workflow delivery, inline explanation in the final response or PR body may be enough when the governing workflow contract allows it.
+Use `change.yaml` for current state and treat the plan and upstream artifacts as read-only.
 
 ## Generated Markdown readability
 
-When this skill creates or updates generated or generator-shaped Markdown:
+Write normal Markdown paragraphs with stable IDs. Do not split a sentence across physical source lines. Diagrams are optional. Do not require manual-proof contracts from readability alone.
 
-- Write ordinary prose as normal Markdown paragraphs. Do not split a sentence across physical source lines merely for wrapping or clause separation; multiple sentences may remain in one paragraph.
-- Preserve stable IDs for requirements, findings, commands, milestones, and evidence; use tables for repeated mappings.
-- Keep commands fenced or table-owned when they carry proof.
-- Diagrams are optional. Use them only when they reduce cognitive load and map to real artifacts, stages, components, actors, or states.
-- Do not require manual-proof contracts from this readability guidance alone; use governing project rules when manual proof is otherwise required.
+## Classification and resources
 
-## Artifact placement
+Classify the governed signal as `no-governed-signal`, `single-governed-candidate`, or `invalid-or-ambiguous-governed-signal`. A malformed, duplicated, escaped, unsafe, stale, missing-root, mismatched, or conflicting signal stops without portable fallback.
 
-Use the project workflow guide for artifact locations when placement matters.
+Independently select `inline-explanation`, `create-durable-explanation`, or `refresh-durable-explanation`. Create requires an exact absent target. Refresh requires an exact existing target, current identity, and explicit user authority or a validated governed stale route. A missing refresh target routes to creation without silent reclassification.
 
-Lookup order:
+Use exactly these assemblies:
 
-1. explicit user path or change ID;
-2. active plan, change metadata, reviewed artifact path, or current artifact metadata;
-3. known governing spec or schema constraint when directly relevant;
-4. `docs/workflows.md` artifact-location table;
-5. this skill's portable default path;
-6. block on ambiguity.
+- `EC0-portable-inline`: `SKILL.md`.
+- `EC1-portable-durable`: `SKILL.md` plus skeleton.
+- `EC2-governed-inline`: `SKILL.md` plus governed reference.
+- `EC3-governed-durable`: `SKILL.md` plus governed reference and skeleton.
 
-This discovery order is subordinate to the source-rank rule in `docs/workflows.md` when sources conflict.
+For a single candidate, READ `references/governed-workflow-explanation.md`. For durable output, COPY `assets/explain-change-skeleton.md`. Loading does not grant mutation, lifecycle, routing, automation, or readiness authority. A missing, unreadable, escaped, stale, contradictory, or mixed-version resource blocks; must not reconstruct it. Load late-discovered resources before dependent work.
 
-Do not broad-search authoritative documents just to find paths. Use `docs/workflows.md` as the path index, and consult specs or schemas only when they govern exact shape, placement, or a detected conflict.
+## Durable writes
 
-## Required sections
+Create and refresh compose a complete whole-file artifact from the current skeleton. No section-level refresh, mixed-ownership preservation, managed-region editing, or historical-layout parsing. Leave untargeted history unchanged.
 
-1. **Summary**: what changed and why.
-2. **Problem**: original issue or goal.
-3. **Decision trail**:
-   - exploration option selected;
-   - proposal decision;
-   - requirement IDs;
-   - architecture/ADR decisions;
-   - plan milestones.
-4. **Diff rationale by area**:
-   - files changed;
-   - why each file changed;
-   - which requirement/test/design decision it supports.
-5. **Tests added or changed**:
-   - test IDs;
-   - what each test proves;
-   - why the test level is appropriate.
-6. **Validation evidence available before final verify**:
-   - commands run;
-   - CI status if known;
-   - manual checks.
-7. **Review resolution summary** when material findings exist:
-   - concise counts by disposition;
-   - link to `review-resolution.md`;
-   - do not duplicate transcript details from review records.
-8. **Alternatives rejected**: what was not done and why.
-9. **Scope control**: non-goals preserved.
-10. **Risks and follow-ups**.
+Resolve action, target, prior identity, reviewed basis, and content; validate and re-read decision identities; atomically replace one file; then read back. Unavailable, failed, uncertain, or concurrent replacement blocks. A retry must classify current state afresh and never adopt unknown or changed content.
 
-## File rationale format
+## Content and claims
 
-Use a table when useful:
+Trace decisions to changes and tests. Include pre-verify evidence, alternatives, scope, risks, and disposition counts with a resolution link.
 
-```text
-File | Change | Reason | Source artifact | Test/evidence
-```
+Never claim final verify, branch readiness, `pr-body-ready`, `pr-open-ready`, hosted-CI completion, release, deployment, lifecycle completion, artifact settlement, milestone state, routing, or external mutation. Only workflow decides whether verify is next.
 
-## Rules
+## Stop conditions
 
-- Explain from the actual diff, not memory.
-- For ordinary non-trivial work, do not treat PR text alone as the durable reasoning surface.
-- For new ordinary non-trivial work, do not default to a new top-level `docs/explain/` artifact when `docs/changes/<change-id>/explain-change.md` should exist.
-- Do not justify unrelated changes; flag them.
-- Do not claim a requirement drove a change unless the link is real.
-- Do not hide validation gaps.
-- Do not claim final `verify`, `branch-ready`, `pr-body-ready`, `pr-open-ready`, or hosted CI-final status before the owning stage has produced that evidence.
-- Explain-change is scoped evidence and must not own artifact settlement, milestone state, or routing.
-- Use `change.yaml` when summarizing current planned-initiative state and treat the plan and upstream artifacts as read-only.
-- Material finding closeout must not proceed at `Closeout status: open`; `Closeout status: closed` requires final dispositions, no `needs-decision`, and no stale `review-log.md` open findings.
-- A stage-owned non-approval outcome that blocks downstream progress or requires revision needs a same-stage later review round or explicit reviewer or owner closeout naming the original Review ID; `review-resolution.md` alone is not a silent substitute.
-- For no-material review events, no-material detailed records need `review-log.md` but not an empty `review-resolution.md`.
-- Do not proceed when `review-resolution.md` is missing, open, still contains `needs-decision`, or `review-log.md` still lists open findings for material findings that must close before handoff.
-- Do not duplicate transcript content from detailed reviews; summarize review-resolution counts from the scan-first summary or overview and link the durable artifact.
-- Do not invent alternatives that were never considered; mark them as hindsight if added.
-- Keep explanations readable for a human reviewer.
-- For planned initiatives, do not claim PR readiness unless lifecycle state made true by this PR is recorded before the PR opens for review. If completion depends on a true downstream completion event, say why the plan remains `Active`; merge itself is not that event.
-
-## Workflow handoff behavior
-
-- In a workflow-managed standard workflow, successful `explain-change` completion hands off to `verify` unless a stop condition applies.
-- Direct `explain-change` requests remain isolated by default unless the user explicitly asks to continue beyond the explanation.
-- If explanation work surfaces a validation gap, stale artifact, or other blocker, stop and report it instead of implying the change is ready for `verify` or `pr`.
-- Automatic `explain-change` requires a valid verification capability, all implementation milestones closed, required review-resolution closed, a final full code-review, and promotion evidence.
-- Explain from the final reviewed diff and record remaining validation gaps without claiming final verify or PR readiness. `explain-change` does not open `pr`.
+Stop on ambiguous diff, target, authority, identity, signal, resource, open finding, unsafe content, or failed read-back. Name the blocker and owner.
 
 ## Evidence collection efficiency
 
-Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output. Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
+Use summary and stable-ID first reasoning. Prefer check IDs, requirement IDs, file paths, and line citations before broad reads.
 
 ## When full-file read is required
 
-Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
+Read fully when the whole file is the review target, bounded searches disagree, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Expected output
 
-- explanation artifact path or inline explanation;
-- trace from problem to diff;
-- file-by-file rationale;
-- tests and available validation evidence;
-- alternatives rejected;
-- remaining risks;
-- readiness statement for `verify` or blocker state.
+Report classification, action, assembly, output, basis, gaps, commands, blockers, claim limits, and handoff owner.
+
+## Resource map
+
+- READ `references/governed-workflow-explanation.md` only for `single-governed-candidate`.
+- COPY `assets/explain-change-skeleton.md` only for durable create or refresh.

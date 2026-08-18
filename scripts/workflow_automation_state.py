@@ -900,6 +900,9 @@ def _verify_implementation_stage_completion(
                     "Status",
                     "Final diff identity",
                     "Final review identity",
+                    "Reviewed subject revision",
+                    "Explanation basis",
+                    "Validation-evidence cutoff",
                 },
             )
         except StateContractError:

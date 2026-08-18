@@ -318,6 +318,15 @@ class GitCodeStateProvider:
                 "reviewed revision is not an ancestor of HEAD"
             ) from error
 
+        if head != reviewed:
+            parent_line = self._git(
+                root, "rev-list", "--parents", "-n", "1", head
+            ).decode("ascii").strip().split()
+            if len(parent_line) != 2 or parent_line[1] != reviewed:
+                raise CodeStateError(
+                    "post-review evidence tail must be one direct-child commit"
+                )
+
         post_review = self._changed_paths(root, reviewed, head)
         unexpected_committed = post_review - self._allowed_post_review_paths
         if unexpected_committed:
