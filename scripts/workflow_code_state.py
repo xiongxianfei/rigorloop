@@ -138,7 +138,8 @@ class GitCodeStateProvider:
         ("workflow", "automation", "current_stage"),
         ("workflow", "automation", "stop_reason"),
         ("workflow", "automation", "evidence"),
-        ("review",),
+        ("review", "status"),
+        ("review", "unresolved_items"),
         ("changed_files",),
     )
     _EXPLANATION_CHANGE_FIELD_PREFIXES = (
@@ -153,6 +154,25 @@ class GitCodeStateProvider:
         ("workflow", "automation", "stop_reason"),
         ("workflow", "automation", "evidence"),
         ("artifacts", "explain_change"),
+        ("changed_files",),
+    )
+    _VERIFY_CHANGE_FIELD_PREFIXES = (
+        ("workflow_state", "lifecycle_state"),
+        ("workflow_state", "current_stage"),
+        ("workflow_state", "next_stage"),
+        ("workflow_state", "blocker"),
+        ("workflow_state", "evidence"),
+        ("workflow_state", "planned_work", "final_closeout"),
+        ("workflow", "automation", "status"),
+        ("workflow", "automation", "current_stage"),
+        ("workflow", "automation", "stop_reason"),
+        ("workflow", "automation", "evidence"),
+        ("validation",),
+        ("changed_files",),
+    )
+    _SHARED_LIST_FIELDS = (
+        ("workflow_state", "evidence"),
+        ("workflow", "automation", "evidence"),
         ("changed_files",),
     )
 
@@ -279,6 +299,58 @@ class GitCodeStateProvider:
             return frozenset({prefix})
         return frozenset()
 
+    @staticmethod
+    def _value_at_path(value: object, path: tuple[str, ...]) -> object:
+        current = value
+        for part in path:
+            if not isinstance(current, dict) or part not in current:
+                return None
+            current = current[part]
+        return current
+
+    def _validate_shared_list_deltas(
+        self,
+        before: object,
+        after: object,
+        *,
+        stage: str,
+        allowed_entries: frozenset[str],
+    ) -> None:
+        for field_path in self._SHARED_LIST_FIELDS:
+            old_value = self._value_at_path(before, field_path)
+            new_value = self._value_at_path(after, field_path)
+            if old_value is None:
+                old_value = []
+            if new_value is None:
+                new_value = []
+            if old_value == new_value:
+                continue
+            if not isinstance(old_value, list) or not isinstance(new_value, list):
+                raise CodeStateError(
+                    f"shared metadata list has invalid shape in {stage}: "
+                    f"{'.'.join(field_path)}"
+                )
+            if new_value[: len(old_value)] != old_value:
+                raise CodeStateError(
+                    f"shared metadata list must preserve its prior sequence "
+                    f"in {stage}: {'.'.join(field_path)}"
+                )
+            appended = new_value[len(old_value) :]
+            if (
+                not appended
+                or not all(isinstance(entry, str) for entry in appended)
+                or len(set(appended)) != len(appended)
+                or any(
+                    entry not in allowed_entries
+                    or entry in old_value
+                    for entry in appended
+                )
+            ):
+                raise CodeStateError(
+                    f"shared metadata list has unowned append in {stage}: "
+                    f"{'.'.join(field_path)}"
+                )
+
     def _validate_change_metadata_fields(
         self,
         root: Path,
@@ -287,6 +359,7 @@ class GitCodeStateProvider:
         *,
         stage: str,
         change_path: str,
+        allowed_list_entries: frozenset[str],
     ) -> None:
         try:
             before = _parse_change_yaml_text(
@@ -299,10 +372,17 @@ class GitCodeStateProvider:
             raise CodeStateError(
                 "cannot parse change metadata for stage-evidence validation"
             ) from error
-        prefixes = (
-            self._REVIEW_CHANGE_FIELD_PREFIXES
-            if stage == "final-review"
-            else self._EXPLANATION_CHANGE_FIELD_PREFIXES
+        prefixes_by_stage = {
+            "final-review": self._REVIEW_CHANGE_FIELD_PREFIXES,
+            "explanation": self._EXPLANATION_CHANGE_FIELD_PREFIXES,
+            "verify": self._VERIFY_CHANGE_FIELD_PREFIXES,
+        }
+        prefixes = prefixes_by_stage[stage]
+        self._validate_shared_list_deltas(
+            before,
+            after,
+            stage=stage,
+            allowed_entries=allowed_list_entries,
         )
         changed = self._changed_fields(before, after)
         unowned = sorted(
@@ -348,7 +428,12 @@ class GitCodeStateProvider:
                 f"{label} are invalid: {sorted(paths)}"
             )
         self._validate_change_metadata_fields(
-            root, older, newer, stage=stage, change_path=change_path
+            root,
+            older,
+            newer,
+            stage=stage,
+            change_path=change_path,
+            allowed_list_entries=paths - frozenset({change_path}),
         )
 
     def _linear_tail(self, root: Path, reviewed: str, head: str) -> tuple[str, ...]:
@@ -483,7 +568,9 @@ class GitCodeStateProvider:
             ) from error
 
         tail = self._linear_tail(root, reviewed, head)
-        if len(tail) > 2 and not self._allowed_post_handoff_paths:
+        if len(tail) > 3 or (
+            len(tail) > 2 and not self._allowed_post_handoff_paths
+        ):
             raise CodeStateError(
                 "post-review evidence tail contains additional pre-verify commits"
             )
@@ -507,10 +594,22 @@ class GitCodeStateProvider:
         for commit in tail[2:]:
             assert previous is not None
             paths = self._changed_paths(root, previous, commit)
-            if not paths or not paths.issubset(self._allowed_post_handoff_paths):
+            if paths != self._allowed_post_handoff_paths:
                 raise CodeStateError(
                     "post-handoff evidence revision contains unowned paths: "
                     f"{sorted(paths)}"
+                )
+            change_path = (
+                f"docs/changes/{self._anchor.change_id}/change.yaml"
+            )
+            if change_path in paths:
+                self._validate_change_metadata_fields(
+                    root,
+                    previous,
+                    commit,
+                    stage="verify",
+                    change_path=change_path,
+                    allowed_list_entries=paths - frozenset({change_path}),
                 )
             previous = commit
 
