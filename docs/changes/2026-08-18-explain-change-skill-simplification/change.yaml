@@ -41,7 +41,7 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: implement
+  current_stage: review-resolution
   next_stage: code-review
   blocker: null
   evidence:
@@ -71,6 +71,8 @@ workflow_state:
     - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/workflow-automation-target-verify.md
     - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m1-r1.yaml
     - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m2-r1.yaml
+    - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m2-r1.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: M2
@@ -86,7 +88,7 @@ workflow_state:
         state: closed
       M2:
         kind: implementation
-        state: implementing
+        state: resolution-needed
       M3:
         kind: implementation
         state: planned
@@ -94,14 +96,14 @@ workflow_state:
       - M2
       - M3
     latest_review:
-      status: approved
+      status: changes-requested
       stage: code-review
       round: r1
       artifact_id: plan
       occurrence: milestone
-      milestone_id: M1
+      milestone_id: M2
       evidence:
-        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m1-r1.md
+        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m2-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -125,7 +127,7 @@ workflow:
       completion:
         rule: verify records one final result for the current handoff revision
     status: active
-    current_stage: implement
+    current_stage: review-resolution
     stop_reason: null
     evidence:
       - docs/proposals/2026-08-18-explain-change-skill-simplification.md
@@ -154,6 +156,8 @@ workflow:
       - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/workflow-automation-target-verify.md
       - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m1-r1.yaml
       - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m1-r1.md
+      - docs/changes/2026-08-18-explain-change-skill-simplification/review-invocation-code-review-m2-r1.yaml
+      - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m2-r1.md
 
 artifacts:
   spec: specs/explain-change-skill-simplification.md
@@ -174,8 +178,8 @@ tests:
   - Static semantic, literal, package, generated-output, adapter, and measurement proof without target-agent runtime execution.
 
 review:
-  status: pending
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 1
 
 validation: []
 
