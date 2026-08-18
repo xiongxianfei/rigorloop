@@ -5569,12 +5569,27 @@ Open findings: None
             "branch_state_identity": branch_path,
             "verification_commands_identity": commands_path,
         }
-        readiness = resolve_verification_readiness(
-            repository_root=root,
-            basis=basis,
-            basis_paths=paths,
-            code_state_provider=code_state_provider,
+        captured_tail_paths: list[frozenset[str]] = []
+        original_code_state_resolver = (
+            workflow_automation_module.resolve_canonical_code_state
         )
+
+        def capture_code_state_paths(**kwargs):
+            captured_tail_paths.append(kwargs["lifecycle_evidence_paths"])
+            return original_code_state_resolver(**kwargs)
+
+        with patch.object(
+            workflow_automation_module,
+            "resolve_canonical_code_state",
+            side_effect=capture_code_state_paths,
+        ):
+            readiness = resolve_verification_readiness(
+                repository_root=root,
+                basis=basis,
+                basis_paths=paths,
+                code_state_provider=code_state_provider,
+            )
+        self.assertEqual(captured_tail_paths, [frozenset({explanation_path})])
         self.assertTrue(readiness.final_review_clean)
         self.assertTrue(readiness.explanation_current)
 

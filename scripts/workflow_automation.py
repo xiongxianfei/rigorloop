@@ -489,8 +489,11 @@ def resolve_verification_readiness(
             reviewed_revision=review_fields["Reviewed commit"],
             final_review_id=review_fields["Review ID"],
             lifecycle_evidence_paths=frozenset(
-                artifact.relative_to(repository_root.resolve()).as_posix()
-                for artifact in artifacts.values()
+                {
+                    artifacts["explanation_inputs_identity"]
+                    .relative_to(repository_root.resolve())
+                    .as_posix()
+                }
             ),
             test_provider=code_state_provider,
         )
