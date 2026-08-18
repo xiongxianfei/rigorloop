@@ -64,8 +64,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: plan-review
-  next_stage: test-spec
+  current_stage: test-spec-review
+  next_stage: implement
   blocker: null
   evidence:
     - docs/proposals/2026-08-18-explain-change-skill-simplification.md
@@ -139,18 +139,17 @@ workflow_state:
         state: closed
       M4:
         kind: implementation
-        state: planned
+        state: implementing
     remaining_implementation_milestones:
       - M4
     latest_review:
-      status: approved
+      status: not-started
       stage: code-review
-      round: r1
+      round: none
       artifact_id: plan
-      occurrence: milestone
-      milestone_id: M3
-      evidence:
-        - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/code-review-m3-r1.md
+      occurrence: none
+      milestone_id: none
+      evidence: []
     final_closeout:
       readiness: not-ready
       reasons:
@@ -174,7 +173,7 @@ workflow:
       completion:
         rule: verify records one final result for the current handoff revision
     status: active
-    current_stage: test-spec
+    current_stage: implement
     stop_reason: null
     evidence:
       - docs/proposals/2026-08-18-explain-change-skill-simplification.md
