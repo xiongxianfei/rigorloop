@@ -726,6 +726,17 @@ Legal temporary states are limited to authoring/revision/blocked without `planne
     the human-controlled PR boundary.
 31. `explain-change`, `verify`, and `pr` use the change-local evidence pack, plan state, validation output, and review closeout state before claiming readiness.
 
+### Final-review stage-evidence tail flow
+
+1. Final holistic code review binds reviewed subject revision `S` and its base-to-subject diff.
+2. The review peer records its exact review occurrence, invocation, log, conditional resolution, and matching settlement. Those changes form one non-merge direct-child revision `R`.
+3. Workflow validates `R` by both path and field ownership. Shared `change.yaml` changes are admitted only for the closed final-review transition; path membership alone never establishes authority.
+4. `explain-change` binds the unchanged reviewed subject and final-review identity, writes only the exact explanation artifact, and returns neutral handback facts.
+5. Workflow records only the matching handback fields. The explanation and handback changes form one non-merge direct-child revision `E`, which is the pre-verify handoff revision.
+6. Verify accepts final-review reuse only for exact linear ancestry `S -> R -> E`, exact content identities, and the closed per-revision path-and-field sets.
+7. If execution stops after `R`, an identical retry may create only `E`. Any intervening revision, changed basis, merge, reordered evidence, unknown field, or unrelated path makes final-review reuse stale.
+8. Verify-owned evidence written after `E` does not retroactively enter the pre-verify tail or redefine `S`, `R`, or `E`.
+
 ### Change-record catalog flow
 
 1. A contributor or agent adds deterministic evidence under `docs/changes/<change-id>/`.
@@ -1188,6 +1199,23 @@ conflicting review identity or evidence fails closed.
 Legacy profile, plan-owned, and artifact-local state remains read-only
 compatibility evidence after a one-way migration.
 
+### Ordered final-review stage evidence
+
+The canonical pre-verify identity is a four-part model:
+
+```text
+reviewed subject revision S
+final-review recording revision R
+explanation recording revision E
+handoff revision E
+```
+
+Git derives `R` and `E` after their commits exist; no tracked artifact embeds its own commit identity. The final reviewed diff remains base-to-`S` and excludes later stage evidence.
+
+`R` and `E` are composition boundaries, not new write owners. The review peer, explain-change, and workflow each retain their stage-owned writes. A commit may contain outputs from more than one existing owner only when each changed path and each changed field is in that stage transition's closed set. Validation compares the actual Git diff with the expected per-revision manifest and rejects whole-file allowlisting for shared lifecycle state.
+
+The protocol permits one recoverable partial state: current exact `S -> R` with no competing change may continue by producing `E`. It does not permit rollback, adoption of an unrelated commit, reordered evidence, merge ancestry, or a broader evidence tail. Later verify evidence is downstream of `E` and does not make the explanation self-stale.
+
 ### Plan baseline and state ownership
 
 The stable plan artifact owns ordered execution intent, completion criteria, required evidence, and review handoff. `change.yaml#workflow_state.planned_work` owns current milestone and closeout state. New writers emit no mutable milestone-state or progress fields in plan bodies. Readers may accept compatible historical plan structures, but historical embedded state never overrides or repairs governed live state.
@@ -1530,6 +1558,8 @@ The legacy normalization follow-on inventoried every current `docs/architecture/
 
 ## Architecture Decisions
 
+- [ADR-20260818: Ordered Final-Review Stage-Evidence Tail](../../adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md) defines the exact `S -> R -> E` pre-verify revision protocol, path-and-field ownership, Git-derived identities, and interrupted-tail recovery.
+
 - [ADR-20260813: Reviewed Plan Initialization and Settlement](../../adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md) amends the initialization timing in ADR-20260729 while preserving single-state ownership, stage-owned writes, and the no-hash boundary.
 
 - `docs/adr/ADR-20260810-published-skill-first-validation-architecture.md`: three composed deterministic product gates, one lifecycle-governance entry point, review-owned semantic quality, no target-runtime acceptance, and ledger-backed retirement slices.
@@ -1646,6 +1676,8 @@ decisions from ADR-20260728 and ADR-20260729.
 | Published stage-ownership completeness | A maintainer adds or changes an automatable stage. | The canonical skill defines one fixed content, evidence, and lifecycle-state write boundary; workflow routing cannot widen it; generated adapters preserve it byte-for-byte or semantically as required by the adapter contract. |
 | Artifact-state write isolation | Multiple peers participate in one lifecycle transition. | The author or review peer writes only the matching artifact entry; plan may initialize missing planned work once only from current clean review evidence; workflow coordinates the owning calls and writes routing and later planned-work transitions; any other cross-owner mutation blocks reliance. |
 | Settlement-stable resume | Review evidence is durable but its matching settlement write is interrupted. | The same review identity reconciles idempotently; conflicting identity or evidence fails closed, and workflow never substitutes its own verdict. |
+| Final-review tail integrity | Final review is recorded after reviewed subject `S`, followed by explanation and workflow handback. | Verify accepts only exact non-merge direct-child ancestry `S -> R -> E`; each revision matches its closed path-and-field set, and any broader or reordered state requires fresh final review. |
+| Final-review tail recovery | Execution stops after exact final-review recording revision `R`. | Resume may create only the exact explanation-and-handback child `E`; changed basis, intervening commits, merges, or unowned fields stop without adoption or rewrite. |
 | Reviewed plan activation | A clean primary-plan review precedes live work initialization. | Clean evidence leaves the plan `review-required`; plan initializes only the exact reviewed revision; identical review settlement retry activates it; no downstream route occurs earlier. |
 | Target-bound execution | A run targets a later stage before its prerequisites exist. | The target remains sufficient repository-local consent, but workflow invokes only the current basis-complete stage and never widens that stage's fixed write boundary. |
 | Interrupted-stage recovery | Execution stops after stage-owned output is partially or fully written. | Resume inspects the owning evidence, reconciles a complete idempotent transition, and pauses on contradiction or partial output rather than inventing completion. |
@@ -1681,6 +1713,8 @@ decisions from ADR-20260728 and ADR-20260729.
 | Consolidation could move all complexity into one oversized validator | Gate ownership is separated by canonical skill, package, release, and lifecycle-governance invariants; semantic judgment is excluded and internal modules retain one parser owner per invariant. |
 | A retired check may protect an undocumented failure | Retirement pauses on unknown fixtures or contradictory behavior and requires old-versus-replacement proof plus rollback before removal. |
 | Review-owned semantic quality may vary by reviewer | Published-skill review uses one concise checklist for trigger clarity, ownership, prerequisites, procedure, resources, stops, claims, output, and handoff; material concerns use formal findings. |
+| Shared `change.yaml` path allowance could conceal unrelated lifecycle mutation | Ordered-tail validation inspects the changed fields for `R` and `E`; path-only allowlisting is explicitly insufficient. |
+| Evidence recording can become self-referential or self-stale | Git derives recording identities after commit, the explanation records content and reviewed-basis identities rather than its own commit hash, and verify keeps later evidence outside the pre-verify tail. |
 | Target runtimes may interpret structurally valid skill text unexpectedly | Treat reported runtime behavior as a product defect to investigate without making routine LLM execution a repository acceptance oracle. |
 | Archived legacy architecture documents can be mistaken for current architecture truth | Each archived record points to this canonical package, and final closeout validation covers every changed legacy document. |
 | First implementation relies on review rather than structural package enforcement | Approved spec intentionally defers enforcement automation until a real package proves the shape. |

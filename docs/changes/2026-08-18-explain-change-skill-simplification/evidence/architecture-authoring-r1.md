@@ -1,7 +1,7 @@
 # Architecture Authoring R1 Prepared Manifest
 
 Stage: architecture
-Operation result: prepared
+Operation result: complete
 Transaction ID: `architecture-authoring-r1`
 Manifest identity basis: ordered targets and identities below
 Assessment receipt: `architecture-assessment-r2`
@@ -9,7 +9,7 @@ Assessment identity: `sha256:1cbfa8741e7bf89e8a0fef64f68fe3bba43ad6b0b8f5f57652e
 Spec identity: `sha256:826cbf5c07be5dab2c4e4f2e4631799ba2caac6f46a4570fc78b7b0c3f4f3e15`
 Approving spec review: `spec-review-r2`
 Approving spec-review identity: `sha256:9b5f0f8e44f1e1cdc2cabefe35d69b4c1f751a101bfdbb2f0efeb19db0411be3`
-Evidence state: prepared
+Evidence state: complete
 
 ## Ordered targets
 
@@ -36,3 +36,7 @@ An interruption after the ADR write but before canonical completion is not indep
 - Diagrams: unchanged because no component, container, deployment, or external boundary changes.
 
 This prepared manifest records no architecture approval, plan readiness, implementation readiness, verification, branch readiness, or PR readiness.
+
+## Completion
+
+Both target files match their intended identities. The ADR was written before the canonical Markdown, all relative links resolve, no diagram changed, and the complete commit group is eligible for independent `architecture-review`.
