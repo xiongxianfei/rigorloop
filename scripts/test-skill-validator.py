@@ -11377,6 +11377,14 @@ class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
             self.assertIn(value, rules)
         for value in ("not-performed-by-ci-maintenance", "closed_vocabularies", "atomic-group-required", "unknown"):
             self.assertIn(value, literals)
+        requirement_rows = re.findall(r"^  - id: R([0-9]+)$", rules, flags=re.MULTILINE)
+        legacy_rows = re.findall(r"^  - id: CIM-R([0-9]+)$", rules, flags=re.MULTILINE)
+        self.assertEqual(requirement_rows, [str(number) for number in range(1, 55)])
+        self.assertEqual(legacy_rows, [str(number) for number in range(1, 66)])
+        self.assertEqual(len(requirement_rows), len(set(requirement_rows)))
+        self.assertEqual(len(legacy_rows), len(set(legacy_rows)))
+        for value in ("CIM0", "CIM8", "scripts/skill_validation.py", "hosted-ci-observation", "project-command"):
+            self.assertIn(value, literals)
 
     def test_scenario_inventory_covers_t1_through_t15(self) -> None:
         scenarios = (self.root / "fixtures" / "scenarios.yaml").read_text(encoding="utf-8")
