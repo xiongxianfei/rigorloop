@@ -1,0 +1,34 @@
+schema: ci-maintenance-literal-compatibility-v1
+allowed_dispositions: [retained, relocated, amended, removed, incidental]
+unknown_value_policy: reject-before-consistency
+literals:
+  - value: ci-maintenance
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - value: references/risk-to-check-map.md
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - value: references/github-workflow-authoring.md
+    disposition: relocated
+    owner: skills/ci-maintenance/SKILL.md
+  - value: assets/github-workflow-skeleton.yml
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - value: not-performed-by-ci-maintenance
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - value: "pull_request_target"
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - value: "schedule/push/workflow_dispatch skeleton examples"
+    disposition: removed
+    owner: skills/ci-maintenance/assets/github-workflow-skeleton.yml
+closed_vocabularies:
+  operation: [create, revise, review]
+  concern: [coverage, performance, caching, permissions, triggers, ordinary-security-hardening]
+  target_kind: [github-workflow, project-validation-automation, related-platform-configuration, external-platform-state, invalid-or-ambiguous-target]
+  provider: [github-actions, project-native-other-provider, invalid-or-ambiguous-provider]
+  privilege: [ordinary-workflow-context, privileged-approved-design, privileged-design-required, invalid-or-ambiguous-privilege-context]
+  structure_mode: [none, compose-from-skeleton, preserve-existing-structure]
+  batch_class: [independent, ordered-dependent, atomic-group-required]
+  batch_result: [complete, partial-blocked, blocked-before-write]

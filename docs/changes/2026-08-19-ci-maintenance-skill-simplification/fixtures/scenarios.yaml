@@ -1,0 +1,18 @@
+schema: ci-maintenance-simplification-scenarios-v1
+scenarios:
+  - {id: T1, outcome: one-exact-assembly}
+  - {id: T2, outcome: target-provider-fail-closed}
+  - {id: T3, outcome: risk-map-owns-placement}
+  - {id: T4, outcome: privileged-design-bound}
+  - {id: T5, outcome: exact-resource-trigger}
+  - {id: T6, outcome: create-no-clobber}
+  - {id: T7, outcome: revise-identity-guarded}
+  - {id: T8, outcome: unsupported-capability-blocks}
+  - {id: T9, outcome: dependency-provider-first}
+  - {id: T10, outcome: exact-partial-result}
+  - {id: T11, outcome: truthful-claims}
+  - {id: T12, outcome: semantic-literal-migration}
+  - {id: T13, outcome: every-assembly-decreases}
+  - {id: T14, outcome: package-parity}
+  - {id: T15, outcome: unknown-value-first}
+

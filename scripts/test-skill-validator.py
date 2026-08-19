@@ -11366,5 +11366,34 @@ class ProjectMapSkillSimplificationTests(unittest.TestCase):
             self.assertIn(phrase, self.skill.lower())
 
 
+class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "docs" / "changes" / "2026-08-19-ci-maintenance-skill-simplification"
+
+    def test_preservation_inventories_cover_closed_ownership(self) -> None:
+        rules = (self.root / "ci-maintenance-rule-disposition.yaml").read_text(encoding="utf-8")
+        literals = (self.root / "ci-maintenance-literal-compatibility.yaml").read_text(encoding="utf-8")
+        for value in ("retained-inline", "relocated", "amended", "CIM-R25", "CIM-R59", "unlisted: retained"):
+            self.assertIn(value, rules)
+        for value in ("not-performed-by-ci-maintenance", "closed_vocabularies", "atomic-group-required", "unknown"):
+            self.assertIn(value, literals)
+
+    def test_scenario_inventory_covers_t1_through_t15(self) -> None:
+        scenarios = (self.root / "fixtures" / "scenarios.yaml").read_text(encoding="utf-8")
+        for number in range(1, 16):
+            self.assertIn(f"id: T{number}", scenarios)
+
+    def test_baseline_binds_current_pre_change_package(self) -> None:
+        baseline = (self.root / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
+        self.assertIn("ea5e0d67aec006edda66e196647d058237a10d35267b59d8e38462ee74cfe456", baseline)
+        self.assertIn("2014", baseline)
+        self.assertIn("14395", baseline)
+
+    def test_unknown_value_fixture_is_explicit(self) -> None:
+        literals = (self.root / "ci-maintenance-literal-compatibility.yaml").read_text(encoding="utf-8")
+        self.assertIn("unknown_value_policy", literals)
+        self.assertIn("invalid-or-ambiguous-provider", literals)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

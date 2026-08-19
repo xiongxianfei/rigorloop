@@ -1,0 +1,39 @@
+schema: ci-maintenance-rule-disposition-v1
+allowed_dispositions: [retained-inline, relocated, amended, removed]
+rules:
+  - id: universal-safety
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+    covers: [command-authority, risk-detection, least-privilege, fork-secret-safety, claims]
+  - id: github-serialization
+    disposition: relocated
+    owner: skills/ci-maintenance/references/github-workflow-authoring.md
+    covers: [events, filters, jobs, expressions, matrices, dependencies]
+  - id: semantic-risk-placement
+    disposition: relocated
+    owner: skills/ci-maintenance/references/risk-to-check-map.md
+    covers: [changed-path, material-risk, owned-check, command, boundary]
+  - id: workflow-structure
+    disposition: amended
+    owner: skills/ci-maintenance/assets/github-workflow-skeleton.yml
+    covers: [safe-yaml-shape, placeholders]
+  - id: privileged-design
+    disposition: retained-inline
+    owner: external-approved-design
+    covers: [events, permissions, credentials, runners, environments, secrets]
+legacy_clauses:
+  CIM-R25: amended-by-R21-R23
+  CIM-R34: amended-by-R15-R20
+  CIM-R45: amended-by-R11-R14-and-R25-R28
+  CIM-R53: amended-by-R18-R20-and-R25
+  CIM-R59: amended-by-R21-R23
+  unlisted: retained
+architecture_triggers:
+  persistent-mutation-receipt: absent
+  managed-locking-service: absent
+  multi-file-transaction: absent
+  managed-yaml-parser: absent
+  provider-neutral-abstraction: absent
+  external-platform-mutation: absent
+  new-persistent-owner: absent
+
