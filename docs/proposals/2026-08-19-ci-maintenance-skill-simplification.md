@@ -1,12 +1,8 @@
 # CI-Maintenance Skill Simplification
 
-## Status
-
-- revised; ready for proposal rereview
-
 ## Owning change record
 
-Portable authoring. No governed change record owns this proposal at creation time. An isolated proposal review may assess it, but neither authoring nor review activates lifecycle settlement or workflow continuation.
+This proposal is governed by [change.yaml](../changes/2026-08-19-ci-maintenance-skill-simplification/change.yaml). Mutable lifecycle status is owned by that change record.
 
 ## Problem
 
@@ -615,11 +611,15 @@ After an approving proposal rereview:
 
 ## Follow-on Artifacts
 
-None yet
+- Approved focused specification: `specs/ci-maintenance-skill-simplification.md`.
+- Bounded architecture assessment: `docs/changes/2026-08-19-ci-maintenance-skill-simplification/architecture-assessment.md`.
+- Approved execution plan: `docs/plans/2026-08-19-ci-maintenance-skill-simplification.md`.
+- Approved test specification: `specs/ci-maintenance-skill-simplification.test.md`.
+- Implementation, formal reviews, explanation, and verification evidence under the owning change root.
 
 ## Readiness
 
-Revised to address `CIMSIM-PR1` through `CIMSIM-PR7`; ready for isolated proposal rereview. Not approved and not ready for specification until rereview settles the direction. No automatic downstream handoff is authorized by this portable proposal.
+Proposal authoring completed after addressing `CIMSIM-PR1` through `CIMSIM-PR7` and handed the direction to proposal review. The isolated R3 review is preserved as historical judgment; current governed lifecycle readiness and routing are owned by the linked change record.
 
 ## Initial intent preservation
 
