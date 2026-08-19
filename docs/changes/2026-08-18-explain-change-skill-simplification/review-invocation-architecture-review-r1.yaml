@@ -1,0 +1,47 @@
+schema_version: 1
+review_id: architecture-review-r1
+review_stage: architecture-review
+review_target: docs/architecture/system/architecture.md
+base_revision: deb347cb
+head_revision: deb347cb
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L1
+author_context_id: root-architecture-authoring-r1
+reviewer_context_id: root-architecture-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - cross-stage-revision-identity-protocol
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-18-explain-change-skill-simplification.md
+  - specs/explain-change-skill-simplification.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r2.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/architecture-assessment.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/architecture-authoring-r1.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md
+formal_criteria:
+  - architecture-review-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: docs/proposals/2026-08-18-explain-change-skill-simplification.md
+    sha256: 167a0affb94be03c43e4233d57a1263b3e46defd77d508158fd4e075224078f1
+  - path: specs/explain-change-skill-simplification.md
+    sha256: 826cbf5c07be5dab2c4e4f2e4631799ba2caac6f46a4570fc78b7b0c3f4f3e15
+  - path: docs/architecture/system/architecture.md
+    sha256: 8b367791fb90aacd81005c761cc252bcb982e2ef7d48fef436d93c197a254abe
+  - path: docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md
+    sha256: d7b1fb1da32f22b28e9fd302e3a0881574563445a2e96c02cb00b4c97a1b76ea
+  - path: docs/changes/2026-08-18-explain-change-skill-simplification/evidence/architecture-authoring-r1.md
+    sha256: b4450f0a270a3752f5fa9966d12949b03bbc63cbafc052591b69946eae5f08cf
+prompt_template_version: architecture-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - exact S-to-R-to-E ancestry and recovery
+  - path-and-field lifecycle ownership
+  - Git-derived non-self-referential identities
+  - compatibility with existing stage owners and verify

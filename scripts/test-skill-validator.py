@@ -4707,6 +4707,8 @@ Use the inputs somehow and produce a useful result.
         ]
         for skill_name in DOWNSTREAM_REVIEW_CLOSEOUT_SKILLS:
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+            if skill_name == "explain-change":
+                body += (ROOT / "skills" / skill_name / "references" / "governed-workflow-explanation.md").read_text(encoding="utf-8")
             for term in required_terms:
                 with self.subTest(skill=skill_name, term=term):
                     self.assertIn(term, body)
@@ -10725,6 +10727,152 @@ class LearnSkillSimplificationLedgerTests(unittest.TestCase):
             self.assertIn(value.lower(), baseline.lower())
         triggers = self.load("fixtures/learn-simplification-scenarios.yaml")["architecture_triggers"]
         self.assertEqual(set(triggers), {"transaction-grade phase recovery", "new persistent route or session schema owner", "polling or coordination service", "external integration", "new cross-owner mutation authority"})
+
+
+class ExplainChangeSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.change = ROOT / "docs" / "changes" / "2026-08-18-explain-change-skill-simplification"
+        self.root = ROOT / "skills" / "explain-change"
+
+    def load(self, relative: str) -> dict:
+        return json.loads((self.change / relative).read_text(encoding="utf-8"))
+
+    def test_rule_dispositions_use_closed_vocabularies(self) -> None:
+        ledger = self.load("explain-change-rule-disposition.yaml")
+        treatments = set(ledger["allowed_treatments"])
+        owners = set(ledger["allowed_owners"])
+        rules = ledger["rules"]
+        self.assertTrue(rules)
+        self.assertEqual(len({row["rule_id"] for row in rules}), len(rules))
+        self.assertTrue(all(row["treatment"] in treatments for row in rules))
+        self.assertTrue(all(row["owner"] in owners for row in rules))
+        self.assertNotIn(ledger["invalid_examples"]["treatment"], treatments)
+        self.assertNotIn(ledger["invalid_examples"]["owner"], owners)
+
+    def test_literal_dispositions_and_consumers_are_closed(self) -> None:
+        ledger = self.load("explain-change-literal-compatibility.yaml")
+        classifications = set(ledger["allowed_classifications"])
+        treatments = set(ledger["allowed_treatments"])
+        literals = ledger["literals"]
+        self.assertTrue(literals)
+        self.assertEqual(len({row["literal_id"] for row in literals}), len(literals))
+        self.assertTrue(all(row["classification"] in classifications for row in literals))
+        self.assertTrue(all(row["treatment"] in treatments for row in literals))
+        self.assertTrue(all(row["consumers"] for row in literals))
+        self.assertNotIn(ledger["invalid_examples"]["classification"], classifications)
+        self.assertNotIn(ledger["invalid_examples"]["treatment"], treatments)
+
+    def test_scenarios_cover_closed_classification_and_failure_families(self) -> None:
+        fixture = self.load("fixtures/explain-change-simplification-scenarios.yaml")
+        scenarios = fixture["scenarios"]
+        self.assertEqual(len({row["id"] for row in scenarios}), len(scenarios))
+        self.assertGreaterEqual(len(scenarios), 24)
+        required_families = {"classification", "assembly", "target", "authority", "resource", "write", "tail", "handback", "history", "measurement"}
+        self.assertTrue(required_families <= {row["family"] for row in scenarios})
+        for name, vocabulary in fixture["vocabularies"].items():
+            with self.subTest(vocabulary=name):
+                self.assertTrue(vocabulary["allowed"])
+                self.assertIn("not_in_vocabulary", vocabulary["invalid"])
+                self.assertFalse(set(vocabulary["allowed"]) & set(vocabulary["invalid"]))
+        assemblies = fixture["vocabularies"]["assembly"]["allowed"]
+        self.assertEqual(assemblies, ["EC0-portable-inline", "EC1-portable-durable", "EC2-governed-inline", "EC3-governed-durable"])
+
+    def test_frozen_baseline_matches_the_unchanged_canonical_skill(self) -> None:
+        skill = subprocess.run(
+            ("git", "show", "fb8bdcdc:skills/explain-change/SKILL.md"),
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+        ).stdout
+        normalized = skill.replace(b"\r\n", b"\n")
+        self.assertEqual(len(normalized), 8224)
+        self.assertEqual(len(normalized.decode("utf-8").split()), 1175)
+        self.assertEqual(hashlib.sha256(normalized).hexdigest(), "8a26dde3b27ec13717cf385948a50b78a37d89c72536d260077416b9caccf95b")
+        baseline = (self.change / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
+        for value in ("EC0", "EC1", "EC2", "EC3", "1,175", "8,224", "8a26dde3b27ec13717cf385948a50b78a37d89c72536d260077416b9caccf95b", "total canonical package"):
+            self.assertIn(value.lower(), baseline.lower())
+
+    def test_architecture_trigger_inventory_is_explicit(self) -> None:
+        fixture = self.load("fixtures/explain-change-simplification-scenarios.yaml")
+        self.assertEqual(len(fixture["architecture_triggers"]), 6)
+        self.assertIn("new persistent identity model", fixture["architecture_triggers"])
+        self.assertIn("single-file atomic replacement", fixture["architecture_non_triggers"])
+        evidence = (self.change / "evidence" / "m1-preservation-inventories.md").read_text(encoding="utf-8")
+        self.assertIn("architecture-not-required", evidence)
+        self.assertIn("stops M2", evidence)
+
+    def test_package_inventory_and_four_assemblies_are_exact(self) -> None:
+        skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        reference = (self.root / "references" / "governed-workflow-explanation.md").read_text(encoding="utf-8")
+        skeleton = (self.root / "assets" / "explain-change-skeleton.md").read_text(encoding="utf-8")
+        self.assertEqual(sorted(path.name for path in (self.root / "references").iterdir()), ["governed-workflow-explanation.md"])
+        self.assertEqual(sorted(path.name for path in (self.root / "assets").iterdir()), ["explain-change-skeleton.md"])
+        self.assertFalse((self.root / "scripts").exists())
+        for value in ("EC0-portable-inline", "EC1-portable-durable", "EC2-governed-inline", "EC3-governed-durable"):
+            self.assertIn(value, skill)
+        self.assertIn("READ `references/governed-workflow-explanation.md`", skill)
+        self.assertIn("COPY `assets/explain-change-skeleton.md`", skill)
+        self.assertTrue(reference)
+        self.assertTrue(skeleton)
+
+    def test_review_resolution_summary_preserves_cross_skill_literals(self) -> None:
+        skill = (self.root / "SKILL.md").read_text(encoding="utf-8")
+        for phrase in ("review-resolution.md", "concise", "duplicate transcript"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, skill)
+
+    def test_signal_action_resource_and_write_contracts_fail_closed(self) -> None:
+        package = "\n".join(
+            path.read_text(encoding="utf-8")
+            for path in (
+                self.root / "SKILL.md",
+                self.root / "references" / "governed-workflow-explanation.md",
+            )
+        )
+        for value in ("no-governed-signal", "single-governed-candidate", "invalid-or-ambiguous-governed-signal", "inline-explanation", "create-durable-explanation", "refresh-durable-explanation"):
+            self.assertIn(value, package)
+        for phrase in ("without portable fallback", "does not grant", "whole-file", "atomic", "read back", "classify current state afresh", "must not reconstruct"):
+            self.assertIn(phrase.lower(), package.lower())
+        for forbidden in ("section-level refresh", "mixed-ownership preservation", "managed-region editing", "historical-layout parsing"):
+            self.assertIn(forbidden, package)
+
+    def test_governed_basis_tail_closeout_and_handback_are_complete(self) -> None:
+        reference = (self.root / "references" / "governed-workflow-explanation.md").read_text(encoding="utf-8")
+        for phrase in ("base revision", "reviewed-subject revision", "base-to-subject diff identity", "final holistic code-review ID", "validation-evidence cutoff", "final-review-recording revision", "explanation-recording revision", "handoff revision", "S -> R -> E", "exact `S -> R`"):
+            self.assertIn(phrase.lower(), reference.lower())
+        for forbidden_tail in ("product code", "tests", "specifications", "architecture", "plans", "dependencies", "configuration", "generated output", "unrelated documentation", "another stage's evidence"):
+            self.assertIn(forbidden_tail, reference.lower())
+        for field_rule in ("final-review-owned `change.yaml` fields", "explain-change-owned workflow-handback fields", "unknown or sibling-owned shared-metadata field"):
+            self.assertIn(field_rule, reference)
+        for phrase in ("Closeout status: open", "needs-decision", "final disposition", "Workflow handback", "Next-stage decision owner", "workflow"):
+            self.assertIn(phrase, reference)
+        for claim in ("verify-ready", "verification-passed", "branch-ready", "pr-body-ready", "pr-open-ready", "release-ready", "lifecycle-complete"):
+            self.assertIn(claim, reference)
+
+    def test_skeleton_owns_complete_structure_without_policy(self) -> None:
+        skeleton = (self.root / "assets" / "explain-change-skeleton.md").read_text(encoding="utf-8")
+        for heading in ("Summary", "Problem", "Decision trail", "Diff rationale by area", "Tests added or changed", "Validation evidence available before final verify", "Alternatives rejected", "Scope control", "Risks and follow-ups", "Workflow handback"):
+            self.assertIn(f"## {heading}", skeleton)
+        for field in ("Stage: explain-change", "Status: <current | blocked>", "Final diff identity:", "Final review identity:", "Explanation basis:", "Validation-evidence cutoff:", "Open explain-change blockers:", "Control returned to workflow:", "Next-stage decision owner: workflow"):
+            self.assertIn(field, skeleton)
+        self.assertNotIn("Verify readiness", skeleton)
+        for policy in ("MUST", "must", "authority", "eligible", "stale when"):
+            self.assertNotIn(policy, skeleton)
+
+    def test_all_loaded_profiles_strictly_decrease(self) -> None:
+        skill = (self.root / "SKILL.md").read_bytes()
+        reference = (self.root / "references" / "governed-workflow-explanation.md").read_bytes()
+        skeleton = (self.root / "assets" / "explain-change-skeleton.md").read_bytes()
+        profiles = {
+            "EC0": skill,
+            "EC1": skill + skeleton,
+            "EC2": skill + reference,
+            "EC3": skill + reference + skeleton,
+        }
+        for name, assembled in profiles.items():
+            with self.subTest(profile=name):
+                self.assertLess(len(assembled), 8224)
+                self.assertLess(len(assembled.decode("utf-8").split()), 1175)
 
 
 class LearnSkillSimplificationTests(unittest.TestCase):

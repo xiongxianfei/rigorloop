@@ -1,0 +1,24 @@
+review_id: code-review-m4-r2
+stage: code-review
+round: r2
+reviewed_milestone: M4
+reviewed_commits:
+  - 155a5fff
+  - 031953ae
+reviewer: Codex independent code-review context
+authority:
+  spec: specs/explain-change-skill-simplification.md
+  architecture: docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md
+  plan: docs/plans/2026-08-18-explain-change-skill-simplification.md
+  test_spec: specs/explain-change-skill-simplification.test.md
+prior_review: code-review-m4-r1
+finding_under_rereview: EXCSIM-CR3
+automation:
+  mode: workflow-managed
+  target_stage: verify
+  context_separation: targeted-rereview-plus-milestone-closeout
+phase_receipts:
+  - correction-diff-read
+  - direct-proof-read
+  - finding-disposition-recorded
+  - milestone-verdict-recorded

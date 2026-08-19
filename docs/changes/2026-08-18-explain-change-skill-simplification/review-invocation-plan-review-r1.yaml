@@ -1,0 +1,36 @@
+schema_version: 1
+review_id: plan-review-r1
+review_stage: plan-review
+review_target: docs/plans/2026-08-18-explain-change-skill-simplification.md
+base_revision: 11179cb7
+head_revision: 11179cb7
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-plan-authoring-r1
+reviewer_context_id: root-plan-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - compatibility-sensitive-consumers
+  - multi-milestone-generated-parity
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/explain-change-skill-simplification.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-18-explain-change-skill-simplification.md
+formal_criteria:
+  - plan-review-v1
+  - boundary-first-v1
+prompt_template_version: plan-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - requirement and boundary alignment
+  - milestone independence and rollback
+  - test-first proof timing
+  - exact validation commands
+  - architecture reassessment trigger
+  - lifecycle-closeout separation

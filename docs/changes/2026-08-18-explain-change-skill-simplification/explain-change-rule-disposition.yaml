@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "allowed_treatments": ["preserve-inline", "move-governed-reference", "move-skeleton", "amend-inline", "remove-obsolete"],
+  "allowed_owners": ["root-skill", "governed-reference", "skeleton", "workflow", "verify", "pr", "change-evidence"],
+  "invalid_examples": {
+    "treatment": "not_in_vocabulary",
+    "owner": "not_in_vocabulary"
+  },
+  "rules": [
+    {"rule_id": "EXC-RULE-001", "subject": "actual-diff grounding", "treatment": "preserve-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-002", "subject": "evidence precedence and truthful gaps", "treatment": "preserve-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-003", "subject": "portable versus governed signal classification", "treatment": "amend-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-004", "subject": "malformed governed signals fail closed", "treatment": "amend-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-005", "subject": "inline, create, and refresh action selection", "treatment": "amend-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-006", "subject": "create requires absent exact target", "treatment": "amend-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-007", "subject": "refresh requires existing target and current authority", "treatment": "amend-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-008", "subject": "portable durable output never creates governed state", "treatment": "amend-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-009", "subject": "generated Markdown readability", "treatment": "preserve-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-010", "subject": "artifact path resolution", "treatment": "preserve-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-011", "subject": "governed lifecycle eligibility", "treatment": "move-governed-reference", "owner": "governed-reference"},
+    {"rule_id": "EXC-RULE-012", "subject": "final holistic review validation", "treatment": "move-governed-reference", "owner": "governed-reference"},
+    {"rule_id": "EXC-RULE-013", "subject": "review-resolution closeout", "treatment": "move-governed-reference", "owner": "governed-reference"},
+    {"rule_id": "EXC-RULE-014", "subject": "reviewed subject and allowed evidence tail", "treatment": "move-governed-reference", "owner": "governed-reference"},
+    {"rule_id": "EXC-RULE-015", "subject": "governed placement and staleness", "treatment": "move-governed-reference", "owner": "governed-reference"},
+    {"rule_id": "EXC-RULE-016", "subject": "whole-file current-skeleton composition", "treatment": "amend-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-017", "subject": "single-file atomic replacement and read-back", "treatment": "amend-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-018", "subject": "concurrent or uncertain writes fail closed", "treatment": "amend-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-019", "subject": "durable explanation section structure", "treatment": "move-skeleton", "owner": "skeleton"},
+    {"rule_id": "EXC-RULE-020", "subject": "workflow handback labels", "treatment": "move-skeleton", "owner": "skeleton"},
+    {"rule_id": "EXC-RULE-021", "subject": "workflow decides continuation", "treatment": "move-governed-reference", "owner": "workflow"},
+    {"rule_id": "EXC-RULE-022", "subject": "verify owns branch readiness", "treatment": "preserve-inline", "owner": "verify"},
+    {"rule_id": "EXC-RULE-023", "subject": "PR owns PR readiness", "treatment": "preserve-inline", "owner": "pr"},
+    {"rule_id": "EXC-RULE-024", "subject": "historical artifacts remain unchanged absent refresh", "treatment": "amend-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-025", "subject": "no target-agent runtime or prose grading", "treatment": "amend-inline", "owner": "root-skill"},
+    {"rule_id": "EXC-RULE-026", "subject": "architecture reassessment on new owner or persistence", "treatment": "preserve-inline", "owner": "change-evidence"}
+  ]
+}

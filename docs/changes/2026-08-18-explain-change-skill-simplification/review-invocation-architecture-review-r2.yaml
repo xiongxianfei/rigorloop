@@ -1,0 +1,47 @@
+schema_version: 1
+review_id: architecture-review-r2
+review_stage: architecture-review
+review_surface: canonical-architecture-update
+review_target: docs/architecture/system/architecture.md
+base_revision: da59d3d1275899720ccb57033a063b1573a9749e
+head_revision: da59d3d1275899720ccb57033a063b1573a9749e
+recording_mode: formal-lifecycle
+artifact_settlement: none
+execution_mode: manual
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L1
+author_context_id: root-architecture-ownership-correction
+reviewer_context_id: root-architecture-review-r2-context-reset
+context_separation_mechanism: artifact-identity-and-criteria-context-reset
+risk_tier: standard
+risk_tier_triggers:
+  - canonical-architecture-lifecycle-ownership-correction
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-18-explain-change-skill-simplification.md
+  - specs/explain-change-skill-simplification.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/spec-review-r2.md
+  - docs/changes/2026-08-18-explain-change-skill-simplification/architecture-assessment.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md
+  - docs/changes/2026-08-14-project-map-skill-simplification/change.yaml
+  - docs/changes/2026-08-18-explain-change-skill-simplification/change.yaml
+formal_criteria:
+  - architecture-review-v1
+initial_packet_inventory:
+  - path: docs/architecture/system/architecture.md
+    sha256: 8b367791fb90aacd81005c761cc252bcb982e2ef7d48fef436d93c197a254abe
+  - path: docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md
+    sha256: d7b1fb1da32f22b28e9fd302e3a0881574563445a2e96c02cb00b4c97a1b76ea
+  - path: specs/explain-change-skill-simplification.md
+    sha256: 826cbf5c07be5dab2c4e4f2e4631799ba2caac6f46a4570fc78b7b0c3f4f3e15
+  - path: docs/changes/2026-08-14-project-map-skill-simplification/change.yaml
+    sha256: 211c00d6f51778e1f2266b3edf496cf8e0b99c63393fdf8f65702d1a40ed2ad3
+  - path: docs/changes/2026-08-18-explain-change-skill-simplification/change.yaml
+    sha256: ecbd1c479bfedcdec0662396094c30f7da14e61f69fe6b122422b4df6c769cb8
+review_focus:
+  - exact canonical lifecycle ownership
+  - review subject versus settlement target separation
+  - unchanged ordered-tail architecture coherence
+settlement_targets: []

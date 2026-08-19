@@ -1,0 +1,48 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/explain-change-skill-simplification.md
+base_revision: 11179cb7
+head_revision: 11179cb7
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-authoring-r1
+reviewer_context_id: root-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - reviewed-subject-evidence-tail-contract
+  - compatibility-sensitive-validation
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-18-explain-change-skill-simplification.md
+  - specs/explain-change-skill-simplification.md
+  - specs/skill-contract.md
+  - specs/rigorloop-workflow.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: docs/proposals/2026-08-18-explain-change-skill-simplification.md
+    sha256: 167a0affb94be03c43e4233d57a1263b3e46defd77d508158fd4e075224078f1
+  - path: specs/explain-change-skill-simplification.md
+    sha256: 4bb07c3be46d22e97ef1ffb874d83421e5311c3ed8621149c36b6e58fa99b5f8
+  - path: specs/skill-contract.md
+    sha256: 43dfde680fddca458d2d18deccba972fb1341f860444940db8347652e2210c56
+  - path: specs/rigorloop-workflow.md
+    sha256: 121f61d1f88791c8355aedfb61a737a4fcb549e9e592e3e86cfd69e2c7f77e66
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - package and resource ownership
+  - signal, action, and assembly closure
+  - refresh authority and atomic replacement
+  - reviewed-subject and evidence-tail identity
+  - handback and readiness claim boundaries
+  - compatibility, measurement, and deterministic acceptance
+  - boundary completeness

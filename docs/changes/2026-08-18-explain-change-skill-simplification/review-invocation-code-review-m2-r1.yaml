@@ -1,0 +1,23 @@
+review_id: code-review-m2-r1
+stage: code-review
+round: r1
+reviewed_milestone: M2
+reviewed_range:
+  base: f9b5f8e1
+  head: 9c5ba56b
+reviewer: Codex independent code-review context
+authority:
+  spec: specs/explain-change-skill-simplification.md
+  plan: docs/plans/2026-08-18-explain-change-skill-simplification.md
+  test_spec: specs/explain-change-skill-simplification.test.md
+automation:
+  mode: workflow-managed
+  target_stage: verify
+  context_separation: fresh-assumption diff-first review
+  risk_map_recorded_before_evidence_menu: true
+  requirement_fidelity: applicable
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded

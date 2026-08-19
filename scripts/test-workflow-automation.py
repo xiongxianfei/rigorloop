@@ -134,8 +134,14 @@ class FixtureCodeStateProvider:
 
     test_only = True
 
-    def __init__(self, paths: tuple[str, ...]) -> None:
+    def __init__(
+        self,
+        paths: tuple[str, ...],
+        *,
+        tail_state: str = "complete",
+    ) -> None:
         self.paths = paths
+        self.tail_state = tail_state
 
     def snapshot(self, repository_root: Path) -> CanonicalCodeState:
         entries = tuple(
@@ -154,6 +160,22 @@ class FixtureCodeStateProvider:
             base_revision="fixture-base",
             reviewed_revision="fixture-reviewed",
             entries=entries,
+            final_review_recording_revision=(
+                "fixture-review-recording"
+                if self.tail_state != "reviewed-subject"
+                else None
+            ),
+            explanation_recording_revision=(
+                "fixture-explanation-recording"
+                if self.tail_state == "complete"
+                else None
+            ),
+            handoff_revision=(
+                "fixture-explanation-recording"
+                if self.tail_state == "complete"
+                else None
+            ),
+            tail_state=self.tail_state,
         )
 
 
@@ -411,7 +433,10 @@ Open findings: None
             "docs/changes/2026-07-20-example/explain-change.md",
             "Stage: explain-change\nStatus: current\n"
             f"Final diff identity: {code_state.identity}\n"
-            f"Final review identity: {review_identity}\n",
+            f"Final review identity: {review_identity}\n"
+            f"Reviewed subject revision: {code_state.reviewed_revision}\n"
+            "Explanation basis: sha256:explanation-basis\n"
+            "Validation-evidence cutoff: sha256:validation-cutoff\n",
         )
         promotion_path, promotion_identity = artifact(
             "docs/changes/2026-07-20-example/promotion-evidence.md",
@@ -5526,7 +5551,10 @@ Open findings: None
             "docs/changes/2026-07-20-example/explain-change.md",
             "Stage: explain-change\nStatus: current\n"
             f"Final diff identity: {final_code_identity}\n"
-            f"Final review identity: {review_identity}\n",
+            f"Final review identity: {review_identity}\n"
+            f"Reviewed subject revision: {final_code_state.reviewed_revision}\n"
+            "Explanation basis: sha256:explanation-basis\n"
+            "Validation-evidence cutoff: sha256:validation-cutoff\n",
         )
         promotion_path, promotion_identity = artifact(
             "docs/changes/2026-07-20-example/promotion-evidence.md",
@@ -5563,14 +5591,75 @@ Open findings: None
             "branch_state_identity": branch_path,
             "verification_commands_identity": commands_path,
         }
-        readiness = resolve_verification_readiness(
-            repository_root=root,
-            basis=basis,
-            basis_paths=paths,
-            code_state_provider=code_state_provider,
+        captured_tail_paths: list[frozenset[str]] = []
+        original_code_state_resolver = (
+            workflow_automation_module.resolve_canonical_code_state
         )
+
+        def capture_code_state_paths(**kwargs):
+            captured_tail_paths.append(kwargs["lifecycle_evidence_paths"])
+            return original_code_state_resolver(**kwargs)
+
+        with patch.object(
+            workflow_automation_module,
+            "resolve_canonical_code_state",
+            side_effect=capture_code_state_paths,
+        ):
+            readiness = resolve_verification_readiness(
+                repository_root=root,
+                basis=basis,
+                basis_paths=paths,
+                code_state_provider=code_state_provider,
+            )
+        self.assertEqual(captured_tail_paths, [frozenset({explanation_path})])
         self.assertTrue(readiness.final_review_clean)
         self.assertTrue(readiness.explanation_current)
+
+        incomplete_tail = dataclasses.replace(
+            final_code_state,
+            explanation_recording_revision=None,
+            handoff_revision=None,
+            tail_state="review-recorded",
+        )
+        with patch.object(
+            workflow_automation_module,
+            "resolve_canonical_code_state",
+            return_value=incomplete_tail,
+        ):
+            with self.assertRaisesRegex(
+                AutomationContractError,
+                "ordered final-review evidence tail is incomplete",
+            ):
+                resolve_verification_readiness(
+                    repository_root=root,
+                    basis=basis,
+                    basis_paths=paths,
+                    code_state_provider=code_state_provider,
+                )
+
+        explanation_file = root / explanation_path
+        original_explanation = explanation_file.read_text(encoding="utf-8")
+        explanation_file.write_text(
+            original_explanation.replace(
+                f"Reviewed subject revision: {final_code_state.reviewed_revision}",
+                "Reviewed subject revision: stale-reviewed-subject",
+            ),
+            encoding="utf-8",
+        )
+        stale_subject_basis = dict(basis)
+        stale_subject_basis["explanation_inputs_identity"] = (
+            "sha256:" + hashlib.sha256(explanation_file.read_bytes()).hexdigest()
+        )
+        with self.assertRaisesRegex(
+            AutomationContractError, "explanation is not current"
+        ):
+            resolve_verification_readiness(
+                repository_root=root,
+                basis=stale_subject_basis,
+                basis_paths=paths,
+                code_state_provider=code_state_provider,
+            )
+        explanation_file.write_text(original_explanation, encoding="utf-8")
 
         branch_file = root / branch_path
         original_branch = branch_file.read_text(encoding="utf-8")
@@ -5639,11 +5728,13 @@ Open findings: None
             "sha256:" + hashlib.sha256(review_file.read_bytes()).hexdigest()
         )
         semantic_basis["final_code_review_identity"] = semantic_review_identity
-        explanation_file = root / explanation_path
         explanation_file.write_text(
             "Stage: explain-change\nStatus: current\n"
             f"Final diff identity: {final_code_identity}\n"
-            f"Final review identity: {semantic_review_identity}\n",
+            f"Final review identity: {semantic_review_identity}\n"
+            f"Reviewed subject revision: {final_code_state.reviewed_revision}\n"
+            "Explanation basis: sha256:explanation-basis\n"
+            "Validation-evidence cutoff: sha256:validation-cutoff\n",
             encoding="utf-8",
         )
         semantic_basis["explanation_inputs_identity"] = (
@@ -6381,7 +6472,10 @@ Open findings: None
             "docs/changes/2026-07-20-example/explain-change.md",
             "Stage: explain-change\nStatus: current\n"
             f"Final diff identity: {final_code_identity}\n"
-            f"Final review identity: {final_review.identity}\n",
+            f"Final review identity: {final_review.identity}\n"
+            f"Reviewed subject revision: {final_code_state.reviewed_revision}\n"
+            "Explanation basis: sha256:explanation-basis\n"
+            "Validation-evidence cutoff: sha256:validation-cutoff\n",
         )
         promotion = write_evidence(
             "docs/changes/2026-07-20-example/promotion.md",
