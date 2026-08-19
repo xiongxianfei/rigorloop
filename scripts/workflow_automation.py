@@ -404,6 +404,23 @@ def _canonical_final_code_identity(
     return canonical.identity
 
 
+def require_complete_ordered_evidence_tail(
+    canonical: CanonicalCodeState,
+) -> None:
+    """Require the exact derived final-review-to-handoff tail for verify."""
+
+    if (
+        canonical.tail_state != "complete"
+        or canonical.final_review_recording_revision is None
+        or canonical.explanation_recording_revision is None
+        or canonical.handoff_revision
+        != canonical.explanation_recording_revision
+    ):
+        raise AutomationContractError(
+            "verification basis ordered final-review evidence tail is incomplete"
+        )
+
+
 def resolve_verification_readiness(
     *,
     repository_root: Path,
@@ -489,8 +506,11 @@ def resolve_verification_readiness(
             reviewed_revision=review_fields["Reviewed commit"],
             final_review_id=review_fields["Review ID"],
             lifecycle_evidence_paths=frozenset(
-                artifact.relative_to(repository_root.resolve()).as_posix()
-                for artifact in artifacts.values()
+                {
+                    artifacts["explanation_inputs_identity"]
+                    .relative_to(repository_root.resolve())
+                    .as_posix()
+                }
             ),
             test_provider=code_state_provider,
         )
@@ -498,6 +518,7 @@ def resolve_verification_readiness(
         raise AutomationContractError(
             "verification basis canonical code-state anchor is invalid"
         ) from error
+    require_complete_ordered_evidence_tail(canonical)
     final_code_identity = _canonical_final_code_identity(
         branch_state_path=artifacts["branch_state_identity"],
         canonical=canonical,
@@ -528,6 +549,9 @@ def resolve_verification_readiness(
                 "Status",
                 "Final diff identity",
                 "Final review identity",
+                "Reviewed subject revision",
+                "Explanation basis",
+                "Validation-evidence cutoff",
             },
         )
     except StateContractError as error:
@@ -541,6 +565,8 @@ def resolve_verification_readiness(
         != final_code_identity
         or explanation.get("Final review identity")
         != identities["final_code_review_identity"]
+        or explanation.get("Reviewed subject revision")
+        != canonical.reviewed_revision
     ):
         raise AutomationContractError("verification basis explanation is not current")
     for name, expected_stage, expected_status in (

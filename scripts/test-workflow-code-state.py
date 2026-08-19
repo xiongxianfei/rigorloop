@@ -17,6 +17,10 @@ from workflow_code_state import (
     GitCodeStateProvider,
     resolve_canonical_code_state,
 )
+from workflow_automation import (
+    AutomationContractError,
+    require_complete_ordered_evidence_tail,
+)
 
 
 class GitCodeStateProviderTests(unittest.TestCase):
@@ -71,9 +75,48 @@ class GitCodeStateProviderTests(unittest.TestCase):
         self.write(root, "scripts/modified.py", "value = 1\n")
         self.write(root, "scripts/deleted.py", "delete_me = True\n")
         self.write(root, "scripts/renamed.py", "rename_me = True\n")
+        self.write_change_state(root, stage="implement", evidence=())
         base = self.commit(root, "base")
         self.git(root, "checkout", "-q", "-b", "feature")
         return root, base
+
+    def write_change_state(
+        self,
+        root: Path,
+        *,
+        stage: str,
+        evidence: tuple[str, ...],
+        extra: str = "",
+    ) -> None:
+        evidence_rows = "".join(f"    - {path}\n" for path in evidence)
+        automation_rows = "".join(f"      - {path}\n" for path in evidence)
+        self.write(
+            root,
+            "docs/changes/2026-07-20-example/change.yaml",
+            "change_id: 2026-07-20-example\n"
+            "lifecycle_contract: stage-owned-change-local-v1\n"
+            "artifact_states: {}\n"
+            "workflow_state:\n"
+            "  lifecycle_state: active\n"
+            f"  current_stage: {stage}\n"
+            "  next_stage: verify\n"
+            "  blocker: null\n"
+            "  evidence:\n"
+            f"{evidence_rows}"
+            "workflow:\n"
+            "  automation:\n"
+            "    status: active\n"
+            f"    current_stage: {stage}\n"
+            "    stop_reason: null\n"
+            "    evidence:\n"
+            f"{automation_rows}"
+            "review:\n"
+            "  status: clean\n"
+            "  unresolved_items: 0\n"
+            "changed_files:\n"
+            "  - scripts/modified.py\n"
+            f"{extra}",
+        )
 
     def provider(
         self, root: Path, reviewed: str
@@ -134,8 +177,246 @@ class GitCodeStateProviderTests(unittest.TestCase):
         self.write(root, "scripts/later.py", "later = True\n")
         self.commit(root, "later code")
 
-        with self.assertRaisesRegex(CodeStateError, "HEAD differs"):
+        with self.assertRaisesRegex(CodeStateError, "final-review recording paths"):
             self.provider(root, reviewed).snapshot(root)
+
+    def test_snapshot_accepts_ordered_review_and_explanation_commits(self) -> None:
+        root, _base = self.make_repository()
+        self.write(root, "scripts/modified.py", "value = 2\n")
+        reviewed = self.commit(root, "reviewed")
+        review_path = (
+            "docs/changes/2026-07-20-example/reviews/"
+            "code-review-final-r1.md"
+        )
+        invocation_path = (
+            "docs/changes/2026-07-20-example/"
+            "review-invocation-code-review-final-r1.yaml"
+        )
+        log_path = "docs/changes/2026-07-20-example/review-log.md"
+        self.write(root, review_path, "Review ID: code-review-final-r1\n")
+        self.write(root, invocation_path, "review_id: code-review-final-r1\n")
+        self.write(root, log_path, "Review ID: code-review-final-r1\n")
+        self.write_change_state(
+            root,
+            stage="final-holistic-code-review",
+            evidence=(review_path, invocation_path),
+        )
+        final_review_recording = self.commit(root, "final review evidence")
+        evidence_path = "docs/changes/2026-07-20-example/explain-change.md"
+        self.write(root, evidence_path, "Stage: explain-change\nStatus: current\n")
+        self.write_change_state(
+            root,
+            stage="explain-change",
+            evidence=(review_path, invocation_path, evidence_path),
+        )
+        explanation_recording = self.commit(root, "explain-change evidence")
+        anchor = GitCodeStateAnchorResolver().resolve(
+            root,
+            change_id="2026-07-20-example",
+            reviewed_revision=reviewed,
+            final_review_id="code-review-final-r1",
+            lifecycle_evidence_paths=frozenset({evidence_path}),
+        )
+
+        snapshot = GitCodeStateProvider(anchor=anchor).snapshot(root)
+
+        self.assertEqual(snapshot.reviewed_revision, reviewed)
+        self.assertEqual(
+            snapshot.final_review_recording_revision,
+            final_review_recording,
+        )
+        self.assertEqual(
+            snapshot.explanation_recording_revision,
+            explanation_recording,
+        )
+        self.assertEqual(snapshot.handoff_revision, explanation_recording)
+        self.assertEqual(snapshot.tail_state, "complete")
+        require_complete_ordered_evidence_tail(snapshot)
+
+        verify_path = "docs/changes/2026-07-20-example/verify-report.md"
+        self.write(root, verify_path, "Stage: verify\nStatus: passed\n")
+        self.write_change_state(
+            root,
+            stage="verify",
+            evidence=(review_path, invocation_path, evidence_path, verify_path),
+        )
+        self.commit(root, "verify evidence")
+        post_verify_anchor = GitCodeStateAnchorResolver().resolve(
+            root,
+            change_id="2026-07-20-example",
+            reviewed_revision=reviewed,
+            final_review_id="code-review-final-r1",
+            lifecycle_evidence_paths=frozenset({evidence_path}),
+        )
+
+        post_verify = GitCodeStateProvider(
+            anchor=post_verify_anchor
+        ).snapshot(root)
+
+        self.assertEqual(post_verify.tail_state, "complete")
+        self.assertEqual(post_verify.handoff_revision, explanation_recording)
+        self.assertEqual(post_verify.identity, snapshot.identity)
+        require_complete_ordered_evidence_tail(post_verify)
+
+    def test_snapshot_accepts_exact_review_only_partial_tail(self) -> None:
+        root, _base = self.make_repository()
+        self.write(root, "scripts/modified.py", "value = 2\n")
+        reviewed = self.commit(root, "reviewed")
+        review_path = "docs/changes/2026-07-20-example/reviews/code-review-final-r1.md"
+        invocation_path = "docs/changes/2026-07-20-example/review-invocation-code-review-final-r1.yaml"
+        log_path = "docs/changes/2026-07-20-example/review-log.md"
+        self.write(root, review_path, "Review ID: code-review-final-r1\n")
+        self.write(root, invocation_path, "review_id: code-review-final-r1\n")
+        self.write(root, log_path, "Review ID: code-review-final-r1\n")
+        self.write_change_state(
+            root,
+            stage="final-holistic-code-review",
+            evidence=(review_path, invocation_path),
+        )
+        final_review_recording = self.commit(root, "final review evidence")
+        anchor = GitCodeStateAnchorResolver().resolve(
+            root,
+            change_id="2026-07-20-example",
+            reviewed_revision=reviewed,
+            final_review_id="code-review-final-r1",
+            lifecycle_evidence_paths=frozenset(
+                {"docs/changes/2026-07-20-example/explain-change.md"}
+            ),
+        )
+
+        snapshot = GitCodeStateProvider(anchor=anchor).snapshot(root)
+
+        self.assertEqual(snapshot.tail_state, "review-recorded")
+        self.assertEqual(
+            snapshot.final_review_recording_revision,
+            final_review_recording,
+        )
+        self.assertIsNone(snapshot.explanation_recording_revision)
+        with self.assertRaisesRegex(
+            AutomationContractError,
+            "ordered final-review evidence tail is incomplete",
+        ):
+            require_complete_ordered_evidence_tail(snapshot)
+
+    def test_snapshot_rejects_unknown_change_field_in_review_commit(self) -> None:
+        root, _base = self.make_repository()
+        self.write(root, "scripts/modified.py", "value = 2\n")
+        reviewed = self.commit(root, "reviewed")
+        review_path = "docs/changes/2026-07-20-example/reviews/code-review-final-r1.md"
+        invocation_path = "docs/changes/2026-07-20-example/review-invocation-code-review-final-r1.yaml"
+        log_path = "docs/changes/2026-07-20-example/review-log.md"
+        self.write(root, review_path, "Review ID: code-review-final-r1\n")
+        self.write(root, invocation_path, "review_id: code-review-final-r1\n")
+        self.write(root, log_path, "Review ID: code-review-final-r1\n")
+        self.write_change_state(
+            root,
+            stage="final-holistic-code-review",
+            evidence=(review_path, invocation_path),
+            extra="unowned_field: forbidden\n",
+        )
+        self.commit(root, "invalid final review evidence")
+
+        with self.assertRaisesRegex(CodeStateError, "unowned change metadata field"):
+            self.provider(root, reviewed).snapshot(root)
+
+    def test_snapshot_rejects_unknown_change_field_in_explanation_commit(self) -> None:
+        root, _base = self.make_repository()
+        self.write(root, "scripts/modified.py", "value = 2\n")
+        reviewed = self.commit(root, "reviewed")
+        change_root = "docs/changes/2026-07-20-example"
+        review_path = f"{change_root}/reviews/code-review-final-r1.md"
+        invocation_path = (
+            f"{change_root}/review-invocation-code-review-final-r1.yaml"
+        )
+        self.write(root, review_path, "Review ID: code-review-final-r1\n")
+        self.write(root, invocation_path, "review_id: code-review-final-r1\n")
+        self.write(root, f"{change_root}/review-log.md", "Status: approved\n")
+        self.write_change_state(
+            root,
+            stage="final-holistic-code-review",
+            evidence=(review_path, invocation_path),
+        )
+        self.commit(root, "final review evidence")
+        explanation_path = f"{change_root}/explain-change.md"
+        self.write(root, explanation_path, "Stage: explain-change\n")
+        self.write_change_state(
+            root,
+            stage="explain-change",
+            evidence=(review_path, invocation_path, explanation_path),
+            extra="unowned_field: forbidden\n",
+        )
+        self.commit(root, "invalid explanation evidence")
+        anchor = GitCodeStateAnchorResolver().resolve(
+            root,
+            change_id="2026-07-20-example",
+            reviewed_revision=reviewed,
+            final_review_id="code-review-final-r1",
+            lifecycle_evidence_paths=frozenset({explanation_path}),
+        )
+
+        with self.assertRaisesRegex(CodeStateError, "unowned change metadata field"):
+            GitCodeStateProvider(anchor=anchor).snapshot(root)
+
+    def test_snapshot_rejects_destructive_explanation_evidence_list(self) -> None:
+        root, _base = self.make_repository()
+        self.write(root, "scripts/modified.py", "value = 2\n")
+        reviewed = self.commit(root, "reviewed")
+        change_root = "docs/changes/2026-07-20-example"
+        review_path = f"{change_root}/reviews/code-review-final-r1.md"
+        invocation_path = (
+            f"{change_root}/review-invocation-code-review-final-r1.yaml"
+        )
+        self.write(root, review_path, "Review ID: code-review-final-r1\n")
+        self.write(root, invocation_path, "review_id: code-review-final-r1\n")
+        self.write(root, f"{change_root}/review-log.md", "Status: approved\n")
+        self.write_change_state(
+            root,
+            stage="final-holistic-code-review",
+            evidence=(review_path, invocation_path),
+        )
+        self.commit(root, "final review evidence")
+        explanation_path = f"{change_root}/explain-change.md"
+        self.write(root, explanation_path, "Stage: explain-change\n")
+        self.write_change_state(
+            root,
+            stage="explain-change",
+            evidence=(explanation_path,),
+        )
+        self.commit(root, "destructive explanation evidence")
+        anchor = GitCodeStateAnchorResolver().resolve(
+            root,
+            change_id="2026-07-20-example",
+            reviewed_revision=reviewed,
+            final_review_id="code-review-final-r1",
+            lifecycle_evidence_paths=frozenset({explanation_path}),
+        )
+
+        with self.assertRaisesRegex(CodeStateError, "preserve its prior sequence"):
+            GitCodeStateProvider(anchor=anchor).snapshot(root)
+
+    def test_snapshot_rejects_reversed_explanation_and_review_order(self) -> None:
+        root, _base = self.make_repository()
+        self.write(root, "scripts/modified.py", "value = 2\n")
+        reviewed = self.commit(root, "reviewed")
+        explanation_path = "docs/changes/2026-07-20-example/explain-change.md"
+        self.write(root, explanation_path, "Stage: explain-change\nStatus: current\n")
+        self.write_change_state(
+            root,
+            stage="explain-change",
+            evidence=(explanation_path,),
+        )
+        self.commit(root, "explanation before review")
+
+        with self.assertRaisesRegex(CodeStateError, "final-review recording paths"):
+            GitCodeStateProvider(
+                anchor=GitCodeStateAnchorResolver().resolve(
+                    root,
+                    change_id="2026-07-20-example",
+                    reviewed_revision=reviewed,
+                    final_review_id="code-review-final-r1",
+                    lifecycle_evidence_paths=frozenset({explanation_path}),
+                )
+            ).snapshot(root)
 
     def test_resolver_rejects_code_path_post_review_exemptions(self) -> None:
         root, _base = self.make_repository()
