@@ -12,6 +12,7 @@ import sys
 import unittest
 from unittest import mock
 import math
+import os
 import tempfile
 import textwrap
 from collections.abc import Callable
@@ -11421,6 +11422,49 @@ class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
         risk_map = (self.skill_dir / "references" / "risk-to-check-map.md").read_text(encoding="utf-8")
         self.assertIn("sole semantic owner", risk_map)
         self.assertIn("required execution boundary", risk_map)
+
+    def test_create_no_clobber_uses_commit_time_absence(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            target = Path(temporary) / "ci.yml"
+            target.write_text("concurrent", encoding="utf-8")
+            with self.assertRaises(FileExistsError):
+                descriptor = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
+                os.close(descriptor)
+            self.assertEqual(target.read_text(encoding="utf-8"), "concurrent")
+
+    def test_revise_identity_guard_rejects_concurrent_change(self) -> None:
+        import hashlib
+        with tempfile.TemporaryDirectory() as temporary:
+            target = Path(temporary) / "ci.yml"
+            target.write_text("A", encoding="utf-8")
+            prior = hashlib.sha256(target.read_bytes()).hexdigest()
+            target.write_text("B", encoding="utf-8")
+            current = hashlib.sha256(target.read_bytes()).hexdigest()
+            self.assertNotEqual(prior, current)
+            self.assertEqual(target.read_text(encoding="utf-8"), "B")
+
+    def test_dependency_batch_orders_provider_before_wrapper(self) -> None:
+        dependencies = {"validation-script": set(), "github-workflow": {"validation-script"}}
+        order = []
+        pending = set(dependencies)
+        while pending:
+            ready = sorted(node for node in pending if dependencies[node] <= set(order))
+            self.assertTrue(ready, "atomic-group-required")
+            order.extend(ready)
+            pending.difference_update(ready)
+        self.assertEqual(order, ["validation-script", "github-workflow"])
+
+    def test_atomic_group_cycle_blocks_before_write(self) -> None:
+        dependencies = {"a": {"b"}, "b": {"a"}}
+        ready = [node for node, needs in dependencies.items() if not needs]
+        self.assertEqual(ready, [])
+        skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("blocked-before-write", skill)
+
+    def test_partial_batch_and_retry_are_exact(self) -> None:
+        skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        for phrase in ("partial-blocked", "completed and pending targets", "Retry rebuilds the entire graph", "adopts no stale manifest"):
+            self.assertIn(phrase, skill)
 
 
 if __name__ == "__main__":
