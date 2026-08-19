@@ -51,4 +51,3 @@ Review challenged root-only measurement, incorrect profile equivalence, duplicat
 | Derived artifact currency | pass | Build and adapter distribution checks pass. |
 | Unrelated changes | pass | M4 changes are proof and final compression only. |
 | Validation evidence | pass | Complete M4 command ledger passed. |
-

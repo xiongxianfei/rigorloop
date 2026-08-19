@@ -15,4 +15,3 @@ scenarios:
   - {id: T13, outcome: every-assembly-decreases}
   - {id: T14, outcome: package-parity}
   - {id: T15, outcome: unknown-value-first}
-

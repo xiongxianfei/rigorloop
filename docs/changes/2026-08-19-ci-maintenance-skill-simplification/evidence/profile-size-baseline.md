@@ -10,4 +10,3 @@ Measurement uses LF-normalized canonical authored files, Unicode whitespace-sepa
 | Complete package | unique resources above | 2014 | 14395 |
 
 Pre-change assembly equivalents use the root alone for narrow review, root plus risk map for coverage-sensitive review, root plus skeleton for ordinary creation, and all three files for coverage-sensitive creation. Privileged external design evidence and project-native contracts are disclosed but excluded from packaged totals.
-

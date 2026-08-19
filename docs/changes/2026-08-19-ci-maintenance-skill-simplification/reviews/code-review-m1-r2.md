@@ -51,4 +51,3 @@ The correction explicitly accounts for R1-R54 and CIM-R1-CIM-R65 exactly once, n
 | Derived artifact currency | pass | Package content remains untouched in M1. |
 | Unrelated changes | pass | Correction stayed inside declared paths. |
 | Validation evidence | pass | Focused tests and metadata/review validation pass. |
-

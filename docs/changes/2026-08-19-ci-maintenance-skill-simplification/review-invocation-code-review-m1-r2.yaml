@@ -15,4 +15,3 @@ automation:
   risk_map_recorded_before_evidence_menu: true
   requirement_fidelity: applicable
 phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, prior-finding-released, verdict-recorded]
-

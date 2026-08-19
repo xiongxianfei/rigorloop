@@ -21,4 +21,3 @@ Counts use LF-normalized canonical files, Unicode whitespace-separated words, UT
 | Complete package | 2014 | 1538 | 14395 | 12149 |
 
 Final resources: root 890/7410; GitHub reference 256/2030; risk map 327/2099; skeleton 65/610. Every supported assembly strictly decreases in both measures.
-

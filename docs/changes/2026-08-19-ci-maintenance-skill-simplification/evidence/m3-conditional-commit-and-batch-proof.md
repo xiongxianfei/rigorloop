@@ -10,4 +10,3 @@
 - Unchanged with rationale: no runtime helper was added because the approved contract is packaged procedure and deterministic proof, not an executable CI engine.
 
 Validation passed: focused simplification tests, canonical skill validation, complete skill-validator suite, and build check.
-

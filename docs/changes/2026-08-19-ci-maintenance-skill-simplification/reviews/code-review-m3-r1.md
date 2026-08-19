@@ -51,4 +51,3 @@ Review challenged preflight/commit races, overwrite-capable rename, read-back mi
 | Derived artifact currency | pass | Build check passes. |
 | Unrelated changes | pass | Tests and evidence are M3-scoped. |
 | Validation evidence | pass | Focused and broad validation pass. |
-

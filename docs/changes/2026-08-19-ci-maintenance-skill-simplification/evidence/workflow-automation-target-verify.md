@@ -9,4 +9,3 @@
 - Starting position: M1 implementation
 - Completion rule: `verify` records one final result for the current handoff revision.
 - External boundary: this run does not push, open a pull request, publish, release, deploy, merge, or mutate external platform state.
-

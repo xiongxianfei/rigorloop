@@ -9,4 +9,3 @@
 - Unchanged with rationale: adapter support metadata and repository workflows remain unchanged because existing build tooling discovers packaged resources and this milestone changes no hosted workflow.
 
 Validation passed: focused simplification tests, canonical skill validation, the complete skill-validator suite, build tests, and `build-skills.py --check`.
-

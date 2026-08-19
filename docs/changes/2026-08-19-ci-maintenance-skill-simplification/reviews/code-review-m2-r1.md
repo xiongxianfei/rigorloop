@@ -51,4 +51,3 @@ Review challenged universal safety loss, policy-owner duplication, invalid targe
 | Derived artifact currency | pass | Build checks discover the new resource. |
 | Unrelated changes | pass | Changes are directly coupled package/validator/spec surfaces. |
 | Validation evidence | pass | Focused, broad, build, and canonical checks passed. |
-
