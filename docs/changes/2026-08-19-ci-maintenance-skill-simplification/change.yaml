@@ -53,7 +53,7 @@ artifact_states:
 workflow_state:
   lifecycle_state: active
   current_stage: verify
-  next_stage: verify
+  next_stage: pr
   blocker: null
   evidence:
     - docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md
@@ -134,12 +134,13 @@ workflow_state:
     final_closeout:
       readiness: not-ready
       reasons:
-        - lifecycle-gates-open
+        - external-completion-event-pending
       evidence:
         - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/plan-review-r1.md
         - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/plan-initialization.md
         - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-final-r2.md
         - docs/changes/2026-08-19-ci-maintenance-skill-simplification/explain-change.md
+        - docs/changes/2026-08-19-ci-maintenance-skill-simplification/verify-report.md
 
 workflow:
   automation:
@@ -151,9 +152,9 @@ workflow:
       bound_at: "2026-08-19T13:00:00-07:00"
       completion:
         rule: verify records one final result for the current handoff revision
-    status: paused
+    status: completed
     current_stage: verify
-    stop_reason: verify-failed
+    stop_reason: target-reached
     evidence:
       - docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md
       - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/reviews/proposal-review-r3.md
@@ -231,7 +232,7 @@ validation:
   - command: python scripts/validate-documentation-prose.py --mode audit --path specs/ci-maintenance-skill-simplification.md --path specs/ci-maintenance-skill-simplification.test.md --path docs/plans/2026-08-19-ci-maintenance-skill-simplification.md
     result: pass
   - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
-    result: fail_invalid_proposal_status
+    result: pass_26_checks
 
 changed_files:
   - docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md

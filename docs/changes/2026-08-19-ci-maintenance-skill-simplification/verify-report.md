@@ -1,30 +1,30 @@
 # Verify Report: CI-Maintenance Skill Simplification
 
-Verification ID: verify-r1
+Verification ID: verify-r2
 Stage: verify
 Verifier: Codex verify
 Verification date: 2026-08-19
-Status: not-ready
+Status: branch-ready
 PR readiness: not claimed
 
 ## Result
 
 - Skill: verify
-- Status: failed
-- Artifacts changed: this report and verify-owned workflow pause state
-- Open blockers: proposal status is outside the closed lifecycle vocabulary
-- Next stage: blocked pending proposal-owned correction and required rereview
-- Validation: CMD1-CMD9 passed; CMD10 failed its PR lifecycle-scope gate
-- Readiness: not-ready
+- Status: passed
+- Artifacts changed: this report and verify/workflow-owned handoff state
+- Open blockers: none for branch readiness
+- Next stage: `pr`, not invoked
+- Validation: CMD1 through CMD10 passed
+- Readiness: branch-ready
 - Hosted CI: not observed
 
 ## Scope and verdict
 
-Final verification assessed governed change `2026-08-19-ci-maintenance-skill-simplification` on branch `proposal/ci-maintenance-skill-simplification` against current `origin/main`.
+Final verification assessed governed change `2026-08-19-ci-maintenance-skill-simplification` on branch `proposal/ci-maintenance-skill-simplification` against `origin/main`.
 
-Verdict: `not-ready`.
+Verdict: `branch-ready`.
 
-The CI-maintenance contract, implementation, tests, package resources, measurements, generated package checks, adapter distribution, review closeout, and explanation agree. The repository PR-mode wrapper nevertheless found one branch-local lifecycle blocker: `docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md` declares `Status: revised; ready for proposal rereview`, which is not a permitted proposal status. A configured or mostly passing gate cannot establish branch readiness while that blocking result remains.
+The accepted proposal, approved specification and test specification, architecture assessment, stable plan, closed milestones, final holistic review, review resolution, current explanation, canonical skill package, generated projections, adapter distribution, and lifecycle metadata agree. The full PR-mode gate passes. This establishes branch readiness only; it does not claim PR-body readiness, PR opening, hosted CI, release, publication, deployment, or merge readiness.
 
 ## Verification basis
 
@@ -36,30 +36,31 @@ verification_basis:
   base_revision: afb4937bd0874286f6c260dbd58cd10a088b0986
   merge_base_revision: afb4937bd0874286f6c260dbd58cd10a088b0986
   head_branch: proposal/ci-maintenance-skill-simplification
-  verified_subject_revision: f6c50d99e0b6902cfa4f0ed264ad345651907099
+  verified_subject_revision: 9f90b9bcec17405e642513374dfb1afcf6f1f309
 ```
 
-This basis identifies the failed verification subject. It does not establish `branch-ready`.
+The final reviewed implementation subject is `0bdaef90`, final-review evidence revision is `a48732e5`, and the explanation/workflow-handback revision is `9f90b9bc`. This verify report and matching workflow completion update occur after that immutable explained subject and do not alter implementation.
 
 ## Verification dimensions
 
 | Dimension | Result | Evidence |
 | --- | --- | --- |
-| Requirements and proof map | pass | R1-R54, T1-T15, boundary rows, interactions, and proof obligations are mapped and the boundary validator passes. |
+| Requirements and proof map | pass | R1-R54, T1-T15, boundary rows, interactions, and proof obligations are mapped; the boundary validator passes. |
 | Focused CI-maintenance contract | pass | All 13 `CiMaintenanceSkillSimplificationTests` pass. |
 | Broad skill behavior | pass | The complete skill-validator suite passes 432 tests with 16 documented skips. |
 | Canonical and generated package | pass | Skill validation, seven build tests, and generated-output check mode pass. |
 | Adapter/archive/install parity | pass | All 150 adapter-distribution tests pass. |
-| Review closeout | pass | Closeout validation reports ten reviews, two resolved findings, and no open finding. |
-| Milestone and rationale state | pass | M1-M4 are closed, final holistic review is clean, and the explanation matches the reviewed subject. |
+| Review closeout | pass | Final code review R2 is approved and the review log has no open findings. |
+| Milestone and rationale state | pass | M1-M4 are closed and the explanation matches the reviewed subject and permitted evidence tail. |
 | Simplification | pass | Every supported assembly and the complete package decrease in words and bytes. |
-| Lifecycle consistency | block | The current proposal carries an invalid closed-vocabulary status, so the PR lifecycle gate exits 1. |
-| Hosted CI | concern | Not observed; no hosted-CI claim is made. |
-| Branch handoff | block | CMD10 failed, so `pr` is not eligible. |
+| Lifecycle consistency | pass | The accepted proposal state and current change-local lifecycle metadata pass the PR-mode gate. |
+| Merge simulation | pass | `git merge-tree --write-tree origin/main HEAD` completed without conflicts. |
+| Hosted CI | not-observed | No hosted-CI result was inspected or claimed. |
+| Branch handoff | pass | PR-mode CI reports 26 passing direct product and governance checks. |
 
 ## Validation evidence
 
-All commands ran locally from the repository root on 2026-08-19.
+All commands ran locally from the repository root on 2026-08-19 against the recorded handoff revision.
 
 | Command | Result |
 | --- | --- |
@@ -68,28 +69,24 @@ All commands ran locally from the repository root on 2026-08-19.
 | CMD3 `python scripts/test-skill-validator.py` | pass; 432 tests and 16 documented skips |
 | CMD4 `python scripts/test-build-skills.py` | pass; seven tests |
 | CMD5 `python scripts/build-skills.py --check` | pass |
-| CMD6 `python scripts/test-adapter-distribution.py` | pass; 150 tests in 377.112 seconds |
+| CMD6 `python scripts/test-adapter-distribution.py` | pass; 150 tests in 376.174 seconds |
 | CMD7 `python scripts/validate-boundary-first.py --check --path specs/ci-maintenance-skill-simplification.md` | pass |
 | CMD8 `python scripts/validate-change-metadata.py docs/changes/2026-08-19-ci-maintenance-skill-simplification/change.yaml` | pass before verify-result recording |
 | CMD9 `python scripts/validate-documentation-prose.py --mode audit --path specs/ci-maintenance-skill-simplification.md --path specs/ci-maintenance-skill-simplification.test.md --path docs/plans/2026-08-19-ci-maintenance-skill-simplification.md` | pass; zero errors and zero warnings |
-| Review closeout diagnostic | pass; ten reviews, two findings closed, ten log entries, and two resolution entries |
 | `git diff --check origin/main...HEAD` | pass before verify-result recording |
-| CMD10 `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` | fail; Governance PR lifecycle scope rejects the proposal status |
+| `git merge-tree --write-tree origin/main HEAD` | pass; no merge conflict |
+| CMD10 `bash scripts/ci.sh --mode pr --base origin/main --head HEAD` | pass; direct gate graph reports 26 checks passed |
 
-CMD10 also emitted warnings for older baseline documents missing normalized status sections. Those warnings are not the blocking result. The adapter suite's recorded-source and incomplete-release messages are expected negative fixtures inside a passing suite.
+The adapter suite's recorded-source and intentionally incomplete release diagnostics are expected negative fixtures inside a passing suite.
 
 No PR, push, publication, target-agent runtime, release action, external mutation, or hosted-CI pass was used or claimed.
 
-## Blocker and safe resolution
+## Prior failed occurrence
 
-Blocker owner: `proposal` followed by the owning review/workflow gates.
-
-Required outcome: replace the compound prose status with the exact approved proposal lifecycle vocabulary, preserve the readiness statement in ordinary prose, obtain any proposal rereview required by the proposal contract, then refresh all stale downstream evidence required by workflow before rerunning final verification. Manual edits alone do not resume the paused automation profile.
-
-Verify does not perform that correction because armed automation explicitly pauses without repair on verify failure.
+Verify R1 returned `not-ready` because the proposal carried a compound prose status outside the closed lifecycle vocabulary. The proposal owner normalized that status, proposal review R4 approved the corrected artifact, workflow reconciled the downstream basis, final code review R2 approved the unchanged implementation, and explain-change recorded the permitted handback revision before this fresh verify R2 run. The R1 failure remains historical evidence in version control and is not represented as a passing result.
 
 ## Readiness
 
-Verdict: `not-ready`.
+Verdict: `branch-ready`.
 
-Automation is paused at `verify`. No PR preparation or opening is authorized by this result.
+The normal next stage is `pr`, but this verification does not prepare or open one.
