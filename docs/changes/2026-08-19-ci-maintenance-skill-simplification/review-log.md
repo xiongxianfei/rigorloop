@@ -10,6 +10,7 @@ This ledger records formal lifecycle reviews for the CI-maintenance skill-simpli
 | --- | --- | --- | --- | --- | --- | ---: | --- |
 | `spec-review-r2` | `spec-review` | `r2` | `specs/ci-maintenance-skill-simplification.md` at `sha256:b7ee60ec3dcdfa54d54f1945d43cb1d6f51297554e81a7375a8d6b764a020ec7` | `reviews/spec-review-r2.md` | `approved` | 0 | `recorded` |
 | `plan-review-r1` | `plan-review` | `r1` | `docs/plans/2026-08-19-ci-maintenance-skill-simplification.md` at commit `54bc0ce2` | `reviews/plan-review-r1.md` | `approved` | 0 | `recorded` |
+| `test-spec-review-r1` | `test-spec-review` | `r1` | `specs/ci-maintenance-skill-simplification.test.md` at commit `86bd8375` | `reviews/test-spec-review-r1.md` | `approved` | 0 | `recorded` |
 
 ## Detailed review entries
 
