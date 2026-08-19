@@ -22,6 +22,7 @@ This ledger records formal lifecycle reviews for the governed explain-change ski
 | `code-review-m4-r2` | `code-review` | `r2` | M4 corrections `155a5fff`, `031953ae` | `reviews/code-review-m4-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r2` | `code-review` | `final R2` | complete diff at `2817aab0e75cc339138009c574581bf3e22f919f` | `reviews/code-review-final-r2.md` | `approved` | 0 | `recorded` |
 | `code-review-final-r3` | `code-review` | `final R3` | complete diff at `8727f39fb03efb0d2cf0002a3e191de4a5c45c0c` | `reviews/code-review-final-r3.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-final-r4` | `code-review` | `final R4` | complete diff at `7a6dab806f91a12aef811a89a7c4a59829dab71c` | `reviews/code-review-final-r4.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 

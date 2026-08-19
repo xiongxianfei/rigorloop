@@ -1,0 +1,113 @@
+review_id: code-review-final-r4
+stage: code-review
+round: final-r4
+reviewed_scope: final-holistic
+reviewed_commit: 7a6dab806f91a12aef811a89a7c4a59829dab71c
+base_commit: 11179cb7f91a4a149bd763bae6a3dfbbadb3f60f
+reviewer: Codex independent code-review context
+authority:
+  proposal: docs/proposals/2026-08-18-explain-change-skill-simplification.md
+  spec: specs/explain-change-skill-simplification.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md
+  plan: docs/plans/2026-08-18-explain-change-skill-simplification.md
+  test_spec: specs/explain-change-skill-simplification.test.md
+reviewed_milestones:
+  - M1
+  - M2
+  - M3
+  - M4
+automation:
+  mode: workflow-managed-automated
+  target_stage: verify
+  context_separation: neutral-diff-first-final-holistic-review
+  independence_level: L1
+  risk_tier: standard
+  requirement_fidelity: applicable
+  second_review_required: false
+initial_packet:
+  included:
+    - exact base and reviewed-subject revisions
+    - complete changed-path inventory
+    - governing proposal, spec, architecture, ADR, plan, and test-spec paths
+    - formal code-review criteria
+  excluded:
+    - author hidden reasoning
+    - author self-assessment
+    - desired review outcome
+    - validation-result summaries
+    - evidence menu
+    - prior finding content
+    - correction eligibility or budget
+risk_map:
+  affected_behavior:
+    - published explain-change skill loading, authority, output, and handback contracts
+    - final-review S-to-R-to-E code-state validation and workflow integration
+    - lifecycle metadata and canonical architecture ownership
+  highest_impact_failure_modes:
+    - universal truthfulness or review-closeout rules become conditionally unavailable
+    - invalid or broader evidence tails are accepted as current
+    - generated or installed packages drift from canonical skill resources
+    - duplicate lifecycle ownership survives final correction
+    - proposal status and readiness contradict each other
+  changed_boundaries:
+    - portable versus governed explanation procedure
+    - inline versus durable output
+    - final reviewed subject versus review and explanation evidence revisions
+    - review subject versus lifecycle settlement target
+  expected_direct_evidence:
+    - exact requirement-to-test and boundary-to-proof mappings
+    - focused explain-change contract tests
+    - workflow automation and code-state tests
+    - skill package, generated output, adapter, lifecycle, and review-closeout validation
+    - complete diff and ownership inspection
+  direct_inspection_areas:
+    - skills/explain-change
+    - scripts/workflow_code_state.py
+    - scripts/workflow_automation.py
+    - directly coupled tests and fixtures
+    - change-local lifecycle and review evidence
+  intentionally_out_of_scope:
+    - target-agent runtime execution
+    - live PR, hosted CI, release, publication, or deployment
+  falsifiable_questions:
+    - Does every supported assembly preserve universal obligations and shrink in words and bytes?
+    - Can any malformed signal, broader tail, unknown field, or duplicate owner pass silently?
+    - Do generated, archived, release-candidate, and installed resources preserve required parity?
+    - Does the lifecycle correction alter implementation behavior or only restore metadata consistency?
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - prior-finding-release
+  - verdict-recorded
+evidence_menu:
+  direct_inspection:
+    - complete origin/main-to-reviewed-subject diff and changed-path inventory
+    - compact explain-change skill, governed reference, and structural skeleton
+    - canonical Git code-state provider and verification-readiness integration
+    - focused evidence-tail, field-ownership, package, lifecycle, and negative fixtures
+    - proposal, specification, architecture, ADR, plan, and test-spec alignment
+  challenged_commands:
+    - python scripts/test-skill-validator.py ExplainChangeSkillSimplificationTests
+    - python scripts/test-workflow-code-state.py
+    - python scripts/test-workflow-automation.py
+    - python scripts/build-skills.py --check
+    - python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-18-explain-change-skill-simplification
+    - python scripts/validate-change-metadata.py docs/changes/2026-08-18-explain-change-skill-simplification/change.yaml
+    - git diff --check origin/main...7a6dab806f91a12aef811a89a7c4a59829dab71c
+evidence_results:
+  focused_skill_contract: pass_11_tests
+  git_code_state: pass_18_tests
+  workflow_automation: pass_76_tests
+  generated_package_check: pass
+  review_closeout: pass_18_reviews_4_findings_closed
+  change_metadata: pass
+  diff_check: pass
+prior_findings:
+  released_after_direct_review: true
+  status: all_prior_material_findings_closed
+verdict:
+  status: clean-with-notes
+  material_findings: []
+  recording: reviews/code-review-final-r4.md
