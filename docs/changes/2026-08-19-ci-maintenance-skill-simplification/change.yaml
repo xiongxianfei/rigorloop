@@ -41,8 +41,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: explain-change
+  current_stage: explain-change
+  next_stage: verify
   blocker: null
   evidence:
     - docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md
@@ -80,6 +80,8 @@ workflow_state:
     - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-m3-r1.md
     - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-code-review-m4-r1.yaml
     - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-m4-r1.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-final-r1.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -108,14 +110,14 @@ workflow_state:
       stage: code-review
       round: r1
       artifact_id: plan
-      occurrence: milestone
-      milestone_id: M4
+      occurrence: final
+      milestone_id: none
       evidence:
-        - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-m4-r1.md
+        - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-final-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
-        - milestone-review-pending
+        - explain-change-pending
       evidence:
         - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/plan-review-r1.md
         - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/plan-initialization.md
@@ -131,7 +133,7 @@ workflow:
       completion:
         rule: verify records one final result for the current handoff revision
     status: active
-    current_stage: code-review
+    current_stage: explain-change
     stop_reason: null
     evidence:
       - docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md
@@ -159,6 +161,8 @@ workflow:
       - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-test-spec-review-r1.yaml
       - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/test-spec-review-r1.md
       - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/workflow-automation-target-verify.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-code-review-final-r1.yaml
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-final-r1.md
 
 artifacts:
   proposal: docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md

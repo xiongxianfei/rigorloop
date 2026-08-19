@@ -15,6 +15,7 @@ This ledger records formal lifecycle reviews for the CI-maintenance skill-simpli
 | `code-review-m2-r1` | `code-review` | `r1` | M2 at `0fd26234` | `reviews/code-review-m2-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m3-r1` | `code-review` | `r1` | M3 at `aaee77b5` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m4-r1` | `code-review` | `r1` | M4 at `139322d8` | `reviews/code-review-m4-r1.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-final-r1` | `code-review` | `r1` | complete branch at `5ca6e833` | `reviews/code-review-final-r1.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 
