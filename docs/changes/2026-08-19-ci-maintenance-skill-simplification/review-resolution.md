@@ -2,21 +2,23 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
+Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
 - Reviews covered: `spec-review-r1`, `code-review-m1-r1`
 - Findings resolved: 1
-- Unresolved findings: 1
-- Current result: CIMSIM-CR1 is corrected and awaits M1 rereview.
+- Unresolved findings: 0
+- Current result: CIMSIM-CR1 is resolved and M1 is cleanly rereviewed.
 
 ## Resolution overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
 | CIMSIM-SR1 | accepted | resolved | Added explicit amendment precedence, five closed legacy-clause dispositions, compatibility-boundary ownership, and AC16. |
-| CIMSIM-CR1 | accepted | pending-rereview | Expanded the ledgers to explicit requirement, legacy, assembly, consumer, result, and placeholder coverage. |
+| CIMSIM-CR1 | accepted | resolved | Expanded the ledgers to explicit requirement, legacy, assembly, consumer, result, and placeholder coverage. |
 
 ### spec-review-r1
 
@@ -38,7 +40,7 @@ Validation evidence: `evidence/spec-revision-r1.md`; `reviews/spec-review-r2.md`
 
 Finding ID: CIMSIM-CR1
 Disposition: accepted
-Status: pending-rereview
+Status: resolved
 Owner: implementation
 Owning stage: implement
 Decision owner: none; M1 and R45 are explicit
@@ -48,4 +50,8 @@ Rationale: Broad ownership groups cannot prove every behaviorally significant ru
 Required outcome: Explicitly account for R1-R54, CIM-R1-CIM-R65, assemblies, results, resources, placeholders, and coupled consumers.
 Safe resolution path: Apply the bounded ledger/test correction, rerun M1 validation, and record code-review-m1-r2.
 Validation target: corrected M1 inventories and focused tests.
-Validation evidence: `evidence/m1-preservation-inventories.md`; pending `reviews/code-review-m1-r2.md`.
+Validation evidence: `evidence/m1-preservation-inventories.md`; `reviews/code-review-m1-r2.md`.
+
+### code-review-m1-r2
+
+No material findings. The rereview confirms CIMSIM-CR1 is resolved and closes M1.

@@ -1537,7 +1537,7 @@ Use the inputs somehow and produce a useful result.
             text = risk_map_path.read_text(encoding="utf-8")
             risk_map_path.write_text(
                 text.replace(
-                    "Unmapped changed surfaces are not no-risk surfaces. If a changed path does not match this map, flag it for reviewer judgment, route it to a conservative boundary check, or both.\n\n",
+                    "Unmapped changed surfaces are not no-risk surfaces. Stop for reviewer judgment, route to a conservative boundary check, or both. Missing, stale, incomplete, or conflicting command and placement evidence blocks coverage-sensitive work.\n\n",
                     "",
                 ),
                 encoding="utf-8",
@@ -11369,6 +11369,7 @@ class ProjectMapSkillSimplificationTests(unittest.TestCase):
 class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.root = ROOT / "docs" / "changes" / "2026-08-19-ci-maintenance-skill-simplification"
+        self.skill_dir = ROOT / "skills" / "ci-maintenance"
 
     def test_preservation_inventories_cover_closed_ownership(self) -> None:
         rules = (self.root / "ci-maintenance-rule-disposition.yaml").read_text(encoding="utf-8")
@@ -11401,6 +11402,25 @@ class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
         literals = (self.root / "ci-maintenance-literal-compatibility.yaml").read_text(encoding="utf-8")
         self.assertIn("unknown_value_policy", literals)
         self.assertIn("invalid-or-ambiguous-provider", literals)
+
+    def test_package_split_and_closed_axes_are_present(self) -> None:
+        skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        reference = (self.skill_dir / "references" / "github-workflow-authoring.md").read_text(encoding="utf-8")
+        for value in ("create", "revise", "review", "invalid-or-ambiguous-target", "CIM8", "not-performed-by-ci-maintenance"):
+            self.assertIn(value, skill)
+        self.assertIn("serializes", reference)
+        self.assertIn("MUST NOT independently choose", reference)
+
+    def test_minimal_skeleton_omits_privileged_and_boundary_examples(self) -> None:
+        skeleton = (self.skill_dir / "assets" / "github-workflow-skeleton.yml").read_text(encoding="utf-8")
+        for forbidden in ("pull_request:", "push:", "schedule:", "workflow_dispatch:", "pull_request_target", "secrets:", "id-token:"):
+            self.assertNotIn(forbidden, skeleton)
+        self.assertIn("permissions:\n  contents: read", skeleton)
+
+    def test_risk_map_owns_semantic_placement(self) -> None:
+        risk_map = (self.skill_dir / "references" / "risk-to-check-map.md").read_text(encoding="utf-8")
+        self.assertIn("sole semantic owner", risk_map)
+        self.assertIn("required execution boundary", risk_map)
 
 
 if __name__ == "__main__":

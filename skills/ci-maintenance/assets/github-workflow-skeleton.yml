@@ -1,58 +1,25 @@
-# Copy and fill this GitHub Actions workflow structure from project policy.
-name: CI
+# Copy and fill only from current project authority.
+name: <workflow name>
 
 on:
-  pull_request:
-    paths:
-      - "<scoped paths from risk map>"
-  push:
-    branches: ["main"]
-  workflow_dispatch:
-  schedule:
-    - cron: "<boundary schedule>"
+  <explicitly authorized trigger>
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: <project-derived concurrency key>
   cancel-in-progress: true
 
 jobs:
-  changed-risk:
-    name: Changed-risk checks
-    runs-on: ubuntu-latest
-    timeout-minutes: <timeout>
+  <ordinary job id>:
+    name: <ordinary job name>
+    runs-on: <authorized runner>
+    timeout-minutes: <bounded timeout>
     steps:
       - name: Checkout
-        uses: actions/checkout@<full-length-sha-or-policy-approved-ref>
-
-      - name: Setup runtime
-        uses: <setup-action>@<full-length-sha-or-policy-approved-ref>
-        with:
-          <runtime inputs>
-
-      - name: Restore dependency cache
-        if: <stable lockfile cache key exists>
-        uses: actions/cache@<full-length-sha-or-policy-approved-ref>
-        with:
-          path: <dependency cache path>
-          key: ${{ runner.os }}-<ecosystem>-${{ hashFiles('<lockfile path>') }}
-
-      - name: Install dependencies
-        run: <deterministic install command from allowed command source>
-
-      - name: Run scoped checks
-        run: <scoped validation command from allowed command source>
-
-  boundary:
-    name: Boundary checks
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: <timeout>
-    steps:
-      - name: Checkout
-        uses: actions/checkout@<full-length-sha-or-policy-approved-ref>
-
-      - name: Run comprehensive checks
-        run: <comprehensive validation command from allowed command source>
+        uses: actions/checkout@<project-approved reference>
+      - name: Setup
+        uses: <project-approved setup action and reference>
+      - name: Run project check
+        run: <authoritative project command>
