@@ -11466,6 +11466,15 @@ class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
         for phrase in ("partial-blocked", "completed and pending targets", "Retry rebuilds the entire graph", "adopts no stale manifest"):
             self.assertIn(phrase, skill)
 
+    def test_all_loaded_profiles_strictly_decrease(self) -> None:
+        measurements = (self.root / "evidence" / "simplification-measurements.md").read_text(encoding="utf-8")
+        rows = re.findall(r"^\| (CIM[^|]+|Complete package) \| (\d+) \| (\d+) \| (\d+) \| (\d+) \|$", measurements, flags=re.MULTILINE)
+        self.assertEqual(len(rows), 15)
+        for name, before_words, after_words, before_bytes, after_bytes in rows:
+            with self.subTest(assembly=name):
+                self.assertLess(int(after_words), int(before_words))
+                self.assertLess(int(after_bytes), int(before_bytes))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

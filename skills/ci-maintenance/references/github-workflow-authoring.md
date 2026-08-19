@@ -8,12 +8,7 @@ The risk map decides what must run and its required execution boundary. This ref
 
 ## Ordinary composition
 
-1. Bind the exact repository workflow path, operation, structure mode, command identities, and settled risk mapping.
-2. For creation or authorized structural replacement, copy the skeleton and replace every placeholder. Otherwise preserve the validated existing organization while composing one complete file.
-3. Serialize only approved events and scopes. Apply path filters only when the risk map proves required checks remain reachable.
-4. Use read-only default permissions and add only evidenced job-specific permissions.
-5. Use project-derived concurrency, bounded timeouts, project-approved action references, deterministic installation, and stable-key caches only when supported.
-6. Validate syntax, commands, references, permissions, fork/secret behavior, and mapping agreement before the root performs its conditional commit.
+Bind the exact path, operation, structure, commands, and settled mapping. Creation or authorized structural replacement fills the skeleton; ordinary revision preserves validated organization while composing one complete file. Serialize only approved events and scopes. Filters require mapped coverage. Use read-only permissions, evidenced elevations, project concurrency, bounded timeouts, approved actions, deterministic installation, and stable-key caches. Validate syntax, references, permissions, fork/secret behavior, and mapping agreement before conditional commit.
 
 ## Approved privileged realization
 
@@ -24,4 +19,3 @@ The skeleton is structural input only. It never authorizes privileged triggers, 
 ## Conflict and failure
 
 Stop on a missing project command, incomplete or stale risk mapping, mapping/composition disagreement, unapproved action reference, unsafe fork/secret path, design mismatch, unfilled placeholder, or syntax/identity uncertainty. Report the exact owner needed for correction.
-
