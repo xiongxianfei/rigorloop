@@ -616,6 +616,7 @@ PROPOSAL_REVIEW_ASSET_FORBIDDEN_LABEL_PATTERN = re.compile(
 CI_MAINTENANCE_SKILL_NAME = "ci-maintenance"
 CI_MAINTENANCE_SKELETON = "assets/github-workflow-skeleton.yml"
 CI_MAINTENANCE_RISK_MAP = "references/risk-to-check-map.md"
+CI_MAINTENANCE_AUTHORING_REFERENCE = "references/github-workflow-authoring.md"
 REVIEW_FAMILY_FIRST_SLICE_SKILLS = {
     "code-review",
     "proposal-review",
@@ -3304,25 +3305,13 @@ def _validate_resource_map(path: Path, body: str) -> list[str]:
 def _validate_ci_maintenance_skeleton(path: Path, text: str) -> list[str]:
     errors: list[str] = []
     required_terms = {
-        "PR trigger structure": ("pull_request:",),
-        "boundary trigger structure": ("workflow_dispatch:", "schedule:"),
+        "authorized trigger placeholder": ("<explicitly authorized trigger>",),
         "least-privilege permissions": ("permissions:\n  contents: read",),
         "concurrency": ("concurrency:", "cancel-in-progress: true"),
-        "changed-risk job": ("changed-risk:", "Changed-risk checks"),
-        "boundary-check job": ("boundary:", "Boundary checks"),
-        "job timeout placeholders": ("timeout-minutes: <timeout>",),
-        "action-reference placeholders": ("<full-length-sha-or-policy-approved-ref>",),
-        "deterministic install placeholder": (
-            "<deterministic install command from allowed command source>",
-        ),
-        "validation command placeholders": (
-            "<scoped validation command from allowed command source>",
-            "<comprehensive validation command from allowed command source>",
-        ),
-        "dependency cache placeholder": (
-            "actions/cache@<full-length-sha-or-policy-approved-ref>",
-            "hashFiles('<lockfile path>')",
-        ),
+        "ordinary job": ("<ordinary job id>", "<ordinary job name>"),
+        "job timeout placeholder": ("timeout-minutes: <bounded timeout>",),
+        "action-reference placeholder": ("<project-approved reference>",),
+        "validation command placeholder": ("<authoritative project command>",),
     }
     for label, terms in required_terms.items():
         if not all(term in text for term in terms):
@@ -3330,6 +3319,9 @@ def _validate_ci_maintenance_skeleton(path: Path, text: str) -> list[str]:
 
     if re.search(r"@[0-9a-fA-F]{40}\b", text):
         errors.append(f"{path}: workflow skeleton must not include invented real action SHAs")
+    for forbidden in ("pull_request:", "push:", "schedule:", "workflow_dispatch:", "pull_request_target", "secrets:", "id-token:"):
+        if forbidden in text:
+            errors.append(f"{path}: workflow skeleton must not include privileged or boundary example '{forbidden}'")
     return errors
 
 
@@ -3411,6 +3403,11 @@ def validate_ci_maintenance_contract(
             errors.append(
                 f"{path}: Resource map entry for '{CI_MAINTENANCE_RISK_MAP}' must use literal READ"
             )
+        authoring_entry = _resource_entry_text(resource_map, CI_MAINTENANCE_AUTHORING_REFERENCE)
+        if authoring_entry is None:
+            errors.append(f"{path}: Resource map must name packaged resource '{CI_MAINTENANCE_AUTHORING_REFERENCE}'")
+        elif not authoring_entry.startswith(f"- READ `{CI_MAINTENANCE_AUTHORING_REFERENCE}`"):
+            errors.append(f"{path}: Resource map entry for '{CI_MAINTENANCE_AUTHORING_REFERENCE}' must use literal READ")
 
     skeleton_path = path.parent / CI_MAINTENANCE_SKELETON
     if skeleton_path.is_file():

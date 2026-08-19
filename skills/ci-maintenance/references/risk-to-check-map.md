@@ -1,39 +1,27 @@
 # Risk-To-Check Map
 
-Use this reference to derive CI checks from changed surfaces. Adapt it to the project. The portable core is safe to consider in ordinary repositories; project-specific extensions apply only when the target project has the named surface.
+This reference is the sole semantic owner of `changed path -> material risk -> owned check -> authoritative command -> required execution boundary`. GitHub authoring serializes the settled result and cannot redefine it.
 
-Unmapped changed surfaces are not no-risk surfaces. If a changed path does not match this map, flag it for reviewer judgment, route it to a conservative boundary check, or both.
+Unmapped changed surfaces are not no-risk surfaces. Stop for reviewer judgment, route to a conservative boundary check, or both. Missing, stale, incomplete, or conflicting command and placement evidence blocks coverage-sensitive work.
 
 ## Portable core
 
 | Changed surface | PR check | Boundary check | Notes |
 | --- | --- | --- | --- |
-| workflow files | workflow syntax, lint, permission review, path-filter review | scheduled or manual full workflow validation | Treat trigger, token, secret, and path-filter changes as security-sensitive. |
-| dependency manifests or lockfiles | deterministic install and affected tests with lockfile-keyed cache if caching is used | dependency audit or scheduled dependency validation when configured | Omit caching when no stable invalidation key exists. |
-| source code | affected unit, component, or package checks from known project commands | full suite | Derive affected checks from changed paths and project conventions. |
-| tests | changed tests and affected source checks | full suite | Test-only changes can still reveal affected source behavior. |
-| generated files | generated-output drift check when configured | full generated-output validation | Do not invent generation commands. |
-| documentation | link, structure, spell, or docs build checks when configured | full docs validation when configured | Docs-only does not mean no checks if docs tooling exists. |
-| package or release metadata | package validation and smoke checks when configured | release verification when relevant | Release publishing and deployment templates need separate design. |
-| container, environment, or secrets-adjacent config | reviewer flag plus available config lint or smoke check | conservative boundary validation | Use this row for common surfaces that are easy to miss; avoid secrets in PR workflows from forks. |
+| workflow files | syntax, permission, and filter review | configured full workflow validation | Treat triggers, credentials, and exclusions as security-sensitive. |
+| dependency manifests or lockfiles | deterministic install and affected tests | configured audit/full validation | Cache only with a stable lockfile key. |
+| source code | affected project-owned checks | full suite | Use authoritative commands only. |
+| tests | changed tests and affected source checks | full suite | Test-only changes can alter coverage. |
+| generated files | configured drift check | configured full generation | Do not invent generation commands. |
+| documentation | configured docs checks | configured full docs validation | Documentation may still be executable. |
+| package or release metadata | configured package checks | release verification | Publishing needs separate design. |
+| environment or secrets-adjacent config | conservative review and available lint | protected boundary validation | Never expose secrets to untrusted forks. |
 
 ## Project-specific extensions
 
-Use these only when the project has the corresponding surface.
-
 | Project surface | Example PR check | Example boundary check | Notes |
 | --- | --- | --- | --- |
-| RigorLoop skills | skill validation | generated local skill mirror validation | Example only; non-RigorLoop projects do not need this. |
-| RigorLoop generated adapters | adapter metadata or packaging checks | generated adapter archive validation | Example only; do not require adapter tooling in adopter projects. |
-| repository validators | validator unit tests and affected lifecycle validation | broad smoke through the repository validation wrapper | Example only; use project-owned commands. |
-| release metadata | package or release-note validation | release verification | Add release triggers only when the workflow owns release validation or packaging. |
+| RigorLoop skills | skill validation | generated package parity | Example only; non-RigorLoop projects do not need this. |
+| RigorLoop adapters | metadata/package checks | archive validation | Example only. |
 
-## Review use
-
-For each changed surface, record:
-
-- PR coverage;
-- boundary coverage;
-- command source;
-- intentionally deferred checks;
-- unmapped surfaces and reviewer judgment needed.
+Record every changed surface, material risk, command source, owned check, required boundary, intentionally deferred check, and unresolved mapping.
