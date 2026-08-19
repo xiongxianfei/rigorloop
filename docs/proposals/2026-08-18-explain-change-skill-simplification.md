@@ -1,5 +1,9 @@
 # Explain-Change Skill Simplification
 
+## Status
+
+- accepted
+
 ## Owning change record
 
 Portable authoring. No governed change record owns this proposal at creation time. Formal review evidence may use the recording-only fallback required by the review-recording contract; that fallback does not activate lifecycle settlement or workflow continuation.
@@ -417,11 +421,17 @@ None at proposal level. Exact metadata field names, validator fixture names, sel
 
 ## Follow-on Artifacts
 
-None yet
+- Focused specification: `specs/explain-change-skill-simplification.md`
+- Canonical architecture update: `docs/architecture/system/architecture.md`
+- Ordered evidence-tail ADR: `docs/adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md`
+- Execution plan: `docs/plans/2026-08-18-explain-change-skill-simplification.md`
+- Test specification: `specs/explain-change-skill-simplification.test.md`
+- Durable change rationale: `docs/changes/2026-08-18-explain-change-skill-simplification/explain-change.md`
+- Verification evidence: `docs/changes/2026-08-18-explain-change-skill-simplification/verify-report.md`
 
 ## Readiness
 
-Ready for independent proposal review. It is not yet ready for specification, implementation, verification, or PR claims until proposal-review settles the direction.
+Accepted by `proposal-review-r3`. The focused specification, architecture and ADR, execution plan, test specification, implementation, review evidence, durable rationale, and verification evidence now exist. Current lifecycle corrections still require refreshed review, explanation, and verification evidence before PR readiness may be assessed.
 
 ## Initial intent preservation
 
