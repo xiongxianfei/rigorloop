@@ -32,3 +32,13 @@ closed_vocabularies:
   structure_mode: [none, compose-from-skeleton, preserve-existing-structure]
   batch_class: [independent, ordered-dependent, atomic-group-required]
   batch_result: [complete, partial-blocked, blocked-before-write]
+assembly_families: [CIM0, CIM1, CIM2, CIM3, CIM4, CIM5, CIM6, CIM7, CIM8]
+resource_consumers:
+  - scripts/skill_validation.py
+  - scripts/test-skill-validator.py
+  - scripts/build-skills.py
+  - scripts/test-build-skills.py
+  - scripts/test-adapter-distribution.py
+  - dist/adapters/manifest.yaml
+result_fields: [requested-operation, actual-operation, target-kind, provider, privilege-class, concerns, structure-mode, selected-assembly, target-identity, mutation-outcome, validation-evidence, blockers, hosted-ci-observation]
+skeleton_placeholders: [authorized-trigger, project-derived-concurrency, runner, timeout, checkout, setup, project-command]

@@ -98,13 +98,14 @@ workflow_state:
       - M3
       - M4
     latest_review:
-      status: not-started
-      stage: none
-      round: none
-      artifact_id: none
-      occurrence: none
-      milestone_id: none
-      evidence: []
+      status: changes-requested
+      stage: code-review
+      round: r1
+      artifact_id: plan
+      occurrence: milestone
+      milestone_id: M1
+      evidence:
+        - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-m1-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -170,8 +171,8 @@ tests:
   - Canonical, generated, packed, archived, and installed resource parity plus before-and-after profile measurements.
 
 review:
-  status: approved
-  unresolved_items: 0
+  status: changes-requested
+  unresolved_items: 1
 
 validation: []
 
