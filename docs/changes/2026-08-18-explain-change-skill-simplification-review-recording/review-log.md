@@ -44,3 +44,16 @@ Resolution: review-resolution.md#proposal-review-r3
 Material findings: none
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: proposal-review-r4
+Stage: proposal-review
+Round: 4
+Reviewed artifact: `docs/proposals/2026-08-18-explain-change-skill-simplification.md` at `sha256:e436fa59cd0bfacda81473f7f82fbebcca89abc15590c466a248b61c419e7a0d`
+Status: approved
+Detailed record: reviews/proposal-review-r4.md
+Resolution: review-resolution.md#proposal-review-r4
+Material findings: none
+Open findings: none
+Recording status: recorded

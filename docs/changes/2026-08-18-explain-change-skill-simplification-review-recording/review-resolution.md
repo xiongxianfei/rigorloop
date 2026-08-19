@@ -4,12 +4,12 @@
 
 Closeout status: closed
 
-Review closeout: proposal-review-r3
+Review closeout: proposal-review-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
 - Findings resolved: 6
 - Unresolved findings: 0
-- Current result: revised proposal approved by same-stage rereview; no automatic downstream handoff.
+- Current result: lifecycle-normalized proposal approved by same-stage rereview; no automatic downstream handoff.
 
 ## Resolution Overview
 
@@ -23,6 +23,10 @@ Review closeout: proposal-review-r3
 | EXCSIM-PR6 | accepted | resolved | `Workflow handback` replaces verification-readiness language. |
 
 ## Finding Details
+
+### proposal-review-r4
+
+No material findings. This clean rereview confirmed that the accepted status, follow-on artifacts, and readiness statement agree without changing the proposal direction.
 
 ### proposal-review-r3
 
