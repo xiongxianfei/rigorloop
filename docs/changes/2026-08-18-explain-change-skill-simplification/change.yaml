@@ -54,7 +54,7 @@ artifact_states:
 workflow_state:
   lifecycle_state: active
   current_stage: verify
-  next_stage: none
+  next_stage: pr
   blocker: null
   evidence:
     - docs/proposals/2026-08-18-explain-change-skill-simplification.md
@@ -155,8 +155,7 @@ workflow_state:
     final_closeout:
       readiness: not-ready
       reasons:
-        - verify-pending
-        - pr-handoff-pending
+        - external-completion-event-pending
       evidence:
         - docs/changes/2026-08-18-explain-change-skill-simplification/reviews/plan-review-r2.md
         - docs/changes/2026-08-18-explain-change-skill-simplification/evidence/plan-initialization-r2.md
@@ -171,9 +170,9 @@ workflow:
       bound_at: "2026-08-18T14:00:00-07:00"
       completion:
         rule: verify records one final result for the current handoff revision
-    status: active
+    status: completed
     current_stage: verify
-    stop_reason: null
+    stop_reason: target-reached
     evidence:
       - docs/proposals/2026-08-18-explain-change-skill-simplification.md
       - docs/changes/2026-08-18-explain-change-skill-simplification-review-recording/reviews/proposal-review-r3.md
@@ -286,7 +285,7 @@ validation:
   - command: python scripts/test-workflow-code-state.py
     result: pass_18_tests
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-18-explain-change-skill-simplification
-    result: pass_17_reviews_4_findings_closed
+    result: pass_19_reviews_4_findings_closed
   - command: python scripts/validate-change-metadata.py docs/changes/2026-08-18-explain-change-skill-simplification/change.yaml
     result: pass_before_verify_result_recording
   - command: git diff --check origin/main...HEAD
@@ -294,7 +293,7 @@ validation:
   - command: git merge-tree --write-tree origin/main HEAD
     result: pass_no_conflicts
   - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
-    result: fail_pr_lifecycle_scope_2_blockers
+    result: pass_26_direct_checks
 
 changed_files:
   - docs/proposals/2026-08-18-explain-change-skill-simplification.md
