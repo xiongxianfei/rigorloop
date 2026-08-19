@@ -11,6 +11,7 @@ This ledger records formal lifecycle reviews for the CI-maintenance skill-simpli
 | `spec-review-r2` | `spec-review` | `r2` | `specs/ci-maintenance-skill-simplification.md` at `sha256:b7ee60ec3dcdfa54d54f1945d43cb1d6f51297554e81a7375a8d6b764a020ec7` | `reviews/spec-review-r2.md` | `approved` | 0 | `recorded` |
 | `plan-review-r1` | `plan-review` | `r1` | `docs/plans/2026-08-19-ci-maintenance-skill-simplification.md` at commit `54bc0ce2` | `reviews/plan-review-r1.md` | `approved` | 0 | `recorded` |
 | `test-spec-review-r1` | `test-spec-review` | `r1` | `specs/ci-maintenance-skill-simplification.test.md` at commit `86bd8375` | `reviews/test-spec-review-r1.md` | `approved` | 0 | `recorded` |
+| `proposal-review-r4` | `proposal-review` | `r4` | `docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md` at `sha256:a7f4b73f458d3bdca53c2f81bb0416edae9fad0dec75bfd8b7054fddbb603d40` | `reviews/proposal-review-r4.md` | `approved` | 0 | `recorded` |
 | `code-review-m1-r2` | `code-review` | `r2` | corrected M1 at `d3fb4d49` | `reviews/code-review-m1-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m2-r1` | `code-review` | `r1` | M2 at `0fd26234` | `reviews/code-review-m2-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m3-r1` | `code-review` | `r1` | M3 at `aaee77b5` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | 0 | `recorded` |
