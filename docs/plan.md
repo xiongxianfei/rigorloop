@@ -27,6 +27,7 @@ Current blockers are not recorded in this index.
 
 | Plan | Owning change record |
 | --- | --- |
+| [CI-Maintenance Skill Simplification](plans/2026-08-19-ci-maintenance-skill-simplification.md) | [change.yaml](changes/2026-08-19-ci-maintenance-skill-simplification/change.yaml) |
 | [Explain-Change Skill Simplification](plans/2026-08-18-explain-change-skill-simplification.md) | [change.yaml](changes/2026-08-18-explain-change-skill-simplification/change.yaml) |
 | [Vision Skill Progressive Disclosure](plans/2026-08-17-vision-skill-progressive-disclosure.md) | [change.yaml](changes/2026-08-17-vision-skill-progressive-disclosure/change.yaml) |
 | [Learn Skill Simplification](plans/2026-08-17-learn-skill-simplification.md) | [change.yaml](changes/2026-08-16-learn-skill-simplification/change.yaml) |

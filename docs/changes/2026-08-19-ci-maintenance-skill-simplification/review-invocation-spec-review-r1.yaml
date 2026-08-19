@@ -1,0 +1,39 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/ci-maintenance-skill-simplification.md
+base_revision: sha256:63282d54f25fa10dcb3b56eaad0071b0ba8779ff9681e947187f4e2e1b2e57e8
+head_revision: sha256:63282d54f25fa10dcb3b56eaad0071b0ba8779ff9681e947187f4e2e1b2e57e8
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L0
+author_context_id: root-spec-authoring-r1
+reviewer_context_id: root-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - conditional-file-commit-contract
+  - compatibility-sensitive-validation
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md
+  - specs/ci-maintenance-skill-simplification.md
+  - specs/ci-maintenance-skill.md
+  - specs/skill-contract.md
+  - specs/rigorloop-workflow.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - package and conditional-resource ownership
+  - operation and assembly closure
+  - policy and privileged-authority ownership
+  - conditional single-file commits
+  - dependency-aware batches
+  - compatibility and measurement
+  - boundary completeness
+  - deterministic acceptance
