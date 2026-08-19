@@ -9,7 +9,7 @@ argument-hint: [operation, exact target path, concern, and command evidence]
 
 # CI maintenance
 
-Maintain CI infrastructure from project-owned commands and risk evidence. Review is read-only. It does not run validation, does not design tests, does not specify validation commands, and does not wait for existing CI checks; validation execution stays under `verify`. It does not mutate external platform state or establish verification, branch, PR, release, or deployment readiness.
+Maintain CI infrastructure from project-owned commands and risk evidence. It does not run validation, does not design tests, does not specify validation commands, and does not wait for existing CI checks; validation execution stays under `verify`.
 
 ## Workflow role
 
@@ -22,44 +22,34 @@ Maintain CI infrastructure from project-owned commands and risk evidence. Review
 
 ## Classification
 
-Resolve each axis independently before loading resources or writing.
+Resolve independently:
 
-- Operation: exactly `create`, `revise`, or `review`. Create requires an absent exact target; revise requires an existing target with a known identity; review never writes and may report `missing-target`.
-- Concern: any applicable values from `coverage`, `performance`, `caching`, `permissions`, `triggers`, and `ordinary-security-hardening`.
-- Target kind: exactly `github-workflow`, `project-validation-automation`, `related-platform-configuration`, `external-platform-state`, or `invalid-or-ambiguous-target`.
-- Provider: exactly `github-actions`, `project-native-other-provider`, or `invalid-or-ambiguous-provider`.
-- Privilege: exactly `ordinary-workflow-context`, `privileged-approved-design`, `privileged-design-required`, or `invalid-or-ambiguous-privilege-context`.
-- Structure: exactly `none`, `compose-from-skeleton`, or `preserve-existing-structure`.
+- Operation: `create`, `revise`, or `review`. Create needs an absent target; revise needs an existing known identity; review never writes.
+- Concern: `coverage`, `performance`, `caching`, `permissions`, `triggers`, `ordinary-security-hardening`.
+- Target: `github-workflow`, `project-validation-automation`, `related-platform-configuration`, `external-platform-state`, `invalid-or-ambiguous-target`.
+- Provider: `github-actions`, `project-native-other-provider`, `invalid-or-ambiguous-provider`.
+- Privilege: `ordinary-workflow-context`, `privileged-approved-design`, `privileged-design-required`, `invalid-or-ambiguous-privilege-context`.
+- Structure: `none`, `compose-from-skeleton`, `preserve-existing-structure`.
 
 Unknown values fail before consistency checks. Ambiguous, escaped, conflicting, stale, or unsupported identities stop without changing operation or provider.
 
-Only a repository-file GitHub workflow may use GitHub authoring procedure. Other repository-file targets require one exact project-native contract covering path, format/provider, authoritative content and command source, validation, and write authority. `external-platform-state` is review-or-route only.
+GitHub procedure applies only to repository-file GitHub workflows. Other files require an exact project-native contract for path, format, content/commands, validation, and authority. External state is review-or-route only.
 
 ## Command, risk, and security boundaries
 
 Do not invent validation commands. Allowed command sources are approved specs or test specs, plan validation sections, existing package scripts or CI conventions, and explicit user-provided commands. When none is reliable, report a blocker instead of guessing.
 
-The project identifies material risks and owns commands. The risk map alone selects checks and required execution boundaries. GitHub procedure only serializes a settled mapping. Coverage-sensitive work includes changed-path coverage, exclusions, boundary placement, unmapped-risk audit, and any job or matrix change that changes checked risks.
+The project owns risks and commands. The risk map alone selects checks and boundaries; GitHub procedure serializes them. Coverage-sensitive work includes exclusions, boundary placement, unmapped risks, and changes to checked risks.
 
-Default permissions are read-only. Add broader job-specific permissions only when a known workflow need requires them and record the rationale. Use dependency caches only when a stable invalidation key exists. Flag overbroad permissions, path filters that skip required checks, slow comprehensive checks on every PR, `pull_request_target` with untrusted code, missing risk coverage, and unmapped changed surfaces.
+Default permissions are read-only. Add broader job-specific permissions only when a known workflow need requires them. Use dependency caches only when a stable invalidation key exists. Flag overbroad permissions, path filters that skip required checks, slow comprehensive checks on every PR, `pull_request_target` with untrusted code, missing risk coverage, and unmapped changed surfaces.
 
-Privileged review remains read-only. Privileged create or revise requires one exact current approved design and approving review bound to the repository and target. The design supplies events, scope, permissions, credentials or OIDC, runners, environment protection, fork/secret behavior, action policy, and validation. Omitted choices retain compatible universal safe defaults or stop; conversation never supplies them.
+Privileged review is read-only. Mutation needs an exact approved design/review bound to repository and target, supplying events, scope, permissions, credentials/OIDC, runners, environments, forks/secrets, actions, and validation. Omitted choices default safely or stop; conversation never supplies them.
 
 ## Assemblies
 
-Select one family, then add only triggered structure or coverage resources:
+Select one: `CIM0` narrow review; `CIM1` ordinary GitHub authoring; `CIM2` project-native file; `CIM3` external-state route; `CIM4` invalid stop; `CIM5` coverage review; `CIM6` coverage authoring; `CIM7` privileged review; `CIM8` approved privileged authoring. Add only triggered references and external evidence.
 
-- `CIM0`: narrow GitHub review; root only.
-- `CIM1`: ordinary GitHub create/revise; add GitHub authoring.
-- `CIM2`: project-native file work; root plus exact external project contract.
-- `CIM3`: external-state review/route; root only.
-- `CIM4`: invalid or ambiguous; root then stop.
-- `CIM5`: coverage-sensitive GitHub review; add risk map.
-- `CIM6`: coverage-sensitive GitHub create/revise; add GitHub authoring and risk map.
-- `CIM7`: privileged review; root plus exact design evidence.
-- `CIM8`: privileged approved create/revise; add GitHub authoring and exact design evidence, plus risk map when coverage-sensitive.
-
-Creation adds the skeleton. Revision adds it only with explicit structural-replacement authority; ordinary revision preserves validated structure. Late coverage, structure, or privilege evidence loads the newly required resource before dependent judgment or mutation.
+Creation adds the skeleton; revision adds it only for authorized replacement. Late predicates load additions before dependent action.
 
 ## Resource map
 
@@ -71,11 +61,11 @@ Confirm every triggered resource is present, readable, inside the package, and f
 
 ## Mutation safety
 
-Prepare and validate the complete target file before mutation. Create uses atomic no-clobber: commit succeeds only if the target is still absent. Revise uses identity-guarded replacement: commit succeeds only if current identity still equals the validated prior identity. A plain overwrite-capable rename is insufficient. Read-back confirms intended bytes after a successful conditional commit but is not concurrency protection. Unsupported or uncertain primitives return `blocked`.
+Prepare and validate the complete file. Create uses commit-time atomic no-clobber. Revise replaces only while identity matches. Plain overwrite is insufficient; read-back confirms but does not protect concurrency. Unsupported or uncertain primitives return `blocked`.
 
 Idempotent success without writing requires current identity equal to intended identity and unchanged decision-bearing evidence. Otherwise reclassify from current state.
 
-For multiple targets, classify exactly `independent`, `ordered-dependent`, or `atomic-group-required`. Build an invocation-local manifest with identities, dependencies, validation, and intermediate validity; prepare and validate everything before writing. Ordered work commits dependency providers before wrappers. Unsafe intermediate state or a cycle returns `blocked-before-write`. Aggregate result is exactly `complete`, `partial-blocked`, or `blocked-before-write`; partial results name completed and pending targets, blockers, and validity. Retry rebuilds the entire graph and adopts no stale manifest. Persistent coordination requires architecture.
+Classify batches as `independent`, `ordered-dependent`, or `atomic-group-required`. Prepare an invocation-local identity/dependency manifest before writes. Providers precede wrappers. Unsafe states or cycles return `blocked-before-write`. Results are `complete`, `partial-blocked`, or `blocked-before-write`; partials name completed and pending targets, blockers, and validity. Retry rebuilds the entire graph and adopts no stale manifest. Persistence requires architecture.
 
 ## Results and handoff
 
