@@ -148,7 +148,7 @@ CIM-R23. The `Resource map` MUST name every packaged `ci-maintenance` resource a
 
 CIM-R24. The workflow skeleton asset MUST be a copy-and-fill GitHub Actions workflow structure, not hidden policy prose.
 
-CIM-R25. The workflow skeleton asset MUST include placeholders for PR changed-risk checks, boundary checks, least-privilege permissions, concurrency, job timeouts, action reference policy, deterministic install commands, validation commands, and dependency cache keys.
+CIM-R25. The workflow skeleton requirements are superseded by R21-R23 of `specs/ci-maintenance-skill-simplification.md`; it is a minimal structural starting point and does not embed PR, boundary, cache, or privileged policy.
 
 CIM-R26. The workflow skeleton asset MUST instruct through placeholders or surrounding skill text that action references use a full-length SHA or a project-policy-approved reference.
 
@@ -168,7 +168,7 @@ CIM-R33. The risk-to-check reference MUST NOT imply that the listed rows mitigat
 
 ### GitHub Actions authoring behavior
 
-CIM-R34. `ci-maintenance` MUST use this design principle when authoring GitHub Actions workflows: run fast changed-risk checks on every PR, and run heavy comprehensive checks at scheduled, release, manual, or other boundary points.
+CIM-R34. Semantic PR-versus-boundary placement is governed by R15-R20 of `specs/ci-maintenance-skill-simplification.md`; the risk map owns the decision and GitHub authoring serializes it.
 
 CIM-R35. PR workflows SHOULD use path filters only when the risk-to-check map proves the filters do not skip required checks.
 
@@ -203,7 +203,7 @@ CIM-R43. `ci-maintenance` MUST include job timeouts for authored GitHub Actions 
 
 CIM-R44. Release triggers MAY be added only when the workflow owns release validation or packaging.
 
-CIM-R45. Deployment, secret-bearing release publishing, self-hosted runner policy, and organization-level Actions policy are outside this first slice.
+CIM-R45. Privileged policy design remains out of scope; R11-R14 and R25-R28 of `specs/ci-maintenance-skill-simplification.md` permit only exact approved-design realization.
 
 ### Command ownership
 
@@ -223,7 +223,7 @@ CIM-R51. Workflow review output MUST flag path filters that skip required checks
 
 CIM-R52. Workflow review output MUST flag slow comprehensive checks on every PR when the proposal, spec, plan, or risk map does not justify them.
 
-CIM-R53. Workflow review output MUST include risk coverage against changed surfaces.
+CIM-R53. Risk-coverage output is mandatory for coverage-sensitive review under R18-R20 and R25 of `specs/ci-maintenance-skill-simplification.md`; narrow review does not invent a coverage claim.
 
 CIM-R54. Workflow review output MUST state open blockers when required command sources, project context, or risk-surface mapping is insufficient.
 
@@ -237,7 +237,7 @@ CIM-R57. Skill validation MUST prove `assets/github-workflow-skeleton.yml` is pr
 
 CIM-R58. Skill validation MUST prove `references/risk-to-check-map.md` is present and mapped with `READ`.
 
-CIM-R59. Skill validation MUST prove the workflow skeleton includes least-privilege permissions, concurrency, PR trigger structure, boundary-check structure, timeout placeholders, action-reference placeholders, command placeholders, and cache placeholders or cache omission guidance.
+CIM-R59. Skill validation MUST prove the minimal skeleton contract in R21-R23 of `specs/ci-maintenance-skill-simplification.md`, including safe structure and absence of built-in PR, boundary, cache, and privileged examples.
 
 CIM-R60. Skill validation MUST prove the risk map separates portable core guidance from project-specific extensions.
 

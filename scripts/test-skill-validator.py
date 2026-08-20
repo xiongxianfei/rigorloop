@@ -12,6 +12,7 @@ import sys
 import unittest
 from unittest import mock
 import math
+import os
 import tempfile
 import textwrap
 from collections.abc import Callable
@@ -1537,7 +1538,7 @@ Use the inputs somehow and produce a useful result.
             text = risk_map_path.read_text(encoding="utf-8")
             risk_map_path.write_text(
                 text.replace(
-                    "Unmapped changed surfaces are not no-risk surfaces. If a changed path does not match this map, flag it for reviewer judgment, route it to a conservative boundary check, or both.\n\n",
+                    "Unmapped changed surfaces are not no-risk surfaces. Stop for reviewer judgment, route to a conservative boundary check, or both. Missing, stale, incomplete, or conflicting command and placement evidence blocks coverage-sensitive work.\n\n",
                     "",
                 ),
                 encoding="utf-8",
@@ -11364,6 +11365,115 @@ class ProjectMapSkillSimplificationTests(unittest.TestCase):
             "must not reconstruct",
         ):
             self.assertIn(phrase, self.skill.lower())
+
+
+class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "docs" / "changes" / "2026-08-19-ci-maintenance-skill-simplification"
+        self.skill_dir = ROOT / "skills" / "ci-maintenance"
+
+    def test_preservation_inventories_cover_closed_ownership(self) -> None:
+        rules = (self.root / "ci-maintenance-rule-disposition.yaml").read_text(encoding="utf-8")
+        literals = (self.root / "ci-maintenance-literal-compatibility.yaml").read_text(encoding="utf-8")
+        for value in ("retained-inline", "relocated", "amended", "CIM-R25", "CIM-R59", "unlisted: retained"):
+            self.assertIn(value, rules)
+        for value in ("not-performed-by-ci-maintenance", "closed_vocabularies", "atomic-group-required", "unknown"):
+            self.assertIn(value, literals)
+        requirement_rows = re.findall(r"^  - id: R([0-9]+)$", rules, flags=re.MULTILINE)
+        legacy_rows = re.findall(r"^  - id: CIM-R([0-9]+)$", rules, flags=re.MULTILINE)
+        self.assertEqual(requirement_rows, [str(number) for number in range(1, 55)])
+        self.assertEqual(legacy_rows, [str(number) for number in range(1, 66)])
+        self.assertEqual(len(requirement_rows), len(set(requirement_rows)))
+        self.assertEqual(len(legacy_rows), len(set(legacy_rows)))
+        for value in ("CIM0", "CIM8", "scripts/skill_validation.py", "hosted-ci-observation", "project-command"):
+            self.assertIn(value, literals)
+
+    def test_scenario_inventory_covers_t1_through_t15(self) -> None:
+        scenarios = (self.root / "fixtures" / "scenarios.yaml").read_text(encoding="utf-8")
+        for number in range(1, 16):
+            self.assertIn(f"id: T{number}", scenarios)
+
+    def test_baseline_binds_current_pre_change_package(self) -> None:
+        baseline = (self.root / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
+        self.assertIn("ea5e0d67aec006edda66e196647d058237a10d35267b59d8e38462ee74cfe456", baseline)
+        self.assertIn("2014", baseline)
+        self.assertIn("14395", baseline)
+
+    def test_unknown_value_fixture_is_explicit(self) -> None:
+        literals = (self.root / "ci-maintenance-literal-compatibility.yaml").read_text(encoding="utf-8")
+        self.assertIn("unknown_value_policy", literals)
+        self.assertIn("invalid-or-ambiguous-provider", literals)
+
+    def test_package_split_and_closed_axes_are_present(self) -> None:
+        skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        reference = (self.skill_dir / "references" / "github-workflow-authoring.md").read_text(encoding="utf-8")
+        for value in ("create", "revise", "review", "invalid-or-ambiguous-target", "CIM8", "not-performed-by-ci-maintenance"):
+            self.assertIn(value, skill)
+        self.assertIn("serializes", reference)
+        self.assertIn("MUST NOT independently choose", reference)
+
+    def test_minimal_skeleton_omits_privileged_and_boundary_examples(self) -> None:
+        skeleton = (self.skill_dir / "assets" / "github-workflow-skeleton.yml").read_text(encoding="utf-8")
+        for forbidden in ("pull_request:", "push:", "schedule:", "workflow_dispatch:", "pull_request_target", "secrets:", "id-token:"):
+            self.assertNotIn(forbidden, skeleton)
+        self.assertIn("permissions:\n  contents: read", skeleton)
+
+    def test_risk_map_owns_semantic_placement(self) -> None:
+        risk_map = (self.skill_dir / "references" / "risk-to-check-map.md").read_text(encoding="utf-8")
+        self.assertIn("sole semantic owner", risk_map)
+        self.assertIn("required execution boundary", risk_map)
+
+    def test_create_no_clobber_uses_commit_time_absence(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            target = Path(temporary) / "ci.yml"
+            target.write_text("concurrent", encoding="utf-8")
+            with self.assertRaises(FileExistsError):
+                descriptor = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
+                os.close(descriptor)
+            self.assertEqual(target.read_text(encoding="utf-8"), "concurrent")
+
+    def test_revise_identity_guard_rejects_concurrent_change(self) -> None:
+        import hashlib
+        with tempfile.TemporaryDirectory() as temporary:
+            target = Path(temporary) / "ci.yml"
+            target.write_text("A", encoding="utf-8")
+            prior = hashlib.sha256(target.read_bytes()).hexdigest()
+            target.write_text("B", encoding="utf-8")
+            current = hashlib.sha256(target.read_bytes()).hexdigest()
+            self.assertNotEqual(prior, current)
+            self.assertEqual(target.read_text(encoding="utf-8"), "B")
+
+    def test_dependency_batch_orders_provider_before_wrapper(self) -> None:
+        dependencies = {"validation-script": set(), "github-workflow": {"validation-script"}}
+        order = []
+        pending = set(dependencies)
+        while pending:
+            ready = sorted(node for node in pending if dependencies[node] <= set(order))
+            self.assertTrue(ready, "atomic-group-required")
+            order.extend(ready)
+            pending.difference_update(ready)
+        self.assertEqual(order, ["validation-script", "github-workflow"])
+
+    def test_atomic_group_cycle_blocks_before_write(self) -> None:
+        dependencies = {"a": {"b"}, "b": {"a"}}
+        ready = [node for node, needs in dependencies.items() if not needs]
+        self.assertEqual(ready, [])
+        skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("blocked-before-write", skill)
+
+    def test_partial_batch_and_retry_are_exact(self) -> None:
+        skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        for phrase in ("partial-blocked", "completed and pending targets", "Retry rebuilds the entire graph", "adopts no stale manifest"):
+            self.assertIn(phrase, skill)
+
+    def test_all_loaded_profiles_strictly_decrease(self) -> None:
+        measurements = (self.root / "evidence" / "simplification-measurements.md").read_text(encoding="utf-8")
+        rows = re.findall(r"^\| (CIM[^|]+|Complete package) \| (\d+) \| (\d+) \| (\d+) \| (\d+) \|$", measurements, flags=re.MULTILINE)
+        self.assertEqual(len(rows), 15)
+        for name, before_words, after_words, before_bytes, after_bytes in rows:
+            with self.subTest(assembly=name):
+                self.assertLess(int(after_words), int(before_words))
+                self.assertLess(int(after_bytes), int(before_bytes))
 
 
 if __name__ == "__main__":
