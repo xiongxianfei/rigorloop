@@ -2,14 +2,23 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
-Review closeout: proposal-review-r3
+Review closeout: proposal-review-r4
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: all recorded findings are resolved in the proposal; same-stage proposal rereview remains required before closeout.
+- Current result: all recorded findings are resolved and proposal-review-r4 approved the revised portable proposal.
+
+### proposal-review-r4
+
+Review ID: proposal-review-r4
+Status: approved
+Reviewed artifact: `docs/proposals/2026-08-20-bugfix-skill-simplification.md` at `sha256:b68256d10f733dd16f52fe5d7d6133afe3b3b1a67bb0ecd4288870faca064f4f`
+Material findings: none
+Open findings: none
+Validation evidence: clean rereview record `reviews/proposal-review-r4.md`; review artifact, metadata, lifecycle, prose, and selected validation recorded after review.
 
 ## Resolution Overview
 
