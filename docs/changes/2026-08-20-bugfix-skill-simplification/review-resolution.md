@@ -7,9 +7,9 @@ Closeout status: open
 Review closeout: code-review-m2-r3
 
 - Reviews covered: `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`
-- Findings resolved: 2
-- Unresolved findings: 1
-- Current result: BUGSIM-CR1 and BUGSIM-CR2 remain resolved; BUGSIM-CR3 is accepted and awaits bounded implementation plus same-stage rereview.
+- Findings resolved: 3
+- Unresolved findings: 0
+- Current result: BUGSIM-CR1 through BUGSIM-CR3 are resolved; M2 is clean and M3 may proceed.
 
 ## Resolution overview
 
@@ -17,7 +17,7 @@ Review closeout: code-review-m2-r3
 | --- | --- | --- | --- |
 | BUGSIM-CR1 | accepted | resolved | Restored omitted causes, actions, phase, side-effect stop, and result fields with regression assertions. |
 | BUGSIM-CR2 | accepted | resolved | Preserve the one-file package, make size metrics diagnostic, and require complete truthful inline semantics. |
-| BUGSIM-CR3 | accepted | pending | Close the absent-defect, conflict-precedence, incomplete-alternative, and executable cross-product proof gaps. |
+| BUGSIM-CR3 | accepted | resolved | Closed absent-defect, conflict-precedence, incomplete-alternative, and executable cross-product proof gaps. |
 
 ### code-review-m2-r1
 
@@ -61,7 +61,7 @@ Validation evidence: approved proposal-review-r5, spec-review-r2, plan-review-r2
 
 Finding ID: BUGSIM-CR3
 Disposition: accepted
-Status: pending
+Status: resolved
 Owner: implementation
 Owning stage: implement
 Decision owner: none; R2, R7, R12, R16, R17, T2, T5, T8, and T11 are explicit
@@ -71,4 +71,4 @@ Rationale: Passing literal checks cannot prove the approved exhaustive, pairwise
 Required outcome: One explicit result exists for absent defect, contract-basis conflict is not shadowed by generic conflict handling, incomplete alternatives fail classification before table evaluation, and every admitted proof state selects exactly one action.
 Safe resolution path: Correct M2, rerun its command ledger, and record code-review-m2-r4.
 Validation target: corrected M2 canonical skill and executable focused action-table tests.
-Validation evidence: pending corrected implementation and code-review-m2-r4.
+Validation evidence: corrected commit `f6ac0ec1`; `evidence/m2-contract-implementation.md`; `reviews/code-review-m2-r4.md`.
