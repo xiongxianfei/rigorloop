@@ -1,16 +1,18 @@
 ---
 name: bugfix
-description: Proof-first fixes.
+description: Diagnose or fix unexpected behavior, failing evidence, incidents, regressions, and bug reports with bounded authority and identity-stable proof.
 argument-hint: [bug description, failing behavior, error message, issue number, or regression]
 ---
 
 # Fix
 
-Use proof before correction. Bind one repository, one concrete defect, and one expected-versus-actual outcome. Split independent defects unless they share one cause, behavior basis, correction scope, and proof bundle.
+Use this skill for unexpected behavior, failing evidence, incident, regression, or bug report. Use proof before correction. Bind one repository, one concrete defect, and one expected-versus-actual outcome. Split independent defects unless they share one cause, behavior basis, correction scope, and proof bundle.
+
+Read the request, governing behavior, current code and tests, available bug evidence, exact current authority, governed signals, and project-owned commands. Use the smallest sufficient evidence set; expand to current plans, architecture, history, or neighboring code only when the defect path requires it.
 
 ## Operation and authority
 
-Operation is exactly `diagnose-only` or `fix`. Explicit diagnosis, explanation, reproduction, or root-cause wording selects `diagnose-only`, even with `$bugfix`. Explicit repair wording, or bare `$bugfix` naming one concrete defect and no narrower outcome, selects `fix`. An invocation without one concrete defect returns `blocked` without mutation. Conflicting intent permits diagnosis but blocks mutation. A later diagnosis-to-fix expansion MUST rerun preflight.
+Operation is exactly `diagnose-only` or `fix`. Explicit diagnosis, explanation, reproduction, or root-cause wording selects `diagnose-only`, even when the bugfix skill is named. Explicit repair wording, or a bare bugfix invocation naming one concrete defect and no narrower outcome, selects `fix`. An invocation without one concrete defect returns `blocked` without mutation. Conflicting intent permits diagnosis but blocks mutation. A later diagnosis-to-fix expansion MUST rerun preflight.
 
 Command authority is exactly `not-required`, `current-bounded`, `absent-or-stale`, or `invalid-or-ambiguous`. Write authority is exactly `none`, `portable-request-bound`, `governed-scope-bound`, `absent-or-stale`, or `invalid-or-ambiguous`. Bind every writable fix to repository identity, normalized defect, authority source, permitted command owner or set, path roots, write categories, governing contract, and current evidence identities.
 
@@ -27,6 +29,8 @@ Classify these axes before dependent consistency checks; unknown values fail clo
 - test feasibility: `feasible`, `infeasible-with-rationale`, `unresolved`;
 - regression proof: `failing-automated-test`, `deterministic-alternative`, `missing`, `conflicting`;
 - root-cause support: `supported`, `uncertain`, `conflicting`.
+
+Record the smallest reliable reproduction with its command or procedure, input, environment, relevant data state, and observed output or error. When reproduction is not established, report the evidence and uncertainty without claiming a fix.
 
 `resolvable-restoration` binds one current authoritative source, owner, precedence, affected behavior, expected result, and conflict check. It restores conformance without adding, removing, broadening, narrowing, or reinterpreting observable behavior. Implementation, a test, a report, or plausible expectation alone is insufficient.
 
@@ -67,6 +71,8 @@ Current action is exactly `stop-blocked`, `route-owner`, `continue-diagnosis`, `
 10. An eligible fix without correction: select exactly one proof-table action.
 
 Cause `unknown` never authorizes mutation. A `test-defect` is writable only from `settled` or `resolvable-restoration` basis; never weaken expectations speculatively. Environment and dependency corrections require exact settled resilience behavior and scope.
+
+Assess blast radius and inspect nearby code for the same pattern. Fix the supported root cause with the smallest scoped change that fully addresses it. Do not refactor unrelated code.
 
 On return, terminal result is exactly `diagnosis-complete`, `diagnosis-incomplete`, `fix-applied`, `routed-to-owner`, or `blocked`. Map `complete-diagnosis`, unresolved diagnosis, `complete-fix`, `route-owner`, and unsafe/incomplete work respectively. Intermediate actions are not terminal results.
 
