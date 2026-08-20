@@ -41,8 +41,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: test-spec-review
-  next_stage: test-spec-review
+  current_stage: implement
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/proposals/2026-08-20-bugfix-skill-simplification.md
@@ -78,6 +78,7 @@ workflow_state:
     - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/test-spec-revision-r2.md
     - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-test-spec-review-r2.yaml
     - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review-r2.md
     - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-test-spec-review-r1.yaml
     - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/test-spec-review-r1.md
     - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-verify.md
@@ -138,9 +139,9 @@ workflow:
       bound_at: "2026-08-20T13:00:00-07:00"
       completion:
         rule: formal verify result is recorded
-    status: active
+    status: completed
     current_stage: test-spec-review
-    stop_reason: null
+    stop_reason: target-reached
     evidence:
       - docs/proposals/2026-08-20-bugfix-skill-simplification.md
       - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
@@ -175,6 +176,7 @@ workflow:
       - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/test-spec-revision-r2.md
       - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-test-spec-review-r2.yaml
       - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/test-spec-review-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review-r2.md
       - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-test-spec-review-r1.yaml
       - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/test-spec-review-r1.md
       - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-verify.md
@@ -248,6 +250,7 @@ changed_files:
   - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/test-spec-revision-r2.md
   - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-test-spec-review-r2.yaml
   - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/test-spec-review-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review-r2.md
   - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-test-spec-review-r1.yaml
   - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/test-spec-review-r1.md
   - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-verify.md
