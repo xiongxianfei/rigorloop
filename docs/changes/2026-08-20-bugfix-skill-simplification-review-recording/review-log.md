@@ -31,3 +31,16 @@ Resolution: review-resolution.md#proposal-review-r2
 Material findings: BUGSIM-PR4, BUGSIM-PR5, BUGSIM-PR6
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: proposal-review-r3
+Stage: proposal-review
+Round: 3
+Reviewed artifact: `docs/proposals/2026-08-20-bugfix-skill-simplification.md` at `sha256:9c2c7746839eacc79585f26506b76079e99dc27fe94dcee5f2d67da6bb59ee1d`
+Status: changes-requested
+Detailed record: reviews/proposal-review-r3.md
+Resolution: review-resolution.md#proposal-review-r3
+Material findings: BUGSIM-PR7
+Open findings: BUGSIM-PR7
+Recording status: recorded

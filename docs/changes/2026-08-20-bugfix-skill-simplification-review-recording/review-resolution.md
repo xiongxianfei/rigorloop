@@ -4,12 +4,12 @@
 
 Closeout status: open
 
-Review closeout: proposal-review-r2
+Review closeout: proposal-review-r3
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Current result: round-1 and round-2 findings are resolved in the proposal; same-stage proposal rereview remains required before closeout.
+- Unresolved findings: 1
+- Current result: round-1 and round-2 findings are resolved; round 3 found one deterministic-table defect requiring focused revision.
 
 ## Resolution Overview
 
@@ -21,6 +21,7 @@ Review closeout: proposal-review-r2
 | BUGSIM-PR4 | accepted | resolved | Operation, command authority, and repository-write authority are independent and bind one exact defect scope. |
 | BUGSIM-PR5 | accepted | resolved | Bounded proof authoring precedes production correction, which requires an identity-bound regression proof. |
 | BUGSIM-PR6 | accepted | resolved | Restoration, cross-axis consistency, owner routing, decomposition, and terminal results are closed. |
+| BUGSIM-PR7 | accepted | open | Remove decision-row shadowing and give every recognized authority and feasibility combination one action. |
 
 ## Finding Details
 
@@ -111,3 +112,19 @@ Required outcome: every completed invocation has one result, every axis combinat
 Follow-up: revise the proposal and run proposal-review-r3.
 Validation target: consistency and routing matrix, terminal results, restoration record, defect decomposition, and acceptance scenarios.
 Validation evidence: revised proposal `Recommended Direction`, restoration definition, consistency and routing table, terminal vocabulary, and defect decomposition; `AC-BUGSIM-033` through `AC-BUGSIM-039`; same-stage rereview pending.
+
+### proposal-review-r3
+
+#### BUGSIM-PR7
+
+Finding ID: BUGSIM-PR7
+Disposition: accepted
+Status: open
+Owner: proposal author
+Owning stage: proposal
+Chosen action: separate phase action from terminal completion, add absent/stale authority and unresolved-feasibility results, and prove row reachability and non-overlap.
+Rationale: the current first-match ordering shadows `fix-applied` and leaves recognized state combinations without one action.
+Required outcome: every recognized authority, feasibility, evidence, and completion state maps to one action and one applicable terminal result.
+Follow-up: revise the proposal and run proposal-review-r4.
+Validation target: revised non-overlapping tables and deterministic scenario inventory.
+Validation evidence: pending proposal revision and rereview.
