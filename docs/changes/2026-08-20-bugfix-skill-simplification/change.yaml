@@ -114,11 +114,11 @@ workflow_state:
         state: closed
       M3:
         kind: implementation
-        state: in-progress
+        state: implementing
     remaining_implementation_milestones:
       - M3
     latest_review:
-      status: clean-with-notes
+      status: approved
       stage: code-review
       round: r4
       artifact_id: code-review-m2-r4
