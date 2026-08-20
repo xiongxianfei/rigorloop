@@ -41,8 +41,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: review-resolution
+  current_stage: review-resolution
+  next_stage: code-review
   blocker: null
   evidence:
     - docs/proposals/2026-08-20-bugfix-skill-simplification.md
@@ -101,6 +101,8 @@ workflow_state:
     - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/m3-package-proof.md
     - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m3-r1.yaml
     - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m3-r1.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r1.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -122,14 +124,14 @@ workflow_state:
         state: closed
     remaining_implementation_milestones: []
     latest_review:
-      status: approved
+      status: changes-requested
       stage: code-review
       round: r1
-      artifact_id: code-review-m3-r1
-      occurrence: milestone
-      milestone_id: M3
+      artifact_id: code-review-final-r1
+      occurrence: final
+      milestone_id: none
       evidence:
-        - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m3-r1.md
+        - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -148,7 +150,7 @@ workflow:
       completion:
         rule: formal verify result is recorded
     status: active
-    current_stage: code-review
+    current_stage: review-resolution
     stop_reason: null
     evidence:
       - docs/proposals/2026-08-20-bugfix-skill-simplification.md
@@ -207,6 +209,8 @@ workflow:
       - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/m3-package-proof.md
       - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m3-r1.yaml
       - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m3-r1.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r1.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r1.md
 
 artifacts:
   proposal: docs/proposals/2026-08-20-bugfix-skill-simplification.md
@@ -224,7 +228,7 @@ tests:
 
 review:
   status: material-findings
-  unresolved_items: 0
+  unresolved_items: 1
 
 validation: []
 

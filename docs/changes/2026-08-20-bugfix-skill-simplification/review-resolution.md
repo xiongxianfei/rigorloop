@@ -4,12 +4,12 @@
 
 Closeout status: open
 
-Review closeout: code-review-m2-r3
+Review closeout: code-review-final-r1
 
-- Reviews covered: `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`
+- Reviews covered: `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-final-r1`
 - Findings resolved: 3
-- Unresolved findings: 0
-- Current result: BUGSIM-CR1 through BUGSIM-CR3 are resolved; M2 is clean and M3 may proceed.
+- Unresolved findings: 1
+- Current result: BUGSIM-CR1 through BUGSIM-CR3 remain resolved; BUGSIM-CR4 is accepted for mechanical review-evidence correction.
 
 ## Resolution overview
 
@@ -18,6 +18,7 @@ Review closeout: code-review-m2-r3
 | BUGSIM-CR1 | accepted | resolved | Restored omitted causes, actions, phase, side-effect stop, and result fields with regression assertions. |
 | BUGSIM-CR2 | accepted | resolved | Preserve the one-file package, make size metrics diagnostic, and require complete truthful inline semantics. |
 | BUGSIM-CR3 | accepted | resolved | Closed absent-defect, conflict-precedence, incomplete-alternative, and executable cross-product proof gaps. |
+| BUGSIM-CR4 | accepted | pending | Normalize parser-owned review IDs and material-finding fields. |
 
 ### code-review-m2-r1
 
@@ -72,3 +73,21 @@ Required outcome: One explicit result exists for absent defect, contract-basis c
 Safe resolution path: Correct M2, rerun its command ledger, and record code-review-m2-r4.
 Validation target: corrected M2 canonical skill and executable focused action-table tests.
 Validation evidence: corrected commit `f6ac0ec1`; `evidence/m2-contract-implementation.md`; `reviews/code-review-m2-r4.md`.
+
+### code-review-final-r1
+
+#### BUGSIM-CR4
+
+Finding ID: BUGSIM-CR4
+Disposition: accepted
+Status: pending
+Owner: review-evidence correction
+Owning stage: review-resolution
+Decision owner: none; formal review recording schema is explicit
+Decision needed: none
+Chosen action: Remove two duplicate parser-visible review IDs and add the required literal finding field to three historical material review records.
+Rationale: The evidence already exists semantically, but its parser-owned shape prevents structural validation and final closeout.
+Required outcome: Review-artifact structure validation passes with all findings, log entries, resolution entries, and root metadata mutually discoverable.
+Safe resolution path: Apply only the mechanical field-shape corrections, validate structure, and record final code-review-r2.
+Validation target: the owning change root under `validate-review-artifacts.py --mode structure`.
+Validation evidence: pending corrected evidence and final code-review-r2.
