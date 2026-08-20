@@ -4,12 +4,12 @@
 
 Closeout status: open
 
-Review closeout: proposal-review-r1
+Review closeout: proposal-review-r2
 
-- Reviews covered: `proposal-review-r1`
-- Findings resolved: 3
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`
+- Findings resolved: 6
 - Unresolved findings: 0
-- Current result: the accepted corrections are present; same-stage proposal rereview remains required before closeout.
+- Current result: round-1 and round-2 findings are resolved in the proposal; same-stage proposal rereview remains required before closeout.
 
 ## Resolution Overview
 
@@ -18,6 +18,9 @@ Review closeout: proposal-review-r1
 | BUGSIM-PR1 | accepted | resolved | Explicit requested outcome now controls one exhaustive operation matrix, and diagnosis-to-fix expansion requires fresh preflight. |
 | BUGSIM-PR2 | accepted | resolved | Test feasibility is separate from proof, and the closed mutation matrix makes infeasibility alone insufficient. |
 | BUGSIM-PR3 | accepted | resolved | Portable and governed write sets are exact, and upstream lifecycle and review surfaces are read-only. |
+| BUGSIM-PR4 | accepted | resolved | Operation, command authority, and repository-write authority are independent and bind one exact defect scope. |
+| BUGSIM-PR5 | accepted | resolved | Bounded proof authoring precedes production correction, which requires an identity-bound regression proof. |
+| BUGSIM-PR6 | accepted | resolved | Restoration, cross-axis consistency, owner routing, decomposition, and terminal results are closed. |
 
 ## Finding Details
 
@@ -64,3 +67,47 @@ Required outcome: bugfix cannot mutate proposal, spec, architecture, plan, revie
 Follow-up: revise the proposal and run proposal-review-r2.
 Validation target: revised write matrix and cross-owner mutation scenarios.
 Validation evidence: revised proposal `Recommended Direction`, exact write-boundary matrix; `Testing and Verification Strategy`, `AC-BUGSIM-020` through `AC-BUGSIM-023`; same-stage rereview pending.
+
+### proposal-review-r2
+
+#### BUGSIM-PR4
+
+Finding ID: BUGSIM-PR4
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: proposal
+Chosen action: separate operation, command authority, and write authority and bind writable fixes to one repository, defect, authority source, path scope, category set, and command scope.
+Rationale: fix intent is not an unbounded command or repository-write grant, and diagnosis commands can have durable side effects despite making no intended source edit.
+Required outcome: every command and write has one exact current authority and scope; missing, stale, conflicting, or unsafe authority stops without mutation.
+Follow-up: revise the proposal and run proposal-review-r3.
+Validation target: authority vocabularies, scope record, command-side-effect behavior, and acceptance scenarios.
+Validation evidence: revised proposal `Recommended Direction`, authority vocabularies and request matrix; command-side-effect and write-boundary rules; `AC-BUGSIM-025` through `AC-BUGSIM-028`; same-stage rereview pending.
+
+#### BUGSIM-PR5
+
+Finding ID: BUGSIM-PR5
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: proposal
+Chosen action: split proof-authoring writes from production-correction writes and bind post-fix validation to the unchanged pre-fix proof identity.
+Rationale: a failing regression test often must be written before the proof exists, so a single no-write gate makes test-first behavior circular.
+Required outcome: otherwise eligible proof authoring may write only bounded proof surfaces; production remains blocked until complete proof exists.
+Follow-up: revise the proposal and run proposal-review-r3.
+Validation target: phase and write matrix, proof record, identity-preserving rerun, and acceptance scenarios.
+Validation evidence: revised proposal `Recommended Direction`, four-phase model, proof-authoring decision table, and proof identity; `AC-BUGSIM-029` through `AC-BUGSIM-032`; same-stage rereview pending.
+
+#### BUGSIM-PR6
+
+Finding ID: BUGSIM-PR6
+Disposition: accepted
+Status: resolved
+Owner: proposal author
+Owning stage: proposal
+Chosen action: add deterministic terminal results, cross-axis consistency and owner routing, exact restoration semantics, and independent-defect decomposition.
+Rationale: the current table contains multiple-result cells and does not prevent supported-but-unknown cause, contract-gap mutation, or unsupported restoration claims.
+Required outcome: every completed invocation has one result, every axis combination is consistent or blocked, and restoration binds one conflict-free authoritative basis without behavior invention.
+Follow-up: revise the proposal and run proposal-review-r3.
+Validation target: consistency and routing matrix, terminal results, restoration record, defect decomposition, and acceptance scenarios.
+Validation evidence: revised proposal `Recommended Direction`, restoration definition, consistency and routing table, terminal vocabulary, and defect decomposition; `AC-BUGSIM-033` through `AC-BUGSIM-039`; same-stage rereview pending.
