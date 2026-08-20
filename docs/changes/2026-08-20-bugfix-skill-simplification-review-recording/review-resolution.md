@@ -7,9 +7,9 @@ Closeout status: open
 Review closeout: proposal-review-r3
 
 - Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`
-- Findings resolved: 6
-- Unresolved findings: 1
-- Current result: round-1 and round-2 findings are resolved; round 3 found one deterministic-table defect requiring focused revision.
+- Findings resolved: 7
+- Unresolved findings: 0
+- Current result: all recorded findings are resolved in the proposal; same-stage proposal rereview remains required before closeout.
 
 ## Resolution Overview
 
@@ -21,7 +21,7 @@ Review closeout: proposal-review-r3
 | BUGSIM-PR4 | accepted | resolved | Operation, command authority, and repository-write authority are independent and bind one exact defect scope. |
 | BUGSIM-PR5 | accepted | resolved | Bounded proof authoring precedes production correction, which requires an identity-bound regression proof. |
 | BUGSIM-PR6 | accepted | resolved | Restoration, cross-axis consistency, owner routing, decomposition, and terminal results are closed. |
-| BUGSIM-PR7 | accepted | open | Remove decision-row shadowing and give every recognized authority and feasibility combination one action. |
+| BUGSIM-PR7 | accepted | resolved | Phase actions and terminal results are separate, and authority, feasibility, completion, reachability, and overlap are closed. |
 
 ## Finding Details
 
@@ -119,7 +119,7 @@ Validation evidence: revised proposal `Recommended Direction`, restoration defin
 
 Finding ID: BUGSIM-PR7
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: proposal author
 Owning stage: proposal
 Chosen action: separate phase action from terminal completion, add absent/stale authority and unresolved-feasibility results, and prove row reachability and non-overlap.
@@ -127,4 +127,4 @@ Rationale: the current first-match ordering shadows `fix-applied` and leaves rec
 Required outcome: every recognized authority, feasibility, evidence, and completion state maps to one action and one applicable terminal result.
 Follow-up: revise the proposal and run proposal-review-r4.
 Validation target: revised non-overlapping tables and deterministic scenario inventory.
-Validation evidence: pending proposal revision and rereview.
+Validation evidence: revised proposal `Recommended Direction`, exhaustive proof-action table, ordered current-action table, terminal-result derivation, and `AC-BUGSIM-040` through `AC-BUGSIM-045`; same-stage rereview pending.

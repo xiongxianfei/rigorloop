@@ -124,13 +124,16 @@ diagnosis
 
 After reproduction, one settled or restoration basis, supported root cause, current bounded command authority, and current write authority exist, proof authoring may write only tests, fixtures, test-only helpers, or controlled reproduction artifacts within the exact scope. It may not change production behavior. Production correction remains blocked until a failing automated test exists, or until a complete deterministic alternative exists with `infeasible-with-rationale`.
 
-| Test feasibility | Current regression evidence | Permitted next action |
+The proof-action table is exhaustive and non-overlapping:
+
+| Test feasibility | Current regression evidence | Current action |
 | --- | --- | --- |
-| `feasible` | `missing` or `deterministic-alternative` | Author the failing automated proof; production mutation remains blocked |
-| `unresolved` | `deterministic-alternative` | Resolve feasibility; production mutation remains blocked |
-| `infeasible-with-rationale` | complete `deterministic-alternative` | Production correction may proceed |
-| Any recognized value | `failing-automated-test` | Production correction may proceed |
-| Any recognized value | `missing` or `conflicting` after proof authoring | No production mutation; terminal result is `blocked` |
+| Any recognized value | `failing-automated-test` | `apply-production-correction` |
+| Any recognized value | `conflicting` | `stop-blocked` |
+| `feasible` | `missing` or `deterministic-alternative` | `author-automated-proof` |
+| `unresolved` | `missing` or `deterministic-alternative` | `resolve-test-feasibility` |
+| `infeasible-with-rationale` | complete `deterministic-alternative` | `apply-production-correction` |
+| `infeasible-with-rationale` | `missing` | `stop-blocked` |
 
 Before production mutation, record one proof identity with kind, procedure or command, fixture and input identities, environment assumptions, expected and observed pre-fix result, feasibility, and any infeasibility rationale. Post-fix validation reruns that identity unchanged and records the post-fix observation. A changed command, test, fixture, input, or environment is a new proof and cannot be reported as the original proof passing. One artifact may serve reproduction and regression roles only when this unchanged-identity rule holds.
 
@@ -148,23 +151,58 @@ external-dependency
 unknown
 ```
 
-Apply these consistency and routing rules before either write gate, from top to bottom; the first matching row owns the action and terminal result:
+Phase actions and terminal results are separate closed vocabularies:
 
-| Condition | Required action and terminal result |
+```text
+current action:
+  stop-blocked
+  route-owner
+  continue-diagnosis
+  complete-diagnosis
+  resolve-test-feasibility
+  author-automated-proof
+  apply-production-correction
+  run-post-fix-validation
+  complete-fix
+
+terminal result:
+  diagnosis-complete
+  diagnosis-incomplete
+  fix-applied
+  routed-to-owner
+  blocked
+```
+
+Apply this current-action table from top to bottom. Its rows are ordered from specific blockers and completed states to broader phase eligibility, so no phase row can shadow completion:
+
+| Condition | Current action |
 | --- | --- |
-| Any unknown closed value, conflicting axis, unsafe identity, or invalid authority | No write; `blocked` |
-| Cause `contract-gap`, or basis `missing`, `conflicting`, or `behavior-change-request` | No bugfix mutation; `routed-to-owner` for `spec` or the exact contract owner |
-| Cause `unknown`, or reproduction or root cause remains unresolved | No production mutation or fixed claim; `diagnosis-incomplete` |
-| Cause `test-defect` with `settled` or `resolvable-restoration` basis | A bounded test correction may proceed through the phase gates; speculative weakening is forbidden |
-| Cause `configuration-or-environment` or `external-dependency` with one settled product contract and current resilience-correction scope | A bounded product correction may proceed through the phase gates |
-| Cause `configuration-or-environment` or `external-dependency` without that exact product basis and scope | No product mutation; `routed-to-owner` |
-| New long-lived design decision is required | No bugfix mutation; `routed-to-owner` for `architecture` |
-| Supported diagnosis-only result with no owner action needed | No write; `diagnosis-complete` |
-| Remaining supported cause with current authority, eligible basis, and proof gate | Perform only the bounded phase write; no terminal success until validation completes |
-| Correction and the unchanged reproduction, proof, and blast-radius checks pass | `fix-applied` |
-| Another identified owner must act | `routed-to-owner` |
+| Unknown closed value, conflicting axis, unsafe identity, or `invalid-or-ambiguous` authority | `stop-blocked` |
+| Required command or write authority is `absent-or-stale` | `stop-blocked` |
+| Operation `fix` requires a write but write authority is `none` | `stop-blocked` |
+| Cause `contract-gap`, or basis `missing`, `conflicting`, or `behavior-change-request` | `route-owner` to `spec` or the exact contract owner |
+| Cause `unknown`, or reproduction or root-cause support remains unresolved | `continue-diagnosis` |
+| New long-lived design decision is required | `route-owner` to `architecture` |
+| Cause `configuration-or-environment` or `external-dependency` without one settled product basis and current resilience-correction scope | `route-owner` to the exact system owner |
+| Operation `diagnose-only` with supported evidence and no owner action | `complete-diagnosis` |
+| A production correction exists and any identity-equal proof or required blast-radius check fails or conflicts | `stop-blocked` |
+| A production correction exists and all identity-equal proof and required blast-radius checks pass | `complete-fix` |
+| A production correction exists and required post-fix checks have not run | `run-post-fix-validation` |
+| Operation `fix` with eligible basis, supported writable cause, current authority, and no production correction | Select exactly one action from the proof-action table |
 
-Every completed invocation emits exactly one terminal result: `diagnosis-complete`, `diagnosis-incomplete`, `fix-applied`, `routed-to-owner`, or `blocked`. Internal investigation may continue, but a completion claim cannot combine terminal results.
+Cause `test-defect` is writable only with `settled` or `resolvable-restoration` basis; speculative weakening is forbidden. Causes `configuration-or-environment` and `external-dependency` enter the proof-action table only when one settled product basis and current scope require a bounded resilience correction. Other supported writable causes enter the same proof-action table after the universal gates pass.
+
+Derive exactly one terminal result only when the invocation returns:
+
+| Return state | Terminal result |
+| --- | --- |
+| Current action `complete-diagnosis` | `diagnosis-complete` |
+| Diagnosis ends without resolving reproduction or cause | `diagnosis-incomplete` |
+| Current action `route-owner` | `routed-to-owner` |
+| Current action `stop-blocked`, or proof authoring, correction, or validation cannot complete safely | `blocked` |
+| Current action `complete-fix` | `fix-applied` |
+
+Intermediate actions continue within the same invocation when safe; they are never reported as terminal results. Every recognized state combination selects one reachable current action, and every completed invocation emits one terminal result.
 
 For governed context, use the same fail-closed signal model as other published skills:
 
@@ -276,6 +314,12 @@ Proposal acceptance requires all of the following:
 | `AC-BUGSIM-037` | Test-defect correction requires a settled or restoration basis and cannot weaken expectations speculatively. |
 | `AC-BUGSIM-038` | Independent defects are decomposed unless one cause, basis, scope, and proof bundle is established. |
 | `AC-BUGSIM-039` | No runtime agent, repair engine, external issue integration, or persistent bug transaction is introduced. |
+| `AC-BUGSIM-040` | Current phase actions and terminal results use separate closed vocabularies. |
+| `AC-BUGSIM-041` | Every recognized state combination selects exactly one current action. |
+| `AC-BUGSIM-042` | No broader phase row can shadow `complete-fix`. |
+| `AC-BUGSIM-043` | Missing, absent, stale, invalid, or ambiguous required authority selects `stop-blocked`. |
+| `AC-BUGSIM-044` | Unresolved test feasibility selects `resolve-test-feasibility` and never permits production correction. |
+| `AC-BUGSIM-045` | Every action row is reachable and pairwise non-overlapping under deterministic fixtures. |
 
 ## Rollout and Rollback
 
@@ -314,6 +358,7 @@ The specification may choose exact field names and fixture representation, but i
 - Permit bounded proof authoring after non-proof prerequisites pass; require exact regression proof before production mutation.
 - Bind post-fix validation to the unchanged pre-fix proof identity.
 - Use exact restoration evidence, deterministic cause/basis routing, one terminal result, and one defect scope per invocation.
+- Keep current actions separate from terminal results and prove every action row reachable and non-overlapping.
 - Route conflicting or behavior-changing contracts to their owning stages.
 - Keep governed-signal validation fail-closed without granting workflow-state authority.
 - Use exact portable and governed write sets; keep upstream lifecycle and review surfaces read-only.
