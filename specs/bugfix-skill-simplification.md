@@ -129,7 +129,7 @@ R24. The result MUST report operation, terminal result, authority classification
 
 R25. Bugfix MUST NOT claim code-review approval, explain-change completion, verification, hosted CI, branch readiness, PR readiness, release, deployment, publication, lifecycle completion, or `Done`.
 
-R26. The implementation MUST preserve every behaviorally meaningful legacy rule or record an approved disposition, preserve parser- or documentation-sensitive literals, validate all existing package projections, and reduce both LF-normalized Unicode whitespace-separated words and UTF-8 bytes for the root and complete package.
+R26. The implementation MUST preserve every behaviorally meaningful legacy rule or record an approved disposition, preserve parser- or documentation-sensitive literals, and validate all existing package projections. It MUST measure and report before/after LF-normalized Unicode whitespace-separated words and UTF-8 bytes for the root and complete package. Any token estimate MUST identify its tokenizer or model basis. Size measurements are diagnostic evidence: semantic completeness, deterministic interpretation, safety, and package parity MUST take precedence, and required behavior MUST NOT be omitted, over-compressed, or relocated solely to reduce a count.
 
 R27. Acceptance MUST use deterministic repository-owned static scenarios and ordinary lifecycle reviews. It MUST NOT execute a live repair task, target agent, external issue or incident system, or introduce a persistent bug transaction.
 
@@ -148,6 +148,7 @@ Inputs are one concrete defect, request wording, repository identity, governing 
 - Upstream and lifecycle owners remain authoritative and read-only.
 - A returning invocation has exactly one terminal result.
 - Direct and manual bugfix invocations remain isolated and explicit-step.
+- Word, byte, and optional tokenizer-specific token measurements report package cost but never override required behavior.
 
 ## Error and boundary behavior
 
@@ -179,7 +180,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | BND-COMPOSE-001 | composition-path | R17, R18, R19, R21, R24 | bugfix-owned proof/correction, contract owner, architecture owner, system owner, code-review handoff | Bugfix never substitutes for another owner or combines independent defects | Writable causes use bugfix path; gaps route; changed implementation hands to code-review | R17 |
 | BND-TEMPORAL-001 | temporal-retry | R5, R13, R16, R23 | current, changed, replayed, or identity-mismatched preflight and proof | Mutation preflight and proof identity remain current across the phase transition | Equal identity may continue; changed identity requires new proof or blocks the claim | R13 |
 | BND-RECOVERY-001 | failure-recovery | R6, R9, R12, R16, R22, R23 | unavailable command, incomplete proof, interrupted phase, failed check, missing evidence path | Earlier evidence never becomes later authority and partial work never implies completion | Continue diagnosis, route, or block with exact pending work; never overclaim | R16 |
-| BND-COMPAT-001 | compatibility-migration | R1, R21, R26 | retained legacy rule, amended rule, removed duplicate, package projection | One current semantic owner remains and shipped projections remain equivalent | Preserved contract ships smaller; lost rule, literal, or parity blocks | R26 |
+| BND-COMPAT-001 | compatibility-migration | R1, R21, R26 | retained legacy rule, amended rule, removed duplicate, package projection, measured size delta | One current semantic owner remains and shipped projections remain equivalent; counts never override semantics | Preserved contract ships with truthful measurements; lost rule, literal, parity, or metric-driven omission blocks | R26 |
 | BND-ENV-001 | external-environment | R6, R9, R18, R27 | local bounded command, destructive/privileged/network/database effect, external owner | No implicit external or privileged authority and no live acceptance machinery | Safe local evidence may run; unauthorized or unavailable external behavior stops or routes | R6 |
 
 ## Selected interactions
@@ -191,7 +192,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | INT-003 | R13, R23 | BND-TEMPORAL-001, BND-RECOVERY-001 | A changed proof is presented as the original regression passing | Require identity equality or create a new proof and withhold `fix-applied` |
 | INT-004 | R17, R18, R21 | BND-COMPOSE-001, BND-AUTH-001 | Bugfix mutates a contract, design, environment, or external owner surface | Route to the exact owner and preserve read-only boundaries |
 | INT-005 | R6, R9, R27 | BND-ENV-001, BND-RECOVERY-001 | Reproduction or acceptance causes unauthorized durable side effects | Require separate authority, skip or stop, and report evidence limits |
-| INT-006 | R1, R21, R26 | BND-COMPAT-001, BND-COMPOSE-001 | Compression drops a legacy rule or changes a packaged consumer | Require dispositions, literal inventory, and all package projections to agree |
+| INT-006 | R1, R21, R26 | BND-COMPAT-001, BND-COMPOSE-001 | A size target drops a legacy rule, obscures deterministic meaning, or changes a packaged consumer | Require complete semantics, dispositions, literal inventory, truthful measurements, and all package projections to agree |
 
 ## Example ownership
 
@@ -226,7 +227,7 @@ No user interface is introduced. Result labels and closed values remain plain te
 
 ## Performance expectations
 
-The implementation adds no runtime. Repository acceptance runs focused deterministic tests before broader package validation. The complete shipped bugfix package must decrease in both normalized word count and UTF-8 bytes.
+The implementation adds no runtime. Repository acceptance runs focused deterministic tests before broader package validation. It reports normalized word and UTF-8 byte deltas for the complete shipped package, plus only tokenizer-identified token estimates when used. No decrease is required when complete, deterministic, safe wording needs the measured size.
 
 ## Edge cases
 
@@ -254,6 +255,8 @@ EC11. A local correction for an external dependency is forbidden unless a settle
 
 EC12. A successful local fix does not imply review, verification, CI, branch, PR, release, or completion readiness.
 
+EC13. A truthful package that exceeds a prior word, byte, or token estimate remains acceptable when required semantics and package parity pass and the measured increase is reported; deleting or relocating required behavior to meet the old count fails acceptance.
+
 ## Non-goals
 
 - Creating a diagnosis skill, incident system, issue integration, debugging runtime, test generator, repair engine, or persistent bug transaction.
@@ -266,7 +269,7 @@ EC12. A successful local fix does not imply review, verification, CI, branch, PR
 
 | ID | Criterion |
 | --- | --- |
-| AC1 | The package remains one smaller `SKILL.md` with no resource addition. |
+| AC1 | The package remains one truthful `SKILL.md` with no resource addition. |
 | AC2 | Intent, command authority, and write authority classify independently and fail closed. |
 | AC3 | Diagnosis-only performs no intentional tracked-file or external-state mutation. |
 | AC4 | Every writable fix binds exact repository, defect, authority, command, path, category, contract, and evidence identities. |
@@ -279,7 +282,7 @@ EC12. A successful local fix does not imply review, verification, CI, branch, PR
 | AC11 | Every returning invocation emits one terminal result and changed implementation routes only to `code-review`. |
 | AC12 | Rule and literal inventories prove semantic preservation and unknown closed values fail before consistency checks. |
 | AC13 | Existing package tooling proves canonical-through-installed parity. |
-| AC14 | LF-normalized word and byte measurements both decrease for the root and complete package. |
+| AC14 | Before/after LF-normalized word and byte measurements are reported for the root and complete package; any token estimate names its tokenizer or model basis, and no metric can override semantic completeness, deterministic interpretation, safety, or package parity. |
 | AC15 | Acceptance uses deterministic static scenarios and ordinary reviews without live repair, target-agent, or external-system execution. |
 
 ## Open questions
