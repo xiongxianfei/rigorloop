@@ -17,6 +17,10 @@ Before editing `skills/bugfix/SKILL.md`, the focused suite reported seven failur
 - Cause, action, and terminal-result vocabularies are closed; completed and failed corrections precede broad eligibility.
 - Upstream, lifecycle, verification, PR, and release surfaces remain read-only; changed implementation hands off only to `code-review`.
 
+## Review correction
+
+`code-review-m2-r1` found that the first compact draft omitted three approved causes, `complete-diagnosis`, the exact `post-fix-validation` phase, the unexpected-mutation stop, and required result fields. `BUGSIM-CR1` was accepted. The canonical skill and focused assertions now contain the complete approved vocabularies and behavior while retaining strict word and byte reductions.
+
 ## Measurements
 
 | Surface | Before | After | Change |

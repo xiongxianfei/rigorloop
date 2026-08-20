@@ -11551,12 +11551,14 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
         ):
             self.assertIn(value, self.skill)
         self.assertLess(self.skill.index("proof-authoring"), self.skill.index("production-correction"))
+        self.assertIn("post-fix-validation", self.skill)
 
     def test_action_precedence_protects_completed_and_failed_corrections(self) -> None:
         for value in (
             "stop-blocked",
             "route-owner",
             "continue-diagnosis",
+            "complete-diagnosis",
             "resolve-test-feasibility",
             "author-automated-proof",
             "apply-production-correction",
@@ -11572,6 +11574,9 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
         for value in (
             "implementation-defect",
             "contract-gap",
+            "integration-mismatch",
+            "data-or-migration",
+            "race-or-timing",
             "configuration-or-environment",
             "external-dependency",
             "test-defect",
@@ -11605,6 +11610,10 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
             "no stage continues automatically",
             "PR readiness",
             "lifecycle completion",
+            "Unexpected mutation",
+            "repository and defect",
+            "proof identity",
+            "next owner",
         ):
             self.assertIn(value, self.skill)
 
