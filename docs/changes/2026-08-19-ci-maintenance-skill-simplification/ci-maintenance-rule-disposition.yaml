@@ -1,0 +1,397 @@
+schema: ci-maintenance-rule-disposition-v1
+allowed_dispositions: [retained-inline, relocated, amended, removed]
+rules:
+  - id: universal-safety
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+    covers: [command-authority, risk-detection, least-privilege, fork-secret-safety, claims]
+  - id: github-serialization
+    disposition: relocated
+    owner: skills/ci-maintenance/references/github-workflow-authoring.md
+    covers: [events, filters, jobs, expressions, matrices, dependencies]
+  - id: semantic-risk-placement
+    disposition: relocated
+    owner: skills/ci-maintenance/references/risk-to-check-map.md
+    covers: [changed-path, material-risk, owned-check, command, boundary]
+  - id: workflow-structure
+    disposition: amended
+    owner: skills/ci-maintenance/assets/github-workflow-skeleton.yml
+    covers: [safe-yaml-shape, placeholders]
+  - id: privileged-design
+    disposition: retained-inline
+    owner: external-approved-design
+    covers: [events, permissions, credentials, runners, environments, secrets]
+legacy_clauses:
+  CIM-R25: amended-by-R21-R23
+  CIM-R34: amended-by-R15-R20
+  CIM-R45: amended-by-R11-R14-and-R25-R28
+  CIM-R53: amended-by-R18-R20-and-R25
+  CIM-R59: amended-by-R21-R23
+  unlisted: retained
+architecture_triggers:
+  persistent-mutation-receipt: absent
+  managed-locking-service: absent
+  multi-file-transaction: absent
+  managed-yaml-parser: absent
+  provider-neutral-abstraction: absent
+  external-platform-mutation: absent
+  new-persistent-owner: absent
+requirement_dispositions:
+  - id: R1
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R2
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R3
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R4
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R5
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R6
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R7
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R8
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R9
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R10
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R11
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R12
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R13
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R14
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R15
+    disposition: retained-inline
+    owner: skills/ci-maintenance/references/risk-to-check-map.md
+  - id: R16
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R17
+    disposition: retained-inline
+    owner: skills/ci-maintenance/references/github-workflow-authoring.md
+  - id: R18
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R19
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R20
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R21
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R22
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R23
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R24
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R25
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R26
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R27
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R28
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R29
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R30
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R31
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R32
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R33
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R34
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R35
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R36
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R37
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R38
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R39
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R40
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R41
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R42
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R43
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R44
+    disposition: retained-inline
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R45
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R46
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R47
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R48
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R49
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R50
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R51
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R52
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R53
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+  - id: R54
+    disposition: retained
+    owner: skills/ci-maintenance/SKILL.md
+legacy_requirement_dispositions:
+  - id: CIM-R1
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R2
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R3
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R4
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R5
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R6
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R7
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R8
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R9
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R10
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R11
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R12
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R13
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R14
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R15
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R16
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R17
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R18
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R19
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R20
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R21
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R22
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R23
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R24
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R25
+    disposition: amended
+    owner: specs/ci-maintenance-skill-simplification.md
+  - id: CIM-R26
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R27
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R28
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R29
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R30
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R31
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R32
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R33
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R34
+    disposition: amended
+    owner: specs/ci-maintenance-skill-simplification.md
+  - id: CIM-R35
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R36
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R37
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R38
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R39
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R40
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R41
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R42
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R43
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R44
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R45
+    disposition: amended
+    owner: specs/ci-maintenance-skill-simplification.md
+  - id: CIM-R46
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R47
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R48
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R49
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R50
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R51
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R52
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R53
+    disposition: amended
+    owner: specs/ci-maintenance-skill-simplification.md
+  - id: CIM-R54
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R55
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R56
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R57
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R58
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R59
+    disposition: amended
+    owner: specs/ci-maintenance-skill-simplification.md
+  - id: CIM-R60
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R61
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R62
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R63
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R64
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md
+  - id: CIM-R65
+    disposition: retained
+    owner: specs/ci-maintenance-skill.md

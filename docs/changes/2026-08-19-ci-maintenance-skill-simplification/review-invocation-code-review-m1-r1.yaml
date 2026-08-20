@@ -1,0 +1,17 @@
+review_id: code-review-m1-r1
+stage: code-review
+round: r1
+reviewed_milestone: M1
+reviewed_range: {base: 5fd2cb0b, head: 33e7dd4a}
+reviewer: Codex independent code-review context
+authority:
+  spec: specs/ci-maintenance-skill-simplification.md
+  plan: docs/plans/2026-08-19-ci-maintenance-skill-simplification.md
+  test_spec: specs/ci-maintenance-skill-simplification.test.md
+automation:
+  mode: workflow-managed
+  target_stage: verify
+  context_separation: fresh-assumption diff-first review
+  risk_map_recorded_before_evidence_menu: true
+  requirement_fidelity: applicable
+phase_receipts: [risk-map-recorded, evidence-menu-released, evidence-results-released, verdict-recorded]

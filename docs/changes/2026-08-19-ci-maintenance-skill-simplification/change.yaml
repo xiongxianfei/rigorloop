@@ -1,0 +1,272 @@
+change_id: 2026-08-19-ci-maintenance-skill-simplification
+title: CI-Maintenance Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r4
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/proposal-review-r4.md
+      round: r4
+  spec:
+    kind: spec
+    path: specs/ci-maintenance-skill-simplification.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r2
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/spec-review-r2.md
+      round: r2
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-19-ci-maintenance-skill-simplification.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r1
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/plan-review-r1.md
+      round: r1
+  test-spec:
+    kind: test-spec
+    path: specs/ci-maintenance-skill-simplification.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r1
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/test-spec-review-r1.md
+      round: r1
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: verify
+  next_stage: pr
+  blocker: null
+  evidence:
+    - docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/reviews/proposal-review-r3.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/review-resolution.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+    - specs/ci-maintenance-skill-simplification.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/spec-authoring.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-spec-review-r1.yaml
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/spec-review-r1.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-log.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-resolution.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/spec-revision-r1.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-spec-review-r2.yaml
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/spec-review-r2.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/architecture-assessment.md
+    - docs/plans/2026-08-19-ci-maintenance-skill-simplification.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/plan-authoring.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-plan-review-r1.yaml
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/plan-review-r1.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/plan-initialization.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/plan-settlement-retry.md
+    - specs/ci-maintenance-skill-simplification.test.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/test-spec-authoring.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-test-spec-review-r1.yaml
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/workflow-automation-target-verify.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-code-review-m1-r1.yaml
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-code-review-m1-r2.yaml
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-m1-r2.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-code-review-m2-r1.yaml
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-code-review-m3-r1.yaml
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-m3-r1.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-code-review-m4-r1.yaml
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-m4-r1.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-final-r1.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/explain-change.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/verify-report.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/proposal-adoption-migration.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/proposal-review-r4.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/proposal-adoption-settlement-route.md
+    - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-final-r2.md
+  planned_work:
+    plan_artifact_id: plan
+    current_milestone: none
+    initialization_basis:
+      review_id: plan-review-r1
+      review_round: r1
+      review_record: docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/plan-review-r1.md
+      reviewed_artifact_path: docs/plans/2026-08-19-ci-maintenance-skill-simplification.md
+      reviewed_revision: 54bc0ce2
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+      M4:
+        kind: implementation
+        state: closed
+    remaining_implementation_milestones: []
+    latest_review:
+      status: approved
+      stage: code-review
+      round: r2
+      artifact_id: plan
+      occurrence: final
+      milestone_id: none
+      evidence:
+        - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-final-r2.md
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - external-completion-event-pending
+      evidence:
+        - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/plan-review-r1.md
+        - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/plan-initialization.md
+        - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-final-r2.md
+        - docs/changes/2026-08-19-ci-maintenance-skill-simplification/explain-change.md
+        - docs/changes/2026-08-19-ci-maintenance-skill-simplification/verify-report.md
+
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: verify
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-19T13:00:00-07:00"
+      completion:
+        rule: verify records one final result for the current handoff revision
+    status: completed
+    current_stage: verify
+    stop_reason: target-reached
+    evidence:
+      - docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/reviews/proposal-review-r3.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/review-resolution.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+      - specs/ci-maintenance-skill-simplification.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/spec-authoring.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-spec-review-r1.yaml
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/spec-review-r1.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-log.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-resolution.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/spec-revision-r1.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-spec-review-r2.yaml
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/spec-review-r2.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/architecture-assessment.md
+      - docs/plans/2026-08-19-ci-maintenance-skill-simplification.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/plan-authoring.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-plan-review-r1.yaml
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/plan-review-r1.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/plan-initialization.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/plan-settlement-retry.md
+      - specs/ci-maintenance-skill-simplification.test.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/test-spec-authoring.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-test-spec-review-r1.yaml
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/workflow-automation-target-verify.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-code-review-final-r1.yaml
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-final-r1.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/explain-change.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/verify-report.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/proposal-adoption-migration.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/proposal-review-r4.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/proposal-adoption-settlement-route.md
+      - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/code-review-final-r2.md
+
+artifacts:
+  proposal: docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md
+  explain_change: docs/changes/2026-08-19-ci-maintenance-skill-simplification/explain-change.md
+  verify_report: docs/changes/2026-08-19-ci-maintenance-skill-simplification/verify-report.md
+
+requirements:
+  - Reduce real loaded CI-maintenance profiles while preserving command authority, risk coverage, least privilege, secret safety, and claim boundaries.
+  - Separate operation, target kind, concern, provider, privileged authority, structure, and resource selection.
+  - Give semantic risk placement, GitHub serialization, and workflow structure exactly one owner each.
+  - Preserve current repository-file target kinds and bind privileged implementation to an exact approved design.
+  - Use conditional single-file commits and dependency-aware non-atomic batch behavior without persistent coordination.
+  - Preserve static proof, package-resource parity, and hosted-CI truthfulness without live CI or target-agent execution.
+
+tests:
+  - Independent specification, plan, and test-spec reviews before implementation.
+  - Deterministic scenarios for closed classifications, resource assemblies, policy ownership, conditional commits, batch dependencies, failure behavior, and claim limits.
+  - Canonical, generated, packed, archived, and installed resource parity plus before-and-after profile measurements.
+
+review:
+  status: approved
+  unresolved_items: 0
+
+validation:
+  - command: python scripts/test-skill-validator.py CiMaintenanceSkillSimplificationTests
+    result: pass_13_tests
+  - command: python scripts/validate-skills.py skills/ci-maintenance/SKILL.md
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass_432_tests_16_skips
+  - command: python scripts/test-build-skills.py
+    result: pass_7_tests
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_150_tests
+  - command: python scripts/validate-boundary-first.py --check --path specs/ci-maintenance-skill-simplification.md
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-08-19-ci-maintenance-skill-simplification/change.yaml
+    result: pass_before_verify_result_recording
+  - command: python scripts/validate-documentation-prose.py --mode audit --path specs/ci-maintenance-skill-simplification.md --path specs/ci-maintenance-skill-simplification.test.md --path docs/plans/2026-08-19-ci-maintenance-skill-simplification.md
+    result: pass
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_26_checks
+
+changed_files:
+  - docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/change.yaml
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/review-log.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/review-resolution.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/reviews/proposal-review-r3.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/change.yaml
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+  - specs/ci-maintenance-skill-simplification.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-log.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-resolution.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/spec-revision-r1.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-spec-review-r2.yaml
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/spec-review-r2.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-19-ci-maintenance-skill-simplification.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/plan-authoring.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/plan-review-r1.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/plan-initialization.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/plan-settlement-retry.md
+  - specs/ci-maintenance-skill-simplification.test.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/test-spec-authoring.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/review-invocation-test-spec-review-r1.yaml
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/workflow-automation-target-verify.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/explain-change.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/verify-report.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/proposal-adoption-migration.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/reviews/proposal-review-r4.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification/evidence/proposal-adoption-settlement-route.md

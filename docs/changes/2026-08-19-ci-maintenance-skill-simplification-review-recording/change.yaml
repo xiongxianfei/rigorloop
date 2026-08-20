@@ -1,0 +1,35 @@
+change_id: 2026-08-19-ci-maintenance-skill-simplification-review-recording
+title: CI-Maintenance Skill Simplification Proposal Review Recording
+classification: review-recording
+risk: low
+artifacts:
+  proposal: docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md
+  review_resolution: docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/review-resolution.md
+requirements:
+  - Record the isolated formal proposal review before any review-driven revision.
+  - Preserve material findings about target coverage, privileged authority, hosted-CI claims, policy ownership, conditional writes, and multi-target dependencies.
+  - Keep this recording-only root separate from proposal settlement and workflow continuation.
+tests:
+  - Review artifact structure validates the detailed review, log, and open resolution relationship.
+review:
+  status: approved
+  unresolved_items: 0
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording
+    result: pass_reviews_3_findings_7_log_entries_3_resolution_entries_7
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording
+    result: pass_reviews_3_findings_7_log_entries_3_resolution_entries_7
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/change.yaml
+    result: pass
+  - command: python scripts/validate-documentation-prose.py --mode audit --path docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md --path docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/reviews/proposal-review-r2.md --path docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/reviews/proposal-review-r3.md --path docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/review-log.md --path docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/review-resolution.md
+    result: pass_no_errors_or_warnings
+  - command: git diff --check -- docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording
+    result: pass
+changed_files:
+  - docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/change.yaml
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/review-log.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/review-resolution.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-19-ci-maintenance-skill-simplification-review-recording/reviews/proposal-review-r3.md

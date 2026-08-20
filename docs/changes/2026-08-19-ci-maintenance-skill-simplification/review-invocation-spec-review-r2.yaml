@@ -1,0 +1,35 @@
+schema_version: 1
+review_id: spec-review-r2
+review_stage: spec-review
+review_target: specs/ci-maintenance-skill-simplification.md
+base_revision: sha256:b7ee60ec3dcdfa54d54f1945d43cb1d6f51297554e81a7375a8d6b764a020ec7
+head_revision: sha256:b7ee60ec3dcdfa54d54f1945d43cb1d6f51297554e81a7375a8d6b764a020ec7
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-correction-r1
+reviewer_context_id: root-spec-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-package-boundary
+  - conditional-file-commit-contract
+  - compatibility-sensitive-validation
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-19-ci-maintenance-skill-simplification.md
+  - specs/ci-maintenance-skill-simplification.md
+  - specs/ci-maintenance-skill.md
+  - specs/skill-contract.md
+  - specs/rigorloop-workflow.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - full requirement and boundary contract
+  - CIMSIM-SR1 legacy-clause disposition
+  - testability and compatibility
+  - architecture and proof-map routing
