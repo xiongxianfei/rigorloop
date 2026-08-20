@@ -11476,5 +11476,49 @@ class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
                 self.assertLess(int(after_bytes), int(before_bytes))
 
 
+class BugfixSkillSimplificationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = ROOT / "docs" / "changes" / "2026-08-20-bugfix-skill-simplification"
+
+    def test_preservation_inventories_cover_closed_ownership(self) -> None:
+        rules = (self.root / "bugfix-rule-disposition.yaml").read_text(encoding="utf-8")
+        literals = (self.root / "bugfix-literal-compatibility.yaml").read_text(encoding="utf-8")
+        for value in ("retained-inline", "amended", "removed-duplicate", "unlisted: retained"):
+            self.assertIn(value, rules)
+        requirement_rows = re.findall(r"^  - id: R([0-9]+)$", rules, flags=re.MULTILINE)
+        legacy_rows = re.findall(r"^  - id: BUG-LEGACY-([0-9]+)$", rules, flags=re.MULTILINE)
+        self.assertEqual(requirement_rows, [str(number) for number in range(1, 28)])
+        self.assertEqual(legacy_rows, [f"{number:03d}" for number in range(1, 28)])
+        self.assertEqual(len(requirement_rows), len(set(requirement_rows)))
+        self.assertEqual(len(legacy_rows), len(set(legacy_rows)))
+        for value in ("diagnose-only", "fix-applied", "code-review", "unknown_value_policy"):
+            self.assertIn(value, literals)
+        for consumer in ("scripts/skill_validation.py", "scripts/test-skill-validator.py", "scripts/build-skills.py", "scripts/adapter_distribution.py"):
+            self.assertIn(consumer, literals)
+
+    def test_scenario_inventory_covers_t1_through_t15(self) -> None:
+        scenarios = (self.root / "fixtures" / "scenarios.yaml").read_text(encoding="utf-8")
+        for number in range(1, 16):
+            self.assertIn(f"id: T{number}", scenarios)
+
+    def test_baseline_binds_current_flat_package(self) -> None:
+        baseline = (self.root / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
+        self.assertIn("ea55e7f477dbc03e11e59798999ce3705125ce24b444766f50da95689c83d2ae", baseline)
+        self.assertIn("586", baseline)
+        self.assertIn("3761", baseline)
+        self.assertIn("one file", baseline.lower())
+
+    def test_architecture_triggers_remain_absent(self) -> None:
+        rules = (self.root / "bugfix-rule-disposition.yaml").read_text(encoding="utf-8")
+        for trigger in (
+            "persistent-bug-transaction: absent",
+            "repair-engine: absent",
+            "external-issue-integration: absent",
+            "cross-stage-state-owner: absent",
+            "separate-diagnosis-skill: absent",
+        ):
+            self.assertIn(trigger, rules)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
