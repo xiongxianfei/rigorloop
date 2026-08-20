@@ -11521,12 +11521,42 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
         ):
             self.assertIn(trigger, rules)
 
-    def test_flat_package_and_strict_size_reduction(self) -> None:
+    def test_flat_package_and_truthful_size_reporting(self) -> None:
         files = sorted(path.relative_to(self.skill_dir).as_posix() for path in self.skill_dir.rglob("*") if path.is_file())
         self.assertEqual(files, ["SKILL.md"])
         normalized = self.skill.replace("\r\n", "\n").replace("\r", "\n")
-        self.assertLess(len(normalized.split()), 586)
-        self.assertLess(len(normalized.encode("utf-8")), 3761)
+        self.assertGreater(len(normalized.split()), 0)
+        self.assertGreater(len(normalized.encode("utf-8")), 0)
+        self.assertIn("Counts are diagnostic", self.skill)
+        self.assertIn("MUST NOT omit, blur, or relocate required behavior", self.skill)
+
+    def test_evidence_vocabularies_and_proof_table_are_complete(self) -> None:
+        for value in (
+            "reproduced",
+            "not-established",
+            "settled",
+            "resolvable-restoration",
+            "behavior-change-request",
+            "feasible",
+            "infeasible-with-rationale",
+            "unresolved",
+            "failing-automated-test",
+            "deterministic-alternative",
+            "missing",
+            "conflicting",
+            "supported",
+            "uncertain",
+        ):
+            self.assertIn(value, self.skill)
+        for required_row in (
+            "Any recognized | failing-automated-test | apply-production-correction",
+            "Any recognized | conflicting | stop-blocked",
+            "feasible | missing or deterministic-alternative | author-automated-proof",
+            "unresolved | missing or deterministic-alternative | resolve-test-feasibility",
+            "infeasible-with-rationale | complete deterministic-alternative | apply-production-correction",
+            "infeasible-with-rationale | missing | stop-blocked",
+        ):
+            self.assertIn(required_row, self.skill)
 
     def test_operation_command_and_write_authority_are_independent(self) -> None:
         for value in (
@@ -11566,7 +11596,7 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
             "complete-fix",
         ):
             self.assertIn(value, self.skill)
-        completed = self.skill.index("correction exists and proof passes")
+        completed = self.skill.index("correction exists and all required checks pass")
         eligible = self.skill.index("eligible fix without correction")
         self.assertLess(completed, eligible)
 
@@ -11600,6 +11630,15 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
             "do not invent",
         ):
             self.assertIn(value, self.skill)
+        for required_row in (
+            "Portable diagnose-only | None",
+            "Portable proof-authoring | Request-bound tests, fixtures, test-only helpers, and controlled reproduction artifacts",
+            "Portable production-correction | Request-bound implementation and explicitly scoped non-authoritative documentation or examples",
+            "Governed diagnose-only | None",
+            "Governed proof-authoring | Exact governed proof surfaces and one existing authorized evidence destination",
+            "Governed production-correction | Exact governed implementation, existing authorized evidence, and only scope-named non-authoritative documentation",
+        ):
+            self.assertIn(required_row, self.skill)
 
     def test_result_and_handoff_claims_are_bounded(self) -> None:
         for value in (

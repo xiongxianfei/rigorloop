@@ -19,25 +19,27 @@ Before editing `skills/bugfix/SKILL.md`, the focused suite reported seven failur
 
 ## Review correction
 
-`code-review-m2-r1` found that the first compact draft omitted three approved causes, `complete-diagnosis`, the exact `post-fix-validation` phase, the unexpected-mutation stop, and required result fields. `BUGSIM-CR1` was accepted. The canonical skill and focused assertions now contain the complete approved vocabularies and behavior while retaining strict word and byte reductions.
+`code-review-m2-r1` found that the first compact draft omitted three approved causes, `complete-diagnosis`, the exact `post-fix-validation` phase, the unexpected-mutation stop, and required result fields. `BUGSIM-CR1` was accepted.
+
+`code-review-m2-r2` then found that optimizing for a strict size decrease still left the approved evidence vocabularies, proof-action matrix, and write-boundary matrix materially incomplete. `BUGSIM-CR2` was accepted. The canonical skill and focused assertions now preserve the complete approved contract. Size is measured honestly but is not used as a semantic gate.
 
 ## Measurements
 
 | Surface | Before | After | Change |
 | --- | ---: | ---: | ---: |
-| normalized words | 586 | 412 | -174 |
-| LF-normalized UTF-8 bytes | 3761 | 3754 | -7 |
+| normalized words | 586 | 1047 | +461 |
+| LF-normalized UTF-8 bytes | 3761 | 8926 | +5165 |
 | packaged files | 1 | 1 | 0 |
 
-The byte reduction is intentionally strict despite the newly explicit closed vocabularies. Final package-chain measurements belong to M3.
+The larger result is intentional: the one-file package now states the complete closed vocabularies and deterministic matrices instead of abbreviating required behavior to meet a count. Final package-chain measurements belong to M3.
 
 ## Validation
 
 All commands passed:
 
-- `python scripts/test-skill-validator.py BugfixSkillSimplificationTests` — 11 tests.
-- `python scripts/validate-skills.py skills/bugfix` — canonical skill valid.
-- `python scripts/test-skill-validator.py` — 443 tests, 16 skipped.
+- `python scripts/test-skill-validator.py BugfixSkillSimplificationTests` — 12 tests.
+- `python scripts/validate-skills.py skills/bugfix/SKILL.md` — canonical skill valid.
+- `python scripts/test-skill-validator.py` — 444 tests, 16 skipped.
 - `python scripts/validate-boundary-first.py --check --path specs/bugfix-skill-simplification.md`.
 - `python scripts/test-build-skills.py` — 7 tests.
 - `python scripts/build-skills.py --check`.
