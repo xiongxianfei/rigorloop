@@ -4,19 +4,19 @@
 
 Closeout status: open
 
-Review closeout: pending code-review-m2-r2
+Review closeout: code-review-m2-r2
 
 - Reviews covered: `code-review-m2-r1`, `code-review-m2-r2`
-- Findings resolved: 1
-- Unresolved findings: 1
-- Current result: BUGSIM-CR1 is resolved; BUGSIM-CR2 needs a proposal/spec decision.
+- Findings resolved: 2
+- Unresolved findings: 0
+- Current result: BUGSIM-CR1 and BUGSIM-CR2 are resolved; corrected M2 requires same-stage code rereview.
 
 ## Resolution overview
 
 | Finding ID | Disposition | Status | Resolution summary |
 | --- | --- | --- | --- |
 | BUGSIM-CR1 | accepted | resolved | Restored omitted causes, actions, phase, side-effect stop, and result fields with regression assertions. |
-| BUGSIM-CR2 | needs-decision | open | Resolve the conflict between exhaustive inline contracts, the one-file boundary, and the legacy-byte ceiling. |
+| BUGSIM-CR2 | accepted | resolved | Preserve the one-file package, make size metrics diagnostic, and require complete truthful inline semantics. |
 
 ### code-review-m2-r1
 
@@ -41,14 +41,15 @@ Validation evidence: corrected commit `1a72a04e`; `evidence/m2-contract-implemen
 #### BUGSIM-CR2
 
 Finding ID: BUGSIM-CR2
-Disposition: needs-decision
-Status: open
+Disposition: accepted
+Status: resolved
 Owner: proposal/spec
 Owning stage: proposal or spec revision
 Decision owner: proposal/spec author
-Decision needed: choose a coherent inline-detail, package, and measurement contract
+Decision needed: resolved by the owner's truth-first measurement decision
 Rationale: R7, R12, and R21 require more published contract than the R1/R26 one-file legacy-byte ceiling admits without omission.
 Required outcome: approve a satisfiable package and measurement boundary, then revise downstream spec, plan, and test-spec identities before implementation resumes.
-Safe resolution path: choose one option in `reviews/code-review-m2-r2.md`, run the owning-stage review, then re-enter M2.
+Chosen action: retain the flat package; remove the legacy-byte ceiling; report word and byte deltas; identify any optional token basis; and prohibit metric-driven omission, over-compression, or relocation.
+Safe resolution path: implement the complete inline R7, R12, and R21 contracts, rerun the revised proof map, and record code-review-m2-r3.
 Validation target: revised approved proposal/spec and matching downstream artifacts.
-Validation evidence: pending decision.
+Validation evidence: approved proposal-review-r5, spec-review-r2, plan-review-r2, and test-spec-review-r2 plus their governed authoring, migration, initialization, settlement, and reconciliation evidence.

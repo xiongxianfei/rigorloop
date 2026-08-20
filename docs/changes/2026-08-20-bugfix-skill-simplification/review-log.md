@@ -41,5 +41,5 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r2.md
 Resolution: review-resolution.md#code-review-m2-r2
 Material findings: BUGSIM-CR2
-Open findings: BUGSIM-CR2
+Open findings: none
 Recording status: recorded
