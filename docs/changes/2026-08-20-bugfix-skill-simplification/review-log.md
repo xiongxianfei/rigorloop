@@ -15,4 +15,15 @@ This ledger records formal lifecycle reviews for the bugfix skill-simplification
 
 ## Detailed review entries
 
-None.
+### Review entry
+
+Review ID: code-review-m2-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: M2 range `204e9689..627aea9b`
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r1.md
+Resolution: review-resolution.md#code-review-m2-r1
+Material findings: BUGSIM-CR1
+Open findings: BUGSIM-CR1
+Recording status: recorded
