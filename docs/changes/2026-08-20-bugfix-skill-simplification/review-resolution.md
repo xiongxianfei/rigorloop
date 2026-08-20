@@ -4,12 +4,12 @@
 
 Closeout status: open
 
-Review closeout: code-review-m2-r2
+Review closeout: code-review-m2-r3
 
-- Reviews covered: `code-review-m2-r1`, `code-review-m2-r2`
+- Reviews covered: `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`
 - Findings resolved: 2
-- Unresolved findings: 0
-- Current result: BUGSIM-CR1 and BUGSIM-CR2 are resolved; corrected M2 requires same-stage code rereview.
+- Unresolved findings: 1
+- Current result: BUGSIM-CR1 and BUGSIM-CR2 remain resolved; BUGSIM-CR3 is accepted and awaits bounded implementation plus same-stage rereview.
 
 ## Resolution overview
 
@@ -17,6 +17,7 @@ Review closeout: code-review-m2-r2
 | --- | --- | --- | --- |
 | BUGSIM-CR1 | accepted | resolved | Restored omitted causes, actions, phase, side-effect stop, and result fields with regression assertions. |
 | BUGSIM-CR2 | accepted | resolved | Preserve the one-file package, make size metrics diagnostic, and require complete truthful inline semantics. |
+| BUGSIM-CR3 | accepted | pending | Close the absent-defect, conflict-precedence, incomplete-alternative, and executable cross-product proof gaps. |
 
 ### code-review-m2-r1
 
@@ -53,3 +54,21 @@ Chosen action: retain the flat package; remove the legacy-byte ceiling; report w
 Safe resolution path: implement the complete inline R7, R12, and R21 contracts, rerun the revised proof map, and record code-review-m2-r3.
 Validation target: revised approved proposal/spec and matching downstream artifacts.
 Validation evidence: approved proposal-review-r5, spec-review-r2, plan-review-r2, and test-spec-review-r2 plus their governed authoring, migration, initialization, settlement, and reconciliation evidence.
+
+### code-review-m2-r3
+
+#### BUGSIM-CR3
+
+Finding ID: BUGSIM-CR3
+Disposition: accepted
+Status: pending
+Owner: implementation
+Owning stage: implement
+Decision owner: none; R2, R7, R12, R16, R17, T2, T5, T8, and T11 are explicit
+Decision needed: none
+Chosen action: State the missing edge classifications explicitly and replace substring-only table proof with deterministic cross-product evaluation.
+Rationale: Passing literal checks cannot prove the approved exhaustive, pairwise non-overlapping action contract.
+Required outcome: One explicit result exists for absent defect, contract-basis conflict is not shadowed by generic conflict handling, incomplete alternatives fail classification before table evaluation, and every admitted proof state selects exactly one action.
+Safe resolution path: Correct M2, rerun its command ledger, and record code-review-m2-r4.
+Validation target: corrected M2 canonical skill and executable focused action-table tests.
+Validation evidence: pending corrected implementation and code-review-m2-r4.
