@@ -24,7 +24,7 @@ The current package is one 586-word, 3,761-byte `SKILL.md` with no references, a
 - Preserve regression-test-first behavior while defining bounded alternative proof when an automated failing test is infeasible.
 - Preserve direct and manual bugfix isolation and prevent bugfix from mutating workflow, review, plan, or artifact lifecycle state.
 - Correct the handoff so implementation changes go to independent `code-review` before later rationale, verification, or PR stages.
-- Reduce both words and bytes for the complete shipped package while preserving every current safety obligation and supported defect class.
+- Simplify the complete shipped package where truth permits, report word and byte effects, and never omit required behavior to force a reduction.
 
 ## Non-goals
 
@@ -61,11 +61,11 @@ This could reduce words and bytes with minimal change. It would not close the op
 
 ### Option 2: Compact one-file contract with closed classifications
 
-This retains one `SKILL.md`, removes repetition, and adds explicit operation, evidence, authority, stop, result, and handoff rules. Every invocation loads the same smaller package, and the common fix path does not pay for navigation or duplicated reference context. This is the recommended option.
+This retains one `SKILL.md`, removes repetition where possible, and adds explicit operation, evidence, authority, stop, result, and handoff rules. Every invocation loads the same truthful package, and the common fix path does not pay for navigation or duplicated reference context. This is the recommended option.
 
 ### Option 3: Compact root plus a conditional fix-execution reference
 
-This would make diagnosis-only requests cheaper by loading detailed mutation procedure only for fixes. Current repository evidence does not establish `bugfix` as a frequent diagnosis-only routing surface, and a full fix would load at least as much content as today. The split should be reconsidered only if measured usage demonstrates a real diagnosis-only profile and both profiles improve.
+This would make diagnosis-only requests cheaper by loading detailed mutation procedure only for fixes. Current repository evidence does not establish `bugfix` as a frequent diagnosis-only routing surface, and a full fix would load at least as much content as today. Reconsider the split only if measured usage demonstrates a real diagnosis-only profile and a net usability or loading benefit without semantic loss.
 
 ### Option 4: Separate diagnosis and bugfix skills
 
@@ -279,7 +279,7 @@ Add deterministic contract fixtures for at least:
 
 Create a rule-disposition ledger for every behaviorally meaningful line in the current `bugfix` skill and a literal-consumer inventory for validator- or documentation-sensitive terms. Prove canonical, generated, packed, archived, release-candidate, and installed package parity with existing repository tooling.
 
-Measure LF-normalized Unicode whitespace-separated words and UTF-8 bytes for the current and proposed root. Because no resource is added, the root and complete package are the same measurement. Acceptance requires both measures to decrease; moving text to contributor-only evidence does not count as semantic preservation unless one current owner remains.
+Measure and report LF-normalized Unicode whitespace-separated words and UTF-8 bytes for the current and proposed root. Because no resource is added, the root and complete package are the same measurement. Counts are diagnostic evidence, not semantic acceptance gates. The implementation MUST preserve the complete approved contract even when truthful wording increases one or both counts, and it MUST NOT move required behavior to contributor-only evidence merely to improve a metric.
 
 Use static scenarios and ordinary independent reviews. Do not execute Codex, Claude Code, opencode, another target agent, a live repair task, or an external issue or incident system as acceptance machinery.
 
@@ -320,18 +320,20 @@ Proposal acceptance requires all of the following:
 | `AC-BUGSIM-043` | Missing, absent, stale, invalid, or ambiguous required authority selects `stop-blocked`. |
 | `AC-BUGSIM-044` | Unresolved test feasibility selects `resolve-test-feasibility` and never permits production correction. |
 | `AC-BUGSIM-045` | Every action row is reachable and pairwise non-overlapping under deterministic fixtures. |
+| `AC-BUGSIM-046` | Word and byte counts are reported truthfully; semantic completeness and safety take precedence over count reduction. |
+| `AC-BUGSIM-047` | No required rule, value, write boundary, stop, or claim limit is omitted, abbreviated beyond deterministic interpretation, or relocated solely to improve a size metric. |
 
 ## Rollout and Rollback
 
 Author the focused bugfix-skill contract amendment, record exact legacy-rule dispositions, update the canonical skill and directly coupled validators or workflow guidance, and validate generated/install parity. Historical bugfix evidence and project artifacts are not rewritten.
 
-Roll back by reverting the canonical skill, focused contract, fixtures, and directly coupled documentation together. No data migration or external rollback is required. If the new classifications prove too verbose or fail to improve the complete package, retain the current one-file structure and restore the accepted legacy text rather than hiding cost in a new reference.
+Roll back by reverting the canonical skill, focused contract, fixtures, and directly coupled documentation together. No data migration or external rollback is required. If the truthful contract becomes materially harder to use, reassess its package boundary explicitly rather than deleting behavior or hiding cost in contributor-only evidence.
 
 ## Risks and Mitigations
 
 | Risk | Mitigation |
 | --- | --- |
-| Closed classifications make a small skill longer | Remove narrative duplication and require strict complete-package word and byte reduction. |
+| Closed classifications make a small skill longer | Remove genuine duplication, disclose the measured cost, and preserve required semantics even when counts grow. |
 | Diagnosis-only broadens the skill trigger unexpectedly | Keep frontmatter explicit, preserve direct `$bugfix` as fix intent for a concrete defect, and test ambiguous ordinary questions. |
 | Strong reproduction rules block legitimate hard-to-reproduce defects | Permit exact deterministic alternative proof with named uncertainty and blast-radius controls; do not permit unsupported inference. |
 | Contract-gap routing adds unnecessary ceremony for obvious regressions | Allow `resolvable-restoration` only when one current authoritative behavior basis exists and no new observable contract is invented. |
@@ -363,7 +365,7 @@ The specification may choose exact field names and fixture representation, but i
 - Keep governed-signal validation fail-closed without granting workflow-state authority.
 - Use exact portable and governed write sets; keep upstream lifecycle and review surfaces read-only.
 - Route changed implementation to `code-review` and keep later gates separate.
-- Require strict word and byte reduction for the complete package.
+- Report complete-package word and byte changes, but make semantic truth, determinism, and safety controlling; never force metric reduction by omitting required behavior.
 - Use deterministic static acceptance and existing package tooling; do not use target-agent runtime execution.
 
 ## Next Artifacts
@@ -390,12 +392,13 @@ Ready for same-stage proposal rereview. This portable proposal is not accepted, 
 | Create a new branch | in scope | Delivery branch `proposal/bugfix-skill-simplification` |
 | Generate a durable proposal | in scope | This artifact |
 | Perform independent `$proposal-review` | in scope | Readiness; Next Artifacts |
+| Implement the truthful contract even when required words or tokens do not decrease | in scope | Goals; Testing and Verification Strategy; AC-BUGSIM-046 through AC-BUGSIM-047; Decision Log |
 
 ## Scope budget
 
 | Work item | Treatment | Reason |
 | --- | --- | --- |
-| Compact universal bugfix contract | core to this proposal | It owns the selected behavior and size improvement. |
+| Compact universal bugfix contract | core to this proposal | It owns the selected behavior; size is measured without overriding truth. |
 | Diagnosis-versus-fix authority | core to this proposal | It closes the highest-risk ambiguity. |
 | Reproduction, contract, cause, and regression-proof states | core to this proposal | They make mutation eligibility and claims deterministic. |
 | Governed-signal and lifecycle write boundaries | same-slice dependency | The public skill must remain safe inside active planned work. |
@@ -403,6 +406,6 @@ Ready for same-stage proposal rereview. This portable proposal is not accepted, 
 | Canonical skill, fixtures, and directly coupled validator changes | separate implementation slice | They implement and prove the later approved contract. |
 | Generated, archived, and installed parity | same-slice dependency | Published-skill compatibility must be proven with the implementation. |
 | Separate diagnosis skill | out of scope | It lacks a distinct durable artifact or gate and would fragment ownership. |
-| Conditional execution reference | deferable follow-up | Reconsider only if measured real usage proves a diagnosis-only loading profile and both profiles improve. |
+| Conditional execution reference | deferable follow-up | Reconsider only if measured usage proves a genuine loading boundary; do not add one merely to hide text size. |
 | Debugging or automated repair engine | out of scope | It adds runtime and architecture beyond text-contract optimization. |
 | Workflow autoprogression changes | out of scope | Bugfix remains isolated or explicit-step under the current workflow contract. |
