@@ -10,7 +10,7 @@ Use proof before correction. Bind one repository, one concrete defect, and one e
 
 ## Operation and authority
 
-Operation is exactly `diagnose-only` or `fix`. Explicit diagnosis, explanation, reproduction, or root-cause wording selects `diagnose-only`, even with `$bugfix`. Explicit repair wording, or bare `$bugfix` naming one concrete defect and no narrower outcome, selects `fix`. Conflicting intent permits diagnosis but blocks mutation. A later diagnosis-to-fix expansion MUST rerun preflight.
+Operation is exactly `diagnose-only` or `fix`. Explicit diagnosis, explanation, reproduction, or root-cause wording selects `diagnose-only`, even with `$bugfix`. Explicit repair wording, or bare `$bugfix` naming one concrete defect and no narrower outcome, selects `fix`. An invocation without one concrete defect returns `blocked` without mutation. Conflicting intent permits diagnosis but blocks mutation. A later diagnosis-to-fix expansion MUST rerun preflight.
 
 Command authority is exactly `not-required`, `current-bounded`, `absent-or-stale`, or `invalid-or-ambiguous`. Write authority is exactly `none`, `portable-request-bound`, `governed-scope-bound`, `absent-or-stale`, or `invalid-or-ambiguous`. Bind every writable fix to repository identity, normalized defect, authority source, permitted command owner or set, path roots, write categories, governing contract, and current evidence identities.
 
@@ -30,7 +30,7 @@ Classify these axes before dependent consistency checks; unknown values fail clo
 
 `resolvable-restoration` binds one current authoritative source, owner, precedence, affected behavior, expected result, and conflict check. It restores conformance without adding, removing, broadening, narrowing, or reinterpreting observable behavior. Implementation, a test, a report, or plausible expectation alone is insufficient.
 
-A `deterministic-alternative` is an independently repeatable command, fixture, static contract check, or controlled manual procedure. Record exact inputs, environment assumptions, steps, expected observation, objective completion, and limitations. Subjective inspection and infeasibility alone are not proof.
+A `deterministic-alternative` is an independently repeatable command, fixture, static contract check, or controlled manual procedure. Record exact inputs, environment assumptions, steps, expected observation, objective completion, and limitations. Classify an incomplete claimed deterministic alternative as `missing` before table evaluation. Subjective inspection and infeasibility alone are not proof.
 
 ## Phases and proof
 
@@ -55,7 +55,7 @@ Root cause is exactly `implementation-defect`, `contract-gap`, `integration-mism
 
 Current action is exactly `stop-blocked`, `route-owner`, `continue-diagnosis`, `complete-diagnosis`, `resolve-test-feasibility`, `author-automated-proof`, `apply-production-correction`, `run-post-fix-validation`, or `complete-fix`. Apply these conditions in order:
 
-1. Unknown value, conflicting axis, unsafe identity, invalid authority, missing required authority, or fix with write authority `none`: `stop-blocked`.
+1. Unknown value, cross-axis inconsistency, unsafe identity, invalid authority, missing required authority, or fix with write authority `none`: `stop-blocked`. The recognized contract basis value `conflicting` routes under the next rule; it is not a cross-axis inconsistency by itself.
 2. `contract-gap`, or basis `missing`, `conflicting`, or `behavior-change-request`: `route-owner` to `spec` or the contract owner.
 3. Cause `unknown`, or unresolved reproduction/support: `continue-diagnosis`.
 4. A required long-lived design decision: `route-owner` to `architecture`.

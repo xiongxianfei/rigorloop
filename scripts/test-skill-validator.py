@@ -11558,6 +11558,36 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
         ):
             self.assertIn(required_row, self.skill)
 
+        table = self.skill.split("Use this exhaustive proof-action table:", 1)[1].split("Before production mutation", 1)[0]
+        rows = []
+        for line in table.splitlines():
+            if not line.startswith("|") or "---" in line or "Test feasibility" in line:
+                continue
+            rows.append(tuple(cell.strip() for cell in line.strip("|").split("|")))
+        self.assertEqual(len(rows), 6)
+
+        feasibilities = ("feasible", "unresolved", "infeasible-with-rationale")
+        proofs = ("failing-automated-test", "conflicting", "missing", "deterministic-alternative")
+        for feasibility in feasibilities:
+            for proof in proofs:
+                matches = []
+                for row_feasibility, row_proof, action in rows:
+                    feasibility_matches = row_feasibility == "Any recognized" or row_feasibility == feasibility
+                    proof_matches = proof in tuple(part.strip() for part in row_proof.replace("complete ", "").split(" or "))
+                    if feasibility_matches and proof_matches:
+                        matches.append(action)
+                self.assertEqual(
+                    len(matches),
+                    1,
+                    f"expected one proof action for {feasibility}/{proof}, got {matches}",
+                )
+
+    def test_edge_classification_prevents_action_overlap(self) -> None:
+        self.assertIn("without one concrete defect returns `blocked`", self.skill)
+        self.assertIn("incomplete claimed deterministic alternative as `missing`", self.skill)
+        self.assertIn("cross-axis inconsistency", self.skill)
+        self.assertIn("contract basis value `conflicting` routes under the next rule", self.skill)
+
     def test_operation_command_and_write_authority_are_independent(self) -> None:
         for value in (
             "diagnose-only",
