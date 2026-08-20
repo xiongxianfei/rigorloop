@@ -6,7 +6,7 @@ Portable authoring. No governed change record exists for this proposal, and this
 
 ## Status
 
-draft
+under review
 
 ## Problem
 
@@ -79,22 +79,32 @@ Deterministic automation could standardize some steps, but reproduction, tests, 
 
 Keep `bugfix` as a single-resource package and rewrite `SKILL.md` as a compact support-stage contract.
 
-Use two operations:
+Use exactly two operations:
 
 ```text
 diagnose-only
 fix
 ```
 
-An explicit request to explain, investigate, or identify root cause selects `diagnose-only` and grants no file mutation. An explicit request to fix, repair, resolve, or use `$bugfix` against a concrete defect selects `fix`. Ambiguous intent permits diagnosis but blocks mutation until the user supplies fix authority. Late evidence cannot silently broaden diagnosis into repair.
+Explicit requested outcome controls operation selection; naming the skill does not override diagnosis-only wording.
 
-Use closed evidence states:
+| Request shape | Resolved operation | Mutation result |
+| --- | --- | --- |
+| Explicitly explain, investigate, reproduce, or identify root cause | `diagnose-only` | No file mutation, including when `$bugfix` is named |
+| Explicitly fix, repair, or resolve a concrete defect | `fix` | Continue to mutation preflight |
+| Bare `$bugfix` with one concrete defect and no narrower outcome | `fix` | Continue to mutation preflight |
+| No concrete defect | none | Block and request a defect target |
+| Conflicting diagnosis-only and repair instructions | `diagnose-only` | Return useful diagnosis but block mutation pending one explicit outcome |
+
+Expanding `diagnose-only` to `fix` later in the invocation requires fresh mutation preflight against current repository, contract, evidence, target, and authority identities. Prior diagnostic evidence may be reused only when it remains current; the operation never broadens silently.
+
+Use independent closed evidence axes:
 
 ```text
 reproduction:
   reproduced
-  alternative-proof
-  not-reproduced
+  deterministic-alternative
+  not-established
   conflicting
 
 contract basis:
@@ -104,14 +114,42 @@ contract basis:
   conflicting
   behavior-change-request
 
+automated-test feasibility:
+  feasible
+  infeasible-with-rationale
+  unresolved
+
 regression proof:
   failing-automated-test
   deterministic-alternative
-  infeasible-with-rationale
   missing
+  conflicting
+
+root-cause support:
+  supported
+  uncertain
+  conflicting
 ```
 
-`alternative-proof` is a pre-fix deterministic proof such as an exact command, fixture, static contract check, or controlled manual reproduction. It is not a guess based on code inspection. `infeasible-with-rationale` records why an automated regression test cannot be created and still requires another exact verification surface before mutation. `not-reproduced`, `conflicting`, or `missing` proof blocks mutation unless the current contract defines a narrower safe diagnostic-only result.
+`deterministic-alternative` is exact repeatable pre-fix evidence such as a command, fixture, static contract check, or controlled manual procedure. Code inspection or a plausible theory is not proof. Automated-test infeasibility is an explanation of test feasibility, never regression proof and never mutation authority.
+
+Mutation eligibility is closed:
+
+Evaluate the rows from top to bottom. The first matching row is the only result; `any` includes every recognized value on that axis.
+
+| Contract basis | Reproduction | Root-cause support | Mutation authority | Regression proof | Result |
+| --- | --- | --- | --- | --- | --- |
+| `settled` or `resolvable-restoration` | `reproduced` or `deterministic-alternative` | `supported` | current | `failing-automated-test` | Fix may proceed |
+| `settled` or `resolvable-restoration` | `reproduced` or `deterministic-alternative` | `supported` | current | `deterministic-alternative`, with test feasibility `infeasible-with-rationale` | Fix may proceed with the exact rationale and proof recorded |
+| `settled` or `resolvable-restoration` | `reproduced` or `deterministic-alternative` | `supported` | current | `deterministic-alternative`, with test feasibility `feasible` or `unresolved` | Block; produce the failing automated regression test or resolve feasibility |
+| `missing`, `conflicting`, or `behavior-change-request` | any | any | any | any | Route to the contract owner; no bugfix mutation |
+| Any otherwise eligible row | any | any | absent or stale | any | Block before write |
+| Any otherwise eligible row | `not-established` or `conflicting` | any | any | any | Continue diagnosis or block; no mutation |
+| Any otherwise eligible row | any | `uncertain` or `conflicting` | any | any | Continue diagnosis or route to the likely owner; no mutation |
+| Any otherwise eligible row | any | any | any | `missing` or `conflicting` | Block before write |
+| Unknown value on any closed axis | any | any | any | any | Fail closed before consistency checks |
+
+One exact evidence artifact may satisfy both reproduction and regression-proof roles only when the unchanged command or procedure demonstrates the pre-fix failure and post-fix success, its identity and both observations are recorded, and automated-test feasibility is separately classified. Otherwise the roles require distinct evidence.
 
 Use a closed root-cause vocabulary:
 
@@ -139,17 +177,30 @@ single-governed-candidate
 invalid-or-ambiguous-governed-signal
 ```
 
-A valid governed candidate may read the exact current change, plan, and approved commands needed to bound the fix. Loading or discovering that context never grants workflow mutation. Invalid, conflicting, escaped, duplicated, or stale signals stop without falling back to portable behavior. Bugfix writes only the authorized implementation, regression proof, narrowly required durable documentation, and bugfix-owned execution evidence. It does not create or advance a workflow run, change plan or milestone state, settle reviews, or claim downstream readiness.
+A valid governed candidate may read the exact current change, plan, and approved commands needed to bound the fix. Loading or discovering that context never grants workflow mutation. Invalid, conflicting, escaped, duplicated, or stale signals stop without falling back to portable behavior.
+
+Use this exact write boundary:
+
+| Context and operation | Permitted writes |
+| --- | --- |
+| Portable `diagnose-only` | None |
+| Portable `fix` | Explicitly authorized implementation and tests; directly coupled non-authoritative documentation or examples only when explicitly in scope |
+| Governed `diagnose-only` | None |
+| Governed `fix` | Exact currently authorized implementation and tests; an existing explicitly authorized bugfix evidence destination; directly coupled non-authoritative documentation only when the governing scope names it |
+
+The following surfaces are always read-only to `bugfix`: proposals, specifications, architecture and ADRs, plans, `change.yaml`, workflow or automation state, reviews and review resolution, explain-change artifacts, verify evidence, PR artifacts, and release or publication state. Normative documentation changes route to the owning skill. If governed execution evidence is required but no exact existing bugfix-owned destination and authority resolve, report evidence in the invocation output and stop before claiming durable recording; do not invent a path, lifecycle entry, or workflow state. Every permitted write must remain within the exact current target and authority scope.
 
 Completion requires rerunning the original reproduction or its exact alternative, the regression proof, and the smallest surrounding validation justified by blast radius. The output reports commands actually run, unexecuted checks, remaining uncertainty, changed surfaces, and the next owning stage. When implementation changed, the immediate next stage is `code-review`; later `explain-change`, `verify`, and `pr` remain separate gates. Diagnosis-only returns findings and owner routing with no automatic continuation.
 
 ## Expected Behavior Changes
 
 - Root-cause questions remain read-only unless the user separately authorizes a fix.
-- Direct `$bugfix` with a concrete defect remains an explicit fix invocation and remains isolated from automatic downstream stages.
+- Direct `$bugfix` with a concrete defect and no narrower requested outcome remains an explicit fix invocation and remains isolated from automatic downstream stages; explicit diagnosis wording remains read-only.
 - A missing or conflicting expected-behavior contract no longer permits a speculative product patch. Restoration may proceed only from one exact current basis that does not invent new behavior.
 - Non-reproducible failures require deterministic alternative proof or stop; code inspection alone does not become successful reproduction.
-- Regression-test exceptions require a specific infeasibility rationale and another exact proof surface.
+- Regression-test exceptions classify feasibility separately, require a specific infeasibility rationale and deterministic regression proof, and never treat infeasibility itself as proof.
+- A diagnosis expanded into a fix reruns mutation preflight against current identities and authority.
+- Portable and governed fixes use exact write sets; all upstream lifecycle and review artifacts remain read-only.
 - Weakening a test is treated as a test-defect correction only when current contract evidence supports the new expectation.
 - Successful fix output routes implementation changes to independent `code-review`, not directly to `explain-change` or `pr`.
 - Result claims distinguish diagnosis, applied correction, local proof, and downstream readiness. Bugfix never claims review, verification, CI, branch, PR, release, deployment, or lifecycle completion.
@@ -166,15 +217,17 @@ Architecture becomes required if implementation introduces a debugging or repair
 
 Add deterministic contract fixtures for at least:
 
-- diagnosis-only requests that attempt no mutation;
+- diagnosis-only requests that attempt no mutation, including explicit `$bugfix` diagnosis wording;
 - explicit fixes with a reproduced failure and failing regression test;
+- bare `$bugfix` with one concrete defect, conflicting intent, no concrete defect, and late diagnosis-to-fix expansion;
 - ambiguous intent that blocks mutation;
-- non-reproduced failures with and without acceptable alternative proof;
+- non-established failures with and without acceptable deterministic alternative proof;
 - missing, conflicting, and behavior-changing contract bases;
+- every mutation-eligibility row, test infeasibility without proof, and shared versus distinct reproduction/regression evidence;
 - implementation, test, environment, external dependency, race, and unknown root causes;
 - test weakening without contract evidence;
 - governed valid, malformed, stale, conflicting, and duplicated signals;
-- attempted workflow, review, plan, verification, or PR-state mutation;
+- portable and governed write boundaries, missing governed evidence destinations, non-authoritative docs, and attempted proposal, spec, architecture, plan, change-record, workflow, review, verification, or PR-state mutation;
 - successful fix handoff to `code-review` and diagnosis-only owner routing;
 - exact reproduction rerun and blast-radius validation requirements;
 - unknown closed-vocabulary values failing before consistency checks.
@@ -184,6 +237,23 @@ Create a rule-disposition ledger for every behaviorally meaningful line in the c
 Measure LF-normalized Unicode whitespace-separated words and UTF-8 bytes for the current and proposed root. Because no resource is added, the root and complete package are the same measurement. Acceptance requires both measures to decrease; moving text to contributor-only evidence does not count as semantic preservation unless one current owner remains.
 
 Use static scenarios and ordinary independent reviews. Do not execute Codex, Claude Code, opencode, another target agent, a live repair task, or an external issue or incident system as acceptance machinery.
+
+Proposal acceptance requires all of the following:
+
+| ID | Criterion |
+| --- | --- |
+| `AC-BUGSIM-013` | Explicit diagnosis wording selects `diagnose-only` even when `$bugfix` is named. |
+| `AC-BUGSIM-014` | Bare `$bugfix` selects `fix` only with one concrete defect and no narrower requested outcome. |
+| `AC-BUGSIM-015` | Conflicting intent blocks mutation, and later diagnosis-to-fix expansion reruns mutation preflight. |
+| `AC-BUGSIM-016` | Automated-test feasibility and regression proof are independent closed axes. |
+| `AC-BUGSIM-017` | `infeasible-with-rationale` alone never authorizes mutation. |
+| `AC-BUGSIM-018` | Every mutation-eligibility combination yields fix, diagnose/route, or blocked-before-write. |
+| `AC-BUGSIM-019` | Shared reproduction and regression evidence is accepted only under the exact unchanged-evidence rule. |
+| `AC-BUGSIM-020` | Portable and governed diagnosis perform no writes. |
+| `AC-BUGSIM-021` | Portable and governed fixes write only their exact authorized implementation, test, evidence, and non-authoritative documentation surfaces. |
+| `AC-BUGSIM-022` | Upstream lifecycle, review, verification, PR, release, and publication surfaces remain read-only. |
+| `AC-BUGSIM-023` | Missing governed evidence placement never creates an implicit path or lifecycle state. |
+| `AC-BUGSIM-024` | Unknown closed-vocabulary values fail before consistency checks. |
 
 ## Rollout and Rollback
 
@@ -215,10 +285,13 @@ The specification may choose exact field names and fixture representation, but i
 - Keep one compact `SKILL.md`; do not add references, assets, or scripts in the first version.
 - Optimize authority and evidence semantics rather than pursuing a resource split without a proven conditional profile.
 - Support exactly `diagnose-only` and `fix` operations.
-- Treat direct `$bugfix` against a concrete defect as explicit fix authority while keeping all continuation explicit-step.
-- Require reproduction or deterministic alternative proof before mutation.
+- Make explicit requested outcome authoritative; treat bare `$bugfix` against a concrete defect as fix authority only when no narrower outcome is stated.
+- Require fresh mutation preflight when diagnosis later expands to repair.
+- Separate reproduction, automated-test feasibility, regression proof, and root-cause support; infeasibility is never proof.
+- Require reproduction or deterministic alternative evidence, supported root cause, current authority, and exact regression proof before mutation.
 - Route conflicting or behavior-changing contracts to their owning stages.
 - Keep governed-signal validation fail-closed without granting workflow-state authority.
+- Use exact portable and governed write sets; keep upstream lifecycle and review surfaces read-only.
 - Route changed implementation to `code-review` and keep later gates separate.
 - Require strict word and byte reduction for the complete package.
 - Use deterministic static acceptance and existing package tooling; do not use target-agent runtime execution.
@@ -236,7 +309,7 @@ None yet
 
 ## Readiness
 
-Ready for independent proposal review. This portable proposal is not accepted, does not establish a governed change, and is not ready for specification until proposal-review approves it.
+Ready for same-stage proposal rereview. This portable proposal is not accepted, does not establish a governed change, and is not ready for specification until proposal-review approves it.
 
 ## Initial intent preservation
 
