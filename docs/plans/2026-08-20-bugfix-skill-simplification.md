@@ -2,7 +2,7 @@
 
 ## Purpose / big picture
 
-Replace the small but ambiguous published bugfix workflow with a smaller one-file contract that deterministically separates diagnosis, commands, writes, proof authoring, production correction, validation, owner routing, results, and handoff. Freeze semantic compatibility first, implement the compact contract second, and prove package reduction and parity third.
+Replace the small but ambiguous published bugfix workflow with a truthful one-file contract that deterministically separates diagnosis, commands, writes, proof authoring, production correction, validation, owner routing, results, and handoff. Freeze semantic compatibility first, implement the compact contract second, and prove truthful measurements and package parity third.
 
 ## Current Handoff Summary
 
@@ -122,10 +122,10 @@ The principal hazards are behavioral loss during compression, circular regressio
 - Rollback/recovery:
   - restore the previous canonical skill and directly coupled consumers together, then rerun the full skill and build suites
 
-### M3. Prove reduction, boundary coverage, and package parity
+### M3. Prove measurements, boundary coverage, and package parity
 
 - Milestone kind: implementation
-- Goal: Reconcile every frozen rule and literal, prove every boundary outcome, and validate a strictly smaller byte-identical package through all supported projections.
+- Goal: Reconcile every frozen rule and literal, prove every boundary outcome, report exact size deltas, and validate a byte-identical package through all supported projections without sacrificing required behavior to a metric.
 - Requirements: R1, R23-R27; all approved boundaries and interactions.
 - Architecture decisions: existing build and adapter-package architecture; no ADR.
 - Files/components likely touched:
@@ -138,7 +138,8 @@ The principal hazards are behavioral loss during compression, circular regressio
 - Tests and proof:
   - original reproduction, identity-equal regression proof, blast-radius checks, and failure claims remain distinct
   - every requirement, example, edge case, boundary, interaction, legacy rule, and sensitive literal has final proof or disposition
-  - root and complete package both decrease in normalized words and UTF-8 bytes
+  - before/after normalized words and UTF-8 bytes are reported for the root and complete package; any token estimate identifies its tokenizer or model basis
+  - semantic completeness, deterministic interpretation, safety, and parity pass regardless of whether a measured count decreases
   - canonical, generated, packed, archived, release-candidate, and clean-installed bugfix packages are byte-identical
 - Implementation steps:
   - run the focused and broad contract suites
@@ -154,14 +155,14 @@ The principal hazards are behavioral loss during compression, circular regressio
   - `python scripts/test-build-skills.py`
   - `python scripts/test-adapter-distribution.py`
   - `python scripts/build-skills.py --check`
-- Expected observable result: the complete shipped package is smaller, semantically complete, and identical through every supported projection.
+- Expected observable result: the complete shipped package is semantically complete, truthfully measured, and identical through every supported projection.
 - Completion criteria: all focused, broad, boundary, build, distribution, measurement, and reconciliation proof passes with no unresolved rule, literal, gap, or growth.
 - Required evidence: measurement, semantic-preservation, and M3 package-proof records.
 - Review handoff: independent `code-review` of final proof and package-chain evidence.
 - Optional commit boundary: `M3: prove bugfix simplification`
 - Risks:
-  - a smaller root hides a changed generated or installed copy
-  - a word decrease masks a byte increase or semantic loss
+  - a measured root change hides a changed generated or installed copy
+  - a word, byte, or token target masks semantic loss or causes required behavior to move outside the published contract
 - Rollback/recovery:
   - restore the prior skill and consumer set, rebuild projections, and discard temporary package trees
 
@@ -199,7 +200,7 @@ The principal hazards are behavioral loss during compression, circular regressio
 
 - M1 owns rule, literal, scenario, unknown-value, baseline, and architecture-trigger proof.
 - M2 owns the executable closed contract, authority, state-machine, routing, write-boundary, and claim proof.
-- M3 owns final boundary coverage, semantic reconciliation, size reduction, and canonical-through-installed parity.
+- M3 owns final boundary coverage, semantic reconciliation, truthful size reporting, metric-gaming prevention, and canonical-through-installed parity.
 - Formal code review, review resolution, explanation, verify, and PR review own later lifecycle judgment.
 
 ## Risks and recovery
@@ -223,7 +224,8 @@ The principal hazards are behavioral loss during compression, circular regressio
 | 2026-08-20 | Use three implementation milestones plus lifecycle closeout. | Preservation, contract mutation, and distribution proof have distinct rollback and review boundaries. | One large rewrite; prose-only milestones. |
 | 2026-08-20 | Keep the package flat. | Every real fix needs the complete compact procedure and no measured conditional profile justifies another resource. | Conditional fix reference; separate diagnosis skill. |
 | 2026-08-20 | Establish fixtures and ledgers before editing the skill. | Compression is safe only when every current rule and consumer-sensitive literal has an owner. | Rewrite first and reconstruct compatibility afterward. |
-| 2026-08-20 | Prove size and package parity only after semantic closure. | Smaller text is not success when behavior or a shipped projection drifts. | Size-first acceptance; root-only measurement. |
+| 2026-08-20 | Prove size and package parity only after semantic closure. | A smaller count is not success when behavior or a shipped projection drifts. | Size-first acceptance; root-only measurement. |
+| 2026-08-20 | Treat word, byte, and tokenizer-specific token counts as diagnostic evidence rather than mandatory reductions. | The complete published contract must reflect the truth even when required deterministic wording increases a count. | Retain the legacy ceiling; omit required inline behavior; hide cost in contributor-only evidence. |
 
 ## Readiness
 
