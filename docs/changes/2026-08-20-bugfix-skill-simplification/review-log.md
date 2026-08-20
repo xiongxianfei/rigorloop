@@ -15,6 +15,7 @@ This ledger records formal lifecycle reviews for the bugfix skill-simplification
 | `test-spec-review-r1` | `test-spec-review` | `r1` | `specs/bugfix-skill-simplification.test.md` at commit `30a71a35` | `reviews/test-spec-review-r1.md` | `approved` | 0 | `recorded` |
 | `test-spec-review-r2` | `test-spec-review` | `r2` | `specs/bugfix-skill-simplification.test.md` at commit `42b388a5` | `reviews/test-spec-review-r2.md` | `approved` | 0 | `recorded` |
 | `code-review-m1-r1` | `code-review` | `r1` | M1 range `af9f8f7b..3d6c2baa` | `reviews/code-review-m1-r1.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-m2-r4` | `code-review` | `r4` | M2 correction `bda11b3b..f6ac0ec1` | `reviews/code-review-m2-r4.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 
@@ -54,5 +55,5 @@ Status: changes-requested
 Detailed record: reviews/code-review-m2-r3.md
 Resolution: review-resolution.md#code-review-m2-r3
 Material findings: BUGSIM-CR3
-Open findings: BUGSIM-CR3
+Open findings: none
 Recording status: recorded
