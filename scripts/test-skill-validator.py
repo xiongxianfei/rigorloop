@@ -11479,6 +11479,8 @@ class CiMaintenanceSkillSimplificationTests(unittest.TestCase):
 class BugfixSkillSimplificationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.root = ROOT / "docs" / "changes" / "2026-08-20-bugfix-skill-simplification"
+        self.skill_dir = ROOT / "skills" / "bugfix"
+        self.skill = (self.skill_dir / "SKILL.md").read_text(encoding="utf-8")
 
     def test_preservation_inventories_cover_closed_ownership(self) -> None:
         rules = (self.root / "bugfix-rule-disposition.yaml").read_text(encoding="utf-8")
@@ -11518,6 +11520,93 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
             "separate-diagnosis-skill: absent",
         ):
             self.assertIn(trigger, rules)
+
+    def test_flat_package_and_strict_size_reduction(self) -> None:
+        files = sorted(path.relative_to(self.skill_dir).as_posix() for path in self.skill_dir.rglob("*") if path.is_file())
+        self.assertEqual(files, ["SKILL.md"])
+        normalized = self.skill.replace("\r\n", "\n").replace("\r", "\n")
+        self.assertLess(len(normalized.split()), 586)
+        self.assertLess(len(normalized.encode("utf-8")), 3761)
+
+    def test_operation_command_and_write_authority_are_independent(self) -> None:
+        for value in (
+            "diagnose-only",
+            "current-bounded",
+            "portable-request-bound",
+            "governed-scope-bound",
+            "invalid-or-ambiguous",
+            "one concrete defect",
+            "rerun preflight",
+        ):
+            self.assertIn(value, self.skill)
+
+    def test_proof_authoring_precedes_production_correction(self) -> None:
+        for value in (
+            "proof-authoring",
+            "production-correction",
+            "failing-automated-test",
+            "infeasible-with-rationale",
+            "deterministic-alternative",
+            "proof identity",
+        ):
+            self.assertIn(value, self.skill)
+        self.assertLess(self.skill.index("proof-authoring"), self.skill.index("production-correction"))
+
+    def test_action_precedence_protects_completed_and_failed_corrections(self) -> None:
+        for value in (
+            "stop-blocked",
+            "route-owner",
+            "continue-diagnosis",
+            "resolve-test-feasibility",
+            "author-automated-proof",
+            "apply-production-correction",
+            "run-post-fix-validation",
+            "complete-fix",
+        ):
+            self.assertIn(value, self.skill)
+        completed = self.skill.index("correction exists and proof passes")
+        eligible = self.skill.index("eligible fix without correction")
+        self.assertLess(completed, eligible)
+
+    def test_causes_and_terminal_results_are_closed(self) -> None:
+        for value in (
+            "implementation-defect",
+            "contract-gap",
+            "configuration-or-environment",
+            "external-dependency",
+            "test-defect",
+            "unknown",
+            "diagnosis-complete",
+            "diagnosis-incomplete",
+            "fix-applied",
+            "routed-to-owner",
+            "blocked",
+        ):
+            self.assertIn(value, self.skill)
+
+    def test_governed_signals_and_write_owners_fail_closed(self) -> None:
+        for value in (
+            "no-governed-signal",
+            "single-governed-candidate",
+            "invalid-or-ambiguous-governed-signal",
+            "never fall back",
+            "change.yaml",
+            "read-only",
+            "do not invent",
+        ):
+            self.assertIn(value, self.skill)
+
+    def test_result_and_handoff_claims_are_bounded(self) -> None:
+        for value in (
+            "commands actually run",
+            "unexecuted checks",
+            "changed surfaces",
+            "code-review",
+            "no stage continues automatically",
+            "PR readiness",
+            "lifecycle completion",
+        ):
+            self.assertIn(value, self.skill)
 
 
 if __name__ == "__main__":
