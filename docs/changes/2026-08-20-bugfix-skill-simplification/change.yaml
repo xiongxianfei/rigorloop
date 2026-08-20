@@ -40,17 +40,14 @@ artifact_states:
       round: r1
 
 workflow_state:
-  lifecycle_state: paused
-  current_stage: review-resolution
-  next_stage: proposal
-  blocker:
-    code: owner-decision
-    evidence:
-      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m2-r2.md
-      - docs/changes/2026-08-20-bugfix-skill-simplification/review-resolution.md
+  lifecycle_state: active
+  current_stage: spec
+  next_stage: spec-review
+  blocker: null
   evidence:
     - docs/proposals/2026-08-20-bugfix-skill-simplification.md
     - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r5.md
     - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md
     - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
     - specs/bugfix-skill-simplification.md
@@ -129,12 +126,13 @@ workflow:
       bound_at: "2026-08-20T13:00:00-07:00"
       completion:
         rule: formal verify result is recorded
-    status: paused
-    current_stage: review-resolution
-    stop_reason: needs-decision-BUGSIM-CR2
+    status: active
+    current_stage: spec
+    stop_reason: null
     evidence:
       - docs/proposals/2026-08-20-bugfix-skill-simplification.md
       - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r5.md
       - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md
       - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
       - specs/bugfix-skill-simplification.md
@@ -171,7 +169,7 @@ requirements:
   - Keep bugfix as one compact skill while closing diagnosis, command, write, proof, routing, and result contracts.
   - Separate diagnosis, proof authoring, production correction, and post-fix validation with exact authority and evidence gates.
   - Preserve upstream and lifecycle ownership, explicit-step handoff, deterministic proof identity, and fail-closed governed signals.
-  - Reduce complete-package words and bytes without adding resources, scripts, runtime machinery, or target-agent acceptance.
+  - Measure complete-package words and bytes without letting those metrics override truthful semantics, and add no resources, scripts, runtime machinery, or target-agent acceptance.
 
 tests:
   - Independent specification, plan, and test-spec reviews before implementation.
@@ -193,6 +191,7 @@ changed_files:
   - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r2.md
   - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r3.md
   - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r5.md
   - docs/changes/2026-08-20-bugfix-skill-simplification/change.yaml
   - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
   - specs/bugfix-skill-simplification.md
