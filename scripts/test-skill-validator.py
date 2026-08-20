@@ -11502,6 +11502,8 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
         scenarios = (self.root / "fixtures" / "scenarios.yaml").read_text(encoding="utf-8")
         for number in range(1, 16):
             self.assertIn(f"id: T{number}", scenarios)
+        self.assertIn("outcome: truthful-size-measurement", scenarios)
+        self.assertNotIn("outcome: word-and-byte-reduction", scenarios)
 
     def test_baseline_binds_current_flat_package(self) -> None:
         baseline = (self.root / "evidence" / "profile-size-baseline.md").read_text(encoding="utf-8")
@@ -11509,6 +11511,8 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
         self.assertIn("586", baseline)
         self.assertIn("3761", baseline)
         self.assertIn("one file", baseline.lower())
+        self.assertIn("diagnostic evidence", baseline)
+        self.assertNotIn("strictly smaller", baseline)
 
     def test_architecture_triggers_remain_absent(self) -> None:
         rules = (self.root / "bugfix-rule-disposition.yaml").read_text(encoding="utf-8")
@@ -11529,6 +11533,31 @@ class BugfixSkillSimplificationTests(unittest.TestCase):
         self.assertGreater(len(normalized.encode("utf-8")), 0)
         self.assertIn("Counts are diagnostic", self.skill)
         self.assertIn("MUST NOT omit, blur, or relocate required behavior", self.skill)
+
+        measurements = (self.root / "evidence" / "simplification-measurements.md").read_text(encoding="utf-8")
+        measured = re.search(
+            r"\| Canonical root and complete package \| (\d+) \| (\d+) \| ([+-]\d+) \| (\d+) \| (\d+) \| ([+-]\d+) \|",
+            measurements,
+        )
+        self.assertIsNotNone(measured)
+        before_words, after_words, word_delta, before_bytes, after_bytes, byte_delta = map(int, measured.groups())
+        self.assertEqual((before_words, before_bytes), (586, 3761))
+        self.assertEqual(after_words, len(normalized.split()))
+        self.assertEqual(after_bytes, len(normalized.encode("utf-8")))
+        self.assertEqual(word_delta, after_words - before_words)
+        self.assertEqual(byte_delta, after_bytes - before_bytes)
+        self.assertIn("A measured increase is acceptable", measurements)
+
+    def test_meaningful_legacy_rules_remain_executable(self) -> None:
+        for phrase in (
+            "unexpected behavior, failing evidence, incident, regression, or bug report",
+            "governing behavior, current code and tests, available bug evidence",
+            "smallest reliable reproduction",
+            "Assess blast radius and inspect nearby code for the same pattern",
+            "Fix the supported root cause with the smallest scoped change",
+            "Do not refactor unrelated code",
+        ):
+            self.assertIn(phrase, self.skill)
 
     def test_evidence_vocabularies_and_proof_table_are_complete(self) -> None:
         for value in (

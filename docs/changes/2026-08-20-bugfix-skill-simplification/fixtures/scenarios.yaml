@@ -27,6 +27,6 @@ scenarios:
   - id: T13
     outcome: governed-and-write-owner-isolation
   - id: T14
-    outcome: word-and-byte-reduction
+    outcome: truthful-size-measurement
   - id: T15
     outcome: package-projection-parity

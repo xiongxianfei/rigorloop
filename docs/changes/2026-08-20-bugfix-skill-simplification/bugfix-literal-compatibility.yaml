@@ -34,5 +34,5 @@ resource_consumers:
   - scripts/test-build-skills.py
   - scripts/test-adapter-distribution.py
   - dist/adapters/manifest.yaml
-required_headings: [Inputs, Classification and authority, Evidence and phases, Action selection, Write boundary, Completion and handoff, Evidence collection efficiency, When full-file read is required, Expected output]
+required_headings: [Operation and authority, Evidence, Phases and proof, "Cause, action, and result", Write boundary, Completion and handoff, Package measurement, Evidence collection efficiency, When full-file read is required, Expected output]
 result_fields: [operation, terminal-result, command-authority, write-authority, repository, defect-scope, commands-run, proof-identity, unexecuted-checks, uncertainty, changed-surfaces, next-owner]
