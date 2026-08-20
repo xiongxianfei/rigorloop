@@ -43,3 +43,16 @@ Resolution: review-resolution.md#code-review-m2-r2
 Material findings: BUGSIM-CR2
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-m2-r3
+Stage: code-review
+Round: r3
+Reviewed artifact: corrected M2 range `204e9689..bda11b3b`
+Status: changes-requested
+Detailed record: reviews/code-review-m2-r3.md
+Resolution: review-resolution.md#code-review-m2-r3
+Material findings: BUGSIM-CR3
+Open findings: BUGSIM-CR3
+Recording status: recorded
