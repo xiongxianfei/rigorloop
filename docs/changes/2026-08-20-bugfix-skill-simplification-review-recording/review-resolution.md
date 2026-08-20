@@ -4,12 +4,21 @@
 
 Closeout status: closed
 
-Review closeout: proposal-review-r4
+Review closeout: proposal-review-r5
 
-- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`
+- Reviews covered: `proposal-review-r1`, `proposal-review-r2`, `proposal-review-r3`, `proposal-review-r4`, `proposal-review-r5`
 - Findings resolved: 7
 - Unresolved findings: 0
-- Current result: all recorded findings are resolved and proposal-review-r4 approved the revised portable proposal.
+- Current result: all recorded findings are resolved and proposal-review-r5 approved the truth-first measurement revision.
+
+### proposal-review-r5
+
+Review ID: proposal-review-r5
+Status: approved
+Reviewed artifact: `docs/proposals/2026-08-20-bugfix-skill-simplification.md` at `sha256:e832cf8f4f1d82b9f48f8db936654732c90aef6371803bfa2fa2fb457fbabc63`
+Material findings: none
+Open findings: none
+Validation evidence: clean rereview record `reviews/proposal-review-r5.md`; review artifact, metadata, lifecycle, prose, and selected validation recorded after review.
 
 ### proposal-review-r4
 

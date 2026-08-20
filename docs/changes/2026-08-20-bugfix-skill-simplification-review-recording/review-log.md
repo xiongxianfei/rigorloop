@@ -57,3 +57,16 @@ Resolution: review-resolution.md#proposal-review-r4
 Material findings: none
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: proposal-review-r5
+Stage: proposal-review
+Round: 5
+Reviewed artifact: `docs/proposals/2026-08-20-bugfix-skill-simplification.md` at `sha256:e832cf8f4f1d82b9f48f8db936654732c90aef6371803bfa2fa2fb457fbabc63`
+Status: approved
+Detailed record: reviews/proposal-review-r5.md
+Resolution: review-resolution.md#proposal-review-r5
+Material findings: none
+Open findings: none
+Recording status: recorded

@@ -29,6 +29,12 @@ validation:
     result: pass_reviews_4_findings_7_log_entries_4_resolution_entries_7
   - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-08-20-bugfix-skill-simplification.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/change.yaml --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-log.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
     result: pass_4_selected_checks
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-20-bugfix-skill-simplification-review-recording
+    result: pass_reviews_5_findings_7_log_entries_5_resolution_entries_7
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/change.yaml
+    result: pass_after_r5
+  - command: python scripts/validate-documentation-prose.py --mode audit --path docs/proposals/2026-08-20-bugfix-skill-simplification.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r5.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-log.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md
+    result: pass_no_errors_or_warnings
 changed_files:
   - docs/proposals/2026-08-20-bugfix-skill-simplification.md
   - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/change.yaml
@@ -38,3 +44,4 @@ changed_files:
   - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r2.md
   - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r3.md
   - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r5.md
