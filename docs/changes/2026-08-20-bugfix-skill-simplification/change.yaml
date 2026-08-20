@@ -1,0 +1,81 @@
+change_id: 2026-08-20-bugfix-skill-simplification
+title: Bugfix Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  spec:
+    kind: spec
+    path: specs/bugfix-skill-simplification.md
+    role: primary
+    lifecycle_state: review-required
+    authoring_evidence: docs/changes/2026-08-20-bugfix-skill-simplification/evidence/spec-authoring.md
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: spec-review
+  next_stage: architecture-assessment
+  blocker: null
+  evidence:
+    - docs/proposals/2026-08-20-bugfix-skill-simplification.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+    - specs/bugfix-skill-simplification.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/spec-authoring.md
+
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: test-spec-review
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-20T12:00:00-07:00"
+      completion:
+        rule: formal test-spec review is recorded
+    status: active
+    current_stage: spec-review
+    stop_reason: null
+    evidence:
+      - docs/proposals/2026-08-20-bugfix-skill-simplification.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+      - specs/bugfix-skill-simplification.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/spec-authoring.md
+
+artifacts:
+  proposal: docs/proposals/2026-08-20-bugfix-skill-simplification.md
+
+requirements:
+  - Keep bugfix as one compact skill while closing diagnosis, command, write, proof, routing, and result contracts.
+  - Separate diagnosis, proof authoring, production correction, and post-fix validation with exact authority and evidence gates.
+  - Preserve upstream and lifecycle ownership, explicit-step handoff, deterministic proof identity, and fail-closed governed signals.
+  - Reduce complete-package words and bytes without adding resources, scripts, runtime machinery, or target-agent acceptance.
+
+tests:
+  - Independent specification, plan, and test-spec reviews before implementation.
+  - Deterministic scenarios for every closed value, authority boundary, phase gate, routing outcome, retry identity, and claim limit.
+  - Rule and literal preservation plus canonical, generated, packed, archived, release-candidate, and installed package parity.
+
+review:
+  status: pending
+  unresolved_items: 0
+
+validation: []
+
+changed_files:
+  - docs/proposals/2026-08-20-bugfix-skill-simplification.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/change.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-log.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r3.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/change.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+  - specs/bugfix-skill-simplification.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/spec-authoring.md
