@@ -41,8 +41,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: spec-review
-  next_stage: architecture-assessment
+  current_stage: plan
+  next_stage: plan-review
   blocker: null
   evidence:
     - docs/proposals/2026-08-20-bugfix-skill-simplification.md
@@ -130,7 +130,7 @@ workflow:
       completion:
         rule: formal verify result is recorded
     status: active
-    current_stage: spec-review
+    current_stage: plan
     stop_reason: null
     evidence:
       - docs/proposals/2026-08-20-bugfix-skill-simplification.md
