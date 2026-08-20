@@ -16,8 +16,8 @@ Boundary model version: boundary-first-v1
 
 | Input | Path | Artifact ID | Review evidence |
 | --- | --- | --- | --- |
-| feature spec | `specs/bugfix-skill-simplification.md` | `sha256:d5cfeeb7351953a123095d64da1362f1ccaa079193f729c45b571d98e4df106d` | `spec-review-r1`; `reviews/spec-review-r1.md` |
-| execution plan | `docs/plans/2026-08-20-bugfix-skill-simplification.md` | commit `0c3bce83` | `plan-review-r1`; `reviews/plan-review-r1.md` and matching settlement retry |
+| feature spec | `specs/bugfix-skill-simplification.md` | `sha256:a3ff7c2894f8a51eb18f39a06b31ec3ba8cb53d0dfb2941e13b0fb44470d93d7` | `spec-review-r2`; `reviews/spec-review-r2.md` |
+| execution plan | `docs/plans/2026-08-20-bugfix-skill-simplification.md` | commit `863ccb4a` | `plan-review-r2`; `reviews/plan-review-r2.md` and matching settlement retry |
 | architecture assessment | `docs/changes/2026-08-20-bugfix-skill-simplification/architecture-assessment.md` | `architecture-not-required` | workflow-owned assessment bound to spec and review identities |
 
 ## Testing strategy
@@ -28,7 +28,7 @@ Use deterministic contract fixtures and repository-owned Python tests to prove c
 
 | Requirement ID | Covered by | Level | Notes |
 | --- | --- | --- | --- |
-| R1 | T1, T14-T15 | contract, integration | Flat package and strict reduction. |
+| R1 | T1, T14-T15 | contract, integration | Flat package, truthful measurements, and parity. |
 | R2-R3 | T2 | contract | Operation and concrete-defect input. |
 | R4-R6 | T3-T4 | contract | Command/write authority, scope, and side effects. |
 | R7-R9 | T5-T6 | contract | Closed evidence, restoration, and alternatives. |
@@ -70,6 +70,7 @@ Use deterministic contract fixtures and repository-owned Python tests to prove c
 | EC10: missing governed evidence path | T13 | Block recording; create no lifecycle surface. |
 | EC11: external-dependency resilience patch | T10 | Require settled resilience basis and exact scope. |
 | EC12: successful local fix | T11, T13 | No downstream readiness overclaim. |
+| EC13: required truthful wording exceeds a prior count | T14 | Report the increase and pass only when semantics and parity remain complete. |
 
 ## Proof map
 
@@ -114,7 +115,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 | --- | --- | --- | --- | --- | --- | --- |
 | M1 | T1-T6, T10-T15 | none | CMD1, CMD4, CMD8-CMD9 | preservation inventory and baseline evidence | M1 code review | Freeze semantics, literals, scenarios, size, and architecture boundary. |
 | M2 | T2-T13 | none | CMD1-CMD5, CMD7-CMD9 | `evidence/m2-contract-implementation.md` | M2 code review | Prove the complete closed contract and one-file package. |
-| M3 | T1, T9, T11, T13-T15 | none | CMD1-CMD9 | measurements, reconciliation, and `evidence/m3-package-proof.md` | M3 code review | Prove final semantics, size, boundaries, and package parity. |
+| M3 | T1, T9, T11, T13-T15 | none | CMD1-CMD9 | measurements, reconciliation, and `evidence/m3-package-proof.md` | M3 code review | Prove final semantics, truthful size reporting, metric-gaming prevention, boundaries, and package parity. |
 | M4 | T1-T15 | none | CMD1-CMD10 | final review, explanation, resolution when required, and verify report | PR handoff | Final coherence after all implementation milestones close. |
 
 ## Test cases
@@ -288,15 +289,15 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 - Automation location: `BugfixSkillSimplificationTests`
 - Required by milestone: M2
 
-### T14. Both size measures decrease
+### T14. Size measurements are truthful and never override semantics
 
 - Covers: R1, R26; AC1, AC14; BND-COMPAT-001; INT-006.
 - Level: integration
 - Command IDs: CMD1
-- Fixture/setup: Frozen current and proposed LF-normalized UTF-8 `SKILL.md` bytes.
-- Steps: Count Unicode whitespace-separated words and UTF-8 bytes for root and complete package.
-- Expected result: Both counts strictly decrease and the root equals the complete package.
-- Failure proves: Simplification hides growth or uses inconsistent measurement.
+- Fixture/setup: Frozen prior and proposed LF-normalized UTF-8 `SKILL.md` bytes, complete semantic/literal dispositions, and optional tokenizer-specific fixtures when a token estimate is reported.
+- Steps: Count Unicode whitespace-separated words and UTF-8 bytes for root and complete package; identify the tokenizer or model basis for any token estimate; then test both decreasing and increasing truthful candidates against semantic, deterministic, safety, and parity gates.
+- Expected result: Exact before/after counts and deltas are reported, the root equals the complete package, an optional token estimate names its basis, and a semantically complete increase passes while any metric-driven omission or relocation fails.
+- Failure proves: Measurement is inconsistent, an unidentified token estimate is presented as comparable truth, or a size target overrides required behavior.
 - Evidence artifact: `evidence/simplification-measurements.md`
 - Automation location: `BugfixSkillSimplificationTests`
 - Required by milestone: M3
@@ -320,7 +321,7 @@ Use deterministic table fixtures under the owning change root or the existing sk
 
 ## Mocking/stubbing policy
 
-Model commands, files, governed signals, external effects, and package projections with local immutable fixture values and test-owned temporary directories. Do not mock away the outcome under test: action selection, path authorization, identity comparison, word/byte measurement, and package-byte comparison must use the real repository-owned functions or direct deterministic assertions.
+Model commands, files, governed signals, external effects, and package projections with local immutable fixture values and test-owned temporary directories. Do not mock away the outcome under test: action selection, path authorization, identity comparison, word/byte measurement, optional tokenizer-basis labeling, and package-byte comparison must use the real repository-owned functions or direct deterministic assertions.
 
 ## Migration or compatibility tests
 
@@ -336,7 +337,7 @@ T3-T4, T6, T10, and T13 cover exact path and command scope, destructive and priv
 
 ## Performance checks
 
-No runtime performance behavior is added. T14 enforces strict word and byte reduction. Focused CMD1 precedes broad CMD3, CMD5, and CMD6 to keep the inner proof loop bounded.
+No runtime performance behavior is added. T14 reports word and byte deltas, identifies any optional token-estimate basis, and proves that counts cannot override semantics or safety. Focused CMD1 precedes broad CMD3, CMD5, and CMD6 to keep the inner proof loop bounded.
 
 ## Manual QA checklist
 
