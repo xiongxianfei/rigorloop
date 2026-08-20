@@ -39,7 +39,7 @@ The final review challenged cross-milestone semantic compression, stale authorit
 
 ## Finding BUGSIM-CR4
 
-- Finding ID: BUGSIM-CR4
+Finding ID: BUGSIM-CR4
 - Severity: major
 - Location: `reviews/plan-review-r2.md`, `reviews/test-spec-review-r2.md`, `reviews/code-review-m2-r1.md`, `reviews/code-review-m2-r2.md`, `reviews/code-review-m2-r3.md`, and `change.yaml` review metadata
 - Evidence: `python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-20-bugfix-skill-simplification` reports 14 failures. Two review records contain a duplicate parser-visible `Review ID`; the three material review records omit the literal `Finding ID:` field required by the normative material-finding shape, so their log and resolution references are unknown. That causes the root to be misclassified as clean and makes its material-finding metadata appear inconsistent.

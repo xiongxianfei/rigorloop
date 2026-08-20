@@ -29,6 +29,8 @@ The main risks were loss of closed vocabulary during compression, action rows th
 
 ## BUGSIM-CR1 — Major: the compact contract omits approved closed values and required result behavior
 
+Finding ID: BUGSIM-CR1
+
 ### Evidence
 
 The canonical skill's cause set omits `integration-mismatch`, `data-or-migration`, and `race-or-timing` required by R14. Its action set omits `complete-diagnosis` required by R15. The phase list says `validation` rather than the exact `post-fix-validation` state required by R10. It also does not explicitly require unexpected command mutations to stop and be reported as R6 requires, and `Expected output` delegates to an undefined “completion record” rather than enumerating the R24 result fields.

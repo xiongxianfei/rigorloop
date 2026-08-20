@@ -1,5 +1,12 @@
 # Plan Review R2: Bugfix Skill Simplification
 
+Review ID: plan-review-r2
+Stage: plan-review
+Round: r2
+Reviewer: Codex independent plan-review context
+Target: `docs/plans/2026-08-20-bugfix-skill-simplification.md` at `863ccb4a`
+Status: approved
+
 ## Core operation
 
 - Skill: plan-review
@@ -13,7 +20,6 @@
 ## Semantic judgment
 
 - Judgment mode: performed
-- Review ID: plan-review-r2
 - Review round: r2
 - Reviewed plan identity: commit `863ccb4a`
 - Review status: approved

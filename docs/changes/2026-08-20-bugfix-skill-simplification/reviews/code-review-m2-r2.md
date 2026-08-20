@@ -29,6 +29,8 @@ Recording status: recorded
 
 ## BUGSIM-CR2 — Major: the approved inline contract and strict legacy-byte ceiling conflict
 
+Finding ID: BUGSIM-CR2
+
 ### Evidence
 
 R7 requires the published skill to classify five axes using every closed value selected by the proposal. R12 requires the complete proof-action matrix. R21 requires exact portable/governed write tables. The corrected 3,754-byte file remains below the 3,761-byte ceiling only because those contracts are summarized rather than enumerated. For example, it names the evidence axes but omits the full reproduction, contract-basis, feasibility, proof, and support vocabularies.

@@ -1,9 +1,16 @@
 # Test-Spec Review R2: Bugfix Skill Simplification
 
+Review ID: test-spec-review-r2
+Stage: test-spec-review
+Round: r2
+Reviewer: Codex independent test-spec-review context
+Target: `specs/bugfix-skill-simplification.test.md` at commit `42b388a5`
+Status: approved
+
 ## Result
 
 - Skill: test-spec-review
-- Review status: approved
+Review status: approved
 - Material findings: none
 - Recording status: recorded
 - Recording blocker: none
@@ -11,8 +18,8 @@
 - Review log: `docs/changes/2026-08-20-bugfix-skill-simplification/review-log.md`
 - Review resolution: not-required for this clean round
 - Open blockers: none at the test-spec gate
-- Immediate next stage: implement
-- Implementation handoff: allowed
+Immediate next stage: implement
+Implementation handoff: allowed
 - Stop condition: none
 
 ## Findings

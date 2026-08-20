@@ -39,7 +39,7 @@ The highest risks were a nominally complete table with unclassified edge states,
 
 ## Finding BUGSIM-CR3
 
-- Finding ID: BUGSIM-CR3
+Finding ID: BUGSIM-CR3
 - Severity: major
 - Location: `skills/bugfix/SKILL.md` operation and current-action rules; `scripts/test-skill-validator.py` focused proof tests
 - Evidence: R2 requires an invocation without one concrete defect to return `blocked`, but the skill never states that result. The first current-action row routes a generic “conflicting axis” to `stop-blocked` before the later R17-required `contract basis: conflicting` owner route, so the two rows can match the same state. The proof table admits only a complete deterministic alternative for infeasible testing but does not state how an incomplete claimed alternative is classified. Finally, `test_evidence_vocabularies_and_proof_table_are_complete` checks substrings only; it does not execute the T8 feasibility/proof cross-product or prove exactly one action per admitted combination.
