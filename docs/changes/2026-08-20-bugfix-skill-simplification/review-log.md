@@ -58,3 +58,16 @@ Resolution: review-resolution.md#code-review-m2-r3
 Material findings: BUGSIM-CR3
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: code-review-final-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: complete branch range `2b7346abf0f8798dd3b49313dee936b1865cc4a1..a3a211cb`
+Status: changes-requested
+Detailed record: reviews/code-review-final-r1.md
+Resolution: review-resolution.md#code-review-final-r1
+Material findings: BUGSIM-CR4
+Open findings: BUGSIM-CR4
+Recording status: recorded
