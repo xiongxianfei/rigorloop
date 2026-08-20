@@ -2,14 +2,14 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
-Review closeout: code-review-final-r1
+Review closeout: code-review-final-r2
 
-- Reviews covered: `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-final-r1`
-- Findings resolved: 3
-- Unresolved findings: 1
-- Current result: BUGSIM-CR1 through BUGSIM-CR3 remain resolved; BUGSIM-CR4 is accepted for mechanical review-evidence correction.
+- Reviews covered: `code-review-m2-r1`, `code-review-m2-r2`, `code-review-m2-r3`, `code-review-final-r1`, `code-review-final-r2`
+- Findings resolved: 4
+- Unresolved findings: 0
+- Current result: BUGSIM-CR1 through BUGSIM-CR4 are resolved; final code review is clean.
 
 ## Resolution overview
 
@@ -18,7 +18,7 @@ Review closeout: code-review-final-r1
 | BUGSIM-CR1 | accepted | resolved | Restored omitted causes, actions, phase, side-effect stop, and result fields with regression assertions. |
 | BUGSIM-CR2 | accepted | resolved | Preserve the one-file package, make size metrics diagnostic, and require complete truthful inline semantics. |
 | BUGSIM-CR3 | accepted | resolved | Closed absent-defect, conflict-precedence, incomplete-alternative, and executable cross-product proof gaps. |
-| BUGSIM-CR4 | accepted | pending | Normalize parser-owned review IDs and material-finding fields. |
+| BUGSIM-CR4 | accepted | resolved | Normalized parser-owned review IDs and material-finding fields. |
 
 ### code-review-m2-r1
 
@@ -80,7 +80,7 @@ Validation evidence: corrected commit `f6ac0ec1`; `evidence/m2-contract-implemen
 
 Finding ID: BUGSIM-CR4
 Disposition: accepted
-Status: pending
+Status: resolved
 Owner: review-evidence correction
 Owning stage: review-resolution
 Decision owner: none; formal review recording schema is explicit
@@ -90,4 +90,4 @@ Rationale: The evidence already exists semantically, but its parser-owned shape 
 Required outcome: Review-artifact structure validation passes with all findings, log entries, resolution entries, and root metadata mutually discoverable.
 Safe resolution path: Apply only the mechanical field-shape corrections, validate structure, and record final code-review-r2.
 Validation target: the owning change root under `validate-review-artifacts.py --mode structure`.
-Validation evidence: pending corrected evidence and final code-review-r2.
+Validation evidence: corrected commit `f7891062`; `reviews/code-review-final-r2.md`; structural validation passed with 14 reviews, four findings, 14 log entries, and four resolution entries.
