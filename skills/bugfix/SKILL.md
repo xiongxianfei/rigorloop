@@ -1,117 +1,112 @@
 ---
 name: bugfix
-description: >
-  Fix a bug with a structured, test-first workflow: understand expected behavior, reproduce, diagnose root cause, add a regression test, implement the minimal fix, verify blast radius, update durable docs, and explain the change.
+description: Diagnose or fix unexpected behavior, failing evidence, incidents, regressions, and bug reports with bounded authority and identity-stable proof.
 argument-hint: [bug description, failing behavior, error message, issue number, or regression]
 ---
 
-# Structured bug fix workflow
+# Fix
 
-You are fixing a defect, not just making a symptom disappear.
+Use this skill for unexpected behavior, failing evidence, incident, regression, or bug report. Use proof before correction. Bind one repository, one concrete defect, and one expected-versus-actual outcome. Split independent defects unless they share one cause, behavior basis, correction scope, and proof bundle.
 
-Use this skill when the task starts from unexpected behavior, a failing test, an incident, a regression, or a bug report.
+Read the request, governing behavior, current code and tests, available bug evidence, exact current authority, governed signals, and project-owned commands. Use the smallest sufficient evidence set; expand to current plans, architecture, history, or neighboring code only when the defect path requires it.
 
-## Inputs to read
+## Operation and authority
 
-Read, if present:
+Operation is exactly `diagnose-only` or `fix`. Explicit diagnosis, explanation, reproduction, or root-cause wording selects `diagnose-only`, even when the bugfix skill is named. Explicit repair wording, or a bare bugfix invocation naming one concrete defect and no narrower outcome, selects `fix`. An invocation without one concrete defect returns `blocked` without mutation. Conflicting intent permits diagnosis but blocks mutation. A later diagnosis-to-fix expansion MUST rerun preflight.
 
-- bug report, issue, logs, screenshots, or failing test output;
-- relevant spec and test spec;
-- concrete plan if the bug belongs to active work;
-- architecture docs or project map for affected flow;
-- `AGENTS.md` and `CONSTITUTION.md`;
-- related code and neighboring tests;
-- recent changes that could have introduced the regression.
+Command authority is exactly `not-required`, `current-bounded`, `absent-or-stale`, or `invalid-or-ambiguous`. Write authority is exactly `none`, `portable-request-bound`, `governed-scope-bound`, `absent-or-stale`, or `invalid-or-ambiguous`. Bind every writable fix to repository identity, normalized defect, authority source, permitted command owner or set, path roots, write categories, governing contract, and current evidence identities.
 
-## Process
+Diagnose-only may run exact inspection or reproduction commands only with current-bounded authority and intentionally changes no tracked file or durable external state. Unknown, destructive, privileged, network, database, or durable effects need their separate authority or are skipped. Unexpected mutation stops and is reported.
 
-### 1. Understand expected behavior
+Governed signal is exactly `no-governed-signal`, `single-governed-candidate`, or `invalid-or-ambiguous-governed-signal`. Explicit change IDs, workflow identities, and structured owning-change fields count even when malformed. Invalid, stale, conflicting, duplicated, escaped, or unsafe signals stop and never fall back to portable authority.
 
-State expected vs actual behavior.
+## Evidence
 
-If the expected behavior is not specified, identify the contract gap and decide whether to update or create a spec before fixing.
+Classify these axes before dependent consistency checks; unknown values fail closed:
 
-### 2. Reproduce
+- reproduction: `reproduced`, `deterministic-alternative`, `not-established`, `conflicting`;
+- contract basis: `settled`, `resolvable-restoration`, `missing`, `conflicting`, `behavior-change-request`;
+- test feasibility: `feasible`, `infeasible-with-rationale`, `unresolved`;
+- regression proof: `failing-automated-test`, `deterministic-alternative`, `missing`, `conflicting`;
+- root-cause support: `supported`, `uncertain`, `conflicting`.
 
-Find the smallest reliable reproduction:
+Record the smallest reliable reproduction with its command or procedure, input, environment, relevant data state, and observed output or error. When reproduction is not established, report the evidence and uncertainty without claiming a fix.
 
-- command;
-- input;
-- environment;
-- data state;
-- observed output or error.
+`resolvable-restoration` binds one current authoritative source, owner, precedence, affected behavior, expected result, and conflict check. It restores conformance without adding, removing, broadening, narrowing, or reinterpreting observable behavior. Implementation, a test, a report, or plausible expectation alone is insufficient.
 
-If reproduction is not possible, collect evidence and explain uncertainty.
+A `deterministic-alternative` is an independently repeatable command, fixture, static contract check, or controlled manual procedure. Record exact inputs, environment assumptions, steps, expected observation, objective completion, and limitations. Classify an incomplete claimed deterministic alternative as `missing` before table evaluation. Subjective inspection and infeasibility alone are not proof.
 
-### 3. Diagnose root cause
+## Phases and proof
 
-Trace the path and classify the cause:
+Phases are ordered `diagnosis`, `proof-authoring`, `production-correction`, `post-fix-validation`. After non-proof prerequisites pass, proof-authoring may write only bounded tests, fixtures, test-only helpers, or controlled reproduction artifacts; production behavior remains unchanged.
 
-- spec gap;
-- implementation error;
-- integration mismatch;
-- edge case;
-- regression;
-- data/migration issue;
-- race/timing issue;
-- configuration or environment issue;
-- test bug.
+Use this exhaustive proof-action table:
 
-Assess blast radius and look for the same pattern nearby.
+| Test feasibility | Regression proof | Current action |
+| --- | --- | --- |
+| Any recognized | failing-automated-test | apply-production-correction |
+| Any recognized | conflicting | stop-blocked |
+| feasible | missing or deterministic-alternative | author-automated-proof |
+| unresolved | missing or deterministic-alternative | resolve-test-feasibility |
+| infeasible-with-rationale | complete deterministic-alternative | apply-production-correction |
+| infeasible-with-rationale | missing | stop-blocked |
 
-### 4. Add regression test first
+Before production mutation, record the proof kind, command or procedure, fixture and input identities, environment assumptions, expected and observed pre-fix result, feasibility, and infeasibility rationale. Post-fix validation reruns the same proof identity. A changed test, fixture, command, input, or environment is a different proof and cannot establish that the original regression passes.
 
-Before changing production code, add or update a test that fails because of the bug when feasible.
+## Cause, action, and result
 
-If not feasible, explain why and provide another verification method.
+Root cause is exactly `implementation-defect`, `contract-gap`, `integration-mismatch`, `data-or-migration`, `race-or-timing`, `configuration-or-environment`, `test-defect`, `external-dependency`, or `unknown`.
 
-### 5. Fix minimally
+Current action is exactly `stop-blocked`, `route-owner`, `continue-diagnosis`, `complete-diagnosis`, `resolve-test-feasibility`, `author-automated-proof`, `apply-production-correction`, `run-post-fix-validation`, or `complete-fix`. Apply these conditions in order:
 
-Fix the root cause with the smallest change that fully addresses it.
+1. Unknown value, cross-axis inconsistency, unsafe identity, invalid authority, missing required authority, or fix with write authority `none`: `stop-blocked`. The recognized contract basis value `conflicting` routes under the next rule; it is not a cross-axis inconsistency by itself.
+2. `contract-gap`, or basis `missing`, `conflicting`, or `behavior-change-request`: `route-owner` to `spec` or the contract owner.
+3. Cause `unknown`, or unresolved reproduction/support: `continue-diagnosis`.
+4. A required long-lived design decision: `route-owner` to `architecture`.
+5. Environment or dependency cause without settled resilience behavior and scope: `route-owner` to its system owner.
+6. Diagnose-only with supported evidence and no owner action: `complete-diagnosis`.
+7. A correction exists and identity-equal proof or required blast-radius validation fails: `stop-blocked`.
+8. A correction exists and all required checks pass: `complete-fix`.
+9. A correction exists with checks pending: `run-post-fix-validation`.
+10. An eligible fix without correction: select exactly one proof-table action.
 
-Do not refactor unrelated code during the bug fix.
+Cause `unknown` never authorizes mutation. A `test-defect` is writable only from `settled` or `resolvable-restoration` basis; never weaken expectations speculatively. Environment and dependency corrections require exact settled resilience behavior and scope.
 
-### 6. Verify
+Assess blast radius and inspect nearby code for the same pattern. Fix the supported root cause with the smallest scoped change that fully addresses it. Do not refactor unrelated code.
 
-Run:
+On return, terminal result is exactly `diagnosis-complete`, `diagnosis-incomplete`, `fix-applied`, `routed-to-owner`, or `blocked`. Map `complete-diagnosis`, unresolved diagnosis, `complete-fix`, `route-owner`, and unsafe/incomplete work respectively. Intermediate actions are not terminal results.
 
-- the regression test;
-- the smallest surrounding test suite;
-- any integration or smoke checks needed by the blast radius.
+## Write boundary
 
-### 7. Update durable docs
+| Context and phase | Permitted writes |
+| --- | --- |
+| Portable diagnose-only | None |
+| Portable proof-authoring | Request-bound tests, fixtures, test-only helpers, and controlled reproduction artifacts |
+| Portable production-correction | Request-bound implementation and explicitly scoped non-authoritative documentation or examples |
+| Governed diagnose-only | None |
+| Governed proof-authoring | Exact governed proof surfaces and one existing authorized evidence destination |
+| Governed production-correction | Exact governed implementation, existing authorized evidence, and only scope-named non-authoritative documentation |
 
-Update the narrowest durable artifact:
+Proposals, specs, architecture, ADRs, plans, `change.yaml`, workflow and automation state, reviews, review resolution, explanation, verification, PR, release, deployment, and publication are read-only. Normative changes route to their owner. Missing or ambiguous governed evidence placement blocks durable recording; do not invent a path, artifact, or lifecycle state.
 
-- spec or test spec for contract gaps;
-- architecture doc or ADR for design gaps;
-- plan for active milestone sequencing issues;
-- `AGENTS.md` or constitution for repeated project-wide mistakes;
-- `docs/workflows.md` for workflow or handoff changes.
+## Completion and handoff
 
-## Rules
+Rerun the original reproduction or exact alternative, the identity-equal regression proof, and the smallest surrounding validation justified by blast radius. A failed, conflicting, skipped-required, or mismatched check prevents `fix-applied`.
 
-- Always prefer a failing regression test before the fix.
-- Fix the root cause, not the symptom.
-- Keep the diff scoped.
-- Do not hide uncertainty.
-- Do not claim the bug is fixed until the reproduction path is verified.
+Report operation, terminal result, authority classifications, repository and defect, commands actually run, proof identity, unexecuted checks, uncertainty, changed surfaces, blockers, and next owner. Changed implementation hands off to independent `code-review`; no stage continues automatically. Never claim review approval, explanation, verification, hosted CI, branch or PR readiness, release, deployment, publication, lifecycle completion, or `Done`.
+
+## Package measurement
+
+Keep this package as one `SKILL.md`. Report before/after LF-normalized words and UTF-8 bytes; identify the tokenizer or model basis for any token estimate. Counts are diagnostic evidence, not a semantic gate. The skill MUST NOT omit, blur, or relocate required behavior to improve a count. Complete meaning, deterministic interpretation, safety, and package parity take precedence.
 
 ## Evidence collection efficiency
 
-Use summary and stable-ID first reasoning before broad reads or raw excerpts. Prefer check IDs, requirement IDs, test IDs, file paths, counts, and line citations when inspecting large files, repeated scans, generated output, or validation output. Read exact ranges after locating relevant lines, then expand only when the narrower evidence is insufficient.
+Use summary and stable-ID first reasoning. Prefer check IDs, requirement IDs, file paths, and line citations.
 
 ## When full-file read is required
 
-Read the full file when the whole file is the review target, the relevant section cannot be isolated safely, surrounding context can change the conclusion, bounded searches disagree or produce incomplete evidence, or a behavior-changing edit depends on the whole source-of-truth artifact.
+Read fully when the whole file is the review target, bounded searches disagree, or a behavior-changing edit depends on the whole source-of-truth artifact.
 
 ## Expected output
 
-- reproduction summary;
-- expected vs actual behavior;
-- root-cause classification;
-- regression test added or reason it was not feasible;
-- minimal fix summary;
-- blast-radius verification;
-- durable docs updated;
-- readiness statement for `explain-change`, `code-review`, or `pr`.
+Return the completion record.

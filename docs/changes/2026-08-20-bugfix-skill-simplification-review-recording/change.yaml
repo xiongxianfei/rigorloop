@@ -1,0 +1,47 @@
+change_id: 2026-08-20-bugfix-skill-simplification-review-recording
+title: Bugfix Skill Simplification Proposal Review Recording
+classification: review-recording
+risk: low
+artifacts:
+  proposal: docs/proposals/2026-08-20-bugfix-skill-simplification.md
+  review_resolution: docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md
+requirements:
+  - Record the isolated formal proposal review before any review-driven revision.
+  - Preserve material findings about operation, authority, proof eligibility, write ownership, routing, and decision-table determinism.
+  - Keep this recording-only root separate from proposal settlement and workflow continuation.
+tests:
+  - Review artifact structure and closeout validate all detailed reviews, the log, and the closed resolution relationship.
+review:
+  status: approved
+  unresolved_items: 0
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-20-bugfix-skill-simplification-review-recording
+    result: pass_reviews_1_findings_3_log_entries_1_resolution_entries_3
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/change.yaml
+    result: pass
+  - command: python scripts/validate-documentation-prose.py --mode audit --path docs/proposals/2026-08-20-bugfix-skill-simplification.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-log.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md
+    result: pass_no_errors_or_warnings
+  - command: git diff --check -- docs/proposals/2026-08-20-bugfix-skill-simplification.md docs/changes/2026-08-20-bugfix-skill-simplification-review-recording
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-08-20-bugfix-skill-simplification.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/change.yaml --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-log.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r1.md
+    result: pass_4_selected_checks
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-20-bugfix-skill-simplification-review-recording
+    result: pass_reviews_4_findings_7_log_entries_4_resolution_entries_7
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-08-20-bugfix-skill-simplification.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/change.yaml --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-log.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
+    result: pass_4_selected_checks
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-20-bugfix-skill-simplification-review-recording
+    result: pass_reviews_5_findings_7_log_entries_5_resolution_entries_7
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/change.yaml
+    result: pass_after_r5
+  - command: python scripts/validate-documentation-prose.py --mode audit --path docs/proposals/2026-08-20-bugfix-skill-simplification.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r5.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-log.md --path docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md
+    result: pass_no_errors_or_warnings
+changed_files:
+  - docs/proposals/2026-08-20-bugfix-skill-simplification.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/change.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-log.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r3.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r5.md

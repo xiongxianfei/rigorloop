@@ -1,0 +1,34 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/bugfix-skill-simplification.md
+base_revision: sha256:d5cfeeb7351953a123095d64da1362f1ccaa079193f729c45b571d98e4df106d
+head_revision: sha256:d5cfeeb7351953a123095d64da1362f1ccaa079193f729c45b571d98e4df106d
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-authoring
+reviewer_context_id: root-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-contract
+  - command-and-write-authority
+  - compatibility-sensitive-validation
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-20-bugfix-skill-simplification.md
+  - specs/bugfix-skill-simplification.md
+  - specs/skill-contract.md
+  - specs/rigorloop-workflow.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - operation, command, and write authority
+  - proof-authoring and production-correction gates
+  - action precedence, owner routing, and terminal results
+  - compatibility, measurements, and acceptance boundaries

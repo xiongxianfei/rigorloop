@@ -1,0 +1,34 @@
+schema_version: 1
+review_id: spec-review-r2
+review_stage: spec-review
+review_target: specs/bugfix-skill-simplification.md
+base_revision: sha256:a3ff7c2894f8a51eb18f39a06b31ec3ba8cb53d0dfb2941e13b0fb44470d93d7
+head_revision: sha256:a3ff7c2894f8a51eb18f39a06b31ec3ba8cb53d0dfb2941e13b0fb44470d93d7
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-revision-r2
+reviewer_context_id: root-spec-review-r2-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - published-skill-contract
+  - semantic-preservation-acceptance
+  - compatibility-sensitive-validation
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-20-bugfix-skill-simplification.md
+  - specs/bugfix-skill-simplification.md
+  - specs/skill-contract.md
+  - specs/rigorloop-workflow.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - truth-first semantic preservation
+  - diagnostic word, byte, and optional token measurements
+  - compatibility boundary and package parity
+  - acceptance observability and metric-gaming prevention

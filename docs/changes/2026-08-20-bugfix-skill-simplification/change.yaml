@@ -1,0 +1,347 @@
+change_id: 2026-08-20-bugfix-skill-simplification
+title: Bugfix Skill Simplification
+classification: published-skill-contract
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  spec:
+    kind: spec
+    path: specs/bugfix-skill-simplification.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r2
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-20-bugfix-skill-simplification/reviews/spec-review-r2.md
+      round: r2
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-20-bugfix-skill-simplification.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r2
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-20-bugfix-skill-simplification/reviews/plan-review-r2.md
+      round: r2
+  test-spec:
+    kind: test-spec
+    path: specs/bugfix-skill-simplification.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r2
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-20-bugfix-skill-simplification/reviews/test-spec-review-r2.md
+      round: r2
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: verify
+  next_stage: pr
+  blocker: null
+  evidence:
+    - docs/proposals/2026-08-20-bugfix-skill-simplification.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r5.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+    - specs/bugfix-skill-simplification.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/spec-authoring.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/spec-revision-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-spec-review-r2.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/spec-review-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-spec-review-r1.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/spec-review-r1.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-log.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/architecture-assessment.md
+    - docs/plans/2026-08-20-bugfix-skill-simplification.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-authoring.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-plan-review-r1.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/plan-review-r1.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-initialization.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-settlement-retry.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-revision-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-replan-migration-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-plan-review-r2.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/plan-review-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-initialization-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-settlement-retry-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-replan-reconciliation-r2.md
+    - specs/bugfix-skill-simplification.test.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/test-spec-authoring.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/test-spec-proof-contract-migration-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/test-spec-revision-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-test-spec-review-r2.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-retarget-verify-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-test-spec-review-r1.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-verify.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/m1-preservation-and-baseline.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m1-r1.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/m2-contract-implementation.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m2-r1.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-resolution.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m2-r2.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m2-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m2-r3.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m2-r3.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m2-r4.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m2-r4.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/simplification-measurements.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/semantic-preservation-review.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/m3-package-proof.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m3-r1.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m3-r1.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r1.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r1.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r2.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r2.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/ci-maintenance-assessment.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r3.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r3.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/explain-change.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/verify-report.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/verify-r1-correction.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r4.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r4.md
+  planned_work:
+    plan_artifact_id: plan
+    current_milestone: none
+    initialization_basis:
+      review_id: plan-review-r2
+      review_round: r2
+      review_record: docs/changes/2026-08-20-bugfix-skill-simplification/reviews/plan-review-r2.md
+      reviewed_artifact_path: docs/plans/2026-08-20-bugfix-skill-simplification.md
+      reviewed_revision: 863ccb4a
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+    remaining_implementation_milestones: []
+    latest_review:
+      status: approved
+      stage: code-review
+      round: r4
+      artifact_id: code-review-final-r4
+      occurrence: final
+      milestone_id: none
+      evidence:
+        - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r4.md
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - pr-handoff-pending
+      evidence:
+        - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/plan-review-r2.md
+        - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m1-r1.md
+        - docs/changes/2026-08-20-bugfix-skill-simplification/verify-report.md
+        - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r4.md
+        - docs/changes/2026-08-20-bugfix-skill-simplification/explain-change.md
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: verify
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-20T05:03:04-07:00"
+      completion:
+        rule: formal verify result is recorded
+    status: completed
+    current_stage: verify
+    stop_reason: target-reached
+    evidence:
+      - docs/proposals/2026-08-20-bugfix-skill-simplification.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r5.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+      - specs/bugfix-skill-simplification.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/spec-authoring.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/spec-revision-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-spec-review-r2.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/spec-review-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-spec-review-r1.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/spec-review-r1.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-log.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/architecture-assessment.md
+      - docs/plans/2026-08-20-bugfix-skill-simplification.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-authoring.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-plan-review-r1.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/plan-review-r1.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-initialization.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-settlement-retry.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-revision-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-replan-migration-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-plan-review-r2.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/plan-review-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-initialization-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-settlement-retry-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-replan-reconciliation-r2.md
+      - specs/bugfix-skill-simplification.test.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/test-spec-authoring.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/test-spec-proof-contract-migration-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/test-spec-revision-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-test-spec-review-r2.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/test-spec-review-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-retarget-verify-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-test-spec-review-r1.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-verify.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/m1-preservation-and-baseline.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m1-r1.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m1-r1.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/m2-contract-implementation.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m2-r1.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m2-r1.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-resolution.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m2-r2.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m2-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m2-r3.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m2-r3.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m2-r4.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m2-r4.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/simplification-measurements.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/semantic-preservation-review.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/m3-package-proof.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m3-r1.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m3-r1.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r1.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r1.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r2.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r2.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/ci-maintenance-assessment.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r3.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r3.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/explain-change.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/verify-report.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/verify-r1-correction.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r4.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r4.md
+
+artifacts:
+  proposal: docs/proposals/2026-08-20-bugfix-skill-simplification.md
+  explain_change: docs/changes/2026-08-20-bugfix-skill-simplification/explain-change.md
+  verify_report: docs/changes/2026-08-20-bugfix-skill-simplification/verify-report.md
+
+requirements:
+  - Keep bugfix as one compact skill while closing diagnosis, command, write, proof, routing, and result contracts.
+  - Separate diagnosis, proof authoring, production correction, and post-fix validation with exact authority and evidence gates.
+  - Preserve upstream and lifecycle ownership, explicit-step handoff, deterministic proof identity, and fail-closed governed signals.
+  - Measure complete-package words and bytes without letting those metrics override truthful semantics, and add no resources, scripts, runtime machinery, or target-agent acceptance.
+
+tests:
+  - Independent specification, plan, and test-spec reviews before implementation.
+  - Deterministic scenarios for every closed value, authority boundary, phase gate, routing outcome, retry identity, and claim limit.
+  - Rule and literal preservation plus canonical, generated, packed, archived, release-candidate, and installed package parity.
+
+review:
+  status: material-findings
+  unresolved_items: 0
+
+validation:
+  - command: python scripts/test-skill-validator.py BugfixSkillSimplificationTests
+    result: pass_14_tests
+  - command: python scripts/validate-skills.py skills/bugfix/SKILL.md
+    result: pass
+  - command: python scripts/test-skill-validator.py
+    result: pass_446_tests_16_skips
+  - command: python scripts/validate-boundary-first.py --check --path specs/bugfix-skill-simplification.md
+    result: pass
+  - command: python scripts/test-build-skills.py
+    result: pass_7_tests
+  - command: python scripts/test-adapter-distribution.py
+    result: pass_150_tests
+  - command: python scripts/build-skills.py --check
+    result: pass
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-08-20-bugfix-skill-simplification/change.yaml
+    result: pass_before_verify_result_recording
+  - command: python scripts/validate-documentation-prose.py --mode audit --path specs/bugfix-skill-simplification.md --path specs/bugfix-skill-simplification.test.md --path docs/plans/2026-08-20-bugfix-skill-simplification.md
+    result: pass_0_errors_0_warnings
+  - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
+    result: pass_26_checks
+  - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-20-bugfix-skill-simplification
+    result: pass_16_reviews_4_resolved_findings
+
+changed_files:
+  - docs/proposals/2026-08-20-bugfix-skill-simplification.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/change.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-log.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/review-resolution.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r3.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r4.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification-review-recording/reviews/proposal-review-r5.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/change.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review.md
+  - specs/bugfix-skill-simplification.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/spec-authoring.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/spec-revision-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-spec-review-r2.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/spec-review-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/spec-review-r1.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/review-log.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/architecture-assessment.md
+  - docs/plans/2026-08-20-bugfix-skill-simplification.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-authoring.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/plan-review-r1.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-initialization.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-settlement-retry.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-revision-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-replan-migration-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-plan-review-r2.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/plan-review-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-initialization-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-settlement-retry-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/plan-replan-reconciliation-r2.md
+  - specs/bugfix-skill-simplification.test.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/test-spec-authoring.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/explain-change.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/test-spec-proof-contract-migration-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/test-spec-revision-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-test-spec-review-r2.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/test-spec-review-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-test-spec-review-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-retarget-verify-r2.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-test-spec-review-r1.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/workflow-automation-target-verify.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/bugfix-rule-disposition.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/bugfix-literal-compatibility.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/fixtures/scenarios.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/profile-size-baseline.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/m1-preservation-and-baseline.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m1-r1.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m1-r1.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/m2-contract-implementation.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m2-r1.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m2-r1.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/review-resolution.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-m2-r2.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m2-r2.md
+  - skills/bugfix/SKILL.md
+  - scripts/test-skill-validator.py
+  - docs/plan.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/verify-report.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/verify-r1-correction.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r4.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r4.md

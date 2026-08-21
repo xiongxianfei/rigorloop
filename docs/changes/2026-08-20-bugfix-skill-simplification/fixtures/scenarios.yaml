@@ -1,0 +1,32 @@
+schema: bugfix-simplification-scenarios-v1
+scenarios:
+  - id: T1
+    outcome: flat-package-and-preservation
+  - id: T2
+    outcome: deterministic-intent
+  - id: T3
+    outcome: exact-write-authority
+  - id: T4
+    outcome: command-side-effect-stop
+  - id: T5
+    outcome: unknown-value-fails-first
+  - id: T6
+    outcome: exact-restoration-and-alternative
+  - id: T7
+    outcome: proof-authoring-before-production
+  - id: T8
+    outcome: exhaustive-proof-action
+  - id: T9
+    outcome: unchanged-proof-identity
+  - id: T10
+    outcome: deterministic-owner-routing
+  - id: T11
+    outcome: action-and-terminal-result
+  - id: T12
+    outcome: independent-defect-decomposition
+  - id: T13
+    outcome: governed-and-write-owner-isolation
+  - id: T14
+    outcome: truthful-size-measurement
+  - id: T15
+    outcome: package-projection-parity

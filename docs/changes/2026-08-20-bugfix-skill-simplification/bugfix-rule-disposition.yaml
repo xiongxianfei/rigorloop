@@ -1,0 +1,237 @@
+schema: bugfix-rule-disposition-v1
+allowed_dispositions: [retained-inline, amended, removed-duplicate, incidental]
+unlisted: retained
+rules:
+  - id: expected-behavior
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    covers: [settled-basis, resolvable-restoration, contract-owner-routing]
+  - id: reproduction
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    covers: [reproduced, deterministic-alternative, uncertainty]
+  - id: root-cause
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    covers: [closed-causes, supported-cause, owner-routing]
+  - id: regression-test-first
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    covers: [proof-authoring, test-feasibility, proof-identity]
+  - id: minimal-fix
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+    covers: [root-cause-correction, scoped-diff]
+  - id: blast-radius-validation
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    covers: [identity-equal-proof, surrounding-validation, failed-check-stop]
+  - id: durable-doc-routing
+    disposition: amended
+    owner: exact-artifact-owner
+    covers: [read-only-upstream, no-implicit-placement]
+  - id: evidence-reading
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+    covers: [bounded-evidence, full-file-trigger]
+  - id: duplicated-narrative
+    disposition: removed-duplicate
+    owner: skills/bugfix/SKILL.md
+    covers: [process-rules-output-overlap]
+architecture_triggers:
+  persistent-bug-transaction: absent
+  repair-engine: absent
+  external-issue-integration: absent
+  cross-stage-state-owner: absent
+  separate-diagnosis-skill: absent
+legacy_clauses:
+  - id: BUG-LEGACY-001
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+    source: frontmatter name and trigger description
+  - id: BUG-LEGACY-002
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    source: defect rather than symptom purpose
+  - id: BUG-LEGACY-003
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+    source: unexpected behavior and regression triggers
+  - id: BUG-LEGACY-004
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+    source: bug evidence inputs
+  - id: BUG-LEGACY-005
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+    source: spec and test-spec inputs
+  - id: BUG-LEGACY-006
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+    source: plan architecture governance code test and history inputs
+  - id: BUG-LEGACY-007
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    source: expected versus actual behavior
+  - id: BUG-LEGACY-008
+    disposition: amended
+    owner: exact-contract-owner
+    source: missing expected behavior routes to spec
+  - id: BUG-LEGACY-009
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    source: smallest reliable reproduction fields
+  - id: BUG-LEGACY-010
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    source: non-reproduction uncertainty
+  - id: BUG-LEGACY-011
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    source: trace and classify root cause
+  - id: BUG-LEGACY-012
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+    source: implementation and integration causes
+  - id: BUG-LEGACY-013
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    source: edge regression data timing environment and test causes
+  - id: BUG-LEGACY-014
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+    source: blast-radius and sibling-pattern assessment
+  - id: BUG-LEGACY-015
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    source: regression-test-first rule
+  - id: BUG-LEGACY-016
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    source: infeasible-test alternative verification
+  - id: BUG-LEGACY-017
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+    source: minimal root-cause correction
+  - id: BUG-LEGACY-018
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+    source: no unrelated refactor
+  - id: BUG-LEGACY-019
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    source: regression surrounding and integration validation
+  - id: BUG-LEGACY-020
+    disposition: amended
+    owner: exact-artifact-owner
+    source: narrowest durable documentation update
+  - id: BUG-LEGACY-021
+    disposition: amended
+    owner: exact-artifact-owner
+    source: spec architecture plan governance and workflow routing
+  - id: BUG-LEGACY-022
+    disposition: removed-duplicate
+    owner: skills/bugfix/SKILL.md
+    source: repeated test-first root-cause scoped and uncertainty rules
+  - id: BUG-LEGACY-023
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    source: fixed claim requires reproduction verification
+  - id: BUG-LEGACY-024
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+    source: bounded evidence collection
+  - id: BUG-LEGACY-025
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+    source: full-file read trigger
+  - id: BUG-LEGACY-026
+    disposition: amended
+    owner: skills/bugfix/SKILL.md
+    source: expected result evidence fields
+  - id: BUG-LEGACY-027
+    disposition: amended
+    owner: workflow
+    source: handoff to code-review before later gates
+requirement_dispositions:
+  - id: R1
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R2
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R3
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R4
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R5
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R6
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R7
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R8
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R9
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R10
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R11
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R12
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R13
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R14
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R15
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R16
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R17
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R18
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R19
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R20
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R21
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R22
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R23
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R24
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R25
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R26
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md
+  - id: R27
+    disposition: retained-inline
+    owner: skills/bugfix/SKILL.md

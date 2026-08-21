@@ -1,0 +1,38 @@
+schema: bugfix-literal-compatibility-v1
+allowed_dispositions: [retained, added, corrected, retained-as-later-gate]
+unknown_value_policy: fail-before-consistency
+closed_vocabularies:
+  operation: [diagnose-only, fix]
+  command_authority: [not-required, current-bounded, absent-or-stale, invalid-or-ambiguous]
+  write_authority: [none, portable-request-bound, governed-scope-bound, absent-or-stale, invalid-or-ambiguous]
+  terminal_result: [diagnosis-complete, diagnosis-incomplete, fix-applied, routed-to-owner, blocked]
+  immediate_handoff: [code-review]
+literals:
+  - value: diagnose-only
+    disposition: retained
+    owner: skills/bugfix/SKILL.md
+  - value: fix-applied
+    disposition: added
+    owner: skills/bugfix/SKILL.md
+  - value: code-review
+    disposition: corrected
+    owner: skills/bugfix/SKILL.md
+  - value: explain-change
+    disposition: retained-as-later-gate
+    owner: workflow
+  - value: pr
+    disposition: retained-as-later-gate
+    owner: workflow
+  - value: skills/bugfix/SKILL.md
+    disposition: retained
+    owner: repository-skill-source
+resource_consumers:
+  - scripts/skill_validation.py
+  - scripts/test-skill-validator.py
+  - scripts/build-skills.py
+  - scripts/adapter_distribution.py
+  - scripts/test-build-skills.py
+  - scripts/test-adapter-distribution.py
+  - dist/adapters/manifest.yaml
+required_headings: [Operation and authority, Evidence, Phases and proof, "Cause, action, and result", Write boundary, Completion and handoff, Package measurement, Evidence collection efficiency, When full-file read is required, Expected output]
+result_fields: [operation, terminal-result, command-authority, write-authority, repository, defect-scope, commands-run, proof-identity, unexecuted-checks, uncertainty, changed-surfaces, next-owner]
