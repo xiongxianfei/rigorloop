@@ -145,12 +145,13 @@ workflow_state:
     final_closeout:
       readiness: not-ready
       reasons:
-        - lifecycle-gates-open
-        - verify-pending
+        - pr-handoff-pending
       evidence:
         - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/plan-review-r2.md
         - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-m1-r1.md
         - docs/changes/2026-08-20-bugfix-skill-simplification/verify-report.md
+        - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r4.md
+        - docs/changes/2026-08-20-bugfix-skill-simplification/explain-change.md
 workflow:
   automation:
     mechanism: bounded-review-fix
@@ -276,7 +277,7 @@ validation:
   - command: bash scripts/ci.sh --mode pr --base origin/main --head HEAD
     result: pass_26_checks
   - command: python scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-20-bugfix-skill-simplification
-    result: block_4_findings
+    result: pass_16_reviews_4_resolved_findings
 
 changed_files:
   - docs/proposals/2026-08-20-bugfix-skill-simplification.md
