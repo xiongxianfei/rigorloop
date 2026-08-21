@@ -41,8 +41,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: explain-change
+  current_stage: explain-change
+  next_stage: verify
   blocker: null
   evidence:
     - docs/proposals/2026-08-20-bugfix-skill-simplification.md
@@ -111,6 +111,8 @@ workflow_state:
     - docs/changes/2026-08-20-bugfix-skill-simplification/explain-change.md
     - docs/changes/2026-08-20-bugfix-skill-simplification/verify-report.md
     - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/verify-r1-correction.md
+    - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r4.yaml
+    - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r4.md
   planned_work:
     plan_artifact_id: plan
     current_milestone: none
@@ -134,12 +136,12 @@ workflow_state:
     latest_review:
       status: approved
       stage: code-review
-      round: r3
-      artifact_id: code-review-final-r3
+      round: r4
+      artifact_id: code-review-final-r4
       occurrence: final
       milestone_id: none
       evidence:
-        - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r3.md
+        - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r4.md
     final_closeout:
       readiness: not-ready
       reasons:
@@ -229,6 +231,8 @@ workflow:
       - docs/changes/2026-08-20-bugfix-skill-simplification/explain-change.md
       - docs/changes/2026-08-20-bugfix-skill-simplification/verify-report.md
       - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/verify-r1-correction.md
+      - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r4.yaml
+      - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r4.md
 
 artifacts:
   proposal: docs/proposals/2026-08-20-bugfix-skill-simplification.md
@@ -338,3 +342,5 @@ changed_files:
   - docs/plan.md
   - docs/changes/2026-08-20-bugfix-skill-simplification/verify-report.md
   - docs/changes/2026-08-20-bugfix-skill-simplification/evidence/verify-r1-correction.md
+  - docs/changes/2026-08-20-bugfix-skill-simplification/review-invocation-code-review-final-r4.yaml
+  - docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r4.md

@@ -19,6 +19,7 @@ This ledger records formal lifecycle reviews for the bugfix skill-simplification
 | `code-review-m3-r1` | `code-review` | `r1` | M3 range `b6d1ae74..98e02b24` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r2` | `code-review` | `r2` | Complete range `2b7346ab..f7891062` | `reviews/code-review-final-r2.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-final-r3` | `code-review` | `r3` | Complete range `2b7346ab..c2cc66b1` | `reviews/code-review-final-r3.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-final-r4` | `code-review` | `r4` | Complete range `2b7346ab..585a60bd` | `reviews/code-review-final-r4.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Detailed review entries
 
