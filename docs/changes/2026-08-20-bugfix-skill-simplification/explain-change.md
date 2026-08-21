@@ -4,12 +4,12 @@
 
 Stage: explain-change
 Status: current
-Final diff identity: `2b7346abf0f8798dd3b49313dee936b1865cc4a1..c2cc66b1a7056fc52c8820df05ae021f5a212dd7` (`sha256:b1d704a87f5ad68e9f96c3b7cf31d5dc41a7fbc4ed548428babe5d65d87cf9d7`)
-Final review identity: `code-review-final-r3` recorded by revision `b2ea37ed80270a2999efbaeb2c4777e3d58d7c37`
+Final diff identity: `2b7346abf0f8798dd3b49313dee936b1865cc4a1..585a60bd8b36b29fc968a2089bc48e34090ff80d` (`sha256:cdd94921d7006c65968d9aed42ac684f7eeb0e741f98817cfc184a4e691aff80`)
+Final review identity: `code-review-final-r4` recorded by revision `613535bcf95fceb06b2dc500dcd560b26cb69a66`
 
 ## Summary
 
-The bugfix skill remains a single, resource-free package, but its compact guidance is replaced by a complete deterministic contract. The new contract separates intent, command authority, write authority, proof authoring, production correction, validation, owner routing, and terminal results. It favors truthful and sufficient semantics over an arbitrary word, byte, or token reduction.
+The bugfix skill remains a single, resource-free package, but its compact guidance is replaced by a complete deterministic contract. The new contract separates intent, command authority, write authority, proof authoring, production correction, validation, owner routing, and terminal results. It favors truthful and sufficient semantics over an arbitrary word, byte, or token reduction. A failed first verification exposed a review-evidence serialization gap; explicit supported closeouts now preserve the historical review identities while making settlement machine-verifiable.
 
 ## Problem
 
@@ -22,7 +22,8 @@ The previous skill combined diagnosis and correction decisions, did not close co
 - Architecture assessment: `docs/changes/2026-08-20-bugfix-skill-simplification/architecture-assessment.md`
 - Plan: `docs/plans/2026-08-20-bugfix-skill-simplification.md`
 - Test specification: `specs/bugfix-skill-simplification.test.md`
-- Final review: `docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r3.md`
+- Verify-R1 correction: `docs/changes/2026-08-20-bugfix-skill-simplification/evidence/verify-r1-correction.md`
+- Final review: `docs/changes/2026-08-20-bugfix-skill-simplification/reviews/code-review-final-r4.md`
 
 ## Diff rationale by area
 
@@ -31,7 +32,7 @@ The previous skill combined diagnosis and correction decisions, did not close co
 | `skills/bugfix/SKILL.md` | Replaced the underspecified workflow with closed vocabularies, ordered gates, matrices, retry rules, claim limits, and explicit handoff. | Make every authority, proof, routing, and terminal-result decision deterministic without adding runtime machinery. | Spec R1-R27; plan M2 | Focused contract tests; semantic-preservation review |
 | `tests/test_bugfix_skill_contract.py` | Added deterministic static scenarios for operation selection, bounded commands and writes, proof-first mutation, restoration, routing, retries, governed-signal failure, and claims. | Prove the complete contract and its failure paths directly. | Test spec T1-T14 | CMD1 and CMD2 |
 | Package and adapter fixtures | Updated expected package content and parity assertions for the canonical one-file skill. | Ensure generated, packed, archived, release-candidate, and installed projections reproduce the canonical source. | Spec R25; plan M3 | CMD3-CMD9 and M3 package proof |
-| Change-local evidence and reviews | Recorded baselines, measurements, semantic preservation, package proof, review findings and resolutions, CI coverage, and final review. | Preserve traceability and independent lifecycle settlement. | Workflow and plan closeout | Review structure and metadata validators |
+| Change-local evidence and reviews | Recorded baselines, measurements, semantic preservation, package proof, review findings and resolutions, CI coverage, failed verify R1, explicit closeout correction, and final rereview R4. | Preserve traceability, retain failed evidence truthfully, and make lifecycle settlement machine-verifiable. | Workflow and plan closeout | Review structure and closeout validators |
 
 ## Tests added or changed
 
@@ -52,13 +53,13 @@ The previous skill combined diagnosis and correction decisions, did not close co
 | Skill boundary and build tests | passed | `c2cc66b1a7056fc52c8820df05ae021f5a212dd7` |
 | Adapter distribution tests | 150 passed | `c2cc66b1a7056fc52c8820df05ae021f5a212dd7` |
 | Build, metadata, and prose checks | passed | `c2cc66b1a7056fc52c8820df05ae021f5a212dd7` |
-| Review-artifact structure and change metadata | passed | `b2ea37ed80270a2999efbaeb2c4777e3d58d7c37` |
+| Review-artifact structure, closeout, and change metadata | passed | `613535bcf95fceb06b2dc500dcd560b26cb69a66` |
 
 The final skill measures 1,228 words and 10,215 bytes, compared with the 586-word and 3,761-byte baseline. No token estimate is claimed. The increase is accepted because the authored contract requires the additional semantics and the governing decision makes size diagnostic rather than normative.
 
 ## Review resolution summary
 
-Four material code-review findings were accepted and resolved: ambiguous operation edges, a lost restoration distinction, insufficient deterministic edge proof, and malformed formal-review evidence fields. The closeout is recorded in `docs/changes/2026-08-20-bugfix-skill-simplification/review-resolution.md`; no finding remains open.
+Four material code-review findings were accepted and resolved: ambiguous operation edges, a lost restoration distinction, insufficient deterministic edge proof, and malformed formal-review evidence fields. Verify R1 subsequently found that four blocking review occurrences lacked parser-recognized closeout linkage. The existing resolution now closes those exact review IDs explicitly, both closeout validators pass, and final rereview R4 is clean. No finding remains open.
 
 ## Alternatives rejected
 
@@ -72,13 +73,13 @@ The change does not add a new skill, modify bugfix lifecycle ownership, automate
 
 ## Risks and follow-ups
 
-The always-loaded skill is larger than its baseline, so future editorial work should remove only demonstrated duplication while preserving the closed semantics. Acceptance is static and package-oriented; it does not claim that a live target agent repaired a real defect. No follow-up is required for this change.
+The always-loaded skill is larger than its baseline, so future editorial work should remove only demonstrated duplication while preserving the closed semantics. Acceptance is static and package-oriented; it does not claim that a live target agent repaired a real defect. The validator's inability to compare canonical `r<n>` round labels automatically may be addressed separately; this change uses its existing explicit-closeout contract and does not expand scope into validator behavior.
 
 ## Workflow handback
 
 Explanation status: current
-Explanation basis: `2b7346abf0f8798dd3b49313dee936b1865cc4a1..c2cc66b1a7056fc52c8820df05ae021f5a212dd7`; final review `code-review-final-r3`
-Validation-evidence cutoff: `c2cc66b1a7056fc52c8820df05ae021f5a212dd7`
+Explanation basis: `2b7346abf0f8798dd3b49313dee936b1865cc4a1..585a60bd8b36b29fc968a2089bc48e34090ff80d`; final review `code-review-final-r4`
+Validation-evidence cutoff: `613535bcf95fceb06b2dc500dcd560b26cb69a66`
 Open explain-change blockers: none
 Control returned to workflow: yes
 Next-stage decision owner: workflow

@@ -41,8 +41,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: explain-change
-  next_stage: verify
+  current_stage: verify
+  next_stage: pr
   blocker: null
   evidence:
     - docs/proposals/2026-08-20-bugfix-skill-simplification.md
