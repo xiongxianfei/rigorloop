@@ -296,6 +296,9 @@ function fixturePackage(options = {}) {
   copyFileSync(join(packageRoot, "dist", "lib", "adapters.js"), join(root, "dist", "lib", "adapters.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "command-result.js"), join(root, "dist", "lib", "command-result.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "lockfile.js"), join(root, "dist", "lib", "lockfile.js"));
+  copyFileSync(join(packageRoot, "dist", "lib", "lifecycle-contract.js"), join(root, "dist", "lib", "lifecycle-contract.js"));
+  copyFileSync(join(packageRoot, "dist", "lib", "lifecycle-cli.js"), join(root, "dist", "lib", "lifecycle-cli.js"));
+  copyFileSync(join(packageRoot, "dist", "lib", "lifecycle-read.js"), join(root, "dist", "lib", "lifecycle-read.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "new-change.js"), join(root, "dist", "lib", "new-change.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "new-change-filesystem.js"), join(root, "dist", "lib", "new-change-filesystem.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "official-archive-url.js"), join(root, "dist", "lib", "official-archive-url.js"));
@@ -604,8 +607,8 @@ test("T2 help output shows only the implemented command surface", () => {
   assert.match(result.stdout, /rigorloop init codex\|claude\|opencode/);
   assert.doesNotMatch(result.stdout, /--adapter/);
   assert.match(result.stdout, /rigorloop new-change <change-id>/);
-  assert.doesNotMatch(result.stdout, /\bstatus\b/);
-  assert.doesNotMatch(result.stdout, /\bvalidate\b/);
+  assert.match(result.stdout, /rigorloop lifecycle status\|context <stage>\|validate/);
+  assert.doesNotMatch(result.stdout, /set-status/);
   assert.doesNotMatch(result.stdout, /Undici|dispatcher|workflow YAML|generated workflow docs/i);
 });
 
