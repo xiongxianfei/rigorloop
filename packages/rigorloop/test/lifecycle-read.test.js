@@ -73,6 +73,8 @@ test("status exposes one deterministic result model without writes", async () =>
   assert.equal(execution.result.effective_state.recorded_state.spec, "approved");
   assert.equal(execution.result.effective_state.evidence_state.spec, "current");
   assert.deepEqual(execution.result.permitted_operations, ["record-validation", "complete-milestone"]);
+  assert.match(execution.human, /Current stage: implement/);
+  assert.match(execution.human, /Artifact spec: approved; evidence current/);
   assert.equal(readFileSync(path, "utf8"), before);
 });
 
@@ -84,6 +86,19 @@ test("context returns bounded stage facts from the shared interpretation", async
   assert.equal(result.context.permitted_registration_operation, "record-review");
   assert.match(result.context.lifecycle_revision, /^sha256:[a-f0-9]{64}$/);
   assert.equal(JSON.stringify(result).includes(root), false);
+  const human = executeLifecycleCli(["context", "code-review"], { cwd: root }).human;
+  assert.match(human, /Context operation: code-review/);
+  assert.match(human, /Permitted registration operation: record-review/);
+});
+
+test("structural blockers use the blocked exit class", async () => {
+  const root = await repository();
+  const logPath = join(root, "docs", "changes", "example", "review-log.md");
+  writeFileSync(logPath, "Open findings: F-1\n", "utf8");
+  const execution = executeLifecycleCli(["status"], { cwd: root });
+  assert.equal(execution.result.status, "blocked");
+  assert.equal(execution.exitCode, 2);
+  assert.equal(execution.result.blockers[0].code, "RL_UNRESOLVED_MATERIAL_FINDING");
 });
 
 test("validate rejects unsupported contracts and malformed YAML deterministically", async () => {
