@@ -1489,6 +1489,10 @@ run_direct_product_gates() {
     python scripts/test-release-transaction.py
   run_direct_check "Public package regressions" \
     npm test --prefix packages/rigorloop
+  run_direct_check "Governance: lifecycle validation wrapper regressions" \
+    python scripts/test-governed-lifecycle-cli-validator.py
+  run_direct_check "Governance: public lifecycle validation" \
+    python scripts/validate-governed-lifecycle-cli.py
 
   run_direct_check "Governance: change metadata regressions" \
     python scripts/test-change-metadata-validator.py
