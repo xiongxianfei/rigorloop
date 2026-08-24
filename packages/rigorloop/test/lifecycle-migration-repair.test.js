@@ -54,6 +54,17 @@ test("migration supports only the enumerated legacy coordination schema", async 
   assert.equal(registration.stage_authority, "spec");
 });
 
+test("migration rejects an ambiguous legacy artifact without changing bytes", async () => {
+  const { root, changePath } = await fixture();
+  writeFileSync(changePath, readFileSync(changePath, "utf8").replace("kind: spec", "kind: unknown"), "utf8");
+  const before = readFileSync(changePath);
+  const path = request(root, "ambiguous-migrate", { schema_version: 1, operation: "migrate", change_id: "example", expected_lifecycle_revision: revision(root), source_schema_version: 1, stage_authority: "workflow" });
+  const result = executeLifecycleCli(["migrate", "--request", path, "--format", "json"], { cwd: root });
+  assert.notEqual(result.exitCode, 0);
+  assert.equal(result.result.errors[0].code, "RL_UNSUPPORTED_SCHEMA");
+  assert.deepEqual(readFileSync(changePath), before);
+});
+
 test("clear-orphaned-lock repair requires explicit condition and preserves change bytes", async () => {
   const { root, changePath } = await fixture();
   const before = readFileSync(changePath);
