@@ -5558,6 +5558,14 @@ raise SystemExit(3)
             with self.subTest(term=term):
                 self.assertNotIn(term, workflow)
 
+    def test_hosted_ci_installs_locked_public_package_dependencies_before_validation(self) -> None:
+        workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+        install_command = "npm ci --prefix packages/rigorloop"
+        validation_command = "bash scripts/ci.sh --mode pr"
+
+        self.assertIn(install_command, workflow)
+        self.assertLess(workflow.index(install_command), workflow.index(validation_command))
+
     def test_local_mode_discovers_tracked_and_untracked_git_paths(self) -> None:
         repo = self.make_git_repo()
         (repo / "skills" / "workflow" / "SKILL.md").write_text("# Workflow\n\nChanged\n", encoding="utf-8")
