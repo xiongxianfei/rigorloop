@@ -20,6 +20,7 @@ const validChange = fixture.valid_yaml;
 
 test("closed lifecycle operation vocabulary rejects an unknown operation", () => {
   assert.deepEqual([...LIFECYCLE_OPERATIONS], [
+    "record-artifact-revision",
     "record-review",
     "record-validation",
     "record-finding-resolution",
@@ -53,6 +54,7 @@ test("request schema rejects unknown fields before operation consistency", () =>
 });
 
 const operationRequests = {
+  "record-artifact-revision": { artifact_id: "spec", artifact_kind: "spec", artifact_role: "primary", artifact_path: "specs/example.md", evidence_path: "evidence/spec-authoring.md", stage_authority: "spec" },
   "record-review": { artifact_id: "spec", evidence_path: "reviews/spec-review-r1.md", stage_authority: "spec-review" },
   "record-validation": { artifact_id: "spec", evidence_path: "evidence/validation.md", subject_path: "specs/example.md", stage_authority: "verify" },
   "record-finding-resolution": { artifact_id: "spec", evidence_path: "review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" },

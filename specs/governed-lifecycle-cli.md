@@ -48,13 +48,18 @@ Given a repository without a governed change record
 When a portable skill authors an isolated artifact without requesting a governed transition
 Then no lifecycle CLI state or `change.yaml` is required.
 
+Example E5: authored revision is registered without a field setter
+Given an authorized governed spec skill has written a revised specification and its bound authoring evidence
+When it requests `record-artifact-revision` with the exact artifact, evidence, prior identity, and current lifecycle revision
+Then the CLI verifies those bytes, invalidates evidence for the replaced identity, derives `review-required`, changes only the matching artifact entry, and leaves workflow routing unchanged.
+
 ## Requirements
 
 | ID | Requirement |
 | --- | --- |
 | R1 | The CLI MUST treat Git-trackable repository artifacts as the complete durable input required to reconstruct governed status at a supported commit. |
 | R2 | The CLI MUST support governed lifecycle commands under `rigorloop lifecycle` and MUST reject lifecycle mutation for records that do not declare the supported lifecycle contract. |
-| R3 | The first release MUST expose the read-only commands `status`, `context <stage>`, and `validate`, plus the mutating operations `record-review`, `record-validation`, `record-finding-resolution`, `settle-artifact`, `start-milestone`, `complete-milestone`, `migrate`, and `repair`. |
+| R3 | The first release MUST expose the read-only commands `status`, `context <stage>`, and `validate`, plus the mutating operations `record-artifact-revision`, `record-review`, `record-validation`, `record-finding-resolution`, `settle-artifact`, `start-milestone`, `complete-milestone`, `migrate`, and `repair`. |
 | R4 | Mutating commands MUST accept a versioned JSON request through `--request <repository-relative-path>` and MUST reject unknown request schema versions, operation names, fields, and closed-vocabulary values before mutation. |
 | R5 | The public interface MUST NOT expose a command or request field that assigns arbitrary lifecycle fields or caller-selected target states. |
 | R6 | Every command MUST support human output by default and `--format json`; both formats MUST derive from the same interpreted result. |
@@ -63,6 +68,7 @@ Then no lifecycle CLI state or `change.yaml` is required.
 | R9 | `status` MUST distinguish recorded state, evidence state, and effective state and report current stage, active artifact or milestone, blockers, unresolved findings, stale evidence, permitted operations, and supporting repository paths. |
 | R10 | `context <stage>` MUST return only the validated facts needed by that stage: exact change, operation, target artifact, settled upstream inputs, review round when applicable, authorized output path, blockers, lifecycle revision, and permitted registration operation. |
 | R11 | If exactly one active governed change exists, read-only commands MAY select it implicitly; otherwise the caller MUST provide `--change <change-id>`, and zero or multiple candidates MUST produce a non-mutating diagnostic. |
+| R11a | `record-artifact-revision` MUST validate an existing stage-authored artifact and authoring-evidence file, exact artifact ID, kind, role, path, stage authority, and prior identity for revisions; it MUST create or revise only the matching artifact entry, invalidate registrations tied to the replaced identity, and derive `review-required` without changing workflow routing or accepting a target state. |
 | R12 | `record-review` MUST validate an existing review record, review-log entry, review round, outcome, reviewed artifact identity, and finding set before registering it; it MUST NOT make or alter the semantic judgment. |
 | R13 | `record-validation` MUST validate an existing evidence artifact and exact subject identity before registration; command success or test exit status alone MUST NOT imply approval, settlement, or readiness. |
 | R14 | `record-finding-resolution` MUST validate an existing resolution entry, allowed disposition, finding identity, owner, required evidence, and review-log consistency before registration. |
@@ -75,7 +81,7 @@ Then no lifecycle CLI state or `change.yaml` is required.
 | R21 | Rejection or interruption before replacement MUST leave `change.yaml` byte-unchanged. Failure after replacement MUST automatically restore and verify the prior bytes when possible; if restoration cannot be verified, the recovery bundle MUST remain and every lifecycle command except `validate` and the named `reconcile-interrupted-replace` repair MUST fail with `RL_POST_VALIDATION_FAILED`. Startup and validation MUST detect and deterministically reconcile or report that condition without treating the candidate as settled. |
 | R22 | A request whose expected lifecycle revision is not current MUST fail under R18 even when an equivalent earlier operation completed. An equivalent operation submitted against the current revision MUST return explicit `already-recorded` success when all requested durable facts are present and identical, without duplicating evidence, review rounds, findings, or transitions; conflicting facts MUST fail. |
 | R23 | `validate` MUST check schema compatibility, artifact identity, lifecycle combinations, evidence references and freshness, review and resolution consistency, milestone projections, lifecycle revision consistency, and detectable unsupported manual mutations. |
-| R24 | `migrate` MUST support only explicitly enumerated source schema versions and deterministic transformations; unsupported or ambiguous legacy state MUST fail without mutation. |
+| R24 | `migrate` MUST support only explicitly enumerated source schema versions and deterministic transformations; for an existing supported artifact it MUST seed the current path, kind, role, content identity, authoring authority, and available authoring-evidence identity so the first later revision has a registered prior identity; unsupported or ambiguous legacy state MUST fail without mutation. |
 | R25 | `repair` MUST accept only named recoverable condition codes, show its exact planned mutation in dry-run output, require the current lifecycle revision, and refuse unknown corruption or arbitrary field edits. |
 | R26 | The CLI MUST reject unsupported repository schema or CLI/repository compatibility combinations with `RL_UNSUPPORTED_SCHEMA` or `RL_INCOMPATIBLE_VERSION` and actionable version guidance. |
 | R27 | Machine-readable output, error codes, request schemas, lifecycle revision calculation, and resulting diffs MUST be deterministic for identical supported inputs except documented timestamp or actor provenance fields. |
@@ -89,7 +95,7 @@ Then no lifecycle CLI state or `change.yaml` is required.
 
 ## Inputs and outputs
 
-Common command inputs are repository root discovery, optional `--change`, `--format human|json`, and optional `--dry-run` for mutating commands. Mutation requests contain `schema_version`, `operation`, `change_id`, `expected_lifecycle_revision`, operation-specific artifact IDs and repository-relative evidence paths, and optional documented provenance.
+Common command inputs are repository root discovery, optional `--change`, `--format human|json`, and optional `--dry-run` for mutating commands. Mutation requests contain `schema_version`, `operation`, `change_id`, `expected_lifecycle_revision`, operation-specific artifact IDs and repository-relative evidence paths, and optional documented provenance. `record-artifact-revision` additionally contains `artifact_kind`, `artifact_role`, `artifact_path`, `stage_authority`, and optional `prior_artifact_sha256`; omission of the prior identity means creation and is valid only when the entry and path are non-conflicting.
 
 Repository-relative paths must be normalized, remain inside the repository, identify regular files, and reject symlink traversal. Request files are inputs only and are not durable evidence unless separately registered by an allowed operation.
 
@@ -199,7 +205,7 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 
 ## Compatibility and migration
 
-The first release is additive and enforcement defaults off. Existing supported repositories remain readable through `status` and `validate`. A repository is writable only when its schema declares a supported migration or current version. Migration writes a deterministic current snapshot and preserves historical semantic artifacts.
+The first release is additive and enforcement defaults off. Existing supported repositories remain readable through `status` and `validate`. A repository is writable only when its schema declares a supported migration or current version. Migration writes a deterministic current snapshot, registers the exact current identities of supported existing artifacts without changing their settlement state, and preserves historical semantic artifacts.
 
 Canonical skills and adapters migrate only after the CLI contract is shipped and validated. Mixed deployments fail closed for mutation while retaining read-only diagnostics. Rollback before enforcement restores the existing validated direct-edit process; rollback after enforcement requires a compatibility release and never instructs users to perform undocumented status edits.
 

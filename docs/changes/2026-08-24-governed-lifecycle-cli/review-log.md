@@ -18,6 +18,14 @@ This ledger records formal lifecycle reviews for the governed lifecycle CLI chan
 | `code-review-m3-r1` | `code-review` | `r1` | implementation milestone M3 at commit `a686cca6` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | `0` | `recorded` |
 | `code-review-m4-r1` | `code-review` | `r1` | implementation milestone M4 at commit `6d271e3c` | `reviews/code-review-m4-r1.md` | `clean-with-notes` | `0` | `recorded` |
 | `code-review-m5-r1` | `code-review` | `r1` | implementation milestone M5 at commit `69e4af1b` | `reviews/code-review-m5-r1.md` | `clean-with-notes` | `0` | `recorded` |
+| `proposal-review-r2` | `proposal-review` | `r2` | proposal at `sha256:7cea1a6df8556b02590c087757ad07f8fbae27840b121f46b5d6e71873840582` | `reviews/proposal-review-r2.md` | `approved` | `0` | `recorded` |
+| `spec-review-r3` | `spec-review` | `r3` | spec at `sha256:b10f778665e91a15718a7f0b7e64befcf52f72bf31c1825aaa6c4664678c3edd` | `reviews/spec-review-r3.md` | `approved` | `0` | `recorded` |
+| `architecture-review-r3` | `architecture-review` | `r3` | canonical architecture and ADR at revised identities | `reviews/architecture-review-r3.md` | `approved` | `0` | `recorded` |
+| `plan-review-r2` | `plan-review` | `r2` | unchanged plan at `sha256:3db2ac47143f4ad05e78eeeeea0edb8a0228d743319cce16199564f2d5bda485` against refined spec | `reviews/plan-review-r2.md` | `approved` | `0` | `recorded` |
+| `test-spec-review-r2` | `test-spec-review` | `r2` | test spec at `sha256:018111c162ebcc448412008493ca354585885e3738055d37deba8f11af9358b5` | `reviews/test-spec-review-r2.md` | `approved` | `0` | `recorded` |
+| `spec-review-r4` | `spec-review` | `r4` | spec at `sha256:e80a5266c1a9a1c873da5578bcc967863f7d1f06892e8638ad7df0474a3905c6` | `reviews/spec-review-r4.md` | `approved` | `0` | `recorded` |
+| `architecture-review-r4` | `architecture-review` | `r4` | canonical architecture at `sha256:ffc5267823c124232cf1336128c1e9d389ad154ac6eb6f3cdb923055f5ddf414` and unchanged ADR | `reviews/architecture-review-r4.md` | `approved` | `0` | `recorded` |
+| `test-spec-review-r3` | `test-spec-review` | `r3` | test spec at `sha256:21dc9de2b83f1c161bfdc8d7c52c1124f9bd7f24b1815ff0e094b23b105b3707` | `reviews/test-spec-review-r3.md` | `approved` | `0` | `recorded` |
 
 ## Review Entries
 

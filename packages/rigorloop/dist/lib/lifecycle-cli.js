@@ -7,7 +7,7 @@ import { contextForStage, findRepositoryRoot, interpretGovernedChange, lifecycle
 import { clearOrphanedLifecycleLock, inspectLifecycleLock, inspectLifecycleRecovery, reconcileInterruptedTransaction, runLifecycleTransaction } from "./lifecycle-transaction.js";
 
 const RESULT_FIELDS = ["schema_version", "command", "operation", "status", "change_id", "lifecycle_revision", "effective_state", "blockers", "permitted_operations", "artifacts", "warnings", "errors"];
-const MUTATING_OPERATIONS = new Set(["record-review", "record-validation", "record-finding-resolution", "settle-artifact", "start-milestone", "complete-milestone", "migrate", "repair"]);
+const MUTATING_OPERATIONS = new Set(["record-artifact-revision", "record-review", "record-validation", "record-finding-resolution", "settle-artifact", "start-milestone", "complete-milestone", "migrate", "repair"]);
 
 function parseArgs(args) {
   const [operation, maybeStage, ...rest] = args;
