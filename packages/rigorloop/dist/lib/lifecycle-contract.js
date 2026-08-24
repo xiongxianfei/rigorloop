@@ -213,6 +213,7 @@ export function validateLifecycleRequest(request) {
     "operation",
     "change_id",
     "expected_lifecycle_revision",
+    ...PROVENANCE_EXCLUDED_FIELDS,
     ...OPERATION_FIELDS[request.operation],
   ]);
   const unknown = Object.keys(request).find((field) => !allowed.has(field));
@@ -251,7 +252,31 @@ export function validateLifecycleRequest(request) {
   if (request.dry_run_acknowledgement !== undefined && request.dry_run_acknowledgement !== true) {
     return { ok: false, errors: [requestError("dry_run_acknowledgement must be true")] };
   }
+  if (request.actor !== undefined && (typeof request.actor !== "string" || request.actor.trim().length === 0)) {
+    return { ok: false, errors: [requestError("actor must be a non-empty string")] };
+  }
+  if (request.recorded_at !== undefined && !isRfc3339Timestamp(request.recorded_at)) {
+    return { ok: false, errors: [requestError("recorded_at must be an RFC 3339 timestamp")] };
+  }
   return { ok: true, value: structuredClone(request), errors: [] };
+}
+
+function isRfc3339Timestamp(value) {
+  if (typeof value !== "string") return false;
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|[+-](\d{2}):(\d{2}))$/.exec(value);
+  if (!match) return false;
+  const [, yearText, monthText, dayText, hourText, minuteText, secondText, offsetHourText, offsetMinuteText] = match;
+  const year = Number(yearText);
+  const month = Number(monthText);
+  const day = Number(dayText);
+  const daysInMonth = month >= 1 && month <= 12 ? new Date(Date.UTC(year, month, 0)).getUTCDate() : 0;
+  return day >= 1
+    && day <= daysInMonth
+    && Number(hourText) <= 23
+    && Number(minuteText) <= 59
+    && Number(secondText) <= 59
+    && (offsetHourText === undefined || Number(offsetHourText) <= 23)
+    && (offsetMinuteText === undefined || Number(offsetMinuteText) <= 59);
 }
 
 function isRepositoryRelativePath(value) {
