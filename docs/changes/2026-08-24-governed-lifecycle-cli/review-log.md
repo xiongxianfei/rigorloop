@@ -17,6 +17,7 @@ This ledger records formal lifecycle reviews for the governed lifecycle CLI chan
 | `code-review-m2-r1` | `code-review` | `r1` | implementation milestone M2 at commit `1a21f9bb` | `reviews/code-review-m2-r1.md` | `clean-with-notes` | `0` | `recorded` |
 | `code-review-m3-r1` | `code-review` | `r1` | implementation milestone M3 at commit `a686cca6` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | `0` | `recorded` |
 | `code-review-m4-r1` | `code-review` | `r1` | implementation milestone M4 at commit `6d271e3c` | `reviews/code-review-m4-r1.md` | `clean-with-notes` | `0` | `recorded` |
+| `code-review-m5-r1` | `code-review` | `r1` | implementation milestone M5 at commit `69e4af1b` | `reviews/code-review-m5-r1.md` | `clean-with-notes` | `0` | `recorded` |
 
 ## Review Entries
 
