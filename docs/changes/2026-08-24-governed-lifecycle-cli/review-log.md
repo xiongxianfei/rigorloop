@@ -26,6 +26,8 @@ This ledger records formal lifecycle reviews for the governed lifecycle CLI chan
 | `spec-review-r4` | `spec-review` | `r4` | spec at `sha256:e80a5266c1a9a1c873da5578bcc967863f7d1f06892e8638ad7df0474a3905c6` | `reviews/spec-review-r4.md` | `approved` | `0` | `recorded` |
 | `architecture-review-r4` | `architecture-review` | `r4` | canonical architecture at `sha256:ffc5267823c124232cf1336128c1e9d389ad154ac6eb6f3cdb923055f5ddf414` and unchanged ADR | `reviews/architecture-review-r4.md` | `approved` | `0` | `recorded` |
 | `test-spec-review-r3` | `test-spec-review` | `r3` | test spec at `sha256:21dc9de2b83f1c161bfdc8d7c52c1124f9bd7f24b1815ff0e094b23b105b3707` | `reviews/test-spec-review-r3.md` | `approved` | `0` | `recorded` |
+| `code-review-m6-r1` | `code-review` | `r1` | implementation milestone M6 at commit `aaa298a9` | `reviews/code-review-m6-r1.md` | `clean-with-notes` | `0` | `recorded` |
+| `test-spec-review-r4` | `test-spec-review` | `r4` | test spec at `sha256:b007a6554fc8a851a145c1773800fa95feb6a8e1372a81205b476a50209b7bc4` | `reviews/test-spec-review-r4.md` | `approved` | `0` | `recorded` |
 
 ## Review Entries
 

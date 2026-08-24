@@ -3,14 +3,23 @@
 Review ID: test-spec-review-r2
 Stage: test-spec-review
 Round: r2
+Target: `specs/governed-lifecycle-cli.test.md` at `sha256:018111c162ebcc448412008493ca354585885e3738055d37deba8f11af9358b5`
+Reviewed artifact: `specs/governed-lifecycle-cli.test.md` at `sha256:018111c162ebcc448412008493ca354585885e3738055d37deba8f11af9358b5`
 Reviewed artifact path: specs/governed-lifecycle-cli.test.md
 Reviewed artifact identity: sha256:018111c162ebcc448412008493ca354585885e3738055d37deba8f11af9358b5
 Reviewer: Codex direct review under user independence override
 Review date: 2026-08-24
 Recording status: recorded
 Status: approved
+Review status: approved
 Material findings: none
+Immediate next stage: implement
+Implementation handoff: allowed
 
 ## Result
+
+- Review status: approved
+- Immediate next stage: implement
+- Implementation handoff: allowed
 
 T06a covers creation, revision, evidence identity, prior identity, authority, stale revision, idempotency, invalidation, and unchanged routing. The proof remains automated and milestone-owned. This receipt makes no independent-review claim.

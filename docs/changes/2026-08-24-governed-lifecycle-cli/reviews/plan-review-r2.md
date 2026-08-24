@@ -3,6 +3,8 @@
 Review ID: plan-review-r2
 Stage: plan-review
 Round: r2
+Target: `docs/plans/2026-08-24-governed-lifecycle-cli.md` at `sha256:3db2ac47143f4ad05e78eeeeea0edb8a0228d743319cce16199564f2d5bda485`
+Reviewed artifact: `docs/plans/2026-08-24-governed-lifecycle-cli.md` at `sha256:3db2ac47143f4ad05e78eeeeea0edb8a0228d743319cce16199564f2d5bda485`
 Reviewed artifact path: docs/plans/2026-08-24-governed-lifecycle-cli.md
 Reviewed artifact identity: sha256:3db2ac47143f4ad05e78eeeeea0edb8a0228d743319cce16199564f2d5bda485
 Reviewer: Codex direct review under user independence override

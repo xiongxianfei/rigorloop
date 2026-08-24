@@ -3,6 +3,8 @@
 Review ID: spec-review-r4
 Stage: spec-review
 Round: r4
+Target: `specs/governed-lifecycle-cli.md` at `sha256:e80a5266c1a9a1c873da5578bcc967863f7d1f06892e8638ad7df0474a3905c6`
+Reviewed artifact: `specs/governed-lifecycle-cli.md` at `sha256:e80a5266c1a9a1c873da5578bcc967863f7d1f06892e8638ad7df0474a3905c6`
 Reviewed artifact path: specs/governed-lifecycle-cli.md
 Reviewed artifact identity: sha256:e80a5266c1a9a1c873da5578bcc967863f7d1f06892e8638ad7df0474a3905c6
 Reviewer: Codex direct review under user independence override

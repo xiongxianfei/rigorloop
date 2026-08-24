@@ -3,6 +3,8 @@
 Review ID: architecture-review-r4
 Stage: architecture-review
 Round: r4
+Target: canonical architecture and ADR-20260824 at the identities below
+Reviewed artifact: canonical architecture `sha256:ffc5267823c124232cf1336128c1e9d389ad154ac6eb6f3cdb923055f5ddf414`; ADR `sha256:5917887bf347c2346f7667c38d1763fca2c656e6586538fd0898224c405e3f81`
 Reviewed artifact path: docs/architecture/system/architecture.md
 Reviewed artifact identity: sha256:ffc5267823c124232cf1336128c1e9d389ad154ac6eb6f3cdb923055f5ddf414
 Reviewed ADR path: docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md
