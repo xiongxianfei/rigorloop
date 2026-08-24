@@ -1,0 +1,254 @@
+change_id: 2026-08-24-governed-lifecycle-cli
+title: Governed Lifecycle CLI for RigorLoop
+classification: workflow-governance-and-cli
+risk: high
+lifecycle_contract: stage-owned-change-local-v1
+
+artifact_states:
+  proposal:
+    kind: proposal
+    path: docs/proposals/2026-08-24-governed-lifecycle-cli.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: proposal-review-r1
+      artifact_id: proposal
+      outcome: approved
+      record: docs/changes/2026-08-24-governed-lifecycle-cli/reviews/proposal-review-r1.md
+      round: r1
+  spec:
+    kind: spec
+    path: specs/governed-lifecycle-cli.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: spec-review-r2
+      artifact_id: spec
+      outcome: approved
+      record: docs/changes/2026-08-24-governed-lifecycle-cli/reviews/spec-review-r2.md
+      round: r2
+  architecture:
+    kind: architecture
+    path: docs/architecture/system/architecture.md
+    role: primary
+    lifecycle_state: approved
+    review:
+      id: architecture-review-r2
+      artifact_id: architecture
+      outcome: approved
+      record: docs/changes/2026-08-24-governed-lifecycle-cli/reviews/architecture-review-r2.md
+      round: r2
+  adr-lifecycle-cli:
+    kind: adr
+    path: docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md
+    role: primary
+    lifecycle_state: accepted
+    review:
+      id: architecture-review-r2
+      artifact_id: adr-lifecycle-cli
+      outcome: approved
+      adr_settlement: accepted
+      record: docs/changes/2026-08-24-governed-lifecycle-cli/reviews/architecture-review-r2.md
+      round: r2
+  plan:
+    kind: plan
+    path: docs/plans/2026-08-24-governed-lifecycle-cli.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: plan-review-r1
+      artifact_id: plan
+      outcome: approved
+      record: docs/changes/2026-08-24-governed-lifecycle-cli/reviews/plan-review-r1.md
+      round: r1
+  test-spec:
+    kind: test-spec
+    path: specs/governed-lifecycle-cli.test.md
+    role: primary
+    lifecycle_state: active
+    review:
+      id: test-spec-review-r1
+      artifact_id: test-spec
+      outcome: approved
+      record: docs/changes/2026-08-24-governed-lifecycle-cli/reviews/test-spec-review-r1.md
+      round: r1
+
+workflow_state:
+  lifecycle_state: active
+  current_stage: implement
+  next_stage: implement
+  blocker: null
+  planned_work:
+    plan_artifact_id: plan
+    initialization_basis:
+      review_id: plan-review-r1
+      review_round: r1
+      review_record: docs/changes/2026-08-24-governed-lifecycle-cli/reviews/plan-review-r1.md
+      reviewed_artifact_path: docs/plans/2026-08-24-governed-lifecycle-cli.md
+      reviewed_revision: 18a204bb9fa3
+    current_milestone: M1
+    milestones:
+      M1:
+        kind: implementation
+        state: implementing
+      M2:
+        kind: implementation
+        state: planned
+      M3:
+        kind: implementation
+        state: planned
+      M4:
+        kind: implementation
+        state: planned
+      M5:
+        kind: implementation
+        state: planned
+      M6:
+        kind: implementation
+        state: planned
+      M7:
+        kind: implementation
+        state: planned
+    remaining_implementation_milestones:
+      - M1
+      - M2
+      - M3
+      - M4
+      - M5
+      - M6
+      - M7
+    latest_review:
+      status: not-started
+      stage: none
+      round: none
+      artifact_id: none
+      occurrence: none
+      milestone_id: none
+      evidence: []
+    final_closeout:
+      readiness: not-ready
+      reasons:
+        - lifecycle-gates-open
+      evidence: []
+  evidence:
+    - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/proposal-authoring.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/proposal-review-r1.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-automation-target-test-spec-review.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/spec-revision-r1.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/spec-review-r2.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/architecture-assessment.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/architecture-revision-r1.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/architecture-review-r2.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/plan-authoring.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/plan-review-r1.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-plan-to-test-spec.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-test-spec-to-review.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/review-invocation-test-spec-review-r1.yaml
+    - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-automation-target-verify.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-test-spec-review-to-m1.md
+
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: verify
+      occurrence:
+        kind: singleton
+      bound_at: "2026-08-24T20:36:54+01:00"
+      completion:
+        rule: final verification result is durably recorded
+    status: active
+    current_stage: implement
+    stop_reason: null
+    evidence:
+      - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-automation-target-verify.md
+      - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-test-spec-review-to-m1.md
+
+artifacts:
+  proposal: docs/proposals/2026-08-24-governed-lifecycle-cli.md
+  spec: specs/governed-lifecycle-cli.md
+  architecture: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md
+  plan: docs/plans/2026-08-24-governed-lifecycle-cli.md
+  test_spec: specs/governed-lifecycle-cli.test.md
+
+requirements:
+  - Establish the existing local RigorLoop CLI as the guarded operation boundary for supported governed lifecycle transitions while preserving Git-tracked repository truth.
+  - Keep semantic judgment, evidence recording, artifact settlement, workflow routing, and continuation authority explicitly separated.
+  - Scope the first release to effective-state inspection, operation context, evidence and review recording, settlement, milestone transitions, validation, compatibility, migration, and controlled repair.
+  - Preserve portable skill operation outside governed lifecycle transitions and exclude autonomous orchestration, PR execution, merging, deployment, and hosted control-plane behavior.
+  - Require lifecycle integrity, stale-operation, deterministic-output, atomicity, fresh-checkout reconstruction, adapter integration, CI validation, and measured token-reduction proof before mandatory enforcement.
+
+tests:
+  - Independent proposal review of problem framing, option quality, product boundary, scope, trust claims, migration, architecture impact, and downstream readiness.
+  - Downstream transition conformance fixtures for valid and invalid predecessors, unresolved findings, stale evidence, wrong identity, duplicate operations, milestone ordering, schema compatibility, migration, and repair.
+  - Downstream determinism, fault-injection atomicity, fresh-checkout reconstruction, adapter integration, CI validation, and representative token-baseline comparisons.
+
+validation:
+  - command: python3 scripts/validate-change-metadata.py docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml
+    result: passed
+  - command: python3 scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-08-24-governed-lifecycle-cli.md --path docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml --path docs/changes/2026-08-24-governed-lifecycle-cli/evidence/proposal-authoring.md
+    result: passed
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-08-24-governed-lifecycle-cli.md --path docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml --path docs/changes/2026-08-24-governed-lifecycle-cli/evidence/proposal-authoring.md
+    result: passed; selected artifact lifecycle, change-metadata regression, and change-metadata validation checks
+  - command: python3 scripts/validate-review-artifacts.py docs/changes/2026-08-24-governed-lifecycle-cli
+    result: passed in structure mode with one review, zero findings, one log entry, and zero resolution entries
+  - command: python3 scripts/validate-artifact-lifecycle.py --mode explicit-paths --path docs/proposals/2026-08-24-governed-lifecycle-cli.md --path docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml --path docs/changes/2026-08-24-governed-lifecycle-cli/evidence/proposal-authoring.md --path docs/changes/2026-08-24-governed-lifecycle-cli/reviews/proposal-review-r1.md --path docs/changes/2026-08-24-governed-lifecycle-cli/review-log.md
+    result: passed after formal proposal settlement
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-08-24-governed-lifecycle-cli.md --path docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml --path docs/changes/2026-08-24-governed-lifecycle-cli/evidence/proposal-authoring.md --path docs/changes/2026-08-24-governed-lifecycle-cli/reviews/proposal-review-r1.md --path docs/changes/2026-08-24-governed-lifecycle-cli/review-log.md
+    result: passed; selected review-artifact, artifact-lifecycle, change-metadata regression, and change-metadata validation checks
+  - command: python3 scripts/validate-documentation-prose.py --mode audit --path specs/governed-lifecycle-cli.md
+    result: passed with zero errors and zero warnings
+  - command: python3 scripts/validate-boundary-first.py --path specs/governed-lifecycle-cli.md
+    result: feature-spec structure passed; matching proof map remains pending the downstream test-spec stage
+
+changed_files:
+  - docs/proposals/2026-08-24-governed-lifecycle-cli.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/proposal-authoring.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/proposal-review-r1.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/review-log.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-automation-target-test-spec-review.md
+  - specs/governed-lifecycle-cli.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/spec-authoring.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/review-invocation-spec-review-r1.yaml
+  - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/spec-review-r1.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/review-resolution.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/spec-revision-r1.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/review-invocation-spec-review-r2.yaml
+  - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/spec-review-r2.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/architecture-assessment.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/architecture-authoring.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/review-invocation-architecture-review-r1.yaml
+  - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/architecture-review-r1.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/architecture-revision-r1.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/review-invocation-architecture-review-r2.yaml
+  - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/architecture-review-r2.md
+  - docs/plans/2026-08-24-governed-lifecycle-cli.md
+  - docs/plan.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/plan-authoring.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/review-invocation-plan-review-r1.yaml
+  - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/plan-review-r1.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-plan-to-test-spec.md
+  - specs/governed-lifecycle-cli.test.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/test-spec-authoring.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-test-spec-to-review.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/review-invocation-test-spec-review-r1.yaml
+  - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/test-spec-review-r1.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-automation-target-verify.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-test-spec-review-to-m1.md
+
+review:
+  status: clean
+  unresolved_items: 0
+  reviewed_artifact: specs/governed-lifecycle-cli.test.md
+  review_log: docs/changes/2026-08-24-governed-lifecycle-cli/review-log.md
+
+architecture:
+  assessment: architecture-required
+  rationale: The approved CLI contract introduces a cross-component canonical interpreter, guarded mutation and recovery protocol, durable identity model, compatibility seam, and mandatory lifecycle authority boundary.
+  package: docs/architecture/system/architecture.md
+  adr: docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md

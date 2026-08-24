@@ -27,6 +27,7 @@ Current blockers are not recorded in this index.
 
 | Plan | Owning change record |
 | --- | --- |
+| [Governed Lifecycle CLI](plans/2026-08-24-governed-lifecycle-cli.md) | [change.yaml](changes/2026-08-24-governed-lifecycle-cli/change.yaml) |
 | [Bugfix Skill Simplification](plans/2026-08-20-bugfix-skill-simplification.md) | [change.yaml](changes/2026-08-20-bugfix-skill-simplification/change.yaml) |
 | [CI-Maintenance Skill Simplification](plans/2026-08-19-ci-maintenance-skill-simplification.md) | [change.yaml](changes/2026-08-19-ci-maintenance-skill-simplification/change.yaml) |
 | [Explain-Change Skill Simplification](plans/2026-08-18-explain-change-skill-simplification.md) | [change.yaml](changes/2026-08-18-explain-change-skill-simplification/change.yaml) |

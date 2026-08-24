@@ -2,7 +2,7 @@
 
 ## Owning change record
 
-`docs/changes/2026-08-14-project-map-skill-simplification/change.yaml`
+`docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml`
 
 ## Related artifacts
 
@@ -161,6 +161,11 @@
 - Workflow Skill Simplification proposal: `docs/proposals/2026-08-11-workflow-skill-simplification.md`
 - Workflow Skill Simplification spec: `specs/workflow-skill-simplification.md`
 - Workflow Skill Simplification change metadata: `docs/changes/2026-08-11-workflow-skill-simplification/change.yaml`
+
+- Governed Lifecycle CLI proposal: `docs/proposals/2026-08-24-governed-lifecycle-cli.md`
+- Governed Lifecycle CLI spec: `specs/governed-lifecycle-cli.md`
+- Governed Lifecycle CLI ADR: `docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md`
+- Governed Lifecycle CLI change metadata: `docs/changes/2026-08-24-governed-lifecycle-cli/change.yaml`
 
 ## Introduction and Goals
 
@@ -329,9 +334,7 @@ The goals are:
 - Review evidence is durable before review settlement. Interrupted identical
   settlement is idempotently reconciled by the matching review peer;
   workflow pauses rather than manufacturing approval.
-- Validation checks closed values, legal transitions, evidence consistency,
-  routing consistency, migration state, and generated-adapter parity. It does
-  not use content hashes or claim which process physically wrote a file.
+- Before governed lifecycle CLI activation, compatibility validators check closed values, legal transitions, evidence consistency, routing consistency, migration state, and generated-adapter parity without using content hashes or claiming which process physically wrote a file. After activation, the lifecycle engine uses exact content identities for freshness and revision calculation but still makes no actor-attribution claim.
 - Proposal-side deterministic corrections remain driver-owned; implementation correction eligibility remains reviewer-owned; verification failure never authorizes automatic repair.
 - Historical changes remain read-only. Resumed nonterminal work migrates once
   to the new state model before mutation; no migration or rollback restores a
@@ -500,6 +503,27 @@ The CLI package remains an additive delivery container. For multi-adapter init, 
 - lockfile parser and serializer: reads existing schema v1/v2 lockfiles as compatibility inputs, checks drift before replacement, and writes target-oriented schema v3 generated adapter entries after installed output verifies;
 - generated-output mutation planner: plans root creation and file writes before mutation, refuses unsafe conflicts, and reports partial failures without claiming success.
 
+### Level 2 White-Box: Governed Lifecycle CLI
+
+The existing `rigorloop` package gains a `lifecycle` command family around one package-local lifecycle engine. The public CLI, skills, adapters, workflow, CI, and compatibility validators consume one versioned operation and result contract rather than independently interpreting lifecycle fields.
+
+The component has four inward-facing responsibilities:
+
+- repository snapshot: select one governed change and normalize `change.yaml`, exact referenced artifact and evidence identities, dependency edges, schema compatibility, and transient recovery state;
+- pure interpretation: derive recorded state, evidence state, effective state, blockers, permitted operations, minimal stage context, lifecycle revision, and stable diagnostics without filesystem mutation;
+- pure transition evaluation: validate a closed versioned semantic request and expected revision, enforce operation authority and preconditions, and return a rejected result or deterministic candidate `change.yaml`; and
+- transaction adaptation: validate the candidate, serialize one same-directory writer, persist the recovery bundle, replace only `change.yaml`, verify the persisted result, restore prior bytes on failure, and admit only named interrupted-replace reconciliation when automatic recovery cannot finish.
+
+The package pins the maintained `yaml` parser dependency. Parsing admits only the lifecycle schema's closed mapping, sequence, boolean, null, finite-number, and string domain; duplicate keys, aliases, anchors, merges, tags, multiple documents, and unsupported nodes fail before interpretation. Mutation serializes the normalized model through one schema-ordered UTF-8/LF block-YAML writer and does not promise source comment or formatting preservation.
+
+Lifecycle revision uses a versioned canonical serialization of mutation-relevant state plus sorted repository-relative identities for every referenced artifact or evidence item that can affect the result. The versioned identity schema explicitly excludes provenance-only fields. The transient lock and recovery bundle coordinate one worktree but are not Git-tracked truth and are unnecessary for fresh-checkout reconstruction.
+
+Skills retain semantic criteria, artifact authoring, findings, authority limits, stop behavior, and portable use. Governed skills ask the CLI for exact context, author their semantic file, then request registration or settlement. The CLI validates the stage-bound operation but never authors semantic content, chooses the next stage, invokes an agent, or infers approval. Workflow remains the only routing and continuation owner.
+
+Stage authority in a request is a structurally checked claim, not an authenticated identity. The engine matches it to the closed operation, current lifecycle state, exact artifact, and durable evidence. Filesystem authority, trusted CI, and branch protection remain the adversarial enforcement boundary.
+
+During migration, existing Python validators consume the same versioned conformance fixtures and may run behind or beside `rigorloop lifecycle validate`. The Node engine is the mutation-time authority. A mismatch between implementations blocks enforcement; validator retirement follows the ledger-backed proof rule in ADR-20260810 rather than a big-bang rewrite.
+
 ### Level 2 White-Box: Validation and Generation Scripts
 
 The validation and generation container has these important internal responsibilities:
@@ -628,12 +652,7 @@ One automation target covers repository-local prerequisite stages through the
 target without a second authorization, capability, selector, or risk-profile
 layer.
 
-Deterministic validators reject unknown values before consistency checks,
-illegal transitions, conflicting artifact and workflow state, stale review
-evidence, ambiguous milestone bindings, open blockers, mixed writable models,
-and adapter drift.
-They do not hash governed content or claim which skill process performed an
-arbitrary file write.
+Deterministic compatibility validators reject unknown values before consistency checks, illegal transitions, conflicting artifact and workflow state, stale review evidence, ambiguous milestone bindings, open blockers, mixed writable models, and adapter drift. Before CLI activation they do not hash governed content. The activated lifecycle engine adds content identities for freshness without claiming which skill process performed a write.
 
 ## Runtime View
 
@@ -1038,6 +1057,18 @@ Legal temporary states are limited to authoring/revision/blocked without `planne
 14. Release evidence remains open for deferred gate follow-up until the gate completes, an approved recovery action replaces it, or an owner closes the risk explicitly.
 15. Failed package contents recover through fix-forward, dist-tag correction when only tags are wrong, or deprecation when necessary. Published npm versions are not overwritten.
 
+### Governed lifecycle CLI flow
+
+1. A human, governed skill, workflow operation, adapter, or CI requests read-only status/context/validation or submits a versioned semantic mutation request.
+2. The CLI resolves the repository and exact change, rejects unsafe paths or ambiguous selection, detects incomplete recovery state, and builds one immutable snapshot.
+3. The pure engine checks compatibility, closed vocabularies, artifact and evidence identities, invalidation outcomes, current effective state, operation authority, and expected lifecycle revision.
+4. Read-only commands render human and JSON views from the same result. A rejected mutation returns stable diagnostics without changing tracked bytes.
+5. An accepted mutation produces a deterministic candidate and operation fingerprint. The transaction adapter validates the candidate before replacement.
+6. The adapter atomically creates `.rigorloop-lifecycle.lock` beside the change record, then creates and syncs `.rigorloop-lifecycle-recovery.json` in `prepared` phase before replacing `change.yaml`; both transient files use mode `0600`.
+7. After replacement, the adapter records `replaced` and verifies the persisted state. Verification failure restores and verifies prior bytes. Failed restoration leaves recovery blocked; only `validate` and named `reconcile-interrupted-replace` repair are admitted. Cleanup removes recovery before lock.
+8. A stale original request always fails. An equivalent request against the current revision returns `already-recorded` only when all requested durable facts are identical.
+9. Workflow reads the structural outcome and independently owns routing. No lifecycle command schedules another stage or crosses the PR, push, release, deploy, or merge boundary.
+
 ## Deployment View
 
 RigorLoop has no deployed service, database, or runtime infrastructure for this architecture method. The deployment boundary is repository packaging and publication.
@@ -1220,7 +1251,7 @@ The protocol permits one recoverable partial state: current exact `S -> R` with 
 
 The stable plan artifact owns ordered execution intent, completion criteria, required evidence, and review handoff. `change.yaml#workflow_state.planned_work` owns current milestone and closeout state. New writers emit no mutable milestone-state or progress fields in plan bodies. Readers may accept compatible historical plan structures, but historical embedded state never overrides or repairs governed live state.
 
-Stable plan identity is artifact ID, kind, role, and normalized path. Reviewed revision identity is the durable review ID, round, record path, reviewed artifact path, and reviewed repository revision or commit. Governed-document hashes remain outside the lifecycle architecture.
+Stable plan identity remains artifact ID, kind, role, and normalized path. Reviewed revision identity remains the durable review ID, round, record path, reviewed artifact path, and reviewed repository revision or commit. After governed lifecycle CLI activation, separate exact content identities participate in evidence freshness and lifecycle revision; they do not replace stable artifact identity or prove writer identity.
 
 After initialization and settlement, changes to milestone ID, order, kind, completion criteria, or required evidence require a governed replan or explicit workflow-owned migration. Ordinary plan authoring cannot replace or update existing `planned_work`.
 
@@ -1477,6 +1508,18 @@ evidence.
 Compatibility rollback may continue reading historical state, but no rollback
 path restores retired plan, artifact, or profile writers.
 
+### Governed lifecycle CLI boundary
+
+`change.yaml` remains the sole Git-tracked mutable lifecycle snapshot. Semantic Markdown remains stage-owned. The lifecycle engine owns mechanical interpretation and transition calculation; the CLI transaction adapter owns local guarded replacement; workflow owns routing; Git owns durable history and branch integration.
+
+The lifecycle revision and artifact digests establish freshness, not actor attribution or cryptographic authorization. Exclusive local writing and optimistic revision checks cover ordinary same-worktree concurrency. Branch divergence remains visible as Git conflicts and requires normal integration policy.
+
+Same-worktree serialization uses fixed transient siblings in the selected change directory. `.rigorloop-lifecycle.lock` is acquired by atomic exclusive create and is never stolen merely because time elapsed. `.rigorloop-lifecycle-recovery.json` has closed `prepared` and `replaced` phases and is reconciled under the lock before a new mutation. A live owner reports busy; an unverifiable orphan requires explicit dry-run plus named `clear-orphaned-lock` repair after recovery is settled.
+
+Compatibility is gated in order: read-only interpretation, guarded mutation, canonical skill and adapter migration, CI parity, then mandatory enforcement. Until enforcement is activated, current validated direct mutation remains a compatibility path. After activation, rollback requires a coordinated compatible CLI, schema, skills, adapters, and CI release; repair never becomes an arbitrary setter.
+
+This boundary amends ADR-20260729's no-hash and direct state-write mechanics for supported operations. It preserves one change-local state owner and the stage authority model: stages still own the semantic operation they may request, while the CLI alone derives and writes the lifecycle fields.
+
 ### Independent adversarial review gate boundary
 
 The independent adversarial review gate is a repository workflow and evidence contract, not a new service, background worker, database, hosted reviewer, or deployment boundary. It executes inside workflow-managed automation and uses existing formal review skills, change-local review artifacts, validation scripts, and the current `workflow_state`.
@@ -1557,10 +1600,11 @@ Architecture artifacts and diagrams must not include secrets, credentials, priva
 The legacy normalization follow-on inventoried every current `docs/architecture/` file, merged accepted current content into this package, and archived the eight top-level legacy Markdown records. Those legacy records remain historical evidence only; downstream architecture work uses this canonical package.
 
 ## Architecture Decisions
+- [ADR-20260824: Governed Lifecycle CLI Transaction Boundary](../../adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md) establishes one lifecycle interpreter, versioned identity and operation contracts, guarded single-record replacement and recovery, validator convergence, skill-mechanics migration, and phased enforcement.
 
 - [ADR-20260818: Ordered Final-Review Stage-Evidence Tail](../../adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md) defines the exact `S -> R -> E` pre-verify revision protocol, path-and-field ownership, Git-derived identities, and interrupted-tail recovery.
 
-- [ADR-20260813: Reviewed Plan Initialization and Settlement](../../adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md) amends the initialization timing in ADR-20260729 while preserving single-state ownership, stage-owned writes, and the no-hash boundary.
+- [ADR-20260813: Reviewed Plan Initialization and Settlement](../../adr/ADR-20260813-reviewed-plan-initialization-and-settlement.md) amended initialization timing while preserving the then-current single-state, stage-write, and no-hash boundaries; ADR-20260824 later revises hash and direct-write mechanics only for activated supported CLI operations.
 
 - `docs/adr/ADR-20260810-published-skill-first-validation-architecture.md`: three composed deterministic product gates, one lifecycle-governance entry point, review-owned semantic quality, no target-runtime acceptance, and ledger-backed retirement slices.
 - `docs/adr/ADR-20260428-architecture-package-method.md`: default C4 plus official arc42 plus ADR architecture package method.

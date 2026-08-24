@@ -1,0 +1,45 @@
+schema_version: 1
+review_id: architecture-review-r2
+review_stage: architecture-review
+review_target: docs/architecture/system/architecture.md
+base_revision: sha256:911aafdbec7f124d92705dd0364183c7a4a805f8963a359553e17d343d2b3c95
+head_revision: sha256:911aafdbec7f124d92705dd0364183c7a4a805f8963a359553e17d343d2b3c95
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-architecture-revision-r1
+reviewer_context_id: root-architecture-review-r2-context-reset
+context_separation_mechanism: corrected-artifact-and-criteria-context-reset
+risk_tier: high
+risk_tier_triggers:
+  - canonical-lifecycle-interpreter
+  - durable-state-transaction
+  - compatibility-and-validator-migration
+  - published-skill-authority-change
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/governed-lifecycle-cli.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/spec-review-r2.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/architecture-assessment.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/architecture-revision-r1.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md
+formal_criteria:
+  - architecture-review-v1
+initial_packet_inventory:
+  - path: specs/governed-lifecycle-cli.md
+    sha256: f7d9984c6913f5326cce231874f57673835c25ed1d4c94a03bdf4437eba8e405
+  - path: docs/architecture/system/architecture.md
+    sha256: 911aafdbec7f124d92705dd0364183c7a4a805f8963a359553e17d343d2b3c95
+  - path: docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md
+    sha256: 9e2ed53a513fe7d1d04c69cfd5044a3aa4f2199e39695849ac7a5d638d6fb78e
+  - path: docs/changes/2026-08-24-governed-lifecycle-cli/evidence/architecture-revision-r1.md
+    sha256: 7ea6eba9dee790f1c91b65dbc696488fe082d7e8b6d5ee00e3dfad410c345c06
+prompt_template_version: architecture-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - closure of RLCLI-AR1 through RLCLI-AR3
+  - YAML parser and deterministic serialization boundary
+  - lock, recovery, and repair protocol
+  - identity scope and stage-authority trust claim
