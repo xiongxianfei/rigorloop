@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: spec-review-r1
 Review closeout: architecture-review-r1
@@ -12,7 +12,7 @@ Review closeout: code-review-m1-r2
 - Reviews covered: `spec-review-r1`, `architecture-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`
 - Findings resolved: 9
 - Unresolved findings: 0
-- Current result: All accepted M1 corrections are implemented and await formal rereview.
+- Current result: All accepted findings are resolved; M1 received a direct same-context clean review and user-directed continuation.
 
 ## Resolution overview
 

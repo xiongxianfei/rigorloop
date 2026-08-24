@@ -13,6 +13,7 @@ This ledger records formal lifecycle reviews for the governed lifecycle CLI chan
 | `architecture-review-r2` | `architecture-review` | `r2` | canonical architecture and ADR-20260824 at revised identities | `reviews/architecture-review-r2.md` | `approved` | `0` | `recorded` |
 | `plan-review-r1` | `plan-review` | `r1` | `docs/plans/2026-08-24-governed-lifecycle-cli.md` at repository revision `18a204bb9fa3` | `reviews/plan-review-r1.md` | `approved` | `0` | `recorded` |
 | `test-spec-review-r1` | `test-spec-review` | `r1` | `specs/governed-lifecycle-cli.test.md` at `sha256:67666e00f314a95058b1399ae723702257e3342781bb2b0acc4d7a81eeb48351` | `reviews/test-spec-review-r1.md` | `approved` | `0` | `recorded` |
+| `code-review-m1-r3` | `code-review` | `r3` | implementation milestone M1 at commit `b5d55924` | `reviews/code-review-m1-r3.md` | `clean-with-notes` | `0` | `recorded` |
 
 ## Review Entries
 
