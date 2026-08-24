@@ -16,13 +16,15 @@ def main() -> int:
     payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
     if payload.get("schema_version") != 1:
         raise SystemExit("unknown conformance fixture schema_version")
-    required = {"valid_yaml", "invalid_yaml", "protected_failures"}
+    required = {"valid_yaml", "invalid_yaml", "provenance_excluded_fields", "protected_failures"}
     unknown = set(payload) - {"schema_version", *required}
     missing = required - set(payload)
     if unknown or missing:
         raise SystemExit(f"fixture vocabulary mismatch: missing={sorted(missing)} unknown={sorted(unknown)}")
     if len(set(payload["protected_failures"])) != len(payload["protected_failures"]):
         raise SystemExit("protected failure IDs must be unique")
+    if payload["provenance_excluded_fields"] != ["actor", "recorded_at"]:
+        raise SystemExit("provenance exclusion contract drift")
     script = """
       import { readFileSync } from 'node:fs';
       import { parseLifecycleYaml } from './packages/rigorloop/dist/lib/lifecycle-contract.js';
