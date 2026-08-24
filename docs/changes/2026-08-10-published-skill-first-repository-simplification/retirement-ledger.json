@@ -202,6 +202,9 @@
         "scripts/test-workflow-automation-policy.py",
         "scripts/test-workflow-automation-state.py",
         "scripts/test-validate-workflow-automation.py",
+        "scripts/test-lifecycle-cli-conformance.py",
+        "scripts/test-governed-lifecycle-cli-validator.py",
+        "scripts/validate-governed-lifecycle-cli.py",
         "scripts/test-retirement-ledger.py"
       ],
       "protected_failure": "Malformed lifecycle state, illegal transition, dangling evidence, contradictory state, invalid review record, or unknown closed-vocabulary value.",
