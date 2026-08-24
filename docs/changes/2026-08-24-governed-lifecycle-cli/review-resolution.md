@@ -2,15 +2,16 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: spec-review-r1
 Review closeout: architecture-review-r1
+Review closeout: code-review-m1-r1
 
-- Reviews covered: `spec-review-r1`, `architecture-review-r1`
+- Reviews covered: `spec-review-r1`, `architecture-review-r1`, `code-review-m1-r1`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Current result: all spec and architecture findings are resolved; corrected architecture is approved by architecture-review r2.
+- Unresolved findings: 2
+- Current result: M1 requires bounded correction and rereview before milestone closeout.
 
 ## Resolution overview
 
@@ -22,6 +23,34 @@ Review closeout: architecture-review-r1
 | RLCLI-AR1 | accepted | resolved | Reconciled canonical hash-policy statements with activated freshness identity. |
 | RLCLI-AR2 | accepted | resolved | Selected pinned `yaml`, closed input domain, and deterministic serialization. |
 | RLCLI-AR3 | accepted | resolved | Defined fixed lock/recovery paths, phases, ordering, refusal, and repair. |
+| RLCLI-CR-M1-1 | accepted | open | Enforce complete operation-specific request contracts. |
+| RLCLI-CR-M1-2 | accepted | open | Add and prove the closed provenance exclusion set. |
+
+### code-review-m1-r1
+
+#### RLCLI-CR-M1-1
+
+Finding ID: RLCLI-CR-M1-1
+Disposition: accepted
+Rationale: Incomplete requests must fail before transition consistency or mutation.
+Status: open
+Owner: implement
+Owning stage: implement
+Final action: Pending bounded correction of the M1 request contract and direct regressions.
+Validation target: `packages/rigorloop/test/lifecycle-contract.test.js`
+Validation evidence: pending M1 correction evidence and formal rereview
+
+#### RLCLI-CR-M1-2
+
+Finding ID: RLCLI-CR-M1-2
+Disposition: accepted
+Rationale: The versioned lifecycle identity contract must exclude only documented provenance.
+Status: open
+Owner: implement
+Owning stage: implement
+Final action: Pending bounded correction of revision canonicalization and shared fixture evidence.
+Validation target: `packages/rigorloop/test/lifecycle-contract.test.js`; shared conformance fixture
+Validation evidence: pending M1 correction evidence and formal rereview
 
 ### spec-review-r1
 

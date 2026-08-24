@@ -31,6 +31,19 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: r1
+Reviewed artifact: implementation milestone M1 at commit `d03fc845`
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: RLCLI-CR-M1-1, RLCLI-CR-M1-2
+Open findings: RLCLI-CR-M1-1, RLCLI-CR-M1-2
+Recording status: recorded
+
+### Review entry
+
 Review ID: architecture-review-r1
 Stage: architecture-review
 Round: r1

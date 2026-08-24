@@ -75,8 +75,8 @@ artifact_states:
 
 workflow_state:
   lifecycle_state: active
-  current_stage: code-review
-  next_stage: code-review
+  current_stage: review-resolution
+  next_stage: review-resolution
   blocker: null
   planned_work:
     plan_artifact_id: plan
@@ -90,7 +90,7 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: review-requested
+        state: resolution-needed
       M2:
         kind: implementation
         state: planned
@@ -118,17 +118,19 @@ workflow_state:
       - M6
       - M7
     latest_review:
-      status: not-started
-      stage: none
-      round: none
-      artifact_id: none
-      occurrence: none
-      milestone_id: none
-      evidence: []
+      status: changes-requested
+      stage: code-review
+      round: r1
+      artifact_id: plan
+      occurrence: milestone
+      milestone_id: M1
+      evidence:
+        - docs/changes/2026-08-24-governed-lifecycle-cli/review-invocation-code-review-m1-r1.yaml
+        - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/code-review-m1-r1.md
     final_closeout:
       readiness: not-ready
       reasons:
-        - lifecycle-gates-open
+        - review-findings-open
       evidence: []
   evidence:
     - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/proposal-authoring.md
@@ -149,6 +151,9 @@ workflow_state:
     - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-test-spec-review-to-m1.md
     - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m1-conformance.md
     - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-m1-to-code-review.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/review-invocation-code-review-m1-r1.yaml
+    - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/code-review-m1-r1.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-m1-review-to-resolution.md
 
 workflow:
   automation:
@@ -161,12 +166,13 @@ workflow:
       completion:
         rule: final verification result is durably recorded
     status: active
-    current_stage: code-review
+    current_stage: review-resolution
     stop_reason: null
     evidence:
       - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-automation-target-verify.md
       - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-test-spec-review-to-m1.md
       - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-m1-to-code-review.md
+      - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-m1-review-to-resolution.md
 
 artifacts:
   proposal: docs/proposals/2026-08-24-governed-lifecycle-cli.md
@@ -245,12 +251,13 @@ changed_files:
   - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-test-spec-review-to-m1.md
   - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m1-conformance.md
   - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-m1-to-code-review.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/review-invocation-code-review-m1-r1.yaml
+  - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/code-review-m1-r1.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/workflow-m1-review-to-resolution.md
 
 review:
-  status: clean
-  unresolved_items: 0
-  reviewed_artifact: specs/governed-lifecycle-cli.test.md
-  review_log: docs/changes/2026-08-24-governed-lifecycle-cli/review-log.md
+  status: changes-requested
+  unresolved_items: 2
 
 architecture:
   assessment: architecture-required
