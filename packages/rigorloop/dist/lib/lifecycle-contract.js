@@ -31,6 +31,8 @@ export const LIFECYCLE_ERROR_CODES = Object.freeze([
   "RL_RECOVERY_REQUIRED",
 ]);
 
+export const PROVENANCE_EXCLUDED_FIELDS = Object.freeze(["actor", "recorded_at"]);
+
 const STANDARD_TAGS = new Set([
   "tag:yaml.org,2002:map",
   "tag:yaml.org,2002:seq",
@@ -69,6 +71,28 @@ const OPERATION_FIELDS = Object.freeze({
   migrate: ["source_schema_version", "stage_authority"],
   repair: ["condition", "stage_authority", "dry_run_acknowledgement"],
 });
+
+const REVIEW_AUTHORITIES = Object.freeze([
+  "proposal-review",
+  "spec-review",
+  "architecture-review",
+  "plan-review",
+  "test-spec-review",
+  "code-review",
+]);
+
+const OPERATION_CONTRACTS = Object.freeze({
+  "record-review": { required: ["artifact_id", "evidence_path", "stage_authority"], authorities: REVIEW_AUTHORITIES },
+  "record-validation": { required: ["artifact_id", "evidence_path", "subject_path", "stage_authority"], authorities: ["implement", "verify", "ci-maintenance"] },
+  "record-finding-resolution": { required: ["artifact_id", "evidence_path", "finding_id", "stage_authority"], authorities: ["review-resolution"] },
+  "settle-artifact": { required: ["artifact_id", "stage_authority"], authorities: REVIEW_AUTHORITIES },
+  "start-milestone": { required: ["milestone_id", "stage_authority"], authorities: ["workflow"] },
+  "complete-milestone": { required: ["milestone_id", "evidence_path", "stage_authority"], authorities: ["workflow"] },
+  migrate: { required: ["source_schema_version", "stage_authority"], authorities: ["workflow"] },
+  repair: { required: ["condition", "stage_authority", "dry_run_acknowledgement"], authorities: ["workflow"] },
+});
+
+const REPAIR_CONDITIONS = new Set(["reconcile-interrupted-replace", "clear-orphaned-lock"]);
 
 function invalid(message) {
   const error = new Error(`RL_INVALID_REQUEST: ${message}`);
@@ -152,8 +176,22 @@ export function lifecycleRevision(change, referenced = []) {
   const identities = [...referenced]
     .map(({ path, sha256: digest }) => ({ path, sha256: digest }))
     .sort((left, right) => left.path.localeCompare(right.path));
-  const payload = canonicalJson({ schema: "rigorloop-lifecycle-revision-v1", change: ordered(change, true), referenced: identities });
+  const payload = canonicalJson({
+    schema: "rigorloop-lifecycle-revision-v1",
+    change: ordered(withoutProvenance(change), true),
+    referenced: identities,
+  });
   return `sha256:${sha256(payload)}`;
+}
+
+function withoutProvenance(value) {
+  if (Array.isArray(value)) return value.map(withoutProvenance);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter(([key]) => !PROVENANCE_EXCLUDED_FIELDS.includes(key))
+      .map(([key, child]) => [key, withoutProvenance(child)]),
+  );
 }
 
 function requestError(summary) {
@@ -179,10 +217,47 @@ export function validateLifecycleRequest(request) {
   ]);
   const unknown = Object.keys(request).find((field) => !allowed.has(field));
   if (unknown) return { ok: false, errors: [requestError(`unknown field ${unknown}`)] };
-  for (const field of ["change_id", "expected_lifecycle_revision"]) {
-    if (typeof request[field] !== "string" || request[field].length === 0) {
-      return { ok: false, errors: [requestError(`${field} must be a non-empty string`)] };
+  if (typeof request.change_id !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(request.change_id)) {
+    return { ok: false, errors: [requestError("change_id must be one safe non-empty identifier")] };
+  }
+  if (typeof request.expected_lifecycle_revision !== "string" || !/^sha256:[a-f0-9]{64}$/.test(request.expected_lifecycle_revision)) {
+    return { ok: false, errors: [requestError("expected_lifecycle_revision must be a sha256 lifecycle revision")] };
+  }
+  const contract = OPERATION_CONTRACTS[request.operation];
+  for (const field of contract.required) {
+    if (request[field] === undefined || request[field] === null || request[field] === "") {
+      return { ok: false, errors: [requestError(`${field} is required for ${request.operation}`)] };
     }
   }
+  if (request.condition !== undefined && !REPAIR_CONDITIONS.has(request.condition)) {
+    return { ok: false, errors: [requestError(`unknown condition ${String(request.condition)}`)] };
+  }
+  if (!contract.authorities.includes(request.stage_authority)) {
+    return { ok: false, errors: [requestError(`unknown stage_authority ${String(request.stage_authority)}`)] };
+  }
+  for (const field of ["artifact_id", "finding_id", "milestone_id"]) {
+    if (request[field] !== undefined && (typeof request[field] !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(request[field]))) {
+      return { ok: false, errors: [requestError(`${field} must be one safe identifier`)] };
+    }
+  }
+  for (const field of ["evidence_path", "subject_path"]) {
+    if (request[field] !== undefined && !isRepositoryRelativePath(request[field])) {
+      return { ok: false, errors: [requestError(`${field} must be a normalized repository-relative path`)] };
+    }
+  }
+  if (request.source_schema_version !== undefined && (!Number.isInteger(request.source_schema_version) || request.source_schema_version < 1)) {
+    return { ok: false, errors: [requestError("source_schema_version must be a positive integer")] };
+  }
+  if (request.dry_run_acknowledgement !== undefined && request.dry_run_acknowledgement !== true) {
+    return { ok: false, errors: [requestError("dry_run_acknowledgement must be true")] };
+  }
   return { ok: true, value: structuredClone(request), errors: [] };
+}
+
+function isRepositoryRelativePath(value) {
+  if (typeof value !== "string" || value.length === 0 || value.startsWith("/") || value.includes("\\") || value.includes("\0")) {
+    return false;
+  }
+  const segments = value.split("/");
+  return segments.every((segment) => segment.length > 0 && segment !== "." && segment !== "..");
 }

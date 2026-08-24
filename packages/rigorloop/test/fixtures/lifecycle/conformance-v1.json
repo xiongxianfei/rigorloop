@@ -9,6 +9,7 @@
     { "id": "multiple-documents", "source": "change_id: one\n---\nchange_id: two\n" },
     { "id": "non-finite-numbers", "source": "change_id: example\nvalue: .inf\n" }
   ],
+  "provenance_excluded_fields": ["actor", "recorded_at"],
   "protected_failures": [
     "unknown-closed-vocabulary",
     "duplicate-yaml-key",

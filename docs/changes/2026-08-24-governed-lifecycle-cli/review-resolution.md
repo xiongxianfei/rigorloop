@@ -9,9 +9,9 @@ Review closeout: architecture-review-r1
 Review closeout: code-review-m1-r1
 
 - Reviews covered: `spec-review-r1`, `architecture-review-r1`, `code-review-m1-r1`
-- Findings resolved: 6
-- Unresolved findings: 2
-- Current result: M1 requires bounded correction and rereview before milestone closeout.
+- Findings resolved: 8
+- Unresolved findings: 0
+- Current result: The accepted M1 corrections are implemented and await formal rereview before milestone closeout.
 
 ## Resolution overview
 
@@ -23,8 +23,8 @@ Review closeout: code-review-m1-r1
 | RLCLI-AR1 | accepted | resolved | Reconciled canonical hash-policy statements with activated freshness identity. |
 | RLCLI-AR2 | accepted | resolved | Selected pinned `yaml`, closed input domain, and deterministic serialization. |
 | RLCLI-AR3 | accepted | resolved | Defined fixed lock/recovery paths, phases, ordering, refusal, and repair. |
-| RLCLI-CR-M1-1 | accepted | open | Enforce complete operation-specific request contracts. |
-| RLCLI-CR-M1-2 | accepted | open | Add and prove the closed provenance exclusion set. |
+| RLCLI-CR-M1-1 | accepted | resolved | Enforced complete operation-specific request contracts and closed values. |
+| RLCLI-CR-M1-2 | accepted | resolved | Added and proved the closed version-one provenance exclusion set. |
 
 ### code-review-m1-r1
 
@@ -33,24 +33,24 @@ Review closeout: code-review-m1-r1
 Finding ID: RLCLI-CR-M1-1
 Disposition: accepted
 Rationale: Incomplete requests must fail before transition consistency or mutation.
-Status: open
+Status: resolved
 Owner: implement
 Owning stage: implement
-Final action: Pending bounded correction of the M1 request contract and direct regressions.
+Final action: Added closed per-operation required fields and validators for identifiers, paths, review authority, migration source version, repair conditions, and repair acknowledgment.
 Validation target: `packages/rigorloop/test/lifecycle-contract.test.js`
-Validation evidence: pending M1 correction evidence and formal rereview
+Validation evidence: `evidence/m1-correction-r1.md`; formal rereview pending
 
 #### RLCLI-CR-M1-2
 
 Finding ID: RLCLI-CR-M1-2
 Disposition: accepted
 Rationale: The versioned lifecycle identity contract must exclude only documented provenance.
-Status: open
+Status: resolved
 Owner: implement
 Owning stage: implement
-Final action: Pending bounded correction of revision canonicalization and shared fixture evidence.
+Final action: Added the version-one `actor` and `recorded_at` exclusion set to code and the shared fixture, with regressions proving excluded provenance is stable and workflow state remains identity-relevant.
 Validation target: `packages/rigorloop/test/lifecycle-contract.test.js`; shared conformance fixture
-Validation evidence: pending M1 correction evidence and formal rereview
+Validation evidence: `evidence/m1-correction-r1.md`; formal rereview pending
 
 ### spec-review-r1
 

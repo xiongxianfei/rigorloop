@@ -5,6 +5,7 @@ import { test } from "node:test";
 
 import {
   LIFECYCLE_OPERATIONS,
+  PROVENANCE_EXCLUDED_FIELDS,
   canonicalJson,
   lifecycleRevision,
   parseLifecycleYaml,
@@ -32,7 +33,7 @@ test("closed lifecycle operation vocabulary rejects an unknown operation", () =>
     schema_version: 1,
     operation: "set-status",
     change_id: "example",
-    expected_lifecycle_revision: "sha256:abc",
+    expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
   });
   assert.equal(result.ok, false);
   assert.equal(result.errors[0].code, "RL_INVALID_REQUEST");
@@ -43,12 +44,59 @@ test("request schema rejects unknown fields before operation consistency", () =>
     schema_version: 1,
     operation: "settle-artifact",
     change_id: "example",
-    expected_lifecycle_revision: "sha256:abc",
+    expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
     artifact_id: "spec",
     target_state: "approved",
   });
   assert.equal(result.ok, false);
   assert.match(result.errors[0].summary, /unknown field target_state/);
+});
+
+const operationRequests = {
+  "record-review": { artifact_id: "spec", evidence_path: "reviews/spec-review-r1.md", stage_authority: "spec-review" },
+  "record-validation": { artifact_id: "spec", evidence_path: "evidence/validation.md", subject_path: "specs/example.md", stage_authority: "verify" },
+  "record-finding-resolution": { artifact_id: "spec", evidence_path: "review-resolution.md", finding_id: "F-1", stage_authority: "review-resolution" },
+  "settle-artifact": { artifact_id: "spec", stage_authority: "spec-review" },
+  "start-milestone": { milestone_id: "M1", stage_authority: "workflow" },
+  "complete-milestone": { milestone_id: "M1", evidence_path: "evidence/m1.md", stage_authority: "workflow" },
+  migrate: { source_schema_version: 1, stage_authority: "workflow" },
+  repair: { condition: "reconcile-interrupted-replace", stage_authority: "workflow", dry_run_acknowledgement: true },
+};
+
+for (const operation of LIFECYCLE_OPERATIONS) {
+  test(`${operation} enforces its required request fields`, () => {
+    const request = {
+      schema_version: 1,
+      operation,
+      change_id: "example",
+      expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
+      ...operationRequests[operation],
+    };
+    assert.equal(validateLifecycleRequest(request).ok, true);
+    const requiredField = Object.keys(operationRequests[operation])[0];
+    delete request[requiredField];
+    const result = validateLifecycleRequest(request);
+    assert.equal(result.ok, false);
+    assert.match(result.errors[0].summary, new RegExp(requiredField));
+  });
+}
+
+test("operation authority and repair condition vocabularies fail closed", () => {
+  const base = {
+    schema_version: 1,
+    operation: "repair",
+    change_id: "example",
+    expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
+    condition: "rewrite-anything",
+    stage_authority: "administrator",
+    dry_run_acknowledgement: true,
+  };
+  const condition = validateLifecycleRequest(base);
+  assert.equal(condition.ok, false);
+  assert.match(condition.errors[0].summary, /condition/);
+  const authority = validateLifecycleRequest({ ...base, condition: "clear-orphaned-lock" });
+  assert.equal(authority.ok, false);
+  assert.match(authority.errors[0].summary, /stage_authority/);
 });
 
 for (const entry of fixture.invalid_yaml) {
@@ -83,4 +131,15 @@ test("lifecycle revision includes sorted referenced identities", () => {
   ]);
   assert.equal(left, right);
   assert.match(left, /^sha256:[a-f0-9]{64}$/);
+});
+
+test("lifecycle revision excludes only the versioned provenance fields", () => {
+  assert.deepEqual([...PROVENANCE_EXCLUDED_FIELDS], fixture.provenance_excluded_fields);
+  const change = parseLifecycleYaml(validChange);
+  const baseline = lifecycleRevision(change);
+  assert.equal(lifecycleRevision({ ...change, actor: "agent", recorded_at: "2026-08-24T20:00:00Z" }), baseline);
+  assert.notEqual(
+    lifecycleRevision({ ...change, workflow_state: { ...change.workflow_state, current_stage: "architecture" } }),
+    baseline,
+  );
 });
