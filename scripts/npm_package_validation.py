@@ -21,6 +21,7 @@ REQUIRED_PACKAGE_PATHS = frozenset(
         "package/dist/lib/lifecycle-contract.js",
         "package/dist/lib/lifecycle-cli.js",
         "package/dist/lib/lifecycle-read.js",
+        "package/dist/lib/lifecycle-operations.js",
         "package/dist/lib/lifecycle-transaction.js",
         "package/dist/lib/new-change-filesystem.js",
         "package/dist/lib/new-change.js",

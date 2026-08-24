@@ -118,6 +118,7 @@ Usage:
   rigorloop init codex|claude|opencode [--write-state] [--dry-run] [--json]
   rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
   rigorloop lifecycle status|context <stage>|validate [--change <id>] [--format human|json]
+  rigorloop lifecycle <operation> --request <path> [--dry-run] [--format human|json]
 
 Commands:
   version                 Print package name and version.
