@@ -15,6 +15,7 @@ This ledger records formal lifecycle reviews for the governed lifecycle CLI chan
 | `test-spec-review-r1` | `test-spec-review` | `r1` | `specs/governed-lifecycle-cli.test.md` at `sha256:67666e00f314a95058b1399ae723702257e3342781bb2b0acc4d7a81eeb48351` | `reviews/test-spec-review-r1.md` | `approved` | `0` | `recorded` |
 | `code-review-m1-r3` | `code-review` | `r3` | implementation milestone M1 at commit `b5d55924` | `reviews/code-review-m1-r3.md` | `clean-with-notes` | `0` | `recorded` |
 | `code-review-m2-r1` | `code-review` | `r1` | implementation milestone M2 at commit `1a21f9bb` | `reviews/code-review-m2-r1.md` | `clean-with-notes` | `0` | `recorded` |
+| `code-review-m3-r1` | `code-review` | `r1` | implementation milestone M3 at commit `a686cca6` | `reviews/code-review-m3-r1.md` | `clean-with-notes` | `0` | `recorded` |
 
 ## Review Entries
 
