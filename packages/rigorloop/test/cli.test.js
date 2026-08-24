@@ -536,7 +536,7 @@ test("T1 package metadata exposes one public binary and publishable runtime poli
   for (const scriptName of ["preinstall", "install", "postinstall", "prepare", "prepack"]) {
     assert.equal(scripts[scriptName], undefined, scriptName);
   }
-  assert.deepEqual(packageJson.dependencies ?? {}, {});
+  assert.deepEqual(packageJson.dependencies ?? {}, { yaml: "2.9.0" });
 });
 
 test("TNP-005 package version maps to bundled v0.4.1 adapter metadata", () => {
