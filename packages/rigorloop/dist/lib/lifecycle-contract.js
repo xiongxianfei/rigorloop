@@ -149,7 +149,7 @@ function ordered(value, topLevel = false) {
   const keys = Object.keys(value);
   const orderedKeys = topLevel
     ? [...TOP_LEVEL_ORDER.filter((key) => keys.includes(key)), ...keys.filter((key) => !TOP_LEVEL_ORDER.includes(key)).sort()]
-    : keys.sort();
+    : keys.includes("schema_version") ? ["schema_version", ...keys.filter((key) => key !== "schema_version").sort()] : keys.sort();
   return Object.fromEntries(orderedKeys.map((key) => [key, ordered(value[key])]));
 }
 

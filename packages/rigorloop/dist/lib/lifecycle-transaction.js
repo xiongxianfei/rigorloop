@@ -181,6 +181,10 @@ export function reconcileInterruptedTransaction({ changePath, changeId, validate
   const inspection = inspectLifecycleRecovery(changePath);
   if (inspection.state === "absent") return { status: "nothing-to-reconcile" };
   if (inspection.state !== "present" || inspection.observed === "unknown") throw lifecycleError("RL_RECOVERY_REQUIRED", "recovery state is malformed or does not match known identities");
+  const existingLock = inspectLifecycleLock(changePath);
+  if (existingLock.state === "live") throw lifecycleError("RL_OPERATION_BUSY", "a live lifecycle transaction cannot be reconciled");
+  if (["orphaned", "unverifiable"].includes(existingLock.state)) removeIfExists(existingLock.path);
+  if (existingLock.state === "unsafe") throw lifecycleError("RL_RECOVERY_REQUIRED", "unsafe lifecycle lock cannot be reconciled");
   const nonce = randomBytes(16).toString("hex");
   const lock = acquireLock(changePath, changeId, nonce);
   try {
@@ -203,4 +207,14 @@ export function reconcileInterruptedTransaction({ changePath, changeId, validate
   } finally {
     removeIfExists(lock);
   }
+}
+
+export function clearOrphanedLifecycleLock(changePath) {
+  const lock = inspectLifecycleLock(changePath);
+  if (lock.state === "absent") return { status: "already-clear" };
+  if (lock.state === "live") throw lifecycleError("RL_OPERATION_BUSY", "a live lifecycle transaction owns the lock");
+  if (lock.state === "unsafe") throw lifecycleError("RL_REPAIR_UNSAFE", "unsafe lock path cannot be removed automatically");
+  if (inspectLifecycleRecovery(changePath).state !== "absent") throw lifecycleError("RL_RECOVERY_REQUIRED", "recovery must be reconciled before clearing its lock");
+  removeIfExists(lock.path);
+  return { status: "cleared-orphaned-lock" };
 }

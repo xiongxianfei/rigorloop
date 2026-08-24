@@ -40,9 +40,9 @@ function metadata(text, name) {
 
 function coordination(change) {
   const current = change.lifecycle_cli;
-  if (current === undefined) return { schema_version: 1, reviews: {}, validations: {}, resolutions: {} };
+  if (current === undefined) return { schema_version: 1, reviews: {}, validations: {}, resolutions: {}, milestones: {} };
   if (!current || typeof current !== "object" || current.schema_version !== 1) throw operationError("RL_UNSUPPORTED_SCHEMA", "unsupported lifecycle_cli coordination schema", "coordination-schema", [String(current?.schema_version)], "migrate");
-  return structuredClone(current);
+  return { reviews: {}, validations: {}, resolutions: {}, milestones: {}, ...structuredClone(current) };
 }
 
 function artifact(change, artifactId) {
@@ -172,6 +172,44 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     target.lifecycle_state = desired;
     target.review = { id: review.review_id, artifact_id: request.artifact_id, outcome: review.outcome === "clean-with-notes" ? "approved" : review.outcome, record: review.evidence_path, round: review.round, ...(target.kind === "adr" && desired === "accepted" ? { adr_settlement: "accepted" } : {}) };
     return { status: "settled", candidate: next };
+  }
+
+  if (request.operation === "start-milestone") {
+    const planned = next.workflow_state?.planned_work;
+    const milestones = planned?.milestones;
+    const targetMilestone = milestones?.[request.milestone_id];
+    if (!planned || !targetMilestone || planned.current_milestone !== request.milestone_id || targetMilestone.kind !== "implementation") throw operationError("RL_MILESTONE_ORDER", "requested milestone is not the unique current implementation milestone", "milestone-selection", [request.milestone_id]);
+    if (targetMilestone.state === "implementing") return { status: "already-recorded", candidate: change };
+    if (targetMilestone.state !== "planned") throw operationError("RL_OPERATION_NOT_PERMITTED", "milestone cannot start from its current state", "milestone-state", [request.milestone_id, String(targetMilestone.state)]);
+    const ordered = Object.keys(milestones);
+    const predecessors = ordered.slice(0, ordered.indexOf(request.milestone_id));
+    const incomplete = predecessors.filter((id) => milestones[id].kind === "implementation" && milestones[id].state !== "closed");
+    if (incomplete.length) throw operationError("RL_MILESTONE_ORDER", "required predecessor milestones are incomplete", "milestone-predecessors", incomplete);
+    targetMilestone.state = "implementing";
+    return { status: "started", candidate: next };
+  }
+
+  if (request.operation === "complete-milestone") {
+    const planned = next.workflow_state?.planned_work;
+    const targetMilestone = planned?.milestones?.[request.milestone_id];
+    if (!planned || planned.current_milestone !== request.milestone_id || !targetMilestone || targetMilestone.kind !== "implementation") throw operationError("RL_MILESTONE_ORDER", "requested milestone is not the unique current implementation milestone", "milestone-selection", [request.milestone_id]);
+    if (targetMilestone.state === "closed") return { status: "already-recorded", candidate: change };
+    if (targetMilestone.state !== "review-requested" && targetMilestone.state !== "implementing") throw operationError("RL_OPERATION_NOT_PERMITTED", "milestone cannot complete from its current state", "milestone-state", [request.milestone_id, String(targetMilestone.state)]);
+    const review = planned.latest_review;
+    if (!review || review.milestone_id !== request.milestone_id || review.status !== "approved") throw operationError("RL_OPERATION_NOT_PERMITTED", "milestone completion requires its approved code review", "milestone-review", [request.milestone_id], "record-review");
+    const evidence = safeFile(root, request.evidence_path);
+    if (metadata(evidence.text, "Milestone") !== request.milestone_id || !/^pass(?:ed)?$/i.test(metadata(evidence.text, "Validation result") ?? "")) throw operationError("RL_INVALID_REQUEST", "milestone evidence must name the milestone and passing validation", "milestone-proof", [request.milestone_id, evidence.path]);
+    state.milestones[request.milestone_id] = { evidence_path: evidence.path, evidence_sha256: evidence.sha256, review_round: review.round, stage_authority: request.stage_authority };
+    targetMilestone.state = "closed";
+    planned.remaining_implementation_milestones = (planned.remaining_implementation_milestones ?? []).filter((id) => id !== request.milestone_id);
+    return { status: "completed", candidate: next };
+  }
+
+  if (request.operation === "migrate") {
+    if (request.source_schema_version !== 1) throw operationError("RL_UNSUPPORTED_SCHEMA", "only legacy coordination schema 1 is supported for migration", "migration-source", [String(request.source_schema_version)]);
+    if (change.lifecycle_cli?.schema_version === 1) return { status: "already-recorded", candidate: change };
+    next.lifecycle_cli = { schema_version: 1, reviews: {}, validations: {}, resolutions: {}, milestones: {} };
+    return { status: "migrated", candidate: next };
   }
 
   throw operationError("RL_INVALID_REQUEST", `operation ${request.operation} is not implemented by the evidence evaluator`, "operation-vocabulary", [request.operation]);
