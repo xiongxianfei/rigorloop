@@ -18,6 +18,19 @@ This ledger records formal lifecycle reviews for the governed lifecycle CLI chan
 
 ### Review entry
 
+Review ID: code-review-m1-r2
+Stage: code-review
+Round: r2
+Reviewed artifact: implementation milestone M1 at commit `a878ca86`
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r2.md
+Resolution: review-resolution.md#code-review-m1-r2
+Material findings: RLCLI-CR-M1-3
+Open findings: RLCLI-CR-M1-3
+Recording status: recorded
+
+### Review entry
+
 Review ID: spec-review-r1
 Stage: spec-review
 Round: r1
@@ -39,7 +52,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m1-r1.md
 Resolution: review-resolution.md#code-review-m1-r1
 Material findings: RLCLI-CR-M1-1, RLCLI-CR-M1-2
-Open findings: RLCLI-CR-M1-1, RLCLI-CR-M1-2
+Open findings: none
 Recording status: recorded
 
 ### Review entry

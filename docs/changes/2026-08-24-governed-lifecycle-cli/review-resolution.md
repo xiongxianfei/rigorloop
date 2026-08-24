@@ -7,11 +7,12 @@ Closeout status: open
 Review closeout: spec-review-r1
 Review closeout: architecture-review-r1
 Review closeout: code-review-m1-r1
+Review closeout: code-review-m1-r2
 
-- Reviews covered: `spec-review-r1`, `architecture-review-r1`, `code-review-m1-r1`
+- Reviews covered: `spec-review-r1`, `architecture-review-r1`, `code-review-m1-r1`, `code-review-m1-r2`
 - Findings resolved: 8
-- Unresolved findings: 0
-- Current result: The accepted M1 corrections are implemented and await formal rereview before milestone closeout.
+- Unresolved findings: 1
+- Current result: M1 requires one bounded request-provenance correction and rereview.
 
 ## Resolution overview
 
@@ -25,6 +26,21 @@ Review closeout: code-review-m1-r1
 | RLCLI-AR3 | accepted | resolved | Defined fixed lock/recovery paths, phases, ordering, refusal, and repair. |
 | RLCLI-CR-M1-1 | accepted | resolved | Enforced complete operation-specific request contracts and closed values. |
 | RLCLI-CR-M1-2 | accepted | resolved | Added and proved the closed version-one provenance exclusion set. |
+| RLCLI-CR-M1-3 | accepted | open | Admit and validate the documented request-provenance vocabulary. |
+
+### code-review-m1-r2
+
+#### RLCLI-CR-M1-3
+
+Finding ID: RLCLI-CR-M1-3
+Disposition: accepted
+Rationale: Every approved request shape must be representable while unknown provenance continues to fail closed.
+Status: open
+Owner: implement
+Owning stage: implement
+Final action: Pending bounded addition of the version-one request-provenance vocabulary and direct regressions.
+Validation target: `packages/rigorloop/test/lifecycle-contract.test.js`
+Validation evidence: pending M1 correction r2 evidence and formal rereview
 
 ### code-review-m1-r1
 
