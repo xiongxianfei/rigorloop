@@ -19,7 +19,7 @@ async function fixture(openFindings = "none") {
   const { createHash } = await import("node:crypto");
   const specIdentity = createHash("sha256").update(spec).digest("hex");
   writeFileSync(join(changeRoot, "reviews", "spec-review-r1.md"), `Review ID: spec-review-r1\nStage: spec-review\nRound: r1\nStatus: approved\nReviewed artifact path: specs/example.md\nReviewed artifact identity: sha256:${specIdentity}\nMaterial findings: none\n`, "utf8");
-  writeFileSync(join(changeRoot, "review-log.md"), `Review ID: spec-review-r1\nFinding ID: F-1\nMaterial findings: none\nOpen findings: ${openFindings}\n`, "utf8");
+  writeFileSync(join(changeRoot, "review-log.md"), `Review ID: earlier-review\nMaterial findings: OLD-1\nOpen findings: none\n\n### Review entry\n\nReview ID: spec-review-r1\nFinding ID: F-1\nMaterial findings: none\nOpen findings: ${openFindings}\n`, "utf8");
   writeFileSync(join(changeRoot, "review-resolution.md"), "Finding ID: F-1\nDisposition: accepted\nOwner: spec\nStatus: resolved\nValidation evidence: focused test\n", "utf8");
   writeFileSync(join(changeRoot, "evidence", "validation.md"), `Subject path: specs/example.md\nSubject identity: sha256:${specIdentity}\nValidation result: passed\n`, "utf8");
   writeFileSync(join(changeRoot, "change.yaml"), `change_id: example

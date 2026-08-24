@@ -82,8 +82,18 @@ function expectedReviewAuthority(kind) {
 
 function requireLogEntry(root, changeId, reviewId) {
   const log = safeFile(root, `docs/changes/${changeId}/review-log.md`);
-  if (!log.text.includes(`Review ID: ${reviewId}`) && !log.text.includes(`Finding ID: ${reviewId}`) && !log.text.includes(`\`${reviewId}\``)) throw operationError("RL_INVALID_REQUEST", "review log does not contain the review or finding occurrence", "review-log-consistency", [reviewId]);
-  return log;
+  const marker = `Review ID: ${reviewId}`;
+  const markerIndex = log.text.indexOf(marker);
+  if (markerIndex >= 0) {
+    const nextEntry = log.text.indexOf("\n### Review entry", markerIndex + marker.length);
+    return { ...log, entry_text: log.text.slice(markerIndex, nextEntry < 0 ? undefined : nextEntry) };
+  }
+  const findingMarker = `Finding ID: ${reviewId}`;
+  const findingIndex = log.text.indexOf(findingMarker);
+  if (findingIndex >= 0) return { ...log, entry_text: log.text.slice(findingIndex, log.text.indexOf("\n### Review entry", findingIndex + findingMarker.length) < 0 ? undefined : log.text.indexOf("\n### Review entry", findingIndex + findingMarker.length)) };
+  const tableLine = log.text.split("\n").find((line) => line.includes(`\`${reviewId}\``));
+  if (tableLine) return { ...log, entry_text: tableLine };
+  throw operationError("RL_INVALID_REQUEST", "review log does not contain the review or finding occurrence", "review-log-consistency", [reviewId]);
 }
 
 export function evaluateLifecycleOperation({ root, change, request }) {
@@ -105,7 +115,9 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     if (reviewedPath !== target.path || identityValue(reviewedIdentity) !== targetIdentity.sha256) throw operationError("RL_STALE_EVIDENCE", "review evidence does not name the exact current artifact", "reviewed-artifact-identity", [String(reviewedPath), String(reviewedIdentity), target.path, targetIdentity.sha256]);
     if (request.stage_authority !== expectedReviewAuthority(target.kind)) throw operationError("RL_AUTHORITY_BOUNDARY", "review authority does not own the target artifact", "stage-authority", [request.stage_authority, expectedReviewAuthority(target.kind)]);
     const log = requireLogEntry(root, change.change_id, reviewId);
-    const loggedFindings = findingSet(metadata(log.text, "Material findings"));
+    const loggedFindings = log.entry_text.startsWith("|") && /\|\s*0\s*\|\s*`?recorded`?\s*\|\s*$/.test(log.entry_text)
+      ? []
+      : findingSet(metadata(log.entry_text, "Material findings"));
     if (JSON.stringify(findings) !== JSON.stringify(loggedFindings)) throw operationError("RL_INVALID_REQUEST", "review evidence and review log finding sets differ", "review-log-consistency", [...findings, ...loggedFindings]);
     const registration = { review_id: reviewId, round, outcome, findings, artifact_path: target.path, artifact_sha256: targetIdentity.sha256, evidence_path: evidence.path, evidence_sha256: evidence.sha256, review_log_sha256: log.sha256, stage_authority: request.stage_authority };
     if (alreadyRecorded(state.reviews[request.artifact_id], registration)) return { status: "already-recorded", candidate: change };
