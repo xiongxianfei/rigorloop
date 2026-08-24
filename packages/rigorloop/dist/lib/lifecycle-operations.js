@@ -4,6 +4,8 @@ import { relative, resolve, sep } from "node:path";
 
 const REVIEW_OUTCOMES = new Set(["approved", "changes-requested", "blocked", "inconclusive", "clean-with-notes"]);
 const RESOLUTION_DISPOSITIONS = new Set(["accepted", "rejected", "deferred", "partially-accepted", "needs-decision"]);
+const ARTIFACT_KINDS = new Set(["proposal", "spec", "architecture", "adr", "plan", "test-spec"]);
+const ARTIFACT_ROLES = new Set(["primary", "supporting"]);
 
 function operationError(code, summary, invariant, identities = [], correctiveOperation = null) {
   const error = new Error(`${code}: ${summary}`);
@@ -69,7 +71,9 @@ function expectedAuthorAuthority(kind) {
 function migrateArtifactRegistrations(root, change) {
   const registrations = {};
   for (const [artifactId, entry] of Object.entries(change.artifact_states ?? {})) {
-    if (!entry?.kind || !entry?.role || !entry?.path) continue;
+    if (!entry || !ARTIFACT_KINDS.has(entry.kind) || !ARTIFACT_ROLES.has(entry.role) || !entry.path) {
+      throw operationError("RL_UNSUPPORTED_SCHEMA", "legacy artifact cannot be migrated without a supported kind, role, and path", "migration-artifact-shape", [artifactId, String(entry?.kind), String(entry?.role), String(entry?.path)]);
+    }
     const identity = artifactIdentity(root, entry);
     const registration = {
       artifact_kind: entry.kind,
