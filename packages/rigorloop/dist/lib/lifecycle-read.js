@@ -171,8 +171,15 @@ export function contextForStage(interpreted, stage) {
   const targetId = artifactForStage(stage);
   const target = targetId ? interpreted.artifacts.find((artifact) => artifact.artifact_id === targetId) : null;
   const review = targetId ? interpreted.change.artifact_states?.[targetId]?.review : null;
+  const directDependencies = {
+    proposal: [],
+    spec: ["proposal"],
+    architecture: ["spec"],
+    plan: ["spec", "architecture"],
+    "test-spec": ["spec", "architecture", "plan"],
+  }[stage] ?? [];
   const settledInputs = interpreted.artifacts
-    .filter((artifact) => ["accepted", "approved", "active"].includes(artifact.recorded_state) && artifact.evidence_state === "current" && artifact.artifact_id !== targetId)
+    .filter((artifact) => directDependencies.includes(artifact.artifact_id) && ["accepted", "approved", "active"].includes(artifact.recorded_state) && artifact.evidence_state === "current")
     .map(({ artifact_id, path, sha256 }) => ({ artifact_id, path, sha256 }));
   return {
     exact_change: interpreted.change_id,
@@ -183,7 +190,7 @@ export function contextForStage(interpreted, stage) {
     authorized_output_path: target?.path ?? null,
     blockers: interpreted.blockers,
     lifecycle_revision: interpreted.lifecycle_revision,
-    permitted_registration_operation: REVIEW_STAGES.has(stage) ? "record-review" : stage === "review-resolution" ? "record-finding-resolution" : ["implement", "verify", "ci-maintenance"].includes(stage) ? "record-validation" : null,
+    permitted_registration_operation: REVIEW_STAGES.has(stage) ? "record-review" : stage === "review-resolution" ? "record-finding-resolution" : ["proposal", "spec", "architecture", "plan", "test-spec"].includes(stage) ? "record-artifact-revision" : ["implement", "verify", "ci-maintenance"].includes(stage) ? "record-validation" : null,
   };
 }
 

@@ -34,15 +34,58 @@ function safeFile(root, path) {
 }
 
 function metadata(text, name) {
-  const match = text.match(new RegExp(`^${name}:\\s*(.+)$`, "mi"));
+  const match = text.match(new RegExp(`^(?:[-*]\\s*)?${name}:\\s*(.+)$`, "mi"));
   return match?.[1]?.trim().replace(/^`|`$/g, "") ?? null;
+}
+
+function reviewedTarget(text, target) {
+  const pathLine = text.split("\n").find((line) => line.includes(target.path));
+  const path = metadata(text, "Reviewed artifact path") ?? (pathLine ? target.path : null);
+  const targetLineIdentity = pathLine?.match(/sha256:([a-f0-9]{64})/)?.[1] ?? null;
+  const declaredIdentity = identityValue(metadata(text, "Reviewed artifact identity") ?? metadata(text, "Reviewed artifact"));
+  const sha256 = targetLineIdentity ?? (/^[a-f0-9]{64}$/.test(declaredIdentity) ? declaredIdentity : null);
+  return { path, sha256 };
+}
+
+function authoredTarget(text, path) {
+  const pathLine = text.split("\n").find((line) => line.includes(path));
+  const declaredPath = metadata(text, "Artifact path") ?? (pathLine ? path : null);
+  const lineIdentity = pathLine?.match(/sha256:([a-f0-9]{64})/)?.[1] ?? null;
+  const declaredIdentity = identityValue(metadata(text, "Artifact identity"));
+  return { path: declaredPath, sha256: lineIdentity ?? (/^[a-f0-9]{64}$/.test(declaredIdentity) ? declaredIdentity : null) };
 }
 
 function coordination(change) {
   const current = change.lifecycle_cli;
-  if (current === undefined) return { schema_version: 1, reviews: {}, validations: {}, resolutions: {}, milestones: {} };
+  if (current === undefined) return { schema_version: 1, artifacts: {}, reviews: {}, validations: {}, resolutions: {}, milestones: {} };
   if (!current || typeof current !== "object" || current.schema_version !== 1) throw operationError("RL_UNSUPPORTED_SCHEMA", "unsupported lifecycle_cli coordination schema", "coordination-schema", [String(current?.schema_version)], "migrate");
-  return { reviews: {}, validations: {}, resolutions: {}, milestones: {}, ...structuredClone(current) };
+  return { artifacts: {}, reviews: {}, validations: {}, resolutions: {}, milestones: {}, ...structuredClone(current) };
+}
+
+function expectedAuthorAuthority(kind) {
+  return kind === "adr" ? "architecture" : kind;
+}
+
+function migrateArtifactRegistrations(root, change) {
+  const registrations = {};
+  for (const [artifactId, entry] of Object.entries(change.artifact_states ?? {})) {
+    if (!entry?.kind || !entry?.role || !entry?.path) continue;
+    const identity = artifactIdentity(root, entry);
+    const registration = {
+      artifact_kind: entry.kind,
+      artifact_role: entry.role,
+      artifact_path: entry.path,
+      artifact_sha256: identity.sha256,
+      stage_authority: expectedAuthorAuthority(entry.kind),
+    };
+    if (entry.authoring_evidence) {
+      const evidence = safeFile(root, entry.authoring_evidence);
+      registration.authoring_evidence_path = evidence.path;
+      registration.authoring_evidence_sha256 = evidence.sha256;
+    }
+    registrations[artifactId] = registration;
+  }
+  return registrations;
 }
 
 function artifact(change, artifactId) {
@@ -100,19 +143,53 @@ export function evaluateLifecycleOperation({ root, change, request }) {
   const next = structuredClone(change);
   const state = coordination(next);
   next.lifecycle_cli = state;
-  const target = request.artifact_id ? artifact(next, request.artifact_id) : null;
+  const target = request.artifact_id && request.operation !== "record-artifact-revision" ? artifact(next, request.artifact_id) : request.artifact_id ? next.artifact_states?.[request.artifact_id] ?? null : null;
   const targetIdentity = target ? artifactIdentity(root, target) : null;
+
+  if (request.operation === "record-artifact-revision") {
+    const authored = safeFile(root, request.artifact_path);
+    const evidence = safeFile(root, request.evidence_path);
+    const evidenced = authoredTarget(evidence.text, authored.path);
+    const authoringResult = metadata(evidence.text, "Authoring result") ?? metadata(evidence.text, "Evidence state");
+    if (evidenced.path !== authored.path || evidenced.sha256 !== authored.sha256 || authoringResult !== "complete") throw operationError("RL_STALE_EVIDENCE", "authoring evidence does not bind the exact completed artifact", "authoring-evidence-identity", [authored.path, authored.sha256, String(evidenced.path), String(evidenced.sha256)]);
+    if (request.stage_authority !== expectedAuthorAuthority(request.artifact_kind)) throw operationError("RL_AUTHORITY_BOUNDARY", "authoring authority does not own the artifact kind", "stage-authority", [request.stage_authority, expectedAuthorAuthority(request.artifact_kind)]);
+    const registration = { artifact_kind: request.artifact_kind, artifact_role: request.artifact_role, artifact_path: authored.path, artifact_sha256: authored.sha256, authoring_evidence_path: evidence.path, authoring_evidence_sha256: evidence.sha256, stage_authority: request.stage_authority };
+    const existingRegistration = state.artifacts[request.artifact_id];
+    if (!target) {
+      if (request.prior_artifact_sha256 !== undefined) throw operationError("RL_INVALID_REQUEST", "creation must not supply a prior artifact identity", "artifact-revision-mode", [request.artifact_id]);
+      const pathCollision = Object.entries(next.artifact_states ?? {}).find(([, entry]) => entry?.path === request.artifact_path);
+      if (pathCollision) throw operationError("RL_OPERATION_NOT_PERMITTED", "artifact path is already registered", "artifact-path-identity", [request.artifact_path, pathCollision[0]]);
+      next.artifact_states ??= {};
+      next.artifact_states[request.artifact_id] = { kind: request.artifact_kind, path: request.artifact_path, role: request.artifact_role, lifecycle_state: "review-required", authoring_evidence: request.evidence_path };
+    } else {
+      if (target.kind !== request.artifact_kind || target.role !== request.artifact_role || target.path !== request.artifact_path) throw operationError("RL_AUTHORITY_BOUNDARY", "revision cannot change artifact kind, role, or path", "artifact-entry-identity", [request.artifact_id]);
+      if (!request.prior_artifact_sha256) {
+        if (alreadyRecorded(existingRegistration, registration) && target.lifecycle_state === "review-required") return { status: "already-recorded", candidate: change };
+        throw operationError("RL_INVALID_REQUEST", "revision requires the prior artifact identity", "artifact-prior-identity", [request.artifact_id]);
+      }
+      if (!existingRegistration || existingRegistration.artifact_sha256 !== request.prior_artifact_sha256) throw operationError("RL_STALE_EVIDENCE", "prior artifact identity is not the registered current identity", "artifact-prior-identity", [request.artifact_id, request.prior_artifact_sha256], "record-artifact-revision");
+      target.lifecycle_state = "review-required";
+      target.authoring_evidence = request.evidence_path;
+      delete target.review;
+      delete state.reviews[request.artifact_id];
+      delete state.validations[request.artifact_id];
+      for (const [findingId, resolution] of Object.entries(state.resolutions)) if (resolution.artifact_id === request.artifact_id) delete state.resolutions[findingId];
+      if (request.artifact_kind === "plan") state.milestones = {};
+    }
+    state.artifacts[request.artifact_id] = registration;
+    return { status: "recorded", candidate: next };
+  }
 
   if (request.operation === "record-review") {
     const evidence = safeFile(root, request.evidence_path);
     const reviewId = metadata(evidence.text, "Review ID");
-    const round = metadata(evidence.text, "Round");
+    const rawRound = metadata(evidence.text, "Round");
+    const round = /^\d+$/.test(rawRound ?? "") ? `r${rawRound}` : rawRound;
     const outcome = reviewOutcome(evidence.text);
-    const reviewedPath = metadata(evidence.text, "Reviewed artifact path");
-    const reviewedIdentity = metadata(evidence.text, "Reviewed artifact identity");
+    const reviewed = reviewedTarget(evidence.text, target);
     const findings = findingSet(metadata(evidence.text, "Material findings"));
     if (!reviewId || !/^r\d+$/.test(round ?? "")) throw operationError("RL_INVALID_REQUEST", "review evidence requires Review ID and r<n> Round", "review-shape", [request.evidence_path]);
-    if (reviewedPath !== target.path || identityValue(reviewedIdentity) !== targetIdentity.sha256) throw operationError("RL_STALE_EVIDENCE", "review evidence does not name the exact current artifact", "reviewed-artifact-identity", [String(reviewedPath), String(reviewedIdentity), target.path, targetIdentity.sha256]);
+    if (reviewed.path !== target.path || reviewed.sha256 !== targetIdentity.sha256) throw operationError("RL_STALE_EVIDENCE", "review evidence does not name the exact current artifact", "reviewed-artifact-identity", [String(reviewed.path), String(reviewed.sha256), target.path, targetIdentity.sha256]);
     if (request.stage_authority !== expectedReviewAuthority(target.kind)) throw operationError("RL_AUTHORITY_BOUNDARY", "review authority does not own the target artifact", "stage-authority", [request.stage_authority, expectedReviewAuthority(target.kind)]);
     const log = requireLogEntry(root, change.change_id, reviewId);
     const loggedFindings = log.entry_text.startsWith("|") && /\|\s*0\s*\|\s*`?recorded`?\s*\|\s*$/.test(log.entry_text)
@@ -146,7 +223,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     const validationEvidence = metadata(evidence.text, "Validation evidence");
     if (!RESOLUTION_DISPOSITIONS.has(disposition) || !owner || status !== "resolved" || !validationEvidence || /^pending$/i.test(validationEvidence)) throw operationError("RL_INVALID_REQUEST", "resolution requires a closed disposition, owner, resolved status, and validation evidence", "resolution-shape", [request.finding_id]);
     requireLogEntry(root, change.change_id, request.finding_id);
-    const registration = { finding_id: request.finding_id, disposition, owner, evidence_path: evidence.path, evidence_sha256: evidence.sha256, stage_authority: request.stage_authority };
+    const registration = { artifact_id: request.artifact_id, finding_id: request.finding_id, disposition, owner, evidence_path: evidence.path, evidence_sha256: evidence.sha256, stage_authority: request.stage_authority };
     if (alreadyRecorded(state.resolutions[request.finding_id], registration)) return { status: "already-recorded", candidate: change };
     state.resolutions[request.finding_id] = registration;
     return { status: "recorded", candidate: next };
@@ -208,7 +285,7 @@ export function evaluateLifecycleOperation({ root, change, request }) {
   if (request.operation === "migrate") {
     if (request.source_schema_version !== 1) throw operationError("RL_UNSUPPORTED_SCHEMA", "only legacy coordination schema 1 is supported for migration", "migration-source", [String(request.source_schema_version)]);
     if (change.lifecycle_cli?.schema_version === 1) return { status: "already-recorded", candidate: change };
-    next.lifecycle_cli = { schema_version: 1, reviews: {}, validations: {}, resolutions: {}, milestones: {} };
+    next.lifecycle_cli = { schema_version: 1, artifacts: migrateArtifactRegistrations(root, change), reviews: {}, validations: {}, resolutions: {}, milestones: {} };
     return { status: "migrated", candidate: next };
   }
 

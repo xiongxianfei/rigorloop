@@ -120,13 +120,13 @@ repository artifacts    preserve decisions, contracts, findings, and evidence
 Git                     preserves durable history and integration state
 ```
 
-The public interface should be operation-oriented. A caller requests actions such as inspecting effective status, obtaining stage context, recording review or validation evidence, recording a finding disposition, settling the matching artifact, or starting or completing an eligible milestone. The CLI derives any lifecycle mutation; callers do not select arbitrary target states.
+The public interface should be operation-oriented. A caller requests actions such as inspecting effective status, obtaining stage context, registering an authored artifact revision, recording review or validation evidence, recording a finding disposition, settling the matching artifact, or starting or completing an eligible milestone. The CLI derives any lifecycle mutation; callers do not select arbitrary target states.
 
 The first release should cover six capability groups:
 
 1. Read-only discovery, effective status, blockers, artifact and milestone identity, allowed operations, and shared human/machine output.
 2. Minimal operation-specific context that binds the exact change, target, approved inputs, review round, authorized output, blockers, and permitted recording action.
-3. Registration of supplied semantic review outcomes, findings, review rounds, validation evidence, and the exact artifact revisions to which they apply.
+3. Registration of authored artifact revisions, supplied semantic review outcomes, findings, review rounds, validation evidence, and the exact artifact revisions to which they apply.
 4. Authorized artifact settlement and implementation-milestone transitions after evidence, freshness, ordering, and authority checks pass.
 5. Local and CI repository validation for schema compatibility, lifecycle combinations, evidence references, stale approvals, and detectable unsupported mutations.
 6. Explicit migration, stale-operation, repair, and refusal behavior for supported legacy or damaged states.

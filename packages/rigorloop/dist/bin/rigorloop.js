@@ -125,7 +125,7 @@ Commands:
   init codex|claude|opencode
                           Initialize verified target support.
   new-change              Plan a change metadata scaffold.
-  lifecycle               Inspect and validate governed lifecycle state.
+  lifecycle               Inspect, validate, and perform guarded governed lifecycle operations.
 `;
 }
 

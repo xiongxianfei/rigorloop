@@ -1,37 +1,19 @@
 # Governed plan authoring
 
-Load this reference only after the parent resolves one exact governed `stage-owned-change-local-v1` change with plan-owned authority. It owns only the three governed operations.
+Load this reference only after the parent resolves one exact governed change with plan authority. The parent owns plan quality; this reference owns authoring registration and the existing one-time initialization exception.
 
-## Change-record authoring transition
+## CLI-bound authoring
 
-For every operation, read the complete `change.yaml` before writing. Require `lifecycle_contract: stage-owned-change-local-v1` and resolve authority by artifact ID, `kind`, and normalized `path`. For creation, create only that entry with a unique stable ID. For creation or revision, use `authoring`, remove any prior `review`, set `authoring_evidence`, and finish at `review-required`. Preserve every other entry. Stop on failed available change-metadata validation.
+Run `rigorloop lifecycle context plan --change <change-id> --format json`. Require settled inputs, exact target or unambiguous creation path, legal authority, and no blocker. Capture the current target digest before revision.
 
-## Create primary plan
+Write only the plan, navigation entry, and evidence containing `Artifact path`, `Artifact identity`, and `Authoring result: complete`. Creation requires an absent primary plan. Revision preserves stable intent and requires exact prior identity; changes to relied-on milestone identity, order, kind, criteria, or evidence route to governed replan or migration.
 
-Use `create-primary-plan` only when the canonical file and primary entry are absent; no prior identity is required. Resolve one deterministic path, reject conflicts or multiple candidates, write the plan and navigation, register artifact ID, kind `plan`, role `primary`, and normalized path, and leave `planned_work` absent. File-entry asymmetry stops.
+Refresh context and submit `record-artifact-revision` with the returned lifecycle revision, exact plan ID, `artifact_kind: plan`, `artifact_role: primary`, path, evidence path, `stage_authority: plan`, and prior digest for revision. The CLI derives `review-required`; never directly edit artifact lifecycle or review fields.
 
-## Revise primary plan
+## Approved-plan initialization
 
-Use `revise-primary-plan` only for one canonical file and matching entry in a legal authoring state. Revise stable content and return it to `review-required` without changing `planned_work`. Later changes to settled milestone identity, order, kind, criteria, or evidence require governed replan or migration. Stop on asymmetry, stale identity, illegal state, or ambiguity.
+Retain the contract's narrow authority to initialize `workflow_state.planned_work` exactly once when a current clean plan review requires it and work is absent. Set every implementation milestone to `planned`, select the first implementation milestone, set `latest_review.status: not-started` and `final_closeout.readiness: not-ready`, bind the exact review and plan revision, and report `settlement-retry-required`. Never replace existing work: plan must not replace or update existing `planned_work`; workflow owns every later `planned_work` transition. If CLI enforcement or repository compatibility rejects this exception, stop for workflow migration.
 
-## Initialize approved plan
+## Result
 
-Use `initialize-approved-plan` only for a `review-required` primary plan with absent work, a current clean review of the exact revision, no later edit, contradictory review, or open resolution, and valid ordered milestones.
-
-Plan may initialize `workflow_state.planned_work` exactly once. Record review ID, round, record path, reviewed artifact path, and repository revision as `initialization_basis`; set every implementation milestone to `planned`; select the first implementation milestone; list all remaining milestones; set `latest_review.status: not-started` and `final_closeout.readiness: not-ready`. Write no other lifecycle or sibling field. Plan must not replace or update existing `planned_work`; workflow owns every later `planned_work` transition.
-
-Report `settlement-retry-required`; workflow may coordinate the identical settlement retry, but plan does not settle or route.
-
-## Retry and recovery
-
-An identical request with matching basis and state is an idempotent no-op. Mismatched work, stale review, open resolution, invalid milestones, validation failure, or write conflict stops without repair.
-
-Plan-review records judgment first. With absent work, clean review leaves `review-required` and reports `initialization-required`. After matching initialization, an identical retry reuses that judgment and alone may activate the plan. Preserve review evidence after failure.
-
-## Historical compatibility
-
-Write stable intent only. Historical and portable plans remain readable. For active governed history, read intent from the plan and state from `change.yaml`. Never reverse-synchronize, infer missing work from prose, or repair conflicts; route them to workflow migration or governed replan.
-
-## Write boundary
-
-Plan may write the plan, navigation, authoring evidence, matching transition, and one initialization. It must not write review judgment, settlement, later work transitions, routing, automation, implementation, verification, or PR state. Unknown operations, missing procedure, or failed complete-state validation block without partial mutation.
+Report authoring and CLI results, initialization state when applicable, blockers, and `plan-review` handoff. Do not settle or route.

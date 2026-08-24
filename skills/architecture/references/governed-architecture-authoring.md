@@ -1,39 +1,17 @@
 # Governed architecture authoring
 
-Load only for `AA2-governed-authoring`. The parent owns universal policy and the package method owns architecture content quality.
+Load only for `AA2-governed-authoring`. The parent and package method own architecture judgment; this reference owns governed registration.
 
-## Authority and assessment basis
+## Basis and manifest
 
-Read the complete current `change.yaml`. Require `lifecycle_contract: stage-owned-change-local-v1`, exact change and paths, settled inputs, legal authority, and one current `architecture-required` assessment receipt. Bind receipt ID, exact spec identity, approving spec-review identity, and decision basis; missing, stale, contradictory, `not-required`, or `ambiguous` basis blocks.
+Run `rigorloop lifecycle context architecture --change <change-id> --format json`. Require a current `architecture-required` assessment, exact approved spec identity, legal authority, and no blocker. Prepare one ordered authoring-evidence manifest covering each canonical or ADR target, its kind, role, path, prior digest or absence, dependencies, commit group, and independently valid commit point. Capture every prior target digest before writing.
 
-Bind each target's artifact ID, kind, role, normalized path, and operation. Create only absent targets, revise matching identities, and supersede/deprecate only with authority and impact handling. Never select by kind alone or change another entry, `workflow_state`, routing, automation, or downstream state.
+Write stage-owned diagrams, ADRs, canonical Markdown, and manifest evidence in dependency order. For each target, evidence names its artifact path, SHA-256 identity, and `Evidence state: complete`. Preserve architecture history. A partial batch may retain only targets the manifest proves independently valid; otherwise stop and route recovery.
 
-## Prepared manifest
+For each complete target, refresh context and submit `record-artifact-revision` using the returned lifecycle revision, exact target ID, kind (`architecture` or `adr`), role, path, shared evidence path, `stage_authority: architecture`, and prior digest for revision. Register targets in manifest order. The CLI derives `review-required` and invalidates replaced evidence; never edit lifecycle fields or routing directly.
 
-Before the first target-file mutation, validate content and durably record one ordered manifest in existing authoring evidence. For each distinct canonical or ADR target, bind transaction and change IDs, target kind, artifact ID, normalized path, operation, prior identity or absence, intended identity, governing inputs, governed evidence path, dependency target IDs, commit group, independently-valid-after-commit result, commit point, and entry transition.
-
-Evidence state is `prepared`, `partial-blocked`, `complete`, or `abandoned`; these are evidence dispositions, not lifecycle states or independent authorization. Batch result is `complete`, `partial-blocked`, or `blocked-before-write`. If existing evidence cannot represent manifest, progress, dependencies, and groups without new schema, authority, persistence, or owner, stop and return `architecture-required` rather than weaken recovery.
-
-After recording `prepared`, re-read authority, assessment, inputs, target entries, and file baselines. Any drift stops before mutation.
-
-## Dependencies, writes, and commit points
-
-A target commits only after dependencies and only when the partial state is independently structurally and semantically valid. Coupled targets share a commit group.
-
-Write diagrams and subordinate sources before canonical Markdown, the target commit point. For ADR supersession, validate the replacement, then update predecessor status/link, then canonical references. Authoring proposes; architecture-review approves.
-
-Before a target write, set only its entry to `authoring`, clear its authorized review, and point `authoring_evidence` to this transaction. Record progress there; complete content and evidence move only that entry to `review-required`.
-
-All targets yield `complete`. Failure preserves only proven independently valid targets as `partial-blocked` and reports every completed and incomplete target. `blocked-before-write` performs no target-file mutation. Canonical Markdown never references incomplete dependencies.
-
-## Retry and recovery
-
-An identical retry requires the same transaction, assessment, inputs, manifest, paths, operations, baselines, identities, dependencies, groups, and authority. Resume once, reconcile only listed files, and avoid duplicate evidence or transitions.
-
-Adding, removing, reordering, or changing any target or dependency creates a new operation, never an identical retry.
-
-An unrecorded file, changed basis, conflicting or ambiguous entry, dependency drift, unrelated content, unsafe partial group, or concurrent write stops without adoption or overwrite. Interrupted completed targets remain only when the manifest proves independent validity; otherwise route exact reconciliation to the governing owner.
+Stop on drift, dependency failure, conflicting target, rejected registration, unsafe partial group, or ambiguous retry. `already-recorded` is success only for the identical target and evidence.
 
 ## Result
 
-Report manifest identity and state, assessment basis, each target operation and progress, dependencies and commit groups, entry states before and after, batch result, blockers, preserved partial state, and architecture-review eligibility. Only a complete required manifest is eligible for review handoff.
+Report assessment basis, manifest, each target and CLI result, preserved partial state, blockers, and architecture-review eligibility. Do not claim approval or continuation.

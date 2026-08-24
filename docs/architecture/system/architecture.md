@@ -337,8 +337,10 @@ The goals are:
 - Before governed lifecycle CLI activation, compatibility validators check closed values, legal transitions, evidence consistency, routing consistency, migration state, and generated-adapter parity without using content hashes or claiming which process physically wrote a file. After activation, the lifecycle engine uses exact content identities for freshness and revision calculation but still makes no actor-attribution claim.
 - Proposal-side deterministic corrections remain driver-owned; implementation correction eligibility remains reviewer-owned; verification failure never authorizes automatic repair.
 - Historical changes remain read-only. Resumed nonterminal work migrates once
-  to the new state model before mutation; no migration or rollback restores a
-  retired artifact-local, plan-owned, or profile-owned writer.
+  to the new state model before mutation, seeding exact current artifact and
+  available authoring-evidence identities without changing settlement; no
+  migration or rollback restores a retired artifact-local, plan-owned, or
+  profile-owned writer.
 - The mechanism cannot open PRs, push branches, publish, deploy, merge, perform destructive Git operations, or perform other external actions.
 - The requirement-fidelity gate is an additive sibling to the independent adversarial review gate. When both apply, workflow-managed continuation requires both passing receipts.
 - Requirement-fidelity applicability is determined before artifact comparison from affected-path and category triggers, with closed applicability results and justified reviewer override only.
@@ -518,7 +520,7 @@ The package pins the maintained `yaml` parser dependency. Parsing admits only th
 
 Lifecycle revision uses a versioned canonical serialization of mutation-relevant state plus sorted repository-relative identities for every referenced artifact or evidence item that can affect the result. The versioned identity schema explicitly excludes provenance-only fields. The transient lock and recovery bundle coordinate one worktree but are not Git-tracked truth and are unnecessary for fresh-checkout reconstruction.
 
-Skills retain semantic criteria, artifact authoring, findings, authority limits, stop behavior, and portable use. Governed skills ask the CLI for exact context, author their semantic file, then request registration or settlement. The CLI validates the stage-bound operation but never authors semantic content, chooses the next stage, invokes an agent, or infers approval. Workflow remains the only routing and continuation owner.
+Skills retain semantic criteria, artifact authoring, findings, authority limits, stop behavior, and portable use. Governed skills ask the CLI for exact context, author their semantic file, then request registration or settlement. The closed `record-artifact-revision` operation verifies an already-written artifact and authoring evidence, binds creation or revision to the exact entry and optional prior identity, invalidates registrations for the replaced identity, and derives `review-required`; it never writes semantic content or routing state. The CLI validates the stage-bound operation but never authors semantic content, chooses the next stage, invokes an agent, or infers approval. Workflow remains the only routing and continuation owner.
 
 Stage authority in a request is a structurally checked claim, not an authenticated identity. The engine matches it to the closed operation, current lifecycle state, exact artifact, and durable evidence. Filesystem authority, trusted CI, and branch protection remain the adversarial enforcement boundary.
 

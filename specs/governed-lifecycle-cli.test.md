@@ -32,7 +32,7 @@ Tests are introduced with their owning milestone and must fail for the intended 
 | --- | --- | --- | --- |
 | R1 | T16, T24 | integration, smoke | Reconstruct from tracked checkout without local history. |
 | R2 | T01, T17 | contract, integration | Command family and supported lifecycle contract. |
-| R3 | T01, T24 | contract, smoke | Exact first-release vocabulary is present; unknown operations fail. |
+| R3 | T01, T24 | contract, smoke | Exact first-release vocabulary, including artifact revision registration, is present; unknown operations fail. |
 | R4 | T01 | contract | Versioned request, unknown field, value, and operation rejection. |
 | R5 | T01, T17 | contract, integration | No arbitrary setter or caller-selected state. |
 | R6 | T03 | integration | Human and JSON share one result. |
@@ -41,6 +41,7 @@ Tests are introduced with their owning milestone and must fail for the intended 
 | R9 | T04 | integration | Recorded, evidence, and effective state. |
 | R10 | T05 | integration | Minimal stage context and registration authority. |
 | R11 | T02 | integration | Zero, one, many, and explicit change selection. |
+| R11a | T06a, T17 | integration | Creation and revision bind exact authored bytes and evidence, invalidate replaced-identity registrations, derive review-required, and preserve routing. |
 | R12 | T06 | integration | Review registration validates all linked evidence. |
 | R13 | T07 | integration | Validation registration cannot imply approval. |
 | R14 | T07 | integration | Resolution registration and closed dispositions. |
@@ -224,6 +225,19 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 - Automation location: `packages/rigorloop/test/lifecycle-evidence.test.js`
 - Required by milestone: M4
 
+### T06a. Authored artifact revision registration
+
+- Covers: R3-R5, R11a, R17-R19, R22, R27-R28, R31
+- Level: integration
+- Command IDs: C01, C04
+- Fixture/setup: absent-entry creation and existing-entry revision fixtures for every authorized authoring stage, plus wrong kind, role, path, authority, prior identity, stale revision, missing evidence, duplicate, and routing-drift partitions
+- Steps: invoke `record-artifact-revision` through the public CLI for each partition and compare exact resulting bytes and registrations
+- Expected result: valid creation or revision changes only the matching artifact entry, records current artifact and authoring-evidence identities, invalidates registrations tied to the prior identity, derives `review-required`, is idempotent at the current revision, and never changes workflow routing
+- Failure proves: authoring skills still require direct lifecycle edits or the CLI has gained arbitrary authoring or routing authority
+- Evidence artifact: M6 authoring-registration matrix
+- Automation location: `packages/rigorloop/test/lifecycle-artifact-revision.test.js`
+- Required by milestone: M6
+
 ### T07. Validation and finding-resolution registration
 
 - Covers: R13, R14, BND-AUTH-001
@@ -320,9 +334,9 @@ Boundary model scope: R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R1
 - Covers: R24, AC2, BND-INPUT-001, BND-COMPAT-001
 - Level: integration
 - Command IDs: C05
-- Fixture/setup: every enumerated legacy version, unsupported older/newer, ambiguous, dry-run, and repeated migration
-- Steps: run migration twice and compare planned and committed bytes
-- Expected result: supported transformations are deterministic and idempotent; all other versions remain unchanged
+- Fixture/setup: every enumerated legacy version, supported existing artifacts, unsupported older/newer, ambiguous, dry-run, and repeated migration
+- Steps: run migration twice, compare planned and committed bytes, and inspect seeded artifact registrations
+- Expected result: supported transformations are deterministic and idempotent; they register current supported artifact and available authoring-evidence identities without changing settlement state; all other versions remain unchanged
 - Failure proves: migration guesses or rewrites unsupported state
 - Evidence artifact: M5 migration matrix
 - Automation location: `packages/rigorloop/test/lifecycle-migration-repair.test.js`

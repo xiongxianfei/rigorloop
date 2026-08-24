@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { isAlias, isMap, isScalar, isSeq, parseAllDocuments, stringify } from "yaml";
 
 export const LIFECYCLE_OPERATIONS = Object.freeze([
+  "record-artifact-revision",
   "record-review",
   "record-validation",
   "record-finding-resolution",
@@ -62,6 +63,7 @@ const TOP_LEVEL_ORDER = [
 ];
 
 const OPERATION_FIELDS = Object.freeze({
+  "record-artifact-revision": ["artifact_id", "artifact_kind", "artifact_role", "artifact_path", "evidence_path", "prior_artifact_sha256", "stage_authority"],
   "record-review": ["artifact_id", "evidence_path", "stage_authority"],
   "record-validation": ["artifact_id", "evidence_path", "subject_path", "stage_authority"],
   "record-finding-resolution": ["artifact_id", "evidence_path", "finding_id", "stage_authority"],
@@ -82,6 +84,7 @@ const REVIEW_AUTHORITIES = Object.freeze([
 ]);
 
 const OPERATION_CONTRACTS = Object.freeze({
+  "record-artifact-revision": { required: ["artifact_id", "artifact_kind", "artifact_role", "artifact_path", "evidence_path", "stage_authority"], authorities: ["proposal", "spec", "architecture", "plan", "test-spec"] },
   "record-review": { required: ["artifact_id", "evidence_path", "stage_authority"], authorities: REVIEW_AUTHORITIES },
   "record-validation": { required: ["artifact_id", "evidence_path", "subject_path", "stage_authority"], authorities: ["implement", "verify", "ci-maintenance"] },
   "record-finding-resolution": { required: ["artifact_id", "evidence_path", "finding_id", "stage_authority"], authorities: ["review-resolution"] },
@@ -241,10 +244,19 @@ export function validateLifecycleRequest(request) {
       return { ok: false, errors: [requestError(`${field} must be one safe identifier`)] };
     }
   }
-  for (const field of ["evidence_path", "subject_path"]) {
+  for (const field of ["artifact_path", "evidence_path", "subject_path"]) {
     if (request[field] !== undefined && !isRepositoryRelativePath(request[field])) {
       return { ok: false, errors: [requestError(`${field} must be a normalized repository-relative path`)] };
     }
+  }
+  if (request.artifact_kind !== undefined && !["proposal", "spec", "architecture", "adr", "plan", "test-spec"].includes(request.artifact_kind)) {
+    return { ok: false, errors: [requestError(`unknown artifact_kind ${String(request.artifact_kind)}`)] };
+  }
+  if (request.artifact_role !== undefined && !["primary", "supporting"].includes(request.artifact_role)) {
+    return { ok: false, errors: [requestError(`unknown artifact_role ${String(request.artifact_role)}`)] };
+  }
+  if (request.prior_artifact_sha256 !== undefined && !/^[a-f0-9]{64}$/.test(request.prior_artifact_sha256)) {
+    return { ok: false, errors: [requestError("prior_artifact_sha256 must be a 64-character sha256 digest") ] };
   }
   if (request.source_schema_version !== undefined && (!Number.isInteger(request.source_schema_version) || request.source_schema_version < 1)) {
     return { ok: false, errors: [requestError("source_schema_version must be a positive integer")] };
