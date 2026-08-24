@@ -166,6 +166,7 @@ workflow_state:
     - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/code-review-m3-r1.md
     - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m4-evidence-settlement.md
     - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/code-review-m4-r1.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m5-milestone-migration-repair.md
 
 workflow:
   automation:
@@ -299,6 +300,9 @@ changed_files:
   - packages/rigorloop/dist/lib/lifecycle-operations.js
   - packages/rigorloop/test/lifecycle-evidence.test.js
   - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/code-review-m4-r1.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m5-milestone-migration-repair.md
+  - packages/rigorloop/test/lifecycle-milestone.test.js
+  - packages/rigorloop/test/lifecycle-migration-repair.test.js
 
 review:
   status: approved

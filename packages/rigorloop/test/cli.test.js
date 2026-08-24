@@ -299,6 +299,8 @@ function fixturePackage(options = {}) {
   copyFileSync(join(packageRoot, "dist", "lib", "lifecycle-contract.js"), join(root, "dist", "lib", "lifecycle-contract.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "lifecycle-cli.js"), join(root, "dist", "lib", "lifecycle-cli.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "lifecycle-read.js"), join(root, "dist", "lib", "lifecycle-read.js"));
+  copyFileSync(join(packageRoot, "dist", "lib", "lifecycle-operations.js"), join(root, "dist", "lib", "lifecycle-operations.js"));
+  copyFileSync(join(packageRoot, "dist", "lib", "lifecycle-transaction.js"), join(root, "dist", "lib", "lifecycle-transaction.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "new-change.js"), join(root, "dist", "lib", "new-change.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "new-change-filesystem.js"), join(root, "dist", "lib", "new-change-filesystem.js"));
   copyFileSync(join(packageRoot, "dist", "lib", "official-archive-url.js"), join(root, "dist", "lib", "official-archive-url.js"));

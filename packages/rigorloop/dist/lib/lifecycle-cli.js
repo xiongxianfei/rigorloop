@@ -4,7 +4,7 @@ import { relative, resolve, sep } from "node:path";
 import { parseLifecycleYaml, serializeLifecycleYaml, validateLifecycleRequest } from "./lifecycle-contract.js";
 import { evaluateLifecycleOperation, operationDiagnostic } from "./lifecycle-operations.js";
 import { contextForStage, findRepositoryRoot, interpretGovernedChange, lifecycleDiagnostic, selectGovernedChange } from "./lifecycle-read.js";
-import { runLifecycleTransaction } from "./lifecycle-transaction.js";
+import { clearOrphanedLifecycleLock, inspectLifecycleLock, inspectLifecycleRecovery, reconcileInterruptedTransaction, runLifecycleTransaction } from "./lifecycle-transaction.js";
 
 const RESULT_FIELDS = ["schema_version", "command", "operation", "status", "change_id", "lifecycle_revision", "effective_state", "blockers", "permitted_operations", "artifacts", "warnings", "errors"];
 const MUTATING_OPERATIONS = new Set(["record-review", "record-validation", "record-finding-resolution", "settle-artifact", "start-milestone", "complete-milestone", "migrate", "repair"]);
@@ -142,6 +142,23 @@ export function executeLifecycleCli(args, options = {}) {
         const issue = lifecycleDiagnostic("RL_STALE_OPERATION", "expected lifecycle revision is not current", "optimistic-concurrency", null, [request.expected_lifecycle_revision, interpreted.lifecycle_revision]);
         const result = errorResult(parsed.operation, issue, "blocked");
         return { result, exitCode: resultExitCode(result), format: parsed.format, human: human(result) };
+      }
+      if (request.operation === "repair") {
+        const condition = request.condition;
+        const inspection = condition === "clear-orphaned-lock" ? inspectLifecycleLock(selected.path) : inspectLifecycleRecovery(selected.path);
+        if (parsed.dryRun) {
+          const result = baseResult(parsed.operation, { status: "success", change_id: interpreted.change_id, lifecycle_revision: interpreted.lifecycle_revision, effective_state: interpreted.effective_state, blockers: interpreted.blockers, permitted_operations: interpreted.permitted_operations, artifacts: interpreted.artifacts, warnings: [], errors: [], mutation: { status: "planned", changed_path: `docs/changes/${interpreted.change_id}/${condition === "clear-orphaned-lock" ? ".rigorloop-lifecycle.lock" : ".rigorloop-lifecycle-recovery.json"}`, condition, observed_state: inspection.state } });
+          return { result, exitCode: 0, format: parsed.format, human: human(result) };
+        }
+        const repair = condition === "clear-orphaned-lock"
+          ? clearOrphanedLifecycleLock(selected.path)
+          : reconcileInterruptedTransaction({ changePath: selected.path, changeId: interpreted.change_id, validateCandidate: (bytes) => {
+              try { return interpretGovernedChange(root, { ...selected, bytes: bytes.toString("utf8"), change: parseLifecycleYaml(bytes.toString("utf8")) }).errors.length === 0; } catch { return false; }
+            } });
+        const persisted = readFileSync(selected.path, "utf8");
+        const after = interpretGovernedChange(root, { ...selected, bytes: persisted, change: parseLifecycleYaml(persisted) });
+        const result = baseResult(parsed.operation, { status: "success", change_id: after.change_id, lifecycle_revision: after.lifecycle_revision, effective_state: after.effective_state, blockers: after.blockers, permitted_operations: after.permitted_operations, artifacts: after.artifacts, warnings: [], errors: [], mutation: { status: repair.status, changed_path: `docs/changes/${after.change_id}/${condition === "clear-orphaned-lock" ? ".rigorloop-lifecycle.lock" : ".rigorloop-lifecycle-recovery.json"}`, condition } });
+        return { result, exitCode: 0, format: parsed.format, human: human(result) };
       }
       const transition = evaluateLifecycleOperation({ root, change: interpreted.change, request });
       if (transition.status === "already-recorded") {
