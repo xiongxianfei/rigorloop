@@ -99,6 +99,25 @@ test("operation authority and repair condition vocabularies fail closed", () => 
   assert.match(authority.errors[0].summary, /stage_authority/);
 });
 
+test("request provenance uses the closed version-one vocabulary", () => {
+  const request = {
+    schema_version: 1,
+    operation: "settle-artifact",
+    change_id: "example",
+    expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
+    artifact_id: "spec",
+    stage_authority: "spec-review",
+    actor: "review-agent",
+    recorded_at: "2026-08-24T21:15:00+01:00",
+  };
+  assert.equal(validateLifecycleRequest(request).ok, true);
+  assert.match(validateLifecycleRequest({ ...request, actor: " " }).errors[0].summary, /actor/);
+  assert.match(validateLifecycleRequest({ ...request, recorded_at: "24 August" }).errors[0].summary, /recorded_at/);
+  assert.match(validateLifecycleRequest({ ...request, recorded_at: "2026-02-31T21:15:00Z" }).errors[0].summary, /recorded_at/);
+  assert.match(validateLifecycleRequest({ ...request, recorded_at: "2026-08-24T21:15:00+25:00" }).errors[0].summary, /recorded_at/);
+  assert.match(validateLifecycleRequest({ ...request, provenance: "hidden" }).errors[0].summary, /unknown field provenance/);
+});
+
 for (const entry of fixture.invalid_yaml) {
   test(`YAML parser rejects ${entry.id}`, () => {
     assert.throws(() => parseLifecycleYaml(entry.source), /RL_INVALID_REQUEST/);

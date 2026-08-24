@@ -26,7 +26,7 @@ Status: changes-requested
 Detailed record: reviews/code-review-m1-r2.md
 Resolution: review-resolution.md#code-review-m1-r2
 Material findings: RLCLI-CR-M1-3
-Open findings: RLCLI-CR-M1-3
+Open findings: none
 Recording status: recorded
 
 ### Review entry
