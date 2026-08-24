@@ -164,6 +164,7 @@ workflow_state:
     - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/code-review-m1-r3.md
     - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m2-read-only.md
     - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/code-review-m2-r1.md
+    - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m3-transaction.md
 
 workflow:
   automation:
@@ -287,6 +288,9 @@ changed_files:
   - packages/rigorloop/dist/lib/lifecycle-cli.js
   - packages/rigorloop/test/lifecycle-read.test.js
   - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/code-review-m2-r1.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/m3-transaction.md
+  - packages/rigorloop/dist/lib/lifecycle-transaction.js
+  - packages/rigorloop/test/lifecycle-transaction.test.js
 
 review:
   status: approved
