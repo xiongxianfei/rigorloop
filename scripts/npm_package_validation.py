@@ -19,6 +19,8 @@ REQUIRED_PACKAGE_PATHS = frozenset(
         "package/dist/lib/command-result.js",
         "package/dist/lib/lockfile.js",
         "package/dist/lib/lifecycle-contract.js",
+        "package/dist/lib/lifecycle-cli.js",
+        "package/dist/lib/lifecycle-read.js",
         "package/dist/lib/new-change-filesystem.js",
         "package/dist/lib/new-change.js",
         "package/dist/lib/official-archive-url.js",
