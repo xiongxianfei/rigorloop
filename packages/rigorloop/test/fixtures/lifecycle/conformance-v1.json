@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "valid_yaml": "change_id: example\nclassification: feature\nrisk: medium\nlifecycle_contract: stage-owned-change-local-v1\nartifact_states: {}\nworkflow_state:\n  lifecycle_state: active\n  current_stage: spec\n  next_stage: spec-review\n  blocker: null\nworkflow: {}\nartifacts: {}\nrequirements: []\ntests: []\nvalidation: []\nchanged_files: []\nreview:\n  status: pending\n  unresolved_items: 0\n  reviewed_artifact: null\n  review_log: null\n",
+  "invalid_yaml": [
+    { "id": "duplicate-keys", "source": "change_id: one\nchange_id: two\n" },
+    { "id": "aliases", "source": "change_id: &id one\ncopy: *id\n" },
+    { "id": "merge-keys", "source": "base: &base\n  value: one\ncopy:\n  <<: *base\n" },
+    { "id": "custom-tags", "source": "change_id: !custom example\n" },
+    { "id": "multiple-documents", "source": "change_id: one\n---\nchange_id: two\n" },
+    { "id": "non-finite-numbers", "source": "change_id: example\nvalue: .inf\n" }
+  ],
+  "protected_failures": [
+    "unknown-closed-vocabulary",
+    "duplicate-yaml-key",
+    "yaml-alias-anchor-merge",
+    "custom-yaml-tag",
+    "multiple-yaml-document",
+    "non-finite-number",
+    "stale-artifact-identity",
+    "unresolved-material-finding",
+    "invalid-milestone-order",
+    "unsupported-schema-version"
+  ]
+}

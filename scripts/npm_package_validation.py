@@ -18,6 +18,7 @@ REQUIRED_PACKAGE_PATHS = frozenset(
         "package/dist/bin/rigorloop.js",
         "package/dist/lib/command-result.js",
         "package/dist/lib/lockfile.js",
+        "package/dist/lib/lifecycle-contract.js",
         "package/dist/lib/new-change-filesystem.js",
         "package/dist/lib/new-change.js",
         "package/dist/lib/official-archive-url.js",
@@ -54,6 +55,7 @@ FORBIDDEN_CONTENT_MARKERS = (
 
 FORBIDDEN_LIFECYCLE_SCRIPTS = frozenset({"preinstall", "install", "postinstall", "prepare", "prepack"})
 FORBIDDEN_SUFFIXES = (".zip", ".tgz", ".pem", ".key")
+APPROVED_RUNTIME_DEPENDENCIES = {"yaml": "2.9.0"}
 
 
 class NpmPackageValidationError(Exception):
@@ -75,8 +77,15 @@ def validate_package_policy(package_json: dict[str, Any]) -> None:
             raise NpmPackageValidationError(f"forbidden lifecycle script: {script_name}")
 
     dependencies = package_json.get("dependencies") or {}
-    if dependencies:
-        raise NpmPackageValidationError("runtime dependencies require an approved recorded purpose before publication")
+    if dependencies != APPROVED_RUNTIME_DEPENDENCIES:
+        unknown = sorted(
+            f"{name}@{version}"
+            for name, version in dependencies.items()
+            if APPROVED_RUNTIME_DEPENDENCIES.get(name) != version
+        )
+        missing = sorted(set(APPROVED_RUNTIME_DEPENDENCIES) - set(dependencies))
+        details = [*(f"unapproved={value}" for value in unknown), *(f"missing={value}" for value in missing)]
+        raise NpmPackageValidationError(f"unapproved runtime dependency set: {', '.join(details) or 'unknown mismatch'}")
 
 
 def inspect_package_json(package_root: Path) -> None:
