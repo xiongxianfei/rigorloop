@@ -47,11 +47,14 @@ test("migration supports only the enumerated legacy coordination schema", async 
   assert.equal(executeLifecycleCli(["migrate", "--request", path, "--dry-run"], { cwd: root }).exitCode, 0);
   assert.doesNotMatch(readFileSync(changePath, "utf8"), /lifecycle_cli/);
   assert.equal(executeLifecycleCli(["migrate", "--request", path], { cwd: root }).exitCode, 0);
-  assert.match(readFileSync(changePath, "utf8"), /lifecycle_cli:\n\s+schema_version: 1/);
-  const registration = parseLifecycleYaml(readFileSync(changePath, "utf8")).lifecycle_cli.artifacts.spec;
+  assert.match(readFileSync(changePath, "utf8"), /lifecycle_cli:\n\s+schema_version: 2/);
+  const coordination = parseLifecycleYaml(readFileSync(changePath, "utf8")).lifecycle_cli;
+  const registration = coordination.artifacts.spec;
   assert.equal(registration.artifact_path, "specs/example.md");
   assert.match(registration.artifact_sha256, /^[a-f0-9]{64}$/);
   assert.equal(registration.stage_authority, "spec");
+  assert.deepEqual(coordination.correction_history, {});
+  assert.deepEqual(coordination.withdrawals, {});
 });
 
 test("migration rejects an ambiguous legacy artifact without changing bytes", async () => {
