@@ -16,19 +16,14 @@ artifact_states:
       round: r4
     role: primary
   spec:
+    authoring_evidence: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/spec-revision-r1.md
     kind: spec
-    lifecycle_state: revision-required
+    lifecycle_state: review-required
     path: specs/cli-observability-and-token-efficient-results.md
-    review:
-      artifact_id: spec
-      id: spec-review-r1
-      outcome: changes-requested
-      record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/spec-review-r1.md
-      round: r1
     role: primary
 workflow_state:
   blocker: null
-  current_stage: spec
+  current_stage: spec-review
   evidence:
     - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
@@ -37,7 +32,7 @@ workflow_state:
   next_stage: spec-review
 workflow:
   automation:
-    current_stage: spec
+    current_stage: spec-review
     evidence:
       - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
       - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
@@ -75,9 +70,9 @@ lifecycle_cli:
       artifact_kind: spec
       artifact_path: specs/cli-observability-and-token-efficient-results.md
       artifact_role: primary
-      artifact_sha256: 60a0fc29fd429e56673d87b32bccd6d2411dbfaba7f2bf5f5d6b02f38e6e612a
-      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/spec-authoring.md
-      authoring_evidence_sha256: c97812ef779f14a0e9a801334f44993414f1a25312dc433b8a48a214999bf88e
+      artifact_sha256: de9ec40c11d33b4d199e79fea74374199d94133c8eed651546ed04d664bc1029
+      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/spec-revision-r1.md
+      authoring_evidence_sha256: 7f05c2578a405288bb382fbdaf55244ea9dbed776ff0c254101e980c3415fb3f
       stage_authority: spec
   milestones: {}
   resolutions: {}
@@ -93,18 +88,4 @@ lifecycle_cli:
       review_log_sha256: f6660ae1638bd5a6c58009f012c2d3e4d766b4f48085dbe7d51cd45e454f9247
       round: r4
       stage_authority: proposal-review
-    spec:
-      artifact_path: specs/cli-observability-and-token-efficient-results.md
-      artifact_sha256: 60a0fc29fd429e56673d87b32bccd6d2411dbfaba7f2bf5f5d6b02f38e6e612a
-      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/spec-review-r1.md
-      evidence_sha256: 982182c2c8fcbada402463541d922f532509b40011d216dce389812292f0626a
-      findings:
-        - CLIOBS-SR1
-        - CLIOBS-SR2
-        - CLIOBS-SR3
-      outcome: changes-requested
-      review_id: spec-review-r1
-      review_log_sha256: f443dcdaf1a80081a39d29773cacc9fb61b2290ddd4f2590fbcead6e0424406e
-      round: r1
-      stage_authority: spec-review
   validations: {}

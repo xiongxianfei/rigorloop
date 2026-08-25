@@ -73,5 +73,5 @@ Status: changes-requested
 Detailed record: reviews/spec-review-r1.md
 Resolution: review-resolution.md#spec-review-r1
 Material findings: CLIOBS-SR1, CLIOBS-SR2, CLIOBS-SR3
-Open findings: CLIOBS-SR1, CLIOBS-SR2, CLIOBS-SR3
+Open findings: none
 Recording status: recorded

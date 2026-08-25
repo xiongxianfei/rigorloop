@@ -2,17 +2,18 @@
 
 ## Summary
 
-Closeout status: open
+Closeout status: closed
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
 Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
+Review closeout: spec-review-r1
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`
-- Findings resolved: 3
-- Unresolved findings: 3
-- Current result: Proposal findings remain closed. CLIOBS-SR1 through CLIOBS-SR3 are accepted for bounded specification revision and require same-stage rereview.
+- Findings resolved: 6
+- Unresolved findings: 0
+- Current result: Proposal findings remain closed. The revised specification resolves CLIOBS-SR1 through CLIOBS-SR3; same-stage rereview remains required before architecture.
 - Validation evidence: revised proposal `sha256:70652f4e5afb34bb3272f73be339a43661a14ef6d4c69bf02585091a6592f47c`; review log has no open findings; focused lifecycle regressions and package tests pass.
 
 ## Resolution Overview
@@ -22,9 +23,9 @@ Review closeout: proposal-review-r4
 | CLIOBS-PR6 | accepted | resolved | Remove request fingerprints from the first release and use invocation IDs plus allowlisted semantic identities. |
 | CLIOBS-PR7 | accepted | resolved | Add an `invalid-input` family and define the minimum logger-initialization boundary. |
 | CLIOBS-PR8 | accepted | resolved | Assign hosted CI retention and forwarding to a separate roadmap-owned proposal. |
-| CLIOBS-SR1 | accepted | open | Close the unprovable expired-ID outcome or define bounded expiry evidence. |
-| CLIOBS-SR2 | accepted | open | Define path containment, permission refusal, and emergency stderr behavior. |
-| CLIOBS-SR3 | accepted | open | Close concise-field applicability and benchmark/wrapper proof inputs. |
+| CLIOBS-SR1 | accepted | resolved | Removed the unprovable expired-ID outcome from the first release. |
+| CLIOBS-SR2 | accepted | resolved | Defined path containment, permission refusal, bounded locks, and console-off behavior. |
+| CLIOBS-SR3 | accepted | resolved | Added concise-field applicability and versioned benchmark/wrapper proof inputs. |
 
 ## Finding Details
 
@@ -34,7 +35,7 @@ Review closeout: proposal-review-r4
 
 Finding ID: CLIOBS-SR1
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: specification author
 Owning stage: spec
 Decision owner: none; the finding narrows ambiguity within the accepted proposal
@@ -43,13 +44,14 @@ Chosen action: remove `RL_LOG_EXPIRED` from the first release and use one absent
 Rationale: random IDs plus five retained files cannot prove that an absent ID previously existed.
 Required outcome: retained lookup has one deterministic absent partition and no hidden or unbounded index.
 Validation target: revised R19, EC5, state boundary, examples, and acceptance criteria.
-Validation evidence: pending specification revision and spec-review-r2.
+Final action: Replaced expiry claims with one absent-ID result across R19, EC5, BND-STATE-001, and AC5.
+Validation evidence: `evidence/spec-revision-r1.md`; spec-review-r2 pending.
 
 #### CLIOBS-SR2
 
 Finding ID: CLIOBS-SR2
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: specification author
 Owning stage: spec
 Decision owner: none; safe local logging behavior is already in scope
@@ -58,13 +60,14 @@ Chosen action: make the selected absolute directory the containment root, refuse
 Rationale: an explicit console-off choice should be honored while diagnostic degradation remains visible in new structured projections.
 Required outcome: path and emergency-output behavior is closed and testable without changing semantic results.
 Validation target: revised R11-R17, E4, EC3, EC6, EC9, and affected boundaries.
-Validation evidence: pending specification revision and spec-review-r2.
+Final action: Defined selected-root containment, symlink refusal, no chmod repair, `RL_LOG_UNSAFE_PATH`, a 10-attempt/1,000-millisecond lock bound, and explicit console-off suppression.
+Validation evidence: `evidence/spec-revision-r1.md`; spec-review-r2 pending.
 
 #### CLIOBS-SR3
 
 Finding ID: CLIOBS-SR3
 Disposition: accepted
-Status: open
+Status: resolved
 Owner: specification author
 Owning stage: spec
 Decision owner: none; this operationalizes the accepted token-efficiency gate
@@ -73,7 +76,8 @@ Chosen action: add concise field applicability, exact line-budget exceptions, a 
 Rationale: adoption proof must not depend on implementation-selected fields, profiles, or wrappers.
 Required outcome: concise semantic completeness and adoption measurements are deterministic and regression-testable.
 Validation target: revised R23-R31, E2, E7, INT-003, INT-005, and AC7-AC10.
-Validation evidence: pending specification revision and spec-review-r2.
+Final action: Added the exhaustive concise-field applicability table, closed the two-line scope, and fixed the six-profile manifest, v0.4.x baseline, unweighted median, versioning rule, and production wrapper surface.
+Validation evidence: `evidence/spec-revision-r1.md`; spec-review-r2 pending.
 
 ### proposal-review-r1
 
