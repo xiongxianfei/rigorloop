@@ -1,0 +1,49 @@
+schema_version: 1
+review_id: architecture-review-r1
+review_stage: architecture-review
+review_target: docs/architecture/system/architecture.md
+base_revision: sha256:badf904a6b8996e3c386a068325fe373715e99fe2d56bf8dc052721bbff00ce2
+head_revision: sha256:badf904a6b8996e3c386a068325fe373715e99fe2d56bf8dc052721bbff00ce2
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L0
+author_context_id: root-architecture-authoring-r1
+reviewer_context_id: root-architecture-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: high
+risk_tier_triggers:
+  - canonical-lifecycle-interpreter
+  - durable-state-transaction
+  - compatibility-and-validator-migration
+  - published-skill-authority-change
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-24-governed-lifecycle-cli.md
+  - specs/governed-lifecycle-cli.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/spec-review-r2.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/architecture-assessment.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/evidence/architecture-authoring.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md
+formal_criteria:
+  - architecture-review-v1
+initial_packet_inventory:
+  - path: CONSTITUTION.md
+    sha256: 25c0479714a44aa0dd9db8ba9830ea3588140d3daeac1706f572281ae2aeb0e0
+  - path: specs/governed-lifecycle-cli.md
+    sha256: f7d9984c6913f5326cce231874f57673835c25ed1d4c94a03bdf4437eba8e405
+  - path: docs/architecture/system/architecture.md
+    sha256: badf904a6b8996e3c386a068325fe373715e99fe2d56bf8dc052721bbff00ce2
+  - path: docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md
+    sha256: 08cd57ab1198ad0fc4b8de9a1faafc43a0ffa2510fe31dee30cb54469211d6fa
+  - path: docs/changes/2026-08-24-governed-lifecycle-cli/evidence/architecture-authoring.md
+    sha256: c083e18dd961a83e7dde31675452ba3cfbeead0c00dd1cf1095c339a69be5395
+prompt_template_version: architecture-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - canonical lifecycle authority and validator convergence
+  - YAML parsing and dependency boundary
+  - local serialization and interrupted-replace recovery
+  - canonical compatibility with stage-owned lifecycle decisions
+  - skill-mechanics reduction with semantic ownership preserved

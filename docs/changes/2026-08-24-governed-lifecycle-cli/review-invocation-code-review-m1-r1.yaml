@@ -1,0 +1,30 @@
+review_id: code-review-m1-r1
+stage: code-review
+round: r1
+reviewed_milestone: M1
+reviewed_range:
+  base: b18fedac
+  head: d03fc845
+reviewer: Codex independent code-review context
+authority:
+  spec: specs/governed-lifecycle-cli.md
+  architecture: docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md
+  plan: docs/plans/2026-08-24-governed-lifecycle-cli.md
+  test_spec: specs/governed-lifecycle-cli.test.md
+automation:
+  mode: workflow-managed
+  target_stage: verify
+  context_separation: fresh-assumption blind-first review
+  risk_map_recorded_before_evidence_menu: true
+  requirement_fidelity: applicable
+risk_tier: elevated
+risk_tier_triggers:
+  - untrusted-yaml-parser
+  - public-request-schema
+  - lifecycle-identity-contract
+  - runtime-package-dependency
+phase_receipts:
+  - risk-map-recorded
+  - evidence-menu-released
+  - evidence-results-released
+  - verdict-recorded

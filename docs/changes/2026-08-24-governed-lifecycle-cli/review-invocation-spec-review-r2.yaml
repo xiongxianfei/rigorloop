@@ -1,0 +1,36 @@
+schema_version: 1
+review_id: spec-review-r2
+review_stage: spec-review
+review_target: specs/governed-lifecycle-cli.md
+base_revision: sha256:f7d9984c6913f5326cce231874f57673835c25ed1d4c94a03bdf4437eba8e405
+head_revision: sha256:f7d9984c6913f5326cce231874f57673835c25ed1d4c94a03bdf4437eba8e405
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-spec-revision-r1
+reviewer_context_id: root-spec-review-r2-context-reset
+context_separation_mechanism: corrected-artifact-and-criteria-context-reset
+risk_tier: high
+risk_tier_triggers:
+  - governed-lifecycle-authority
+  - durable-state-mutation
+  - concurrency-and-recovery
+  - skill-and-adapter-migration
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-24-governed-lifecycle-cli.md
+  - specs/governed-lifecycle-cli.md
+  - specs/skill-contract.md
+  - specs/rigorloop-workflow.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - closure of RLCLI-SR1 through RLCLI-SR3
+  - lifecycle interpretation and mutation authority
+  - evidence identity and invalidation
+  - concurrency, retry, atomicity, and recovery
+  - skill simplification without semantic-guidance loss

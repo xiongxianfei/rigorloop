@@ -117,12 +117,15 @@ Usage:
   rigorloop version
   rigorloop init codex|claude|opencode [--write-state] [--dry-run] [--json]
   rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
+  rigorloop lifecycle status|context <stage>|validate [--change <id>] [--format human|json]
+  rigorloop lifecycle <operation> --request <path> [--dry-run] [--format human|json]
 
 Commands:
   version                 Print package name and version.
   init codex|claude|opencode
                           Initialize verified target support.
   new-change              Plan a change metadata scaffold.
+  lifecycle               Inspect, validate, and perform guarded governed lifecycle operations.
 `;
 }
 
@@ -2068,6 +2071,10 @@ async function main() {
     const rawArgs = process.argv.slice(2);
     if (rawArgs[0] === "new-change") {
       return handleNewChange(rawArgs.slice(1));
+    }
+    if (rawArgs[0] === "lifecycle") {
+      const { runLifecycleCli } = await import("../lib/lifecycle-cli.js");
+      return runLifecycleCli(rawArgs.slice(1));
     }
 
     const { flags, positional } = parseFlags(rawArgs);

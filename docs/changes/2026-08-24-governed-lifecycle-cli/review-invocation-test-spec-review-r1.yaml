@@ -1,0 +1,54 @@
+schema_version: 1
+review_id: test-spec-review-r1
+review_stage: test-spec-review
+review_target: specs/governed-lifecycle-cli.test.md
+base_revision: sha256:67666e00f314a95058b1399ae723702257e3342781bb2b0acc4d7a81eeb48351
+head_revision: sha256:67666e00f314a95058b1399ae723702257e3342781bb2b0acc4d7a81eeb48351
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-test-spec-authoring-r1
+reviewer_context_id: root-test-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: high
+risk_tier_triggers:
+  - canonical-lifecycle-interpreter
+  - durable-transaction-and-recovery
+  - multi-validator-compatibility
+  - published-skill-migration
+  - mandatory-governance-enforcement
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/governed-lifecycle-cli.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/spec-review-r2.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/architecture-review-r2.md
+  - docs/plans/2026-08-24-governed-lifecycle-cli.md
+  - docs/changes/2026-08-24-governed-lifecycle-cli/reviews/plan-review-r1.md
+  - specs/governed-lifecycle-cli.test.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+  - boundary-first-proof-v1
+initial_packet_inventory:
+  - path: specs/governed-lifecycle-cli.md
+    sha256: f7d9984c6913f5326cce231874f57673835c25ed1d4c94a03bdf4437eba8e405
+  - path: docs/plans/2026-08-24-governed-lifecycle-cli.md
+    sha256: 3db2ac47143f4ad05e78eeeeea0edb8a0228d743319cce16199564f2d5bda485
+  - path: docs/architecture/system/architecture.md
+    sha256: 911aafdbec7f124d92705dd0364183c7a4a805f8963a359553e17d343d2b3c95
+  - path: docs/adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md
+    sha256: 9e2ed53a513fe7d1d04c69cfd5044a3aa4f2199e39695849ac7a5d638d6fb78e
+  - path: specs/governed-lifecycle-cli.test.md
+    sha256: 67666e00f314a95058b1399ae723702257e3342781bb2b0acc4d7a81eeb48351
+prompt_template_version: test-spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - requirement, example, edge-case, boundary, and interaction traceability
+  - public-path and negative-partition proof
+  - transaction interruption and deterministic recovery
+  - milestone proof timing and command ownership
+  - semantic-skill preservation and measurable token reduction
+  - compatibility gates before mandatory enforcement

@@ -59,6 +59,7 @@ class NpmPackagePublicationTests(unittest.TestCase):
                 "bin": {"rigorloop": "dist/bin/rigorloop.js"},
                 "files": ["dist/", "package.json", "README.md", "LICENSE"],
                 "scripts": {"test": "node --test"},
+                "dependencies": {"yaml": "2.9.0"},
                 "license": "MIT",
             }
         )
@@ -68,8 +69,11 @@ class NpmPackagePublicationTests(unittest.TestCase):
                 with self.assertRaisesRegex(NpmPackageValidationError, script_name):
                     validate_package_policy({"scripts": {script_name: "echo unsafe"}})
 
-        with self.assertRaisesRegex(NpmPackageValidationError, "runtime dependencies"):
+        self.assertIsNone(validate_package_policy({"dependencies": {"yaml": "2.9.0"}}))
+        with self.assertRaisesRegex(NpmPackageValidationError, "unapproved runtime dependency"):
             validate_package_policy({"dependencies": {"left-pad": "1.3.0"}})
+        with self.assertRaisesRegex(NpmPackageValidationError, "unapproved runtime dependency"):
+            validate_package_policy({"dependencies": {"yaml": "2.8.1"}})
 
     def test_forbidden_path_patterns_are_explicit(self) -> None:
         self.assertIn("package/dist/adapters/**", FORBIDDEN_PATH_PATTERNS)
