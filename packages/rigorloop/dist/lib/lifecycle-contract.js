@@ -10,6 +10,9 @@ export const LIFECYCLE_OPERATIONS = Object.freeze([
   "settle-artifact",
   "start-milestone",
   "complete-milestone",
+  "route-correction",
+  "return-correction",
+  "withdraw-artifact-registration",
   "migrate",
   "repair",
 ]);
@@ -30,6 +33,10 @@ export const LIFECYCLE_ERROR_CODES = Object.freeze([
   "RL_REPAIR_UNSAFE",
   "RL_OPERATION_BUSY",
   "RL_RECOVERY_REQUIRED",
+  "RL_WORKFLOW_ROUTE_REQUIRED",
+  "RL_CORRECTION_ROUTE_INVALID",
+  "RL_ARTIFACT_PATH_OWNED",
+  "RL_WITHDRAWAL_UNSAFE",
 ]);
 
 export const PROVENANCE_EXCLUDED_FIELDS = Object.freeze(["actor", "recorded_at"]);
@@ -70,6 +77,9 @@ const OPERATION_FIELDS = Object.freeze({
   "settle-artifact": ["artifact_id", "stage_authority"],
   "start-milestone": ["milestone_id", "stage_authority"],
   "complete-milestone": ["milestone_id", "evidence_path", "stage_authority"],
+  "route-correction": ["source_stage", "destination_stage", "destination_artifact_id", "reason", "evidence_path", "finding_ids", "return_stage", "milestone_id", "stage_authority"],
+  "return-correction": ["route_id", "evidence_path", "stage_authority"],
+  "withdraw-artifact-registration": ["artifact_id", "artifact_path", "canonical_owner_change_id", "reason", "evidence_path", "stage_authority"],
   migrate: ["source_schema_version", "stage_authority"],
   repair: ["condition", "stage_authority", "dry_run_acknowledgement"],
 });
@@ -91,11 +101,16 @@ const OPERATION_CONTRACTS = Object.freeze({
   "settle-artifact": { required: ["artifact_id", "stage_authority"], authorities: REVIEW_AUTHORITIES },
   "start-milestone": { required: ["milestone_id", "stage_authority"], authorities: ["workflow"] },
   "complete-milestone": { required: ["milestone_id", "evidence_path", "stage_authority"], authorities: ["workflow"] },
+  "route-correction": { required: ["source_stage", "destination_stage", "destination_artifact_id", "reason", "evidence_path", "finding_ids", "return_stage", "stage_authority"], authorities: ["workflow"] },
+  "return-correction": { required: ["route_id", "evidence_path", "stage_authority"], authorities: ["workflow"] },
+  "withdraw-artifact-registration": { required: ["artifact_id", "artifact_path", "canonical_owner_change_id", "reason", "evidence_path", "stage_authority"], authorities: ["workflow"] },
   migrate: { required: ["source_schema_version", "stage_authority"], authorities: ["workflow"] },
   repair: { required: ["condition", "stage_authority", "dry_run_acknowledgement"], authorities: ["workflow"] },
 });
 
 const REPAIR_CONDITIONS = new Set(["reconcile-interrupted-replace", "clear-orphaned-lock"]);
+const CORRECTION_REASONS = new Set(["upstream-contract-gap", "upstream-proof-gap", "upstream-ownership-gap", "upstream-planning-gap", "upstream-stale-input"]);
+const CORRECTION_DESTINATIONS = new Set(["proposal", "spec", "architecture", "plan", "test-spec"]);
 
 function invalid(message) {
   const error = new Error(`RL_INVALID_REQUEST: ${message}`);
@@ -197,8 +212,8 @@ function withoutProvenance(value) {
   );
 }
 
-function requestError(summary) {
-  return { code: "RL_INVALID_REQUEST", summary, blocking_invariant: "request-schema-v1" };
+function requestError(summary, code = "RL_INVALID_REQUEST") {
+  return { code, summary, blocking_invariant: "request-schema-v1" };
 }
 
 export function validateLifecycleRequest(request) {
@@ -239,10 +254,23 @@ export function validateLifecycleRequest(request) {
   if (!contract.authorities.includes(request.stage_authority)) {
     return { ok: false, errors: [requestError(`unknown stage_authority ${String(request.stage_authority)}`)] };
   }
-  for (const field of ["artifact_id", "finding_id", "milestone_id"]) {
+  for (const field of ["artifact_id", "finding_id", "milestone_id", "destination_artifact_id", "route_id", "canonical_owner_change_id"]) {
     if (request[field] !== undefined && (typeof request[field] !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(request[field]))) {
       return { ok: false, errors: [requestError(`${field} must be one safe identifier`)] };
     }
+  }
+  if (request.finding_ids !== undefined && (!Array.isArray(request.finding_ids) || request.finding_ids.some((value) => typeof value !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(value)) || new Set(request.finding_ids).size !== request.finding_ids.length)) {
+    return { ok: false, errors: [requestError("finding_ids must be a unique array of safe identifiers")] };
+  }
+  if (request.reason !== undefined) {
+    const allowedReasons = request.operation === "withdraw-artifact-registration" ? new Set(["duplicate-registration"]) : CORRECTION_REASONS;
+    if (!allowedReasons.has(request.reason)) return { ok: false, errors: [requestError(`unknown reason ${String(request.reason)}`, request.operation === "withdraw-artifact-registration" ? "RL_WITHDRAWAL_UNSAFE" : "RL_INVALID_REQUEST")] };
+  }
+  if (request.destination_stage !== undefined && !CORRECTION_DESTINATIONS.has(request.destination_stage)) {
+    return { ok: false, errors: [requestError(`unknown destination_stage ${String(request.destination_stage)}`)] };
+  }
+  for (const field of ["source_stage", "return_stage"]) {
+    if (request[field] !== undefined && (typeof request[field] !== "string" || !/^[a-z][a-z0-9-]*$/.test(request[field]))) return { ok: false, errors: [requestError(`${field} must be one normalized stage`)] };
   }
   for (const field of ["artifact_path", "evidence_path", "subject_path"]) {
     if (request[field] !== undefined && !isRepositoryRelativePath(request[field])) {

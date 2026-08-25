@@ -1,0 +1,432 @@
+change_id: 2026-08-25-workflow-routed-upstream-corrections
+title: Workflow-Routed Upstream Corrections
+classification: workflow-governance-and-cli
+risk: high
+lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  adr-correction-ownership:
+    kind: adr
+    lifecycle_state: accepted
+    path: docs/adr/ADR-20260825-workflow-routed-correction-and-artifact-ownership.md
+    review:
+      adr_settlement: accepted
+      artifact_id: adr-correction-ownership
+      id: architecture-review-adr-r1
+      outcome: approved
+      record: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/architecture-review-adr-r1.md
+      round: r1
+    role: supporting
+  architecture:
+    kind: architecture
+    lifecycle_state: approved
+    path: docs/architecture/2026-08-25-workflow-routed-upstream-corrections.md
+    review:
+      artifact_id: architecture
+      id: architecture-review-r3
+      outcome: approved
+      record: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/architecture-review-r3.md
+      round: r3
+    role: primary
+  plan:
+    kind: plan
+    lifecycle_state: active
+    path: docs/plans/2026-08-25-workflow-routed-upstream-corrections.md
+    review:
+      artifact_id: plan
+      id: plan-review-r2
+      outcome: approved
+      record: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/plan-review-r2.md
+      round: r2
+    role: primary
+  proposal:
+    kind: proposal
+    lifecycle_state: accepted
+    path: docs/proposals/2026-08-25-workflow-routed-upstream-corrections.md
+    review:
+      artifact_id: proposal
+      id: proposal-review-r2
+      outcome: approved
+      record: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/proposal-review-r2.md
+      round: r2
+    role: primary
+  spec:
+    kind: spec
+    lifecycle_state: approved
+    path: specs/workflow-routed-upstream-corrections.md
+    review:
+      artifact_id: spec
+      id: spec-review-r3
+      outcome: approved
+      record: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/spec-review-r3.md
+      round: r3
+    role: primary
+  test-spec:
+    kind: test-spec
+    lifecycle_state: active
+    path: specs/workflow-routed-upstream-corrections.test.md
+    review:
+      artifact_id: test-spec
+      id: test-spec-review-r3
+      outcome: approved
+      record: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/test-spec-review-r3.md
+      round: r3
+    role: primary
+workflow_state:
+  blocker: null
+  current_stage: verify
+  evidence:
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/proposal-authoring.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-proposal-to-review.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/proposal-review-r1.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/proposal-revision-r1.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-proposal-revision-to-rereview.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/proposal-review-r2.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-proposal-to-spec.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/spec-authoring.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-spec-to-review.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/spec-review-r1.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-spec-review-to-revision-r1.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/spec-revision-r1.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-spec-revision-to-rereview-r1.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/spec-review-r2.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-spec-review-to-revision-r2.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/spec-revision-r2.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-spec-revision-to-rereview-r2.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/spec-review-r3.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-spec-to-architecture.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/architecture-assessment.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/architecture-revision-pre-review.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/adr-revision-pre-review.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-architecture-to-review.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/architecture-review-r1.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/architecture-review-adr-r1.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-architecture-to-plan.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/plan-authoring.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-plan-to-review.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/plan-review-r1.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-plan-to-test-spec.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/test-spec-authoring.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-test-spec-to-review.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/test-spec-review-r1.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-test-spec-to-implement-m1.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/architecture-structure-correction-route.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/architecture-structure-revision.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/architecture-review-r2.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/architecture-structure-correction-return.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/code-review-final-r1.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/explain-change.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/verify-report.md
+  lifecycle_state: active
+  next_stage: pr
+  planned_work:
+    current_milestone: none
+    final_closeout:
+      evidence:
+        - docs/changes/2026-08-25-workflow-routed-upstream-corrections/explain-change.md
+        - docs/changes/2026-08-25-workflow-routed-upstream-corrections/verify-report.md
+      readiness: ready
+      reasons:
+        - ready
+    initialization_basis:
+      review_id: plan-review-r2
+      review_record: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/plan-review-r2.md
+      review_round: r2
+      reviewed_artifact_path: docs/plans/2026-08-25-workflow-routed-upstream-corrections.md
+      reviewed_revision: f2e8745d3e2d85b6fd2445752dc3a2ac5648d3f5c6c20634fbd425fb09416cad
+    latest_review:
+      artifact_id: plan
+      evidence:
+        - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/code-review-final-r1.md
+      milestone_id: none
+      occurrence: final
+      round: r1
+      stage: code-review
+      status: approved
+    milestones:
+      M1:
+        kind: implementation
+        state: closed
+      M2:
+        kind: implementation
+        state: closed
+      M3:
+        kind: implementation
+        state: closed
+    plan_artifact_id: plan
+    remaining_implementation_milestones: []
+workflow: {}
+artifacts:
+  proposal: docs/proposals/2026-08-25-workflow-routed-upstream-corrections.md
+  verify_report: docs/changes/2026-08-25-workflow-routed-upstream-corrections/verify-report.md
+requirements:
+  - Provide a workflow-requested, CLI-validated upstream correction route that preserves findings, milestone state, and return context.
+  - Prevent cross-change artifact-path collisions and provide a narrow guarded recovery for existing duplicate registrations.
+  - Keep semantic routing with workflow and semantic artifact work with the owning stage while the CLI enforces mechanical validity.
+tests:
+  - Closed route-matrix, stale-operation, authority, retry, and return-readiness conformance.
+  - Cross-change collision detection and exact duplicate-withdrawal recovery without semantic artifact mutation.
+  - Human and JSON diagnostic parity plus unchanged portable-mode behavior.
+validation:
+  - command: npm test --prefix packages/rigorloop
+    result: passed; 178 tests
+  - command: python3 scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-25-workflow-routed-upstream-corrections
+    result: passed; 18 reviews and 5 resolved findings
+  - command: python3 scripts/validate-boundary-first.py --path specs/workflow-routed-upstream-corrections.test.md
+    result: passed
+  - command: node packages/rigorloop/dist/bin/rigorloop.js lifecycle validate --change 2026-08-25-workflow-routed-upstream-corrections --format json
+    result: passed; no blockers or stale evidence
+  - command: bash scripts/ci.sh --mode broad-smoke --jobs 2
+    result: passed; 12 checks in 787 seconds
+changed_files:
+  - docs/changes/2026-08-25-workflow-routed-upstream-corrections/change.yaml
+  - docs/proposals/2026-08-25-workflow-routed-upstream-corrections.md
+  - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/proposal-authoring.md
+  - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-proposal-to-review.md
+  - docs/changes/2026-08-25-workflow-routed-upstream-corrections/verify-report.md
+review:
+  latest_review: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/code-review-final-r1.md
+  review_log: docs/changes/2026-08-25-workflow-routed-upstream-corrections/review-log.md
+  reviewed_artifact: ffc03485ea6a8f48d5f8d4a89d051f7d669312b7
+  status: clean
+  unresolved_items: 0
+lifecycle_cli:
+  schema_version: 2
+  artifacts:
+    adr-correction-ownership:
+      artifact_kind: adr
+      artifact_path: docs/adr/ADR-20260825-workflow-routed-correction-and-artifact-ownership.md
+      artifact_role: supporting
+      artifact_sha256: bb9ae9746eea36669c560153660dda049dee8470cf3f38eb2304c3fd3e08d8c5
+      authoring_evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/adr-revision-pre-review.md
+      authoring_evidence_sha256: 435d026d3a22d6ccfa1184fb061d6f55e494bc952cf63f2a611e816e00978278
+      stage_authority: architecture
+    architecture:
+      artifact_kind: architecture
+      artifact_path: docs/architecture/2026-08-25-workflow-routed-upstream-corrections.md
+      artifact_role: primary
+      artifact_sha256: dfca9caa10a55f8a0d3266ae5c92793b2aaea92f26840973cf1b32893618c2cb
+      authoring_evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/architecture-module-revision.md
+      authoring_evidence_sha256: b84078089dbb2611ac8d47293156a800372060db989defe877310f8b9eee8a6c
+      stage_authority: architecture
+    plan:
+      artifact_kind: plan
+      artifact_path: docs/plans/2026-08-25-workflow-routed-upstream-corrections.md
+      artifact_role: primary
+      artifact_sha256: f2e8745d3e2d85b6fd2445752dc3a2ac5648d3f5c6c20634fbd425fb09416cad
+      authoring_evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/plan-validation-scope-revision.md
+      authoring_evidence_sha256: d17d15769aeeb4f97cfc0c451178a55ecaf06dfd19858a84479578229c708cd5
+      stage_authority: plan
+    proposal:
+      artifact_kind: proposal
+      artifact_path: docs/proposals/2026-08-25-workflow-routed-upstream-corrections.md
+      artifact_role: primary
+      artifact_sha256: 51b5ced0eb33970c8fa01a01a0b8ff49af256e47bcf70a930e985673f8c82959
+      authoring_evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/proposal-revision-r1.md
+      authoring_evidence_sha256: 93ae82a2e4a281abbe9df0b25a7e4e8ac80b42f85b821f019e2d9320837e2ebf
+      stage_authority: proposal
+    spec:
+      artifact_kind: spec
+      artifact_path: specs/workflow-routed-upstream-corrections.md
+      artifact_role: primary
+      artifact_sha256: 1a3bc2c06cc7e30f4f9feac9d53448c0d344d0fdc0ff10f7a28520bda1bb7100
+      authoring_evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/spec-revision-r2.md
+      authoring_evidence_sha256: 7cecb218a539482edf6b8b9c0099f8bc403127a758464135a1ccabaf74c6b729
+      stage_authority: spec
+    test-spec:
+      artifact_kind: test-spec
+      artifact_path: specs/workflow-routed-upstream-corrections.test.md
+      artifact_role: primary
+      artifact_sha256: de1c1fbfd1e55a9c7feb15ce6cd649f6ef147068b9e1187af313a43d357a1e30
+      authoring_evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/test-spec-validation-revision.md
+      authoring_evidence_sha256: b1faf2cdedacfe3a6ae1e05414447e8e0037aad46f9d817eefa0c761e4200d83
+      stage_authority: test-spec
+  correction_history:
+    route-9fe409ebe036f602abc16d921ef8f984778521fabc14c2042797671bb1d7cd31:
+      destination_artifact_id: test-spec
+      destination_stage: test-spec
+      evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/test-spec-input-correction-route.md
+      evidence_sha256: 0217135f3a5e24e348e7a6a7e4a8982bda77a2ce5ff429d7e0557465bba73d31
+      prior_artifact_sha256: 5e0a1254c7105ec48f15642262c2b7b763ce9588d04ab528786fd30ea0b586f4
+      prior_lifecycle_revision: sha256:133f2b141cc417832c2f56f3e00c42247e90b1b79a4610ee0eb625f61cc5dd57
+      reason: upstream-stale-input
+      return_evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/test-spec-input-correction-return.md
+      return_evidence_sha256: 0fc5aea2b47d6ccd74ee65cdf91c4386f74bcdec1539d0785bb50f918e1f9c30
+      return_stage: implement
+      route_id: route-9fe409ebe036f602abc16d921ef8f984778521fabc14c2042797671bb1d7cd31
+      source_snapshot:
+        blocker: null
+        current_stage: implement
+        finding_ids: []
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: implementing
+        next_stage: code-review
+      status: returned
+    route-a1be06eb097c49612670bc4c0e7aa8846a8e5f1d0cd8d5a92f7a1d9cdeb86be4:
+      destination_artifact_id: plan
+      destination_stage: plan
+      evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/plan-validation-scope-correction-route.md
+      evidence_sha256: fe9050f303638097b2da1a0bc12c22811ecde62a77127e78af365110725e68cb
+      prior_artifact_sha256: 39595fe4e30aa6f870e79c46668741095bbd28a920a5a4aff56224e2a5148ed4
+      prior_lifecycle_revision: sha256:e7990fe4ae72b31e1b07e47707dede0254ae0c76796eb92b18ab0894fcb8746d
+      reason: upstream-planning-gap
+      return_evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/plan-validation-scope-correction-return.md
+      return_evidence_sha256: a8559cc7a1831156f2f112d429f45589c66c8859dd79dc3d59992761575b2410
+      return_stage: implement
+      route_id: route-a1be06eb097c49612670bc4c0e7aa8846a8e5f1d0cd8d5a92f7a1d9cdeb86be4
+      source_snapshot:
+        blocker: null
+        current_stage: implement
+        finding_ids: []
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: implementing
+        next_stage: code-review
+      status: returned
+    route-c2d988fd66b1b46437aa5caeaf55262ff3ec15328e339dbaa632589724058752:
+      destination_artifact_id: architecture
+      destination_stage: architecture
+      evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/architecture-structure-correction-route.md
+      evidence_sha256: b2457f0066714ab8e9b75e6925c2966bed1877ac5f6334873f7f65c5539ed589
+      prior_artifact_sha256: 1b7f5e3a2b416e41b22ad95fb845a124140f521ca929d64e1c88a88737d93eac
+      prior_lifecycle_revision: sha256:652707939682c038fabbc302c45712e433be88aa98bc17e960f39ec163905807
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/architecture-structure-correction-return.md
+      return_evidence_sha256: fb1df5d7cfe764cabedd434f6135d57237cc9b188191b6c54ed41f1bf983e2fb
+      return_stage: implement
+      route_id: route-c2d988fd66b1b46437aa5caeaf55262ff3ec15328e339dbaa632589724058752
+      source_snapshot:
+        blocker: null
+        current_stage: implement
+        finding_ids: []
+        lifecycle_state: active
+        milestone_id: M1
+        milestone_state: implementing
+        next_stage: code-review
+      status: returned
+    route-cbc33d7ad3ee320e0375872cea6b91200806d088b6d426d161705127a73d5bd0:
+      destination_artifact_id: test-spec
+      destination_stage: test-spec
+      evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/test-spec-validation-correction-route.md
+      evidence_sha256: c0316a0c871973630ff24b81fb627c8dc4d2c6a60bb493402503c6d26e6f706f
+      prior_artifact_sha256: e376de1537f3668e75dc2aa772f26dde5b9760752514171cb94e609b198aa5af
+      prior_lifecycle_revision: sha256:df75589c2f9c17d358e3a877325b78c8e96142251af1ea438faba6362e726b81
+      reason: upstream-proof-gap
+      return_evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/test-spec-validation-correction-return.md
+      return_evidence_sha256: 337a8b566cef1c31eeb0422237a8d314be1f4744dac57024f455cefc5e37d054
+      return_stage: implement
+      route_id: route-cbc33d7ad3ee320e0375872cea6b91200806d088b6d426d161705127a73d5bd0
+      source_snapshot:
+        blocker: null
+        current_stage: implement
+        finding_ids: []
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: implementing
+        next_stage: code-review
+      status: returned
+    route-ed8364d974162a620f4fb7f70c0c82f648f6116b9bcb1c3474f57f7daf397b18:
+      destination_artifact_id: architecture
+      destination_stage: architecture
+      evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/architecture-module-correction-route.md
+      evidence_sha256: 33169695c28b3e4993b150d99d624910ff62659ad3d7093023e11ff5eb71cdb3
+      prior_artifact_sha256: a48b2678a07639ceb98131c03bc0118094543ef2454cd58ad51adf96bc234e09
+      prior_lifecycle_revision: sha256:35c4cea692de32c37faa9f3f153860f1475850cc4006713f8205301c8315fe63
+      reason: upstream-contract-gap
+      return_evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/architecture-module-correction-return.md
+      return_evidence_sha256: a0d79267ee6338f66fd6a1ca0fd70a0d760c642da6c5df181abb8c74637f1264
+      return_stage: implement
+      route_id: route-ed8364d974162a620f4fb7f70c0c82f648f6116b9bcb1c3474f57f7daf397b18
+      source_snapshot:
+        blocker: null
+        current_stage: implement
+        finding_ids: []
+        lifecycle_state: active
+        milestone_id: M3
+        milestone_state: implementing
+        next_stage: code-review
+      status: returned
+  milestones:
+    M3:
+      evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/m3-withdrawal-consumers.md
+      evidence_sha256: e2881426fced9340cfd4e51f4657159fd2f076f8344adda81d0fa25423f87798
+      review_round: r1
+      stage_authority: workflow
+  resolutions:
+    WRUC-PR1:
+      artifact_id: proposal
+      disposition: accepted
+      evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/review-resolution.md
+      evidence_sha256: c77e5ac984f6ecc1cf74b7eeaaf9423c34128d292347083deae1d5c9cbcbfc85
+      finding_id: WRUC-PR1
+      owner: proposal author
+      stage_authority: review-resolution
+  reviews:
+    adr-correction-ownership:
+      artifact_path: docs/adr/ADR-20260825-workflow-routed-correction-and-artifact-ownership.md
+      artifact_sha256: bb9ae9746eea36669c560153660dda049dee8470cf3f38eb2304c3fd3e08d8c5
+      evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/architecture-review-adr-r1.md
+      evidence_sha256: a27c5ecf6ba407bfd9747e9e4fbc6e99e9cce1be5a798b9ca354e9b23f20f757
+      findings: []
+      outcome: approved
+      review_id: architecture-review-adr-r1
+      review_log_sha256: 20cf37eb23bd6cabd97e781047a1688cd56b35996e526f0404fa5ac0f1e661b3
+      round: r1
+      stage_authority: architecture-review
+    architecture:
+      artifact_path: docs/architecture/2026-08-25-workflow-routed-upstream-corrections.md
+      artifact_sha256: dfca9caa10a55f8a0d3266ae5c92793b2aaea92f26840973cf1b32893618c2cb
+      evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/architecture-review-r3.md
+      evidence_sha256: 5d673b238b0fb15c3f79461f36017ff9bae35775bdf4b2e80555965c8b33631c
+      findings: []
+      outcome: approved
+      review_id: architecture-review-r3
+      review_log_sha256: 691d5ed98439056297ec695d0d3de26fc51aef6541a37aab00fd5bf235338bfd
+      round: r3
+      stage_authority: architecture-review
+    plan:
+      artifact_path: docs/plans/2026-08-25-workflow-routed-upstream-corrections.md
+      artifact_sha256: f2e8745d3e2d85b6fd2445752dc3a2ac5648d3f5c6c20634fbd425fb09416cad
+      evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/plan-review-r2.md
+      evidence_sha256: ed0a677c7f980049fb6b35fc22c9c1576ad9bec7f6dedeee4046ccd4f9fe3143
+      findings: []
+      outcome: approved
+      review_id: plan-review-r2
+      review_log_sha256: 87d647baeeaefc7a4bf2311538ed719ac86d7eeda73d1a35e8d7f05773cded04
+      round: r2
+      stage_authority: plan-review
+    proposal:
+      artifact_path: docs/proposals/2026-08-25-workflow-routed-upstream-corrections.md
+      artifact_sha256: 51b5ced0eb33970c8fa01a01a0b8ff49af256e47bcf70a930e985673f8c82959
+      evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/proposal-review-r2.md
+      evidence_sha256: 709a5a72d8033ec17047af466eb5031021f57fa1a4f48a62578f5747e6522c65
+      findings: []
+      outcome: approved
+      review_id: proposal-review-r2
+      review_log_sha256: 9ee3ca25a7e1765c0a0640d733436e8cf70516ab5be72330b2d9ae6ea143d025
+      round: r2
+      stage_authority: proposal-review
+    spec:
+      artifact_path: specs/workflow-routed-upstream-corrections.md
+      artifact_sha256: 1a3bc2c06cc7e30f4f9feac9d53448c0d344d0fdc0ff10f7a28520bda1bb7100
+      evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/spec-review-r3.md
+      evidence_sha256: b7a390ac3b129cd655f2e3d419a2a054edd8c85401caf2572045b92b54bd77df
+      findings: []
+      outcome: approved
+      review_id: spec-review-r3
+      review_log_sha256: a8a1ead9bc65013d60366f78d5df2c908081b639e7cbd62393256a7f68e28511
+      round: r3
+      stage_authority: spec-review
+    test-spec:
+      artifact_path: specs/workflow-routed-upstream-corrections.test.md
+      artifact_sha256: de1c1fbfd1e55a9c7feb15ce6cd649f6ef147068b9e1187af313a43d357a1e30
+      evidence_path: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/test-spec-review-r3.md
+      evidence_sha256: db12d094deafd87aa5645bd0f021e59e315b410ed1cb29720916485086ca1711
+      findings: []
+      outcome: approved
+      review_id: test-spec-review-r3
+      review_log_sha256: 4e1c69637cd6cd0cc497e8a0f01d37f8c2ebb306f3dbb0dd2abdccf1ec6182ec
+      round: r3
+      stage_authority: test-spec-review
+  validations: {}
+  withdrawals: {}

@@ -8,7 +8,7 @@ import { clearOrphanedLifecycleLock, inspectLifecycleLock, inspectLifecycleRecov
 import { renderResult, RESULT_FORMATS } from "./result-renderer.js";
 
 const RESULT_FIELDS = ["schema_version", "command", "operation", "status", "change_id", "lifecycle_revision", "effective_state", "blockers", "permitted_operations", "artifacts", "warnings", "errors"];
-const MUTATING_OPERATIONS = new Set(["record-artifact-revision", "record-review", "record-validation", "record-finding-resolution", "settle-artifact", "start-milestone", "complete-milestone", "migrate", "repair"]);
+const MUTATING_OPERATIONS = new Set(["record-artifact-revision", "record-review", "record-validation", "record-finding-resolution", "settle-artifact", "start-milestone", "complete-milestone", "route-correction", "return-correction", "withdraw-artifact-registration", "migrate", "repair"]);
 
 function parseArgs(args) {
   const [operation, maybeStage, ...rest] = args;
@@ -62,7 +62,7 @@ function resultExitCode(result) {
   if (result.status === "blocked" && result.errors.length === 0) return 2;
   if (["RL_INVALID_REQUEST", "RL_UNSUPPORTED_SCHEMA", "RL_INCOMPATIBLE_VERSION"].includes(code)) return 4;
   if (code === "RL_STALE_OPERATION") return 5;
-  if (["RL_CHANGE_NOT_FOUND", "RL_AMBIGUOUS_CHANGE", "RL_OPERATION_NOT_PERMITTED", "RL_UNRESOLVED_MATERIAL_FINDING", "RL_AUTHORITY_BOUNDARY", "RL_OPERATION_BUSY", "RL_RECOVERY_REQUIRED"].includes(code)) return 2;
+  if (["RL_CHANGE_NOT_FOUND", "RL_AMBIGUOUS_CHANGE", "RL_OPERATION_NOT_PERMITTED", "RL_UNRESOLVED_MATERIAL_FINDING", "RL_AUTHORITY_BOUNDARY", "RL_OPERATION_BUSY", "RL_RECOVERY_REQUIRED", "RL_WORKFLOW_ROUTE_REQUIRED", "RL_CORRECTION_ROUTE_INVALID", "RL_ARTIFACT_PATH_OWNED", "RL_WITHDRAWAL_UNSAFE"].includes(code)) return 2;
   return 3;
 }
 
@@ -74,9 +74,10 @@ function human(result) {
   if (result.effective_state?.current_stage) lines.push(`Current stage: ${result.effective_state.current_stage}`);
   if (result.effective_state?.active_artifact) lines.push(`Active artifact: ${result.effective_state.active_artifact}`);
   if (result.effective_state?.active_milestone) lines.push(`Active milestone: ${result.effective_state.active_milestone}`);
+  if (result.effective_state?.active_correction) lines.push(`Active correction: ${result.effective_state.active_correction.route_id}; ${result.effective_state.active_correction.source_stage} -> ${result.effective_state.active_correction.destination_stage}; milestone ${result.effective_state.active_correction.milestone_id ?? "none"}`);
   if (result.effective_state?.unresolved_findings?.length) lines.push(`Unresolved findings: ${result.effective_state.unresolved_findings.join(", ")}`);
   if (result.effective_state?.stale_evidence?.length) lines.push(`Stale evidence: ${result.effective_state.stale_evidence.join(", ")}`);
-  for (const artifact of result.artifacts) lines.push(`Artifact ${artifact.artifact_id}: ${artifact.recorded_state}; evidence ${artifact.evidence_state}; ${artifact.path}`);
+  if (result.operation !== "context") for (const artifact of result.artifacts) lines.push(`Artifact ${artifact.artifact_id}: ${artifact.recorded_state}; evidence ${artifact.evidence_state}; ${artifact.path}`);
   for (const blocker of result.blockers) lines.push(`${blocker.code}: ${blocker.summary}`);
   if (result.permitted_operations.length) lines.push(`Permitted operations: ${result.permitted_operations.join(", ")}`);
   if (result.context) {
@@ -86,9 +87,15 @@ function human(result) {
     lines.push(`Review round: ${result.context.review_round ?? "not-applicable"}`);
     lines.push(`Authorized output path: ${result.context.authorized_output_path ?? "none"}`);
     lines.push(`Permitted registration operation: ${result.context.permitted_registration_operation ?? "none"}`);
+    if (result.context.route_required) {
+      lines.push(`${result.context.route_required.code}: workflow must route ${result.context.route_required.current_stage} -> ${result.context.route_required.requested_stage}`);
+      lines.push(`Available after workflow route: ${result.context.available_after_workflow_route}`);
+    }
   }
   if (result.validation) lines.push(`Repository validation: ${result.validation.valid ? "valid" : "invalid"}`);
   if (result.mutation) lines.push(`Mutation: ${result.mutation.status}; ${result.mutation.changed_path}`);
+  if (result.operation_result?.route_id) lines.push(`Route: ${result.operation_result.route_id}`);
+  if (result.operation_result?.withdrawal_id) lines.push(`Withdrawal: ${result.operation_result.artifact_id}; ${result.operation_result.artifact_path}; ${result.operation_result.receipt_status}; canonical owner ${result.operation_result.canonical_owner_change_id}`);
   return `${lines.join("\n")}\n`;
 }
 
@@ -131,7 +138,7 @@ export function executeLifecycleCli(args, options = {}) {
       const requestValidation = validateLifecycleRequest(request);
       if (!requestValidation.ok) {
         const issue = requestValidation.errors[0];
-        const result = errorResult(parsed.operation, { ...issue, relevant_identities: [], corrective_operation: null });
+        const result = errorResult(parsed.operation, { ...issue, relevant_identities: [], corrective_operation: null }, issue.code === "RL_WITHDRAWAL_UNSAFE" ? "blocked" : "error");
         return { result, exitCode: resultExitCode(result), format: parsed.format, human: human(result) };
       }
       if (request.operation !== parsed.operation || request.change_id !== interpreted.change_id || (parsed.change && parsed.change !== request.change_id)) {
@@ -187,16 +194,18 @@ export function executeLifecycleCli(args, options = {}) {
           },
         });
       }
-      const result = baseResult(parsed.operation, { status: "success", change_id: interpreted.change_id, lifecycle_revision: candidateInterpretation.lifecycle_revision, effective_state: candidateInterpretation.effective_state, blockers: candidateInterpretation.blockers, permitted_operations: candidateInterpretation.permitted_operations, artifacts: candidateInterpretation.artifacts, warnings: [], errors: [], mutation });
+      const result = baseResult(parsed.operation, { status: "success", change_id: interpreted.change_id, lifecycle_revision: candidateInterpretation.lifecycle_revision, effective_state: candidateInterpretation.effective_state, blockers: candidateInterpretation.blockers, permitted_operations: candidateInterpretation.permitted_operations, artifacts: candidateInterpretation.artifacts, warnings: [], errors: [], mutation, ...(transition.operationResult ? { operation_result: transition.operationResult } : {}) });
       return { result, exitCode: 0, format: parsed.format, human: human(result) };
     } catch (error) {
       const issue = operationDiagnostic(error);
-      const result = errorResult(parsed.operation, issue, ["RL_STALE_OPERATION", "RL_OPERATION_NOT_PERMITTED", "RL_UNRESOLVED_MATERIAL_FINDING", "RL_AUTHORITY_BOUNDARY", "RL_OPERATION_BUSY", "RL_RECOVERY_REQUIRED"].includes(issue.code) ? "blocked" : "error");
+      const result = errorResult(parsed.operation, issue, ["RL_STALE_OPERATION", "RL_OPERATION_NOT_PERMITTED", "RL_UNRESOLVED_MATERIAL_FINDING", "RL_AUTHORITY_BOUNDARY", "RL_OPERATION_BUSY", "RL_RECOVERY_REQUIRED", "RL_WORKFLOW_ROUTE_REQUIRED", "RL_CORRECTION_ROUTE_INVALID", "RL_ARTIFACT_PATH_OWNED", "RL_WITHDRAWAL_UNSAFE"].includes(issue.code) ? "blocked" : "error");
       return { result, exitCode: resultExitCode(result), format: parsed.format, human: human(result) };
     }
   }
+  const context = parsed.operation === "context" ? contextForStage(interpreted, parsed.stage) : null;
+  const routeIssue = context?.route_required ? lifecycleDiagnostic("RL_WORKFLOW_ROUTE_REQUIRED", `Workflow must route from ${context.route_required.current_stage} to ${context.route_required.requested_stage} before authoring can begin.`, "correction-route-ownership", "route-correction", context.route_required.finding_ids) : null;
   const result = baseResult(parsed.operation, {
-    status: interpreted.errors.length ? "error" : interpreted.blockers.length ? "blocked" : "success",
+    status: interpreted.errors.length ? "error" : interpreted.blockers.length || routeIssue ? "blocked" : "success",
     change_id: interpreted.change_id,
     lifecycle_revision: interpreted.lifecycle_revision,
     effective_state: interpreted.effective_state,
@@ -204,8 +213,9 @@ export function executeLifecycleCli(args, options = {}) {
     permitted_operations: interpreted.permitted_operations,
     artifacts: interpreted.artifacts,
     warnings: interpreted.warnings,
-    errors: interpreted.errors,
-    ...(parsed.operation === "context" ? { context: contextForStage(interpreted, parsed.stage) } : {}),
+    errors: routeIssue ? [...interpreted.errors, routeIssue] : interpreted.errors,
+    ...(routeIssue ? { blockers: [...interpreted.blockers, routeIssue] } : {}),
+    ...(context ? { context } : {}),
     ...(parsed.operation === "validate" ? { validation: { valid: interpreted.errors.length === 0, checks: ["schema", "artifacts", "evidence", "findings", "milestones"] } } : {}),
   });
   for (const field of RESULT_FIELDS) if (!(field in result)) throw new Error(`missing lifecycle result field ${field}`);
