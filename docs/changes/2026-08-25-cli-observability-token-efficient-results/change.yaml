@@ -16,12 +16,31 @@ artifact_states:
       round: r4
     role: primary
 workflow_state:
-  blocker: null
-  current_stage: proposal
-  evidence: []
   lifecycle_state: active
-  next_stage: proposal-review
-workflow: {}
+  current_stage: spec
+  next_stage: spec-review
+  blocker: null
+  evidence:
+    - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+workflow:
+  automation:
+    mechanism: bounded-review-fix
+    target:
+      stage: test-spec-review
+      occurrence:
+        kind: singleton
+      bound_at: 2026-08-25T10:10:00Z
+      completion:
+        rule: formal test-spec review is recorded
+    status: active
+    current_stage: spec
+    stop_reason: null
+    evidence:
+      - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
 artifacts: {}
 requirements: []
 tests: []
