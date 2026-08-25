@@ -34,6 +34,26 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: code-review-m1-r1
+Stage: code-review
+Round: r1
+Reviewed artifact path: branch diff `bcc7ef14ae45e8df737d8a97e72eff3a3823446b..ca112ac6028ad265cbf111f99ad2d4618b6a72b6`
+Reviewed artifact identity: sha256:7fdc8b445397922feba03da3f5ff6aefffd01d38a6d137a6ed78d366c64a6d7d
+Status: changes-requested
+Detailed record: reviews/code-review-m1-r1.md
+Resolution: review-resolution.md#code-review-m1-r1
+Material findings: CLIOBS-M1-CR1, CLIOBS-M1-CR2, CLIOBS-M1-CR3, CLIOBS-M1-CR4, CLIOBS-M1-CR5, CLIOBS-M1-CR6
+Finding ID: CLIOBS-M1-CR1
+Finding ID: CLIOBS-M1-CR2
+Finding ID: CLIOBS-M1-CR3
+Finding ID: CLIOBS-M1-CR4
+Finding ID: CLIOBS-M1-CR5
+Finding ID: CLIOBS-M1-CR6
+Open findings: CLIOBS-M1-CR1, CLIOBS-M1-CR2, CLIOBS-M1-CR3, CLIOBS-M1-CR4, CLIOBS-M1-CR5, CLIOBS-M1-CR6
+Recording status: recorded
+
+### Review entry
+
 Review ID: proposal-review-r1
 Stage: proposal-review
 Round: r1

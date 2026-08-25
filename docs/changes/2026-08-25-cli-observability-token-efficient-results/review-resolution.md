@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -14,8 +14,8 @@ Review closeout: test-spec-review-r1
 
 - Reviews covered: `proposal-review-r1`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`
 - Findings resolved: 10
-- Unresolved findings: 0
-- Current result: The revised test specification resolves CLIOBS-TSR1 and CLIOBS-TSR2; fresh same-stage review remains required before implementation.
+- Unresolved findings: 6
+- Current result: Code-review M1 R1 requested six implementation and proof corrections. M1 remains open and requires review-resolution, correction, workflow handoff, and same-stage rereview.
 - Validation evidence: `evidence/test-spec-revision-r1.md`; revised test spec `sha256:2c407aeff91b44a7ee39b8eaed162f46755483f75b4cb54379abaec86b319c73`; boundary-first structural validation passed.
 
 ## Resolution Overview
@@ -32,8 +32,106 @@ Review closeout: test-spec-review-r1
 | CLIOBS-PLR2 | accepted | resolved | Added deterministic selector ownership and a passing exact command requirement. |
 | CLIOBS-TSR1 | accepted | resolved | Added direct no-network, no-database, no-daemon, and bounded-resource proof for R34. |
 | CLIOBS-TSR2 | accepted | resolved | Added benchmark harness tests and packed-package/documentation proof to M4. |
+| CLIOBS-M1-CR1 | accepted | open | Make unsafe-path and event-construction failures diagnostic-only and preserve semantic dispatch. |
+| CLIOBS-M1-CR2 | accepted | open | Make log inspection non-mutating for absent and existing stores. |
+| CLIOBS-M1-CR3 | accepted | open | Return semantic results to one controller and finalize observability before new projection rendering. |
+| CLIOBS-M1-CR4 | accepted | open | Preserve complete JSONL records across partial append, rotation, and interruption failures. |
+| CLIOBS-M1-CR5 | accepted | open | Measure real complete CLI interactions instead of trusting asserted gate values. |
+| CLIOBS-M1-CR6 | accepted | open | Implement and run the approved T01-T17 and C01-C10 proof surface truthfully. |
 
 ## Finding Details
+
+### code-review-m1-r1
+
+#### CLIOBS-M1-CR1
+
+Finding ID: CLIOBS-M1-CR1
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: implement M1-M3
+Decision owner: none
+Decision needed: none
+Chosen action: isolate unsafe-path and event-construction failures from semantic dispatch and add direct failure regressions.
+Rationale: diagnostic availability cannot control semantic command behavior.
+Required outcome: logging failures preserve command output, repository bytes, and semantic exit status.
+Validation target: R15, R33, T02, T07, T12, PRF-002, PRF-006, PRF-009.
+Validation evidence: pending correction and code-review-m1-r2.
+
+#### CLIOBS-M1-CR2
+
+Finding ID: CLIOBS-M1-CR2
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: implement M3
+Decision owner: none
+Decision needed: none
+Chosen action: split read-only path validation from writer initialization.
+Rationale: lookup cannot mutate the local diagnostic store.
+Required outcome: every inspection outcome leaves the store byte/path inventory unchanged.
+Validation target: R18-R20, T08, T14, PRF-002, PRF-012.
+Validation evidence: pending correction and code-review-m1-r2.
+
+#### CLIOBS-M1-CR3
+
+Finding ID: CLIOBS-M1-CR3
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: implement M1-M3
+Decision owner: none
+Decision needed: none
+Chosen action: return normalized semantic results to the invocation controller, finalize observability, and render once.
+Rationale: a completion failure must be visible in a new projection without duplicate stdout.
+Required outcome: new projections report final observability and all renderers share one semantic result.
+Validation target: R15, R21-R28, T10-T12, BND-COMPOSE-001, INT-003.
+Validation evidence: pending correction and code-review-m1-r2.
+
+#### CLIOBS-M1-CR4
+
+Finding ID: CLIOBS-M1-CR4
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: implement M2
+Decision owner: none
+Decision needed: none
+Chosen action: add recoverable append/rotation behavior and fault-injection proof.
+Rationale: failed local diagnostics cannot leave corrupt retained JSONL.
+Required outcome: every retained line remains complete under append, rotation, disk, and interruption faults.
+Validation target: R13-R15, T05, PRF-005, PRF-006, PRF-010.
+Validation evidence: pending correction and code-review-m1-r2.
+
+#### CLIOBS-M1-CR5
+
+Finding ID: CLIOBS-M1-CR5
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: implement M4
+Decision owner: none
+Decision needed: none
+Chosen action: replace asserted byte/gate values with executable complete-interaction measurements.
+Rationale: self-reported fixture booleans and byte counts cannot prove adoption eligibility.
+Required outcome: all six profiles are measured from normalized CLI stdout, stderr, and required follow-ups.
+Validation target: R29-R30, T15, C06, C10, PRF-013, INT-005.
+Validation evidence: pending correction and code-review-m1-r2.
+
+#### CLIOBS-M1-CR6
+
+Finding ID: CLIOBS-M1-CR6
+Disposition: accepted
+Status: open
+Owner: implementation author
+Owning stage: implement M1-M4
+Decision owner: none
+Decision needed: none
+Chosen action: complete the approved test partitions and rerun every milestone command with truthful evidence.
+Rationale: broad passing package tests do not substitute for named boundary, recovery, privacy, packaging, and measurement proof.
+Required outcome: T01-T17 and applicable C01-C10 evidence are current and all milestone reports match actual results.
+Validation target: complete approved proof map.
+Validation evidence: pending correction and code-review-m1-r2.
 
 ### test-spec-review-r1
 
