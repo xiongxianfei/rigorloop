@@ -60,16 +60,34 @@ artifact_states:
       record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/spec-review-r2.md
       round: r2
     role: primary
+  test-spec:
+    kind: test-spec
+    lifecycle_state: active
+    path: specs/cli-observability-and-token-efficient-results.test.md
+    review:
+      artifact_id: test-spec
+      id: test-spec-review-r3
+      outcome: approved
+      record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r3.md
+      round: r3
+    role: primary
 workflow_state:
   blocker: null
-  current_stage: test-spec
+  current_stage: test-spec-review
   evidence:
     - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-settlement-r2.md
+    - specs/cli-observability-and-token-efficient-results.test.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/test-spec-revision-r1.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-test-spec-review-r2.yaml
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r2.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/test-spec-revision-r2.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-test-spec-review-r3.yaml
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r3.md
   lifecycle_state: active
-  next_stage: test-spec-review
+  next_stage: implement
   planned_work:
     current_milestone: M1
     final_closeout:
@@ -115,15 +133,23 @@ workflow_state:
       - M4
 workflow:
   automation:
-    current_stage: test-spec
+    current_stage: test-spec-review
     evidence:
       - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
       - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
       - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
       - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-settlement-r2.md
+      - specs/cli-observability-and-token-efficient-results.test.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r1.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/test-spec-revision-r1.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-test-spec-review-r2.yaml
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r2.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/test-spec-revision-r2.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-invocation-test-spec-review-r3.yaml
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r3.md
     mechanism: bounded-review-fix
-    status: active
-    stop_reason: null
+    status: completed
+    stop_reason: target-reached
     target:
       bound_at: 2026-08-25T10:10:00Z
       completion:
@@ -182,6 +208,14 @@ lifecycle_cli:
       authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/spec-revision-r1.md
       authoring_evidence_sha256: 7f05c2578a405288bb382fbdaf55244ea9dbed776ff0c254101e980c3415fb3f
       stage_authority: spec
+    test-spec:
+      artifact_kind: test-spec
+      artifact_path: specs/cli-observability-and-token-efficient-results.test.md
+      artifact_role: primary
+      artifact_sha256: 4af3e383ffc9cc13522e0a71b953b3d3b3272ced34a9758a8335bd591e170622
+      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/test-spec-revision-r2.md
+      authoring_evidence_sha256: ec0ec279be777195a95b9f9fd1728eb5d050763766173713cb0b05506a99e2c5
+      stage_authority: test-spec
   milestones: {}
   resolutions: {}
   reviews:
@@ -240,4 +274,15 @@ lifecycle_cli:
       review_log_sha256: fa39c8417e5250c7902d6d696326ea0a9d64f435d154bbe221895335190b8264
       round: r2
       stage_authority: spec-review
+    test-spec:
+      artifact_path: specs/cli-observability-and-token-efficient-results.test.md
+      artifact_sha256: 4af3e383ffc9cc13522e0a71b953b3d3b3272ced34a9758a8335bd591e170622
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/test-spec-review-r3.md
+      evidence_sha256: 05297caf2d892a2924f02e31982b08a9da9c0a46208b69555ecbe82b9b9a9228
+      findings: []
+      outcome: approved
+      review_id: test-spec-review-r3
+      review_log_sha256: 68a8540b5b57845cb30baa7a80451ebb674003d9cc5e41c8c336dd837f83926f
+      round: r3
+      stage_authority: test-spec-review
   validations: {}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "operation": "record-finding-resolution",
+  "change_id": "2026-08-25-cli-observability-token-efficient-results",
+  "expected_lifecycle_revision": "sha256:0ef545c3d51bd8165a3b7f149fdc9026e577fbb9900aa61514ec455ba14a4cbd",
+  "artifact_id": "test-spec",
+  "evidence_path": "docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md",
+  "finding_id": "CLIOBS-TSR2",
+  "stage_authority": "review-resolution"
+}

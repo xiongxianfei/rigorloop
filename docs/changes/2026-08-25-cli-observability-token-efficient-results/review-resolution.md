@@ -10,12 +10,13 @@ Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
 Review closeout: spec-review-r1
 Review closeout: plan-review-r1
+Review closeout: test-spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `plan-review-r1`
-- Findings resolved: 8
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `plan-review-r1`, `test-spec-review-r1`
+- Findings resolved: 10
 - Unresolved findings: 0
-- Current result: Earlier findings remain closed. The revised plan resolves CLIOBS-PLR1 and CLIOBS-PLR2; same-stage rereview remains required before test-spec authoring.
-- Validation evidence: revised proposal `sha256:70652f4e5afb34bb3272f73be339a43661a14ef6d4c69bf02585091a6592f47c`; review log has no open findings; focused lifecycle regressions and package tests pass.
+- Current result: The revised test specification resolves CLIOBS-TSR1 and CLIOBS-TSR2; fresh same-stage review remains required before implementation.
+- Validation evidence: `evidence/test-spec-revision-r1.md`; revised test spec `sha256:2c407aeff91b44a7ee39b8eaed162f46755483f75b4cb54379abaec86b319c73`; boundary-first structural validation passed.
 
 ## Resolution Overview
 
@@ -29,8 +30,44 @@ Review closeout: plan-review-r1
 | CLIOBS-SR3 | accepted | resolved | Added concise-field applicability and versioned benchmark/wrapper proof inputs. |
 | CLIOBS-PLR1 | accepted | resolved | Made M1-M4 explicitly test-first. |
 | CLIOBS-PLR2 | accepted | resolved | Added deterministic selector ownership and a passing exact command requirement. |
+| CLIOBS-TSR1 | accepted | resolved | Added direct no-network, no-database, no-daemon, and bounded-resource proof for R34. |
+| CLIOBS-TSR2 | accepted | resolved | Added benchmark harness tests and packed-package/documentation proof to M4. |
 
 ## Finding Details
+
+### test-spec-review-r1
+
+#### CLIOBS-TSR1
+
+Finding ID: CLIOBS-TSR1
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: test-spec
+Decision owner: none; this is direct proof required by R34
+Decision needed: none
+Chosen action: extend T05 with network/process guards and open-handle assertions and map it to the affected proof rows.
+Rationale: fixed file counts do not alone prove absence of prohibited external execution paths.
+Required outcome: deterministic direct proof of the complete R34 resource boundary.
+Validation target: R34, PRF-008, T05, and Performance checks.
+Final action: Extended T05 and the affected R34, BND-ENV-001, and performance mappings with deterministic network/process guards, dependency inspection, open-handle proof, and bounded filesystem counts.
+Validation evidence: `evidence/test-spec-revision-r1.md`; revised test spec `sha256:2c407aeff91b44a7ee39b8eaed162f46755483f75b4cb54379abaec86b319c73`.
+
+#### CLIOBS-TSR2
+
+Finding ID: CLIOBS-TSR2
+Disposition: accepted
+Status: resolved
+Owner: test-spec author
+Owning stage: test-spec
+Decision owner: none; the approved plan already requires these M4 proofs
+Decision needed: none
+Chosen action: add the benchmark regression command and a packed-package/documentation T17 case to M4.
+Rationale: named automation and plan proof do not count unless a milestone command executes them.
+Required outcome: M4 directly executes benchmark-tool tests and proves the shipped package/documentation surface.
+Validation target: validation command ledger, M4 milestone row, T15, and new T17.
+Final action: Added C10 for benchmark-harness regressions, T17 for packed CLI and documented operations, and mapped both to the M4 gate.
+Validation evidence: `evidence/test-spec-revision-r1.md`; revised test spec `sha256:2c407aeff91b44a7ee39b8eaed162f46755483f75b4cb54379abaec86b319c73`.
 
 ### plan-review-r1
 

@@ -1,0 +1,34 @@
+schema_version: 1
+review_id: test-spec-review-r3
+review_stage: test-spec-review
+review_target: specs/cli-observability-and-token-efficient-results.test.md
+base_revision: sha256:4af3e383ffc9cc13522e0a71b953b3d3b3272ced34a9758a8335bd591e170622
+head_revision: sha256:4af3e383ffc9cc13522e0a71b953b3d3b3272ced34a9758a8335bd591e170622
+native_review_status: approved
+review_gate_outcome: approved
+independence_level: L0
+author_context_id: root-test-spec-revision-r2
+reviewer_context_id: root-test-spec-review-r3-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - privacy-and-filesystem-observability
+  - concurrency-and-compatibility-gates
+governing_artifacts:
+  - CONSTITUTION.md
+  - specs/cli-observability-and-token-efficient-results.md
+  - docs/architecture/system/architecture.md
+  - docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+  - docs/plans/2026-08-25-cli-observability-token-efficient-results.md
+  - specs/cli-observability-and-token-efficient-results.test.md
+formal_criteria:
+  - test-spec-review-v1
+  - boundary-first-v1
+prompt_template_version: test-spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - exact stable-ID and command mapping
+  - closure of CLIOBS-TSR1 and CLIOBS-TSR2
+  - repository evidence-grammar conformance
+  - implementation handoff readiness

@@ -11,8 +11,26 @@ This ledger records formal review evidence for the governed local CLI observabil
 | `spec-review-r2` | `spec-review` | `r2` | `specs/cli-observability-and-token-efficient-results.md` at `sha256:de9ec40c11d33b4d199e79fea74374199d94133c8eed651546ed04d664bc1029` | `reviews/spec-review-r2.md` | `approved` | 0 | `recorded` |
 | `architecture-review-r1` | `architecture-review` | `r1` | canonical architecture and ADR-20260825 at recorded identities | `reviews/architecture-review-r1.md` | `approved` | 0 | `recorded` |
 | `plan-review-r2` | `plan-review` | `r2` | `docs/plans/2026-08-25-cli-observability-token-efficient-results.md` at `sha256:fef931d84d84a7ba3b16a164f2dd16cdd37180b428098803d6eddc8cbc01fe0a` | `reviews/plan-review-r2.md` | `approved` | 0 | `recorded` |
+| `test-spec-review-r2` | `test-spec-review` | `r2` | `specs/cli-observability-and-token-efficient-results.test.md` at `sha256:2c407aeff91b44a7ee39b8eaed162f46755483f75b4cb54379abaec86b319c73` | `reviews/test-spec-review-r2.md` | `approved` | 0 | `recorded` |
+| `test-spec-review-r3` | `test-spec-review` | `r3` | `specs/cli-observability-and-token-efficient-results.test.md` at `sha256:4af3e383ffc9cc13522e0a71b953b3d3b3272ced34a9758a8335bd591e170622` | `reviews/test-spec-review-r3.md` | `approved` | 0 | `recorded` |
 
 ## Detailed review entries
+
+### Review entry
+
+Review ID: test-spec-review-r1
+Stage: test-spec-review
+Round: r1
+Reviewed artifact path: specs/cli-observability-and-token-efficient-results.test.md
+Reviewed artifact identity: sha256:1d4d6dfb266b986ba9e66a0fa44816a77e26e02e5b721524737621c88f98e86a
+Status: changes-requested
+Detailed record: reviews/test-spec-review-r1.md
+Resolution: review-resolution.md#test-spec-review-r1
+Material findings: CLIOBS-TSR1, CLIOBS-TSR2
+Finding ID: CLIOBS-TSR1
+Finding ID: CLIOBS-TSR2
+Open findings: none
+Recording status: recorded
 
 ### Review entry
 
