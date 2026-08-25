@@ -16,23 +16,28 @@ artifact_states:
       round: r4
     role: primary
   spec:
-    authoring_evidence: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/spec-revision-r1.md
     kind: spec
-    lifecycle_state: review-required
+    lifecycle_state: approved
     path: specs/cli-observability-and-token-efficient-results.md
+    review:
+      artifact_id: spec
+      id: spec-review-r2
+      outcome: approved
+      record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/spec-review-r2.md
+      round: r2
     role: primary
 workflow_state:
   blocker: null
-  current_stage: spec-review
+  current_stage: architecture
   evidence:
     - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
   lifecycle_state: active
-  next_stage: spec-review
+  next_stage: architecture-review
 workflow:
   automation:
-    current_stage: spec-review
+    current_stage: architecture
     evidence:
       - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
       - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
@@ -53,8 +58,8 @@ tests: []
 validation: []
 changed_files: []
 review:
-  status: changes-requested
-  unresolved_items: 3
+  status: approved
+  unresolved_items: 0
 lifecycle_cli:
   schema_version: 1
   artifacts:
@@ -88,4 +93,15 @@ lifecycle_cli:
       review_log_sha256: f6660ae1638bd5a6c58009f012c2d3e4d766b4f48085dbe7d51cd45e454f9247
       round: r4
       stage_authority: proposal-review
+    spec:
+      artifact_path: specs/cli-observability-and-token-efficient-results.md
+      artifact_sha256: de9ec40c11d33b4d199e79fea74374199d94133c8eed651546ed04d664bc1029
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/spec-review-r2.md
+      evidence_sha256: 9d83f4989f315cf098007f13b3460b7d5fa07ecffb19ebbad3d1b62f7c4292c8
+      findings: []
+      outcome: approved
+      review_id: spec-review-r2
+      review_log_sha256: fa39c8417e5250c7902d6d696326ea0a9d64f435d154bbe221895335190b8264
+      round: r2
+      stage_authority: spec-review
   validations: {}

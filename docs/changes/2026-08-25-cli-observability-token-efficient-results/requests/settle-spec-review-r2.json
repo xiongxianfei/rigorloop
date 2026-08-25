@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "settle-artifact",
+  "change_id": "2026-08-25-cli-observability-token-efficient-results",
+  "expected_lifecycle_revision": "sha256:44d7f9d14ae2ac92f4a0a730fb7c3ac075d72cc99babe6b41ef89ea339bbf2b6",
+  "artifact_id": "spec",
+  "stage_authority": "spec-review"
+}
