@@ -106,10 +106,20 @@ function activeMilestone(change) {
 }
 
 function permittedOperations(change, blockers) {
-  if (blockers.length > 0) return [];
   const stage = change.workflow_state?.current_stage;
   const operations = [];
-  if (REVIEW_STAGES.has(stage)) operations.push("record-review");
+  const targetId = artifactForStage(stage);
+  const target = targetId ? change.artifact_states?.[targetId] : null;
+  const registeredReview = targetId ? change.lifecycle_cli?.reviews?.[targetId] : null;
+  const blockerCodes = new Set(blockers.map((blocker) => blocker.code));
+  const onlyOpenFindings = blockerCodes.size === 1 && blockerCodes.has("RL_UNRESOLVED_MATERIAL_FINDING");
+
+  if (blockers.some((blocker) => blocker.code !== "RL_UNRESOLVED_MATERIAL_FINDING")) return [];
+  if (target?.lifecycle_state === "revision-required") return ["record-artifact-revision"];
+  if (REVIEW_STAGES.has(stage) && registeredReview?.outcome === "changes-requested" && onlyOpenFindings) return ["settle-artifact"];
+  if (blockers.length > 0) return onlyOpenFindings ? ["record-finding-resolution"] : [];
+  if (["proposal", "spec", "architecture", "plan", "test-spec"].includes(stage) && ["authoring", "revision-required"].includes(target?.lifecycle_state)) operations.push("record-artifact-revision");
+  if (REVIEW_STAGES.has(stage)) operations.push(registeredReview ? "settle-artifact" : "record-review");
   if (stage === "review-resolution") operations.push("record-finding-resolution");
   if (["implement", "verify", "ci-maintenance"].includes(stage)) operations.push("record-validation");
   const milestone = activeMilestone(change);
@@ -117,6 +127,17 @@ function permittedOperations(change, blockers) {
   if (stage === "implement" && milestoneState === "planned") operations.push("start-milestone");
   if (stage === "implement" && milestoneState === "implementing") operations.push("complete-milestone");
   return operations;
+}
+
+function nextDurableReviewRound(root, changeId, stage) {
+  const reviewsRoot = join(root, "docs", "changes", changeId, "reviews");
+  if (!existsSync(reviewsRoot) || !lstatSync(reviewsRoot).isDirectory()) return "r1";
+  const escapedStage = stage.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = new RegExp(`^${escapedStage}-r(\\d+)\\.md$`);
+  const rounds = readdirSync(reviewsRoot, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && !entry.isSymbolicLink())
+    .map((entry) => Number(entry.name.match(pattern)?.[1] ?? 0));
+  return `r${Math.max(0, ...rounds) + 1}`;
 }
 
 export function interpretGovernedChange(root, selected) {
@@ -155,6 +176,7 @@ export function interpretGovernedChange(root, selected) {
     blockers,
     permitted_operations: permittedOperations(change, blockers),
     artifacts: collected.artifacts,
+    next_review_rounds: Object.fromEntries([...REVIEW_STAGES].map((stage) => [stage, nextDurableReviewRound(root, selected.id, stage)])),
     warnings: [],
     errors,
   };
@@ -170,7 +192,7 @@ function artifactForStage(stage) {
 export function contextForStage(interpreted, stage) {
   const targetId = artifactForStage(stage);
   const target = targetId ? interpreted.artifacts.find((artifact) => artifact.artifact_id === targetId) : null;
-  const review = targetId ? interpreted.change.artifact_states?.[targetId]?.review : null;
+  const registeredReview = targetId ? interpreted.change.lifecycle_cli?.reviews?.[targetId] : null;
   const directDependencies = {
     proposal: [],
     spec: ["proposal"],
@@ -186,7 +208,7 @@ export function contextForStage(interpreted, stage) {
     operation: stage,
     target_artifact: target ? { artifact_id: target.artifact_id, path: target.path, sha256: target.sha256 } : null,
     settled_upstream_inputs: settledInputs,
-    review_round: REVIEW_STAGES.has(stage) ? review?.round ?? "r1" : null,
+    review_round: REVIEW_STAGES.has(stage) ? registeredReview?.round ?? interpreted.next_review_rounds?.[stage] ?? "r1" : null,
     authorized_output_path: target?.path ?? null,
     blockers: interpreted.blockers,
     lifecycle_revision: interpreted.lifecycle_revision,
