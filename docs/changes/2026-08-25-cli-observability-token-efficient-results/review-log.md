@@ -29,6 +29,20 @@ Recording status: recorded
 
 ### Review entry
 
+Review ID: plan-review-r1
+Stage: plan-review
+Round: r1
+Reviewed artifact path: docs/plans/2026-08-25-cli-observability-token-efficient-results.md
+Reviewed artifact identity: sha256:3cd6a1937d40b653244eb72deb3e8b277872e011a626d63e1d502a08ed8cc6ff
+Status: changes-requested
+Detailed record: reviews/plan-review-r1.md
+Resolution: review-resolution.md#plan-review-r1
+Material findings: CLIOBS-PLR1, CLIOBS-PLR2
+Open findings: CLIOBS-PLR1, CLIOBS-PLR2
+Recording status: recorded
+
+### Review entry
+
 Review ID: proposal-review-r2
 Stage: proposal-review
 Round: r2

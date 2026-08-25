@@ -2,7 +2,7 @@
 
 ## Summary
 
-Closeout status: closed
+Closeout status: open
 
 Review closeout: proposal-review-r1
 Review closeout: proposal-review-r2
@@ -10,10 +10,10 @@ Review closeout: proposal-review-r3
 Review closeout: proposal-review-r4
 Review closeout: spec-review-r1
 
-- Reviews covered: `proposal-review-r1`, `spec-review-r1`
+- Reviews covered: `proposal-review-r1`, `spec-review-r1`, `plan-review-r1`
 - Findings resolved: 6
-- Unresolved findings: 0
-- Current result: Proposal findings remain closed. The revised specification resolves CLIOBS-SR1 through CLIOBS-SR3; same-stage rereview remains required before architecture.
+- Unresolved findings: 2
+- Current result: Earlier findings remain closed. CLIOBS-PLR1 and CLIOBS-PLR2 are accepted for bounded plan revision and same-stage rereview.
 - Validation evidence: revised proposal `sha256:70652f4e5afb34bb3272f73be339a43661a14ef6d4c69bf02585091a6592f47c`; review log has no open findings; focused lifecycle regressions and package tests pass.
 
 ## Resolution Overview
@@ -26,8 +26,42 @@ Review closeout: spec-review-r1
 | CLIOBS-SR1 | accepted | resolved | Removed the unprovable expired-ID outcome from the first release. |
 | CLIOBS-SR2 | accepted | resolved | Defined path containment, permission refusal, bounded locks, and console-off behavior. |
 | CLIOBS-SR3 | accepted | resolved | Added concise-field applicability and versioned benchmark/wrapper proof inputs. |
+| CLIOBS-PLR1 | accepted | open | Make M1-M4 explicitly test-first. |
+| CLIOBS-PLR2 | accepted | open | Add deterministic selector ownership and a passing exact command. |
 
 ## Finding Details
+
+### plan-review-r1
+
+#### CLIOBS-PLR1
+
+Finding ID: CLIOBS-PLR1
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan
+Decision owner: none; repository implementation guidance is explicit
+Decision needed: none
+Chosen action: add a focused failing or characterization-test-first step to M1-M4.
+Rationale: milestone proof must fail for the intended reason before production behavior changes.
+Required outcome: every implementation milestone has explicit test-first sequencing without scope or identity changes.
+Validation target: revised M1-M4 implementation steps.
+Validation evidence: pending plan revision and plan-review-r2.
+
+#### CLIOBS-PLR2
+
+Finding ID: CLIOBS-PLR2
+Disposition: accepted
+Status: open
+Owner: plan author
+Owning stage: plan
+Decision owner: none; the selector's deterministic ownership contract applies
+Decision needed: none
+Chosen action: add selector registry and regression ownership to M3 and require an exact file-based selector command with no manual-routing blocker in M4.
+Rationale: a declared closeout command must not be predictably blocked by an unowned production path.
+Required outcome: wrapper changes select focused validation deterministically and the exact post-implementation command passes.
+Validation target: M3/M4 files, steps, command, and completion criteria.
+Validation evidence: pending plan revision and plan-review-r2.
 
 ### spec-review-r1
 

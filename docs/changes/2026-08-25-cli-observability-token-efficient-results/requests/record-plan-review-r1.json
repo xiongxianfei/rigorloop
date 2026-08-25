@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "operation": "record-review",
+  "change_id": "2026-08-25-cli-observability-token-efficient-results",
+  "expected_lifecycle_revision": "sha256:c98797fcd6bdcb466fb5536f522251f380dd99be27fed56385ed11d98bb6177d",
+  "artifact_id": "plan",
+  "evidence_path": "docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/plan-review-r1.md",
+  "stage_authority": "plan-review"
+}
