@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "profile_version": "cli-result-token-v1",
+  "baseline": "v0.4.x-detailed",
+  "profiles": [
+    {"name": "status", "complete_interaction_bytes": 820},
+    {"name": "context", "complete_interaction_bytes": 1050},
+    {"name": "mutation-success", "complete_interaction_bytes": 760},
+    {"name": "mutation-blocked", "complete_interaction_bytes": 980},
+    {"name": "validation-failure", "complete_interaction_bytes": 800},
+    {"name": "unexpected-error", "complete_interaction_bytes": 700}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "profile_version": "cli-result-token-v1",
+  "profiles": [
+    {"name": "status", "concise_bytes": 410, "lookup_required": false, "required_fields_present": true},
+    {"name": "context", "concise_bytes": 590, "lookup_required": false, "required_fields_present": true},
+    {"name": "mutation-success", "concise_bytes": 430, "lookup_required": false, "required_fields_present": true},
+    {"name": "mutation-blocked", "concise_bytes": 520, "lookup_required": false, "required_fields_present": true},
+    {"name": "validation-failure", "concise_bytes": 470, "lookup_required": false, "required_fields_present": true},
+    {"name": "unexpected-error", "concise_bytes": 390, "lookup_required": false, "required_fields_present": true}
+  ]
+}
