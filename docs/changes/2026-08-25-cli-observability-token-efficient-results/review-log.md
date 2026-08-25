@@ -61,3 +61,17 @@ Resolution: review-resolution.md#proposal-review-r4
 Material findings: none
 Open findings: none
 Recording status: recorded
+
+### Review entry
+
+Review ID: spec-review-r1
+Stage: spec-review
+Round: r1
+Reviewed artifact path: specs/cli-observability-and-token-efficient-results.md
+Reviewed artifact identity: sha256:60a0fc29fd429e56673d87b32bccd6d2411dbfaba7f2bf5f5d6b02f38e6e612a
+Status: changes-requested
+Detailed record: reviews/spec-review-r1.md
+Resolution: review-resolution.md#spec-review-r1
+Material findings: CLIOBS-SR1, CLIOBS-SR2, CLIOBS-SR3
+Open findings: CLIOBS-SR1, CLIOBS-SR2, CLIOBS-SR3
+Recording status: recorded

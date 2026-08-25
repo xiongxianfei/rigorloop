@@ -1,0 +1,33 @@
+schema_version: 1
+review_id: spec-review-r1
+review_stage: spec-review
+review_target: specs/cli-observability-and-token-efficient-results.md
+base_revision: sha256:60a0fc29fd429e56673d87b32bccd6d2411dbfaba7f2bf5f5d6b02f38e6e612a
+head_revision: sha256:60a0fc29fd429e56673d87b32bccd6d2411dbfaba7f2bf5f5d6b02f38e6e612a
+native_review_status: changes-requested
+review_gate_outcome: changes-requested
+independence_level: L0
+author_context_id: root-spec-authoring
+reviewer_context_id: root-spec-review-r1-context-reset
+context_separation_mechanism: artifact-and-criteria-context-reset
+risk_tier: elevated
+risk_tier_triggers:
+  - local-diagnostic-persistence
+  - compatibility-sensitive-output
+  - concurrency-and-privacy-boundaries
+governing_artifacts:
+  - CONSTITUTION.md
+  - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+  - specs/cli-observability-and-token-efficient-results.md
+  - specs/rigorloop-workflow.md
+formal_criteria:
+  - spec-review-v1
+  - boundary-first-v1
+prompt_template_version: spec-review-v1
+manifest_owner: workflow-orchestrator
+forbidden_initial_context_excluded: true
+review_focus:
+  - retained-log state and exact lookup outcomes
+  - configuration, privacy, and degraded-observability behavior
+  - concise continuation facts and compatibility gates
+  - concurrency, recovery, and cross-path boundaries
