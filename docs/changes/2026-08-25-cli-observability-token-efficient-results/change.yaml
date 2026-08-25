@@ -15,32 +15,38 @@ artifact_states:
       record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
       round: r4
     role: primary
+  spec:
+    authoring_evidence: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/spec-authoring.md
+    kind: spec
+    lifecycle_state: review-required
+    path: specs/cli-observability-and-token-efficient-results.md
+    role: primary
 workflow_state:
-  lifecycle_state: active
-  current_stage: spec
-  next_stage: spec-review
   blocker: null
+  current_stage: spec-review
   evidence:
     - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+  lifecycle_state: active
+  next_stage: spec-review
 workflow:
   automation:
-    mechanism: bounded-review-fix
-    target:
-      stage: test-spec-review
-      occurrence:
-        kind: singleton
-      bound_at: 2026-08-25T10:10:00Z
-      completion:
-        rule: formal test-spec review is recorded
-    status: active
-    current_stage: spec
-    stop_reason: null
+    current_stage: spec-review
     evidence:
       - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
       - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
       - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+    mechanism: bounded-review-fix
+    status: active
+    stop_reason: null
+    target:
+      bound_at: 2026-08-25T10:10:00Z
+      completion:
+        rule: formal test-spec review is recorded
+      occurrence:
+        kind: singleton
+      stage: test-spec-review
 artifacts: {}
 requirements: []
 tests: []
@@ -60,6 +66,14 @@ lifecycle_cli:
       authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/proposal-authoring.md
       authoring_evidence_sha256: 4ace27f262c2118c84af4b41de207942b43eba26e0bc7b80e163391d24e574c0
       stage_authority: proposal
+    spec:
+      artifact_kind: spec
+      artifact_path: specs/cli-observability-and-token-efficient-results.md
+      artifact_role: primary
+      artifact_sha256: 60a0fc29fd429e56673d87b32bccd6d2411dbfaba7f2bf5f5d6b02f38e6e612a
+      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/spec-authoring.md
+      authoring_evidence_sha256: c97812ef779f14a0e9a801334f44993414f1a25312dc433b8a48a214999bf88e
+      stage_authority: spec
   milestones: {}
   resolutions: {}
   reviews:
