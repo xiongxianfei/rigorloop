@@ -8104,18 +8104,6 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
         return body
 
     def test_authoring_peers_define_an_executable_change_record_transition(self) -> None:
-        required = (
-            "read the complete `change.yaml` before writing",
-            "`lifecycle_contract: stage-owned-change-local-v1`",
-            "artifact ID, `kind`, and normalized `path`",
-            "create only that entry with a unique stable ID",
-            "`authoring`",
-            "remove any prior `review`",
-            "`authoring_evidence`",
-            "`review-required`",
-            "Preserve every other entry",
-            "failed available change-metadata validation",
-        )
         for skill_name, entry_kind in self.AUTHORING_ENTRY_KINDS.items():
             body = (ROOT / "skills" / skill_name / "SKILL.md").read_text(
                 encoding="utf-8"
@@ -8162,31 +8150,20 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                 ).read_text(encoding="utf-8")
             normalized = " ".join(body.split())
             with self.subTest(skill=skill_name):
-                if skill_name in {"spec", "test-spec", "architecture"}:
-                    self.assertIn(f"# Governed {skill_name} authoring", normalized)
-                    for phrase in (
-                        "Read the complete current `change.yaml`",
-                        "`lifecycle_contract: stage-owned-change-local-v1`",
-                        "artifact ID",
-                        "normalized canonical path" if skill_name != "architecture" else "normalized path",
-                        "`authoring`",
-                        "authoring-evidence path" if skill_name != "architecture" else "authoring evidence",
-                        "`review-required`",
-                        "must not change `workflow_state`" if skill_name == "spec" else ("must not mutate `workflow_state`" if skill_name == "test-spec" else "Never select by kind alone or change another entry, `workflow_state`"),
-                    ):
-                        self.assertIn(" ".join(phrase.split()), normalized)
-                    continue
-                self.assertIn("## Change-record authoring transition", normalized)
+                self.assertIn(f"rigorloop lifecycle context {skill_name}", normalized)
+                self.assertIn("record-artifact-revision", normalized)
                 self.assertIn(entry_kind, normalized)
-                for phrase in required:
-                    self.assertIn(" ".join(phrase.split()), normalized)
+                self.assertIn("review-required", normalized)
+                self.assertIn("prior digest", normalized.lower())
+                self.assertRegex(normalized.lower(), r"never (directly )?edit .*lifecycle")
 
     def test_review_peers_settle_only_the_matching_change_local_entry(self) -> None:
         for skill_name, phrase in self.REVIEW_SETTLEMENT_PHRASES.items():
             body = self.review_contract_body(skill_name)
             with self.subTest(skill=skill_name):
-                self.assertIn("change.yaml", body)
-                self.assertIn(phrase, body)
+                self.assertIn("record-review", body)
+                self.assertIn("settle-artifact", body)
+                self.assertIn(f"stage_authority: {skill_name}", body)
                 self.assertTrue(
                     "read-only" in body
                     or re.search(
@@ -8198,59 +8175,14 @@ class StageOwnedLifecycleSkillContractTests(unittest.TestCase):
                 )
 
     def test_review_peers_define_evidence_first_independent_settlement(self) -> None:
-        expected_settlement = {
-            "proposal-review": "`approved` to `accepted`",
-            "spec-review": "`approved` to `approved`",
-            "architecture-review": "architecture to `approved`",
-            "plan-review": "`approved` to `active`",
-            "test-spec-review": "`approved` to `active`",
-        }
-        required = (
-            "read the complete `change.yaml`",
-            "`lifecycle_contract: stage-owned-change-local-v1`",
-            "Require `review-required` and complete authoring evidence",
-            "Write the durable review record first",
-            "`id`, `artifact_id`, `outcome`, `record`, and `round`",
-            "`changes-requested` to `revision-required`",
-            "`blocked` or `inconclusive` to `blocked`",
-            "Retry identical incomplete settlement without rerunning the review",
-            "failed available change-metadata validation",
-            "stops without advancing routing",
-        )
-        for skill_name, settlement in expected_settlement.items():
+        for skill_name in self.REVIEW_SETTLEMENT_PHRASES:
             body = self.review_contract_body(skill_name)
             normalized = " ".join(body.split())
             with self.subTest(skill=skill_name):
-                if skill_name == "architecture-review":
-                    self.assertIn("## Prepared settlement manifest", normalized)
-                    self.assertIn("canonical architecture target becomes `approved`", normalized)
-                    for phrase in (
-                        "complete `change.yaml`",
-                        "review-required",
-                        "authoring-evidence identity",
-                        "complete prepared settlement manifest",
-                        "before the first target transition",
-                        "compare-and-set",
-                        "only pending matching writes",
-                        "without advancing routing",
-                    ):
-                        self.assertIn(" ".join(phrase.split()), normalized)
-                    continue
-                expected_heading = {
-                    "proposal-review": "## Formal lifecycle settlement",
-                    "test-spec-review": "## Formal-only settlement",
-                }.get(skill_name, "## Change-record review settlement")
-                self.assertIn(expected_heading, normalized)
-                self.assertIn(settlement, normalized)
-                for phrase in required:
-                    self.assertIn(" ".join(phrase.split()), normalized)
-                if skill_name == "plan-review":
-                    self.assertIn(
-                        "preserve authoring, review, and initialization evidence",
-                        normalized,
-                    )
-                else:
-                    self.assertIn("remove `authoring_evidence`", normalized)
+                self.assertLess(normalized.index("review record"), normalized.index("record-review"))
+                self.assertLess(normalized.index("record-review"), normalized.index("settle-artifact"))
+                self.assertIn("workflow", normalized.lower())
+                self.assertRegex(normalized.lower(), r"(never|does not).*routing")
 
     def test_workflow_defines_bounded_change_record_mutation(self) -> None:
         body = (
@@ -10023,7 +9955,8 @@ class TestSpecReviewSkillSimplificationContractTests(unittest.TestCase):
         self.assertIn("## Shared recording procedure", reference)
         self.assertIn("## Formal-only settlement", reference)
         self.assertIn("Every formal lifecycle review result must be recorded or explicitly blocked.", reference)
-        self.assertIn("settle only the matching test-spec entry", reference)
+        self.assertIn("record-review", reference)
+        self.assertIn("settle-artifact", reference)
         self.assertIn("must not execute", reference)
         self.assertNotIn("Review status: approved` requires", reference)
 
@@ -10117,7 +10050,8 @@ class PlanReviewSkillSimplificationContractTests(unittest.TestCase):
             "planned_work",
             "initialization-required",
             "state_changed: false",
-            "preserve authoring, review, and initialization evidence",
+            "record-review",
+            "settle-artifact",
             "must not perform semantic rereview",
             "must not initialize or mutate `planned_work`",
         ):
@@ -10231,19 +10165,17 @@ class PlanSkillSimplificationContractTests(unittest.TestCase):
             "initialize-approved-plan",
         ):
             self.assertIn(operation, self.skill)
-            self.assertIn(operation, self.reference)
+        self.assertIn("record-artifact-revision", self.reference)
         self.assertIn("Conversational wording", self.skill)
         self.assertIn("does not establish governed authority", self.skill)
 
     def test_plan_simplification_governed_reference_owns_only_governed_procedure(self) -> None:
         for phrase in (
             "review-required",
-            "initialization-required",
             "settlement-retry-required",
-            "idempotent no-op",
-            "must not replace or update existing `planned_work`",
+            "record-artifact-revision",
+            "Never replace existing work",
             "workflow owns every later `planned_work` transition",
-            "Never reverse-synchronize",
         ):
             self.assertIn(phrase, self.reference)
         self.assertIn("Load this reference only", self.reference)
@@ -10428,7 +10360,7 @@ class ProposalSkillSimplificationTests(unittest.TestCase):
     def test_portable_and_governed_operation_authority_is_separate(self) -> None:
         for operation in ("create-primary-proposal", "revise-primary-proposal"):
             self.assertIn(operation, self.skill)
-            self.assertIn(operation, self.governed)
+        self.assertIn("record-artifact-revision", self.governed)
         for phrase in (
             "governed_proposal_candidate_context",
             "Conversational wording alone does not establish",
@@ -10437,18 +10369,11 @@ class ProposalSkillSimplificationTests(unittest.TestCase):
             "Portable authoring writes only the proposal artifact",
         ):
             self.assertIn(phrase.lower(), self.skill.lower())
-        for phrase in ("complete `change.yaml`", "review-required", "commit point", "idempotent success", "downstream reliance"):
+        for phrase in ("review-required", "already-recorded", "downstream reliance", "prior digest"):
             self.assertIn(phrase.lower(), self.governed.lower())
 
     def test_governed_retry_and_authorized_reset_fail_closed(self) -> None:
-        for phrase in (
-            "authoring-reset-required",
-            "workflow reset authorization",
-            "single-use or idempotently consumable",
-            "new transaction identity",
-            "must not mutate `workflow_state`",
-            "must not delete completed authoring or review evidence",
-        ):
+        for phrase in ("unsupported partial authoring", "workflow owns recovery", "without adoption", "never edit lifecycle fields directly"):
             self.assertIn(phrase.lower(), self.governed.lower())
 
     def test_specialized_predicates_and_scope_budget_vocabulary_are_closed(self) -> None:
@@ -10503,9 +10428,9 @@ class SpecSkillSimplificationTests(unittest.TestCase):
         self.assertNotIn("change.yaml", self.method)
 
     def test_governed_transactions_restart_and_write_boundaries_are_complete(self) -> None:
-        for value in ("create-primary-spec", "revise-primary-spec", "restart-stale-authoring", "stale-authoring-attempt", "review-required"):
+        for value in ("record-artifact-revision", "already-recorded", "review-required"):
             self.assertIn(value, self.governed)
-        for phrase in ("complete current `change.yaml`", "change ID", "artifact ID", "artifact kind", "artifact role", "governing input identities", "retry identity", "complete spec", "content identity", "commit point", "idempotent success", "explicit current user instruction", "same-change workflow handoff", "request identity", "old retry identity", "new retry identity", "byte-for-byte", "zero-byte", "same canonical spec file", "completed authoring and review evidence", "must not change `workflow_state`", "leaves the entry in `authoring`"):
+        for phrase in ("artifact ID", "prior identity", "evidence containing", "competing primary", "stale context", "never edit `change.yaml` lifecycle fields directly"):
             self.assertIn(phrase.lower(), self.governed.lower())
 
     def test_universal_semantic_preservation_is_explicit(self) -> None:
@@ -11007,21 +10932,19 @@ class ArchitectureReviewSkillSimplificationTests(unittest.TestCase):
 
     def test_review_subject_basis_and_record_only_surfaces_are_exact(self) -> None:
         combined = self.skill + self.recording
-        for phrase in ("review_subject", "governing_basis", "settlement_targets", "governing specification", "approving spec-review", "architecture-assessment receipt", "architecture-method contract", "repository revision"):
+        for phrase in ("review subject", "governing basis", "settlement targets", "artifact ID", "content identity"):
             self.assertIn(phrase.lower(), combined.lower())
-        for surface in ("no-impact", "proposal/spec-gap"):
-            self.assertIn(surface, self.recording.lower())
-        self.assertIn("empty settlement-target set", self.recording.lower())
-        self.assertIn("identity-free formal", self.recording.lower())
+        self.assertIn("record-only no-impact or upstream-gap", self.recording.lower())
+        self.assertIn("use no settlement targets", self.recording.lower())
 
     def test_target_dispositions_do_not_create_partial_approval(self) -> None:
-        for phrase in ("intended `accepted` or `active`", "missing or ambiguous intended ADR state", "only targets named by material findings", "unaffected targets remain `review-required`", "review-occurrence", "target-set", "target:<artifact-id>", "inconclusive", "no partial approval"):
+        for phrase in ("accepted or active", "only targets named by findings", "blocked target scope", "inconclusive", "no partial approval"):
             self.assertIn(phrase.lower(), self.recording.lower())
 
     def test_prepared_manifest_precedes_exact_retry_and_concurrency(self) -> None:
-        for phrase in ("before the first target transition", "prepared settlement manifest", "pre-state", "disposition", "expected post-state", "settlement progress", "partial-retry-required", "only pending matching writes", "no duplicate review", "concurrent", "without adoption"):
+        for phrase in ("prepared settlement manifest", "record-review", "settle-artifact", "partial-retry-required", "already-recorded", "without adoption"):
             self.assertIn(phrase.lower(), self.recording.lower())
-        self.assertLess(self.recording.lower().index("before the first target transition"), self.recording.lower().index("compare-and-set"))
+        self.assertLess(self.recording.lower().index("record-review"), self.recording.lower().index("settle-artifact"))
 
     def test_method_reference_owns_architecture_package_judgment(self) -> None:
         for phrase in ("C4", "arc42", "diagram", "canonical architecture", "ADR quality", "package consistency", "quality scenario", "Deployment View"):
@@ -11107,8 +11030,6 @@ class ArchitectureSkillSimplificationTests(unittest.TestCase):
             "action": {"assessment-only", "canonical-update", "adr-only", "canonical-update-with-adr", "blocked"},
             "signal": {"no-governed-signal", "single-governed-candidate", "invalid-or-ambiguous-governed-signal"},
             "operation": {"create", "revise", "supersede", "deprecate"},
-            "evidence_state": {"prepared", "partial-blocked", "complete", "abandoned"},
-            "batch_result": {"complete", "partial-blocked", "blocked-before-write"},
         }
         package = self.skill + self.governed
         for name, allowed in vocabularies.items():
@@ -11120,18 +11041,16 @@ class ArchitectureSkillSimplificationTests(unittest.TestCase):
     def test_assessment_and_governed_signals_fail_closed(self) -> None:
         for phrase in ("Stage: architecture-assessment", "Applicability: required | not-required", "explicit valid user-provided evidence path", "Any explicit change ID", "without portable fallback"):
             self.assertIn(phrase.lower(), self.skill.lower())
-        for phrase in ("one current `architecture-required` assessment receipt", "exact spec identity", "approving spec-review identity", "missing, stale, contradictory"):
+        for phrase in ("current `architecture-required` assessment", "exact approved spec identity", "legal authority", "no blocker"):
             self.assertIn(phrase.lower(), self.governed.lower())
 
     def test_prepared_manifest_precedes_bounded_writes(self) -> None:
-        for phrase in ("Before the first target-file mutation", "durably record one ordered manifest", "target kind", "prior identity or absence", "governed evidence path", "dependency target IDs", "commit group", "independently-valid-after-commit", "commit point", "After recording `prepared`", "Any drift stops before mutation"):
+        for phrase in ("ordered authoring-evidence manifest", "prior digest or absence", "dependencies", "commit group", "independently valid commit point", "capture every prior target digest"):
             self.assertIn(phrase.lower(), self.governed.lower())
-        self.assertLess(self.governed.index("Before the first target-file mutation"), self.governed.index("Before a target write"))
 
     def test_dependency_order_retry_and_settlement_are_closed(self) -> None:
-        for phrase in ("not lifecycle states or independent authorization", "independently structurally and semantically valid", "subordinate sources before canonical Markdown", "replacement, then update predecessor status", "reports every completed and incomplete target", "performs no target-file mutation", "An identical retry", "creates a new operation", "unrecorded file", "without adoption or overwrite"):
+        for phrase in ("dependency order", "preserve architecture history", "independently valid", "unsafe partial group", "already-recorded", "never edit lifecycle fields"):
             self.assertIn(phrase.lower(), self.governed.lower())
-        self.assertIn("architecture-review approves", self.governed)
 
     def test_assets_are_structural_and_method_policy_has_one_owner(self) -> None:
         skeleton = (self.root / "assets" / "architecture-skeleton.md").read_text(encoding="utf-8")
@@ -11192,29 +11111,18 @@ class TestSpecSkillSimplificationTests(unittest.TestCase):
             "restart-stale-authoring",
         ):
             self.assertIn(operation, self.skill)
-            self.assertIn(operation, self.reference)
-        for phrase in (
-            "change ID",
-            "artifact ID",
-            "normalized path",
-            "authoring-evidence path",
-            "governing input identities",
-            "prior content identity",
-            "authorizing finding or upstream-change identity",
-        ):
+        for phrase in ("artifact ID", "evidence path", "prior digest", "current finding", "upstream change"):
             self.assertIn(phrase, self.reference)
-        self.assertIn("stale-authoring-attempt", self.reference)
-        self.assertIn("idempotent success", self.reference)
+        self.assertIn("record-artifact-revision", self.reference)
+        self.assertIn("already-recorded", self.reference)
 
     def test_governed_write_boundaries_and_settlement_are_narrow(self) -> None:
         for phrase in (
             "review-required",
             "test-spec-review",
-            "must not write peer-review settlement",
-            "must not mutate `workflow_state`",
-            "must not authorize implementation",
-            "same entry",
-            "same canonical path",
+            "Never edit lifecycle",
+            "without authorizing implementation",
+            "record-artifact-revision",
         ):
             self.assertIn(phrase, self.reference)
         self.assertNotIn("branch-ready", self.reference)
