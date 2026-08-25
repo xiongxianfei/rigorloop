@@ -5,16 +5,27 @@ risk: medium
 lifecycle_contract: stage-owned-change-local-v1
 artifact_states:
   adr-cli-observability:
-    authoring_evidence: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/architecture-authoring.md
     kind: adr
-    lifecycle_state: review-required
+    lifecycle_state: accepted
     path: docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+    review:
+      adr_settlement: accepted
+      artifact_id: adr-cli-observability
+      id: architecture-review-r1
+      outcome: approved
+      record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/architecture-review-r1.md
+      round: r1
     role: supporting
   architecture:
-    authoring_evidence: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/architecture-authoring.md
     kind: architecture
-    lifecycle_state: review-required
+    lifecycle_state: approved
     path: docs/architecture/system/architecture.md
+    review:
+      artifact_id: architecture
+      id: architecture-review-r1
+      outcome: approved
+      record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/architecture-review-r1.md
+      round: r1
     role: primary
   proposal:
     kind: proposal
@@ -40,16 +51,16 @@ artifact_states:
     role: primary
 workflow_state:
   blocker: null
-  current_stage: architecture-review
+  current_stage: plan
   evidence:
     - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
   lifecycle_state: active
-  next_stage: architecture-review
+  next_stage: plan-review
 workflow:
   automation:
-    current_stage: architecture-review
+    current_stage: plan
     evidence:
       - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
       - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
@@ -110,6 +121,28 @@ lifecycle_cli:
   milestones: {}
   resolutions: {}
   reviews:
+    adr-cli-observability:
+      artifact_path: docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+      artifact_sha256: 8df259dc5e97efa06535f785c25d575c366e2864b1fd88abde96fba6075b4fd4
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/architecture-review-r1.md
+      evidence_sha256: afb2ebf9b8b5ce08feca8cfcd8d15e4b5c04658c67c93b13d1ce4b96b22563c0
+      findings: []
+      outcome: approved
+      review_id: architecture-review-r1
+      review_log_sha256: 7a7d5e08c5b688b2134f2d671ff696653000c90859ec05bf1daf3031801f395f
+      round: r1
+      stage_authority: architecture-review
+    architecture:
+      artifact_path: docs/architecture/system/architecture.md
+      artifact_sha256: 427828a44dd25d63f18e07c99eb4055330a26961f5de8d8297545a7d6455c6e7
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/architecture-review-r1.md
+      evidence_sha256: afb2ebf9b8b5ce08feca8cfcd8d15e4b5c04658c67c93b13d1ce4b96b22563c0
+      findings: []
+      outcome: approved
+      review_id: architecture-review-r1
+      review_log_sha256: 7a7d5e08c5b688b2134f2d671ff696653000c90859ec05bf1daf3031801f395f
+      round: r1
+      stage_authority: architecture-review
     proposal:
       artifact_path: docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
       artifact_sha256: bda70adc597cc43f9799c34db57010c2fb626e1eea4abdeada88ea716d8429ae

@@ -9,6 +9,7 @@ This ledger records formal review evidence for the governed local CLI observabil
 | Review ID | Stage | Round | Reviewed artifact | Record | Status | Material findings | Recording |
 | --- | --- | --- | --- | --- | --- | ---: | --- |
 | `spec-review-r2` | `spec-review` | `r2` | `specs/cli-observability-and-token-efficient-results.md` at `sha256:de9ec40c11d33b4d199e79fea74374199d94133c8eed651546ed04d664bc1029` | `reviews/spec-review-r2.md` | `approved` | 0 | `recorded` |
+| `architecture-review-r1` | `architecture-review` | `r1` | canonical architecture and ADR-20260825 at recorded identities | `reviews/architecture-review-r1.md` | `approved` | 0 | `recorded` |
 
 ## Detailed review entries
 
