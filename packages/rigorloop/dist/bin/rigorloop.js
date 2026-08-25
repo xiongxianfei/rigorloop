@@ -12,8 +12,12 @@ import { parseLockfile, serializeLockfile, sha256NormalizedText } from "../lib/l
 import { buildNewChangeDraft, parseNewChangeArgs } from "../lib/new-change.js";
 import { runNewChangePlan } from "../lib/new-change-filesystem.js";
 import { validateOfficialArchiveUrl } from "../lib/official-archive-url.js";
+import { runObservedCli } from "../lib/cli-observability.js";
+import { findInvocationEvents } from "../lib/log-inspection.js";
+import { renderResult, RESULT_FORMATS } from "../lib/result-renderer.js";
 
 const LOCKFILE_PATH = "rigorloop.lock";
+let activeOutput = {};
 
 function packageInfo() {
   const here = dirname(fileURLToPath(import.meta.url));
@@ -41,6 +45,8 @@ function parseFlags(args) {
     fromArchiveProvided: false,
     fromArchive: undefined,
     force: false,
+    format: undefined,
+    formatError: false,
   };
 
   const positional = [];
@@ -48,6 +54,14 @@ function parseFlags(args) {
     const arg = args[index];
     if (arg === "--json") {
       flags.json = true;
+      flags.format = "json";
+    } else if (arg === "--format") {
+      const value = args[++index];
+      if (!RESULT_FORMATS.includes(value)) flags.formatError = true;
+      else {
+        flags.format = value;
+        flags.json = value !== "human";
+      }
     } else if (arg === "--quiet") {
       flags.quiet = true;
     } else if (arg === "--debug") {
@@ -100,7 +114,14 @@ function envelope(command, flags, overrides = {}) {
 }
 
 function writeJson(result) {
-  process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+  if (["concise-json", "concise-human", "detailed-json"].includes(activeOutput.format)) {
+    process.stdout.write(renderResult(result, {
+      format: activeOutput.format,
+      invocationId: activeOutput.invocationId,
+      observability: activeOutput.getObservability?.(),
+      exitCode: exitCodeForResult(result),
+    }));
+  } else process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
 }
 
 function writeHuman(message, flags) {
@@ -119,6 +140,8 @@ Usage:
   rigorloop new-change <change-id> --title <title> [--dry-run] [--json]
   rigorloop lifecycle status|context <stage>|validate [--change <id>] [--format human|json]
   rigorloop lifecycle <operation> --request <path> [--dry-run] [--format human|json]
+  rigorloop logs path [--format human|json]
+  rigorloop logs show <invocation-id> [--format human|json]
 
 Commands:
   version                 Print package name and version.
@@ -126,7 +149,39 @@ Commands:
                           Initialize verified target support.
   new-change              Plan a change metadata scaffold.
   lifecycle               Inspect, validate, and perform guarded governed lifecycle operations.
+  logs                    Show the local log path or inspect one exact invocation.
 `;
+}
+
+function logCommandFormat(args) {
+  const index = args.indexOf("--format");
+  if (index < 0) return "human";
+  return args[index + 1];
+}
+
+function handleLogs(args, invocation) {
+  const [operation, identity] = args;
+  const format = logCommandFormat(args);
+  if (!["human", "json", "detailed-json"].includes(format)) {
+    process.stderr.write("RL_INVALID_REQUEST: unknown log output format\n");
+    return 4;
+  }
+  if (operation === "path") {
+    const result = { schema_version: 1, command: "logs", operation: "path", status: "success", path: invocation.logDirectory };
+    process.stdout.write(format === "human" ? `${result.path}\n` : `${JSON.stringify(result, null, 2)}\n`);
+    return 0;
+  }
+  if (operation === "show" && identity) {
+    const lookup = findInvocationEvents(invocation.logDirectory, identity);
+    const result = { schema_version: 1, command: "logs", operation: "show", invocation_id: identity, ...lookup };
+    if (format === "human") {
+      if (lookup.status === "error") process.stderr.write(`${lookup.code}: invocation ${identity} was not available\n`);
+      else process.stdout.write(`${lookup.events.map((event) => JSON.stringify(event)).join("\n")}\n`);
+    } else process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+    return lookup.status === "error" ? (lookup.code === "RL_INVALID_INVOCATION_ID" ? 4 : 3) : 0;
+  }
+  process.stderr.write("RL_INVALID_REQUEST: logs requires path or show <invocation-id>\n");
+  return 4;
 }
 
 function releaseForPackage(version) {
@@ -2066,18 +2121,21 @@ async function handleInit(flags, initArgs = []) {
   return exitCodeForResult({ ...result, exit_class: "success" });
 }
 
-async function main() {
+async function main(rawArgs = process.argv.slice(2), invocation = {}) {
   try {
-    const rawArgs = process.argv.slice(2);
+    activeOutput = invocation;
+    if (rawArgs[0] === "logs") return handleLogs(rawArgs.slice(1), invocation);
     if (rawArgs[0] === "new-change") {
       return handleNewChange(rawArgs.slice(1));
     }
     if (rawArgs[0] === "lifecycle") {
       const { runLifecycleCli } = await import("../lib/lifecycle-cli.js");
-      return runLifecycleCli(rawArgs.slice(1));
+      return runLifecycleCli(rawArgs.slice(1), { invocationId: invocation.invocationId, observability: invocation.getObservability?.() });
     }
 
     const { flags, positional } = parseFlags(rawArgs);
+    activeOutput.format = flags.format;
+    if (flags.formatError) return invalidUsage("Unknown result format.", flags);
     const [command] = positional;
 
     if (!command || command === "--help" || command === "-h") {
@@ -2100,4 +2158,4 @@ async function main() {
   }
 }
 
-process.exitCode = await main();
+process.exitCode = await runObservedCli(process.argv.slice(2), main, { cliVersion: packageInfo().version });
