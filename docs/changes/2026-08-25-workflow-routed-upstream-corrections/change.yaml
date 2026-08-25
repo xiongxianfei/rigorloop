@@ -115,16 +115,18 @@ workflow_state:
     - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/architecture-structure-correction-return.md
     - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/code-review-final-r1.md
     - docs/changes/2026-08-25-workflow-routed-upstream-corrections/explain-change.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/verify-report.md
   lifecycle_state: active
-  next_stage: verify
+  next_stage: pr
   planned_work:
     current_milestone: none
     final_closeout:
       evidence:
         - docs/changes/2026-08-25-workflow-routed-upstream-corrections/explain-change.md
-      readiness: not-ready
+        - docs/changes/2026-08-25-workflow-routed-upstream-corrections/verify-report.md
+      readiness: ready
       reasons:
-        - verify-pending
+        - ready
     initialization_basis:
       review_id: plan-review-r2
       review_record: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/plan-review-r2.md
@@ -155,6 +157,7 @@ workflow_state:
 workflow: {}
 artifacts:
   proposal: docs/proposals/2026-08-25-workflow-routed-upstream-corrections.md
+  verify_report: docs/changes/2026-08-25-workflow-routed-upstream-corrections/verify-report.md
 requirements:
   - Provide a workflow-requested, CLI-validated upstream correction route that preserves findings, milestone state, and return context.
   - Prevent cross-change artifact-path collisions and provide a narrow guarded recovery for existing duplicate registrations.
@@ -163,12 +166,23 @@ tests:
   - Closed route-matrix, stale-operation, authority, retry, and return-readiness conformance.
   - Cross-change collision detection and exact duplicate-withdrawal recovery without semantic artifact mutation.
   - Human and JSON diagnostic parity plus unchanged portable-mode behavior.
-validation: []
+validation:
+  - command: npm test --prefix packages/rigorloop
+    result: passed; 178 tests
+  - command: python3 scripts/validate-review-artifacts.py --mode closeout docs/changes/2026-08-25-workflow-routed-upstream-corrections
+    result: passed; 18 reviews and 5 resolved findings
+  - command: python3 scripts/validate-boundary-first.py --path specs/workflow-routed-upstream-corrections.test.md
+    result: passed
+  - command: node packages/rigorloop/dist/bin/rigorloop.js lifecycle validate --change 2026-08-25-workflow-routed-upstream-corrections --format json
+    result: passed; no blockers or stale evidence
+  - command: bash scripts/ci.sh --mode broad-smoke --jobs 2
+    result: passed; 12 checks in 787 seconds
 changed_files:
   - docs/changes/2026-08-25-workflow-routed-upstream-corrections/change.yaml
   - docs/proposals/2026-08-25-workflow-routed-upstream-corrections.md
   - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/proposal-authoring.md
   - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-proposal-to-review.md
+  - docs/changes/2026-08-25-workflow-routed-upstream-corrections/verify-report.md
 review:
   latest_review: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/code-review-final-r1.md
   review_log: docs/changes/2026-08-25-workflow-routed-upstream-corrections/review-log.md
