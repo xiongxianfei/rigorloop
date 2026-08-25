@@ -242,16 +242,24 @@ export function evaluateLifecycleOperation({ root, change, request }) {
     if (review.artifact_sha256 !== targetIdentity.sha256 || review.evidence_sha256 !== evidence.sha256) throw operationError("RL_STALE_EVIDENCE", "review or artifact identity is stale", "evidence-freshness", [request.artifact_id], "record-review");
     const log = requireLogEntry(root, change.change_id, review.review_id);
     if (review.review_log_sha256 !== log.sha256) throw operationError("RL_STALE_EVIDENCE", "review log changed after registration", "review-log-freshness", [review.review_id], "record-review");
-    const openFindings = [...log.text.matchAll(/^Open findings:[ \t]*(.*)$/gmi)]
-      .map((match) => match[1].trim())
-      .filter((value) => value && value.toLowerCase() !== "none");
-    if (openFindings.length) throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "material review findings remain open", "finding-closeout", openFindings, "record-finding-resolution");
     const desired = review.outcome === "approved" || review.outcome === "clean-with-notes"
       ? ({ proposal: "accepted", spec: "approved", architecture: "approved", plan: "active", "test-spec": "active", adr: "accepted" }[target.kind] ?? "approved")
       : review.outcome === "changes-requested" ? "revision-required" : "blocked";
-    if (target.lifecycle_state === desired) return { status: "already-recorded", candidate: change };
+    const openFindings = [...new Set([...log.text.matchAll(/^Open findings:[ \t]*(.*)$/gmi)]
+      .flatMap((match) => match[1].split(","))
+      .map((value) => value.trim().replace(/`/g, ""))
+      .filter((value) => value && value.toLowerCase() !== "none"))].sort();
+    if ((review.outcome === "approved" || review.outcome === "clean-with-notes") && openFindings.length) {
+      throw operationError("RL_UNRESOLVED_MATERIAL_FINDING", "material review findings remain open", "finding-closeout", openFindings, "record-finding-resolution");
+    }
     target.lifecycle_state = desired;
+    delete target.authoring_evidence;
     target.review = { id: review.review_id, artifact_id: request.artifact_id, outcome: review.outcome === "clean-with-notes" ? "approved" : review.outcome, record: review.evidence_path, round: review.round, ...(target.kind === "adr" && desired === "accepted" ? { adr_settlement: "accepted" } : {}) };
+    if (next.review && typeof next.review === "object") {
+      next.review.status = review.outcome === "clean-with-notes" ? "approved" : review.outcome;
+      next.review.unresolved_items = openFindings.length;
+    }
+    if (JSON.stringify(next) === JSON.stringify(change)) return { status: "already-recorded", candidate: change };
     return { status: "settled", candidate: next };
   }
 
