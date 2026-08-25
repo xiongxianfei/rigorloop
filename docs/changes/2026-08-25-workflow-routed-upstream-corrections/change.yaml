@@ -73,7 +73,7 @@ artifact_states:
     role: primary
 workflow_state:
   blocker: null
-  current_stage: code-review
+  current_stage: explain-change
   evidence:
     - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/proposal-authoring.md
     - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-proposal-to-review.md
@@ -113,15 +113,15 @@ workflow_state:
     - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/architecture-structure-revision.md
     - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/architecture-review-r2.md
     - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/architecture-structure-correction-return.md
+    - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/code-review-final-r1.md
   lifecycle_state: active
-  next_stage: explain-change
+  next_stage: verify
   planned_work:
     current_milestone: none
     final_closeout:
       evidence: []
       readiness: not-ready
       reasons:
-        - lifecycle-gates-open
         - explain-change-pending
         - verify-pending
     initialization_basis:
@@ -133,9 +133,9 @@ workflow_state:
     latest_review:
       artifact_id: plan
       evidence:
-        - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/code-review-m3-r1.md
-      milestone_id: M3
-      occurrence: milestone
+        - docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/code-review-final-r1.md
+      milestone_id: none
+      occurrence: final
       round: r1
       stage: code-review
       status: approved
@@ -169,9 +169,9 @@ changed_files:
   - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/proposal-authoring.md
   - docs/changes/2026-08-25-workflow-routed-upstream-corrections/evidence/workflow-proposal-to-review.md
 review:
-  latest_review: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/test-spec-review-r3.md
+  latest_review: docs/changes/2026-08-25-workflow-routed-upstream-corrections/reviews/code-review-final-r1.md
   review_log: docs/changes/2026-08-25-workflow-routed-upstream-corrections/review-log.md
-  reviewed_artifact: specs/workflow-routed-upstream-corrections.test.md
+  reviewed_artifact: ffc03485ea6a8f48d5f8d4a89d051f7d669312b7
   status: clean
   unresolved_items: 0
 lifecycle_cli:

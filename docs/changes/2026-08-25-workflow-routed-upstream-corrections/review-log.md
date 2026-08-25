@@ -22,6 +22,7 @@ This ledger records formal review evidence for the workflow-routed upstream corr
 | `code-review-m1-r1` | `code-review` | `r1` | M1 implementation slice | `reviews/code-review-m1-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m2-r1` | `code-review` | `r1` | M2 implementation slice | `reviews/code-review-m2-r1.md` | `clean-with-notes` | 0 | `recorded` |
 | `code-review-m3-r1` | `code-review` | `r1` | M3 implementation slice | `reviews/code-review-m3-r1.md` | `clean-with-notes` | 0 | `recorded` |
+| `code-review-final-r1` | `code-review` | `r1` | commit `ffc03485ea6a8f48d5f8d4a89d051f7d669312b7` | `reviews/code-review-final-r1.md` | `clean-with-notes` | 0 | `recorded` |
 
 ## Review Entries
 
