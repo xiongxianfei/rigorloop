@@ -60,6 +60,7 @@ The implementation must keep existing handlers semantically stable while moving 
   - Table-driven concise field-applicability tests for success, blocked, invalid, and internal outcomes.
   - Shared-fact equivalence and one-stdout-emission tests.
 - Implementation steps:
+  - Write compatibility characterization and concise-field tests first; confirm new-format tests fail because the renderer does not yet exist while existing-format characterization passes.
   - Add a closed internal result shape without changing command semantics.
   - Extract compatibility renderers before adding concise-human, concise-JSON schema v2, and detailed-JSON selectors.
   - Route lifecycle and top-level handlers through pure rendering while retaining existing aliases and defaults.
@@ -93,6 +94,7 @@ The implementation must keep existing handlers semantically stable while moving 
   - Linux, macOS, and Windows path resolution fixtures plus symlink and permission refusal.
   - Concurrent writer, lock exhaustion, stale lock, interruption, disk-full, append, and every rotation boundary with complete JSON Lines proof.
 - Implementation steps:
+  - Write event, privacy, path, rotation, concurrency, and fault-injection tests first; confirm each new behavior fails for the intended missing logging-core capability.
   - Build strict config resolution and random invocation identity using Node built-ins.
   - Build allowlist-only event construction with family extensions and 16 KiB fail-closed encoding.
   - Implement validated root creation, restrictive modes, non-following owned-path checks, and no implicit permission repair.
@@ -120,6 +122,8 @@ The implementation must keep existing handlers semantically stable while moving 
   - `packages/rigorloop/dist/lib/lifecycle-cli.js`
   - invocation orchestration and log-inspection modules under `packages/rigorloop/dist/lib/`
   - `scripts/validate-governed-lifecycle-cli.py`
+  - `scripts/validation_selection.py`
+  - `scripts/test-select-validation.py`
   - CLI, lifecycle, and wrapper tests
 - Dependencies:
   - M1 normalized results and M2 logging core.
@@ -130,14 +134,17 @@ The implementation must keep existing handlers semantically stable while moving 
   - Repository byte and exit-code equivalence with logging enabled, disabled, and failed.
   - Python wrapper single-output and aggregate exit-classification tests.
 - Implementation steps:
+  - Write end-to-end invocation, lookup, semantic-equivalence, and wrapper tests first; confirm they fail on the missing controller, commands, or selector ownership rather than unrelated baseline state.
   - Parse only strict logging controls before dispatch and install the invocation controller around `main()`.
   - Map normalized semantic outcomes to file severity and thresholded stderr without duplicating stdout.
   - Add read-only `logs path` and `logs show` commands against the bounded sink inventory.
   - Update the production Python wrapper to consume structured results once and keep concise successful output suppressed.
+  - Register `scripts/validate-governed-lifecycle-cli.py` with deterministic focused wrapper and CLI checks in the existing selector catalog and add changed-path regression fixtures.
   - Prove a fresh checkout and lifecycle operation remain independent of logs.
 - Validation commands:
   - `npm test --prefix packages/rigorloop`
   - `python scripts/test-governed-lifecycle-cli-validator.py`
+  - `python scripts/test-select-validation.py`
   - `python scripts/validate-governed-lifecycle-cli.py`
 - Expected observable result: Every supported invocation is correlated and searchable by default, routine success remains quiet on stderr, and logging cannot alter semantic output, repository state, or exit status.
 - Completion criteria: All command families and inspection outcomes have end-to-end proof; wrapper and lifecycle parity checks pass.
@@ -168,6 +175,7 @@ The implementation must keep existing handlers semantically stable while moving 
   - Human examples for default quiet success, warning lookup, console-off, no-file-log, and explicit concise/detailed formats.
   - Packed-package smoke proving logs and formats are present in the published package surface.
 - Implementation steps:
+  - Write profile-vocabulary, baseline-identity, aggregation, threshold, continuation, fixture-version, and packed-surface tests first; confirm they fail on the missing v1 artifacts and measurement implementation.
   - Add the v1 profile manifest and immutable v0.4.x detailed baseline.
   - Implement deterministic measurement over stdout, stderr, and required follow-up interactions.
   - Record pass/fail for the 30% median, 10% per-profile, field, and no-lookup gates without changing v0.4.x defaults.
@@ -175,11 +183,11 @@ The implementation must keep existing handlers semantically stable while moving 
   - Run changed-path selection and add only the validation routing demanded by existing ownership rules.
 - Validation commands:
   - `npm test --prefix packages/rigorloop`
-  - `python scripts/select-validation.py --mode explicit --path packages/rigorloop --path scripts/validate-governed-lifecycle-cli.py --path docs/reports/token-cost/cli/v0.4.x-detailed-baseline.json --path packages/rigorloop/test/fixtures/observability/token-profiles-v1.json`
+  - `python scripts/select-validation.py --mode explicit --path packages/rigorloop/dist/bin/rigorloop.js --path packages/rigorloop/dist/lib/command-result.js --path packages/rigorloop/dist/lib/result-renderer.js --path packages/rigorloop/dist/lib/log-config.js --path packages/rigorloop/dist/lib/diagnostic-event.js --path packages/rigorloop/dist/lib/log-sink.js --path packages/rigorloop/dist/lib/cli-observability.js --path packages/rigorloop/dist/lib/log-inspection.js --path packages/rigorloop/dist/lib/lifecycle-cli.js --path packages/rigorloop/test/cli-observability.test.js --path packages/rigorloop/test/result-renderer.test.js --path scripts/validate-governed-lifecycle-cli.py --path scripts/validation_selection.py --path scripts/test-select-validation.py --path docs/reports/token-cost/cli/v0.4.x-detailed-baseline.json --path packages/rigorloop/test/fixtures/observability/token-profiles-v1.json`
   - the exact measurement command defined by the approved test specification
   - `bash scripts/release-verify.sh v0.4.1`
 - Expected observable result: A reproducible report states whether concise defaults qualify for v0.5.0, while the shipped v0.4.x defaults remain unchanged and users can operate the new logging surface from package documentation.
-- Completion criteria: Profile and package validation pass; measurement includes all follow-ups; no unauthorized default switch or release mutation occurs.
+- Completion criteria: Profile and package validation pass; measurement includes all follow-ups; the exact selector command returns no `manual-routing-required` blocker and selects the focused wrapper and CLI checks; no unauthorized default switch or release mutation occurs.
 - Required evidence: `docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/m4-token-and-package-proof.md`
 - Review handoff: code-review of benchmark integrity, documentation truth, package contents, and compatibility claim boundaries.
 - Optional commit boundary: `M4: prove CLI token and package compatibility`
