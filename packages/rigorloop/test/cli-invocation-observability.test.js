@@ -49,3 +49,13 @@ test("explicit concise output is compact and disabling file logs is semantic-onl
   assert.equal(payload.observability, "disabled");
   assert.equal(existsSync(join(directory, "rigorloop.jsonl")), false);
 });
+
+test("file and console thresholds suppress lower-severity success events", () => {
+  const directory = root();
+  chmodSync(directory, 0o700);
+  const cli = new URL("../dist/bin/rigorloop.js", import.meta.url);
+  const child = spawnSync(process.execPath, [cli.pathname, "version", "--file-log-level", "error", "--console-log-level", "warning"], { encoding: "utf8", env: { ...process.env, RIGORLOOP_LOG_DIR: directory } });
+  assert.equal(child.status, 0);
+  assert.equal(child.stderr, "");
+  assert.equal(existsSync(join(directory, "rigorloop.jsonl")), false);
+});
