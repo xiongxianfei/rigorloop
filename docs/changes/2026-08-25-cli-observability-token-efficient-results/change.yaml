@@ -28,10 +28,15 @@ artifact_states:
       round: r1
     role: primary
   plan:
-    authoring_evidence: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-revision-r1.md
     kind: plan
-    lifecycle_state: review-required
+    lifecycle_state: active
     path: docs/plans/2026-08-25-cli-observability-token-efficient-results.md
+    review:
+      artifact_id: plan
+      id: plan-review-r2
+      outcome: approved
+      record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/plan-review-r2.md
+      round: r2
     role: primary
   proposal:
     kind: proposal
@@ -57,20 +62,65 @@ artifact_states:
     role: primary
 workflow_state:
   blocker: null
-  current_stage: plan-review
+  current_stage: test-spec
   evidence:
     - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+    - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-settlement-r2.md
   lifecycle_state: active
-  next_stage: plan-review
+  next_stage: test-spec-review
+  planned_work:
+    current_milestone: M1
+    final_closeout:
+      evidence: []
+      readiness: not-ready
+      reasons:
+        - lifecycle-gates-open
+    initialization_basis:
+      review_id: plan-review-r2
+      review_record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/plan-review-r2.md
+      review_round: r2
+      reviewed_artifact_path: docs/plans/2026-08-25-cli-observability-token-efficient-results.md
+      reviewed_revision: sha256:fef931d84d84a7ba3b16a164f2dd16cdd37180b428098803d6eddc8cbc01fe0a
+    latest_review:
+      artifact_id: none
+      evidence: []
+      milestone_id: none
+      occurrence: none
+      round: none
+      stage: none
+      status: not-started
+    milestones:
+      M1:
+        kind: implementation
+        state: planned
+      M2:
+        kind: implementation
+        state: planned
+      M3:
+        kind: implementation
+        state: planned
+      M4:
+        kind: implementation
+        state: planned
+      M5:
+        kind: lifecycle-closeout
+        state: planned
+    plan_artifact_id: plan
+    remaining_implementation_milestones:
+      - M1
+      - M2
+      - M3
+      - M4
 workflow:
   automation:
-    current_stage: plan-review
+    current_stage: test-spec
     evidence:
       - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
       - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
       - docs/changes/2026-08-25-cli-observability-token-efficient-results/review-resolution.md
+      - docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-settlement-r2.md
     mechanism: bounded-review-fix
     status: active
     stop_reason: null
@@ -87,8 +137,8 @@ tests: []
 validation: []
 changed_files: []
 review:
-  status: changes-requested
-  unresolved_items: 2
+  status: approved
+  unresolved_items: 0
 lifecycle_cli:
   schema_version: 1
   artifacts:
@@ -157,6 +207,17 @@ lifecycle_cli:
       review_log_sha256: 7a7d5e08c5b688b2134f2d671ff696653000c90859ec05bf1daf3031801f395f
       round: r1
       stage_authority: architecture-review
+    plan:
+      artifact_path: docs/plans/2026-08-25-cli-observability-token-efficient-results.md
+      artifact_sha256: fef931d84d84a7ba3b16a164f2dd16cdd37180b428098803d6eddc8cbc01fe0a
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/plan-review-r2.md
+      evidence_sha256: 3d250c84011ddbff9294ef9b2ce397565eeb862d170b53844b3ce0ce4c285191
+      findings: []
+      outcome: approved
+      review_id: plan-review-r2
+      review_log_sha256: 652bb703057f0de9c1e4f37a187775b67b8ab747d3a63590e25bfeee02d3a73d
+      round: r2
+      stage_authority: plan-review
     proposal:
       artifact_path: docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
       artifact_sha256: bda70adc597cc43f9799c34db57010c2fb626e1eea4abdeada88ea716d8429ae
