@@ -18,6 +18,8 @@ Update only `workflow_state`, the selected `workflow.automation` target state, a
 
 Plan owns only the one-time deterministic initialization of missing primary-plan `planned_work`; workflow owns every later `planned_work` transition. Accept plan's initialization without rewriting it. Stop on failed available change-metadata validation instead of repairing another stage's state.
 
+Use the lifecycle CLI for governed correction coordination. When an upstream authoring context returns `RL_WORKFLOW_ROUTE_REQUIRED`, workflow may write exact route evidence and request `route-correction`; it supplies the source, earlier destination and artifact, closed reason, current finding IDs, return stage, and active milestone. After the revised artifact receives an exact approving review and settlement, write the CLI-requested return evidence and request `return-correction`. For a provable duplicate architecture or ADR registration, write exact ownership evidence and request `withdraw-artifact-registration`. Never emulate these operations by editing lifecycle fields, and never ask a stage skill to choose the route, settle another stage, or withdraw ownership.
+
 ## Canonical applicability
 
 Architecture-assessment applicability and routing are owned here. After approved recorded `spec-review`, record exactly one assessment: `architecture-required`, `architecture-not-required`, or `architecture-ambiguous`.
