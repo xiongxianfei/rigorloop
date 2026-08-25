@@ -27,6 +27,9 @@ test("closed lifecycle operation vocabulary rejects an unknown operation", () =>
     "settle-artifact",
     "start-milestone",
     "complete-milestone",
+    "route-correction",
+    "return-correction",
+    "withdraw-artifact-registration",
     "migrate",
     "repair",
   ]);
@@ -61,6 +64,9 @@ const operationRequests = {
   "settle-artifact": { artifact_id: "spec", stage_authority: "spec-review" },
   "start-milestone": { milestone_id: "M1", stage_authority: "workflow" },
   "complete-milestone": { milestone_id: "M1", evidence_path: "evidence/m1.md", stage_authority: "workflow" },
+  "route-correction": { source_stage: "verify", destination_stage: "test-spec", destination_artifact_id: "test-spec", reason: "upstream-proof-gap", evidence_path: "evidence/correction-route.md", finding_ids: ["F-1"], return_stage: "verify", stage_authority: "workflow" },
+  "return-correction": { route_id: "route-1", evidence_path: "evidence/correction-return.md", stage_authority: "workflow" },
+  "withdraw-artifact-registration": { artifact_id: "architecture", artifact_path: "docs/architecture/example.md", canonical_owner_change_id: "canonical-change", reason: "duplicate-registration", evidence_path: "evidence/withdrawal.md", stage_authority: "workflow" },
   migrate: { source_schema_version: 1, stage_authority: "workflow" },
   repair: { condition: "reconcile-interrupted-replace", stage_authority: "workflow", dry_run_acknowledgement: true },
 };
@@ -99,6 +105,29 @@ test("operation authority and repair condition vocabularies fail closed", () => 
   const authority = validateLifecycleRequest({ ...base, condition: "clear-orphaned-lock" });
   assert.equal(authority.ok, false);
   assert.match(authority.errors[0].summary, /stage_authority/);
+});
+
+test("correction and withdrawal vocabularies fail closed before consistency", () => {
+  const route = {
+    schema_version: 1,
+    operation: "route-correction",
+    change_id: "example",
+    expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
+    ...operationRequests["route-correction"],
+  };
+  assert.match(validateLifecycleRequest({ ...route, reason: "fix-it" }).errors[0].summary, /reason/);
+  assert.match(validateLifecycleRequest({ ...route, destination_stage: "implementation" }).errors[0].summary, /destination_stage/);
+  assert.match(validateLifecycleRequest({ ...route, finding_ids: ["F-1", "F-1"] }).errors[0].summary, /finding_ids/);
+  const withdrawal = {
+    schema_version: 1,
+    operation: "withdraw-artifact-registration",
+    change_id: "example",
+    expected_lifecycle_revision: `sha256:${"a".repeat(64)}`,
+    ...operationRequests["withdraw-artifact-registration"],
+  };
+  const unknownWithdrawalReason = validateLifecycleRequest({ ...withdrawal, reason: "cleanup" });
+  assert.equal(unknownWithdrawalReason.errors[0].code, "RL_WITHDRAWAL_UNSAFE");
+  assert.match(unknownWithdrawalReason.errors[0].summary, /reason/);
 });
 
 test("request provenance uses the closed version-one vocabulary", () => {

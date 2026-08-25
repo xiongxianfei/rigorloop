@@ -6,6 +6,8 @@ Load only for `governed_proposal_candidate_context`. The parent owns proposal ju
 
 Run `rigorloop lifecycle context proposal --change <change-id> --format json`. Require one supported governed change, legal proposal authority, settled inputs, an exact target or unambiguous creation path, and no blocker. Capture the current target identity before revising.
 
+If context returns `RL_WORKFLOW_ROUTE_REQUIRED`, do not author or mutate state. Return its route facts to workflow and resume only after context makes `record-artifact-revision` immediately available.
+
 Author only the proposal and its evidence, which records `Artifact path`, `Artifact identity`, and `Authoring result: complete`. Creation requires an absent entry and non-conflicting path. Revision requires exact prior identity and explicit revision authority; downstream reliance first routes to workflow impact handling. Preserve history and every unrelated artifact.
 
 After writing and validating both files, refresh context and submit `record-artifact-revision` with the returned lifecycle revision, exact artifact ID, `artifact_kind: proposal`, role, path, evidence path, `stage_authority: proposal`, and the captured prior digest for revision. The CLI derives `review-required`, invalidates replaced evidence, and changes only the matching entry. Never edit lifecycle fields directly.
