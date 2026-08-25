@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdtemp } from "node:fs/promises";
 import { join } from "node:path";
@@ -48,7 +49,7 @@ function toYaml(value, indent = 0) {
   return Object.entries(value).map(([key, child]) => {
     if (child === null) return `${prefix}${key}: null`;
     if (Array.isArray(child)) return child.length ? `${prefix}${key}:\n${toYaml(child, indent + 2)}` : `${prefix}${key}: []`;
-    if (typeof child === "object") return `${prefix}${key}:\n${toYaml(child, indent + 2)}`;
+    if (typeof child === "object") return Object.keys(child).length ? `${prefix}${key}:\n${toYaml(child, indent + 2)}` : `${prefix}${key}: {}`;
     return `${prefix}${key}: ${child}`;
   }).join("\n");
 }
@@ -89,6 +90,30 @@ test("context returns bounded stage facts from the shared interpretation", async
   const human = executeLifecycleCli(["context", "code-review"], { cwd: root }).human;
   assert.match(human, /Context operation: code-review/);
   assert.match(human, /Permitted registration operation: record-review/);
+});
+
+test("non-current upstream context requires workflow routing and keeps deferred work out of immediate permissions", async () => {
+  const artifactSha = createHash("sha256").update("# example\n").digest("hex");
+  const root = await repository(["example"], {
+    lifecycle_cli: {
+      schema_version: 2,
+      artifacts: { spec: { artifact_kind: "spec", artifact_role: "primary", artifact_path: "specs/example.md", artifact_sha256: artifactSha, stage_authority: "spec" } },
+      reviews: {}, validations: {}, resolutions: {}, milestones: {}, correction_history: {}, withdrawals: {},
+    },
+  });
+  writeFileSync(join(root, "docs", "changes", "example", "review-log.md"), "Finding ID: F-1\nOpen findings: F-1\n", "utf8");
+  const execution = executeLifecycleCli(["context", "spec", "--change", "example", "--format", "json"], { cwd: root });
+  assert.equal(execution.exitCode, 2, JSON.stringify(execution.result));
+  assert.equal(execution.result.errors.at(-1).code, "RL_WORKFLOW_ROUTE_REQUIRED");
+  assert.equal(execution.result.context.permitted_registration_operation, null);
+  assert.equal(execution.result.context.available_after_workflow_route, "record-artifact-revision");
+  assert.deepEqual(execution.result.context.route_required.finding_ids, ["F-1"]);
+  assert.equal(execution.result.permitted_operations.includes("record-artifact-revision"), false);
+  assert.equal(execution.result.permitted_operations.includes("route-correction"), true);
+  const human = executeLifecycleCli(["context", "spec", "--change", "example"], { cwd: root }).human;
+  assert.match(human, /RL_WORKFLOW_ROUTE_REQUIRED/);
+  assert.match(human, /Available after workflow route: record-artifact-revision/);
+  assert.equal(human.includes(root), false);
 });
 
 test("structural blockers use the blocked exit class", async () => {
@@ -157,4 +182,36 @@ test("validate rejects unsupported contracts and malformed YAML deterministicall
   const malformed = await repository();
   writeFileSync(join(malformed, "docs", "changes", "example", "change.yaml"), "change_id: example\nchange_id: duplicate\n", "utf8");
   assert.equal(executeLifecycleCli(["validate", "--change", "example"], { cwd: malformed }).result.errors[0].code, "RL_INVALID_REQUEST");
+});
+
+test("stored correction and withdrawal vocabularies fail closed", async () => {
+  const artifactSha = createHash("sha256").update("# example\n").digest("hex");
+  const root = await repository(["example"], {
+    lifecycle_cli: {
+      schema_version: 2,
+      artifacts: { spec: { artifact_kind: "spec", artifact_role: "primary", artifact_path: "specs/example.md", artifact_sha256: artifactSha, stage_authority: "spec" } },
+      reviews: {}, validations: {}, resolutions: {}, milestones: {}, correction_history: {},
+      withdrawals: { bad: { withdrawal_id: "bad", status: "archived", artifact_id: "old", artifact_kind: "plan", artifact_path: "docs/plans/old.md", canonical_owner_change_id: "owner", reason: "cleanup" } },
+    },
+  });
+  const execution = executeLifecycleCli(["validate", "--change", "example", "--format", "json"], { cwd: root });
+  assert.equal(execution.exitCode, 4);
+  assert.equal(execution.result.errors.some((error) => /unknown or contradictory receipt/.test(error.summary)), true);
+  assert.equal(execution.result.errors.some((error) => /unknown artifact kind or reason/.test(error.summary)), true);
+  assert.equal(execution.result.permitted_operations.includes("route-correction"), false);
+});
+
+test("upstream context does not advertise a route against stale registered identity", async () => {
+  const root = await repository(["example"], {
+    lifecycle_cli: {
+      schema_version: 2,
+      artifacts: { spec: { artifact_kind: "spec", artifact_role: "primary", artifact_path: "specs/example.md", artifact_sha256: "0".repeat(64), stage_authority: "spec" } },
+      reviews: {}, validations: {}, resolutions: {}, milestones: {}, correction_history: {}, withdrawals: {},
+    },
+  });
+  const execution = executeLifecycleCli(["context", "spec", "--change", "example", "--format", "json"], { cwd: root });
+  assert.equal(execution.result.context.route_required, undefined);
+  assert.equal(execution.result.context.available_after_workflow_route, undefined);
+  assert.equal(execution.result.permitted_operations.includes("route-correction"), false);
+  assert.deepEqual(execution.result.effective_state.stale_evidence, ["spec"]);
 });

@@ -6,6 +6,8 @@ Load this reference only after the parent resolves one exact governed change wit
 
 Run `rigorloop lifecycle context plan --change <change-id> --format json`. Require settled inputs, exact target or unambiguous creation path, legal authority, and no blocker. Capture the current target digest before revision.
 
+If context returns `RL_WORKFLOW_ROUTE_REQUIRED`, do not author or mutate state. Return its route facts to workflow and resume only after context makes `record-artifact-revision` immediately available.
+
 Write only the plan, navigation entry, and evidence containing `Artifact path`, `Artifact identity`, and `Authoring result: complete`. Creation requires an absent primary plan. Revision preserves stable intent and requires exact prior identity; changes to relied-on milestone identity, order, kind, criteria, or evidence route to governed replan or migration.
 
 Refresh context and submit `record-artifact-revision` with the returned lifecycle revision, exact plan ID, `artifact_kind: plan`, `artifact_role: primary`, path, evidence path, `stage_authority: plan`, and prior digest for revision. The CLI derives `review-required`; never directly edit artifact lifecycle or review fields.

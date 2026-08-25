@@ -76,5 +76,6 @@ test("complete milestone requires matching review and proof", async () => {
   const changed = readFileSync(join(changeRoot, "change.yaml"), "utf8");
   assert.match(changed, /M2:\n\s+kind: implementation\n\s+state: closed/);
   assert.doesNotMatch(changed, /remaining_implementation_milestones:\n\s+- M2/);
+  assert.match(changed, /current_milestone: M3/);
   assert.match(changed, /current_stage: implement/);
 });
