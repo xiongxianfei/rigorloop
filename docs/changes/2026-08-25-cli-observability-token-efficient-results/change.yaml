@@ -4,6 +4,18 @@ classification: feature
 risk: medium
 lifecycle_contract: stage-owned-change-local-v1
 artifact_states:
+  adr-cli-observability:
+    authoring_evidence: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/architecture-authoring.md
+    kind: adr
+    lifecycle_state: review-required
+    path: docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+    role: supporting
+  architecture:
+    authoring_evidence: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/architecture-authoring.md
+    kind: architecture
+    lifecycle_state: review-required
+    path: docs/architecture/system/architecture.md
+    role: primary
   proposal:
     kind: proposal
     lifecycle_state: accepted
@@ -28,7 +40,7 @@ artifact_states:
     role: primary
 workflow_state:
   blocker: null
-  current_stage: architecture
+  current_stage: architecture-review
   evidence:
     - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
@@ -37,7 +49,7 @@ workflow_state:
   next_stage: architecture-review
 workflow:
   automation:
-    current_stage: architecture
+    current_stage: architecture-review
     evidence:
       - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
       - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
@@ -63,6 +75,22 @@ review:
 lifecycle_cli:
   schema_version: 1
   artifacts:
+    adr-cli-observability:
+      artifact_kind: adr
+      artifact_path: docs/adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md
+      artifact_role: supporting
+      artifact_sha256: 8df259dc5e97efa06535f785c25d575c366e2864b1fd88abde96fba6075b4fd4
+      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/architecture-authoring.md
+      authoring_evidence_sha256: fff998df21a1ce5470c1f2efb33b2d2bc5957ad56f3fa6a6e7d249a8693b05ee
+      stage_authority: architecture
+    architecture:
+      artifact_kind: architecture
+      artifact_path: docs/architecture/system/architecture.md
+      artifact_role: primary
+      artifact_sha256: 427828a44dd25d63f18e07c99eb4055330a26961f5de8d8297545a7d6455c6e7
+      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/architecture-authoring.md
+      authoring_evidence_sha256: fff998df21a1ce5470c1f2efb33b2d2bc5957ad56f3fa6a6e7d249a8693b05ee
+      stage_authority: architecture
     proposal:
       artifact_kind: proposal
       artifact_path: docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md

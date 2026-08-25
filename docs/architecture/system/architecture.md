@@ -526,6 +526,14 @@ Stage authority in a request is a structurally checked claim, not an authenticat
 
 During migration, existing Python validators consume the same versioned conformance fixtures and may run behind or beside `rigorloop lifecycle validate`. The Node engine is the mutation-time authority. A mismatch between implementations blocks enforcement; validator retirement follows the ledger-backed proof rule in ADR-20260810 rather than a big-bang rewrite.
 
+### Level 2 White-Box: CLI Observability and Result Projection
+
+One invocation controller surrounds every public command family after safe logging configuration and before dispatch. It owns invocation correlation, timing, diagnostic emission, single semantic-result rendering, and final exit mapping without acquiring semantic or lifecycle authority.
+
+The component separates five package-local responsibilities: strict log configuration; allowlist-only event construction; a synchronous bounded JSON Lines sink; a shared internal command-result representation with compatibility, concise, and detailed renderers; and read-only path or exact-ID log inspection. Semantic handlers return normalized results and do not write diagnostic files or duplicate successful stdout.
+
+The sink owns only `rigorloop.jsonl`, four numbered archives, and `.rigorloop-log.lock` beneath one validated user-state root. A fixed exclusive-create lock serializes each complete append and any rotation for at most 10 attempts and 1,000 milliseconds. Logging failures become `recorded`, `degraded`, or `disabled` diagnostic state and never change repository bytes, lifecycle evidence, semantic status, or exit behavior.
+
 ### Level 2 White-Box: Validation and Generation Scripts
 
 The validation and generation container has these important internal responsibilities:
@@ -1071,6 +1079,16 @@ Legal temporary states are limited to authoring/revision/blocked without `planne
 8. A stale original request always fails. An equivalent request against the current revision returns `already-recorded` only when all requested durable facts are identical.
 9. Workflow reads the structural outcome and independently owns routing. No lifecycle command schedules another stage or crosses the PR, push, release, deploy, or merge boundary.
 
+### CLI observable invocation flow
+
+1. The entrypoint resolves strict logging options and a random invocation ID without persisting raw argv or arbitrary environment values.
+2. The invocation controller classifies one closed command family, records monotonic start state, and attempts one schema-v1 start event through the file and console thresholds.
+3. The selected semantic handler runs independently and returns one normalized internal result. Logging availability cannot change its mutation, status, or exit class.
+4. One selected renderer writes exactly one semantic stdout projection. Existing v0.4.x renderers preserve their compatibility contracts; new concise and detailed formats project the same result.
+5. The controller derives an allowlisted completion event, attempts one terminal append, and returns the semantic exit code. Interruption may leave only the start event.
+6. The sink acquires its fixed lock, revalidates owned paths, rotates within five files when required, writes one complete JSON line synchronously, and releases the lock. Failure or bound exhaustion degrades diagnostics without retrying the semantic command.
+7. `logs show` scans the same five files for an exact validated invocation ID, ignores its own different invocation ID, returns only validated matching events, and never reconstructs or reruns the original operation.
+
 ## Deployment View
 
 RigorLoop has no deployed service, database, or runtime infrastructure for this architecture method. The deployment boundary is repository packaging and publication.
@@ -1111,6 +1129,7 @@ The main execution and publication boundaries are:
 - legacy automation evidence: retired `workflow.autoprogression` records remain read-only compatibility inputs and historical audit evidence during migration;
 - GitHub Actions: runs the same repository-owned scripts in hosted CI when configured;
 - local validation execution cache: untracked branch-local, worktree-local, and change-local state that can speed eligible repeated local validation but is not portable and is not lifecycle evidence;
+- local CLI diagnostic logs: user-scoped JSON Lines under the platform state/log directory or an explicit safe override, bounded to one active file and four archives; they are disposable observability state and never repository, review, lifecycle, CI, or release evidence;
 - local Codex runtime state: `.codex/skills/`, ignored by Git and installed locally from public Codex adapter output when contributors need local Codex use;
 - public adapter packages: tracked `dist/adapters/` output during the compatibility window through `v0.1.2`, then generated temporary or release-output packages and release archives for `v0.1.3` and later;
 - mapped skill-local resource parity: canonical `skills/<skill>/` resources, generated adapter output, locally packed release candidates, and adapter archives preserve skill-root relative paths and raw-byte SHA-256 unless an explicit transformation contract applies; installed-tree inspection remains only for additional materialization behavior not proved by package parity;
@@ -1522,6 +1541,14 @@ Compatibility is gated in order: read-only interpretation, guarded mutation, can
 
 This boundary amends ADR-20260729's no-hash and direct state-write mechanics for supported operations. It preserves one change-local state owner and the stage authority model: stages still own the semantic operation they may request, while the CLI alone derives and writes the lifecycle fields.
 
+### Local CLI observability boundary
+
+CLI diagnostics are machine-local, user-scoped, bounded, and non-authoritative. The invocation controller may observe only allowlisted normalized command and result facts. It cannot receive raw requests, arbitrary environment values, artifact contents, credentials, private network data, or absolute repository paths for event serialization.
+
+The file sink validates one containment root and uses non-following inspection for its five log names and lock. New POSIX paths use restrictive modes; existing unsafe permissions or symlinks are refused without implicit repair. Rotation, corruption, contention, unavailable storage, and console configuration affect only diagnostic state. Explicit console level `off` suppresses even the guarded emergency diagnostic.
+
+Result projection is downstream of semantic execution. Compatibility, concise, and detailed renderers consume one internal result and must agree on shared facts. The versioned benchmark corpus measures complete agent-facing interactions, including any follow-up lookup; it cannot become a substitute for semantic field-preservation tests.
+
 ### Independent adversarial review gate boundary
 
 The independent adversarial review gate is a repository workflow and evidence contract, not a new service, background worker, database, hosted reviewer, or deployment boundary. It executes inside workflow-managed automation and uses existing formal review skills, change-local review artifacts, validation scripts, and the current `workflow_state`.
@@ -1602,6 +1629,8 @@ Architecture artifacts and diagrams must not include secrets, credentials, priva
 The legacy normalization follow-on inventoried every current `docs/architecture/` file, merged accepted current content into this package, and archived the eight top-level legacy Markdown records. Those legacy records remain historical evidence only; downstream architecture work uses this canonical package.
 
 ## Architecture Decisions
+- [ADR-20260825: Local CLI Observability and Result Projection Boundary](../../adr/ADR-20260825-local-cli-observability-and-result-projection-boundary.md) establishes one invocation controller, allowlist event model, bounded synchronous local sink, shared result projection, and compatibility-gated concise-default decision.
+
 - [ADR-20260824: Governed Lifecycle CLI Transaction Boundary](../../adr/ADR-20260824-governed-lifecycle-cli-transaction-boundary.md) establishes one lifecycle interpreter, versioned identity and operation contracts, guarded single-record replacement and recovery, validator convergence, skill-mechanics migration, and phased enforcement.
 
 - [ADR-20260818: Ordered Final-Review Stage-Evidence Tail](../../adr/ADR-20260818-ordered-final-review-stage-evidence-tail.md) defines the exact `S -> R -> E` pre-verify revision protocol, path-and-field ownership, Git-derived identities, and interrupted-tail recovery.
@@ -1699,6 +1728,9 @@ decisions from ADR-20260728 and ADR-20260729.
 | Managed state opt-in | A user runs `rigorloop init codex --write-state`. | The CLI writes target-oriented `rigorloop.yaml` schema v2 and `rigorloop.lock` schema v3 only after verified install; new user-visible schema keys do not use `adapter` or `adapters`, and historical archive filename values may remain unchanged. |
 | Release smoke fidelity | A maintainer prepares the target-native `0.3.0` release. | Packed-package pre-publish smoke and live registry/download post-publish smoke run real non-dry-run init for `codex`, `claude`, and `opencode`; dry-run output alone is not accepted as install proof. |
 | Routine release transaction safety | A maintainer prepares a routine release. | `docs/releases/profiles/<tag>.yaml` owns release state; `prepare-release` generates only profile-owned surfaces, preflight catches cheap deterministic drift, `release-verify.sh <tag>` remains the full gate, closeout writes validator-compatible public evidence, and timing evidence is recorded without weakening release checks. |
+| CLI diagnostic isolation | The log directory is unavailable, unsafe, full, corrupt, or contended while a semantic command completes. | Repository bytes, semantic stdout, and exit status match logging-disabled execution; the invocation records diagnostics when possible or reports bounded degraded state without recursive failure. |
+| CLI diagnostic privacy | A command contains a synthetic credential, private path, request body, control character, or environment secret. | The value is absent from stdout, stderr, active logs, archives, and lookup output; only closed normalized fields appear. |
+| Concise-result compatibility | A v0.4.x caller and an opt-in concise caller execute the same fixture. | Existing defaults retain their contract, concise and detailed projections agree on shared facts, and a default switch remains blocked unless all six complete-interaction profiles pass the adoption gates. |
 | Skill resource self-containment | A published skill maps a skill-local resource. | The resource exists in canonical source, generated output, locally packed release candidates, and clean installed target skill roots with matching relative path and raw-byte SHA-256 unless a transformation contract applies. |
 | Boundary-resource proportionality | A governed stage makes a decision after the compact scan. | Non-behavior work loads no formal family resource; feature-contract stages map only compact and feature-authoring resources; proof-map stages map only compact and proof resources; other stages begin with cited approved rows and expand only when the slice is insufficient. |
 | Boundary-resource parity | A maintainer changes a boundary resource or governed skill. | One declarative manifest projects exactly the owner-approved resources; canonical, skill-local, generated, packed, and installed Codex, Claude Code, and opencode trees retain the expected mapped path and raw-byte SHA-256 with no missing or additional layer. |
@@ -1770,6 +1802,9 @@ decisions from ADR-20260728 and ADR-20260729.
 | Architecture-review finding format could be mistaken for a replacement of material-finding closeout | The focused spec and this package keep the simple finding fields separate from the repository-wide material-finding contract. |
 | Token-cost reports could expose excessive transcript or command-output content | Measurement reports summarize cost drivers and avoid embedding unnecessary raw transcript content. |
 | Raw Codex JSONL could expose sensitive local paths or output | Release metadata supports sanitized summaries, and analyzer summaries do not require private raw JSONL paths when raw evidence is intentionally omitted. |
+| Local CLI diagnostic logs could expose private inputs or be mistaken for lifecycle evidence | Event construction is allowlist-only and cannot access raw requests or arbitrary environment data; logs remain outside the repository and are explicitly excluded from lifecycle, review, verification, and CI authority. |
+| Synchronous diagnostic writes could delay routine commands under contention | Each event uses at most 10 lock attempts and 1,000 milliseconds total; exhaustion degrades diagnostics and preserves the semantic result. |
+| Concise output could hide an actionable fact or shift cost into a second lookup | A closed field-applicability matrix and six versioned complete-interaction profiles gate adoption; detailed output remains available through the declared compatibility window. |
 | Benchmark runners could accidentally measure the repository-local Codex mirror instead of public adapter output | The release benchmark installs public Codex skills from tracked public adapter output while available, generated temporary adapter output, or release artifact output, and rejects `.codex/skills/` as the public benchmark source. |
 | Release metadata can become prose-only or unreproducible | Structured YAML records runner invocation, fixture source, public skill source, run evidence, waiver state, and comparison data; release validation reads YAML rather than Markdown prose. |
 | Users rely on copying public adapter skills from the repository tree | Public adapter skill copies remain tracked for at least one stable public release after downloadable adapter artifacts and install docs are available; release notes announce the repository-tree install transition. |
