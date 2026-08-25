@@ -101,6 +101,54 @@ test("structural blockers use the blocked exit class", async () => {
   assert.equal(execution.result.blockers[0].code, "RL_UNRESOLVED_MATERIAL_FINDING");
 });
 
+test("open findings preserve the owner-stage revision operation and advance the durable review round", async () => {
+  const root = await repository(["example"], {
+    artifact_states: {
+      spec: {
+        kind: "spec",
+        path: "specs/example.md",
+        role: "primary",
+        lifecycle_state: "revision-required",
+        review: { id: "spec-review-r1", artifact_id: "spec", outcome: "changes-requested", record: "docs/changes/example/reviews/spec-review-r1.md", round: "r1" },
+      },
+    },
+    workflow_state: {
+      lifecycle_state: "active",
+      current_stage: "spec-review",
+      next_stage: "spec",
+      blocker: null,
+      evidence: [],
+    },
+    review: { status: "changes-requested", unresolved_items: 1 },
+  });
+  const changeRoot = join(root, "docs", "changes", "example");
+  mkdirSync(join(changeRoot, "reviews"), { recursive: true });
+  writeFileSync(join(changeRoot, "review-log.md"), "Open findings: F-1\n", "utf8");
+  writeFileSync(join(changeRoot, "reviews", "spec-review-r1.md"), "Review ID: spec-review-r1\nRound: r1\n", "utf8");
+
+  const status = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: root }).result;
+  assert.deepEqual(status.permitted_operations, ["record-artifact-revision"]);
+  const context = executeLifecycleCli(["context", "spec-review", "--change", "example", "--format", "json"], { cwd: root }).result.context;
+  assert.equal(context.review_round, "r2");
+
+  const blockedRoot = await repository(["example"], {
+    artifact_states: {
+      spec: {
+        kind: "spec",
+        path: "specs/example.md",
+        role: "primary",
+        lifecycle_state: "revision-required",
+        review: { id: "spec-review-r1", artifact_id: "spec", outcome: "changes-requested", record: "docs/changes/example/reviews/spec-review-r1.md", round: "r1" },
+      },
+    },
+    workflow_state: { lifecycle_state: "active", current_stage: "spec-review", next_stage: "spec", blocker: "owner decision required", evidence: [] },
+    review: { status: "changes-requested", unresolved_items: 1 },
+  });
+  writeFileSync(join(blockedRoot, "docs", "changes", "example", "review-log.md"), "Open findings: F-1\n", "utf8");
+  const fatallyBlocked = executeLifecycleCli(["status", "--change", "example", "--format", "json"], { cwd: blockedRoot }).result;
+  assert.deepEqual(fatallyBlocked.permitted_operations, []);
+});
+
 test("validate rejects unsupported contracts and malformed YAML deterministically", async () => {
   const unsupported = await repository(["example"], { lifecycle_contract: "future-v9" });
   const incompatible = executeLifecycleCli(["validate"], { cwd: unsupported });
