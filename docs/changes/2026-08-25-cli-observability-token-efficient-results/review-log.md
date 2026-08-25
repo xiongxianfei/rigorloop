@@ -38,7 +38,7 @@ Status: changes-requested
 Detailed record: reviews/plan-review-r1.md
 Resolution: review-resolution.md#plan-review-r1
 Material findings: CLIOBS-PLR1, CLIOBS-PLR2
-Open findings: CLIOBS-PLR1, CLIOBS-PLR2
+Open findings: none
 Recording status: recorded
 
 ### Review entry

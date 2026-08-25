@@ -28,15 +28,10 @@ artifact_states:
       round: r1
     role: primary
   plan:
+    authoring_evidence: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-revision-r1.md
     kind: plan
-    lifecycle_state: revision-required
+    lifecycle_state: review-required
     path: docs/plans/2026-08-25-cli-observability-token-efficient-results.md
-    review:
-      artifact_id: plan
-      id: plan-review-r1
-      outcome: changes-requested
-      record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/plan-review-r1.md
-      round: r1
     role: primary
   proposal:
     kind: proposal
@@ -62,7 +57,7 @@ artifact_states:
     role: primary
 workflow_state:
   blocker: null
-  current_stage: plan
+  current_stage: plan-review
   evidence:
     - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
@@ -71,7 +66,7 @@ workflow_state:
   next_stage: plan-review
 workflow:
   automation:
-    current_stage: plan
+    current_stage: plan-review
     evidence:
       - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
       - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
@@ -117,9 +112,9 @@ lifecycle_cli:
       artifact_kind: plan
       artifact_path: docs/plans/2026-08-25-cli-observability-token-efficient-results.md
       artifact_role: primary
-      artifact_sha256: 3cd6a1937d40b653244eb72deb3e8b277872e011a626d63e1d502a08ed8cc6ff
-      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-authoring.md
-      authoring_evidence_sha256: 8e36a3755e88622a34ada581ecaa1625242ecba22d8fc0b102556f2a9282caf4
+      artifact_sha256: fef931d84d84a7ba3b16a164f2dd16cdd37180b428098803d6eddc8cbc01fe0a
+      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-revision-r1.md
+      authoring_evidence_sha256: a553d8badf860899b2b2727f2c73062f251d8e0025bf7e94a113c3d113f24c4c
       stage_authority: plan
     proposal:
       artifact_kind: proposal
@@ -162,19 +157,6 @@ lifecycle_cli:
       review_log_sha256: 7a7d5e08c5b688b2134f2d671ff696653000c90859ec05bf1daf3031801f395f
       round: r1
       stage_authority: architecture-review
-    plan:
-      artifact_path: docs/plans/2026-08-25-cli-observability-token-efficient-results.md
-      artifact_sha256: 3cd6a1937d40b653244eb72deb3e8b277872e011a626d63e1d502a08ed8cc6ff
-      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/plan-review-r1.md
-      evidence_sha256: 0ad3d90281892b226416aa773a6b212e3af3ee863101c05f56a9b33190a90f13
-      findings:
-        - CLIOBS-PLR1
-        - CLIOBS-PLR2
-      outcome: changes-requested
-      review_id: plan-review-r1
-      review_log_sha256: bef0967cee51b0f3209681681ffd637eb3f405af47266c9876a85a62138f01bc
-      round: r1
-      stage_authority: plan-review
     proposal:
       artifact_path: docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
       artifact_sha256: bda70adc597cc43f9799c34db57010c2fb626e1eea4abdeada88ea716d8429ae
