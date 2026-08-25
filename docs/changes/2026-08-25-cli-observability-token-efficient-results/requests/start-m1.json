@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "operation": "start-milestone",
+  "change_id": "2026-08-25-cli-observability-token-efficient-results",
+  "expected_lifecycle_revision": "sha256:3b10e1982f74aadf39e39c3b201cbe3c7faecc9120bc8090ee23c97c49c348fe",
+  "milestone_id": "M1",
+  "stage_authority": "workflow"
+}

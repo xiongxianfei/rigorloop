@@ -113,7 +113,7 @@ workflow_state:
     milestones:
       M1:
         kind: implementation
-        state: planned
+        state: implementing
       M2:
         kind: implementation
         state: planned
