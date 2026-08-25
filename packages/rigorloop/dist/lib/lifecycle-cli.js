@@ -5,6 +5,7 @@ import { parseLifecycleYaml, serializeLifecycleYaml, validateLifecycleRequest } 
 import { evaluateLifecycleOperation, operationDiagnostic } from "./lifecycle-operations.js";
 import { contextForStage, findRepositoryRoot, interpretGovernedChange, lifecycleDiagnostic, selectGovernedChange } from "./lifecycle-read.js";
 import { clearOrphanedLifecycleLock, inspectLifecycleLock, inspectLifecycleRecovery, reconcileInterruptedTransaction, runLifecycleTransaction } from "./lifecycle-transaction.js";
+import { renderResult, RESULT_FORMATS } from "./result-renderer.js";
 
 const RESULT_FIELDS = ["schema_version", "command", "operation", "status", "change_id", "lifecycle_revision", "effective_state", "blockers", "permitted_operations", "artifacts", "warnings", "errors"];
 const MUTATING_OPERATIONS = new Set(["record-artifact-revision", "record-review", "record-validation", "record-finding-resolution", "settle-artifact", "start-milestone", "complete-milestone", "migrate", "repair"]);
@@ -28,7 +29,7 @@ function parseArgs(args) {
   if (operation === "context" && (!positional[0] || positional[0].startsWith("--"))) return { error: "context requires a stage" };
   if (MUTATING_OPERATIONS.has(operation) && !request) return { error: `${operation} requires --request` };
   if (!MUTATING_OPERATIONS.has(operation) && (request || dryRun)) return { error: `${operation} does not accept mutation flags` };
-  if (!new Set(["human", "json"]).has(format)) return { error: `Unknown format ${format}` };
+  if (!RESULT_FORMATS.includes(format)) return { error: `Unknown format ${format}` };
   return { operation, stage: positional[0], format, change, request, dryRun };
 }
 
@@ -213,7 +214,14 @@ export function executeLifecycleCli(args, options = {}) {
 
 export function runLifecycleCli(args, options = {}) {
   const execution = executeLifecycleCli(args, options);
-  if (execution.format === "json") process.stdout.write(`${JSON.stringify(execution.result, null, 2)}\n`);
-  else (execution.exitCode === 0 ? process.stdout : process.stderr).write(execution.human);
+  const rendered = renderResult(execution.result, {
+    format: execution.format,
+    exitCode: execution.exitCode,
+    invocationId: options.invocationId,
+    observability: options.observability,
+    human: () => execution.human,
+  });
+  if (execution.format === "human" && execution.exitCode !== 0) process.stderr.write(rendered);
+  else process.stdout.write(rendered);
   return execution.exitCode;
 }
