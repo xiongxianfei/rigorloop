@@ -1,0 +1,58 @@
+change_id: 2026-08-25-cli-observability-token-efficient-results
+title: Local CLI Observability and Token-Efficient Results
+classification: feature
+risk: medium
+lifecycle_contract: stage-owned-change-local-v1
+artifact_states:
+  proposal:
+    kind: proposal
+    lifecycle_state: accepted
+    path: docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+    review:
+      artifact_id: proposal
+      id: proposal-review-r4
+      outcome: approved
+      record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
+      round: r4
+    role: primary
+workflow_state:
+  blocker: null
+  current_stage: proposal
+  evidence: []
+  lifecycle_state: active
+  next_stage: proposal-review
+workflow: {}
+artifacts: {}
+requirements: []
+tests: []
+validation: []
+changed_files: []
+review:
+  status: approved
+  unresolved_items: 0
+lifecycle_cli:
+  schema_version: 1
+  artifacts:
+    proposal:
+      artifact_kind: proposal
+      artifact_path: docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+      artifact_role: primary
+      artifact_sha256: bda70adc597cc43f9799c34db57010c2fb626e1eea4abdeada88ea716d8429ae
+      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/proposal-authoring.md
+      authoring_evidence_sha256: 4ace27f262c2118c84af4b41de207942b43eba26e0bc7b80e163391d24e574c0
+      stage_authority: proposal
+  milestones: {}
+  resolutions: {}
+  reviews:
+    proposal:
+      artifact_path: docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+      artifact_sha256: bda70adc597cc43f9799c34db57010c2fb626e1eea4abdeada88ea716d8429ae
+      evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
+      evidence_sha256: 8140d5a5c0d4904665717f5dbbeb6e1b023509c751bbeb092c61d9a930236458
+      findings: []
+      outcome: approved
+      review_id: proposal-review-r4
+      review_log_sha256: f6660ae1638bd5a6c58009f012c2d3e4d766b4f48085dbe7d51cd45e454f9247
+      round: r4
+      stage_authority: proposal-review
+  validations: {}
