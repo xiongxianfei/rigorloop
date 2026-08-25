@@ -6,6 +6,8 @@ Load for `single-governed-candidate`; the parent owns contract quality and this 
 
 Run `rigorloop lifecycle context spec --change <change-id> --format json`. Require one supported governed change, settled applicable proposal, exact target or unambiguous creation path, legal authority, and no blocker. Capture the current target digest before revision.
 
+If context returns `RL_WORKFLOW_ROUTE_REQUIRED`, do not author or mutate state. Return its route facts to workflow and resume only after context makes `record-artifact-revision` immediately available.
+
 Write only the specification and evidence containing `Artifact path`, `Artifact identity`, and `Authoring result: complete`. Creation requires no conflicting primary spec. Revision requires exact prior identity plus current finding, upstream-change, reopen, or user authority. Preserve historical evidence; route downstream reliance or unsafe partial authoring to workflow rather than repairing lifecycle state.
 
 After content and evidence validation, refresh context and submit `record-artifact-revision` with the returned lifecycle revision, exact artifact ID, `artifact_kind: spec`, role, path, evidence path, `stage_authority: spec`, and prior digest for revision. The CLI derives `review-required` and invalidates registrations tied to the replaced identity. Never edit `change.yaml` lifecycle fields directly.
