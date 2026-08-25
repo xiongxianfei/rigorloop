@@ -1,0 +1,32 @@
+change_id: 2026-08-25-cli-observability-token-efficient-results-review-recording
+title: CLI Observability and Token-Efficient Results Proposal Review Recording
+classification: review-recording
+risk: low
+artifacts:
+  proposal: docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
+  review_resolution: docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording/review-resolution.md
+requirements:
+  - Record the isolated formal proposal review before any review-driven revision.
+  - Preserve material findings about command scope, output compatibility, invocation lookup, measurable token value, and proposal lifecycle validity.
+  - Keep this recording-only root separate from proposal settlement and workflow continuation.
+tests:
+  - Review artifact structure validates the detailed review, log, and open resolution relationship.
+review:
+  status: changes-requested
+  unresolved_items: 5
+validation:
+  - command: python scripts/validate-review-artifacts.py --mode structure docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording
+    result: pass_reviews_1_findings_5_log_entries_1_resolution_entries_5
+  - command: python scripts/validate-change-metadata.py docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording/change.yaml
+    result: pass
+  - command: python scripts/validate-documentation-prose.py --mode audit --path docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md --path docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording/reviews/proposal-review-r1.md --path docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording/review-log.md --path docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording/review-resolution.md
+    result: pass_no_errors_or_warnings
+  - command: git diff --check --cached -- docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording
+    result: pass
+  - command: bash scripts/ci.sh --mode explicit --path docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md --path docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording/change.yaml --path docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording/review-log.md --path docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording/review-resolution.md --path docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording/reviews/proposal-review-r1.md
+    result: blocked_expected_missing_required_proposal_status_section
+changed_files:
+  - docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording/change.yaml
+  - docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording/review-log.md
+  - docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording/review-resolution.md
+  - docs/changes/2026-08-25-cli-observability-token-efficient-results-review-recording/reviews/proposal-review-r1.md
