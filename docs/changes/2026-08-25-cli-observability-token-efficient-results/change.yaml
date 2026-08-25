@@ -27,6 +27,12 @@ artifact_states:
       record: docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/architecture-review-r1.md
       round: r1
     role: primary
+  plan:
+    authoring_evidence: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-authoring.md
+    kind: plan
+    lifecycle_state: review-required
+    path: docs/plans/2026-08-25-cli-observability-token-efficient-results.md
+    role: primary
   proposal:
     kind: proposal
     lifecycle_state: accepted
@@ -51,7 +57,7 @@ artifact_states:
     role: primary
 workflow_state:
   blocker: null
-  current_stage: plan
+  current_stage: plan-review
   evidence:
     - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
     - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
@@ -60,7 +66,7 @@ workflow_state:
   next_stage: plan-review
 workflow:
   automation:
-    current_stage: plan
+    current_stage: plan-review
     evidence:
       - docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
       - docs/changes/2026-08-25-cli-observability-token-efficient-results/reviews/proposal-review-r4.md
@@ -102,6 +108,14 @@ lifecycle_cli:
       authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/architecture-authoring.md
       authoring_evidence_sha256: fff998df21a1ce5470c1f2efb33b2d2bc5957ad56f3fa6a6e7d249a8693b05ee
       stage_authority: architecture
+    plan:
+      artifact_kind: plan
+      artifact_path: docs/plans/2026-08-25-cli-observability-token-efficient-results.md
+      artifact_role: primary
+      artifact_sha256: 3cd6a1937d40b653244eb72deb3e8b277872e011a626d63e1d502a08ed8cc6ff
+      authoring_evidence_path: docs/changes/2026-08-25-cli-observability-token-efficient-results/evidence/plan-authoring.md
+      authoring_evidence_sha256: 8e36a3755e88622a34ada581ecaa1625242ecba22d8fc0b102556f2a9282caf4
+      stage_authority: plan
     proposal:
       artifact_kind: proposal
       artifact_path: docs/proposals/2026-08-25-cli-observability-and-token-efficient-results.md
