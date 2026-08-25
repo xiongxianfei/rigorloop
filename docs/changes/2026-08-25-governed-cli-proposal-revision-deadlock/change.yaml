@@ -25,7 +25,7 @@ tests:
 
 review:
   status: clean
-  reviewed_artifact: commit e050956852b3b1913f8f1ca050d14fabc2900608
+  reviewed_artifact: commit c26133b3997afb2736b917fb938a8615ae885766
   review_log: docs/changes/2026-08-25-governed-cli-proposal-revision-deadlock/review-log.md
   unresolved_items: 0
 
